@@ -121,13 +121,13 @@ function rainGaugeDisplayViewModel() {
         var self = this;
 
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
         
         //we fill the deviceId of the battery indicator
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.configureBatteryIcon(parseInt(self.widget.configuration.device.deviceId));
         self.widgetApi.registerAdditionalInformation(["unit"]); // We would like the unit !
-        self.shouldBeVisible(self.widget.configuration.dateDisplay);
-        var d = self.getValues(self.widget.configuration.device.keywordId);
+        self.shouldBeVisible(parseBool(self.widget.configuration.dateDisplay));
+        var d = self.getValues(parseInt(self.widget.configuration.device.keywordId));
       
       return d.promise();
     }
@@ -154,7 +154,7 @@ function rainGaugeDisplayViewModel() {
        self.widgetApi.askServerLocalTime(function (serverLocalTime) {
           self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
        }).done(function(data) {
-          self.getValues(self.widget.configuration.device.keywordId);
+          self.getValues(parseInt(self.widget.configuration.device.keywordId));
        })
        .fail(function(error) {
        });
@@ -169,8 +169,7 @@ function rainGaugeDisplayViewModel() {
         var self = this;
         
         //it is the right device
-        if (keywordId === self.widget.configuration.device.keywordId) {
-           
+        if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
            // Receive at startup data.unit and data.capacity
            if (!isNullOrUndefinedOrEmpty(data.unit))
               self.unit($.t(data.unit));
@@ -178,11 +177,11 @@ function rainGaugeDisplayViewModel() {
             if (data.value !==""){
                if (self.acquisitionData.length!=0){
                   if (data.date != DateTimeFormatter.isoDateToDate(self.acquisitionData[self.acquisitionData.length-1].date)) {
-                     self.acquisitionData.push({date: DateTimeFormatter.dateToIsoDate(data.date), key: data.value});
+                     self.acquisitionData.push({date: data.date, key: data.value});
                   }
                }
                else{
-                  self.acquisitionData.push({date: DateTimeFormatter.dateToIsoDate(data.date), key: data.value});
+                  self.acquisitionData.push({date: data.date, key: data.value});
                }
             }
             self.analyzeBuffer(keywordId);

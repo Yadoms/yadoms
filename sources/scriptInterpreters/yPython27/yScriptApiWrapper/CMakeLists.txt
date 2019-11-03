@@ -33,7 +33,7 @@ set_source_files_properties(yScriptApiWrapper.i PROPERTIES CPLUSPLUS ON)
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
 set(YPYTHON27_WRAPPER_INCLDIR
-   ${PYTHON_INCLUDE_DIRS}
+   ${Python2_INCLUDE_DIRS}
    ${script_cpp_api_INCLUDE_DIR}
 )
 
@@ -42,7 +42,7 @@ set(YPYTHON27_WRAPPER_INCLDIR
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
 set(YPYTHON27_WRAPPER_LINK
-   ${PYTHON_LIBRARIES}
+   ${Python2_LIBRARIES}
    script_cpp_api
 )
 
@@ -51,12 +51,12 @@ set(YPYTHON27_WRAPPER_LINK
 #########################################
 # Special workaround for Python under Windows : When using the Windows installer version of Python, the debug library is not provided.
 # We should use this workaround to make our application build in debug configuration.
-if(WIN32 AND NOT PYTHON_USE_SOURCES)
+if(WIN32 AND NOT PYTHON27_USE_SOURCES)
    add_definitions(-DSWIG_PYTHON_INTERPRETER_NO_DEBUG)
 endif()
 
-if(PYTHON_USE_SOURCES)
-   add_definitions(-DPYTHON_USE_SOURCES)
+if(PYTHON27_USE_SOURCES)
+   add_definitions(-DPYTHON27_USE_SOURCES)
 endif()
 
 ## Remove some warnings on generated code
@@ -64,13 +64,32 @@ if(MSVC)
    add_definitions( "/wd4706 /wd4701 /wd4459 /wd4456 /wd4702" )
 endif()
 
+##specific linker lib for osxcross (cross build for Darwin)
+if (CMAKE_SYSTEM_NAME MATCHES Darwin)
+	#check osxcross cross compilation
+	#in taht case, we must use 
+	find_package(Iconv)
+	if(Iconv_FOUND)
+			set(YPYTHON27_WRAPPER_LINK ${YPYTHON27_WRAPPER_LINK} ${Iconv_LIBRARIES})
+	else(Iconv_FOUND)
+			message(FATAL_ERROR "libiconv not FOUND")
+	endif()
+	find_package(Intl)
+	if(Intl_FOUND)
+			set(YPYTHON27_WRAPPER_LINK ${YPYTHON27_WRAPPER_LINK} ${Intl_LIBRARIES})
+	else(Intl_FOUND)
+			message(FATAL_ERROR "libintl not FOUND")
+	endif()
+endif()
+
+
 #########################################
 ## Always leave these lines to configure script wrapper correctly
 ## even if some variables are empty
 #########################################
-SCRIPT_API_WRAPPER_SOURCES(${YPYTHON27_TARGET_LANGUAGE} ${YPYTHON27_WRAPPER_SOURCES})
-SCRIPT_API_WRAPPER_LINK(${YPYTHON27_WRAPPER_LINK})
-SCRIPT_API_WRAPPER_INCLDIR(${YPYTHON27_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
+SCRIPT_API_WRAPPER_SOURCES(yScriptApiWrapper27 ${YPYTHON27_TARGET_LANGUAGE} ${YPYTHON27_WRAPPER_SOURCES})
+SCRIPT_API_WRAPPER_LINK(yScriptApiWrapper27 ${YPYTHON27_WRAPPER_LINK})
+SCRIPT_API_WRAPPER_INCLDIR(yScriptApiWrapper27 ${YPYTHON27_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
 SCRIPT_API_SOURCE_GROUP(${YPYTHON27_PARENT_INTERPRETER})
 
 #########################################
@@ -86,12 +105,12 @@ add_custom_command(OUTPUT swigpyrun.h
 #########################################
 ## Add post-build step to deploy Swig-generated file
 #########################################
-SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper.py ${YPYTHON27_PARENT_INTERPRETER})
+SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(yScriptApiWrapper27 ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper27.py ${YPYTHON27_PARENT_INTERPRETER})
   
 #########################################
 ## Add post-build step to deploy Api doc file
 #########################################
-SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md ${YPYTHON27_PARENT_INTERPRETER})
+SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(yScriptApiWrapper27 ${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md ${YPYTHON27_PARENT_INTERPRETER})
 
 
-install(TARGETS _yScriptApiWrapper DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/yPython27)
+install(TARGETS yScriptApiWrapper27 DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/yPython27)

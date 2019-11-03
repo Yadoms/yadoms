@@ -99,7 +99,7 @@ void CFreeMobileSms::sendSms(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
-      //retreive recipient parameters (login & key)
+      //retrieve recipient parameters (login & key)
       auto userId = api->getRecipientValue(recipientId, "userId");
       auto key = api->getRecipientValue(recipientId, "apiKey");
 

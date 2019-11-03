@@ -54,7 +54,7 @@ widgetViewModelCtor =
               var counter = 0;
               if ((!isNullOrUndefined(self.widget.configuration.commands))) {
                   $.each(self.widget.configuration.commands, function (index, command) {
-                     var btn = self.createDomButton(command.content.target.keywordId, command.content.target.value, command.content.icon, counter);
+                     var btn = self.createDomButton(parseInt(command.content.target.keywordId), command.content.target.value, command.content.icon, counter);
                      self.widget.$content.find(".commands-container").append(btn);
                      
                      //force KnockOut to apply binding on newly created button

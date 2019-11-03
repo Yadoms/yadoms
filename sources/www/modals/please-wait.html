@@ -1,0 +1,28 @@
+<!--Please wait Modal -->
+<div class="modal fade" id="please-wait-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title" data-i18n="modals.please-wait.title"></h4>
+         </div>
+         <div class="modal-body">
+            <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw waiting-animation"></i>
+            <div class="please-wait-reason" data-i18n="modals.please-wait.default-reason"></div>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   Yadoms.showPleaseWaitModal = function (reason) {
+      if (!isNullOrUndefined(reason)) {
+         $('.please-wait-reason')[0].textContent = reason;
+      }
+
+      $('div#please-wait-modal').modal("show");
+   };
+
+   Yadoms.hidePleaseWaitModal = function () {
+      $('div#please-wait-modal').modal("hide");
+   }
+</script>

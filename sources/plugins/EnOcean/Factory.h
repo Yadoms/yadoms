@@ -2,8 +2,11 @@
 #include "IConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/IBufferLogger.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IMessageHandler.h"
+#include "PairingHelper.h"
 
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	General factory
@@ -48,5 +51,13 @@ public:
                                                                      shared::event::CEventHandler& eventHandler,
                                                                      int evtPortDataReceived,
                                                                      boost::shared_ptr<shared::communication::IBufferLogger> bufferLogger);
-};
 
+   //--------------------------------------------------------------
+   /// \brief	                           Create the pairing helper
+   /// \param[in] api                     The Yadoms plugin API
+   /// \param[in] pairingMode             Pairing mode
+   /// \return                            The pairing helper
+   //--------------------------------------------------------------
+   static boost::shared_ptr<CPairingHelper> constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                   IPairingHelper::EPairingMode pairingMode);
+};

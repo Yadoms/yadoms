@@ -20,9 +20,9 @@ namespace rfxcomMessages
       m_batteryLevel->set(100);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
-      m_unitCode = deviceDetails.get<unsigned char>("unitCode");
+      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
@@ -61,6 +61,8 @@ namespace rfxcomMessages
       case sTypeBlindsT11:
       case sTypeBlindsT12:
       case sTypeBlindsT13:
+      case sTypeBlindsT14:
+      case sTypeBlindsT16:
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -97,6 +99,7 @@ namespace rfxcomMessages
       case sTypeBlindsT1:
       case sTypeBlindsT12:
       case sTypeBlindsT13:
+      case sTypeBlindsT16:
          m_id = rbuf.BLINDS1.id2 << 8 | rbuf.BLINDS1.id3;
          break;
 
@@ -107,6 +110,7 @@ namespace rfxcomMessages
       case sTypeBlindsT8:
       case sTypeBlindsT10:
       case sTypeBlindsT11:
+      case sTypeBlindsT14:
          m_id = rbuf.BLINDS1.id1 << 16 | rbuf.BLINDS1.id2 << 8 | rbuf.BLINDS1.id3;
          break;
 
@@ -128,6 +132,7 @@ namespace rfxcomMessages
       case sTypeBlindsT3:
       case sTypeBlindsT8:
       case sTypeBlindsT12:
+      case sTypeBlindsT14:
          m_unitCode = rbuf.BLINDS1.unitcode + 1;
          break;
       case sTypeBlindsT0:
@@ -141,6 +146,7 @@ namespace rfxcomMessages
       case sTypeBlindsT10:
       case sTypeBlindsT11:
       case sTypeBlindsT13:
+      case sTypeBlindsT16:
          m_unitCode = rbuf.BLINDS1.unitcode;
          break;
       default:
@@ -149,7 +155,7 @@ namespace rfxcomMessages
 
       m_state->set(fromProtocolState(rbuf.BLINDS1.cmnd));
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BLINDS1.filler)); // filler is specified as battery level in RFXtrx SDF.pdf
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.BLINDS1.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.BLINDS1.rssi));
 
       // Build device description
       buildDeviceModel();
@@ -188,6 +194,7 @@ namespace rfxcomMessages
       case sTypeBlindsT1:
       case sTypeBlindsT12:
       case sTypeBlindsT13:
+      case sTypeBlindsT16:
          buffer.BLINDS1.id1 = 0;
          buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
          buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & m_id);
@@ -201,6 +208,7 @@ namespace rfxcomMessages
       case sTypeBlindsT8:
       case sTypeBlindsT10:
       case sTypeBlindsT11:
+      case sTypeBlindsT14:
          buffer.BLINDS1.id1 = static_cast<unsigned char>(0xFF & (m_id >> 16));
          buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
          buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & m_id);
@@ -231,6 +239,7 @@ namespace rfxcomMessages
       case sTypeBlindsT3:
       case sTypeBlindsT8:
       case sTypeBlindsT12:
+      case sTypeBlindsT14:
          buffer.BLINDS1.unitcode = m_unitCode - 1;
          break;
       case sTypeBlindsT0:
@@ -244,6 +253,7 @@ namespace rfxcomMessages
       case sTypeBlindsT10:
       case sTypeBlindsT11:
       case sTypeBlindsT13:
+      case sTypeBlindsT16:
          buffer.BLINDS1.unitcode = m_unitCode;
          break;
       default:
@@ -327,6 +337,10 @@ namespace rfxcomMessages
       case sTypeBlindsT12: ssModel << "Confexx CNF24-2435";
          break;
       case sTypeBlindsT13: ssModel << "Screenline";
+         break;
+      case sTypeBlindsT14: ssModel << "Hualite";
+         break;
+      case sTypeBlindsT16: ssModel << "Zemismart";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;

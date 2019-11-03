@@ -1,69 +1,66 @@
 {
-	"type": "thermostat",
-	"version": "1.0.4",
-	"author": "jean-Michel BERHAULT",
-	"url": "https://github.com/Yadoms/yadoms/wiki/thermostat",
-	"credits": "",
+   "type": "thermostat",
+   "version": "1.1.1",
+   "author": "jean-Michel BERHAULT",
+   "url": "https://github.com/Yadoms/yadoms/wiki/thermostat",
+   "credits": "",
    "dependencies": {
-      "yadoms" : {
-         "minimumVersion" : "2.2.0-beta.1"
+      "yadoms": {
+         "minimumVersion": "2.4.0-beta.1"
       }
-   },  
-  "dimensions": {
-    "min": {
-      "x": 1,
-      "y": 1
-    },
-    "max": {
-      "x": 4,
-      "y": 4
-    },
-    "default": {
-      "x": 1,
-      "y": 1
-    }
-  },
-  "hasTitle" :  true,
-	"configurationSchema": {
-      "LivetemperatureSection" : {
-			"type": "section",
-			"defaultValue": "true",
-			"enableWithCheckBox": "true",
-			"enableWithCheckBoxDefaultValue": "true",
+   },
+   "dimensions": {
+      "min": {
+         "x": 1,
+         "y": 1
+      },
+      "max": {
+         "x": 4,
+         "y": 4
+      },
+      "default": {
+         "x": 1,
+         "y": 1
+      }
+   },
+   "hasTitle": true,
+   "configurationSchema": {
+      "LivetemperatureSection": {
+         "type": "section",
+         "defaultValue": "true",
+         "enableWithCheckBox": "true",
+         "enableWithCheckBoxDefaultValue": "true",
          "content": {
-		      "temperatureDevice": {
-			      "type": "keyword",
-			      "expectedCapacity": ["temperature"],
-			      "expectedKeywordAccess": "get"
-		      }
+            "temperatureDevice": {
+               "type": "keyword",
+               "expectedCapacity": ["temperature"]
+            }
          }
       },
-      "controlSection" : {
-			"type": "section",
-         "content": {         
-		      "temperatureSet": {
-			   "type": "keyword",
-			   "expectedCapacity": ["temperature"],
-			   "expectedKeywordAccess": "get"
+      "controlSection": {
+         "type": "section",
+         "content": {
+            "temperatureSet": {
+               "type": "keyword",
+               "expectedCapacity": ["temperature"]
             },
             "stepValue": {
                "type": "decimal",
                "defaultValue": "0.2"
             }
          }
-		},
-      "thermostatStateSection" : {
-			"type": "section",
-			"defaultValue": "true",
-			"enableWithCheckBox": "true",
-			"enableWithCheckBoxDefaultValue": "true",
+      },
+      "thermostatStateSection": {
+         "type": "section",
+         "defaultValue": "true",
+         "enableWithCheckBox": "true",
+         "enableWithCheckBoxDefaultValue": "true",
          "content": {
-            "state":{
+            "state": {
                "type": "keyword",
-               "expectedCapacity": ["switch","Operating State"],
-               "expectedKeywordAccess": "get"      
+               "expectedCapacity": ["switch", "Operating State"]
             }
          }
       }
-	}
+   }
 }

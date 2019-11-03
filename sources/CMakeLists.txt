@@ -12,8 +12,12 @@
 project (Yadoms)
 
 # Check the minimum CMake version
-cmake_minimum_required (VERSION 3.2.0)
+cmake_minimum_required (VERSION 3.14.0)
 
+# Global CMake policies
+cmake_policy(SET CMP0074 NEW)
+cmake_policy(SET CMP0078 NEW)
+cmake_policy(SET CMP0086 NEW)
 
 ##################################################################################################
 ## Extract Yadoms version from Version.h
@@ -42,7 +46,6 @@ else()
 	include(cmake/PrecompiledHeader.cmake)
 endif()
 
-
 # Windows specific macro
 if(WIN32)
 	include(cmake/windows.cmake)
@@ -55,9 +58,6 @@ endif()
    
 # Compilers/IDE configurations
 include(cmake/compilers.cmake)
-
-# include debug helpers
-include(cmake/debugger.cmake)
 
 ##################################################################################################
 ## CPack installation preconfiguration
@@ -106,6 +106,7 @@ set(BOOST_LIBS
 	date_time 
 	chrono 
 	regex
+	locale
 )
 
 # search boost libs
@@ -145,6 +146,23 @@ if(APPLE)
 	set(LIBS ${LIBS} ${IOKIT_LIBRARY} ${CARBON_LIBRARY})
 endif()
 
+##specific linker lib for osxcross (cross build for Darwin)
+if (CMAKE_SYSTEM_NAME MATCHES Darwin)
+	#check osxcross cross compilation
+	#in taht case, we must use 
+	find_package(Iconv)
+	if(Iconv_FOUND)
+			set(LIBS ${LIBS} ${Iconv_LIBRARIES})
+	else(Iconv_FOUND)
+			message(FATAL_ERROR "libiconv not FOUND")
+	endif()
+	find_package(Intl)
+	if(Intl_FOUND)
+			set(LIBS ${LIBS} ${Intl_LIBRARIES})
+	else(Intl_FOUND)
+			message(FATAL_ERROR "libintl not FOUND")
+	endif()
+endif()
 
 ###############################################
 # OpenSSL
@@ -220,10 +238,16 @@ if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
    endif(NOT PROTOBUF_PROTOC_EXECUTABLE)
 endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
 
-find_package(Protobuf 3.0.0 REQUIRED)
+find_package(Protobuf 3.1.0 REQUIRED)
 
 if(NOT ${PROTOBUF_FOUND})
 	message(FATAL_ERROR "Unable to find the required Protobuf tool")
+endif()
+
+
+if(MSVC)   
+   # Workaround to avoid conflict between min/max constants defined in windows.h and Protobuf
+   add_definitions(-DNOMINMAX)
 endif()
 
 
@@ -543,6 +567,10 @@ set(YADOMS_SRC
    server/task/TaskStatus.cpp
    server/task/backup/Backup.h
    server/task/backup/Backup.cpp
+   server/task/exportData/ExportData.h
+   server/task/exportData/ExportData.cpp
+   server/task/packLogs/PackLogs.h
+   server/task/packLogs/PackLogs.cpp
    server/task/plugins/ExtraQuery.h
    server/task/plugins/ExtraQuery.cpp
    
@@ -668,6 +696,7 @@ source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPl
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
+source_group(server\\task\\packLogs  server/task/packLogs/*.*)
 source_group(server\\task\\plugins  server/task/plugins/*.*)
 source_group(server\\update  server/update/*.*)
 source_group(server\\update\\info  server/update/info/*.*)
@@ -744,7 +773,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/adapters/DatabaseAdapters.cpp
 	server/database/common/adapters/GenericAdapter.h
 	server/database/common/adapters/GenericAdapter.cpp
-	server/database/common/adapters/HugeDataVectorAdapter.hpp
+	server/database/common/adapters/HugeDataVectorAdapter.h
+	server/database/common/adapters/HugeDataVectorAdapter.cpp
 	server/database/common/adapters/IResultAdapter.h
 	server/database/common/adapters/MultipleValueAdapter.hpp
 	server/database/common/adapters/SingleValueAdapter.hpp
@@ -788,6 +818,14 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_4_1_0.cpp
 	server/database/common/versioning/Version_4_2_0.h
 	server/database/common/versioning/Version_4_2_0.cpp
+	server/database/common/versioning/Version_4_3_0.h
+	server/database/common/versioning/Version_4_3_0.cpp
+	server/database/common/versioning/Version_4_4_0.h
+	server/database/common/versioning/Version_4_4_0.cpp
+	server/database/common/versioning/Version_5_0_0.h
+	server/database/common/versioning/Version_5_0_0.cpp
+	server/database/common/versioning/Version_5_1_0.h
+	server/database/common/versioning/Version_5_1_0.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -830,7 +868,7 @@ ENDIF()
 
 IF(USE_PGSQL_DATABASE)
    # Be careful updating PostgreSQL version : you maybe have to update ssleay32.dll dependency (MSVCRxxx.DLL)
-   find_package(PostgreSQL 9.6 EXACT)
+   find_package(PostgreSQL 9.6)
 
    if(PostgreSQL_FOUND)
       message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
@@ -960,10 +998,6 @@ else()
 	add_precompiled_header(yadoms stdafx.h)
 endif()
 
-##################################################################################################
-## Add natvis (allow better debugging within VisualStudio)
-##################################################################################################
-ADD_VS_NATVIS(yadoms)
 
 ##################################################################################################
 ## yadoms-shared

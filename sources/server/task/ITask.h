@@ -31,7 +31,7 @@ namespace task
 
       //------------------------------
       ///\brief Method called when task instance is ready to start
-      ///\param [in] taskId : The taskid
+      ///\param [in] taskId : The task id
       //------------------------------
       virtual void onSetTaskId(const std::string& taskId)
       {
@@ -39,7 +39,7 @@ namespace task
 
       //------------------------------
       ///\brief The task core working method
-      ///\param [in] pFunctor : a fucntion pointer to call on task update
+      ///\param [in] pFunctor : a function pointer to call on task update
       //------------------------------
       virtual void doWork(TaskProgressFunc pFunctor) = 0;
 

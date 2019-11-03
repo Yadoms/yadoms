@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include <boost/date_time.hpp>
+#include "../typeInfo/DoubleTypeInfo.h"
 
 namespace shared
 {
@@ -14,25 +14,26 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A duration (s) historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CDuration : public CSingleHistorizableData<boost::posix_time::time_duration>
+            class YADOMS_SHARED_EXPORT CDuration : public CSingleHistorizableData<double>
             {
             public:
                //-----------------------------------------------------
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
-               ///\param[in] accessMode      Access mode
+               ///\param[in] accessMode      The access mode
+               ///\param[in] measureType     The measure type (normally kAbsolute)
+               ///\param[in] additionalInfo  The additional info (min, max, precision...)
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CDuration(const std::string& keywordName,
-                                  const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
+                                  const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
+                                  const EMeasureType& measureType = EMeasureType::kAbsolute,
+                                  const typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
+                                  const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CDuration();
+               virtual ~CDuration() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

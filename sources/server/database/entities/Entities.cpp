@@ -135,12 +135,14 @@ namespace database
          ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)("type"))
          ((Units)(std::string)("")("units"))
          ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer())("typeInfo"))
-         ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(
+         ((Measure)(shared::plugin::yPluginApi::EMeasureType)(shared::plugin::yPluginApi::EMeasureType::kAbsolute)(
             "measure"))
          ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
          ((Blacklist)(bool)(false)("blacklist"))
          ((LastAcquisitionValue)(std::string)("")("lastAcquisitionValue"))
          ((LastAcquisitionDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("lastAcquisitionDate"))
+         ((HistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth::kDefault)(
+            "historyDepth"))
       ) ;
 
       DECLARE_ENTITY_CLASS_IMPLEMENTATION(
@@ -159,7 +161,8 @@ namespace database
          ((Avg)(std::string)("")("avg"))
          ((Min)(std::string)("")("min"))
          ((Max)(std::string)("")("max"))
-      ) ;
+         ((Count)(int)(0)("count"))
+         ) ;
 
 
       DECLARE_ENTITY_CLASS_IMPLEMENTATION(

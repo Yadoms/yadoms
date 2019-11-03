@@ -211,6 +211,8 @@ namespace automation
             break;
          case script_IPC::toYadoms::msg::kReadKeyword: processReadKeyword(toYadomsProtoBuffer.readkeyword());
             break;
+         case script_IPC::toYadoms::msg::kReadKeywordDetails: processReadKeywordDetails(toYadomsProtoBuffer.readkeyworddetails());
+            break;
          case script_IPC::toYadoms::msg::kWaitForNextAcquisition: processWaitForNextAcquisition(toYadomsProtoBuffer.waitfornextacquisition());
             break;
          case script_IPC::toYadoms::msg::kWaitForNextAcquisitions: processWaitForNextAcquisitions(toYadomsProtoBuffer.waitfornextacquisitions());
@@ -282,6 +284,23 @@ namespace automation
          {
             ans.set_error(ex.what());
             std::cout << "Error processing processReadKeyword request : " << ex.what() << std::endl;
+         }
+
+         send(ans);
+      }
+
+      void CIpcAdapter::processReadKeywordDetails(const script_IPC::toYadoms::ReadKeywordDetails& request)
+      {
+         script_IPC::toScript::msg ans;
+         auto answer = ans.mutable_readkeyworddetails();
+         try
+         {
+            answer->set_value(m_scriptApi->readKeywordDetails(request.keywordid()));
+         }
+         catch (std::exception& ex)
+         {
+            ans.set_error(ex.what());
+            std::cout << "Error processing processReadKeywordDetails request : " << ex.what() << std::endl;
          }
 
          send(ans);

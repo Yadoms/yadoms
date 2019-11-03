@@ -27,9 +27,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Destructor
             //-----------------------------------------------------
-            virtual ~IYPluginApi()
-            {
-            }
+            virtual ~IYPluginApi() = default;
 
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
@@ -173,9 +171,19 @@ namespace shared
 
             ///\brief Set the current plugin state
             ///\param    [in]    state                   The new state
-            ///\param    [in]    customMessageId         The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message __something__ received')
+            ///\param    [in]    customMessageId         The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message {{something}} received')
             ///\param    [in]    customMessageDataParams The message data parameters (map<name, value> ) (used as translation parameters). Ignored if state != kCustom or kError.
             ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
+            ///\details Example of a call with custom message containing a parameter :
+            /// api->setPluginState(yApi::historization::EPluginState::kCustom,
+            ///                     "lastRequestFailed",
+            ///                     {{"error", exception.what()}});
+            /// with "lastRequestFailed" declared in your locale file (ie en.json), like :
+            ///  "customLabels": {
+            ///    "pluginState": {
+            ///      "lastRequestFailed": "Error ({{error}}) detected",
+            ///    }
+            ///  }
             //-----------------------------------------------------
             virtual void setPluginState(const historization::EPluginState& state,
                                         const std::string& customMessageId = std::string(),
@@ -201,7 +209,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keyword (all-in-one function)
             ///\param    [in]    device            The device name
-            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retreive configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
+            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retrieve configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185"). Displayed and editable by user
             ///\param    [in]    keyword           Keyword to declare for this device
             ///\param    [in]    details           Device details
@@ -216,7 +224,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keywords (all-in-one function)
             ///\param    [in]    device            The device name
-            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retreive configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
+            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retrieve configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185"). Displayed and editable by user
             ///\param    [in]    keywords          List of keywords to declare for this device
             ///\param    [in]    details           Device details
@@ -540,7 +548,7 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
             //--
-            //-- Yadoms informations
+            //-- Yadoms information
             //--
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
@@ -550,7 +558,7 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
 
             //-----------------------------------------------------
-            /// \brief	    return information on Yadoms (version, developper mode state, location...)
+            /// \brief	    return information on Yadoms (version, developer mode state, location...)
             /// \return     Yadoms information
             //-----------------------------------------------------
             virtual boost::shared_ptr<const information::IYadomsInformation> getYadomsInformation() const = 0;
@@ -558,5 +566,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi
-
-

@@ -148,25 +148,28 @@
       function createLocationSectionParameters(i18NContext, supportedTimezones) {
          var currentLocation = configurationManager.location();
 
-         latitudeParameter = new StringParameterHandler(i18NContext,
+         latitudeParameter = new DecimalParameterHandler(i18NContext,
                undefined,
-               "latitude", {
-                     "regex": "^-?[0-9]+(\.[0-9]+)?$",
-                     "required": "true"
+               "latitude",
+               {
+                     "minimumValue": -90,
+                     "maximumValue": 90
                },
                currentLocation.latitude);
 
-         longitudeParameter = new StringParameterHandler(i18NContext,
+         longitudeParameter = new DecimalParameterHandler(i18NContext,
                undefined,
-               "longitude", {
-                     "regex": "^-?[0-9]+(\.[0-9]+)?$",
-                     "required": "true"
+               "longitude",
+               {
+                     "minimumValue": -180,
+                     "maximumValue": 180
                },
                currentLocation.longitude);
 
          timezoneParameter = new EnumParameterHandler(i18NContext,
                undefined,
-               "timezone", {
+               "timezone",
+               {
                      "values": supportedTimezones,
                      "sort": true
                },
@@ -175,7 +178,8 @@
          locationSectionParameters = new SectionParameterHandler(
                i18NContext,
                undefined,
-               "location", {});
+               "location",
+               {});
 
          locationSectionParameters.configurationHandlers.push(latitudeParameter);
          locationSectionParameters.configurationHandlers.push(longitudeParameter);
@@ -332,7 +336,7 @@
             var d1 = new $.Deferred();
             latitudeParameter.getCurrentConfiguration()
                   .done(function (lat) {
-                        latitude = lat;
+                        latitude = parseFloat(lat);
                         d1.resolve();
                   })
                   .fail(d1.reject);
@@ -341,7 +345,7 @@
             var d2 = new $.Deferred();
             longitudeParameter.getCurrentConfiguration()
                   .done(function (lon) {
-                        longitude = lon;
+                        longitude = parseFloat(lon);
                         d2.resolve();
                   })
                   .fail(d2.reject);

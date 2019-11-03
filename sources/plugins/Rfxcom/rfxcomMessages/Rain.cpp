@@ -28,7 +28,7 @@ namespace rfxcomMessages
 
       m_rain = boost::make_shared<yApi::historization::CRain>("rain",
                                                               yApi::EKeywordAccessMode::kGet,
-                                                              (m_subType == sTypeRAIN6) ? (yApi::historization::EMeasureType::kIncrement) : (yApi::historization::EMeasureType::kCumulative));
+                                                              (m_subType == sTypeRAIN6) ? (yApi::EMeasureType::kIncrement) : (yApi::EMeasureType::kCumulative));
       m_keywords.push_back(m_rain);
 
       switch (m_subType)
@@ -47,16 +47,13 @@ namespace rfxcomMessages
       case sTypeRAIN8:
          m_rain->set(rbuf.RAIN.raintotal3 * 0.2); // 2 cartridge can be installed : 0.2 mm or 0.01 inch. We support only 0.2 mm cartridge.
          break;
-      case sTypeRAIN9:
-         m_rain->set((rbuf.RAIN.raintotal2 << 8 | rbuf.RAIN.raintotal3) * 0.3);
-         break;
       default:
          YADOMS_LOG(information) << "Rain subtype is not supported : " << m_subType;
          break;
       }
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.RAIN.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.RAIN.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.RAIN.rssi));
 
       buildDeviceModel();
       buildDeviceName();
@@ -129,8 +126,6 @@ namespace rfxcomMessages
       case sTypeRAIN7: ssModel << "Alecto WS4500, Auriol H13726, Hama EWS1500, Meteoscan W155/W160, Ventus WS155";
          break;
       case sTypeRAIN8: ssModel << "Davis";
-         break;
-      case sTypeRAIN9: ssModel << "Alecto ACH2010";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;

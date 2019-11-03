@@ -1,4 +1,61 @@
-### 2.2.0-beta.1
+### 2.4.0-beta.1
+* New feature #575 : add keyword without history
+* New feature (plugin API) : web requests done by plugins now include proxy settings from Yadoms. Just need to rebuild plugin.
+
+
+### 2.3.0
+* Add IlluminationWm2 historizer
+* Add getKeywordListLastData REST request
+* New feature #434 : Add a "connected/disconnected" flag on the main page 
+* New feature #532 : Add readkeyworddetails function to script API
+* New feature #537 : Add a download logs function
+* New feature #553 : use of full compliant Json
+* New feature #555 : Add data export function (maintenance page of configuration panel)
+* New feature #556 : Duplicate rule function 
+* New feature #572 : App proxy support
+* Fix #136 : JSON empty collection. 
+* Fix #451 : Summary Acquisition Months 
+* Fix #482 : ZWave plugin - Configuration display error
+* Fix #520 : [switch] Bad behaviour with dimmable keyword 
+* Fix #521 : Change the format of duration keywords
+* Fix #522 : Try to backup elsewhere if not enough place in system temp folder
+* Fix #539 : ZWave : configuration items : add numbers NewFeature
+* Fix #540 : Fix getKeywordData request when used without specifying limit
+* Fix #558 : Build with Protobuf 3.7.1 under Windows
+* Fix #560 : ZWave plugin - cleanup logs
+* Fix #561 : Yadoms update
+* Fix #565 : Extra queries failure
+* Fix #567 : Widget moving to another page fail 
+* Fix #568 : Check summary acquisition on yadoms update 
+* Fix #569 : Fix model usage on manually created devices
+* Fix #570 : remove connected user from Summary page of configuration panel (makes no sense)
+* Fix #571 : Summary data : average values are not exact 
+* Fix #573 : fix querying summary values and fix widget chart
+* Fix error when loading web client on slow connection
+* Fix script interpreter startup in debug mode
+* Fix wrong display for new devices
+
+#### Issues fixed
+* [Click here to see issues fixed in this version](https://github.com/Yadoms/yadoms/milestone/10?closed=1)
+
+
+
+
+### 2.2.1
+
+#### Yadoms Core
+* Fix #551 : Update fails on Windows
+
+#### Web Client
+* Fix #549 : Fix device configuration loading when accessing to configuration of a newly discovered device
+* Fix widget refresh value after newAcquisition
+
+#### Issues fixed
+* [Click here to see issues fixed in this version](https://github.com/Yadoms/yadoms/milestone/12?closed=1)
+
+
+
+### 2.2.0
 
 #### Yadoms Core
 * Fix #319 - No widget displayed with SAFARI
@@ -11,6 +68,11 @@
 * Fix incremental historization from automation rules or web client
 * Automatic set version number into package.json (from changelog.md) for modules (plugins and script interpreters)
 * Log Yadoms version at startup (information level)
+* New feature #513 : Add device fusion 
+* Fix #540 : Fix getKeywordData request when used without specifying limit
+* Fix script interpreter package generation (post build copy)
+* Fix #529 : Fix saving system configuration
+* Fix #526 - Equipment type change not fully functional
 
 #### Web Client
 * Fix #389 - Bad display after computer wake up
@@ -23,6 +85,15 @@
 * Fix #502 - [Dashboard - automation rules] Move help button to edit rule modal footer
 * In configuration sections, don't display sub-section of a combo section if no content
 * Optimize Devices Page in dashboard (less requests to the server)
+* Fix device details access on devices page
+* Fix #512 - Fix confirmation modals displayed multiple times and at background (need update of switch widget to version 1.1.1)
+* Fix #510 - Title not display
+* Fix #527 - Equipment renamed is not displayed immediately
+* Fix wrong display for new devices
+* Fix #511 - Configuration blocks - duplicate buttons doesn't work properly
+
+#### Issues fixed
+* [Click here to see issues fixed in this version](https://github.com/Yadoms/yadoms/milestone/11?closed=1)
 
 
 ### 2.1.0

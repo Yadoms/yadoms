@@ -22,16 +22,15 @@ function LazyLoaderManager(modalPath) {
  * Load the modal with lazy loading if needed
  * @param callback
  */
-LazyLoaderManager.prototype.load = function (callback){
+LazyLoaderManager.prototype.load = function (callback) {
    assert($.isFunction(callback), "callback must be defined");
    var self = this;
    if (self.modalHasBeenLoaded) {
       //we simply call the callback function
       callback();
-   }
-   else{
+   } else {
       RestEngine.getHtml(self.modalPath)
-         .done(function(data) {
+         .done(function (data) {
             var $data = $(data);
             $data.i18n();
             //we add the modal to the body
@@ -41,8 +40,10 @@ LazyLoaderManager.prototype.load = function (callback){
             //we call the callback
             callback();
          })
-         .fail(function(error) {
-            notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", {modalPath : self.modalPath}), error);
+         .fail(function (error) {
+            notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", {
+               modalPath: self.modalPath
+            }), error);
          });
    }
 };
@@ -57,22 +58,26 @@ LazyLoaderManager.prototype.loadAsync = function () {
    var self = this;
    if (self.modalHasBeenLoaded) {
       d.resolve();
-   }
-   else {
+   } else {
       RestEngine.getHtml(self.modalPath)
-      .done(function(data) {
-         var $data = $(data);
-         $data.i18n();
-         //we add the modal to the body
-         $('body').append($data);
-         //we save the information that the modal has been loaded
-         self.modalHasBeenLoaded = true;
-         d.resolve();
-      })
-      .fail(function(error) {
-         notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", { modalPath: self.modalPath }), error);
-         d.reject(error);
-      });
+         .done(function (data) {
+            // Protection against multiple requests
+            if (!self.modalHasBeenLoaded) {
+               var $data = $(data);
+               $data.i18n();
+               //we add the modal to the body
+               $('body').append($data);
+               //we save the information that the modal has been loaded
+               self.modalHasBeenLoaded = true;
+            }
+            d.resolve();
+         })
+         .fail(function (error) {
+            notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", {
+               modalPath: self.modalPath
+            }), error);
+            d.reject(error);
+         });
    }
    return d.promise();
 };

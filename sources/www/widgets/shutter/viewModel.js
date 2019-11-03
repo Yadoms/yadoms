@@ -43,7 +43,7 @@ widgetViewModelCtor =
 							 cmd = newState;
 							 break;
 					  }
-                     KeywordManager.sendCommand(this.widget.configuration.device.keywordId, cmd.toString());
+                     KeywordManager.sendCommand(parseInt(this.widget.configuration.device.keywordId), cmd.toString());
                  }
               }
           };
@@ -102,10 +102,10 @@ widgetViewModelCtor =
                   return;
 
               //we register keyword new acquisition
-              self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+              self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
          
               //we register keyword for get last value at web client startup 
-              self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
+              self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
               self.widgetApi.registerAdditionalInformation(["accessMode", "capacity"]); // We would like the unit !
 
               if (!isNullOrUndefined(this.widget.configuration.kind)) {
@@ -128,7 +128,7 @@ widgetViewModelCtor =
               if ((this.widget.configuration == undefined) || (this.widget.configuration.device == undefined))
                  return;
               
-              if (keywordId === this.widget.configuration.device.keywordId) {
+              if (keywordId === parseInt(this.widget.configuration.device.keywordId)) {
                  if (!isNullOrUndefinedOrEmpty(data.capacityName))
                     self.capacity   = data.capacityName;
                  

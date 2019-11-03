@@ -13,8 +13,7 @@ namespace automation
       ///\brief               Destructor
       //-----------------------------------------------------
       virtual ~IRuleManager()
-      {
-      }
+      = default;
 
       //-----------------------------------------------------
       ///\brief               Start the Rule manager (start all rules)
@@ -30,7 +29,7 @@ namespace automation
       ///\brief               Get all available interpreters (re-scan interpreters)
       ///\return              The interpreter list
       //-----------------------------------------------------
-      virtual std::vector<std::string> getAvailableInterpreters() = 0;
+      virtual std::vector<std::string> getLoadedInterpreters() = 0;
 
       //-----------------------------------------------------
       ///\brief               Get all rules
@@ -41,10 +40,11 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Create a new rule
       /// \param[in] ruleData Data of the rule to create (name, configuration, etc...)
-      /// \param[in] code  Rule code
+      /// \param[in] code     Rule code
+      /// \param[in] startNow Indicate if the rule must be started after creation
       ///\return              The new rule id
       //-----------------------------------------------------
-      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) = 0;
+      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code, bool startNow = true) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Get the rule informations
@@ -106,6 +106,15 @@ namespace automation
       //--------------------------------------------------------------
       virtual void deleteRule(int id) = 0;
 
+            //--------------------------------------------------------------
+      /// \brief                          Duplicate a rule
+      /// \param[in] idToDuplicate        Rule Id to duplicate
+      /// \param[in] newName              The new rule name
+      /// \return                         The new rule id
+      /// \throw                          CInvalidParameter if rule id is unknown
+      //--------------------------------------------------------------
+      virtual int duplicateRule(int idToDuplicate, const std::string & newName) = 0;
+
       //--------------------------------------------------------------
       /// \brief                          Start all rules using a script interpreter
       /// \param[in] interpreterName      The script interpreter name
@@ -141,6 +150,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Stop a rule
       ///\param[in] ruleId    The rule ID
+      ///\param timeout       The timeout (default 20sec)
       ///\throw               CRuleException if timeout
       //-----------------------------------------------------
       virtual void stopRuleAndWaitForStopped(int ruleId,

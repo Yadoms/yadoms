@@ -34,7 +34,7 @@ namespace rfxcomMessages
       m_state->set(command);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
       m_houseCode = deviceDetails.get<std::string>("houseCode");
       m_groupAddress = deviceDetails.get<std::string>("groupAddress");
       m_subAddress = deviceDetails.get<std::string>("subAddress");
@@ -177,7 +177,7 @@ namespace rfxcomMessages
          }
       }
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.FS20.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.FS20.rssi));
 
       // Build device description
       buildDeviceModel();

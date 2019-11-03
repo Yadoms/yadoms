@@ -66,11 +66,8 @@ namespace xplcore
    {
       /* Instance ID rule : alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
 
-      std::string temp;
-
-      // First, convert to lower case
-      temp.resize(instanceName.size());
-      std::transform(instanceName.begin(), instanceName.end(), temp.begin(), ::tolower);
+	  // First, convert to lower case
+	   std::string temp = boost::to_lower_copy(instanceName);
 
       // Next, remove all unsupported characters
       std::string xplElementName;

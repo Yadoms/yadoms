@@ -53,7 +53,7 @@ namespace rfxcomMessages
       }
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.CURRENT_ENERGY.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.CURRENT_ENERGY.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.CURRENT_ENERGY.rssi));
 
       buildDeviceModel();
       buildDeviceName();

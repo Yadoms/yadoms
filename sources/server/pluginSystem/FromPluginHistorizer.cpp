@@ -10,13 +10,12 @@ namespace pluginSystem
                                                                  historizable.capacity().unit(),
                                                                  shared::plugin::yPluginApi::EKeywordDataType(historizable.capacity().type()))),
         m_accessMode(shared::plugin::yPluginApi::EKeywordAccessMode(historizable.accessmode())),
-        m_measureType(shared::plugin::yPluginApi::historization::EMeasureType(historizable.measure())),
+        m_measureType(shared::plugin::yPluginApi::EMeasureType(historizable.measure())),
         m_typeInfo(historizable.typeinfo().empty() ? shared::CDataContainer::EmptyContainer : shared::CDataContainer(historizable.typeinfo())),
+        m_historyDepth(historizable.historydepth().empty()
+                          ? shared::plugin::yPluginApi::EHistoryDepth::kDefault
+                          : shared::plugin::yPluginApi::EHistoryDepth(historizable.historydepth())),
         m_value(formatValue)
-   {
-   }
-
-   CFromPluginHistorizer::~CFromPluginHistorizer()
    {
    }
 
@@ -40,7 +39,7 @@ namespace pluginSystem
       return m_value;
    }
 
-   const shared::plugin::yPluginApi::historization::EMeasureType& CFromPluginHistorizer::getMeasureType() const
+   const shared::plugin::yPluginApi::EMeasureType& CFromPluginHistorizer::getMeasureType() const
    {
       return m_measureType;
    }
@@ -49,6 +48,9 @@ namespace pluginSystem
    {
       return m_typeInfo;
    }
+
+   const shared::plugin::yPluginApi::EHistoryDepth& CFromPluginHistorizer::getHistoryDepth() const
+   {
+      return m_historyDepth;
+   }
 } // namespace pluginSystem	
-
-

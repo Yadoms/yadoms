@@ -59,6 +59,7 @@ function initializeWidgetEngine() {
 
                 //we can start the periodic update
                 serverIsOnline = true;
+                displayConnectedState();
                 if (!WebSocketEngine.isActive())
                     widgetUpdateInterval = setInterval(periodicUpdateTask,
                         Yadoms.updateIntervalWithWebSocketDisabled);
@@ -166,6 +167,7 @@ function periodicUpdateTask() {
             //if we were offline we go back to online status
             if (!serverIsOnline) {
                 serverIsOnline = true;
+                displayConnectedState();
                 //we signal that server has been back
                 notifyInformation($.t("mainPage.notifications.connectionToServerHasBeenRestored"));
                 //if the errorNotification is always visible we close it
@@ -251,13 +253,17 @@ function periodicUpdateTask() {
                         LastEventLogId = value.id;
                     });
             }
-            if (!WebSocketEngine.isConnected())
+            if (!WebSocketEngine.isConnected()) {
                 serverIsOnline = false;
+                displayDisconnectedState();
+            }
         })
         .fail(function (error) {
             if (serverIsOnline) {
                 //we indicate that *server has passed offline
                 serverIsOnline = false;
+                displayDisconnectedState();
+                
                 OfflineServerNotification =
                     notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"),
                         error,
@@ -411,8 +417,8 @@ function updateWidgetsPolling(pageId) {
     } else {
        $.each(pageId.widgets, function (widgetIndex, widget) {
            //we ask which devices are needed for this widget instance
-           if (!isNullOrUndefinedOrEmpty(widget.getlastValue)){
-              getLastValues = getLastValues.concat(widget.getlastValue);
+           if (!isNullOrUndefinedOrEmpty(widget.keywordsToGetlastValue)){
+              getLastValues = getLastValues.concat(widget.keywordsToGetlastValue);
            }
            if (!isNullOrUndefinedOrEmpty(widget.additionalInfo)){
               getAdditionInfo = getAdditionInfo.concat(widget.additionalInfo);
@@ -424,8 +430,8 @@ function updateWidgetsPolling(pageId) {
           $.each(data, function (index, acquisition) {
              //we signal the new acquisition to the widget if the widget support the method
              $.each(pageId.widgets, function (widgetIndex, widget) {
-                if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1){
-                   if (isNullOrUndefined(acquisition.error)){
+                if ($.inArray(acquisition.keywordId, widget.keywordsToGetlastValue)!=-1){
+                   if (parseBool(acquisition.exist)){
                       if (widget.viewModel.onNewAcquisition !== undefined)
                          widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
                    }else{ // we desactivate the widget
@@ -451,7 +457,7 @@ function updateWidgetsPolling(pageId) {
 
 function updateWidgetPolling(widget) {
     var d = new $.Deferred();
-    
+
     if (!isNullOrUndefined(widget.listenedKeywords)) {
        if (widget.listenedKeywords.length!=0){ // only if this list is not empty
           AcquisitionManager.getLastAcquisition(widget.listenedKeywords, widget.additionalInfo)
@@ -461,6 +467,7 @@ function updateWidgetPolling(widget) {
                          //we signal the new acquisition to the widget if the widget support the method
                          if (widget.viewModel.onNewAcquisition !== undefined) {
                              widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+                             widget.$gridWidget.find(".textfit").fitText();
                          }
                          widget.viewModel.widgetApi.manageBatteryConfiguration();
                     });
@@ -469,8 +476,8 @@ function updateWidgetPolling(widget) {
             })
             .fail(function (error) {
                 notifyError($.t("objects.generic.errorGetting",{
-                        objectName: "last acquisition for widget = " + widget.id
-                    }),error);
+                   objectName: "last acquisition for widget = " + widget.id
+                   }),error);
              d.reject(error);
           });
        } else 
@@ -486,11 +493,10 @@ function updateWidgetPollingByKeywordsId(keywords, additionnalInfo) {
     
     if (!isNullOrUndefined(keywords)) {
        if (keywords!=0){
-          console.log (additionnalInfo);
           AcquisitionManager.getLastAcquisition(keywords, additionnalInfo)
           .done(d.resolve)
           .fail(function (error) {
-             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + infos }), error);
+             notifyError($.t("objects.widgetManager.errorDuringGettingKeywordsInformation"), error);
              d.reject(error);
           });
        } else 

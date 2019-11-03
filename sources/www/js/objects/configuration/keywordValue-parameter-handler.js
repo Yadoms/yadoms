@@ -24,7 +24,6 @@ function KeywordValueParameterHandler(i18NContext, i18nKey, paramName, content, 
    this.content = content;
 
    this.content.expectedKeywordAccess = "GetSet";
-   this.content.lookupMethod = "accessMode";
    this.currentValue = currentValue;
    this.keywordPH = new KeywordParameterHandler(i18NContext, i18nKey, paramName, content, currentValue);
 }
@@ -126,14 +125,7 @@ KeywordValueParameterHandler.prototype.getParamName = function() {
  */
 KeywordValueParameterHandler.prototype.setEnabled = function (enabled) {
     var self = this;
-
     this.keywordPH.setEnabled(enabled);
-    /*
-    if (enabled) {
-            $("#" + self.uuidContainer + " select").addClass("enable-validation");
-    } else {
-            $("#" + self.uuidContainer + " select").removeClass("enable-validation");
-    }*/
 }
 
 /**

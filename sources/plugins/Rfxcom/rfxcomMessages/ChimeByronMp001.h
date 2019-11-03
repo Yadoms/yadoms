@@ -16,11 +16,11 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CChimeByronMp001();
+      explicit CChimeByronMp001(const std::string& model);
 
       // ILighting2Subtype implementation
       std::string getModel() const override;
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() const override;
       void set(const std::string& yadomsCommand, const shared::CDataContainer& deviceDetails) override;
       void reset() override;
       unsigned int idFromProtocol(unsigned char id1,
@@ -35,6 +35,8 @@ namespace rfxcomMessages
       // [END] ILighting2Subtype implementation
 
    private:
+      const std::string m_model;
+
       //--------------------------------------------------------------
       /// \brief	                        The keywords
       //--------------------------------------------------------------
@@ -43,8 +45,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
-
-

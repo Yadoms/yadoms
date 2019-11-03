@@ -19,6 +19,15 @@ namespace shared
          //---------------------------------------------
          static boost::filesystem::path makeRelative(const boost::filesystem::path& from,
                                                      const boost::filesystem::path& to);
+
+		 //---------------------------------------------
+		 ///\brief Compute diretory size
+		 ///\param [in] directory Directory to compute size
+		 ///\param [in] recurse True to compute directory tree size
+		 ///\return the size in bytes
+		 //---------------------------------------------
+		 static uintmax_t directorySize(const boost::filesystem::path& directory,
+										        bool recurse = true);
       };
    } // namespace tools 
 } // namespace shared

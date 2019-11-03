@@ -24,13 +24,14 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::Dimmable, "dimmable", CStandardUnits::Percent(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Direction, "direction", CStandardUnits::Degrees(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Distance, "distance", CStandardUnits::Meter(), EKeywordDataType::kNumeric);
-         DECLARE_CAPACITY(CStandardCapacities::Duration, "duration", CStandardUnits::NoUnit(), EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Duration, "duration", CStandardUnits::Second(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::ElectricLoad, "electricLoad", CStandardUnits::AmperePerHOur(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Energy, "energy", CStandardUnits::WattPerHour(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Event, "event", CStandardUnits::NoUnit(), EKeywordDataType::kNoData);
          DECLARE_CAPACITY(CStandardCapacities::Frequency, "frequency", CStandardUnits::Hertz(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Humidity, "humidity", CStandardUnits::Percent(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Illumination, "illumination", CStandardUnits::Lux(), EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::IlluminationWm2, "illuminationWm2", CStandardUnits::WattPerSquareMeter(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Load, "load", CStandardUnits::Percent(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Message, "message", CStandardUnits::NoUnit(), EKeywordDataType::kJson);
          DECLARE_CAPACITY(CStandardCapacities::PluginState, "pluginState", CStandardUnits::NoUnit(), EKeywordDataType::kEnum);

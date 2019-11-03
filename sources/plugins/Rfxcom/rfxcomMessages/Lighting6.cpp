@@ -18,10 +18,10 @@ namespace rfxcomMessages
       m_state->setCommand(command);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
       m_id = deviceDetails.get<unsigned short>("id");
-      m_groupCode = deviceDetails.get<unsigned char>("groupCode");
-      m_unitCode = deviceDetails.get<unsigned char>("unitCode");
+      m_groupCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("groupCode"));
+      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
@@ -42,12 +42,18 @@ namespace rfxcomMessages
       m_signalPower->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
-      if (m_subType != sTypeBlyss)
+      switch (m_subType)
+      {
+      case sTypeBlyss:
+      case sTypeCuveo:
+         break;
+      default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+      }
 
       m_id = manuallyDeviceCreationConfiguration.get<short>("id");
       m_groupCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("groupCode"));
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -73,7 +79,7 @@ namespace rfxcomMessages
       m_groupCode = rbuf.LIGHTING6.groupcode;
       m_unitCode = rbuf.LIGHTING6.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING6.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING6.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.LIGHTING6.rssi));
 
       // Build device description
       buildDeviceModel();
@@ -162,6 +168,7 @@ namespace rfxcomMessages
       switch (m_subType)
       {
       case sTypeBlyss: ssModel << "Blyss";
+      case sTypeCuveo: ssModel << "Cuveo";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;

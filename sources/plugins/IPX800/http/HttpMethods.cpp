@@ -17,7 +17,7 @@ namespace http
    {
       try
       {
-         std::map<std::string, std::string> mapParameters = parameters.getAsMap();
+         std::map<std::string, std::string> mapParameters = parameters.getAsMap<std::string>();
          Poco::URI uri(url);
 
          if (!parameters.empty())

@@ -48,7 +48,6 @@ DeviceManager.getAll = function () {
     RestEngine.getJson("rest/device")
     .done(function (data) {
         var devices = [];
-        //foreach result we append a <tr>
         $.each(data.device, function (index, value) {
             devices.push(DeviceManager.factory(value));
         });
@@ -58,6 +57,24 @@ DeviceManager.getAll = function () {
 
     return d.promise();
 };
+
+/**
+ * Get compatible devices for merge from existing device
+ * @ return {Promise}
+ */
+DeviceManager.getCompatibleForMerge = function (deviceId) {
+    var d = new $.Deferred();
+
+    RestEngine.getJson("rest/device/" + deviceId + "/compatibleForMergeDevice")
+    .done(function (data) {
+        d.resolve(data);
+    })
+    .fail(function(err) {
+        console.error(err);
+     });
+
+    return d.promise();
+}
 
 /**
  * Get the device attached to a plugin
@@ -72,8 +89,12 @@ DeviceManager.getAttachedPlugin = function (device, force) {
     if(!device.attachedPlugin || force === true) {
         PluginInstanceManager.get(device.pluginId)
         .done(function (pluginInstance) {
-            device.attachedPlugin = pluginInstance;
-            d.resolve();
+            PluginInstanceManager.downloadPackage(pluginInstance)
+            .done(function() {
+                device.attachedPlugin = pluginInstance;
+                d.resolve();
+            })
+            .fail(d.reject);
         }).fail(d.reject);
     } else {
        d.resolve();
@@ -156,7 +177,7 @@ DeviceManager.getKeywordsBydeviceIdAndCapacity = function (deviceId, KeywordAcce
 /**
  * Get the keywords attached to a device
  * @param {Object} device The device
- * @param {boolean} forceReload if true force reloading keywords fro mserver
+ * @param {boolean} forceReload if true force reloading keywords from server
  * @ return {Promise}
  */
 DeviceManager.getKeywords = function (device, forceReload) {
@@ -305,4 +326,32 @@ DeviceManager.updateToServer = function (device) {
     }).fail(d.reject);
 
     return d.promise();
+};
+
+/**
+ * Merge 2 devices
+ * @param {Object} sourceDeviceId The source device id
+ * @param {Object} targetDeviceId The target device id
+ * @param {Object} keywordCorrespondences The correspondance between keywords
+ * @ return {Promise}
+ */
+DeviceManager.mergeDevices = function (sourceDeviceId, targetDeviceId, keywordCorrespondences) {
+   assert(!isNullOrUndefined(sourceDeviceId), "sourceDeviceId must be defined");
+   assert(!isNullOrUndefined(targetDeviceId), "targetDeviceId must be defined");
+   assert(!isNullOrUndefined(keywordCorrespondences), "keywordCorrespondences must be defined");
+
+   var d = new $.Deferred();
+
+   mergeInfo = {
+      "sourceDeviceId" : sourceDeviceId,
+      "targetDeviceId" : targetDeviceId,
+      "keywordCorrespondences" : keywordCorrespondences
+   }
+
+   RestEngine.putJson("/rest/device/merge", { data: JSON.stringify(mergeInfo) })
+   .done(function () {
+       d.resolve();
+   }).fail(d.reject);
+
+   return d.promise();
 };

@@ -34,7 +34,6 @@ WidgetPackageManager.loadLanguage = function(type) {
    //we manage i18n
    if (!isNullOrUndefined(WidgetPackageManager.packageList[type]) && !WidgetPackageManager.packageList[type].languageHaveBeenDownloaded){
        i18nManager.loadNamespace("widgets", type).done(function(){
-          console.log("Namespace ok");
           WidgetPackageManager.packageList[type].languageHaveBeenDownloaded = true;
           d.resolve();
        })

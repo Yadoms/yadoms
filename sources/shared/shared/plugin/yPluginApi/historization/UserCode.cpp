@@ -11,24 +11,20 @@ namespace shared
          namespace historization
          {
             CUserCode::CUserCode(const std::string& keywordName,
-                     const EKeywordAccessMode& accessMode,
-                     const EMeasureType& measureType,
-                     typeInfo::CStringTypeInfo& additionalInfo)
+                                 const EKeywordAccessMode& accessMode,
+                                 const EMeasureType& measureType,
+                                 const typeInfo::CStringTypeInfo& additionalInfo,
+                                 const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<std::string>(keywordName,
-                                                 CStandardCapacities::UserCode(),
-                                                 accessMode,
-                                                 std::string(),
-                                                 measureType,
-                                                 additionalInfo)
-            {
-            }
-
-            CUserCode::~CUserCode()
+                                                      CStandardCapacities::UserCode(),
+                                                      accessMode,
+                                                      std::string(),
+                                                      measureType,
+                                                      additionalInfo,
+                                                      historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

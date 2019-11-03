@@ -152,7 +152,7 @@ Blockly.Blocks["keyword-value-set"] = {
      */
     domToMutation: function (xmlElement) {
         //attribute name must be lower case
-        var inputValueShown = (xmlElement.getAttribute("input_shown") === "true");
+        var inputValueShown = parseBool(xmlElement.getAttribute("input_shown"), false);
 
         this.updateShape_(inputValueShown);
     }

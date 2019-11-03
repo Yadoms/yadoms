@@ -37,11 +37,10 @@ namespace pluginSystem
    {
       //convert map to dataContainer
       shared::CDataContainer dc;
-      std::map<std::string, std::string>::const_iterator i;
-      for (i = customMessageDataParams.begin(); i != customMessageDataParams.end(); ++i)
-         dc.set(i->first, i->second);
+      for (const auto& customMessageDataParam : customMessageDataParams)
+         dc.set(customMessageDataParam.first, customMessageDataParam.second);
 
-      auto customMessageDataSerialized = dc.serialize(); //use variable to allow use of reference parameter
+      const auto customMessageDataSerialized = dc.serialize(); //use variable to allow use of reference parameter
       m_instanceStateHandler->setState(state, customMessageId, customMessageDataSerialized);
    }
 
@@ -61,7 +60,8 @@ namespace pluginSystem
    void CYPluginApiImplementation::declareDevice(const std::string& device,
                                                  const std::string& type,
                                                  const std::string& model,
-                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
+                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>&
+                                                 keywords,
                                                  const shared::CDataContainer& details)
    {
       if (!deviceExists(device))
@@ -137,16 +137,17 @@ namespace pluginSystem
       m_deviceManager->updateDeviceType(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), type);
    }
 
-   void CYPluginApiImplementation::updateDeviceState(const std::string& device, const shared::plugin::yPluginApi::historization::EDeviceState& state, const std::string& customMessageId, const std::map<std::string, std::string>& customMessageDataParams) const
+   void CYPluginApiImplementation::updateDeviceState(const std::string& device, const shared::plugin::yPluginApi::historization::EDeviceState& state,
+                                                     const std::string& customMessageId,
+                                                     const std::map<std::string, std::string>& customMessageDataParams) const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device state : device doesn't exist.");
 
       //convert map to dataContainer
       shared::CDataContainer dc;
-      std::map<std::string, std::string>::const_iterator i;
-      for (i = customMessageDataParams.begin(); i != customMessageDataParams.end(); ++i)
-         dc.set(i->first, i->second);
+      for (const auto& customMessageDataParam : customMessageDataParams)
+         dc.set(customMessageDataParam.first, customMessageDataParam.second);
 
       m_deviceManager->updateDeviceState(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), state, customMessageId, dc);
    }
@@ -169,14 +170,16 @@ namespace pluginSystem
       m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id(), *keyword, details);
    }
 
-   void CYPluginApiImplementation::declareKeywords(const std::string& device, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
+   void CYPluginApiImplementation::declareKeywords(const std::string& device,
+                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>
+                                                   >& keywords)
    {
       std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywordsToDeclare;
 
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+      for (const auto& keyword : keywords)
       {
-         if (!keywordExists(device, *keyword))
-            keywordsToDeclare.push_back(*keyword);
+         if (!keywordExists(device, keyword))
+            keywordsToDeclare.push_back(keyword);
       }
 
       if (keywordsToDeclare.empty())
@@ -193,7 +196,8 @@ namespace pluginSystem
       return m_keywordDataAccessLayer->keywordExists(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id, keyword);
    }
 
-   bool CYPluginApiImplementation::keywordExists(const std::string& device, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword) const
+   bool CYPluginApiImplementation::keywordExists(const std::string& device,
+                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword) const
    {
       return keywordExists(device, keyword->getKeyword());
    }
@@ -201,8 +205,9 @@ namespace pluginSystem
    std::vector<std::string> CYPluginApiImplementation::getAllKeywords(const std::string& device) const
    {
       std::vector<std::string> keywordNames;
-      for (const auto& keyword : m_keywordDataAccessLayer->getKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id()))
-         keywordNames.push_back(keyword->Name());
+	  auto keywords = m_keywordDataAccessLayer->getKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id());
+	  std::transform(keywords.begin(), keywords.end(), std::back_inserter(keywordNames),
+		  [](auto &k) -> std::string { return k->Name(); });
       return keywordNames;
    }
 
@@ -216,19 +221,20 @@ namespace pluginSystem
 
    std::string CYPluginApiImplementation::getRecipientValue(int recipientId, const std::string& fieldName) const
    {
-      boost::shared_ptr<const database::entities::CRecipient> recipient = m_recipientRequester->getRecipient(recipientId);
+      const auto recipient = m_recipientRequester->getRecipient(recipientId);
 
       // Search for from plugin fields
-      for (auto itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
-         if ((*itField)->PluginType == m_instanceData->Type && (*itField)->FieldName == fieldName)
-            return (*itField)->Value;
+      for (auto& itField : recipient->Fields())
+         if (itField->PluginType == m_instanceData->Type && itField->FieldName == fieldName)
+            return itField->Value;
 
       // If not found from plugin fields, looking for general fields
-      for (auto itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
-         if ((*itField)->PluginType == "system" && (*itField)->FieldName == fieldName)
-            return (*itField)->Value;
+      for (auto& itField : recipient->Fields())
+         if (itField->PluginType == "system" && itField->FieldName == fieldName)
+            return itField->Value;
 
-      throw shared::exception::CEmptyResult((boost::format("Cannot retrieve field %1% for recipient Id %2% in database") % fieldName % recipientId).str());
+      throw shared::exception::CEmptyResult(
+         (boost::format("Cannot retrieve field %1% for recipient Id %2% in database") % fieldName % recipientId).str());
    }
 
    std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const
@@ -236,8 +242,8 @@ namespace pluginSystem
       auto recipients = m_recipientRequester->findRecipientsFromField(fieldName, expectedFieldValue);
       std::vector<int> recipientIds;
 
-      for (auto itRecipient = recipients.begin(); itRecipient != recipients.end(); ++itRecipient)
-         recipientIds.push_back((*itRecipient)->Id);
+      for (auto& recipient : recipients)
+         recipientIds.push_back(recipient->Id);
 
       return recipientIds;
    }
@@ -248,14 +254,15 @@ namespace pluginSystem
    }
 
 
-   void CYPluginApiImplementation::historizeData(const std::string& device, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data)
+   void CYPluginApiImplementation::historizeData(const std::string& device,
+                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data)
    {
       try
       {
-         boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device, true);
+         const auto deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device, true);
          if (!deviceEntity->Blacklist())
          {
-            boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, data->getKeyword());
+            const auto keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, data->getKeyword());
             if (!keywordEntity->Blacklist())
             {
                m_acquisitionHistorizer->saveData(keywordEntity->Id, *data);
@@ -276,24 +283,26 @@ namespace pluginSystem
       }
    }
 
-   void CYPluginApiImplementation::historizeData(const std::string& device, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect)
+   void CYPluginApiImplementation::historizeData(const std::string& device,
+                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>&
+                                                 dataVect)
    {
       try
       {
          std::vector<int> keywordIdList;
 
-         boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device, true);
+         const auto deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device, true);
          if (!deviceEntity->Blacklist())
          {
             std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> dataVectFilter;
 
-            for (auto iter = dataVect.begin(); iter != dataVect.end(); ++iter)
+            for (const auto& item : dataVect)
             {
-               boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
+               const auto keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, item->getKeyword());
                if (!keywordEntity->Blacklist())
                {
                   keywordIdList.push_back(keywordEntity->Id);
-                  dataVectFilter.push_back(*iter);
+                  dataVectFilter.push_back(item);
                }
                else
                {
@@ -345,5 +354,3 @@ namespace pluginSystem
       return m_instanceData->Id;
    }
 } // namespace pluginSystem	
-
-

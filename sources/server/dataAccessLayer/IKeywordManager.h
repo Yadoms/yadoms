@@ -19,7 +19,8 @@ namespace dataAccessLayer
       /// \param [in] keywordName         The keyword name
       /// \return                         true if exist, else false
       //--------------------------------------------------------------
-      virtual bool keywordExists(int deviceId, const std::string& keywordName) const = 0;
+      virtual bool keywordExists(int deviceId,
+                                 const std::string& keywordName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Check if keyword exists
@@ -34,7 +35,8 @@ namespace dataAccessLayer
       /// \param [in]      keyword   the keyword to get
       /// \throw           shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(int deviceId, const std::string& keyword) const = 0;
+      virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(int deviceId,
+                                                                         const std::string& keyword) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           Get a keyword
@@ -51,7 +53,8 @@ namespace dataAccessLayer
       /// \return                         The list of found keywords
       /// \throw                          shared::exception::CEmptyResult if none found
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId, const std::string& friendlyName) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordIdFromFriendlyName(
+         int deviceId, const std::string& friendlyName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords 
@@ -77,12 +80,29 @@ namespace dataAccessLayer
       /// \brief           List all keywords which match capacity for a device
       /// \param [in]      deviceId             the device which own the keyword
       /// \param [in]      capacityName         the capacity name
-      /// \param [in]      capacityAccessMode   the capacity acces mode
+      /// \param [in]      capacityAccessMode   the capacity access mode
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getDeviceKeywordsWithCapacity(int deviceId,
-                                                                                                         const std::string& capacityName,
-                                                                                                         const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getDeviceKeywordsWithCapacity(
+         int deviceId,
+         const std::string& capacityName,
+         const shared::plugin::yPluginApi::
+         EKeywordAccessMode& capacityAccessMode) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Get the keyword list which match some criteria
+      /// \param [in] expectedKeywordTypes         The keyword type criteria
+      /// \param [in] expectedCapacities           The capacity name criteria
+      /// \param [in] expectedKeywordAccesses      The access mode criteria
+      /// \param [in] expectedKeywordHistoryDepth  The history depth criteria
+      /// \param [in] blacklisted                  The blacklisted criteria
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordsMatchingCriteria(
+         const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
+         const std::vector<std::string>& expectedCapacities,
+         const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
+         const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth,
+         bool blacklisted) const = 0;
 
       //-----------------------------------------
       ///\brief      Get the last acquisition of a keyword
@@ -103,6 +123,13 @@ namespace dataAccessLayer
       //-----------------------------------------
       virtual std::string getKeywordLastData(const int keywordId,
                                              bool throwIfNotExists = true) = 0;
+
+      //-----------------------------------------
+      ///\brief      Get the last data of a keywords list
+      ///\param [in] keywordIds  The keyword ids list
+      ///\return     the last acquisition for the keywords
+      //-----------------------------------------
+      virtual std::vector<boost::tuple<int, std::string>> getKeywordListLastData(const std::vector<int> keywordIds) = 0;
 
       //--------------------------------------------------------------
       /// \brief                    Add new keyword
@@ -131,7 +158,9 @@ namespace dataAccessLayer
       /// \param [in] newFriendlyName     The new friendly name
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateKeywordFriendlyName(int deviceId, const std::string& keyword, const std::string& newFriendlyName) = 0;
+      virtual void updateKeywordFriendlyName(int deviceId,
+                                             const std::string& keyword,
+                                             const std::string& newFriendlyName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update a keyword friendly name
@@ -139,15 +168,17 @@ namespace dataAccessLayer
       /// \param [in] newFriendlyName     The new friendly name
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateKeywordFriendlyName(int keywordId, const std::string& newFriendlyName) = 0;
+      virtual void updateKeywordFriendlyName(int keywordId,
+                                             const std::string& newFriendlyName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the keyword blacklist state
-      /// \param [in] deviceId            The keyword id
+      /// \param [in] keywordId           The keyword id
       /// \param [in] blacklist           The keyword blacklist state
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateKeywordBlacklistState(int keywordId, const bool blacklist) = 0;
+      virtual void updateKeywordBlacklistState(int keywordId,
+                                               const bool blacklist) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove a keyword
@@ -155,7 +186,8 @@ namespace dataAccessLayer
       /// \param [in]      keyword   the keyword to delete
       /// \throw           shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void removeKeyword(int deviceId, const std::string& keyword) = 0;
+      virtual void removeKeyword(int deviceId,
+                                 const std::string& keyword) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove a keyword
@@ -165,5 +197,3 @@ namespace dataAccessLayer
       virtual void removeKeyword(int keywordId) = 0;
    };
 } //namespace dataAccessLayer 
-
-

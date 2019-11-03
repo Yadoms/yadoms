@@ -82,6 +82,7 @@ namespace database
          ((Measure)("measure"))
          ((Details)("details"))
          ((Blacklist)("blacklist"))
+         ((HistoryDepth)("historyDepth"))
          ((LastAcquisitionValue)("lastAcquisitionValue"))
          ((LastAcquisitionDate)("lastAcquisitionDate"))
       )
@@ -99,6 +100,7 @@ namespace database
          ((Avg)("avgValue"))
          ((Min)("minValue"))
          ((Max)("maxValue"))
+         ((Count)("count"))
       )
 
 

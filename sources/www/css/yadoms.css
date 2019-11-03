@@ -1,7 +1,6 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 
 body {
-    padding-bottom: 20px;
     background: rgb(234, 234, 234);
     -moz-background-size: 100% 100%; /* Gecko 1.9.2 (Firefox 3.6) */
     -o-background-size: 100% 100%; /* Opera 9.5 */
@@ -20,6 +19,28 @@ body {
 .waiting-animation {
     color: #428bca;
 }
+
+.disconnected-logo {
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);	
+}
+
+.disconnected-title {
+	color: red;
+}
+
+.disconnected-content {
+  position: fixed; /* Stay in place */
+  z-index: 100000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
 
 /* Finesse the page header spacing */
 .page-header {
@@ -138,6 +159,7 @@ body {
     background-image: -webkit-gradient(linear, 50.00% 0.00, 50.00% 100.00%, color-stop( 0, rgba(0,0,0,0.00)),color-stop( 100%, rgba(0,0,0,0.00)));
     background-image: -webkit-linear-gradient(270deg,rgba(0,0,0,0.00) 0,rgba(0,0,0,0.00) 100%);
     background-image: linear-gradient(180deg,rgba(0,0,0,0.00) 0,rgba(0,0,0,0.00) 100%);
+	margin-bottom: 0px;
     /*height: 50px;*/
 }
 
@@ -294,6 +316,21 @@ body {
 .modal-content {
     height: 100%;
 }
+
+.modal-content-scroll {
+    height: auto !important;
+}
+
+.modal-body-scroll {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    margin-right: 0 !important;	
+}
+
+.modal-dialog-scroll {
+    height: 80%;
+}
+
 
 /* fix blockly issue 1364 */
 .blocklyWidgetDiv .goog-menu { 

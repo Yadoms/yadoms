@@ -97,7 +97,7 @@ MACRO(PLUGIN_SOURCES _targetName)
    
    add_executable(${_targetName} ${PLUGIN_SOURCE_FILES})
    project(${_targetName})
-   
+	
    # Build package.json (add version to package.in.json from changelog.md)
    MAKE_PACKAGE_JSON(${_targetName})
 	
@@ -126,7 +126,7 @@ MACRO(PLUGIN_INCLDIR _targetName)
 ENDMACRO()
 
 MACRO(PLUGIN_LINK _targetName)
-   target_link_libraries(${_targetName}
+	target_link_libraries(${_targetName}
       yadoms-shared
       plugin_cpp_api
       ${LIBS}
@@ -135,11 +135,6 @@ MACRO(PLUGIN_LINK _targetName)
       ${ARGN}
       )
 	
-   ##################################################################################################
-   ## Add natvis (allow better debugging within VisualStudio)
-   ##################################################################################################
-   ADD_VS_NATVIS(${_targetName})
-   
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
    #configure plugin as installable component if not in devlopment state (target name begin by 'dev-')
@@ -215,8 +210,8 @@ MACRO(PLUGIN_LINK _targetName)
             endif(COTIRE_USE_UNITY)
          endif(COTIRE_USE)
       endif(MSVC)
-   endif(WIN32)  
-   
+   endif(WIN32)   
+	
    # Post-build copy of required files
    if(DEFINED SPECIFIC_PACKAGE_JSON)
       PLUGIN_POST_BUILD_COPY_FILE(${_targetName} ${SPECIFIC_PACKAGE_JSON})

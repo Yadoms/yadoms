@@ -21,9 +21,9 @@ namespace rfxcomMessages
    {
       m_signalPower->set(0);
 
-      createSubType(deviceDetails.get<unsigned char>("subType"));
+      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
       m_id = deviceDetails.get<unsigned int>("id");
-      m_unitCode = deviceDetails.get<unsigned char>("unitCode");
+      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
       m_subTypeManager->set(command);
 
       // Build device description
@@ -60,7 +60,7 @@ namespace rfxcomMessages
          m_unitCode = 0;
          break;
       default:
-         m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+         m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
          break;
       }
 
@@ -90,7 +90,7 @@ namespace rfxcomMessages
       m_id = rbuf.LIGHTING5.id1 << 16 | rbuf.LIGHTING5.id2 << 8 | rbuf.LIGHTING5.id3;
       m_unitCode = rbuf.LIGHTING5.unitcode;
       m_subTypeManager->setFromProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING5.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.LIGHTING5.rssi));
 
       // Build device description
       buildDeviceName();
@@ -143,7 +143,7 @@ namespace rfxcomMessages
          break;
       case sTypeEurodomest: m_subTypeManager = boost::make_shared<CLighting5OnOff>("Eurodomest");
          break;
-      case sTypeLivoloAppliance: m_subTypeManager = boost::make_shared<CLighting5OnOff>("Livolo Appliance");
+      case sTypeLivolo1to10: m_subTypeManager = boost::make_shared<CLighting5OnOff>("Livolo Appliance");
          break;
       case sTypeRGB432W: m_subTypeManager = boost::make_shared<CLighting5OnOff>("RGB432W");
          break;

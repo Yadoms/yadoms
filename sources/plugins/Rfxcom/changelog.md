@@ -1,3 +1,28 @@
+### 1.2.2
+* Update to RFXCom SDK v9.24 (2019-03-16) : add support for weather stations (Alecto ACH2010, WS5500, WH2900), solar sensors (Davis)
+
+### 1.2.1
+* Fix many protocols commands
+
+### 1.2.0
+* New feature #553 : use of full compliant Json
+
+### 1.1.6-beta.2
+* Fix #546 : Keep plugin state in cache to send only state changes
+
+### 1.1.6-beta.1
+* Fix #534 : Fix rare crashs when CPU too loaded
+
+### 1.1.5
+* Fix #524 : Add label to new protocols (MCZ and FunkBus)
+
+### 1.1.4
+* Update to RFXCom SDK v9.23 (2018-10-10) : add support for Mertik G6R-H3T1
+
+### 1.1.3
+* Update to RFXCom SDK v9.22 (2018-08-18) : add support for Falmec, LucciAir DCII, Zemismart, Fan LucciAir DC, Casafan, FT1211R fan controller, Hualite blind, Oase, Cuveo...
+* Fix Fan Siemens keywords
+
 ### 1.1.2
 * Add Cartelectronic-Encoder devices counters configuration (water, gas...)
 * Fix Security1-Meiantech receive (manage more status values)

@@ -26,7 +26,7 @@ namespace pluginSystem
          /// \brief	                           Constructor
          /// \param[in] instanceInformation     Instance information
          /// \param[in] pluginInformation       Plugin information
-         /// \param[in] yPluginApi              yPluginApi context instance
+         /// \param[in] api              yPluginApi context instance
          /// \param[in] instanceStateHandler    Instance state handler
          //--------------------------------------------------------------
          CInstance(boost::shared_ptr<const database::entities::CPlugin> instanceInformation,
@@ -37,7 +37,7 @@ namespace pluginSystem
          //--------------------------------------------------------------
          /// \brief	Destructor
          //--------------------------------------------------------------
-         virtual ~CInstance();
+         virtual ~CInstance() = default;
 
          // IInstance Implementation
          void updateConfiguration(const shared::CDataContainer& newConfiguration) override;

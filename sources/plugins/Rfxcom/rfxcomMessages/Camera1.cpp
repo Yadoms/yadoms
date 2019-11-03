@@ -18,8 +18,8 @@ namespace rfxcomMessages
       m_camera->setCommand(command);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
-      m_houseCode = deviceDetails.get<unsigned char>("houseCode");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
+      m_houseCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("houseCode"));
 
       // Build device description
       buildDeviceModel();
@@ -67,7 +67,7 @@ namespace rfxcomMessages
       m_subType = rbuf.CAMERA1.subtype;
       m_houseCode = rbuf.CAMERA1.housecode;
       m_camera->set(fromProtocolState(rbuf.CAMERA1.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.CAMERA1.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.CAMERA1.rssi));
 
       // Build device description
       buildDeviceModel();

@@ -275,11 +275,18 @@
                 }
                 if (data.plugins)
                     // Load plugins translations
-                    PluginManager.getAll().always(function () {
-                        buildList("plugin", data.plugins);
+                    PluginManager.getAll().always(function() {
+                        buildList("plugin", data.plugins)
                     });
                 if (data.widgets) {
-                    buildList("widget", data.widgets);
+                    // Load widgets translations
+                    var arrayOfDeffered = [];           
+                    $.each(_.keys(WidgetPackageManager.packageList), function(index, Package) {
+                        arrayOfDeffered.push(WidgetPackageManager.loadLanguage(Package)); // load the language package if any
+                    });               
+                    $.when.apply($, arrayOfDeffered).always(function() {
+                        buildList("widget", data.widgets)
+                    });
                 }
                 if (data.scriptInterpreters)
                     // Load script interpreters translations
@@ -510,8 +517,9 @@
         var $table = $("table#" + objectType + "-install-update-list");
         $table.find("tr:gt(0)").remove();
 
-        // Add updatable and new items in the same list
-        addItemsInTable($table, objectType, list.updatable, function (moduleType, data) {
+        // Add updateable and new items in the same list
+        addItemsInTable($table, objectType, list.updateable, function (moduleType, data) {
+            console.log(objectType + "s." + moduleType);
             return objectType + "s." + moduleType;
         });
 

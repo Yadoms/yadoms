@@ -8,6 +8,11 @@
     "linux": "supported",
     "others": "unsupported"
   },
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.3.0-beta.1"
+    }
+  },
   "configurationSchema": {
     "linuxMode": {
       "type": "radioSection",

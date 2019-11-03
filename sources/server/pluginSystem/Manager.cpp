@@ -344,11 +344,8 @@ namespace pluginSystem
       auto someInstancesStillRunning = true;
       while (someInstancesStillRunning && shared::currentTime::Provider().now() <= endTime)
       {
-         someInstancesStillRunning = false;
-         for (const auto instance:instancesToStop)
-            if (isInstanceRunning(instance))
-               someInstancesStillRunning = true;
-
+		  //if any instance is still running just wait for another second
+  	     someInstancesStillRunning = std::any_of(instancesToStop.begin(), instancesToStop.end(), [this](int instance) { return this->isInstanceRunning(instance); });
          if (someInstancesStillRunning)
             boost::this_thread::sleep(boost::posix_time::seconds(1));
       }
@@ -363,11 +360,7 @@ namespace pluginSystem
          boost::this_thread::sleep(boost::posix_time::seconds(1));
 
          // Check
-         someInstancesStillRunning = false;
-         for (const auto instance:instancesToStop)
-            if (isInstanceRunning(instance))
-               someInstancesStillRunning = true;
-
+		 someInstancesStillRunning = std::any_of(instancesToStop.begin(), instancesToStop.end(), [this](int instance) { return this->isInstanceRunning(instance); });
          if (someInstancesStillRunning)
             throw std::runtime_error((boost::format("Unable to stop all instances of plugin %1%") % pluginName).str());
       }

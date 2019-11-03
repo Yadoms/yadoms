@@ -17,10 +17,10 @@ namespace rfxcomMessages
       m_state->setCommand(command);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
       m_houseCode = deviceDetails.get<char>("houseCode");
-      m_unitCode = deviceDetails.get<unsigned char>("unitCode");
+      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
@@ -46,7 +46,7 @@ namespace rfxcomMessages
 
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
       m_houseCode = manuallyDeviceCreationConfiguration.get<char>("houseCode");
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+      m_unitCode =static_cast<unsigned char>( manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -72,7 +72,7 @@ namespace rfxcomMessages
       m_houseCode = rbuf.HOMECONFORT.housecode;
       m_unitCode = rbuf.HOMECONFORT.unitcode;
       m_state->set(fromProtocolState(rbuf.HOMECONFORT.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.HOMECONFORT.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.HOMECONFORT.rssi));
 
       // Build device description
       buildDeviceModel();

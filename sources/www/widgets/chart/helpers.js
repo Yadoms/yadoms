@@ -2,21 +2,34 @@
   * Simple Helpers
   */
  
- function isOdd(num) {return num % 2;}
+function isOdd(num) {return num % 2;}
  
- function isBoolVariable(keywordInfo) {
-    if ((keywordInfo) && (keywordInfo.type === "Bool"))
-       return true;
-    else
-       return false;
- };
+function isBoolVariable(keywordInfo) {
+   if ((keywordInfo) && (keywordInfo.dataType === "Bool"))
+      return true;
+   else
+      return false;
+};
  
- function isEnumVariable (keywordInfo) {
-    if ((keywordInfo) && (keywordInfo.type === "Enum"))
-       return true;
-    else
-       return false;
- };
+function isEnumVariable (keywordInfo) {
+   if ((keywordInfo) && (keywordInfo.dataType === "Enum"))
+      return true;
+   else
+      return false;
+};
+
+function roundNumber(num, scale) {
+  if(!("" + num).includes("e")) {
+    return +(Math.round(num + "e+" + scale)  + "e-" + scale);
+  } else {
+    var arr = ("" + num).split("e");
+    var sig = ""
+    if(+arr[1] + scale > 0) {
+      sig = "+";
+    }
+    return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
+  }
+}
 
  /**
   * transform old configuration to new interval/prefix configuration
@@ -180,7 +193,7 @@ function createAxis (index,         // index of the plot
   
   // treat oneAxis configuration option => axis name and color
   if (parseBool(configuration.oneAxis.checkbox)) {
-     yAxisName = 'axis' + seriesUuid[0];
+     yAxisName = 'axis0';
   }
   else {
      yAxisName = 'axis' + seriesUuid[index];
@@ -205,13 +218,7 @@ function createAxis (index,         // index of the plot
           if (isOdd(index))
               align = 'left';
 
-          var unit="";
-          try {
-             unit = $.t(units);
-          }
-          catch(error){
-             console.log ("unit is empty for keyword ", device.content.source.keywordId);
-          }
+          var unit = $.t(units);
 
           chart.addAxis({
               // new axis
@@ -220,26 +227,26 @@ function createAxis (index,         // index of the plot
               title: getAxisTitle(),
               labels: {
                   align: align,
-                  format: '{value:.' + precision.toString() + 'f} ' + unit,
+                  enabled: !isBoolVariable(chart.keyword[index]),
                   style: {
                       color: colorAxis
                   },
                   formatter: function () {
-                     if (this.chart.keyword[index].type === "Enum") {  // Return the translated enum value
+                     if (isEnumVariable(this.chart.keyword[index])) {  // Return the translated enum value
                         return this.chart.keyword[index].typeInfo.translatedValues[this.value];
                      }
                      else
-                        return this.axis.defaultLabelFormatter.call(this);
+                       return roundNumber(this.value, precision) + " " + unit;
                   }
               },
               opposite: isOdd(index)
           }, false, false, false);
 
       } catch (error) {
-          console.log('Fail to create axis (for index = ' + index + ') : ' + error);
+          console.log('Fail to create axis for keyword = ' + index + ' : ' + error);
       }
   } else {
-      console.log('Axis already exists (for index = ' + index + ')');
+      console.log('Axis already exists for keyword = ' + index);
   }
 
   if ((parseBool(configuration.oneAxis.checkbox))) {
@@ -268,6 +275,32 @@ function createAxis (index,         // index of the plot
 };
 
 /**
+ * Adapt an array of values with coefficient
+ * @param arrayToAdapt values to adapt
+ * @param coeff the new coefficient
+ */
+adaptArray = function(arrayToAdapt, coeff) {
+   var newArray = [];
+   $.each(arrayToAdapt, function (index,value) {
+      newArray.push([value[0],parseFloat(value[1])*coeff]);
+   });
+   return newArray;
+};
+
+/**
+ * Adapt a range with coefficient
+ * @param rangeToAdapt rangeToAdapt
+ * @param coeff the new coefficient
+ */
+adaptRange = function(rangeToAdapt, coeff) {
+   var newRange = [];
+   $.each(rangeToAdapt, function (index,value) {
+      newRange.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
+   });
+   return newRange;
+};
+
+/**
  * Adapt the unit and an array of values to an appropriate unit
  * @param values The Id to find
  * @param baseUnit Unit received from yadoms server
@@ -278,6 +311,7 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
    var unit = baseUnit;
    var newValues = values;
    var newRange = range;
+   var coeff = 1;
    
    evaluateArray = function(arrayToEvaluate) {
       var moy = 0;
@@ -296,72 +330,92 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
       return moy;
    };
    
-   adaptArray = function(arrayToAdapt, coeff) {
-      var newArray = [];
-      $.each(arrayToAdapt, function (index,value) {
-         newArray.push([value[0],parseFloat(value[1])*coeff]);
-      });
-      return newArray;
-   };
-   
-   adaptRange = function(rangeToAdapt, coeff) {
-      var newRange = [];
-      $.each(rangeToAdapt, function (index,value) {
-         newArray.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
-      });
-      return newRange;
-   };
-   
    switch (baseUnit){
       case "data.units.cubicMetre":
          if (evaluateArray(values) <1) {
-            newValues = adaptArray(values, 1000);
-            newRange = adaptRange(range, 1000);
+            coeff = 1000;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
             unit = "data.units.liter";
          }
          break;
       case "data.units.wattPerHour":
          if (evaluateArray(values) >2000) {
-            newValues = adaptArray(values, 0.001);
-            newRange = adaptRange(range, 0.001);
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
             unit = "data.units.KwattPerHour";
          }      
          break;
       case "data.units.watt":
          if (evaluateArray(values)>2000) {
-            newValues = adaptArray(values, 0.001);
-            newRange = adaptRange(range, 0.001);
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
             unit = "data.units.Kwatt";
          }      
          break;
       case "data.units.ampere":
          if (evaluateArray(values)>2000) {
-            newValues = adaptArray(values, 0.001);
-            newRange = adaptRange(range, 0.001);
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
             unit = "data.units.Kampere";
          } else if (evaluateArray(values)<1) {
-            newValues = adaptArray(values, 1000);
-            newRange = adaptRange(range, 1000);
+            coeff = 1000;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
             unit = "data.units.mampere";
          }
          break;
       case "bit/s":
          if (evaluateArray(values)>2000000000) {
-            newValues = adaptArray(values, 0.000000001);
-            newRange = adaptRange(range, 0.000000001);
+            coeff = 0.000000001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
             unit = "Gb/s";
          }else if (evaluateArray(values)>2000000) {
-            newValues = adaptArray(values, 0.000001);
-            newRange = adaptRange(range, 0.000001);
-            unit = "Mb/s";            
+            coeff = 0.000001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "Mb/s";
          }else if (evaluateArray(values)>2000) {
-            newValues = adaptArray(values, 0.001);
-            newRange = adaptRange(range, 0.001);
-            unit = "Kb/s";            
-         }
-         break;         
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "Kb/s";
+         }else{}
+         break;
+      case "data.units.second":
+         console.log(evaluateArray(values));
+         if (evaluateArray(values)<0.002){
+            coeff = 0.000001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.microsecond";
+         }else if (evaluateArray(values)<2){
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.millisecond";
+         }else if (evaluateArray(values)>86400){
+            coeff = 1/86400;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.day";
+         }else if (evaluateArray(values)>3600) {
+            coeff = 1/3600;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.hour";
+         }else if (evaluateArray(values)>60) {
+            coeff = 1/60;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.minute";
+         }else{}
       default:
          break;
    }
-   callback(newValues, newRange, unit);
+   callback(newValues, newRange, unit, coeff);
 };

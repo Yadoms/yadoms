@@ -18,9 +18,9 @@ namespace rfxcomMessages
       m_state->setCommand(command);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
-      m_houseCode = deviceDetails.get<unsigned char>("houseCode");
-      m_unitCode = deviceDetails.get<unsigned char>("unitCode");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
+      m_houseCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("houseCode"));
+      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
@@ -55,13 +55,14 @@ namespace rfxcomMessages
       case sTypeEnergenie5:
       case sTypeGDR2:
       case sTypeHQ:
+      case sTypeOase:
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
 
-      m_houseCode = manuallyDeviceCreationConfiguration.get<char>("houseCode");
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+      m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned char>("houseCode"));
+      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -86,7 +87,7 @@ namespace rfxcomMessages
       m_houseCode = rbuf.LIGHTING1.housecode;
       m_unitCode = rbuf.LIGHTING1.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING1.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING1.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.LIGHTING1.rssi));
 
       // Build device description
       buildDeviceModel();
@@ -189,6 +190,8 @@ namespace rfxcomMessages
       case sTypeGDR2: ssModel << "COCO GDR2-2000R";
          break;
       case sTypeHQ: ssModel << "HQ COCO-20";
+         break;
+      case sTypeOase: ssModel << "Oase Inscenio FM Master";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;

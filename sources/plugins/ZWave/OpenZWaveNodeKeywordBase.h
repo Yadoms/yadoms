@@ -25,7 +25,9 @@ public:
    virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue() = 0;
    virtual void updateValue(OpenZWave::ValueID& value);
    virtual shared::CDataContainer serialize();
-   virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo> & getTypeInformation() override;
+   virtual boost::shared_ptr<shared::plugin::yPluginApi::typeInfo::ITypeInfo> & getTypeInformation() override;
+   int getIndex() override;
+   ECommandClass getCommandClass() override;
    // [END] IOpenZWaveKeyword implementation
 
 protected:
@@ -73,7 +75,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	      The type information
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo> m_typeInformation;
+   boost::shared_ptr<shared::plugin::yPluginApi::typeInfo::ITypeInfo> m_typeInformation;
 };
 
 

@@ -1,14 +1,14 @@
 {
   "type": "shutter",
-  "version": "1.0.5-beta.1",
+  "version": "1.1.1",
   "author": "Jean-Michel BERHAULT",
   "url": "https://github.com/Yadoms/yadoms/wiki/shutter",
   "credits": "",
   "dependencies": {
-     "yadoms" : {
-        "minimumVersion" : "2.2.0-beta.1"
-     }
-  },  
+    "yadoms": {
+      "minimumVersion": "2.4.0-beta.1"
+    }
+  },
   "dimensions": {
     "min": {
       "x": 1,
@@ -27,8 +27,7 @@
   "configurationSchema": {
     "device": {
       "type": "keyword",
-	  "expectedCapacity": ["switch", "curtain", "dimmable"],
-      "expectedKeywordAccess": "get"
+      "expectedCapacity": ["switch", "curtain", "dimmable"]
     },
     "invert": {
       "type": "bool",

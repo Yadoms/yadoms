@@ -1,8 +1,6 @@
 #pragma once
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
-#include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/Field.hpp>
 #include "IHistorizable.h"
 
 namespace shared
@@ -23,15 +21,11 @@ namespace shared
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
-               ///\param[in] measureType     The measure type (normally kAbsolute)
                //-----------------------------------------------------
                explicit CEvent(const std::string& keywordName,
                                const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CEvent();
+               virtual ~CEvent() = default;
 
                // IHistorizable implementation
                const std::string& getKeyword() const override;
@@ -40,6 +34,7 @@ namespace shared
                std::string formatValue() const override;
                const EMeasureType& getMeasureType() const override;
                CDataContainer getTypeInfo() const override;
+               const EHistoryDepth& getHistoryDepth() const override;
                // [END] IHistorizable implementation
 
             private:
@@ -51,7 +46,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief                     The access mode
                //-----------------------------------------------------
-               const EKeywordAccessMode& m_accessMode;
+               const EKeywordAccessMode m_accessMode;
             };
          }
       }

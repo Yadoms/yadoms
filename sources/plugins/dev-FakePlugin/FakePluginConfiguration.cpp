@@ -2,13 +2,16 @@
 #include "FakePluginConfiguration.h"
 #include <shared/Log.h>
 
-CFakePluginConfiguration::~CFakePluginConfiguration()
-{
-}
 
 void CFakePluginConfiguration::initializeWith(const shared::CDataContainer& data)
 {
    m_configuration.initializeWith(data);
+}
+
+void CFakePluginConfiguration::initializeWith(const shared::CDataContainer& data,
+                                              const boost::filesystem::path& packageJsonPath)
+{
+   m_configuration.initializeWith(data, packageJsonPath);
 }
 
 EEnumType CFakePluginConfiguration::getEnumParameter() const
@@ -28,8 +31,7 @@ void CFakePluginConfiguration::trace() const
    {
       // Get simple parameters
       YADOMS_LOG(information) << "CFakePlugin::doWork, parameter 'StringParameter' is "
-         << (m_configuration.get<std::string>("StringParameter").empty() ? "empty" : m_configuration.get<std::string>("StringParameter"))
-        ;
+         << (m_configuration.get<std::string>("StringParameter").empty() ? "empty" : m_configuration.get<std::string>("StringParameter"));
       YADOMS_LOG(information) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << m_configuration.get<bool>("BoolParameter");
       YADOMS_LOG(information) << "CFakePlugin::doWork, parameter 'DecimalParameter' is " << m_configuration.get<double>("DecimalParameter");
       YADOMS_LOG(information) << "CFakePlugin::doWork, parameter 'IntParameter' is " << m_configuration.get<int>("IntParameter");
@@ -38,10 +40,12 @@ void CFakePluginConfiguration::trace() const
       YADOMS_LOG(information) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << getEnumParameter();
 
       // Parameters in sections
-      YADOMS_LOG(information) << "CFakePlugin::doWork, parameter 'MySection.SubIntParameter' is " << m_configuration.get<int>("MySection.content.SubIntParameter");
+      YADOMS_LOG(information) << "CFakePlugin::doWork, parameter 'MySection.SubIntParameter' is " << m_configuration.get<int>(
+            "MySection.content.SubIntParameter");
       YADOMS_LOG(information) << "CFakePlugin::doWork, parameter 'MySection.SubStringParameter' is "
-         << (m_configuration.get<std::string>("MySection.content.SubStringParameter").empty() ? "empty" : m_configuration.get<std::string>("MySection.content.SubStringParameter"))
-        ;
+         << (m_configuration.get<std::string>("MySection.content.SubStringParameter").empty()
+                ? "empty"
+                : m_configuration.get<std::string>("MySection.content.SubStringParameter"));
    }
    catch (const shared::exception::CInvalidParameter& e)
    {
@@ -52,4 +56,3 @@ void CFakePluginConfiguration::trace() const
       YADOMS_LOG(error) << "Parameter value out of range : " << e.what();
    }
 }
-

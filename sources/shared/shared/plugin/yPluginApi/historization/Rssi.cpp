@@ -13,22 +13,18 @@ namespace shared
             CRssi::CRssi(const std::string& keywordName,
                          const EKeywordAccessMode& accessMode,
                          const EMeasureType& measureType,
-                         typeInfo::CIntTypeInfo& additionalInfo)
+                         const typeInfo::CIntTypeInfo& additionalInfo,
+                         const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Rssi(),
                                                  accessMode,
                                                  0,
                                                  measureType,
-                                                 additionalInfo)
-            {
-            }
-
-            CRssi::~CRssi()
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

@@ -88,7 +88,7 @@ Blockly.Blocks['yadoms_wait_for_event'] = {
             if (blockInfo && blockInfo.type && blockInfo.type !== "") {
                 var additionalBlock = workspace.newBlock(self.adaptBlockType(blockInfo.type));
                 additionalBlock.initSvg();
-				if(blockInfo.condition && (blockInfo.condition === "true" || blockInfo.condition === true))
+				if(blockInfo.condition && parseBool(blockInfo.condition))
 					additionalBlock.checkCondition();
                 connection.connect(additionalBlock.previousConnection);
                 connection = additionalBlock.nextConnection;

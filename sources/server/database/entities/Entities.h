@@ -132,11 +132,12 @@ namespace database
          ((Type)(shared::plugin::yPluginApi::EKeywordDataType))
          ((Units)(std::string))
          ((TypeInfo)(shared::CDataContainer))
-         ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType))
+         ((Measure)(shared::plugin::yPluginApi::EMeasureType))
          ((Details)(shared::CDataContainer))
          ((Blacklist)(bool))
          ((LastAcquisitionValue)(std::string))
          ((LastAcquisitionDate)(boost::posix_time::ptime))
+         ((HistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth))
       )
 
       DECLARE_ENTITY_CLASS_HEADER(Acquisition,
@@ -153,6 +154,7 @@ namespace database
          ((Avg)(std::string))
          ((Min)(std::string))
          ((Max)(std::string))
+         ((Count)(int))
       )
 
 

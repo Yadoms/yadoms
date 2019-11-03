@@ -81,6 +81,8 @@ set(SHARED_LIB_SRC
 
    shared/dateTime/DateTimeContainer.h
    shared/dateTime/DateTimeContainer.cpp
+   shared/dateTime/Format.h
+   shared/dateTime/Format.cpp
 
    shared/encryption/Xor.h
    shared/encryption/Xor.cpp
@@ -127,6 +129,8 @@ set(SHARED_LIB_SRC
    shared/plugin/information/IYadomsInformation.h
 
    shared/plugin/yPluginApi/commonIncludes.h
+   shared/plugin/yPluginApi/HistoryDepth.cpp
+   shared/plugin/yPluginApi/HistoryDepth.h
    shared/plugin/yPluginApi/IBindingQueryData.h
    shared/plugin/yPluginApi/IBindingQueryRequest.h
    shared/plugin/yPluginApi/IDeviceCommand.h
@@ -142,6 +146,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/KeywordAccessMode.h
    shared/plugin/yPluginApi/KeywordDataType.cpp
    shared/plugin/yPluginApi/KeywordDataType.h
+   shared/plugin/yPluginApi/MeasureType.cpp
+   shared/plugin/yPluginApi/MeasureType.h
    shared/plugin/yPluginApi/StandardCapacities.cpp
    shared/plugin/yPluginApi/StandardCapacities.h
    shared/plugin/yPluginApi/StandardCapacity.cpp
@@ -206,14 +212,14 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Humidity.h
    shared/plugin/yPluginApi/historization/Illumination.cpp
    shared/plugin/yPluginApi/historization/Illumination.h
+   shared/plugin/yPluginApi/historization/IlluminationWm2.cpp
+   shared/plugin/yPluginApi/historization/IlluminationWm2.h
    shared/plugin/yPluginApi/historization/Load.cpp
    shared/plugin/yPluginApi/historization/Load.h
    shared/plugin/yPluginApi/historization/Message.cpp
    shared/plugin/yPluginApi/historization/Message.h
    shared/plugin/yPluginApi/historization/MessageFormatter.cpp
    shared/plugin/yPluginApi/historization/MessageFormatter.h
-   shared/plugin/yPluginApi/historization/MeasureType.cpp
-   shared/plugin/yPluginApi/historization/MeasureType.h
    shared/plugin/yPluginApi/historization/PluginState.cpp
    shared/plugin/yPluginApi/historization/PluginState.h
    shared/plugin/yPluginApi/historization/PluginStateMessage.cpp
@@ -259,22 +265,22 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/WeatherCondition.cpp
    shared/plugin/yPluginApi/historization/Weight.h
    
-   shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/ByteArrayTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/ByteArrayTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/PercentageTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/PercentageTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
+   shared/plugin/yPluginApi/typeInfo/ITypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/EmptyTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/EmptyTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/ByteArrayTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/ByteArrayTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/BoolTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/BoolTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/IntTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/IntTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/DoubleTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/DoubleTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/PercentageTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/PercentageTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/StringTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/StringTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/EnumTypeInfo.hpp
 
    shared/process/CoutCerrConsoleLogChannel.h
    shared/process/CoutCerrConsoleLogChannel.cpp
@@ -293,6 +299,43 @@ set(SHARED_LIB_SRC
    shared/process/YadomsSubModuleLogConfiguration.h
    shared/process/YadomsSubModuleLogConfiguration.cpp
 
+   shared/rapidjson/allocators.h
+   shared/rapidjson/cursorstreamwrapper.h
+   shared/rapidjson/document.h
+   shared/rapidjson/encodedstream.h
+   shared/rapidjson/encodings.h
+   shared/rapidjson/filereadstream.h
+   shared/rapidjson/filewritestream.h
+   shared/rapidjson/fwd.h
+   shared/rapidjson/istreamwrapper.h
+   shared/rapidjson/memorybuffer.h
+   shared/rapidjson/memorystream.h
+   shared/rapidjson/ostreamwrapper.h
+   shared/rapidjson/pointer.h
+   shared/rapidjson/prettywriter.h
+   shared/rapidjson/rapidjson.h
+   shared/rapidjson/reader.h
+   shared/rapidjson/schema.h
+   shared/rapidjson/stream.h
+   shared/rapidjson/stringbuffer.h
+   shared/rapidjson/writer.h
+   shared/rapidjson/error/en.h
+   shared/rapidjson/error/error.h
+   shared/rapidjson/internal/biginteger.h
+   shared/rapidjson/internal/diyfp.h
+   shared/rapidjson/internal/dtoa.h
+   shared/rapidjson/internal/ieee754.h
+   shared/rapidjson/internal/itoa.h
+   shared/rapidjson/internal/meta.h
+   shared/rapidjson/internal/pow10.h
+   shared/rapidjson/internal/regex.h
+   shared/rapidjson/internal/stack.h
+   shared/rapidjson/internal/strfunc.h
+   shared/rapidjson/internal/strtod.h
+   shared/rapidjson/internal/swap.h
+   shared/rapidjson/msinttypes/inttypes.h
+   shared/rapidjson/msinttypes/stdint.h
+   
    shared/serialization/IDataSerializable.h
    shared/serialization/IDataFileSerializable.h
 
@@ -414,14 +457,18 @@ source_group(event shared/event/*.*)
 source_group(exception shared/exception/*.*)
 source_group(http shared/http/*.*)
 source_group(logInternal shared/logInternal/*.*)
+source_group(notification shared/shared/notification/*.* )	
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\yPluginApi shared/shared/plugin/yPluginApi/*.* )	
 source_group(plugin\\yPluginApi\\configuration shared/shared/plugin/yPluginApi/configuration/*.* )	
 source_group(plugin\\yPluginApi\\historization shared/shared/plugin/yPluginApi/historization/*.* )	
-source_group(plugin\\yPluginApi\\historization\\typeInfo shared/shared/plugin/yPluginApi/historization/typeInfo/*.* )	
+source_group(plugin\\yPluginApi\\typeInfo shared/shared/plugin/yPluginApi/typeInfo/*.* )	
 source_group(process process/*.* )	
-source_group(notification shared/shared/notification/*.* )	
+source_group(rapidjson shared/shared/rapidjson/*.* )	
+source_group(rapidjson\\msinttypes shared/shared/rapidjson/msinttypes/*.* )	
+source_group(rapidjson\\internal shared/shared/rapidjson/internal/*.* )	
+source_group(rapidjson\\error shared/shared/rapidjson/error/*.* )
 source_group(serialization shared/shared/serialization/*.* )	
 source_group(script shared/shared/script/*.* )	
 source_group(script\\yScriptApi shared/shared/script/yScriptApi/*.* )	
@@ -449,12 +496,6 @@ add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}  ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
 
-
-##################################################################################################
-## Add natvis (allow better debugging within VisualStudio)
-##################################################################################################
-ADD_VS_NATVIS(yadoms-shared)
-
 if(COTIRE_USE)
    set_target_properties(yadoms-shared PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
 	
@@ -468,7 +509,7 @@ if(COTIRE_USE)
 	
    if(COTIRE_USE_UNITY)
       target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
-set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+      set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
    endif()	
 else()
    add_precompiled_header(yadoms-shared stdafx.h)

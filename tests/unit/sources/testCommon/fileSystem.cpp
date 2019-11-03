@@ -4,57 +4,73 @@
 
 namespace testCommon
 {
-   void filesystem::CreateDirectory(const std::string& name)
+   void filesystem::createDirectory(const std::string& name)
    {
-      boost::filesystem::path dir(name.c_str());
+      const boost::filesystem::path dir(name.c_str());
       BOOST_REQUIRE(boost::filesystem::create_directory(dir)) ;
    }
 
-   void filesystem::RemoveDirectory(const std::string& name)
+   void filesystem::removeDirectory(const std::string& name)
    {
       boost::filesystem::remove_all(name.c_str());
    }
 
-   void filesystem::CreateFile(const std::string& dir,
-                               const std::string& file)
+   void filesystem::createFile(const boost::filesystem::path& file,
+                               const std::string& content,
+                               bool withBom)
    {
-      auto fullPath = boost::filesystem::path(dir) / file;
-      std::ofstream outfile(fullPath.string().c_str(), std::ios_base::out);
-      BOOST_REQUIRE(outfile.is_open()) ;
+      boost::filesystem::remove(file);
+
+      if (!file.parent_path().empty() && !boost::filesystem::exists(file.parent_path()))
+         boost::filesystem::create_directories(file.parent_path());
+
+      if (withBom)
+      {
+         std::ofstream binaryStream;
+         binaryStream.open(file.string(), std::ios::out | std::ios::binary);
+         unsigned char bom[3] = {0xEF, 0xBB, 0xBF};
+         binaryStream.write(reinterpret_cast<char*>(bom), sizeof bom);
+         binaryStream.close();
+      }
+
+      std::ofstream textStream;
+      textStream.open(file.string(), std::ios::out | (withBom ? std::ios::app : 0));
+      textStream << content;
+      textStream.close();
    }
 
-   void filesystem::RemoveFile(const std::string& dir,
+   void filesystem::removeFile(const std::string& dir,
                                const std::string& file)
    {
-      auto fullPath = boost::filesystem::path(dir) / file;
+      const auto fullPath = boost::filesystem::path(dir) / file;
       BOOST_REQUIRE(boost::filesystem::remove(fullPath)) ;
    }
 
-   void filesystem::RemoveFile(const std::string& file,
+   void filesystem::removeFile(const std::string& file,
                                bool successRequired)
    {
       if (successRequired)
-      BOOST_REQUIRE(boost::filesystem::remove(file)) ;
+         BOOST_REQUIRE(boost::filesystem::remove(file)) ;
       else
          boost::filesystem::remove(file);
    }
 
-   void filesystem::RemoveFile(const boost::filesystem::path& file,
+   void filesystem::removeFile(const boost::filesystem::path& file,
                                bool successRequired)
    {
       if (successRequired)
-      BOOST_REQUIRE(boost::filesystem::remove(file.string())) ;
+         BOOST_REQUIRE(boost::filesystem::remove(file.string())) ;
       else
          boost::filesystem::remove(file.string());
    }
 
-   void filesystem::WriteFile(const std::string& dir,
-      const std::string& file)
+   void filesystem::writeFile(const std::string& dir,
+                              const std::string& file)
    {
-      WriteFile(dir, file, "some text...");
+      writeFile(dir, file, "some text...");
    }
 
-   void filesystem::WriteFile(const std::string& dir,
+   void filesystem::writeFile(const std::string& dir,
                               const std::string& file,
                               const std::string& content)
    {
@@ -71,7 +87,7 @@ namespace testCommon
       outfile << content;
    }
 
-   void filesystem::WriteFile(const boost::filesystem::path& file,
+   void filesystem::writeFile(const boost::filesystem::path& file,
                               const std::string& content)
    {
       if (!file.parent_path().empty() && !boost::filesystem::exists(file.parent_path()))
@@ -81,7 +97,7 @@ namespace testCommon
       outfile << content;
    }
 
-   void filesystem::RenameFile(const std::string& dir,
+   void filesystem::renameFile(const std::string& dir,
                                const std::string& oldFile,
                                const std::string& newFile)
    {

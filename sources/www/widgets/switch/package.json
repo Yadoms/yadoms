@@ -1,92 +1,64 @@
 {
-  "type": "switch",
-  "version": "1.1.0-beta.2",
-  "author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
-  "url": "https://github.com/Yadoms/yadoms/wiki/switch",
-  "credits": "[bootstrap toogle](http://www.bootstraptoggle.com/)",
-  "dependencies": {
-     "yadoms" : {
-        "minimumVersion" : "2.2.0-beta.1"
-     }
-  },    
-  "dimensions": {
-    "min": {
-      "x": 1,
-      "y": 1
-    },
-    "max": {
-      "x": 1,
-      "y": 1
-    },
-    "default": {
-      "x": 1,
-      "y": 1
-    }
-  },
-  "hasTitle": true,
-  "configurationSchema": {
-    "device": {
-      "type": "keyword",
-      "expectedCapacity": ["switch", "dimmable", "event"],
-      "expectedKeywordAccess": "get"
-    },
-    "invert": {
-      "type": "bool",
-      "defaultValue": "false"
-    },
-    "askConfirmation": {
-      "type": "bool",
-      "defaultValue": "false"
-    },    
-    "additionalDevices": {
-      "type": "section",
-      "defaultValue": "false",
-      "enableWithCheckBox": "true",
-      "enableWithCheckBoxDefaultValue": "false",
-      "content": {
-        "devices": {
-          "type": "list",
-          "nbItemsMin": "1",
-          "nbItemsMax": "10",
-          "allowDuplication": "true",
-          "item": {
-            "type": "section",
-            "name": "",
-            "description": "",
-            "content": {
-              "source": {
-                "name": "",
-                "description": "",
-                "type": "keyword",
-                "expectedCapacity": ["switch", "dimmable", "event"],
-                "expectedKeywordAccess": "get"
-              }
-            }
-          }
-        }
+   "type": "switch",
+   "version": "1.3.1",
+   "author": "Jean-Michel DECORET, Jean-Michel BERHAULT, Nicolas HILAIRE",
+   "url": "https://github.com/Yadoms/yadoms/wiki/switch",
+   "credits": "[bootstrap toogle](http://www.bootstraptoggle.com/)",
+   "dependencies": {
+      "yadoms": {
+         "minimumVersion": "2.4.0-beta.1"
       }
-    },
-    "kind": {
-      "type": "radioSection",
-      "content": {
-        "horizontalInverter": {
-          "type": "section"
-        },
-        "verticalInverter": {
-          "type": "section"
-        },
-        "pushButton": {
-          "type": "section",
-          "content": {
-            "icon": {
-              "type": "icon"
-            }
-          }
-        },
-        "toggle": {
-          "type": "section"
-        }
+   },
+   "dimensions": {
+      "min": {
+         "x": 1,
+         "y": 1
+      },
+      "max": {
+         "x": 1,
+         "y": 1
+      },
+      "default": {
+         "x": 1,
+         "y": 1
       }
-    }
-  }
+   },
+   "hasTitle": true,
+   "configurationSchema": {
+      "device": {
+         "type": "keyword",
+         "expectedCapacity": ["switch", "dimmable", "event"],
+         "expectedKeywordAccess": "getSet"
+      },
+      "invert": {
+         "type": "bool",
+         "defaultValue": "false"
+      },
+      "askConfirmation": {
+         "type": "bool",
+         "defaultValue": "false"
+      },
+      "kind": {
+         "type": "radioSection",
+         "content": {
+            "horizontalInverter": {
+               "type": "section"
+            },
+            "verticalInverter": {
+               "type": "section"
+            },
+            "pushButton": {
+               "type": "section",
+               "content": {
+                  "icon": {
+                     "type": "icon"
+                  }
+               }
+            },
+            "toggle": {
+               "type": "section"
+            }
+         }
+      }
+   }
 }

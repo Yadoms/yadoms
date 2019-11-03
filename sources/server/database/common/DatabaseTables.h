@@ -82,6 +82,7 @@ namespace database
          (Measure)
          (Details)
          (Blacklist)
+         (HistoryDepth)
          (LastAcquisitionValue)
          (LastAcquisitionDate)
       )
@@ -99,6 +100,7 @@ namespace database
          (Avg)
          (Min)
          (Max)
+         (Count)
       )
 
       DECLARE_TABLE(Rule,

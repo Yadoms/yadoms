@@ -5,5 +5,10 @@
     "periodicityMinutes": {
       "name": "Measure periodicity (in minutes)"
     }
+  },
+  "customLabels": {
+    "pluginState": {
+      "updateConfiguration": "Configuration updating..."
+    }
   }
 }

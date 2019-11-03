@@ -7,6 +7,7 @@
 #include <Poco/Debugger.h>
 #include <shared/Log.h>
 #include <shared/communication/SmallHeaderMessageAssembler.h>
+#include <shared/currentTime/Provider.h>
 
 
 namespace yApi = shared::script::yInterpreterApi;
@@ -21,10 +22,6 @@ namespace interpreter_cpp_api
         m_returnCode(kOk)
    {
       shared::currentTime::Provider().setProvider(boost::make_shared<shared::currentTime::Local>());
-   }
-
-   CInterpreterContext::~CInterpreterContext()
-   {
    }
 
    void CInterpreterContext::run()
@@ -90,15 +87,12 @@ namespace interpreter_cpp_api
          std::cout << " Wait for a debugger to attach current process " << std::endl;
          std::cout << "***********************************************" << std::endl;
 
-         // Check every 300 ms, while 2 minutes
-         const auto endTimePoint = shared::currentTime::Provider().now() + boost::posix_time::minutes(2);
+         // Check every 300 ms, while 20 seconds (must be < at the delay that Yadoms expect an answer to the interpreter availability request, actually fixed at 30s)
+         // Don't wait for stop request as it consumes standard event (interpreter init, interpreter available request...)
+         const auto endTimePoint = shared::currentTime::Provider().now() + boost::posix_time::seconds(20);
          while (!Poco::Debugger::isAvailable() && shared::currentTime::Provider().now() < endTimePoint)
          {
-            if (api->getEventHandler().waitForEvents(boost::posix_time::millisec(300)) == yApi::IYInterpreterApi::kEventStopRequested)
-            {
-               std::cout << "Stop requested" << std::endl;
-               return;
-            }
+            boost::this_thread::sleep(boost::posix_time::millisec(300));
          }
 
          if (Poco::Debugger::isAvailable())
@@ -114,8 +108,8 @@ namespace interpreter_cpp_api
       {
          auto path = api->getLogFile();
          std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
-         CLogConfiguration logconfig;
-         logconfig.configure(api->getLogLevel(), path);
+         CLogConfiguration logConfig;
+         logConfig.configure(api->getLogLevel(), path);
       }
       catch (std::exception& e)
       {

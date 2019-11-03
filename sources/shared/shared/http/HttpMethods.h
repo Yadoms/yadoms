@@ -45,9 +45,8 @@ namespace shared
       /// \param[in]  parameters          parameters at the end of the url
       /// \param[in]  onReceive           function called on received data
       /// \param[in]  timeout             timeout for the request
-      /// \return     false if the time has expired. In this case the onReceived is not executed
       //--------------------------------------------------------------
-      static bool sendGetRequest(const boost::shared_ptr<IHTTPSession> session,
+      static void sendGetRequest(const boost::shared_ptr<IHTTPSession> session,
                                  const CDataContainer& headerParameters,
                                  const CDataContainer& parameters,
                                  boost::function1<void, CDataContainer&> onReceive,

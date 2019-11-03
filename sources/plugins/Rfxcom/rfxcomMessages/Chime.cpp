@@ -17,7 +17,7 @@ namespace rfxcomMessages
    {
       m_signalPower->set(0);
 
-      createSubType(deviceDetails.get<unsigned char>("subType"));
+      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
       m_subTypeManager->set(command, deviceDetails);
       m_id = deviceDetails.get<unsigned int>("id");
 
@@ -62,7 +62,7 @@ namespace rfxcomMessages
       createSubType(rbuf.CHIME.subtype);
       m_id = m_subTypeManager->idFromProtocol(rbuf.CHIME.id1, rbuf.CHIME.id2, rbuf.CHIME.sound);
       m_subTypeManager->setFromProtocolState(rbuf.CHIME.sound);
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.CHIME.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.CHIME.rssi));
 
       // Build device description
       buildDeviceName();
@@ -90,13 +90,15 @@ namespace rfxcomMessages
       {
       case sTypeByronSX: m_subTypeManager = boost::make_shared<CChimeByronSx>();
          break;
-      case sTypeByronMP001: m_subTypeManager = boost::make_shared<CChimeByronMp001>();
+      case sTypeByronMP001: m_subTypeManager = boost::make_shared<CChimeByronMp001>("Byron MP001");
          break;
-      case sTypeSelectPlus: m_subTypeManager = boost::make_shared<CChimeByronMp001>();
+      case sTypeSelectPlus: m_subTypeManager = boost::make_shared<CChimeByronMp001>("SelectPlus");
          break;
-      case sTypeSelectPlus3: m_subTypeManager = boost::make_shared<CChimeByronMp001>();
+      case sTypeByronBY: m_subTypeManager = boost::make_shared<CChimeByronMp001>("Byron BY");
          break;
-      case sTypeEnvivo: m_subTypeManager = boost::make_shared<CChimeByronMp001>();
+      case sTypeEnvivo: m_subTypeManager = boost::make_shared<CChimeByronMp001>("Envivo");
+         break;
+      case sTypeAlfawise: m_subTypeManager = boost::make_shared<CChimeByronMp001>("Alfawise, dBell");
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");

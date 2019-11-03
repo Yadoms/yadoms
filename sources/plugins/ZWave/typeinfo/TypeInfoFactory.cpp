@@ -8,7 +8,7 @@
 #include "IntegerTypeInfo.h"
 #include "StringTypeInfo.h"
 
-boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo> CTypeInfoFactory::create(OpenZWave::ValueID& valueId)
+boost::shared_ptr<shared::plugin::yPluginApi::typeInfo::ITypeInfo> CTypeInfoFactory::create(OpenZWave::ValueID& valueId)
 {
    switch (valueId.GetType())
    {
@@ -30,6 +30,6 @@ boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo
       return boost::make_shared<CStringTypeInfo>(valueId);
 
    default:
-      return boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo>();
+      return boost::shared_ptr<shared::plugin::yPluginApi::typeInfo::ITypeInfo>();
    }
 }

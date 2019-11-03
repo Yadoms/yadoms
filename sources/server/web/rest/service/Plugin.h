@@ -17,8 +17,9 @@ namespace web
             explicit CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
                              boost::shared_ptr<pluginSystem::CManager> pluginManager,
                              boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-                             communication::ISendMessageAsync& messageSender);
-            virtual ~CPlugin();
+                             communication::ISendMessageAsync& messageSender,
+                             bool developerMode);
+            virtual ~CPlugin() = default;
 
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;
@@ -29,14 +30,22 @@ namespace web
                                                                                      const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstance(const std::vector<std::string>& parameters,
                                                                                               const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string>& parameters,
-                                                                                                                     const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceWithState(const std::vector<std::string>& parameters,
+                                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceForManualDeviceCreation(
+               const std::vector<std::string>& parameters,
+               const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePlugins(const std::vector<std::string>& parameters,
                                                                                                const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsParameterized(
+               const std::vector<std::string>& parameters,
+               const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters,
                                                                                                           const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> sendExtraQuery(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> sendDeviceExtraQuery(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> sendExtraQuery(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> sendDeviceExtraQuery(
+               const std::vector<std::string>& parameters, const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> createPlugin(const std::vector<std::string>& parameters,
                                                                                      const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> updatePlugin(const std::vector<std::string>& parameters,
@@ -45,8 +54,10 @@ namespace web
                                                                                      const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllPlugins(const std::vector<std::string>& parameters,
                                                                                          const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getInstanceState(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getInstanceRunning(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getInstanceState(const std::vector<std::string>& parameters,
+                                                                                         const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getInstanceRunning(
+               const std::vector<std::string>& parameters, const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getPluginDevices(const std::vector<std::string>& parameters,
                                                                                          const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> startInstance(const std::vector<std::string>& parameters,
@@ -73,20 +84,14 @@ namespace web
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
 
-            //-----------------------------------------
-            ///\brief   Device manager
-            //-----------------------------------------
             boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
 
             std::string m_restKeyword;
 
-            //-----------------------------------------
-            ///\brief   The send message interface
-            //-----------------------------------------
             communication::ISendMessageAsync& m_messageSender;
+
+            bool m_developerMode;
          };
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-

@@ -21,21 +21,8 @@ AutomationEditorManager.getAll = function() {
 
       //to add an editor in the return list it must support at least one available interpreter
 
-      var interpreterFound = false;
-      //Code editor
-      $.each(AutomationEditorCode.getSupportedInterpreters(), function (key, value) {
-         if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value])) {
-            interpreterFound = true;
-         }            
-      });
-
-      if (interpreterFound) {
-         //we can use this editor
-         editors.push(new AutomationEditorCode(interpreters));
-      }
-
-      interpreterFound = false;
       //Blockly editor
+      var interpreterFound = false;
       $.each(AutomationEditorBlockly.getSupportedInterpreters(), function (key, value) {
          if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value])) {
             interpreterFound = true;
@@ -45,6 +32,19 @@ AutomationEditorManager.getAll = function() {
       if (interpreterFound) {
          //we can use this editor
          editors.push(new AutomationEditorBlockly(interpreters));
+      }
+
+      //Code editor
+      interpreterFound = false;
+      $.each(AutomationEditorCode.getSupportedInterpreters(), function (key, value) {
+         if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value])) {
+            interpreterFound = true;
+         }            
+      });
+
+      if (interpreterFound) {
+         //we can use this editor
+         editors.push(new AutomationEditorCode(interpreters));
       }
 
       d.resolve(editors);

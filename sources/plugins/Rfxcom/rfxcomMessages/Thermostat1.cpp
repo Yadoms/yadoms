@@ -17,7 +17,7 @@ namespace rfxcomMessages
    {
       m_signalPower->set(0);
 
-      createSubType(deviceDetails.get<unsigned char>("subType"));
+      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
       m_subTypeManager->set(command);
       m_id = deviceDetails.get<unsigned int>("id");
 
@@ -64,7 +64,7 @@ namespace rfxcomMessages
       createSubType(rbuf.THERMOSTAT1.subtype);
       m_id = rbuf.THERMOSTAT1.id1 << 8 | rbuf.THERMOSTAT1.id2;
       m_subTypeManager->setFromProtocolState(rbuf);
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT1.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.THERMOSTAT1.rssi));
 
       // Build device description
       buildDeviceName();

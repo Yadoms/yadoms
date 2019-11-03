@@ -34,13 +34,14 @@ namespace shared
             static const CStandardCapacity& Dimmable();         // dimmable          | none                  | A value from 0-100 (0 is off, 100 is on)
             static const CStandardCapacity& Direction();        // direction         | degrees               | Direction (for compass, wind direction)
             static const CStandardCapacity& Distance();         // length            | meter                 | A distance, in meter	  
-            static const CStandardCapacity& Duration();         // duration          | none                  | A Duration (duration type)
+            static const CStandardCapacity& Duration();         // duration          | s                     | A duration, in seconds
             static const CStandardCapacity& ElectricLoad();     // electric load     | Ampere/hour           | Electric load in Ah
             static const CStandardCapacity& Energy();           // energy            | Watt/hour             | Energy measure
             static const CStandardCapacity& Event();            // event             | -                     | Just an event (no associated data)
             static const CStandardCapacity& Frequency();        // frequency         | Hertz                 | Frequency
             static const CStandardCapacity& Humidity();         // humidity          | percent               | Humidity
             static const CStandardCapacity& Illumination();     // illumination      | lux                   | Illumination (lux)
+            static const CStandardCapacity& IlluminationWm2();  // illuminationWm2   | W/m²                  | Illumination (W/m²)
             static const CStandardCapacity& Load();             // load              | percent               | Load (%)
             static const CStandardCapacity& Message();          // message           | -                     | A message (contains "from", "to" and "body" fields)
             static const CStandardCapacity& PluginState();      // pluginState       | -                     | Specific capacity for plugin states

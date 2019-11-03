@@ -18,7 +18,7 @@ namespace rfxcomMessages
       m_state->setCommand(command);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
       m_unitCode = deviceDetails.get<unsigned int>("unitCode");
 
       // Build device description
@@ -73,7 +73,7 @@ namespace rfxcomMessages
       m_subType = rbuf.THERMOSTAT2.subtype;
       m_unitCode = rbuf.THERMOSTAT2.unitcode;
       m_state->set(fromProtocolState(rbuf.THERMOSTAT2.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT2.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.THERMOSTAT2.rssi));
 
       // Build device description
       buildDeviceModel();

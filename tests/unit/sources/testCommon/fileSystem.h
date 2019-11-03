@@ -5,31 +5,32 @@ namespace testCommon
    class filesystem
    {
    public:
-      static void CreateDirectory(const std::string& name);
+      static void createDirectory(const std::string& name);
 
-      static void RemoveDirectory(const std::string& name);
+      static void removeDirectory(const std::string& name);
 
-      static void CreateFile(const std::string& dir,
+      static void createFile(const boost::filesystem::path& file,
+                             const std::string& content,
+                             bool withBom = false);
+
+      static void removeFile(const std::string& dir,
                              const std::string& file);
-
-      static void RemoveFile(const std::string& dir,
-                             const std::string& file);
-      static void RemoveFile(const std::string& file,
+      static void removeFile(const std::string& file,
                              bool successRequired);
-      static void RemoveFile(const boost::filesystem::path& file,
+      static void removeFile(const boost::filesystem::path& file,
                              bool successRequired);
 
-      static void WriteFile(const std::string& dir,
+      static void writeFile(const std::string& dir,
                             const std::string& file);
 
-      static void WriteFile(const std::string& dir,
+      static void writeFile(const std::string& dir,
                             const std::string& file,
                             const std::string& content);
 
-      static void WriteFile(const boost::filesystem::path& file,
+      static void writeFile(const boost::filesystem::path& file,
                             const std::string& content);
 
-      static void RenameFile(const std::string& dir,
+      static void renameFile(const std::string& dir,
                              const std::string& oldFile,
                              const std::string& newFile);
    };

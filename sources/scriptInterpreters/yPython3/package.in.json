@@ -1,0 +1,15 @@
+{
+  "name": "Python 3",
+  "type": "yPython3",
+  "description": "Python 3.x rules interpreter",
+  "version": "@SCRIPT_INTERPRETER_VERSION@",
+  "author": "yadoms-team",
+  "url": "https://github.com/Yadoms/yadoms/",
+  "credits": "",
+  "supportedPlatforms": "all",
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.3.0-beta.4"
+    }
+  }
+}

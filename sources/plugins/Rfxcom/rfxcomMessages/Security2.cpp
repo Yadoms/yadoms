@@ -19,7 +19,7 @@ namespace rfxcomMessages
       m_batteryLevel->set(100);
       m_signalPower->set(0);
 
-      createSubType(deviceDetails.get<unsigned char>("subType"));
+      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
       m_subTypeManager->set(keyword, command);
       m_subTypeManager->setId(deviceDetails.get<unsigned int>("id"));
 
@@ -68,7 +68,7 @@ namespace rfxcomMessages
       createSubType(rbuf.SECURITY2.subtype);
       m_subTypeManager->setFromProtocolState(rbuf);
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.SECURITY2.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.SECURITY2.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.SECURITY2.rssi));
 
       // Build device description
       buildDeviceName();

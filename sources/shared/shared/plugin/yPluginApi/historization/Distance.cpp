@@ -12,22 +12,18 @@ namespace shared
          {
             CDistance::CDistance(const std::string& keywordName,
                                  const EKeywordAccessMode& accessMode,
-                                 typeInfo::CDoubleTypeInfo& additionalInfo)
+                                 const typeInfo::CDoubleTypeInfo& additionalInfo,
+                                 const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Distance(),
                                                  accessMode,
                                                  0.0,
                                                  EMeasureType::kAbsolute,
-                                                 additionalInfo)
-            {
-            }
-
-            CDistance::~CDistance()
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

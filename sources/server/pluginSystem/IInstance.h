@@ -51,7 +51,7 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief			            Post a device command to the plugin
-      /// \param  information       Device command
+      /// \param  deviceCommand     Device command
       //--------------------------------------------------------------
       virtual void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) = 0;
 

@@ -12,14 +12,9 @@ namespace web
                                                const std::vector< boost::shared_ptr<rest::service::IRestService> >& services)
          : m_restBaseKeyword(restBaseKeyword)
       {
-         std::vector< boost::shared_ptr<rest::service::IRestService> >::const_iterator i;
-         for (i = services.begin(); i != services.end(); ++i)
-            registerRestService(*i);
-         initialize();
-      }
-
-      CRestRequestHandler::~CRestRequestHandler()
-      {
+         for (auto i = services.begin(); i != services.end(); ++i)
+            CRestRequestHandler::registerRestService(*i);
+         CRestRequestHandler::initialize();
       }
 
       const std::string& CRestRequestHandler::getRestKeyword() const
@@ -29,18 +24,18 @@ namespace web
 
       std::vector<std::string> CRestRequestHandler::parseUrl(const std::string& url)
       {
-         std::vector<std::string> strs;
+         std::vector<std::string> strings;
          std::vector<std::string> results;
          //split on slash or anti slash
-         boost::split(strs, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
+         boost::split(strings, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
          //remove empty strings
          //do not use std::empty in std::remove_if because MacOs Clang do not support it
-         auto i = strs.begin();
-         while (i != strs.end())
+         auto i = strings.begin();
+         while (i != strings.end())
          {
             if (i->empty())
             {
-               i = strs.erase(i);
+               i = strings.erase(i);
             }
             else
             {
@@ -59,17 +54,15 @@ namespace web
       std::string CRestRequestHandler::manageRestRequests(Poco::Net::HTTPServerRequest& request)
       {
          // Decode url to path.
-         std::string request_path = request.getURI();
+         auto requestPath = request.getURI();
 
          try
          {
-            std::vector<std::string> parameters;
-
             //remove the fist /rest/ string
-            request_path = request_path.substr(m_restBaseKeyword.size());
+            requestPath = requestPath.substr(m_restBaseKeyword.size());
 
             //parse url to parameters
-            parameters = parseUrl(request_path);
+            const auto parameters = parseUrl(requestPath);
 
             std::string content;
             if (request.hasContentLength())
@@ -79,20 +72,19 @@ namespace web
             }
 
             //dispatch url to rest dispatcher
-            auto js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
-            std::string temp = js->serialize();
+            const auto js = m_restDispatcher.dispatch(request.getMethod(), parameters, content);
+            auto temp = js->serialize();
             return temp;
          }
-
          catch (std::exception& ex)
          {
-            YADOMS_LOG(error) << "An exception occured in treating REST url : " << request_path << std::endl << "Exception : " << ex.what();
+            YADOMS_LOG(error) << "An exception occured in treating REST url : " << requestPath << std::endl << "Exception : " << ex.what();
             return web::rest::CResult::GenerateError(ex)->serialize();
          }
          catch (...)
          {
-            YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << request_path;
-            return web::rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + request_path)->serialize();
+            YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << requestPath;
+            return web::rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + requestPath)->serialize();
          }
       }
 
@@ -101,10 +93,10 @@ namespace web
       {
          YADOMS_LOG(trace) << "Rest request : [" << request.getMethod() << "] : " << request.getURI();
 
-         std::string answer = manageRestRequests(request);
+         const auto answer = manageRestRequests(request);
          response.setContentType("application/json");
-         std::ostream& ostr = response.send();
-         ostr << answer;
+         auto& stream = response.send();
+         stream << answer;
       }
 
       void CRestRequestHandler::registerRestService(boost::shared_ptr<rest::service::IRestService> restService)

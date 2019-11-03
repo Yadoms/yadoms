@@ -43,7 +43,7 @@ namespace update
       m_thread.timed_join(boost::posix_time::seconds(30));
    }
 
-   void CUpdateManager::doWork(const boost::posix_time::time_duration scanPeriod)
+   void CUpdateManager::doWork(const boost::posix_time::time_duration& scanPeriod)
    {
       YADOMS_LOG_CONFIGURE("CUpdateManager");
       YADOMS_LOG(debug) << "Start";
@@ -109,7 +109,7 @@ namespace update
          const auto widgetsAvailableVersions = info::CUpdateSite::getAllWidgetVersions();
 
          YADOMS_LOG(debug) << "Read ScriptInterpreters versions...";
-         const auto scriptInterpretersLocalVersions = m_interpreterManager->getAvailableInterpretersInformation();
+         const auto scriptInterpretersLocalVersions = m_interpreterManager->getLoadedInterpretersInformation();
          const auto scriptInterpretersAvailableVersions = info::CUpdateSite::getAllScriptInterpreterVersions();
 
          YADOMS_LOG(debug) << "Build updates data (with prereleases)...";
@@ -190,7 +190,7 @@ namespace update
                                                        const std::map<
                                                           std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>&
                                                        scriptInterpretersLocalVersions,
-                                                       const shared::CDataContainer& scriptInterpretersAvailableVersions)
+                                                       const shared::CDataContainer& scriptInterpretersAvailableVersions) const
    {
       shared::CDataContainer updates;
 
@@ -221,23 +221,23 @@ namespace update
                                                           const shared::CDataContainer& availableVersions,
                                                           bool includePrereleases) const
    {
-      // Only updatable items for Yadoms
-      return addUpdatableYadoms(localVersion,
-                                availableVersions,
-                                includePrereleases);
+      // Only updateable items for Yadoms
+      return addUpdateableYadoms(localVersion,
+                                 availableVersions,
+                                 includePrereleases);
    }
 
    shared::CDataContainer CUpdateManager::buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                                           const shared::CDataContainer& availableVersions,
-                                                          bool includePrereleases)
+                                                          bool includePrereleases) const
    {
       shared::CDataContainer list;
 
-      // Add updatable items (ie already installed)
-      const auto updatableItems = addUpdatablePlugins(localVersions,
-                                                      availableVersions,
-                                                      includePrereleases);
-      list.set("updatable", updatableItems);
+      // Add updateable items (ie already installed)
+      const auto updateableItems = addUpdateablePlugins(localVersions,
+                                                        availableVersions,
+                                                        includePrereleases);
+      list.set("updateable", updateableItems);
 
       // Add items not already installed (ie not in localVersions list)
       const auto newItems = addNewPlugins(localVersions,
@@ -250,15 +250,15 @@ namespace update
 
    shared::CDataContainer CUpdateManager::buildWidgetList(const worker::CWidget::AvailableWidgetMap& localVersions,
                                                           const shared::CDataContainer& availableVersions,
-                                                          bool includePrereleases)
+                                                          bool includePrereleases) const
    {
       shared::CDataContainer list;
 
-      // Add updatable items (ie already installed)
-      const auto updatableItems = addUpdatableWidgets(localVersions,
-                                                      availableVersions,
-                                                      includePrereleases);
-      list.set("updatable", updatableItems);
+      // Add updateable items (ie already installed)
+      const auto updateableItems = addUpdateableWidgets(localVersions,
+                                                        availableVersions,
+                                                        includePrereleases);
+      list.set("updateable", updateableItems);
 
       // Add items not already installed (ie not in localVersions list)
       const auto newItems = addNewWidgets(localVersions,
@@ -272,15 +272,15 @@ namespace update
    shared::CDataContainer CUpdateManager::buildScriptInterpreterList(
       const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
       const shared::CDataContainer& availableVersions,
-      bool includePrereleases)
+      bool includePrereleases) const
    {
       shared::CDataContainer list;
 
-      // Add updatable items (ie already installed)
-      const auto updatableItems = addUpdatableScriptInterpreters(localVersions,
-                                                                 availableVersions,
-                                                                 includePrereleases);
-      list.set("updatable", updatableItems);
+      // Add updateable items (ie already installed)
+      const auto updateableItems = addUpdateableScriptInterpreters(localVersions,
+                                                                   availableVersions,
+                                                                   includePrereleases);
+      list.set("updateable", updateableItems);
 
       // Add items not already installed (ie not in localVersions list)
       const auto newItems = addNewScriptInterpreters(localVersions,
@@ -291,9 +291,9 @@ namespace update
       return list;
    }
 
-   shared::CDataContainer CUpdateManager::addUpdatableYadoms(const shared::versioning::CVersion& localVersion,
-                                                             const shared::CDataContainer& availableVersions,
-                                                             bool includePrereleases) const
+   shared::CDataContainer CUpdateManager::addUpdateableYadoms(const shared::versioning::CVersion& localVersion,
+                                                              const shared::CDataContainer& availableVersions,
+                                                              bool includePrereleases) const
    {
       shared::CDataContainer item;
 
@@ -303,17 +303,14 @@ namespace update
       std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
       std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
 
-      for (auto& version : availableVersions.get<std::vector<shared::CDataContainer>>())
+      for (auto& version : availableVersions.get<std::vector<shared::CDataContainer>>("versions"))
       {
-         if (version.empty()) // Ignore value data (like "changelog.md")
-            continue;
-
          try
          {
             shared::versioning::CVersion v(version.get<std::string>("version"));
 
             // Don't add prereleases versions if not asked
-            if (!v.prerelease().empty() && !includePrereleases)
+            if (!v.getPrerelease().empty() && !includePrereleases)
                continue;
 
             if (v == localVersion)
@@ -341,8 +338,8 @@ namespace update
          {
             if (m_developerMode)
             {
-               YADOMS_LOG(warning) << "Previous Yadoms versions are available because you are in developper mode : "
-                  << "Install a previous version at yout own risk, "
+               YADOMS_LOG(warning) << "Previous Yadoms versions are available because you are in developer mode : "
+                  << "Install a previous version at your own risk, "
                   << "downgraded version may be unable to load your current database";
             }
             else
@@ -351,9 +348,9 @@ namespace update
             }
          }
 
-         item.set("versions", buildUpdatableVersionsNode(localVersion.toString(),
-                                                         older,
-                                                         newer));
+         item.set("versions", buildUpdateableVersionsNode(localVersion.toString(),
+                                                          older,
+                                                          newer));
       }
       catch (std::exception& exception)
       {
@@ -364,11 +361,11 @@ namespace update
       return item;
    }
 
-   shared::CDataContainer CUpdateManager::addUpdatablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
-                                                              const shared::CDataContainer& availableVersions,
-                                                              bool includePrereleases) const
+   shared::CDataContainer CUpdateManager::addUpdateablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                                               const shared::CDataContainer& availableVersions,
+                                                               bool includePrereleases) const
    {
-      shared::CDataContainer updatableItems;
+      shared::CDataContainer updateableItems;
 
       for (const auto& localVersion : localVersions)
       {
@@ -376,7 +373,7 @@ namespace update
          {
             const auto moduleType = localVersion.first;
 
-            // Filter non-updatable modules
+            // Filter non-updateable modules
             if (m_developerMode && boost::starts_with(moduleType, "dev-"))
                continue;
 
@@ -393,16 +390,13 @@ namespace update
 
                try
                {
-                  const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+                  const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
                   for (auto& version : availableVersionsForItem)
                   {
-                     if (version.empty()) // Ignore value data (like "changelog.md")
-                        continue;
-
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
-                     if (!v.prerelease().empty() && !includePrereleases)
+                     if (!v.getPrerelease().empty() && !includePrereleases)
                         continue;
 
                      if (v == localVersion.second->getVersion())
@@ -427,11 +421,11 @@ namespace update
                }
             }
 
-            item.set("versions", buildUpdatableVersionsNode(localVersion.second->getVersion().toString(),
-                                                            older,
-                                                            newer));
+            item.set("versions", buildUpdateableVersionsNode(localVersion.second->getVersion().toString(),
+                                                             older,
+                                                             newer));
 
-            updatableItems.set(moduleType, item);
+            updateableItems.set(moduleType, item);
          }
          catch (std::exception& exception)
          {
@@ -440,7 +434,7 @@ namespace update
          }
       }
 
-      return updatableItems;
+      return updateableItems;
    }
 
    shared::CDataContainer CUpdateManager::addNewPlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
@@ -458,16 +452,13 @@ namespace update
          std::map<std::string, shared::CDataContainer> newModuleAvailableVersions;
          try
          {
-            const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
             for (auto& version : availableVersionsForItem)
             {
-               if (version.empty()) // Ignore value data (like "changelog.md")
-                  continue;
-
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
-               if (!v.prerelease().empty() && !includePrereleases)
+               if (!v.getPrerelease().empty() && !includePrereleases)
                   continue;
 
                if (!checkDependencies(version))
@@ -492,16 +483,13 @@ namespace update
          try
          {
             shared::CDataContainer item;
-            const auto& availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            const auto& availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
             const auto& newestVersionLabel = newModuleAvailableVersions.rbegin()->first;
             const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
                                                          availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
                                                          const shared::CDataContainer& availableVersionForItem)
                                                          {
-                                                            if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
-                                                               return false;
-
                                                             return availableVersionForItem.get<std::string>(
                                                                "version") == newestVersionLabel;
                                                          });
@@ -522,11 +510,11 @@ namespace update
       return newItems;
    }
 
-   shared::CDataContainer CUpdateManager::addUpdatableWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
-                                                              const shared::CDataContainer& availableVersions,
-                                                              bool includePrereleases) const
+   shared::CDataContainer CUpdateManager::addUpdateableWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
+                                                               const shared::CDataContainer& availableVersions,
+                                                               bool includePrereleases) const
    {
-      shared::CDataContainer updatableItems;
+      shared::CDataContainer updateableItems;
 
       for (const auto& localVersion : localVersions)
       {
@@ -534,7 +522,7 @@ namespace update
          {
             const auto moduleType = localVersion.first;
 
-            // Filter non-updatable modules
+            // Filter non-updateable modules
             if (moduleType == "system-deactivated-widget")
                continue;
             if (m_developerMode && boost::starts_with(moduleType, "dev-"))
@@ -557,16 +545,13 @@ namespace update
 
                try
                {
-                  const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+                  const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
                   for (auto& version : availableVersionsForItem)
                   {
-                     if (version.empty()) // Ignore value data (like "changelog.md")
-                        continue;
-
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
-                     if (!v.prerelease().empty() && !includePrereleases)
+                     if (!v.getPrerelease().empty() && !includePrereleases)
                         continue;
 
                      if (v == localVersion.second->getVersion())
@@ -591,11 +576,11 @@ namespace update
                }
             }
 
-            item.set("versions", buildUpdatableVersionsNode(localVersion.second->getVersion().toString(),
-                                                            older,
-                                                            newer));
+            item.set("versions", buildUpdateableVersionsNode(localVersion.second->getVersion().toString(),
+                                                             older,
+                                                             newer));
 
-            updatableItems.set(moduleType, item);
+            updateableItems.set(moduleType, item);
          }
          catch (std::exception& exception)
          {
@@ -604,7 +589,7 @@ namespace update
          }
       }
 
-      return updatableItems;
+      return updateableItems;
    }
 
    shared::CDataContainer CUpdateManager::addNewWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
@@ -622,16 +607,13 @@ namespace update
          std::map<std::string, shared::CDataContainer> newModuleAvailableVersions;
          try
          {
-            const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
             for (auto& version : availableVersionsForModule)
             {
-               if (version.empty()) // Ignore value data (like "changelog.md")
-                  continue;
-
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
-               if (!v.prerelease().empty() && !includePrereleases)
+               if (!v.getPrerelease().empty() && !includePrereleases)
                   continue;
 
                if (!checkDependencies(version))
@@ -656,16 +638,13 @@ namespace update
          try
          {
             shared::CDataContainer item;
-            const auto& availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            const auto& availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
             const auto& newestVersionLabel = newModuleAvailableVersions.rbegin()->first;
             const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
                                                          availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
                                                          const shared::CDataContainer& availableVersionForItem)
                                                          {
-                                                            if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
-                                                               return false;
-
                                                             return availableVersionForItem.get<std::string>(
                                                                "version") == newestVersionLabel;
                                                          });
@@ -686,12 +665,12 @@ namespace update
       return newItems;
    }
 
-   shared::CDataContainer CUpdateManager::addUpdatableScriptInterpreters(
+   shared::CDataContainer CUpdateManager::addUpdateableScriptInterpreters(
       const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
       const shared::CDataContainer& availableVersions,
       bool includePrereleases) const
    {
-      shared::CDataContainer updatableItems;
+      shared::CDataContainer updateableItems;
 
       for (const auto& localVersion : localVersions)
       {
@@ -699,7 +678,7 @@ namespace update
          {
             const auto moduleType = localVersion.first;
 
-            // Filter non-updatable modules
+            // Filter non-updateable modules
             if (m_developerMode && boost::starts_with(moduleType, "dev-"))
                continue;
 
@@ -716,16 +695,13 @@ namespace update
 
                try
                {
-                  const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+                  const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
                   for (auto& version : availableVersionsForItem)
                   {
-                     if (version.empty()) // Ignore value data (like "changelog.md")
-                        continue;
-
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
-                     if (!v.prerelease().empty() && !includePrereleases)
+                     if (!v.getPrerelease().empty() && !includePrereleases)
                         continue;
 
                      if (v == localVersion.second->getVersion())
@@ -750,11 +726,11 @@ namespace update
                }
             }
 
-            item.set("versions", buildUpdatableVersionsNode(localVersion.second->getVersion().toString(),
-                                                            older,
-                                                            newer));
+            item.set("versions", buildUpdateableVersionsNode(localVersion.second->getVersion().toString(),
+                                                             older,
+                                                             newer));
 
-            updatableItems.set(moduleType, item);
+            updateableItems.set(moduleType, item);
          }
          catch (std::exception& exception)
          {
@@ -763,7 +739,7 @@ namespace update
          }
       }
 
-      return updatableItems;
+      return updateableItems;
    }
 
    shared::CDataContainer CUpdateManager::addNewScriptInterpreters(
@@ -782,16 +758,13 @@ namespace update
          std::map<std::string, shared::CDataContainer> newModuleAvailableVersions;
          try
          {
-            const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
             for (auto& version : availableVersionsForModule)
             {
-               if (version.empty()) // Ignore value data (like "changelog.md")
-                  continue;
-
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
-               if (!v.prerelease().empty() && !includePrereleases)
+               if (!v.getPrerelease().empty() && !includePrereleases)
                   continue;
 
                if (!checkDependencies(version))
@@ -816,16 +789,13 @@ namespace update
          try
          {
             shared::CDataContainer item;
-            const auto& availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            const auto& availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
             const auto& newestVersionLabel = newModuleAvailableVersions.rbegin()->first;
             const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
                                                          availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
                                                          const shared::CDataContainer& availableVersionForItem)
                                                          {
-                                                            if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
-                                                               return false;
-
                                                             return availableVersionForItem.get<std::string>(
                                                                "version") == newestVersionLabel;
                                                          });
@@ -846,9 +816,9 @@ namespace update
       return newItems;
    }
 
-   shared::CDataContainer CUpdateManager::buildUpdatableVersionsNode(const std::string& installed,
-                                                                     std::map<std::string, shared::CDataContainer> older,
-                                                                     std::map<std::string, shared::CDataContainer> newer)
+   shared::CDataContainer CUpdateManager::buildUpdateableVersionsNode(const std::string& installed,
+                                                                      std::map<std::string, shared::CDataContainer> older,
+                                                                      std::map<std::string, shared::CDataContainer> newer)
    {
       shared::CDataContainer versions;
       versions.set("installed", installed);
@@ -929,7 +899,7 @@ namespace update
 
    std::string CUpdateManager::startTask(boost::shared_ptr<task::ITask> task) const
    {
-      std::string taskId = "";
+      std::string taskId;
       if (startTask(task, taskId))
          return taskId;
       throw shared::exception::CException("Fail to start task");
@@ -1056,22 +1026,20 @@ namespace update
    std::string CUpdateManager::findMd5HashAssociatedTo(const std::string& downloadUrl,
                                                        const std::string& allUpdatesNode) const
    {
-      if (m_allUpdates.exists(allUpdatesNode))
+      if (m_allUpdates.exists(allUpdatesNode, '|'))
       {
-         auto versions = m_allUpdates.get<std::vector<shared::CDataContainer>>(allUpdatesNode);
-         auto versionInfo = std::find_if(versions.begin(),
-                                         versions.end(),
-                                         [&downloadUrl](
-                                         const shared::CDataContainer& version)
-                                         {
-                                            return version.get<std::string>(
-                                               "downloadUrl") == downloadUrl;
-                                         });
+         auto versions = m_allUpdates.getAsMap<shared::CDataContainer>(allUpdatesNode, '|'); // Don't use default pathChar('.') because also contained in version name (like '2.3.0')
+         const auto versionInfo = std::find_if(versions.begin(),
+                                               versions.end(),
+                                               [&downloadUrl](const auto& version)
+                                               {
+                                                  return version.second.template get<std::string>("downloadUrl") == downloadUrl;
+                                               });
 
          if (versionInfo == versions.end())
             return std::string();
 
-         return versionInfo->get<std::string>("md5Hash");
+         return versionInfo->second.get<std::string>("md5Hash");
       }
       return std::string();
    }
@@ -1081,9 +1049,9 @@ namespace update
       boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
 
       // Find expected MD5Hash corresponding to the download URL
-      auto expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms.versions.newer");
+      auto expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms|versions|newer");
       if (expectedMd5Hash.empty())
-         expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms.versions.older");
+         expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms|versions|older");
       if (expectedMd5Hash.empty())
          throw std::runtime_error("Version not found");
 

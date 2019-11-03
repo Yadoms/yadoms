@@ -12,21 +12,18 @@ namespace shared
          {
             CLoad::CLoad(const std::string& keywordName,
                          const EKeywordAccessMode& accessMode,
-                         typeInfo::CDoubleTypeInfo& additionalInfo)
+                         const typeInfo::CDoubleTypeInfo& additionalInfo,
+                         const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Load(),
                                                  accessMode,
                                                  0.0,
-                                                 EMeasureType::kAbsolute, additionalInfo)
-            {
-            }
-
-            CLoad::~CLoad()
+                                                 EMeasureType::kAbsolute,
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

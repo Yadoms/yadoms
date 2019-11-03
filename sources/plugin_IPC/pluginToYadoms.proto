@@ -53,6 +53,7 @@ message Historizable {
 	string units = 5;
 	string typeInfo = 6;
 	string measure = 7;
+	string historyDepth = 8;
 }
 
 message DeclareKeyword {

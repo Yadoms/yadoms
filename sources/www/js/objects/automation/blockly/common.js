@@ -180,14 +180,16 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
                 //load initial content if exists
                 if (!isNullOrUndefinedOrEmpty(initialContent)) {
                     var xml = Blockly.Xml.textToDom(initialContent);
-                    if (xml)
+                    if (xml) {
                         Blockly.Xml.domToWorkspace(xml, Blockly.Yadoms.CurrentWorkspace);
+					}
                 } else {
                     //load default template if no content is found
                     var templateWithTranslatedHelp = Blockly.Yadoms.DefaultTemplate_.replace("__help__", $.t("blockly.templateHelp"));
                     var defaultXml = Blockly.Xml.textToDom(templateWithTranslatedHelp);
-                    if (defaultXml)
+                    if (defaultXml) {
                         Blockly.Xml.domToWorkspace(defaultXml, Blockly.Yadoms.CurrentWorkspace);
+					}
                 }
                 Blockly.Yadoms.isLoadingFromXml = false;
 
@@ -326,7 +328,7 @@ Blockly.Yadoms.GetResult = function (language, callback) {
 
     var generatedCode = "";
     switch (language) {
-        case "yPython27":
+        case "yPython3":
             generatedCode = Blockly.Yadoms.GetPythonOutput_();
             break;
 

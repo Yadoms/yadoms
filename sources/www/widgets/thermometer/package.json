@@ -1,46 +1,50 @@
 {
-	"type": "thermometer",
-	"version": "1.0.2",
-	"author": "Jean-Michel BERHAULT",
-	"url": "https://github.com/Yadoms/yadoms/wiki/thermometer",
-	"credits": "",
-  "dimensions": {
-    "min": {
-      "x": 1,
-      "y": 2
-    },
-    "max": {
-      "x": 2,
-      "y": 4
-    },
-    "default": {
-      "x": 1,
-      "y": 2
-    }
-  },
-  "hasTitle" :  true,
-	"configurationSchema": {
-		"device": {
-			"type": "keyword",
-			"expectedCapacity": ["temperature"],
-			"expectedKeywordAccess": "get"
-		},
-		"customYAxisMinMax": {
-			"type": "section",
-			"enableWithCheckBox": "true",
-			"enableWithCheckBoxDefaultValue": "false",
-			"content": {
-				"maximumValue": {
-					"type": "decimal",
-					"defaultValue": "50.0",
-					"precision": "1"
-				},
-				"minimumValue": {
-					"type": "decimal",
-					"defaultValue": "-40.0",
-					"precision": "1"
-				}
-			}
-		}
-	}
+   "type": "thermometer",
+   "version": "1.1.1",
+   "author": "Jean-Michel BERHAULT",
+   "url": "https://github.com/Yadoms/yadoms/wiki/thermometer",
+   "credits": "",
+   "dependencies": {
+      "yadoms": {
+         "minimumVersion": "2.4.0-beta.1"
+      }
+   },
+   "dimensions": {
+      "min": {
+         "x": 1,
+         "y": 2
+      },
+      "max": {
+         "x": 2,
+         "y": 4
+      },
+      "default": {
+         "x": 1,
+         "y": 2
+      }
+   },
+   "hasTitle": true,
+   "configurationSchema": {
+      "device": {
+         "type": "keyword",
+         "expectedCapacity": ["temperature"]
+      },
+      "customYAxisMinMax": {
+         "type": "section",
+         "enableWithCheckBox": "true",
+         "enableWithCheckBoxDefaultValue": "false",
+         "content": {
+            "maximumValue": {
+               "type": "decimal",
+               "defaultValue": "50.0",
+               "precision": "1"
+            },
+            "minimumValue": {
+               "type": "decimal",
+               "defaultValue": "-40.0",
+               "precision": "1"
+            }
+         }
+      }
+   }
 }

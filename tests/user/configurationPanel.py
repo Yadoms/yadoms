@@ -1,7 +1,7 @@
 ﻿from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as Condition
-
+import tools
 
 
 class ConfigurationPanel(object):
@@ -52,6 +52,14 @@ class ConfigurationPanel(object):
       """ Get a button of a configuration section """
       return self._panelWebElement.find_element_by_xpath(".//button[@data-i18n='" + dataI18nString + "']")
       
+   def getItemButton(self):
+      """ Get 'add item button' - when we add multiple devices, configuration, ... """
+      return self._panelWebElement.find_element_by_class_name('pull-right')
+      
+   def getDuplicateButton(self):
+      """ Get 'duplicate item button' - when we add multiple devices, configuration, ... """
+      return self._panelWebElement.find_element_by_class_name('btn-duplicate')
+      
    def getTextItemByName(self, dataI18nString):
       """ Find a configuration single text box by its "data-i18n" title """
       return self.findField(dataI18nString).find_element_by_xpath(".//input[@type='text']")
@@ -66,5 +74,16 @@ class ConfigurationPanel(object):
 
    def getItemsByName(self, dataI18nString):
       """ Find list of configuration items by its "data-i18n" title """
-      return self.findField(dataI18nString).find_element_by_class_name('configuration-control').find_element_by_tag_name('div').find_elements_by_class_name('form-control')
-               
+      return self.findField(dataI18nString).find_element_by_class_name('controls').find_element_by_tag_name('div').find_elements_by_class_name('form-control')
+   
+   def getControlGroupParentItem(self, dataI18nString, position):
+      """ Find configuration item list parent by its "data-i18n" title, and it's position """
+      return self._panelWebElement.find_element_by_xpath("(//span[@data-i18n='" + dataI18nString + "'])[" + str(position) + "]").find_element_by_xpath("./../../..")
+
+   def getPanel(self):
+      """ Return panel """
+      return self._panelWebElement
+      
+   def getItemListByNameAndPosition(self, dataI18nString, position):
+      """ Find configuration item list by its "data-i18n" title, and it's position """
+      return self.getControlGroupParentItem(dataI18nString, position).find_element_by_class_name('controls').find_element_by_tag_name('div').find_elements_by_class_name('form-control')

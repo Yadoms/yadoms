@@ -5,18 +5,19 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-   CChimeByronMp001::CChimeByronMp001()
-      : m_event(boost::make_shared<shared::plugin::yPluginApi::historization::CEvent>("event")),
-      m_keywords({ m_event })
+   CChimeByronMp001::CChimeByronMp001(const std::string& model)
+      : m_model(model),
+        m_event(boost::make_shared<shared::plugin::yPluginApi::historization::CEvent>("event")),
+        m_keywords({m_event})
    {
    }
 
    std::string CChimeByronMp001::getModel() const
    {
-      return "Byron MP001";
+      return m_model;
    }
 
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CChimeByronMp001::keywords() const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CChimeByronMp001::keywords() const
    {
       return m_keywords;
    }
@@ -56,5 +57,3 @@ namespace rfxcomMessages
       // Nothing to do, sound is used à ID3
    }
 } // namespace rfxcomMessages
-
-

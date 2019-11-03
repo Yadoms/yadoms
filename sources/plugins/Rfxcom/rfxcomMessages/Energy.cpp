@@ -27,7 +27,7 @@ namespace rfxcomMessages
 
       m_id = rbuf.ENERGY.id1 | (rbuf.ENERGY.id2 << 8);
 
-      long instantPower = rbuf.ENERGY.instant1 << 24 | rbuf.ENERGY.instant2 << 16 | rbuf.ENERGY.instant3 << 8 | rbuf.ENERGY.instant4;
+      const long instantPower = rbuf.ENERGY.instant1 << 24 | rbuf.ENERGY.instant2 << 16 | rbuf.ENERGY.instant3 << 8 | rbuf.ENERGY.instant4;
       m_instantPower->set(instantPower);
 
       // No total power on CM180 if count > 0
@@ -43,7 +43,7 @@ namespace rfxcomMessages
       }
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.ENERGY.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.ENERGY.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.ENERGY.rssi));
 
       buildDeviceModel();
       buildDeviceName();

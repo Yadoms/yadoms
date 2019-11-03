@@ -27,7 +27,9 @@ namespace communication
       ///\throw shared::exception::CEmptyResult if keywordId not found
       //----------------------------------------------
       virtual void sendKeywordCommandAsync(int keywordId,
-                                           const std::string& body) = 0;
+                                           const std::string& body)
+      {
+      }
 
       //----------------------------------------------
       ///\brief                     Send an extra command

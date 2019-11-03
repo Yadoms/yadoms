@@ -21,7 +21,7 @@ namespace rfxcomMessages
    {
       m_signalPower->set(0);
 
-      createSubType(deviceDetails.get<unsigned char>("subType"));
+      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
       m_subTypeManager->set(command);
       m_id = deviceDetails.get<unsigned int>("id");
 
@@ -45,7 +45,7 @@ namespace rfxcomMessages
       m_id = rbuf.REMOTE.id;
       m_subTypeManager->setFromProtocolState(rbuf);
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.REMOTE.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.REMOTE.rssi));
 
       buildDeviceName();
    }

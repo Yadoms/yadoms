@@ -1,6 +1,6 @@
 # ------------------------------------
 # --
-# --  Configuration files for Yadoms v1.0.1
+# --  Configuration files for Yadoms v1.0.2
 # --  This file is for retrieve all names from the WES equipment revision 2.
 # --
 # ------------------------------------
@@ -8,15 +8,15 @@ t <form>
 # COMPTEURS TELEINFO
 # COMPTEUR 1
 c en1 <html><id>CPT1_name</id><value>%s</value></html>
-c es1 <html><id>CPT1_adco</id><value>%s</value></html>
+c ea1 <html><id>CPT1_adco</id><value>%s</value></html>
 c ed1 <html><id>CPT1_abo_name</id><value>%d</value></html>
 # COMPTEUR 2
 c en2 <html><id>CPT2_name</id><value>%s</value></html>
-c es2 <html><id>CPT2_adco</id><value>%s</value></html>
+c ea2 <html><id>CPT2_adco</id><value>%s</value></html>
 c ed2 <html><id>CPT2_abo_name</id><value>%d</value></html>
 # COMPTEUR 3
 c en3 <html><id>CPT3_name</id><value>%s</value></html>
-c es3 <html><id>CPT3_adco</id><value>%s</value></html>
+c ea3 <html><id>CPT3_adco</id><value>%s</value></html>
 c ed3 <html><id>CPT3_abo_name</id><value>%d</value></html>
 # PINCES AMPERMETRIQUES
 c Pn1 <html><id>nPCE1</id><value>%s</value></html>

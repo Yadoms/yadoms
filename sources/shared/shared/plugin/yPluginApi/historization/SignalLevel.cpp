@@ -10,20 +10,20 @@ namespace shared
       {
          namespace historization
          {
-            
-            CSignalLevel::CSignalLevel(const std::string& keywordName, const EMeasureType& measureType, typeInfo::CIntTypeInfo& additionalInfo)
-               : CSingleHistorizableData<int>(  keywordName, CStandardCapacities::SignalLevel(), EKeywordAccessMode::kGet, 0, measureType, additionalInfo)
+            CSignalLevel::CSignalLevel(const std::string& keywordName,
+                                       const EMeasureType& measureType,
+                                       const typeInfo::CIntTypeInfo& additionalInfo,
+                                       const EHistoryDepth& historyDepth)
+               : CSingleHistorizableData<int>(keywordName,
+                                              CStandardCapacities::SignalLevel(),
+                                              EKeywordAccessMode::kGet,
+                                              0,
+                                              measureType,
+                                              additionalInfo,
+                                              historyDepth)
             {
             }
-
-            CSignalLevel::~CSignalLevel()
-            {
-            }
-
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-
-

@@ -7,7 +7,7 @@ services:
   - docker
   
 before_install:
-  - docker pull yadoms/build_for_ubuntu
+  - docker pull yadoms/build_for_ubuntu${DOCKER_TAG}
   
 script:
-  - docker run -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} yadoms/build_for_ubuntu
+  - docker run -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} yadoms/build_for_ubuntu${DOCKER_TAG}

@@ -44,3 +44,10 @@ boost::shared_ptr<IMessageHandler> CFactory::constructMessageHandler(boost::shar
                                               evtPortDataReceived,
                                               bufferLogger);
 }
+
+boost::shared_ptr<CPairingHelper> CFactory::constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                   IPairingHelper::EPairingMode pairingMode)
+{
+   return boost::make_shared<CPairingHelper>(api,
+                                             pairingMode);
+}

@@ -19,9 +19,7 @@ public:
    {
    }
 
-   virtual ~CFakeMessage()
-   {
-   }
+   virtual ~CFakeMessage() = default;
 };
 
 BOOST_AUTO_TEST_SUITE(TestMessageHandler)
@@ -30,9 +28,9 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
    {
       shared::event::CEventHandler evtHandler;
       enum
-         {
-            kDataReceived = shared::event::kUserFirstId
-         };
+      {
+         kDataReceived = shared::event::kUserFirstId
+      };
       CMessageHandler messageHandler(boost::make_shared<CAsyncPortMock>(),
                                      evtHandler,
                                      kDataReceived,
@@ -40,7 +38,7 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
 
       BOOST_CHECK(evtHandler.empty()) ;
 
-      auto message = boost::make_shared<message::CEsp3ReceivedPacket>(std::vector<unsigned char>
+      const auto message = boost::make_shared<message::CEsp3ReceivedPacket>(std::vector<unsigned char>
          {0x55, 0x00, 0x00, 0x00, message::RADIO_ERP1, 0x07, 0x00});
       messageHandler.onReceived(message);
 
@@ -52,7 +50,7 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
 
    BOOST_AUTO_TEST_CASE(TestNominalSend)
    {
-      auto portMock = boost::make_shared<CAsyncPortMock>();
+      const auto portMock = boost::make_shared<CAsyncPortMock>();
       shared::event::CEventHandler evtHandler;
       CMessageHandler messageHandler(portMock,
                                      evtHandler,
@@ -67,13 +65,13 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       // Check that sent message through message handler is really transmitted to port
       BOOST_CHECK_EQUAL(portMock->m_lastSendBuffer->size(), message.buffer()->size()) ;
       {
-         auto vect1 = portMock->m_lastSendBuffer;
-         auto vect2 = *message.buffer();
-         auto idx1 = vect1->begin();
-         auto idx2 = vect2.begin();
+         auto vector1 = portMock->m_lastSendBuffer;
+         auto vector2 = *message.buffer();
+         auto idx1 = vector1->begin();
+         auto idx2 = vector2.begin();
          for (;
-            idx1 != vect1->end() && idx2 != vect2.end();
-            ++idx1 , ++idx2)
+            idx1 != vector1->end() && idx2 != vector2.end();
+            ++idx1, ++idx2)
          {
             BOOST_CHECK_EQUAL(*idx1, *idx2) ;
          }
@@ -87,9 +85,9 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       auto portMock = boost::make_shared<CAsyncPortMock>();
       shared::event::CEventHandler mainEvtHandler;
       enum
-         {
-            kDataReceived = shared::event::kUserFirstId
-         };
+      {
+         kDataReceived = shared::event::kUserFirstId
+      };
       auto messageHandler = boost::make_shared<CMessageHandler>(portMock,
                                                                 mainEvtHandler,
                                                                 kDataReceived,
@@ -106,28 +104,29 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       portMock->setAutoReceiveMessage(boost::make_shared<shared::communication::CByteBuffer>(answer->buffer()));
 
       // Send the message and process answer
-      auto sendSuccess = messageHandler->send(request,
-                                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket>)
-                                              {
-                                                 return true;
-                                              },
-                                              [&answer](boost::shared_ptr<const message::CEsp3ReceivedPacket> receivedAnswer)
-                                              {
-                                                 // Check that received message was transmitted as answer
-                                                 BOOST_TEST_CHECK(receivedAnswer->buffer() == answer->buffer(), boost::test_tools::per_element()) ;
-                                              });
+      const auto sendSuccess = messageHandler->send(request,
+                                                    [](boost::shared_ptr<const message::CEsp3ReceivedPacket>)
+                                                    {
+                                                       return true;
+                                                    },
+                                                    [&answer](boost::shared_ptr<const message::CEsp3ReceivedPacket> receivedAnswer)
+                                                    {
+                                                       // Check that received message was transmitted as answer
+                                                       BOOST_TEST_CHECK(receivedAnswer->buffer() == answer->buffer(), boost::test_tools::per_element()
+                                                       ) ;
+                                                    });
       BOOST_CHECK(sendSuccess) ;
 
       // Check that sent message through message handler was really transmitted to port
       BOOST_CHECK_EQUAL(portMock->m_lastSendBuffer->size(), request.buffer()->size()) ;
       {
-         auto vect1 = portMock->m_lastSendBuffer;
-         auto vect2 = *request.buffer();
-         auto idx1 = vect1->begin();
-         auto idx2 = vect2.begin();
+         auto vector1 = portMock->m_lastSendBuffer;
+         auto vector2 = *request.buffer();
+         auto idx1 = vector1->begin();
+         auto idx2 = vector2.begin();
          for (;
-            idx1 != vect1->end() && idx2 != vect2.end();
-            ++idx1 , ++idx2)
+            idx1 != vector1->end() && idx2 != vector2.end();
+            ++idx1, ++idx2)
          {
             BOOST_CHECK_EQUAL(*idx1, *idx2) ;
          }
@@ -148,9 +147,9 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       auto portMock = boost::make_shared<CAsyncPortMock>();
       shared::event::CEventHandler mainEvtHandler;
       enum
-         {
-            kDataReceived = shared::event::kUserFirstId
-         };
+      {
+         kDataReceived = shared::event::kUserFirstId
+      };
       auto messageHandler = boost::make_shared<CMessageHandler>(portMock,
                                                                 mainEvtHandler,
                                                                 kDataReceived,
@@ -159,22 +158,20 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       BOOST_CHECK(mainEvtHandler.empty()) ;
 
       CFakeMessage request;
-      const auto answer = boost::make_shared<message::CEsp3ReceivedPacket>(std::vector<unsigned char>
-         {0x55, 0x00, 0x00, 0x00, message::RADIO_ERP1, 0x07, 0x00});
 
       // Send the message and process answer
-      auto sendSuccess = messageHandler->send(request,
-                                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket>)
-                                              {
-                                                 // Should not receive any message
-                                                 BOOST_CHECK(false) ;
-                                                 return true;
-                                              },
-                                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket>)
-                                              {
-                                                 // Should not receive any message
-                                                 BOOST_CHECK(false) ;
-                                              });
+      const auto sendSuccess = messageHandler->send(request,
+                                                    [](boost::shared_ptr<const message::CEsp3ReceivedPacket>)
+                                                    {
+                                                       // Should not receive any message
+                                                       BOOST_CHECK(false) ;
+                                                       return true;
+                                                    },
+                                                    [](boost::shared_ptr<const message::CEsp3ReceivedPacket>)
+                                                    {
+                                                       // Should not receive any message
+                                                       BOOST_CHECK(false) ;
+                                                    });
       BOOST_CHECK(!sendSuccess) ;
 
       // Check that received message was not transmitted to main event handler by the message handler
@@ -186,4 +183,3 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
    }
 
 BOOST_AUTO_TEST_SUITE_END()
-

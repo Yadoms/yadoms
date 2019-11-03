@@ -9,11 +9,12 @@ CProfile_D2_01_09::CProfile_D2_01_09(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
+     m_resetLoadEnergy(boost::make_shared<yApi::historization::CEvent>("ResetLoadEnergy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_dimmerMode(boost::make_shared<specificHistorizers::CDimmerModeHistorizer>("DimmerMode")),
      m_dimmer(boost::make_shared<yApi::historization::CDimmable>("Dimmer", yApi::EKeywordAccessMode::kGetSet)),
      m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_loadEnergy, m_loadPower, m_dimmerMode, m_dimmer, m_overCurrent})
+     m_historizers({m_loadEnergy, m_resetLoadEnergy, m_loadPower, m_dimmerMode, m_dimmer, m_overCurrent})
 {
 }
 
@@ -57,11 +58,12 @@ void CProfile_D2_01_09::readInitialState(const std::string& senderId,
                                                        CProfile_D2_01_Common::kQueryPower);
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_09::states(unsigned char rorg,
-                                                                                                   const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status,
-                                                                                                   const std::string& senderId,
-                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_09::states(
+   unsigned char rorg,
+   const boost::dynamic_bitset<>& data,
+   const boost::dynamic_bitset<>& status,
+   const std::string& senderId,
+   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -88,8 +90,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
          if (std::find(historizers.begin(), historizers.end(), m_loadPower) != historizers.end())
          {
-            // Power is configured to be received automaticaly.
-            // As we can not receive both data (power + energy) automaticaly,
+            // Power is configured to be received automatically.
+            // As we can not receive both data (power + energy) automatically,
             // we ask for Energy just after receiving Power.
             CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                                 senderId,
@@ -113,23 +115,42 @@ void CProfile_D2_01_09::sendCommand(const std::string& keyword,
    if (keyword == m_dimmer->getKeyword())
    {
       m_dimmer->setCommand(commandBody);
+
+      CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
+                                                                 senderId,
+                                                                 m_deviceId,
+                                                                 CProfile_D2_01_Common::kAllOutputChannels,
+                                                                 m_dimmerMode->get(),
+                                                                 m_dimmer->get());
    }
    else if (keyword == m_dimmerMode->getKeyword())
    {
       m_dimmerMode->setCommand(commandBody);
       // Nothing to do more, this keyword is at internal-usage only.
       // It will be used at next dimmer value change.
-      return;
    }
-   else
-      return;
+   else if (keyword == m_resetLoadEnergy->getKeyword())
+   {
+      // Resetting the load energy counter is done by sending an Actuator Set Measurement command
+      CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
+                                                               senderId,
+                                                               m_deviceId,
+                                                               CProfile_D2_01_Common::kAllOutputChannels,
+                                                               false,
+                                                               true,
+                                                               0,
+                                                               0);
 
-   CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
-                                                              senderId,
-                                                              m_deviceId,
-                                                              CProfile_D2_01_Common::kAllOutputChannels,
-                                                              m_dimmerMode->get(),
-                                                              m_dimmer->get());
+      // Ask for a new energy measure now to reflect de resetted value      
+
+      // Need to wait a bit between outgoing messages, to be sure to receive answer
+      boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+      CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                          senderId,
+                                                          m_deviceId,
+                                                          CProfile_D2_01_Common::kAllOutputChannels,
+                                                          CProfile_D2_01_Common::kQueryPower);
+   }
 }
 
 void CProfile_D2_01_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -163,7 +184,8 @@ void CProfile_D2_01_09::sendConfiguration(const shared::CDataContainer& deviceCo
    if (minEnergyMeasureRefreshTime > maxEnergyMeasureRefreshTime)
    {
       std::ostringstream oss;
-      oss << "Min refresh time (" << minEnergyMeasureRefreshTime << ") is over max refresh time (" << maxEnergyMeasureRefreshTime << ") for device " << m_deviceId << " (" << profile() << ")";
+      oss << "Min refresh time (" << minEnergyMeasureRefreshTime << ") is over max refresh time (" << maxEnergyMeasureRefreshTime << ") for device "
+         << m_deviceId << " (" << profile() << ")";
       YADOMS_LOG(error) << oss.str();
       throw std::logic_error(oss.str());
    }
@@ -175,6 +197,7 @@ void CProfile_D2_01_09::sendConfiguration(const shared::CDataContainer& deviceCo
                                                             m_deviceId,
                                                             CProfile_D2_01_Common::kAllOutputChannels,
                                                             true,
+                                                            false,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
 }

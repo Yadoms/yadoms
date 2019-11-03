@@ -18,9 +18,8 @@ namespace web
                     boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                     boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
                     communication::ISendMessageAsync& messageSender);
-            virtual ~CDevice();
+            virtual ~CDevice() = default;
 
-         public:
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;
             // [END] IRestService implementation
@@ -34,7 +33,12 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getOneDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
-            ///\brief   get configurationd schema of specified device
+            ///\brief   get device compatible for merge operation
+            //-----------------------------------------
+            boost::shared_ptr<shared::serialization::IDataSerializable> getCompatibleForMergeDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+
+            //-----------------------------------------
+            ///\brief   get configuration schema of specified device
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceConfigurationSchema(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
@@ -64,9 +68,24 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceWithKeywordAccessMode(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
+            ///\brief   get all the devices with any keyword history depth
+            //-----------------------------------------
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceWithKeywordHistoryDepth(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+
+            //-----------------------------------------
+            ///\brief   get all the devices matching some criteria
+            //-----------------------------------------
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceMatchCriteria(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+
+            //-----------------------------------------
             ///\brief   get all the keywords of a device
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceKeywords(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            
+            //-----------------------------------------
+            ///\brief   get the keywords last state (from unique keyword or keyword list)
+            //-----------------------------------------
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordsLastState(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get a keyword
@@ -99,6 +118,11 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> updateDeviceConfiguration(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
+            ///\brief   merge 2 devices
+            //-----------------------------------------
+            boost::shared_ptr<shared::serialization::IDataSerializable> mergeDevices(const std::vector<std::string>& parameters, const std::string& requestContent) const;            
+
+            //-----------------------------------------
             ///\brief   update a keyword friendly name
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> updateKeywordFriendlyName(const std::vector<std::string>& parameters, const std::string& requestContent) const;
@@ -114,7 +138,6 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> updateKeywordBlacklist(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
 
-         private:
             //-----------------------------------------
             ///\brief   Transactional method used to encapsulate operation in transactions
             //-----------------------------------------
@@ -126,6 +149,7 @@ namespace web
             ///\brief   Data provider
             //-----------------------------------------
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
+            boost::shared_ptr<database::IDeviceRequester> m_deviceRequester;
 
             //-----------------------------------------
             ///\brief   Plugin manager (required for some operations)

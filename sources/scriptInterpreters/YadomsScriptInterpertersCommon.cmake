@@ -29,7 +29,7 @@ MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG}/scriptInterpreters/${_targetName})
    endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
    
-   # Retrieve plugin version
+   # Retrieve interpreter version
    GET_PACKAGE_VERSION("changelog.md" SCRIPT_INTERPRETER_VERSION)
    EXTRACT_VERSION(${SCRIPT_INTERPRETER_VERSION} SCRIPT_INTERPRETER_VERSION_MAJOR SCRIPT_INTERPRETER_VERSION_MINOR SCRIPT_INTERPRETER_VERSION_PATCH)
    
@@ -79,12 +79,6 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
       ${PROTOBUF_LIBRARIES}
       ${ARGN}
       )
-
-   ##################################################################################################
-   ## Add natvis (allow better debugging within VisualStudio)
-   ##################################################################################################
-   ADD_VS_NATVIS(${_targetName})
-
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
    #configure interpreter as installable component
@@ -130,10 +124,10 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 	endif()	
    
    # Post-build copy of required files
-   PLUGIN_POST_BUILD_COPY_FILE(${_targetName} ${CMAKE_CURRENT_BINARY_DIR}/package.json)
-   PLUGIN_POST_BUILD_COPY_FILE(${_targetName} changelog.md)
-   PLUGIN_POST_BUILD_COPY_FILE(${_targetName} icon.png)
-   PLUGIN_POST_BUILD_COPY_DIRECTORY(${_targetName} locales) 
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(${_targetName} ${CMAKE_CURRENT_BINARY_DIR}/package.json)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(${_targetName} changelog.md)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(${_targetName} icon.png)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(${_targetName} locales) 
 	
 ENDMACRO()
 
@@ -171,7 +165,7 @@ MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE _targetName _resource)
 ENDMACRO()
 
 # brief Copy a directory (and its content) to the target output dir
-# param [in] _targetName The current target (ie: pluginName)
+# param [in] _targetName The current target (ie: scriptInterpreterName)
 # param [in] _resource The resource folder (absolute path) to copy to the target output dir
 # param [in/optional] To specify the target destination (if omit, destination will be the last part of _resource tree)
 MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY _targetName _resource)
@@ -211,7 +205,7 @@ MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY _targetName _resource)
    if(COTIRE_USE)
       if(COTIRE_USE_UNITY)
          add_custom_command(TARGET ${_targetName}_unity POST_BUILD
-           COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/${resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${where})
+           COMMAND ${CMAKE_COMMAND} -E copy_directory ${resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${where})
 	  endif()	
    endif()		  
 ENDMACRO()

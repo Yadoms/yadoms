@@ -16,7 +16,7 @@ namespace database
 
       //--------------------------------------------------------------
       /// \brief                    Add new keyword
-      /// \param [in] newKeywords   New keyword informations
+      /// \param [in] newKeyword    New keyword informations
       /// \throw                    shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
       virtual void addKeyword(const entities::CKeyword& newKeyword) = 0;
@@ -67,6 +67,21 @@ namespace database
       virtual std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCapacity(const std::string& capacity) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Get the keyword list which match some criteria
+      /// \param [in] expectedKeywordTypes         The keyword type criteria
+      /// \param [in] expectedCapacities           The capacity name criteria
+      /// \param [in] expectedKeywordAccesses      The access mode criteria
+      /// \param [in] expectedKeywordHistoryDepth  The history depth criteria
+      /// \param [in] blacklisted                  The blacklisted criteria
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordsMatchingCriteria(
+         const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
+         const std::vector<std::string>& expectedCapacities,
+         const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
+         const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth,
+         bool blacklisted) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief           List all keywords which match capacity for a device
       /// \param [in]      deviceId             the device which own the keyword
       /// \param [in]      capacityName         the capacity name
@@ -95,9 +110,16 @@ namespace database
       virtual std::string getKeywordLastData(const int keywordId,
                                              bool throwIfNotExists = true) = 0;
 
+      //-----------------------------------------
+      ///\brief      Get the last data of a keywords list
+      ///\param [in] keywordIds  The keyword ids list
+      ///\return     the last acquisition for the keywords
+      //-----------------------------------------
+      virtual std::vector<boost::tuple<int, std::string>> getKeywordListLastData(const std::vector<int> keywordIds) = 0;
+
       //--------------------------------------------------------------
       /// \brief                          Update the keyword blacklist state
-      /// \param [in] deviceId            The keyword id
+      /// \param [in] keywordId           The keyword id
       /// \param [in] blacklist           The keyword blacklist state
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------

@@ -1,4 +1,17 @@
-### 1.1.0-beta.1
+### 1.3.1
+* Better keyword selection filtering
+
+### 1.3.0
+* New feature #553 : use of full compliant Json
+* fix #521 : display properly duration values with new format
+
+### 1.2.1
+* Fix display after update
+
+### 1.2.0
+* new feature - add automatic scale checkbox
+
+### 1.1.0
 * New Feature #466 - Adapt unit if it's necessary
 * newFeature #449 - Adapt the widget to new architecture
 

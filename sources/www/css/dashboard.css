@@ -14,23 +14,27 @@
     display: block;
     padding: 20px;
     overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    overflow-y: auto;
+    /* Scrollable contents if viewport is shorter than content. */
     background-color: #f5f5f5;
     border-right: 1px solid #eee;
 }
 
 /* Sidebar navigation */
 .nav-sidebar {
-    margin-right: -21px; /* 20px padding + 1px border */
+    margin-right: -21px;
+    /* 20px padding + 1px border */
     margin-bottom: 20px;
     margin-left: -20px;
 }
-.nav-sidebar > li > a {
+
+.nav-sidebar>li>a {
     padding-right: 20px;
     padding-left: 20px;
 }
 
-.nav-sidebar>li.active, .nav-sidebar>li.active>a {
+.nav-sidebar>li.active,
+.nav-sidebar>li.active>a {
     background-color: #428bca;
     color: #fff;
 }
@@ -60,13 +64,11 @@
 }
 
 /*Device edition part*/
-
 .delete-device {
     margin-top: 15px;
 }
 
 /*Automation rule edition part*/
-
 .edit-automation-rule-modal {
     width: 90%;
     height: 90%;
@@ -84,10 +86,10 @@
 }
 
 .automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item {
-    list-style-type:none;
-    margin:0;
-    padding:10px 5px 0 5px;
-    position:relative
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 5px 0 5px;
+    position: relative
 }
 
 .automation-rule ul.automation-rule-first-item {
@@ -96,29 +98,30 @@
 
 .automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item::before,
 .automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item::after {
-    content:'';
-    left:-20px;
-    position:absolute;
-    right:auto
+    content: '';
+    left: -20px;
+    position: absolute;
+    right: auto
 }
+
 .automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item::before {
-    border-left:1px solid #999;
-    bottom:50px;
-    height:100%;
-    top:0;
-    width:1px
+    border-left: 1px solid #999;
+    bottom: 50px;
+    height: 100%;
+    top: 0;
+    width: 1px
 }
 
 .automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item::after {
-    border-top:1px solid #999;
-    height:20px;
-    top:25px;
-    width:25px
+    border-top: 1px solid #999;
+    height: 20px;
+    top: 25px;
+    width: 25px
 }
 
-.automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item > span {
-    display:inline-block;
-    text-decoration:none;
+.automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item>span {
+    display: inline-block;
+    text-decoration: none;
     padding: 2px 2px 2px 2px;
     border-width: 1px 1px 1px 5px;
     border-style: solid;
@@ -127,22 +130,24 @@
     border-radius: 3px;
 }
 
-.automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item > span {
+.automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item>span {
     margin-bottom: 0;
 }
 
 .automation-rule>ul.automation-rule-sub-item>li.automation-rule-sub-item::before,
 .automation-rule>ul.automation-rule-sub-item>li.automation-rule-sub-item::after {
-    border:0;
+    border: 0;
 }
+
 .automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item:last-child::before {
-    height:30px;
+    height: 30px;
 }
+
 .automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item.parent_li>span:hover,
 .automation-rule ul.automation-rule-sub-item li.automation-rule-sub-item.parent_li>span:hover+ul li span {
-    background:#eee;
-    border:1px solid #94a0b4;
-    color:#000
+    background: #eee;
+    border: 1px solid #94a0b4;
+    color: #000
 }
 
 .invalid.automation-rule-item {
@@ -153,7 +158,7 @@
     margin-right: 5px;
 }
 
-.automation-rule-item > .dropdown-menu {
+.automation-rule-item>.dropdown-menu {
     -moz-min-width: 60px;
     -ms-min-width: 60px;
     -o-min-width: 60px;
@@ -161,11 +166,11 @@
     min-width: 60px;
 }
 
-.automation-rule-item > .content {
+.automation-rule-item>.content {
     display: inline;
     color: black;
     margin-right: 5px;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 #edit-automation-rule-modal .modal-body {
@@ -196,7 +201,7 @@
     padding-bottom: 115px;
 }
 
-#automation-rule-editor > div {
+#automation-rule-editor>div {
     height: 100%;
 }
 
@@ -208,8 +213,7 @@
     height: 100%;
 }
 
-
-.blocklyValidationDropdownError{
+.blocklyValidationDropdownError {
     font-style: italic;
     font-weight: bold;
 }
@@ -222,7 +226,6 @@
 .blocklySelectedError>.blocklyPathLight {
     display: none;
 }
-
 
 .edit-automation-rule-modal-blockly {
     width: 800px;
@@ -243,18 +246,18 @@
 }
 
 .btn-editor-choice {
-    margin : 10px;
-    width : 150px;
-    height : 100px;
+    margin: 10px;
+    width: 150px;
+    height: 100px;
 }
 
 .btn-model {
-    margin : 10px;
-    width : 200px;
-    height : 150px;
+    margin: 10px;
+    width: 200px;
+    height: 150px;
 }
 
-.btn-model > div {
+.btn-model>div {
     white-space: normal;
 }
 
@@ -268,24 +271,24 @@
     border: 1px #ccc solid;
 }
 
-
 .btn-combo {
-   text-align: left;
+    text-align: left;
 }
+
 .combo-item-title {
-   font-weight: bold;
+    font-weight: bold;
 }
 
 .combo-item-title-without-description {
-   font-weight: normal;
+    font-weight: normal;
 }
 
 .combo-item-description {
-   font-style: italic;
+    font-style: italic;
 }
 
 .current-selected-item {
-   margin-right: 8px;
+    margin-right: 8px;
 }
 
 /*Menu with dropdown management*/
@@ -345,43 +348,47 @@
 }
 
 .keyword-list li {
-    -moz-min-width:200px;
-    -ms-min-width:200px;
-    -o-min-width:200px;
-    -webkit-min-width:200px;
-    min-width:200px;
+    -moz-min-width: 200px;
+    -ms-min-width: 200px;
+    -o-min-width: 200px;
+    -webkit-min-width: 200px;
+    min-width: 200px;
 }
 
 .recipient-list li {
-    -moz-min-width:300px;
-    -ms-min-width:300px;
-    -o-min-width:300px;
-    -webkit-min-width:300px;
-    min-width:300px;
+    -moz-min-width: 300px;
+    -ms-min-width: 300px;
+    -o-min-width: 300px;
+    -webkit-min-width: 300px;
+    min-width: 300px;
 }
 
 /*Install update dashboard page*/
-
 #install-update-release-choice {
     width: auto;
 }
 
 .action-progression .progress {
-    margin-bottom : 0;
+    margin-bottom: 0;
 }
 
 .with-overflow-visible {
-	overflow: visible !important;
+    overflow: visible !important;
 }
 
 .install-update-button-group {
-	margin-top : 10px;
-	margin-bottom : 20px;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
 /*! indicator to show a new update available*/
 .update-available-label {
     margin-left: 5px;
+}
+
+/* For status labels, authorize multi-lines (Override bootstrap label behavior that prevent text to wrap) */
+.label-status {
+    white-space: normal;
 }
 
 /*Yadoms updating blocking splash screen*/
@@ -408,15 +415,15 @@
 /* CSS Method for adding Font Awesome Chevron Icons */
 .accordion-title:after {
     /* symbol for "opening" panels */
-    font-family:'FontAwesome';
-    content:"\f077";
+    font-family: 'FontAwesome';
+    content: "\f077";
     float: right;
     color: inherit;
 }
 
 .panel-heading.collapsed .accordion-title:after {
     /* symbol for "collapsed" panels */
-    content:"\f078";
+    content: "\f078";
 }
 
 .dashboard-table-icon {
@@ -437,6 +444,12 @@
     padding: 0;
 }
 
+.modal-dialog .no-compatible-device {
+    color: #ce4844;
+    margin: 20px 0;
+    padding-left: 1.8em;
+}
+
 .modal-dialog {
     width: 80%;
 }
@@ -446,8 +459,20 @@
     padding-left: 1.8em;
 }
 
+.device-merge-summary-warning {
+   color: #ce4844;
+}
+
 .confirm-dialog {
     width: 50%;
+}
+
+div#please-wait-modal {
+  text-align: center;
+}
+
+div#please-wait-modal i {
+  margin: 10px;
 }
 
 .bs-callout {
@@ -472,22 +497,21 @@
 }
 
 .developerModeWarning {
-   display: none;
+    display: none;
 }
 
 .deleteAllButton {
-   margin-right: 10px;
-   margin-bottom: 5px;
+    margin-right: 10px;
+    margin-bottom: 5px;
 }
 
 .backupButton {
-   margin-right: 10px;
-   margin-bottom: 5px;
+    margin-right: 10px;
+    margin-bottom: 5px;
 }
 
 @media (max-width: 920px) {
-   .onlyLargeScreen {
-      visibility: collapse;
-   }
+    .onlyLargeScreen {
+        visibility: collapse;
+    }
 }
-

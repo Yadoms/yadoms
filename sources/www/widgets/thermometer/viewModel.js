@@ -34,7 +34,7 @@ function thermometerViewModel(){
    this.onNewAcquisition = function(keywordId, data){
       var self = this;	  
 	  
-      if (keywordId === self.widget.configuration.device.keywordId){
+      if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
 		  if ( data.value !== self.data ){ // refresh only when it's necessary.
 			 //it is the good device
           if (data.value !== "")
@@ -73,8 +73,8 @@ function thermometerViewModel(){
 		// max -> 60 of height
 		
       // Value 
-      var tempMax = self.widget.configuration.customYAxisMinMax.content.maximumValue;
-      var tempMin = self.widget.configuration.customYAxisMinMax.content.minimumValue;
+      var tempMax = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);
+      var tempMin = parseFloat(self.widget.configuration.customYAxisMinMax.content.minimumValue);
       
       // Value for the physical representation
       var posYMin = 10 * self.WidgetHeight / 99;   // the highest position
@@ -152,13 +152,13 @@ function thermometerViewModel(){
        var self = this;
 	   
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
 	   
 		//we register keyword for get last value at web client startup
-		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);	   
+		self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
 	   
       //we fill the deviceId of the battery indicator
-      self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+      self.widgetApi.configureBatteryIcon(parseInt(self.widget.configuration.device.deviceId));
       
       if (parseBool(self.widget.configuration.customYAxisMinMax.checkbox)){
          self.tempMax = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);

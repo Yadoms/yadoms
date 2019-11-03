@@ -31,18 +31,15 @@ namespace shared
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                CUpDownStop(const std::string& keywordName,
-                           const EKeywordAccessMode& accessMode);
+                           const EKeywordAccessMode& accessMode,
+                           const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CUpDownStop();
+               virtual ~CUpDownStop() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

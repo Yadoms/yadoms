@@ -14,7 +14,7 @@ namespace rfxcomMessages
       : m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
         m_rain(boost::make_shared<yApi::historization::CRain>("rain",
                                                               yApi::EKeywordAccessMode::kGet,
-                                                              yApi::historization::EMeasureType::kCumulative)),
+                                                              yApi::EMeasureType::kCumulative)),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_temperature , m_rain, m_batteryLevel , m_signalPower})
@@ -33,7 +33,7 @@ namespace rfxcomMessages
       m_temperature->set(NormalizeTemperature(rbuf.TEMP_RAIN.temperatureh, rbuf.TEMP_RAIN.temperaturel, rbuf.TEMP_RAIN.tempsign == 1));
       m_rain->set(static_cast<double>((rbuf.TEMP_RAIN.raintotal1 << 8) | rbuf.TEMP_RAIN.raintotal2) / 10.0);
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.TEMP_RAIN.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP_RAIN.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.TEMP_RAIN.rssi));
 
       buildDeviceModel();
       buildDeviceName();

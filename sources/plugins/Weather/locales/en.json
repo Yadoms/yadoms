@@ -1,0 +1,30 @@
+{
+  "name": "Weather",
+  "description": "This plugin get weather conditions (live, forecast) from the inline service OpenWeather (no sensor needed)",
+  "configurationSchema": {
+    "apiKey": {
+      "name": "API key",
+      "description": "This key is needed and provided by sign up on [OpenWeather website](https://openweathermap.org/appid) (free)"
+    },
+    "useSpecificLocation": {
+      "name": "Use a specific location",
+      "description": "Use this option if default location provided by Yadoms is not accurate",
+      "content": {
+        "longitude": {
+          "name": "Longitude"
+        },
+        "latitude": {
+          "name": "Latitude"
+        }
+      }
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "updateConfiguration": "Update configuration...",
+      "tryToJoinService": "Connecting to service...",
+      "unableToJoinService": "Unable to connect to service ({{error}}), will retry later...",
+      "maxTriesAchieved": "Unable to connect to service"
+    }
+  }
+}

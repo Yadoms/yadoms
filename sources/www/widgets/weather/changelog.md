@@ -1,3 +1,12 @@
+### 1.2.0
+* Fix keywords managment (no more compatible with WeatherUnderground plugin data)
+
+### 1.1.1
+* Better keyword selection filtering
+
+### 1.1.0
+* New feature #553 : use of full compliant Json
+
 ### 1.0.5
 * Fix #489 - some icons are missing
 

@@ -4,7 +4,7 @@
 #include "IRunningInformation.h"
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
 #include "dateTime/TimeZoneDatabase.h"
-#include "shared/plugin/yPluginApi/historization/MeasureType.h"
+#include "shared/plugin/yPluginApi/MeasureType.h"
 
 namespace web
 {
@@ -40,9 +40,8 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getNetworkInterfaces(const bool includeLoopback) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> platformIs(const std::string& refPlatform) const;
             static void addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
-                                                           const std::vector<shared::plugin::yPluginApi::historization::EMeasureType>&
-                                                              acceptedMeasureTypes = std::vector<shared::plugin::yPluginApi::historization::
-                                                                 EMeasureType>());
+                                                           const std::vector<shared::plugin::yPluginApi::EMeasureType>&
+                                                              acceptedMeasureTypes = std::vector<shared::plugin::yPluginApi::EMeasureType>());
             static const shared::CDataContainer& getVirtualDevicesSupportedCapacities();
             boost::shared_ptr<shared::serialization::IDataSerializable> getSupportedTimezones() const;
 

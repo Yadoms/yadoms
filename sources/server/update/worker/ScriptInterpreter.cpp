@@ -50,7 +50,7 @@ namespace update
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, std::string(), callbackData);
                auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
                if (automationRuleManager)
-                  automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
+                  automationRuleManager->getLoadedInterpreters(); //as seen in comments, refresh interpreters list
 
                YADOMS_LOG(information) << "ScriptInterpreter installed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, std::string(),
@@ -129,7 +129,7 @@ namespace update
                YADOMS_LOG(information) << "Refresh scriptInterpreter list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, std::string(), callbackData);
                if (automationRuleManager)
-                  automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
+                  automationRuleManager->getLoadedInterpreters(); //as seen in comments, refresh interpreters list
 
 
                YADOMS_LOG(information) << "Start instances";
@@ -204,9 +204,8 @@ namespace update
             /////////////////////////////////////////////
             //3. update scriptInterpreter manager
             /////////////////////////////////////////////
-            //TODO : update scriptInterpreter list
             if (automationRuleManager)
-               automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
+               automationRuleManager->getLoadedInterpreters(); //as seen in comments, refresh interpreters list
          }
          catch (std::exception& ex)
          {

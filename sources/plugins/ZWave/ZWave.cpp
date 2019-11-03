@@ -414,7 +414,7 @@ void CZWave::onUpdateDeviceInfo(boost::shared_ptr<yApi::IYPluginApi> api)
 
       shared::CDataContainer details = api->getDeviceDetails(deviceName);
       shared::CDataContainer newDetails = deviceData.get<shared::CDataContainer>("details");
-      auto allprops = newDetails.getAsMap();
+      auto allprops = newDetails.getAsMap<std::string>();
       for (auto i = allprops.begin(); i != allprops.end(); ++i)
       {
          if (!i->second.empty())
@@ -445,7 +445,7 @@ void CZWave::onUpdateDeviceState(boost::shared_ptr<yApi::IYPluginApi> api)
       shared::plugin::yPluginApi::historization::EDeviceState deviceState = deviceData.getWithDefault<shared::plugin::yPluginApi::historization::EDeviceState>("state", shared::plugin::yPluginApi::historization::EDeviceState::kUnknown);
       std::string deviceCustomMessage = deviceData.getWithDefault<std::string>("customMessage", "");
       shared::CDataContainer deviceCustomMessageDataParams = deviceData.getWithDefault<shared::CDataContainer>("customMessageDataParams", shared::CDataContainer::EmptyContainer);
-      api->updateDeviceState(deviceName, deviceState, deviceCustomMessage, deviceCustomMessageDataParams.getAsMap());
+      api->updateDeviceState(deviceName, deviceState, deviceCustomMessage, deviceCustomMessageDataParams.getAsMap<std::string>());
    }
    catch (shared::exception::CException& ex)
    {

@@ -74,7 +74,7 @@ namespace web
                return CResult::GenerateError("unsupported binding query : " + query);
             }
 
-            return CResult::GenerateError("Cannot retreive url parameters");
+            return CResult::GenerateError("Cannot retrieve url parameters");
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSerialPorts() const
@@ -98,7 +98,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving all serial ports");
+               return CResult::GenerateError("unknown exception in retrieving all serial ports");
             }
          }
 
@@ -123,7 +123,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving all serial ports");
+               return CResult::GenerateError("unknown exception in retrieving all serial ports");
             }
          }
 
@@ -150,7 +150,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving system information");
+               return CResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -169,7 +169,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving system information");
+               return CResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -189,7 +189,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving system information");
+               return CResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -207,12 +207,12 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving system information");
+               return CResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
          void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
-                                                          const std::vector<shared::plugin::yPluginApi::historization::EMeasureType>&
+                                                          const std::vector<shared::plugin::yPluginApi::EMeasureType>&
                                                           acceptedMeasureTypes)
          {
             auto capacityContainer = boost::make_shared<shared::CDataContainer>();
@@ -223,8 +223,9 @@ namespace web
             if (!acceptedMeasureTypes.empty())
             {
                std::vector<std::string> strAcceptedMeasureTypes;
-               for (const auto& acceptedMeasureType : acceptedMeasureTypes)
-                  strAcceptedMeasureTypes.push_back(acceptedMeasureType.toString());
+			   std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(), std::back_inserter(strAcceptedMeasureTypes),
+				   [](const auto &acceptedMeasureType) -> std::string { return acceptedMeasureType.toString(); });
+
                capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
             }
 
@@ -242,11 +243,11 @@ namespace web
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGB());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGBW());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter(),
-                                                  std::vector<shared::plugin::yPluginApi::historization::EMeasureType>
+                                                  std::vector<shared::plugin::yPluginApi::EMeasureType>
                                                   {
-                                                     shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
-                                                     shared::plugin::yPluginApi::historization::EMeasureType::kIncrement,
-                                                     shared::plugin::yPluginApi::historization::EMeasureType::kCumulative
+                                                     shared::plugin::yPluginApi::EMeasureType::kAbsolute,
+                                                     shared::plugin::yPluginApi::EMeasureType::kIncrement,
+                                                     shared::plugin::yPluginApi::EMeasureType::kCumulative
                                                   });
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Current());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Curtain());
@@ -255,11 +256,11 @@ namespace web
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Distance());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Duration());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Energy(),
-                                                  std::vector<shared::plugin::yPluginApi::historization::EMeasureType>
+                                                  std::vector<shared::plugin::yPluginApi::EMeasureType>
                                                   {
-                                                     shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
-                                                     shared::plugin::yPluginApi::historization::EMeasureType::kIncrement,
-                                                     shared::plugin::yPluginApi::historization::EMeasureType::kCumulative
+                                                     shared::plugin::yPluginApi::EMeasureType::kAbsolute,
+                                                     shared::plugin::yPluginApi::EMeasureType::kIncrement,
+                                                     shared::plugin::yPluginApi::EMeasureType::kCumulative
                                                   });
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Event());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Frequency());
@@ -270,10 +271,10 @@ namespace web
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::PowerFactor());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Pressure());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rain(),
-                                                  std::vector<shared::plugin::yPluginApi::historization::EMeasureType>
+                                                  std::vector<shared::plugin::yPluginApi::EMeasureType>
                                                   {
-                                                     shared::plugin::yPluginApi::historization::EMeasureType::kIncrement,
-                                                     shared::plugin::yPluginApi::historization::EMeasureType::kCumulative
+                                                     shared::plugin::yPluginApi::EMeasureType::kIncrement,
+                                                     shared::plugin::yPluginApi::EMeasureType::kCumulative
                                                   });
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::RainRate());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rssi());
@@ -310,7 +311,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving all serial ports");
+               return CResult::GenerateError("unknown exception in retrieving all serial ports");
             }
          }
       } //namespace service

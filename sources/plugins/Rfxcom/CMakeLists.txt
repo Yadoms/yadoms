@@ -41,6 +41,22 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Fan.h
    rfxcomMessages/Fan.cpp
+   rfxcomMessages/FanFalmec.h
+   rfxcomMessages/FanFalmec.cpp
+   rfxcomMessages/FanFt1211R.h
+   rfxcomMessages/FanFt1211R.cpp
+   rfxcomMessages/FanItho.h
+   rfxcomMessages/FanItho.cpp
+   rfxcomMessages/FanLucciAirDc.h
+   rfxcomMessages/FanLucciAirDc.cpp
+   rfxcomMessages/FanLucciAirDc2.h
+   rfxcomMessages/FanLucciAirDc2.cpp
+   rfxcomMessages/FanLucciAirWestinghouseCasafan.h
+   rfxcomMessages/FanLucciAirWestinghouseCasafan.cpp
+   rfxcomMessages/FanSeavTXS4.h
+   rfxcomMessages/FanSeavTXS4.cpp
+   rfxcomMessages/FanSiemensSF01.h
+   rfxcomMessages/FanSiemensSF01.cpp
    rfxcomMessages/FS20.h
    rfxcomMessages/FS20.cpp
    rfxcomMessages/Energy.h
@@ -51,6 +67,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Humidity.cpp
    rfxcomMessages/ICartelectronicSubtype.h
    rfxcomMessages/IChimeSubtype.h
+   rfxcomMessages/IFanSubtype.h
    rfxcomMessages/ILighting2Subtype.h
    rfxcomMessages/ILighting5Subtype.h
    rfxcomMessages/IRemoteSubtype.h
@@ -58,6 +75,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/ISecurity2Subtype.h
    rfxcomMessages/IThermostat1Subtype.h
    rfxcomMessages/IThermostat3Subtype.h
+   rfxcomMessages/IWeatherSubtype.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
    rfxcomMessages/Lighting2.h
@@ -104,6 +122,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/RFXSensor.cpp
    rfxcomMessages/Rfy.h
    rfxcomMessages/Rfy.cpp
+   rfxcomMessages/Funkbus.h
+   rfxcomMessages/Funkbus.cpp
    rfxcomMessages/Security1.h
    rfxcomMessages/Security1.cpp
    rfxcomMessages/Security1KD101_SA30.h
@@ -124,6 +144,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Security2.cpp
    rfxcomMessages/Security2ClassicKeyLoq.h
    rfxcomMessages/Security2ClassicKeyLoq.cpp
+   rfxcomMessages/Solar.h
+   rfxcomMessages/Solar.cpp
    rfxcomMessages/Thermostat1.h
    rfxcomMessages/Thermostat1.cpp
    rfxcomMessages/Thermostat1Digimax.h
@@ -136,8 +158,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Thermostat3.cpp
    rfxcomMessages/Thermostat3MertikG6RH4S.h
    rfxcomMessages/Thermostat3MertikG6RH4S.cpp
-   rfxcomMessages/Thermostat3MertikG6RH4T1.h
-   rfxcomMessages/Thermostat3MertikG6RH4T1.cpp
+   rfxcomMessages/Thermostat3MertikG6RHxT1.h
+   rfxcomMessages/Thermostat3MertikG6RHxT1.cpp
    rfxcomMessages/Thermostat3MertikG6RH4TB.h
    rfxcomMessages/Thermostat3MertikG6RH4TB.cpp
    rfxcomMessages/Thermostat3MertikG6RH4TD.h
@@ -156,6 +178,12 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/TransceiverStatus.cpp
    rfxcomMessages/UV.h
    rfxcomMessages/UV.cpp
+   rfxcomMessages/Weather.h
+   rfxcomMessages/Weather.cpp
+   rfxcomMessages/Weather1.h
+   rfxcomMessages/Weather1.cpp
+   rfxcomMessages/Weather2.h
+   rfxcomMessages/Weather2.cpp
    rfxcomMessages/Weight.h
    rfxcomMessages/Weight.cpp
    rfxcomMessages/Wind.h

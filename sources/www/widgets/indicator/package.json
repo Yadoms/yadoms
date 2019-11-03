@@ -1,14 +1,14 @@
 {
   "type": "indicator",
-  "version": "1.0.4-beta.1",
+  "version": "1.1.1",
   "author": "Nicolas HILAIRE",
   "url": "https://github.com/Yadoms/yadoms/wiki/indicator",
   "credits": "",
   "dependencies": {
-     "yadoms" : {
-       "minimumVersion" : "2.2.0-beta.1"
-     }
-  },  
+    "yadoms": {
+      "minimumVersion": "2.4.0-beta.1"
+    }
+  },
   "dimensions": {
     "min": {
       "x": 1,
@@ -27,8 +27,7 @@
   "configurationSchema": {
     "device": {
       "type": "keyword",
-      "expectedCapacity": [ "switch", "dimmable" ],
-      "expectedKeywordAccess": "get"
+      "expectedCapacity": ["switch", "dimmable"]
     },
     "icon": {
       "type": "icon"

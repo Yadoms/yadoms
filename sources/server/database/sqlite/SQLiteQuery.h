@@ -25,6 +25,7 @@ namespace database
 
          // Overriding common::CQuery
          std::string functionDateToIsoString(const std::string& sqlPart) override;
+         std::string functionSubstring(const std::string& sqlPart, int offset, int count) override;
          // [END] - Overriding common::CQuery 
       };
    } //namespace sqlite

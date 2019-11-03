@@ -1,5 +1,7 @@
 ### 1.1.0-beta.1
 * newFeature #469 - Read units when reading analog input for WES v2
+### 1.1.0
+* New feature #553 : use of full compliant Json
 
 ### 1.0.1
 * change CGX files for WES v1 and v2 with last firmware

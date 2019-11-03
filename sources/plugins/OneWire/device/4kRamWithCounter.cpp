@@ -10,8 +10,8 @@ namespace device
                                         boost::shared_ptr<ioInterfaces::IMultiCounter> io)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2423")),
       m_io(io),
-      m_countA(boost::make_shared<yApi::historization::CCounter>("counter_A", yApi::EKeywordAccessMode::kGet, yApi::historization::EMeasureType::kCumulative)),
-      m_countB(boost::make_shared<yApi::historization::CCounter>("counter_B", yApi::EKeywordAccessMode::kGet, yApi::historization::EMeasureType::kCumulative)),
+      m_countA(boost::make_shared<yApi::historization::CCounter>("counter_A", yApi::EKeywordAccessMode::kGet, yApi::EMeasureType::kCumulative)),
+      m_countB(boost::make_shared<yApi::historization::CCounter>("counter_B", yApi::EKeywordAccessMode::kGet, yApi::EMeasureType::kCumulative)),
       m_keywords({ m_countA, m_countB })
    {
       BOOST_ASSERT_MSG(m_identification->family() == k4kRamWithCounter, "Invalid family number");

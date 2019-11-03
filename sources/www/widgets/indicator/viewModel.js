@@ -59,7 +59,7 @@ widgetViewModelCtor = function indicatorViewModel() {
                         self.iconColor(self.deactivatedColor);
                     }
                     //Send the command
-                    KeywordManager.sendCommand(self.widget.configuration.device.keywordId, self.command().toString());
+                    KeywordManager.sendCommand(parseInt(self.widget.configuration.device.keywordId), self.command().toString());
                 }, 500);
             }
         }
@@ -68,9 +68,9 @@ widgetViewModelCtor = function indicatorViewModel() {
     this.configurationChanged = function () {
         var self = this;
 
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);		
-		  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
+		  self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
+        self.widgetApi.configureBatteryIcon(parseInt(self.widget.configuration.device.deviceId));
         self.widgetApi.registerAdditionalInformation(["capacity", "accessMode"]);
 
         try {
@@ -91,8 +91,8 @@ widgetViewModelCtor = function indicatorViewModel() {
         var defaultDeactivatedColor = "#777";
 
         try {
-            self.activatedColor = self.widget.configuration.customColors.checkbox ? self.widget.configuration.customColors.content.activated : defaultActivatedColor;
-            self.deactivatedColor = self.widget.configuration.customColors.checkbox ? self.widget.configuration.customColors.content.deactivated : defaultDeactivatedColor;
+            self.activatedColor = parseBool(self.widget.configuration.customColors.checkbox) ? self.widget.configuration.customColors.content.activated : defaultActivatedColor;
+            self.deactivatedColor = parseBool(self.widget.configuration.customColors.checkbox) ? self.widget.configuration.customColors.content.deactivated : defaultDeactivatedColor;
         } catch (err) {
             self.activatedColor = defaultActivatedColor;
             self.deactivatedColor = defaultDeactivatedColor;
@@ -107,7 +107,7 @@ widgetViewModelCtor = function indicatorViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
         try {
-            if (keywordId === self.widget.configuration.device.keywordId) {
+            if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
                if (!isNullOrUndefinedOrEmpty(data.capacityName))
                   self.capacity[index+1] = data.capacityName;
           

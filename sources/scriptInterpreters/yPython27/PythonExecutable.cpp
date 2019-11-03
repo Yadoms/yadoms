@@ -65,7 +65,10 @@ bool CPythonExecutable::isPythonIn(const boost::filesystem::path& directory,
                                    boost::filesystem::path& pythonDirectory,
                                    bool& inSystemPath)
 {
-   if (!readPythonVersion(directory).empty())
+   static const std::string ExpectedVersionString("Python 2.7");
+   const std::string version = readPythonVersion(directory);
+	
+   if (!version.empty() && version.find(ExpectedVersionString) != std::string::npos)
    {
       YADOMS_LOG(information) << "Python executable found in " << (directory.empty() ? "the system path" : directory.string());
       pythonDirectory = directory;

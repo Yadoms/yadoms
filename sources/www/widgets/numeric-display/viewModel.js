@@ -7,12 +7,11 @@ widgetViewModelCtor =
 function numericDisplayViewModel() {
    
     this.precision = 1;
-   
-    //observable data
     this.data = ko.observable("-");
     this.rawUnit = "";
     this.unit = ko.observable("");
     this.shouldBeVisible = ko.observable(false);
+    this.automaticScale = ko.observable(true);
     this.lastReceiveDate = ko.observable("");
     this.capacity = "";
     //
@@ -38,7 +37,8 @@ function numericDisplayViewModel() {
          return;
       }
       
-      var d = moment.duration(value);
+      self.widgetApi.find(".unit").addClass("hidden");
+      var d = moment.duration(parseFloat(value), "seconds");
       if (d.asSeconds() < 1) {  // Display in millisecond
          self.data(d.milliseconds().toString() + " ms");
       } else if (d.asSeconds() < 30) { // Display in seconds + milliseconds
@@ -61,6 +61,18 @@ function numericDisplayViewModel() {
           self.shouldBeVisible(false);
           console.warn (error);
        }
+       
+       try{
+          if (!isNullOrUndefined(self.widget.configuration.automaticScale)){
+             self.automaticScale(parseBool(self.widget.configuration.automaticScale));
+          } else{
+             self.automaticScale(true);
+          }
+       }
+       catch(error){
+          self.automaticScale(true);
+          console.warn (error);
+       }       
         
        if (!isNullOrUndefined(self.widget.configuration.precision))
           self.precision = parseInt(self.widget.configuration.precision, 10);
@@ -68,13 +80,13 @@ function numericDisplayViewModel() {
           self.precision = 1;
 	   
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
 	   
 		  //we register keyword for get last value at web client startup
-        self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);  	   
+        self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
         
         //we fill the deviceId of the battery indicator
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.configureBatteryIcon(parseInt(self.widget.configuration.device.deviceId));
         self.widgetApi.registerAdditionalInformation(["unit", "capacity"]);
     }
 
@@ -85,7 +97,7 @@ function numericDisplayViewModel() {
     */
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
-        if (keywordId === self.widget.configuration.device.keywordId) {
+        if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
            // Receive at startup data.unit and data.capacity
            if (!isNullOrUndefinedOrEmpty(data.unit))
               self.rawUnit = data.unit;
@@ -105,10 +117,15 @@ function numericDisplayViewModel() {
                   self.displayDuration(data.value);
                }else {
                   var temp = parseFloat(data.value);
-                  adaptValueAndUnit(temp, self.rawUnit, function(newValue, newUnit) {
-                     self.unit($.t(newUnit));
-                     self.data(newValue.toFixed(self.precision).toString());
-                  });
+                  if (self.automaticScale()){
+                     adaptValueAndUnit(temp, self.rawUnit, function(newValue, newUnit) {
+                        self.unit($.t(newUnit));
+                        self.data(newValue.toFixed(self.precision).toString());
+                     });
+                  }else{
+                     self.unit($.t(self.rawUnit));
+                     self.data(temp.toFixed(self.precision).toString());
+                  }
                }
             }else 
                self.data("-");

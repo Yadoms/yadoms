@@ -13,12 +13,7 @@ namespace shared
       class CException : public std::exception
       {
       protected:
-         //--------------------------------------------------------------
-         /// \brief	                        Default constructor (only internal usage)
-         //--------------------------------------------------------------
-         CException()
-         {
-         }
+         CException() = default;
 
       public:
          //--------------------------------------------------------------
@@ -26,9 +21,8 @@ namespace shared
          /// \param[in]  message             Exception message
          //--------------------------------------------------------------
          explicit CException(const char* message)
+            :m_message(message)
          {
-            if (message != NULL)
-               m_message = std::string(message);
          }
 
          explicit CException(const std::string& message)
@@ -36,24 +30,17 @@ namespace shared
          {
          }
 
-         //--------------------------------------------------------------
-         /// \brief      Destructor
-         //--------------------------------------------------------------
-         virtual ~CException() throw()
-         {
-         }
+         virtual ~CException() noexcept = default;
 
          //--------------------------------------------------------------
          /// \brief	    Build full message explaining exception reason
          /// \return     message explaining exception reason
          //--------------------------------------------------------------
-         virtual char const* what() const throw() override { return m_message.c_str(); }
-
+         const char *what() const noexcept override {
+            return m_message.what();
+         }
       protected:
-         //--------------------------------------------------------------
-         /// \brief      Message container
-         //--------------------------------------------------------------
-         std::string m_message;
+         std::runtime_error m_message;
       };
    }
 } // namespace shared::exception

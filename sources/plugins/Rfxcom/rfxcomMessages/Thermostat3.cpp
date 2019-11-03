@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Thermostat3.h"
-#include "Thermostat3MertikG6RH4T1.h"
+#include "Thermostat3MertikG6RHxT1.h"
 #include "Thermostat3MertikG6RH4TB.h"
 #include "Thermostat3MertikG6RH4TD.h"
 #include "Thermostat3MertikG6RH4S.h"
@@ -19,7 +19,7 @@ namespace rfxcomMessages
    {
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
       m_unitCode = deviceDetails.get<unsigned int>("unitCode");
 
       Init(api);
@@ -38,7 +38,7 @@ namespace rfxcomMessages
 
       m_subType = static_cast<unsigned char>(subType);
 
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode");
+      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -63,7 +63,7 @@ namespace rfxcomMessages
       m_subType = rbuf.THERMOSTAT3.subtype;
       m_unitCode = rbuf.THERMOSTAT3.unitcode1 << 16 | rbuf.THERMOSTAT3.unitcode2 << 8 | rbuf.THERMOSTAT3.unitcode3;
       m_subTypeManager->setFromProtocolState(rbuf.THERMOSTAT3.cmnd);
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT3.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.THERMOSTAT3.rssi));
 
       Init(api);
    }
@@ -86,7 +86,9 @@ namespace rfxcomMessages
    {
       switch (m_subType)
       {
-      case sTypeMertikG6RH4T1: m_subTypeManager = boost::make_shared<CThermostat3MertikG6RH4T1>();
+      case sTypeMertikG6RH4T1:
+      case sTypeMertikG6RH3T1:
+         m_subTypeManager = boost::make_shared<CThermostat3MertikG6RHxT1>(m_subType);
          break;
       case sTypeMertikG6RH4TB: m_subTypeManager = boost::make_shared<CThermostat3MertikG6RH4TB>();
          break;

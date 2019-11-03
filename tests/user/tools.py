@@ -70,3 +70,13 @@ def saveContext(browser):
       shutil.copyfile(yadomsServer.databasePath(), os.path.join(contexteDirectory, os.path.basename(yadomsServer.databasePath())))
    if os.path.exists(yadomsServer.scriptsPath()):
       shutil.copytree(yadomsServer.scriptsPath(), os.path.join(contexteDirectory))
+
+def highlight(self, element):
+    """Highlights (blinks) a Selenium Webdriver element"""
+    def apply_style(s):
+        self.browser.execute_script("arguments[0].setAttribute('style', arguments[1]);",
+                              element, s)
+    original_style = element.get_attribute('style')
+    apply_style("background: yellow; border: 2px solid red;")
+    time.sleep(10)
+    apply_style(original_style)

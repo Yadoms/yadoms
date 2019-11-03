@@ -19,10 +19,6 @@ namespace pluginSystem
       {
       }
 
-      CInstance::~CInstance()
-      {
-      }
-
       void CInstance::requestStop()
       {
          m_thread.interrupt();
@@ -182,7 +178,7 @@ namespace pluginSystem
          }
          catch (shared::exception::CException& ex)
          {
-            YADOMS_LOG(fatal) << "The Yadoms Sytem plugin fails. Unknown exception : " << ex.what();
+            YADOMS_LOG(fatal) << "The Yadoms System plugin fails. Unknown exception : " << ex.what();
          }
       }
 
@@ -195,7 +191,6 @@ namespace pluginSystem
          try
          {
             const auto isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
-            boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
             if (isStandardCapacity)
                createStandardCapacityDevice(api,
                                             data.getDeviceName(),
@@ -234,7 +229,7 @@ namespace pluginSystem
          else if (selectedCapacity == yApi::CStandardCapacities::Counter().getName())
             keyword = boost::make_shared<yApi::historization::CCounter>("counter",
                yApi::EKeywordAccessMode::kGetSet,
-               yApi::historization::EMeasureType(standardCapacity.get<std::string>("content." + yApi::CStandardCapacities::Counter().getName() + ".content.measureType")));
+               yApi::EMeasureType(standardCapacity.get<std::string>("content." + yApi::CStandardCapacities::Counter().getName() + ".content.measureType")));
          else if (selectedCapacity == yApi::CStandardCapacities::Current().getName())
             keyword = boost::make_shared<yApi::historization::CCurrent>("current", yApi::EKeywordAccessMode::kGetSet);
          else if (selectedCapacity == yApi::CStandardCapacities::Curtain().getName())
@@ -250,7 +245,7 @@ namespace pluginSystem
          else if (selectedCapacity == yApi::CStandardCapacities::Energy().getName())
             keyword = boost::make_shared<yApi::historization::CEnergy>("energy",
                yApi::EKeywordAccessMode::kGetSet,
-               yApi::historization::EMeasureType(standardCapacity.get<std::string>("content." + yApi::CStandardCapacities::Energy().getName() + ".content.measureType")));
+               yApi::EMeasureType(standardCapacity.get<std::string>("content." + yApi::CStandardCapacities::Energy().getName() + ".content.measureType")));
          else if (selectedCapacity == yApi::CStandardCapacities::Event().getName())
             keyword = boost::make_shared<yApi::historization::CEvent>("event", yApi::EKeywordAccessMode::kGetSet);
          else if (selectedCapacity == yApi::CStandardCapacities::Frequency().getName())
@@ -270,7 +265,7 @@ namespace pluginSystem
          else if (selectedCapacity == yApi::CStandardCapacities::Rain().getName())
             keyword = boost::make_shared<yApi::historization::CRain>("rain",
                yApi::EKeywordAccessMode::kGetSet,
-               yApi::historization::EMeasureType(standardCapacity.get<std::string>("content." + yApi::CStandardCapacities::Rain().getName() + ".content.measureType")));
+               yApi::EMeasureType(standardCapacity.get<std::string>("content." + yApi::CStandardCapacities::Rain().getName() + ".content.measureType")));
          else if (selectedCapacity == yApi::CStandardCapacities::RainRate().getName())
             keyword = boost::make_shared<yApi::historization::CRainRate>("rainRate", yApi::EKeywordAccessMode::kGetSet);
          else if (selectedCapacity == yApi::CStandardCapacities::Rssi().getName())

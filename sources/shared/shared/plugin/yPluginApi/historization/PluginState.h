@@ -38,10 +38,7 @@ namespace shared
                explicit CPluginState(const std::string& keywordName,
                                      const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CPluginState();
+               virtual ~CPluginState() = default;
             };
          }
       }

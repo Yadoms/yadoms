@@ -58,8 +58,8 @@ WidgetManager.getFromGridElement = function ($gridElement) {
     assert($gridElement !== undefined, "$gridElement must be defined");
 
     if ($gridElement) {
-        var pageId = $gridElement.attr("page-id");
-        var widgetId = $gridElement.attr("widget-id");
+        var pageId = parseInt($gridElement.attr("page-id"));
+        var widgetId = parseInt($gridElement.attr("widget-id"));
         return WidgetManager.get(pageId, widgetId);
     }
     return null;
@@ -240,26 +240,28 @@ WidgetManager.updateToServer = function (widget) {
 WidgetManager.updateWidgetConfiguration_ = function (widget) {
     var d = new $.Deferred();
     try {
-        //Update the widget title if displayed
-        if (widget.displayTitle)
-            widget.$gridWidget.find('div.panel-widget-title').text(widget.title);
-        else
-            widget.$gridWidget.find('div.panel-widget-title').text("");
         //we clear the listened device list before call the configuration
         widget.listenedKeywords = [];
-        widget.getlastValue = [];
+        widget.keywordsToGetlastValue = [];
         // Update widget specific values
         var defferedResult;
         widget.viewModel.widgetApi.setState(widgetStateEnum.ConfigurationChanged);
         if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
-            var defferedResult = widget.viewModel.configurationChanged();
+            defferedResult = widget.viewModel.configurationChanged();
         }
+       
+        //Update the widget title if displayed
+        if (widget.displayTitle)
+            widget.$gridWidget.find('div.panel-widget-title').text(widget.title);
+        else
+            widget.$gridWidget.find('div.panel-widget-title').text("");        
+        
         //we manage answer if it is a promise or not
         defferedResult = defferedResult || new $.Deferred().resolve();
         defferedResult
         .always(function () {
-               // fit the new text to the container
-               widget.viewModel.widgetApi.fitText();
+           // fit the new text to the container
+           widget.viewModel.widgetApi.fitText();
                
            //we manage the toolbar api specific icons
            widget.viewModel.widgetApi.manageBatteryConfiguration()
@@ -499,8 +501,8 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
     //we listen click event on configure click
     widget.$gridWidget.find('div.btn-configure-widget').bind('click', function (e) {
         var widgetDomElement = $(e.currentTarget).parents(".widget");
-        var pageId = widgetDomElement.attr("page-id");
-        var widgetId = widgetDomElement.attr("widget-id");
+        var pageId = parseInt(widgetDomElement.attr("page-id"));
+        var widgetId = parseInt(widgetDomElement.attr("widget-id"));
         Yadoms.modals.widgetConfiguration.load(function (pageId, widgetId) {
             return function () {
                 var widgetToConfigure = WidgetManager.get(pageId, widgetId);
@@ -514,8 +516,8 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
     //we listen click event on delete click
     widget.$gridWidget.find('div.btn-delete-widget').bind('click', function (e) {
         var widgetDomElement = $(e.currentTarget).parents(".widget");
-        var pageId = widgetDomElement.attr("page-id");
-        var widgetId = widgetDomElement.attr("widget-id");
+        var pageId = parseInt(widgetDomElement.attr("page-id"));
+        var widgetId = parseInt(widgetDomElement.attr("widget-id"));
         Yadoms.modals.widgetDelete.load(function () {
             Yadoms.showDeleteWidgetModal(pageId, widgetId);
         });

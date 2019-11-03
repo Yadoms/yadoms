@@ -1,20 +1,20 @@
 <script type="text/html" id="switch-template">
     <div class="main">
         <div class="action btn-group btn-toggle hidden" style="padding-top: 17px; padding-bottom: 17px" data-bind="css: { hidden: kind() != 'horizontalInverter'}">
-            <button class="btn btn-primary active" data-bind="disable: readonly, css: { active: command() == 0, 'btn-primary': command() == 0, 'btn-default': command() != 0 }, event: {click: function() {commandClick(0)}}">0</button>
-            <button class="btn btn-default" data-bind="disable: readonly, css: { active: command() == 0, 'btn-primary': command() == 1, 'btn-default': command() != 1 }, event: {click: function() {commandClick(1)}}">1</button>
+            <button class="btn btn-primary active" data-bind="disable: readonly, css: { active: command() == 'off', 'btn-primary': command() == 'off', 'btn-default': command() != 'off' }, event: {click: function() {commandClick('off')}}">0</button>
+            <button class="btn btn-default" data-bind="disable: readonly, css: { active: command() == 'on', 'btn-primary': command() == 'on', 'btn-default': command() != 'on' }, event: {click: function() {commandClick('on')}}">1</button>
         </div>
         <div class="action btn-group-vertical btn-toggle hidden" data-bind="css: { hidden: kind() != 'verticalInverter'}">
-            <button class="btn btn-default" data-bind="disable: readonly, css: {active: command() == 1, 'btn-primary': command() == 1, 'btn-default': command() != 1 }, event: {click: function() {commandClick(1)}}"><span class="glyphicon glyphicon-chevron-up"></span></button>
-            <button class="btn btn-primary active" data-bind="disable: readonly, css: {active: command() == 0, 'btn-primary': command() == 0, 'btn-default': command() != 0 }, event: {click: function() {commandClick(0)}}"><span class="glyphicon glyphicon-chevron-down"></span></button>
+            <button class="btn btn-default" data-bind="disable: readonly, css: {active: command() == 'on', 'btn-primary': command() == 'on', 'btn-default': command() != 'on' }, event: {click: function() {commandClick('on')}}"><span class="glyphicon glyphicon-chevron-up"></span></button>
+            <button class="btn btn-primary active" data-bind="disable: readonly, css: {active: command() == 'off', 'btn-primary': command() == 'off', 'btn-default': command() != 'off' }, event: {click: function() {commandClick('off')}}"><span class="glyphicon glyphicon-chevron-down"></span></button>
         </div>
         <div class="action btn-group btn-toggle hidden" style="padding-top: 11px;" data-bind="css: { hidden: kind() != 'pushButton'}">
-            <button class="btn btn-lg btn-primary" data-bind="disable: readonly, event: {click: function() {commandClick(1)}}">
+            <button class="btn btn-lg btn-primary" data-bind="disable: readonly, event: {click: function() {commandClick('on')}}">
                 <span class="" data-bind="attr: {class: icon()}"></span>
             </button>
         </div>
         <div class="toggle-action checkbox hidden" data-bind="disable: readonly, css: { hidden: kind() != 'toggle'}">
-           <input type="checkbox" data-toggle="toggle" data-bind="disable: readonly, checked: command()==1, event: {change: function() {if (!update() && kind() == 'toggle') toggleCommand()}}" data-width="75" data-height="50">
+           <input type="checkbox" data-toggle="toggle" data-bind="disable: readonly, checked: command()!='off', event: {change: function() {if (!update() && kind() == 'toggle') toggleCommand()}}" data-width="75" data-height="50">
         </div>        
     </div>
 </script>

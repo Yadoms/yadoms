@@ -66,6 +66,18 @@ namespace i18n
       static std::string BackupClean;
       static std::string BackupSuccess;
 
+      static std::string PackLogsPrepare;
+      static std::string PackLogsCopyFile;
+      static std::string PackLogsCompress;
+      static std::string PackLogsClean;
+      static std::string PackLogsSuccess;
+
+      static std::string ExportDataPrepare;
+      static std::string ExportDataCreateFile;
+      static std::string ExportDataCompress;
+      static std::string ExportDataClean;
+      static std::string ExportDataSuccess;
+
       static std::string ExtraQuerySuccess;
       static std::string ExtraQueryFail;
 

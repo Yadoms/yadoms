@@ -10,6 +10,7 @@
 #include <Poco/Net/NetworkInterface.h>
 #include <shared/Log.h>
 #include <shared/plugin/yPluginApi/configuration/File.h>
+#include "FakeNoHistorySensor.h"
 
 // Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -57,6 +58,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    CFakeDynamicallyConfigurableDevice dynamicallyConfigurableDevice("dynamicallyConfigurableDevice",
                                                                     shared::CDataContainer());
    CFakeCurtain fakeCurtain("fakeCurtain");
+   CFakeNoHistorySensor noHistorySensor("noHistorySensor");
 
 
    // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
@@ -74,6 +76,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                       dynamicallyConfigurableDevice.getModel(),
                       dynamicallyConfigurableDevice.historizers());
    fakeCurtain.declareDevice(api);
+   noHistorySensor.declareDevice(api);
 
    // Timer used to send fake sensor states periodically
    api->getEventHandler().createTimer(kSendSensorsStateTimerEventId,
@@ -94,7 +97,8 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          devName != fakeDimmableReadWriteSwitch.getDeviceName() &&
          devName != fakeController.getDeviceName() &&
          devName != configurableDevice.getDeviceName() &&
-         devName != fakeCurtain.getDeviceName())
+         devName != fakeCurtain.getDeviceName() &&
+         devName != noHistorySensor.getDeviceName())
       {
          const auto type = api->getDeviceType(devName);
          if (type == CFakeAnotherConfigurableDevice::getType())
@@ -426,6 +430,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             fakeController.read();
             configurableDevice.read();
             fakeCurtain.read();
+            noHistorySensor.read();
 
             YADOMS_LOG(information) << "Send the periodically sensors state...";
             fakeSensor1.historizeData(api);
@@ -436,6 +441,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             fakeController.historizeData(api);
             configurableDevice.historizeData(api);
             fakeCurtain.historizeData(api);
+            noHistorySensor.historizeData(api);
 
             for (const auto& device : m_manuallyCreatedStaticConfDevices)
             {
