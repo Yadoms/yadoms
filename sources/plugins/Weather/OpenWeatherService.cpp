@@ -137,6 +137,10 @@ void COpenWeatherService::processLiveWeatherAnswer(const shared::CDataContainer&
          weatherDevice.setWindSpeed(weatherData.get<double>("wind.speed"));
       if (weatherData.containsValue("wind.deg"))
          weatherDevice.setWindDirection(weatherData.get<int>("wind.deg"));
+      if (weatherData.containsValue("rain.3h"))
+         weatherDevice.setRainForLast3h(weatherData.get<double>("rain.3h"));
+      if (weatherData.containsValue("snow.3h"))
+         weatherDevice.setSnowForLast3h(weatherData.get<double>("snow.3h"));
       if (weatherData.containsValue("visibility"))
          weatherDevice.setVisibility(weatherData.get<int>("visibility"));
 
@@ -198,6 +202,10 @@ void COpenWeatherService::historize3HoursForecast(int hourIndex,
       weatherDevice.setWindSpeed(forecast.get<double>("wind.speed"));
    if (forecast.containsValue("wind.deg"))
       weatherDevice.setWindDirection(forecast.get<int>("wind.deg"));
+   if (forecast.containsValue("rain.3h"))
+      weatherDevice.setRainForNextPeriod(forecast.get<double>("rain.3h"));
+   if (forecast.containsValue("snow.3h"))
+      weatherDevice.setSnowForNextPeriod(forecast.get<double>("snow.3h"));
 
    weatherDevice.historize(m_api);
 }
@@ -224,6 +232,10 @@ void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<
       auto averageWindSpeedDataCount = 0;
       auto averageWindDeg = static_cast<int>(0);
       auto averageWindDegDataCount = 0;
+      auto totalDayRain = static_cast<double>(0.0f);
+      auto totalDayRainDataCount = 0;
+      auto totalDaySnow = static_cast<double>(0.0f);
+      auto totalDaySnowDataCount = 0;
 
       for (const auto forecastData:forecastDataForOneDay.second)
       {
@@ -286,6 +298,18 @@ void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<
             averageWindDeg += forecastData.get<int>("wind.deg");
             ++averageWindDegDataCount;
          }
+
+         if (forecastData.containsValue("rain.3h"))
+         {
+            totalDayRain += forecastData.get<double>("rain.3h");
+            ++totalDayRainDataCount;
+         }
+
+         if (forecastData.containsValue("snow.3h"))
+         {
+            totalDaySnow += forecastData.get<double>("snow.3h");
+            ++totalDaySnowDataCount;
+         }
       }
 
       averageWeatherCondition /= averageWeatherConditionDataCount;
@@ -314,6 +338,10 @@ void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<
          weatherDevice.setWindSpeed(averageWindSpeed);
       if (averageWindDegDataCount)
          weatherDevice.setWindDirection(averageWindDeg);
+      if (totalDayRainDataCount)
+         weatherDevice.setRainForNextPeriod(totalDayRain);
+      if (totalDaySnowDataCount)
+         weatherDevice.setSnowForNextPeriod(totalDaySnow);
 
       weatherDevice.historize(m_api);
    }
@@ -321,7 +349,6 @@ void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<
 
 void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContainer& weatherData) const
 {
-   //TODO ajouter pluie
    //TODO ajouter index UV
    try
    {

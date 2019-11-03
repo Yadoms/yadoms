@@ -47,6 +47,16 @@ CForecastWeatherDevice::CForecastWeatherDevice(std::string deviceName)
                                                                          yApi::EMeasureType::kAbsolute,
                                                                          yApi::typeInfo::CIntTypeInfo::Empty,
                                                                          yApi::EHistoryDepth::kNoHistory)),
+     m_rain(boost::make_shared<yApi::historization::CRain>("Rain next period",
+                                                                         yApi::EKeywordAccessMode::kGet,
+                                                                         yApi::EMeasureType::kCumulative,
+                                                                         yApi::typeInfo::CDoubleTypeInfo::Empty,
+                                                                         yApi::EHistoryDepth::kNoHistory)),
+     m_snow(boost::make_shared<yApi::historization::CRain>("Snow next period",
+                                                                         yApi::EKeywordAccessMode::kGet,
+                                                                         yApi::EMeasureType::kCumulative,
+                                                                         yApi::typeInfo::CDoubleTypeInfo::Empty,
+                                                                         yApi::EHistoryDepth::kNoHistory)),
      m_visibility(boost::make_shared<yApi::historization::CDistance>("Visibility",
                                                                      yApi::EKeywordAccessMode::kGet,
                                                                      yApi::typeInfo::CDoubleTypeInfo::Empty,
@@ -61,6 +71,8 @@ CForecastWeatherDevice::CForecastWeatherDevice(std::string deviceName)
         m_pressure,
         m_windSpeed,
         m_windDirection,
+        m_rain,
+        m_snow,
         m_visibility
      })
 {
@@ -139,6 +151,18 @@ void CForecastWeatherDevice::setWindDirection(int direction)
 {
    m_windDirection->set(direction);
    m_keywords.emplace_back(m_windDirection);
+}
+
+void CForecastWeatherDevice::setRainForNextPeriod(double rain)
+{
+   m_rain->set(rain);
+   m_keywords.emplace_back(m_rain);
+}
+
+void CForecastWeatherDevice::setSnowForNextPeriod(double snow)
+{
+   m_snow->set(snow);
+   m_keywords.emplace_back(m_snow);
 }
 
 void CForecastWeatherDevice::setVisibility(int distance)

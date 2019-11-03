@@ -23,6 +23,8 @@ public:
    void setPressure(double pressure);
    void setWindSpeed(double speed);
    void setWindDirection(int direction);
+   void setRainForLast3h(double rain);
+   void setSnowForLast3h(double snow);
    void setVisibility(int distance);
 
 private:
@@ -35,6 +37,8 @@ private:
    boost::shared_ptr<yApi::historization::CPressure> m_pressure;
    boost::shared_ptr<yApi::historization::CSpeed> m_windSpeed;
    boost::shared_ptr<yApi::historization::CDirection> m_windDirection;
+   boost::shared_ptr<yApi::historization::CRain> m_rain;
+   boost::shared_ptr<yApi::historization::CRain> m_snow;
    boost::shared_ptr<yApi::historization::CDistance> m_visibility;
    const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_allKeywords;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
