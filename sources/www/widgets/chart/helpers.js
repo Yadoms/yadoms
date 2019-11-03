@@ -32,44 +32,35 @@ function roundNumber(num, scale) {
 }
 
  /**
+  * Menu Helpers
+  */
+
+function constructToolBarPeriodMenuItem(interval, datai18n) {return "<div class=\"widget-toolbar-button range-btn\" interval=" + interval + "><span data-i18n=\"widgets.chart:navigator." + datai18n + "\"/></div>";}
+function constructToolBarIntervalMenuItem(prefix, datai18n) {return "<div class=\"widget-toolbar-button range-btn\" prefix=" + prefix + "><span data-i18n=\"widgets.chart:navigator." + datai18n + "\"/></div>";}
+function constructExportCommandMenuItem(datai18n, mime) {return "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export." + datai18n + "\" mime-type=" + mime + "></span></li>";}
+
+ /**
   * transform old configuration to new interval/prefix configuration
   */
  
  function compatibilityManagement (intervalConfiguration) {
   var returnValue;
   switch (intervalConfiguration) {
-      case "HOUR":
-          returnValue = "HOUR/minute";
-          break;
-      case "DAY":
-          returnValue = "DAY/hour";
-          break;
-      case "WEEK":
-          returnValue = "WEEK/hour";
-          break;
-      case "MONTH":
-          returnValue = "MONTH/day";
-          break;
-      case "HALF_YEAR":
-          returnValue = "HALF_YEAR/day";
-          break;
-      case "YEAR":
-          returnValue = "YEAR/day";
-          break;
-      case "FIVE_YEAR": //This one doesn't exist
-          returnValue = "FIVE_YEAR/day";
-          break;
-      default:
-         returnValue = intervalConfiguration;
-         break;          
+      case "HOUR": returnValue = "HOUR/minute"; break;
+      case "DAY": returnValue = "DAY/hour"; break;
+      case "WEEK": returnValue = "WEEK/hour"; break;
+      case "MONTH": returnValue = "MONTH/day"; break;
+      case "HALF_YEAR": returnValue = "HALF_YEAR/day"; break;
+      case "YEAR": returnValue = "YEAR/day"; break;
+      case "FIVE_YEAR": returnValue = "FIVE_YEAR/day"; break; //This one doesn't exist
+      default: returnValue = intervalConfiguration; break;          
   }
   return returnValue;
  };
  
  function defaultPrefixForInterval(interval) {
    var prefix;
-   switch (interval)
-   {
+   switch (interval){
       default:
       case "HOUR":
       case "DAY":
@@ -88,34 +79,25 @@ function roundNumber(num, scale) {
    return prefix;
  };
  
- function calculateBeginDate(interval, time, prefix) {
-  var dateValue;
-  switch (interval) {
-      case "HOUR":
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'hours').startOf(prefix));
-          break;
-      default:
-      case "DAY": //we request hour summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'days').startOf(prefix));
-          break;
-      case "WEEK": //we request hour summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'weeks').startOf(prefix));
-          break;
-      case "MONTH": //we request day summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'months').startOf(prefix));
-          break;
-      case "HALF_YEAR": //we request day summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(6, 'months').startOf(prefix));
-          break;
-      case "YEAR": //we request day summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'years').startOf(prefix));
-          break;
-      case "FIVE_YEAR": //we request day summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(5, 'years').startOf(prefix));
-          break;          
-  }
-  
-  return dateValue;
+ function calculateBeginDate(period, time, prefix, window) {
+   return DateTimeFormatter.dateToIsoDate(moment(time).subtract(period.nb * window, period.type).startOf(prefix));
+ };
+ 
+ function calculateFinalDate(period, time, prefix, window){
+   return DateTimeFormatter.dateToIsoDate(moment(time).subtract(period.nb * (window-1), period.type));
+ };
+ 
+ function computePrefixUIForRequest(keywordInformation, prefix){
+	var prefixUri = "/" + prefix;
+	
+	if (isBoolVariable(keywordInformation) || isEnumVariable(keywordInformation) || (prefix == "minute")) {
+       prefixUri = "";
+	}else if (prefix === "week") {
+       // the prefix week doesn't exist at the server side we have to to it manually
+	   // we use the day prefix		
+       prefixUri = "/day";
+	};
+	return prefixUri;
  };
 
   /**
@@ -130,9 +112,7 @@ function getWeeks(vectorToParse){
     $.each(vectorToParse, function (index, data) {
        weekNum = DateTimeFormatter.isoDateToDate(data.date).week();
        try{
-          
-          if (weekNum == weekplot[weekplot.length-1].week)
-          {
+          if (weekNum == weekplot[weekplot.length-1].week){
              weekplot[weekplot.length-1].avg += parseFloat(data.avg);
              
              // treat min and max values
@@ -175,7 +155,13 @@ function getWeeks(vectorToParse){
   * Highcharts Helpers
   */  
  
-function changexAxisBound(chart, dateMin){
+function setDateMinAndMax(chart, dateMin, dateMax){
+    var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
+	var datem = DateTimeFormatter.isoDateToDate(dateMax)._d.getTime();
+    chart.xAxis[0].setExtremes(datet, datem);
+};
+
+function setDateMin(chart, dateMin){
     var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
     chart.xAxis[0].setExtremes(datet, null);
 };
@@ -270,7 +256,6 @@ function createAxis (index,         // index of the plot
           console.log(error2);
       }
   }
-  
   return yAxisName; // Return the name of the axis
 };
 
@@ -334,55 +319,39 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
       case "data.units.cubicMetre":
          if (evaluateArray(values) <1) {
             coeff = 1000;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.liter";
          }
          break;
       case "data.units.wattPerHour":
          if (evaluateArray(values) >2000) {
             coeff = 0.001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.KwattPerHour";
          }      
          break;
       case "data.units.watt":
          if (evaluateArray(values)>2000) {
             coeff = 0.001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.Kwatt";
          }      
          break;
       case "data.units.ampere":
          if (evaluateArray(values)>2000) {
             coeff = 0.001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.Kampere";
          } else if (evaluateArray(values)<1) {
             coeff = 1000;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.mampere";
          }
          break;
       case "bit/s":
          if (evaluateArray(values)>2000000000) {
             coeff = 0.000000001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "Gb/s";
          }else if (evaluateArray(values)>2000000) {
             coeff = 0.000001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "Mb/s";
          }else if (evaluateArray(values)>2000) {
             coeff = 0.001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "Kb/s";
          }else{}
          break;
@@ -390,32 +359,159 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
          console.log(evaluateArray(values));
          if (evaluateArray(values)<0.002){
             coeff = 0.000001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.microsecond";
          }else if (evaluateArray(values)<2){
             coeff = 0.001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.millisecond";
          }else if (evaluateArray(values)>86400){
             coeff = 1/86400;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.day";
          }else if (evaluateArray(values)>3600) {
             coeff = 1/3600;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.hour";
          }else if (evaluateArray(values)>60) {
             coeff = 1/60;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.minute";
          }else{}
       default:
          break;
    }
+   if (coeff!=1){
+      newValues = adaptArray(values, coeff);
+      newRange = adaptRange(range, coeff);	   
+   }
    callback(newValues, newRange, unit, coeff);
+};
+
+createPlotVector = function (data, KeywordInformation, differentialDisplay, lastValue, keywordId) {
+   var plot=[];
+   var lastDisplayDate = undefined;
+   var timeBetweenAcquisition = [];
+   var sum = 0;
+   var nb = 0;
+   $.each(data, function (index,value) { //data comes from acquisition table
+       var d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
+       var v;
+	   
+	   if (isNullOrUndefined(value.key))
+		   throw $.t("widgets.chart:errorInitialization");
+	   
+       if (isEnumVariable(KeywordInformation)) {
+          v = parseFloat(getKeyByValue(KeywordInformation.typeInfo.values, value.key));
+       }else {
+          v = parseFloat(value.key);
+       }
+
+	   if (!isNullOrUndefined(lastDisplayDate)){
+		  sum += (d-lastDisplayDate);
+		  nb++;
+		  
+		  if ((d-lastDisplayDate)> 2*(sum/nb)){
+			  plot.push([d, null]);
+		  }
+		  
+		  timeBetweenAcquisition.push(d-lastDisplayDate);
+	   }
+	   lastDisplayDate = d;
+
+       // The differential display is disabled if the type of the data is enum or boolean
+       if (differentialDisplay && !isBoolVariable(KeywordInformation) && !isEnumVariable(KeywordInformation)){
+          if (!isNullOrUndefined(lastValue[keywordId]))
+             plot.push([d, v-lastValue[keywordId]]);
+
+          lastValue[keywordId] = v;
+       }else // standard display
+          plot.push([d, v]);
+    });
+	return plot;
+}
+
+createSummaryPlotVector = function (
+              data, 
+			  periodValueType, 
+			  timeBetweenTwoConsecutiveValues, 
+			  plotType,
+			  plot,
+			  range,
+			  KeywordInformation, 
+			  differentialDisplay, 
+			  lastValue,
+			  keywordId) {
+	 var vMin;
+	 var vMax;
+	 var lastDate;
+	 var d = undefined;
+
+	 $.each(data, function (index2, value) {
+		 lastDate = d;
+		 d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
+		 var vplot;
+
+		 if (!isNullOrUndefined(value[periodValueType])) { // read the computed desired value (avg/min/max)
+			 vplot = parseFloat(value[periodValueType]);
+			 vMin = parseFloat(value.min);
+			 vMax = parseFloat(value.max);
+		 } else {
+			throw $.t("widgets.chart:errorInitialization");
+		 }
+
+		 //we manage the missing data
+		 if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
+		 (lastDate + timeBetweenTwoConsecutiveValues < d)) {
+			 if (plotType === "arearange")
+				 range.push([d, null, null]);
+
+			 plot.push([d, null]);
+		 }
+		 
+		 // The differential display is disabled if the type of the data is enum or boolean
+		 if (differentialDisplay && !isBoolVariable(KeywordInformation) && !isEnumVariable(KeywordInformation)){  
+			 if (periodValueType =="avg") {
+			   if (!isNullOrUndefined(lastValue[keywordId]))
+				 plot.push([d, vplot-lastValue[keywordId]]);
+			   
+			   lastValue[keywordId] = vplot;
+			}
+			else if (periodValueType =="max") { // In this case, we display vMax-vMin
+			   plot.push([d, vMax-vMin]);
+			   lastValue = vMax;
+			}
+		 }
+		 else{
+			if (plotType === "arearange")
+				range.push([d, vMin, vMax]);
+
+			plot.push([d, vplot]);                                                   
+		 }
+	 });
+	 
+	 // Add here a null plot to separate points (no connections) if there are a missing point between the last one and the future one (a future acquisition)
+	 if (!isNullOrUndefinedOrEmpty(data) && data.length>0){
+		d = DateTimeFormatter.isoDateToDate(data[data.length-1].date)._d.getTime();
+		var time = moment(self.serverTime).startOf(self.prefix)._d.getTime().valueOf();
+		var registerDate = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf();
+		
+		if ((time - d) > self.summaryTimeBetweenNewPoint){
+			if (plotType === "arearange")
+				 range.push([registerDate, null, null]);
+
+			plot.push([registerDate, null]);                                             
+		}
+	 }
+};
+
+createLegendText = function (configuration, deviceName, keywordName){
+   var legendText = "";
+   try{
+      if (configuration ==="Device")
+         legendText = deviceName;
+      else if (configuration ==="Keyword")
+         legendText = keywordName;                                       
+      else
+         legendText = deviceName + "/" + keywordName;
+
+      return legendText;
+   }catch(error){
+	  throw error;
+   }	
 };
