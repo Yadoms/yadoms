@@ -254,6 +254,7 @@ function chartViewModel() {
                 xAxis: {
                    ordinal: false, //axis is linear
                    events: {},
+				   maxPadding: 0.0104,
                    labels: {
                       rotation: -20,
                       formatter: function () {
@@ -390,9 +391,8 @@ function chartViewModel() {
         //we create an uuid for each serie
         $.each(self.widget.configuration.devices, function (index, device) {
             var keywordId = device.content.source.keywordId;
-            //Register the keyword position into the tab
-            self.keywordPosition[keywordId] = index;
-            
+            self.keywordPosition[keywordId] = index; //Register the keyword position into the tab
+			
             //we update uuid if they don't exist
             if (isNullOrUndefined(self.seriesUuid[keywordId]))
                 self.seriesUuid[keywordId] = createUUID();
@@ -594,8 +594,6 @@ function chartViewModel() {
         while (self.chart.yAxis.length > 0)
            self.chart.yAxis[0].remove(false);
 
-        //we compute the initial date
-//        changexAxisBound(self.chart, dateFrom, dateTo);
 		console.log(self.prefix);   // minute
 		console.log(self.interval); // hour
         var timeBetweenTwoConsecutiveValues;
@@ -603,11 +601,9 @@ function chartViewModel() {
         //for each plot in the configuration we request for data
         $.each(self.widget.configuration.devices, function (index, device) {
             var keywordId = device.content.source.keywordId; // Index to find all information about each keyword
-			//var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
 			
             //If the device is a bool or a enum, you have to modify
             if (isBoolVariable(self.chart.keyword[keywordId]) || isEnumVariable(self.chart.keyword[keywordId]) || (self.prefix === "minute")) {
-                //dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
 				timeBetweenTwoConsecutiveValues = undefined;
                 deviceIsSummary[keywordId] = false; // We change the summary for the boolean device.
             } else {
@@ -615,14 +611,13 @@ function chartViewModel() {
                deviceIsSummary[keywordId] = true;
             }
 			
-			console.log("date from : ", dateFrom);
-			console.log("date to : ", dateTo);
 			var prefixUri = computePrefixUIForRequest(self.chart.keyword[keywordId], self.prefix);
             var deffered = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
             arrayOfDeffered.push(deffered);
             arrayOfDeffered2[keywordId] = new $.Deferred();
             deffered.done(function (data) {
                var dataVector = data.data;
+//			   console.log(data.data);
                if (!(deviceIsSummary[keywordId])) {
 			      plot[keywordId] = createPlotVector(
 				                       data.data, 
@@ -765,11 +760,7 @@ function chartViewModel() {
 
        // Final traitment
         $.when.apply($, arrayOfDeffered2).done(function () {
-			if (self.window==1){
-               setDateMin(self.chart, dateFrom);
-			}else{
-			   setDateMinAndMax(self.chart, dateFrom, dateTo);
-			}
+           setDateMinAndMax(self.chart, dateFrom, dateTo);
            self.finalRefresh();
            defferedRefresh.resolve();
         })
@@ -825,43 +816,20 @@ function chartViewModel() {
       return d;
     };
     
-    this.cleanUpChart = function (serie, finaldate, dateInMilliSecondes) {
-       var self = this;
-
-       if (!isNullOrUndefined(serie.points)) {
-          if (!isNullOrUndefined(serie.points[0])) {
-             if ((finaldate - serie.points[0].x) > dateInMilliSecondes){
-                setDateMin(self.chart, calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
-			 }
-          }
-       }
-    };
-    
     this.onTime = function (serverLocalTime) {
       var self = this;
       
       self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime); // Update the serverTime
-      var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+      var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
       var isofinaldate = DateTimeFormatter.isoDateToDate(dateTo)._d.getTime().valueOf();
 	  
-	  // Display new points only if we are in the last window
-	  if (self.window==1){
-		  // Display new points only if we are in summary display mode
-		  if (self.prefix !== "minute") 
-			  self.timeDeffered = self.addContinuousSummaryPoint();
-		  
-		  $.each(self.seriesUuid, function (index, value) {
-			 var serie = self.chart.get(value);
-			 var serieRange = self.chart.get('range_' + value);
-			 
-			 // If a serie is available  // Clean points > cleanValue for serie
-			 if (!isNullOrUndefined(serie))
-				self.cleanUpChart(serie, isofinaldate, self.cleanValue);
-
-			  // Clean points > cleanValue for ranges, if any
-			 if (!isNullOrUndefined(serieRange))
-				self.cleanUpChart(serieRange, isofinaldate, self.cleanValue);
-		  });
+	  // We don't remove points anymore, we just move Extremes of the chart for better performances
+	  // points stay in the chart, but outside the view
+	  setDateMinAndMax(self.chart, calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window) ,dateTo);
+	  
+	  // Display new points only if we are in the last window & in summary display mode
+	  if (self.window==1 && self.prefix !== "minute"){
+         self.timeDeffered = self.addContinuousSummaryPoint();
 	  }
     };
    
@@ -1009,6 +977,7 @@ function chartViewModel() {
 						var time  = moment(self.serverTime)._d.getTime().valueOf();
 						var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
 						if (time - isolastdate < 3600000){ // Only if the last value is in last hour
+						   setDateMinAndMax(self.chart, calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window) ,data.date); // disable the last max extreme
 						   self.chart.hideLoading(); // If a text was displayed before
 						   if (self.differentialDisplay[keywordId]){
 							  if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[keywordId]))

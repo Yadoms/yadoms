@@ -76,7 +76,7 @@ function roundNumber(num, scale) {
  };
  
  function calculateFinalDate(period, time, prefix, window){
-   return DateTimeFormatter.dateToIsoDate(moment(time).subtract(period.nb * (window-1), period.type).startOf(prefix));
+   return DateTimeFormatter.dateToIsoDate(moment(time).subtract(period.nb * (window-1), period.type));
  };
  
  function computePrefixUIForRequest(keywordInformation, prefix){
@@ -150,14 +150,11 @@ function getWeeks(vectorToParse){
 function setDateMinAndMax(chart, dateMin, dateMax){
     var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
 	var datem = DateTimeFormatter.isoDateToDate(dateMax)._d.getTime();
-	console.log(datet);
-	console.log(datem);
     chart.xAxis[0].setExtremes(datet, datem);
 };
 
 function setDateMin(chart, dateMin){
     var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
-	console.log(datet);
     chart.xAxis[0].setExtremes(datet, null);
 };
 
