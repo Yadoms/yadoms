@@ -35,36 +35,36 @@ function chartViewModel() {
        
        var menuItem = [
           { custom: "<div class=\"widget-toolbar-button before\"><span class=\"glyphicon glyphicon-chevron-left\"></div>" },
-          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets.chart:navigator.hour\"/></div>" },
-          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets.chart:navigator.day\"/></div>"},
-          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets.chart:navigator.week\"/></div>"},
-          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets.chart:navigator.month\"/></div>"},
-          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets.chart:navigator.half_year\"/></div>"},
-          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
-          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"FIVE_YEAR\"><span data-i18n=\"widgets.chart:navigator.five_year\"/></div>" },
+		  {custom: constructToolBarPeriodMenuItem("HOUR", "hour")},
+		  {custom: constructToolBarPeriodMenuItem("DAY", "day")},
+		  {custom: constructToolBarPeriodMenuItem("WEEK", "week")},
+		  {custom: constructToolBarPeriodMenuItem("MONTH", "month")},
+		  {custom: constructToolBarPeriodMenuItem("HALF_YEAR", "half_year")},
+		  {custom: constructToolBarPeriodMenuItem("YEAR", "year")},
+		  {custom: constructToolBarPeriodMenuItem("FIVE_YEAR", "five_year")},
           { custom: "<div class=\"widget-toolbar-button after\"><span class=\"glyphicon glyphicon-chevron-right\"></div>" },
           { separator: ""}];
        
        switch(interval){
           case "HOUR/minute":
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"minute\"><span data-i18n=\"widgets.chart:navigator.all\"/></div>" });
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("minute", "all")});
              break;
           case "DAY/minute":
           case "DAY/hour":
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"minute\"><span data-i18n=\"widgets.chart:navigator.all\"/></div>" });
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"hour\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("minute", "all")});
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("hour", "hourly")});
              break;
           case "WEEK/hour":
           case "WEEK/day":
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"hour\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("hour", "hourly")});
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("day", "daily")});
           break;
           case "MONTH/hour":
           case "MONTH/day":
           case "MONTH/week":
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"hour\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"week\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("hour", "hourly")});
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("day", "daily")});
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("week", "weekly")});
              break;
          case "HALF_YEAR/day":
          case "HALF_YEAR/week":
@@ -74,9 +74,9 @@ function chartViewModel() {
          case "FIVE_YEAR/day":
          case "FIVE_YEAR/week":
          case "FIVE_YEAR/month":
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"week\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"month\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("day", "daily")});
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("week", "weekly")});
+             menuItem.push({ custom: constructToolBarIntervalMenuItem("month", "monthly")});
              break;
           default:
           break;
