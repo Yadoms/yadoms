@@ -32,7 +32,7 @@ void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                                               m_configuration.apiKey());
    declareDevices();
 
-   api->setPluginState(yApi::historization::EPluginState::kRunning);
+   api->setPluginState(yApi::historization::EPluginState::kCustom, "tryToJoinService");
 
    m_requestTries = 0;
    static const auto Immediately = boost::posix_time::seconds(0);
@@ -63,7 +63,10 @@ void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             m_requestTimer->stop();
 
-            api->setPluginState(yApi::historization::EPluginState::kRunning);
+            m_weatherService = boost::make_shared<COpenWeatherService>(api,
+                                                                       m_configuration.apiKey());
+
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "tryToJoinService");
 
             // Start a measure now and restart timer for next measures
             requestWeather(api);
@@ -108,7 +111,7 @@ void CWeather::requestWeather(boost::shared_ptr<yApi::IYPluginApi> api)
       YADOMS_LOG(error) << "Error requesting weather data, " << exception.what();
 
       api->setPluginState(yApi::historization::EPluginState::kCustom,
-                          "lastRequestFailed",
+                          "unableToJoinService",
                           {{"error", exception.what()}});
 
       if (++m_requestTries >= 3)
@@ -130,8 +133,5 @@ boost::shared_ptr<const shared::ILocation> CWeather::getLocation(boost::shared_p
    {
       return m_configuration.specificLocation();
    }
-   else
-   {
-      return api->getYadomsInformation()->location();
-   }
+   return api->getYadomsInformation()->location();
 }

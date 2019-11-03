@@ -22,7 +22,8 @@
   "customLabels": {
     "pluginState": {
       "updateConfiguration": "Update configuration...",
-      "lastRequestFailed": "Unable to connect to service ({{error}}), will retry later...",
+      "tryToJoinService": "Connecting to service...",
+      "unableToJoinService": "Unable to connect to service ({{error}}), will retry later...",
       "maxTriesAchieved": "Unable to connect to service"
     }
   }

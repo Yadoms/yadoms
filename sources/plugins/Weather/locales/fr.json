@@ -22,7 +22,8 @@
   "customLabels": {
     "pluginState": {
       "updateConfiguration": "Mise à jour de la configuration...",
-      "lastRequestFailed": "Service injoignable ({{error}}), will retry later...",
+      "tryToJoinService": "Connexion au service...",
+      "unableToJoinService": "Service injoignable ({{error}}), will retry later...",
       "maxTriesAchieved": "Service injoignable"
     }
   }

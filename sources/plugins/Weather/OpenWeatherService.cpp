@@ -207,25 +207,34 @@ void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<
    for (const auto& forecastDataForOneDay:forecastDataByDay)
    {
       const auto dayIndex = forecastDataForOneDay.first;
-      const auto dataCountInTheDay = forecastDataForOneDay.second.size();
       boost::posix_time::ptime forecastDate;
       auto averageWeatherCondition = static_cast<int>(0);
+      auto averageWeatherConditionDataCount = 0;
       auto averageTemperature = static_cast<double>(0.0f);
+      auto averageTemperatureDataCount = 0;
       auto minTemperature = static_cast<double>(0.0f);
+      auto minTemperatureDataCount = 0;
       auto maxTemperature = static_cast<double>(0.0f);
+      auto maxTemperatureDataCount = 0;
       auto averageHumidity = static_cast<double>(0.0f);
+      auto averageHumidityDataCount = 0;
       auto averagePressure = static_cast<double>(0.0f);
+      auto averagePressureDataCount = 0;
       auto averageWindSpeed = static_cast<double>(0.0f);
+      auto averageWindSpeedDataCount = 0;
       auto averageWindDeg = static_cast<int>(0);
+      auto averageWindDegDataCount = 0;
+
       for (const auto forecastData:forecastDataForOneDay.second)
       {
          // For weather condition, we consider that an average does the job
-         
+
          forecastDate = boost::posix_time::ptime(boost::posix_time::time_from_string(forecastData.get<std::string>("dt_txt")).date());
 
          try
          {
             averageWeatherCondition += toYadomsCondition(forecastData.get<std::vector<shared::CDataContainer>>("weather")[0].get<int>("id"));
+            ++averageWeatherConditionDataCount;
          }
          catch (const std::out_of_range& exOutOfRange)
          {
@@ -236,33 +245,75 @@ void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<
             YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, " << exception.what();
          }
 
-         averageTemperature += forecastData.get<double>("main.temp");
-         minTemperature = std::min(minTemperature, forecastData.get<double>("main.temp_min"));
-         maxTemperature = std::max(maxTemperature, forecastData.get<double>("main.temp_max"));
-         averageHumidity += forecastData.get<double>("main.humidity");
-         averagePressure += forecastData.get<double>("main.pressure");
-         averageWindSpeed += forecastData.get<double>("wind.speed");
-         averageWindDeg += forecastData.get<int>("wind.deg");
+
+         if (forecastData.containsValue("main.temp"))
+         {
+            averageTemperature += forecastData.get<double>("main.temp");
+            ++averageTemperatureDataCount;
+         }
+
+         if (forecastData.containsValue("main.temp_min"))
+         {
+            minTemperature = minTemperatureDataCount ? std::min(minTemperature, forecastData.get<double>("main.temp_min")) : forecastData.get<double>("main.temp_min");
+            ++minTemperatureDataCount;
+         }
+
+         if (forecastData.containsValue("main.temp_max"))
+         {
+            maxTemperature = maxTemperatureDataCount ? std::max(maxTemperature, forecastData.get<double>("main.temp_max")) : forecastData.get<double>("main.temp_max");
+            ++maxTemperatureDataCount;
+         }
+
+         if (forecastData.containsValue("main.humidity"))
+         {
+            averageHumidity += forecastData.get<double>("main.humidity");
+            ++averageHumidityDataCount;
+         }
+         if (forecastData.containsValue("main.pressure"))
+         {
+            averagePressure += forecastData.get<double>("main.pressure");
+            ++averagePressureDataCount;
+         }
+
+         if (forecastData.containsValue("wind.speed"))
+         {
+            averageWindSpeed += forecastData.get<double>("wind.speed");
+            ++averageWindSpeedDataCount;
+         }
+
+         if (forecastData.containsValue("wind.deg"))
+         {
+            averageWindDeg += forecastData.get<int>("wind.deg");
+            ++averageWindDegDataCount;
+         }
       }
 
-      averageWeatherCondition /= dataCountInTheDay;
-      averageTemperature /= dataCountInTheDay;
-      averageHumidity /= dataCountInTheDay;
-      averagePressure /= dataCountInTheDay;
-      averageWindSpeed /= dataCountInTheDay;
-      averageWindDeg /= dataCountInTheDay;
+      averageWeatherCondition /= averageWeatherConditionDataCount;
+      averageTemperature /= averageTemperatureDataCount;
+      averageHumidity /= averageHumidityDataCount;
+      averagePressure /= averagePressureDataCount;
+      averageWindSpeed /= averageWindSpeedDataCount;
+      averageWindDeg /= averageWindDegDataCount;
 
       CForecastWeatherDevice weatherDevice(getForecastWeatherDeviceNameForDay(dayIndex));
-      
+
       weatherDevice.setForecastDatetime(forecastDate);
-      weatherDevice.setCondition(yApi::historization::EWeatherCondition(averageWeatherCondition));
-      weatherDevice.setTemperature(averageTemperature);
-      weatherDevice.setTemperatureMin(minTemperature);
-      weatherDevice.setTemperatureMax(maxTemperature);
-      weatherDevice.setHumidity(averageHumidity);
-      weatherDevice.setPressure(averagePressure);
-      weatherDevice.setWindSpeed(averageWindSpeed);
-      weatherDevice.setWindDirection(averageWindDeg);
+      if (averageWeatherConditionDataCount)
+         weatherDevice.setCondition(yApi::historization::EWeatherCondition(averageWeatherCondition));
+      if (averageTemperatureDataCount)
+         weatherDevice.setTemperature(averageTemperature);
+      if (minTemperatureDataCount)
+         weatherDevice.setTemperatureMin(minTemperature);
+      if (maxTemperatureDataCount)
+         weatherDevice.setTemperatureMax(maxTemperature);
+      if (averageHumidityDataCount)
+         weatherDevice.setHumidity(averageHumidity);
+      if (averagePressureDataCount)
+         weatherDevice.setPressure(averagePressure);
+      if (averageWindSpeedDataCount)
+         weatherDevice.setWindSpeed(averageWindSpeed);
+      if (averageWindDegDataCount)
+         weatherDevice.setWindDirection(averageWindDeg);
 
       weatherDevice.historize(m_api);
    }
