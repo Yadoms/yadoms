@@ -77,11 +77,11 @@
 		}
 	},
 	"customLabels": {
-		"pluginState": {
-			"connecting": "Connecting...",
-			"updateConfiguration": "Configuration updating...",
-			"anotherMessageWithData" : "New state with message {{messageFromExtraQuery}}"
-		},
+    "pluginState": {
+      "connecting": "Connecting...",
+      "updateConfiguration": "Configuration updating...",
+      "newCustomStateMessage": "New state with message {{messageFromExtraQuery}}"
+    },
       "asyncEQwithProgression" : {
          "step1" : "Step n°1",
          "step2" : "Step n°2",

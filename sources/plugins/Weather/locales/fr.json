@@ -21,7 +21,10 @@
   },
   "customLabels": {
     "pluginState": {
-      "updateConfiguration": "Mise à jour de la configuration..."
+      "updateConfiguration": "Mise à jour de la configuration...",
+      "tryToJoinService": "Connexion au service...",
+      "unableToJoinService": "Service injoignable ({{error}}), will retry later...",
+      "maxTriesAchieved": "Service injoignable"
     }
   }
 }
