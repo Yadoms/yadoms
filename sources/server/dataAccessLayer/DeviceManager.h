@@ -31,11 +31,19 @@ namespace dataAccessLayer
       bool deviceExists(int deviceId) const override;
       bool deviceExists(int pluginId, const std::string& deviceName) const override;
       boost::shared_ptr<database::entities::CDevice> getDevice(int deviceId) const override;
-      boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(int pluginId, const std::string& name, bool includeBlacklistDevice) const override;
+      boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(int pluginId, const std::string& name,
+                                                                       bool includeBlacklistDevice) const override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,
-                                                                                        const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const override;
-      std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
-                                                                                            const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const override;
+                                                                                        const shared::plugin::yPluginApi
+                                                                                        ::EKeywordAccessMode&
+                                                                                        capacityAccessMode) const
+      override;
+      std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacityType(
+         const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
+         const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const override;
+      std::vector<boost::shared_ptr<database::entities::CDevice>> getDevicesMatchingCriteria(
+         const std::vector<std::string>& expectedNames,
+         bool blacklisted) const override;
       boost::shared_ptr<database::entities::CDevice> createDevice(int pluginId,
                                                                   const std::string& name,
                                                                   const std::string& friendlyName,
@@ -50,7 +58,8 @@ namespace dataAccessLayer
       void updateDeviceModel(int deviceId, const std::string& model) override;
       void updateDeviceType(int deviceId, const std::string& type) override;
       void updateDeviceBlacklistState(int deviceId, bool blacklist) override;
-      void updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state, const std::string& customMessageId, const shared::CDataContainer &data) const override;
+      void updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state,
+                             const std::string& customMessageId, const shared::CDataContainer& data) const override;
       void removeDevice(int deviceId) override;
       void removeDevice(int pluginId, const std::string& deviceName) override;
       void removeAllDeviceForPlugin(int pluginId) override;
@@ -58,14 +67,9 @@ namespace dataAccessLayer
       // [END] IDeviceManager Implementation
 
    protected:
-      //--------------------------------------------------------------
-      /// \brief           The real data requester
-      //--------------------------------------------------------------
       boost::shared_ptr<database::IDeviceRequester> m_deviceRequester;
       boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
       boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
       boost::shared_ptr<IKeywordManager> m_keywordManager;
    };
 } //namespace dataAccessLayer 
-
-

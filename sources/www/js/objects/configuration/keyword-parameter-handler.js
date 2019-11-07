@@ -44,7 +44,7 @@ function getDeviceMatchingCriteria(self) {
    if (!isNullOrUndefined(self.content.expectedKeywordHistoryDepth))
       requestData["expectedKeywordHistoryDepth"] = Array.isArray(self.content.expectedKeywordHistoryDepth) ? self.content.expectedKeywordHistoryDepth : [self.content.expectedKeywordHistoryDepth];
 
-   return RestEngine.postJson("/rest/device/matchcriteria/", {
+   return RestEngine.postJson("/rest/device/matchkeywordcriteria/", {
       data: JSON.stringify(requestData)
    });
 }
