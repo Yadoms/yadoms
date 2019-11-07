@@ -3,8 +3,8 @@
   "description": "This widget display forecast for next days. A plugin getting weather forecast data must be installed (ex : WeatherUnderGround).",
   "configurationSchema": {
     "device": {
-      "name": "forecast",
-      "description": "The forecast for next days"
+      "name": "Forecast device",
+      "description": "The device providing weather forecast for next days"
     },
     "DateFormat": {
       "name": "Date Format",
