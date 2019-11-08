@@ -125,6 +125,7 @@ function forecastViewModel() {
     * @param data Acquisition data
     */
    this.onNewAcquisition = function (keywordId, data) {
+      debugger;
       var self = this;
       
       if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
@@ -193,10 +194,11 @@ function forecastViewModel() {
          return;
 
       //we register keyword new acquisition
+      debugger;
       self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
    
-      //we register keyword for get last value at web client startup 
-      self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId)); 
+      //we register keyword for get last value at web client startup
+      self.widgetApi.getLastValue(self.widget.configuration.device.keywords.map(x => x.id)); 
 
       try {
          //Read the date format

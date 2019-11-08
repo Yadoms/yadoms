@@ -30,7 +30,7 @@ function DeviceParameterHandler(i18NContext, i18nKey, paramName, content, curren
 
 function getDeviceMatchingCriteria(self) {
    var requestData = {};
-   
+
    if (!isNullOrUndefined(self.content.expectedName))
       requestData["expectedName"] = Array.isArray(self.content.expectedName) ? self.content.expectedName : [self.content.expectedName];
 
@@ -152,10 +152,16 @@ DeviceParameterHandler.prototype.setEnabled = function (enabled) {
  * @returns {string}
  */
 DeviceParameterHandler.prototype.getCurrentConfiguration = function () {
+   var self = this;
    this.value = {};
    this.value.deviceId = parseInt($("select#" + this.uuid).val());
-
    var d = new $.Deferred();
-   d.resolve(this.value);
+   DeviceManager.getKeywordsByDeviceId(this.value.deviceId)
+      .done(function (keywords) {
+         self.value.keywords = keywords;
+         d.resolve(self.value);
+      })
+      .fail(d.reject);
+
    return d.promise();
 };

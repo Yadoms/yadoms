@@ -1,13 +1,13 @@
 {
    "type": "forecast",
-	"version": "1.1.1",
+   "version": "1.1.1",
    "author": "Jean-Michel BERHAULT",
-   "url" : "https://github.com/Yadoms/yadoms/wiki/forecast",
+   "url": "https://github.com/Yadoms/yadoms/wiki/forecast",
    "credits": "[Weather icons](https://www.iconfinder.com/)",
    "dependencies": {
-     "yadoms": {
-       "minimumVersion": "2.4.0-beta.1"
-     }
+      "yadoms": {
+         "minimumVersion": "2.4.0-beta.1"
+      }
    },
    "dimensions": {
       "min": {
@@ -24,19 +24,30 @@
       }
    },
    "configurationSchema": {
-      "device" : {
-         "type" : "device",
-         "expectedName" : ["Forecast weather day + 1"],
-
-         "expectedName" : ["pluginState"]
+      "devices": {
+         "type": "list",
+         "nbItemsMin": "1",
+         "nbItemsMax": "3",
+         "allowDuplication": "false",
+         "item": {
+            "type": "section",
+            "content": {
+               "source": {
+                  "type": "device",
+                  "expectedName": [
+                     "Forecast weather day + 1"
+                  ]
+               }
+            }
+         }
       },
-		"DateFormat": {
-		  "type": "enum",
-		  "values": {
-			"DateFormat1": "Short date. Ex: Monday 15",
-			"DateFormat2": "Long date. Ex: June 15, 2015"
-		  },
-		  "defaultValue": "DateFormat1"
-		}
+      "DateFormat": {
+         "type": "enum",
+         "values": {
+            "DateFormat1": "Short date. Ex: Monday 15",
+            "DateFormat2": "Long date. Ex: June 15, 2015"
+         },
+         "defaultValue": "DateFormat1"
+      }
    }
 }
