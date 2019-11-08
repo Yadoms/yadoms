@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "ITimeEvent.h"
 
 namespace shared
@@ -10,7 +9,7 @@ namespace shared
       /// \brief	    A timer for events system
       /// \note       CEventTimer is not thread-safe, use it only on the thread calling waitForEvents of associated event handler
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CEventTimer : public ITimeEvent
+      class CEventTimer : public ITimeEvent
       {
       public:
          enum EPeriodicity

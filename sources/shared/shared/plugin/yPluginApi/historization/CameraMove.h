@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "SingleHistorizableData.hpp"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief               The curtain command values
             //-----------------------------------------------------   
-            DECLARE_ENUM_HEADER_SHARED(ECameraMoveCommand, YADOMS_SHARED_EXPORT,
+            DECLARE_ENUM_HEADER(ECameraMoveCommand,
                ((Left))
                ((Right))
                ((Up))
@@ -37,7 +36,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A curtain historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CCameraMove : public CSingleHistorizableData<ECameraMoveCommand>
+            class CCameraMove : public CSingleHistorizableData<ECameraMoveCommand>
             {
             public:
                //-----------------------------------------------------

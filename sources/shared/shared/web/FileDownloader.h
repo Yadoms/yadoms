@@ -3,7 +3,6 @@
 #include <shared/DataContainer.h>
 #include <Poco/URI.h>
 #include <Poco/Path.h>
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -12,7 +11,7 @@ namespace shared
       //---------------------------------
       ///\brief Utility (static) class for downloading files
       //---------------------------------
-      class YADOMS_SHARED_EXPORT CFileDownloader
+      class CFileDownloader
       {
       private:
          //---------------------------------

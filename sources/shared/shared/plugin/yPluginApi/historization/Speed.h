@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/DoubleTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A speed historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CSpeed : public CSingleHistorizableData<double>
+            class CSpeed : public CSingleHistorizableData<double>
             {
             public:
                //-----------------------------------------------------

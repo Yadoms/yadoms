@@ -1,6 +1,5 @@
 #pragma once
 #include "ITypeInfo.h"
-#include <shared/Export.h>
 #include <shared/Field.hpp>
 
 namespace shared
@@ -11,7 +10,7 @@ namespace shared
       {
          namespace typeInfo
          {
-            class YADOMS_SHARED_EXPORT CIntTypeInfo : public ITypeInfo
+            class CIntTypeInfo : public ITypeInfo
             {
             public:
                static const CIntTypeInfo Empty;

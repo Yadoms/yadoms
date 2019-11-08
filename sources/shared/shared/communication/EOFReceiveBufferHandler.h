@@ -14,7 +14,7 @@ namespace shared
       /// This class implements a IReceiveBufferHandler for messages with a special End-Of-Frame character
       /// A message is then considered complete when the End-Of-Frame character is received
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CEOFReceiveBufferHandler : public IReceiveBufferHandler
+      class CEOFReceiveBufferHandler : public IReceiveBufferHandler
       {
       public:
          //--------------------------------------------------------------

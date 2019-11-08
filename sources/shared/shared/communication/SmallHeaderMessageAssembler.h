@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "IMessageAssembler.h"
 
 namespace shared
@@ -10,7 +9,7 @@ namespace shared
       /// \brief	Implementation of a message cutter with a small header
       ///  (2 bytes). Number of parts is limited to 255
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT SmallHeaderMessageAssembler : public IMessageAssembler
+      class SmallHeaderMessageAssembler : public IMessageAssembler
       {
       public:
          explicit SmallHeaderMessageAssembler(size_t maxPartSize);

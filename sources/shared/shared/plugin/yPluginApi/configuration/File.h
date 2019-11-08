@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/IDataContainable.h>
 #include <shared/dateTime/DateTimeContainer.h>
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A container for file data
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CFile : IDataContainable
+            class CFile : IDataContainable
             {
             public:
                //-----------------------------------------------------

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 #include <shared/DataContainer.h>
 
 namespace http

@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
 
 namespace shared
@@ -11,7 +10,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief		Standard capacities
          //--------------------------------------------------------------
-         class YADOMS_SHARED_EXPORT CStandardCapacities
+         class CStandardCapacities
          {
          public:
             //--------------------------------------------------------------

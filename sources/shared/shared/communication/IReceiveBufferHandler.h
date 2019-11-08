@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "Buffer.hpp"
 
 namespace shared
@@ -18,7 +17,7 @@ namespace shared
       /// As evaluation of a valid message is dependant of the protocol used,
       /// you probably have to write your implementation.
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT IReceiveBufferHandler
+      class IReceiveBufferHandler
       {
       public:
          //--------------------------------------------------------------

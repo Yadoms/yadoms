@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <Poco/Types.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/IntTypeInfo.h"
@@ -15,7 +14,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A counter historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CCounter : public CSingleHistorizableData<Poco::Int64>
+            class CCounter : public CSingleHistorizableData<Poco::Int64>
             {
             public:
                //-----------------------------------------------------

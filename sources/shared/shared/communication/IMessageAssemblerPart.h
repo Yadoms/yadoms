@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	Part of a SmallHeaderMessageAssembler message
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT IMessageAssemblerPart
+      class IMessageAssemblerPart
       {
       public:
          virtual ~IMessageAssemblerPart(boost::shared_ptr<const unsigned char[]> message,

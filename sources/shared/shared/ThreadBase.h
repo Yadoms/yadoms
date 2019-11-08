@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief	Base class for threads
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CThreadBase
+   class CThreadBase
    {
    public:
       //--------------------------------------------------------------

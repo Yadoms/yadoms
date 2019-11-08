@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
       //-----------------------------------------------------------------------------
       /// \class              Application stop request
       //-----------------------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT IApplicationStopHandler
+      class IApplicationStopHandler
       {
       public:
          //--------------------------------------------------------------
