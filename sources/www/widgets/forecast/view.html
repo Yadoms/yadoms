@@ -1,26 +1,16 @@
 <script type="text/html" id="forecast-template">
-   <!-- <div class="main-div">
-      <div class="condition">
-         <i class="textfit textfit-in-parent" data-bind="css: conditionClass"></i>
-      </div>
-      <div class="temperature">
-         <div class="textfit-in-parent textfit" data-bind="text: temperature"></div>
-         <div class="unit textfit" data-bind="text: unit" min-font="14"></div>
-      </div>
-   </div> -->
-   <span class="centerimageCity" data-bind="text: city"></span>
-     <div class "layout">
+   <div class="layout">
       <div  data-bind="foreach: period" class="forecastlayout">
-            <div class="daylayout">
-               <div class="cases" data-bind="text: TimeDate" style="width: 65px"></div>
-               <div class="centerimage"> <img data-bind="attr:{ src: WeatherIcon }" height="37" width="37"></div>
-               <div class="cases">
-                  <span data-bind="text: TempMin" style="color: blue"></span><span>/</span><span data-bind="text: TempMax" style="color: red" ></span>
-               </div>
-
-               <canvas class="centerimage wind-canvas" data-bind="attr: { id: WindCanvasId }, event: { load: $root.canvasload( WindCanvasId, AveWindDegrees, AveWind, MaxWind ) }" height="45" width="45"></canvas>
-               <canvas class="centerimage rain-canvas" data-bind="attr: { id: RainCanvasId }, event: { load: $root.RainCanvasLoad( RainCanvasId, RainDay ) }" height="45" width="40"></canvas>
+         <div class="daylayout">
+            <div class="cases" data-bind="text: TimeDate" style="width: 65px"></div>
+            <div class="centerimage"> <img data-bind="attr:{ src: WeatherIcon }" height="37" width="37"></div>
+            <div class="cases">
+               <span data-bind="text: TempMin" style="color: blue"></span><span>/</span><span data-bind="text: TempMax" style="color: red" ></span>
             </div>
+      
+            <canvas class="centerimage wind-canvas" data-bind="attr: { id: WindCanvasId }, event: { load: $root.canvasload( WindCanvasId, AveWindDegrees, AveWind, MaxWind ) }" height="45" width="45"></canvas>
+            <canvas class="centerimage rain-canvas" data-bind="attr: { id: RainCanvasId }, event: { load: $root.RainCanvasLoad( RainCanvasId, RainDay ) }" height="45" width="40"></canvas>
+         </div>
       </div>
-     </div>
+   </div>
 </script>
