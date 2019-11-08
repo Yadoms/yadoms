@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "LametricConfiguration.h"
+#include "Configuration.h"
 
 
 class CUrlManagerHelper
@@ -10,7 +10,7 @@ public:
    // ----------------------------------------
    /// \brief	        Constructor
    // ---------------------------------------- 
-   CUrlManagerHelper(CLametricConfiguration& lametricConfiguration);
+   CUrlManagerHelper(CConfiguration& lametricConfiguration);
 
    // ----------------------------------------
    /// \brief	        Destructor
@@ -43,7 +43,7 @@ public:
     * \param[in] requestPath               path of lametric API 
     * \return    the url to send
     */
-   static std::string getRequestUrl(const CLametricConfiguration& lametricConfiguration,
+   static std::string getRequestUrl(const CConfiguration& lametricConfiguration,
                                     const std::string& requestPath);
 
    /**
@@ -51,10 +51,10 @@ public:
     * \param[in] lametricConfiguration              Lametric Configuration
     * \return    the common Headers parameters
     */
-   static shared::CDataContainer buildCommonHeaderParameters(const CLametricConfiguration& lametricConfiguration);
+   static shared::CDataContainer buildCommonHeaderParameters(const CConfiguration& lametricConfiguration);
 
 private:
-   const CLametricConfiguration m_lametricConfiguration;
+   const CConfiguration m_lametricConfiguration;
    const shared::CDataContainer m_commonHeaderParameters;
    static const std::string DevicePath;
    static const std::string WifiPath;

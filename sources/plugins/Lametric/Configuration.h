@@ -15,13 +15,13 @@ enum EPortType
 //--------------------------------------------------------------
 /// \brief	Configuration of the empty plugin
 //--------------------------------------------------------------
-class CLametricConfiguration
+class CConfiguration
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CLametricConfiguration() = default;
+   virtual ~CConfiguration() = default;
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data

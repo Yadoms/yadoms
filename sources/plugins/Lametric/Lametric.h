@@ -1,10 +1,9 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
-#include "LametricConfiguration.h"
-#include "LametricDeviceState.h"
 #include <boost/smart_ptr/shared_ptr.hpp>
-#include "LametricNotificationSender.h"
-
+#include "Configuration.h"
+#include "IDeviceState.h"
+#include "INotificationSender.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -36,26 +35,28 @@ private:
    /**
     * \brief Declare device
     * \param[in] api                   Pointer to the API
-    * \param[in] deviceInformation     Structure with device informations
+    * \param[in] deviceInformation     Structure with device information
     */
-   static void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation);
+   static void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
+                             boost::shared_ptr<DeviceInformation>& deviceInformation);
    /**
     * \brief  Declare Keyword
     * \param api pointer to the API
-    * \param[in] deviceInformation     Structure with device informations
+    * \param[in] deviceInformation     Structure with device information
     */
-   void declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation) const;
+   void declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api,
+                       boost::shared_ptr<DeviceInformation>& deviceInformation) const;
    /**
-    * \brief Fill device informations
-    * \param[in] deviceInformation     Structure with device informations
+    * \brief Fill device information
+    * \param[in] deviceInformation     Structure with device information
     */
-   void fillDeviceInformation(DeviceInformation& deviceInformation) const;
+   void fillDeviceInformation(boost::shared_ptr<DeviceInformation>& deviceInformation) const;
    /**
     * \brief Init Lametric device
     * \param[in] api                   Pointer to the API
-    * \param[int] deviceInformation    Structure with device informations
+    * \return                          Structure with device information
     */
-   void initLametric(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation) const;
+   boost::shared_ptr<DeviceInformation> initLametric(boost::shared_ptr<yApi::IYPluginApi>& api) const;
    /**
     * \brief Update the configuration of the plugin after a change
     * \param api                  pointer to the API
@@ -65,16 +66,12 @@ private:
                               const shared::CDataContainer& newConfigurationData);
 
    //--------------------------------------------------------------
-   /// \brief	Refresh timer
-   //--------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventTimer> m_refreshTimer;
-   //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   CLametricConfiguration m_configuration;
+   CConfiguration m_configuration;
 
-   boost::shared_ptr<CLametricDeviceState> m_lametricDeviceManager;
-   boost::shared_ptr<CLametricNotificationSender> m_lametricManagerSender;
+   boost::shared_ptr<IDeviceState> m_deviceManager;
+   boost::shared_ptr<INotificationSender> m_managerSender;
    boost::shared_ptr<yApi::historization::CText> m_text;
 
    static const std::string DeviceName;

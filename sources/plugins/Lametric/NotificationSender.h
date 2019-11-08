@@ -1,35 +1,30 @@
 #pragma once
 #include "NotificationProperties.h"
 #include "UrlManagerHelper.h"
+#include "INotificationSender.h"
 
-
-class CLametricNotificationSender
+class CNotificationSender final : INotificationSender
 {
 public:
    // ----------------------------------------
    /// \brief	        Constructor
    // ---------------------------------------- 
-   CLametricNotificationSender(CLametricConfiguration& lametricConfiguration);
+   explicit CNotificationSender(CConfiguration& lametricConfiguration);
    // ----------------------------------------
    /// \brief	        Destructor
    // ---------------------------------------- 
-   virtual ~CLametricNotificationSender() = default;
+   virtual ~CNotificationSender() = default;
 
-   /**
-    * \brief     Sends new notification to device
-    * \param[in] text                              Text to send
-    * \param[in] priorityType                      Priority of the message, optional. Valid values are info, warning, critical
-    * \param[in] iconType                          Represents the nature of notification, optional. Valid values: none, info, alert
-   */
+   // ILametricDeviceState implementation
    void displayText(const std::string& text,
                     notificationProperties::CNotificationPriority::EPriorityType priorityType = notificationProperties::
                        CNotificationPriority::EPriorityType::kCritical,
                     notificationProperties::CNotificationIcon::EIconType iconType = notificationProperties::
-                       CNotificationIcon::EIconType::kAlert);
+                       CNotificationIcon::EIconType::kAlert) override;
 
 private:
 
-   CLametricConfiguration m_lametricConfiguration;
+   CConfiguration m_Configuration;
 
    boost::shared_ptr<CUrlManagerHelper> m_urlManagerHelper;
 };

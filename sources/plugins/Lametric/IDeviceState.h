@@ -2,14 +2,14 @@
 
 #include <shared/DataContainer.h>
 
-class ILametricDeviceState
+class IDeviceState
 {
 public:
 
    // ----------------------------------------
    /// \brief	        Destructor
    // ---------------------------------------- 
-   virtual ~ILametricDeviceState() = default;
+   virtual ~IDeviceState() = default;
 
    /**
     * \brief  Get Device State

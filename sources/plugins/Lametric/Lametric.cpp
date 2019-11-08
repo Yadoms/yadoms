@@ -5,6 +5,9 @@
 #include <Poco/Net/HTTPSClientSession.h>
 #include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
 #include <shared/Log.h>
+#include "DeviceState.h"
+#include "NotificationSender.h"
+#include "CFactory.h"
 
 IMPLEMENT_PLUGIN(CLametric)
 
@@ -28,26 +31,24 @@ CLametric::CLametric()
 void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "CLametric is starting...";
-   DeviceInformation deviceInformation;
+
+   m_configuration.initializeWith(api->getConfiguration());
+
+   m_deviceManager = CFactory::createDeviceState(m_configuration);
+   m_managerSender = CFactory::createNotificationSender(m_configuration);
+
+   boost::shared_ptr<DeviceInformation> deviceInformation;
    try
    {
-      m_configuration.initializeWith(api->getConfiguration());
-
-      m_lametricDeviceManager = boost::make_shared<CLametricDeviceState>(m_configuration);
-
-      m_lametricManagerSender = boost::make_shared<CLametricNotificationSender>(m_configuration);
-
-      m_refreshTimer = api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
-                                                          boost::posix_time::seconds(00));
-
-      m_refreshTimer->stop();
-
+      deviceInformation = initLametric(api);
       api->setPluginState(yApi::historization::EPluginState::kRunning);
    }
-   catch (...)
+   catch (const std::exception& e)
    {
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
-      YADOMS_LOG(error) << "Lametric plugin initialization error...";
+      api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
+      api->getEventHandler().createTimer(kConnectionRetryTimer,
+                                         shared::event::CEventTimer::kOneShot,
+                                         boost::posix_time::seconds(30));
    }
 
    // the main loop
@@ -71,6 +72,7 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
                api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
                                                   boost::posix_time::seconds(30));
+               //TODO reinitialiser
             }
             catch (...)
             {
@@ -81,14 +83,17 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
-            initLametric(api, deviceInformation);
+            if (!deviceInformation)
+               //TODO ne pas traiter la commande
+               break;
+
             const auto command =
                api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
-            if (boost::iequals(command->getDevice(), deviceInformation.deviceName))
+            if (boost::iequals(command->getDevice(), deviceInformation->deviceName))
             {
-               m_lametricManagerSender->displayText(command->getBody());
+               m_managerSender->displayText(command->getBody());
             }
 
             break;
@@ -96,13 +101,24 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case kConnectionRetryTimer:
          {
-            initLametric(api, deviceInformation);
+            deviceInformation.reset();
+            try
+            {
+               deviceInformation = initLametric(api);
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+            }
+            catch (const std::exception& e)
+            {
+               api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
+               api->getEventHandler().createTimer(kConnectionRetryTimer,
+                                                  shared::event::CEventTimer::kOneShot,
+                                                  boost::posix_time::seconds(30));
+            }
             break;
          }
       case kAnswerTimeout:
          {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "failedToConnect");
-            m_refreshTimer->stop();
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while...";
             api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
                                                boost::posix_time::seconds(30));
@@ -117,50 +133,49 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CLametric::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation)
+void CLametric::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
+                              boost::shared_ptr<DeviceInformation>& deviceInformation)
 {
-   if (!api->deviceExists(deviceInformation.deviceName))
-      api->declareDevice(deviceInformation.deviceName, deviceInformation.deviceType, deviceInformation.deviceModel);
+   if (!api->deviceExists(deviceInformation->deviceName))
+      api->declareDevice(deviceInformation->deviceName, deviceInformation->deviceType, deviceInformation->deviceModel);
 }
 
-void CLametric::declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation) const
+void CLametric::declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api,
+                               boost::shared_ptr<DeviceInformation>& deviceInformation) const
 {
    // TODO : Declare icon & priority keywords
-   if (!api->keywordExists(deviceInformation.deviceName, m_text))
-      api->declareKeyword(deviceInformation.deviceName, m_text);
+   if (!api->keywordExists(deviceInformation->deviceName, m_text))
+      api->declareKeyword(deviceInformation->deviceName, m_text);
 }
 
-void CLametric::fillDeviceInformation(DeviceInformation& deviceInformation) const
+void CLametric::fillDeviceInformation(boost::shared_ptr<DeviceInformation>& deviceInformation) const
 {
-   deviceInformation.deviceName = "Lametric";
-   deviceInformation.deviceModel = m_lametricDeviceManager->getDeviceState().get<std::string>("model");
-   deviceInformation.deviceType = m_lametricDeviceManager->getDeviceState().get<std::string>("name");
+   deviceInformation->deviceName = "Lametric";
+   deviceInformation->deviceModel = m_deviceManager->getDeviceState().get<std::string>("model");
+   deviceInformation->deviceType = m_deviceManager->getDeviceState().get<std::string>("name");
 }
 
 
-void CLametric::initLametric(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation) const
+boost::shared_ptr<DeviceInformation> CLametric::initLametric(boost::shared_ptr<yApi::IYPluginApi>& api) const
 {
-   YADOMS_LOG(information) << "Init the connexion ...";
-
+   YADOMS_LOG(information) << "Init the connection ...";
    try
    {
-      m_lametricDeviceManager->getWifiState();
+      m_deviceManager->getWifiState();
 
+      boost::shared_ptr<DeviceInformation> deviceInformation;
       fillDeviceInformation(deviceInformation);
 
       declareDevice(api, deviceInformation);
 
       declareKeyword(api, deviceInformation);
 
-      m_refreshTimer->start();
+      return deviceInformation;
    }
    catch (std::exception& e)
    {
-      api->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot,
-                                         boost::posix_time::seconds(0));
-      const auto message = (boost::format("Failed to send GET http request \"%1%\"") % e.
-         what()).str();
-      YADOMS_LOG(error) << message;
+      YADOMS_LOG(error) << "Failed to send GET http request \"" << e.what() << "\"";
+      throw;
    }
 }
 
@@ -172,7 +187,8 @@ void CLametric::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 
    m_configuration.initializeWith(newConfiguration);
 
-   m_lametricDeviceManager = boost::make_shared<CLametricDeviceState>(m_configuration);
+   m_deviceManager = CFactory::createDeviceState(m_configuration);
+   m_managerSender = CFactory::createNotificationSender(m_configuration);
 
    m_configuration.trace();
 }

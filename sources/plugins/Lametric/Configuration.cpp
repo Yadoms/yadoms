@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "LametricConfiguration.h"
+#include "Configuration.h"
 #include <shared/Log.h>
 
-void CLametricConfiguration::initializeWith(const shared::CDataContainer& data)
+void CConfiguration::initializeWith(const shared::CDataContainer& data)
 {
    m_configuration.initializeWith(data);
 }
 
 
-void CLametricConfiguration::trace() const
+void CConfiguration::trace() const
 {
    try
    {
@@ -28,12 +28,12 @@ void CLametricConfiguration::trace() const
    }
 }
 
-std::string CLametricConfiguration::getIPAddress() const
+std::string CConfiguration::getIPAddress() const
 {
    return m_configuration.get<std::string>("IPAddress");
 }
 
-EPortType CLametricConfiguration::getPort() const
+EPortType CConfiguration::getPort() const
 {
    static const shared::CDataContainer::EnumValuesNames EPortNumber = boost::assign::map_list_of
       ("Http", kHttp)
@@ -42,7 +42,7 @@ EPortType CLametricConfiguration::getPort() const
    return m_configuration.getEnumValue<EPortType>("Port", EPortNumber);
 }
 
-std::string CLametricConfiguration::getAPIKey() const
+std::string CConfiguration::getAPIKey() const
 {
    return m_configuration.get<std::string>("APIKey");
 }

@@ -9,7 +9,7 @@ const std::string CUrlManagerHelper::AudioPath("/api/v2/device/audio");
 const std::string CUrlManagerHelper::NotificationsPath("/api/v2/device/notifications");
 const std::string CUrlManagerHelper::Username("dev");
 
-CUrlManagerHelper::CUrlManagerHelper(CLametricConfiguration& lametricConfiguration)
+CUrlManagerHelper::CUrlManagerHelper(CConfiguration& lametricConfiguration)
    : m_lametricConfiguration(lametricConfiguration),
      m_commonHeaderParameters(buildCommonHeaderParameters(lametricConfiguration))
 {
@@ -41,7 +41,7 @@ std::string CUrlManagerHelper::getRequestPath(const ERequestType requestType)
    return requestPath;
 }
 
-std::string CUrlManagerHelper::getRequestUrl(const CLametricConfiguration& lametricConfiguration,
+std::string CUrlManagerHelper::getRequestUrl(const CConfiguration& lametricConfiguration,
                                       const std::string& requestPath)
 {
    const auto protocolType = lametricConfiguration.getPort() == kHttp ? "http://" : "https://";
@@ -51,7 +51,7 @@ std::string CUrlManagerHelper::getRequestUrl(const CLametricConfiguration& lamet
 }
 
 
-shared::CDataContainer CUrlManagerHelper::buildCommonHeaderParameters(const CLametricConfiguration& lametricConfiguration)
+shared::CDataContainer CUrlManagerHelper::buildCommonHeaderParameters(const CConfiguration& lametricConfiguration)
 {
    const auto apiKey = lametricConfiguration.getAPIKey();
 

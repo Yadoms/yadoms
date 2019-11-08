@@ -1,20 +1,21 @@
 #pragma once
 #include "shared/DataContainer.h"
-#include "LametricConfiguration.h"
+#include "Configuration.h"
 #include "UrlManagerHelper.h"
-#include "ILametricDeviceState.h"
+#include "IDeviceState.h"
 
-class CLametricDeviceState : ILametricDeviceState
+class CDeviceState final : IDeviceState
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   CLametricDeviceState(CLametricConfiguration& lametricConfiguration);
+   explicit CDeviceState(CConfiguration& lametricConfiguration);
+
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CLametricDeviceState() = default;
+   virtual ~CDeviceState() = default;
 
    // ILametricDeviceState implementation
    shared::CDataContainer getDeviceState() override;
@@ -24,7 +25,7 @@ public:
    // [END] ILametricDeviceState implementation
 private:
 
-   CLametricConfiguration m_lametricConfiguration;
+   CConfiguration m_lametricConfiguration;
 
    boost::shared_ptr<CUrlManagerHelper> m_urlManagerHelper;
 
