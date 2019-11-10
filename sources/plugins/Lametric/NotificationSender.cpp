@@ -4,7 +4,7 @@
 #include "shared/http/HttpException.hpp"
 
 CNotificationSender::CNotificationSender(CConfiguration& lametricConfiguration)
-   : m_Configuration(lametricConfiguration)
+   : m_configuration(lametricConfiguration)
 {
 }
 
@@ -19,17 +19,17 @@ void CNotificationSender::displayText(const std::string& text,
    notificationProperties::CNotificationPriority::getPriorityType(priorityType, priorityMessage);
    notificationProperties::CNotificationIcon::getIconType(iconType, iconToDisplay);
 
-   m_urlManagerHelper = boost::make_shared<CUrlManagerHelper>(m_Configuration);
+   m_urlManagerHelper = boost::make_shared<CUrlManagerHelper>(m_configuration);
 
    const auto requestPath = m_urlManagerHelper->getRequestPath(CUrlManagerHelper::kRequestNotifications);
 
-   const auto url = m_urlManagerHelper->getRequestUrl(m_Configuration, requestPath);
+   const auto url = m_urlManagerHelper->getRequestUrl(m_configuration, requestPath);
    const auto body =
       "{\n\"priority\": \"" + priorityMessage + "\",\n\"icon_type\": \"" + iconToDisplay +
       "\",\n\"model\":{\n\"frames\":[\n{\n\"text\":\"Yadoms\",\n\"icon\":\"i31581\",\n\"index\":0\n},\n{\n\"text\":\"" +
       text + "\",\n\"icon\":\"i31581\"\n}\n]\n}\n}";
 
-   auto headerPostParameters = m_urlManagerHelper->buildCommonHeaderParameters(m_Configuration);
+   auto headerPostParameters = m_urlManagerHelper->buildCommonHeaderParameters(m_configuration);
    headerPostParameters.set("Content-Length", body.length());
 
    try
@@ -38,7 +38,7 @@ void CNotificationSender::displayText(const std::string& text,
                                             headerPostParameters,
                                             shared::CDataContainer(),
                                             body,
-                                            m_Configuration.getPort() == kHttp
+                                            m_configuration.getPort() == kHttp
                                                ? shared::CHttpMethods::ESessionType::kStandard
                                                : shared::CHttpMethods::ESessionType::kSecured);
    }

@@ -3,14 +3,14 @@
 #include "Configuration.h"
 
 
-class CUrlManagerHelper
+class CUrlManagerHelper final
 {
 public:
 
    // ----------------------------------------
    /// \brief	        Constructor
    // ---------------------------------------- 
-   CUrlManagerHelper(CConfiguration& lametricConfiguration);
+   explicit CUrlManagerHelper(CConfiguration& lametricConfiguration);
 
    // ----------------------------------------
    /// \brief	        Destructor

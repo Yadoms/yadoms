@@ -15,13 +15,13 @@ enum EPortType
 //--------------------------------------------------------------
 /// \brief	Configuration of the empty plugin
 //--------------------------------------------------------------
-class CConfiguration
+class CConfiguration final
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CConfiguration() = default;
+   ~CConfiguration() = default;
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data

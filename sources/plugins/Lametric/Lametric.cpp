@@ -36,7 +36,7 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_deviceManager = CFactory::createDeviceState(m_configuration);
    m_managerSender = CFactory::createNotificationSender(m_configuration);
 
-   boost::shared_ptr<DeviceInformation> deviceInformation = initLametric(api);
+   auto deviceInformation = initLametric(api);
 
    // the main loop
    while (true)
@@ -139,7 +139,7 @@ boost::shared_ptr<DeviceInformation> CLametric::initLametric(boost::shared_ptr<y
    {
       m_deviceManager->getWifiState();
 
-      boost::shared_ptr<DeviceInformation> deviceInformation = boost::make_shared<DeviceInformation>();
+      auto deviceInformation = boost::make_shared<DeviceInformation>();
 
       fillDeviceInformation(deviceInformation);
 
@@ -153,6 +153,7 @@ boost::shared_ptr<DeviceInformation> CLametric::initLametric(boost::shared_ptr<y
    }
    catch (std::exception& e)
    {
+      UNREFERENCED_PARAMETER(e);
       api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
       api->getEventHandler().createTimer(kConnectionRetryTimer,
                                          shared::event::CEventTimer::kOneShot,

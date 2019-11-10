@@ -10,7 +10,7 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	Configuration of the plugin
 //--------------------------------------------------------------
-class CConfiguration : public IConfiguration
+class CConfiguration final : public IConfiguration
 {
 public:
    //--------------------------------------------------------------

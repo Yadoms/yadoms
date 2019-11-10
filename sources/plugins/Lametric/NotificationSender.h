@@ -24,7 +24,7 @@ public:
 
 private:
 
-   CConfiguration m_Configuration;
+   CConfiguration m_configuration;
 
    boost::shared_ptr<CUrlManagerHelper> m_urlManagerHelper;
 };
