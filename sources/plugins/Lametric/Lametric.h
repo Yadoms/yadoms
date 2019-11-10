@@ -62,7 +62,7 @@ private:
     * \param api                  pointer to the API
     * \param newConfigurationData The new configuration of the module
     */
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi>& api,
                               const shared::CDataContainer& newConfigurationData);
 
    //--------------------------------------------------------------

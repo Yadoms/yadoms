@@ -162,7 +162,7 @@ boost::shared_ptr<DeviceInformation> CLametric::initLametric(boost::shared_ptr<y
 }
 
 
-void CLametric::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+void CLametric::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi>& api,
                                       const shared::CDataContainer& newConfigurationData)
 {
    const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
