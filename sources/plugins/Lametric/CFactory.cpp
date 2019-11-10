@@ -5,10 +5,10 @@
 
 boost::shared_ptr<IDeviceState> CFactory::createDeviceState(CConfiguration & lametricConfiguration)
 {
-   return boost::shared_ptr<IDeviceState>();
+   return boost::make_shared<CDeviceState>(lametricConfiguration);
 }
 
 boost::shared_ptr<INotificationSender> CFactory::createNotificationSender(CConfiguration & lametricConfiguration)
 {
-   return boost::shared_ptr<INotificationSender>();
+   return boost::make_shared<CNotificationSender>(lametricConfiguration);
 }

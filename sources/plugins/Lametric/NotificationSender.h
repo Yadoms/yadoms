@@ -3,7 +3,7 @@
 #include "UrlManagerHelper.h"
 #include "INotificationSender.h"
 
-class CNotificationSender final : INotificationSender
+class CNotificationSender final : public INotificationSender
 {
 public:
    // ----------------------------------------
