@@ -17,7 +17,10 @@ shared::CDataContainer CDeviceState::getState(const CUrlManagerHelper::ERequestT
 
    return shared::CHttpMethods::sendGetRequest(url,
                                                m_urlManagerHelper->buildCommonHeaderParameters(
-                                                  m_lametricConfiguration));
+                                                  m_lametricConfiguration), shared::CDataContainer(),
+                                               m_lametricConfiguration.getPort() == kHttp
+                                                  ? shared::CHttpMethods::ESessionType::kStandard
+                                                  : shared::CHttpMethods::ESessionType::kSecured);
 }
 
 shared::CDataContainer CDeviceState::getDeviceState()

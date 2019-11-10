@@ -4,13 +4,13 @@
 #include "shared/http/HttpException.hpp"
 
 CNotificationSender::CNotificationSender(CConfiguration& lametricConfiguration)
-   :m_Configuration(lametricConfiguration)
+   : m_Configuration(lametricConfiguration)
 {
 }
 
 void CNotificationSender::displayText(const std::string& text,
-                                              notificationProperties::CNotificationPriority::EPriorityType priorityType,
-                                              notificationProperties::CNotificationIcon::EIconType iconType)
+                                      notificationProperties::CNotificationPriority::EPriorityType priorityType,
+                                      notificationProperties::CNotificationIcon::EIconType iconType)
 {
    std::string authorizationType = "Basic ";
    std::string priorityMessage;
@@ -22,7 +22,7 @@ void CNotificationSender::displayText(const std::string& text,
    m_urlManagerHelper = boost::make_shared<CUrlManagerHelper>(m_Configuration);
 
    const auto requestPath = m_urlManagerHelper->getRequestPath(CUrlManagerHelper::kRequestNotifications);
-   
+
    const auto url = m_urlManagerHelper->getRequestUrl(m_Configuration, requestPath);
    const auto body =
       "{\n\"priority\": \"" + priorityMessage + "\",\n\"icon_type\": \"" + iconToDisplay +
@@ -37,7 +37,10 @@ void CNotificationSender::displayText(const std::string& text,
       shared::CHttpMethods::sendPostRequest(url,
                                             headerPostParameters,
                                             shared::CDataContainer(),
-                                            body);
+                                            body,
+                                            m_Configuration.getPort() == kHttp
+                                               ? shared::CHttpMethods::ESessionType::kStandard
+                                               : shared::CHttpMethods::ESessionType::kSecured);
    }
    catch (std::exception& e)
    {
