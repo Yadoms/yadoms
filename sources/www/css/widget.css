@@ -249,6 +249,10 @@
     white-space: nowrap;
 }
 
+.dropdown-menu > li > span:hover {
+	background-color:#e7e7e7;
+}
+
 .droppable-over {
 	background-color: orange;
 }
