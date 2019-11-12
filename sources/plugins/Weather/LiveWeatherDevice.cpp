@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "LiveWeatherDevice.h"
-#include <utility>
 
 
 CLiveWeatherDevice::CLiveWeatherDevice(std::string deviceName)
@@ -13,7 +12,10 @@ CLiveWeatherDevice::CLiveWeatherDevice(std::string deviceName)
      m_pressure(boost::make_shared<yApi::historization::CPressure>("Pressure")),
      m_windSpeed(boost::make_shared<yApi::historization::CSpeed>("Wind speed")),
      m_windDirection(boost::make_shared<yApi::historization::CDirection>("Wind direction")),
+     m_rain(boost::make_shared<yApi::historization::CRain>("Rain last 3h")),
+     m_snow(boost::make_shared<yApi::historization::CRain>("Snow last 3h")),
      m_visibility(boost::make_shared<yApi::historization::CDistance>("Visibility")),
+     m_uvIndex(boost::make_shared<yApi::historization::CUv>("UV")),
      m_allKeywords({
         m_condition,
         m_temperature,
@@ -23,18 +25,22 @@ CLiveWeatherDevice::CLiveWeatherDevice(std::string deviceName)
         m_pressure,
         m_windSpeed,
         m_windDirection,
-        m_visibility
+        m_rain,
+        m_snow,
+        m_visibility,
+        m_uvIndex
      })
 {
 }
 
-void CLiveWeatherDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+void CLiveWeatherDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                       const std::string serviceName) const
 {
    if (!api->deviceExists(m_deviceName))
    {
       api->declareDevice(m_deviceName,
                          m_deviceName,
-                         m_deviceName,
+                         serviceName,
                          m_allKeywords);
    }
 }
@@ -96,8 +102,26 @@ void CLiveWeatherDevice::setWindDirection(int direction)
    m_keywords.emplace_back(m_windDirection);
 }
 
+void CLiveWeatherDevice::setRainForLast3h(double rain)
+{
+   m_rain->set(rain);
+   m_keywords.emplace_back(m_rain);
+}
+
+void CLiveWeatherDevice::setSnowForLast3h(double snow)
+{
+   m_snow->set(snow);
+   m_keywords.emplace_back(m_snow);
+}
+
 void CLiveWeatherDevice::setVisibility(int distance)
 {
    m_visibility->set(distance);
    m_keywords.emplace_back(m_visibility);
+}
+
+void CLiveWeatherDevice::setUV(double uvIndex)
+{
+   m_uvIndex->set(uvIndex);
+   m_keywords.emplace_back(m_uvIndex);
 }

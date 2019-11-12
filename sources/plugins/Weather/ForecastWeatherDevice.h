@@ -5,15 +5,16 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 
-class CLiveWeatherDevice
+class CForecastWeatherDevice
 {
 public:
-   explicit CLiveWeatherDevice(std::string deviceName);
-   virtual ~CLiveWeatherDevice() = default;
+   explicit CForecastWeatherDevice(std::string deviceName);
+   virtual ~CForecastWeatherDevice() = default;
 
    void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string serviceName) const;
    void historize(boost::shared_ptr<yApi::IYPluginApi> api) const;
+   void setForecastDatetime(const boost::posix_time::ptime& datetime);
 
    void setCondition(const yApi::historization::EWeatherCondition& condition);
    void setTemperature(double temperature);
@@ -23,13 +24,14 @@ public:
    void setPressure(double pressure);
    void setWindSpeed(double speed);
    void setWindDirection(int direction);
-   void setRainForLast3h(double rain);
-   void setSnowForLast3h(double snow);
+   void setRainForNextPeriod(double rain);
+   void setSnowForNextPeriod(double snow);
    void setVisibility(int distance);
    void setUV(double uvIndex);
 
 private:
    const std::string m_deviceName;
+   boost::shared_ptr<yApi::historization::CDateTime> m_forecastDatetime;
    boost::shared_ptr<yApi::historization::CWeatherCondition> m_condition;
    boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
    boost::shared_ptr<yApi::historization::CTemperature> m_temperatureMin;

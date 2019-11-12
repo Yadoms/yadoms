@@ -1,13 +1,13 @@
 # ------------------------------------
 # --
-# --  Configuration files for Yadoms v1.00 beta
+# --  Configuration files for Yadoms v1.0.1 beta
 # --  This file is for retrieve all values from the WES equipment revision 2.
 # --
 # ------------------------------------
 t <form>
 # COMPTEURS TELEINFO
 # COMPTEUR 1
-c es1 <html><id>CPT1_adco</id><value>%s</value></html>
+c ea1 <html><id>CPT1_adco</id><value>%s</value></html>
 c TP1 <html><id>CPT1_PTarif</id><value>%d</value></html>
 c ed1 <html><id>CPT1_abo_name</id><value>%d</value></html>
 c ii0 <html><id>CPT1_IINST_mono</id><value>%d A</value></html>
@@ -20,7 +20,7 @@ c TI15<html><id>CPT1_INDEX_5</id><value>%d</value></html>
 c TI16<html><id>CPT1_INDEX_6</id><value>%d</value></html>
 c Tp1 <html><id>DEMAIN_1</id><value>%d</value></html>
 # COMPTEUR 2
-c es2 <html><id>CPT2_adco</id><value>%s</value></html>
+c ea2 <html><id>CPT2_adco</id><value>%s</value></html>
 c TP2 <html><id>CPT2_PTarif</id><value>%d</value></html>
 c ed2 <html><id>CPT2_abo_name</id><value>%d</value></html>
 c Ii0 <html><id>CPT2_IINST_mono</id><value>%d A</value></html>
@@ -33,7 +33,7 @@ c TI25<html><id>CPT2_INDEX_5</id><value>%d</value></html>
 c TI26<html><id>CPT2_INDEX_6</id><value>%d</value></html>
 c Tp2 <html><id>DEMAIN_2</id><value>%d</value></html>
 # COMPTEUR 3
-c es3 <html><id>CPT3_adco</id><value>%s</value></html>
+c ea3 <html><id>CPT3_adco</id><value>%s</value></html>
 c TP3 <html><id>CPT3_PTarif</id><value>%d</value></html>
 c ed3 <html><id>CPT3_abo_name</id><value>%d</value></html>
 c II0 <html><id>CPT3_IINST_mono</id><value>%d A</value></html>
@@ -71,9 +71,9 @@ c o E2 <bssw><id>RL2</id><value>%d</value></bssw>
 c l E1 <text><id>I1</id><value>%d</value></text>
 c l E2 <text><id>I2</id><value>%d</value></text>
 # ANALOGIQUE
-c l A1 <html><id>ad1</id><value>%f</value></html>
-c l A2 <html><id>ad2</id><value>%f</value></html>
-c l A3 <html><id>ad3</id><value>%f</value></html>
-c l A4 <html><id>ad4</id><value>%f</value></html>
+c l A1 <html><id>ad1</id><value>%d</value></html>
+c l A2 <html><id>ad2</id><value>%d</value></html>
+c l A3 <html><id>ad3</id><value>%d</value></html>
+c l A4 <html><id>ad4</id><value>%d</value></html>
 t </form>
 .
