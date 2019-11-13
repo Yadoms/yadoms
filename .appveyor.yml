@@ -55,11 +55,11 @@ install:
   - ps: echo "Download extra libs..."
   - ps: if (!(Test-Path 'extra_libs')) { mkdir 'extra_libs' }
   - ps: pushd extra_libs
-  - ps: if (!(Test-Path 'boost_1_71_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_71_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
-  - ps: if (!(Test-Path 'poco-1.8.1-all')) { Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.8.1-all-build.7z -OutFile poco.7z; 7z x poco.7z -bso0 }
+  - ps: if (!(Test-Path 'boost_1_70_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_70_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
+  - ps: if (!(Test-Path 'poco-1.9.4-all')) { Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.9.4-all-build.7z -OutFile poco.7z; 7z x poco.7z -bso0 }
   - ps: if (!(Test-Path 'openssl-1.1.0g')) { Invoke-WebRequest http://yadoms.com/appveyor_build/openssl-1.1.0g-build.7z -OutFile openssl.7z; 7z x openssl.7z -bso0 }
   - ps: if (!(Test-Path 'swig-3.0.12')) { Invoke-WebRequest http://yadoms.com/appveyor_build/swig-3.0.12-build.7z -OutFile swig.7z; 7z x swig.7z -bso0 }
-  - ps: if (!(Test-Path 'protobuf-3.4.1')) { Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.4.1-build.7z -OutFile protobuf.7z; 7z x protobuf.7z -bso0 }
+  - ps: if (!(Test-Path 'protobuf-3.10.1')) { Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.10.1-build.7z -OutFile protobuf.7z; 7z x protobuf.7z -bso0 }
   - ps: if (!(Test-Path 'pgsql')) { Invoke-WebRequest http://yadoms.com/appveyor_build/postgresql-9.6.2-3-windows-binaries.zip -OutFile pgsql.zip; 7z x pgsql.zip -bso0 }
   - ps: if (!(Test-Path 'gammu-1.37.4')) { Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.37.4-build.7z -OutFile gammu.7z; 7z x gammu.7z -bso0 }
   - ps: rm *.7z
