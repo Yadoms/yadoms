@@ -118,7 +118,7 @@ if(${Python3_FOUND})
    #########################################
    add_subdirectory(yScriptApiWrapper)
    
-else()
+#TODO remettre else()
    message("==================================================================")
    message("Python3_ROOT: ${Python3_ROOT}")
    message("Python3_FOUND: ${Python3_FOUND}")
@@ -127,5 +127,6 @@ else()
    message("Python3_Interpreter_FOUND: ${Python3_Interpreter_FOUND}")
    message("Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
 
+else() #TODO supprimer
    message(SEND_ERROR "yPython3 interpreter is not available. Python 3.x library is Mssing")
 endif()
