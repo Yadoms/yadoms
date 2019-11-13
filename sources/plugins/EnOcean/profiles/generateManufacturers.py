@@ -51,6 +51,7 @@ manufacturersClass.addMethod(cppClass.CppMethod('name', 'const std::string&', 'E
 
 
 # Start
+print ('Script run with Python version ' + sys.version)
 try:
    os.makedirs(outputPath)
 except OSError:
