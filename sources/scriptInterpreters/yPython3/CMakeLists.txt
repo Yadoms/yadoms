@@ -8,7 +8,7 @@ set(PYTHON_LIBRARY PYTHON_LIBRARY-NOTFOUND)
 
 # Extract library if several configurations are provided
 macro(EXTRACT_LIBRARY INPUT OUTPUT CONFIGURATION)
-  set(LST ${INPUT})   # can we avoid this?
+  set(LST ${INPUT})
   list(LENGTH LST LST_LENGTH)
   if(LST_LENGTH EQUAL 1)
       set(${OUTPUT} ${LST})
@@ -143,7 +143,7 @@ if(${Python3_FOUND})
    #########################################
    add_subdirectory(yScriptApiWrapper)
    
-#TODO remettre else()
+else()
    message("==================================================================")
    message("Python3_ROOT: ${Python3_ROOT}")
    message("Python3_FOUND: ${Python3_FOUND}")
@@ -152,6 +152,5 @@ if(${Python3_FOUND})
    message("Python3_Interpreter_FOUND: ${Python3_Interpreter_FOUND}")
    message("Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
 
-else() #TODO supprimer
    message(SEND_ERROR "yPython3 interpreter is not available. Python 3.x library is Mssing")
 endif()
