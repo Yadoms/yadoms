@@ -5,6 +5,27 @@ set(Python3_USE_STATIC_LIBS FALSE)
 set(PYTHON_INCLUDE_DIR PYTHON_INCLUDE_DIR-NOTFOUND)
 set(PYTHON_LIBRARY PYTHON_LIBRARY-NOTFOUND)
 
+
+# Extract library if several configurations are provided
+macro(EXTRACT_LIBRARY INPUT OUTPUT CONFIGURATION)
+  set(LST ${INPUT})   # can we avoid this?
+  list(LENGTH LST LST_LENGTH)
+  if(LST_LENGTH EQUAL 1)
+      set(${OUTPUT} ${LST})
+  else()
+     set(TAKE_NEXT NO)
+     foreach(ELEMENT IN LISTS LST)
+      if(TAKE_NEXT)
+         set(${OUTPUT} ${ELEMENT})
+         break()
+      elseif(${ELEMENT} STREQUAL ${CONFIGURATION})
+         set(TAKE_NEXT YES)
+      endif()
+     endforeach()
+  endif()
+endmacro(EXTRACT_LIBRARY)
+
+
 if(${Python3_ManualSetup})
 	if(EXISTS ${Python3_EXECUTABLE})
 		set(Python3_Interpreter_FOUND TRUE)
@@ -77,6 +98,10 @@ if(${Python3_FOUND})
          platformSpecific/windows/PythonExecutablePath.cpp
       )	
       set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platformSpecific/windows)
+
+      # Default Python installation doen't provide debug library (python38_d.lib),
+      # so link with the release library for both configurations
+      EXTRACT_LIBRARY("${Python3_LIBRARIES}" Python3_LIBRARIES optimized)      
 
    ELSEIF(APPLE)
       set(YPYTHON3_SOURCES	
