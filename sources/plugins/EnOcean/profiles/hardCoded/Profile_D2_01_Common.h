@@ -18,8 +18,8 @@ public:
    ) ;
 
    DECLARE_ENUM_HEADER(EConnectedSwitchsType,
-      ((externalSwitch)(1))
-      ((externalPushButton)(2))
+      ((switch)(1))
+      ((pushButton)(2))
       ((autodetection)(3))
    ) ;
 
