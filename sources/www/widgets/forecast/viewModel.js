@@ -249,8 +249,15 @@ widgetViewModelCtor =
          $.when.apply($, arrayOfDeffered)
             .done(function () {
                self.widgetApi.registerKeywordForNewAcquisitions(listenKeywordIds);
-               debugger;
-               self.widgetApi.getLastValue(listenKeywordIds);
+               
+               // Cannot use self.widgetApi.getLastValue here, as keywords list is not known at configurationChanged end.
+               // So directy get last keywords values and call onNewAcquisition
+               KeywordManager.getLastValues(listenKeywordIds)
+                  .done(function (data) {
+                     for (let [keywordId, keywordLastValue] of Object.entries(data)) {
+                        self.onNewAcquisition(keywordId, { value: keywordLastValue.lastValue });
+                     }
+                  });
             })
             .fail(function (error) {
                throw "Fail to configure widget : " + error;
