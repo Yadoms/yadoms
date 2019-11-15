@@ -2,8 +2,51 @@ function Convertmstokmh(value) {
    return value * 3.6;
 }
 
-widgetViewModelCtor =
+function ConditionsDevice(keywords) {
+   assert(!isNullOrUndefined(keywords), "keywords array must be defined");
+   assert(!isNullOrUndefined(keywords.length) && keywords.length > 0, "keywords array is empty");
 
+   this.deviceId = keywords[0].deviceId;
+
+   this.conditionKw = keywords.find(function (kw) { return kw.capacityName == "weathercondition"; });
+   assert(!isNullOrUndefined(this.conditionKw), "weathercondition must be provided");
+
+   this.forecastDatetimeKw = keywords.find(function (kw) { return kw.capacityName == "datetime"; });
+
+   var temperatureKws = keywords.filter(kw => kw.capacityName == "temperature");
+   if (temperatureKws.length == 1) {
+      this.temperatureKw = temperatureKws[0];
+   }
+   else if (temperatureKws.length > 1) {
+      this.temperatureKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase() == "temperature"; });
+      this.temperatureMinKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase() == "temperature min"; });
+      this.temperatureMaxKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase() == "temperature max"; });
+   }
+   this.temperatureUnity = keywords.find(function (kw) { return kw.capacityName == "temperature"; }).units;
+
+   this.humidityKw = keywords.find(function (kw) { return kw.capacityName == "humidity"; });
+
+   this.pressureKw = keywords.find(function (kw) { return kw.capacityName == "pressure"; });
+
+   var rainKws = keywords.filter(kw => kw.capacityName == "rain");
+   if (rainKws.length == 1) {
+      this.rainKw = rainKws[0];
+   }
+   else if (rainKws.length > 1) {
+      this.rainKw = rainKws.find(function (kw) { return kw.name.toLowerCase().includes("rain"); });
+      this.snowKw = rainKws.find(function (kw) { return kw.name.toLowerCase().includes("snow"); });
+   }
+
+   this.uvKw = keywords.find(function (kw) { return kw.capacityName == "uv"; });
+
+   this.visibilityKw = keywords.find(function (kw) { return kw.capacityName == "distance"; });
+
+   this.windDirectionKw = keywords.find(function (kw) { return kw.capacityName == "direction"; });
+
+   this.windspeedKw = keywords.find(function (kw) { return kw.capacityName == "speed"; });
+}
+
+widgetViewModelCtor =
    /**
     * Create a Forecast ViewModel
     * @constructor
@@ -180,25 +223,38 @@ widgetViewModelCtor =
 
       this.configurationChanged = function () {
          var self = this;
-
+         //TODO le top serait de ne devoir sélectionner que le device (les keywords étant récupérés dynamiquement). Il faut sélectionner tout device contenant au moins le KW conditions (le seul requis)
          if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
 
-         var keywordIds = self.widget.configuration.devices[0/*TODO*/].content.source.keywords.map(x => x.id);
+         self.dateformat = self.widget.configuration.DateFormat;
 
-         //we register keywords for new acquisition
-         self.widgetApi.registerKeywordForNewAcquisitions(keywordIds);
+         self.devicesIdPerPeriod = self.widget.configuration.devices.map(x => x.content.source.deviceId);
 
-         //we register keywords for get last values at web client startup
-         self.widgetApi.getLastValue(keywordIds);
+         var arrayOfDeffered = [];
+         var listenKeywordIds = [];
+         self.devices = [];
+         self.devicesIdPerPeriod.forEach(function (deviceId) {
+            var d = $.Deferred();
+            DeviceManager.getKeywordsByDeviceId(deviceId)
+               .done(function (keywords) {
+                  self.devices[keywords.deviceId] = new ConditionsDevice(keywords);
+                  Array.prototype.push.apply(listenKeywordIds, keywords.map(kw => kw.id));
+                  d.resolve();
+               })
+               .fail(d.reject);
+            arrayOfDeffered.push(d.promise());
+         });
 
-         try {
-            //Read the date format
-            self.dateformat = self.widget.configuration.DateFormat;
-         }
-         catch (err) {
-            console.debug(err.message);
-         }
+         $.when.apply($, arrayOfDeffered)
+            .done(function () {
+               self.widgetApi.registerKeywordForNewAcquisitions(listenKeywordIds);
+               debugger;
+               self.widgetApi.getLastValue(listenKeywordIds);
+            })
+            .fail(function (error) {
+               throw "Fail to configure widget : " + error;
+            });
       }
 
       this.resized = function () {
