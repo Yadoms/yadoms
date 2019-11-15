@@ -28,7 +28,7 @@ function DeviceParameterHandler(i18NContext, i18nKey, paramName, content, curren
    }
 }
 
-function getDeviceMatchingCriteria(self) {
+function getDeviceMatchingDeviceCriteria(self) {
    var requestData = {};
 
    if (!isNullOrUndefined(self.content.expectedName))
@@ -85,7 +85,7 @@ DeviceParameterHandler.prototype.applyScript = function () {
       $deviceList.prop('disabled', false);
    });
 
-   getDeviceMatchingCriteria(self)
+   getDeviceMatchingDeviceCriteria(self)
       .done(function (data) {
          var tabDevice = [];
          $.each(data.devices, function (index, value) {
