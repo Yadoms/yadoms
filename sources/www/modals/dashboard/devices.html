@@ -177,7 +177,9 @@
    dispatchDevicesDeletedToDevicesView = function (device) {
       // remove device and device-details if any ...
       getDeviceDomRow(device.device).remove();
-      getDeviceDetailsDomRow().remove();
+	  if (parseInt(getDeviceDetailsDomRow().attr("device-id")) == parseInt(device.device.id)){
+         getDeviceDetailsDomRow().remove();
+	  }
       $("p.nokeyword-for-device").remove();
 
       // Remove the device from the device list to display
