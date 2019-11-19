@@ -15,12 +15,20 @@
         }
       }
     },
+    "Iconset": {
+      "name": "Jeu d'icônes",
+      "description": "Sélectionner le jeu d'icônes à utiliser",
+       "values": {
+          "material": "Material design",
+          "color": "Couleur"
+       }
+    },
     "DateFormat": {
       "name": "Format de la date",
       "description": "Choisir le format de la date du widget",
       "values": {
-        "DateFormat1": "Court (Lundi 15)",
-        "DateFormat2": "Long (15 juin 2015)"
+        "short": "Court (Lundi 15)",
+        "long": "Long (15 juin 2015)"
       }
     }
   },

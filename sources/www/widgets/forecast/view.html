@@ -5,11 +5,13 @@
             <div class="cases" data-bind="text: TimeDate" style="width: 65px"></div>
             <div class="centerimage"> <img data-bind="attr:{ src: WeatherIcon }" height="37" width="37"></div>
             <div class="cases">
-               <span data-bind="text: TempMin" style="color: blue"></span><span>/</span><span data-bind="text: TempMax" style="color: red" ></span>
+               <span data-bind="text: TempMin" style="color: blue"></span>
+               <span>/</span>
+               <span data-bind="text: TempMax" style="color: red"></span>
             </div>
       
-            <canvas class="centerimage wind-canvas" data-bind="attr: { id: WindCanvasId }, event: { load: $root.canvasload( WindCanvasId, AveWindDegrees, AveWind, MaxWind ) }" height="45" width="45"></canvas>
-            <canvas class="centerimage rain-canvas" data-bind="attr: { id: RainCanvasId }, event: { load: $root.RainCanvasLoad( RainCanvasId, RainDay ) }" height="45" width="40"></canvas>
+            <canvas class="centerimage wind-canvas" data-bind="attr: { id: WindCanvasId }, event: { load: $root.Windcanvasload( WindCanvasId, AveWindDegrees, AveWind ) }" height="45" width="45"></canvas>
+            <canvas class="centerimage rain-canvas" data-bind="attr: { id: RainCanvasId }, event: { load: $root.RainCanvasLoad( RainCanvasId, Rain ) }" height="45" width="40"></canvas>
          </div>
       </div>
    </div>

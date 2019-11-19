@@ -15,12 +15,20 @@
         }
       }
     },
+    "Iconset": {
+      "name": "Icons set",
+      "description": "Select the icons set to use",
+       "values": {
+          "material": "Material design",
+          "color": "Color"
+       }
+    },
     "DateFormat": {
       "name": "Date Format",
       "description": "Choose the date format of the widget",
       "values": {
-        "DateFormat1": "Short date. Ex: Monday 15",
-        "DateFormat2": "Long date. Ex: June 15, 2015"
+        "short": "Short date. Ex: Monday 15",
+        "long": "Long date. Ex: June 15, 2015"
       }
     }
   },

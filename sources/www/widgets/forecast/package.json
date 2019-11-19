@@ -40,13 +40,21 @@
             }
          }
       },
+      "Iconset": {
+         "type": "enum",
+         "values": {
+            "material": "Material",
+            "color": "Color"
+         },
+         "defaultValue": "material"
+      },
       "DateFormat": {
          "type": "enum",
          "values": {
-            "DateFormat1": "Short date. Ex: Monday 15",
-            "DateFormat2": "Long date. Ex: June 15, 2015"
+            "short": "Short date. Ex: Monday 15",
+            "long": "Long date. Ex: June 15, 2015"
          },
-         "defaultValue": "DateFormat1"
+         "defaultValue": "short"
       }
    }
 }

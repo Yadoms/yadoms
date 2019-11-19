@@ -44,6 +44,164 @@ function ConditionsDevice(keywords) {
    this.windDirectionKw = keywords.find(function (kw) { return kw.capacityName == "direction"; });
 
    this.windspeedKw = keywords.find(function (kw) { return kw.capacityName == "speed"; });
+
+   this.hasKeywordId = function (keywordId) {
+      if (keywordId == this.conditionKw.id
+         || keywordId == this.forecastDatetimeKw.id
+         || keywordId == this.temperatureKw.id
+         || keywordId == this.temperatureMinKw.id
+         || keywordId == this.temperatureMaxKw.id
+         || keywordId == this.humidityKw.id
+         || keywordId == this.pressureKw.id
+         || keywordId == this.rainKw.id
+         || keywordId == this.snowKw.id
+         || keywordId == this.uvKw.id
+         || keywordId == this.visibilityKw.id
+         || keywordId == this.windDirectionKw.id
+         || keywordId == this.windspeedKw.id)
+         return this;
+   }
+
+   this.values = new Map();
+   this.setValue = function (keywordId, data) {
+      this.values.set(parseInt(keywordId), data);
+   }
+   this.getCondition = function () { return this.values.get(this.conditionKw.id); }
+   this.getForecastDateTime = function (format) {
+      return moment(new Date(this.values.get(this.forecastDatetimeKw.id))).format(format === "short" ? 'dddd D' : 'LL');
+   }
+   this.getTemperature = function () {
+      return isNullOrUndefined(this.values.get(this.temperatureKw.id)) ? "" : (this.values.get(this.temperatureKw.id) + this.temperatureUnity);
+   }
+   this.getTemperatureMin = function () {
+      return isNullOrUndefined(this.values.get(this.temperatureMinKw.id)) ? "" : (this.values.get(this.temperatureMinKw.id) + this.temperatureUnity);
+   }
+   this.getTemperatureMax = function () {
+      return isNullOrUndefined(this.values.get(this.temperatureMaxKw.id)) ? "" : (this.values.get(this.temperatureMaxKw.id) + this.temperatureUnity);
+   }
+   this.getWindSpeed = function () {
+      return isNullOrUndefined(this.values.get(this.windspeedKw.id)) ? "" : (Convertmstokmh(parseFloat(this.values.get(this.windspeedKw.id), 10)).toFixed(0));
+   }
+   this.getWindDirection = function () {
+      return isNullOrUndefined(this.values.get(this.windDirectionKw.id)) ? "" : this.values.get(this.windDirectionKw.id);
+   }
+   this.getRain = function () {
+      return isNullOrUndefined(this.values.get(this.rainKw.id)) ? "" : this.values.get(this.rainKw.id);
+   }
+   this.getWeatherIconPath = function (iconset) {
+      debugger;
+      var path = "widgets/forecast/images/" + iconset + "/";
+      switch (iconset) {
+         case "material":
+            switch (this.values.get(this.conditionKw.id)) {
+               case "Sunny": return path + "Sunny.png";
+               case "Cloudy": return path + "Cloudy.png";
+               case "CloudyGusts": return path + "Cloudy.png";
+               case "CloudyWindy": return path + "Cloudy.png";
+               case "CloudyHigh": return path + "Cloudy.png";
+               case "PartlyCloudy": return path + "PartlySunny.png";
+               case "Fog": return path + "Fog.png";
+               case "Hail": return path + "Sleet.png";
+               case "Haze": return path + "Fog.png";
+               case "Drizzle": return path + "Rain.png";
+               case "Lightning": return path + "Storm.png";
+               case "Rain": return path + "Rain.png";
+               case "RainMix": return path + "Rain.png";
+               case "RainWind": return path + "Rain.png";
+               case "Showers": return path + "Rain.png";
+               case "Sleet": return path + "Sleet.png";
+               case "SleetStorm": return path + "Sleet.png";
+               case "Snow": return path + "Snow.png";
+               case "SnowThunderstorm": return path + "Snow.png";
+               case "SnowWind": return path + "Snow.png";
+               case "Sprinkle": return path + "Snow.png";
+               case "StormShowers": return path + "Rain.png";
+               case "Thunderstorm": return path + "Storm.png";
+               case "Windy": return path + "Sunny.png";
+               case "LightWind": return path + "Sunny.png";
+               case "NightClear": return path + "Night_Clear.png";
+               case "NightCloudy": return path + "Night_Cloudy.png";
+               case "NightCloudyGusts": return path + "Night_Cloudy.png";
+               case "NightCloudyWindy": return path + "Night_Cloudy.png";
+               case "NightCloudyHigh": return path + "Night_Cloudy.png";
+               case "NightPartlyCloudy": return path + "Night_Cloudy.png";
+               case "NightFog": return path + "Night_Cloudy.png";
+               case "NightHail": return path + "Night_Rain.png";
+               case "NightHaze": return path + "Night_Cloudy.png";
+               case "NightLightning": return path + "Storm.png";
+               case "NightRain": return path + "Night_Rain.png";
+               case "NightRainMix": return path + "Night_Rain.png";
+               case "NightRainWind": return path + "Night_Rain.png";
+               case "NightShowers": return path + "Night_Rain.png";
+               case "NightSleet": return path + "Night_Rain.png";
+               case "NightSleetStorm": return path + "Night_Rain.png";
+               case "NightSnow": return path + "Night_Snow.png";
+               case "NightSnowThunderstorm": return path + "Night_Snow.png";
+               case "NightSnowWind": return path + "Night_Snow.png";
+               case "NightSprinkle": return path + "Night_Snow.png";
+               case "NightStormShowers": return path + "Night_Rain.png";
+               case "NightThunderstorm": return path + "Night_Rain.png";
+               case "NightWindy": return path + "Night_Clear.png";
+               case "NightLightWind": return path + "Night_Clear.png";
+            }
+            break;
+         case "color":
+            switch (this.values.get(this.conditionKw.id)) {
+               case "Sunny": return path + "sunny.png";
+               case "Cloudy": return path + "cloudy.png";
+               case "CloudyGusts": return path + "wind.png";
+               case "CloudyWindy": return path + "wind.png";
+               case "CloudyHigh": return path + "cloudy.png";
+               case "PartlyCloudy": return path + "partly-cloudy.png";
+               case "Fog": return path + "fog.png";
+               case "Hail": return path + "freezing-rain.png";
+               case "Haze": return path + "hazy.png";
+               case "Drizzle": return path + "drizzle.png";
+               case "Lightning": return path + "thunder-storm.png";
+               case "Rain": return path + "rainy.png";
+               case "RainMix": return path + "rainy-snow.png";
+               case "RainWind": return path + "rainy.png";
+               case "Showers": return path + "showers.png";
+               case "Sleet": return path + "sleet.png";
+               case "SleetStorm": return path + "sleet.png";
+               case "Snow": return path + "snow.png";
+               case "SnowThunderstorm": return path + "blowing-snow.png";
+               case "SnowWind": return path + "snow.png";
+               case "Sprinkle": return path + "snow.png";
+               case "StormShowers": return path + "rainy.png";
+               case "Thunderstorm": return path + "thunder-storm.png";
+               case "Windy": return path + "wind.png";
+               case "LightWind": return path + "wind.png";
+               case "NightClear": return path + "moon.png";
+               case "NightCloudy": return path + "m-cloudy-night.png";
+               case "NightCloudyGusts": return path + "m-cloudy-night.png";
+               case "NightCloudyWindy": return path + "m-cloudy-night.png";
+               case "NightCloudyHigh": return path + "m-cloudy-night.png";
+               case "NightPartlyCloudy": return path + "p-c-night.png";
+               case "NightFog": return path + "m-cloudy-night.png";
+               case "NightHail": return path + "m-c-night-rain.png";
+               case "NightHaze": return path + "m-cloudy-night.png";
+               case "NightLightning": return path + "m-c-night-rain.png";
+               case "NightRain": return path + "m-c-night-rain.png";
+               case "NightRainMix": return path + "m-c-night-rain.png";
+               case "NightRainWind": return path + "m-c-night-rain.png";
+               case "NightShowers": return path + "m-c-night-rain.png";
+               case "NightSleet": return path + "m-c-night-rain.png";
+               case "NightSleetStorm": return path + "m-c-night-rain.png";
+               case "NightSnow": return path + "m-c-night-snow.png";
+               case "NightSnowThunderstorm": return path + "m-c-night-snow.png";
+               case "NightSnowWind": return path + "m-c-night-snow.png";
+               case "NightSprinkle": return path + "m-c-night-snow.png";
+               case "NightStormShowers": return path + "m-c-night-rain.png";
+               case "NightThunderstorm": return path + "m-c-night-rain.png";
+               case "NightWindy": return path + "moon.png";
+               case "NightLightWind": return path + "moon.png";
+            }
+            break;
+      }
+      console.warn("Unknwon condition value. iconset = " + iconset + ", conditionValue = ", this.values.get(this.conditionKw.id))
+      return "";
+   }
 }
 
 widgetViewModelCtor =
@@ -54,21 +212,21 @@ widgetViewModelCtor =
    function forecastViewModel() {
 
       //observable data
-      this.data = ko.observable("");
+      this.data = ko.observable(""); //TODO conserver ?
 
       //Default value - This value is overwrite after
-      this.period = ko.observableArray();
+      this.period = ko.observableArray(); //TODO conserver ?
 
       //Definition of the temporary array
-      this.TempPeriod = new Array();
+      this.TempPeriod = new Array(); //TODO conserver ?
 
-      this.dateformat = "";
+      this.devices = [];
 
       //Number of day to be displayed
-      this.DayNumber = ko.observable(10);
+      this.ControlNumber = ko.observable(10); //TODO conserver ?
 
       //Height of the widget.
-      this.height = 0;
+      this.height = 0; //TODO conserver ?
 
       /**
        * Initialization method
@@ -84,13 +242,14 @@ widgetViewModelCtor =
 
       /**
        * Draw in circle the speed and the direction of the wind
-       * @data device identifier which make the values
+       * @canvasId device identifier which make the values
        * @WindPosition Direction from the Wind
        * @WindSpeed    Speed of the Wind
        */
-      this.canvasload = function (data, windPosition, windSpeed, maxWindSpeed) {
+      this.Windcanvasload = function (canvasId, windPosition, windSpeed) {
+         debugger;
          //get a reference to the canvas
-         var ctx = this.widgetApi.find("#" + data).get(0).getContext("2d");
+         var ctx = this.widgetApi.find("#" + canvasId).get(0).getContext("2d");
 
          // Refresh the canvas, clear all existing information
          ctx.clearRect(0, 0, 42, 42);
@@ -118,17 +277,19 @@ widgetViewModelCtor =
 
          ctx.font = "11px Georgia";
 
-         //write the text at the same position as the height of the column
-         ctx.fillText(windSpeed, 22 - (6 * String(windSpeed).match(/\d/g).length) / 2, 18);
+         if (!isNullOrUndefinedOrEmpty(windSpeed)) {
+            //write the text at the same position as the height of the column
+            ctx.fillText(windSpeed, 22 - (6 * String(windSpeed).match(/\d/g).length) / 2, 18);
 
-         ctx.fillStyle = "rgb(255,0,0)"; // blue Azur clair
-         ctx.fillText(maxWindSpeed, 22 - (6 * String(maxWindSpeed).match(/\d/g).length) / 2, 30);
+            // ctx.fillStyle = "rgb(255,0,0)"; // blue Azur clair
+            // ctx.fillText(maxWindSpeed, 22 - (6 * String(maxWindSpeed).match(/\d/g).length) / 2, 30);//TODO virer
+         }
          ctx.stroke();
       };
 
-      this.RainCanvasLoad = function (data, rainValue) {
+      this.RainCanvasLoad = function (canvasId, rainValue) {
          //get a reference to the canvas
-         var ctx = this.widgetApi.find("#" + data).get(0).getContext("2d");
+         var ctx = this.widgetApi.find("#" + canvasId).get(0).getContext("2d");
 
          // Refresh the canvas, clear all existing information
          ctx.clearRect(0, 0, 40, 45);
@@ -162,72 +323,127 @@ widgetViewModelCtor =
          ctx.stroke();
       };
 
+      this.findControlIndexFromKeywordId = function (keywordId) {
+         return this.devices.findIndex(function (device) {
+            return device.hasKeywordId(keywordId);
+         });
+      }
+
+      this.findDeviceFromKeywordId = function (keywordId) {
+         return this.devices.find(function (device) {
+            return device.hasKeywordId(keywordId);
+         });
+      }
+
+      this.onFirstAcquisition = function (keywordId, data) {
+         this.findDeviceFromKeywordId(keywordId).setValue(keywordId, data);
+      }
+
       /**
        * New acquisition handler
        * @param device Device on which new acquisition was received
        * @param data Acquisition data
        */
       this.onNewAcquisition = function (keywordId, data) {
-         debugger;
-         var self = this;
 
-         if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
-            if (data.value && data.value !== "") {
-               var obj = jQuery.parseJSON(data.value);
+         const controlIndex = this.findControlIndexFromKeywordId(keywordId);
 
-               //We delete all information already keep in.
-               while (self.TempPeriod.length > 0) {
-                  self.TempPeriod.pop();
-               }
+         if (isNullOrUndefined(controlIndex))
+            return;
 
-               self.DayNumber(obj.forecast.length);
+         this.findDeviceFromKeywordId(keywordId).setValue(keywordId, data);
 
-               //Copy of all object into the temporary array
-               $.each(obj.forecast, function (i) {
-                  // create the name for each div where wind canvas will be attached
-                  var elementId = 'widget-column-' + i;
+         refresh();
+      }
 
-                  // create the name for each div where rain canvas will be attached
-                  var rainElementId = 'widget-rain-' + i;
+      this.refresh = function () {
+         self = this;
 
-                  var timeString = "";
+         self.TempPeriod = new Array();
 
-                  if (self.dateformat === "DateFormat1") {
-                     //Ex: Mon. 15
-                     timeString = moment(obj.forecast[i].Day + "-" + obj.forecast[i].Month, "DD-MM").format('dddd').substring(0, 3) + ". " + obj.forecast[i].Day;
-                  } else if (self.dateformat === "DateFormat2") {
-                     timeString = moment(obj.forecast[i].Day + "-" + obj.forecast[i].Month, "DD-MM").format('LL');
-                  }
+         //TODO virer ? self.ControlNumber(obj.forecast.length);
 
-                  self.TempPeriod.push({
-                     WeatherCondition: obj.forecast[i].WeatherCondition,
-                     TimeDate: timeString,
-                     TempMax: obj.forecast[i].TempMax + $.t(obj.Units.temperature),
-                     TempMin: obj.forecast[i].TempMin + $.t(obj.Units.temperature),
-                     MaxWind: Convertmstokmh(parseFloat(obj.forecast[i].MaxWind, 10)).toFixed(0),
-                     AveWind: Convertmstokmh(parseFloat(obj.forecast[i].AveWind, 10)).toFixed(0),
-                     AveWindDegrees: obj.forecast[i].AveWindDegrees,
-                     WindCanvasId: elementId,
-                     RainCanvasId: rainElementId,
-                     RainDay: obj.forecast[i].RainDay,
-                     WeatherIcon: "widgets/forecast/images/Icons1/" + obj.forecast[i].WeatherCondition + ".png"
-                  });
-               }
-               );
+         // Redraw
+         $.each(self.devices, function (index, device) {
+            // create the name for each div where wind canvas will be attached
+            var windElementId = 'widget-wind-' + index;
 
-               //Resize the widget and display the elements automatically
-               self.resized();
-            }
-         }
-      };
+            // create the name for each div where rain canvas will be attached
+            var rainElementId = 'widget-rain-' + index;
+
+            self.TempPeriod.push({
+               WeatherCondition: device.getCondition(),
+               TimeDate: device.getForecastDateTime(self.widget.configuration.DateFormat),
+               TempMax: device.getTemperatureMax(),
+               TempMin: device.getTemperatureMin(),
+               AveWind: device.getWindSpeed(),
+               AveWindDegrees: device.getWindDirection(),
+               WindCanvasId: windElementId,
+               RainCanvasId: rainElementId,
+               Rain: device.getRain(),
+               WeatherIcon: device.getWeatherIconPath(self.widget.configuration.Iconset)
+            }); //TODO exploiter les valeurs non encore exploitées(snow...)
+
+         });
+
+         //Resize the widget and display the elements automatically
+         self.resized();
+      }
+
+      //TODO j'en suis là
+      /*
+               if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
+                  if (data.value && data.value !== "") {
+                     var obj = jQuery.parseJSON(data.value);
+      
+                     this.TempPeriod = new Array();
+      
+                     self.ControlNumber(obj.forecast.length);
+      
+                     //Copy of all object into the temporary array
+                     $.each(obj.forecast, function (i) {
+                        // create the name for each div where wind canvas will be attached
+                        var elementId = 'widget-column-' + i;
+      
+                        // create the name for each div where rain canvas will be attached
+                        var rainElementId = 'widget-rain-' + i;
+      
+                        var timeString = "";
+      
+                        if (self.dateformat === "DateFormat1") {
+                           //Ex: Mon. 15
+                           timeString = moment(obj.forecast[i].Day + "-" + obj.forecast[i].Month, "DD-MM").format('dddd').substring(0, 3) + ". " + obj.forecast[i].Day;
+                        } else if (self.dateformat === "DateFormat2") {
+                           timeString = moment(obj.forecast[i].Day + "-" + obj.forecast[i].Month, "DD-MM").format('LL');
+                        }
+      
+                        self.TempPeriod.push({
+                           WeatherCondition: obj.forecast[i].WeatherCondition,
+                           TimeDate: timeString,
+                           TempMax: obj.forecast[i].TempMax + $.t(obj.Units.temperature),
+                           TempMin: obj.forecast[i].TempMin + $.t(obj.Units.temperature),
+                           MaxWind: Convertmstokmh(parseFloat(obj.forecast[i].MaxWind, 10)).toFixed(0),
+                           AveWind: Convertmstokmh(parseFloat(obj.forecast[i].AveWind, 10)).toFixed(0),
+                           AveWindDegrees: obj.forecast[i].AveWindDegrees,
+                           WindCanvasId: elementId,
+                           RainCanvasId: rainElementId,
+                           RainDay: obj.forecast[i].RainDay,
+                           WeatherIcon: "widgets/forecast/images/Icons1/" + obj.forecast[i].WeatherCondition + ".png"
+                        });
+                     }
+                     );
+      
+                     //Resize the widget and display the elements automatically
+                     self.resized();
+   }
+   }
+      };*/
 
       this.configurationChanged = function () {
          var self = this;
          //TODO le top serait de ne devoir sélectionner que le device (les keywords étant récupérés dynamiquement). Il faut sélectionner tout device contenant au moins le KW conditions (le seul requis)
          if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
-
-         self.dateformat = self.widget.configuration.DateFormat;
 
          self.devicesIdPerPeriod = self.widget.configuration.devices.map(x => x.content.source.deviceId);
 
@@ -238,7 +454,7 @@ widgetViewModelCtor =
             var d = $.Deferred();
             DeviceManager.getKeywordsByDeviceId(deviceId)
                .done(function (keywords) {
-                  self.devices[keywords.deviceId] = new ConditionsDevice(keywords);
+                  self.devices.push(new ConditionsDevice(keywords));
                   Array.prototype.push.apply(listenKeywordIds, keywords.map(kw => kw.id));
                   d.resolve();
                })
@@ -249,14 +465,15 @@ widgetViewModelCtor =
          $.when.apply($, arrayOfDeffered)
             .done(function () {
                self.widgetApi.registerKeywordForNewAcquisitions(listenKeywordIds);
-               
+
                // Cannot use self.widgetApi.getLastValue here, as keywords list is not known at configurationChanged end.
                // So directy get last keywords values and call onNewAcquisition
                KeywordManager.getLastValues(listenKeywordIds)
                   .done(function (data) {
                      for (let [keywordId, keywordLastValue] of Object.entries(data)) {
-                        self.onNewAcquisition(keywordId, { value: keywordLastValue.lastValue });
+                        self.onFirstAcquisition(keywordId, keywordLastValue.lastValue);
                      }
+                     self.refresh();
                   });
             })
             .fail(function (error) {
@@ -268,21 +485,21 @@ widgetViewModelCtor =
          var self = this;
 
          if (self.widget.getWidth() <= 100)
-            self.DayNumber(1);
+            self.ControlNumber(1); //TODO revoir le nombre
          else if (self.widget.getWidth() <= 200) // if length = 2 cases -> 2 days
-            self.DayNumber(3);
+            self.ControlNumber(3); //TODO revoir le nombre
          else if (self.widget.getWidth() <= 300) // if length = 3 cases -> 3 days
-            self.DayNumber(4);
+            self.ControlNumber(4); //TODO revoir le nombre
          else if (self.widget.getWidth() <= 400) // if length = 4 cases -> 5 days
-            self.DayNumber(6);
+            self.ControlNumber(6); //TODO revoir le nombre
          else if (self.widget.getWidth() <= 500) // if length = 5 cases -> 6 days
-            self.DayNumber(6);
+            self.ControlNumber(6); //TODO revoir le nombre
          else if (self.widget.getWidth() <= 600) // if length = 6 cases -> 8 days
-            self.DayNumber(8);
-         else if (self.DayNumber() !== 10)  // Otherwise 10 days
-            self.DayNumber(10);
+            self.ControlNumber(8); //TODO revoir le nombre
+         else if (self.ControlNumber() !== 10)  // Otherwise 10 days
+            self.ControlNumber(10); //TODO revoir le nombre
 
          self.period.removeAll();
-         self.period(self.TempPeriod.slice(0, self.DayNumber()));
+         self.period(self.TempPeriod.slice(0, self.ControlNumber()));
       };
    };
