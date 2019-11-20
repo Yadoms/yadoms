@@ -3,7 +3,7 @@ function Convertmstokmh(value) {
 }
 
 function round(value, precision) {
-   if (typeof value == "string"){
+   if (typeof value == "string") {
       value = parseFloat(value);
    }
    var multiplier = Math.pow(10, precision || 0);
@@ -247,42 +247,6 @@ widgetViewModelCtor =
          });
       };
 
-      this.RainCanvasLoad = function (canvasId, rainValue) {
-         //get a reference to the canvas
-         var ctx = this.widgetApi.find("#" + canvasId).get(0).getContext("2d");
-
-         // Refresh the canvas, clear all existing information
-         ctx.clearRect(0, 0, 40, 45);
-
-         ctx.fillStyle = "rgb(116,208,241)"; // blue Azur clair
-
-         var rain = parseInt(rainValue, 10);
-         if (isNaN(rain)) rain = 0;
-
-         var positionY = 0;
-         if (rainValue < 40)
-            positionY = 40 - rain;
-
-         ctx.fillRect(0, positionY, 40, rain);
-         ctx.stroke();
-
-         ctx.strokeStyle = "rgb(116,208,241)"; // blue Azur clair
-
-         ctx.beginPath();
-         ctx.moveTo(40, 0);
-         ctx.lineTo(40, 40);
-         ctx.closePath();
-
-         ctx.fillStyle = "rgb(0,0,255)"; // black
-
-         // We use the same font as in the css file
-         ctx.font = $(".cases").css("font-size") + " " + $(".cases").css("font-family");
-
-         //write the text at the same position as the height of the column
-         ctx.fillText(rainValue, 20 - (7 * String(rainValue).length) / 2, 23);
-         ctx.stroke();
-      };
-
       this.findControlIndexFromKeywordId = function (keywordId) {
          return this.devices.findIndex(function (device) {
             return device.hasKeywordId(keywordId);
@@ -325,12 +289,6 @@ widgetViewModelCtor =
 
          // Redraw
          $.each(self.devices, function (index, device) {
-            // create the name for each div where wind canvas will be attached
-            var windElementId = 'widget-wind-' + index;
-
-            // create the name for each div where rain canvas will be attached
-            var rainElementId = 'widget-rain-' + index;
-
             self.TempPeriod.push({
                WeatherCondition: device.getCondition(),
                TimeDate: device.getForecastDateTime(self.widget.configuration.DateFormat),
@@ -338,9 +296,7 @@ widgetViewModelCtor =
                TempMin: device.getTemperatureMin(),
                AveWind: device.getWindSpeed() + " km/h",
                RotateWind: "transform:rotate(" + device.getWindDirection() + "deg);",
-               WindCanvasId: windElementId,
-               RainCanvasId: rainElementId,
-               Rain: device.getRain(),
+               Rain: device.getRain() + " mm",
                WeatherIcon: device.getWeatherIconPath(self.widget.configuration.Iconset)
             }); //TODO exploiter les valeurs non encore exploitées(snow...)
 

@@ -9,22 +9,19 @@
          "minimumVersion": "2.4.0-beta.1"
       }
    },
+   "hasTitle": true,
    "dimensions": {
-      "stepSize": {
-         "x": 2,
-         "y": 2
-      },
       "min": {
          "x": 1,
-         "y": 1
+         "y": 3
       },
       "max": {
-         "x": 3,
-         "y": 1
+         "x": 4,
+         "y": 3
       },
       "default": {
          "x": 2,
-         "y": 1
+         "y": 3
       }
    },
    "configurationSchema": {

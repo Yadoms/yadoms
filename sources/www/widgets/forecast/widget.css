@@ -1,8 +1,8 @@
-.widget-forecast .centerimage {
+.widget-forecast .condition {
    display: flex;
-   margin:0 auto;
+   margin: 0 auto;
    justify-content: center;
-   width: 50px;
+   width: 100px;
 }
 
 .widget-forecast .date {
@@ -21,17 +21,22 @@
 }
 
 .widget-forecast .layout {
-   height:auto;
-   flex-grow:1;
+   height: auto;
+   flex-grow: 1;
    flex-wrap: no-wrap;
    display: -webkit-flex;
    display: flex;
    -webkit-flex-direction: row;
-   flex-direction: row;   
+   flex-direction: row;
 }
 
-.widget-forecast .temp-image {
-   width: 10px;
+.widget-forecast .block {
+   margin-top: 10px;
+   margin-bottom: 10px;
+}
+
+.widget-forecast .block-image {
+   height: 20px;
 }
 
 .widget-forecast .temp-min {
@@ -40,8 +45,4 @@
 
 .widget-forecast .temp-max {
    color: red;
-}
-
-.widget-forecast .wind-image {
-   width: 10px;
 }
