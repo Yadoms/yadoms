@@ -2,6 +2,14 @@ function Convertmstokmh(value) {
    return value * 3.6;
 }
 
+function round(value, precision) {
+   if (typeof value == "string"){
+      value = parseFloat(value);
+   }
+   var multiplier = Math.pow(10, precision || 0);
+   return Math.round(value * multiplier) / multiplier;
+}
+
 function ConditionsDevice(keywords) {
    assert(!isNullOrUndefined(keywords), "keywords array must be defined");
    assert(!isNullOrUndefined(keywords.length) && keywords.length > 0, "keywords array is empty");
@@ -22,7 +30,7 @@ function ConditionsDevice(keywords) {
       this.temperatureMinKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase() == "temperature min"; });
       this.temperatureMaxKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase() == "temperature max"; });
    }
-   this.temperatureUnity = keywords.find(function (kw) { return kw.capacityName == "temperature"; }).units;
+   this.temperatureUnity = $.t(keywords.find(function (kw) { return kw.capacityName == "temperature"; }).units);
 
    this.humidityKw = keywords.find(function (kw) { return kw.capacityName == "humidity"; });
 
@@ -71,26 +79,25 @@ function ConditionsDevice(keywords) {
       return moment(new Date(this.values.get(this.forecastDatetimeKw.id))).format(format === "short" ? 'dddd D' : 'LL');
    }
    this.getTemperature = function () {
-      return isNullOrUndefined(this.values.get(this.temperatureKw.id)) ? "" : (this.values.get(this.temperatureKw.id) + this.temperatureUnity);
+      return isNullOrUndefined(this.values.get(this.temperatureKw.id)) ? "" : (round(this.values.get(this.temperatureKw.id), 1) + this.temperatureUnity);
    }
    this.getTemperatureMin = function () {
-      return isNullOrUndefined(this.values.get(this.temperatureMinKw.id)) ? "" : (this.values.get(this.temperatureMinKw.id) + this.temperatureUnity);
+      return isNullOrUndefined(this.values.get(this.temperatureMinKw.id)) ? "" : (round(this.values.get(this.temperatureMinKw.id), 1) + this.temperatureUnity);
    }
    this.getTemperatureMax = function () {
-      return isNullOrUndefined(this.values.get(this.temperatureMaxKw.id)) ? "" : (this.values.get(this.temperatureMaxKw.id) + this.temperatureUnity);
+      return isNullOrUndefined(this.values.get(this.temperatureMaxKw.id)) ? "" : (round(this.values.get(this.temperatureMaxKw.id), 1) + this.temperatureUnity);
    }
    this.getWindSpeed = function () {
-      return isNullOrUndefined(this.values.get(this.windspeedKw.id)) ? "" : (Convertmstokmh(parseFloat(this.values.get(this.windspeedKw.id), 10)).toFixed(0));
+      return isNullOrUndefined(this.values.get(this.windspeedKw.id)) ? "" : (round(Convertmstokmh(parseFloat(this.values.get(this.windspeedKw.id), 10)), 0));
    }
    this.getWindDirection = function () {
       return isNullOrUndefined(this.values.get(this.windDirectionKw.id)) ? "" : this.values.get(this.windDirectionKw.id);
    }
    this.getRain = function () {
-      return isNullOrUndefined(this.values.get(this.rainKw.id)) ? "" : this.values.get(this.rainKw.id);
+      return isNullOrUndefined(this.values.get(this.rainKw.id)) ? "" : round(this.values.get(this.rainKw.id), 1);
    }
    this.getWeatherIconPath = function (iconset) {
-      debugger;
-      var path = "widgets/forecast/images/" + iconset + "/";
+      var path = "widgets/forecast/images/conditions/" + iconset + "/";
       switch (iconset) {
          case "material":
             switch (this.values.get(this.conditionKw.id)) {
@@ -240,53 +247,6 @@ widgetViewModelCtor =
          });
       };
 
-      /**
-       * Draw in circle the speed and the direction of the wind
-       * @canvasId device identifier which make the values
-       * @WindPosition Direction from the Wind
-       * @WindSpeed    Speed of the Wind
-       */
-      this.Windcanvasload = function (canvasId, windPosition, windSpeed) {
-         debugger;
-         //get a reference to the canvas
-         var ctx = this.widgetApi.find("#" + canvasId).get(0).getContext("2d");
-
-         // Refresh the canvas, clear all existing information
-         ctx.clearRect(0, 0, 42, 42);
-
-         ctx.fillStyle = "rgb(0,0,0)"; // black
-
-         //draw a circle
-         ctx.beginPath();
-
-         ctx.arc(22, 22, 21, 0, Math.PI * 2, true);
-         ctx.closePath();
-
-         ctx.lineWidth = 1;
-         ctx.strokeStyle = '#000000';
-         ctx.stroke();
-
-         //triangle of the direction
-         ctx.beginPath();
-         ctx.moveTo(22 - 13 * Math.sin(Math.PI / 180 * parseInt(windPosition)), 22 - 13 * Math.cos(Math.PI / 180 * parseInt(windPosition)));
-         ctx.lineTo(22 - 20 * Math.sin(Math.PI / 180 * (parseInt(windPosition) + 10)), 22 - 20 * Math.cos(Math.PI / 180 * (parseInt(windPosition) + 10)));
-         ctx.lineTo(22 - 20 * Math.sin(Math.PI / 180 * (parseInt(windPosition) - 10)), 22 - 20 * Math.cos(Math.PI / 180 * (parseInt(windPosition) - 10)));
-         ctx.closePath();
-         ctx.fill();
-         ctx.stroke();
-
-         ctx.font = "11px Georgia";
-
-         if (!isNullOrUndefinedOrEmpty(windSpeed)) {
-            //write the text at the same position as the height of the column
-            ctx.fillText(windSpeed, 22 - (6 * String(windSpeed).match(/\d/g).length) / 2, 18);
-
-            // ctx.fillStyle = "rgb(255,0,0)"; // blue Azur clair
-            // ctx.fillText(maxWindSpeed, 22 - (6 * String(maxWindSpeed).match(/\d/g).length) / 2, 30);//TODO virer
-         }
-         ctx.stroke();
-      };
-
       this.RainCanvasLoad = function (canvasId, rainValue) {
          //get a reference to the canvas
          var ctx = this.widgetApi.find("#" + canvasId).get(0).getContext("2d");
@@ -376,8 +336,8 @@ widgetViewModelCtor =
                TimeDate: device.getForecastDateTime(self.widget.configuration.DateFormat),
                TempMax: device.getTemperatureMax(),
                TempMin: device.getTemperatureMin(),
-               AveWind: device.getWindSpeed(),
-               AveWindDegrees: device.getWindDirection(),
+               AveWind: device.getWindSpeed() + " km/h",
+               RotateWind: "transform:rotate(" + device.getWindDirection() + "deg);",
                WindCanvasId: windElementId,
                RainCanvasId: rainElementId,
                Rain: device.getRain(),
@@ -389,55 +349,6 @@ widgetViewModelCtor =
          //Resize the widget and display the elements automatically
          self.resized();
       }
-
-      //TODO j'en suis là
-      /*
-               if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
-                  if (data.value && data.value !== "") {
-                     var obj = jQuery.parseJSON(data.value);
-      
-                     this.TempPeriod = new Array();
-      
-                     self.ControlNumber(obj.forecast.length);
-      
-                     //Copy of all object into the temporary array
-                     $.each(obj.forecast, function (i) {
-                        // create the name for each div where wind canvas will be attached
-                        var elementId = 'widget-column-' + i;
-      
-                        // create the name for each div where rain canvas will be attached
-                        var rainElementId = 'widget-rain-' + i;
-      
-                        var timeString = "";
-      
-                        if (self.dateformat === "DateFormat1") {
-                           //Ex: Mon. 15
-                           timeString = moment(obj.forecast[i].Day + "-" + obj.forecast[i].Month, "DD-MM").format('dddd').substring(0, 3) + ". " + obj.forecast[i].Day;
-                        } else if (self.dateformat === "DateFormat2") {
-                           timeString = moment(obj.forecast[i].Day + "-" + obj.forecast[i].Month, "DD-MM").format('LL');
-                        }
-      
-                        self.TempPeriod.push({
-                           WeatherCondition: obj.forecast[i].WeatherCondition,
-                           TimeDate: timeString,
-                           TempMax: obj.forecast[i].TempMax + $.t(obj.Units.temperature),
-                           TempMin: obj.forecast[i].TempMin + $.t(obj.Units.temperature),
-                           MaxWind: Convertmstokmh(parseFloat(obj.forecast[i].MaxWind, 10)).toFixed(0),
-                           AveWind: Convertmstokmh(parseFloat(obj.forecast[i].AveWind, 10)).toFixed(0),
-                           AveWindDegrees: obj.forecast[i].AveWindDegrees,
-                           WindCanvasId: elementId,
-                           RainCanvasId: rainElementId,
-                           RainDay: obj.forecast[i].RainDay,
-                           WeatherIcon: "widgets/forecast/images/Icons1/" + obj.forecast[i].WeatherCondition + ".png"
-                        });
-                     }
-                     );
-      
-                     //Resize the widget and display the elements automatically
-                     self.resized();
-   }
-   }
-      };*/
 
       this.configurationChanged = function () {
          var self = this;

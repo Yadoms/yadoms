@@ -2,15 +2,22 @@
    <div class="layout">
       <div  data-bind="foreach: period" class="forecastlayout">
          <div class="daylayout">
-            <div class="cases" data-bind="text: TimeDate" style="width: 65px"></div>
-            <div class="centerimage"> <img data-bind="attr:{ src: WeatherIcon }" height="37" width="37"></div>
-            <div class="cases">
-               <span data-bind="text: TempMin" style="color: blue"></span>
-               <span>/</span>
-               <span data-bind="text: TempMax" style="color: red"></span>
+            <div class="date" data-bind="text: TimeDate"></div>
+            <img class="centerimage" data-bind="attr:{ src: WeatherIcon }">
+            <div>
+               <img class="temp-image" src="widgets/forecast/images/temp-min.png"/>
+               <span class="temp-min" data-bind="text: TempMin"></span>
+            </div>
+            <div>
+               <img class="temp-image" src="widgets/forecast/images/temp-max.png"/>
+               <span class="temp-max" data-bind="text: TempMax"></span>
             </div>
       
-            <canvas class="centerimage wind-canvas" data-bind="attr: { id: WindCanvasId }, event: { load: $root.Windcanvasload( WindCanvasId, AveWindDegrees, AveWind ) }" height="45" width="45"></canvas>
+            <div>
+               <img class="wind-image" src="widgets/forecast/images/wind.png"/>
+               <span data-bind="text: AveWind"></span>
+               <img class="wind-direction" src="widgets/forecast/images/wind-sud.png" data-bind="attr:{ style: RotateWind }"/>
+            </div>
             <canvas class="centerimage rain-canvas" data-bind="attr: { id: RainCanvasId }, event: { load: $root.RainCanvasLoad( RainCanvasId, Rain ) }" height="45" width="40"></canvas>
          </div>
       </div>

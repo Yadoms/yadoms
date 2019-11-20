@@ -2,18 +2,11 @@
    display: flex;
    margin:0 auto;
    justify-content: center;
+   width: 50px;
 }
 
-.widget-forecast .centerimageCity { 
-   margin:0 auto;
-   display: table;
-   font-weight: bold;
-}
-
-.widget-forecast .cases {
+.widget-forecast .date {
    display: flex;
-   font-family: "Georgia";
-   font-size: "14px";
    justify-content: center;
 }
 
@@ -35,4 +28,20 @@
    display: flex;
    -webkit-flex-direction: row;
    flex-direction: row;   
+}
+
+.widget-forecast .temp-image {
+   width: 10px;
+}
+
+.widget-forecast .temp-min {
+   color: blue;
+}
+
+.widget-forecast .temp-max {
+   color: red;
+}
+
+.widget-forecast .wind-image {
+   width: 10px;
 }
