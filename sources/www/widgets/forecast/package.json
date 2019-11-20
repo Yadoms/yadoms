@@ -10,17 +10,21 @@
       }
    },
    "dimensions": {
+      "stepSize": {
+         "x": 2,
+         "y": 2
+      },
       "min": {
          "x": 1,
-         "y": 2
+         "y": 1
       },
       "max": {
          "x": 3,
-         "y": 2
+         "y": 1
       },
       "default": {
-         "x": 3,
-         "y": 2
+         "x": 2,
+         "y": 1
       }
    },
    "configurationSchema": {
