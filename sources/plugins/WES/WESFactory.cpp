@@ -37,6 +37,7 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
             }
             catch (std::exception&)
             {
+				//TODO : Try restart the plugin with the equipment connected => We should have a error
             }
          }
 

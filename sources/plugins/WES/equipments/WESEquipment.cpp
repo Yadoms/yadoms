@@ -61,20 +61,7 @@ namespace equipments
             throw shared::exception::CException("WES Revision not properly set : " + boost::lexical_cast<std::string>(m_version));
 
          // get the firmware revision to desactivate the plugin if the revision is too low
-         std::string m_serverVersion = results.get<std::string>("version_serveur");
-
-         //separation of letters and digits
-         boost::regex reg("V([0-9]\\d*(\\.\\d+))([A-Z])");
-         boost::smatch match;
-
-         //Check the version
-         if (boost::regex_search(m_serverVersion, match, reg))
-         {
-            // match[1] => 0.83 The revision
-            // match[3] => E The revision letter
-            if (boost::lexical_cast<float>(match[1]) < 0.8)
-               throw CtooLowRevisionException("WES revision is < 0.80");
-         }
+		 checkRevision(results.get<std::string>("version_serveur"));
 
          if (pluginConfiguration->isRetrieveNamesFromdevice())
          {
@@ -271,8 +258,7 @@ namespace equipments
             for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
             {
                TICName[counter] = details.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
-               boost::make_shared<equipments::CTIC>(api,
-                                                    TICName[counter]);
+               boost::make_shared<equipments::CTIC>(api,TICName[counter]);
             }
          }
 
@@ -288,6 +274,23 @@ namespace equipments
          YADOMS_LOG(error) << e.what();
          throw CManuallyDeviceCreationException(e.what());
       }
+   }
+
+   void CWESEquipment::checkRevision(const std::string& revision)
+   {
+	   //separation of letters and digits
+	   boost::regex reg("V(\\d+)(\\.)?(\\d+\\.)?(\\*|\\d+)([A-Z])");
+	   boost::smatch match;
+
+	   //Check the version
+	   if (boost::regex_search(revision, match, reg)) {
+		   // match[4] => 83 The sub-number revision
+		   // match[5] => E The revision letter
+		   if ((boost::lexical_cast<int>(match[4]) < 83) || ((boost::lexical_cast<int>(match[4]) == 83) && (match[5] < 'H')))
+		     throw CtooLowRevisionException("WES revision is < 0.83H");
+	   }
+	   else
+		   throw std::exception("Could not check WES revision");
    }
 
    std::string CWESEquipment::getDeviceName() const
@@ -377,10 +380,8 @@ namespace equipments
          }
 
          //Reading analog values
-         if (m_configuration.isAnalogInputsActivated())
-         {
-            try
-            {
+         if (m_configuration.isAnalogInputsActivated()){
+            try{
                auto values = results.get<std::string>("ANA");
 
                //separation of letters and digits

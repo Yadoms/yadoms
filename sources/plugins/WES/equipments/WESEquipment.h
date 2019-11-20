@@ -47,6 +47,7 @@ namespace equipments
                        boost::shared_ptr<const yApi::IDeviceCommand> command) override;
       void remove(boost::shared_ptr<yApi::IYPluginApi> api) override;
       specificHistorizers::EWESdeviceStatus getStatus() const override;
+	  void checkRevision(const std::string& revision) override;
       // [END] IEquipment implementation
 
       //-----------------------------------------------------
