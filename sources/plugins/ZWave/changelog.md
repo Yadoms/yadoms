@@ -1,5 +1,6 @@
 ### 1.6.0.beta1
 * **Update OpenZwave to 1.6.xxx**
+* Enhance SensorBinary class (fix #592)
 * Remove libudev dependency
 
 ### 1.3.0
