@@ -1,9 +1,7 @@
 {
-   "type": "forecast",
-   "version": "1.1.1",
-   "author": "Jean-Michel BERHAULT",
-   "url": "https://github.com/Yadoms/yadoms/wiki/forecast",
-   "credits": "[Weather icons](https://www.iconfinder.com/)",
+   "type": "forecast-weather",
+   "version": "1.0.0",
+   "author": "Sébastien Gallou",
    "dependencies": {
       "yadoms": {
          "minimumVersion": "2.4.0-beta.1"
@@ -20,7 +18,7 @@
          "y": 3
       },
       "default": {
-         "x": 2,
+         "x": 4,
          "y": 3
       }
    },

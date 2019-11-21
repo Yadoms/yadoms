@@ -74,33 +74,17 @@ function ConditionsDevice(keywords) {
    this.setValue = function (keywordId, data) {
       this.values.set(parseInt(keywordId), data);
    }
-   this.getCondition = function () { return this.values.get(this.conditionKw.id); }
+
    this.getForecastDateTime = function (format) {
       return moment(new Date(this.values.get(this.forecastDatetimeKw.id))).format(format === "short" ? 'dddd D' : 'LL');
    }
-   this.getTemperature = function () {
-      return isNullOrUndefined(this.values.get(this.temperatureKw.id)) ? "" : (round(this.values.get(this.temperatureKw.id), 1) + this.temperatureUnity);
-   }
-   this.getTemperatureMin = function () {
-      return isNullOrUndefined(this.values.get(this.temperatureMinKw.id)) ? "" : (round(this.values.get(this.temperatureMinKw.id), 1) + this.temperatureUnity);
-   }
-   this.getTemperatureMax = function () {
-      return isNullOrUndefined(this.values.get(this.temperatureMaxKw.id)) ? "" : (round(this.values.get(this.temperatureMaxKw.id), 1) + this.temperatureUnity);
-   }
-   this.getWindSpeed = function () {
-      return isNullOrUndefined(this.values.get(this.windspeedKw.id)) ? "" : (round(Convertmstokmh(parseFloat(this.values.get(this.windspeedKw.id), 10)), 0));
-   }
-   this.getWindDirection = function () {
-      return isNullOrUndefined(this.values.get(this.windDirectionKw.id)) ? "" : this.values.get(this.windDirectionKw.id);
-   }
-   this.getRain = function () {
-      return isNullOrUndefined(this.values.get(this.rainKw.id)) ? "" : round(this.values.get(this.rainKw.id), 1);
-   }
+   
+   this.getCondition = function () { return this.values.get(this.conditionKw.id); }
    this.getWeatherIconPath = function (iconset) {
-      var path = "widgets/forecast/images/conditions/" + iconset + "/";
+      var path = "widgets/forecast-weather/images/conditions/" + iconset + "/";
       switch (iconset) {
          case "material":
-            switch (this.values.get(this.conditionKw.id)) {
+            switch (this.getCondition()) {
                case "Sunny": return path + "Sunny.png";
                case "Cloudy": return path + "Cloudy.png";
                case "CloudyGusts": return path + "Cloudy.png";
@@ -209,13 +193,67 @@ function ConditionsDevice(keywords) {
       console.warn("Unknwon condition value. iconset = " + iconset + ", conditionValue = ", this.values.get(this.conditionKw.id))
       return "";
    }
+
+   this.getTemperature = function () {
+      return isNullOrUndefined(this.values.get(this.temperatureKw.id)) ? "" : (round(this.values.get(this.temperatureKw.id), 1) + this.temperatureUnity);
+   }
+
+   this.hasTemperatureMinMax = function () {
+      return !isNullOrUndefined(this.values.get(this.temperatureMinKw.id)) && !isNullOrUndefined(this.values.get(this.temperatureMaxKw.id));
+   }   
+   this.getTemperatureMin = function () {
+      return isNullOrUndefined(this.values.get(this.temperatureMinKw.id)) ? "" : (round(this.values.get(this.temperatureMinKw.id), 1) + this.temperatureUnity);
+   }
+   this.getTemperatureMax = function () {
+      return isNullOrUndefined(this.values.get(this.temperatureMaxKw.id)) ? "" : (round(this.values.get(this.temperatureMaxKw.id), 1) + this.temperatureUnity);
+   }
+
+   this.hasTemperatureAvg = function () {
+      return !isNullOrUndefined(this.values.get(this.temperatureKw.id));
+   }   
+   this.getTemperatureAvg = function () {
+      return isNullOrUndefined(this.values.get(this.temperatureKw.id)) ? "" : (round(this.values.get(this.temperatureKw.id), 1) + this.temperatureUnity);
+   }
+
+   this.hasRainOrSnow = function () {
+      return !isNullOrUndefined(this.isSnow());
+   }   
+   this.getRainMm = function () {
+      return isNullOrUndefined(this.values.get(this.rainKw.id)) ? "" : round(this.values.get(this.rainKw.id), 1);
+   }
+   this.getSnowCm = function () {
+      // Note : 1 mm of precipitation gives approximatively 1 cm of snow
+      return isNullOrUndefined(this.values.get(this.snowKw.id)) ? "" : round(this.values.get(this.snowKw.id), 0);
+   }
+   this.isSnow = function () {
+      if (isNullOrUndefined(this.values.get(this.rainKw.id)) && isNullOrUndefined(this.values.get(this.snowKw.id))){
+         return undefined;
+      }
+      if (isNullOrUndefined(this.values.get(this.rainKw.id))){
+         return true;
+      }
+      if (isNullOrUndefined(this.values.get(this.snowKw.id))){
+         return false;
+      }
+      return this.values.get(this.snowKw.id) > this.values.get(this.rainKw.id);
+   }
+
+   this.hasWind = function () {
+      return !isNullOrUndefined(this.values.get(this.windspeedKw.id));
+   }
+   this.getWindSpeed = function () {
+      return isNullOrUndefined(this.values.get(this.windspeedKw.id)) ? "" : (round(Convertmstokmh(parseFloat(this.values.get(this.windspeedKw.id), 10)), 0));
+   }
+   this.hasWindDirection = function () {
+      return !isNullOrUndefined(this.values.get(this.windDirectionKw.id));
+   }
+   this.getWindDirection = function () {
+      return isNullOrUndefined(this.values.get(this.windDirectionKw.id)) ? "" : this.values.get(this.windDirectionKw.id);
+   }
 }
 
 widgetViewModelCtor =
-   /**
-    * Create a Forecast ViewModel
-    * @constructor
-    */
+
    function forecastViewModel() {
 
       //observable data
@@ -263,11 +301,6 @@ widgetViewModelCtor =
          this.findDeviceFromKeywordId(keywordId).setValue(keywordId, data);
       }
 
-      /**
-       * New acquisition handler
-       * @param device Device on which new acquisition was received
-       * @param data Acquisition data
-       */
       this.onNewAcquisition = function (keywordId, data) {
 
          const controlIndex = this.findControlIndexFromKeywordId(keywordId);
@@ -286,19 +319,28 @@ widgetViewModelCtor =
          self.TempPeriod = new Array();
 
          //TODO virer ? self.ControlNumber(obj.forecast.length);
-
-         // Redraw
          $.each(self.devices, function (index, device) {
             self.TempPeriod.push({
-               WeatherCondition: device.getCondition(),
                TimeDate: device.getForecastDateTime(self.widget.configuration.DateFormat),
+
+               WeatherIcon: device.getWeatherIconPath(self.widget.configuration.Iconset),
+
+               DisplayTemperatureMinMax: device.hasTemperatureMinMax() ? "display: block" : "display: none",
                TempMax: device.getTemperatureMax(),
-               TempMin: device.getTemperatureMin(),
-               AveWind: device.getWindSpeed() + " km/h",
-               RotateWind: "transform:rotate(" + device.getWindDirection() + "deg);",
-               Rain: device.getRain() + " mm",
-               WeatherIcon: device.getWeatherIconPath(self.widget.configuration.Iconset)
-            }); //TODO exploiter les valeurs non encore exploitées(snow...)
+               TempMin: device.getTemperatureMin(),               
+
+               DisplayTemperatureAvg: (!device.hasTemperatureMinMax() && device.hasTemperatureAvg()) ? "display: block" : "display: none",
+               TempAvg: device.getTemperatureAvg(),
+               
+               DisplayRainOrSnow: device.hasRainOrSnow() ? "display: block" : "display: none",
+               Rain: device.isSnow() ? (device.getSnowCm() + " cm") : (device.getRainMm() + " mm"),
+               RainOrSnowImage: "widgets/forecast-weather/images/" + (device.isSnow() ? "snow.png" : "rain.png"),
+
+               DisplayWind: device.hasWind() ? "display: block" : "display: none",
+               Wind: device.getWindSpeed() + " km/h",
+               DisplayWindDirection : device.hasWindDirection() ? "display: inline" : "display: none",
+               RotateWind: "transform:rotate(" + device.getWindDirection() + "deg);"
+            });
 
          });
 
