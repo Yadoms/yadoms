@@ -330,6 +330,15 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 
       break;
 
+   case ECommandClass::kSensorBinaryValue:
+      if (vLabel == "Detection" || boost::istarts_with(vLabel, "Sensor"))
+      {
+         CBoolTypeInfo ti(vID);
+         auto historizer(boost::make_shared<historizers::CSwitch>(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, ti));
+         return COpenZWaveNodeKeywordGeneric<bool>::create(historizer, vID);
+      }
+      break;
+
    case ECommandClass::kSwitchBinaryValue:
       if (vLabel == "Switch")
       {
