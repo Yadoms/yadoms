@@ -76,9 +76,20 @@ function ConditionsDevice(keywords) {
    }
 
    this.getForecastDateTime = function (format) {
-      return moment(new Date(this.values.get(this.forecastDatetimeKw.id))).format(format === "short" ? 'dddd D' : 'LL');
+      const date = moment(new Date(this.values.get(this.forecastDatetimeKw.id)));
+      switch (format) {
+         case "shortDate":
+            return date.format('dddd D');
+         case "longDate":
+            return date.format('LL');
+         case "hour":
+            return date.format('LT');
+         default:
+            console.warn("Invalid format for date " + format);
+            return "-";
+      }
    }
-   
+
    this.getCondition = function () { return this.values.get(this.conditionKw.id); }
    this.getWeatherIconPath = function (iconset) {
       var path = "widgets/forecast-weather/images/conditions/" + iconset + "/";
@@ -200,7 +211,7 @@ function ConditionsDevice(keywords) {
 
    this.hasTemperatureMinMax = function () {
       return !isNullOrUndefined(this.values.get(this.temperatureMinKw.id)) && !isNullOrUndefined(this.values.get(this.temperatureMaxKw.id));
-   }   
+   }
    this.getTemperatureMin = function () {
       return isNullOrUndefined(this.values.get(this.temperatureMinKw.id)) ? "" : (round(this.values.get(this.temperatureMinKw.id), 1) + this.temperatureUnity);
    }
@@ -210,14 +221,14 @@ function ConditionsDevice(keywords) {
 
    this.hasTemperatureAvg = function () {
       return !isNullOrUndefined(this.values.get(this.temperatureKw.id));
-   }   
+   }
    this.getTemperatureAvg = function () {
       return isNullOrUndefined(this.values.get(this.temperatureKw.id)) ? "" : (round(this.values.get(this.temperatureKw.id), 1) + this.temperatureUnity);
    }
 
    this.hasRainOrSnow = function () {
       return !isNullOrUndefined(this.isSnow());
-   }   
+   }
    this.getRainMm = function () {
       return isNullOrUndefined(this.values.get(this.rainKw.id)) ? "" : round(this.values.get(this.rainKw.id), 1);
    }
@@ -226,13 +237,13 @@ function ConditionsDevice(keywords) {
       return isNullOrUndefined(this.values.get(this.snowKw.id)) ? "" : round(this.values.get(this.snowKw.id), 0);
    }
    this.isSnow = function () {
-      if (isNullOrUndefined(this.values.get(this.rainKw.id)) && isNullOrUndefined(this.values.get(this.snowKw.id))){
+      if (isNullOrUndefined(this.values.get(this.rainKw.id)) && isNullOrUndefined(this.values.get(this.snowKw.id))) {
          return undefined;
       }
-      if (isNullOrUndefined(this.values.get(this.rainKw.id))){
+      if (isNullOrUndefined(this.values.get(this.rainKw.id))) {
          return true;
       }
-      if (isNullOrUndefined(this.values.get(this.snowKw.id))){
+      if (isNullOrUndefined(this.values.get(this.snowKw.id))) {
          return false;
       }
       return this.values.get(this.snowKw.id) > this.values.get(this.rainKw.id);
@@ -256,22 +267,13 @@ widgetViewModelCtor =
 
    function forecastViewModel() {
 
-      //observable data
-      this.data = ko.observable(""); //TODO conserver ?
-
       //Default value - This value is overwrite after
-      this.period = ko.observableArray(); //TODO conserver ?
+      this.period = ko.observableArray();
 
       //Definition of the temporary array
-      this.TempPeriod = new Array(); //TODO conserver ?
+      this.tempPeriod = new Array();
 
       this.devices = [];
-
-      //Number of day to be displayed
-      this.ControlNumber = ko.observable(10); //TODO conserver ?
-
-      //Height of the widget.
-      this.height = 0; //TODO conserver ?
 
       /**
        * Initialization method
@@ -316,29 +318,28 @@ widgetViewModelCtor =
       this.refresh = function () {
          self = this;
 
-         self.TempPeriod = new Array();
+         self.tempPeriod = new Array();
 
-         //TODO virer ? self.ControlNumber(obj.forecast.length);
          $.each(self.devices, function (index, device) {
-            self.TempPeriod.push({
+            self.tempPeriod.push({
                TimeDate: device.getForecastDateTime(self.widget.configuration.DateFormat),
 
                WeatherIcon: device.getWeatherIconPath(self.widget.configuration.Iconset),
 
                DisplayTemperatureMinMax: device.hasTemperatureMinMax() ? "display: block" : "display: none",
                TempMax: device.getTemperatureMax(),
-               TempMin: device.getTemperatureMin(),               
+               TempMin: device.getTemperatureMin(),
 
                DisplayTemperatureAvg: (!device.hasTemperatureMinMax() && device.hasTemperatureAvg()) ? "display: block" : "display: none",
                TempAvg: device.getTemperatureAvg(),
-               
+
                DisplayRainOrSnow: device.hasRainOrSnow() ? "display: block" : "display: none",
                Rain: device.isSnow() ? (device.getSnowCm() + " cm") : (device.getRainMm() + " mm"),
                RainOrSnowImage: "widgets/forecast-weather/images/" + (device.isSnow() ? "snow.png" : "rain.png"),
 
                DisplayWind: device.hasWind() ? "display: block" : "display: none",
                Wind: device.getWindSpeed() + " km/h",
-               DisplayWindDirection : device.hasWindDirection() ? "display: inline" : "display: none",
+               DisplayWindDirection: device.hasWindDirection() ? "display: inline" : "display: none",
                RotateWind: "transform:rotate(" + device.getWindDirection() + "deg);"
             });
 
@@ -391,24 +392,7 @@ widgetViewModelCtor =
       }
 
       this.resized = function () {
-         var self = this;
-
-         if (self.widget.getWidth() <= 100)
-            self.ControlNumber(1); //TODO revoir le nombre
-         else if (self.widget.getWidth() <= 200) // if length = 2 cases -> 2 days
-            self.ControlNumber(3); //TODO revoir le nombre
-         else if (self.widget.getWidth() <= 300) // if length = 3 cases -> 3 days
-            self.ControlNumber(4); //TODO revoir le nombre
-         else if (self.widget.getWidth() <= 400) // if length = 4 cases -> 5 days
-            self.ControlNumber(6); //TODO revoir le nombre
-         else if (self.widget.getWidth() <= 500) // if length = 5 cases -> 6 days
-            self.ControlNumber(6); //TODO revoir le nombre
-         else if (self.widget.getWidth() <= 600) // if length = 6 cases -> 8 days
-            self.ControlNumber(8); //TODO revoir le nombre
-         else if (self.ControlNumber() !== 10)  // Otherwise 10 days
-            self.ControlNumber(10); //TODO revoir le nombre
-
-         self.period.removeAll();
-         self.period(self.TempPeriod.slice(0, self.ControlNumber()));
+         this.period.removeAll();
+         this.period(this.tempPeriod.slice());
       };
    };

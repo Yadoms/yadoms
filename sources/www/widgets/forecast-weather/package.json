@@ -50,10 +50,11 @@
       "DateFormat": {
          "type": "enum",
          "values": {
-            "short": "Short date. Ex: Monday 15",
-            "long": "Long date. Ex: June 15, 2015"
+            "shortDate": "Short date. Ex: Monday 15",
+            "longDate": "Long date. Ex: June 15, 2015",
+            "hour": "Hour. Ex: 09:00"
          },
-         "defaultValue": "short"
+         "defaultValue": "shortDate"
       }
    }
 }

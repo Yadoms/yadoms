@@ -27,8 +27,9 @@
       "name": "Format de la date",
       "description": "Choisir le format de la date du widget",
       "values": {
-        "short": "Court (Lundi 15)",
-        "long": "Long (15 juin 2015)"
+        "shortDate": "Date courte (Lundi 15)",
+        "longDate": "Date Longue (15 juin 2015)",
+        "hour": "Heure. Ex: 09:00"
       }
     }
   },

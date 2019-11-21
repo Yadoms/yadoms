@@ -8,6 +8,7 @@
 .widget-forecast-weather .date {
    display: flex;
    justify-content: center;
+   font-weight: bold;
 }
 
 .widget-forecast-weather .forecast-layout {
