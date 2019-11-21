@@ -15,33 +15,25 @@ namespace equipments
          m_keywordName(keywordName),
          m_type(type)
       {
-         initializeAnalog(api, keywordsToDeclare, type, keywordName);
-      }
+		 boost::shared_ptr<yApi::historization::IHistorizable> temp;
 
-      void CAnalog::initializeAnalog(boost::shared_ptr<yApi::IYPluginApi> api,
-                                     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                                     const std::string& type,
-                                     const std::string& keywordName)
-      {
-         boost::shared_ptr<yApi::historization::IHistorizable> temp;
-
-         if (type == "temperature") {
-            m_TemperatureHistorizer = boost::make_shared<yApi::historization::CTemperature>(keywordName, yApi::EKeywordAccessMode::kGet);
-            temp = m_TemperatureHistorizer;
-         }
-         else if (type == "ampere") {
-            m_CurrentHistorizer = boost::make_shared<yApi::historization::CCurrent>(keywordName, yApi::EKeywordAccessMode::kGet);
-            temp = m_CurrentHistorizer;
-         }
-         else if (type == "voltage") {
-            m_VoltageHistorizer = boost::make_shared<yApi::historization::CVoltage>(keywordName, yApi::EKeywordAccessMode::kGet);
-            temp = m_VoltageHistorizer;
-         }
-         else if (type == "watthour") {
-            m_EnergyHistorizer = boost::make_shared<yApi::historization::CEnergy>(keywordName, yApi::EKeywordAccessMode::kGet);
-            temp = m_EnergyHistorizer;
-         }
-         keywordsToDeclare.push_back(temp);
+		 if (type == "temperature") {
+			 m_TemperatureHistorizer = boost::make_shared<yApi::historization::CTemperature>(keywordName, yApi::EKeywordAccessMode::kGet);
+			 temp = m_TemperatureHistorizer;
+		 }
+		 else if (type == "ampere") {
+			 m_CurrentHistorizer = boost::make_shared<yApi::historization::CCurrent>(keywordName, yApi::EKeywordAccessMode::kGet);
+			 temp = m_CurrentHistorizer;
+		 }
+		 else if (type == "voltage") {
+			 m_VoltageHistorizer = boost::make_shared<yApi::historization::CVoltage>(keywordName, yApi::EKeywordAccessMode::kGet);
+			 temp = m_VoltageHistorizer;
+		 }
+		 else if (type == "watthour") {
+			 m_EnergyHistorizer = boost::make_shared<yApi::historization::CEnergy>(keywordName, yApi::EKeywordAccessMode::kGet);
+			 temp = m_EnergyHistorizer;
+		 }
+		 keywordsToDeclare.push_back(temp);
       }
 
       void CAnalog::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,

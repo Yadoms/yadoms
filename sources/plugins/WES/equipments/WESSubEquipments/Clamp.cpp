@@ -13,16 +13,8 @@ namespace equipments
          m_deviceName(deviceName),
          m_keywordName(keywordName)
       {
-         initializeClamp(api, keywordsToDeclare, keywordName);
-      }
-
-      void CClamp::initializeClamp(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                                   const std::string& keywordName)
-      {
-         m_CounterClamp = boost::make_shared<yApi::historization::CEnergy>(keywordName,
-                                                                           yApi::EKeywordAccessMode::kGet);
-         keywordsToDeclare.push_back(m_CounterClamp);
+		  m_CounterClamp = boost::make_shared<yApi::historization::CEnergy>(keywordName, yApi::EKeywordAccessMode::kGet);
+		  keywordsToDeclare.push_back(m_CounterClamp);
       }
 
       void CClamp::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,

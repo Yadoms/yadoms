@@ -85,7 +85,7 @@
 						},
 						"analog": {
 							"name": "Définition des entrées analogiques",
-							"description": "Définissez ici, le type de chaque entrée analogique (pour le WES v2). Il faut que la valeur envoyée par le WES soit de la même unité. Si cette section n'est pas cochée, aucune valeur analogique sera synchronisée",
+							"description": "Définissez ici, le type de chaque entrée analogique (pour le WES v2). Il faut que la valeur envoyée par le WES soit de la même unité. Si cette section n'est pas cochée, aucune valeur analogique sera synchronisée. Un changement de type réinitialisera complètement la donnée.",
 							"content": {
 								"ana1": {
 									"name": "entrée analogique n°1",

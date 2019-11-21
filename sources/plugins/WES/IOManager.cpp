@@ -75,10 +75,8 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 
    YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command) ;
 
-   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
-   {
-      if (deviceName == (*iteratorDevice)->getDeviceName())
-      {
+   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice){
+      if (deviceName == (*iteratorDevice)->getDeviceName()){
          (*iteratorDevice)->sendCommand(api, command->getKeyword(), command);
          return;
       }
@@ -90,10 +88,8 @@ void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi
                                              const shared::CDataContainer& newConfiguration,
                                              const int refreshEvent)
 {
-   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
-   {
-      if (deviceName == (*iteratorDevice)->getDeviceName())
-      {
+   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice){
+      if (deviceName == (*iteratorDevice)->getDeviceName()){
          (*iteratorDevice)->updateConfiguration(api, newConfiguration, refreshEvent);
       }
    }
@@ -104,8 +100,7 @@ shared::CDataContainer CIOManager::bindMasterDevice()
    shared::CDataContainer ev;
    const auto counter = 0;
 
-   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
-   {
+   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice){
       ev.set(boost::lexical_cast<std::string>(counter + 1), (*iteratorDevice)->getDeviceName());
    }
 

@@ -17,22 +17,18 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
    CWESFactory factory;
 
    // Create all devices and equipments
-   for (const auto& device : api->getAllDevices())
-   {
+   for (const auto& device : api->getAllDevices()){
       std::string type = "";
 
       // plugin state have no type
-      try
-      {
+      try{
          type = api->getDeviceDetails(device).getWithDefault<std::string>("type", "");
 
-         if (type == "WES")
-         {
+         if (type == "WES"){
             try{
                deviceList.push_back(factory.createEquipment(api, device, configuration));
             }
-            catch (CTimeOutException&)
-            {
+            catch (CTimeOutException&){
                deviceToRetry.push_back(device);
             }
             catch (std::exception&)
@@ -45,8 +41,7 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
          if (type == "TIC")
          {}
       }
-      catch (std::exception& e)
-      {
+      catch (std::exception& e){
          YADOMS_LOG(error) << e.what();
          throw;
       }

@@ -64,19 +64,6 @@ namespace equipments
       private:
 
          //-----------------------------------------------------
-         ///\brief                                      initializeAnalog
-         ///\param[in] api                             Yadoms API
-         ///\param[in] keywordsToDeclare               list of keywords to declare
-         ///\param[in] pluginConfiguration             the plugin configuration
-         ///\param[in] type                            The type to be declared
-         ///\param[in] keywordName                     The keyword name
-         //-----------------------------------------------------
-         void initializeAnalog(boost::shared_ptr<yApi::IYPluginApi> api,
-                               std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                               const std::string& type,
-                               const std::string& keywordName);
-
-         //-----------------------------------------------------
          ///\brief                     The device name
          //-----------------------------------------------------
          std::string m_deviceName;

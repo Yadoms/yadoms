@@ -243,8 +243,7 @@ namespace equipments
          m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
          api->historizeData(m_deviceName, m_deviceStatus);
 
-         if (api->deviceExists(m_deviceName))
-         {
+         if (api->deviceExists(m_deviceName)){
             // We read TIC device names, to set the state for each
             details = api->getDeviceDetails(m_deviceName);
 
@@ -306,8 +305,7 @@ namespace equipments
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize;
 
-      try
-      {
+      try{
          if (m_version == 0 || m_version > 2)
             throw shared::exception::CException("m_version is not set properly : " + boost::lexical_cast<std::string>(m_version));
 
@@ -330,82 +328,61 @@ namespace equipments
             updateSwitchValue(keywordsToHistorize, m_relaysList[0], results.get<bool>("RL1"), forceHistorization);
             updateSwitchValue(keywordsToHistorize, m_relaysList[1], results.get<bool>("RL2"), forceHistorization);
          }
-         catch (std::exception& e)
-         {
+         catch (std::exception& e){
             YADOMS_LOG(warning) << "Exception reading relays" << e.what();
          }
 
-         try
-         {
+         try{
             updateSwitchValue(keywordsToHistorize, m_inputList[0], results.get<bool>("I1"), forceHistorization);
             updateSwitchValue(keywordsToHistorize, m_inputList[1], results.get<bool>("I2"), forceHistorization);
          }
-         catch (std::exception& e)
-         {
+         catch (std::exception& e){
             YADOMS_LOG(warning) << "Exception reading inputs" << e.what();
          }
 
          //Reading clamp values
-         for (auto counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
-         {
-            try
-            {
+         for (auto counter = 0; counter < m_WESIOMapping.clampQty; ++counter){
+            try{
                m_ClampList[counter]->updateFromDevice(api,
                                                       keywordsToHistorize,
                                                       results.get<Poco::Int64>("WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
             }
-            catch (std::exception& e)
-            {
+            catch (std::exception& e){
                YADOMS_LOG(warning) << "Error reading clamp " << "WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val" << e.what();
             }
          }
 
          //Reading pulse values
-         for (auto counter = 0; counter < m_WESIOMapping.pulseQty; ++counter)
-         {
-            try
-            {
+         for (auto counter = 0; counter < m_WESIOMapping.pulseQty; ++counter){
+            try{
                m_PulseList[counter]->updateFromDevice(api,
                                                       keywordsToHistorize,
                                                       results.get<subdevices::EUnit>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
                                                       results.get<double>("actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
             }
-            catch (std::exception& e)
-            {
+            catch (std::exception& e){
                YADOMS_LOG(warning) << "Error reading pulse " << "actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val :" << e.what();
             }
          }
 
          //Reading analog values
          if (m_configuration.isAnalogInputsActivated()){
-            try{
-               auto values = results.get<std::string>("ANA");
-
-               //separation of letters and digits
-               boost::regex reg("[-+]?([0-9]*\\.[0-9]+|[0-9]+),[-+]?([0-9]*\\.[0-9]+|[0-9]+),[-+]?([0-9]*\\.[0-9]+|[0-9]+),[-+]?([0-9]*\\.[0-9]+|[0-9]+)");
-               boost::smatch match;
-
-               //Check the version
-               if (boost::regex_search(values, match, reg))
-               {
-                  m_AnalogList[0]->updateFromDevice(api, keywordsToHistorize, boost::lexical_cast<double>(match[1]));
-                  m_AnalogList[1]->updateFromDevice(api, keywordsToHistorize, boost::lexical_cast<double>(match[2]));
-                  m_AnalogList[2]->updateFromDevice(api, keywordsToHistorize, boost::lexical_cast<double>(match[3]));
-                  m_AnalogList[3]->updateFromDevice(api, keywordsToHistorize, boost::lexical_cast<double>(match[4]));
-               }
-            }
-            catch (std::exception& e)
-            {
-               YADOMS_LOG(warning) << "Exception reading analog ANA" << e.what();
-            }
+			for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter) {
+				try {
+					auto value = results.get<double>("ad"+boost::lexical_cast<std::string>(counter + 1));
+					m_AnalogList[counter]->updateFromDevice(api, keywordsToHistorize, value);
+				}
+				catch (std::exception& e) {
+					YADOMS_LOG(warning) << "Error reading ad " + boost::lexical_cast<std::string>(counter + 1) + " value :" << e.what();
+				}
+			}
          }
 
          setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kOk);
          api->historizeData(m_deviceName, keywordsToHistorize);
 
          // TIC Counters Values -> independant from the others keywords
-         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
-         {
+         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter){
             m_TICList[counter]->updateFromDevice(api,
                                                  m_deviceStatus->get(),
                                                  results.get<equipments::ContractAvailable>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
@@ -421,22 +398,19 @@ namespace equipments
                                                  results.get<int>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1)));
          }
       }
-      catch (CTimeOutException&)
-      {
+      catch (CTimeOutException&){
          setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kTimeOut);
          api->historizeData(m_deviceName, keywordsToHistorize);
 
          for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
             m_TICList[counter]->setDeviceState(api, specificHistorizers::EWESdeviceStatus::kTimeOut);
       }
-      catch (std::exception& e)
-      {
+      catch (std::exception& e){
          YADOMS_LOG(error) << e.what();
          setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kError);
          api->historizeData(m_deviceName, keywordsToHistorize);
 
-         if (m_TICList.size() == m_WESIOMapping.ticQty)
-         {
+         if (m_TICList.size() == m_WESIOMapping.ticQty){
             for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
                m_TICList[counter]->setDeviceState(api, specificHistorizers::EWESdeviceStatus::kError);
          }
@@ -467,26 +441,36 @@ namespace equipments
 
       // For Analog
       //Reading analog values
-      if (m_configuration.isAnalogInputsActivated())
-      {
+      if (m_configuration.isAnalogInputsActivated()){
          // Analog Values Configuration
-         for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
-         {
+		  std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare;
+         for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter){
             auto analogConfigurationType = m_configuration.analogInputsType(counter + 1);
             // remove the keyword, if the type is different. It should be recreated automatically at next reading
-            if (m_AnalogList[counter]->type() != analogConfigurationType)
-            {
+            if (m_AnalogList[counter]->type() != analogConfigurationType){
                api->removeKeyword(m_deviceName, m_AnalogList[counter]->name());
-               api->getEventHandler().postEvent(refreshEvent);
+			   const auto temp = boost::make_shared<subdevices::CAnalog>(api,
+				   keywordsToDeclare,
+				   analogConfigurationType,
+				   m_deviceName,
+				   m_AnalogList[counter]->name());
+			   m_AnalogList[counter] = temp;
             }
          }
+
+		 // Declare new keywords
+		 if (keywordsToDeclare.size() != 0) {
+			 api->declareKeywords(m_deviceName, keywordsToDeclare);
+			 api->getEventHandler().postEvent(refreshEvent);
+		 }
       }
       else {
-         for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
-         {
+         for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter){
             // If keyword already exists, we delete it
-            if (m_AnalogList[counter] || api->keywordExists(m_deviceName, m_AnalogList[counter]->name()))
-               api->removeKeyword(m_deviceName, m_AnalogList[counter]->name());
+			 if (m_AnalogList[counter] || api->keywordExists(m_deviceName, m_AnalogList[counter]->name())) {
+				 api->removeKeyword(m_deviceName, m_AnalogList[counter]->name());
+				 m_AnalogList.erase(m_AnalogList.begin() + counter + 1);
+			 }
          }
       }
    }
@@ -497,8 +481,7 @@ namespace equipments
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize;
 
-      try
-      {
+      try{
          shared::CDataContainer credentials;
          shared::CDataContainer parameters;
          std::string stringState;
@@ -541,15 +524,12 @@ namespace equipments
             }
          }
 
-         if (results.containsChild("Relai2"))
-         {
-            if (results.get<std::string>("Relai2") == "ON" && !m_relaysList[1]->get())
-            {
+         if (results.containsChild("Relai2")){
+            if (results.get<std::string>("Relai2") == "ON" && !m_relaysList[1]->get()){
                m_relaysList[1]->set(true);
                keywordsToHistorize.push_back(m_relaysList[1]);
             }
-            else if (results.get<std::string>("Relai2") == "OFF" && m_relaysList[1]->get())
-            {
+            else if (results.get<std::string>("Relai2") == "OFF" && m_relaysList[1]->get()){
                m_relaysList[1]->set(false);
                keywordsToHistorize.push_back(m_relaysList[1]);
             }
@@ -558,8 +538,7 @@ namespace equipments
          setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kOk);
          api->historizeData(m_deviceName, keywordsToHistorize);
       }
-      catch (std::exception& e)
-      {
+      catch (std::exception& e){
          keywordsToHistorize.clear();
          setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kError);
          api->historizeData(m_deviceName, keywordsToHistorize);
@@ -570,16 +549,14 @@ namespace equipments
    void CWESEquipment::setDeviceState(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywordsToHistorize,
                                       specificHistorizers::EWESdeviceStatus newState) const
    {
-      if (m_deviceStatus->get() != newState)
-      {
+      if (m_deviceStatus->get() != newState){
          m_deviceStatus->set(newState);
          keywordsToHistorize.push_back(m_deviceStatus);
          YADOMS_LOG(trace) << "device state " << m_deviceName << " set to " << newState.toString();
       }
    }
 
-   specificHistorizers::EWESdeviceStatus CWESEquipment::getStatus() const
-   {
+   specificHistorizers::EWESdeviceStatus CWESEquipment::getStatus() const{
       return m_deviceStatus->get();
    }
 
