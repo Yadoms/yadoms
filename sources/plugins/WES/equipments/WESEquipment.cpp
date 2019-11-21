@@ -162,8 +162,7 @@ namespace equipments
          }
 
          // Relay Configuration
-         for (auto counter = 0; counter < m_WESIOMapping.relayQty; ++counter)
-         {
+         for (auto counter = 0; counter < m_WESIOMapping.relayQty; ++counter){
             const auto temp = boost::make_shared<yApi::historization::CSwitch>(relayName[counter],
                                                                          yApi::EKeywordAccessMode::kGetSet);
             m_relaysList.push_back(temp);
@@ -171,8 +170,7 @@ namespace equipments
          }
 
          // Input Configuration
-         for (auto counter = 0; counter < m_WESIOMapping.inputQty; ++counter)
-         {
+         for (auto counter = 0; counter < m_WESIOMapping.inputQty; ++counter){
             const auto temp = boost::make_shared<yApi::historization::CSwitch>(inputName[counter],
                                                                          yApi::EKeywordAccessMode::kGet);
             m_inputList.push_back(temp);
@@ -180,8 +178,7 @@ namespace equipments
          }
 
          // TIC Counters Configuration
-         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
-         {
+         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter){
             const auto temp = boost::make_shared<equipments::CTIC>(api,
                                                                    m_deviceName + " - " + TICName[counter],
                                                                    counterId[counter],
@@ -192,8 +189,7 @@ namespace equipments
          }
 
          // Pulse Counters Configuration
-         for (auto counter = 0; counter < m_WESIOMapping.pulseQty; ++counter)
-         {
+         for (auto counter = 0; counter < m_WESIOMapping.pulseQty; ++counter){
             const auto temp = boost::make_shared<subdevices::CPulse>(api,
                                                                keywordsToDeclare,
                                                                m_deviceName,
@@ -203,8 +199,7 @@ namespace equipments
          }
 
          // Current clamp Configuration
-         for (auto counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
-         {
+         for (auto counter = 0; counter < m_WESIOMapping.clampQty; ++counter){
             const auto temp = boost::make_shared<subdevices::CClamp>(api,
                                                                keywordsToDeclare,
                                                                m_deviceName,
@@ -213,15 +208,17 @@ namespace equipments
          }
 
          // Analog Values Configuration
-         for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
-         {
-            const auto temp = boost::make_shared<subdevices::CAnalog>(api,
-                                                                      keywordsToDeclare,
-                                                                      m_configuration.analogInputsType(counter + 1),
-                                                                      m_deviceName,
-                                                                      AnalogName[counter]);
-            m_AnalogList.push_back(temp);
-         }
+		 // TODO : Read Analog if activated !
+		 if (m_configuration.isAnalogInputsActivated()) {
+			 for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter){
+				 const auto temp = boost::make_shared<subdevices::CAnalog>(api,
+					 keywordsToDeclare,
+					 m_configuration.analogInputsType(counter + 1),
+					 m_deviceName,
+					 AnalogName[counter]);
+				 m_AnalogList.push_back(temp);
+			 }
+		 }
 
          // Save names into details
          details.set("provider", "WES");
