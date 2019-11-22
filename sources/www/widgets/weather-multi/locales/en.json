@@ -1,16 +1,16 @@
 {
-  "name": "Weather forecast",
-  "description": "This widget display forecast for next days. A plugin getting weather forecast data must be installed (ex : WeatherUnderGround).",
+  "name": "Weather live and forecast",
+  "description": "This widget displays multiple weather data. It's useful to current and forecast weather conditions.",
   "configurationSchema": {
     "devices": {
-      "name": "Forecast devices",
-      "description": "The devices providing weather forecast for next days",
+      "name": "Weather source devices",
+      "description": "The devices providing weather condition per period",
       "item": {
         "name": "",
         "content": {
           "source": {
-            "name": "Forecast device",
-            "description": "Select the device for this day"
+            "name": "Weather source device",
+            "description": "Select the weather condition source for a period"
           }
         }
       }
@@ -33,5 +33,5 @@
       }
     }
   },
-  "forecastUpdated": "Forecast updated"
+  "LiveConditions": "Live"
 }

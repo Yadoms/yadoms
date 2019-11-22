@@ -56,9 +56,6 @@ namespace web
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("matchkeywordcriteria"),
                                                         CDevice::getDeviceMatchKeywordCriteria,
                                                         CDevice::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("matchdevicecriteria"),
-                                                        CDevice::getDeviceMatchDeviceCriteria,
-                                                        CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"),
                                         CDevice::getDeviceKeywordsForCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
@@ -519,53 +516,6 @@ namespace web
                return CResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
             }
          }
-
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceMatchDeviceCriteria(
-            const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
-         {
-            try
-            {
-               // Get all devices matching some criteria.
-               // Criteria are provided by a JSON string, like :
-               //
-               // {
-               //    "expectedKeywordType": [
-               //       "numeric",
-               //       "bool",
-               //       "Enum"
-               //    ],
-               //    "expectedName" : ["Forecast weather day + 1"]
-               // }
-               //
-               // The answer is a JSON string, like :
-               // {
-               //    "devices": [ deviceEntity1, deviceEntity2... ]
-               // }
-               //
-               const auto criteria = shared::CDataContainer(requestContent);
-
-               const auto expectedNames = criteria.exists("expectedName")
-                                             ? criteria.get<std::vector<std::string>>("expectedName")
-                                             : std::vector<std::string>();
-
-               const auto& devices = m_deviceManager->getDevicesMatchingCriteria(expectedNames,
-                                                                                 false);
-
-               shared::CDataContainer collection;
-               collection.set("devices", devices);
-               return CResult::GenerateSuccess(collection);
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
-            }
-         }
-
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceKeywordsForCapacity(
             const std::vector<std::string>& parameters,

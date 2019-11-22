@@ -52,8 +52,7 @@ namespace dataAccessLayer
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacity(
          const std::string& capacityName,
-         const shared::plugin::yPluginApi::EKeywordAccessMode&
-         capacityAccessMode) const = 0;
+         const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get the device list which support a capacity type

@@ -98,13 +98,6 @@ namespace web
                const std::string& requestContent) const;
 
             //-----------------------------------------
-            ///\brief   get all the devices matching some criteria
-            //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceMatchDeviceCriteria(
-               const std::vector<std::string>& parameters,
-               const std::string& requestContent) const;
-
-            //-----------------------------------------
             ///\brief   get all the keywords of a device
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceKeywords(

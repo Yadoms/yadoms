@@ -1,4 +1,4 @@
-<script type="text/html" id="forecast-weather-template">
+<script type="text/html" id="weather-multi-template">
    <div class="layout">
       <div  data-bind="foreach: period" class="forecast-layout">
          <div class="period-layout">
@@ -10,17 +10,17 @@
 
                <div data-bind="attr:{ style: DisplayTemperatureMinMax }">
                   <div class="block">
-                     <img class="block-image" src="widgets/forecast-weather/images/temp-min.png"/>
+                     <img class="block-image" src="widgets/weather-multi/images/temp-min.png"/>
                      <span class="temp-min" data-bind="text: TempMin"></span>
                   </div>
                   <div class="block">
-                     <img class="block-image" src="widgets/forecast-weather/images/temp-max.png"/>
+                     <img class="block-image" src="widgets/weather-multi/images/temp-max.png"/>
                      <span class="temp-max" data-bind="text: TempMax"></span>
                   </div>
                </div>
 
                <div class="block" data-bind="attr:{ style: DisplayTemperatureAvg }">
-                  <img class="block-image" src="widgets/forecast-weather/images/temp-avg.png"/>
+                  <img class="block-image" src="widgets/weather-multi/images/temp-avg.png"/>
                   <span data-bind="text: TempAvg"></span>
                </div>
 
@@ -30,9 +30,9 @@
                </div>
 
                <div class="block" data-bind="attr:{ style: DisplayWind }">
-                  <img class="block-image" src="widgets/forecast-weather/images/wind.png"/>
+                  <img class="block-image" src="widgets/weather-multi/images/wind.png"/>
                   <span data-bind="text: Wind"></span>
-                  <img class="wind-direction" data-bind="attr:{ style: DisplayWindDirection }" src="widgets/forecast-weather/images/wind-sud.png" data-bind="attr:{ style: RotateWind }"/>
+                  <img class="wind-direction" data-bind="attr:{ style: DisplayWindDirection }" src="widgets/weather-multi/images/wind-sud.png" data-bind="attr:{ style: RotateWind }"/>
                </div> 
             </div>
          </div>

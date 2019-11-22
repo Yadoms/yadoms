@@ -1,5 +1,5 @@
 {
-   "type": "forecast-weather",
+   "type": "weather-multi",
    "version": "1.0.0",
    "author": "Sébastien Gallou",
    "dependencies": {
@@ -32,9 +32,8 @@
             "type": "section",
             "content": {
                "source": {
-                  "type": "keyword",
-                  "expectedCapacity": ["weathercondition"],
-                  "expectedKeywordHistoryDepth": "noHistory"
+                  "type": "Device",
+                  "expectedCapacity" : ["weathercondition"]
                }
             }
          }

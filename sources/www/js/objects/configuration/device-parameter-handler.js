@@ -31,10 +31,10 @@ function DeviceParameterHandler(i18NContext, i18nKey, paramName, content, curren
 function getDeviceMatchingDeviceCriteria(self) {
    var requestData = {};
 
-   if (!isNullOrUndefined(self.content.expectedName))
-      requestData["expectedName"] = Array.isArray(self.content.expectedName) ? self.content.expectedName : [self.content.expectedName];
+   if (!isNullOrUndefined(self.content.expectedCapacity))
+      requestData["expectedCapacity"] = Array.isArray(self.content.expectedCapacity) ? self.content.expectedCapacity : [self.content.expectedCapacity];
 
-   return RestEngine.postJson("/rest/device/matchdevicecriteria/", {
+   return RestEngine.postJson("/rest/device/matchkeywordcriteria/", {
       data: JSON.stringify(requestData)
    });
 }

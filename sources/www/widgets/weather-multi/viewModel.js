@@ -15,7 +15,7 @@ function ConditionsDevice(keywords) {
    assert(!isNullOrUndefined(keywords.length) && keywords.length > 0, "keywords array is empty");
 
    this.deviceId = keywords[0].deviceId;
-
+   
    this.conditionKw = keywords.find(function (kw) { return kw.capacityName == "weathercondition"; });
    assert(!isNullOrUndefined(this.conditionKw), "weathercondition must be provided");
 
@@ -27,8 +27,8 @@ function ConditionsDevice(keywords) {
    }
    else if (temperatureKws.length > 1) {
       this.temperatureKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase() == "temperature"; });
-      this.temperatureMinKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase() == "temperature min"; });
-      this.temperatureMaxKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase() == "temperature max"; });
+      this.temperatureMinKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase().includes("min"); });
+      this.temperatureMaxKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase().includes("max"); });
    }
    this.temperatureUnity = $.t(keywords.find(function (kw) { return kw.capacityName == "temperature"; }).units);
 
@@ -55,18 +55,18 @@ function ConditionsDevice(keywords) {
 
    this.hasKeywordId = function (keywordId) {
       if (keywordId == this.conditionKw.id
-         || keywordId == this.forecastDatetimeKw.id
-         || keywordId == this.temperatureKw.id
-         || keywordId == this.temperatureMinKw.id
-         || keywordId == this.temperatureMaxKw.id
-         || keywordId == this.humidityKw.id
-         || keywordId == this.pressureKw.id
-         || keywordId == this.rainKw.id
-         || keywordId == this.snowKw.id
-         || keywordId == this.uvKw.id
-         || keywordId == this.visibilityKw.id
-         || keywordId == this.windDirectionKw.id
-         || keywordId == this.windspeedKw.id)
+         || (!isNullOrUndefined(this.forecastDatetimeKw) && keywordId == this.forecastDatetimeKw.id)
+         || (!isNullOrUndefined(this.temperatureKw) && keywordId == this.temperatureKw.id)
+         || (!isNullOrUndefined(this.temperatureMinKw) && keywordId == this.temperatureMinKw.id)
+         || (!isNullOrUndefined(this.temperatureMaxKw) && keywordId == this.temperatureMaxKw.id)
+         || (!isNullOrUndefined(this.humidityKw) && keywordId == this.humidityKw.id)
+         || (!isNullOrUndefined(this.pressureKw) && keywordId == this.pressureKw.id)
+         || (!isNullOrUndefined(this.rainKw) && keywordId == this.rainKw.id)
+         || (!isNullOrUndefined(this.snowKw) && keywordId == this.snowKw.id)
+         || (!isNullOrUndefined(this.uvKw) && keywordId == this.uvKw.id)
+         || (!isNullOrUndefined(this.visibilityKw) && keywordId == this.visibilityKw.id)
+         || (!isNullOrUndefined(this.windDirectionKw) && keywordId == this.windDirectionKw.id)
+         || (!isNullOrUndefined(this.windspeedKw) && keywordId == this.windspeedKw.id))
          return this;
    }
 
@@ -76,6 +76,8 @@ function ConditionsDevice(keywords) {
    }
 
    this.getForecastDateTime = function (format) {
+      if (isNullOrUndefined(this.forecastDatetimeKw))
+         return $.t("widgets.weather-multi:LiveConditions");
       const date = moment(new Date(this.values.get(this.forecastDatetimeKw.id)));
       switch (format) {
          case "shortDate":
@@ -92,7 +94,7 @@ function ConditionsDevice(keywords) {
 
    this.getCondition = function () { return this.values.get(this.conditionKw.id); }
    this.getWeatherIconPath = function (iconset) {
-      var path = "widgets/forecast-weather/images/conditions/" + iconset + "/";
+      var path = "widgets/weather-multi/images/conditions/" + iconset + "/";
       switch (iconset) {
          case "material":
             switch (this.getCondition()) {
@@ -335,7 +337,7 @@ widgetViewModelCtor =
 
                DisplayRainOrSnow: device.hasRainOrSnow() ? "display: block" : "display: none",
                Rain: device.isSnow() ? (device.getSnowCm() + " cm") : (device.getRainMm() + " mm"),
-               RainOrSnowImage: "widgets/forecast-weather/images/" + (device.isSnow() ? "snow.png" : "rain.png"),
+               RainOrSnowImage: "widgets/weather-multi/images/" + (device.isSnow() ? "snow.png" : "rain.png"),
 
                DisplayWind: device.hasWind() ? "display: block" : "display: none",
                Wind: device.getWindSpeed() + " km/h",
@@ -351,7 +353,7 @@ widgetViewModelCtor =
 
       this.configurationChanged = function () {
          var self = this;
-         //TODO le top serait de ne devoir sélectionner que le device (les keywords étant récupérés dynamiquement). Il faut sélectionner tout device contenant au moins le KW conditions (le seul requis)
+         
          if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
 

@@ -1,16 +1,16 @@
 {
-  "name": "Prévision Météo",
-  "description": "Ce widget permet d'afficher les prévisions météorologiques pour les prochains jours. Un plugin de récupération des prévisions météo doit être installé (ex : WeatherUnderGround).",
+  "name": "Météo",
+  "description": "Ce widget permet d'afficher plusieurs données météorologiques. Il permet par exemple d'afficher les conditions courantes et prévisions.",
   "configurationSchema": {
     "devices": {
       "name": "Equipements de prévision",
-      "description": "Sélection des équipements fournissant les prévisions pour les prochains jours",
+      "description": "Sélection des équipements fournissant les conditions météo par période",
       "item": {
         "name": "",
         "content": {
           "source": {
             "name": "Equipement de prévision",
-            "description": "Sélectionner l'équipement fournissant les prévisions pour ce jour"
+            "description": "Sélectionner l'équipement fournissant les conditions météo pour cette période"
           }
         }
       }
@@ -33,5 +33,5 @@
       }
     }
   },
-  "forecastUpdated": "Données météo mises à jour"
+  "LiveConditions": "Actuellement"
 }

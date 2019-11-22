@@ -1,32 +1,32 @@
-.widget-forecast-weather .condition {
+.widget-weather-multi .condition {
    display: flex;
    margin: 0 auto;
    justify-content: center;
    width: 100px;
 }
 
-.widget-forecast-weather .date {
+.widget-weather-multi .date {
    display: flex;
    justify-content: center;
    font-weight: bold;
 }
 
-.widget-forecast-weather .forecast-layout {
+.widget-weather-multi .forecast-layout {
    flex-grow: 1;
    display: flex;
    flex-direction: row;
 }
 
-.widget-forecast-weather .condition-layout {
+.widget-weather-multi .condition-layout {
    margin: auto;
 }
 
-.widget-forecast-weather .period-layout {
+.widget-weather-multi .period-layout {
    margin: auto;
    margin-top: 10px;
 }
 
-.widget-forecast-weather .layout {
+.widget-weather-multi .layout {
    height: auto;
    flex-grow: 1;
    flex-wrap: no-wrap;
@@ -36,19 +36,19 @@
    flex-direction: row;
 }
 
-.widget-forecast-weather .block {
+.widget-weather-multi .block {
    margin-top: 10px;
    margin-bottom: 10px;
 }
 
-.widget-forecast-weather .block-image {
+.widget-weather-multi .block-image {
    height: 20px;
 }
 
-.widget-forecast-weather .temp-min {
+.widget-weather-multi .temp-min {
    color: blue;
 }
 
-.widget-forecast-weather .temp-max {
+.widget-weather-multi .temp-max {
    color: red;
 }
