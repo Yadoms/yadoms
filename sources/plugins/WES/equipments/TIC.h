@@ -19,6 +19,9 @@ namespace equipments
       HpHc,
       Ejp,
       Tempo,
+	  Producteur,
+	  HC_Et_WE,
+	  HC_SEM_WE_MERCR,
       BT4SUP36,
       BJEJP,
       NotAvailable
@@ -105,13 +108,6 @@ namespace equipments
       virtual ~CTIC();
 
    private:
-      //-----------------------------------------------------
-      ///\brief                     initializeTIC
-      ///\param[in]   api          Yadoms API
-      ///\param[in]   counterId    the counterId with 12 digits
-      //-----------------------------------------------------
-      void initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api,
-                         const std::string& counterId);
 
       //-----------------------------------------------------
       ///\brief                     set the state of the device only when this one change
@@ -143,20 +139,10 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief  Keywords
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CEnergy> m_baseCounter;
-      boost::shared_ptr<yApi::historization::CEnergy> m_lowCostCounter;
-      boost::shared_ptr<yApi::historization::CEnergy> m_normalCostCounter;
-      boost::shared_ptr<yApi::historization::CEnergy> m_EJPPeakPeriod;
-      boost::shared_ptr<yApi::historization::CEnergy> m_EJPNormalPeriod;
-      boost::shared_ptr<yApi::historization::CEnergy> m_tempoBlueDaysLowCostPeriod;
-      boost::shared_ptr<yApi::historization::CEnergy> m_tempoBlueDaysNormalCostPeriod;
-      boost::shared_ptr<yApi::historization::CEnergy> m_tempoRedDaysLowCostPeriod;
-      boost::shared_ptr<yApi::historization::CEnergy> m_tempoRedDaysNormalCostPeriod;
-      boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysLowCostPeriod;
-      boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysNormalCostPeriod;
+	  boost::shared_ptr<yApi::historization::CEnergy> m_Counter[10];
       boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
       boost::shared_ptr<specificHistorizers::CPeriod> m_TimePeriod;
-      boost::shared_ptr<specificHistorizers::CColor> m_Color;
+      boost::shared_ptr<specificHistorizers::CColor> m_tomorrowColor;
 
       //--------------------------------------------------------------
       /// \brief	TeleInfo Status
@@ -172,5 +158,10 @@ namespace equipments
       /// \brief  Keywords list
       //--------------------------------------------------------------
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
+
+	  //--------------------------------------------------------------
+	  /// \brief  Counter keyword list names
+	  //--------------------------------------------------------------
+	  static const std::map<ContractAvailable, std::vector<std::string>> m_counterNames;
    };
 } // namespace equipments::subdevices
