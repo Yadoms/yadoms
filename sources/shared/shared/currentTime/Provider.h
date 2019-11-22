@@ -1,6 +1,5 @@
 #pragma once
 #include "ICurrentTime.h"
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -9,7 +8,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	   The current time provider interface
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CProvider
+      class CProvider
       {
       public:
          //--------------------------------------------------------------
@@ -44,7 +43,7 @@ namespace shared
       };
 
       // The time provider instance
-      YADOMS_SHARED_EXPORT CProvider& Provider();
+      CProvider& Provider();
    }
 } // namespace shared::currentTime
 

@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/DoubleTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A temperature historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CTemperature : public CSingleHistorizableData<double>
+            class CTemperature : public CSingleHistorizableData<double>
             {
             public:
                //-----------------------------------------------------

@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <Poco/DateTime.h>
 
 namespace shared { namespace dateTime {
@@ -9,7 +8,7 @@ namespace shared { namespace dateTime {
    /// The aim is to make it compatible between boost dateTime and Poco::DateTime
    /// and make boost::posix_time::ptime usable in notification (boost::posix_time::ptime can not be used as template type)
    //--------------------------------------------------------------
-	class YADOMS_SHARED_EXPORT CFormat
+	class CFormat
 	{
 	public:
 		//--------------------------------------------------------------

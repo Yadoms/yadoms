@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "IAsyncPort.h"
 #include "IReceiveBufferHandler.h"
 
@@ -8,7 +7,7 @@ namespace shared { namespace communication {
    //--------------------------------------------------------------
    /// \brief	This class manage a serial port
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CAsyncTcpClient : public IAsyncPort
+   class CAsyncTcpClient : public IAsyncPort
    {  
    public:
       //--------------------------------------------------------------

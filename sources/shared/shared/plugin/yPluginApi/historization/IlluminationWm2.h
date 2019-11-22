@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/DoubleTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A Illumination(W/m²) historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CIlluminationWm2 : public CSingleHistorizableData<double>
+            class CIlluminationWm2 : public CSingleHistorizableData<double>
             {
             public:
                explicit CIlluminationWm2(const std::string& keywordName,

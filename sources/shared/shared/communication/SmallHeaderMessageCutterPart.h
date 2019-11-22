@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "IMessageCutterPart.h"
 #include "SmallHeader.h"
 
@@ -11,7 +10,7 @@ namespace shared
       /// \brief	Part of a SmallHeaderMessageCutter message
       /// \note For performance issues, SmallHeaderMessagePart doesn't have it's own message copy, only pointer
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT SmallHeaderMessageCutterPart : public IMessageCutterPart
+      class SmallHeaderMessageCutterPart : public IMessageCutterPart
       {
       public:
          SmallHeaderMessageCutterPart(unsigned char partNumber,

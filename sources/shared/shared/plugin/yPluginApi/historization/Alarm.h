@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include "../typeInfo/BoolTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A Alarm historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CAlarm : public CSingleHistorizableData<bool>
+            class CAlarm : public CSingleHistorizableData<bool>
             {
             public:
                //-----------------------------------------------------

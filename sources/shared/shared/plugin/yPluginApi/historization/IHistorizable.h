@@ -16,7 +16,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief The historizable object interface
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT IHistorizable
+            class IHistorizable
             {
             public:
                //-----------------------------------------------------

@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include "../typeInfo/BoolTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A tamper historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CTamper : public CSingleHistorizableData<bool>
+            class CTamper : public CSingleHistorizableData<bool>
             {
             public:
                //-----------------------------------------------------

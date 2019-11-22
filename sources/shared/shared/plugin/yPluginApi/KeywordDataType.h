@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace shared
@@ -11,7 +10,7 @@ namespace shared
          //-----------------------------------------------------
          ///\brief Keyword type
          //-----------------------------------------------------
-         DECLARE_ENUM_HEADER_SHARED(EKeywordDataType, YADOMS_SHARED_EXPORT,
+         DECLARE_ENUM_HEADER(EKeywordDataType,
             ((NoData))
             ((String))
             ((Numeric))

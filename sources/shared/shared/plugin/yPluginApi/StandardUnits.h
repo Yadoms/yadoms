@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 
 namespace shared
@@ -11,7 +10,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief		Standard units
          //--------------------------------------------------------------
-         class YADOMS_SHARED_EXPORT CStandardUnits
+         class CStandardUnits
          {
          public:
             //--------------------------------------------------------------

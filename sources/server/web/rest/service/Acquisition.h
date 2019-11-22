@@ -13,7 +13,7 @@ namespace web
          {
          public:
             explicit CAcquisition(boost::shared_ptr<database::IDataProvider> dataProvider);
-            virtual ~CAcquisition();
+            virtual ~CAcquisition() = default;
 
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;

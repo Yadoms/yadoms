@@ -1,0 +1,37 @@
+{
+  "name": "Météo",
+  "description": "Ce widget permet d'afficher plusieurs données météorologiques. Il permet par exemple d'afficher les conditions courantes et prévisions.",
+  "configurationSchema": {
+    "devices": {
+      "name": "Equipements de prévision",
+      "description": "Sélection des équipements fournissant les conditions météo par période",
+      "item": {
+        "name": "",
+        "content": {
+          "source": {
+            "name": "Equipement de prévision",
+            "description": "Sélectionner l'équipement fournissant les conditions météo pour cette période"
+          }
+        }
+      }
+    },
+    "Iconset": {
+      "name": "Jeu d'icônes",
+      "description": "Sélectionner le jeu d'icônes à utiliser",
+       "values": {
+          "material": "Material design",
+          "color": "Couleur"
+       }
+    },
+    "DateFormat": {
+      "name": "Format de la date",
+      "description": "Choisir le format de la date du widget",
+      "values": {
+        "shortDate": "Date courte (Lundi 15)",
+        "longDate": "Date Longue (15 juin 2015)",
+        "hour": "Heure. Ex: 09:00"
+      }
+    }
+  },
+  "LiveConditions": "Actuellement"
+}

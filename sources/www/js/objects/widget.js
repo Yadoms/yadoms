@@ -1,6 +1,6 @@
 /** @module Widget class */
 
-var widgetStateEnum = Object.freeze({OK: 0, Initialization:1, ConfigurationChanged: 2, Running: 3, InvalidConfiguration: 4});
+var widgetStateEnum = Object.freeze({ OK: 0, Initialization: 1, ConfigurationChanged: 2, Running: 3, InvalidConfiguration: 4 });
 
 /**
  * Create an instance of Widget
@@ -15,55 +15,55 @@ var widgetStateEnum = Object.freeze({OK: 0, Initialization:1, ConfigurationChang
  * @constructor
  */
 function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) {
-    assert(id !== undefined, "id of a widget must be defined");
-    assert(idPage !== undefined, "idPage of a widget must be defined");
-    assert(type !== undefined, "type of a widget must be defined");
-    assert(title !== undefined, "type of a widget must be defined");
-    assert(sizeX !== undefined, "sizeX of a widget must be defined");
-    assert(sizeY !== undefined, "sizeY of a widget must be defined");
-    assert(position !== undefined, "position of a widget must be defined");
-    //configuration can be undefined
+   assert(id !== undefined, "id of a widget must be defined");
+   assert(idPage !== undefined, "idPage of a widget must be defined");
+   assert(type !== undefined, "type of a widget must be defined");
+   assert(title !== undefined, "type of a widget must be defined");
+   assert(sizeX !== undefined, "sizeX of a widget must be defined");
+   assert(sizeY !== undefined, "sizeY of a widget must be defined");
+   assert(position !== undefined, "position of a widget must be defined");
+   //configuration can be undefined
 
-    this.id = id;
-    this.idPage = idPage;
-    this.type = type;
-    this.title = title;
-    this.toolbarActivated = true;                 // by default the toolbar is activated
-    this.state = widgetStateEnum.Initialization;  // by default, the widget is Initialization
+   this.id = id;
+   this.idPage = idPage;
+   this.type = type;
+   this.title = title;
+   this.toolbarActivated = true;                 // by default the toolbar is activated
+   this.state = widgetStateEnum.Initialization;  // by default, the widget is Initialization
 
-    //we save initial values that could change over the time
-    this.initialValues = {};
-    this.initialValues.sizeX = sizeX;
-    this.initialValues.sizeY = sizeY;
-    this.initialValues.position = position;
+   //we save initial values that could change over the time
+   this.initialValues = {};
+   this.initialValues.sizeX = sizeX;
+   this.initialValues.sizeY = sizeY;
+   this.initialValues.position = position;
 
-    this.configuration = configuration || "";
+   this.configuration = configuration || "";
 
-    this.viewModel = null;
+   this.viewModel = null;
 
-    //grid item
-    this.$gridWidget = null;
+   //grid item
+   this.$gridWidget = null;
 
-    //div where is embed the widget
-    this.$div = null;
+   //div where is embed the widget
+   this.$div = null;
 
-    //package information of the current widget type (package.json file)
-    this.package = null;
+   //package information of the current widget type (package.json file)
+   this.package = null;
 
-    //toolbar of the widget
-    this.$toolbar = null;
+   //toolbar of the widget
+   this.$toolbar = null;
 
-    //list of all keywords {keywordId} to listen
-    this.listenedKeywords = [];
-    
-    //list of all keywords {keywordId} to get the last value
-    this.keywordsToGetlastValue = [];
-    
-    //list of all waiting acquisitions during the startup of the widget 
-    this.waitingAcquisition = [];
-    
-    //list of addition information needed at first acquisition for this widget
-    this.additionalInfo = [];
+   //list of all keywords {keywordId} to listen
+   this.listenedKeywords = [];
+
+   //list of all keywords {keywordId} to get the last value
+   this.keywordsToGetlastValue = [];
+
+   //list of all waiting acquisitions during the startup of the widget 
+   this.waitingAcquisition = [];
+
+   //list of addition information needed at first acquisition for this widget
+   this.additionalInfo = [];
 }
 
 /**
@@ -71,16 +71,16 @@ function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) 
  * @returns {{id: *, idPage: *, type: *,title: *, sizeX: *, sizeY: *, positionX: *, positionY: *, configuration: *}}
  */
 Widget.prototype.toJSON = function () {
-    return {
-        id: this.id,
-        idPage: this.idPage,
-        type: this.type,
-        title: this.title,
-        sizeX: this.getWidth() || this.initialValues.sizeX,
-        sizeY: this.getHeight() || this.initialValues.sizeY,
-        position: this.getPosition() || this.initialValues.position,
-        configuration: this.configuration
-    };
+   return {
+      id: this.id,
+      idPage: this.idPage,
+      type: this.type,
+      title: this.title,
+      sizeX: this.getWidth() || this.initialValues.sizeX,
+      sizeY: this.getHeight() || this.initialValues.sizeY,
+      position: this.getPosition() || this.initialValues.position,
+      configuration: this.configuration
+   };
 };
 
 /**
@@ -88,59 +88,59 @@ Widget.prototype.toJSON = function () {
  * @returns {int} return the position begining by 0. -1 if element is not on a page 
  */
 Widget.prototype.getPosition = function () {
-    var page = PageManager.getPage(this.idPage);
-    if (!page)
-        return null;
-    
-    var value = $(page.$grid.packery('getItemElements')).index(this.$gridWidget);
-    return (value !== -1) ? value : null;
+   var page = PageManager.getPage(this.idPage);
+   if (!page)
+      return null;
+
+   var value = $(page.$grid.packery('getItemElements')).index(this.$gridWidget);
+   return (value !== -1) ? value : null;
 };
 
 Widget.prototype.getHeight = function () {
-    return (this.$gridWidget) ? this.$gridWidget.height() : null;
+   return (this.$gridWidget) ? this.$gridWidget.height() : null;
 };
 
 Widget.prototype.getWidth = function () {
-    return (this.$gridWidget) ? this.$gridWidget.width() : null;
+   return (this.$gridWidget) ? this.$gridWidget.width() : null;
 };
 
 Widget.prototype.getInnerHeight = function () {
-    return (this.$gridWidget) ? this.$content.height() : null;
+   return (this.$gridWidget) ? this.$content.height() : null;
 };
 
 Widget.prototype.getInnerWidth = function () {
-    return (this.$gridWidget) ? this.$content.width() : null;
+   return (this.$gridWidget) ? this.$content.width() : null;
 };
 
 Widget.prototype.setHeight = function (newHeight) {
-    if ((this.$gridWidget)) {
-        this.$gridWidget.height(newHeight);
-    }
+   if ((this.$gridWidget)) {
+      this.$gridWidget.height(newHeight);
+   }
 };
 
 Widget.prototype.setWidth = function (newWidth) {
-    if ((this.$gridWidget)) {
-        this.$gridWidget.width(newWidth);
-    }
+   if ((this.$gridWidget)) {
+      this.$gridWidget.width(newWidth);
+   }
 };
 
 Widget.prototype.setInitialPosition = function (position) {
-    this.initialValues.position = position;
+   this.initialValues.position = position;
 };
 
 Widget.prototype.title = function () {
-    return this.title;
+   return this.title;
 };
 
 Widget.prototype.setState = function (newState) {
    this.state = newState;
 };
 
-Widget.prototype.getState = function() {
+Widget.prototype.getState = function () {
    return this.state;
 };
 
-Widget.prototype.getBoundConfigurationSchema = function() {
+Widget.prototype.getBoundConfigurationSchema = function () {
    var d = new $.Deferred();
 
    if (!isNullOrUndefined(this.package)) {
@@ -166,14 +166,14 @@ Widget.prototype.getBoundConfigurationSchema = function() {
  * @param allowedTypes Allowed types for this item
  * @returns {*}
  */
-Widget.prototype.applyBindingPrivate = function(item, allowedTypes) {
+Widget.prototype.applyBindingPrivate = function (item, allowedTypes) {
    assert(!isNullOrUndefined(item), "item must be defined");
    assert(!isNullOrUndefined(allowedTypes), "allowedTypes must be defined");
    var self = this;
    var d = new $.Deferred();
    var arrayOfDeffered = [];
 
-   $.each(item, function(key, confItem) {
+   $.each(item, function (key, confItem) {
       if ($.isPlainObject(confItem)) {
          if (!isNullOrUndefined(confItem.__Binding__)) {
             //we've got binding
@@ -184,23 +184,23 @@ Widget.prototype.applyBindingPrivate = function(item, allowedTypes) {
             assert(!isNullOrUndefined(confItem.__Binding__.query), "query must be defined in binding");
 
             switch (confItem.__Binding__.type.toLowerCase()) {
-            case "system":
-               //we ask synchronously the bound value
-               var deffered = RestEngine.getJson("/rest/system/binding/" + confItem.__Binding__.query);
-               arrayOfDeffered.push(deffered);
-               deffered.done(function(data) {
+               case "system":
+                  //we ask synchronously the bound value
+                  var deffered = RestEngine.getJson("/rest/system/binding/" + confItem.__Binding__.query);
+                  arrayOfDeffered.push(deffered);
+                  deffered.done(function (data) {
                      //we replace the binded value by the result
-                  item[key] = data;
+                     item[key] = data;
                   })
-                  .fail(function(error) {
-                     notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
-                  });
+                     .fail(function (error) {
+                        notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
+                     });
                break;
             }
          } else {
             var innerDeferred = self.applyBindingPrivate(confItem, allowedTypes);
             arrayOfDeffered.push(innerDeferred);
-            innerDeferred.done(function(data) {
+            innerDeferred.done(function (data) {
                confItem = data;
             });
          }
@@ -208,7 +208,7 @@ Widget.prototype.applyBindingPrivate = function(item, allowedTypes) {
    });
 
    if (arrayOfDeffered.length > 0) {
-      $.when.apply($, arrayOfDeffered).done(function() {
+      $.when.apply($, arrayOfDeffered).done(function () {
          d.resolve(item);
       });
    } else {

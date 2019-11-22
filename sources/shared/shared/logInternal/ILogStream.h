@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared {
    namespace logInternal {

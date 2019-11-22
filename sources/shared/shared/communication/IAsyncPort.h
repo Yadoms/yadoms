@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/event/EventHandler.hpp>
-#include <shared/Export.h>
 #include "IReceiveBufferHandler.h"
 #include "Buffer.hpp"
 
@@ -24,7 +23,7 @@ namespace shared
       /// that a full message is received.
       ///
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT IAsyncPort
+      class IAsyncPort
       {
       public:
          //--------------------------------------------------------------

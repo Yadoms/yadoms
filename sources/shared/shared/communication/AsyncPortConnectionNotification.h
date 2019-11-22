@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	A container class for IAsyncPort connection notification
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CAsyncPortConnectionNotification
+      class CAsyncPortConnectionNotification
       {
       public:
          //--------------------------------------------------------------

@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include "../typeInfo/BoolTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A switch historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CSwitch : public CSingleHistorizableData<bool>
+            class CSwitch : public CSingleHistorizableData<bool>
             {
             public:
                //-----------------------------------------------------

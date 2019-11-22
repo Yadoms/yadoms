@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief	This class is used to get information on executable files
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CExecutable
+   class CExecutable
    {
    public:
       //--------------------------------------------------------------

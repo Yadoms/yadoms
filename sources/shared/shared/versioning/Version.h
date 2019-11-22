@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/exception/Exception.hpp>
-#include <shared/Export.h>
 
 
 namespace shared
@@ -11,7 +10,7 @@ namespace shared
       ///\brief Class which handle and parse versions
       ///       Version format: using SEMVER 2.0 http://semver.org/
       //---------------------------------------------
-      class YADOMS_SHARED_EXPORT CVersion
+      class CVersion
       {
       public:
          //---------------------------------------------

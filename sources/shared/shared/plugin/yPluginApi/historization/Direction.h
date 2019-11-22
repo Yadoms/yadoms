@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/IntTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A direction historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CDirection : public CSingleHistorizableData<int>
+            class CDirection : public CSingleHistorizableData<int>
             {
             public:
                //-----------------------------------------------------

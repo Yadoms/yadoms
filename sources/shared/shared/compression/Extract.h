@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 #include <Poco/Path.h>
 #include <Poco/Zip/ZipLocalFileHeader.h>
 
@@ -9,7 +8,7 @@ namespace shared { namespace compression {
    //--------------------------------------------------------------
    /// \brief	Archive extraction
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CExtract
+   class CExtract
    {
    public:
       //--------------------------------------------------------------

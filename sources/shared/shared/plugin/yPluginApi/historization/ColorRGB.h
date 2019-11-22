@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include <Poco/Types.h>
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A color (RGB) historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CColorRGB : public CSingleHistorizableData<Poco::UInt32>
+            class CColorRGB : public CSingleHistorizableData<Poco::UInt32>
             {
             public:
                //-----------------------------------------------------

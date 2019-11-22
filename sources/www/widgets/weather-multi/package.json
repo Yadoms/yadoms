@@ -1,0 +1,59 @@
+{
+   "type": "weather-multi",
+   "version": "1.0.0",
+   "author": "Sébastien Gallou",
+   "dependencies": {
+      "yadoms": {
+         "minimumVersion": "2.4.0-beta.1"
+      }
+   },
+   "hasTitle": true,
+   "dimensions": {
+      "min": {
+         "x": 1,
+         "y": 3
+      },
+      "max": {
+         "x": 4,
+         "y": 3
+      },
+      "default": {
+         "x": 4,
+         "y": 3
+      }
+   },
+   "configurationSchema": {
+      "devices": {
+         "type": "list",
+         "nbItemsMin": "1",
+         "nbItemsMax": "3",
+         "allowDuplication": "false",
+         "item": {
+            "type": "section",
+            "content": {
+               "source": {
+                  "type": "Device",
+                  "expectedCapacity" : ["weathercondition"]
+               }
+            }
+         }
+      },
+      "Iconset": {
+         "type": "enum",
+         "values": {
+            "material": "Material",
+            "color": "Color"
+         },
+         "defaultValue": "material"
+      },
+      "DateFormat": {
+         "type": "enum",
+         "values": {
+            "shortDate": "Short date. Ex: Monday 15",
+            "longDate": "Long date. Ex: June 15, 2015",
+            "hour": "Hour. Ex: 09:00"
+         },
+         "defaultValue": "shortDate"
+      }
+   }
+}

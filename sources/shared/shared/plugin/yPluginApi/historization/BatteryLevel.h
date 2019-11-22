@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/PercentageTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A battery level historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CBatteryLevel : public CSingleHistorizableData<int>
+            class CBatteryLevel : public CSingleHistorizableData<int>
             {
             public:
                static typeInfo::CPercentageTypeInfo PercentageTypeInfo;

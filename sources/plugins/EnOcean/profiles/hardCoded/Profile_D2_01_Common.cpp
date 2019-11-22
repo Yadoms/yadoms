@@ -13,8 +13,8 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EDefaultState, EDefaul
 );
 
 DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EConnectedSwitchsType, EConnectedSwitchsType,
-   ((switch))
-   ((pushButton))
+   ((externalSwitch))
+   ((externalPushButton))
    ((autodetection))
 );
 

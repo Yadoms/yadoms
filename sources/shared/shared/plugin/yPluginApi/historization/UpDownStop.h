@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "SingleHistorizableData.hpp"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief               The curtain command values
             //-----------------------------------------------------   
-            DECLARE_ENUM_HEADER_SHARED(EUpDownStopCommand, YADOMS_SHARED_EXPORT,
+            DECLARE_ENUM_HEADER(EUpDownStopCommand,
                ((Stop))
                ((Up))
                ((Down))
@@ -24,7 +23,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A curtain historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CUpDownStop : public CSingleHistorizableData<EUpDownStopCommand>
+            class CUpDownStop : public CSingleHistorizableData<EUpDownStopCommand>
             {
             public:
                //-----------------------------------------------------
