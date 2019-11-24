@@ -33,6 +33,11 @@ namespace equipments
    class CTIC
    {
    public:
+	   //-----------------------------------------------------
+	   ///\brief                     Nb counters handle by the class
+	   //-----------------------------------------------------
+	   static const Poco::Int32 TICCountersNb;
+
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in]   api          Yadoms API
@@ -74,12 +79,7 @@ namespace equipments
                               const std::string& counterId,
                               const int timePeriod,
                               const unsigned int apparentPower,
-                              const Poco::Int64& counter1,
-                              const Poco::Int64& counter2,
-                              const Poco::Int64& counter3,
-                              const Poco::Int64& counter4,
-                              const Poco::Int64& counter5,
-                              const Poco::Int64& counter6,
+		                      const std::vector<Poco::Int64>& counters,
                               const int newColor);
 
       //-----------------------------------------------------

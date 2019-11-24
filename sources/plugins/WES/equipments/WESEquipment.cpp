@@ -383,19 +383,20 @@ namespace equipments
 
          // TIC Counters Values -> independant from the others keywords
          for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter){
+			 std::vector<Poco::Int64> counters;
+
+			 for (auto index = 0; index < CTIC::TICCountersNb; ++index) {
+				 counters.push_back(results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_" + boost::lexical_cast<std::string>(index + 1)));
+			 }
+
             m_TICList[counter]->updateFromDevice(api,
-                                                 m_deviceStatus->get(),
-                                                 results.get<equipments::ContractAvailable>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
-                                                 results.get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_adco"),
-                                                 results.get<int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_PTarif"),
-                                                 results.get<unsigned int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_P"),
-                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_1"),
-                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_2"),
-                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_3"),
-                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_4"),
-                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_5"),
-                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"),
-                                                 results.get<int>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1)));
+                m_deviceStatus->get(),
+                results.get<equipments::ContractAvailable>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
+                results.get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_adco"),
+                results.get<int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_PTarif"),
+                results.get<unsigned int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_P"),
+				counters,
+                results.get<int>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1)));
          }
       }
       catch (CTimeOutException&){

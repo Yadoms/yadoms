@@ -23,6 +23,13 @@ namespace specificHistorizers
       ((SummerNormalCost))
       ((SummerLowCost))
       ((WinterCost))
+	  ((WEHours))
+	  ((LowCostWeek))
+	  ((NormalCostWeek))
+	  ((LowCostWeekEnd))
+	  ((NormalCostWeekEnd))
+	  ((LowCostDayOfWeek))
+	  ((NormalCostDayOfWeek))
    );
 
    DECLARE_CAPACITY(PeriodCapacity, "Period", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
@@ -31,10 +38,8 @@ namespace specificHistorizers
       : CSingleHistorizableData<EWESTeleInfoPeriod>(keywordName,
                                                     PeriodCapacity(),
                                                     shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
-   {
-   }
+   {}
 
    CPeriod::~CPeriod()
-   {
-   }
+   {}
 } // namespace specificHistorizers

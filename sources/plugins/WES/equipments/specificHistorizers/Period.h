@@ -8,7 +8,7 @@ namespace specificHistorizers
    //-----------------------------------------------------
    ///\brief  All periods
    //-----------------------------------------------------   
-   DECLARE_ENUM_HEADER(EWESTeleInfoPeriod,
+   DECLARE_ENUM_HEADER(EWESTeleInfoPeriod, // TODO : Check if possible to declare different Enum Class for a better cast into TIC class shared::enumeration::IExtendedEnum
       ((NotDefined))
       ((AllHours))
       ((LowCostHours))
@@ -26,6 +26,13 @@ namespace specificHistorizers
       ((SummerNormalCost))
       ((SummerLowCost))
       ((WinterCost))
+	  ((WEHours))
+      ((LowCostWeek))
+	  ((NormalCostWeek))
+	  ((LowCostWeekEnd))
+	  ((NormalCostWeekEnd))
+      ((LowCostDayOfWeek))
+      ((NormalCostDayOfWeek))
    );
 
    //-----------------------------------------------------

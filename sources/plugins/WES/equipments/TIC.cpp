@@ -11,6 +11,8 @@ namespace equipments
 	  {Tempo,  {"TempoBlueDaysLowCostPeriod" , "TempoBlueDaysNormalCostPeriod", "TempoRedDaysLowCostPeriod", "TempoRedDaysNormalCostPeriod", "TempoWhiteDaysLowCostPeriod", "TempoWhiteDaysNormalCostPeriod"}},
 	};
 
+	const Poco::Int32 CTIC::TICCountersNb = 10;
+
    CTIC::CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& deviceName,
               const std::string& counterId,
@@ -89,12 +91,7 @@ namespace equipments
                                  const std::string& counterId,
                                  const int timePeriod,
                                  const unsigned int apparentPower,
-                                 const Poco::Int64& counter1,
-                                 const Poco::Int64& counter2,
-                                 const Poco::Int64& counter3,
-                                 const Poco::Int64& counter4,
-                                 const Poco::Int64& counter5,
-                                 const Poco::Int64& counter6,
+	                             const std::vector<Poco::Int64>& counters,
                                  const int newColor)
    {
       setDeviceState(newState);
@@ -107,7 +104,7 @@ namespace equipments
 
 	  auto size = m_counterNames.find(m_contractName)->second.size();
 	  for (auto index = 0; index < size; index++) {
-		  m_Counter[index]->set(counter1); // TODO : to be placed in an array
+		  m_Counter[index]->set(counters[index]);
 	  }
 
       switch (contractName)
@@ -163,8 +160,7 @@ namespace equipments
       YADOMS_LOG(information) << "remove " << m_deviceName;
    }
 
-   std::string CTIC::name()
-   {
+   std::string CTIC::name(){
       return m_deviceName;
    }
 
@@ -188,21 +184,23 @@ namespace equipments
    CTIC::~CTIC()
    {}
 
-   void CTIC::setPeriodTime(const int period)
-   {
-      switch (period)
-      {
+   void CTIC::setPeriodTime(const int period){
+      switch (period){
       case 0:
          if (m_contractName == Base)
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kAllHours);
          else if (m_contractName == HpHc || m_contractName == Ejp)
-            m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostHours);
+            m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostHours); // TODO : To be validated, but somethig wrong here for HC here
          else if (m_contractName == Tempo)
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostBlueDays);
          else if (m_contractName == BT4SUP36)
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kWinterNormalCost);
          else if (m_contractName == BJEJP)
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kPeakCostHours);
+		 else if (m_contractName == HC_Et_WE)
+			 m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostHours);
+		 else if (m_contractName == HC_SEM_WE_MERCR)
+			 m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostWeek);
          else
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
          break;
@@ -217,6 +215,10 @@ namespace equipments
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kWinterLowCost);
          else if (m_contractName == BJEJP)
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kWinterCost);
+		 else if (m_contractName == HC_Et_WE)
+			 m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostHours);
+		 else if (m_contractName == HC_SEM_WE_MERCR)
+			 m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostWeek);
          else
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
          break;
@@ -225,6 +227,10 @@ namespace equipments
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostWhiteDays);
          else if (m_contractName == BT4SUP36 || m_contractName == BJEJP)
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kSummerNormalCost);
+		 else if (m_contractName == HC_Et_WE)
+			 m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kWEHours);
+		 else if (m_contractName == HC_SEM_WE_MERCR)
+			 m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostWeekEnd);
          else
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
          break;
@@ -233,18 +239,24 @@ namespace equipments
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostWhiteDays);
          else if (m_contractName == BT4SUP36 || m_contractName == BJEJP)
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kSummerLowCost);
+		 else if (m_contractName == HC_SEM_WE_MERCR)
+			 m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostWeekEnd);
          else
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
          break;
       case 4:
          if (m_contractName == Tempo)
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostRedDays);
+		 else if (m_contractName == HC_SEM_WE_MERCR)
+			 m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostDayOfWeek);
          else
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
          break;
       case 5:
          if (m_contractName == Tempo)
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostRedDays);
+		 else if (m_contractName == HC_SEM_WE_MERCR)
+			 m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostDayOfWeek);
          else
             m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
          break;
