@@ -23,7 +23,7 @@ namespace location
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CLocation();
+      virtual ~CLocation() = default;
 
    protected:
       // ILocation Implementation
@@ -54,7 +54,7 @@ namespace location
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
 
       //--------------------------------------------------------------
-      /// \brief           The autolocation service
+      /// \brief           The auto-location service
       //--------------------------------------------------------------
       boost::shared_ptr<IAutoLocation> m_autoLocationService;
    };

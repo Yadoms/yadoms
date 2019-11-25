@@ -99,7 +99,7 @@ namespace web
             //the request url should contain the pluginName
             //the request content should contain the downloadURL
             if (parameters.size() <= 3)
-               return CResult::GenerateError("Not enougth parameters in url /rest/update/plugin/update/**pluginName**");
+               return CResult::GenerateError("Not enough parameters in url /rest/update/plugin/update/**pluginName**");
 
             const auto pluginName = parameters[3];
 
@@ -135,7 +135,7 @@ namespace web
          {
             //the request url should contain the pluginName
             if (parameters.size() <= 3)
-               return CResult::GenerateError("Not enougth parameters in url /rest/plugin/remove/**pluginName**");
+               return CResult::GenerateError("Not enough parameters in url /rest/plugin/remove/**pluginName**");
 
             const auto pluginName = parameters[3];
             const auto taskId = m_updateManager->removePluginAsync(pluginName);
@@ -151,7 +151,7 @@ namespace web
             //the request url should contain the widgetName
             //the request content should contain the downloadURL
             if (parameters.size() <= 3)
-               return CResult::GenerateError("Not enougth parameters in url /rest/widget/update/**widgetName**");
+               return CResult::GenerateError("Not enough parameters in url /rest/widget/update/**widgetName**");
 
             const auto widgetName = parameters[3];
 
@@ -187,7 +187,7 @@ namespace web
          {
             //the request url should contain the pluginName
             if (parameters.size() <= 3)
-               return CResult::GenerateError("Not enougth parameters in url /rest/widget/remove/**widgetName**");
+               return CResult::GenerateError("Not enough parameters in url /rest/widget/remove/**widgetName**");
 
             const auto widgetName = parameters[3];
             const auto taskId = m_updateManager->removeWidgetAsync(widgetName);
@@ -204,7 +204,7 @@ namespace web
             //the request content should contain the downloadURL
             if (parameters.size() <= 3)
                return CResult::GenerateError(
-                  "Not enougth parameters in url /rest/scriptInterpreter/update/**scriptInterpreterName**");
+                  "Not enough parameters in url /rest/scriptInterpreter/update/**scriptInterpreterName**");
 
             const auto scriptInterpreterName = parameters[3];
 
@@ -241,7 +241,7 @@ namespace web
             //the request url should contain the scriptInterpreterName
             if (parameters.size() <= 3)
                return CResult::GenerateError(
-                  "Not enougth parameters in url /rest/scriptInterpreter/remove/**scriptInterpreterName**");
+                  "Not enough parameters in url /rest/scriptInterpreter/remove/**scriptInterpreterName**");
 
             const auto scriptInterpreterName = parameters[3];
             const auto taskId = m_updateManager->removeScriptInterpreterAsync(scriptInterpreterName);

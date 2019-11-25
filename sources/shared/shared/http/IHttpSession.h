@@ -4,10 +4,10 @@
 
 namespace shared
 {
-   class IHTTPSession
+   class IHttpSession
    {
    public:
-      virtual ~IHTTPSession() = default;
+      virtual ~IHttpSession() = default;
 
       //--------------------------------------------------------------
       /// \brief	    set the time out time for the request response

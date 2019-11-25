@@ -7,6 +7,7 @@
 #include <Poco/Util/OptionSet.h>
 #include <Poco/Util/HelpFormatter.h>
 #include <Poco/Net/HTTPClientSession.h>
+#include <Poco/Net/HTTPStreamFactory.h>
 
 #include "Supervisor.h"
 #include "ErrorHandler.h"
@@ -52,6 +53,7 @@ void CYadomsServer::initialize(Application& self)
 
    //define proxy settings as earlier possible
    setupProxy();
+   Poco::Net::HTTPStreamFactory::registerFactory();
 }
 
 void CYadomsServer::setupProxy() const
