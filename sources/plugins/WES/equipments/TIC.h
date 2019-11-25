@@ -84,6 +84,12 @@ namespace equipments
 		                      const std::vector<Poco::Int64>& counters,
                               const int newColor);
 
+	  //-----------------------------------------------------
+	  ///\brief                     remove
+	  ///\param[in]   api          Yadoms API
+	  //-----------------------------------------------------
+	  void initialize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& counterId);
+
       //-----------------------------------------------------
       ///\brief                     remove
       ///\param[in]   api          Yadoms API

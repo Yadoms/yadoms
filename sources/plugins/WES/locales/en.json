@@ -172,7 +172,7 @@
 						},
 						"analog": {
 							"name": "analog values definition",
-							"description": "Define here the type of each analog input (for the wes v2). The value send by the WES should be the same unit. If not checked, no analog values will be synchronized. A type changed will reinitialized the data.",
+							"description": "Define here the type of each analog input (for the wes v2). The value send by the WES should be the same unit. If not checked, no analog values will be synchronized. A type changed will reinitialized the data. WES V1 doesn't support analog values.",
 							"content": {
 								"ana1": {
                            "name": "analog input n°1",

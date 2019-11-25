@@ -71,8 +71,7 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
 {
    boost::shared_ptr<equipments::IEquipment> equipment;
 
-   if (data.getDeviceType() == "WES")
-   {
+   if (data.getDeviceType() == "WES"){
       // TODO : Manage the case where the device is not connected when restart. The device should be created with just the statuts in the plugin
       equipment = boost::make_shared<equipments::CWESEquipment>(api,
                                                                 data.getDeviceName(),

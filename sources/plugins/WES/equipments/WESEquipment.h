@@ -108,7 +108,6 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief  TIC counters
       //--------------------------------------------------------------
-      //TODO : To be included to the WES ???
       std::vector<boost::shared_ptr<equipments::CTIC> > m_TICList;
 
       //--------------------------------------------------------------

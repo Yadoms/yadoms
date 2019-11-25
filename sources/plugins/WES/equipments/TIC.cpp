@@ -45,6 +45,10 @@ namespace equipments
       m_teleInfoStatus(boost::make_shared<specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")),
       m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("DeviceStatus"))
    {
+	   initialize(api, counterId);
+   }
+
+   void CTIC::initialize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& counterId) {
 	   shared::CDataContainer details;
 	   m_keywords.clear();
 	   m_keywords.push_back(m_deviceStatus);
@@ -140,7 +144,7 @@ namespace equipments
       // In case of contract change -> create new keywords
       if (m_contractName != contractName){
          m_contractName = contractName;
-         //initializeTIC(api, counterId); // TODO : To be changed !
+         initialize(api, counterId);
       }
 
 	  auto size = m_counterNames.find(m_contractName)->second.size();

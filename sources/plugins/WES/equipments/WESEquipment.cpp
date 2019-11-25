@@ -333,7 +333,7 @@ namespace equipments
          }
 
          //Reading analog values
-         if (m_configuration.isAnalogInputsActivated()){
+         if (m_configuration.isAnalogInputsActivated() && (m_version == 2)){
 			for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter) {
 				try {
 					auto value = results.get<double>("ad"+boost::lexical_cast<std::string>(counter + 1));
