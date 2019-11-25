@@ -21,6 +21,8 @@ set(WES_PLUGIN_SOURCES
    urlManager.h
    equipments/IEquipment.h
    equipments/ImasterDeviceConfiguration.h
+   equipments/Helpers.cpp
+   equipments/Helpers.h   
    equipments/WESEquipment.cpp
    equipments/WESEquipment.h
    equipments/manuallyDeviceCreationException.hpp

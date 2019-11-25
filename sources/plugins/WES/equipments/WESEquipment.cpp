@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "WESEquipment.h"
+#include "Helpers.h"
 #include <shared/DataContainer.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
@@ -172,14 +173,14 @@ namespace equipments
          }
 
          // TIC Counters Configuration
-         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter){
-            const auto temp = boost::make_shared<equipments::CTIC>(api,
-                                                                   m_deviceName + " - " + TICName[counter],
-                                                                   counterId[counter],
-                                                                   contract[counter]);
-            
-            details.set("TIC" + boost::lexical_cast<std::string>(counter), m_deviceName + " - " + TICName[counter]);
-            m_TICList.push_back(temp);
+         for (auto index = 0; index < m_WESIOMapping.ticQty; ++index){
+			const auto temp = boost::make_shared<equipments::CTIC>(api,
+																m_deviceName + " - " + TICName[index],
+																counterId[index],
+																contract[index]);
+
+			details.set("TIC" + boost::lexical_cast<std::string>(index), m_deviceName + " - " + TICName[index]);
+			m_TICList.push_back(temp);
          }
 
          // Pulse Counters Configuration
@@ -219,8 +220,7 @@ namespace equipments
          details.set("type", m_deviceType);
 
          //Déclaration of all IOs
-         if (api->deviceExists(m_deviceName))
-         {
+         if (api->deviceExists(m_deviceName)){
             auto existingModel = api->getDeviceModel(m_deviceName);
             if (existingModel.empty())
                api->updateDeviceModel(m_deviceName, "WES");
@@ -238,11 +238,8 @@ namespace equipments
          api->historizeData(m_deviceName, m_deviceStatus);
 
          if (api->deviceExists(m_deviceName)){
-            // We read TIC device names, to set the state for each
-            details = api->getDeviceDetails(m_deviceName);
-
-            // default mapping
-            m_WESIOMapping = WESv2;
+            details = api->getDeviceDetails(m_deviceName);  // We read TIC device names, to set the state for each
+            m_WESIOMapping = WESv2;                         // default mapping
 
             // TIC Counters SetDevice Timeout
             for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter){
@@ -261,22 +258,6 @@ namespace equipments
          YADOMS_LOG(error) << e.what();
          throw CManuallyDeviceCreationException(e.what());
       }
-   }
-
-   void CWESEquipment::checkRevision(const std::string& revision){
-	   //separation of letters and digits
-	   boost::regex reg("V(\\d+)(\\.)?(\\d+\\.)?(\\*|\\d+)([A-Z])");
-	   boost::smatch match;
-
-	   //Check the version
-	   if (boost::regex_search(revision, match, reg)) {
-		   // match[4] => 83 The sub-number revision
-		   // match[5] => E The revision letter
-		   if ((boost::lexical_cast<int>(match[4]) < 83) || ((boost::lexical_cast<int>(match[4]) == 83) && (match[5] < 'H')))
-		     throw CtooLowRevisionException("WES revision is < 0.83H");
-	   }
-	   else
-		   throw std::exception("Could not check WES revision");
    }
 
    std::string CWESEquipment::getDeviceName() const{

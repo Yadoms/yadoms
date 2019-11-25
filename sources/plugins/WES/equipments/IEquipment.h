@@ -69,12 +69,6 @@ namespace equipments
       //--------------------------------------------------------------
       virtual specificHistorizers::EWESdeviceStatus getStatus() const = 0;
 
-	  //-----------------------------------------------------
-	  ///\brief                          check the WES revision
-	  ///\param[in] revision            The WES revision
-	  //-----------------------------------------------------
-	  virtual void checkRevision(const std::string& revision) = 0;
-
       //--------------------------------------------------------------
       /// \brief	    Destructor
       //--------------------------------------------------------------
