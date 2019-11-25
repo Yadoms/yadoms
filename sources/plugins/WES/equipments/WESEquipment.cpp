@@ -251,8 +251,7 @@ namespace equipments
             m_WESIOMapping = WESv2;
 
             // TIC Counters SetDevice Timeout
-            for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
-            {
+            for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter){
                TICName[counter] = details.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
                boost::make_shared<equipments::CTIC>(api,TICName[counter]);
             }
@@ -260,20 +259,17 @@ namespace equipments
 
          throw e;
       }
-      catch (CtooLowRevisionException& e)
-      {
+      catch (CtooLowRevisionException& e){
          YADOMS_LOG(error) << e.what();
          throw e;
       }
-      catch (std::exception& e)
-      {
+      catch (std::exception& e){
          YADOMS_LOG(error) << e.what();
          throw CManuallyDeviceCreationException(e.what());
       }
    }
 
-   void CWESEquipment::checkRevision(const std::string& revision)
-   {
+   void CWESEquipment::checkRevision(const std::string& revision){
 	   //separation of letters and digits
 	   boost::regex reg("V(\\d+)(\\.)?(\\d+\\.)?(\\*|\\d+)([A-Z])");
 	   boost::smatch match;
@@ -289,13 +285,11 @@ namespace equipments
 		   throw std::exception("Could not check WES revision");
    }
 
-   std::string CWESEquipment::getDeviceName() const
-   {
+   std::string CWESEquipment::getDeviceName() const{
       return m_deviceName;
    }
 
-   std::string CWESEquipment::getDeviceType() const
-   {
+   std::string CWESEquipment::getDeviceType() const{
       return m_deviceType;
    }
 
@@ -323,8 +317,7 @@ namespace equipments
          results.printToLog(YADOMS_LOG(trace));
 
          // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
-         try
-         {
+         try{
             updateSwitchValue(keywordsToHistorize, m_relaysList[0], results.get<bool>("RL1"), forceHistorization);
             updateSwitchValue(keywordsToHistorize, m_relaysList[1], results.get<bool>("RL2"), forceHistorization);
          }

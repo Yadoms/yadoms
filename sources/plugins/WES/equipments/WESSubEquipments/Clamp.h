@@ -1,7 +1,6 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "../specificHistorizers/Period.h"
 #include "../specificHistorizers/TeleInfoStatus.h"
 #include "../masterDeviceConfiguration.h"
 #include "../../IWESConfiguration.h"

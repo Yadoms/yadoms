@@ -17,27 +17,114 @@
 				"TimeOut": "Time out"
 			}
 		},
-		"EWESTeleInfoPeriod": {
-			"name" : "Running period",
-			"values" : {
-				"AllHours": "All hours",
-				"LowCostHours": "Low cost hours",
-				"PeakCostHour": "Peak cost hour",
-				"NormalCostHours": "Normal cost hours",
-            "MobilePeakCostHours": "Mobile peak cost hours",
-            "LowCostBlueDays": "Low cost blue day",
-            "LowCostWhiteDays": "Low cost white day",
-            "LowCostRedDays": "Low cost red day",
-            "NormalCostBlueDays": "Normal cost blue day",
-            "NormalCostWhiteDays": "Normal cost white day",
-            "NormalCostRedDays": "Normal cost red day",
-            "WinterNormalCost": "Winter normal cost",
-            "WinterLowCost": "Winter low cost",
-            "SummerNormalCost": "Summer normal cost",
-            "SummerLowCost": "Summer low cost",
-            "WinterCost": "Winter cost"
+		"EWESPeriodBase": {
+            "name" : "Running period",
+            "values" : {
+			   "AllHours": "All hours",
+			   "NotDefined": "Not defined"			   
 			}
-		},
+        },
+		"EWESPeriodBASEA5": {
+            "name" : "Running period",
+            "values" : {
+               "WinterNormalCost": "Winter normal cost hours",
+               "WinterLowCost": "Winter low cost hours",
+               "SummerNormalCost": "Summer normal cost hours",
+               "SummerLowCost": "Summer low cost hours",			
+			   "NotDefined": "Not defined"
+			}
+        },
+		"EWESPeriodBT4SUP36": {
+            "name" : "Running period",
+            "values" : {
+               "WinterNormalCost": "Winter normal cost hours",
+               "WinterLowCost": "Winter low cost hours",
+               "SummerNormalCost": "Summer normal cost hours",
+               "SummerLowCost": "Summer low cost hours",			
+			   "NotDefined": "Not defined"
+			}
+        },
+		"EWESPeriodBT5SUP36": {
+            "name" : "Running period",
+            "values" : {
+               "WinterNormalCost": "Winter normal cost hours",
+               "WinterLowCost": "Winter low cost hours",
+               "SummerNormalCost": "Summer normal cost hours",
+               "SummerLowCost": "Summer low cost hours",
+			   "PeakCostHours": "Peak cost hours",
+			   "NotDefined": "Not defined"
+			}
+        },
+		"EWESPeriodEjp": {
+            "name" : "Running period",
+            "values" : {
+               "NormalCostHours": "Normal cost hours",
+               "MobilePeakCostHours": "Mobile peak cost hours",
+			   "NotDefined": "Not defined"			   
+			}
+        },
+		"EWESPeriodHCWE": {
+            "name" : "Running period",
+            "values" : {
+               "LowCostHours": "Low cost hours",
+               "NormalCostHours": "Normal cost hours",
+               "WEHours": "Week-end hours",
+			   "NotDefined": "Not defined"			   
+			}
+        },
+		"EWESPeriodHCWeekDaydofweek": {
+            "name" : "Running period",
+            "values" : {
+               "LowCostWeek": "Low cost week hours",
+			   "NormalCostWeek": "Normal cost week hours",
+               "LowCostWeekEnd": "Low cost week-end hours",
+			   "NormalCostWeekEnd": "Normal cost week-end hours",
+               "LowCostDayOfWeek": "Low cost 'day of week' hours",
+			   "NormalCostDayOfWeek": "Normal cost 'day of week' hours",			   
+			   "NotDefined": "Not defined"			   
+			}
+        },
+		"EWESPeriodHpHc": {
+            "name" : "Running period",
+            "values" : {
+               "LowCostHours": "Low cost hours",
+               "NormalCostHours": "Normal cost hours",
+			   "NotDefined": "Not defined"			   
+			}
+        },
+		"EWESPeriodHTA5": {
+            "name" : "Running period",
+            "values" : {
+               "WinterNormalCost": "Winter normal cost hours",
+               "WinterLowCost": "Winter low cost hours",
+               "SummerNormalCost": "Summer normal cost hours",
+               "SummerLowCost": "Summer low cost hours",
+			   "PeakCostHours": "Peak cost hours",
+			   "NotDefined": "Not defined"		   
+			}
+        },
+		"EWESPeriodTempo": {
+            "name" : "Running period",
+            "values" : {
+               "LowCostBlueDays": "Low cost blue hours",
+               "LowCostWhiteDays": "Low cost white hours",
+               "LowCostRedDays": "Low cost red hours",
+               "NormalCostBlueDays": "Normal cost blue hours",
+               "NormalCostWhiteDays": "Normal cost white hours",
+               "NormalCostRedDays": "Normal cost red hours",
+			   "NotDefined": "Not defined"		   
+			}
+        },
+		"EWESPeriodTJEJP": {
+            "name" : "Running period",
+            "values" : {
+			   "MobilePeakCostHours": "Mobile peak cost hours",
+               "WinterCost": "Winter cost hours",
+               "SummerNormalCost": "Summer normal cost hours",
+               "SummerLowCost": "Summer low cost hours",			
+			   "NotDefined": "Not defined"
+			}
+        },
 		"EWESTeleInfoStatus": {
 			"name" : "Télé-info Status",
 			"values" : {

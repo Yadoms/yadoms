@@ -17,27 +17,114 @@
 				"TimeOut": "Connection perdue"
 			}
 		},
-		"EWESTeleInfoPeriod": {
-			"name": "Période tarifaire",
-			"values": {
-				"AllHours": "Toutes heures",
-				"LowCostHours": "Heures creuses",
-				"PeakCostHour": "Heures pleines",
-				"NormalCostHours": "Heures pleines",
-				"MobilePeakCostHours": "heures pointe mobile",
+		"EWESPeriodBase": {
+            "name": "Période tarifaire",
+            "values" : {
+               "AllHours": "Toutes heures",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodBASEA5": {
+            "name": "Période tarifaire",
+            "values" : {
+               "WinterNormalCost": "Heures pleines hiver",
+               "WinterLowCost": "Heures creuses hiver",
+               "SummerNormalCost": "Heures pleines été",
+               "SummerLowCost": "Heures creuses été",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodBT4SUP36": {
+            "name": "Période tarifaire",
+            "values" : {
+               "WinterNormalCost": "Heures pleines hiver",
+               "WinterLowCost": "Heures creuses hiver",
+               "SummerNormalCost": "Heures pleines été",
+               "SummerLowCost": "Heures creuses été",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodBT5SUP36": {
+            "name": "Période tarifaire",
+            "values" : {
+               "WinterNormalCost": "Heures pleines hiver",
+               "WinterLowCost": "Heures creuses hiver",
+               "SummerNormalCost": "Heures pleines été",
+               "SummerLowCost": "Heures creuses été",
+			   "PeakCostHours": "Heures de pointe",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodEjp": {
+            "name": "Période tarifaire",
+            "values" : {
+               "NormalCostHours": "Heures pleines",
+               "MobilePeakCostHours": "heures pointe mobile",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodHCWE": {
+            "name": "Période tarifaire",
+            "values" : {
+               "LowCostHours": "Heures creuses",
+               "NormalCostHours": "Heures pleines",
+               "WEHours": "Heures fin de semaine",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodHCWeekDaydofweek": {
+            "name": "Période tarifaire",
+            "values" : {
+               "LowCostWeek": "Heures creuses semaine",
+			   "NormalCostWeek": "Heures pleines semaine",
+               "LowCostWeekEnd": "Heures creuses fin de semaine",
+			   "NormalCostWeekEnd": "Heures pleines fin de semaine",
+               "LowCostDayOfWeek": "Heures creuses 'jour de la semaine'",
+			   "NormalCostDayOfWeek": "Heures creuses 'jour de la semaine'",
+               "NotDefined": "Pas définie"	   
+			}
+        },
+		"EWESPeriodHpHc": {
+            "name": "Période tarifaire",
+            "values" : {
+               "LowCostHours": "Heures creuses",
+               "NormalCostHours": "Heures pleines",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodHTA5": {
+            "name": "Période tarifaire",
+            "values" : {
+               "WinterNormalCost": "Heures pleines hiver",
+               "WinterLowCost": "Heures creuses hiver",
+               "SummerNormalCost": "Heures pleines été",
+               "SummerLowCost": "Heures creuses été",
+			   "PeakCostHours": "Heures de pointe",
+               "NotDefined": "Pas définie"  
+			}
+        },
+		"EWESPeriodTempo": {
+            "name": "Période tarifaire",
+            "values" : {
 				"LowCostBlueDays": "Heures creuses bleues",
-				"LowCostWhiteDays": "Heures creuses blanches",
-				"LowCostRedDays": "Heures creuses rouges",
 				"NormalCostBlueDays": "Heures pleines bleues",
+				"LowCostWhiteDays": "Heures creuses blanches",
 				"NormalCostWhiteDays": "Heures pleines blanches",
+				"LowCostRedDays": "Heures creuses rouges",
 				"NormalCostRedDays": "Heures pleines rouges",
-				"WinterNormalCost": "Heures pleines hiver",
-				"WinterLowCost": "Heures creuses hiver",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodTJEJP": {
+            "name": "Période tarifaire",
+            "values" : {
+			   "MobilePeakCostHours": "Heures de pointe mobile",
+               "WinterCost": "Heures hiver",
 				"SummerNormalCost": "Heures pleines été",
 				"SummerLowCost": "Heures creuses été",
-				"WinterCost": "Heures hiver"
+				"NotDefined": "Pas définie"
 			}
-		},
+        },
 		"EWESTeleInfoStatus": {
 			"name": "Etat de la télé-info",
 			"values": {

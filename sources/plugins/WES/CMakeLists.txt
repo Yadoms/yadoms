@@ -34,10 +34,32 @@ set(WES_PLUGIN_SOURCES
    equipments/specificHistorizers/Color.h
    equipments/specificHistorizers/deviceStatus.cpp
    equipments/specificHistorizers/deviceStatus.h
-   equipments/specificHistorizers/Period.cpp
-   equipments/specificHistorizers/Period.h
    equipments/specificHistorizers/TeleInfoStatus.cpp
    equipments/specificHistorizers/TeleInfoStatus.h
+   equipments/specificHistorizers/Periods/Base.cpp
+   equipments/specificHistorizers/Periods/Base.h
+   equipments/specificHistorizers/Periods/BASEA5.cpp
+   equipments/specificHistorizers/Periods/BASEA5.h
+   equipments/specificHistorizers/Periods/BT4SUP36.cpp
+   equipments/specificHistorizers/Periods/BT4SUP36.h
+   equipments/specificHistorizers/Periods/BT5SUP36.cpp
+   equipments/specificHistorizers/Periods/BT5SUP36.h
+   equipments/specificHistorizers/Periods/Ejp.cpp
+   equipments/specificHistorizers/Periods/Ejp.h
+   equipments/specificHistorizers/Periods/HCWE.cpp
+   equipments/specificHistorizers/Periods/HCWE.h
+   equipments/specificHistorizers/Periods/HCWeekDayOfWeek.cpp
+   equipments/specificHistorizers/Periods/HCWeekDayOfWeek.h
+   equipments/specificHistorizers/Periods/HpHc.cpp
+   equipments/specificHistorizers/Periods/HpHc.h
+   equipments/specificHistorizers/Periods/HTA5.cpp
+   equipments/specificHistorizers/Periods/HTA5.h
+   equipments/specificHistorizers/Periods/Tempo.cpp
+   equipments/specificHistorizers/Periods/Tempo.h
+   equipments/specificHistorizers/Periods/TJEJP.cpp
+   equipments/specificHistorizers/Periods/TJEJP.h
+   equipments/specificHistorizers/Periods/TeleInfoCapacities.cpp
+   equipments/specificHistorizers/Periods/TeleInfoCapacities.h
    equipments/WESSubEquipments/Analog.cpp
    equipments/WESSubEquipments/Analog.h
    equipments/WESSubEquipments/Clamp.cpp
@@ -58,6 +80,7 @@ source_group(sources ./*.*)
 source_group(sources\\equipments equipments/*.*)
 source_group(sources\\http http/*.*)
 source_group(sources\\equipments\\specificHistorizers equipments/specificHistorizers/*.*)
+source_group(sources\\equipments\\specificHistorizers\\Periods equipments/specificHistorizers/Periods/*.*)
 source_group(sources\\equipments\\WESSubEquipments equipments/WESSubEquipments/*.*)
 	
 #########################################

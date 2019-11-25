@@ -1,7 +1,6 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "specificHistorizers/Period.h"
 #include "specificHistorizers/Color.h"
 #include "specificHistorizers/TeleInfoStatus.h"
 #include "specificHistorizers/deviceStatus.h"
@@ -22,8 +21,11 @@ namespace equipments
 	  Producteur,
 	  HC_Et_WE,
 	  HC_SEM_WE_MERCR,
+	  TJEJP,
       BT4SUP36,
-      BJEJP,
+	  BT5SUP36,
+      BASEA5,
+	  HTA5,
       NotAvailable
    }ContractAvailable;
 
@@ -117,9 +119,10 @@ namespace equipments
 
       //-----------------------------------------------------
       ///\brief                     set the period time. The value depends of the contract
+	  ///\param[in]   contract        the contract number
       ///\param[in]   period          the period number
       //-----------------------------------------------------
-      void setPeriodTime(const int period);
+      void setPeriodTime(const ContractAvailable contractName, const int period);
 
       //-----------------------------------------------------
       ///\brief                     The device name
@@ -141,7 +144,7 @@ namespace equipments
       //--------------------------------------------------------------
 	  boost::shared_ptr<yApi::historization::CEnergy> m_Counter[10];
       boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
-      boost::shared_ptr<specificHistorizers::CPeriod> m_TimePeriod;
+	  boost::shared_ptr<yApi::historization::IHistorizable> m_runningPeriod;
       boost::shared_ptr<specificHistorizers::CColor> m_tomorrowColor;
 
       //--------------------------------------------------------------
