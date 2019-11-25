@@ -203,8 +203,7 @@ namespace equipments
          }
 
          // Analog Values Configuration
-		 // TODO : Read Analog if activated !
-		 if (m_configuration.isAnalogInputsActivated()) {
+		 if (m_configuration.isAnalogInputsActivated() && (m_version == 2)) {
 			 for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter){
 				 const auto temp = boost::make_shared<subdevices::CAnalog>(api,
 					 keywordsToDeclare,
