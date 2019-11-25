@@ -17,13 +17,21 @@
 namespace equipments
 {
 	const std::map<ContractAvailable, std::vector<std::string>> CTIC::m_counterNames = 
-	{ {Base, {"BaseCounter"}},
-	  {HpHc, {"LowCostCounter" , "NormalCostCounter"}},
+	{ {Base, {"Counter"}},
+	  {HpHc, {"LowCostPeriod" , "NormalCostPeriod"}},
 	  {Ejp,  {"EJPPeakPeriod" , "EJPNormalPeriod"}},
 	  {Tempo,  {"TempoBlueDaysLowCostPeriod" , "TempoBlueDaysNormalCostPeriod", "TempoRedDaysLowCostPeriod", "TempoRedDaysNormalCostPeriod", "TempoWhiteDaysLowCostPeriod", "TempoWhiteDaysNormalCostPeriod"}},
+	  {Producteur, {"ProductionPeriod"}},
+	  {HC_Et_WE, {"LowCostPeriod", "NormalCostPeriod", "LowCostWeekPeriod"}},
+	  {HC_SEM_WE_MERCR, {"LowCostWeekPeriod", "NormalCostWeekPeriod", "LowCostWeekEndPeriod", "NormalCostWeekEndPeriod", "LowCostDayOfWeekPeriod", "NormalCostDayOfWeekPeriod"}},
+	  {TJEJP, {"MobilePeakPeriod", "WinterPeriod", "SummerNormalPeriod", "SummerLowCostPeriod"}},
+	  {BT4SUP36, {"WinterNormalPeriod", "WinterLowCostPeriod", "SummerNormalPeriod", "SummerLowCostPeriod"}},
+      {BT5SUP36, {"WinterNormalPeriod", "WinterLowCostPeriod", "SummerNormalPeriod", "SummerLowCostPeriod", "PeakCostPeriod"}},
+      {BASEA5, {"WinterNormalPeriod", "WinterLowCostPeriod", "SummerNormalPeriod", "SummerLowCostPeriod"}},
+      {HTA5, {"WinterNormalPeriod", "WinterLowCostPeriod", "SummerNormalPeriod", "SummerLowCostPeriod", "PeakCostPeriod"}},
 	};
 
-	const Poco::Int32 CTIC::TICCountersNb = 10;
+	const Poco::Int32 CTIC::TICCountersNb = 9;
 
    CTIC::CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& deviceName,

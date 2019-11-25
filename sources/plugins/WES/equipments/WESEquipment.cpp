@@ -74,23 +74,17 @@ namespace equipments
 
             results.printToLog(YADOMS_LOG(information));
 
-            contract[0] = results.get<equipments::ContractAvailable>("CPT1_abo_name");
-            contract[1] = results.get<equipments::ContractAvailable>("CPT2_abo_name");
-            contract[1] = results.get<equipments::ContractAvailable>("CPT3_abo_name");
-
-            counterId[0] = results.get<std::string>("CPT1_adco");
-            counterId[1] = results.get<std::string>("CPT2_adco");
-            counterId[2] = results.get<std::string>("CPT3_adco");
+			for (auto index = 0; index < m_WESIOMapping.ticQty; ++index) {
+				contract[index] = results.get<equipments::ContractAvailable>("CPT" + boost::lexical_cast<std::string>(index + 1) + "_abo_name");
+				counterId[index] = results.get<std::string>("CPT" + boost::lexical_cast<std::string>(index + 1) + "_adco");
+				TICName[index] = results.get<std::string>("CPT" + boost::lexical_cast<std::string>(index + 1) + "_name");
+			}
 
             relayName[0] = results.get<std::string>("RL1");
             relayName[1] = results.get<std::string>("RL2");
 
             inputName[0] = results.get<std::string>("I1");
             inputName[1] = results.get<std::string>("I2");
-
-            TICName[0] = results.get<std::string>("CPT1_name");
-            TICName[1] = results.get<std::string>("CPT2_name");
-            TICName[2] = results.get<std::string>("CPT3_name");
 
             ClampName[0] = results.get<std::string>("nPCE1");
             ClampName[1] = results.get<std::string>("nPCE2");

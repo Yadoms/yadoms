@@ -18,6 +18,9 @@ c TI13<html><id>CPT1_INDEX_3</id><value>%d</value></html>
 c TI14<html><id>CPT1_INDEX_4</id><value>%d</value></html>
 c TI15<html><id>CPT1_INDEX_5</id><value>%d</value></html>
 c TI16<html><id>CPT1_INDEX_6</id><value>%d</value></html>
+c TI17<html><id>CPT1_INDEX_7</id><value>%d</value></html>
+c TI18<html><id>CPT1_INDEX_8</id><value>%d</value></html>
+c TI19<html><id>CPT1_INDEX_9</id><value>%d</value></html>
 c Tp1 <html><id>DEMAIN_1</id><value>%d</value></html>
 # COMPTEUR 2
 c ea2 <html><id>CPT2_adco</id><value>%s</value></html>
@@ -31,6 +34,9 @@ c TI23<html><id>CPT2_INDEX_3</id><value>%d</value></html>
 c TI24<html><id>CPT2_INDEX_4</id><value>%d</value></html>
 c TI25<html><id>CPT2_INDEX_5</id><value>%d</value></html>
 c TI26<html><id>CPT2_INDEX_6</id><value>%d</value></html>
+c TI27<html><id>CPT2_INDEX_7</id><value>%d</value></html>
+c TI28<html><id>CPT2_INDEX_8</id><value>%d</value></html>
+c TI29<html><id>CPT2_INDEX_9</id><value>%d</value></html>
 c Tp2 <html><id>DEMAIN_2</id><value>%d</value></html>
 # COMPTEUR 3
 c ea3 <html><id>CPT3_adco</id><value>%s</value></html>
@@ -44,6 +50,9 @@ c TI33<html><id>CPT3_INDEX_3</id><value>%d</value></html>
 c TI34<html><id>CPT3_INDEX_4</id><value>%d</value></html>
 c TI35<html><id>CPT3_INDEX_5</id><value>%d</value></html>
 c TI36<html><id>CPT3_INDEX_6</id><value>%d</value></html>
+c TI37<html><id>CPT3_INDEX_7</id><value>%d</value></html>
+c TI38<html><id>CPT3_INDEX_8</id><value>%d</value></html>
+c TI39<html><id>CPT3_INDEX_9</id><value>%d</value></html>
 c Tp3 <html><id>DEMAIN_3</id><value>%d</value></html>
 # PINCES AMPEREMETRIQUES
 c P P1 <html><id>VAPC1_val</id><value>%d</value></html>
