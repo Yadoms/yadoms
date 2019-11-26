@@ -31,7 +31,7 @@ namespace equipments
       {HTA5, {"WinterNormalPeriod", "WinterLowCostPeriod", "SummerNormalPeriod", "SummerLowCostPeriod", "PeakCostPeriod"}},
 	};
 
-	const Poco::Int32 CTIC::TICCountersNb = 9;
+	const Poco::Int32 CTIC::TICCountersNb = 6; // At this time the WES retreive only 6 counters maximum
 
    CTIC::CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& deviceName,
@@ -52,10 +52,9 @@ namespace equipments
 	   shared::CDataContainer details;
 	   m_keywords.clear();
 	   m_keywords.push_back(m_deviceStatus);
-	   m_keywords.push_back(m_apparentPower);
 	   m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kOk);
 
-	   // Counters création
+	   // Counters creation
 	   uint32_t index = 0;
 	   if (m_contractName != NotAvailable) {
 		   for (auto& name : m_counterNames.find(m_contractName)->second) {
@@ -63,9 +62,11 @@ namespace equipments
 			   m_keywords.push_back(m_Counter[index]);
 			   ++index;
 		   }
+
+		   m_keywords.push_back(m_apparentPower);
 	   }
 
-	   // Specific déclarations
+	   // Specific declarations
 	   switch (m_contractName)
 	   {
 	   case Tempo:
@@ -156,27 +157,25 @@ namespace equipments
 		  for (auto index = 0; index < size; index++) {
 			  m_Counter[index]->set(counters[index]);
 		  }
-	  }
 
-	  setPeriodTime(contractName, timePeriod);
+		  setPeriodTime(contractName, timePeriod);
 
-      switch (contractName)
-      {
-	  case Tempo:
-		  if (m_tomorrowColor->get() != newColor) {
-			  m_tomorrowColor->set((specificHistorizers::EColor)newColor);
+		  switch (contractName)
+		  {
+		  case Tempo:
+			  if (m_tomorrowColor->get() != newColor) {
+				  m_tomorrowColor->set((specificHistorizers::EColor)newColor);
+			  }
+			  break;
+		  case NotAvailable:
+			  YADOMS_LOG(trace) << "This equipment (" << m_deviceName << ") is desactivated.";
+			  break;
+		  default:
+			  YADOMS_LOG(error) << "This contract is unknown";
+			  break;
 		  }
-		  break;
-      case NotAvailable:
-         YADOMS_LOG(trace) << "This equipment (" << m_deviceName << ") is desactivated.";
-         break;
-      default:
-         YADOMS_LOG(error) << "This contract is unknown";
-         break;
-      }
-
-      YADOMS_LOG(information) << "Time period :" << timePeriod;
-      m_apparentPower->set(apparentPower);
+		  m_apparentPower->set(apparentPower);
+	  }
       api->historizeData(m_deviceName, m_keywords);
    }
 

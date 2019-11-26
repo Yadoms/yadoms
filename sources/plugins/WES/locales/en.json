@@ -130,10 +130,19 @@
 			"values" : {
 				"Ok": "Ok",
 				"Error": "Error",
-            "TeleInfoLost": "TeleInfo lost",
+                "TeleInfoLost": "TeleInfo lost",
 				"Desactivated": "Desactivated"
 			}
-		}      
+		},
+		"EColor": {
+			"name" : "Color for a day",
+			"values" : {
+				"NOTDEFINED": "Not defined",
+				"BLUE": "Blue",
+                "WHITE": "White",
+				"RED": "Red"
+			}
+		}
 	},     
 	"deviceConfiguration": {
 		"staticConfigurationSchema": {

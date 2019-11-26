@@ -133,7 +133,16 @@
 				"TeleInfoLost": "Perte télé-info",
 				"Desactivated": "Désactivée"
 			}
-		}
+		},
+		"EColor": {
+			"name" : "Couleur du jour",
+			"values" : {
+				"NOTDEFINED": "Pas définie",
+				"BLUE": "Bleu",
+                "WHITE": "Blanc",
+				"RED": "Rouge"
+			}
+		}		
 	},
 	"deviceConfiguration": {
 		"staticConfigurationSchema": {
