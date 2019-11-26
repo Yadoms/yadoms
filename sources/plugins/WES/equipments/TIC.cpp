@@ -57,10 +57,12 @@ namespace equipments
 
 	   // Counters création
 	   uint32_t index = 0;
-	   for (auto& name : m_counterNames.find(m_contractName)->second) {
-		   m_Counter[index] = boost::make_shared<yApi::historization::CEnergy>(name);
-		   m_keywords.push_back(m_Counter[index]);
-		   ++index;
+	   if (m_contractName != NotAvailable) {
+		   for (auto& name : m_counterNames.find(m_contractName)->second) {
+			   m_Counter[index] = boost::make_shared<yApi::historization::CEnergy>(name);
+			   m_keywords.push_back(m_Counter[index]);
+			   ++index;
+		   }
 	   }
 
 	   // Specific déclarations
@@ -112,7 +114,9 @@ namespace equipments
 		   break;
 	   }
 
-	   m_keywords.push_back(m_runningPeriod);
+	   if (m_runningPeriod.get()) { // Register this keyword only if initialized
+		   m_keywords.push_back(m_runningPeriod);
+	   }
 	   m_keywords.push_back(m_teleInfoStatus);
 
 	   std::string model = "TIC Id = " + counterId;
@@ -142,14 +146,16 @@ namespace equipments
       setDeviceState(newState);
 
       // In case of contract change -> create new keywords
-      if (m_contractName != contractName){
+      if (m_contractName != contractName && (m_contractName != NotAvailable)){
          m_contractName = contractName;
          initialize(api, counterId);
       }
 
-	  auto size = m_counterNames.find(m_contractName)->second.size();
-	  for (auto index = 0; index < size; index++) {
-		  m_Counter[index]->set(counters[index]);
+	  if (m_contractName != NotAvailable) {
+		  auto size = m_counterNames.find(m_contractName)->second.size();
+		  for (auto index = 0; index < size; index++) {
+			  m_Counter[index]->set(counters[index]);
+		  }
 	  }
 
 	  setPeriodTime(contractName, timePeriod);
@@ -158,22 +164,7 @@ namespace equipments
       {
 	  case Tempo:
 		  if (m_tomorrowColor->get() != newColor) {
-			  switch (newColor) {
-			  case specificHistorizers::EColor::kNOTDEFINEDValue:
-				  m_tomorrowColor->set(specificHistorizers::EColor::kNOTDEFINED);
-				  break;
-			  case specificHistorizers::EColor::kBLUEValue:
-				  m_tomorrowColor->set(specificHistorizers::EColor::kBLUE);
-				  break;
-			  case specificHistorizers::EColor::kWHITEValue:
-				  m_tomorrowColor->set(specificHistorizers::EColor::kWHITE);
-				  break;
-			  case specificHistorizers::EColor::kREDValue:
-				  m_tomorrowColor->set(specificHistorizers::EColor::kRED);
-				  break;
-			  default:
-				  break;
-			  }
+			  m_tomorrowColor->set((specificHistorizers::EColor)newColor);
 		  }
 		  break;
       case NotAvailable:
