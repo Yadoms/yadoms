@@ -478,15 +478,12 @@ namespace equipments
                                                                     parameters);
 
          // For security, we check if the results contain the value, with the corresponding new state
-         if (results.containsChild("Relai1"))
-         {
-            if (results.get<std::string>("Relai1") == "ON" && !m_relaysList[0]->get())
-            {
+         if (results.containsChild("Relai1")){
+            if (results.get<std::string>("Relai1") == "ON" && !m_relaysList[0]->get()){
                m_relaysList[0]->set(true);
                keywordsToHistorize.push_back(m_relaysList[0]);
             }
-            else if (results.get<std::string>("Relai1") == "OFF" && m_relaysList[0]->get())
-            {
+            else if (results.get<std::string>("Relai1") == "OFF" && m_relaysList[0]->get()){
                m_relaysList[0]->set(false);
                keywordsToHistorize.push_back(m_relaysList[0]);
             }
@@ -528,14 +525,12 @@ namespace equipments
       return m_deviceStatus->get();
    }
 
-   void CWESEquipment::remove(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
+   void CWESEquipment::remove(boost::shared_ptr<yApi::IYPluginApi> api){
       // Delete 2 others devices
       for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
          m_TICList[counter]->remove(api);
    }
 
    CWESEquipment::~CWESEquipment()
-   {
-   }
+   {}
 }// namespace equipments

@@ -214,7 +214,6 @@ namespace equipments
 	   switch (contractName)
 	   {
 	   case Tempo:
-		   m_keywords.push_back(m_tomorrowColor);
 		   boost::dynamic_pointer_cast<specificHistorizers::CPeriodTempo>(m_runningPeriod)->set((specificHistorizers::EWESPeriodTempo)period);
 		   break;
 	   case Base:
