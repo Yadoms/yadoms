@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/exception/Exception.hpp>
+#include <shared/Export.h>
 
 
 namespace shared

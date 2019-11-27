@@ -31,7 +31,10 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    try
    {
       api->setPluginState(yApi::historization::EPluginState::kCustom, "initialization");
-      
+
+      //check for version upgrade (allow to cleanup data folder when a new version run)
+      checkVersionUpgrade(api);
+
       // Load configuration values (provided by database)
       m_configuration.initializeWith(api->getConfiguration());
       m_configuration.setPath(api->getInformation()->getPath().string());
@@ -214,6 +217,90 @@ void CZWave::stopController() const
       YADOMS_LOG(error) << "The ZWave plugin fail to stop. unknown exception" ;
    }
 }
+
+void CZWave::checkVersionUpgrade(const boost::shared_ptr<yApi::IYPluginApi>& api) const
+{
+   /**
+    * In case of version upgrade, OpenZWave data folder must be erased.
+    *
+    * To determine it, a file named "currentVersion.json" in data folder contains the plugin version of the last time it started.
+    *
+    * If version is obsolete (or file do not exist or do not contains a version entry) then erase data folder
+    *
+    * In all cases, just write the current verion in file; so at next start nothing will be done.
+    * 
+    */
+   YADOMS_LOG(information) << "The ZWave plugin starting... checking version upgrade...";
+
+   shared::versioning::CVersion currentRunningVersion = api->getInformation()->getVersion();
+
+   const auto dataVersionFile = api->getDataPath() / "currentVersion.json";
+   shared::CDataContainer dvc;
+
+   if(boost::filesystem::exists(dataVersionFile))
+   {
+      try
+      {
+         dvc.deserializeFromFile(dataVersionFile.string());
+         if (dvc.containsValue("version"))
+         {
+            const auto versionAsString = dvc.get<std::string>("version");
+            shared::versioning::CVersion localVersion(versionAsString);
+            if (currentRunningVersion > localVersion)
+            {
+               try
+               {
+                  YADOMS_LOG(information) << "The ZWave plugin started after an update. Cleaning " << api->getDataPath().string() << " folder...";
+                  //an upgrade havve benn realized
+                  //cleanup data folder
+                  boost::filesystem::remove_all(api->getDataPath());
+                  boost::filesystem::create_directory(api->getDataPath());
+
+                  YADOMS_LOG(debug) << "The ZWave plugin started after an update. Cleaning " << api->getDataPath().string() << " folder... DONE";
+               }
+               catch (std::exception & ex)
+               {
+                  YADOMS_LOG(error) << "The ZWave plugin started after an update. Cleaning " << api->getDataPath().string() << " folder... FAIL";
+                  YADOMS_LOG(error) << "The ZWave plugin fail to manage data folder after an update : " << ex.what();
+               }
+            }
+            else
+            {
+               YADOMS_LOG(debug) << "The ZWave plugin starting... checking version upgrade... data folder already at last running version";
+            }
+         }
+         else
+         {
+            YADOMS_LOG(debug) << "The ZWave plugin starting... checking version upgrade... cant find 'VERSION' in " << dataVersionFile << " : ";
+            dvc.printToLog(YADOMS_LOG(debug));
+
+         }
+
+      }
+      catch (std::exception & ex)
+      {
+         YADOMS_LOG(debug) << "Fail to parse " << dataVersionFile.string() << " : " << ex.what();
+      }
+   }
+   else
+   {
+      YADOMS_LOG(debug) << "The ZWave plugin starting... checking version upgrade... cant find " << dataVersionFile << ". Consider new install, nothing to do";
+   }
+
+   try
+   {
+      YADOMS_LOG(debug) << "The ZWave plugin starting... checking version upgrade... writing current version " << currentRunningVersion;
+      dvc.set("version", currentRunningVersion.toString());
+      dvc.serializeToFile(dataVersionFile.string());
+
+      YADOMS_LOG(debug) << "The ZWave plugin starting... checking version upgrade... DONE";
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(error) << "The ZWave plugin starting... checking version upgrade... writing current version FAILED " << ex.what();
+   }
+}
+
 
 void CZWave::onEventDeviceCommand(const boost::shared_ptr<yApi::IYPluginApi>& api) const
 {

@@ -724,6 +724,33 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       }
       break;
    }
+   case OpenZWave::Notification::Type_UserAlerts:
+   {
+      switch(_notification->GetUserAlertType())
+      {
+      case OpenZWave::Notification::UserAlertNotification::Alert_None:
+         break;
+      case OpenZWave::Notification::UserAlertNotification::Alert_ConfigOutOfDate: //One of the Config Files is out of date. Use GetNodeId to determine which node is effected.
+         break;
+      case OpenZWave::Notification::UserAlertNotification::Alert_MFSOutOfDate: //the manufacturer_specific.xml file is out of date
+         break;
+      case OpenZWave::Notification::UserAlertNotification::Alert_ConfigFileDownloadFailed: //A Config File failed to download 
+         break;
+      case OpenZWave::Notification::UserAlertNotification::Alert_DNSError: //A error occurred performing a DNS Lookup
+         break;
+      case OpenZWave::Notification::UserAlertNotification::Alert_NodeReloadRequired: //A new Config file has been discovered for this node, and its pending a Reload to Take affect
+         break;
+      case OpenZWave::Notification::UserAlertNotification::Alert_UnsupportedController: //The Controller is not running a Firmware Library we support
+         break;
+      case OpenZWave::Notification::UserAlertNotification::Alert_ApplicationStatus_Retry: //Application Status CC returned a Retry Later Message
+         break;
+      case OpenZWave::Notification::UserAlertNotification::Alert_ApplicationStatus_Queued: //Command Has been Queued for later execution
+         break;
+      case OpenZWave::Notification::UserAlertNotification::Alert_ApplicationStatus_Rejected: //Command has been rejected
+         break;
+      }
+      break;
+   }
    default:
       break;
    }

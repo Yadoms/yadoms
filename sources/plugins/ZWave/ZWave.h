@@ -106,6 +106,12 @@ private:
 
 
    //--------------------------------------------------------------
+   /// \brief	Check if a version upgrade have been done
+   /// \param [in] api The plugin API
+   //--------------------------------------------------------------
+   void checkVersionUpgrade(const boost::shared_ptr<yApi::IYPluginApi>& api) const;
+
+   //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CZWaveConfiguration m_configuration;
