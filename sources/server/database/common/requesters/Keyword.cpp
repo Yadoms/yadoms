@@ -270,7 +270,7 @@ namespace database
             return boost::shared_ptr<entities::CAcquisition>();
          }
 
-         std::string CKeyword::getKeywordLastData(const int keywordId,
+         std::string CKeyword::getKeywordLastData(int keywordId,
                                                   bool throwIfNotExists)
          {
             auto qSelect = m_databaseRequester->newQuery();
@@ -293,7 +293,7 @@ namespace database
             return std::string();
          }
 
-         std::vector<boost::tuple<int, std::string>> CKeyword::getKeywordListLastData(const std::vector<int> keywordIds)
+         std::vector<boost::tuple<int, std::string>> CKeyword::getKeywordListLastData(const std::vector<int>& keywordIds)
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CKeywordTable::getIdColumnName(), CKeywordTable::getLastAcquisitionValueColumnName()).
