@@ -20,14 +20,14 @@ public:
    // [END] IWeatherService implementation
 
 private:
-   std::string getForecastWeatherDeviceNameForDay(int forecastDay) const;
-   std::string getForecastWeatherDeviceNameForHour(int forecastHour) const;
-   shared::CDataContainer syncRequest(const std::string& url) const;
+   std::string getForecastWeatherDeviceNameForDay(unsigned int forecastDay) const;
+   std::string getForecastWeatherDeviceNameForHour(unsigned int forecastHour) const;
+   static shared::CDataContainer syncRequest(const std::string& url);
    void requestLiveWeather(boost::shared_ptr<const shared::ILocation> forLocation) const;
    void processLiveWeatherAnswer(const shared::CDataContainer& weatherData,
                                  const shared::CDataContainer& uvIndexData) const;
    void requestForecastWeather(boost::shared_ptr<const shared::ILocation> forLocation) const;
-   void historize3HoursForecast(int hourIndex,
+   void historize3HoursForecast(unsigned int hourIndex,
                                 const boost::posix_time::ptime& forecastDatetime,
                                 const shared::CDataContainer& forecast) const;
    void historizeDaysForecast(const std::map<int, std::vector<shared::CDataContainer>>& forecastDataByDay,
