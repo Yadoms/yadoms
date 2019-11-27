@@ -159,6 +159,7 @@ void CSupervisor::run()
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider,
                                                               pDataProvider->getDatabaseRequester(),
+                                                              pDataProvider->getKeywordRequester(),
                                                               pDataProvider->getAcquisitionRequester(),
                                                               taskManager));
 
