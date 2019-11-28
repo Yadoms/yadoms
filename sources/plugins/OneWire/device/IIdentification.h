@@ -4,42 +4,37 @@
 
 namespace device
 {
+//--------------------------------------------------------------
+/// \brief	1-Wire Device identification interface
+//--------------------------------------------------------------
+class IIdentification
+{
+public:
+   virtual ~IIdentification() = default;
+
    //--------------------------------------------------------------
-   /// \brief	1-Wire Device identification interface
+   /// \brief	Device family
    //--------------------------------------------------------------
-   class IIdentification
-   {
-   public:
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~IIdentification()
-      {
-      }
+   virtual EOneWireFamily family() const = 0;
 
-      //--------------------------------------------------------------
-      /// \brief	Device family
-      //--------------------------------------------------------------
-      virtual EOneWireFamily family() const = 0;
+   //--------------------------------------------------------------
+   /// \brief	Device Id
+   //--------------------------------------------------------------
+   virtual std::string id() const = 0;
 
-      //--------------------------------------------------------------
-      /// \brief	Device Id
-      //--------------------------------------------------------------
-      virtual std::string id() const = 0;
+   //--------------------------------------------------------------
+   /// \brief	Convert identification to Yadoms device name
+   //--------------------------------------------------------------
+   virtual const std::string &deviceName() const = 0;
 
-      //--------------------------------------------------------------
-      /// \brief	Convert identification to Yadoms device name
-      //--------------------------------------------------------------
-      virtual const std::string& deviceName() const = 0;
+   //--------------------------------------------------------------
+   /// \brief	Device model (chip reference)
+   //--------------------------------------------------------------
+   virtual const std::string &model() const = 0;
 
-      //--------------------------------------------------------------
-      /// \brief	Device model (chip reference)
-      //--------------------------------------------------------------
-      virtual const std::string& model() const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief	Details (1-wire specific data)
-      //--------------------------------------------------------------
-      virtual const shared::CDataContainer& details() const = 0;
-   };
+   //--------------------------------------------------------------
+   /// \brief	Details (1-wire specific data)
+   //--------------------------------------------------------------
+   virtual const shared::CDataContainer &details() const = 0;
+};
 } // namespace device

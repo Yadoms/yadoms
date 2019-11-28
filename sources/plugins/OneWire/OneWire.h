@@ -12,15 +12,8 @@ namespace yApi = shared::plugin::yPluginApi;
 class COneWire : public plugin_cpp_api::IPlugin
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
    COneWire();
-
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~COneWire();
+   virtual ~COneWire() = default;
 
 protected:
    // IPlugin implementation

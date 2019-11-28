@@ -5,31 +5,26 @@
 
 namespace device
 {
+//--------------------------------------------------------------
+/// \brief	Thermachron Device (Family 21)
+//--------------------------------------------------------------
+class CThermachron : public CSingleTemperature
+{
+public:
    //--------------------------------------------------------------
-   /// \brief	Thermachron Device (Family 21)
+   /// \brief	Constructor
+   /// \param[in]	family Device family
+   /// \param[in]	id Device serial number
+   /// \param[in]	reader I/O access object
    //--------------------------------------------------------------
-   class CThermachron : public CSingleTemperature
+   CThermachron(EOneWireFamily family,
+                const std::string &id,
+                boost::shared_ptr<ioInterfaces::ITemperature> io)
+       : CSingleTemperature(family, id, "DS1921", io, kThermachron)
    {
-   public:
-      //--------------------------------------------------------------
-      /// \brief	Constructor
-      /// \param[in]	family Device family
-      /// \param[in]	id Device serial number
-      /// \param[in]	reader I/O access object
-      //--------------------------------------------------------------
-      CThermachron(EOneWireFamily family,
-                   const std::string& id,
-                   boost::shared_ptr<ioInterfaces::ITemperature> io)
-         :CSingleTemperature(family, id, "DS1921", io, kThermachron)
-      {
-      }
+   }
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~CThermachron()
-      {
-      }
-   };
+   virtual ~CThermachron() = default;
+};
 
 } // namespace device

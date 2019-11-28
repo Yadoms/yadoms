@@ -8,12 +8,7 @@ namespace ioInterfaces
    class IQuadAdConverter
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~IQuadAdConverter()
-      {
-      }
+      virtual ~IQuadAdConverter() = default;
 
       //--------------------------------------------------------------
       /// \brief	Read value
