@@ -176,7 +176,7 @@ void CSmartBatteryMonitor::write(const std::string &keyword, const std::string &
 
 bool CSmartBatteryMonitor::hasRelevantValue()
 {
-   if (m_keywords->empty())
+   if (m_keywords.empty())
       return false;
 
    const auto now = shared::currentTime::Provider().now();

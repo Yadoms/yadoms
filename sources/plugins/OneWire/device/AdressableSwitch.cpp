@@ -43,7 +43,7 @@ void CAdressableSwitch::write(const std::string &keyword, const std::string &com
 
 bool CAdressableSwitch::hasRelevantValue()
 {
-   if (m_keywords->empty())
+   if (m_keywords.empty())
       return false;
 
    const auto now = shared::currentTime::Provider().now();

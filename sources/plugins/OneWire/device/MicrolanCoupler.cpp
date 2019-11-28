@@ -43,7 +43,7 @@ void CMicrolanCoupler::write(const std::string &keyword, const std::string &comm
 
 bool CMicrolanCoupler::hasRelevantValue()
 {
-   if (m_keywords->empty())
+   if (m_keywords.empty())
       return false;
 
    const auto now = shared::currentTime::Provider().now();

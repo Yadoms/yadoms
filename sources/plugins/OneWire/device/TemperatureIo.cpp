@@ -6,7 +6,7 @@
 
 namespace device
 {
-const boost::posix_time::time_duration CQuadAdConverter::HistorizationPeriod(boost::posix_time::seconds(5));
+const boost::posix_time::time_duration CTemperatureIo::HistorizationPeriod(boost::posix_time::seconds(5));
 
 CTemperatureIo::CTemperatureIo(EOneWireFamily family,
                                const std::string &id,

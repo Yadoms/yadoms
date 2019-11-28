@@ -63,7 +63,7 @@ void C4kEepromWithPio::write(const std::string &keyword, const std::string &comm
 
 bool C4kEepromWithPio::hasRelevantValue()
 {
-   if (m_keywords->empty())
+   if (m_keywords.empty())
       return false;
 
    const auto now = shared::currentTime::Provider().now();

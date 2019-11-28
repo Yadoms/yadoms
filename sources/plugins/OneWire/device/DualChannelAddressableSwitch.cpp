@@ -63,7 +63,7 @@ void CDualChannelAddressableSwitch::write(const std::string &keyword, const std:
 
 bool CDualChannelAddressableSwitch::hasRelevantValue()
 {
-   if (m_keywords->empty())
+   if (m_keywords.empty())
       return false;
 
    const auto now = shared::currentTime::Provider().now();
