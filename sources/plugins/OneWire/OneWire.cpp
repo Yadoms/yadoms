@@ -8,16 +8,10 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
 
-
 IMPLEMENT_PLUGIN(COneWire)
 
-
 COneWire::COneWire()
-   :m_configuration(boost::make_shared<CConfiguration>())
-{
-}
-
-COneWire::~COneWire()
+    : m_configuration(boost::make_shared<CConfiguration>())
 {
 }
 
@@ -37,7 +31,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_engine = CFactory::createEngine(api, m_configuration);
 
    // 1-wire Network devices
-   std::map<std::string, boost::shared_ptr<device::IDevice> > devices;
+   std::map<std::string, boost::shared_ptr<device::IDevice>> devices;
 
    // Periodic network refresh
    api->getEventHandler().createTimer(kEvtTimerNetworkRefresh,
@@ -49,7 +43,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // the main loop
    YADOMS_LOG(information) << "OneWire plugin is running...";
 
-   while (1)
+   while (true)
    {
       try
       {
@@ -69,15 +63,15 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             YADOMS_LOG(trace) << "Netword updated, " << devices.size() << " device(s) found";
 
             // Now read all devices state and historize data
-            for (auto device = devices.begin(); device != devices.end(); ++device)
+            for (const auto& device : devices)
             {
                // Set here an interruption point because it can take some time in case of big networks
                boost::this_thread::interruption_point();
 
-               boost::shared_ptr<device::IDevice> newDevice = device->second;
+               boost::shared_ptr<device::IDevice> newDevice = device.second;
                YADOMS_LOG(trace) << "  Read " << newDevice->ident()->deviceName() << " state...";
                newDevice->read();
-               if (!newDevice->keywords().empty())
+               if (newDevice->hasRelevantValue())
                   api->historizeData(newDevice->ident()->deviceName(),
                                      newDevice->keywords());
             }
@@ -86,18 +80,18 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          case yApi::IYPluginApi::kEventDeviceRemoved:
          {
-            const auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+            const auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
             if (devices.find(device->device()) == devices.end())
                YADOMS_LOG(error) << "Fail to remove " << device->device() << " device : device unknown";
             else
                devices.erase(device->device());
-               YADOMS_LOG(information) << "Device " << device->device() << " removed";
+            YADOMS_LOG(information) << "Device " << device->device() << " removed";
             break;
          }
          case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // A command was received from Yadoms
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             onCommand(devices, command);
 
             break;
@@ -122,7 +116,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          }
       }
-      catch (COneWireException& e)
+      catch (COneWireException &e)
       {
          YADOMS_LOG(error) << e.what();
       }
@@ -130,9 +124,9 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 }
 
 void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                     const shared::CDataContainer& newConfigurationData)
+                                     const shared::CDataContainer &newConfigurationData)
 {
-   BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Configuration was updated
    YADOMS_LOG(information) << "Configuration was updated...";
@@ -148,7 +142,7 @@ void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void COneWire::onDeviceConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                     std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
+                                     std::map<std::string, boost::shared_ptr<device::IDevice>> &devices,
                                      boost::shared_ptr<const yApi::ISetDeviceConfiguration> deviceConfiguration)
 {
    auto device = devices.find(deviceConfiguration->name());
@@ -162,13 +156,12 @@ void COneWire::onDeviceConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                     deviceConfiguration->configuration());
 }
 
-
-void COneWire::onCommand(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
+void COneWire::onCommand(std::map<std::string, boost::shared_ptr<device::IDevice>> &devices,
                          boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
    YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command);
 
-   std::map<std::string, boost::shared_ptr<device::IDevice> >::iterator device = devices.find(command->getDevice());
+   std::map<std::string, boost::shared_ptr<device::IDevice>>::iterator device = devices.find(command->getDevice());
    if (device == devices.end())
    {
       YADOMS_LOG(information) << "Device " << command->getDevice() << " not found on the 1-wire network";
@@ -179,40 +172,40 @@ void COneWire::onCommand(std::map<std::string, boost::shared_ptr<device::IDevice
 }
 
 void COneWire::updateNetwork(boost::shared_ptr<yApi::IYPluginApi> api,
-                             std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
-                             const std::map<std::string, boost::shared_ptr<device::IDevice> >& foundDevices)
+                             std::map<std::string, boost::shared_ptr<device::IDevice>> &devices,
+                             const std::map<std::string, boost::shared_ptr<device::IDevice>> &foundDevices)
 {
-   for (auto foundDevice = foundDevices.begin(); foundDevice != foundDevices.end(); ++foundDevice)
+   for (const auto &foundDevice : foundDevices)
    {
-      if (devices.find(foundDevice->first) == devices.end())
+      if (devices.find(foundDevice.first) != devices.end())
+         continue;
+
+      YADOMS_LOG(information) << "New device found " << foundDevice.first;
+
+      // New device
+      boost::shared_ptr<device::IDevice> newDevice = foundDevice.second;
+      // First, add it to main list
+      devices[foundDevice.first] = newDevice;
+      // Now, declare it to Yadoms
+      if (!api->deviceExists(newDevice->ident()->deviceName()))
       {
-         YADOMS_LOG(information) << "New device found " << foundDevice->first;
+         // Declare device
+         api->declareDevice(newDevice->ident()->deviceName(),
+                            newDevice->ident()->model(),
+                            newDevice->ident()->model(),
+                            newDevice->keywords(),
+                            newDevice->ident()->details());
 
-         // New device
-         boost::shared_ptr<device::IDevice> newDevice = foundDevice->second;
-         // First, add it to main list
-         devices[foundDevice->first] = newDevice;
-         // Now, declare it to Yadoms
-         if (!api->deviceExists(newDevice->ident()->deviceName()))
+         // Ask device configuration to set keywords list
+         try
          {
-            // Declare device
-            api->declareDevice(newDevice->ident()->deviceName(),
-                               newDevice->ident()->model(),
-                               newDevice->ident()->model(),
-                               newDevice->keywords(),
-                               newDevice->ident()->details());
-
-            // Ask device configuration to set keywords list
-            try
-            {
-               const auto deviceConfiguration = api->getDeviceConfiguration(newDevice->ident()->deviceName());
-               if (!deviceConfiguration.empty())
-                  newDevice->setConfiguration(api,
-                                              deviceConfiguration);
-            }
-            catch(shared::exception::CEmptyResult&)
-            {
-            }
+            const auto deviceConfiguration = api->getDeviceConfiguration(newDevice->ident()->deviceName());
+            if (!deviceConfiguration.empty())
+               newDevice->setConfiguration(api,
+                                           deviceConfiguration);
+         }
+         catch (shared::exception::CEmptyResult &)
+         {
          }
       }
    }

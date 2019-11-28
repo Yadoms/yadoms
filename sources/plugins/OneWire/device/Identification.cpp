@@ -40,10 +40,6 @@ namespace device
    {
    }
 
-   CIdentification::~CIdentification()
-   {
-   }
-
    EOneWireFamily CIdentification::family() const
    {
       return m_family;

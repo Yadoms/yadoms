@@ -20,10 +20,6 @@ namespace device
       m_visInput = configuration.get<bool>("visSensor");
    }
 
-   CSmartBatteryMonitorConfiguration::~CSmartBatteryMonitorConfiguration()
-   {
-   }
-
    CSmartBatteryMonitorConfiguration::EVadSensorType CSmartBatteryMonitorConfiguration::vadSensor() const
    {
       return m_vadSensor;
