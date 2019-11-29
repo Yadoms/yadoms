@@ -4,7 +4,7 @@
 #include "UrlManagerHelper.h"
 #include "IDeviceState.h"
 
-class CDeviceState final : public IDeviceState
+class CDeviceState : public IDeviceState
 {
 public:
    //--------------------------------------------------------------
