@@ -3,7 +3,7 @@
 #include "INotificationSender.h"
 #include "Configuration.h"
 
-class CFactory final
+class CFactory
 {
 public:
    CFactory() = default;
