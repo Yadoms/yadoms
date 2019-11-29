@@ -3,7 +3,7 @@
 #include "Configuration.h"
 
 
-class CUrlManagerHelper final
+class CUrlManagerHelper
 {
 public:
 
