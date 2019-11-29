@@ -68,12 +68,8 @@ namespace equipments
       ///\param[in] contractName                    contract Name
       ///\param[in] timePeriod                      the time period of the moment
       ///\param[in] apparentPower                   apparent power of the counter
-      ///\param[in] counter1                        1st counter sent by the wes
-      ///\param[in] counter2                        2nd counter sent by the wes
-      ///\param[in] counter3                        3td counter sent by the wes
-      ///\param[in] counter4                        4th counter sent by the wes
-      ///\param[in] counter5                        5th counter sent by the wes
-      ///\param[in] counter6                        6th counter sent by the wes
+      ///\param[in] counters                        all counters of the WES
+	  ///\param[in] newColor                        the color for tomorrow
       //-----------------------------------------------------
       void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                               specificHistorizers::EWESdeviceStatus newState,

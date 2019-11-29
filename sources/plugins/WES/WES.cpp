@@ -255,20 +255,16 @@ void CWES::onUpdateConfiguration(const shared::CDataContainer& newConfigurationD
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
-
-   // Update configuration
-   m_configuration->initializeWith(newConfigurationData);
+   m_configuration->initializeWith(newConfigurationData); // Update configuration
 }
 
 void CWES::analyzePluginState(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    auto newState = kRunning; // default state
 
-   for (const auto& devicesStatus : m_ioManager->getMasterdeviceStates())
-   {
+   for (const auto& devicesStatus : m_ioManager->getMasterdeviceStates()){
       if (devicesStatus == specificHistorizers::EWESdeviceStatus::kTimeOut ||
-         devicesStatus == specificHistorizers::EWESdeviceStatus::kError)
-      {
+         devicesStatus == specificHistorizers::EWESdeviceStatus::kError){
          newState = kAtLeastOneConnectionFaulty;
       }
    }

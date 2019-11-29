@@ -377,11 +377,6 @@ namespace equipments
          YADOMS_LOG(error) << e.what();
          setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kError);
          api->historizeData(m_deviceName, keywordsToHistorize);
-
-         if (m_TICList.size() == m_WESIOMapping.ticQty){
-            for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
-               m_TICList[counter]->setDeviceState(api, specificHistorizers::EWESdeviceStatus::kError);
-         }
       }
    }
 
@@ -516,7 +511,9 @@ namespace equipments
    {
       if (m_deviceStatus->get() != newState){
          m_deviceStatus->set(newState);
-         keywordsToHistorize.push_back(m_deviceStatus);
+		 if (std::find(keywordsToHistorize.begin(), keywordsToHistorize.end(), m_deviceStatus) == keywordsToHistorize.end()) {
+			 keywordsToHistorize.push_back(m_deviceStatus);
+		 }
          YADOMS_LOG(trace) << "device state " << m_deviceName << " set to " << newState.toString();
       }
    }
