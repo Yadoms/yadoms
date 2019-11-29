@@ -1,6 +1,5 @@
 #pragma once
 #include "IntTypeInfo.h"
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -10,7 +9,7 @@ namespace shared
       {
          namespace typeInfo
          {
-            class YADOMS_SHARED_EXPORT CPercentageTypeInfo : public ITypeInfo
+            class CPercentageTypeInfo : public ITypeInfo
             {
             public:
                CPercentageTypeInfo();

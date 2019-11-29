@@ -214,6 +214,7 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Illumination.h
    shared/plugin/yPluginApi/historization/IlluminationWm2.cpp
    shared/plugin/yPluginApi/historization/IlluminationWm2.h
+   shared/plugin/yPluginApi/historization/IMessageFormatter.h
    shared/plugin/yPluginApi/historization/Load.cpp
    shared/plugin/yPluginApi/historization/Load.h
    shared/plugin/yPluginApi/historization/Message.cpp
@@ -378,7 +379,6 @@ set(SHARED_LIB_SRC
    windows/shared/DynamicLibraryExport.h
    windows/shared/Executable.h
    windows/shared/Executable.cpp
-   windows/shared/Export.h
    windows/shared/FileSystemExtension.h
    windows/shared/FileSystemExtension.cpp
    windows/shared/iobFuncLegacyAdapter.cpp
@@ -406,7 +406,6 @@ set(SHARED_LIB_SRC
    mac/shared/DynamicLibraryExport.h
    mac/shared/Executable.h
    mac/shared/Executable.cpp
-   mac/shared/Export.h
    mac/shared/FileSystemExtension.h
    mac/shared/FileSystemExtension.cpp
    mac/shared/NetworkHelper.h
@@ -429,7 +428,6 @@ set(SHARED_LIB_SRC
    linux/shared/DynamicLibraryExport.h
    linux/shared/Executable.h
    linux/shared/Executable.cpp
-   linux/shared/Export.h
    linux/shared/FileSystemExtension.h
    linux/shared/FileSystemExtension.cpp
    linux/shared/NetworkHelper.h

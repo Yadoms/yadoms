@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include <Poco/Net/HTTPClientSession.h>
 
@@ -16,16 +15,18 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief	Base class for threads
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CHttpMethods
+   class CHttpMethods
    {
    public:
       //--------------------------------------------------------------
       /// \brief	    Session type to use with request
+      //--------------------------------------------------------------
       enum ESessionType
       {
          kStandard,
          kSecured
       };
+
 
       virtual ~CHttpMethods() = default;
 

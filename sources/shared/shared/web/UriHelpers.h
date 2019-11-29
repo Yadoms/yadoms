@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 #include <Poco/URI.h>
 
 namespace shared { namespace web { 
@@ -8,7 +7,7 @@ namespace shared { namespace web {
    //---------------------------------
    ///\brief Utility (static) class which simplify use of Poco::URI
    //---------------------------------
-   class YADOMS_SHARED_EXPORT CUriHelpers
+   class CUriHelpers
    {
    public:
       //---------------------------------

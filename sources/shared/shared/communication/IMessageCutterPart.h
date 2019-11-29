@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	Part of a SmallHeaderMessageCutter message
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT IMessageCutterPart
+      class IMessageCutterPart
       {
       public:
          virtual ~IMessageCutterPart()

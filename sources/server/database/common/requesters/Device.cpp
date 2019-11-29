@@ -449,6 +449,23 @@ namespace database
             return adapter.getResults();
          }
 
+         std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices(const std::vector<std::string>& names,
+                                                                               bool blacklistedIncluded = false) const
+         {
+            auto qSelect = m_databaseRequester->newQuery();
+
+            qSelect->Select().
+                     From(CDeviceTable::getTableName()).
+                     Where(CDeviceTable::getNameColumnName(), CQUERY_OP_IN, names);
+
+            if (!blacklistedIncluded)
+               qSelect->And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, 0);
+
+            adapters::CDeviceAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
+            return adapter.getResults();
+         }
+
          void CDevice::removeDevice(int deviceId)
          {
             auto qDelete = m_databaseRequester->newQuery();

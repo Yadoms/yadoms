@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Buffer.hpp"
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -10,7 +9,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	This class manage a raw char buffer
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CStringBuffer : public CBuffer<char>
+      class CStringBuffer : public CBuffer<char>
       {
       public:
          //--------------------------------------------------------------

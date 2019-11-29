@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 
 namespace shared
@@ -13,7 +12,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A dataTime historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CDateTime : public CSingleHistorizableData<boost::posix_time::ptime>
+            class CDateTime : public CSingleHistorizableData<boost::posix_time::ptime>
             {
             public:
                //-----------------------------------------------------

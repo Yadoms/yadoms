@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Interface for time events
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT ITimeEvent
+      class ITimeEvent
       {
       public:
          //--------------------------------------------------------------

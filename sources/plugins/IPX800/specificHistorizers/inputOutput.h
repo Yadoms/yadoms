@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/plugin/yPluginApi/KeywordAccessMode.h>
 

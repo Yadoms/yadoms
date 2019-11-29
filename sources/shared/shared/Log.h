@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 #include "logInternal/ILogStream.h"
 #include <Poco/Logger.h>
 #include <Poco/Thread.h>
@@ -22,7 +21,7 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief	    Class which keeps statically the logger
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CLog
+   class CLog
    {
    public:
       //--------------------------------------------------------------

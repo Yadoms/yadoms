@@ -14,7 +14,7 @@ namespace shared
          ///<         - kIncrement : Say Yadoms that value must be added to current value. Ex : pulse counters (water, energy counters...)
          ///>         - kCumulative : the current value is a total value (like some energy power)
          //-----------------------------------------------------
-         DECLARE_ENUM_HEADER_SHARED(EMeasureType, YADOMS_SHARED_EXPORT,
+         DECLARE_ENUM_HEADER(EMeasureType,
             ((Absolute)(0))
             ((Increment)(1))
             ((Cumulative)(3))

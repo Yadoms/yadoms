@@ -4,7 +4,6 @@
 // Platforms network helper
 //
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -12,7 +11,7 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief	this class is used to provide helpers in networking
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CNetworkHelper
+   class CNetworkHelper
    {
    public:
       //--------------------------------------------------------------

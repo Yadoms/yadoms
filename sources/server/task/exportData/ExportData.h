@@ -3,6 +3,7 @@
 #include "IPathProvider.h"
 #include <Poco/Zip/ZipLocalFileHeader.h>
 #include "database/IAcquisitionRequester.h"
+#include "database/IKeywordRequester.h"
 
 namespace task
 {
@@ -15,6 +16,7 @@ namespace task
       {
       public:
          explicit CExportData(boost::shared_ptr<const IPathProvider> pathProvider,
+                              boost::shared_ptr<database::IKeywordRequester> keywordRequester,
                               boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                               int keywordId);
          virtual ~CExportData() = default;
@@ -50,6 +52,7 @@ namespace task
          ///\brief   The input data for the task
          //------------------------------------------
          boost::shared_ptr<const IPathProvider> m_pathProvider;
+         boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
          boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
          int m_keywordId;
 

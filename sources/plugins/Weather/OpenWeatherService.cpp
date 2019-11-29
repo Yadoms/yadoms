@@ -7,7 +7,7 @@
 #include <algorithm>
 
 
-// Openweather gives up to 5 days forecast, by 3 hours, so 40 forecasts.
+// OpenWeather gives up to 5 days forecast, by 3 hours, so 40 forecasts.
 // It's too many data for us, we keep only 24 hours with 3 hours details,
 // and compute day summary for the 5 days.
 const unsigned int COpenWeatherService::NbForecastHours(8);
@@ -30,30 +30,30 @@ boost::posix_time::time_duration COpenWeatherService::serviceRecommendedRetryDel
    return boost::posix_time::minutes(10);
 }
 
-std::string COpenWeatherService::getForecastWeatherDeviceNameForDay(int forecastDay) const
+std::string COpenWeatherService::getForecastWeatherDeviceNameForDay(unsigned int forecastDay) const
 {
    return ForecastWeatherPerDayDevicePrefix + std::to_string(forecastDay + 1);
 }
 
-std::string COpenWeatherService::getForecastWeatherDeviceNameForHour(int forecastHour) const
+std::string COpenWeatherService::getForecastWeatherDeviceNameForHour(unsigned int forecastHour) const
 {
    return ForecastWeatherPerHourDevicePrefix + std::to_string((forecastHour + 1) * 3);
 }
 
 void COpenWeatherService::declareDevices() const
 {
-   CLiveWeatherDevice liveWeatherDevice(LiveWeatherDeviceName);
+   const CLiveWeatherDevice liveWeatherDevice(LiveWeatherDeviceName);
    liveWeatherDevice.declareDevice(m_api,
                                    ServiceName);
 
-   for (auto forecastHour = 0; forecastHour < NbForecastHours; ++forecastHour)
+   for (unsigned int forecastHour = 0; forecastHour < NbForecastHours; ++forecastHour)
    {
       CForecastWeatherDevice forecastWeatherDevice(getForecastWeatherDeviceNameForHour(forecastHour));
       forecastWeatherDevice.declareDevice(m_api,
                                           ServiceName);
    }
 
-   for (auto forecastDay = 0; forecastDay < NbForecastDays; ++forecastDay)
+   for (unsigned int forecastDay = 0; forecastDay < NbForecastDays; ++forecastDay)
    {
       CForecastWeatherDevice forecastWeatherDevice(getForecastWeatherDeviceNameForDay(forecastDay));
       forecastWeatherDevice.declareDevice(m_api,
@@ -67,7 +67,7 @@ void COpenWeatherService::requestWeather(boost::shared_ptr<const shared::ILocati
    requestForecastWeather(forLocation);
 }
 
-shared::CDataContainer COpenWeatherService::syncRequest(const std::string& url) const
+shared::CDataContainer COpenWeatherService::syncRequest(const std::string& url)
 {
    try
    {
@@ -189,7 +189,7 @@ void COpenWeatherService::requestForecastWeather(boost::shared_ptr<const shared:
                                 uvIndexData);
 }
 
-void COpenWeatherService::historize3HoursForecast(int hourIndex,
+void COpenWeatherService::historize3HoursForecast(unsigned int hourIndex,
                                                   const boost::posix_time::ptime& forecastDatetime,
                                                   const shared::CDataContainer& forecast) const
 {
@@ -263,7 +263,7 @@ void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<
       auto totalDaySnow = static_cast<double>(0.0f);
       auto totalDaySnowDataCount = 0;
 
-      for (const auto forecastData:forecastDataForOneDay.second)
+      for (const auto& forecastData:forecastDataForOneDay.second)
       {
          // For weather condition, we consider that an average does the job
 
@@ -397,7 +397,7 @@ void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContai
       {
          const auto& forecasts = weatherData.get<std::vector<shared::CDataContainer>>("list");
 
-         auto hourIndex = 0;
+         unsigned int hourIndex = 0;
          for (const auto& forecast:forecasts)
          {
             const auto forecastDatetime = boost::posix_time::time_from_string(forecast.get<std::string>("dt_txt"));
@@ -411,7 +411,7 @@ void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContai
 
             if (forecastDatetime.date() > shared::currentTime::Provider().now().date())
             {
-               auto dayIndex = (forecastDatetime.date() - shared::currentTime::Provider().now().date()).days() - 1;
+               const unsigned int dayIndex = (forecastDatetime.date() - shared::currentTime::Provider().now().date()).days() - 1;
                if (dayIndex < NbForecastDays)
                   forecastDataByDay[dayIndex].push_back(forecast);
             }
@@ -423,14 +423,14 @@ void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContai
       for (const auto& dayUvIndex:uvIndexData.get<std::vector<shared::CDataContainer>>())
       {
          auto uvDate = dayUvIndex.get<std::string>("date_iso");
-         // Not compilant with Boost
+         // Not compliant with Boost
          boost::erase_all(uvDate, "-");
          boost::erase_all(uvDate, ":");
          boost::erase_all(uvDate, "Z");
          const auto forecastUvIndexDatetime = boost::posix_time::from_iso_string(uvDate);
          if (forecastUvIndexDatetime.date() > shared::currentTime::Provider().now().date())
          {
-            auto dayIndex = (forecastUvIndexDatetime.date() - shared::currentTime::Provider().now().date()).days() - 1;
+            const unsigned int dayIndex = (forecastUvIndexDatetime.date() - shared::currentTime::Provider().now().date()).days() - 1;
             if (dayIndex < NbForecastDays)
                uvIndexByDay[dayIndex] = dayUvIndex.get<double>("value");
          }

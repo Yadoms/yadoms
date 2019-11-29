@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/AsyncPortConnectionNotification.h>

@@ -1,6 +1,9 @@
 ### 2.4.0-beta.1
 * New feature #575 : add keyword without history
 * New feature (plugin API) : web requests done by plugins now include proxy settings from Yadoms. Just need to rebuild plugin.
+* Fix #564 : GUI : devices page / deletion and equipment with details
+* Fix #615 : GUI : Precise coordonates format and units
+* Fix #595 : GUI : Fix data export
 
 
 ### 2.3.0

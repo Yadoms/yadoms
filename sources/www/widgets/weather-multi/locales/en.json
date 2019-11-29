@@ -1,0 +1,37 @@
+{
+  "name": "Weather live and forecast",
+  "description": "This widget displays multiple weather data. It's useful to current and forecast weather conditions.",
+  "configurationSchema": {
+    "devices": {
+      "name": "Weather source devices",
+      "description": "The devices providing weather condition per period",
+      "item": {
+        "name": "",
+        "content": {
+          "source": {
+            "name": "Weather source device",
+            "description": "Select the weather condition source for a period"
+          }
+        }
+      }
+    },
+    "Iconset": {
+      "name": "Icons set",
+      "description": "Select the icons set to use",
+       "values": {
+          "material": "Material design",
+          "color": "Color"
+       }
+    },
+    "DateFormat": {
+      "name": "Date Format",
+      "description": "Choose the date format of the widget",
+      "values": {
+        "shortDate": "Short date. Ex: Monday 15",
+        "longDate": "Long date. Ex: June 15, 2015",
+        "hour": "Hour. Ex: 09:00"
+      }
+    }
+  },
+  "LiveConditions": "Live"
+}

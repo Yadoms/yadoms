@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SmallHeader.h"
 
 namespace shared
@@ -10,7 +9,7 @@ namespace shared
       /// \brief	Part of a SmallHeaderMessageCutter message
       /// \note For performance issues, SmallHeaderMessagePart doesn't have it's own message copy, only pointer
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT SmallHeaderMessageAssemblerPart
+      class SmallHeaderMessageAssemblerPart
       {
       public:
          SmallHeaderMessageAssemblerPart(boost::shared_ptr<const unsigned char[]> message,

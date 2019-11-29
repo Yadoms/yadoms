@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 #include <shared/exception/OutOfRange.hpp>
 #include <shared/exception/InvalidParameter.hpp>
 #include "serialization/IDataSerializable.h"
@@ -175,7 +174,7 @@ namespace shared
    ///
    ///
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CDataContainer : public serialization::IDataSerializable, public serialization::IDataFileSerializable /*, public IDataContainable*/
+   class CDataContainer : public serialization::IDataSerializable, public serialization::IDataFileSerializable /*, public IDataContainable*/
    {
    public:
       //--------------------------------------------------------------
@@ -489,7 +488,7 @@ namespace shared
       /// \param [in] dt  The input data container
       /// \return   The stream
       //--------------------------------------------------------------
-      friend YADOMS_SHARED_EXPORT std::ostream& operator<<(std::ostream& os, const CDataContainer& dt);
+      friend std::ostream& operator<<(std::ostream& os, const CDataContainer& dt);
 
       //--------------------------------------------------------------
       /// \brief		Input operator (read a serialized container)
@@ -497,7 +496,7 @@ namespace shared
       /// \param [in] dt  The output data container
       /// \return   The stream
       //--------------------------------------------------------------
-      friend YADOMS_SHARED_EXPORT std::istream& operator>>(std::istream& is, CDataContainer& dt);
+      friend std::istream& operator>>(std::istream& is, CDataContainer& dt);
 
       //--------------------------------------------------------------
       /// \brief		Check if the container is empty

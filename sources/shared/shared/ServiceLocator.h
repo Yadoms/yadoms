@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 #include "exception/NullReference.hpp"
 
 namespace shared { 
@@ -29,7 +28,7 @@ namespace shared {
    ///      //get all
    ///      std::vector< boost::shared<B> > all = shared::CServiceLocator::instance().getAll<B>();
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CServiceLocator
+   class CServiceLocator
    {
    public:
       //--------------------------------------------------------------

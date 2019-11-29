@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include "ITypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Interface for keyword type information
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CEmptyTypeInfo : public ITypeInfo
+            class CEmptyTypeInfo : public ITypeInfo
             {
             public:
                //-----------------------------------------------------

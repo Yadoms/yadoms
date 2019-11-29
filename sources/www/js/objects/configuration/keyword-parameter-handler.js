@@ -33,7 +33,7 @@ function KeywordParameterHandler(i18NContext, i18nKey, paramName, content, curre
    }
 }
 
-function getDeviceMatchingCriteria(self) {
+function getDeviceMatchingKeywordCriteria(self) {
    var requestData = {};
    if (!isNullOrUndefined(self.content.expectedKeywordType))
       requestData["expectedKeywordType"] = Array.isArray(self.content.expectedKeywordType) ? self.content.expectedKeywordType : [self.content.expectedKeywordType];
@@ -44,7 +44,7 @@ function getDeviceMatchingCriteria(self) {
    if (!isNullOrUndefined(self.content.expectedKeywordHistoryDepth))
       requestData["expectedKeywordHistoryDepth"] = Array.isArray(self.content.expectedKeywordHistoryDepth) ? self.content.expectedKeywordHistoryDepth : [self.content.expectedKeywordHistoryDepth];
 
-   return RestEngine.postJson("/rest/device/matchcriteria/", {
+   return RestEngine.postJson("/rest/device/matchkeywordcriteria/", {
       data: JSON.stringify(requestData)
    });
 }
@@ -153,7 +153,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
       $deviceList.prop('disabled', false);
    });
 
-   getDeviceMatchingCriteria(self)
+   getDeviceMatchingKeywordCriteria(self)
       .done(function (data) {
          var tabDevice = [];
          $.each(data.devices, function (index, value) {

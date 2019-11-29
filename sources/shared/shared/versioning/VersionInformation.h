@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "Version.h"
 #include <shared/DataContainer.h>
 
@@ -10,7 +9,7 @@ namespace shared
       //---------------------------------------------
       ///\brief Class which contains a version and a releaseType
       //---------------------------------------------
-      class YADOMS_SHARED_EXPORT CVersionInformation
+      class CVersionInformation
       {
       public:
          //---------------------------------------------

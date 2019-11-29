@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief Interface for extended enums (can be parsed/get as strings)
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT IExtendedEnum
+      class IExtendedEnum
       {
       public:
          //--------------------------------------------------------------
@@ -63,7 +62,7 @@ namespace shared
       ///         Without this overload, "std::ostream << IExtendedEnum" add the int value of std::ostream
       ///         With it, the string value is used
       //--------------------------------------------------------------
-      YADOMS_SHARED_EXPORT std::ostream& operator <<(std::ostream& stream, const IExtendedEnum& enumValue);
+      std::ostream& operator <<(std::ostream& stream, const IExtendedEnum& enumValue);
    } //namespace enumeration
 } //namespace shared
 

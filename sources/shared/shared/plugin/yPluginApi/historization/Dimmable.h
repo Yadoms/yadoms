@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "../typeInfo/IntTypeInfo.h"
 #include "SingleHistorizableData.hpp"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A dimmable switch historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CDimmable : public CSingleHistorizableData<int>
+            class CDimmable : public CSingleHistorizableData<int>
             {
             public:
                static const typeInfo::CIntTypeInfo DimmableDefaultTypeInfo;

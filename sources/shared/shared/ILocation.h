@@ -8,28 +8,23 @@ namespace shared
    class ILocation
    {
    public:
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~ILocation()
-      {
-      }
+      virtual ~ILocation() = default;
 
       //-----------------------------------------------------
       ///\brief               Get latitude
-      ///\return latitude as string
+      ///\return latitude
       //-----------------------------------------------------
       virtual double latitude() const = 0;
 
       //-----------------------------------------------------
       ///\brief               Get longitude
-      ///\return longitude as string
+      ///\return longitude
       //-----------------------------------------------------
       virtual double longitude() const = 0;
 
       //-----------------------------------------------------
       ///\brief               Get altitude
-      ///\return altitude as string
+      ///\return altitude
       //-----------------------------------------------------
       virtual double altitude() const = 0;
    };

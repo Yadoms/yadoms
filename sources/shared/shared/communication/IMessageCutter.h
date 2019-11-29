@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "IMessageCutterPart.h"
 
 namespace shared
@@ -9,7 +8,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	This interface manage cutting too long messages
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT IMessageCutter
+      class IMessageCutter
       {
       public:
          virtual ~IMessageCutter()
