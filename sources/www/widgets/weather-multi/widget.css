@@ -1,0 +1,54 @@
+.widget-weather-multi .condition {
+   display: flex;
+   margin: 0 auto;
+   justify-content: center;
+   width: 100px;
+}
+
+.widget-weather-multi .date {
+   display: flex;
+   justify-content: center;
+   font-weight: bold;
+}
+
+.widget-weather-multi .forecast-layout {
+   flex-grow: 1;
+   display: flex;
+   flex-direction: row;
+}
+
+.widget-weather-multi .condition-layout {
+   margin: auto;
+}
+
+.widget-weather-multi .period-layout {
+   margin: auto;
+   margin-top: 10px;
+}
+
+.widget-weather-multi .layout {
+   height: auto;
+   flex-grow: 1;
+   flex-wrap: no-wrap;
+   display: -webkit-flex;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;
+}
+
+.widget-weather-multi .block {
+   margin-top: 10px;
+   margin-bottom: 10px;
+}
+
+.widget-weather-multi .block-image {
+   height: 20px;
+}
+
+.widget-weather-multi .temp-min {
+   color: blue;
+}
+
+.widget-weather-multi .temp-max {
+   color: red;
+}

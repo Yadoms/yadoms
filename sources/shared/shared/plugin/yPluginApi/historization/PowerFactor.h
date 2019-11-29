@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/DoubleTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A power factor historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CPowerFactor : public CSingleHistorizableData<double>
+            class CPowerFactor : public CSingleHistorizableData<double>
             {
             public:
                //-----------------------------------------------------

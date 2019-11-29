@@ -5,14 +5,13 @@
 //
 #pragma once
 
-#include <shared/Export.h>
 
 namespace shared
 {
    //--------------------------------------------------------------
    /// \brief	this class is used to manage platforms peripherals
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CPeripherals
+   class CPeripherals
    {
    public:
       //--------------------------------------------------------------

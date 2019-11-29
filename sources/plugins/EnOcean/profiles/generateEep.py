@@ -223,8 +223,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          def supportedUnit(xmlDataFieldNode, expectedUnit):
             if expectedUnit is not None and xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text == expectedUnit:
                return True
-            util.warning("Unsupported unit \"" + xmlDataFieldNode.find("unit").text.encode("utf-8") + \
-               "\" for \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" (expected \"" + expectedUnit.encode("utf-8") + "\"), corresponding data will be ignored")
+            util.warning("Unsupported unit \"" + str(xmlDataFieldNode.find("unit").text.encode("utf-8")) + \
+               "\" for \"" + str(xmlDataFieldNode.find("data").text.encode("utf-8")) + "\" (expected \"" + str(expectedUnit.encode("utf-8")) + "\"), corresponding data will be ignored")
             return False
 
          # Create historizers
@@ -251,7 +251,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
          historizersCppName = []
          if len(xmlTypeNode.findall("case")) != 1:            
-            util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")
+            util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This profile will be ignored.")
          else:
             for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlTypeNode.find("case")):
                dataText = xmlDataFieldNode.find("data").text
@@ -284,9 +284,9 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      if not supportedUnit(xmlDataFieldNode, u"lx"):
                         continue
                      cppHistorizerClassName = "yApi::historization::CIllumination"
-                  elif dataText.encode("utf-8") == "Sun – West" \
-                     or dataText.encode("utf-8") == "Sun – South" \
-                     or dataText.encode("utf-8") == "Sun – East":            
+                  elif str(dataText.encode("utf-8")) == "Sun – West" \
+                     or str(dataText.encode("utf-8")) == "Sun – South" \
+                     or str(dataText.encode("utf-8")) == "Sun – East":            
                      if not supportedUnit(xmlDataFieldNode, u"klx"):
                         continue
                      cppHistorizerClassName = "yApi::historization::CIllumination"
@@ -295,7 +295,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                         continue
                      cppHistorizerClassName = "yApi::historization::CBatteryLevel"
                   else:
-                     util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")
+                     util.warning("func/type : Unsupported linear data type \"" + str(dataText.encode("utf-8")) + "\" for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This data will be ignored.")
                      continue
                elif isBoolValue(xmlDataFieldNode):
                   cppHistorizerClassName = "yApi::historization::CSwitch"
@@ -305,7 +305,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                   typeClass.addDependency(cppHistorizerClass)
                   cppHistorizerClassName = cppHistorizerClass.cppClassName()
                else:
-                  util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")
+                  util.warning("func/type : Unsupported data type \"" + str(xmlDataFieldNode.find("data").text.encode("utf-8")) + "\" for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This data will be ignored.")
                   continue
                typeClass.addMember(cppClass.CppMember(historizerCppName, "boost::shared_ptr<" + cppHistorizerClassName + ">", \
                   cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(boost::make_shared<" + cppHistorizerClassName + ">(\"" + keywordName + "\"" + printCtorExtraParameters(ctorExtraParameters) + "))"))
@@ -374,19 +374,19 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      dataText == "Illumination" or \
                      dataText == "Illuminance":
                      code += statesCodeForLinearValue(xmlDataFieldNode)
-                  elif dataText.encode("utf-8") == "Sun – West" \
-                     or dataText.encode("utf-8") == "Sun – South" \
-                     or dataText.encode("utf-8") == "Sun – East": # Provided as kilo-lux when Yadoms knows only lux
+                  elif str(dataText.encode("utf-8")) == "Sun – West" \
+                     or str(dataText.encode("utf-8")) == "Sun – South" \
+                     or str(dataText.encode("utf-8")) == "Sun – East": # Provided as kilo-lux when Yadoms knows only lux
                      code += statesCodeForLinearValue(xmlDataFieldNode, 1000)
                   elif dataText == "Energy Storage":
                      code += statesCodeForLinearValue(xmlDataFieldNode, applyCoef=None, finalCast="int")
                   else:
-                     util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")
+                     util.warning("func/type : Unsupported linear data type \"" + str(dataText.encode("utf-8")) + "\" for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This data will be ignored.")
                      continue
                elif isBoolValue(xmlDataFieldNode):
                   code += statesCodeForBoolValue(xmlDataFieldNode)
                else:
-                  util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")
+                  util.warning("func/type : Unsupported data type \"" + str(xmlDataFieldNode.find("data").text.encode("utf-8")) + "\" for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This data will be ignored.")
                   continue
             code += "   return m_historizers;"
             return code
@@ -424,6 +424,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
 
 # Start
+print ('Script run with Python version ' + sys.version)
 try:
    os.makedirs(outputPath)
 except OSError:

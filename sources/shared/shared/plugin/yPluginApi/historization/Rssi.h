@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/IntTypeInfo.h"
 
@@ -15,7 +14,7 @@ namespace shared
             ///\brief A rssi (dBm) historizable object
             ///\note Rssi value is read-only
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CRssi : public CSingleHistorizableData<double>
+            class CRssi : public CSingleHistorizableData<double>
             {
             public:
                explicit CRssi(const std::string& keywordName,

@@ -8,7 +8,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	   The local time implementation of current time
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT Local : public ICurrentTime
+      class Local : public ICurrentTime
       {
       public:
          virtual ~Local();

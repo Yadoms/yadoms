@@ -1,6 +1,5 @@
 #pragma once
 #include "ITypeInfo.h"
-#include <shared/Export.h>
 #include <shared/Field.hpp>
 
 namespace shared
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Interface for keyword type information
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CStringTypeInfo : public ITypeInfo
+            class CStringTypeInfo : public ITypeInfo
             {
             public:
                //-----------------------------------------------------

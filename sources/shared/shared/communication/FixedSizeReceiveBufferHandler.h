@@ -14,7 +14,7 @@ namespace shared
       /// This class implements a IReceiveBufferHandler for fixeds size messages.
       /// A message is then considered complete when its size is the construct-time given size
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CFixedSizeReceiveBufferHandler : public IReceiveBufferHandler
+      class CFixedSizeReceiveBufferHandler : public IReceiveBufferHandler
       {
       public:
          //--------------------------------------------------------------

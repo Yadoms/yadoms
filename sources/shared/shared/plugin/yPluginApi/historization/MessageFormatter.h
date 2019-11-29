@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "IMessageFormatter.h"
 
 namespace shared
@@ -13,7 +12,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief The message formatter
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CMessageFormatter : public IMessageFormatter
+            class CMessageFormatter : public IMessageFormatter
             {
             public:
                //-----------------------------------------------------

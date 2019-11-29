@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include <shared/DataContainer.h>
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief The plugin state historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CPluginStateMessage : public CSingleHistorizableData<CDataContainer>
+            class CPluginStateMessage : public CSingleHistorizableData<CDataContainer>
             {
             public:
                //-----------------------------------------------------

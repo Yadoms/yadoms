@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/IntTypeInfo.h"
 
@@ -15,7 +14,7 @@ namespace shared
             ///\brief A signal Level (unit : dB) historizable object
             ///\note signal Level value is read-only
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CSignalLevel : public CSingleHistorizableData<int>
+            class CSignalLevel : public CSingleHistorizableData<int>
             {
             public:
                //-----------------------------------------------------

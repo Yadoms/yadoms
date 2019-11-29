@@ -9,7 +9,7 @@
 namespace pluginSystem
 {
    //--------------------------------------------------------------
-   /// \brief	Class used to read plugin informations
+   /// \brief	Class used to read plugin information
    //--------------------------------------------------------------
    class IFactory
    {

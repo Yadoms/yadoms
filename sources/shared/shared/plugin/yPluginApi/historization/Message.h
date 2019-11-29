@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "IHistorizable.h"
 #include "IMessageFormatter.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A message historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CMessage : public IHistorizable
+            class CMessage : public IHistorizable
             {
             public:
                //-----------------------------------------------------

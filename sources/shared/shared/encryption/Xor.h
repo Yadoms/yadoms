@@ -1,13 +1,12 @@
 #pragma once
 
-#include <shared/Export.h>
 
 namespace shared { namespace encryption { 
 
    //--------------------------------------------------------------
    /// \brief	XOR encryption/decryption
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CXor
+   class CXor
    {
    public:
       //--------------------------------------------------------------

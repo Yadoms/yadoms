@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "IBufferLogger.h"
 
 namespace shared
@@ -9,7 +8,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	This class manage a buffer logger
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CNoBufferLogger : public IBufferLogger
+      class CNoBufferLogger : public IBufferLogger
       {
       public:
          //--------------------------------------------------------------

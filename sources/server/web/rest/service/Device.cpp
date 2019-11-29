@@ -38,39 +38,55 @@ namespace web
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CDevice::getOneDevice);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), CDevice::getCompatibleForMergeDevice);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"), CDevice::getDeviceConfigurationSchema);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"),
+                                        CDevice::getCompatibleForMergeDevice);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"),
+                                        CDevice::getDeviceConfigurationSchema);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), CDevice::getAllKeywords);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CDevice::getKeyword);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacity")("*")("*"), CDevice::getDevicesWithCapacity);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacitytype")("*")("*"), CDevice::getDeviceWithCapacityType);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordaccess")("*"), CDevice::getDeviceWithKeywordAccessMode);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordhistorydepth")("*"), CDevice::getDeviceWithKeywordHistoryDepth
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacity")("*")("*"),
+                                        CDevice::getDevicesWithCapacity);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacitytype")("*")("*"),
+                                        CDevice::getDeviceWithCapacityType);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordaccess")("*"),
+                                        CDevice::getDeviceWithKeywordAccessMode);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordhistorydepth")("*"),
+                                        CDevice::getDeviceWithKeywordHistoryDepth
             );
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("matchcriteria"), CDevice::getDeviceMatchCriteria,
-               CDevice::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("matchkeywordcriteria"),
+                                                        CDevice::getDeviceMatchKeywordCriteria,
+                                                        CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"),
+                                        CDevice::getDeviceKeywordsForCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), CDevice::getKeywordsLastState,
-               CDevice:: transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), CDevice::updateDeviceConfiguration,
-               CDevice::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), CDevice::mergeDevices,
-               CDevice:: transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"), CDevice::restoreDevice,
-               CDevice:: transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName,
-               CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"),
+                                                        CDevice::getKeywordsLastState,
+                                                        CDevice:: transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"),
+                                                        CDevice::updateDeviceConfiguration,
+                                                        CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"),
+                                                        CDevice::mergeDevices,
+                                                        CDevice:: transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"),
+                                                        CDevice::restoreDevice,
+                                                        CDevice:: transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"),
+                                                        CDevice::updateKeywordFriendlyName,
+                                                        CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("blacklist"),
-               CDevice:: updateKeywordBlacklist, CDevice::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), CDevice::sendKeywordCommand,
-               CDevice::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CDevice::deleteDevice,
-               CDevice:: transactionalMethod);
+                                                        CDevice:: updateKeywordBlacklist, CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"),
+                                                        CDevice::sendKeywordCommand,
+                                                        CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"),
+                                                        CDevice::deleteDevice,
+                                                        CDevice:: transactionalMethod);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getOneDevice(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getOneDevice(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             std::string objectId;
             if (parameters.size() > 1)
@@ -80,8 +96,9 @@ namespace web
             return CResult::GenerateSuccess(deviceFound);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getCompatibleForMergeDevice(const std::vector<std::string>& parameters,
-                                                                                                          const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getCompatibleForMergeDevice(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -119,10 +136,13 @@ namespace web
                                              std::remove_if(candidateKeywords.begin(),
                                                             candidateKeywords.end(),
                                                             [&commonKeywords, &refKeyword](
-                                                            const boost::shared_ptr<database::entities::CKeyword>& candidateKeyword)
+                                                            const boost::shared_ptr<database::entities::CKeyword>&
+                                                            candidateKeyword)
                                                             {
-                                                               if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
-                                                                  refKeyword->AccessMode == candidateKeyword->AccessMode &&
+                                                               if (refKeyword->CapacityName == candidateKeyword->
+                                                                  CapacityName &&
+                                                                  refKeyword->AccessMode == candidateKeyword->AccessMode
+                                                                  &&
                                                                   refKeyword->Name == candidateKeyword->Name &&
                                                                   refKeyword->Type == candidateKeyword->Type &&
                                                                   refKeyword->Units == candidateKeyword->Units &&
@@ -148,7 +168,8 @@ namespace web
                                           return true;
                                        }
 
-                                       commonKeywordsForCompatibleDevices.set(std::to_string(candidateDevice->Id), commonKeywords);
+                                       commonKeywordsForCompatibleDevices.set(
+                                          std::to_string(candidateDevice->Id), commonKeywords);
                                        return false;
                                     }),
                      compatibleDevices.end());
@@ -168,8 +189,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceConfigurationSchema(const std::vector<std::string>& parameters,
-                                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceConfigurationSchema(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -226,8 +248,9 @@ namespace web
             return CResult::GenerateSuccess(collection);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getKeyword(const std::vector<std::string>& parameters,
-                                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getKeyword(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -249,15 +272,17 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getKeywordsLastState(const std::vector<std::string>& parameters,
-                                                                                                   const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getKeywordsLastState(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 2)
                {
                   const auto keywordIds = shared::CDataContainer(requestContent);
-                  const auto keywordListLastData = m_keywordManager->getKeywordListLastData(keywordIds.get<std::vector<int>>("keywordIds"));
+                  const auto keywordListLastData = m_keywordManager->getKeywordListLastData(
+                     keywordIds.get<std::vector<int>>("keywordIds"));
                   shared::CDataContainer result;
                   for (auto keywordLastData : keywordListLastData)
                   {
@@ -278,8 +303,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getAllKeywords(const std::vector<std::string>& parameters,
-                                                                                             const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getAllKeywords(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -298,8 +324,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDevicesWithCapacity(const std::vector<std::string>& parameters,
-                                                                                                     const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDevicesWithCapacity(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -327,8 +354,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceWithCapacityType(const std::vector<std::string>& parameters,
-                                                                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceWithCapacityType(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -411,13 +439,13 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceMatchCriteria(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceMatchKeywordCriteria(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
             try
             {
-               // Get all devices matching some criteria.
+               // Get all devices matching some criteria on keywords.
                // Criteria are provided by a JSON string, like :
                //
                // {
@@ -489,9 +517,9 @@ namespace web
             }
          }
 
-
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceKeywordsForCapacity(const std::vector<std::string>& parameters,
-                                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceKeywordsForCapacity(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -519,8 +547,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceKeywords(const std::vector<std::string>& parameters,
-                                                                                                const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceKeywords(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -550,8 +579,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::sendKeywordCommand(const std::vector<std::string>& parameters,
-                                                                                                 const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::sendKeywordCommand(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -582,8 +612,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::deleteDevice(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::deleteDevice(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -620,8 +651,9 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateDeviceFriendlyName(const std::vector<std::string>& parameters,
-                                                                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateDeviceFriendlyName(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -656,8 +688,9 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateDeviceConfiguration(const std::vector<std::string>& parameters,
-                                                                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateDeviceConfiguration(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -706,15 +739,17 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::mergeDevices(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::mergeDevices(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
-               shared::CDataContainer content(requestContent);
+               const shared::CDataContainer content(requestContent);
                const auto sourceDeviceId = content.get<int>("sourceDeviceId");
                const auto targetDeviceId = content.get<int>("targetDeviceId");
-               const auto keywordCorrespondences = content.get<std::vector<shared::CDataContainer>>("keywordCorrespondences");
+               const auto keywordCorrespondences = content.get<std::vector<shared::CDataContainer>>(
+                  "keywordCorrespondences");
 
                // Merge acquisitions
                YADOMS_LOG(information) << "Starting merging 2 devices...";
@@ -726,14 +761,18 @@ namespace web
                   m_dataProvider->getAcquisitionRequester()->moveAllData(fromKw, toKw);
                   // Update last acquisition in keyword table
                   const auto lastData = m_dataProvider->getAcquisitionRequester()->getKeywordData(toKw,
-                                                                                                  boost::posix_time::not_a_date_time,
-                                                                                                  boost::posix_time::not_a_date_time,
+                                                                                                  boost::posix_time::
+                                                                                                  not_a_date_time,
+                                                                                                  boost::posix_time::
+                                                                                                  not_a_date_time,
                                                                                                   1);
                   m_dataProvider->getKeywordRequester()->updateLastValue(fromKw,
                                                                          lastData.size() != 0
                                                                             ? lastData[0].get<0>()
                                                                             : boost::posix_time::not_a_date_time,
-                                                                         lastData.size() != 0 ? lastData[0].get<1>() : std::string());
+                                                                         lastData.size() != 0
+                                                                            ? lastData[0].get<1>()
+                                                                            : std::string());
                }
                // Change name of target device, to make plugin using this device from now
                m_deviceRequester->rename(targetDeviceId, m_deviceRequester->getDevice(sourceDeviceId)->Name());
@@ -756,8 +795,9 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::restoreDevice(const std::vector<std::string>& parameters,
-                                                                                            const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::restoreDevice(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -783,8 +823,9 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateKeywordFriendlyName(const std::vector<std::string>& parameters,
-                                                                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateKeywordFriendlyName(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -814,8 +855,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateKeywordBlacklist(const std::vector<std::string>& parameters,
-                                                                                                     const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateKeywordBlacklist(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -846,9 +888,10 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
-                                                                                                  const std::vector<std::string>& parameters,
-                                                                                                  const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::transactionalMethod(
+            CRestDispatcher::CRestMethodHandler realMethod,
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             boost::shared_ptr<shared::serialization::IDataSerializable> result;

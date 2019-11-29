@@ -1,18 +1,17 @@
 #include "stdafx.h"
 #include "urlManager.h"
-#include <shared/http/SecureSession.h>
 
 urlManager::urlManager():
    m_url("https://liveobjects.orange-business.com/api/v0"), //liveobjects
    m_baseUrl("liveobjects.orange-business.com")
-{}
+{
+}
 
-shared::CDataContainer urlManager::getRegisteredEquipments(const std::string &apikey,
+shared::CDataContainer urlManager::getRegisteredEquipments(const std::string& apikey,
                                                            const int page,
                                                            const bool activated,
                                                            const boost::posix_time::time_duration& timeout)
 {
-   shared::CDataContainer response;
    shared::CDataContainer headerParameters;
    shared::CDataContainer parameters;
 
@@ -21,30 +20,23 @@ shared::CDataContainer urlManager::getRegisteredEquipments(const std::string &ap
    headerParameters.set("X-API-Key", apikey);
    headerParameters.set("Accept", "application/json");
 
-   parameters.set("page", boost::lexical_cast<std::string>(page));
+   parameters.set("page", std::to_string(page));
 
    if (activated)
       parameters.set("status", "ACTIVATED");
 
-   auto deviceUrl = m_url.str() + "/vendors/lora/devices";
-   const auto session = boost::make_shared<shared::CSecureSession>(deviceUrl);
-   shared::CHttpMethods::sendGetRequest(session,
-                                        headerParameters,
-                                        parameters,
-                                        [&](shared::CDataContainer& data)
-                                        {
-                                           response = data;
-                                        },
-                                        timeout);
-
-   return response;
+   const auto deviceUrl = m_url.str() + "/vendors/lora/devices";
+   return shared::CHttpMethods::sendGetRequest(deviceUrl,
+                                               headerParameters,
+                                               parameters,
+                                               shared::CHttpMethods::kSecured,
+                                               timeout);
 }
 
-shared::CDataContainer urlManager::getDeviceInformation(const std::string &apikey, 
-                                                        const std::string &devEUI,
+shared::CDataContainer urlManager::getDeviceInformation(const std::string& apikey,
+                                                        const std::string& devEUI,
                                                         const boost::posix_time::time_duration& timeout)
 {
-   shared::CDataContainer response;
    shared::CDataContainer headerParameters;
    const shared::CDataContainer noParameters;
 
@@ -53,26 +45,19 @@ shared::CDataContainer urlManager::getDeviceInformation(const std::string &apike
    headerParameters.set("X-API-Key", apikey);
    headerParameters.set("Accept", "application/json");
 
-   auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI;
-   const auto session = boost::make_shared<shared::CSecureSession>(deviceUrl);
-   shared::CHttpMethods::sendGetRequest(session,
-                                        headerParameters,
-                                        noParameters,
-                                        [&](shared::CDataContainer& data)
-                                        {
-                                           response = data;
-                                        },
-                                        timeout);
-
-   return response;
+   const auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI;
+   return shared::CHttpMethods::sendGetRequest(deviceUrl,
+                                               headerParameters,
+                                               noParameters,
+                                               shared::CHttpMethods::kSecured,
+                                               timeout);
 }
 
-shared::CDataContainer urlManager::listDeviceCommands(const std::string &apikey,
-                                                      const std::string &devEUI,
+shared::CDataContainer urlManager::listDeviceCommands(const std::string& apikey,
+                                                      const std::string& devEUI,
                                                       const int page,
                                                       const boost::posix_time::time_duration& timeout)
 {
-   shared::CDataContainer response;
    shared::CDataContainer headerParameters;
    shared::CDataContainer parameters;
 
@@ -82,16 +67,10 @@ shared::CDataContainer urlManager::listDeviceCommands(const std::string &apikey,
 
    parameters.set("limit", "5");
    parameters.set("sort", "-creationTs"); // Get the newest command at the first page
-   auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/data/streams/urn:lora:" + devEUI + "!uplink";
-   const auto session = boost::make_shared<shared::CSecureSession>(deviceUrl);
-   shared::CHttpMethods::sendGetRequest(session,
-                                        headerParameters,
-                                        parameters,
-                                        [&](shared::CDataContainer& data)
-                                        {
-                                           response = data;
-                                        },
-                                        timeout);
-
-   return response;
+   const auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/data/streams/urn:lora:" + devEUI + "!uplink";
+   return shared::CHttpMethods::sendGetRequest(deviceUrl,
+                                               headerParameters,
+                                               parameters,
+                                               shared::CHttpMethods::kSecured,
+                                               timeout);
 }

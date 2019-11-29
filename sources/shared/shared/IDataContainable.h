@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -9,7 +8,7 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief		Interface defining a containable class
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT IDataContainable
+   class IDataContainable
    {
    public:
       virtual ~IDataContainable() { }

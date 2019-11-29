@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <Poco/Types.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/DoubleTypeInfo.h"
@@ -15,7 +14,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A energy historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CEnergy : public CSingleHistorizableData<Poco::Int64>
+            class CEnergy : public CSingleHistorizableData<Poco::Int64>
             {
             public:
                //-----------------------------------------------------
@@ -38,7 +37,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A energy historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CEnergyDouble : public CSingleHistorizableData<double>
+            class CEnergyDouble : public CSingleHistorizableData<double>
             {
             public:
                //-----------------------------------------------------

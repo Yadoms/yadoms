@@ -12,7 +12,7 @@ call:getCMakeExecutable cmake_executable
 
 ::Move to destination folder
 cd /D %~dp0/projects
-"%cmake_executable%" %~dp0/sources
+"%cmake_executable%" %~dp0/sources -A Win32
 
 
 goto:eof
