@@ -10,6 +10,8 @@ namespace specificHistorizers
 	   ((SummerNormalCost))
 	   ((SummerLowCost))
 	   ((NotDefined))
+	   ((FrameError))
+	   ((SignalLoss))
 	   );
 
    CPeriodTJEJP::CPeriodTJEJP(const std::string& keywordName)

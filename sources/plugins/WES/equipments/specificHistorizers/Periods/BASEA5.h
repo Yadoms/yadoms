@@ -9,12 +9,14 @@ namespace specificHistorizers
 	//-----------------------------------------------------   
 
 	DECLARE_ENUM_HEADER(EWESPeriodBASEA5,
-	((WinterNormalCost))
+	    ((WinterNormalCost))
 		((WinterLowCost))
 		((SummerNormalCost))
 		((SummerLowCost))
 		((PeakCostHours))
-		((NotDefined))
+		((NotDefined)(6))
+		((FrameError)(7))
+		((SignalLoss)(8))
 		);
 
    //-----------------------------------------------------

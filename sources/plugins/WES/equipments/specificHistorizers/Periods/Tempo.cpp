@@ -12,6 +12,8 @@ namespace specificHistorizers
 		((NormalCostWhiteDays))
 		((NormalCostRedDays))
 		((NotDefined))
+		((FrameError))
+		((SignalLoss))
 		);
 
    CPeriodTempo::CPeriodTempo(const std::string& keywordName)

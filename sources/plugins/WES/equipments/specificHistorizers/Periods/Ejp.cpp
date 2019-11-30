@@ -7,7 +7,9 @@ namespace specificHistorizers
    DECLARE_ENUM_IMPLEMENTATION(EWESPeriodEjp,
 	   ((NormalCostHours))
 	   ((MobilePeakCostHours))
-       ((NotDefined))
+	   ((NotDefined))
+	   ((FrameError))
+	   ((SignalLoss))
    );
 
    CPeriodEjp::CPeriodEjp(const std::string& keywordName)

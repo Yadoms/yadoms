@@ -12,6 +12,8 @@ namespace specificHistorizers
 	   ((LowCostDayOfWeek))
 	   ((NormalCostDayOfWeek))
 	   ((NotDefined))
+	   ((FrameError))
+	   ((SignalLoss))
 	   );
 
    CPeriodHCWeekDayofweek::CPeriodHCWeekDayofweek(const std::string& keywordName)

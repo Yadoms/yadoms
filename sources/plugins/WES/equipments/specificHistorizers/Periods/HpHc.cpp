@@ -7,7 +7,9 @@ namespace specificHistorizers
    DECLARE_ENUM_IMPLEMENTATION(EWESPeriodHpHc,
       ((LowCostHours))
       ((NormalCostHours))
-      ((NotDefined))
+	  ((NotDefined))
+	  ((FrameError))
+	  ((SignalLoss))
    );
 
    CPeriodHpHc::CPeriodHpHc(const std::string& keywordName)

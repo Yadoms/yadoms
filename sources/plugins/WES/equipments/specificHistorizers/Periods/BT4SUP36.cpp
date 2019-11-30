@@ -10,6 +10,8 @@ namespace specificHistorizers
 	   ((SummerNormalCost))
 	   ((SummerLowCost))
 	   ((NotDefined))
+	   ((FrameError))
+	   ((SignalLoss))
 	   );
 
    CPeriodBT4SUP36::CPeriodBT4SUP36(const std::string& keywordName)

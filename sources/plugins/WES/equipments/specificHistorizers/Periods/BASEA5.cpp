@@ -11,6 +11,8 @@ namespace specificHistorizers
 	   ((SummerLowCost))
 	   ((PeakCostHours))
 	   ((NotDefined))
+	   ((FrameError))
+	   ((SignalLoss))
 	   );
 
    CPeriodBaseA5::CPeriodBaseA5(const std::string& keywordName)

@@ -7,6 +7,8 @@ namespace specificHistorizers
    DECLARE_ENUM_IMPLEMENTATION(EWESPeriodBase,
 	  ((AllHours))
       ((NotDefined))
+      ((FrameError))
+      ((SignalLoss))
    );
 
    CPeriodBase::CPeriodBase(const std::string& keywordName)

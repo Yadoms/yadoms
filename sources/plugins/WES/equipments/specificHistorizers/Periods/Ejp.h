@@ -11,7 +11,9 @@ namespace specificHistorizers
 	DECLARE_ENUM_HEADER(EWESPeriodEjp,
 		((NormalCostHours))
 		((MobilePeakCostHours))
-        ((NotDefined))
+		((NotDefined)(6))
+		((FrameError)(7))
+		((SignalLoss)(8))
 	);
 
    //-----------------------------------------------------

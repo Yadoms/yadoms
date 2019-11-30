@@ -21,7 +21,9 @@
             "name": "Période tarifaire",
             "values" : {
                "AllHours": "Toutes heures",
-               "NotDefined": "Pas définie"
+               "NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"
 			}
         },
 		"EWESPeriodBASEA5": {
@@ -31,7 +33,9 @@
                "WinterLowCost": "Heures creuses hiver",
                "SummerNormalCost": "Heures pleines été",
                "SummerLowCost": "Heures creuses été",
-               "NotDefined": "Pas définie"
+               "NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"			   
 			}
         },
 		"EWESPeriodBT4SUP36": {
@@ -41,7 +45,9 @@
                "WinterLowCost": "Heures creuses hiver",
                "SummerNormalCost": "Heures pleines été",
                "SummerLowCost": "Heures creuses été",
-               "NotDefined": "Pas définie"
+               "NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"			   
 			}
         },
 		"EWESPeriodBT5SUP36": {
@@ -52,7 +58,9 @@
                "SummerNormalCost": "Heures pleines été",
                "SummerLowCost": "Heures creuses été",
 			   "PeakCostHours": "Heures de pointe",
-               "NotDefined": "Pas définie"
+               "NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"			   
 			}
         },
 		"EWESPeriodEjp": {
@@ -60,7 +68,9 @@
             "values" : {
                "NormalCostHours": "Heures pleines",
                "MobilePeakCostHours": "heures pointe mobile",
-               "NotDefined": "Pas définie"
+               "NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"			   
 			}
         },
 		"EWESPeriodHCWE": {
@@ -69,7 +79,9 @@
                "LowCostHours": "Heures creuses",
                "NormalCostHours": "Heures pleines",
                "WEHours": "Heures fin de semaine",
-               "NotDefined": "Pas définie"
+               "NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"			   
 			}
         },
 		"EWESPeriodHCWeekDaydofweek": {
@@ -81,7 +93,9 @@
 			   "NormalCostWeekEnd": "Heures pleines fin de semaine",
                "LowCostDayOfWeek": "Heures creuses 'jour de la semaine'",
 			   "NormalCostDayOfWeek": "Heures creuses 'jour de la semaine'",
-               "NotDefined": "Pas définie"	   
+               "NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"			   
 			}
         },
 		"EWESPeriodHpHc": {
@@ -89,7 +103,9 @@
             "values" : {
                "LowCostHours": "Heures creuses",
                "NormalCostHours": "Heures pleines",
-               "NotDefined": "Pas définie"
+               "NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"			   
 			}
         },
 		"EWESPeriodHTA5": {
@@ -100,7 +116,9 @@
                "SummerNormalCost": "Heures pleines été",
                "SummerLowCost": "Heures creuses été",
 			   "PeakCostHours": "Heures de pointe",
-               "NotDefined": "Pas définie"  
+               "NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"			   
 			}
         },
 		"EWESPeriodTempo": {
@@ -112,7 +130,9 @@
 				"NormalCostWhiteDays": "Heures pleines blanches",
 				"LowCostRedDays": "Heures creuses rouges",
 				"NormalCostRedDays": "Heures pleines rouges",
-               "NotDefined": "Pas définie"
+               "NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"			   
 			}
         },
 		"EWESPeriodTJEJP": {
@@ -122,7 +142,9 @@
                "WinterCost": "Heures hiver",
 				"SummerNormalCost": "Heures pleines été",
 				"SummerLowCost": "Heures creuses été",
-				"NotDefined": "Pas définie"
+				"NotDefined": "Pas définie",
+			   "FrameError": "Erreur trame",
+			   "SignalLoss": "Perte signal"				
 			}
         },
 		"EWESTeleInfoStatus": {

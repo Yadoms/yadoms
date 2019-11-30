@@ -9,11 +9,13 @@ namespace specificHistorizers
 	//-----------------------------------------------------   
 
 	DECLARE_ENUM_HEADER(EWESPeriodBT4SUP36,
-	((WinterNormalCost))
+	    ((WinterNormalCost))
 		((WinterLowCost))
 		((SummerNormalCost))
 		((SummerLowCost))
-		((NotDefined))
+		((NotDefined)(6))
+		((FrameError)(7))
+		((SignalLoss)(8))
 		);
 
    //-----------------------------------------------------

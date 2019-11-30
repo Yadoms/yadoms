@@ -21,7 +21,9 @@
             "name" : "Running period",
             "values" : {
 			   "AllHours": "All hours",
-			   "NotDefined": "Not defined"			   
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"
 			}
         },
 		"EWESPeriodBASEA5": {
@@ -31,7 +33,9 @@
                "WinterLowCost": "Winter low cost hours",
                "SummerNormalCost": "Summer normal cost hours",
                "SummerLowCost": "Summer low cost hours",			
-			   "NotDefined": "Not defined"
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"			   
 			}
         },
 		"EWESPeriodBT4SUP36": {
@@ -41,7 +45,9 @@
                "WinterLowCost": "Winter low cost hours",
                "SummerNormalCost": "Summer normal cost hours",
                "SummerLowCost": "Summer low cost hours",			
-			   "NotDefined": "Not defined"
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"			   
 			}
         },
 		"EWESPeriodBT5SUP36": {
@@ -52,7 +58,9 @@
                "SummerNormalCost": "Summer normal cost hours",
                "SummerLowCost": "Summer low cost hours",
 			   "PeakCostHours": "Peak cost hours",
-			   "NotDefined": "Not defined"
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"			   
 			}
         },
 		"EWESPeriodEjp": {
@@ -60,7 +68,9 @@
             "values" : {
                "NormalCostHours": "Normal cost hours",
                "MobilePeakCostHours": "Mobile peak cost hours",
-			   "NotDefined": "Not defined"			   
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"			   
 			}
         },
 		"EWESPeriodHCWE": {
@@ -69,7 +79,9 @@
                "LowCostHours": "Low cost hours",
                "NormalCostHours": "Normal cost hours",
                "WEHours": "Week-end hours",
-			   "NotDefined": "Not defined"			   
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"			   
 			}
         },
 		"EWESPeriodHCWeekDaydofweek": {
@@ -81,7 +93,9 @@
 			   "NormalCostWeekEnd": "Normal cost week-end hours",
                "LowCostDayOfWeek": "Low cost 'day of week' hours",
 			   "NormalCostDayOfWeek": "Normal cost 'day of week' hours",			   
-			   "NotDefined": "Not defined"			   
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"			   
 			}
         },
 		"EWESPeriodHpHc": {
@@ -89,7 +103,9 @@
             "values" : {
                "LowCostHours": "Low cost hours",
                "NormalCostHours": "Normal cost hours",
-			   "NotDefined": "Not defined"			   
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"			   
 			}
         },
 		"EWESPeriodHTA5": {
@@ -100,7 +116,9 @@
                "SummerNormalCost": "Summer normal cost hours",
                "SummerLowCost": "Summer low cost hours",
 			   "PeakCostHours": "Peak cost hours",
-			   "NotDefined": "Not defined"		   
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"			   
 			}
         },
 		"EWESPeriodTempo": {
@@ -112,7 +130,9 @@
                "NormalCostBlueDays": "Normal cost blue hours",
                "NormalCostWhiteDays": "Normal cost white hours",
                "NormalCostRedDays": "Normal cost red hours",
-			   "NotDefined": "Not defined"		   
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"			   
 			}
         },
 		"EWESPeriodTJEJP": {
@@ -122,7 +142,9 @@
                "WinterCost": "Winter cost hours",
                "SummerNormalCost": "Summer normal cost hours",
                "SummerLowCost": "Summer low cost hours",			
-			   "NotDefined": "Not defined"
+			   "NotDefined": "Not defined",
+			   "FrameError": "Frame error",
+			   "SignalLoss": "Signal loss"			   
 			}
         },
 		"EWESTeleInfoStatus": {
