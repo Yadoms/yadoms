@@ -1,4 +1,4 @@
-### 1.2.0
+### 1.2.0-beta.1
 * New feature #599 : Add different refresh periods per devices type
 
 ### 1.1.0
