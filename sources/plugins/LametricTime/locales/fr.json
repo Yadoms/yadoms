@@ -1,5 +1,5 @@
 ﻿{
-  "name": "Lametric",
+  "name": "LametricTime",
   "description": "Support de l'équipement Lametric",
   "configurationSchema": {
     "IPAddress": {
