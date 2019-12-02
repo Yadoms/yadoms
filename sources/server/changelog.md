@@ -4,6 +4,7 @@
 * Fix #564 : GUI : devices page / deletion and equipment with details
 * Fix #615 : GUI : Precise coordonates format and units
 * Fix #595 : GUI : Fix data export
+* Fix #594 : GUI : Refresh widgets when closing configuration pannel
 
 
 ### 2.3.0
