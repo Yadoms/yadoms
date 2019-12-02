@@ -153,7 +153,6 @@ boost::shared_ptr<DeviceInformation> CLametric::initLametric(boost::shared_ptr<y
    }
    catch (std::exception& e)
    {
-      UNREFERENCED_PARAMETER(e);
       api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
       api->getEventHandler().createTimer(kConnectionRetryTimer,
                                          shared::event::CEventTimer::kOneShot,
