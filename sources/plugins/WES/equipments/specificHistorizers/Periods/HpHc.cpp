@@ -8,8 +8,6 @@ namespace specificHistorizers
       ((LowCostHours))
       ((NormalCostHours))
 	  ((NotDefined))
-	  ((FrameError))
-	  ((SignalLoss))
    );
 
    CPeriodHpHc::CPeriodHpHc(const std::string& keywordName)

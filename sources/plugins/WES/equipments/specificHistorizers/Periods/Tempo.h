@@ -16,8 +16,6 @@ namespace specificHistorizers
 		((NormalCostWhiteDays))
 		((NormalCostRedDays))
 		((NotDefined)(6))
-		((FrameError)(7))
-		((SignalLoss)(8))
 	);
 
    //-----------------------------------------------------

@@ -12,8 +12,6 @@ namespace specificHistorizers
 		((NormalCostHours))
 		((MobilePeakCostHours))
 		((NotDefined)(6))
-		((FrameError)(7))
-		((SignalLoss)(8))
 	);
 
    //-----------------------------------------------------

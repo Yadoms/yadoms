@@ -11,8 +11,6 @@ namespace specificHistorizers
 	DECLARE_ENUM_HEADER(EWESPeriodBase,
 	   ((AllHours))
        ((NotDefined)(6))
-       ((FrameError)(7))
-       ((SignalLoss)(8))
     );
 
    //-----------------------------------------------------

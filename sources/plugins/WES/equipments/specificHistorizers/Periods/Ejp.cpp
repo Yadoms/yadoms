@@ -8,8 +8,6 @@ namespace specificHistorizers
 	   ((NormalCostHours))
 	   ((MobilePeakCostHours))
 	   ((NotDefined))
-	   ((FrameError))
-	   ((SignalLoss))
    );
 
    CPeriodEjp::CPeriodEjp(const std::string& keywordName)

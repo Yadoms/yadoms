@@ -11,8 +11,6 @@ namespace specificHistorizers
 	   ((SummerLowCost))
 	   ((PeakCostHours))
 	   ((NotDefined))
-	   ((FrameError))
-	   ((SignalLoss))
 	   );
 
    CPeriodHTA5::CPeriodHTA5(const std::string& keywordName)

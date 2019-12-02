@@ -12,8 +12,6 @@ namespace specificHistorizers
 		((LowCostHours))
 		((NormalCostHours))
 		((NotDefined)(6))
-		((FrameError)(7))
-		((SignalLoss)(8))
     );
 
    //-----------------------------------------------------

@@ -9,8 +9,6 @@ namespace specificHistorizers
       ((NormalCostHours))
       ((WEHours))
 	  ((NotDefined))
-	  ((FrameError))
-	  ((SignalLoss))
    );
 
    CPeriodHCWE::CPeriodHCWE(const std::string& keywordName)

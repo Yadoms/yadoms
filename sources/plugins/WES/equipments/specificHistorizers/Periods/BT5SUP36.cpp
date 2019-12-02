@@ -11,8 +11,6 @@ namespace specificHistorizers
 	   ((SummerLowCost))
 	   ((PeakCostHours))
 	   ((NotDefined))
-	   ((FrameError))
-	   ((SignalLoss))
 	   );
 
    CPeriodBT5SUP36::CPeriodBT5SUP36(const std::string& keywordName)

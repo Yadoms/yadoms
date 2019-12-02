@@ -15,8 +15,6 @@ namespace specificHistorizers
 		((SummerLowCost))
 		((PeakCostHours))
 		((NotDefined)(6))
-		((FrameError)(7))
-		((SignalLoss)(8))
 		);
 
    //-----------------------------------------------------

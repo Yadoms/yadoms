@@ -16,8 +16,6 @@ namespace specificHistorizers
 		((LowCostDayOfWeek))
 		((NormalCostDayOfWeek))
 		((NotDefined)(6))
-		((FrameError)(7))
-		((SignalLoss)(8))
 		);
 
    //-----------------------------------------------------

@@ -153,30 +153,43 @@ namespace equipments
       }
 
 	  if (m_contractName != NotAvailable) {
-		  auto size = m_counterNames.find(m_contractName)->second.size();
-		  for (auto index = 0; index < size; index++) {
-			  m_Counter[index]->set(counters[index]);
-		  }
+		  try {
 
-		  setPeriodTime(contractName, timePeriod);
-
-		  switch (contractName)
-		  {
-		  case Tempo:
-			  if (m_tomorrowColor->get() != newColor) {
-				  m_tomorrowColor->set((specificHistorizers::EColor)newColor);
+			  if ((timePeriod == 7) || (timePeriod == 8)) {
+				  m_teleInfoStatus->set((specificHistorizers::EWESTeleInfoStatus)(timePeriod));
+				  throw std::exception("Period Error");
 			  }
-			  break;
-		  case NotAvailable:
-			  YADOMS_LOG(trace) << "This equipment (" << m_deviceName << ") is desactivated.";
-			  break;
-		  default:
-			  YADOMS_LOG(error) << "This contract is unknown";
-			  break;
+
+			  auto size = m_counterNames.find(m_contractName)->second.size();
+			  for (auto index = 0; index < size; index++) {
+				  m_Counter[index]->set(counters[index]);
+			  }
+
+			  setPeriodTime(contractName, timePeriod);
+
+			  switch (contractName)
+			  {
+			  case Tempo:
+				  if (m_tomorrowColor->get() != newColor) {
+					  m_tomorrowColor->set((specificHistorizers::EColor)newColor);
+				  }
+				  break;
+			  case NotAvailable:
+				  YADOMS_LOG(trace) << "This equipment (" << m_deviceName << ") is desactivated.";
+				  break;
+			  default:
+				  YADOMS_LOG(error) << "This contract is unknown";
+				  break;
+			  }
+			  m_apparentPower->set(apparentPower);
+			  api->historizeData(m_deviceName, m_keywords);
 		  }
-		  m_apparentPower->set(apparentPower);
+		  catch (const std::exception &) {
+			  m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kError);
+			  std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywords{ m_teleInfoStatus , m_deviceStatus };
+			  api->historizeData(m_deviceName, keywords);
+		  }
 	  }
-      api->historizeData(m_deviceName, m_keywords);
    }
 
    void CTIC::remove(boost::shared_ptr<yApi::IYPluginApi> api)
