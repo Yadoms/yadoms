@@ -151,9 +151,8 @@ boost::shared_ptr<DeviceInformation> CLametricTime::initLametricTime(boost::shar
 
       return deviceInformation;
    }
-   catch (std::exception& e)
+   catch (std::exception&)
    {
-      UNREFERENCED_PARAMETER(e);
       api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
       api->getEventHandler().createTimer(kConnectionRetryTimer,
                                          shared::event::CEventTimer::kOneShot,
