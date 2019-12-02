@@ -1,6 +1,6 @@
 ﻿{
   "name": "LametricTime",
-  "description": "Support de l'équipement Lametric Time",
+  "description": "Support de l'équipement Lametric Time (voir [site web Lametric](https://lametric.com/en-US/time/overview))",
   "configurationSchema": {
     "IPAddress": {
       "name": "Adresse IP",
@@ -18,8 +18,7 @@
     },
     "APIKey": {
       "name": "Clé d'API",
-      "description":
-        "Cette clé est nécessaire pour le fonctionnement de votre plugin. Elle peut être obtenue sur simple inscription (gratuite) au [Lametric](https://developer.lametric.com/user/devices).",
+      "description": "Cette clé est nécessaire pour le fonctionnement de votre plugin. Elle peut être obtenue sur simple inscription (gratuite) au [Lametric](https://developer.lametric.com/user/devices).",
       "regexErrorMessage": ""
     }
   },
