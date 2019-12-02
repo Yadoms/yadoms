@@ -53,7 +53,7 @@ namespace database
             void exportAcquisitions(const int keywordId,
                                     std::function<void(const boost::posix_time::ptime& date,
                                                        const std::string& value,
-                                                       int nbTotalLines)> exportOneLineFunctionn) override;
+                                                       int nbTotalLines)> exportOneLineFunction) override;
             std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(int keywordId,
                                                                                             boost::posix_time::ptime timeFrom = boost::posix_time::
                                                                                                not_a_date_time,

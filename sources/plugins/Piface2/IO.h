@@ -2,7 +2,6 @@
 
 #include "IIO.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "IPf2Configuration.h"
 #include "eventDefinitions.h"

@@ -5,52 +5,64 @@
 
 namespace device
 {
-   CDigitalPotentiometer::CDigitalPotentiometer(EOneWireFamily family,
-                                                const std::string& id,
-                                                boost::shared_ptr<ioInterfaces::IDigitalPotentiometer> io)
-      :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2890")),
+const boost::posix_time::time_duration CDigitalPotentiometer::HistorizationPeriod(boost::posix_time::seconds(5));
+
+CDigitalPotentiometer::CDigitalPotentiometer(EOneWireFamily family,
+                                             const std::string &id,
+                                             boost::shared_ptr<ioInterfaces::IDigitalPotentiometer> io)
+    : m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2890")),
       m_io(io),
       m_potentiometerMode(boost::make_shared<yApi::historization::CSwitch>("PotentiometerMode")),
       m_dim(boost::make_shared<yApi::historization::CDimmable>("dim")),
-      m_keywords({ m_potentiometerMode, m_dim })
-   {
-      BOOST_ASSERT_MSG(m_identification->family() == kDigitalPotentiometer, "Invalid family number");
-   }
+      m_keywords({m_potentiometerMode, m_dim})
+{
+   BOOST_ASSERT_MSG(m_identification->family() == kDigitalPotentiometer, "Invalid family number");
+}
 
-   CDigitalPotentiometer::~CDigitalPotentiometer()
-   {
-   }
+void CDigitalPotentiometer::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                             const shared::CDataContainer &configuration)
+{
+   YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
+}
 
-   void CDigitalPotentiometer::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                const shared::CDataContainer& configuration)
-   {
-      YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
-   }
+void CDigitalPotentiometer::read() const
+{
+   m_potentiometerMode->set(m_io->readPotentiometerMode());
+   m_dim->set(m_io->readDim());
+}
 
-   void CDigitalPotentiometer::read() const
-   {
-      m_potentiometerMode->set(m_io->readPotentiometerMode());
-      m_dim->set(m_io->readDim());
-   }
+void CDigitalPotentiometer::write(const std::string &keyword, const std::string &command)
+{
+   boost::shared_ptr<yApi::historization::CSwitch> kw;
 
-   void CDigitalPotentiometer::write(const std::string& keyword, const std::string& command)
+   if (m_potentiometerMode->getKeyword() == keyword)
    {
-      boost::shared_ptr<yApi::historization::CSwitch> kw;
-
-      if (m_potentiometerMode->getKeyword() == keyword)
-      {
-         m_potentiometerMode->setCommand(command);
-         m_io->writePotentiometerMode(m_potentiometerMode->get());
-      }
-      else if (m_dim->getKeyword() == keyword)
-      {
-         m_dim->set(command);
-         m_io->writeDim(m_dim->switchLevel());
-      }
-      else
-      {
-         YADOMS_LOG(error) << "Unknown keyword " << keyword;
-         return;
-      }
+      m_potentiometerMode->setCommand(command);
+      m_io->writePotentiometerMode(m_potentiometerMode->get());
    }
+   else if (m_dim->getKeyword() == keyword)
+   {
+      m_dim->set(command);
+      m_io->writeDim(m_dim->switchLevel());
+   }
+   else
+   {
+      YADOMS_LOG(error) << "Unknown keyword " << keyword;
+      return;
+   }
+}
+
+bool CDigitalPotentiometer::hasRelevantValue()
+{
+   if (m_keywords.empty())
+      return false;
+
+   const auto now = shared::currentTime::Provider().now();
+
+   if (now < (m_lastHistorizationDate + HistorizationPeriod))
+      return false;
+
+   m_lastHistorizationDate = now;
+   return true;
+}
 } // namespace device

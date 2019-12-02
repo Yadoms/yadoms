@@ -10,11 +10,13 @@
       "name": "Use a specific location",
       "description": "Use this option if default location provided by Yadoms is not accurate",
       "content": {
-        "longitude": {
-          "name": "Longitude"
-        },
         "latitude": {
-          "name": "Latitude"
+          "name": "Latitude",
+          "description": "Latitude in decimal degrees (DDD), as used by [Google Map](https://www.google.fr/maps)"
+        },
+        "longitude": {
+          "name": "Longitude",
+          "description": "Longitude in decimal degrees (DDD), as used by [Google Map](https://www.google.fr/maps)"
         }
       }
     }

@@ -5,48 +5,60 @@
 
 namespace device
 {
-   CHighPrecisionLiBatteryMonitor::CHighPrecisionLiBatteryMonitor(EOneWireFamily family,
-                                                                  const std::string& id,
-                                                                  boost::shared_ptr<ioInterfaces::IHighPrecisionLiBatteryMonitor> io)
-      :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2760")),
+const boost::posix_time::time_duration CHighPrecisionLiBatteryMonitor::HistorizationPeriod(boost::posix_time::seconds(5));
+
+CHighPrecisionLiBatteryMonitor::CHighPrecisionLiBatteryMonitor(EOneWireFamily family,
+                                                               const std::string &id,
+                                                               boost::shared_ptr<ioInterfaces::IHighPrecisionLiBatteryMonitor> io)
+    : m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2760")),
       m_io(io),
       m_kwIo(boost::make_shared<yApi::historization::CSwitch>("io")),
       m_kwTemperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
       m_kwVis(boost::make_shared<yApi::historization::CVoltage>("vis")),
       m_kwVolt(boost::make_shared<yApi::historization::CVoltage>("volt")),
-      m_keywords({ m_kwIo, m_kwTemperature, m_kwVis, m_kwVolt })
+      m_keywords({m_kwIo, m_kwTemperature, m_kwVis, m_kwVolt})
+{
+   BOOST_ASSERT_MSG(m_identification->family() == kHighPrecisionLiBatteryMonitor, "Invalid family number");
+}
+
+void CHighPrecisionLiBatteryMonitor::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                      const shared::CDataContainer &configuration)
+{
+   YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
+}
+
+void CHighPrecisionLiBatteryMonitor::read() const
+{
+   m_kwIo->set(m_io->readIo());
+   m_kwTemperature->set(m_io->readTemperature());
+   m_kwVis->set(m_io->readVis());
+   m_kwVolt->set(m_io->readVolt());
+}
+
+void CHighPrecisionLiBatteryMonitor::write(const std::string &keyword, const std::string &command)
+{
+   if (m_kwIo->getKeyword() != keyword)
    {
-      BOOST_ASSERT_MSG(m_identification->family() == kHighPrecisionLiBatteryMonitor, "Invalid family number");
+      YADOMS_LOG(error) << "Unknown keyword " << keyword;
+      return;
    }
 
-   CHighPrecisionLiBatteryMonitor::~CHighPrecisionLiBatteryMonitor()
-   {
-   }
+   m_kwIo->setCommand(command);
+   m_io->writeIo(m_kwIo->get());
+}
 
-   void CHighPrecisionLiBatteryMonitor::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                         const shared::CDataContainer& configuration)
-   {
-      YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
-   }
+bool CHighPrecisionLiBatteryMonitor::hasRelevantValue()
+{
+   if (m_keywords.empty())
+      return false;
 
-   void CHighPrecisionLiBatteryMonitor::read() const
-   {
-      m_kwIo->set(m_io->readIo());
-      m_kwTemperature->set(m_io->readTemperature());
-      m_kwVis->set(m_io->readVis());
-      m_kwVolt->set(m_io->readVolt());
-   }
+   const auto now = shared::currentTime::Provider().now();
 
-   void CHighPrecisionLiBatteryMonitor::write(const std::string& keyword, const std::string& command)
-   {
-      if (m_kwIo->getKeyword() != keyword)
-      {
-         YADOMS_LOG(error) << "Unknown keyword " << keyword;
-         return;
-      }
+   if (now < (m_lastHistorizationDate + HistorizationPeriod))
+      return false;
 
-      m_kwIo->setCommand(command);
-      m_io->writeIo(m_kwIo->get());
-   }
+   m_lastHistorizationDate = now;
+   return true;
+}
 
 } // namespace device

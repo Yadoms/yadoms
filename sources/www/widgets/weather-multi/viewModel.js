@@ -389,7 +389,9 @@ widgetViewModelCtor =
                   });
             })
             .fail(function (error) {
-               throw "Fail to configure widget : " + error;
+               console.error("Fail to configure widget : " + error);
+               self.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+                          debugger;
             });
       }
 

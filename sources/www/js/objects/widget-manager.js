@@ -579,7 +579,10 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                             d.reject();
                         });
                 })
-                .fail(d.reject);
+                .fail(function () {
+                    widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+                    d.reject();
+                });
         } else {
             d.reject("view model do not implement 'initialize' method");
         }
