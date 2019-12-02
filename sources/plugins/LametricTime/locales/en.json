@@ -1,6 +1,6 @@
 {
   "name": "LametricTime",
-  "description": "Lametric devices support",
+  "description": "Lametric Time devices support",
   "configurationSchema": {
     "IPAddress": {
       "name": "IP Address",
