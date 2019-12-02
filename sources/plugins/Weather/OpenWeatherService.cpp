@@ -84,7 +84,7 @@ shared::CDataContainer COpenWeatherService::syncRequest(const std::string& url)
    }
    catch (std::exception& exception)
    {
-      YADOMS_LOG(error) << "Fail to request OpenWeather service, " << exception.what();
+      YADOMS_LOG(warning) << "Fail to request OpenWeather service, " << exception.what();
       throw;
    }
 }
@@ -104,8 +104,16 @@ void COpenWeatherService::requestLiveWeather(boost::shared_ptr<const shared::ILo
       + "?APPID=" + m_apiKey
       + "&units=metric"
       + "&lat=" + std::to_string(forLocation->latitude())
-      + "&lon=" + std::to_string(forLocation->longitude()));
-   const auto uvIndexData = syncRequest(uvIndexUrl);
+      + "&lon=" + std::to_string(forLocation->longitude()));   
+   shared::CDataContainer uvIndexData;
+   try
+   {
+      uvIndexData = syncRequest(uvIndexUrl);
+   }
+   catch(const std::exception& e)
+   {
+      YADOMS_LOG(warning) << "UV live index not available, " << e.what();
+   }
 
    processLiveWeatherAnswer(weatherData,
                             uvIndexData);
@@ -183,7 +191,15 @@ void COpenWeatherService::requestForecastWeather(boost::shared_ptr<const shared:
       + "&units=metric"
       + "&lat=" + std::to_string(forLocation->latitude())
       + "&lon=" + std::to_string(forLocation->longitude()));
-   const auto uvIndexData = syncRequest(uvIndexUrl);
+   shared::CDataContainer uvIndexData;
+   try
+   {
+      uvIndexData = syncRequest(uvIndexUrl);
+   }
+   catch(const std::exception& e)
+   {
+      YADOMS_LOG(warning) << "UV forecast index not available, " << e.what();
+   }
 
    processForecastWeatherAnswer(weatherData,
                                 uvIndexData);
