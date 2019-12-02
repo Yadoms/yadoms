@@ -1,10 +1,27 @@
 ### 2.4.0-beta.1
-* New feature #575 : add keyword without history
-* New feature (plugin API) : web requests done by plugins now include proxy settings from Yadoms. Just need to rebuild plugin.
-* Fix #564 : GUI : devices page / deletion and equipment with details
-* Fix #615 : GUI : Precise coordonates format and units
-* Fix #595 : GUI : Fix data export
+
+#### Yadoms
+* New feature #543 : Add a Python 3.x script interpreter
+* New feature #575 : Add keyword without history
+* New feature (plugin API) : Web requests done by plugins now uses proxy settings from Yadoms (just need to rebuild plugin to make your plugin support this function)
+* New feature #604 : Proxy supported for file downloading (used in install & update page)
+* New platform supported : Synology DS218+
+* Fix #564 : GUI : Devices page / deletion and equipment with details
+* Fix #584 : GUI : Fix loading of translated labels for not already loaded modules
+* Fix #593 : GUI : Fix plugin icon display in devices configuration page
 * Fix #594 : GUI : Refresh widgets when closing configuration pannel
+* Fix #595 : GUI : Fix data export
+* Fix #615 : GUI : Precise coordonates format and units
+* Known issue #617 : No more progression displayed when downloading file
+
+#### Plugins and widgets
+* Weather Underground plugin removed (WU web service is discontinued)
+* Weather plugin was added (manages live and forecast weather conditions, based on openWeather web service)
+* weather-forecast widget was removed (obsolete)
+* weather-multi widget was added (displays up to 3 weather conditions, live or forecast, with general conditions, temperature min/max, wind, rain, snow)
+* Lametric Time plugin was added to drive [Lametric Time displays](https://lametric.com/en-US/time/overview)
+* OledEspEasy plugin was added to drive OLed deported screen, based on ESP8266 with ESPEasy Firmware (wemos d1, lolin, arduino...)
+* And a lot of fixes and new functionnalities on existing plugins and widgets (refer to corresponding changelog.md files)
 
 
 ### 2.3.0
