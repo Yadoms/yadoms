@@ -49,7 +49,6 @@ namespace equipments
    }
 
    void CTIC::initialize(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& counterId) {
-	   shared::CDataContainer details;
 	   m_keywords.clear();
 	   m_keywords.push_back(m_deviceStatus);
 	   m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kOk);
@@ -110,7 +109,7 @@ namespace equipments
 		   m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kDesactivated);
 		   break;
 	   default:
-		   YADOMS_LOG(error) << "This contract is unknown";
+		   YADOMS_LOG(error) << "This contract is unknown : " << boost::lexical_cast<std::string>(m_contractName) << " : " << boost::lexical_cast<std::string>(counterId);
 		   m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kDesactivated);
 		   break;
 	   }
@@ -121,10 +120,18 @@ namespace equipments
 	   m_keywords.push_back(m_teleInfoStatus);
 
 	   std::string model = "TIC Id = " + counterId;
+	   shared::CDataContainer details;
 	   details.set("type", m_deviceType);
 
 	   //Déclaration of all IOs
-	   api->declareDevice(m_deviceName, "TeleInfo", model, m_keywords, details);
+	   if (!api->deviceExists(m_deviceName)) {
+		   api->declareDevice(m_deviceName, "TeleInfo", model, m_keywords, details);
+	   }
+	   else {
+		   // If already exists => update only details and model (counter Id)
+		   api->updateDeviceDetails(m_deviceName, details);
+		   api->updateDeviceModel(m_deviceName, model);
+	   }
    }
 
    CTIC::CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -154,7 +161,6 @@ namespace equipments
 
 	  if (m_contractName != NotAvailable) {
 		  try {
-
 			  if ((timePeriod == 7) || (timePeriod == 8)) {
 				  m_teleInfoStatus->set((specificHistorizers::EWESTeleInfoStatus)(timePeriod));
 				  throw std::exception("Period Error");
@@ -176,9 +182,6 @@ namespace equipments
 				  break;
 			  case NotAvailable:
 				  YADOMS_LOG(trace) << "This equipment (" << m_deviceName << ") is desactivated.";
-				  break;
-			  default:
-				  YADOMS_LOG(error) << "This contract is unknown";
 				  break;
 			  }
 			  m_apparentPower->set(apparentPower);
