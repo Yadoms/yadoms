@@ -63,9 +63,14 @@ private:
    shared::CDataContainer getNodeInfo(uint32 homeId, uint8 nodeId);
 
    //-----------------------------------------------------------------------------
+   /// \brief	Return the Node meta data
+   //-----------------------------------------------------------------------------   
+   static void getNodeMetaData(uint32 homeId, uint8 nodeId, shared::CDataContainer &result);
+
+   //-----------------------------------------------------------------------------
    /// \brief	Configure the value refresh mode depending on the device listening state
    //-----------------------------------------------------------------------------   
-   static void setupValue(boost::shared_ptr<COpenZWaveNode> node, OpenZWave::ValueID & vid);
+   static void setupValue(const boost::shared_ptr<COpenZWaveNode>& node, OpenZWave::ValueID & vid);
 
 
    void manageDeviceValue(const std::string & deviceName, shared::CDataContainer &container);

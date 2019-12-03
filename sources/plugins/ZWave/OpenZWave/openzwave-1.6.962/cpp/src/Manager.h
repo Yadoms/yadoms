@@ -54,6 +54,7 @@ namespace OpenZWave
 			class ValueStore;
 		}
 		class Msg;
+      class i_HttpClient;
 	}
 	class Options;
 	class Node;
@@ -2607,6 +2608,21 @@ namespace OpenZWave
 			 * \return a string containing the requested metadata
 			 */
 			string const GetMetaData(uint32 const _homeId, uint8 const _nodeId, Node::MetaDataFields _metadata);
+
+         /**
+          * \brief Retrieve metadata from its name
+          * \param metaDataFiledtoParse the string to parse (careful, case sensitive)
+          * \return the found metaDataField if parsing is successful, or MetaData_Invalid 
+          */
+         Node::MetaDataFields GetMetaDataId(const string & metaDataFiledtoParse);
+
+         /**
+          * \brief Get the MetaData string representation
+          * \param metaData the metaData enum
+          * \return the metaData name (or empty string if not found)
+          */
+         string const GetMetaDataString(Node::MetaDataFields metaData);
+
 			/**
 			 * \brief Retrieve ChangeLogs about a configuration revision
 			 * \param _homeId The Home ID of the driver for the node
@@ -2682,6 +2698,8 @@ namespace OpenZWave
 			 */
 			bool downloadLatestMFSRevision(uint32 const _homeId);
 
+
+         bool setHttpClient(uint32 const _homeId, OpenZWave::Internal::i_HttpClient*);
 			/*@}*/
 
 	};

@@ -11,6 +11,39 @@
 #include "ZWaveInternalState.h"
 #include <shared/Log.h>
 #include <Poco/DateTime.h>
+#include "Http.h"
+#include <shared/web/FileDownloader.h>
+
+class PocoDownloader : public OpenZWave::Internal::i_HttpClient
+{
+   bool StartDownload(OpenZWave::Internal::HttpDownload* transfer)
+   {
+      boost::thread(&PocoDownloader::downloadAsync, this, transfer);
+      return true;
+   }
+
+   void PocoDownloader::downloadAsync(OpenZWave::Internal::HttpDownload* transfer)
+   {
+
+      try
+      {
+         shared::web::CFileDownloader::downloadFile(Poco::URI(transfer->url), Poco::Path(transfer->filename),
+            [&](const std::string&file, float progress) -> void
+            {
+
+            });
+         transfer->transferStatus = OpenZWave::Internal::HttpDownload::Ok;
+      }
+      catch(...)
+      {
+         transfer->transferStatus = OpenZWave::Internal::HttpDownload::Failed;
+      }
+
+      this->FinishDownload(transfer);
+   }
+};
+
+PocoDownloader GlobalDownloader;
 
 COpenZWaveController::COpenZWaveController()
    : m_homeId(0),
@@ -162,6 +195,7 @@ IZWaveController::E_StartResult COpenZWaveController::start(boost::function0<voi
          }
       }
 
+      
 
       // Now we just wait for either the AwakeNodesQueried or AllNodesQueried notification,
       // then write out the config file.
@@ -272,21 +306,21 @@ void COpenZWaveController::ExploreNetwork()
 {
    for (auto& m_node : m_nodes)
    {
-      YADOMS_LOG(information) << "Exploring " << m_node->getHomeId() << "." << (int)m_node->getNodeId();
+      YADOMS_LOG(information) << "Exploring " << m_node->getHomeId() << "." << static_cast<int>(m_node->getNodeId());
 
-      unsigned char nGrp = OpenZWave::Manager::Get()->GetNumGroups(m_node->getHomeId(), m_node->getNodeId());
-      YADOMS_LOG(debug) << "    Group count : " << (int)nGrp;
+      const unsigned char nGrp = OpenZWave::Manager::Get()->GetNumGroups(m_node->getHomeId(), m_node->getNodeId());
+      YADOMS_LOG(debug) << "    Group count : " << static_cast<int>(nGrp);
       for (unsigned char i = 1; i <= nGrp; ++i)
       {
          std::string label = OpenZWave::Manager::Get()->GetGroupLabel(m_node->getHomeId(), m_node->getNodeId(), i);
          YADOMS_LOG(debug) << "        Group name : " << label;
 
          OpenZWave::InstanceAssociation* ia = nullptr;
-         int assocNb = OpenZWave::Manager::Get()->GetAssociations(m_node->getHomeId(), m_node->getNodeId(), i, &ia);
+         const int assocNb = OpenZWave::Manager::Get()->GetAssociations(m_node->getHomeId(), m_node->getNodeId(), i, &ia);
          YADOMS_LOG(debug) << "        Assoc count : " << assocNb;
          for (int k = 0; k < assocNb; k++)
          {
-            YADOMS_LOG(debug) << "          Association : " << (int)ia[k].m_nodeId << "#" << (int)ia[k].m_instance;
+            YADOMS_LOG(debug) << "          Association : " << static_cast<int>(ia[k].m_nodeId) << "#" << static_cast<int>(ia[k].m_instance);
          }
       }
 
@@ -414,21 +448,21 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       // One of the node's association groups has changed
       unsigned char groupIdx = _notification->GetGroupIdx();
       auto groupLabel = OpenZWave::Manager::Get()->GetGroupLabel(_notification->GetHomeId(), _notification->GetNodeId(), groupIdx);
-      YADOMS_LOG(debug) << "Group change : id= " << (int)groupIdx << " label=" << groupLabel;
+      YADOMS_LOG(debug) << "Group change : id= " << static_cast<int>(groupIdx) << " label=" << groupLabel;
       break;
    }
 
    case OpenZWave::Notification::Type_NodeNew:
    {
       //A new node has been found (not already stored in zwcfg*.xml file)
-      YADOMS_LOG(debug) << "A new node has been found (not already stored in zwcfg*.xml file) " << _notification->GetHomeId() << "." << (int)_notification->GetNodeId();
+      YADOMS_LOG(debug) << "A new node has been found (not already stored in zwcfg*.xml file) " << _notification->GetHomeId() << "." << static_cast<int>(_notification->GetNodeId());
       break;
    }
 
    case OpenZWave::Notification::Type_NodeAdded:
    {
       //A new node has been added to OpenZWave's list.  This may be due to a device being added to the Z-Wave network, or because the application is initializing itself.
-      YADOMS_LOG(debug) << "A new node has been added to OpenZWave's list.  This may be due to a device being added to the Z-Wave network, or because the application is initializing itself " << _notification->GetHomeId() << "." << (int)_notification->GetNodeId();
+      YADOMS_LOG(debug) << "A new node has been added to OpenZWave's list.  This may be due to a device being added to the Z-Wave network, or because the application is initializing itself " << _notification->GetHomeId() << "." << static_cast<int>(_notification->GetNodeId());
       if (getNode(_notification->GetHomeId(), _notification->GetNodeId()).get() == nullptr)
       {
          std::string name;
@@ -528,6 +562,10 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kDriverReady);
 
       m_homeId = _notification->GetHomeId();
+
+      m_homeId = _notification->GetHomeId();
+      OpenZWave::Manager::Get()->setHttpClient(m_homeId, &GlobalDownloader);
+
       break;
    }
 
@@ -677,7 +715,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       auto nodeInfo = getNode(_notification);
       if (nodeInfo)
       {
-         YADOMS_LOG(debug) << "NodeQueriesComplete : " << nodeInfo->getHomeId() << ":" << (int)nodeInfo->getNodeId();
+         YADOMS_LOG(debug) << "NodeQueriesComplete : " << nodeInfo->getHomeId() << ":" << static_cast<int>(nodeInfo->getNodeId());
 
          std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
          shared::CDataContainer d = getNodeInfo(nodeInfo->getHomeId(), nodeInfo->getNodeId());
@@ -853,8 +891,41 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
    if (!extraQueries.empty())
       details.set("extraQueries", eqSingleLine);
 
+   shared::CDataContainer meta;
+   getNodeMetaData(homeId, nodeId, meta);
+   details.set("metadata", meta);
+
    d.set("details", details);
+
    return d;
+}
+
+void COpenZWaveController::getNodeMetaData(uint32 homeId, uint8 nodeId, shared::CDataContainer& result)
+{
+   for (int i = 0; i < OpenZWave::Node::MetaData_Invalid; ++i)
+   {
+      try
+      {
+         const auto mdi = static_cast<OpenZWave::Node::MetaDataFields>(i);
+         std::string metaName = OpenZWave::Manager::Get()->GetMetaDataString(mdi);
+         if (metaName.empty())
+         {
+            i = OpenZWave::Node::MetaData_Invalid;
+         }
+         else
+         {
+            std::string metaValue = OpenZWave::Manager::Get()->GetMetaData(homeId, nodeId, mdi);
+            if (!metaValue.empty())
+            {
+               result.set(metaName, metaValue);
+            }
+         }
+      }
+      catch(...)
+      {
+         break;
+      }
+   }
 }
 
 std::vector<shared::CDataContainer> COpenZWaveController::getDeviceCommandClasses(const uint32 homeId, const uint8 nodeId)
@@ -866,17 +937,17 @@ std::vector<shared::CDataContainer> COpenZWaveController::getDeviceCommandClasse
    {
       std::string name;
       unsigned char version;
-      if (OpenZWave::Manager::Get()->GetNodeClassInformation(homeId, nodeId, (uint8)allclasse, &name, &version))
+      if (OpenZWave::Manager::Get()->GetNodeClassInformation(homeId, nodeId, static_cast<uint8>(allclasse), &name, &version))
       {
          shared::CDataContainer c;
          c.set("name", name);
-         c.set("version", (int)version);
+         c.set("version", static_cast<int>(version));
          allClasses.push_back(c);
       }
    }
    return allClasses;
 }
-void COpenZWaveController::setupValue(boost::shared_ptr<COpenZWaveNode> node, OpenZWave::ValueID & vID)
+void COpenZWaveController::setupValue(const boost::shared_ptr<COpenZWaveNode>& node, OpenZWave::ValueID & vID)
 {
    if (OpenZWave::Manager::Get()->IsNodeListeningDevice(node->getHomeId(), node->getNodeId()) ||
       OpenZWave::Manager::Get()->IsNodeFrequentListeningDevice(node->getHomeId(), node->getNodeId()))
