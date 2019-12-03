@@ -9,45 +9,142 @@
 	},
 	"enumerations": {
 		"EWESdeviceStatus": {
-			"name" : "Etat de l'équipement",
-			"values" : {
+			"name": "Etat de l'équipement",
+			"values": {
 				"Undefined": "Indéfini",
 				"Ok": "Ok",
 				"Error": "Erreur",
 				"TimeOut": "Connection perdue"
 			}
 		},
-		"EWESTeleInfoPeriod": {
-			"name" : "Période tarifaire",
-			"values" : {
-				"AllHours": "Toutes heures",
-				"LowCostHours": "Heures creuses",
-				"PeakCostHour": "Heures pleines",
-				"NormalCostHours": "Heures pleines",
-            "MobilePeakCostHours": "heures pointe mobile",
-            "LowCostBlueDays": "Heures creuses bleues",
-            "LowCostWhiteDays": "Heures creuses blanches",
-            "LowCostRedDays": "Heures creuses rouges",
-            "NormalCostBlueDays": "Heures pleines bleues",
-            "NormalCostWhiteDays": "Heures pleines blanches",
-            "NormalCostRedDays": "Heures pleines rouges",
-            "WinterNormalCost": "Heures pleines hiver",
-            "WinterLowCost": "Heures creuses hiver",
-            "SummerNormalCost": "Heures pleines été",
-            "SummerLowCost": "Heures creuses été",
-            "WinterCost": "Heures hiver"            
+		"EWESPeriodBase": {
+            "name": "Période tarifaire",
+            "values" : {
+               "AllHours": "Toutes heures",
+               "NotDefined": "Pas définie"
 			}
-		},
+        },
+		"EWESPeriodBASEA5": {
+            "name": "Période tarifaire",
+            "values" : {
+               "WinterNormalCost": "Heures pleines hiver",
+               "WinterLowCost": "Heures creuses hiver",
+               "SummerNormalCost": "Heures pleines été",
+               "SummerLowCost": "Heures creuses été",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodBT4SUP36": {
+            "name": "Période tarifaire",
+            "values" : {
+               "WinterNormalCost": "Heures pleines hiver",
+               "WinterLowCost": "Heures creuses hiver",
+               "SummerNormalCost": "Heures pleines été",
+               "SummerLowCost": "Heures creuses été",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodBT5SUP36": {
+            "name": "Période tarifaire",
+            "values" : {
+               "WinterNormalCost": "Heures pleines hiver",
+               "WinterLowCost": "Heures creuses hiver",
+               "SummerNormalCost": "Heures pleines été",
+               "SummerLowCost": "Heures creuses été",
+			   "PeakCostHours": "Heures de pointe",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodEjp": {
+            "name": "Période tarifaire",
+            "values" : {
+               "NormalCostHours": "Heures pleines",
+               "MobilePeakCostHours": "heures pointe mobile",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodHCWE": {
+            "name": "Période tarifaire",
+            "values" : {
+               "LowCostHours": "Heures creuses",
+               "NormalCostHours": "Heures pleines",
+               "WEHours": "Heures fin de semaine",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodHCWeekDaydofweek": {
+            "name": "Période tarifaire",
+            "values" : {
+               "LowCostWeek": "Heures creuses semaine",
+			   "NormalCostWeek": "Heures pleines semaine",
+               "LowCostWeekEnd": "Heures creuses fin de semaine",
+			   "NormalCostWeekEnd": "Heures pleines fin de semaine",
+               "LowCostDayOfWeek": "Heures creuses 'jour de la semaine'",
+			   "NormalCostDayOfWeek": "Heures creuses 'jour de la semaine'",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodHpHc": {
+            "name": "Période tarifaire",
+            "values" : {
+               "LowCostHours": "Heures creuses",
+               "NormalCostHours": "Heures pleines",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodHTA5": {
+            "name": "Période tarifaire",
+            "values" : {
+               "WinterNormalCost": "Heures pleines hiver",
+               "WinterLowCost": "Heures creuses hiver",
+               "SummerNormalCost": "Heures pleines été",
+               "SummerLowCost": "Heures creuses été",
+			   "PeakCostHours": "Heures de pointe",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodTempo": {
+            "name": "Période tarifaire",
+            "values" : {
+				"LowCostBlueDays": "Heures creuses bleues",
+				"NormalCostBlueDays": "Heures pleines bleues",
+				"LowCostWhiteDays": "Heures creuses blanches",
+				"NormalCostWhiteDays": "Heures pleines blanches",
+				"LowCostRedDays": "Heures creuses rouges",
+				"NormalCostRedDays": "Heures pleines rouges",
+               "NotDefined": "Pas définie"
+			}
+        },
+		"EWESPeriodTJEJP": {
+            "name": "Période tarifaire",
+            "values" : {
+			   "MobilePeakCostHours": "Heures de pointe mobile",
+               "WinterCost": "Heures hiver",
+				"SummerNormalCost": "Heures pleines été",
+				"SummerLowCost": "Heures creuses été",
+				"NotDefined": "Pas définie"
+			}
+        },
 		"EWESTeleInfoStatus": {
-			"name" : "Etat de la télé-info",
-			"values" : {
+			"name": "Etat de la télé-info",
+			"values": {
 				"Ok": "Ok",
 				"Error": "Erreur",
-            "TeleInfoLost": "Perte télé-info",
-				"Desactivated": "Désactivée"
+				"Desactivated": "Désactivée",
+			    "FrameError": "Erreur trame",
+			    "SignalLoss": "Perte signal"
 			}
-		}      
-	},   
+		},
+		"EColor": {
+			"name" : "Couleur du jour",
+			"values" : {
+				"NOTDEFINED": "Pas définie",
+				"BLUE": "Bleu",
+                "WHITE": "Blanc",
+				"RED": "Rouge"
+			}
+		}		
+	},
 	"deviceConfiguration": {
 		"staticConfigurationSchema": {
 			"name": "Type",
@@ -63,7 +160,7 @@
 						"IPAddress": {
 							"name": "Adresse IP",
 							"description": "L'adresse IP du module",
-                     "regexErrorMessage": "Ce n'est pas une adresse IP valide"
+							"regexErrorMessage": "Ce n'est pas une adresse IP valide"
 						},
 						"Port": {
 							"name": "Port",
@@ -82,6 +179,52 @@
 									"description": ""
 								}
 							}
+						},
+						"analog": {
+							"name": "Définition des entrées analogiques",
+							"description": "Définissez ici, le type de chaque entrée analogique (pour le WES v2). Il faut que la valeur envoyée par le WES soit de la même unité. Si cette section n'est pas cochée, aucune valeur analogique sera synchronisée. Un changement de type réinitialisera complètement la donnée. Le WES V1 ne supporte pas les valeurs analogiques.",
+							"content": {
+								"ana1": {
+									"name": "entrée analogique n°1",
+									"description": "",
+									"values": {
+										"ampere": "Ampère (A)",
+										"temperature": "température (Celcius)",
+										"voltage": "Volt (V)",
+										"watthour": "Watt-heure (Wh)"
+									}
+								},
+								"ana2": {
+									"name": "entrée analogique n°2",
+									"description": "",
+									"values": {
+										"ampere": "Ampère (A)",
+										"temperature": "température (Celcius)",
+										"voltage": "Volt (V)",
+										"watthour": "Watt-heure (Wh)"
+									}
+								},
+								"ana3": {
+									"name": "entrée analogique n°3",
+									"description": "",
+									"values": {
+										"ampere": "Ampère (A)",
+										"temperature": "température (Celcius)",
+										"voltage": "Volt (V)",
+										"watthour": "Watt-heure (Wh)"
+									}
+								},
+								"ana4": {
+									"name": "entrée analogique n°4",
+									"description": "",
+									"values": {
+										"ampere": "Ampère (A)",
+										"temperature": "température (Celcius)",
+										"voltage": "Volt (V)",
+										"watthour": "Watt-heure (Wh)"
+									}
+								}
+							}
 						}
 					}
 				}
@@ -96,9 +239,9 @@
 			"noConnection": "Pas de connexion à l'équipement",
 			"noInformation": "L'équipement est connecté, mais aucune information n'est retournée. Vérifiez la clé apikey.",
 			"updateConfiguration": "Mise à jour de la configuration...",
-         "kAtLeastOneConnectionFaulty": "Au moins un équipement est en erreur",
-         "manuallyCreationError": "La création manuelle de l'équipement est un échec",
-         "serverRevisionTooLow": "La version du firmware sur le serveur WES doit être >=0.80"
+			"kAtLeastOneConnectionFaulty": "Au moins un équipement est en erreur",
+			"manuallyCreationError": "La création manuelle de l'équipement est un échec",
+			"serverRevisionTooLow": "La version du firmware sur le serveur WES doit être >=0.80"
 		}
 	}
 }

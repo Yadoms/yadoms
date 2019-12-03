@@ -1,6 +1,9 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "../specificHistorizers/TeleInfoStatus.h"
+#include "../masterDeviceConfiguration.h"
+#include "../../IWESConfiguration.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -10,67 +13,52 @@ namespace equipments
    namespace subdevices
    {
       //-----------------------------------------------------
-      ///\brief list of units available
+      ///\brief Analog subdevices connected to the WES
       //-----------------------------------------------------
-      typedef enum {
-         undefined,
-         litre,
-         m3,
-         Wh,
-         KWh
-      } EUnit;
-
-      //-----------------------------------------------------
-      ///\brief WES equipment
-      //-----------------------------------------------------
-      class CPulse
+      class CAnalog
       {
       public:
          //-----------------------------------------------------
          ///\brief                                      Constructor
          ///\param[in] api                             Yadoms API
          ///\param[in] keywordsToDeclare               list of keywords to declare
+         ///\param[in] pluginConfiguration             the plugin configuration
+         ///\param[in] type                            the declaration type
          ///\param[in] deviceName                      The device name
          ///\param[in] keywordName                     The keyword name
-         ///\param[in] unitName                        The unit used by the WES
          //-----------------------------------------------------
-         CPulse(boost::shared_ptr<yApi::IYPluginApi> api,
+         CAnalog(boost::shared_ptr<yApi::IYPluginApi> api,
                 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
+                const std::string& type,
                 const std::string& deviceName,
-                const std::string& keywordName,
-                const EUnit unitName);
+                const std::string& keywordName);
 
          //-----------------------------------------------------
          ///\brief                                      updateFromDevice
          ///\param[in] api                             Yadoms API
          ///\param[in] keywordsToHistorize             list of keywords to historize
-         ///\param[in] unitName                        The unit used by the WES
-         ///\param[in] totalValue                      The total value sent by the WES
+         ///\param[in] energyClampValue                The energy clamp value sent by the WES
          //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
-                               const EUnit unitName,
-                               const double& totalValue
-         );
-
-         //-----------------------------------------------------
-         ///\brief                                      updateConfiguration
-         ///\param[in] api                             Yadoms API
-         ///\param[in] unitName                        the unit used
-         //-----------------------------------------------------
-         void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                  const EUnit unitName);
+                               const double& Value);
 
          //-----------------------------------------------------
          ///\brief                     get the device name
-         ///\return                    the pulse keyword Name
+         ///\return                    the clamp keyword Name
          //-----------------------------------------------------
          std::string name();
 
          //-----------------------------------------------------
+         ///\brief                     get the device name
+         ///\return                    the clamp keyword Name
+         //-----------------------------------------------------
+         std::string type();
+
+         //-----------------------------------------------------
          ///\brief                     Destructor
          //-----------------------------------------------------
-         virtual ~CPulse();
+         virtual ~CAnalog();
 
       private:
 
@@ -79,21 +67,23 @@ namespace equipments
          //-----------------------------------------------------
          std::string m_deviceName;
 
-         //-----------------------------------------------------
-         ///\brief                     The keyword name
-         //-----------------------------------------------------
+         //--------------------------------------------------------------
+         /// \brief  Keywords list
+         //--------------------------------------------------------------
+         boost::shared_ptr<yApi::historization::CCurrent> m_CurrentHistorizer;
+         boost::shared_ptr<yApi::historization::CVoltage> m_VoltageHistorizer;
+         boost::shared_ptr<yApi::historization::CEnergy> m_EnergyHistorizer;
+         boost::shared_ptr<yApi::historization::CTemperature> m_TemperatureHistorizer;
+
+         //--------------------------------------------------------------
+         /// \brief  Keywords Name
+         //--------------------------------------------------------------
          std::string m_keywordName;
 
-         //-----------------------------------------------------
-         ///\brief                     The contract name
-         //-----------------------------------------------------
-         EUnit m_unitName;
-
          //--------------------------------------------------------------
-         /// \brief  Main keywords
+         /// \brief  Type
          //--------------------------------------------------------------
-         boost::shared_ptr<yApi::historization::CEnergy> m_pulseEnergy;
-         boost::shared_ptr<yApi::historization::CVolume> m_pulseVolume;
+         std::string m_type;
       };
    }
 } // namespace equipments::subdevices

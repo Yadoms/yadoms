@@ -4,34 +4,31 @@
 
 namespace specificHistorizers
 {
-   //-----------------------------------------------------
-   ///\brief  Status of the TeleInfo
-   //-----------------------------------------------------   
-   DECLARE_ENUM_HEADER(EWESTeleInfoStatus,
-      ((Ok))
-      ((Error))
-      ((Desactivated))
-      ((FrameError)(7))
-      ((SignalLoss)(8))
-      );
+	//-----------------------------------------------------
+	///\brief  All periods
+	//-----------------------------------------------------   
+
+	DECLARE_ENUM_HEADER(EWESPeriodEjp,
+		((NormalCostHours))
+		((MobilePeakCostHours))
+		((NotDefined)(6))
+	);
 
    //-----------------------------------------------------
-   ///\brief A Status object
+   ///\brief A Running Period object
    //-----------------------------------------------------
-   class CTeleInfoStatus : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EWESTeleInfoStatus>
+   class CPeriodEjp : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EWESPeriodEjp>
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      explicit CTeleInfoStatus(const std::string& keywordName);
+      explicit CPeriodEjp(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CTeleInfoStatus();
+      virtual ~CPeriodEjp();
    };
 } // namespace specificHistorizers
-
-

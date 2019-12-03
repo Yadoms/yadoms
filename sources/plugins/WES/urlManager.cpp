@@ -17,7 +17,7 @@ shared::CDataContainer urlManager::readFileState(Poco::Net::SocketAddress socket
    shared::CDataContainer response;
 
    // create the URL
-   url << "http://" << socket.toString() << "/ASSETS/CGX/YADOMS/" + file;
+   url << "http://" << socket.toString() << "/WEBPROG/CGX/YADOMS/" + file;
    YADOMS_LOG(trace) << "URL : " << url.str();
    response =  http::CHttpMethods::SendGetRequest(url.str(), credentials,  noParameters, timeout);
    return response;
