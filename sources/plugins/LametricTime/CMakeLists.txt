@@ -4,11 +4,11 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 ## Place here all the plugin source files
 #########################################
-set(LAMETRIC_PLUGIN_SOURCES
+set(LAMETRICTIME_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
-	Lametric.cpp
-	Lametric.h
+	LametricTime.cpp
+	LametricTime.h
 	Configuration.cpp
 	Configuration.h
 	NotificationSender.cpp 
@@ -33,14 +33,14 @@ source_group(sources ./*.*)
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
 #########################################
-set(LAMETRIC_PLUGIN_INCLDIR
+set(LAMETRICTIME_PLUGIN_INCLDIR
 )
 
 #########################################
 ## Place here all additional libraries to link with
 ## (by default yadoms-shared and boost are included)
 #########################################
-set(LAMETRIC_PLUGIN_LINK
+set(LAMETRICTIME_PLUGIN_LINK
 )
 
 #########################################
@@ -53,7 +53,7 @@ set(LAMETRIC_PLUGIN_LINK
 ## Always leave these lines to configure plugin correctly
 ## even if LAMETRIC_PLUGIN_INCLDIR or LAMETRIC_PLUGIN_LINK are LAMETRIC
 #########################################
-PLUGIN_SOURCES(Lametric ${LAMETRIC_PLUGIN_SOURCES})
-PLUGIN_INCLDIR(Lametric ${LAMETRIC_PLUGIN_ADDITIONAL_INC_DIR})
-PLUGIN_LINK(Lametric ${LAMETRIC_PLUGIN_ADDITIONAL_LIB})
+PLUGIN_SOURCES(LametricTime ${LAMETRICTIME_PLUGIN_SOURCES})
+PLUGIN_INCLDIR(LametricTime ${LAMETRICTIME_PLUGIN_ADDITIONAL_INC_DIR})
+PLUGIN_LINK(LametricTime ${LAMETRICTIME_PLUGIN_ADDITIONAL_LIB})
 

@@ -15,17 +15,17 @@ struct DeviceInformation
    std::string deviceModel;
 };
 
-class CLametric : public plugin_cpp_api::IPlugin
+class CLametricTime : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CLametric();
+   CLametricTime();
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CLametric() = default;
+   virtual ~CLametricTime() = default;
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
@@ -56,7 +56,7 @@ private:
     * \param[in] api                   Pointer to the API
     * \return                          Structure with device information
     */
-   boost::shared_ptr<DeviceInformation> initLametric(boost::shared_ptr<yApi::IYPluginApi>& api) const;
+   boost::shared_ptr<DeviceInformation> initLametricTime(boost::shared_ptr<yApi::IYPluginApi>& api) const;
    /**
     * \brief Update the configuration of the plugin after a change
     * \param api                  pointer to the API
