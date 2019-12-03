@@ -148,6 +148,7 @@ IZWaveController::E_StartResult COpenZWaveController::start(boost::function0<voi
 
       OpenZWave::Options::Get()->AddOptionBool("Logging", true);
       OpenZWave::Options::Get()->AddOptionString("LogFileName", "OZW.log", false);
+      OpenZWave::Options::Get()->AddOptionString("ReloadAfterUpdate", "AWAKE", false);
       OpenZWave::Options::Get()->AddOptionBool("AppendLogFile", false);
       OpenZWave::Options::Get()->AddOptionBool("ConsoleOutput", false); //disable console output
 
