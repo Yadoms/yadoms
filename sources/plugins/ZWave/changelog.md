@@ -1,7 +1,12 @@
-### 1.6.0.beta1
-* **Update OpenZwave to 1.6.xxx**
+### 1.6.0.beta2
+* **Update OpenZwave to 1.6.962**
 * Enhance SensorBinary class (fix #592)
 * Remove libudev dependency
+* Manage userAlerts
+* Enhance update process (cleanup Data folder)
+* Keep the current plugin version in data folder
+* Manage proxy
+* Add device metaData in database
 
 ### 1.3.0
 * Fix #539 : add command class to configuration description (command class is the identifier found in devices manuals)

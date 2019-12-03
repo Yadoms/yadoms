@@ -765,30 +765,65 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    }
    case OpenZWave::Notification::Type_UserAlerts:
    {
+      shared::CDataContainer alert;
+
+      std::string alertContent;
+      std::map<std::string, std::string> alertData = std::map<std::string, std::string>();
+
+      auto nodeInfo = getNode(_notification);
       switch(_notification->GetUserAlertType())
       {
       case OpenZWave::Notification::UserAlertNotification::Alert_None:
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_ConfigOutOfDate: //One of the Config Files is out of date. Use GetNodeId to determine which node is effected.
+         alertContent = "Alert_ConfigOutOfDate";
+         if (nodeInfo)
+         {
+            const std::string sNodeName = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            alertData["nodeName"] = sNodeName;
+         }
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_MFSOutOfDate: //the manufacturer_specific.xml file is out of date
+         alertContent = "Alert_MFSOutOfDate";
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_ConfigFileDownloadFailed: //A Config File failed to download 
+         alertContent = "Alert_ConfigFileDownloadFailed";
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_DNSError: //A error occurred performing a DNS Lookup
+         alertContent = "Alert_DNSError";
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_NodeReloadRequired: //A new Config file has been discovered for this node, and its pending a Reload to Take affect
+         alertContent = "Alert_NodeReloadRequired";
+         if (nodeInfo)
+         {
+            const std::string sNodeName = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            alertData["nodeName"] = sNodeName;
+         }
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_UnsupportedController: //The Controller is not running a Firmware Library we support
+         alertContent = "Alert_UnsupportedController";
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_ApplicationStatus_Retry: //Application Status CC returned a Retry Later Message
+         alertContent = "Alert_ApplicationStatus_Retry";
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_ApplicationStatus_Queued: //Command Has been Queued for later execution
+         alertContent = "Alert_ApplicationStatus_Queued";
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_ApplicationStatus_Rejected: //Command has been rejected
+         alertContent = "Alert_ApplicationStatus_Rejected";
          break;
       }
+
+      if (!alertContent.empty())
+      {
+         alert.set("type", alertContent);
+         if(!alertData.empty())
+            alert.set("data", alertData);
+         m_handler->postEvent(CZWave::kUserAlert, alert);
+      }
       break;
+
+      
    }
    default:
       break;

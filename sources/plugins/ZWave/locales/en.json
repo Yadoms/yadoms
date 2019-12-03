@@ -16,19 +16,28 @@
     }
   },
 	"customLabels": {
-		"pluginState": {
-			"waiting": "Waiting...",
-			"waitingInclusion": "In inclusion mode. Waiting for user to include new device...",
-			"waitingExclusion": "In exclusion mode. Waiting for user to exclude a device...",
-			"completed": "Terminated",
-			"driverReady": "Ready",
-			"driverFailed": "Driver error",
-			"initialization" : "ZWave initialization and device analysis...",
-			"updateConfiguration" : "Update configuration",
-			"failToAccessSerialPort" : "Fail to access serial port. Please verify ZWave dongle is plugged or the plugin configuration",
-			"failToStartController" : "Fail to start ZWave controller. Please verify ZWave dongle is plugged or the plugin configuration",
-			"failToStart" : "Fail to start"
-		}
+    "pluginState": {
+      "waiting": "Waiting...",
+      "waitingInclusion": "In inclusion mode. Waiting for user to include new device...",
+      "waitingExclusion": "In exclusion mode. Waiting for user to exclude a device...",
+      "completed": "Terminated",
+      "driverReady": "Ready",
+      "driverFailed": "Driver error",
+      "initialization": "ZWave initialization and device analysis...",
+      "updateConfiguration": "Update configuration",
+      "failToAccessSerialPort": "Fail to access serial port. Please verify ZWave dongle is plugged or the plugin configuration",
+      "failToStartController": "Fail to start ZWave controller. Please verify ZWave dongle is plugged or the plugin configuration",
+      "failToStart": "Fail to start",
+      "Alert_ConfigOutOfDate": "Config Files for device {{nodeName}} is out of date.",
+      "Alert_MFSOutOfDate": "the manufacturer_specific.xml file is out of date.",
+      "Alert_ConfigFileDownloadFailed": "A Config File failed to download",
+      "Alert_DNSError": "A error occurred performing a DNS Lookup",
+      "Alert_NodeReloadRequired": "A new Config file has been discovered for device {{nodeName}}, and its pending a Reload to Take affect",
+      "Alert_UnsupportedController": "The Controller is not running a Firmware Library we support",
+      "Alert_ApplicationStatus_Retry": "Application Status CC returned a Retry Later Message",
+      "Alert_ApplicationStatus_Queued": "Command Has been Queued for later execution",
+      "Alert_ApplicationStatus_Rejected": "Command has been rejected"
+    }
 	},
 	"extraQueries" : {
 		"inclusionMode" : {

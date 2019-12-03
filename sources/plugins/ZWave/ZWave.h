@@ -111,6 +111,12 @@ private:
    //--------------------------------------------------------------
    void checkVersionUpgrade(const boost::shared_ptr<yApi::IYPluginApi>& api) const;
 
+      //--------------------------------------------------------------
+   /// \brief	Handle UserAlert from OZW and send it to yadoms core
+   /// \param [in] api The plugin API
+   //--------------------------------------------------------------
+   void onUserAlert(const boost::shared_ptr<yApi::IYPluginApi>& api) const;
+
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
@@ -130,7 +136,8 @@ public:
       kUpdateDeviceState,
       kUpdateKeyword,
       kUpdateConfiguration,
-      kInternalStateChange
+      kInternalStateChange,
+      kUserAlert
    };
    
 };

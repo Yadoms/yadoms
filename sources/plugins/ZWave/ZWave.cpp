@@ -193,6 +193,10 @@ void CZWave::mainLoop(const boost::shared_ptr<yApi::IYPluginApi>& api)
          onInternalStateChange(api);
          break;
 
+      case kUserAlert:
+         onUserAlert(api);
+         break;
+
       default:
          YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
          break;
@@ -629,4 +633,18 @@ void CZWave::onInternalStateChange(const boost::shared_ptr<yApi::IYPluginApi>& a
       api->setPluginState(yApi::historization::EPluginState::kCustom, s.toString());
       break;
    }
+}
+
+
+void CZWave::onUserAlert(const boost::shared_ptr<yApi::IYPluginApi>& api) const
+{
+   const auto userAlert = api->getEventHandler().getEventData<shared::CDataContainer>();
+   const std::string alertType = userAlert.get("type");
+   std::map<std::string, std::string> alertData = std::map<std::string, std::string>();
+   if(userAlert.containsValue("data"))
+   {
+      alertData = userAlert.getAsMap<std::string>("data");
+      
+   }
+   api->setPluginState(yApi::historization::EPluginState::kCustom, alertType, alertData);
 }
