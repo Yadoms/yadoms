@@ -5,6 +5,7 @@
 #include <command_classes/CommandClass.h>
 #include "OpenZWaveNode.h"
 #include "OpenZWaveControllerCache.h"
+#include <Http.h>
 
 class COpenZWaveController : public IZWaveController
 {
@@ -97,7 +98,15 @@ private:
    //-----------------------------------------------------------------------------   
    void RequestConfigurationParameters();
 
+   //-----------------------------------------------------------------------------
+   /// \brief	Explore the network
+   //-----------------------------------------------------------------------------   
    void ExploreNetwork();
+
+   //-----------------------------------------------------------------------------
+   /// \brief	Upgrade config file (manufacturer_specific an devery node config)
+   //-----------------------------------------------------------------------------   
+   void UpgradeConfigFiles();
 
    //--------------------------------------------------------------
    /// \brief	   Mutex protecting the configuration content
@@ -149,5 +158,10 @@ private:
    /// \brief	   The developerMode flag
    //--------------------------------------------------------------
    bool m_developerMode;
+
+   //--------------------------------------------------------------
+   /// \brief	   The http client
+   //--------------------------------------------------------------
+   boost::shared_ptr<OpenZWave::Internal::i_HttpClient> m_httpClient;
 };
 

@@ -11,39 +11,7 @@
 #include "ZWaveInternalState.h"
 #include <shared/Log.h>
 #include <Poco/DateTime.h>
-#include "Http.h"
-#include <shared/web/FileDownloader.h>
-
-class PocoDownloader : public OpenZWave::Internal::i_HttpClient
-{
-   bool StartDownload(OpenZWave::Internal::HttpDownload* transfer)
-   {
-      boost::thread(&PocoDownloader::downloadAsync, this, transfer);
-      return true;
-   }
-
-   void PocoDownloader::downloadAsync(OpenZWave::Internal::HttpDownload* transfer)
-   {
-
-      try
-      {
-         shared::web::CFileDownloader::downloadFile(Poco::URI(transfer->url), Poco::Path(transfer->filename),
-            [&](const std::string&file, float progress) -> void
-            {
-
-            });
-         transfer->transferStatus = OpenZWave::Internal::HttpDownload::Ok;
-      }
-      catch(...)
-      {
-         transfer->transferStatus = OpenZWave::Internal::HttpDownload::Failed;
-      }
-
-      this->FinishDownload(transfer);
-   }
-};
-
-PocoDownloader GlobalDownloader;
+#include "OpenZWaveHttpClient.h"
 
 COpenZWaveController::COpenZWaveController()
    : m_homeId(0),
@@ -52,7 +20,8 @@ COpenZWaveController::COpenZWaveController()
    m_lastSuccessfullySentCommand(OpenZWave::Driver::ControllerCommand_None),
    m_handler(nullptr),
    m_configuration(nullptr),
-   m_developerMode(false)
+   m_developerMode(false),
+   m_httpClient(boost::make_shared<COpenZWaveHttpClient>())
 {
    //ensure OpenZWave is configured correctly (need sources modifications)
 #ifdef OPENZWAVE_DISABLE_EXCEPTIONS
@@ -231,6 +200,7 @@ IZWaveController::E_StartResult COpenZWaveController::start(boost::function0<voi
 
       if (!m_initFailed)
       {
+         UpgradeConfigFiles();
          RequestConfigurationParameters();
          ExploreNetwork();
 
@@ -564,8 +534,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
       m_homeId = _notification->GetHomeId();
 
-      m_homeId = _notification->GetHomeId();
-      OpenZWave::Manager::Get()->setHttpClient(m_homeId, &GlobalDownloader);
+      OpenZWave::Manager::Get()->setHttpClient(m_homeId, m_httpClient.get());
 
       break;
    }
@@ -768,7 +737,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       shared::CDataContainer alert;
 
       std::string alertContent;
-      std::map<std::string, std::string> alertData = std::map<std::string, std::string>();
+      shared::CDataContainer alertData;
 
       auto nodeInfo = getNode(_notification);
       switch(_notification->GetUserAlertType())
@@ -780,7 +749,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          if (nodeInfo)
          {
             const std::string sNodeName = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-            alertData["nodeName"] = sNodeName;
+            alertData.set("nodeName", sNodeName);
          }
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_MFSOutOfDate: //the manufacturer_specific.xml file is out of date
@@ -797,7 +766,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          if (nodeInfo)
          {
             const std::string sNodeName = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-            alertData["nodeName"] = sNodeName;
+            alertData.set("nodeName", sNodeName);
          }
          break;
       case OpenZWave::Notification::UserAlertNotification::Alert_UnsupportedController: //The Controller is not running a Firmware Library we support
@@ -1253,4 +1222,14 @@ bool COpenZWaveController::onDeviceExtraQuery(const std::string & targetDevice, 
       return node->onExtraQuery(extraQuery, data);
    }
    return false;
+}
+
+
+void COpenZWaveController::UpgradeConfigFiles()
+{
+   OpenZWave::Manager::Get()->downloadLatestMFSRevision(m_homeId);
+   for (auto& m_node : m_nodes)
+   {
+      OpenZWave::Manager::Get()->downloadLatestConfigFileRevision(m_node->getHomeId(), m_node->getNodeId());
+   }
 }

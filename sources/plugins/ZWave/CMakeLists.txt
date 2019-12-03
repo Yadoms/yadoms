@@ -26,6 +26,8 @@ set(ZWAVE_PLUGIN_SOURCES
    OpenZWaveCommandClass.cpp    
    IOpenZWaveNodeKeyword.h
    IOpenZWaveNodePlugin.h
+   OpenZWaveHttpClient.h
+   OpenZWaveHttpClient.cpp 
    OpenZWaveNode.h
    OpenZWaveNode.cpp 
    OpenZWaveNodeConfiguration.h
