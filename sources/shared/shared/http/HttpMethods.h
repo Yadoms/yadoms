@@ -3,6 +3,7 @@
 #include <Poco/Net/HTTPClientSession.h>
 
 #include "IHttpSession.h"
+#include <boost/property_tree/exceptions.hpp>
 
 
 namespace shared
@@ -62,12 +63,22 @@ namespace shared
                                             const ESessionType& sessionType = kStandard,
                                             const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
 
-   private:
+   protected:
       static boost::shared_ptr<IHttpSession> createSession(const ESessionType& sessionType,
                                                            const std::string& url,
                                                            const boost::posix_time::time_duration& timeout);
 
-      static CDataContainer jsonResponseReader(Poco::Net::HTTPResponse& response,
+      static CDataContainer processResponse(Poco::Net::HTTPResponse& response,
+                                            std::istream& receivedStream);
+
+      static CDataContainer processJsonResponse(Poco::Net::HTTPResponse& response,
+                                                std::istream& receivedStream);
+      static CDataContainer processXmlNode(const boost::property_tree::ptree& node);
+      static CDataContainer processXmlResponse(Poco::Net::HTTPResponse& response,
+                                               std::istream& receivedStream);
+      static CDataContainer processTextResponse(Poco::Net::HTTPResponse& response,
+                                                std::istream& receivedStream);
+      static CDataContainer processRawResponse(Poco::Net::HTTPResponse& response,
                                                std::istream& receivedStream);
    };
 } // namespace shared

@@ -126,12 +126,13 @@ endif()
 ###############################################
 
 SET ( POCO_LIBS
-	PocoFoundation
-	PocoNet
 	PocoUtil
-	PocoXML
-   PocoJSON
+   PocoNetSSL
    PocoZip
+	PocoXML
+	PocoNet
+   PocoJSON
+	PocoFoundation
 )
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
@@ -144,7 +145,10 @@ IF(NOT ${Poco_FOUND})
 ENDIF()
 
 # define libraries to link with
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS})
+if(MSVC) # Needed under Windows by Poco.
+	set(LIBS ${LIBS} "${OPENSSL_ROOT}/lib/libeay32.lib" "${OPENSSL_ROOT}/lib/ssleay32.lib")
+endif()
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} )
 
 ##################################################################################################
 ## Sources
@@ -194,6 +198,7 @@ source_group(shared shared/*.*)
 source_group(shared\\event shared/event/*.*)
 source_group(shared\\communication shared/communication/*.*)
 source_group(shared\\exception shared/exception/*.*)
+source_group(shared\\http shared/http/*.*)
 source_group(shared\\plugin shared/plugin/*.*)
 source_group(shared\\plugin\\configuration shared/plugin/configuration/*.*)
 source_group(shared\\plugin\\information shared/plugin/information/*.*)
