@@ -8,6 +8,8 @@
 #include "SecureSession.h"
 #include "StandardSession.h"
 #include <Poco/URI.h>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
 namespace shared
 {
@@ -51,7 +53,7 @@ namespace shared
          auto& receivedStream = session->receiveResponse(response);
 
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
-            return jsonResponseReader(response, receivedStream);
+            return processResponse(response, receivedStream);
 
          const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
          YADOMS_LOG(error) << message;
@@ -124,7 +126,7 @@ namespace shared
          auto& receivedStream = session->receiveResponse(response);
 
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK || response.getStatus() == Poco::Net::HTTPResponse::HTTP_CREATED)
-            return jsonResponseReader(response, receivedStream);
+            return processResponse(response, receivedStream);
 
          const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
          YADOMS_LOG(error) << message;
@@ -176,17 +178,81 @@ namespace shared
       return session;
    }
 
-   CDataContainer CHttpMethods::jsonResponseReader(Poco::Net::HTTPResponse& response,
-                                                   std::istream& receivedStream)
+   CDataContainer CHttpMethods::processResponse(Poco::Net::HTTPResponse& response,
+                                                std::istream& receivedStream)
    {
-      if (!boost::icontains(response.getContentType(), "application/json"))
+      if (boost::icontains(response.getContentType(), "application/json") ||
+         boost::icontains(response.getContentType(), "text/json"))
       {
-         YADOMS_LOG(error) << "HTTP response is not JSON";
-         throw std::runtime_error("HTTP response is not JSON");
+         return processJsonResponse(response,
+                                    receivedStream);
       }
+      if (boost::icontains(response.getContentType(), "application/xml") ||
+         boost::icontains(response.getContentType(), "text/xml"))
+      {
+         return processXmlResponse(response,
+                                   receivedStream);
+      }
+      if (boost::icontains(response.getContentType(), "text/"))
+      {
+         return processTextResponse(response,
+                                    receivedStream);
+      }
+      return processRawResponse(response,
+                                receivedStream);
+   }
 
+   CDataContainer CHttpMethods::processJsonResponse(Poco::Net::HTTPResponse& response,
+                                                    std::istream& receivedStream)
+   {
       // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength
       static const std::istreambuf_iterator<char> Eos;
       return CDataContainer(std::string(std::istreambuf_iterator<char>(receivedStream), Eos));
+   }
+
+   CDataContainer CHttpMethods::processXmlNode(const boost::property_tree::ptree& node)
+   {
+      CDataContainer data;
+      for (const auto& it : node)
+      {
+         if (it.second.size() != 0)
+         {
+            data.set(it.first,
+                     processXmlNode(it.second));
+         }
+         else
+         {
+            //TODO
+            //if (it->first == "id" || it->first == "var")
+            //   attributeName = it->second.data();
+
+            //if (it->first == "value")
+            //   attributeValue = it->second.data();
+
+            //data.set(attributeName, attributeValue);
+         }
+      }
+      
+      return CDataContainer();//TODO virer
+   }
+
+   CDataContainer CHttpMethods::processXmlResponse(Poco::Net::HTTPResponse& response,
+                                                   std::istream& receivedStream)
+   {
+      boost::property_tree::ptree tree;
+      read_xml(receivedStream, tree);
+      return processXmlNode(tree);
+   }
+
+   CDataContainer CHttpMethods::processTextResponse(Poco::Net::HTTPResponse& response, std::istream& receivedStream)
+   {
+      //TODO
+      return CDataContainer();//TODO virer
+   }
+
+   CDataContainer CHttpMethods::processRawResponse(Poco::Net::HTTPResponse& response, std::istream& receivedStream)
+   {
+      //TODO
+      return CDataContainer();//TODO virer
    }
 } // namespace shared
