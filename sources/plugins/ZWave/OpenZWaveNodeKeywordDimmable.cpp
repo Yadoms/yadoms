@@ -15,14 +15,14 @@ COpenZWaveNodeKeywordDimmable::~COpenZWaveNodeKeywordDimmable()
 
 bool COpenZWaveNodeKeywordDimmable::sendCommand(const std::string& commandData)
 {
-   int v = fixValue(shared::plugin::yPluginApi::IDeviceCommand::simpleNumericCommandHelperToInt(commandData));
+   const int v = fixValue(shared::plugin::yPluginApi::IDeviceCommand::simpleNumericCommandHelperToInt(commandData));
    m_keyword->set(v);
    return realSendCommand<Poco::Int32>(m_keyword->switchLevel());
 }
 
 boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpenZWaveNodeKeywordDimmable::getLastKeywordValue()
 {
-   int v = fixValue(extractLastValue<Poco::Int32>());
+   const int v = fixValue(extractLastValue<Poco::Int32>());
    m_keyword->set(v);
    return m_keyword;
 }

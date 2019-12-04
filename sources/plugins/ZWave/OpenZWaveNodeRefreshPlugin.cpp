@@ -1,11 +1,8 @@
 #include "stdafx.h"
 #include "OpenZWaveNodeRefreshPlugin.h"
-#include "OpenZWaveCommandClass.h"
 #include <Manager.h>
-#include <command_classes/UserCode.h>
 #include "OpenZWaveNodeKeywordFactory.h"
 #include <boost/regex.hpp>
-#include "OpenZWaveNode.h"
 
 COpenZWaveNodeRefreshPlugin::COpenZWaveNodeRefreshPlugin(const uint32 homeId, const uint8 nodeId)
    :m_homeId(homeId), m_nodeId(nodeId)

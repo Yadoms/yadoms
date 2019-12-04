@@ -13,9 +13,8 @@
 ## Define the main folder name
 #########################################
 
-#When changing openzwave, remeber to enable exceptions, by undefining OPENZWAVE_DISABLE_EXCEPTIONS (cpp/src/Defs.h, line 149 in v1.4.1)
 #Include "vers.cpp" to git manually
-set(OPENZWAVE_DIR_NAME openzwave-1.4.3319)
+set(OPENZWAVE_DIR_NAME openzwave-1.6.962)
 
 
 #########################################
@@ -23,27 +22,47 @@ set(OPENZWAVE_DIR_NAME openzwave-1.4.3319)
 #########################################
 set(OPENZWAVE_MAIN_SOURCES
 		${OPENZWAVE_DIR_NAME}/cpp/src/Bitfield.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/Bitfield.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/CompatOptionManager.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/CompatOptionManager.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Defs.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/DNSThread.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/DNSThread.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/DoxygenMain.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Driver.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Driver.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Group.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Group.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/Http.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/Http.cpp		
+		${OPENZWAVE_DIR_NAME}/cpp/src/Localization.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/Localization.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Manager.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Manager.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/ManufacturerSpecificDB.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/ManufacturerSpecificDB.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Msg.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Msg.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Node.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Node.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Notification.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Notification.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/NotificationCCTypes.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/NotificationCCTypes.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Options.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Options.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/OZWException.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Scene.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Scene.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/SensorMultiLevelCCTypes.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/SensorMultiLevelCCTypes.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/TimerThread.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/TimerThread.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Utils.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Utils.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/ValueIDIndexes.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/ValueIDIndexesDefines.h
+		${OPENZWAVE_DIR_NAME}/cpp/src/ValueIDIndexesDefines.def
 		${OPENZWAVE_DIR_NAME}/cpp/src/vers.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/ZWSecurity.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/ZWSecurity.cpp
@@ -61,6 +80,8 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Association.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/AssociationCommandConfiguration.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/AssociationCommandConfiguration.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/BarrierOperator.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/BarrierOperator.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Basic.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Basic.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/BasicWindowCovering.cpp
@@ -101,6 +122,8 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Language.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Lock.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Lock.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ManufacturerProprietary.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ManufacturerProprietary.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ManufacturerSpecific.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ManufacturerSpecific.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Meter.cpp
@@ -133,6 +156,12 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SensorBinary.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SensorMultilevel.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SensorMultilevel.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SimpleAV.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SimpleAV.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SimpleAVCommandItem.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SimpleAVCommandItem.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SoundSwitch.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SoundSwitch.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SwitchAll.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SwitchAll.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SwitchBinary.cpp
@@ -171,6 +200,8 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 set(OPENZWAVE_VALUECLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/Value.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/Value.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueBitSet.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueBitSet.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueBool.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueBool.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueButton.cpp
@@ -179,6 +210,7 @@ set(OPENZWAVE_VALUECLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueByte.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueDecimal.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueDecimal.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueID.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueID.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueInt.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/ValueInt.h
@@ -203,12 +235,16 @@ set(OPENZWAVE_VALUECLASSES_SOURCES
 set(OPENZWAVE_PLATFORM_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/Controller.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/Controller.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/platform/DNS.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/platform/DNS.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/Event.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/Event.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/FileOps.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/FileOps.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/HidController.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/HidController.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/platform/HttpClient.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/platform/HttpClient.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/Log.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/Log.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/platform/Mutex.cpp
@@ -233,6 +269,8 @@ if ( WIN32 )
 
 	set(OPENZWAVE_PLATFORM_SOURCES
 		${OPENZWAVE_PLATFORM_SOURCES}
+		${OPENZWAVE_DIR_NAME}/cpp/src/platform/windows/DNSImpl.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/platform/windows/DNSImpl.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/platform/windows/EventImpl.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/platform/windows/EventImpl.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/platform/windows/FileOpsImpl.cpp
@@ -255,6 +293,8 @@ else()
 
 	set(OPENZWAVE_PLATFORM_SOURCES
 		${OPENZWAVE_PLATFORM_SOURCES}
+		${OPENZWAVE_DIR_NAME}/cpp/src/platform/unix/DNSImpl.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/platform/unix/DNSImpl.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/platform/unix/EventImpl.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/platform/unix/EventImpl.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/platform/unix/FileOpsImpl.cpp
@@ -304,28 +344,6 @@ set(OPENZWAVE_TINYXML_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/tinyxml/tinyxmlparser.cpp
 )
 
-#########################################
-## HidAPI sources
-#########################################
-if ( WIN32 )
-	set(OPENZWAVE_HIDAPI_SOURCES
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/windows/hid.cpp
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/hidapi/hidapi.h
-	) 
-	
-ELSEIF(APPLE)
-	set(OPENZWAVE_HIDAPI_SOURCES
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/mac/hid.c
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/hidapi/hidapi.h
-	) 
-
-else()
-	set(OPENZWAVE_HIDAPI_SOURCES
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/linux/hid.c
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/hidapi/hidapi.h
-	) 
-	
-endif()
 
 
 #########################################
@@ -336,9 +354,8 @@ set(OPENZWAVE_SOURCES
 	${OPENZWAVE_COMMANDCLASSES_SOURCES}
 	${OPENZWAVE_VALUECLASSES_SOURCES}
 	${OPENZWAVE_PLATFORM_SOURCES}
-   ${OPENZWAVE_AES_SOURCES}
+    ${OPENZWAVE_AES_SOURCES}
 	${OPENZWAVE_TINYXML_SOURCES}
-	${OPENZWAVE_HIDAPI_SOURCES}
 )
 
 #########################################
@@ -381,13 +398,11 @@ set(OPENZWAVE_INCLUDE_SHARED_DIRECTORY
 )
 
 set(OPENZWAVE_INCLUDE_DIRECTORY 
-	${LIBUDEV_ROOT}
 	${OPENZWAVE_INCLUDE_SHARED_DIRECTORY}
 	${OPENZWAVE_INCLUDE_SHARED_DIRECTORY}/command_classes/
 	${OPENZWAVE_INCLUDE_SHARED_DIRECTORY}/value_classes/
 	${OPENZWAVE_INCLUDE_SHARED_DIRECTORY}/platform/
 	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/aes/
-	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/hidapi/hidapi/
 	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/tinyxml/
 )
 
@@ -397,17 +412,7 @@ if ( WIN32 )
 		${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/src/platform/windows/
 	)
 else()
-	#for raspberry, we need to use libudev folder
-	if(CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER)
-	set(	OPENZWAVE_INCLUDE_DIRECTORY 
-		${OPENZWAVE_INCLUDE_DIRECTORY}
-		${CMAKE_CURRENT_SOURCE_DIR}/libudev/
-	)
-	set(UDEV_PATH_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/libudev)
-
-	endif()
-
-	set(	OPENZWAVE_INCLUDE_DIRECTORY 
+	set(OPENZWAVE_INCLUDE_DIRECTORY 
 		${OPENZWAVE_INCLUDE_DIRECTORY}
 		${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/src/platform/unix/
 	)
@@ -436,7 +441,7 @@ add_definitions(-DOPENZWAVE_USE_EXCEPTIONS)
 set(OPENZWAVE_INCLUDE_DIR2 "${CMAKE_CURRENT_SOURCE_DIR}" )
 set(OPENZWAVE_INCLUDE_DIRECTORY 
 	${OPENZWAVE_INCLUDE_DIR2}
-	${OPENZWAVE_INCLUDE_SHARED_DIRECTORY}
+	${OPENZWAVE_INCLUDE_DIRECTORY}
 	PARENT_SCOPE
 )
 

@@ -2,10 +2,10 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IEquipment.h"
-#include "specificHistorizers/Analog.h"
 #include "../IWESConfiguration.h"
 #include "masterDeviceConfiguration.h"
-#include "WESSubEquipments/TIC.h"
+#include "TIC.h"
+#include "WESSubEquipments/Analog.h"
 #include "WESSubEquipments/Pulse.h"
 #include "WESSubEquipments/Clamp.h"
 
@@ -20,16 +20,6 @@ namespace equipments
    class CWESEquipment : public IEquipment
    {
    public:
-
-      //-----------------------------------------------------
-      ///\brief                          Constructor from restart (devices and keywords already registered)
-      ///\param[in]   api               Yadoms API
-      ///\param[in] device              The device name
-      ///\param[in] deviceConfiguration The device configuration
-      //-----------------------------------------------------
-      CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-                    const std::string& device,
-                    const shared::CDataContainer& deviceConfiguration);
 
       //-----------------------------------------------------
       ///\brief                          Constructor from manual creation
@@ -50,7 +40,8 @@ namespace equipments
                             const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                             bool forceHistorization = false) override;
       void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                               const shared::CDataContainer& newConfiguration) override;
+                               const shared::CDataContainer& newConfiguration,
+                               const int refreshEvent) override;
       void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                        const std::string& keyword,
                        boost::shared_ptr<const yApi::IDeviceCommand> command) override;
@@ -117,7 +108,7 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief  TIC counters
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<equipments::subdevices::CTIC> > m_TICList;
+      std::vector<boost::shared_ptr<equipments::CTIC> > m_TICList;
 
       //--------------------------------------------------------------
       /// \brief	Pulse counters
@@ -132,7 +123,7 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief	Analog Values
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > m_AnalogList;
+      std::vector<boost::shared_ptr<equipments::subdevices::CAnalog> > m_AnalogList;
 
       //--------------------------------------------------------------
       /// \brief	WES IP Mapping. Differentiation v1/v2

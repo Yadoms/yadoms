@@ -23,7 +23,7 @@ COpenZWaveNode::~COpenZWaveNode()
 
 void COpenZWaveNode::registerKeyword(OpenZWave::ValueID& value, bool includeSystemKeywords)
 {
-   std::string keyword = COpenZWaveHelpers::GenerateKeywordName(value);
+   const std::string keyword = COpenZWaveHelpers::GenerateKeywordName(value);
 
    if (value.GetGenre() != OpenZWave::ValueID::ValueGenre_Config)
    {
@@ -35,7 +35,7 @@ void COpenZWaveNode::registerKeyword(OpenZWave::ValueID& value, bool includeSyst
             if ((*i)->isKeywordManagedByPlugin(value, m_homeId, m_nodeId))
             {
                keywordHandledByPlugin = true;
-               auto newKeyword = (*i)->createKeyword(value, m_homeId, m_nodeId, includeSystemKeywords);
+               const auto newKeyword = (*i)->createKeyword(value, m_homeId, m_nodeId, includeSystemKeywords);
                if (newKeyword)
                   m_keywords[keyword] = newKeyword;
                break;
@@ -55,7 +55,7 @@ void COpenZWaveNode::registerKeyword(OpenZWave::ValueID& value, bool includeSyst
 
 boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNode::getKeyword(OpenZWave::ValueID& value, bool includeSystemKeywords)
 {
-   std::string keyword = COpenZWaveHelpers::GenerateKeywordName(value);
+   const std::string keyword = COpenZWaveHelpers::GenerateKeywordName(value);
    if (value.GetGenre() != OpenZWave::ValueID::ValueGenre_Config)
    {
       if (m_keywords.find(keyword) == m_keywords.end())
@@ -105,7 +105,7 @@ bool COpenZWaveNode::sendCommand(const std::string& keyword, const std::string& 
    throw shared::exception::CException("The keyword is not registered for this zwave node");
 }
 
-const boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpenZWaveNode::getLastKeywordValue(const std::string& keyword)
+boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpenZWaveNode::getLastKeywordValue(const std::string& keyword)
 {
    if (m_keywords.find(keyword) != m_keywords.end())
       return m_keywords[keyword]->getLastKeywordValue();
@@ -114,17 +114,17 @@ const boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable
 }
 
 
-const bool COpenZWaveNode::match(const uint32 homeId, const uint8 nodeId)
+bool COpenZWaveNode::match(const uint32 homeId, const uint8 nodeId) const
 {
    return m_homeId == homeId && m_nodeId == nodeId;
 }
 
-const uint32 COpenZWaveNode::getHomeId()
+uint32 COpenZWaveNode::getHomeId() const
 {
    return m_homeId;
 }
 
-const uint8 COpenZWaveNode::getNodeId()
+uint8 COpenZWaveNode::getNodeId() const
 {
    return m_nodeId;
 }

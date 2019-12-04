@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "OpenZWaveNodeKeywordEvent.h"
 #include "OpenZWaveHelpers.h"
-#include <Poco/RegularExpression.h>
-#include <shared/plugin/yPluginApi/IDeviceCommand.h>
-#include <Poco/Types.h>
 
 COpenZWaveNodeKeywordEvent::COpenZWaveNodeKeywordEvent(OpenZWave::ValueID& valueId, const std::string& vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
    : COpenZWaveNodeKeywordBase(valueId),

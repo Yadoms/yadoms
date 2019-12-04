@@ -3,7 +3,6 @@
 #include <shared/exception/NotSupported.hpp>
 #include "OpenZWaveNodeKeywordBase.h"
 #include "OpenZWaveNodeKeywordGeneric.h"
-#include "OpenZWaveNodeKeywordDimmable.h"
 
 shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(boost::shared_ptr<IOpenZWaveNodeKeyword> historizer)
 {

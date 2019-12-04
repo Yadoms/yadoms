@@ -3,54 +3,56 @@ include("../YadomsPluginsCommon.cmake")
 
 
 set(ZWAVE_PLUGIN_SOURCES
-	stdafx.h
-	stdafx.cpp
+   stdafx.h
+   stdafx.cpp
    ConfigurationSchemaFactory.h
    ConfigurationSchemaFactory.cpp
-	ZWave.h
-	ZWave.cpp 
-	ZWaveConfiguration.h
-	ZWaveConfiguration.cpp 	
-	IZWaveController.h
-	ZWaveControllerFactory.h
-	ZWaveControllerFactory.cpp 	
-	ZWaveInternalState.h
-	ZWaveInternalState.cpp 	
-	OpenZWaveController.h
-	OpenZWaveController.cpp 
-	OpenZWaveControllerCache.h
-	OpenZWaveControllerCache.cpp 
-	OpenZWaveEnumHandler.h
-	OpenZWaveEnumHandler.cpp 
-	OpenZWaveCommandClass.h
-	OpenZWaveCommandClass.cpp 	
-	IOpenZWaveNodeKeyword.h
+   ZWave.h
+   ZWave.cpp 
+   ZWaveConfiguration.h
+   ZWaveConfiguration.cpp    
+   IZWaveController.h
+   ZWaveControllerFactory.h
+   ZWaveControllerFactory.cpp    
+   ZWaveInternalState.h
+   ZWaveInternalState.cpp    
+   OpenZWaveController.h
+   OpenZWaveController.cpp 
+   OpenZWaveControllerCache.h
+   OpenZWaveControllerCache.cpp 
+   OpenZWaveEnumHandler.h
+   OpenZWaveEnumHandler.cpp 
+   OpenZWaveCommandClass.h
+   OpenZWaveCommandClass.cpp    
+   IOpenZWaveNodeKeyword.h
    IOpenZWaveNodePlugin.h
-	OpenZWaveNode.h
-	OpenZWaveNode.cpp 
-	OpenZWaveNodeConfiguration.h
-	OpenZWaveNodeConfiguration.cpp 
-	OpenZWaveHelpers.h
-	OpenZWaveHelpers.cpp 
-	OpenZWaveNodeKeywordBase.h
-	OpenZWaveNodeKeywordBase.cpp 
-	OpenZWaveNodeKeywordDimmable.h
-	OpenZWaveNodeKeywordDimmable.cpp 
-	OpenZWaveNodeKeywordColor.h
-	OpenZWaveNodeKeywordColor.cpp 	
+   OpenZWaveHttpClient.h
+   OpenZWaveHttpClient.cpp 
+   OpenZWaveNode.h
+   OpenZWaveNode.cpp 
+   OpenZWaveNodeConfiguration.h
+   OpenZWaveNodeConfiguration.cpp 
+   OpenZWaveHelpers.h
+   OpenZWaveHelpers.cpp 
+   OpenZWaveNodeKeywordBase.h
+   OpenZWaveNodeKeywordBase.cpp 
+   OpenZWaveNodeKeywordDimmable.h
+   OpenZWaveNodeKeywordDimmable.cpp 
+   OpenZWaveNodeKeywordColor.h
+   OpenZWaveNodeKeywordColor.cpp    
    OpenZWaveNodeKeywordEvent.h
-	OpenZWaveNodeKeywordEvent.cpp 
+   OpenZWaveNodeKeywordEvent.cpp 
    OpenZWaveNodeKeywordGeneric.h
    OpenZWaveNodeKeywordGenericByType.h
-	OpenZWaveNodeKeywordFactory.h
-	OpenZWaveNodeKeywordFactory.cpp 
+   OpenZWaveNodeKeywordFactory.h
+   OpenZWaveNodeKeywordFactory.cpp 
    OpenZWaveNodeRefreshPlugin.h
    OpenZWaveNodeRefreshPlugin.cpp
    OpenZWaveNodeUserCodePlugin.h
    OpenZWaveNodeUserCodePlugin.cpp
    OpenZWaveNodePluginFactory.h
    OpenZWaveNodePluginFactory.cpp
-	KeywordContainer.h
+   KeywordContainer.h
    OpenZWaveSingleHistorizableData.h
    historizers/Temperature.h
    historizers/Temperature.cpp
@@ -60,35 +62,35 @@ set(ZWAVE_PLUGIN_SOURCES
    historizers/Energy.cpp
    historizers/Counter.h
    historizers/Counter.cpp
-	historizers/Power.h
+   historizers/Power.h
    historizers/Power.cpp
-	historizers/Voltage.h
+   historizers/Voltage.h
    historizers/Voltage.cpp
-	historizers/Current.h
+   historizers/Current.h
    historizers/Current.cpp
-	historizers/PowerFactor.h
+   historizers/PowerFactor.h
    historizers/PowerFactor.cpp
-	historizers/Illumination.h
+   historizers/Illumination.h
    historizers/Illumination.cpp
-	historizers/Humidity.h
+   historizers/Humidity.h
    historizers/Humidity.cpp
-	historizers/Direction.h
+   historizers/Direction.h
    historizers/Direction.cpp
-	historizers/Speed.h
+   historizers/Speed.h
    historizers/Speed.cpp
-	historizers/Pressure.h
+   historizers/Pressure.h
    historizers/Pressure.cpp
-	historizers/RainRate.h
+   historizers/RainRate.h
    historizers/RainRate.cpp
-	historizers/Weight.h
+   historizers/Weight.h
    historizers/Weight.cpp
-	historizers/Distance.h
+   historizers/Distance.h
    historizers/Distance.cpp
-	historizers/UserCode.h
-   historizers/UserCode.cpp	
+   historizers/UserCode.h
+   historizers/UserCode.cpp   
    historizers/Uv.h
    historizers/Uv.cpp
-	historizers/Switch.h
+   historizers/Switch.h
    historizers/Switch.cpp
    typeinfo/BoolTypeInfo.h
    typeinfo/BoolTypeInfo.cpp
@@ -102,7 +104,7 @@ set(ZWAVE_PLUGIN_SOURCES
    typeinfo/StringTypeInfo.cpp
    typeinfo/TypeInfoFactory.h
    typeinfo/TypeInfoFactory.cpp
-	${OPENZWAVE_MAIN_SOURCES}
+   ${OPENZWAVE_MAIN_SOURCES}
 )
 
 source_group(sources ./*.*)
@@ -111,14 +113,14 @@ source_group(sources\\typeinfo typeinfo/*.*)
 
 ADD_SUBDIRECTORY(OpenZWave)
 IF(MSVC OR XCODE)
-	SET_PROPERTY(TARGET openzwave PROPERTY FOLDER "plugins/external-libs")
+   SET_PROPERTY(TARGET openzwave PROPERTY FOLDER "plugins/external-libs")
 ENDIF()
 
 #########################################
 ## Remove specific warnings (due to OpenZWave)
 #########################################
 if(CMAKE_COMPILER_IS_GNUCXX)
-	add_definitions ("-Wno-unknown-pragmas")
+   add_definitions ("-Wno-unknown-pragmas")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 
@@ -127,7 +129,7 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(ZWAVE_PLUGIN_ADDITIONAL_INC_DIR
-	${OPENZWAVE_INCLUDE_DIRECTORY}
+   ${OPENZWAVE_INCLUDE_DIRECTORY}
 )
 
 #########################################
@@ -135,30 +137,21 @@ set(ZWAVE_PLUGIN_ADDITIONAL_INC_DIR
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(ZWAVE_PLUGIN_ADDITIONAL_LIB
-	openzwave
+   openzwave
 )
 
 #add platform specific link libs
 if ( WIN32 )
-	set(ZWAVE_PLUGIN_ADDITIONAL_LIB
-		${ZWAVE_PLUGIN_ADDITIONAL_LIB}
-		Setupapi.lib
-	)
-ELSEIF(APPLE)
-		set(ZWAVE_PLUGIN_ADDITIONAL_LIB
-			${ZWAVE_PLUGIN_ADDITIONAL_LIB})
-else()
-	include(FindUDev.cmake)
-	if(UDEV_FOUND)
-		set(ZWAVE_PLUGIN_ADDITIONAL_LIB
-			${ZWAVE_PLUGIN_ADDITIONAL_LIB}
-			${UDEV_LIBRARIES}
-		)
-	else()
-		message(error "Fail to find udev")
-	endif()
-	
-endif()
+   set(ZWAVE_PLUGIN_ADDITIONAL_LIB
+      ${ZWAVE_PLUGIN_ADDITIONAL_LIB}
+      Setupapi.lib dnsapi.lib
+   )
+else( WIN32 )
+   set(ZWAVE_PLUGIN_ADDITIONAL_LIB 
+      ${ZWAVE_PLUGIN_ADDITIONAL_LIB}
+      resolv
+   )
+endif( WIN32)
 
 
 #########################################

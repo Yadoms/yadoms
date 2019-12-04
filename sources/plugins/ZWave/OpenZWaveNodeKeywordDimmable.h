@@ -30,7 +30,7 @@ private:
    /// \param [in]   value The initial value
    /// \return       The value in full range
    //--------------------------------------------------------------
-   int fixValue(int value);
+   static int fixValue(int value);
 
    boost::shared_ptr<shared::plugin::yPluginApi::historization::CDimmable> m_keyword;
 };

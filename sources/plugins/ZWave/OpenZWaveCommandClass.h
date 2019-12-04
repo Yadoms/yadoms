@@ -71,13 +71,11 @@ Ensure the OpenZWave command classes cpp\src\command_classes are all defined in 
       ((TimeParameters)(0x8b))
       ((GeographicLocation)(0x8c))
       ((Composite)(0x8d))
-      ((MultiInstanceAssociation)(0x8e))
       ((MultiCmd)(0x8f))
       ((EnergyProduction)(0x90))
       ((ManufacturerProprietary)(0x91))
       ((ScreenMd)(0x92))
       ((ScreenAttributes)(0x93))
-      ((SimpleAvControl)(0x94))
       ((AvContentDirectoryMd)(0x95))
       ((AvRendererStatus)(0x96))
       ((AvContentSearchMd)(0x97))
@@ -89,5 +87,9 @@ Ensure the OpenZWave command classes cpp\src\command_classes are all defined in 
       ((SilenceAlarm)(0x9d))
       ((SensorConfiguration)(0x9e))
       ((NonInteroperable)(0xf0))
+      ((BarrierOperator)(0x66))    //here
+      ((MultiChannelAssociation)(0x8E)) 
+      ((SimpleAV)(0x94))
+      ((SoundSwitch)(0x79))
    );
    

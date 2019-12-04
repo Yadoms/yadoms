@@ -1,6 +1,4 @@
 #pragma once
-#include <shared/exception/Exception.hpp>
-
 
 namespace shared
 {

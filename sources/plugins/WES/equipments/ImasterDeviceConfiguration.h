@@ -37,4 +37,16 @@ public:
    /// \return     the user
    //--------------------------------------------------------------
    virtual std::string getUser() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief      return true, if analog section is activated
+   /// \return     true if analog inputs are activated
+   //--------------------------------------------------------------
+   virtual bool isAnalogInputsActivated() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief      return the type of the keyword used for the input
+   /// \return     the type return
+   //--------------------------------------------------------------
+   virtual std::string analogInputsType(int index) const = 0;
 };

@@ -56,7 +56,7 @@ namespace shared
             return processResponse(response, receivedStream);
 
          const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
-         YADOMS_LOG(error) << message;
+         YADOMS_LOG(warning) << message;
          throw exception::CException(message);
       }
       catch (const Poco::Net::SSLException& e)
@@ -68,15 +68,15 @@ namespace shared
       {
          const auto message = (boost::format("Fail to send GET http request \"%1%\" : %2%") % url % e.
             message()).str();
-         YADOMS_LOG(error) << message;
-         YADOMS_LOG(error) << "Request was : " << url;
+         YADOMS_LOG(warning) << message;
+         YADOMS_LOG(warning) << "Request was : " << url;
          throw CHttpException(message);
       }
       catch (std::exception& e)
       {
          const auto message = (boost::format("Fail to send GET http request or interpret answer \"%1%\" : %2%") % url %
             e.what()).str();
-         YADOMS_LOG(error) << message;
+         YADOMS_LOG(warning) << message;
          throw CHttpException(message);
       }
    }
@@ -129,7 +129,7 @@ namespace shared
             return processResponse(response, receivedStream);
 
          const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
-         YADOMS_LOG(error) << message;
+         YADOMS_LOG(warning) << message;
          throw exception::CException(message);
       }
       catch (const Poco::Net::SSLException& e)
@@ -141,15 +141,15 @@ namespace shared
       {
          const auto message = (boost::format("Fail to send Post http request \"%1%\" : %2%") % url % e.
             message()).str();
-         YADOMS_LOG(error) << message;
-         YADOMS_LOG(error) << "Request was : " << url;
+         YADOMS_LOG(warning) << message;
+         YADOMS_LOG(warning) << "Request was : " << url;
          throw CHttpException(message);
       }
       catch (std::exception& e)
       {
          const auto message = (boost::format("Fail to send Post http request or interpret answer \"%1%\" : %2%") % url %
             e.what()).str();
-         YADOMS_LOG(error) << message;
+         YADOMS_LOG(warning) << message;
          throw CHttpException(message);
       }
    }

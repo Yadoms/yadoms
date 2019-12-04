@@ -16,35 +16,28 @@ namespace equipments
          m_keywordName(keywordName),
          m_unitName(unitName)
       {
-         initializePulse(api, keywordsToDeclare, keywordName);
-      }
-
-      void CPulse::initializePulse(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                                   const std::string& keywordName)
-      {
-         switch (m_unitName)
-         {
-         case undefined:
-            YADOMS_LOG(information) << "this input (" << m_keywordName << ") is not used. It is desactivated";
-            break;
-         case Wh:
-         case KWh:
-            m_pulseEnergy = boost::make_shared<yApi::historization::CEnergy>(keywordName,
-                                                                             yApi::EKeywordAccessMode::kGet);
-            keywordsToDeclare.push_back(m_pulseEnergy);
-            break;
-         case litre:
-         case m3:
-            m_pulseVolume = boost::make_shared<yApi::historization::CVolume>(keywordName,
-                                                                             yApi::EKeywordAccessMode::kGet,
-                                                                             yApi::EMeasureType::kCumulative);
-            keywordsToDeclare.push_back(m_pulseVolume);
-            break;
-         default:
-            YADOMS_LOG(information) << "No keywords created for pulse equipments";
-            break;
-         }
+		  switch (m_unitName)
+		  {
+		  case undefined:
+			  YADOMS_LOG(information) << "this input (" << m_keywordName << ") is not used. It is desactivated";
+			  break;
+		  case Wh:
+		  case KWh:
+			  m_pulseEnergy = boost::make_shared<yApi::historization::CEnergy>(keywordName,
+				  yApi::EKeywordAccessMode::kGet);
+			  keywordsToDeclare.push_back(m_pulseEnergy);
+			  break;
+		  case litre:
+		  case m3:
+			  m_pulseVolume = boost::make_shared<yApi::historization::CVolume>(keywordName,
+				  yApi::EKeywordAccessMode::kGet,
+				  yApi::EMeasureType::kCumulative);
+			  keywordsToDeclare.push_back(m_pulseVolume);
+			  break;
+		  default:
+			  YADOMS_LOG(information) << "No keywords created for pulse equipments";
+			  break;
+		  }
       }
 
       void CPulse::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,

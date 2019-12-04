@@ -10,8 +10,9 @@ namespace specificHistorizers
    DECLARE_ENUM_HEADER(EWESTeleInfoStatus,
       ((Ok))
       ((Error))
-      ((TeleInfoLost))
       ((Desactivated))
+      ((FrameError)(7))
+      ((SignalLoss)(8))
       );
 
    //-----------------------------------------------------
