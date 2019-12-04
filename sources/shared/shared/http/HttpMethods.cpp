@@ -213,12 +213,12 @@ namespace shared
    CDataContainer CHttpMethods::processXmlNode(const boost::property_tree::ptree& node)
    {
       CDataContainer data;
-      for (const auto& it : node)
+      for (const auto& child : node)
       {
-         if (it.second.size() != 0)
+         if (child.second.size() != 0)
          {
-            data.set(it.first,
-                     processXmlNode(it.second));
+            data.set(child.first,
+                     processXmlNode(child.second));
          }
          else
          {
