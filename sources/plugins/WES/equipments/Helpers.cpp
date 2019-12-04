@@ -17,6 +17,6 @@ namespace equipments
 				throw CtooLowRevisionException("WES revision is < 0.83H");
 		}
 		else
-			throw std::exception("Could not check WES revision");
+			throw std::runtime_error("Could not check WES revision");
 	}
 }// namespace equipments

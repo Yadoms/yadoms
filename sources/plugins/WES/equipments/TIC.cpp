@@ -163,7 +163,7 @@ namespace equipments
 		  try {
 			  if ((timePeriod == 7) || (timePeriod == 8)) {
 				  m_teleInfoStatus->set((specificHistorizers::EWESTeleInfoStatus)(timePeriod));
-				  throw std::exception("Period Error");
+				  throw std::runtime_error("Period Error");
 			  }
 
 			  auto size = m_counterNames.find(m_contractName)->second.size();
@@ -173,16 +173,10 @@ namespace equipments
 
 			  setPeriodTime(contractName, timePeriod);
 
-			  switch (contractName)
-			  {
-			  case Tempo:
+			  if (contractName == Tempo){
 				  if (m_tomorrowColor->get() != newColor) {
 					  m_tomorrowColor->set((specificHistorizers::EColor)newColor);
 				  }
-				  break;
-			  case NotAvailable:
-				  YADOMS_LOG(trace) << "This equipment (" << m_deviceName << ") is desactivated.";
-				  break;
 			  }
 			  m_apparentPower->set(apparentPower);
 			  api->historizeData(m_deviceName, m_keywords);

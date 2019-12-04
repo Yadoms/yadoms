@@ -19,7 +19,7 @@
 * Weather plugin was added (manages live and forecast weather conditions, based on openWeather web service)
 * weather-forecast widget was removed (obsolete)
 * weather-multi widget was added (displays up to 3 weather conditions, live or forecast, with general conditions, temperature min/max, wind, rain, snow)
-* Lametric Time plugin was added to drive [Lametric Time displays](https://lametric.com/en-US/time/overview)
+* LametricTime plugin was added to drive [Lametric Time displays](https://lametric.com/en-US/time/overview)
 * OledEspEasy plugin was added to drive OLed deported screen, based on ESP8266 with ESPEasy Firmware (wemos d1, lolin, arduino...)
 * And a lot of fixes and new functionnalities on existing plugins and widgets (refer to corresponding changelog.md files)
 
