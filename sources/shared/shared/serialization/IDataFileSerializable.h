@@ -1,13 +1,12 @@
 #pragma once
 
-#include <shared/Export.h>
 
 namespace shared { namespace serialization {
 
    //--------------------------------------------------------------
    /// \brief	    Interface for a file serializable object
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT IDataFileSerializable
+   class IDataFileSerializable
    {
    public:
       //--------------------------------------------------------------

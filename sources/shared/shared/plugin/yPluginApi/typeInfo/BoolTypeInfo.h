@@ -1,6 +1,5 @@
 #pragma once
 #include "ITypeInfo.h"
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -13,7 +12,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Interface for keyword type information
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CBoolTypeInfo : public ITypeInfo
+            class CBoolTypeInfo : public ITypeInfo
             {
             public:
                //-----------------------------------------------------

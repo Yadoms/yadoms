@@ -6,7 +6,7 @@
 import glob
 import re
 import os.path
-from sets import Set
+
 
 
 
@@ -42,7 +42,7 @@ class HardCodedProfiles():
 
    def __init__(self, profilePath):
       self.__hardCodedProfiles__ = []
-      self.__profileHardCodedFiles__ = Set()
+      self.__profileHardCodedFiles__ = set()
       pattern = re.compile(r'^class CProfile_(.*) : public IType')
       for profilePath in glob.glob(os.path.join(profilePath, "hardCoded", '*.h')):
          with open(profilePath, 'r') as hardCodedFile:

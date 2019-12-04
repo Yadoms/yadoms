@@ -8,7 +8,7 @@ namespace shared
       //-----------------------------
       ///\brief   Windows application stop handler
       //-----------------------------  
-      class YADOMS_SHARED_EXPORT CApplicationStopHandler : IApplicationStopHandler
+      class CApplicationStopHandler : IApplicationStopHandler
       {
       public:
          explicit CApplicationStopHandler(bool isRunningAsService);

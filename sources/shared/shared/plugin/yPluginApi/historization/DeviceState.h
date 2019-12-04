@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "SingleHistorizableData.hpp"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Device state
             //-----------------------------------------------------
-            DECLARE_ENUM_HEADER_SHARED(EDeviceState, YADOMS_SHARED_EXPORT,
+            DECLARE_ENUM_HEADER(EDeviceState,
                ((Unknown))
                ((Active))
                ((Busy))
@@ -27,7 +26,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief The device state historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CDeviceState : public CSingleHistorizableData<EDeviceState>
+            class CDeviceState : public CSingleHistorizableData<EDeviceState>
             {
             public:
                //-----------------------------------------------------

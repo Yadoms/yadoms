@@ -41,9 +41,11 @@ namespace equipments
       /// \brief      updateConfiguration    build the message to send to the WES
       ///\param[in] api                       Yadoms API
       ///\param[in] newConfiguration          New device configuration
+      ///\param[in] refreshEvent              Event to fire a device refresh after updating configuration
       //--------------------------------------------------------------
       virtual void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                       const shared::CDataContainer& newConfiguration) = 0;
+                                       const shared::CDataContainer& newConfiguration,
+                                       const int refreshEvent) = 0;
 
       //--------------------------------------------------------------
       /// \brief      sendCommand             send a message to the WES

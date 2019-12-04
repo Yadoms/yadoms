@@ -9,15 +9,8 @@ namespace location
    class CIpApiAutoLocation : public IAutoLocation
    {
    public:
-      //-----------------------------------------------------
-      ///\brief               Constructor
-      //-----------------------------------------------------
-      CIpApiAutoLocation();
-
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~CIpApiAutoLocation();
+      CIpApiAutoLocation() = default;
+      virtual ~CIpApiAutoLocation() = default;
 
    protected:
       // IAutoLocation Implementation
@@ -27,5 +20,3 @@ namespace location
       static void doAutoLocate(boost::function<void(const shared::CDataContainer&)> onFoundFct);
    };
 } // namespace location
-
-

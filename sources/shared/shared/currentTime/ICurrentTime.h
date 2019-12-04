@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	   The current time provider interface
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT ICurrentTime
+      class ICurrentTime
       {
       public:
          virtual ~ICurrentTime()

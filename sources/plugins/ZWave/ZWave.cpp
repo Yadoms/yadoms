@@ -7,7 +7,6 @@
 #include "ZWaveInternalState.h"
 #include <Poco/Thread.h>
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
-#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 #include "OpenZWaveHelpers.h"
 #include <shared/Log.h>
@@ -32,7 +31,10 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    try
    {
       api->setPluginState(yApi::historization::EPluginState::kCustom, "initialization");
-      
+
+      //check for version upgrade (allow to cleanup data folder when a new version run)
+      checkVersionUpgrade(api);
+
       // Load configuration values (provided by database)
       m_configuration.initializeWith(api->getConfiguration());
       m_configuration.setPath(api->getInformation()->getPath().string());
@@ -44,10 +46,10 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          //create the controller
          m_controller = CZWaveControllerFactory::Create();
          shared::event::CEventHandler init;
-         m_controller->configure(&m_configuration, &init);
+         m_controller->configure(&m_configuration, &init, api->getYadomsInformation()->developperMode());
 
          //start controller (and analyse network)
-         IZWaveController::E_StartResult initResult = m_controller->start([&] {
+         const IZWaveController::E_StartResult initResult = m_controller->start([&] {
             int evt;
             do
             {
@@ -61,7 +63,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                }
             } while (evt != shared::event::kNoEvent && !stopRequested);
          });
-         m_controller->configure(&m_configuration, &api->getEventHandler());
+         m_controller->configure(&m_configuration, &api->getEventHandler(), api->getYadomsInformation()->developperMode());
          switch (initResult)
          {
          case IZWaveController::E_StartResult::kSuccess:
@@ -95,7 +97,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          //if an error occurs, then cleanup events, and look for stopRequest
          if (!stopRequested)
          {
-            int evt = 0;
+            int evt;
             
             do
             {
@@ -134,7 +136,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    stopController();
 }
 
-void CZWave::mainLoop(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::mainLoop(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    bool stopRequested = false;
    while (!stopRequested)
@@ -191,6 +193,10 @@ void CZWave::mainLoop(boost::shared_ptr<yApi::IYPluginApi> api)
          onInternalStateChange(api);
          break;
 
+      case kUserAlert:
+         onUserAlert(api);
+         break;
+
       default:
          YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
          break;
@@ -216,10 +222,94 @@ void CZWave::stopController() const
    }
 }
 
-void CZWave::onEventDeviceCommand(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::checkVersionUpgrade(const boost::shared_ptr<yApi::IYPluginApi>& api) const
+{
+   /**
+    * In case of version upgrade, OpenZWave data folder must be erased.
+    *
+    * To determine it, a file named "currentVersion.json" in data folder contains the plugin version of the last time it started.
+    *
+    * If version is obsolete (or file do not exist or do not contains a version entry) then erase data folder
+    *
+    * In all cases, just write the current verion in file; so at next start nothing will be done.
+    * 
+    */
+   YADOMS_LOG(information) << "The ZWave plugin starting... checking version upgrade...";
+
+   shared::versioning::CVersion currentRunningVersion = api->getInformation()->getVersion();
+
+   const auto dataVersionFile = api->getDataPath() / "currentVersion.json";
+   shared::CDataContainer dvc;
+
+   if(boost::filesystem::exists(dataVersionFile))
+   {
+      try
+      {
+         dvc.deserializeFromFile(dataVersionFile.string());
+         if (dvc.containsValue("version"))
+         {
+            const auto versionAsString = dvc.get<std::string>("version");
+            shared::versioning::CVersion localVersion(versionAsString);
+            if (currentRunningVersion > localVersion)
+            {
+               try
+               {
+                  YADOMS_LOG(information) << "The ZWave plugin started after an update. Cleaning " << api->getDataPath().string() << " folder...";
+                  //an upgrade havve benn realized
+                  //cleanup data folder
+                  boost::filesystem::remove_all(api->getDataPath());
+                  boost::filesystem::create_directory(api->getDataPath());
+
+                  YADOMS_LOG(debug) << "The ZWave plugin started after an update. Cleaning " << api->getDataPath().string() << " folder... DONE";
+               }
+               catch (std::exception & ex)
+               {
+                  YADOMS_LOG(error) << "The ZWave plugin started after an update. Cleaning " << api->getDataPath().string() << " folder... FAIL";
+                  YADOMS_LOG(error) << "The ZWave plugin fail to manage data folder after an update : " << ex.what();
+               }
+            }
+            else
+            {
+               YADOMS_LOG(debug) << "The ZWave plugin starting... checking version upgrade... data folder already at last running version";
+            }
+         }
+         else
+         {
+            YADOMS_LOG(debug) << "The ZWave plugin starting... checking version upgrade... cant find 'VERSION' in " << dataVersionFile << " : ";
+            dvc.printToLog(YADOMS_LOG(debug));
+
+         }
+
+      }
+      catch (std::exception & ex)
+      {
+         YADOMS_LOG(debug) << "Fail to parse " << dataVersionFile.string() << " : " << ex.what();
+      }
+   }
+   else
+   {
+      YADOMS_LOG(debug) << "The ZWave plugin starting... checking version upgrade... cant find " << dataVersionFile << ". Consider new install, nothing to do";
+   }
+
+   try
+   {
+      YADOMS_LOG(debug) << "The ZWave plugin starting... checking version upgrade... writing current version " << currentRunningVersion;
+      dvc.set("version", currentRunningVersion.toString());
+      dvc.serializeToFile(dataVersionFile.string());
+
+      YADOMS_LOG(debug) << "The ZWave plugin starting... checking version upgrade... DONE";
+   }
+   catch (std::exception & ex)
+   {
+      YADOMS_LOG(error) << "The ZWave plugin starting... checking version upgrade... writing current version FAILED " << ex.what();
+   }
+}
+
+
+void CZWave::onEventDeviceCommand(const boost::shared_ptr<yApi::IYPluginApi>& api) const
 {
    // Command was received from Yadoms
-   auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+   const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
 
    YADOMS_LOG(information) << "Command received from Yadoms :" << yApi::IDeviceCommand::toString(command);
    try
@@ -240,31 +330,31 @@ void CZWave::onEventDeviceCommand(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CZWave::onDeviceConfigurationSchemaRequest(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::onDeviceConfigurationSchemaRequest(const boost::shared_ptr<yApi::IYPluginApi>& api) const
 {
    // Yadoms ask for device configuration schema
    // Schema can come from package.json, or built by code. In this example,
    // we just take the schema from package.json, in case of configuration is supported by device.
    auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> >();
-   shared::CDataContainer schema = m_controller->getNodeConfigurationSchema(deviceConfigurationSchemaRequest->device());
+   const shared::CDataContainer schema = m_controller->getNodeConfigurationSchema(deviceConfigurationSchemaRequest->device());
    deviceConfigurationSchemaRequest->sendSuccess(schema);
 }
 
-void CZWave::setDeviceConfiguration(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::setDeviceConfiguration(const boost::shared_ptr<yApi::IYPluginApi>& api) const
 {
    // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
-   auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration> >();
+   const auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration> >();
    m_controller->setNodeConfiguration(deviceConfiguration->name(), deviceConfiguration->configuration());
 }
 
-void CZWave::onExtraQuery(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::onExtraQuery(const boost::shared_ptr<yApi::IYPluginApi>& api) const
 {
    // Command was received from Yadoms
    auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
 
    if (extraQuery)
    {
-      std::string targetDevice = extraQuery->getData()->device();
+      const std::string targetDevice = extraQuery->getData()->device();
       if (targetDevice.empty())
       {
          YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
@@ -307,11 +397,11 @@ void CZWave::onExtraQuery(boost::shared_ptr<yApi::IYPluginApi> api)
    extraQuery->sendSuccess(shared::CDataContainer());
 }
 
-void CZWave::onEventUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::onEventUpdateConfiguration(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    // Configuration was updated
    api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-   auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
+   const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
    YADOMS_LOG(information) << "Update configuration...";
    if (!!newConfiguration.empty())
    {
@@ -320,7 +410,7 @@ void CZWave::onEventUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api
 
       m_configuration.initializeWith(newConfiguration);
 
-      m_controller->configure(&m_configuration, &api->getEventHandler());
+      m_controller->configure(&m_configuration, &api->getEventHandler(), api->getYadomsInformation()->developperMode());
 
       if (m_controller->start([&]{}))
       {
@@ -338,7 +428,7 @@ void CZWave::onEventUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api
    }
 }
 
-void CZWave::onDeclareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::onDeclareDevice(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    shared::CDataContainer deviceData;
    try
@@ -389,7 +479,7 @@ void CZWave::onDeclareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CZWave::onUpdateDeviceInfo(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::onUpdateDeviceInfo(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    try
    {
@@ -436,7 +526,7 @@ void CZWave::onUpdateDeviceInfo(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CZWave::onUpdateDeviceState(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::onUpdateDeviceState(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    try
    {
@@ -461,13 +551,13 @@ void CZWave::onUpdateDeviceState(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CZWave::onUpdateKeyword(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::onUpdateKeyword(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    try
    {
-      auto keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer> >();
-      auto deviceId = keywordData->getDeviceId();
-      auto keywordId = keywordData->getKeyword();
+      const auto keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer> >();
+      const auto deviceId = keywordData->getDeviceId();
+      const auto keywordId = keywordData->getKeyword();
 
       if (!api->keywordExists(deviceId, keywordId))
          api->declareKeyword(deviceId, keywordId);
@@ -488,12 +578,12 @@ void CZWave::onUpdateKeyword(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CZWave::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::onUpdateConfiguration(const boost::shared_ptr<yApi::IYPluginApi>& api) const
 {
    //This case is used, when the device itself send a new configuration value (maybe after reset,...)
    try
    {
-      auto keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer> >();
+      const auto keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer> >();
       YADOMS_LOG(information) << "Update configuration..." << keywordData->getKeyword()->getKeyword() << " : " << keywordData->getKeyword()->formatValue();
 
       //get the acual device configuration
@@ -520,9 +610,9 @@ void CZWave::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CZWave::onInternalStateChange(boost::shared_ptr<yApi::IYPluginApi> api)
+void CZWave::onInternalStateChange(const boost::shared_ptr<yApi::IYPluginApi>& api) const
 {
-   auto s = EZWaveInteralState(api->getEventHandler().getEventData<std::string>());
+   const auto s = EZWaveInteralState(api->getEventHandler().getEventData<std::string>());
 
    switch (s)
    {
@@ -543,4 +633,18 @@ void CZWave::onInternalStateChange(boost::shared_ptr<yApi::IYPluginApi> api)
       api->setPluginState(yApi::historization::EPluginState::kCustom, s.toString());
       break;
    }
+}
+
+
+void CZWave::onUserAlert(const boost::shared_ptr<yApi::IYPluginApi>& api) const
+{
+   const auto userAlert = api->getEventHandler().getEventData<shared::CDataContainer>();
+   const std::string alertType = userAlert.get("type");
+   std::map<std::string, std::string> alertData = std::map<std::string, std::string>();
+   if(userAlert.containsValue("data"))
+   {
+      alertData = userAlert.getAsMap<std::string>("data");
+      
+   }
+   api->setPluginState(yApi::historization::EPluginState::kCustom, alertType, alertData);
 }

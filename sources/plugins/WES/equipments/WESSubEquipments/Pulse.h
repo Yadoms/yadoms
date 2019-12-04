@@ -75,16 +75,6 @@ namespace equipments
       private:
 
          //-----------------------------------------------------
-         ///\brief                                      Constructor
-         ///\param[in] api                             Yadoms API
-         ///\param[in] keywordsToDeclare               list of keywords to declare
-         ///\param[in] keywordName                     The keyword name
-         //-----------------------------------------------------
-         void initializePulse(boost::shared_ptr<yApi::IYPluginApi> api, 
-                              std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                              const std::string& keywordName);
-
-         //-----------------------------------------------------
          ///\brief                     The device name
          //-----------------------------------------------------
          std::string m_deviceName;

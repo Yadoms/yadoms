@@ -1,13 +1,12 @@
 #pragma once
 
-#include <shared/Export.h>
 
 namespace shared { namespace encryption { 
 
    //--------------------------------------------------------------
    /// \brief	Base64 encryption/decryption
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CBase64
+   class CBase64
    {
    public:
       static std::string encode(unsigned char const* , unsigned int len);

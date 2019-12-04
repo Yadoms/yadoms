@@ -86,14 +86,6 @@ SET(COTIRE_USE_UNITY ON)
 #set(SONARQUBE_SCANNER_ROOT "path/to/sonar-scanner")
 
 
-
-##### Plugin ZWave ######
-#
-# Plugin ZWave needs LibUDev
-#set(LIBUDEV_ROOT "/path/to/libudev")
-
-
-
 ##### Plugin SmsDialer #####
 #
 # Plugin SmsDialer needs Gammu

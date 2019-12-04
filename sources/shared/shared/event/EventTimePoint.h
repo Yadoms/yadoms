@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "ITimeEvent.h"
 
 namespace shared
@@ -10,7 +9,7 @@ namespace shared
       /// \brief	    A dated event for events system
       /// \note       CEventTimePoint is not thread-safe, use it only on the thread calling waitForEvents of associated event handler
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CEventTimePoint : public ITimeEvent
+      class CEventTimePoint : public ITimeEvent
       {
       public:
          //--------------------------------------------------------------

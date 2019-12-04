@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "SingleHistorizableData.hpp"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Plugin state
             //-----------------------------------------------------
-            DECLARE_ENUM_HEADER_SHARED(EPluginState, YADOMS_SHARED_EXPORT,
+            DECLARE_ENUM_HEADER(EPluginState,
                ((Unknown))
                ((Error))
                ((Stopped))
@@ -27,7 +26,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief The plugin state historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CPluginState : public CSingleHistorizableData<EPluginState>
+            class CPluginState : public CSingleHistorizableData<EPluginState>
             {
             public:
                //-----------------------------------------------------

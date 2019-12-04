@@ -65,8 +65,8 @@ class CppMethod():
             f.write(" = 0");
          f.write(";\n")
       except Exception as e:
-         print "error : generating header of " + parentClassName + "::" + self.__cppMethodName
-         print traceback.format_exc()
+         print("error : generating header of " + parentClassName + "::" + self.__cppMethodName)
+         print(traceback.format_exc())
 
    def generateSource(self, f, parentClassName):
       try:
@@ -79,8 +79,8 @@ class CppMethod():
          f.write(self.__content + "\n");
          f.write("}\n");
       except Exception as e:
-         print "error : generating source of " + parentClassName + "::" + self.__cppMethodName
-         print traceback.format_exc()
+         print("error : generating source of " + parentClassName + "::" + self.__cppMethodName)
+         print(traceback.format_exc())
 
 
 #-------------------------------------------------------------------------------
@@ -112,8 +112,8 @@ class CppMember():
             f.write("const ");
          f.write(self.__cppType + " " + self.__cppMemberName + ";\n")
       except Exception as e:
-         print "error : generating header of " + parentClassName + "::" + self.__cppMemberName
-         print traceback.format_exc()
+         print("error : generating header of " + parentClassName + "::" + self.__cppMemberName)
+         print(traceback.format_exc())
 
    def generateSource(self, f, parentClassName):
       try:
@@ -127,8 +127,8 @@ class CppMember():
             f.write(" = " + self.__initilizationCode)
          f.write("\n")
       except Exception as e:
-         print "error : generating source of " + parentClassName + "::" + self.__cppMemberName
-         print traceback.format_exc()
+         print("error : generating source of " + parentClassName + "::" + self.__cppMemberName)
+         print(traceback.format_exc())
 
 
 
@@ -257,8 +257,8 @@ class CppClassConstructor():
             f.write("explicit ")
          f.write(parentClassName + "(" + self.__args + ");\n")
       except Exception as e:
-         print "error : generating header of " + parentClassName + "::" + parentClassName
-         print traceback.format_exc()
+         print("error : generating header of " + parentClassName + "::" + parentClassName)
+         print(traceback.format_exc())
 
    def generateSource(self, f, initializersCode, parentClassName):
       try:
@@ -276,8 +276,8 @@ class CppClassConstructor():
             f.write(self.__code + "\n")
          f.write("}\n")
       except Exception as e:
-         print "error : generating source of " + parentClassName + "::" + parentClassName
-         print traceback.format_exc()
+         print("error : generating source of " + parentClassName + "::" + parentClassName)
+         print(traceback.format_exc())
 
 
 #-------------------------------------------------------------------------------
@@ -362,11 +362,11 @@ class CppClass(CppType):
          # Parent classes
          if self.__parentClasses:
             f.write(" : ")
-            if self.__parentClasses.has_key(PUBLIC):
+            if PUBLIC in self.__parentClasses:
                publicClassesString = visibilityCppTag(PUBLIC) + " " + self.__parentClasses[PUBLIC]
-            if self.__parentClasses.has_key(PROTECTED):
+            if PROTECTED in self.__parentClasses:
                protectedClassesString = visibilityCppTag(PROTECTED) + " " + self.__parentClasses[PROTECTED]
-            if self.__parentClasses.has_key(PRIVATE):
+            if PRIVATE in self.__parentClasses:
                privateClassesString = visibilityCppTag(PRIVATE) + " " + self.__parentClasses[PRIVATE]
 
             if 'publicClassesString' in locals():
@@ -397,8 +397,8 @@ class CppClass(CppType):
          f.write("};\n\n")
 
       except Exception as e:
-         print "error : generating header of " + self.__cppClassName
-         print traceback.format_exc()
+         print("error : generating header of " + self.__cppClassName)
+         print(traceback.format_exc())
 
 
    def __generateMembersInitializersCode(self):
@@ -442,5 +442,5 @@ class CppClass(CppType):
          f.write("\n\n")
 
       except Exception as e:
-         print "error : generating source of " + self.__cppClassName
-         print traceback.format_exc()
+         print("error : generating source of " + self.__cppClassName)
+         print(traceback.format_exc())

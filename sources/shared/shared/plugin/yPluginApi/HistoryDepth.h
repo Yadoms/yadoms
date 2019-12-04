@@ -13,7 +13,7 @@ namespace shared
          ///<         - kDefault : Default policy : keep 30-days values (by default, see yadoms.ini), and hour/day/month/year summary
          ///<         - kNoHistory : No history, keep only last acquisition
          //-----------------------------------------------------
-         DECLARE_ENUM_HEADER_SHARED(EHistoryDepth, YADOMS_SHARED_EXPORT,
+         DECLARE_ENUM_HEADER(EHistoryDepth,
             ((Default)(0))
             ((NoHistory)(1))
          )

@@ -1,31 +1,43 @@
 ﻿{
 	"name": "Z-Wave",
 	"description": "Plugin qui supporte le protocole Z-Wave",
-	"configurationSchema": {
-		"Serial Port": {
-			"name": "Port série",
-			"description": "Le port série connecté au matériel ZWave (adaptateur USB par exemple)."
-		},
-		"IncludeSystemKeywords":
-		{
-			"name": "Enregistre les données systèmes",
-			"description": "Enregistre des données internes supplémentaires (pour un usage avancé)"
-		}		
-	},
+  "configurationSchema": {
+    "Serial Port": {
+      "name": "Port série",
+      "description": "Le port série connecté au matériel ZWave (adaptateur USB par exemple)."
+    },
+    "IncludeSystemKeywords": {
+      "name": "Enregistre les données systèmes",
+      "description": "Enregistre des données internes supplémentaires (pour un usage avancé)"
+    },
+    "initTimeout": {
+      "name": "Timeout pour l'initialisation (secondes)",
+      "description": "Cela permet de by-passer l'étape d'initialisation au bout d'un certain temps (cas d'un équipement qui pose problème). Par défaut à 0, le timeout est inihibé; sinon cela défini une valeur en secondes: 1800 (30 min) est une bonne valeur car l'initialiation de tout le réseau peut être très longue"
+    }
+  },
 	"customLabels": {
-		"pluginState": {
-			"waiting": "En attente...",
-			"waitingInclusion": "En mode appairage. Veuillez associer un nouveau matériel...",
-			"waitingExclusion": "En mode exclusion. Veuillez exclure un matériel...",
-			"completed": "Terminé",
-			"driverReady": "Contrôleur prêt",
-			"driverFailed": "Erreur de driver",
-			"initialization" : "Initialisation du ZWave et analyse des équipements...",
-			"updateConfiguration" : "Mise à jour de la configuration",
-			"failToAccessSerialPort" : "Impossible d'accéder au contrôleur ZWave. Vérifier qu'il est bien branché ainsi que sa configuration",
-			"failToStartController" : "Impossible de démarrer le contrôlleur ZWave. Vérifier qu'il est bien branché ainsi que sa configuration",
-			"failToStart" : "Impossible de démarrer"
-		}
+    "pluginState": {
+      "waiting": "En attente...",
+      "waitingInclusion": "En mode appairage. Veuillez associer un nouveau matériel...",
+      "waitingExclusion": "En mode exclusion. Veuillez exclure un matériel...",
+      "completed": "Terminé",
+      "driverReady": "Contrôleur prêt",
+      "driverFailed": "Erreur de driver",
+      "initialization": "Initialisation du ZWave et analyse des équipements...",
+      "updateConfiguration": "Mise à jour de la configuration",
+      "failToAccessSerialPort": "Impossible d'accéder au contrôleur ZWave. Vérifier qu'il est bien branché ainsi que sa configuration",
+      "failToStartController": "Impossible de démarrer le contrôlleur ZWave. Vérifier qu'il est bien branché ainsi que sa configuration",
+      "failToStart": "Impossible de démarrer",
+      "Alert_ConfigOutOfDate": "Un fichier de configuration de l'équipement {{nodeName}} est obsolète.",
+      "Alert_MFSOutOfDate": "Le fichier manufacturer_specific.xml est obsolète.",
+      "Alert_ConfigFileDownloadFailed": "Impossible de télécharger un fichier de configuration équipement",
+      "Alert_DNSError": "Une erreur est survenue lors d'une recherche DNS",
+      "Alert_NodeReloadRequired": "Un nouveau fichier de configuration a été découvert pour l'équipement {{nodeName}} et son application est en attente d'un rechargement",
+      "Alert_UnsupportedController": "Le contrôleur ZWAve fonctionne avec un firmware non supporté.",
+      "Alert_ApplicationStatus_Retry": "Le statut de l'application (CC) a retourné 'Retry Later Message'",
+      "Alert_ApplicationStatus_Queued": "La commande a été mise en attente pour une exécution ultérieure",
+      "Alert_ApplicationStatus_Rejected": "La commande a été rejetée"
+    }
 	},
 	"extraQueries" : {
 		"inclusionMode" : {

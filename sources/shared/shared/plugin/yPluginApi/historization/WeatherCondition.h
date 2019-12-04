@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "SingleHistorizableData.hpp"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief  The weather states
             //-----------------------------------------------------   
-            DECLARE_ENUM_HEADER_SHARED(EWeatherCondition, YADOMS_SHARED_EXPORT,
+            DECLARE_ENUM_HEADER(EWeatherCondition,
                ((Sunny))
                ((Cloudy))
                ((CloudyGusts))
@@ -70,7 +69,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A Weather object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CWeatherCondition : public CSingleHistorizableData<EWeatherCondition>
+            class CWeatherCondition : public CSingleHistorizableData<EWeatherCondition>
             {
             public:
                //-----------------------------------------------------

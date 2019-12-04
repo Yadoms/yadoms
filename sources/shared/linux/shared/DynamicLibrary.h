@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
    /// \brief	This class is used to load a plugin file library and 
    ///         provide construct and destruct methods
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CDynamicLibrary
+   class CDynamicLibrary
    {
    public:
       //--------------------------------------------------------------

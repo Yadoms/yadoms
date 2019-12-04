@@ -39,3 +39,4 @@ sources/www/.vs
 
 /analysis/.vscode
 /.vscode
+/sources/plugins/OneWire/.vscode

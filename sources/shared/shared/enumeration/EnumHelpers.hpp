@@ -32,21 +32,6 @@ DECLARE_ENUM_HEADER(ECurtainCommand,
 ((Close)(-2))
 );
 
-
-//shared enum with automatically generated integers
-DECLARE_ENUM_HEADER_SHARED(ECurtainCommand, YADOMS_SHARED_EXPORT,
-((Stop))
-((Open))
-((Close))
-);
-
-//shared enum with custom integers
-DECLARE_ENUM_HEADER_SHARED(ECurtainCommand, YADOMS_SHARED_EXPORT,
-((Stop)(0))
-((Open)(8))
-((Close)(-2))
-);
-
 //////////////////////////////////////////
 //The implementation part
 //////////////////////////////////////////
@@ -510,14 +495,6 @@ CCurtain::ECommand::ECommand()
 /// \param [in] _type         The enumeration type (int, unsigned int, short,....)
 //
 #define DECLARE_ENUM_HEADER_TYPE(_enumName, _seq, _type)    DECLARE_ENUM_HEADER_SHARED_TYPE(_enumName, , _type, _seq)
-
-//
-/// \brief Macro used to declare the Enum class header with possibility of export/import from/to a shared library
-/// \param [in] _enumName     The enumeration name : Test : will give "enum ETest {..."
-/// \param [in] _export       The export class specifier (can be __declspec(dllexport/dllimport) for MSVC, or extern "C" for unix systems
-/// \param [in] _seq          The enumeration sequence
-//
-#define DECLARE_ENUM_HEADER_SHARED(_enumName, _export, _seq)   DECLARE_ENUM_HEADER_SHARED_TYPE(_enumName, _export, int, _seq)
 
 //
 /// \brief Macro used to declare the implementation of GetAsString method for one case

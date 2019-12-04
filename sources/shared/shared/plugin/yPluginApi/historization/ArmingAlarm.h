@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "SingleHistorizableData.hpp"
 
@@ -14,17 +13,19 @@ namespace shared
             //-----------------------------------------------------
             ///\brief               The alarm arming status
             //-----------------------------------------------------   
-            DECLARE_ENUM_HEADER_SHARED(EArmingAlarmStatus, YADOMS_SHARED_EXPORT,
-               ((Disarmed))
-               ((ArmedAtHome))
-               ((ArmedAway))
+            DECLARE_ENUM_HEADER(EArmingAlarmStatus,
+                                ((Disarmed))
+                                ((ArmedAtHome))
+                                ((ArmedAway))
             ) ;
 
             //-----------------------------------------------------
             ///\brief A arming alarm status historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CArmingAlarm : public CSingleHistorizableData<EArmingAlarmStatus>
-            {
+            class CArmingAlarm : 
+            public
+            CSingleHistorizableData<EArmingAlarmStatus>
+{
             public:
                //-----------------------------------------------------
                ///\brief                     Constructor
@@ -42,5 +43,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

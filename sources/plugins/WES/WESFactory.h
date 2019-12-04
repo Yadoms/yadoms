@@ -32,7 +32,18 @@ public:
    /// \return                         The IO Manager containing all parameters
    //--------------------------------------------------------------
    boost::shared_ptr<CIOManager> loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                 const boost::shared_ptr<IWESConfiguration> configuration) const;
+                                                   const boost::shared_ptr<IWESConfiguration> configuration) const;
+
+   //--------------------------------------------------------------
+   /// \brief	    create all the configuration (all devices, ...)
+   /// \param[in] api                  yPluginApi API
+   /// \param[in] device               the device name
+   /// \param[in] configuration        configuration of the plugin
+   /// \return                         The IO Manager containing all parameters
+   //--------------------------------------------------------------
+   boost::shared_ptr<equipments::IEquipment> createEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                             const std::string& device,
+                                                             const boost::shared_ptr<IWESConfiguration> configuration);
 
    //--------------------------------------------------------------
    /// \brief	    createDeviceManually

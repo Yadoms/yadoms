@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/DoubleTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A rain historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CRain : public CSingleHistorizableData<double>
+            class CRain : public CSingleHistorizableData<double>
             {
             public:
                explicit CRain(const std::string& keywordName,

@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <Poco/Message.h>
 
 namespace shared
@@ -9,7 +8,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	This class is a helper for buffer logger
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CBufferLoggerHelper
+      class CBufferLoggerHelper
       {
       public:
 

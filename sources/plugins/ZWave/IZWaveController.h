@@ -31,8 +31,9 @@ public:
    /// \brief	Configure the controller
    /// \param [in] 	configuration  the configuration
    /// \param [in] 	handler        the event handler
+   /// \param [in] 	developerMode  indicate if developerMode is active
    //--------------------------------------------------------------
-   virtual void configure(CZWaveConfiguration * configuration, shared::event::CEventHandler * handler) = 0;   
+   virtual void configure(CZWaveConfiguration * configuration, shared::event::CEventHandler * handler, bool developerMode) = 0;   
    
    //--------------------------------------------------------------
    /// \brief	Start the controller

@@ -42,4 +42,12 @@ void CZWaveConfiguration::setDataPath(const std::string & dataPath)
    m_container.set("dataPath", dataPath);
 }
 
+int CZWaveConfiguration::getInitTimeout() const
+{
+   return m_container.getWithDefault<int>("initTimeout", 0);
+}
 
+void CZWaveConfiguration::setInitTimeout(int timeOut)
+{
+   m_container.set("initTimeout", timeOut);
+}

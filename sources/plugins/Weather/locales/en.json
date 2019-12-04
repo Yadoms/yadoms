@@ -10,19 +10,23 @@
       "name": "Use a specific location",
       "description": "Use this option if default location provided by Yadoms is not accurate",
       "content": {
-        "longitude": {
-          "name": "Longitude"
-        },
         "latitude": {
-          "name": "Latitude"
+          "name": "Latitude",
+          "description": "Latitude in decimal degrees (DDD), as used by [Google Map](https://www.google.fr/maps)"
+        },
+        "longitude": {
+          "name": "Longitude",
+          "description": "Longitude in decimal degrees (DDD), as used by [Google Map](https://www.google.fr/maps)"
         }
       }
     }
   },
   "customLabels": {
     "pluginState": {
-      "lastRequestFailed": "Last request failed, will retry later...",
-      "maxTriesAchieved": "Max tries achieved, will retry later..."
+      "updateConfiguration": "Update configuration...",
+      "tryToJoinService": "Connecting to service...",
+      "unableToJoinService": "Unable to connect to service ({{error}}), will retry later...",
+      "maxTriesAchieved": "Unable to connect to service"
     }
   }
 }

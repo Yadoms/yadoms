@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include "../typeInfo/StringTypeInfo.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A UserCode historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CUserCode : public CSingleHistorizableData<std::string>
+            class CUserCode : public CSingleHistorizableData<std::string>
             {
             public:
                //-----------------------------------------------------

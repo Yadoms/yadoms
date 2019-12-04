@@ -28,10 +28,6 @@ namespace location
       }
    }
 
-   CLocation::~CLocation()
-   {
-   }
-
    void CLocation::tryAutoLocate() const
    {
       try

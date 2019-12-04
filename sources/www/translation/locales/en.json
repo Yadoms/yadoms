@@ -617,11 +617,11 @@
                   },
                   "latitude": {
                      "name": "Latitude",
-                     "description": ""
+                     "description": "Latitude in decimal degrees (DDD), as used by [Google Map](https://www.google.fr/maps)"
                   },
                   "longitude": {
                      "name": "Longitude",
-                     "description": ""
+                     "description": "Longitude in decimal degrees (DDD), as used by [Google Map](https://www.google.fr/maps)"
                   }
                },
                "confirmResetToDefault": "This operation will restore all default configuration. Continue ?",

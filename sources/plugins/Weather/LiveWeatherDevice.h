@@ -11,7 +11,8 @@ public:
    explicit CLiveWeatherDevice(std::string deviceName);
    virtual ~CLiveWeatherDevice() = default;
 
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                      const std::string serviceName) const;
    void historize(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    void setCondition(const yApi::historization::EWeatherCondition& condition);
@@ -22,7 +23,10 @@ public:
    void setPressure(double pressure);
    void setWindSpeed(double speed);
    void setWindDirection(int direction);
+   void setRainForLast3h(double rain);
+   void setSnowForLast3h(double snow);
    void setVisibility(int distance);
+   void setUV(double uvIndex);
 
 private:
    const std::string m_deviceName;
@@ -34,7 +38,10 @@ private:
    boost::shared_ptr<yApi::historization::CPressure> m_pressure;
    boost::shared_ptr<yApi::historization::CSpeed> m_windSpeed;
    boost::shared_ptr<yApi::historization::CDirection> m_windDirection;
+   boost::shared_ptr<yApi::historization::CRain> m_rain;
+   boost::shared_ptr<yApi::historization::CRain> m_snow;
    boost::shared_ptr<yApi::historization::CDistance> m_visibility;
+   boost::shared_ptr<yApi::historization::CUv> m_uvIndex;
    const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_allKeywords;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
 };

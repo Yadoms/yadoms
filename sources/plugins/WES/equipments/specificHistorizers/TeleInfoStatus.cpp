@@ -8,8 +8,9 @@ namespace specificHistorizers
    DECLARE_ENUM_IMPLEMENTATION(EWESTeleInfoStatus,
       ((Ok))
       ((Error))
-      ((TeleInfoLost))
       ((Desactivated))
+      ((FrameError))
+      ((SignalLoss))
    );
 
    DECLARE_CAPACITY(StatusCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);

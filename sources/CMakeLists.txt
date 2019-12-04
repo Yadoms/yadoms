@@ -255,6 +255,9 @@ endif()
 # define libraries to link with
 #
 ###############################################
+if(MSVC) # Needed under Windows by Poco.
+	set(LIBS ${LIBS} "${OPENSSL_ROOT}/lib/libeay32.lib" "${OPENSSL_ROOT}/lib/ssleay32.lib")
+endif()
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Protobuf_LIBRARIES})
 
 ##################################################################################################
@@ -1202,7 +1205,8 @@ endif(COTIRE_USE)
 install(TARGETS yadoms RUNTIME DESTINATION ${INSTALL_BINDIR})
 
 #set yadoms.ini configuration file to be copied in bindir
-install(FILES "../config/yadoms.ini" DESTINATION ${INSTALL_BINDIR})
+install(FILES ${CMAKE_SOURCE_DIR}/../config/yadoms.ini
+   DESTINATION ${INSTALL_BINDIR})
 
 #Configure all building targets to allow finding dependencies next to them
 #so just copying boost and poco next to yadoms executable and it will work

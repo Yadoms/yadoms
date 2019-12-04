@@ -8,6 +8,8 @@ set(WEATHER_PLUGIN_SOURCES
    stdafx.h
    stdafx.cpp
    IWeatherService.h
+   ForecastWeatherDevice.h
+   ForecastWeatherDevice.cpp
    LiveWeatherDevice.h
    LiveWeatherDevice.cpp
    OpenWeatherService.h

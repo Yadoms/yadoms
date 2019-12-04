@@ -40,8 +40,8 @@ namespace shared
 
             //-----------------------------------------------------
             ///\brief               To string transformer
-            ///\param[in] command   The commande to print out
-            ///\return              The formated string representing the command
+            ///\param[in] command   The command to print out
+            ///\return              The formatted string representing the command
             //-----------------------------------------------------
             static std::string toString(boost::shared_ptr<const IDeviceCommand> command)
             {

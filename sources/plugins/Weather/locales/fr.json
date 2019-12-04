@@ -10,18 +10,23 @@
       "name": "Utiliser une localisation spécifique",
       "description": "Utiliser cette option si la localisation par défaut fournie par Yadoms ne convient pas",
       "content": {
-        "longitude": {
-          "name": "Longitude"
-        },
         "latitude": {
-          "name": "Latitude"
+          "name": "Latitude",
+          "description": "Latitude en degrés décimaux (DDD), comme utilisé par [Google Map](https://www.google.fr/maps)"
+        },
+        "longitude": {
+          "name": "Longitude",
+          "description": "Longitude en degrés décimaux (DDD), comme utilisé par [Google Map](https://www.google.fr/maps)"
         }
       }
     }
   },
   "customLabels": {
     "pluginState": {
-      "updateConfiguration": "Mise à jour de la configuration..."
+      "updateConfiguration": "Mise à jour de la configuration...",
+      "tryToJoinService": "Connexion au service...",
+      "unableToJoinService": "Service injoignable ({{error}}), will retry later...",
+      "maxTriesAchieved": "Service injoignable"
     }
   }
 }

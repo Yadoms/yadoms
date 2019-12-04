@@ -19,10 +19,12 @@ namespace web
 
          CMaintenance::CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider,
                                     boost::shared_ptr<database::IDatabaseRequester> databaseRequester,
+                                    boost::shared_ptr<database::IKeywordRequester> keywordRequester,
                                     boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                                     boost::shared_ptr<task::CScheduler> taskScheduler)
             : m_pathProvider(pathProvider),
               m_databaseRequester(databaseRequester),
+              m_keywordRequester(keywordRequester),
               m_acquisitionRequester(acquisitionRequester),
               m_taskScheduler(taskScheduler)
          {
@@ -345,6 +347,7 @@ namespace web
                   const auto keywordId = std::stoi(parameters[2]);
 
                   const boost::shared_ptr<task::ITask> task(boost::make_shared<task::exportData::CExportData>(m_pathProvider,
+                                                                                                              m_keywordRequester,
                                                                                                               m_acquisitionRequester,
                                                                                                               keywordId));
 

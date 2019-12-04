@@ -2,6 +2,7 @@
 #include "Version.h"
 #include <Poco/RegularExpression.h>
 #include <Poco/NumberParser.h>
+#include <shared/exception/Exception.hpp>
 
 namespace shared
 {

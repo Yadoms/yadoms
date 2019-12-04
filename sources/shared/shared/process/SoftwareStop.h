@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
       //-----------------------------
       ///\brief   Class which provide stop by application itself
       //-----------------------------  
-      class YADOMS_SHARED_EXPORT CSoftwareStop
+      class CSoftwareStop
       {
       public:
          //-----------------------------

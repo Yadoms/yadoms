@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include "IHistorizable.h"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A event historizable object (no data)
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CEvent : public IHistorizable
+            class CEvent : public IHistorizable
             {
             public:
                //-----------------------------------------------------
