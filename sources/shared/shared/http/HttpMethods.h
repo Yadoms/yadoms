@@ -73,6 +73,7 @@ namespace shared
 
       static CDataContainer processJsonResponse(Poco::Net::HTTPResponse& response,
                                                 std::istream& receivedStream);
+      static CDataContainer processXmlElements(const boost::property_tree::ptree& node);
       static CDataContainer processXmlNode(const boost::property_tree::ptree& node);
       static CDataContainer processXmlResponse(Poco::Net::HTTPResponse& response,
                                                std::istream& receivedStream);

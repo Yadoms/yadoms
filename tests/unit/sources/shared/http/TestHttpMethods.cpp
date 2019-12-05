@@ -11,7 +11,7 @@ class CHttpMethodsPrivateAccess : public shared::CHttpMethods
 public:
    static shared::CDataContainer callProcessXmlNode(const boost::property_tree::ptree& node)
    {
-      return CHttpMethods::processXmlNode(node);
+      return processXmlNode(node);
    }
 };
 
@@ -19,30 +19,33 @@ BOOST_AUTO_TEST_SUITE(TestHttpMethods)
 
    BOOST_AUTO_TEST_CASE(InternalProcessXmlNode)
    {
-   const std::string input("<?xml version=\"1.0\"?> \
-<root> \
-  <firstNode>2</firstNode> \
-  <secondNode stringAttribute=\"attributeValue\" intAttribute=\"3\"> \
-    <item1>value1</item1> \
-    <item2>1234</item2> \
-  </secondNode> \
-</root>");
+      std::istringstream input(std::string(
+         "<?xml version=\"1.0\"?> \
+          <root rootAttribute=\"rootAttributeValue\"> \
+            <firstNode>2</firstNode> \
+            <secondNode stringAttribute=\"attributeValue\" intAttribute=\"3\"> \
+              <item1>value1</item1> \
+              <item1>repeatedValue1</item1> \
+              <item2>1234</item2> \
+            </secondNode> \
+            <thirdNode otherAttribute=\"other\"> \
+            </thirdNode> \
+            <emptyItem/> \
+          </root>"));
 
       boost::property_tree::ptree tree;
       read_xml(input, tree);
       const auto output = CHttpMethodsPrivateAccess::callProcessXmlNode(tree);
 
-   output.printToLog(std::cout);//TODO virer
-   
+      output.printToLog(std::cout);//TODO virer
+
       BOOST_CHECK_EQUAL(output.get<int>("firstNode"), 2);
       BOOST_CHECK_EQUAL(output.get<std::string>("secondNode.stringAttribute"), "attributeValue");
       BOOST_CHECK_EQUAL(output.get<int>("secondNode.intAttribute"), 3);
       BOOST_CHECK_EQUAL(output.get<std::string>("secondNode.item1"), "value1");
       BOOST_CHECK_EQUAL(output.get<int>("secondNode.item2"), 1234);
 
-   //TODO
-
+      //TODO
    }
 
 BOOST_AUTO_TEST_SUITE_END()
-

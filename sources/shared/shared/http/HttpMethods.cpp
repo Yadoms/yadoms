@@ -210,47 +210,114 @@ namespace shared
       return CDataContainer(std::string(std::istreambuf_iterator<char>(receivedStream), Eos));
    }
 
+   CDataContainer CHttpMethods::processXmlElements(const boost::property_tree::ptree& node)
+   {
+      std::vector<CDataContainer> itemsArray;
+      CDataContainer data;
+
+      for (const auto& child : node)
+      {
+         if (!child.second.empty())
+         {
+            // XML attributes
+            if (child.first == "<xmlattr>")
+            {
+               for (const auto& attribute : child.second)
+               {
+                  data.set(attribute.first,
+                           attribute.second.get_value<std::string>());
+               }
+               continue;
+            }
+
+            // XML elements
+            CDataContainer data2;
+            data2.set(child.first,
+                      processXmlElements(child.second));
+            itemsArray.push_back(data2);
+            continue;
+         }
+
+         if (!child.second.get_value<std::string>().empty())
+         {
+            CDataContainer data2;
+            data2.set(child.first,
+                      child.second.get_value<std::string>());
+            itemsArray.push_back(data2);
+            continue;
+         }
+
+         CDataContainer data2;
+         data2.set(child.first,
+                   std::string());
+         itemsArray.push_back(data2);
+         continue;
+      }
+
+      if (!itemsArray.empty())
+         data.set("<XML elements>",
+                  itemsArray);
+      return data;
+   }
+
    CDataContainer CHttpMethods::processXmlNode(const boost::property_tree::ptree& node)
    {
       CDataContainer data;
+
       for (const auto& child : node)
       {
-         if (child.second.size() != 0)
+         if (!child.second.empty())
          {
+            // XML attributes
+            //if (child.first == "<xmlattr>")
+            //{
+            //   for (const auto& attribute : child.second)
+            //   {
+            //      data.set(attribute.first,
+            //               attribute.second.get_value<std::string>());
+            //   }
+            //   continue;
+            //}
+
+            // XML elements
             data.set(child.first,
-                     processXmlNode(child.second));
+                     processXmlElements(child.second));
+            continue;
          }
-         else
-         {
-            //TODO
-            //if (it->first == "id" || it->first == "var")
-            //   attributeName = it->second.data();
 
-            //if (it->first == "value")
-            //   attributeValue = it->second.data();
+         //if (!child.second.get_value<std::string>().empty())
+         //{
+         //   data.set(child.first,
+         //            child.second.get_value<std::string>());
+         //   continue;
+         //}
 
-            //data.set(attributeName, attributeValue);
-         }
+         //data.set(child.first,
+         //         std::string());
       }
-      
-      return CDataContainer();//TODO virer
+
+      return data;
    }
 
    CDataContainer CHttpMethods::processXmlResponse(Poco::Net::HTTPResponse& response,
                                                    std::istream& receivedStream)
    {
+      //TODO déplacer dans la classe CDataContainer ?
       boost::property_tree::ptree tree;
       read_xml(receivedStream, tree);
       return processXmlNode(tree);
    }
 
-   CDataContainer CHttpMethods::processTextResponse(Poco::Net::HTTPResponse& response, std::istream& receivedStream)
+   CDataContainer CHttpMethods::processTextResponse(Poco::Net::HTTPResponse& response,
+                                                    std::istream& receivedStream)
    {
-      //TODO
-      return CDataContainer();//TODO virer
+      CDataContainer data;
+      data.set("text", std::string(std::istreambuf_iterator<char>(receivedStream), {}));
+      return data;
    }
 
-   CDataContainer CHttpMethods::processRawResponse(Poco::Net::HTTPResponse& response, std::istream& receivedStream)
+   CDataContainer CHttpMethods::processRawResponse(Poco::Net::HTTPResponse& response,
+                                                   std::istream& receivedStream)
    {
       //TODO
       return CDataContainer();//TODO virer

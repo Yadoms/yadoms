@@ -100,13 +100,13 @@ add_definitions(-DBOOST_SPIRIT_THREADSAFE)
 # define all needed boost libraries
 set(BOOST_LIBS 
    atomic
-	system 
-	filesystem 
-	thread 
-	date_time 
-	chrono 
-	regex
-	locale
+   system 
+   filesystem 
+   thread 
+   date_time 
+   chrono 
+   regex
+   locale
 )
 
 # search boost libs
@@ -255,10 +255,15 @@ endif()
 # define libraries to link with
 #
 ###############################################
-if(MSVC) # Needed under Windows by Poco.
-	set(LIBS ${LIBS} "${OPENSSL_ROOT}/lib/libeay32.lib" "${OPENSSL_ROOT}/lib/ssleay32.lib")
-endif()
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Protobuf_LIBRARIES})
+set(LIBS
+   ${LIBS}
+   ${Boost_LIBRARIES}
+   ${CMAKE_THREAD_LIBS_INIT}
+   ${Poco_FOUND_LIBS}
+   ${OPENSSL_SSL_LIBRARY}
+   ${OPENSSL_CRYPTO_LIBRARY}
+   ${Protobuf_LIBRARIES}
+)
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completely build from sources
