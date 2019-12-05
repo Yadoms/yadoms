@@ -212,11 +212,12 @@ namespace shared
 
    CDataContainer CHttpMethods::processXmlElements(const boost::property_tree::ptree& node)
    {
+      CDataContainer nodeContainer;
       std::vector<CDataContainer> itemsArray;
-      CDataContainer data;
 
       for (const auto& child : node)
       {
+         // Sub-nodes
          if (!child.second.empty())
          {
             // XML attributes
@@ -224,8 +225,8 @@ namespace shared
             {
                for (const auto& attribute : child.second)
                {
-                  data.set(attribute.first,
-                           attribute.second.get_value<std::string>());
+                  nodeContainer.set(attribute.first,
+                                    attribute.second.get_value<std::string>());
                }
                continue;
             }
@@ -238,65 +239,17 @@ namespace shared
             continue;
          }
 
-         if (!child.second.get_value<std::string>().empty())
-         {
-            CDataContainer data2;
-            data2.set(child.first,
-                      child.second.get_value<std::string>());
-            itemsArray.push_back(data2);
-            continue;
-         }
-
          CDataContainer data2;
          data2.set(child.first,
-                   std::string());
+                   child.second.get_value<std::string>());
          itemsArray.push_back(data2);
-         continue;
       }
 
       if (!itemsArray.empty())
-         data.set("<XML elements>",
-                  itemsArray);
-      return data;
-   }
+         nodeContainer.set("<XML elements>",
+                           itemsArray);
 
-   CDataContainer CHttpMethods::processXmlNode(const boost::property_tree::ptree& node)
-   {
-      CDataContainer data;
-
-      for (const auto& child : node)
-      {
-         if (!child.second.empty())
-         {
-            // XML attributes
-            //if (child.first == "<xmlattr>")
-            //{
-            //   for (const auto& attribute : child.second)
-            //   {
-            //      data.set(attribute.first,
-            //               attribute.second.get_value<std::string>());
-            //   }
-            //   continue;
-            //}
-
-            // XML elements
-            data.set(child.first,
-                     processXmlElements(child.second));
-            continue;
-         }
-
-         //if (!child.second.get_value<std::string>().empty())
-         //{
-         //   data.set(child.first,
-         //            child.second.get_value<std::string>());
-         //   continue;
-         //}
-
-         //data.set(child.first,
-         //         std::string());
-      }
-
-      return data;
+      return nodeContainer;
    }
 
    CDataContainer CHttpMethods::processXmlResponse(Poco::Net::HTTPResponse& response,
@@ -305,7 +258,17 @@ namespace shared
       //TODO déplacer dans la classe CDataContainer ?
       boost::property_tree::ptree tree;
       read_xml(receivedStream, tree);
-      return processXmlNode(tree);
+
+      CDataContainer data;
+      for (const auto& child : tree)
+      {
+         if (!child.second.empty())
+         {
+            data.set(child.first,
+                     processXmlElements(child.second));
+         }
+      }
+      return data;
    }
 
    CDataContainer CHttpMethods::processTextResponse(Poco::Net::HTTPResponse& response,
