@@ -136,7 +136,7 @@ class NewPluginModal():
       item = self.__modal.selectItem(expectedPluginName)
       if item is not None:
          return item
-      print "selectPlugin : Nothing to select, ", expectedPluginName, " not found"
+      print ('selectPlugin : Nothing to select, {expectedPluginName} not found')
       assert False
 
    def getConfirmButton(self):
@@ -187,21 +187,21 @@ class ConfigurePluginModal():
 
 
 def basicFillConfigurationSequence(browser, pluginInstanceName):
-   print '  Plugin configuration'
+   print ('  Plugin configuration')
    editPluginModal = waitConfigurePluginModal(browser)
    editPluginModal.setPluginName(pluginInstanceName)
-   print '  Click OK'
+   print ('  Click OK')
    editPluginModal.ok()      
 
 
 def createPluginSequence(browser, pluginInstanceName, pluginType, setPluginConfigurationSequenceFct):
    """ Create plugin all-in-one sequence """
 
-   print '  Open plugin dashboard'
+   print ('  Open plugin dashboard')
    dashboard.open(browser)
    dashboard.openPlugin(browser)
 
-   print '  Create new plugin'
+   print ('  Create new plugin')
    tools.waitUntil(lambda: getCreatePluginButton(browser).is_enabled())
    getCreatePluginButton(browser).click()
    newPluginModal = waitNewPluginModal(browser)
@@ -214,10 +214,10 @@ def createPluginSequence(browser, pluginInstanceName, pluginType, setPluginConfi
 def checkCreatedPluginSequence(test, pluginInstanceName, pluginType, hasExtraCommand, hasLog):
    """ Check successfull plugin creation all-in-one sequence """
 
-   print '  Check notification'
+   print ('  Check notification')
    notification.waitText(test.browser, notification.Type.Success, i18n.get()["modals"]["configure-plugin"]["pluginSuccessfullyCreated"])
       
-   print '  Check plugins table'
+   print ('  Check plugins table')
    pluginsTable = waitPluginsTableHasNPlugins(test.browser, 1)
 
    pluginNumber = 0

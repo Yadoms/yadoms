@@ -30,14 +30,14 @@ class StartStopRule(unittest.TestCase):
       
       
    def test_startStopRule(self):
-      print '=== start/stop rule test ==='
+      print ('=== start/stop rule test ===')
 
-      print '  Open rules dashboard'
+      print ('  Open rules dashboard')
       dashboard.open(self.browser)
       dashboard.openAutomation(self.browser)
       ruleNumber = 0
 
-      print '  Get rule table'
+      print ('  Get rule table')
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       startStopButton = dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber)
       
@@ -45,12 +45,12 @@ class StartStopRule(unittest.TestCase):
       
       self.assertFalse(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
       
-      print '  Start rule'
+      print ('  Start rule')
       self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
       startStopButton.click()
       WebDriverWait(self.browser, 10).until(lambda browser: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running and startStopButton.is_enabled())
 
-      print '  Stop rule'
+      print ('  Stop rule')
       self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
       startStopButton.click()
       WebDriverWait(self.browser, 10).until(lambda browser: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped and startStopButton.is_enabled())

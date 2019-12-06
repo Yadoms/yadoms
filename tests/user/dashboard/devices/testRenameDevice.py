@@ -30,30 +30,30 @@ class RenameDevice(unittest.TestCase):
       dashboard.openDevice(self.browser)
 
    def test_renameDevice(self):
-      print '=== Rename a device ==='
+      print ('=== Rename a device ===')
       deviceName = u'configurableDevice'
       newDeviceName = u'myNewName'
       attachedPluginInstance = u'My fakePlugin instance'
      
-      print '  Open the configure device modal'
+      print ('  Open the configure device modal')
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
 
-      print '  Change device name then cancel'
+      print ('  Change device name then cancel')
       configureDeviceModal.updateTextField('friendlyName', newDeviceName)
       configureDeviceModal.cancel()
       self.assertTrue(tools.waitUntil(lambda: dashboard.devices.getDeviceName(devicesTable, deviceId) == deviceName))
       
-      print '  Change device name then confirm'
+      print ('  Change device name then confirm')
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
       configureDeviceModal.updateTextField('friendlyName', newDeviceName)
       configureDeviceModal.ok()
       self.assertTrue(tools.waitUntil(lambda: dashboard.devices.getDeviceName(devicesTable, deviceId) == newDeviceName))
 
-      print '  Check change was saved'
+      print ('  Check change was saved')
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, newDeviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)

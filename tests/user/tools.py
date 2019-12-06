@@ -39,7 +39,7 @@ def tryWhile(actionFct, timeout = 10):
          time.sleep(1)
          tries += 1
          if tries > 10:
-            print "Try ", timeout, " times to do ", actionFct, ", unsuccessfull"
+            print ('Try {timeout} times to do {actionFct} unsuccessfull')
             raise
 
 
@@ -54,14 +54,14 @@ def deleteContext():
       try:
          tryWhile(lambda : shutil.rmtree(contexteMainDirectory))
       except:
-         print 'Unable to delete context backup directory'
+         print ('Unable to delete context backup directory')
          raise
 
 
 def saveContext(browser):
    callerFonctionName = inspect.stack()[1][3]
    contexteDirectory = os.path.join('report', 'debug', callerFonctionName)
-   print 'Save contexte to ', contexteDirectory
+   print ('Save contexte to {contexteDirectory}')
    if not os.path.exists(contexteDirectory):
       os.makedir(contexteDirectory)
       

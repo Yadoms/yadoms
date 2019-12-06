@@ -31,11 +31,11 @@ class ConfigureDevice(unittest.TestCase):
       
 
    def test_notConfigurableDevice(self):
-      print '=== Try to configure not configurable device ==='
+      print ('=== Try to configure not configurable device ===')
       deviceName = u'fakeDimmableReadOnlySwitch'
       attachedPluginInstance = u'My fakePlugin instance'
      
-      print '  Check that device is not configurable'
+      print ('  Check that device is not configurable')
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
@@ -45,35 +45,35 @@ class ConfigureDevice(unittest.TestCase):
 
 
    def test_configurableDevice(self):
-      print '=== Configure a device ==='
+      print ('=== Configure a device ===')
       deviceName = u'configurableDevice'
       attachedPluginInstance = u'My fakePlugin instance'
      
-      print '  Check that device is configurable'
+      print ('  Check that device is configurable')
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
       self.assertEqual(configureDeviceModal.getConfigurationFieldsCount(), 5)
 
-      print '  Start change device configuration then cancel'
+      print ('  Start change device configuration then cancel')
       self.assertEqual(configureDeviceModal.getTextField('CounterDivider2'), '2')
       configureDeviceModal.updateTextField('CounterDivider2', '5')
       configureDeviceModal.cancel()
 
-      print '  Check, it s possible to open twice the configuration windows for a normal device'
+      print ('  Check, it s possible to open twice the configuration windows for a normal device')
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
       configureDeviceModal.cancel()
       
-      print '  Start change device configuration then confirm'
+      print ('  Start change device configuration then confirm')
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
       self.assertEqual(configureDeviceModal.getTextField('CounterDivider2'), '2')
       configureDeviceModal.updateTextField('CounterDivider2', '5')
       configureDeviceModal.ok()
 
-      print '  Check change was saved'
+      print ('  Check change was saved')
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
       self.assertEqual(configureDeviceModal.getTextField('CounterDivider2'), '5')

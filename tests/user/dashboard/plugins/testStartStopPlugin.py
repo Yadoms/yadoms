@@ -30,25 +30,25 @@ class StartStopPlugin(unittest.TestCase):
       
       
    def test_startStopPlugin(self):
-      print '=== Start/stop plugin test ==='
+      print ('=== Start/stop plugin test ===')
 
-      print 'Open plugins dashboard'
+      print ('Open plugins dashboard')
       dashboard.open(self.browser)
       dashboard.openPlugin(self.browser)
       pluginNumber = 0
       
-      print 'Get plugins table'
+      print ('Get plugins table')
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       startStopButton = dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber)
       
       self.assertEqual(dashboard.plugins.getPluginState(pluginsTable, pluginNumber), dashboard.plugins.PluginState.Running)
 
-      print 'Stop plugin'
+      print ('Stop plugin')
       self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
       startStopButton.click()
       self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Stopped))
 
-      print 'Start plugin'
+      print ('Start plugin')
       self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
       startStopButton.click()
       self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Running))

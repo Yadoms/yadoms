@@ -78,10 +78,10 @@ class ExtraQuery(unittest.TestCase):
       
 
    def test_simpleQuery(self):
-      print '=== Simple query test ==='
+      print ('=== Simple query test ===')
       pluginNumber = 0
      
-      print '  Select query'
+      print ('  Select query')
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       tools.waitUntil(lambda: dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber).is_enabled())
       button = dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber)
@@ -96,10 +96,10 @@ class ExtraQuery(unittest.TestCase):
       
 
    def test_textDataQuery(self):
-      print '=== Query with text data test ==='
+      print ('=== Query with text data test ===')
       pluginNumber = 0
      
-      print '  Select query'
+      print ('  Select query')
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       tools.waitUntil(lambda: dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber).is_enabled())
       button = dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber)
@@ -118,10 +118,10 @@ class ExtraQuery(unittest.TestCase):
       
 
    def test_numericDataQuery(self):
-      print '=== Query with numeric data test ==='
+      print ('=== Query with numeric data test ===')
       pluginNumber = 0
      
-      print '  Select query'
+      print ('  Select query')
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       tools.waitUntil(lambda: dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber).is_enabled())
       button = dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber)
@@ -140,10 +140,10 @@ class ExtraQuery(unittest.TestCase):
       
 
    def test_dataBindingQuery(self):
-      print '=== Query with data binding test ==='
+      print ('=== Query with data binding test ===')
       pluginNumber = 0
      
-      print '  Select query'
+      print ('  Select query')
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       tools.waitUntil(lambda: dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber).is_enabled())
       button = dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber)
@@ -162,10 +162,10 @@ class ExtraQuery(unittest.TestCase):
       
 
    def test_dataBindingPluginCommandQuery(self):
-      print '=== Query with data binding with plugin test ==='
+      print ('=== Query with data binding with plugin test ===')
       pluginNumber = 0
      
-      print '  Select query'
+      print ('  Select query')
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       tools.waitUntil(lambda: dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber).is_enabled())
       button = dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber)
@@ -184,10 +184,10 @@ class ExtraQuery(unittest.TestCase):
       
 
    def test_changePluginStateMessageQuery(self):
-      print '=== Query of change plugin state test ==='
+      print ('=== Query of change plugin state test ===')
       pluginNumber = 0
      
-      print '  Select query'
+      print ('  Select query')
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       tools.waitUntil(lambda: dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber).is_enabled())
       button = dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber)
@@ -206,10 +206,10 @@ class ExtraQuery(unittest.TestCase):
       
 
    def test_asyncEQwithProgressionQuery(self):
-      print '=== Query with progress following test ==='
+      print ('=== Query with progress following test ===')
       pluginNumber = 0
      
-      print '  Select query'
+      print ('  Select query')
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       tools.waitUntil(lambda: dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber).is_enabled())
       button = dashboard.plugins.getPluginExtraCommandButton(pluginsTable, pluginNumber)

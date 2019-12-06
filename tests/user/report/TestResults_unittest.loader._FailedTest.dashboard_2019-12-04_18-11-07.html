@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unittest Results</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="text-capitalize">Unittest Results</h2>
+                <p class='attribute'><strong>Start Time: </strong>2019-12-04 18:11:07</p>
+                <p class='attribute'><strong>Duration: </strong>6 ms</p>
+                <p class='attribute'><strong>Summary: </strong>Total: 5, Pass: 0, Error: 5</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-10 col-md-10">
+                <table class='table table-hover table-responsive'>
+                    <thead>
+                        <tr>
+                            <th>unittest.loader._FailedTest.dashboard</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class='warning'>
+                            <td class="col-xs-10">devices</td>
+                            <td class="col-xs-1">
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p style="color:maroon;">ImportError: Failed to import test module: dashboard.devices
+Traceback (most recent call last):
+  File "C:\Python38\lib\unittest\loader.py", line 470, in _find_test_path
+    package = self._get_module_from_name(name)
+  File "C:\Python38\lib\unittest\loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "D:\Projets\Domotique\yadoms\tests\user\dashboard\devices\__init__.py", line 184
+    print "selectAttachedPlugin : Nothing to select, ", pluginName, " not found"
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print("selectAttachedPlugin : Nothing to select, ", pluginName, " not found")?
+</p><p style="color:maroon;">ImportError: Failed to import test module: dashboard.devices
+Traceback (most recent call last):
+  File "C:\Python38\lib\unittest\loader.py", line 470, in _find_test_path
+    package = self._get_module_from_name(name)
+  File "C:\Python38\lib\unittest\loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "D:\Projets\Domotique\yadoms\tests\user\dashboard\devices\__init__.py", line 184
+    print "selectAttachedPlugin : Nothing to select, ", pluginName, " not found"
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print("selectAttachedPlugin : Nothing to select, ", pluginName, " not found")?
+
+</p>
+                            </td>
+                        </tr>
+                        <tr class='warning'>
+                            <td class="col-xs-10">plugins</td>
+                            <td class="col-xs-1">
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p style="color:maroon;">ImportError: Failed to import test module: dashboard.plugins
+Traceback (most recent call last):
+  File "C:\Python38\lib\unittest\loader.py", line 470, in _find_test_path
+    package = self._get_module_from_name(name)
+  File "C:\Python38\lib\unittest\loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "D:\Projets\Domotique\yadoms\tests\user\dashboard\plugins\__init__.py", line 139
+    print "selectPlugin : Nothing to select, ", expectedPluginName, " not found"
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print("selectPlugin : Nothing to select, ", expectedPluginName, " not found")?
+</p><p style="color:maroon;">ImportError: Failed to import test module: dashboard.plugins
+Traceback (most recent call last):
+  File "C:\Python38\lib\unittest\loader.py", line 470, in _find_test_path
+    package = self._get_module_from_name(name)
+  File "C:\Python38\lib\unittest\loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "D:\Projets\Domotique\yadoms\tests\user\dashboard\plugins\__init__.py", line 139
+    print "selectPlugin : Nothing to select, ", expectedPluginName, " not found"
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print("selectPlugin : Nothing to select, ", expectedPluginName, " not found")?
+
+</p>
+                            </td>
+                        </tr>
+                        <tr class='warning'>
+                            <td class="col-xs-10">systemConfiguration</td>
+                            <td class="col-xs-1">
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p style="color:maroon;">ImportError: Failed to import test module: dashboard.systemConfiguration
+Traceback (most recent call last):
+  File "C:\Python38\lib\unittest\loader.py", line 470, in _find_test_path
+    package = self._get_module_from_name(name)
+  File "C:\Python38\lib\unittest\loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "D:\Projets\Domotique\yadoms\tests\user\dashboard\systemConfiguration\__init__.py", line 7, in <module>
+    import i18n
+  File "D:\Projets\Domotique\yadoms\tests\user\i18n.py", line 26
+    print "getPlugin : ", pluginType, " not found"
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print("getPlugin : ", pluginType, " not found")?
+</p><p style="color:maroon;">ImportError: Failed to import test module: dashboard.systemConfiguration
+Traceback (most recent call last):
+  File "C:\Python38\lib\unittest\loader.py", line 470, in _find_test_path
+    package = self._get_module_from_name(name)
+  File "C:\Python38\lib\unittest\loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "D:\Projets\Domotique\yadoms\tests\user\dashboard\systemConfiguration\__init__.py", line 7, in <module>
+    import i18n
+  File "D:\Projets\Domotique\yadoms\tests\user\i18n.py", line 26
+    print "getPlugin : ", pluginType, " not found"
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print("getPlugin : ", pluginType, " not found")?
+
+</p>
+                            </td>
+                        </tr>
+                        <tr class='warning'>
+                            <td class="col-xs-10">testMenuEntries</td>
+                            <td class="col-xs-1">
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p style="color:maroon;">ImportError: Failed to import test module: dashboard.testMenuEntries
+Traceback (most recent call last):
+  File "C:\Python38\lib\unittest\loader.py", line 436, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "C:\Python38\lib\unittest\loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "D:\Projets\Domotique\yadoms\tests\user\dashboard\testMenuEntries.py", line 31
+    print '=== Main dashboard menu test ==='
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print('=== Main dashboard menu test ===')?
+</p><p style="color:maroon;">ImportError: Failed to import test module: dashboard.testMenuEntries
+Traceback (most recent call last):
+  File "C:\Python38\lib\unittest\loader.py", line 436, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "C:\Python38\lib\unittest\loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "D:\Projets\Domotique\yadoms\tests\user\dashboard\testMenuEntries.py", line 31
+    print '=== Main dashboard menu test ==='
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print('=== Main dashboard menu test ===')?
+
+</p>
+                            </td>
+                        </tr>
+                        <tr class='warning'>
+                            <td class="col-xs-10">testNavigationAccrossPages</td>
+                            <td class="col-xs-1">
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p style="color:maroon;">ImportError: Failed to import test module: dashboard.testNavigationAccrossPages
+Traceback (most recent call last):
+  File "C:\Python38\lib\unittest\loader.py", line 436, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "C:\Python38\lib\unittest\loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "D:\Projets\Domotique\yadoms\tests\user\dashboard\testNavigationAccrossPages.py", line 27
+    print 'click on ' + menuEntries[pageIndex].text + ' page (index ' + str(pageIndex) + ')'
+          ^
+SyntaxError: invalid syntax
+</p><p style="color:maroon;">ImportError: Failed to import test module: dashboard.testNavigationAccrossPages
+Traceback (most recent call last):
+  File "C:\Python38\lib\unittest\loader.py", line 436, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "C:\Python38\lib\unittest\loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "D:\Projets\Domotique\yadoms\tests\user\dashboard\testNavigationAccrossPages.py", line 27
+    print 'click on ' + menuEntries[pageIndex].text + ' page (index ' + str(pageIndex) + ')'
+          ^
+SyntaxError: invalid syntax
+
+</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                Total: 5, Pass: 0, Error: 5 -- Duration: 6 ms
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('td').on('click', '.btn', function(e){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var $this = $(this);
+                var $nextRow = $this.closest('tr').next('tr');
+                $nextRow.slideToggle("fast");
+                $this.text(function(i, text){
+                    if (text === 'View') {
+                        return 'Hide';
+                    } else {
+                        return 'View';
+                    };
+                });
+            });
+        });
+    </script>
+</body>
+</html

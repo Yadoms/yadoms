@@ -32,35 +32,35 @@ class AdvancedParameterSection(unittest.TestCase):
       
       
    def test_testAdvancedParameterSectionReset(self):
-      print '=== Advanced parameter section default state check (cold start), save value, restore value and reset to default ==='
+      print ('=== Advanced parameter section default state check (cold start), save value, restore value and reset to default ===')
 
-      print 'Open systemConfiguration dashboard'
+      print ('Open systemConfiguration dashboard')
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
 
-      print 'Check Advanced parameter section default state (cold start)'
+      print ('Check Advanced parameter section default state (cold start)')
       panel = dashboard.systemConfiguration.getPanel(self.browser)
       self.assertFalse(panel.isAdvancedParametersSectionActive())
       
-      print 'Enable Advanced parameter section'      
+      print ('Enable Advanced parameter section')
       panel.enableAdvancedParametersSection()
       panel.apply()
       dashboard.close(self.browser)
 
-      print 'Check that advanced parameter section state was saved'
+      print ('Check that advanced parameter section state was saved')
       self.browser.refresh()
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
       panel = dashboard.systemConfiguration.getPanel(self.browser)
       self.assertTrue(panel.isAdvancedParametersSectionActive())
 
-      print 'Reset to default value'
+      print ('Reset to default value')
       panel.resetToDefaultValues()
       modals.waitOkCancelModal(self.browser).ok()
       # Reseting to default values make page reload, wait for page reloaded
       yadomsServer.waitPageLoaded(self.browser)
 
-      print 'Re-open systemConfiguration dashboard and check state was restored'
+      print ('Re-open systemConfiguration dashboard and check state was restored')
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
       panel = dashboard.systemConfiguration.getPanel(self.browser)

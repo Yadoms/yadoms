@@ -32,53 +32,53 @@ class BasicAuthentication(unittest.TestCase):
 
       
    def test_testSetBasicAuthentication(self):
-      print '=== Set a basic authentication ==='
+      print ('=== Set a basic authentication ===')
 
-      print 'Open systemConfiguration dashboard'
+      print ('Open systemConfiguration dashboard')
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
 
-      print 'Check that basic authentication is disabled (cold start)'
+      print ('Check that basic authentication is disabled (cold start)')
       panel = dashboard.systemConfiguration.getPanel(self.browser)
       self.assertFalse(panel.isBasicAuthenticationSectionActive())
       
-      print 'Enable basic authentication section'      
+      print ('Enable basic authentication section')
       panel.enableBasicAuthenticationSection()
       
-      print 'Check that Apply is not possible without password'
+      print ('Check that Apply is not possible without password')
       panel.apply()
       passwordField = panel.getBasicAuthenticationPasswordField()
       self.assertTrue(tools.waitUntil(lambda: "has-error" in passwordField.get_attribute("class")))
       self.assertEqual(passwordField.find_element_by_xpath(".//div[@class='help-block']//ul[@role='alert']//li").text, i18n.get()["configuration"]["validationForm"]["required"])
       
-      print 'Check that verify password is needed'
+      print ('Check that verify password is needed')
       panel.setBasicAuthenticationPassword("yadoms1234");
       panel.apply()
       verifyPasswordField = panel.getBasicAuthenticationVerifyPasswordField()
       self.assertTrue(tools.waitUntil(lambda: "has-warning" in verifyPasswordField.get_attribute("class")))
       self.assertEqual(verifyPasswordField.find_element_by_xpath(".//div[@class='help-block']//ul[@role='alert']//li").text, i18n.get()["modals"]["dashboard"]["sub-windows"]["system-configuration"]["configuration-items"]["basicAuthenticationPassword2"]["matchToErrorMessage"])
 
-      print 'Check that password fields must be the same'
+      print ('Check that password fields must be the same')
       panel.setBasicAuthenticationVerifyPassword("yadoms123");
       panel.apply()
       verifyPasswordField = panel.getBasicAuthenticationVerifyPasswordField()
       self.assertTrue(tools.waitUntil(lambda: "has-warning" in verifyPasswordField.get_attribute("class")))
       self.assertEqual(verifyPasswordField.find_element_by_xpath(".//div[@class='help-block']//ul[@role='alert']//li").text, i18n.get()["modals"]["dashboard"]["sub-windows"]["system-configuration"]["configuration-items"]["basicAuthenticationPassword2"]["matchToErrorMessage"])
 
-      print 'Check that password fields must be the same'
+      print ('Check that password fields must be the same')
       panel.setBasicAuthenticationVerifyPassword("yadoms1234");
       self.assertTrue(tools.waitUntil(lambda: "has-warning" not in verifyPasswordField.get_attribute("class")))
 
-      print 'Valid new authentication'
+      print ('Valid new authentication')
       panel.apply()
 
       # Applying these modification make Yadoms client to be refreshed (by Yadoms design)
       # It's probably because this that we can't access alert dialog (Selenium alert API doesn't work)
       
-      print 'Check that requests without credentials are refused'
+      print ('Check that requests without credentials are refused')
       self.assertTrue(tools.waitUntil(lambda: yadomsServer.waitServerStarted(clientCredentials = None, timemoutSeconds = 1) == False))
 
-      print 'Check that it works with credentials'
+      print ('Check that it works with credentials')
       self.assertTrue(yadomsServer.waitServerStarted(clientCredentials = { "user" : "admin", "password" : "yadoms1234" }))
 
       

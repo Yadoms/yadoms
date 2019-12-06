@@ -25,15 +25,15 @@ class CreatePlugin(unittest.TestCase):
             
             
    def test_createOkPlugin(self):
-      print '=== Nominal test of plugin creation ==='
+      print ('=== Nominal test of plugin creation ===')
 
       pluginInstanceName = "My fakePlugin instance"
       pluginType = "dev-fakePlugin"
 
-      print 'Create created plugin'
+      print ('Create created plugin')
       dashboard.plugins.createPluginSequence(self.browser, pluginInstanceName, pluginType, lambda pluginInstanceName: dashboard.plugins.basicFillConfigurationSequence(self.browser, pluginInstanceName))
 
-      print 'Check created plugin'
+      print ('Check created plugin')
       dashboard.plugins.checkCreatedPluginSequence(self, pluginInstanceName, pluginType, True, True)
       
       

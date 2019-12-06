@@ -28,14 +28,14 @@ class MenuEntries(unittest.TestCase):
       self.assertEqual(entry.is_selected(), False)
       
    def test_checkEntries(self):
-      print '=== Main dashboard menu test ==='
+      print ('=== Main dashboard menu test ===')
 
       self.assertIn("Yadoms", self.browser.title)
       
-      print '  Enter dashboard'
+      print ('  Enter dashboard')
       dashboard.open(self.browser)
    
-      print '  Check summary page'
+      print ('  Check summary page')
       dashboard_boutons = self.browser.find_element_by_id("dashboard-btns")
       menuEntries = dashboard_boutons.find_elements_by_xpath("./child::*")
       self.assertEqual(len(menuEntries), 9)

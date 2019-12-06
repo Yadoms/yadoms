@@ -76,14 +76,14 @@ def start(startupArgs=[]):
    for arg in startupArgs:
       cmdLine.append("--" + arg)
 
-   print 'Start server ...' 
-   print '  ', ' '.join(str(item) for item in cmdLine)
+   print ('Start server ...' )
+   print ('  ' + ' '.join(str(item) for item in cmdLine))
    serverProcess = psutil.Popen(cmdLine)
 
    if waitServerStarted():
       return serverProcess
 
-   print 'Server failed to start'
+   print ('Server failed to start')
    stop(serverProcess)
    assert False
    
@@ -115,19 +115,19 @@ def killProcTree(pid, including_parent=True):
       try:
          parent.kill()
          parent.wait(20)
-         print 'Process killed'
+         print ('Process killed')
       except:
-         print 'Error : process still alive'
+         print ('Error : process still alive')
          assert False
       
   
 def stop(yadomsProcess):
    """Kill Yadoms server with its sub-processes"""
 
-   print 'Stop Yadoms...'
+   print ('Stop Yadoms...')
    # Sending signal.CTRL_C_EVENT doesn't work, so kill process tree
    killProcTree(yadomsProcess.pid)
-   print 'Yadoms stopped'
+   print ('Yadoms stopped')
       
   
 def ensureStopped():
@@ -157,12 +157,12 @@ def waitServerStarted(clientCredentials = None, timemoutSeconds = 30):
       try:
          response = requests.post(url + '/rest/general/system', timeout=1)
          if response.status_code == requests.codes.ok:
-            print 'Server started'
+            print ('Server started')
             return True
       except:
         pass
 
-   print 'Server not responding'
+   print ('Server not responding')
    return False
 
 
@@ -183,7 +183,7 @@ def openClient(browser, waitForReadyForNormalOperation = True, credentials = Non
       if waitPageLoaded(browser, waitForReadyForNormalOperation):
          return
    except:
-      print 'Exception waiting page loading'
+      print ('Exception waiting page loading')
 
-   print 'Unable to load client'
+   print ('Unable to load client')
    assert False

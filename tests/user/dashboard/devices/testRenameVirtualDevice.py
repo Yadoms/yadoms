@@ -30,30 +30,30 @@ class RenameVirtualDevice(unittest.TestCase):
       dashboard.openDevice(self.browser)
 
    def test_renameVirtualDevice(self):
-      print '=== Rename a virtual device ==='
+      print ('=== Rename a virtual device ===')
       deviceName = u'My virtual device'
       newDeviceName = u'myNewName'
       attachedPluginInstance = u'My fakePlugin instance'
      
-      print '  Open the configure device modal'
+      print ('  Open the configure device modal')
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureVirtualDeviceModal = dashboard.devices.waitConfigureVirtualDeviceModal(self.browser)
 
-      print '  Change virtual device name then cancel'
+      print ('  Change virtual device name then cancel')
       configureVirtualDeviceModal.updateTextField('friendlyName', newDeviceName)
       configureVirtualDeviceModal.cancel()
       self.assertTrue(tools.waitUntil(lambda: dashboard.devices.getDeviceName(devicesTable, deviceId) == deviceName))
       
-      print '  Change virtual device name then confirm'
+      print ('  Change virtual device name then confirm')
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureVirtualDeviceModal = dashboard.devices.waitConfigureVirtualDeviceModal(self.browser)
       configureVirtualDeviceModal.updateTextField('friendlyName', newDeviceName)
       configureVirtualDeviceModal.ok()
       self.assertTrue(tools.waitUntil(lambda: dashboard.devices.getDeviceName(devicesTable, deviceId) == newDeviceName))
 
-      print '  Check change was saved'
+      print ('  Check change was saved')
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, newDeviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureVirtualDeviceModal = dashboard.devices.waitConfigureVirtualDeviceModal(self.browser)

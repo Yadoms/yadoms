@@ -104,7 +104,7 @@ def getRuleState(rulesTable, ruleNumber):
       return RuleState.Running
    if 'label-danger' in classes:
       return RuleState.Error
-   print 'Not expected class for label-status : ', classes
+   print ('Not expected class for label-status : {classes}')
    assert False   
 
    

@@ -23,6 +23,6 @@ def getPlugin(pluginType):
    try:
       translations = json.load(codecs.open(os.path.join(yadomsServer.pluginsPath(), pluginType, "locales", currentLocale() + ".json"), "r", "utf-8-sig"))
    except:
-      print "getPlugin : ", pluginType, " not found"
+      print ('getPlugin : {pluginType} not found')
    
    return translations
