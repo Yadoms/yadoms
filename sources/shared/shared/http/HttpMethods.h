@@ -59,10 +59,10 @@ namespace shared
       static void sendGetRequest(const std::string& url,
                                  const boost::function<void(const Poco::Net::HTTPResponse& response,
                                                             std::istream& receivedStream)>& responseHandlerFct,
-                                 const CDataContainer& headerParameters,
-                                 const CDataContainer& parameters,
-                                 const ESessionType& sessionType,
-                                 const boost::posix_time::time_duration& timeout);
+                                 const CDataContainer& headerParameters = CDataContainer(),
+                                 const CDataContainer& parameters = CDataContainer(),
+                                 const ESessionType& sessionType = kStandard,
+                                 const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
       /// \brief	    Send post request to remote server (for JSON answer)
@@ -95,11 +95,11 @@ namespace shared
       static void sendPostRequest(const std::string& url,
                                   const boost::function<void(const Poco::Net::HTTPResponse& response,
                                                              std::istream& receivedStream)>& responseHandlerFct,
-                                  const CDataContainer& headerParameters,
-                                  const CDataContainer& parameters,
-                                  const std::string& body,
-                                  const ESessionType& sessionType,
-                                  const boost::posix_time::time_duration& timeout);
+                                  const CDataContainer& headerParameters = CDataContainer(),
+                                  const CDataContainer& parameters = CDataContainer(),
+                                  const std::string& body = std::string(),
+                                  const ESessionType& sessionType = kStandard,
+                                  const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
 
    protected:
       static boost::shared_ptr<IHttpSession> createSession(const ESessionType& sessionType,
