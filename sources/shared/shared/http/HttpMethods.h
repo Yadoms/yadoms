@@ -47,6 +47,24 @@ namespace shared
                                            const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
+      /// \brief	    Send get request to remote server with response processing injection
+      /// \param[in]  url                 the url to send the request
+      /// \param[in]  responseHandlerFct  lambda for response processing
+      /// \param[in]  headerParameters    parameters included into the frame
+      /// \param[in]  parameters          parameters at the end of the url
+      /// \param[in]  sessionType         the session type to use
+      /// \param[in]  timeout             timeout for the request
+      /// \return     the answer of the request
+      //--------------------------------------------------------------
+      static void sendGetRequest(const std::string& url,
+                                 const boost::function<void(const Poco::Net::HTTPResponse& response,
+                                                            std::istream& receivedStream)>& responseHandlerFct,
+                                 const CDataContainer& headerParameters,
+                                 const CDataContainer& parameters,
+                                 const ESessionType& sessionType,
+                                 const boost::posix_time::time_duration& timeout);
+
+      //--------------------------------------------------------------
       /// \brief	    Send post request to remote server
       /// \param[in]  url                 the url to send the request
       /// \param[in]  headerParameters    parameters included into the frame
@@ -71,7 +89,7 @@ namespace shared
       static CDataContainer processResponse(Poco::Net::HTTPResponse& response,
                                             std::istream& receivedStream);
 
-      static CDataContainer processJsonResponse(Poco::Net::HTTPResponse& response,
+      static CDataContainer processJsonResponse(const Poco::Net::HTTPResponse& response,
                                                 std::istream& receivedStream);
       static CDataContainer processXmlElements(const boost::property_tree::ptree& node);
       static CDataContainer processXmlResponse(Poco::Net::HTTPResponse& response,
