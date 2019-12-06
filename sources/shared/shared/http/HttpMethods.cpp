@@ -108,13 +108,38 @@ namespace shared
       }
    }
 
-   //TODO appliquer l'injection des handlers de réponse à cette fonction
    CDataContainer CHttpMethods::sendPostRequest(const std::string& url,
                                                 const CDataContainer& headerParameters,
                                                 const CDataContainer& parameters,
                                                 const std::string& body,
                                                 const ESessionType& sessionType,
                                                 const boost::posix_time::time_duration& timeout)
+   {
+      CDataContainer out;
+      sendPostRequest(url,
+                      [&out](const Poco::Net::HTTPResponse& response,
+                             std::istream& receivedStream)
+                      {
+                         out = processJsonResponse(response,
+                                                   receivedStream);
+                      },
+                      headerParameters,
+                      parameters,
+                      body,
+                      sessionType,
+                      timeout);
+
+      return out;
+   }
+
+   void CHttpMethods::sendPostRequest(const std::string& url,
+                                      const boost::function<void(const Poco::Net::HTTPResponse& response,
+                                                                 std::istream& receivedStream)>& responseHandlerFct,
+                                      const CDataContainer& headerParameters,
+                                      const CDataContainer& parameters,
+                                      const std::string& body,
+                                      const ESessionType& sessionType,
+                                      const boost::posix_time::time_duration& timeout)
    {
       try
       {
@@ -146,19 +171,23 @@ namespace shared
                                     url,
                                     timeout));
 
-         std::ostream& os = session->sendRequest(request);
+         auto& os = session->sendRequest(request);
 
          os << body;
 
          Poco::Net::HTTPResponse response;
          auto& receivedStream = session->receiveResponse(response);
 
-         if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK || response.getStatus() == Poco::Net::HTTPResponse::HTTP_CREATED)
-            return processResponse(response, receivedStream);
+         if (response.getStatus() != Poco::Net::HTTPResponse::HTTP_OK &&
+            response.getStatus() != Poco::Net::HTTPResponse::HTTP_CREATED)
+         {
+            const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
+            YADOMS_LOG(warning) << message;
+            throw exception::CException(message);
+         }
 
-         const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
-         YADOMS_LOG(warning) << message;
-         throw exception::CException(message);
+         responseHandlerFct(response,
+                            receivedStream);
       }
       catch (const Poco::Net::SSLException& e)
       {
