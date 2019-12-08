@@ -67,17 +67,17 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Send post request to remote server (for JSON answer)
       /// \param[in]  url                 the url to send the request
+      /// \param[in]  body                the body of request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  body                the body of request
       /// \param[in]  sessionType         the session type to use
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
       static CDataContainer sendPostRequest(const std::string& url,
+                                            const std::string& body,
                                             const CDataContainer& headerParameters = CDataContainer(),
                                             const CDataContainer& parameters = CDataContainer(),
-                                            const std::string& body = std::string(),
                                             const ESessionType& sessionType = kStandard,
                                             const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
 

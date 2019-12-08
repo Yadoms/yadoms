@@ -109,9 +109,9 @@ namespace shared
    }
 
    CDataContainer CHttpMethods::sendPostRequest(const std::string& url,
+                                                const std::string& body,
                                                 const CDataContainer& headerParameters,
                                                 const CDataContainer& parameters,
-                                                const std::string& body,
                                                 const ESessionType& sessionType,
                                                 const boost::posix_time::time_duration& timeout)
    {
