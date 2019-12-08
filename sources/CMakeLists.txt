@@ -255,6 +255,9 @@ endif()
 # define libraries to link with
 #
 ###############################################
+if(MSVC) # Needed under Windows by Poco.
+	set(LIBS ${LIBS} "${OPENSSL_ROOT}/lib/libeay32.lib" "${OPENSSL_ROOT}/lib/ssleay32.lib")
+endif()
 set(LIBS
    ${LIBS}
    ${Boost_LIBRARIES}
