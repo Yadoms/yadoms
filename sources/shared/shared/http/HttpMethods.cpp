@@ -117,6 +117,7 @@ namespace shared
    {
       CDataContainer out;
       sendPostRequest(url,
+                      body,
                       [&out](const Poco::Net::HTTPResponse& response,
                              std::istream& receivedStream)
                       {
@@ -125,7 +126,6 @@ namespace shared
                       },
                       headerParameters,
                       parameters,
-                      body,
                       sessionType,
                       timeout);
 
@@ -133,11 +133,11 @@ namespace shared
    }
 
    void CHttpMethods::sendPostRequest(const std::string& url,
+                                      const std::string& body,
                                       const boost::function<void(const Poco::Net::HTTPResponse& response,
                                                                  std::istream& receivedStream)>& responseHandlerFct,
                                       const CDataContainer& headerParameters,
                                       const CDataContainer& parameters,
-                                      const std::string& body,
                                       const ESessionType& sessionType,
                                       const boost::posix_time::time_duration& timeout)
    {
@@ -235,30 +235,6 @@ namespace shared
       return session;
    }
 
-   CDataContainer CHttpMethods::processResponse(Poco::Net::HTTPResponse& response,
-                                                std::istream& receivedStream)
-   {
-      if (boost::icontains(response.getContentType(), "application/json") ||
-         boost::icontains(response.getContentType(), "text/json"))
-      {
-         return processJsonResponse(response,
-                                    receivedStream);
-      }
-      if (boost::icontains(response.getContentType(), "application/xml") ||
-         boost::icontains(response.getContentType(), "text/xml"))
-      {
-         return processXmlResponse(response,
-                                   receivedStream);
-      }
-      if (boost::icontains(response.getContentType(), "text/"))
-      {
-         return processTextResponse(response,
-                                    receivedStream);
-      }
-      return processRawResponse(response,
-                                receivedStream);
-   }
-
    CDataContainer CHttpMethods::processJsonResponse(const Poco::Net::HTTPResponse& response,
                                                     std::istream& receivedStream)
    {
@@ -271,81 +247,5 @@ namespace shared
       // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength
       static const std::istreambuf_iterator<char> Eos;
       return CDataContainer(std::string(std::istreambuf_iterator<char>(receivedStream), Eos));
-   }
-
-   CDataContainer CHttpMethods::processXmlElements(const boost::property_tree::ptree& node)
-   {
-      CDataContainer nodeContainer;
-      std::vector<CDataContainer> itemsArray;
-
-      for (const auto& child : node)
-      {
-         // Sub-nodes
-         if (!child.second.empty())
-         {
-            // XML attributes
-            if (child.first == "<xmlattr>")
-            {
-               for (const auto& attribute : child.second)
-               {
-                  nodeContainer.set(attribute.first,
-                                    attribute.second.get_value<std::string>());
-               }
-               continue;
-            }
-
-            // XML elements
-            CDataContainer data2;
-            data2.set(child.first,
-                      processXmlElements(child.second));
-            itemsArray.push_back(data2);
-            continue;
-         }
-
-         CDataContainer data2;
-         data2.set(child.first,
-                   child.second.get_value<std::string>());
-         itemsArray.push_back(data2);
-      }
-
-      if (!itemsArray.empty())
-         nodeContainer.set("<XML elements>",
-                           itemsArray);
-
-      return nodeContainer;
-   }
-
-   CDataContainer CHttpMethods::processXmlResponse(Poco::Net::HTTPResponse& response,
-                                                   std::istream& receivedStream)
-   {
-      //TODO déplacer dans la classe CDataContainer ?
-      boost::property_tree::ptree tree;
-      read_xml(receivedStream, tree);
-
-      CDataContainer data;
-      for (const auto& child : tree)
-      {
-         if (!child.second.empty())
-         {
-            data.set(child.first,
-                     processXmlElements(child.second));
-         }
-      }
-      return data;
-   }
-
-   CDataContainer CHttpMethods::processTextResponse(Poco::Net::HTTPResponse& response,
-                                                    std::istream& receivedStream)
-   {
-      CDataContainer data;
-      data.set("text", std::string(std::istreambuf_iterator<char>(receivedStream), {}));
-      return data;
-   }
-
-   CDataContainer CHttpMethods::processRawResponse(Poco::Net::HTTPResponse& response,
-                                                   std::istream& receivedStream)
-   {
-      //TODO
-      return CDataContainer(); //TODO virer
    }
 } // namespace shared

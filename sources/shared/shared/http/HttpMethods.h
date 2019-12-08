@@ -84,20 +84,20 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Send get request to remote server with response processing injection
       /// \param[in]  url                 the url to send the request
+      /// \param[in]  body                the body of request
       /// \param[in]  responseHandlerFct  lambda for response processing
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  body                the body of request
       /// \param[in]  sessionType         the session type to use
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
       static void sendPostRequest(const std::string& url,
+                                  const std::string& body,
                                   const boost::function<void(const Poco::Net::HTTPResponse& response,
                                                              std::istream& receivedStream)>& responseHandlerFct,
                                   const CDataContainer& headerParameters = CDataContainer(),
                                   const CDataContainer& parameters = CDataContainer(),
-                                  const std::string& body = std::string(),
                                   const ESessionType& sessionType = kStandard,
                                   const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
 
@@ -106,17 +106,7 @@ namespace shared
                                                            const std::string& url,
                                                            const boost::posix_time::time_duration& timeout);
 
-      static CDataContainer processResponse(Poco::Net::HTTPResponse& response,
-                                            std::istream& receivedStream);
-
       static CDataContainer processJsonResponse(const Poco::Net::HTTPResponse& response,
                                                 std::istream& receivedStream);
-      static CDataContainer processXmlElements(const boost::property_tree::ptree& node);
-      static CDataContainer processXmlResponse(Poco::Net::HTTPResponse& response,
-                                               std::istream& receivedStream);
-      static CDataContainer processTextResponse(Poco::Net::HTTPResponse& response,
-                                                std::istream& receivedStream);
-      static CDataContainer processRawResponse(Poco::Net::HTTPResponse& response,
-                                               std::istream& receivedStream);
    };
 } // namespace shared
