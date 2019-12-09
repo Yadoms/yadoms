@@ -63,9 +63,9 @@ MACRO(SCRIPT_API_WRAPPER_LINK _targetName)
 	endif()	   
 ENDMACRO()
 
-MACRO(SCRIPT_API_SOURCE_GROUP parentInterpreter)
+MACRO(SCRIPT_API_SOURCE_GROUP _targetName parentInterpreter)
    IF(MSVC OR XCODE)
-      SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "scriptInterpreters/${parentInterpreter}")
+      SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "scriptInterpreters/${parentInterpreter}/${_targetName}")
    ENDIF()
 ENDMACRO()
 
