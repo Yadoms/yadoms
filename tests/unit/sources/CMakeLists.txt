@@ -120,6 +120,26 @@ if(APPLE)
 endif()
 
 ###############################################
+# OpenSSL
+#
+###############################################
+SET(OPENSSL_USE_STATIC_LIBS TRUE)
+SET(OPENSSL_MSVC_STATIC_RT TRUE)
+SET(OPENSSL_ROOT_DIR ${OPENSSL_ROOT})
+FIND_PACKAGE(OpenSSL)
+
+if(NOT ${OPENSSL_FOUND})
+   message("Cannot find opensll, all plugins which requires SSL features will not be loaded")
+   set(OPENSSL_INCLUDE_DIR "")
+endif()
+
+set(LIBS 
+   ${LIBS} 
+   ${OPENSSL_SSL_LIBRARY} 
+   ${OPENSSL_CRYPTO_LIBRARY}
+)
+
+###############################################
 # POCO
 #
 # POCO_LIBS : define all required poco libraries
@@ -138,6 +158,7 @@ SET ( POCO_LIBS
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
 set(POCO_USE_STATIC_LIBS 1)
 set(POCO_USE_STATIC_RUNTIME 1)
+add_definitions(-DPOCO_EXTERNAL_OPENSSL=42) #force an unknown value (empty value do not work correctly)
 include(${YADOMS_PATH}/cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
@@ -145,9 +166,6 @@ IF(NOT ${Poco_FOUND})
 ENDIF()
 
 # define libraries to link with
-if(MSVC) # Needed under Windows by Poco.
-	set(LIBS ${LIBS} "${OPENSSL_ROOT}/lib/libeay32.lib" "${OPENSSL_ROOT}/lib/ssleay32.lib")
-endif()
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} )
 
 ##################################################################################################
@@ -167,8 +185,6 @@ set(YADOMS_TESTS_SRC
    testCommon/serialTeleInfoMessage.h
    testCommon/serialTeleInfoMessage.cpp
 )
-
-set(YADOMS_INCL_DIR)
 
 ##################################################################################################
 ## Tests selection to build
@@ -223,20 +239,35 @@ add_precompiled_header(yadomsTests stdafx.h)
 ##################################################################################################
 ## Include directories
 ##################################################################################################
-include_directories(${BOOST_INCL_DIR} . mock ${YADOMS_PATH}/server ${YADOMS_PATH}/shared ${YADOMS_PATH}/server/tools ${Poco_INCLUDE_DIRS})
+
+set(YADOMS_INCL_DIR
+   ${YADOMS_INCL_DIR}
+   ${YADOMS_PATH}/server
+   ${YADOMS_PATH}/shared
+   ${YADOMS_PATH}/server/tools
+)
 
 IF(WIN32)
-   include_directories(${YADOMS_PATH}/server/tools/windows)
-   include_directories(${YADOMS_PATH}/shared/windows)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${YADOMS_PATH}/server/tools/windows)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${YADOMS_PATH}/shared/windows)
 ELSEIF(APPLE)
-   include_directories(${YADOMS_PATH}/server/tools/mac)
-   include_directories(${YADOMS_PATH}/shared/mac)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${YADOMS_PATH}/server/tools/mac)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${YADOMS_PATH}/shared/mac)
 ELSE()
-   include_directories(${YADOMS_PATH}/server/tools/linux)
-   include_directories(${YADOMS_PATH}/shared/linux)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${YADOMS_PATH}/server/tools/linux)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${YADOMS_PATH}/shared/linux)
 ENDIF()
-
-include_directories(${YADOMS_INCL_DIR})
+message("YADOMS_INCL_DIR=${YADOMS_INCL_DIR}")
+# include OPENSSL_INCLUDE_DIR before YADOMS_INCL_DIR because YADOMS_INCL_DIR include postgresql which may embed its own openssl files (not used)
+# but this may infer in some compilation cases
+include_directories(
+   ${BOOST_INCL_DIR}
+   ${OPENSSL_INCLUDE_DIR}
+   ${Poco_INCLUDE_DIRS}
+   ${YADOMS_INCL_DIR}
+   .
+   mock
+)
 
 ##################################################################################################
 ## Link
