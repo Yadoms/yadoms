@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "HttpMethods.h"
 #include <Poco/Net/HTTPRequest.h>
-#include <Poco/Net/HTTPCredentials.h>
+#include <Poco/Net/HTTPBasicCredentials.h>
 #include <Poco/URI.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
@@ -15,19 +15,19 @@ namespace http
 {
    boost::posix_time::time_duration CHttpMethods::httpRequestDefaultTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(45)));
 
-   bool CHttpMethods::SendGetRequest(const std::string& url,
-                                     const shared::CDataContainer& credentials,
-                                     const shared::CDataContainer& parameters,
-                                     boost::function1<void, shared::CDataContainer&> onReceive,
-                                     const boost::posix_time::time_duration& timeout)
+   bool CHttpMethods::SendGetRequest(
+	   const std::string& url,
+       const shared::CDataContainer& credentials,
+       const shared::CDataContainer& parameters,
+       boost::function1<void, shared::CDataContainer&> onReceive,
+	   http::httpContext& context,
+       const boost::posix_time::time_duration& timeout)
    {
-      try
-      {
+      try{
          auto mapParameters = parameters.getAsMap<std::string>();
          Poco::URI uri(url);
 
-         if (!parameters.empty())
-         {
+         if (!parameters.empty()){
             for (const auto& parametersIterator : mapParameters)
                uri.addQueryParameter(parametersIterator.first, parametersIterator.second);
          }
@@ -35,22 +35,28 @@ namespace http
          Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
          session.setTimeout(Poco::Timespan(timeout.seconds(), 0));
 
-         Poco::Net::HTTPCredentials creds(credentials.get<std::string>("user"), 
-                                          credentials.get<std::string>("password"));
-
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
                                         uri.getPathAndQuery(),
                                         Poco::Net::HTTPMessage::HTTP_1_1);
          
          Poco::Net::HTTPResponse response;
-         session.sendRequest(request);
-         session.receiveResponse(response);
+
+		 YADOMS_LOG(information) << "basic credential active : " << context.basicCredential();
+
+		 if (!context.basicCredential()) {
+			 session.sendRequest(request);
+			 session.receiveResponse(response);
+		 }
 
          // Retry for protected equipements
-         std::string buffer;
-         if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
-         {
-            creds.authenticate(request, response);
+		 if ((response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED && !context.basicCredential())) {
+			 context.setBasicCredential(true);
+		 }
+
+		 std::string buffer;
+		 if (context.basicCredential()){
+			Poco::Net::HTTPBasicCredentials creds(credentials.get<std::string>("user"),credentials.get<std::string>("password"));
+			creds.authenticate(request);
             session.sendRequest(request);
             auto& receiveSecureStream = session.receiveResponse(response);
             
@@ -59,14 +65,12 @@ namespace http
             buffer = oss.str();
          }
 
-         if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
-         {
+         if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK){
             shared::CDataContainer data;
             std::istringstream oss1(buffer);
             shared::CDataContainer treeResponse;
 
-            if (XmlResponseReader(oss1, response, treeResponse))
-            {
+            if (XmlResponseReader(oss1, response, treeResponse)){
                onReceive(treeResponse);
                return true;
             }
@@ -75,8 +79,7 @@ namespace http
             YADOMS_LOG(error) << message;
             throw shared::exception::CException(message);
          }
-         else if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
-         {
+         else if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED){
             auto message = "HTTP : unauthorized access";
             YADOMS_LOG(error) << message;
             throw shared::exception::CException(message);
@@ -105,40 +108,48 @@ namespace http
       }
    }
 
-   shared::CDataContainer CHttpMethods::SendGetRequest(const std::string& url,
-                                                            const shared::CDataContainer& parameters,
-                                                            const boost::posix_time::time_duration& timeout)
+   shared::CDataContainer CHttpMethods::SendGetRequest(
+	   const std::string& url,
+       const shared::CDataContainer& parameters,
+	   http::httpContext& context,
+       const boost::posix_time::time_duration& timeout)
    {
       shared::CDataContainer responseData;
       shared::CDataContainer credentials;
 
-      SendGetRequest(url,
-                     credentials,
-                     parameters,
-                     [&](shared::CDataContainer& data)
-                     {
-                        responseData = data;
-                     },
-                     timeout);
+      SendGetRequest(
+		  url,
+          credentials,
+          parameters,
+          [&](shared::CDataContainer& data)
+          {
+             responseData = data;
+          },
+		  context,
+          timeout);
 
       return responseData;
    }
 
-   shared::CDataContainer CHttpMethods::SendGetRequest(const std::string& url,
-                                                            const shared::CDataContainer& credentials,
-                                                            const shared::CDataContainer& parameters,
-                                                            const boost::posix_time::time_duration& timeout)
+   shared::CDataContainer CHttpMethods::SendGetRequest(
+	   const std::string& url,
+       const shared::CDataContainer& credentials,
+       const shared::CDataContainer& parameters,
+	   http::httpContext& context,
+       const boost::posix_time::time_duration& timeout)
    {
       shared::CDataContainer responseData;
 
-      SendGetRequest(url,
-                     credentials,
-                     parameters,
-                     [&](shared::CDataContainer& data)
-                     {
-                        responseData = data;
-                     },
-                     timeout);
+      SendGetRequest(
+		  url,
+          credentials,
+          parameters,
+          [&](shared::CDataContainer& data)
+          {
+              responseData = data;
+          },
+		  context,
+          timeout);
 
       return responseData;
    }

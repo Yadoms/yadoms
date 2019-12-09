@@ -68,9 +68,10 @@ set(WES_PLUGIN_SOURCES
    equipments/WESSubEquipments/Clamp.h
    equipments/WESSubEquipments/Pulse.cpp
    equipments/WESSubEquipments/Pulse.h
+   http/httpContext.cpp
+   http/httpContext.h
    http/HttpMethods.cpp
    http/HttpMethods.h
-   http/invalidHTTPResultException.hpp
    http/timeOutException.hpp
 )
 

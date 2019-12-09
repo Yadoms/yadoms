@@ -2,11 +2,12 @@
 #include <shared/DataContainer.h>
 #include <Poco/Net/HTTPClientSession.h>
 #include <Poco/Net/HTTPResponse.h>
+#include "httpContext.h"
 
 namespace http
 {
    //--------------------------------------------------------------
-   /// \brief	Base class for threads
+   /// \brief	Base class for Http Methods
    //--------------------------------------------------------------
    class CHttpMethods
    {
@@ -20,46 +21,48 @@ namespace http
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
       /// \param[in]  url                 the url to send the request
+      /// \param[in]  parameters          parameters at the end of the url
+	  /// \param[in]  context             context specific for each equipment for sending information
+      /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static shared::CDataContainer SendGetRequest(const std::string & url);
+      static shared::CDataContainer SendGetRequest(
+		  const std::string & url,
+          const shared::CDataContainer & parameters,
+		  http::httpContext& context,
+          const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
       /// \param[in]  url                 the url to send the request
       /// \param[in]  parameters          parameters at the end of the url
+	  /// \param[in]  context             context specific for each equipment for sending information
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      shared::CDataContainer SendGetRequest(const std::string & url,
-                                                 const shared::CDataContainer & parameters,
-                                                 const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
-
-      //--------------------------------------------------------------
-      /// \brief	    SendGetRequest
-      /// \param[in]  url                 the url to send the request
-      /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  timeout             timeout for the request
-      /// \return     the answer of the request
-      //--------------------------------------------------------------
-      static shared::CDataContainer SendGetRequest(const std::string & url,
-                                                        const shared::CDataContainer & credentials,
-                                                        const shared::CDataContainer & parameters,
-                                                        const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
+      static shared::CDataContainer SendGetRequest(
+		  const std::string & url,
+          const shared::CDataContainer & credentials,
+          const shared::CDataContainer & parameters,
+		  http::httpContext& context,
+          const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
       /// \param[in]  url                 the url to send the request
       /// \param[in]  parameters          parameters at the end of the url
       /// \param[in]  onReceive           function called on received data
+	  /// \param[in]  context             context specific for each equipment for sending information
       /// \param[in]  timeout             timeout for the request
       /// \return     false if the time has expired. In this case the onReceived is not executed
       //--------------------------------------------------------------
-      static bool SendGetRequest(const std::string & url, 
-                                 const shared::CDataContainer& credentials,
-                                 const shared::CDataContainer& parameters,
-                                 boost::function1<void, shared::CDataContainer&> onReceive,
-                                 const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
+      static bool SendGetRequest(
+		  const std::string & url, 
+          const shared::CDataContainer& credentials,
+          const shared::CDataContainer& parameters,
+          boost::function1<void, shared::CDataContainer&> onReceive,
+		  http::httpContext& context,
+          const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
       /// \brief	    XmlResponseReader
@@ -70,7 +73,5 @@ namespace http
       static bool XmlResponseReader(std::istream& stream,
                                     Poco::Net::HTTPResponse& httpresponse,
                                     shared::CDataContainer& treeResponse);
-
-   private:
    };
 } // namespace http
