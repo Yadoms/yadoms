@@ -261,7 +261,15 @@ endif()
 #
 ###############################################
 
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Protobuf_LIBRARIES})
+set(LIBS
+   ${LIBS}
+   ${Boost_LIBRARIES}
+   ${CMAKE_THREAD_LIBS_INIT}
+   ${Poco_FOUND_LIBS}
+   ${OPENSSL_SSL_LIBRARY}
+   ${OPENSSL_CRYPTO_LIBRARY}
+   ${Protobuf_LIBRARIES}
+)
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completely build from sources
