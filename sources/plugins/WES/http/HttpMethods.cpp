@@ -41,8 +41,6 @@ namespace http
          
          Poco::Net::HTTPResponse response;
 
-		 YADOMS_LOG(information) << "basic credential active : " << context.basicCredential();
-
 		 if (!context.basicCredential()) {
 			 session.sendRequest(request);
 			 session.receiveResponse(response);
