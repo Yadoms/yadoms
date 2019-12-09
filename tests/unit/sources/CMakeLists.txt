@@ -84,7 +84,6 @@ set(BOOST_LIBS
    date_time 
    chrono 
    regex
-   locale
    unit_test_framework 
 )
 
@@ -105,11 +104,6 @@ if(WIN32)
    set(LIBS ${LIBS} Iphlpapi.lib)
 endif()
 
-## OpenSSL dependencies
-if(WIN32)
-   set(LIBS ${LIBS} legacy_stdio_definitions.lib Crypt32.lib)
-endif()
-
 ## IOKIT (needed for Mac)
 if(APPLE)
 	include(${YADOMS_PATH}/cmake/mac.cmake)
@@ -126,34 +120,19 @@ if(APPLE)
 endif()
 
 ###############################################
-# OpenSSL
-#
-###############################################
-SET(OPENSSL_USE_STATIC_LIBS TRUE)
-SET(OPENSSL_MSVC_STATIC_RT TRUE)
-SET(OPENSSL_ROOT_DIR ${OPENSSL_ROOT})
-FIND_PACKAGE(OpenSSL)
-
-if(NOT ${OPENSSL_FOUND})
-	message("Cannot find opensll, all plugins which requires SSL features will not be loaded")
-   set(OPENSSL_INCLUDE_DIR "")
-endif()
-
-###############################################
 # POCO
 #
 # POCO_LIBS : define all required poco libraries
 ###############################################
 
-SET(POCO_LIBS
-   PocoUtil
+SET ( POCO_LIBS
+	PocoUtil
    PocoNetSSL
-   PocoCrypto
    PocoZip
-   PocoXML
-   PocoNet
+	PocoXML
+	PocoNet
    PocoJSON
-   PocoFoundation
+	PocoFoundation
 )
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
@@ -166,15 +145,10 @@ IF(NOT ${Poco_FOUND})
 ENDIF()
 
 # define libraries to link with
-set(LIBS
-   ${LIBS}
-   ${Boost_LIBRARIES}
-   ${CMAKE_THREAD_LIBS_INIT}
-   ${Poco_FOUND_LIBS}
-   ${RT_LIBRARY}
-   ${OPENSSL_SSL_LIBRARY}
-   ${OPENSSL_CRYPTO_LIBRARY}
-)
+if(MSVC) # Needed under Windows by Poco.
+	set(LIBS ${LIBS} "${OPENSSL_ROOT}/lib/libeay32.lib" "${OPENSSL_ROOT}/lib/ssleay32.lib")
+endif()
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} )
 
 ##################################################################################################
 ## Sources
@@ -249,16 +223,7 @@ add_precompiled_header(yadomsTests stdafx.h)
 ##################################################################################################
 ## Include directories
 ##################################################################################################
-include_directories(
-   ${BOOST_INCL_DIR}
-   ${Poco_INCLUDE_DIRS}
-   ${OPENSSL_INCLUDE_DIR}
-   ${YADOMS_PATH}/server
-   ${YADOMS_PATH}/shared
-   ${YADOMS_PATH}/server/tools
-   .
-   mock
-)
+include_directories(${BOOST_INCL_DIR} . mock ${YADOMS_PATH}/server ${YADOMS_PATH}/shared ${YADOMS_PATH}/server/tools ${Poco_INCLUDE_DIRS})
 
 IF(WIN32)
    include_directories(${YADOMS_PATH}/server/tools/windows)
