@@ -44,10 +44,12 @@ namespace equipments
 
          // request to obtain the WES revision
          std::string CGXfileName = "WESVERSION.CGX";
-         auto results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
-                                                  credentials,
-                                                  CGXfileName,
-                                                  urlManager::httpRequestCreationTimeout);
+		 auto results = urlManager::readFileState(
+			 m_configuration.getIPAddressWithSocket(),
+			 credentials,
+			 CGXfileName,
+			 m_httpContext,
+             urlManager::httpRequestCreationTimeout);
 
          results.printToLog(YADOMS_LOG(trace));
 
@@ -68,10 +70,12 @@ namespace equipments
          {
             // request to obtain names
             CGXfileName = "WESNAMES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
-            results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
-                                                credentials,
-                                                CGXfileName,
-                                                urlManager::httpRequestCreationTimeout);
+            results = urlManager::readFileState(
+				m_configuration.getIPAddressWithSocket(),
+                credentials,
+                CGXfileName,
+				m_httpContext,
+                urlManager::httpRequestCreationTimeout);
 
             results.printToLog(YADOMS_LOG(information));
 
@@ -283,10 +287,12 @@ namespace equipments
          credentials.set("user", m_configuration.getUser());
          credentials.set("password", m_configuration.getPassword());
 
-         auto results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
-                                                                    credentials,
-                                                                    CGXfileName,
-                                                                    urlManager::httpRequestWESTimeout);
+         auto results = urlManager::readFileState(
+			 m_configuration.getIPAddressWithSocket(),
+             credentials,
+             CGXfileName,
+			 m_httpContext,
+             urlManager::httpRequestWESTimeout);
 
          results.printToLog(YADOMS_LOG(trace));
 
@@ -468,9 +474,11 @@ namespace equipments
          if (iteratorRelay == m_relaysList.end())
             throw shared::exception::CException("Failed to identify the relay");
 
-         auto results = urlManager::setRelayState(m_configuration.getIPAddressWithSocket(),
-                                                                    credentials,
-                                                                    parameters);
+         auto results = urlManager::setRelayState(
+			 m_configuration.getIPAddressWithSocket(),
+             credentials,
+             parameters,
+			 m_httpContext);
 
          // For security, we check if the results contain the value, with the corresponding new state
          if (results.containsChild("Relai1")){
