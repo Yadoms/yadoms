@@ -1,6 +1,7 @@
 ### 1.2.0-beta.2
 * fix plugin status when reading values when missing equipment at startup
 * fix devices to retry list when an equipment come back alive
+* enhance basic authenticate with equipment.
 
 ### 1.2.0-beta.1
 * newFeature #469 - Read units when reading analog input for WES v2
