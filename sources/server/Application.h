@@ -33,6 +33,8 @@ protected:
    void handleHelp(const std::string& name, const std::string& value);
    void displayHelp() const;
 
+   void handleVersion(const std::string& name, const std::string& value);
+   void displayVersion() const;
 private:
    //-----------------------------
    ///\brief Setup global proxy settings

@@ -41,14 +41,14 @@ include(CMakeListsUserConfig.txt OPTIONAL)
 # Cotire 
 if(COTIRE_USE)
    set(COTIRE_PCH_MEMORY_SCALING_FACTOR 256)
-	include(cmake/cotire.cmake)
+   include(cmake/cotire.cmake)
 else()
-	include(cmake/PrecompiledHeader.cmake)
+   include(cmake/PrecompiledHeader.cmake)
 endif()
 
 # Windows specific macro
 if(WIN32)
-	include(cmake/windows.cmake)
+   include(cmake/windows.cmake)
 endif()
 
 if(MSVC)
@@ -134,34 +134,34 @@ endif()
 
 ## IOKIT (needed for Mac)
 if(APPLE)
-	include(cmake/mac.cmake)
-	
-	if(NOT IOKIT_FOUND)
-		message(SEND_ERROR "Unable to find the required IOKit libraries")
-	endif()
+   include(cmake/mac.cmake)
+   
+   if(NOT IOKIT_FOUND)
+      message(SEND_ERROR "Unable to find the required IOKit libraries")
+   endif()
 
-	if(NOT CARBON_FOUND)
-		message(SEND_ERROR "Unable to find the required Carbon libraries")
-	endif()
-	set(LIBS ${LIBS} ${IOKIT_LIBRARY} ${CARBON_LIBRARY})
+   if(NOT CARBON_FOUND)
+      message(SEND_ERROR "Unable to find the required Carbon libraries")
+   endif()
+   set(LIBS ${LIBS} ${IOKIT_LIBRARY} ${CARBON_LIBRARY})
 endif()
 
 ##specific linker lib for osxcross (cross build for Darwin)
 if (CMAKE_SYSTEM_NAME MATCHES Darwin)
-	#check osxcross cross compilation
-	#in taht case, we must use 
-	find_package(Iconv)
-	if(Iconv_FOUND)
-			set(LIBS ${LIBS} ${Iconv_LIBRARIES})
-	else(Iconv_FOUND)
-			message(FATAL_ERROR "libiconv not FOUND")
-	endif()
-	find_package(Intl)
-	if(Intl_FOUND)
-			set(LIBS ${LIBS} ${Intl_LIBRARIES})
-	else(Intl_FOUND)
-			message(FATAL_ERROR "libintl not FOUND")
-	endif()
+   #check osxcross cross compilation
+   #in taht case, we must use 
+   find_package(Iconv)
+   if(Iconv_FOUND)
+         set(LIBS ${LIBS} ${Iconv_LIBRARIES})
+   else(Iconv_FOUND)
+         message(FATAL_ERROR "libiconv not FOUND")
+   endif()
+   find_package(Intl)
+   if(Intl_FOUND)
+         set(LIBS ${LIBS} ${Intl_LIBRARIES})
+   else(Intl_FOUND)
+         message(FATAL_ERROR "libintl not FOUND")
+   endif()
 endif()
 
 ###############################################
@@ -174,10 +174,15 @@ SET(OPENSSL_ROOT_DIR ${OPENSSL_ROOT})
 FIND_PACKAGE(OpenSSL)
 
 if(NOT ${OPENSSL_FOUND})
-	message("Cannot find opensll, all plugins which requires SSL features will not be loaded")
+   message("Cannot find opensll, all plugins which requires SSL features will not be loaded")
    set(OPENSSL_INCLUDE_DIR "")
 endif()
 
+set(LIBS 
+   ${LIBS} 
+   ${OPENSSL_SSL_LIBRARY} 
+   ${OPENSSL_CRYPTO_LIBRARY}
+)
 
 ###############################################
 # POCO
@@ -186,24 +191,24 @@ endif()
 ###############################################
 
 SET (POCO_LIBS
-	PocoUtil
+   PocoUtil
    PocoNetSSL
    PocoCrypto
    PocoZip
    PocoXML
-	PocoNet
+   PocoNet
    PocoJSON
-	PocoFoundation
+   PocoFoundation
 )
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
 set(POCO_USE_STATIC_RUNTIME 1)
 add_definitions(-DPOCO_STATIC)
-add_definitions(-DPOCO_EXTERNAL_OPENSSL)
+add_definitions(-DPOCO_EXTERNAL_OPENSSL=42) #force an unknown value (empty value do not work correctly)
 include(cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
-	message(FATAL_ERROR "Unable to find the required POCO libraries")
+   message(FATAL_ERROR "Unable to find the required POCO libraries")
 ENDIF()
 
 
@@ -241,7 +246,7 @@ endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
 find_package(Protobuf 3.1.0 REQUIRED)
 
 if(NOT ${PROTOBUF_FOUND})
-	message(FATAL_ERROR "Unable to find the required Protobuf tool")
+   message(FATAL_ERROR "Unable to find the required Protobuf tool")
 endif()
 
 
@@ -255,9 +260,7 @@ endif()
 # define libraries to link with
 #
 ###############################################
-if(MSVC) # Needed under Windows by Poco.
-	set(LIBS ${LIBS} "${OPENSSL_ROOT}/lib/libeay32.lib" "${OPENSSL_ROOT}/lib/ssleay32.lib")
-endif()
+
 set(LIBS
    ${LIBS}
    ${Boost_LIBRARIES}
@@ -293,17 +296,17 @@ add_subdirectory(external-libs)
 set(YADOMS_SRC
    server/stdafx.cpp
    server/stdafx.h
-	
+   
    server/Application.h
    server/Application.cpp
    server/ErrorHandler.h
    server/ErrorHandler.cpp
    server/IPathProvider.h
    server/PathProvider.cpp
-   server/PathProvider.h	
+   server/PathProvider.h   
    server/IRunningInformation.h
    server/RunningInformation.cpp
-   server/RunningInformation.h	
+   server/RunningInformation.h   
    server/Supervisor.cpp
    server/Supervisor.h
    server/Version.h
@@ -384,7 +387,7 @@ set(YADOMS_SRC
 
    server/communication/ISendMessageAsync.h
    server/communication/PluginGateway.h
-   server/communication/PluginGateway.cpp	
+   server/communication/PluginGateway.cpp   
    server/communication/callback/CallbackRequest.h
    server/communication/callback/NoDataCallbackRequest.h
    server/communication/callback/SynchronousCallback.h
@@ -410,7 +413,7 @@ set(YADOMS_SRC
    server/dataAccessLayer/IDeviceManager.h
    server/dataAccessLayer/IEventLogger.h
    server/dataAccessLayer/IKeywordManager.h
-	
+   
    server/database/DatabaseException.hpp
    server/database/IConfigurationRequester.h
    server/database/IAcquisitionRequester.h
@@ -528,7 +531,7 @@ set(YADOMS_SRC
    server/notification/Helpers.hpp
    server/notification/INotification.h
    server/notification/IObserver.h
-	
+   
    server/notification/action/IAction.h
    server/notification/action/EventAction.hpp
    server/notification/action/FunctionPointerAction.hpp
@@ -556,7 +559,7 @@ set(YADOMS_SRC
    server/startupOptions/StartupOptions.cpp
    server/startupOptions/MustExistPathValidator.h
    server/startupOptions/MustExistPathValidator.cpp
-	
+   
    server/task/FinishedInstance.h
    server/task/FinishedInstance.cpp
    server/task/GenericTask.h
@@ -648,7 +651,7 @@ set(YADOMS_SRC
    server/web/rest/service/Update.cpp
    server/web/rest/service/Widget.h
    server/web/rest/service/Widget.cpp
-	
+   
    server/web/ws/AcquisitionFilterFrame.h
    server/web/ws/AcquisitionFilterFrame.cpp
    server/web/ws/AcquisitionUpdateFrame.h
@@ -720,39 +723,39 @@ source_group(server\\web\\ws  server/web/ws/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
-	server/tools/SupportedPlatformsChecker.h
-	server/tools/SupportedPlatformsChecker.cpp
-	server/tools/FileSystem.h
-	server/tools/FileSystem.cpp
+   server/tools/SupportedPlatformsChecker.h
+   server/tools/SupportedPlatformsChecker.cpp
+   server/tools/FileSystem.h
+   server/tools/FileSystem.cpp
 )
 
 IF(WIN32)
-	set(YADOMS_SRC ${YADOMS_SRC}
-		# Add here server/tools/windows/tools/ sources
-		server/tools/windows/tools/OperatingSystem.h
-		server/tools/windows/tools/OperatingSystem.cpp
-	)	
+   set(YADOMS_SRC ${YADOMS_SRC}
+      # Add here server/tools/windows/tools/ sources
+      server/tools/windows/tools/OperatingSystem.h
+      server/tools/windows/tools/OperatingSystem.cpp
+   )   
 ELSEIF(APPLE)
-	set(YADOMS_SRC ${YADOMS_SRC}
-		# Add here server/tools/mac/tools/ sources
-		server/tools/mac/tools/OperatingSystem.h
-		server/tools/mac/tools/OperatingSystem.cpp
-	)	
+   set(YADOMS_SRC ${YADOMS_SRC}
+      # Add here server/tools/mac/tools/ sources
+      server/tools/mac/tools/OperatingSystem.h
+      server/tools/mac/tools/OperatingSystem.cpp
+   )   
 ELSE()
-	set(YADOMS_SRC ${YADOMS_SRC}
-		# Add here server/tools/linux/tools/ sources
-		server/tools/linux/tools/OperatingSystem.h
-		server/tools/linux/tools/OperatingSystem.cpp
-	)	
+   set(YADOMS_SRC ${YADOMS_SRC}
+      # Add here server/tools/linux/tools/ sources
+      server/tools/linux/tools/OperatingSystem.h
+      server/tools/linux/tools/OperatingSystem.cpp
+   )   
 ENDIF()
 
 # Define include directories
 IF(WIN32)
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/windows)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/windows)
 ELSEIF(APPLE)
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/mac)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/mac)
 ELSE()
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
 ENDIF()
 
 source_group(server\\tools tools/*.*)
@@ -765,83 +768,83 @@ source_group(server\\tools\\platformSpecific\\mac server/tools/mac/tools/*.*)
 #### Database (common)
 ################################################
 set(YADOMS_SRC ${YADOMS_SRC}
-	server/database/common/Query.h
-	server/database/common/Query.cpp
-	server/database/common/QuerySpecializations.h
-	server/database/common/DataProvider.h
-	server/database/common/DataProvider.cpp
-	server/database/common/DatabaseColumn.h
-	server/database/common/DatabaseColumn.cpp
-	server/database/common/DatabaseTables.h
-	server/database/common/DatabaseTables.cpp
-	server/database/common/DatabaseTablesHelpers.hpp
-	server/database/common/SummaryDataTask.h
-	server/database/common/SummaryDataTask.cpp      
-	server/database/common/PurgeTask.h
-	server/database/common/PurgeTask.cpp      
-	server/database/common/adapters/AdapterHelpers.hpp
-	server/database/common/adapters/DatabaseAdapters.h
-	server/database/common/adapters/DatabaseAdapters.cpp
-	server/database/common/adapters/GenericAdapter.h
-	server/database/common/adapters/GenericAdapter.cpp
-	server/database/common/adapters/HugeDataVectorAdapter.h
-	server/database/common/adapters/HugeDataVectorAdapter.cpp
-	server/database/common/adapters/IResultAdapter.h
-	server/database/common/adapters/MultipleValueAdapter.hpp
-	server/database/common/adapters/SingleValueAdapter.hpp
-	server/database/common/adapters/SqlExtension.hpp
-	server/database/common/requesters/Plugin.h
-	server/database/common/requesters/Plugin.cpp
-	server/database/common/requesters/Configuration.h
-	server/database/common/requesters/Configuration.cpp
-	server/database/common/requesters/Keyword.h
-	server/database/common/requesters/Keyword.cpp
-	server/database/common/requesters/Device.h
-	server/database/common/requesters/Device.cpp		
-	server/database/common/requesters/Rule.h
-	server/database/common/requesters/Rule.cpp		
-	server/database/common/requesters/Page.h
-	server/database/common/requesters/Page.cpp		
-	server/database/common/requesters/Recipient.h
-	server/database/common/requesters/Recipient.cpp		
-	server/database/common/requesters/Widget.h
-	server/database/common/requesters/Widget.cpp		
-	server/database/common/requesters/PluginEventLogger.h
-	server/database/common/requesters/PluginEventLogger.cpp
-	server/database/common/requesters/EventLogger.h
-	server/database/common/requesters/EventLogger.cpp
-	server/database/common/requesters/Acquisition.h
-	server/database/common/requesters/Acquisition.cpp
-	server/database/common/versioning/IVersionUpgrade.h
-	server/database/common/versioning/Version_1_0_0.h
-	server/database/common/versioning/Version_1_0_0.cpp
-	server/database/common/versioning/Version_2_0_0.h
-	server/database/common/versioning/Version_2_0_0.cpp
-	server/database/common/versioning/Version_3_0_0.h
-	server/database/common/versioning/Version_3_0_0.cpp
-	server/database/common/versioning/Version_3_0_1.h
-	server/database/common/versioning/Version_3_0_1.cpp
-	server/database/common/versioning/Version_4_0_0.h
-	server/database/common/versioning/Version_4_0_0.cpp
-	server/database/common/versioning/Version_4_0_1.h
-	server/database/common/versioning/Version_4_0_1.cpp
-	server/database/common/versioning/Version_4_1_0.h
-	server/database/common/versioning/Version_4_1_0.cpp
-	server/database/common/versioning/Version_4_2_0.h
-	server/database/common/versioning/Version_4_2_0.cpp
-	server/database/common/versioning/Version_4_3_0.h
-	server/database/common/versioning/Version_4_3_0.cpp
-	server/database/common/versioning/Version_4_4_0.h
-	server/database/common/versioning/Version_4_4_0.cpp
-	server/database/common/versioning/Version_5_0_0.h
-	server/database/common/versioning/Version_5_0_0.cpp
-	server/database/common/versioning/Version_5_1_0.h
-	server/database/common/versioning/Version_5_1_0.cpp
-	server/database/common/versioning/VersionUpgraderFactory.h
-	server/database/common/versioning/VersionUpgraderFactory.cpp
-	server/database/common/versioning/VersionException.h
+   server/database/common/Query.h
+   server/database/common/Query.cpp
+   server/database/common/QuerySpecializations.h
+   server/database/common/DataProvider.h
+   server/database/common/DataProvider.cpp
+   server/database/common/DatabaseColumn.h
+   server/database/common/DatabaseColumn.cpp
+   server/database/common/DatabaseTables.h
+   server/database/common/DatabaseTables.cpp
+   server/database/common/DatabaseTablesHelpers.hpp
+   server/database/common/SummaryDataTask.h
+   server/database/common/SummaryDataTask.cpp      
+   server/database/common/PurgeTask.h
+   server/database/common/PurgeTask.cpp      
+   server/database/common/adapters/AdapterHelpers.hpp
+   server/database/common/adapters/DatabaseAdapters.h
+   server/database/common/adapters/DatabaseAdapters.cpp
+   server/database/common/adapters/GenericAdapter.h
+   server/database/common/adapters/GenericAdapter.cpp
+   server/database/common/adapters/HugeDataVectorAdapter.h
+   server/database/common/adapters/HugeDataVectorAdapter.cpp
+   server/database/common/adapters/IResultAdapter.h
+   server/database/common/adapters/MultipleValueAdapter.hpp
+   server/database/common/adapters/SingleValueAdapter.hpp
+   server/database/common/adapters/SqlExtension.hpp
+   server/database/common/requesters/Plugin.h
+   server/database/common/requesters/Plugin.cpp
+   server/database/common/requesters/Configuration.h
+   server/database/common/requesters/Configuration.cpp
+   server/database/common/requesters/Keyword.h
+   server/database/common/requesters/Keyword.cpp
+   server/database/common/requesters/Device.h
+   server/database/common/requesters/Device.cpp      
+   server/database/common/requesters/Rule.h
+   server/database/common/requesters/Rule.cpp      
+   server/database/common/requesters/Page.h
+   server/database/common/requesters/Page.cpp      
+   server/database/common/requesters/Recipient.h
+   server/database/common/requesters/Recipient.cpp      
+   server/database/common/requesters/Widget.h
+   server/database/common/requesters/Widget.cpp      
+   server/database/common/requesters/PluginEventLogger.h
+   server/database/common/requesters/PluginEventLogger.cpp
+   server/database/common/requesters/EventLogger.h
+   server/database/common/requesters/EventLogger.cpp
+   server/database/common/requesters/Acquisition.h
+   server/database/common/requesters/Acquisition.cpp
+   server/database/common/versioning/IVersionUpgrade.h
+   server/database/common/versioning/Version_1_0_0.h
+   server/database/common/versioning/Version_1_0_0.cpp
+   server/database/common/versioning/Version_2_0_0.h
+   server/database/common/versioning/Version_2_0_0.cpp
+   server/database/common/versioning/Version_3_0_0.h
+   server/database/common/versioning/Version_3_0_0.cpp
+   server/database/common/versioning/Version_3_0_1.h
+   server/database/common/versioning/Version_3_0_1.cpp
+   server/database/common/versioning/Version_4_0_0.h
+   server/database/common/versioning/Version_4_0_0.cpp
+   server/database/common/versioning/Version_4_0_1.h
+   server/database/common/versioning/Version_4_0_1.cpp
+   server/database/common/versioning/Version_4_1_0.h
+   server/database/common/versioning/Version_4_1_0.cpp
+   server/database/common/versioning/Version_4_2_0.h
+   server/database/common/versioning/Version_4_2_0.cpp
+   server/database/common/versioning/Version_4_3_0.h
+   server/database/common/versioning/Version_4_3_0.cpp
+   server/database/common/versioning/Version_4_4_0.h
+   server/database/common/versioning/Version_4_4_0.cpp
+   server/database/common/versioning/Version_5_0_0.h
+   server/database/common/versioning/Version_5_0_0.cpp
+   server/database/common/versioning/Version_5_1_0.h
+   server/database/common/versioning/Version_5_1_0.cpp
+   server/database/common/versioning/VersionUpgraderFactory.h
+   server/database/common/versioning/VersionUpgraderFactory.cpp
+   server/database/common/versioning/VersionException.h
                    
-	server/database/common/IResultHandler.h
+   server/database/common/IResultHandler.h
 )
 
 source_group(server\\database\\common  server/database/common/*.*)
@@ -854,23 +857,23 @@ source_group(server\\database\\common\\versioning  server/database/common/versio
 ################################################
 
 IF(USE_SQLITE_DATABASE)
-	set(YADOMS_SRC ${YADOMS_SRC}
-		server/database/sqlite/SQLiteQuery.h
-		server/database/sqlite/SQLiteQuery.cpp
-		server/database/sqlite/SQLiteRequester.h
-		server/database/sqlite/SQLiteRequester.cpp
-		server/database/sqlite/SQLiteResultHandler.h
-		server/database/sqlite/SQLiteResultHandler.cpp
-		server/database/sqlite/SQLiteSystemTables.h
-		server/database/sqlite/SQLiteSystemTables.cpp
-		server/database/sqlite/SQLiteTableCreationScriptProvider.h
-		server/database/sqlite/SQLiteTableCreationScriptProvider.cpp
-	)
-	
-	source_group(server\\database\\sqlite  server/database/sqlite/*.*)
-	
-	set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} sqlite)
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${SQLITE_INCLUDE_DIRECTORY})
+   set(YADOMS_SRC ${YADOMS_SRC}
+      server/database/sqlite/SQLiteQuery.h
+      server/database/sqlite/SQLiteQuery.cpp
+      server/database/sqlite/SQLiteRequester.h
+      server/database/sqlite/SQLiteRequester.cpp
+      server/database/sqlite/SQLiteResultHandler.h
+      server/database/sqlite/SQLiteResultHandler.cpp
+      server/database/sqlite/SQLiteSystemTables.h
+      server/database/sqlite/SQLiteSystemTables.cpp
+      server/database/sqlite/SQLiteTableCreationScriptProvider.h
+      server/database/sqlite/SQLiteTableCreationScriptProvider.cpp
+   )
+   
+   source_group(server\\database\\sqlite  server/database/sqlite/*.*)
+   
+   set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} sqlite)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${SQLITE_INCLUDE_DIRECTORY})
 ENDIF()
 
 ################################################
@@ -885,24 +888,24 @@ IF(USE_PGSQL_DATABASE)
       message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
 
       set(YADOMS_SRC ${YADOMS_SRC}
-			server/database/pgsql/PgsqlLibrary.h
-			server/database/pgsql/PgsqlLibrary.cpp
-			server/database/pgsql/PgsqlQuery.h
-			server/database/pgsql/PgsqlQuery.cpp
-			server/database/pgsql/PgsqlRequester.h
-			server/database/pgsql/PgsqlRequester.cpp
-			server/database/pgsql/PgsqlResultHandler.h
-			server/database/pgsql/PgsqlResultHandler.cpp
-			server/database/pgsql/PgsqlSqlState.h
-			server/database/pgsql/PgsqlSqlState.cpp
-			server/database/pgsql/PgsqlSystemTables.h
-			server/database/pgsql/PgsqlSystemTables.cpp
-			server/database/pgsql/PgsqlTableCreationScriptProvider.h
-			server/database/pgsql/PgsqlTableCreationScriptProvider.cpp
+         server/database/pgsql/PgsqlLibrary.h
+         server/database/pgsql/PgsqlLibrary.cpp
+         server/database/pgsql/PgsqlQuery.h
+         server/database/pgsql/PgsqlQuery.cpp
+         server/database/pgsql/PgsqlRequester.h
+         server/database/pgsql/PgsqlRequester.cpp
+         server/database/pgsql/PgsqlResultHandler.h
+         server/database/pgsql/PgsqlResultHandler.cpp
+         server/database/pgsql/PgsqlSqlState.h
+         server/database/pgsql/PgsqlSqlState.cpp
+         server/database/pgsql/PgsqlSystemTables.h
+         server/database/pgsql/PgsqlSystemTables.cpp
+         server/database/pgsql/PgsqlTableCreationScriptProvider.h
+         server/database/pgsql/PgsqlTableCreationScriptProvider.cpp
       )
       
       source_group(server\\database\\pgsql  server/database/pgsql/*.*)
-	
+   
       IF(WIN32)
          #add PostgreSQL as dependencies
          IF(EXISTS "${PostgreSQL_ROOT}/bin/libpq.dll")
@@ -940,28 +943,28 @@ ENDIF(USE_PGSQL_DATABASE)
 
 #Web server
 IF(USE_POCO_WEBSERVER)
-	set(YADOMS_SRC ${YADOMS_SRC}
-		server/web/poco/WebServer.h
-		server/web/poco/WebServer.cpp
-		server/web/poco/AuthenticationRequestHandler.h
-		server/web/poco/AuthenticationRequestHandler.cpp
-		server/web/poco/HttpRequestHandlerFactory.h
-		server/web/poco/HttpRequestHandlerFactory.cpp	
-		server/web/poco/HttpRequestHandlerContainer.h
-		server/web/poco/HttpRequestHandlerContainer.cpp
-		server/web/poco/RestRequestHandler.h
-		server/web/poco/RestRequestHandler.cpp
-		server/web/poco/WebsiteCacheManager.h
-		server/web/poco/WebsiteCacheManager.cpp
-		server/web/poco/WebsiteRequestHandler.h
-		server/web/poco/WebsiteRequestHandler.cpp
-		server/web/poco/WebSocketRequestHandler.h
-		server/web/poco/WebSocketRequestHandler.cpp	
-		server/web/poco/MimeType.h
-		server/web/poco/MimeType.cpp	
-	)
-	
-	source_group(server\\web\\poco  server/web/poco/*.*)
+   set(YADOMS_SRC ${YADOMS_SRC}
+      server/web/poco/WebServer.h
+      server/web/poco/WebServer.cpp
+      server/web/poco/AuthenticationRequestHandler.h
+      server/web/poco/AuthenticationRequestHandler.cpp
+      server/web/poco/HttpRequestHandlerFactory.h
+      server/web/poco/HttpRequestHandlerFactory.cpp   
+      server/web/poco/HttpRequestHandlerContainer.h
+      server/web/poco/HttpRequestHandlerContainer.cpp
+      server/web/poco/RestRequestHandler.h
+      server/web/poco/RestRequestHandler.cpp
+      server/web/poco/WebsiteCacheManager.h
+      server/web/poco/WebsiteCacheManager.cpp
+      server/web/poco/WebsiteRequestHandler.h
+      server/web/poco/WebsiteRequestHandler.cpp
+      server/web/poco/WebSocketRequestHandler.h
+      server/web/poco/WebSocketRequestHandler.cpp   
+      server/web/poco/MimeType.h
+      server/web/poco/MimeType.cpp   
+   )
+   
+   source_group(server\\web\\poco  server/web/poco/*.*)
 ENDIF()
 
 
@@ -1004,9 +1007,9 @@ set(YADOMS_SRC ${YADOMS_SRC}
 add_executable(yadoms ${YADOMS_SRC})
 
 if(COTIRE_USE)
-	#nothing to do
+   #nothing to do
 else()
-	add_precompiled_header(yadoms stdafx.h)
+   add_precompiled_header(yadoms stdafx.h)
 endif()
 
 
@@ -1019,11 +1022,11 @@ add_subdirectory(shared)
 set(SHARED_COMMON_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shared)
 set(SHARED_INCL_DIR ${SHARED_COMMON_INCL_DIR})
 IF(WIN32)
-	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/windows)
+   set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/windows)
 ELSEIF(APPLE)
-	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/mac)
+   set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/mac)
 ELSE()
-	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/linux)
+   set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/linux)
 ENDIF()
 
 
@@ -1065,21 +1068,23 @@ add_subdirectory(scriptInterpreters)
 ## Include directories
 ##################################################################################################
 set(YADOMS_INCL_DIR
-	${YADOMS_INCL_DIR}
-	${SHARED_INCL_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/server
-	${plugin_IPC_INCLUDE_DIRS}
-	${interpreter_IPC_INCLUDE_DIRS}
-	${script_IPC_INCLUDE_DIRS}
+   ${YADOMS_INCL_DIR}
+   ${SHARED_INCL_DIR}
+   ${CMAKE_CURRENT_SOURCE_DIR}/server
+   ${plugin_IPC_INCLUDE_DIRS}
+   ${interpreter_IPC_INCLUDE_DIRS}
+   ${script_IPC_INCLUDE_DIRS}
 )
 
 #setup include dirs. Add protobuf include dirs in first lines to make xcode-clang work)
+# include OPENSSL_INCLUDE_DIR before YADOMS_INCL_DIR because YADOMS_INCL_DIR include postgresql which may embed its own openssl files (not used)
+# but this may infer in some compilation cases
 set(YADOMS_ALL_INCL_DIR
-	${PROTOBUF_INCLUDE_DIRS}
-	${YADOMS_INCL_DIR} 
-	${BOOST_INCL_DIR} 
-	${OPENSSL_INCLUDE_DIR}
-	${Poco_INCLUDE_DIRS}
+   ${PROTOBUF_INCLUDE_DIRS}
+   ${BOOST_INCL_DIR} 
+   ${OPENSSL_INCLUDE_DIR}
+   ${Poco_INCLUDE_DIRS}
+   ${YADOMS_INCL_DIR} 
 )
 
 set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
@@ -1093,31 +1098,31 @@ target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC
 ## RPATH
 ##################################################################################################
 if(CMAKE_CROSSCOMPILING)
-	#Fix RPATH for cross compilation of Yadoms
-	set_target_properties(yadoms PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+   #Fix RPATH for cross compilation of Yadoms
+   set_target_properties(yadoms PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
 endif(CMAKE_CROSSCOMPILING)
                        
 ##################################################################################################
 ## COTIRE
 ##################################################################################################
 if(COTIRE_USE)
-	set_target_properties(yadoms PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "server/stdafx.h")
-	
-	if(COTIRE_USE_UNITY)
-		set_target_properties(yadoms PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
-	else()
-		set_target_properties(yadoms PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-	endif()
-	
-	cotire(yadoms)
-	
-	if(COTIRE_USE_UNITY)
-		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
-	    if(CMAKE_CROSSCOMPILING)
-	       #Fix RPATH for cross compilation of yadoms_unity
-	       set_target_properties(yadoms_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
-	    endif(CMAKE_CROSSCOMPILING)
-	endif()	
+   set_target_properties(yadoms PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "server/stdafx.h")
+   
+   if(COTIRE_USE_UNITY)
+      set_target_properties(yadoms PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+   else()
+      set_target_properties(yadoms PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+   endif()
+   
+   cotire(yadoms)
+   
+   if(COTIRE_USE_UNITY)
+      set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
+       if(CMAKE_CROSSCOMPILING)
+          #Fix RPATH for cross compilation of yadoms_unity
+          set_target_properties(yadoms_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+       endif(CMAKE_CROSSCOMPILING)
+   endif()   
 endif()
       
       
@@ -1195,7 +1200,7 @@ ENDFOREACH(PostgreSqlDepend)
 add_custom_command(TARGET yadoms POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                    ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
-		
+      
 if(COTIRE_USE)   
    if(COTIRE_USE_UNITY)
       add_custom_command(TARGET yadoms_unity POST_BUILD
@@ -1286,68 +1291,68 @@ set(CPACK_COMPONENT_GROUP_SCRIPTINTERPRETERS_DESCRIPTION  "All the script interp
 
 IF(WIN32 AND NOT UNIX)
 
-	# Custom target for packaging.
-	if(USE_NSIS)
-		set(CPACK_GENERATOR "NSIS;ZIP")
-	  
-		# There is a bug in NSI that does not handle full unix paths properly. Make
-		# sure there is at least one set of four (4) backlasshes.
-		SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution\\\\Yadoms.bmp")
-
-		set(CPACK_NSIS_PLUGINS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS/extensions")
-		set(CPACK_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS")
-		SET(CPACK_NSIS_INSTALLED_ICON_NAME "${INSTALL_BINDIR}\\\\yadoms.exe")
-		SET(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
-		SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
-		SET(CPACK_NSIS_DISPLAY_NAME "Yadoms")
-		SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.yadoms.com")
-		SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.yadoms.com")
-		SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
-		SET(CPACK_NSIS_MODIFY_PATH ON)
-
-		set(CPACK_NSIS_CREATE_ICONS_STARTMENU
-			"SetOutPath $INSTDIR\\\\bin
-			SetShellVarContext all
-			CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Yadoms-StartServer.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
-			CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
-		)
-
-		set(CPACK_NSIS_CREATE_ICONS_DESKTOP
-			"SetOutPath $INSTDIR\\\\bin
-			SetShellVarContext all
-			CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
-		)
+   # Custom target for packaging.
+   if(USE_NSIS)
+      set(CPACK_GENERATOR "NSIS;ZIP")
      
-		set(CPACK_NSIS_CREATE_ICONS_DESKTOP_NOSERVICE
-			"SetOutPath $INSTDIR\\\\bin
-			SetShellVarContext all
-			CreateShortCut '\$DESKTOP\\\\Yadoms-StartServer.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
-			CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
-		)
+      # There is a bug in NSI that does not handle full unix paths properly. Make
+      # sure there is at least one set of four (4) backlasshes.
+      SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution\\\\Yadoms.bmp")
+
+      set(CPACK_NSIS_PLUGINS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS/extensions")
+      set(CPACK_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS")
+      SET(CPACK_NSIS_INSTALLED_ICON_NAME "${INSTALL_BINDIR}\\\\yadoms.exe")
+      SET(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
+      SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
+      SET(CPACK_NSIS_DISPLAY_NAME "Yadoms")
+      SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.yadoms.com")
+      SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.yadoms.com")
+      SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
+      SET(CPACK_NSIS_MODIFY_PATH ON)
+
+      set(CPACK_NSIS_CREATE_ICONS_STARTMENU
+         "SetOutPath $INSTDIR\\\\bin
+         SetShellVarContext all
+         CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Yadoms-StartServer.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
+         CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+      )
+
+      set(CPACK_NSIS_CREATE_ICONS_DESKTOP
+         "SetOutPath $INSTDIR\\\\bin
+         SetShellVarContext all
+         CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+      )
+     
+      set(CPACK_NSIS_CREATE_ICONS_DESKTOP_NOSERVICE
+         "SetOutPath $INSTDIR\\\\bin
+         SetShellVarContext all
+         CreateShortCut '\$DESKTOP\\\\Yadoms-StartServer.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
+         CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+      )
      
 
-		set(CPACK_NSIS_INSTALL_SERVICE
-			"ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --registerService --displayName:Yadoms --startup:automatic' $0
-			!insertmacro SERVICE 'start' 'Yadoms' ''"
-		)   
+      set(CPACK_NSIS_INSTALL_SERVICE
+         "ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --registerService --displayName:Yadoms --startup:automatic' $0
+         !insertmacro SERVICE 'start' 'Yadoms' ''"
+      )   
 
-		set(CPACK_NSIS_UNINSTALL_SERVICE
-			"!ifdef UN
-			!undef UN
-			!endif
-			!define UN 'un.'         
-			!insertmacro SERVICE 'stop' 'Yadoms' ''
-			ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --unregisterService' $0"
-		)
+      set(CPACK_NSIS_UNINSTALL_SERVICE
+         "!ifdef UN
+         !undef UN
+         !endif
+         !define UN 'un.'         
+         !insertmacro SERVICE 'stop' 'Yadoms' ''
+         ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --unregisterService' $0"
+      )
       
-		# Grant full authorisations for install directory (all users : identified by (S-1-1-0) )
-		set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
-			"AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1)\\\" \\\"FullAccess\\\"
-			AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1-0)\\\" \\\"FullAccess\\\""
-		)
-	else(USE_NSIS)
-		set(CPACK_GENERATOR "ZIP")
-	endif(USE_NSIS)
+      # Grant full authorisations for install directory (all users : identified by (S-1-1-0) )
+      set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+         "AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1)\\\" \\\"FullAccess\\\"
+         AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1-0)\\\" \\\"FullAccess\\\""
+      )
+   else(USE_NSIS)
+      set(CPACK_GENERATOR "ZIP")
+   endif(USE_NSIS)
 
 ELSE(WIN32 AND NOT UNIX)
 
