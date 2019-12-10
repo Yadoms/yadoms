@@ -41,3 +41,4 @@ sources/www/.vs
 /.vscode
 /sources/plugins/OneWire/.vscode
 /tests/user/Backup/
+/tests/user/report/
