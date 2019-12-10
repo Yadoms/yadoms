@@ -261,10 +261,10 @@ endif()
 set(LIBS
    ${LIBS}
    ${Boost_LIBRARIES}
-   ${CMAKE_THREAD_LIBS_INIT}
    ${Poco_FOUND_LIBS}
    ${OPENSSL_SSL_LIBRARY}
    ${OPENSSL_CRYPTO_LIBRARY}
+   ${CMAKE_THREAD_LIBS_INIT}
    ${Protobuf_LIBRARIES}
 )
 
