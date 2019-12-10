@@ -45,9 +45,10 @@ class CreateRule(unittest.TestCase):
       self.assertTrue(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
 
       buttons = dashboard.automation.getRuleButtons(rulesTable, ruleNumber)
-      self.assertEqual(len(buttons), 4)
+      self.assertEqual(len(buttons), 5)
       self.assertEqual(dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-startStop btn-warning")
       self.assertEqual(dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-edit btn-primary")
+      self.assertEqual(dashboard.automation.getRuleDuplicateButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-duplicate btn-primary")
       self.assertEqual(dashboard.automation.getRuleRemoveButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-delete btn-danger")
 
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running)
@@ -94,10 +95,13 @@ class CreateRule(unittest.TestCase):
       self.assertTrue(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
 
       buttons = dashboard.automation.getRuleButtons(rulesTable, ruleNumber)
-      self.assertEqual(len(buttons), 4)
+      self.assertEqual(len(buttons), 5)
       self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-enableDisable btn-success"))
+      self.assertEqual(dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-startStop btn-success")
       self.assertEqual(dashboard.automation.getRuleEditButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-edit btn-primary")
+      self.assertEqual(dashboard.automation.getRuleDuplicateButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-duplicate btn-primary")
       self.assertEqual(dashboard.automation.getRuleRemoveButton(rulesTable, ruleNumber).get_attribute("class"), "btn btn-delete btn-danger")
+
       
       self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber) == dashboard.automation.RuleState.Error))
       
@@ -141,7 +145,7 @@ class CreateRule(unittest.TestCase):
       newRuleModal = dashboard.automation.waitNewRuleModal(self.browser)
       
       print ('Select code')
-      newRuleModal.getEditorSelectionButton('code').click()
+      newRuleModal.getEditorSelectionButton('code.yPython27').click()
 
       print ('Configure rule')
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)

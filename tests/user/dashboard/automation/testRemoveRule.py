@@ -37,7 +37,7 @@ class RemoveRule(unittest.TestCase):
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
    
    def test_removeStoppedRule(self):
-      print '=== Remove of a stopped rule test ==='
+      print ('=== Remove of a stopped rule test ===')
       self.doTest_removeRule(lambda rulesTable, ruleNumber: self.initialConditionsForRemoveStoppedRuleTest(rulesTable, ruleNumber))
       
       
@@ -48,60 +48,60 @@ class RemoveRule(unittest.TestCase):
       self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running))
    
    def test_removeRunningRule(self):
-      print '=== Remove of a running rule test ==='
+      print ('=== Remove of a running rule test ===')
       self.doTest_removeRule(lambda rulesTable, ruleNumber: self.initialConditionsForRemoveRunningRuleTest(rulesTable, ruleNumber))
       
       
    def doTest_removeRule(self, initialConditionsFct):
-      print '  Open rules dashboard'
+      print ('  Open rules dashboard')
       dashboard.open(self.browser)
       dashboard.openAutomation(self.browser)
       ruleNumber = 0
 
-      print '  Get rule table'
+      print ('  Get rule table')
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       removeButton = dashboard.automation.getRuleRemoveButton(rulesTable, ruleNumber)
       
       initialConditionsFct(rulesTable, ruleNumber)
       
-      print '  Remove rule'
+      print ('  Remove rule')
       removeButton.click()
       confirmationModal = modals.waitOkCancelModal(self.browser)
       confirmationModal.ok()
       
-      print '  Expect notification'
+      print ('  Expect notification')
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleDeleted"])
-      print '  Check table was updated'
+      print ('  Check table was updated')
       self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleNumberInTable(self.browser, rulesTable) == 0, 5))
   
       
       
    def test_dontConfirmRemoveRule(self):
-      print '=== Don\'t confirm remove rule test ==='
+      print ('=== Don\'t confirm remove rule test ===')
 
       # Wait startup notifications are closed
       self.assertTrue(tools.waitUntil(lambda: notification.noNotification(self.browser)))
 
-      print '  Open rules dashboard'
+      print ('  Open rules dashboard')
       dashboard.open(self.browser)
       dashboard.openAutomation(self.browser)
       ruleNumber = 0
 
-      print '  Get rule table'
+      print ('  Get rule table')
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       removeButton = dashboard.automation.getRuleRemoveButton(rulesTable, ruleNumber)
       
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
       
-      print '  Remove rule'
+      print ('  Remove rule')
       removeButton.click()
       confirmationModal = modals.waitOkCancelModal(self.browser)
-      print '  Cancel'
+      print ('  Cancel')
       confirmationModal.cancel()
       
-      print '  Expect no notification'
+      print ('  Expect no notification')
       self.assertTrue(notification.noNotification(self.browser))
-      print '  Expect no change in rule table'
+      print ('  Expect no change in rule table')
       self.assertEqual(dashboard.automation.getRuleNumberInTable(self.browser, rulesTable), 1)
       
       

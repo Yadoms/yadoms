@@ -50,9 +50,9 @@ def checkLocalRuleCodeById(id, expectedCode):
       
    if (readCode != expectedCode):
       print ('>>>>>>>>>>> Read code : ')
-      print readCode
+      print (readCode)
       print ('>>>>>>>>>>> Expected code : ')
-      print expectedCode
+      print (expectedCode)
       return False
       
    return True
