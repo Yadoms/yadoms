@@ -117,6 +117,10 @@ set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 ## Thread Library
 FIND_PACKAGE(Threads)
 
+#ensure "RT" is added after OpenSSL libs
+if(UNIX AND NOT APPLE)
+   set(LIBS ${LIBS} rt)
+endif()
 
 ## Poco dependencies
 if(WIN32)
@@ -271,10 +275,7 @@ set(LIBS
 )
 
 
-#ensure "RT" is added after OpenSSL libs
-if(UNIX AND NOT APPLE)
-   set(LIBS ${LIBS} rt)
-endif()
+
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completely build from sources
