@@ -8,6 +8,8 @@
 #include "SecureSession.h"
 #include "StandardSession.h"
 #include <Poco/URI.h>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
 namespace shared
 {
@@ -16,6 +18,30 @@ namespace shared
                                                const CDataContainer& parameters,
                                                const ESessionType& sessionType,
                                                const boost::posix_time::time_duration& timeout)
+   {
+      CDataContainer out;
+      sendGetRequest(url,
+                     [&out](const Poco::Net::HTTPResponse& response,
+                            std::istream& receivedStream)
+                     {
+                        out = processJsonResponse(response,
+                                                  receivedStream);
+                     },
+                     headerParameters,
+                     parameters,
+                     sessionType,
+                     timeout);
+
+      return out;
+   }
+
+   void CHttpMethods::sendGetRequest(const std::string& url,
+                                     const boost::function<void(const Poco::Net::HTTPResponse& response,
+                                                                std::istream& receivedStream)>& responseHandlerFct,
+                                     const CDataContainer& headerParameters,
+                                     const CDataContainer& parameters,
+                                     const ESessionType& sessionType,
+                                     const boost::posix_time::time_duration& timeout)
    {
       try
       {
@@ -50,12 +76,15 @@ namespace shared
          Poco::Net::HTTPResponse response;
          auto& receivedStream = session->receiveResponse(response);
 
-         if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
-            return jsonResponseReader(response, receivedStream);
+         if (response.getStatus() != Poco::Net::HTTPResponse::HTTP_OK)
+         {
+            const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
+            YADOMS_LOG(warning) << message;
+            throw exception::CException(message);
+         }
 
-         const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
-         YADOMS_LOG(warning) << message;
-         throw exception::CException(message);
+         responseHandlerFct(response,
+                            receivedStream);
       }
       catch (const Poco::Net::SSLException& e)
       {
@@ -80,11 +109,37 @@ namespace shared
    }
 
    CDataContainer CHttpMethods::sendPostRequest(const std::string& url,
+                                                const std::string& body,
                                                 const CDataContainer& headerParameters,
                                                 const CDataContainer& parameters,
-                                                const std::string& body,
                                                 const ESessionType& sessionType,
                                                 const boost::posix_time::time_duration& timeout)
+   {
+      CDataContainer out;
+      sendPostRequest(url,
+                      body,
+                      [&out](const Poco::Net::HTTPResponse& response,
+                             std::istream& receivedStream)
+                      {
+                         out = processJsonResponse(response,
+                                                   receivedStream);
+                      },
+                      headerParameters,
+                      parameters,
+                      sessionType,
+                      timeout);
+
+      return out;
+   }
+
+   void CHttpMethods::sendPostRequest(const std::string& url,
+                                      const std::string& body,
+                                      const boost::function<void(const Poco::Net::HTTPResponse& response,
+                                                                 std::istream& receivedStream)>& responseHandlerFct,
+                                      const CDataContainer& headerParameters,
+                                      const CDataContainer& parameters,
+                                      const ESessionType& sessionType,
+                                      const boost::posix_time::time_duration& timeout)
    {
       try
       {
@@ -116,19 +171,23 @@ namespace shared
                                     url,
                                     timeout));
 
-         std::ostream& os = session->sendRequest(request);
+         auto& os = session->sendRequest(request);
 
          os << body;
 
          Poco::Net::HTTPResponse response;
          auto& receivedStream = session->receiveResponse(response);
 
-         if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK || response.getStatus() == Poco::Net::HTTPResponse::HTTP_CREATED)
-            return jsonResponseReader(response, receivedStream);
+         if (response.getStatus() != Poco::Net::HTTPResponse::HTTP_OK &&
+            response.getStatus() != Poco::Net::HTTPResponse::HTTP_CREATED)
+         {
+            const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
+            YADOMS_LOG(warning) << message;
+            throw exception::CException(message);
+         }
 
-         const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
-         YADOMS_LOG(warning) << message;
-         throw exception::CException(message);
+         responseHandlerFct(response,
+                            receivedStream);
       }
       catch (const Poco::Net::SSLException& e)
       {
@@ -176,13 +235,13 @@ namespace shared
       return session;
    }
 
-   CDataContainer CHttpMethods::jsonResponseReader(Poco::Net::HTTPResponse& response,
-                                                   std::istream& receivedStream)
+   CDataContainer CHttpMethods::processJsonResponse(const Poco::Net::HTTPResponse& response,
+                                                    std::istream& receivedStream)
    {
-      if (!boost::icontains(response.getContentType(), "application/json"))
+      if (!boost::icontains(response.getContentType(), "application/json") &&
+         !boost::icontains(response.getContentType(), "text/json"))
       {
-         YADOMS_LOG(error) << "HTTP response is not JSON";
-         throw std::runtime_error("HTTP response is not JSON");
+         YADOMS_LOG(warning) << "HTTP answer : JSON expected but content type not defined as JSON : " << response.getContentType();
       }
 
       // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength

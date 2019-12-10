@@ -3,6 +3,7 @@
 #include <Poco/Net/HTTPClientSession.h>
 
 #include "IHttpSession.h"
+#include <boost/property_tree/exceptions.hpp>
 
 
 namespace shared
@@ -31,7 +32,7 @@ namespace shared
       virtual ~CHttpMethods() = default;
 
       //--------------------------------------------------------------
-      /// \brief	    Send get request to remote server
+      /// \brief	    Send get request to remote server (for JSON answer)
       /// \param[in]  url                 the url to send the request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
@@ -46,28 +47,66 @@ namespace shared
                                            const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
-      /// \brief	    Send post request to remote server
+      /// \brief	    Send get request to remote server with response processing injection
       /// \param[in]  url                 the url to send the request
+      /// \param[in]  responseHandlerFct  lambda for response processing
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
+      /// \param[in]  sessionType         the session type to use
+      /// \param[in]  timeout             timeout for the request
+      /// \return     the answer of the request
+      //--------------------------------------------------------------
+      static void sendGetRequest(const std::string& url,
+                                 const boost::function<void(const Poco::Net::HTTPResponse& response,
+                                                            std::istream& receivedStream)>& responseHandlerFct,
+                                 const CDataContainer& headerParameters = CDataContainer(),
+                                 const CDataContainer& parameters = CDataContainer(),
+                                 const ESessionType& sessionType = kStandard,
+                                 const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
+
+      //--------------------------------------------------------------
+      /// \brief	    Send post request to remote server (for JSON answer)
+      /// \param[in]  url                 the url to send the request
       /// \param[in]  body                the body of request
+      /// \param[in]  headerParameters    parameters included into the frame
+      /// \param[in]  parameters          parameters at the end of the url
       /// \param[in]  sessionType         the session type to use
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
       static CDataContainer sendPostRequest(const std::string& url,
+                                            const std::string& body,
                                             const CDataContainer& headerParameters = CDataContainer(),
                                             const CDataContainer& parameters = CDataContainer(),
-                                            const std::string& body = std::string(),
                                             const ESessionType& sessionType = kStandard,
                                             const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
 
-   private:
+      //--------------------------------------------------------------
+      /// \brief	    Send get request to remote server with response processing injection
+      /// \param[in]  url                 the url to send the request
+      /// \param[in]  body                the body of request
+      /// \param[in]  responseHandlerFct  lambda for response processing
+      /// \param[in]  headerParameters    parameters included into the frame
+      /// \param[in]  parameters          parameters at the end of the url
+      /// \param[in]  sessionType         the session type to use
+      /// \param[in]  timeout             timeout for the request
+      /// \return     the answer of the request
+      //--------------------------------------------------------------
+      static void sendPostRequest(const std::string& url,
+                                  const std::string& body,
+                                  const boost::function<void(const Poco::Net::HTTPResponse& response,
+                                                             std::istream& receivedStream)>& responseHandlerFct,
+                                  const CDataContainer& headerParameters = CDataContainer(),
+                                  const CDataContainer& parameters = CDataContainer(),
+                                  const ESessionType& sessionType = kStandard,
+                                  const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
+
+   protected:
       static boost::shared_ptr<IHttpSession> createSession(const ESessionType& sessionType,
                                                            const std::string& url,
                                                            const boost::posix_time::time_duration& timeout);
 
-      static CDataContainer jsonResponseReader(Poco::Net::HTTPResponse& response,
-                                               std::istream& receivedStream);
+      static CDataContainer processJsonResponse(const Poco::Net::HTTPResponse& response,
+                                                std::istream& receivedStream);
    };
 } // namespace shared

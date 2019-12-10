@@ -57,14 +57,16 @@ void CIOManager::tryMissingEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    CWESFactory factory;
 
-   for (const auto& deviceId : m_deviceToRetry)
-   {
-      try
-      {
-         m_deviceManager.push_back(factory.createEquipment(api, deviceId, pluginConfiguration));
-      }
-      catch(std::exception&)
-      { }
+   auto deviceId = m_deviceToRetry.begin();
+   while (deviceId != m_deviceToRetry.end()){
+	   try {
+		   m_deviceManager.push_back(factory.createEquipment(api, *deviceId, pluginConfiguration));
+		   deviceId = m_deviceToRetry.erase(deviceId); // Remove the device from the device to retry if all is running well
+	   }
+	   catch (std::exception&)
+	   {
+		   deviceId++;
+	   }
    }
 }
 

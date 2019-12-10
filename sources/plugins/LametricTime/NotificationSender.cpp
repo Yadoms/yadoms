@@ -35,9 +35,9 @@ void CNotificationSender::displayText(const std::string& text,
    try
    {
       shared::CHttpMethods::sendPostRequest(url,
+                                            body,
                                             headerPostParameters,
                                             shared::CDataContainer(),
-                                            body,
                                             m_configuration.getPort() == kHttp
                                                ? shared::CHttpMethods::ESessionType::kStandard
                                                : shared::CHttpMethods::ESessionType::kSecured);

@@ -99,7 +99,7 @@ if(${Python3_FOUND})
       )	
       set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platformSpecific/windows)
 
-      # Default Python installation doen't provide debug library (python38_d.lib),
+      # Default Python installation doesn't provide debug library (python38_d.lib),
       # so link with the release library for both configurations
       EXTRACT_LIBRARY("${Python3_LIBRARIES}" Python3_LIBRARIES optimized)      
 
