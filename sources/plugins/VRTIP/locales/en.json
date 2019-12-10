@@ -1,0 +1,70 @@
+{
+	"name": "VRT IP",
+	"description": "This plugin allow to control his roof windows through VRT IP equipment (wired shutter) (see https://www.cartelectronic.fr/home/25-commande-volet-type-velux-par-ethernet.html)\n",
+	"configurationSchema": {
+	},
+	"enumerations": {
+		"EVRTIPdeviceStatus": {
+			"name" : "Device status",
+			"values" : {
+				"Undefined": "Undefined",
+				"Ok": "Ok",
+				"Error": "Error",
+				"TimeOut": "Time out"
+			}
+		}
+	},     
+	"deviceConfiguration": {
+		"staticConfigurationSchema": {
+			"name": "Type",
+			"description": "Type of the device",
+			"schemas": {
+				"WES": {
+					"types": {
+						"WES": {
+							"title": "WES Module"
+						}
+					},
+					"content": {
+						"IPAddress": {
+							"name": "IP Address",
+							"description": "the IP address of the equipment",
+                     "regexErrorMessage": "this is not a valid IP address"
+						},
+						"Port": {
+							"name": "Port",
+							"description": "the WES local socket opened (example: 80)"
+						},
+						"authentication": {
+							"name": "key to access the WES",
+							"description": "Only if the key is enabled",
+							"content": {
+								"User": {
+									"name": "User",
+									"description": ""
+								},
+								"Password": {
+									"name": "Password",
+									"description": ""
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}, 
+	"customLabels": {
+		"pluginState": {
+			"initialization": "Initializing...",
+			"initializationError": "Initialization error",
+			"ready": "Plugin ready",
+			"noConnection": "Could not connect to the equipment",
+			"noInformation": "The equipment is connected. No information returned. Please check the apikey",
+			"updateConfiguration": "Configuration updating...",
+         "kAtLeastOneConnectionFaulty": "At least one connection is faulty",
+         "manuallyCreationError": "The manual creation of the device have failed",
+         "serverRevisionTooLow": "The server firmware revision is would be 0.80 or greater"
+		}
+	}
+}

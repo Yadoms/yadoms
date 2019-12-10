@@ -1,0 +1,70 @@
+﻿{
+	"name": "VRT IP",
+	"description": "Ce plugin permet de controler ses volets roulants de toit filaires par l'équipement VRT IP (https://www.cartelectronic.fr/home/25-commande-volet-type-velux-par-ethernet.html)",
+	"configurationSchema": {
+	},
+	"enumerations": {
+		"EVRTIPdeviceStatus": {
+			"name": "Etat de l'équipement",
+			"values": {
+				"Undefined": "Indéfini",
+				"Ok": "Ok",
+				"Error": "Erreur",
+				"TimeOut": "Connection perdue"
+			}
+		}
+	},
+	"deviceConfiguration": {
+		"staticConfigurationSchema": {
+			"name": "Type",
+			"description": "Type de l'équipement",
+			"schemas": {
+				"WES": {
+					"types": {
+						"WES": {
+							"title": "module WES"
+						}
+					},
+					"content": {
+						"IPAddress": {
+							"name": "Adresse IP",
+							"description": "L'adresse IP du module",
+							"regexErrorMessage": "Ce n'est pas une adresse IP valide"
+						},
+						"Port": {
+							"name": "Port",
+							"description": "Le port de communication du WES (exemple: 80)"
+						},
+						"authentication": {
+							"name": "clé d'accès au module WES",
+							"description": "seulement si la clé est activée",
+							"content": {
+								"User": {
+									"name": "Utilisateur",
+									"description": ""
+								},
+								"Password": {
+									"name": "Mot de passe",
+									"description": ""
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"initialization": "Initialisation...",
+			"initializationError": "Erreur d'initialisation",
+			"ready": "plugin prêt",
+			"noConnection": "Pas de connexion à l'équipement",
+			"noInformation": "L'équipement est connecté, mais aucune information n'est retournée. Vérifiez la clé apikey.",
+			"updateConfiguration": "Mise à jour de la configuration...",
+			"kAtLeastOneConnectionFaulty": "Au moins un équipement est en erreur",
+			"manuallyCreationError": "La création manuelle de l'équipement est un échec",
+			"serverRevisionTooLow": "La version du firmware sur le serveur WES doit être >=0.80"
+		}
+	}
+}
