@@ -8,6 +8,7 @@
 #include "WESSubEquipments/Analog.h"
 #include "WESSubEquipments/Pulse.h"
 #include "WESSubEquipments/Clamp.h"
+#include "../http/httpContext.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -143,5 +144,6 @@ namespace equipments
 
       WESIOMapping m_WESIOMapping;
       int m_version;
+	  http::httpContext m_httpContext;
    };
 } // namespace equipments

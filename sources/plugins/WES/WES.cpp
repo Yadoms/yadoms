@@ -269,6 +269,11 @@ void CWES::analyzePluginState(boost::shared_ptr<yApi::IYPluginApi> api)
       }
    }
 
+   if (m_ioManager->getWaitingEquipment() != 0) {
+	   YADOMS_LOG(error) << "Waiting " << m_ioManager->getWaitingEquipment() << " equipment(s)";
+	   newState = kAtLeastOneConnectionFaulty;
+   }
+
    setPluginState(api, newState);
 }
 

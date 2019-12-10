@@ -117,7 +117,7 @@ set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 ## Thread Library
 FIND_PACKAGE(Threads)
 
-## RT Library
+#ensure "RT" is added after OpenSSL libs
 if(UNIX AND NOT APPLE)
    set(LIBS ${LIBS} rt)
 endif()
@@ -177,12 +177,9 @@ if(NOT ${OPENSSL_FOUND})
    message("Cannot find opensll, all plugins which requires SSL features will not be loaded")
    set(OPENSSL_INCLUDE_DIR "")
 endif()
+#Do not add OPENSSL_SSL_LIBRARY and OPENSSL_CRYPTO_LIBRARY here; it will be later
+#if done here, this is too early, and for gcc the libraries appears in bad order regarding Poco for example
 
-set(LIBS 
-   ${LIBS} 
-   ${OPENSSL_SSL_LIBRARY} 
-   ${OPENSSL_CRYPTO_LIBRARY}
-)
 
 ###############################################
 # POCO
@@ -261,15 +258,24 @@ endif()
 #
 ###############################################
 
+# This library Order is VERY important for GCC
+# At this time what is needed:
+#   1/ OpenSSL libs must appear after Poco
+#   2/ Libs must appear after Boost
+#   3/ CMAKE_THREAD_LIBS_INIT must appear after Openssl
+# maybe other conditions are needed, but only those are actually detected
 set(LIBS
-   ${LIBS}
-   ${Boost_LIBRARIES}
-   ${CMAKE_THREAD_LIBS_INIT}
    ${Poco_FOUND_LIBS}
    ${OPENSSL_SSL_LIBRARY}
    ${OPENSSL_CRYPTO_LIBRARY}
+   ${CMAKE_THREAD_LIBS_INIT}
+   ${Boost_LIBRARIES}
    ${Protobuf_LIBRARIES}
+   ${LIBS}
 )
+
+
+
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completely build from sources
