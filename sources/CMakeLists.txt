@@ -177,12 +177,9 @@ if(NOT ${OPENSSL_FOUND})
    message("Cannot find opensll, all plugins which requires SSL features will not be loaded")
    set(OPENSSL_INCLUDE_DIR "")
 endif()
+#Do not add OPENSSL_SSL_LIBRARY and OPENSSL_CRYPTO_LIBRARY here; it will be later
+#if done here, this is too early, and for gcc the libraries appears in bad order regarding Poco for example
 
-set(LIBS 
-   ${LIBS} 
-   ${OPENSSL_SSL_LIBRARY} 
-   ${OPENSSL_CRYPTO_LIBRARY}
-)
 
 ###############################################
 # POCO
