@@ -4,7 +4,7 @@
 #include <Poco/Net/NetworkInterface.h>
 #include <Poco/Net/Socket.h>
 #include "http/HttpMethods.h"
-#include "http/HttpContext.h"
+#include "http/httpContext.h"
 
 //--------------------------------------------------------------
 /// \brief	All url handling
