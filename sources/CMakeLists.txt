@@ -117,10 +117,6 @@ set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 ## Thread Library
 FIND_PACKAGE(Threads)
 
-## RT Library
-if(UNIX AND NOT APPLE)
-   set(LIBS ${LIBS} rt)
-endif()
 
 ## Poco dependencies
 if(WIN32)
@@ -258,15 +254,27 @@ endif()
 #
 ###############################################
 
+# This library Order is VERY important for GCC
+# At this time what is needed:
+#   1/ OpenSSL libs must appear after Poco
+#   2/ Libs must appear after Boost
+#   3/ CMAKE_THREAD_LIBS_INIT must appear after Openssl
+# maybe other conditions are needed, but only those are actually detected
 set(LIBS
-   ${LIBS}
-   ${Boost_LIBRARIES}
    ${Poco_FOUND_LIBS}
    ${OPENSSL_SSL_LIBRARY}
    ${OPENSSL_CRYPTO_LIBRARY}
    ${CMAKE_THREAD_LIBS_INIT}
+   ${Boost_LIBRARIES}
    ${Protobuf_LIBRARIES}
+   ${LIBS}
 )
+
+
+#ensure "RT" is added after OpenSSL libs
+if(UNIX AND NOT APPLE)
+   set(LIBS ${LIBS} rt)
+endif()
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completely build from sources
