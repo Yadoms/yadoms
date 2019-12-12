@@ -21,21 +21,24 @@ before_install:
   - docker pull ${DOCKER_IMAGE}
   
 script:
-  # 
-  #- docker run --name docCon -e MAKE_PACKAGE=true -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} -e UPLOAD_FTP_CREDENTIALS=${FTP_USER}:${FTP_PASSWORD} ${DOCKER_IMAGE} /entrypoint.sh
+  # make generation withtou uploading to ftp
   - docker run --name docCon -e MAKE_PACKAGE=true -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} ${DOCKER_IMAGE} /entrypoint.sh
-  - mkdir -p binaries
-  - docker cp docCon:/yadoms/builds/package binaries
-  - ls -al binaries/package
+  - docker cp docCon:/yadoms/builds/package .
 
 before_deploy:
-  - export TRAVIS_TAG="preview"
+  #setting the travis tag, ensure all upload are assigned to the same draft
+  - export TRAVIS_TAG=`ls packages/Yadoms*.tar.gz | head -1 | grep -oP '(?<=-).*(?=-)'`
   
 deploy:
+  #Deploy for Github Release
+  # -> create a draft for each new version
+  # -> all job push to the same draft
+  # -> in case of job re-run, files are overwritten
+  # -> deploy is systematic (not only on tags) and for all branches
   provider: releases
   api_key: "${GH_OAUTH}"
   file_glob: true
-  file: binaries/package/*
+  file: package/*
   skip_cleanup: true  
   draft: true
   overwrite: true
