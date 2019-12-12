@@ -24,6 +24,7 @@ script:
   # make generation withtou uploading to ftp
   - docker run --name docCon -e MAKE_PACKAGE=true -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} ${DOCKER_IMAGE} /entrypoint.sh
   - docker cp docCon:/yadoms/builds/package .
+  - ls -al ./package/* 
 
 before_deploy:
   #setting the travis tag, ensure all upload are assigned to the same draft

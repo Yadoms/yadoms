@@ -28,7 +28,7 @@ else
 	mv builds updatepackage/package
 	rm -f updatepackage/package/yadoms.ini
 	cd updatepackage
-	zip -r ../package-$1.zip ./ -x \*.gitignore
+	zip -qr ../package-$1.zip ./ -x \*.gitignore
 	cd -
 	mkdir builds
 	mv packagetomove builds/package
