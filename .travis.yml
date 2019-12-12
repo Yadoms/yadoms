@@ -3,11 +3,35 @@ dist: trusty
 
 sudo: required
 
+jobs:
+  include:
+  - env: DOCKER_IMAGE=yadoms/build_for_raspberrypi${DOCKER_TAG_RPI}
+  - env: DOCKER_IMAGE=yadoms/build_for_ubuntu${DOCKER_TAG_LINUX}
+  - env: DOCKER_IMAGE=yadoms/build_for_macos${DOCKER_TAG_MACOS}
+  - env: DOCKER_IMAGE=yadoms/build_for_synology218p${DOCKER_TAG_SYNO}
+  
 services:
   - docker
 
 before_install:
-  - docker pull yadoms/build_for_ubuntu${DOCKER_TAG}
+  - docker pull ${DOCKER_IMAGE}
   
 script:
-  - docker run -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} yadoms/build_for_ubuntu${DOCKER_TAG}
+  # 
+  #- docker run --name docCon -e MAKE_PACKAGE=true -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} -e UPLOAD_FTP_CREDENTIALS=${FTP_USER}:${FTP_PASSWORD} ${DOCKER_IMAGE} /entrypoint.sh
+  - docker run --name docCon -e MAKE_PACKAGE=true -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} ${DOCKER_IMAGE} /entrypoint.sh
+  - mkdir -p binaries
+  - docker cp docCon:/yadoms/builds/package binaries
+  - ls -al binaries
+
+deploy:
+  provider: releases
+  api_key: "${GH_OAUTH}"
+  file_glob: true
+  file: binaries/*
+  skip_cleanup: true  
+  draft: true
+  overwrite: true
+  on:
+    all_branches: true
+    
