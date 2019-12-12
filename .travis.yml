@@ -5,10 +5,14 @@ sudo: required
 
 jobs:
   include:
-  - env: DOCKER_IMAGE=yadoms/build_for_raspberrypi${DOCKER_TAG_RPI}
-  - env: DOCKER_IMAGE=yadoms/build_for_ubuntu${DOCKER_TAG_LINUX}
-  - env: DOCKER_IMAGE=yadoms/build_for_macos${DOCKER_TAG_MACOS}
-  - env: DOCKER_IMAGE=yadoms/build_for_synology218p${DOCKER_TAG_SYNO}
+  - name: "RaspberryPI"
+    env: DOCKER_IMAGE=yadoms/build_for_raspberrypi${DOCKER_TAG_RPI}
+  - name: "Linux"
+    env: DOCKER_IMAGE=yadoms/build_for_ubuntu${DOCKER_TAG_LINUX}
+  - name: "MacOSX"
+    env: DOCKER_IMAGE=yadoms/build_for_macos${DOCKER_TAG_MACOS}
+  - name: "Synology 218+"
+    env: DOCKER_IMAGE=yadoms/build_for_synology218p${DOCKER_TAG_SYNO}
   
 services:
   - docker
@@ -22,13 +26,13 @@ script:
   - docker run --name docCon -e MAKE_PACKAGE=true -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} ${DOCKER_IMAGE} /entrypoint.sh
   - mkdir -p binaries
   - docker cp docCon:/yadoms/builds/package binaries
-  - ls -al binaries
+  - ls -al binaries/package
 
 deploy:
   provider: releases
   api_key: "${GH_OAUTH}"
   file_glob: true
-  file: binaries/*
+  file: binaries/package/*
   skip_cleanup: true  
   draft: true
   overwrite: true
