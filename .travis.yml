@@ -28,6 +28,9 @@ script:
   - docker cp docCon:/yadoms/builds/package binaries
   - ls -al binaries/package
 
+before_deploy:
+  - export TRAVIS_TAG="preview"
+  
 deploy:
   provider: releases
   api_key: "${GH_OAUTH}"
