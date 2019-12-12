@@ -26,7 +26,7 @@ class AdvancedParameterSection(unittest.TestCase):
       database.new()
       config.deploy("nominal")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       

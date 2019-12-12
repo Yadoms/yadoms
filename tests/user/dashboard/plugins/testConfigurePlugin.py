@@ -19,7 +19,7 @@ class ConfigurePlugin(unittest.TestCase):
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -47,7 +47,7 @@ class ConfigurePlugin(unittest.TestCase):
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       pluginDatas = dashboard.plugins.getPluginDatas(pluginsTable, pluginNumber)
       self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginName(pluginsTable, pluginNumber) == pluginNewName))
-      self.assertEqual(dashboard.plugins.getPluginState(pluginsTable, pluginNumber), dashboard.plugins.PluginState.Running)
+      self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) == dashboard.plugins.PluginState.Running))
       self.assertTrue(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
       
       

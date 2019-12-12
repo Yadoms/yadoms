@@ -13,16 +13,18 @@ def currentLocale():
 def get():
    """Return the translations array"""
    
-   translations = json.load(codecs.open(os.path.join(yadomsServer.wwwLocalesPath(), currentLocale() + ".json"), "r", "utf-8-sig"))
-   return translations
+   with codecs.open(os.path.join(yadomsServer.wwwLocalesPath(), currentLocale() + ".json"), "r", "utf-8-sig") as file:
+      translations = json.load(file)
+      return translations
    
    
 def getPlugin(pluginType):
    """Return the translations array for a plugin"""
 
    try:
-      translations = json.load(codecs.open(os.path.join(yadomsServer.pluginsPath(), pluginType, "locales", currentLocale() + ".json"), "r", "utf-8-sig"))
+      with codecs.open(os.path.join(yadomsServer.pluginsPath(), pluginType, "locales", currentLocale() + ".json"), "r", "utf-8-sig") as file:
+         translations = json.load(file)
+         return translations
    except:
       print ('getPlugin : {pluginType} not found')
-   
-   return translations
+      return ""

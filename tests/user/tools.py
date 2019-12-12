@@ -3,6 +3,7 @@ import inspect
 import os.path
 import shutil
 import yadomsServer
+from selenium.webdriver.chrome.options import Options
 
 def doUntil(actionFct, conditionFct, timeout = 10):
    """Do a action every second until a condition. Returns True if conditionFct was satisfed, False if timeout"""
@@ -80,3 +81,17 @@ def highlight(self, element):
     apply_style("background: yellow; border: 2px solid red;")
     time.sleep(10)
     apply_style(original_style)
+
+
+class ChromeOptionsHelper:
+   __options = None
+
+   @staticmethod
+   def get():
+      return ChromeOptionsHelper.__options
+
+   @staticmethod
+   def setHeadless():
+      if ChromeOptionsHelper.__options is None:
+         ChromeOptionsHelper.__options = Options()
+      ChromeOptionsHelper.__options.add_argument("--headless")

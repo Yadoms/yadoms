@@ -8,6 +8,7 @@ import scripts
 import yadomsServer
 import mainPage
 import time
+import tools
 
 class AddPage(unittest.TestCase):
    """App page test"""
@@ -18,7 +19,7 @@ class AddPage(unittest.TestCase):
       config.deploy("nominal")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
             

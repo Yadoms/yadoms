@@ -20,7 +20,7 @@ class CreateDevice(unittest.TestCase):
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -63,7 +63,7 @@ class CreateDevice(unittest.TestCase):
       
    def test_createVirtualDevice(self):
       print ('=== Manually virtual device creation test ===')
-      deviceName = u'My virtual device')
+      deviceName = u'My virtual device'
      
       print ('  Select virtual device')
       tools.waitUntil(lambda: dashboard.devices.getCreateDeviceButton(self.browser).is_enabled())

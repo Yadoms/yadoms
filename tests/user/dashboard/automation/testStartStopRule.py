@@ -24,7 +24,7 @@ class StartStopRule(unittest.TestCase):
       config.deploy("nominal")
       scripts.deploy(["DisplayServerVersion"])
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       

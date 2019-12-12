@@ -43,7 +43,7 @@ def getPluginName(pluginsTable, pluginNumber):
    return getPluginDatas(pluginsTable, pluginNumber)[0].text
 
 def getPluginType(pluginsTable, pluginNumber):
-   return getPluginDatas(pluginsTable, pluginNumber)[1].text
+   return getPluginDatas(pluginsTable, pluginNumber)[1].find_element_by_tag_name("img").get_attribute("alt")
    
 def getPluginAutoStart(pluginsTable, pluginNumber):
    return getPluginDatas(pluginsTable, pluginNumber)[2].find_element_by_tag_name("input")
@@ -224,7 +224,7 @@ def checkCreatedPluginSequence(test, pluginInstanceName, pluginType, hasExtraCom
       
    test.assertEqual(len(getPluginDatas(pluginsTable, pluginNumber)), 5)
    test.assertEqual(getPluginName(pluginsTable, pluginNumber), pluginInstanceName)
-   test.assertEqual(getPluginType(pluginsTable, pluginNumber).lstrip(), i18n.getPlugin(pluginType)["name"])
+   test.assertEqual(getPluginType(pluginsTable, pluginNumber), i18n.getPlugin(pluginType)["name"])
    test.assertTrue(getPluginAutoStartState(pluginsTable, pluginNumber))
 
    buttons = getPluginButtons(pluginsTable, pluginNumber)

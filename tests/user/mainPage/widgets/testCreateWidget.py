@@ -23,7 +23,7 @@ class CreateWidget(unittest.TestCase):
       config.deploy("withDeveloperMode")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
                         
@@ -45,14 +45,11 @@ class CreateWidget(unittest.TestCase):
       print ('  Confirm')
       editWidgetModal.ok()
 
-
    def checkCreateWidget(self, widgetType, widgetTitle, widgetExpectedPosition, widgetExpectedSize):
       print ('  Check no notification occurs')
       self.assertTrue(notification.noNotification(self.browser))
       print ('  Check widget present on main page')
-      widget = mainPage.findWidgetOnCurrentPage(self.browser, widgetType, widgetTitle)
-      self.assertIsNotNone(widget)
-
+      self.assertIsTrue(tools.waitUntil(mainPage.findWidgetOnCurrentPage(self.browser, widgetType, widgetTitle) != None))
          
    def test_createGaugeWidget(self):
       print ('=== Nominal test of gauge widget creation ===')

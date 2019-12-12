@@ -4,15 +4,17 @@ import unittest
 import HtmlTestRunner
 import tools
 import shutil
- 
+import os
+
 
 if __name__ == "__main__":
-   tools.deleteContext()         
-   loader = unittest.TestLoader()         
-   suite = loader.discover('.')
+   tools.ChromeOptionsHelper.setHeadless()
+   tools.deleteContext()
+   suite = unittest.TestLoader().discover('.')
 
-   shutil.rmtree('report')
-   runner = HtmlTestRunner.HTMLTestRunner(output = 'report',
+   shutil.rmtree('report_html', True)
+   os.makedirs('report_html', exist_ok=True)
+   runner = HtmlTestRunner.HTMLTestRunner(output = 'report_html',
                                           combine_reports = True,
                                           report_name = 'index',
                                           add_timestamp = False,

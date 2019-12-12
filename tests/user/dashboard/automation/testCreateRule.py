@@ -13,6 +13,7 @@ import notification
 import i18n
 import tools
 import os.path
+import tools
 
 class CreateRule(unittest.TestCase):
    """Create rule test"""
@@ -24,7 +25,7 @@ class CreateRule(unittest.TestCase):
       scripts.deleteAll()
       # We have to activate log to be able to check rules logs
       self.serverProcess = yadomsServer.start(["logLevel=information"])
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       

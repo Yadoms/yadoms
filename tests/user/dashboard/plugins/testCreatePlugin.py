@@ -9,6 +9,7 @@ import config
 import scripts
 import yadomsServer
 import dashboard.plugins
+import tools
 
 class CreatePlugin(unittest.TestCase):
    """Create plugin test"""
@@ -19,7 +20,7 @@ class CreatePlugin(unittest.TestCase):
       config.deploy("withDeveloperMode")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
             

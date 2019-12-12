@@ -20,7 +20,7 @@ class DatabaseMigration(unittest.TestCase):
       yadomsServer.ensureStopped()
       config.deploy("nominal")
       scripts.deleteAll()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       self.serverProcess = None
 
