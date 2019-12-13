@@ -49,7 +49,7 @@ class CreateWidget(unittest.TestCase):
       print ('  Check no notification occurs')
       self.assertTrue(notification.noNotification(self.browser))
       print ('  Check widget present on main page')
-      self.assertIsTrue(tools.waitUntil(mainPage.findWidgetOnCurrentPage(self.browser, widgetType, widgetTitle) != None))
+      self.assertTrue(tools.waitUntil(lambda: mainPage.findWidgetOnCurrentPage(self.browser, widgetType, widgetTitle) is not None))
          
    def test_createGaugeWidget(self):
       print ('=== Nominal test of gauge widget creation ===')
