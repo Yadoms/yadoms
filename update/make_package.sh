@@ -30,7 +30,7 @@ else
 	mv builds updatepackage/package
 	rm -f updatepackage/package/yadoms.ini
 	cd updatepackage
-	zip -r ../update-package-$1.zip ./ -x \*.gitignore
+	zip -qr ../update-package-$1.zip ./ -x \*.gitignore
 	cd -
 	mkdir builds
 	mv packagetomove builds/package
