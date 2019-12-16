@@ -7,9 +7,11 @@ if [ -z "$1" ]
 then
 	echo "Make package require the current plaform name"
 	echo " make_package.sh <platform>"
+	echo " output: package-<platform>.zip"
 	echo " example"
 	echo "         : make_package.sh Linux"
 	echo "         : make_package.sh RaspberryPI"
+	echo "         : make_package.sh MyPlatformName"
 	exit 1
 else
 	#move to project root directory
@@ -28,11 +30,11 @@ else
 	mv builds updatepackage/package
 	rm -f updatepackage/package/yadoms.ini
 	cd updatepackage
-	zip -r ../package-$1.zip ./ -x \*.gitignore
+	zip -r ../update-package-$1.zip ./ -x \*.gitignore
 	cd -
 	mkdir builds
 	mv packagetomove builds/package
-	mv package-$1.zip builds/package
+	mv update-package-$1.zip builds/package
 	#cleanup
 	rm -Rf updatepackage
 fi
