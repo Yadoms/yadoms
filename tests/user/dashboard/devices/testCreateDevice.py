@@ -20,7 +20,7 @@ class CreateDevice(unittest.TestCase):
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -30,30 +30,30 @@ class CreateDevice(unittest.TestCase):
       
 
    def test_createDevice(self):
-      print '=== Manually device creation test ==='
+      print ('=== Manually device creation test ===')
       deviceName = u'My device'
       attachedPluginInstance = u'My fakePlugin instance'
      
-      print '  open the create device & cancel'
+      print ('  open the create device & cancel')
       tools.waitUntil(lambda: dashboard.devices.getCreateDeviceButton(self.browser).is_enabled())
       dashboard.devices.getCreateDeviceButton(self.browser).click()
       newDeviceModal = dashboard.devices.waitNewDeviceModal(self.browser)
       newDeviceModal.cancel()
      
-      print '  Create the device'
+      print ('  Create the device')
       tools.waitUntil(lambda: dashboard.devices.getCreateDeviceButton(self.browser).is_enabled())
       dashboard.devices.getCreateDeviceButton(self.browser).click()
       newDeviceModal = dashboard.devices.waitNewDeviceModal(self.browser)
       newDeviceModal.selectAttachedPlugin(attachedPluginInstance).click()
       newDeviceModal.ok()
       
-      print '  Configure the device'
+      print ('  Configure the device')
       editDeviceModal = dashboard.devices.waitConfigureManuallyDeviceModal(self.browser)
       editDeviceModal.setDeviceName(deviceName)
-      print '  Click OK'
+      print ('  Click OK')
       editDeviceModal.ok()
       
-      print '  Check created device'
+      print ('  Check created device')
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       deviceDatas = dashboard.devices.getDeviceDatas(devicesTable, deviceId)
@@ -62,25 +62,25 @@ class CreateDevice(unittest.TestCase):
       
       
    def test_createVirtualDevice(self):
-      print '=== Manually virtual device creation test ==='
+      print ('=== Manually virtual device creation test ===')
       deviceName = u'My virtual device'
      
-      print '  Select virtual device'
+      print ('  Select virtual device')
       tools.waitUntil(lambda: dashboard.devices.getCreateDeviceButton(self.browser).is_enabled())
       dashboard.devices.getCreateDeviceButton(self.browser).click()
       newDeviceModal = dashboard.devices.waitNewDeviceModal(self.browser)
       newDeviceModal.selectVirtualDevice().click()
       newDeviceModal.ok()
       
-      print '  Configure the virtual device'
+      print ('  Configure the virtual device')
       editVirtualDeviceModal = dashboard.devices.waitConfigureVirtualDeviceModal(self.browser)
       editVirtualDeviceModal.updateTextField('friendlyName', deviceName)
       # Device with the first capacity in the list
       # In the futur, it should be great to create all types of virtual devices
-      print '  Click OK'
+      print ('  Click OK')
       editVirtualDeviceModal.ok()
       
-      print '  Check created device'
+      print ('  Check created device')
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       deviceDatas = dashboard.devices.getDeviceDatas(devicesTable, deviceId)

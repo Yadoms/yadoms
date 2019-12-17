@@ -66,15 +66,21 @@ def getRuleEditButton(rulesTable, ruleNumber):
    assert "btn-edit" in button.get_attribute("class")
    return button
    
-def getRuleLogButton(rulesTable, ruleNumber):
-   """ Log button is the third button of the buttons group """
+def getRuleDuplicateButton(rulesTable, ruleNumber):
+   """ Duplicate button is the third button of the buttons group """
    button = getRuleButton(rulesTable, ruleNumber, 2)
+   assert "btn-duplicate" in button.get_attribute("class")
+   return button
+   
+def getRuleLogButton(rulesTable, ruleNumber):
+   """ Log button is the 4th button of the buttons group """
+   button = getRuleButton(rulesTable, ruleNumber, 3)
    assert "btn-log" in button.get_attribute("class")
    return button
    
 def getRuleRemoveButton(rulesTable, ruleNumber):
-   """ Remove button is the 4th button of the buttons group """
-   button = getRuleButton(rulesTable, ruleNumber, 3)
+   """ Remove button is the 5th button of the buttons group """
+   button = getRuleButton(rulesTable, ruleNumber, 4)
    assert "btn-delete" in button.get_attribute("class")
    return button
    
@@ -104,7 +110,7 @@ def getRuleState(rulesTable, ruleNumber):
       return RuleState.Running
    if 'label-danger' in classes:
       return RuleState.Error
-   print 'Not expected class for label-status : ', classes
+   print ('Not expected class for label-status : {classes}')
    assert False   
 
    
@@ -197,8 +203,8 @@ class AceCodeEditor:
       
       self.__codeEditorWebElement.send_keys(Keys.ENTER)
       spacesPerIndentation = 3   ## 3 spaces for a tab
-      indentationCount = (len(codeLine) - len(codeLine.lstrip(' '))) / spacesPerIndentation
-      if (len(codeLine) > 0 and codeLine[-1] is ':'):
+      indentationCount = int((len(codeLine) - len(codeLine.lstrip(' '))) / spacesPerIndentation)
+      if (len(codeLine) > 0 and codeLine[-1] == ':'):
          # Rollback auto-indentation
          indentationCount += 1
       for indent in range(indentationCount):

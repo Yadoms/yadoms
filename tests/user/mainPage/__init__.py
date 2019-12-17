@@ -79,7 +79,7 @@ class NewWidgetModal():
       item = self.__modal.selectItem(expectedWidgetName)
       if item is not None:
          return item
-      print "selectWidget : Nothing to select, ", expectedWidgetName, " not found"
+      print ('selectWidget : Nothing to select, {expectedWidgetName} not found')
       assert False
 
    def getConfirmButton(self):

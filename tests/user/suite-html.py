@@ -1,26 +1,22 @@
 import sys
 sys.path.append('.')
 import unittest
-import HTMLTestRunner
-import StringIO
+import HtmlTestRunner
 import tools
- 
- 
-class Test_Suite(unittest.TestCase):
-
-   def test_main(self):
-      tools.deleteContext()      
-      loader = unittest.TestLoader()         
-      suite = loader.discover('.')
-
-      with open("report/index.html", 'w') as outFile:
-         runner = HTMLTestRunner.HTMLTestRunner(
-            stream=outFile,
-            title='Yadoms user tests report',
-            description='Tests covering Yadoms usage from the web client'
-         )
-         runner.run(suite)
+import shutil
+import os
 
 
 if __name__ == "__main__":
-   unittest.main()
+   tools.ChromeOptionsHelper.setHeadless()
+   tools.deleteContext()
+   suite = unittest.TestLoader().discover('.')
+
+   shutil.rmtree('report_html', True)
+   os.makedirs('report_html', exist_ok=True)
+   runner = HtmlTestRunner.HTMLTestRunner(output = 'report_html',
+                                          combine_reports = True,
+                                          report_name = 'index',
+                                          add_timestamp = False,
+                                          report_title ='Yadoms user tests report')
+   runner.run(suite)
