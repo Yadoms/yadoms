@@ -34,7 +34,7 @@ before_install:
   - docker pull ${DOCKER_IMAGE}
   
 script:
-  - docker run ${DOCKER_FLAG} --name docCon -e MAKE_PACKAGE=true -e -e YADOMS_REPO=${YADOMS_REPO} YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} -e PARAM1=${PARAM1} -e PARAM2=${PARAM2} -e PARAM3=${PARAM3} -e PARAM4=${PARAM4} ${DOCKER_IMAGE} /entrypoint.sh
+  - docker run ${DOCKER_FLAG} --name docCon -e MAKE_PACKAGE=true -e YADOMS_REPO=${YADOMS_REPO} -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} -e PARAM1=${PARAM1} -e PARAM2=${PARAM2} -e PARAM3=${PARAM3} -e PARAM4=${PARAM4} ${DOCKER_IMAGE} /entrypoint.sh
   - docker cp docCon:/yadoms/builds/package .
   - ls -al ./package/* 
 
