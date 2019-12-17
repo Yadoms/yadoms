@@ -19,10 +19,6 @@ namespace interpreter_cpp_api
    {
    }
 
-   CApiImplementation::~CApiImplementation()
-   {
-   }
-
    void CApiImplementation::setSendingMessageQueue(boost::shared_ptr<boost::interprocess::message_queue> sendMessageQueue)
    {
       m_sendMessageQueue = sendMessageQueue;
@@ -59,18 +55,18 @@ namespace interpreter_cpp_api
             throw std::runtime_error(
                (boost::format("CApiImplementation::send \"%1%\", request is not fully initialized") % msg.descriptor()->full_name()).str());
 
-         const auto pbMessageSize = msg.ByteSize();
+         const auto pbMessageSize = msg.ByteSizeLong();
          const auto serializedMessage = boost::make_shared<unsigned char[]>(pbMessageSize);
          if (!msg.SerializeWithCachedSizesToArray(serializedMessage.get()))
             throw std::runtime_error(
                (boost::format("CApiImplementation::send \"%1%\", fail to serialize request (too big ?)") % msg.descriptor()->full_name()).str());
 
-         const auto cuttedMessage = m_messageCutter->cut(serializedMessage,
+         const auto cutMessage = m_messageCutter->cut(serializedMessage,
                                                          pbMessageSize);
 
-         if (!cuttedMessage->empty())
+         if (!cutMessage->empty())
          {
-            for (const auto& part : *cuttedMessage)
+            for (const auto& part : *cutMessage)
             {
                m_sendMessageQueue->send(part->formattedMessage(),
                                         part->formattedSize(),
@@ -260,7 +256,7 @@ namespace interpreter_cpp_api
    {
       const boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request =
          boost::make_shared<CLoadScriptContentRequest>(msg,
-                                                       [&](const std::string content)
+                                                       [&](const std::string& content)
                                                        {
                                                           interpreter_IPC::toYadoms::msg ans;
                                                           auto answer = ans.mutable_loadscriptcontentanswer();

@@ -127,7 +127,7 @@ namespace automation
             return;
          }
 
-         const auto pbMessageSize = pbMsg.ByteSize();
+         const auto pbMessageSize = pbMsg.ByteSizeLong();
          const auto serializedMessage = boost::make_shared<unsigned char[]>(pbMessageSize);
          if (!pbMsg.SerializeWithCachedSizesToArray(serializedMessage.get()))
          {
