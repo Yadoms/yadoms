@@ -14,10 +14,10 @@
       "content": {
         "Port": {
           "name": "Port",
-          "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)",
+          "description": "the Lametric local socket opened (example Http: 8080, Https: 4343)",
           "values": {
-            "Http": "8080",
-            "Https": "4343"
+            "http": "8080",
+            "https": "4343"
           },
           "defaultValue": "Https"
         }
