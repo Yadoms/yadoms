@@ -17,8 +17,9 @@ sudo: required
 jobs:
   include:
   - name: "RaspberryPI"
-    env: DOCKER_IMAGE=yadoms/build_for_raspberrypi${DOCKER_TAG_RPI}
-    env: DOCKER_FLAG=--privileged
+    env: 
+      - DOCKER_IMAGE=yadoms/build_for_raspberrypi${DOCKER_TAG_RPI}
+      - DOCKER_FLAG=--privileged
   - name: "Linux"
     env: DOCKER_IMAGE=yadoms/build_for_ubuntu${DOCKER_TAG_LINUX}
   - name: "MacOSX"
