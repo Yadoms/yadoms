@@ -14,7 +14,7 @@ include(CMakeListsUserConfig.txt OPTIONAL)
 set(CC_RPI_ROOT /opt/arm-marvell-linux-gnueabi)
 set(CC_RPI_GCC ${CC_RPI_ROOT}/bin/arm-marvell-linux-gnueabi-gcc)
 set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/arm-marvell-linux-gnueabi-g++)
-set(CC_RPI_LIBS ${CC_RPI_ROOT}/arm-marvell-linux-gnueabi)
+set(CC_RPI_LIBS ${CC_RPI_ROOT}/arm-marvell-linux-gnueabi/sysroot)
 set(CMAKE_SYSROOT ${CC_RPI_LIBS})
 
 unset(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES)
