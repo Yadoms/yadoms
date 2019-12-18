@@ -1,0 +1,38 @@
+{
+  "type": "StreamDeck",
+  "version": "@PLUGIN_VERSION@",
+  "author": "Oussama DAHMAZ",
+  "credits": "",
+  "supportedPlatforms": "all",
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.4.0-beta.1"
+    }
+  },
+  "configurationSchema": {
+    "StringParameter": {
+      "type": "string"
+    },
+    "BoolParameter": {
+      "type": "bool",
+      "defaultValue": "false"
+    },
+    "IntParameter": {
+      "type": "int",
+      "defaultValue": "258"
+    },
+    "DecimalParameter": {
+      "type": "decimal",
+      "defaultValue": "25.3"
+    },
+    "EnumParameter": {
+      "type": "enum",
+      "values": {
+        "EnumValue1": "",
+        "EnumValue2": "",
+        "EnumValue3": ""
+      },
+      "defaultValue": "EnumValue2"
+    }
+  }
+}

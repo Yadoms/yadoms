@@ -1,0 +1,31 @@
+{
+	"name": "Stream Deck",
+	"description": "Stream Deck devices support (see [site web](https://www.elgato.com/fr/gaming/stream-deck))"
+	"configurationSchema": {
+		"StringParameter": {
+			"name": "A string example",
+			"description": "Just a string parameter"
+		},
+		"BoolParameter": {
+			"name": "A bool example",
+			"description": "Just a boolean example"
+		},
+		"IntParameter": {
+			"name": "An integer example",
+			"description": "This is my int parameter example"
+		},
+		"DecimalParameter": {
+			"name": "A decimal example",
+			"description": "Now a decimal"
+		},
+		"EnumParameter": {
+			"name": "A custom enum example",
+			"description": "Example of an enum with 3 values",
+			"values": {
+				"EnumValue1": "My first value",
+				"EnumValue2": "My second value",
+				"EnumValue3": "My third value"
+			}
+		}
+	}
+}
