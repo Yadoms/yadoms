@@ -4,7 +4,7 @@
 class CSsdpDiscoveredDevice
 {
 public:
-	CSsdpDiscoveredDevice() = default;
+	CSsdpDiscoveredDevice();
 	explicit CSsdpDiscoveredDevice(std::string& deviceDescription);
 	virtual ~CSsdpDiscoveredDevice() = default;
 	

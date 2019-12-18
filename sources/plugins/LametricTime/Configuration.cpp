@@ -35,7 +35,7 @@ std::string CConfiguration::getIPAddress() const
 	return m_ipAddress;
 }
 
-void CConfiguration::setIPAddress(std::string& ipAddress)
+void CConfiguration::setIPAddress(std::string ipAddress)
 {
 	m_ipAddress = ipAddress;
 }

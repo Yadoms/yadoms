@@ -60,7 +60,7 @@ public:
 	 * \param[in] Device IP Address
 	* \return Returns Device IP address
 	*/
-	void setIPAddress(std::string& ipAddress);
+	void setIPAddress(std::string ipAddress);
 	/**
 	* \brief  get pairing mode
 	* \return Returns pairing mode

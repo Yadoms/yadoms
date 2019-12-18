@@ -2,8 +2,6 @@
 #include <boost/asio.hpp>
 #include <boost/asio/steady_timer.hpp>
 
-static boost::posix_time::time_duration HttpRequestDefaultTimeout(boost::posix_time::seconds(45));
-
 class CSsdpClient
 {
 public:

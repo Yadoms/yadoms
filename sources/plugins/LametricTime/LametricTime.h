@@ -48,16 +48,15 @@ private:
 	                    boost::shared_ptr<DeviceInformation>& deviceInformation) const;
 	/**
 	 * \brief Fill device information manually
-	 * \param[out] deviceInformation     Structure with device information
+	 * \return     deviceInformation     Structure with device information
 	 */
-	void fillDeviceInformationManually(boost::shared_ptr<DeviceInformation>& deviceInformation) const;
+	boost::shared_ptr<DeviceInformation> fillDeviceInformationManually() const;
 	/**
 	 * \brief Fill device information automatically
 	 * \param[in]  foundDevice           Class containing device information
-	 * \param[out] deviceInformation     Structure with device information
+	 * \return     deviceInformation     Structure with device information
 	 */
-	static void fillDeviceInformationAutomatically(CSsdpDiscoveredDevice& foundDevice,
-	                                               boost::shared_ptr<DeviceInformation>& deviceInformation);
+	static boost::shared_ptr<DeviceInformation> fillDeviceInformationAutomatically(CSsdpDiscoveredDevice& foundDevice);
 	/**
 	 * \brief Init Lametric device
 	 * \param[in] api                   Pointer to the API

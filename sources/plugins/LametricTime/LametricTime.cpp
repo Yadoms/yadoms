@@ -119,26 +119,30 @@ void CLametricTime::declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api,
                                    boost::shared_ptr<DeviceInformation>& deviceInformation) const
 {
 	YADOMS_LOG(information) << "Declaring the keyword :" << m_text;
-	
+
 	// TODO : Declare icon & priority keywords
 	if (!api->keywordExists(deviceInformation->m_deviceName, m_text))
 		api->declareKeyword(deviceInformation->m_deviceName, m_text);
 }
 
-void CLametricTime::fillDeviceInformationManually(boost::shared_ptr<DeviceInformation>& deviceInformation) const
+boost::shared_ptr<DeviceInformation> CLametricTime::fillDeviceInformationManually() const
 {
-	deviceInformation->m_deviceName = "Lametric Time";
+	auto deviceInformation = boost::make_shared<DeviceInformation>();
+	deviceInformation->m_deviceName = DeviceName;
 	deviceInformation->m_deviceModel = m_deviceManager->getDeviceState().get<std::string>("model");
 	deviceInformation->m_deviceType = m_deviceManager->getDeviceState().get<std::string>("name");
+	return deviceInformation;
 }
 
 
-void CLametricTime::fillDeviceInformationAutomatically(CSsdpDiscoveredDevice& foundDevice,
-                                                       boost::shared_ptr<DeviceInformation>& deviceInformation)
+boost::shared_ptr<DeviceInformation> CLametricTime::fillDeviceInformationAutomatically(
+	CSsdpDiscoveredDevice& foundDevice)
 {
+	auto deviceInformation = boost::make_shared<DeviceInformation>();
 	deviceInformation->m_deviceName = foundDevice.findTag("friendlyName");
 	deviceInformation->m_deviceModel = foundDevice.findTag("modelName");
 	deviceInformation->m_deviceType = foundDevice.findTag("modelNumber");
+	return deviceInformation;
 }
 
 boost::shared_ptr<DeviceInformation> CLametricTime::initLametricTime(boost::shared_ptr<yApi::IYPluginApi>& api)
@@ -168,23 +172,19 @@ boost::shared_ptr<DeviceInformation> CLametricTime::automaticInit(boost::shared_
 		if (!CSsdpDiscoverService::discover("urn:schemas-upnp-org:device:LaMetric:1",
 		                                    [&foundDevice](const CSsdpDiscoveredDevice& device)
 		                                    {
-			                                    if (device.findTag("modelName") != "LaMetric Time")
+			                                    if (device.findTag("modelName") != DeviceName)
 				                                    return false;
 			                                    foundDevice = device;
 			                                    return true;
 		                                    }))
 		{
 			api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
-			throw;
 		}
 		// Device Found
-		auto ip = foundDevice.getIp();
 
-		m_configuration.setIPAddress(ip);
+		m_configuration.setIPAddress(foundDevice.getIp());
 
-		auto deviceInformation = boost::make_shared<DeviceInformation>();
-
-		fillDeviceInformationAutomatically(foundDevice, deviceInformation);
+		auto deviceInformation = fillDeviceInformationAutomatically(foundDevice);
 
 		declareDevice(api, deviceInformation);
 
@@ -209,9 +209,7 @@ boost::shared_ptr<DeviceInformation> CLametricTime::manualInit(boost::shared_ptr
 	{
 		m_deviceManager->getWifiState();
 
-		auto deviceInformation = boost::make_shared<DeviceInformation>();
-
-		fillDeviceInformationManually(deviceInformation);
+		auto deviceInformation = fillDeviceInformationManually();
 
 		declareDevice(api, deviceInformation);
 

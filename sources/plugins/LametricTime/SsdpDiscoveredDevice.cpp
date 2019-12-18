@@ -1,5 +1,9 @@
 ﻿#include "SsdpDiscoveredDevice.h"
 
+CSsdpDiscoveredDevice::CSsdpDiscoveredDevice()
+{
+}
+
 CSsdpDiscoveredDevice::CSsdpDiscoveredDevice(std::string& deviceDescription)
 	: m_deviceDescription(deviceDescription)
 {
