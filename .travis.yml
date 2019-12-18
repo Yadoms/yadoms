@@ -48,6 +48,11 @@ before_deploy:
   #setting the travis tag, ensure all upload are assigned to the same draft
   - export TRAVIS_TAG=`ls package/Yadoms*.tar.gz | head -1 | grep -oP '(?<=-).*(?=-)'`
     
+  - if [ env(DEPLOY_SPECIFIC_BRANCH) IS present AND env(DEPLOY_SPECIFIC_BRANCH) IS NOT blank AND branch != master  ]; then
+      #ensure DEPLOY_SPECIFIC_BRANCH can be used later
+      export TRAVIS_TAG=$TRAVIS_TAG-$TRAVIS_BRANCH
+    fi
+    
 deploy:
   #Deploy for Github Release
   # -> create a draft for each new version
@@ -78,7 +83,7 @@ deploy:
     skip_cleanup: true  
     draft: true
     overwrite: true
-    name: "$TRAVIS_TAG-$TRAVIS_BRANCH"
+    name: "$TRAVIS_TAG"
     on:
       branch: $DEPLOY_SPECIFIC_BRANCH
     
