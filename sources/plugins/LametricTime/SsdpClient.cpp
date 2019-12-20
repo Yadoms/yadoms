@@ -73,22 +73,22 @@ void CSsdpClient::handleReadHeader(const boost::system::error_code& errorCode, s
 	{
 		throw std::runtime_error("Error trying to receive ssdp answer");
 	}
+	
+	const auto httpResponse = std::string(m_data);
 
-	const auto httpResponse = std::stringstream(m_data);
-
-	if (!CHttpResponseHelper::isValidHttpResponse(httpResponse.str()))
+	if (!CHttpResponseHelper::isValidHttpResponse(httpResponse))
 	{
 		throw std::runtime_error("Invalid response from the device");
 	}
 
-	if (!CHttpResponseHelper::isValidHttpStatusCode(httpResponse.str()))
+	if (!CHttpResponseHelper::isValidHttpStatusCode(httpResponse))
 	{
 		throw std::runtime_error("Response returned with a failed status code");
 	}
 
 	const std::string headerLocationName = "LOCATION";
 
-	m_descriptionUrl = CHttpResponseHelper::getHttpResponseHeaderField(headerLocationName, httpResponse.str());
+	m_descriptionUrl = CHttpResponseHelper::getHttpResponseHeaderField(headerLocationName, httpResponse);
 	m_socket.close();
 	m_timer.cancel();
 }

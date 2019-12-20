@@ -52,23 +52,27 @@ void CNotificationSender::displayText(const std::string& text,
 std::string CNotificationSender::buildMessageBody(const std::string& priorityMessage, const std::string& iconToDisplay,
                                                   const std::string& text)
 {
-	std::stringstream body;
-	body << "{\n\"";
-	body << "priority\": \"" + priorityMessage + "\",\n\"";
-	body << "icon_type\": \"" + iconToDisplay + "\",\n\"";
-	body << "model\":{\n\"";
-	body << "frames\":[\n";
-	body << "{\n\"";
-	body << "text\":\"Yadoms\",\n\"";
-	body << "icon\":\"i31581\",\n\"";
-	body << "index\":0\n";
-	body << "},\n";
-	body << "{\n\"";
-	body << "text\":\"" + text + "\",\n\"";
-	body << "icon\":\"i31581\"\n";
-	body << "}\n";
-	body << "]\n";
-	body << "}\n";
-	body << "}";
-	return body.str();
+	shared::CDataContainer body;
+	body.set("prority", priorityMessage);
+	body.set("icon_type", iconToDisplay);
+
+	shared::CDataContainer frame1;
+	frame1.set("text", "Yadoms");
+	frame1.set("icon", "i31581");
+	frame1.set("index", 0);
+
+	shared::CDataContainer frame2;
+	frame2.set("text", text);
+	frame2.set("icon", "i31581");
+
+	std::vector<shared::CDataContainer> frames;
+	frames.push_back(frame1);
+	frames.push_back(frame2);
+
+	shared::CDataContainer model;
+	model.set("frames", frames);
+
+	body.set("model", model);
+
+	return body.serialize();
 }
