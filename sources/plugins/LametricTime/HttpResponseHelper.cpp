@@ -36,15 +36,3 @@ bool CHttpResponseHelper::isValidHttpStatusCode(const std::string& httpResponse)
 	}
 	return true;
 }
-
-std::string CHttpResponseHelper::getXmlTagValue(std::string& xmlTag,  std::string& xmlTagValue)
-{
-	const boost::regex reg("<" + xmlTag + ">(.+?)<\/" + xmlTag + ">");
-	boost::smatch match;
-
-	if (!boost::regex_search(xmlTagValue, match, reg))
-	{
-		return "";
-	}
-	return match[1].str();
-}
