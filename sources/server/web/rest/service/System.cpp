@@ -21,34 +21,26 @@ namespace web
          std::string CSystem::m_restKeyword = std::string("system");
          shared::CDataContainer CSystem::m_virtualDevicesSupportedCapacities;
 
-         CSystem::CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase)
+         CSystem::CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
+                          boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister)
             : m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>()),
-              m_timezoneDatabase(timezoneDatabase)
+              m_timezoneDatabase(timezoneDatabase),
+              m_usbDevicesLister(usbDevicesLister)
          {
          }
-
-
-         CSystem::~CSystem()
-         {
-         }
-
 
          void CSystem::configureDispatcher(CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("binding")("*"), CSystem::getBinding);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation
-            );
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBinding);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"), CSystem
-               ::getVirtualDevicesSupportedCapacities);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"), CSystem::getVirtualDevicesSupportedCapacities);
          }
-
 
          const std::string& CSystem::getRestKeyword()
          {
             return m_restKeyword;
          }
-
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getBinding(const std::vector<std::string>& parameters,
                                                                                          const std::string& requestContent) const
@@ -57,8 +49,10 @@ namespace web
             {
                const auto query = parameters[2];
 
-               if (boost::iequals(query, "SerialPorts"))
+               if (boost::iequals(query, "serialPorts"))
                   return getSerialPorts();
+               if (boost::iequals(query, "usbDevices"))
+                  return getUsbDevices(requestContent);
                if (boost::iequals(query, "NetworkInterfaces"))
                   return getNetworkInterfaces(true);
                if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
@@ -99,6 +93,26 @@ namespace web
             catch (...)
             {
                return CResult::GenerateError("unknown exception in retrieving all serial ports");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(const std::string& requestContent) const
+         {
+            try
+            {
+               shared::CDataContainer result;
+               const auto devices = m_usbDevicesLister->fromRequest(shared::CDataContainer(requestContent));
+               for (const auto& device:devices)
+                  result.set(device->id(), device->friendlyName());
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retrieving filtered USB devices");
             }
          }
 
@@ -223,8 +237,8 @@ namespace web
             if (!acceptedMeasureTypes.empty())
             {
                std::vector<std::string> strAcceptedMeasureTypes;
-			   std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(), std::back_inserter(strAcceptedMeasureTypes),
-				   [](const auto &acceptedMeasureType) -> std::string { return acceptedMeasureType.toString(); });
+               std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(), std::back_inserter(strAcceptedMeasureTypes),
+                              [](const auto& acceptedMeasureType) -> std::string { return acceptedMeasureType.toString(); });
 
                capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
             }

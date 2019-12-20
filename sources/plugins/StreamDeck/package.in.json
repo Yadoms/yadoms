@@ -10,6 +10,19 @@
     }
   },
   "configurationSchema": {
+    "UsbDevices": {
+      "type": "enum",
+      "values": {
+        "__Binding__": {
+          "type": "system",
+          "query": "usbDevices",
+          "content": {
+            "iManufacturer": { "matchExactly": "Elgato" },
+            "iProduct": { "matchRegex": "Stream Deck" }
+          }
+        }
+      }
+    },
     "StringParameter": {
       "type": "string"
     },

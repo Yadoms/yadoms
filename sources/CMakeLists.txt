@@ -447,6 +447,13 @@ set(YADOMS_SRC
   
    server/i18n/ClientStrings.h
    server/i18n/ClientStrings.cpp
+  
+   server/hardware/usb/Device.h
+   server/hardware/usb/Device.cpp
+   server/hardware/usb/DevicesLister.h
+   server/hardware/usb/DevicesLister.cpp
+   server/hardware/usb/IDevice.h
+   server/hardware/usb/IDevicesLister.h
    
    server/location/IAutoLocation.h
    server/location/IpApiAutoLocation.h
@@ -702,6 +709,7 @@ source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\dateTime  server/dateTime/*.*)
 source_group(server\\i18n  server/i18n/*.*)
+source_group(server\\hardware\\usb  server/hardware/usb/*.*)
 source_group(server\\location  server/location/*.*)
 source_group(server\\logging  server/logging/*.*)
 source_group(server\\notification  server/notification/*.*)

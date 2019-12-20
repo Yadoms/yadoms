@@ -2,6 +2,10 @@
   "name": "Stream Deck",
   "description": "Support de l'équipement Stream Deck (voir [site web Stream Deck](https://www.elgato.com/fr/gaming/stream-deck))",
   "configurationSchema": {
+    "UsbDevices": {
+      "name": "Périphérique USB",
+      "description": "Sélectionner un périphérique compatible"
+    },
     "StringParameter": {
       "name": "Un exemple de chaîne",
       "description": "Voici un exemple de paramètre chaîne"

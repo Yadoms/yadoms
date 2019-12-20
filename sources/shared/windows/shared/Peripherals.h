@@ -11,7 +11,7 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief	this class is used to manage platforms peripherals
    //--------------------------------------------------------------
-   class CPeripherals
+   class CPeripherals //TODO : why this class is in shared ? Should we move to server ?
    {
    public:
       //--------------------------------------------------------------

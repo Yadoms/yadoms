@@ -18,7 +18,7 @@ namespace xplrules
       {
       }
 
-      // IRule implemntation
+      // IRule implementation
       xplcore::CXplMessageSchemaIdentifier CDateTimeBasic::getProtocol()
       {
          return m_protocol;
@@ -38,10 +38,10 @@ namespace xplrules
          return keywords;
       }
 
-      // [END] IRule implemntation
+      // [END] IRule implementation
 
 
-      // IReadRule implemntation
+      // IReadRule implementation
       MessageContent CDateTimeBasic::extractMessageData(xplcore::CXplMessage& msg)
       {
          MessageContent data;
@@ -67,7 +67,7 @@ namespace xplrules
          return data;
       }
 
-      // [END] IReadRule implemntation
+      // [END] IReadRule implementation
    } //namespace rfxLanXpl
 } //namespace xplrules
 
