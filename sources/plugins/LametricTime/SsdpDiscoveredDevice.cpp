@@ -11,7 +11,7 @@ CSsdpDiscoveredDevice::CSsdpDiscoveredDevice(std::string& deviceDescription)
 
 std::string CSsdpDiscoveredDevice::findTag(const std::string& tagName) const
 {
-	const boost::regex reg("<" + tagName + ">(.+?)<\/" + tagName + ">");
+	const boost::regex reg("<" + tagName + ">(.+?)</" + tagName + ">");
 	boost::smatch match;
 
 	if (!boost::regex_search(m_deviceDescription, match, reg))

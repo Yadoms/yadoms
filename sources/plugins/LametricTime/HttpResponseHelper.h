@@ -8,5 +8,4 @@ public:
 	                                              const std::string& httpResponse);
 	static bool isValidHttpResponse(const std::string& httpResponse);
 	static bool isValidHttpStatusCode(const std::string& httpResponse);
-	static std::string getXmlTagValue(std::string& xmlTag, std::string& xmlTagValue);
 };

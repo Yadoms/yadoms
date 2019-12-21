@@ -10,7 +10,7 @@
 
 IMPLEMENT_PLUGIN(CLametricTime)
 
-const std::string CLametricTime::DeviceName("Lametric Time");
+const std::string CLametricTime::DeviceName("LaMetric Time");
 const std::string CLametricTime::TextKeywordName("Message");
 
 // Event IDs
@@ -139,8 +139,8 @@ boost::shared_ptr<DeviceInformation> CLametricTime::fillDeviceInformationAutomat
 	CSsdpDiscoveredDevice& foundDevice)
 {
 	auto deviceInformation = boost::make_shared<DeviceInformation>();
-	deviceInformation->m_deviceName = foundDevice.findTag("friendlyName");
-	deviceInformation->m_deviceModel = foundDevice.findTag("modelName");
+	deviceInformation->m_deviceName = foundDevice.findTag("modelName");
+	deviceInformation->m_deviceModel = foundDevice.findTag("friendlyName");
 	deviceInformation->m_deviceType = foundDevice.findTag("modelNumber");
 	return deviceInformation;
 }
@@ -179,9 +179,8 @@ boost::shared_ptr<DeviceInformation> CLametricTime::automaticInit(boost::shared_
 		                                    }))
 		{
 			api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
+			throw std::runtime_error("No response from the device: wrong ip or no device listening on this network");
 		}
-		// Device Found
-
 		m_configuration.setIPAddress(foundDevice.getIp());
 
 		auto deviceInformation = fillDeviceInformationAutomatically(foundDevice);
