@@ -1,6 +1,10 @@
 # include common plugin definitions
 include("../YadomsPluginsCommon.cmake")
 
+set(LIBUSB1_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libusb-1.0.22/include/libusb-1.0)
+set(LIBUSB1_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/libusb-1.0.22/MS32/dll/libusb-1.0.lib)
+
+ADD_SUBDIRECTORY(Libusbpp)	
 #########################################
 ## Place here all the plugin source files
 #########################################
@@ -10,19 +14,36 @@ set(STREAMDECK_PLUGIN_SOURCES
 	StreamDeck.h
 	StreamDeck.cpp 
 	Configuration.h
-	Configuration.cpp 
+	Configuration.cpp
+	${libusbppsrc}
+	${libusbppheader}
 )
 
+get_target_property(LIBUSBPP_SOURCE_DIR objlibusbpp SOURCE_DIR)
+
+set(LIBUSBPP_HEADER_DIR ${LIBUSBPP_SOURCE_DIR}/../headers/libusbpp)
+
+IF(MSVC OR XCODE)
+   SET_PROPERTY(TARGET objlibusbpp PROPERTY FOLDER "plugins/external-libs")
+   SET_PROPERTY(TARGET sharedlibusbpp PROPERTY FOLDER "plugins/external-libs")
+   SET_PROPERTY(TARGET libusbpp-pic-example PROPERTY FOLDER "plugins/external-libs")
+   SET_PROPERTY(TARGET staticlibusbpp PROPERTY FOLDER "plugins/external-libs")
+   SET_PROPERTY(TARGET uninstall PROPERTY FOLDER "plugins/external-libs")
+ENDIF()
 #########################################
 ## Place here all additional groups (solution folder)
 #########################################
 source_group(sources ./*.*)
 
+message(STATUS "HELLO ${LIBUSBPP_INCLUDE_DIR}")
 #########################################
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(STREAMDECK_PLUGIN_INCLDIR
+
+	${LIBUSBPP_SOURCE_DIR}
+	${LIBUSBPP_HEADER_DIR}
 )
 
 #########################################
@@ -30,6 +51,9 @@ set(STREAMDECK_PLUGIN_INCLDIR
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(STREAMDECK_PLUGIN_LINK
+	objlibusbpp
+	sharedlibusbpp
+	staticlibusbpp
 )
 
 #########################################
@@ -43,6 +67,6 @@ set(STREAMDECK_PLUGIN_LINK
 ## even if STREAMDECK_PLUGIN_INCLDIR or STREAMDECK_PLUGIN_LINK are empty
 #########################################
 PLUGIN_SOURCES(StreamDeck ${STREAMDECK_PLUGIN_SOURCES})
-PLUGIN_INCLDIR(StreamDeck ${STREAMDECK_PLUGIN_ADDITIONAL_INC_DIR})
-PLUGIN_LINK(StreamDeck ${STREAMDECK_PLUGIN_ADDITIONAL_LIB})
+PLUGIN_INCLDIR(StreamDeck ${STREAMDECK_PLUGIN_INCLDIR})
+PLUGIN_LINK(StreamDeck ${STREAMDECK_PLUGIN_LINK})
 

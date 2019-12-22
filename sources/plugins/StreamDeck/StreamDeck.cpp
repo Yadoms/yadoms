@@ -2,6 +2,8 @@
 #include "StreamDeck.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
+#include "Libusbpp/headers/libusbpp.hpp"
+
 
 /* ----------------------------------
 
@@ -38,6 +40,9 @@ enum
 
 void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
+    uint16_t vendorID = 0x04D8;
+    uint16_t productID = 0xFB92;
+    auto deviceList = LibUSB::LibUSB::FindAllDevices();
    // Informs Yadoms about the plugin actual state
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
