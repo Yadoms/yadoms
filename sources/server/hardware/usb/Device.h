@@ -11,7 +11,7 @@ namespace hardware
          virtual ~CDevice() = default;
 
          // IDevice implementation
-         std::string id() const override;
+         std::string yadomsConnectionId() const override;
          std::string friendlyName() const override;
          shared::CDataContainer toContainer() const override;
          // [END] IDevice implementation

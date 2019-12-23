@@ -50,6 +50,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
+   api->getConfiguration().printToLog(YADOMS_LOG(debug)); //TODO pour test, à virer
 
    /* -----------------------------
    

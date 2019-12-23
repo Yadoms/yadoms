@@ -103,7 +103,8 @@ namespace web
                shared::CDataContainer result;
                const auto devices = m_usbDevicesLister->fromRequest(shared::CDataContainer(requestContent));
                for (const auto& device:devices)
-                  result.set(device->id(), device->friendlyName());
+                  result.set(device->yadomsConnectionId(), device->friendlyName(), 0x00);
+                  //in case of key contains a dot, just ensure the full key is taken into account
                return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)

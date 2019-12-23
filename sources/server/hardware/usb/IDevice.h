@@ -10,7 +10,7 @@ namespace hardware
       public:
          virtual ~IDevice() = default;
 
-         virtual std::string id() const = 0;
+         virtual std::string yadomsConnectionId() const = 0;
          virtual std::string friendlyName() const = 0;
          virtual shared::CDataContainer toContainer() const = 0;
       };
