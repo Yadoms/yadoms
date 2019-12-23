@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$class_lib_u_s_b_1_1_transfer_impl.html" title="Base USB Transfer implementation." alt="" coords="5,81,149,108"/>
+<area shape="rect" id="node3" href="$class_lib_u_s_b_1_1_bulk_transfer_impl.html" title="LibUSB::BulkTransferImpl" alt="" coords="220,5,391,32"/>
+<area shape="rect" id="node5" href="$class_lib_u_s_b_1_1_control_transfer_impl.html" title="LibUSB::ControlTransferImpl" alt="" coords="213,56,398,83"/>
+<area shape="rect" id="node7" href="$class_lib_u_s_b_1_1_interrupt_transfer_impl.html" title="LibUSB::InterruptTransferImpl" alt="" coords="210,107,401,133"/>
+<area shape="rect" id="node9" href="$class_lib_u_s_b_1_1_isochronous_transfer_impl.html" title="LibUSB::IsochronousTransferImpl" alt="" coords="198,157,413,184"/>
+</map>

@@ -2,11 +2,15 @@
 #include "Device.h"
 #include "shared/DataContainer.h"
 
-
 namespace hardware
 {
    namespace usb
    {
+      CDevice::CDevice(const LibUSB::Device& libusbppDevice)
+         :m_libusbppDevice(libusbppDevice)
+      {   
+      }
+
       std::string CDevice::yadomsConnectionId() const
       {
          //TODO

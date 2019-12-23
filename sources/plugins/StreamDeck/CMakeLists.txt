@@ -1,10 +1,7 @@
 # include common plugin definitions
 include("../YadomsPluginsCommon.cmake")
 
-set(LIBUSB1_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libusb-1.0.22/include/libusb-1.0)
-set(LIBUSB1_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/libusb-1.0.22/MS32/dll/libusb-1.0.lib)
 
-ADD_SUBDIRECTORY(Libusbpp)	
 #########################################
 ## Place here all the plugin source files
 #########################################

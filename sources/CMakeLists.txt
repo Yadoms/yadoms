@@ -981,6 +981,13 @@ IF(USE_POCO_WEBSERVER)
    source_group(server\\web\\poco  server/web/poco/*.*)
 ENDIF()
 
+################################################
+#### Lubusbpp
+################################################
+#TODO ménage
+set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} libusbpp)
+set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${LIBUSBPP_INCLUDE_DIR})
+
 
 
 
@@ -1098,6 +1105,7 @@ set(YADOMS_ALL_INCL_DIR
    ${BOOST_INCL_DIR} 
    ${OPENSSL_INCLUDE_DIR}
    ${Poco_INCLUDE_DIRS}
+   ${LIBUSBPP_INCLUDE_DIR}
    ${YADOMS_INCL_DIR} 
 )
 

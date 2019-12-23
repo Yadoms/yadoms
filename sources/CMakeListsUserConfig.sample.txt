@@ -35,6 +35,12 @@ set(PROTOBUF_ROOT "path/to/protobuf")
 #set(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY ON)
 
 
+##### Libusb ######
+#
+#define Libusb ROOT (only for Windows, ignored otherwise)
+set(LIBUSB_ROOT "path/to/libusb")
+
+
 ##### Database ######
 #
 # PostgreSQL
