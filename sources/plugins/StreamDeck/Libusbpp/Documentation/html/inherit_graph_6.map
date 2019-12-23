@@ -1,7 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_lib_u_s_b_1_1_transfer.html" title="USB Data transfer object." alt="" coords="5,81,125,108"/>
-<area shape="rect" id="node3" href="$class_lib_u_s_b_1_1_bulk_transfer.html" title="USB Bulk Transfer object." alt="" coords="196,5,343,32"/>
-<area shape="rect" id="node5" href="$class_lib_u_s_b_1_1_control_transfer.html" title="USB Control transfer object." alt="" coords="189,56,350,83"/>
-<area shape="rect" id="node7" href="$class_lib_u_s_b_1_1_interrupt_transfer.html" title="USB Interrupt Transfer object." alt="" coords="186,107,353,133"/>
-<area shape="rect" id="node9" href="$class_lib_u_s_b_1_1_isochronous_transfer.html" title="USB Isochronous Transfer object." alt="" coords="174,157,365,184"/>
-</map>

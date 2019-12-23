@@ -2,8 +2,7 @@
 #include "StreamDeck.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
-#include "Libusbpp/headers/libusbpp.hpp"
-
+#include <libusbpp.hpp>
 
 /* ----------------------------------
 

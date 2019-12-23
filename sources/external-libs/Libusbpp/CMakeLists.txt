@@ -30,15 +30,26 @@ set(LIBUSBPP_SOURCES
    ${LIBUSBPP_DIR_NAME}/src/Wideconvert.hpp
 )
 
+#TODO il existe un FindLibUSB-1.0.cmake dans ${LIBUSBPP_DIR_NAME}/cmake ==> A utiliser !
 set(LIBUSB1_INCLUDE_DIR ${LIBUSB_ROOT}/include/libusb-1.0)
 set(LIBUSB1_LIBRARIES ${LIBUSB_ROOT}/MS32/dll/libusb-1.0.lib)#TODO pas bon, chemin vers la lib windows en dur
 
+set(LIBUSBPP_INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIBUSBPP_DIR_NAME}/headers)
+
+include_directories(
+   ${LIBUSB1_INCLUDE_DIR}
+   ${LIBUSBPP_INCLUDE_DIRECTORY}
+)
 
 add_library(libusbpp STATIC ${LIBUSBPP_SOURCES})
 
+#TODO virer target_link_libraries(libusbpp "${LIBUSB1_LIBRARIES}" )
+
+
 IF(WIN32)
-	SET_PROPERTY(TARGET libusbpp PROPERTY FOLDER "External Libs")
+   SET_PROPERTY(TARGET libusbpp PROPERTY FOLDER "External Libs")
 ENDIF()
 
-set(LIBUSBPP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${LIBUSBPP_DIRECTORY}/headers PARENT_SCOPE)
 
+set(LIBUSBPP_INCLUDE_DIRECTORIES ${LIBUSB1_INCLUDE_DIR} ${LIBUSBPP_INCLUDE_DIRECTORY} PARENT_SCOPE)
+set(LIBUSBPP_LIBRARIES libusbpp ${LIBUSB1_LIBRARIES} PARENT_SCOPE)
