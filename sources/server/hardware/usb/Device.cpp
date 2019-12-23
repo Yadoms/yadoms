@@ -7,7 +7,7 @@ namespace hardware
 {
    namespace usb
    {
-      std::string CDevice::id() const
+      std::string CDevice::yadomsConnectionId() const
       {
          //TODO
          return "streamdeckxl";

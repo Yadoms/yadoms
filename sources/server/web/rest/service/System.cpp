@@ -103,7 +103,7 @@ namespace web
                shared::CDataContainer result;
                const auto devices = m_usbDevicesLister->fromRequest(shared::CDataContainer(requestContent));
                for (const auto& device:devices)
-                  result.set(device->id(), device->friendlyName());
+                  result.set(device->yadomsConnectionId(), device->friendlyName());
                return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
