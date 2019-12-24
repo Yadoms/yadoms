@@ -12,6 +12,8 @@ set(STREAMDECK_PLUGIN_SOURCES
 	StreamDeck.cpp 
 	Configuration.h
 	Configuration.cpp
+	UsbService.cpp
+	UsbService.h
 )
 
 #########################################
