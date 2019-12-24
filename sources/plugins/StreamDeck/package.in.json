@@ -2,7 +2,7 @@
   "type": "StreamDeck",
   "version": "@PLUGIN_VERSION@",
   "author": "Oussama DAHMAZ",
-  "credits": "",
+  "credits": "[Libusb](https://libusb.info/), [Libusbpp](https://github.com/zarthcode/Libusbpp)",
   "supportedPlatforms": "all",
   "dependencies": {
     "yadoms": {
