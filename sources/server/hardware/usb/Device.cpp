@@ -13,11 +13,28 @@ namespace hardware
 
       std::string CDevice::yadomsConnectionId() const
       {
-         //TODO
-         return "streamdeckxl";
+         return std::to_string(vendorId()) + ";" + std::to_string(productId()) + ";" + serialNumber();
       }
 
-      std::string CDevice::friendlyName() const
+      int CDevice::vendorId() const
+      {
+         //TODO
+         return 0x0fd9;
+      }
+
+      int CDevice::productId() const
+      {
+         //TODO
+         return 0x0060;
+      }
+
+      std::string CDevice::serialNumber() const
+      {
+         //TODO
+         return "AL25I1C03149";
+      }
+
+      std::string CDevice::yadomsFriendlyName() const
       {
          //TODO
          return "Stream Deck XL - CL30I1A03593";

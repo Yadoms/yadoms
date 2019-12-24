@@ -14,7 +14,10 @@ namespace hardware
 
          // IDevice implementation
          std::string yadomsConnectionId() const override;
-         std::string friendlyName() const override;
+         std::string yadomsFriendlyName() const override;
+         int vendorId() const override;
+         int productId() const override;
+         std::string serialNumber() const override;
          shared::CDataContainer toContainer() const override;
          // [END] IDevice implementation
 
