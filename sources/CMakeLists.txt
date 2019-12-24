@@ -1216,6 +1216,18 @@ FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
                           
 ENDFOREACH(PostgreSqlDepend)
 
+#copy libusb library into build directory
+add_custom_command(TARGET yadoms POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                   ${LIBUSB1_BINARY} $<TARGET_FILE_DIR:yadoms>/)
+      
+if(COTIRE_USE)   
+   if(COTIRE_USE_UNITY)
+      add_custom_command(TARGET yadoms_unity POST_BUILD
+                         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                         ${LIBUSB1_BINARY} $<TARGET_FILE_DIR:yadoms_unity>/)
+   endif(COTIRE_USE_UNITY)
+endif(COTIRE_USE)
 
 #copy www directory into build directory
 add_custom_command(TARGET yadoms POST_BUILD
@@ -1260,6 +1272,10 @@ if(USE_PGSQL_DATABASE AND PostgreSQL_FOUND)
       endif()
    ENDFOREACH(PostgreSqlDepend)
 endif()
+
+#add libusb library
+install(PROGRAMS ${LIBUSB1_BINARY}
+	DESTINATION ${INSTALL_BINDIR})
 
 
 #add www directory

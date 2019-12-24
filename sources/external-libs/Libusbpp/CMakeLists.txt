@@ -33,6 +33,7 @@ set(LIBUSBPP_SOURCES
 #TODO il existe un FindLibUSB-1.0.cmake dans ${LIBUSBPP_DIR_NAME}/cmake ==> A utiliser !
 set(LIBUSB1_INCLUDE_DIR ${LIBUSB_ROOT}/include/libusb-1.0)
 set(LIBUSB1_LIBRARIES ${LIBUSB_ROOT}/MS32/dll/libusb-1.0.lib)#TODO pas bon, chemin vers la lib windows en dur
+set(LIBUSB1_BINARY ${LIBUSB_ROOT}/MS32/dll/libusb-1.0.dll)#TODO utiliser la lib statique ? Dans ce cas il faudra probablement recompiler libusb
 
 set(LIBUSBPP_INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIBUSBPP_DIR_NAME}/headers)
 
@@ -43,13 +44,15 @@ include_directories(
 
 add_library(libusbpp STATIC ${LIBUSBPP_SOURCES})
 
-#TODO virer target_link_libraries(libusbpp "${LIBUSB1_LIBRARIES}" )
-
 
 IF(WIN32)
    SET_PROPERTY(TARGET libusbpp PROPERTY FOLDER "External Libs")
 ENDIF()
 
+install(FILES ${LIBUSB_ROOT}/MS32/dll/libusb-1.0.dll
+   DESTINATION ${INSTALL_BINDIR})
+
 
 set(LIBUSBPP_INCLUDE_DIRECTORIES ${LIBUSB1_INCLUDE_DIR} ${LIBUSBPP_INCLUDE_DIRECTORY} PARENT_SCOPE)
 set(LIBUSBPP_LIBRARIES libusbpp ${LIBUSB1_LIBRARIES} PARENT_SCOPE)
+set(LIBUSB1_BINARY ${LIBUSB1_BINARY} PARENT_SCOPE)
