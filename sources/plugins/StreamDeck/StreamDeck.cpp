@@ -3,6 +3,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
 #include <libusbpp.hpp>
+#include "UsbService.h"
 
 /* ----------------------------------
 
@@ -27,106 +28,108 @@ CStreamDeck::~CStreamDeck()
 // Event IDs
 enum
 {
-   // Example of adding a custom event
-   kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
+	// Example of adding a custom event
+	kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
+	// Always start from yApi::IYPluginApi::kPluginFirstEventId
 
-   /* ----------------------------------
-
-   Insert here all your events
-
-   ---------------------------------- */
+	/* ----------------------------------
+ 
+	Insert here all your events
+ 
+	---------------------------------- */
 };
 
 void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-    uint16_t vendorID = 0x04D8;
-    uint16_t productID = 0xFB92;
-    auto deviceList = LibUSB::LibUSB::FindAllDevices();
-   // Informs Yadoms about the plugin actual state
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+	// Informs Yadoms about the plugin actual state
+	api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   YADOMS_LOG(information) << "CStreamDeck is starting...";
+	YADOMS_LOG(information) << "CStreamDeck is starting...";
 
-   // Load configuration values (provided by database)
-   m_configuration.initializeWith(api->getConfiguration());
-   api->getConfiguration().printToLog(YADOMS_LOG(debug)); //TODO pour test, à virer
+	// Load configuration values (provided by database)
+	m_configuration.initializeWith(api->getConfiguration());
+	api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-   /* -----------------------------
-   
-      Create & declare here all your devices and keywords.
-      Create timers.
+	try
+	{
+		auto foundedDevice = CUsbService::findDevice(m_configuration);
+	}
+	catch (std::exception& e)
+	{
+		api->setPluginState(yApi::historization::EPluginState::kError);
+		YADOMS_LOG(error) << "Unknown or unsupported device :" << e.what();
+		throw;
+	}
+	
+	api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-      ----------------------------- */
+	// the main loop
+	while (true)
+	{
+		// Wait for an event
+		switch (api->getEventHandler().waitForEvents())
+		{
+		case yApi::IYPluginApi::kEventStopRequested:
+			{
+				// Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
+				YADOMS_LOG(information) << "Stop requested";
+				api->setPluginState(yApi::historization::EPluginState::kStopped);
+				return;
+			}
 
-   api->setPluginState(yApi::historization::EPluginState::kRunning);
+		case yApi::IYPluginApi::kEventUpdateConfiguration:
+			{
+				// Configuration was updated
+				api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+				const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
+				YADOMS_LOG(information) << "Update configuration...";
 
-   // the main loop
-   while (true)
-   {
-      // Wait for an event
-      switch (api->getEventHandler().waitForEvents())
-      {
-      case yApi::IYPluginApi::kEventStopRequested:
-         {
-            // Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
-            YADOMS_LOG(information) << "Stop requested";
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
-            return;
-         }
+				// Take into account the new configuration
+				// - Restart the plugin if necessary,
+				// - Update some resources,
+				// - etc...
+				m_configuration.initializeWith(newConfiguration);
 
-      case yApi::IYPluginApi::kEventUpdateConfiguration:
-         {
-            // Configuration was updated
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
-            YADOMS_LOG(information) << "Update configuration...";
+				// Trace the configuration
+				m_configuration.trace();
 
-            // Take into account the new configuration
-            // - Restart the plugin if necessary,
-            // - Update some resources,
-            // - etc...
-            m_configuration.initializeWith(newConfiguration);
+				api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-            // Trace the configuration
-            m_configuration.trace();
+				break;
+			}
 
-            api->setPluginState(yApi::historization::EPluginState::kRunning);
+		case yApi::IYPluginApi::kEventDeviceCommand:
+			{
+				// A command was received from Yadoms
+				const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>
+				>();
+				YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
-            break;
-         }
+				/*
+	
+				Process the command here (to drive a keyword for example)
+	
+				*/
 
-      case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // A command was received from Yadoms
-            const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-            YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
+				break;
+			}
 
-            /*
+		case kCustomEvent:
+			{
+				/*
+	
+				Process your custom event
+	
+				*/
 
-            Process the command here (to drive a keyword for example)
+				break;
+			}
 
-            */
-
-            break;
-         }
-
-      case kCustomEvent:
-         {
-            /*
-
-            Process your custom event
-
-            */
-
-            break;
-         }
-
-      default:
-         {
-            YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
-            break;
-         }
-      }
-   }
+		default:
+			{
+				YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
+				break;
+			}
+		}
+	}
 }
-
