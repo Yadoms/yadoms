@@ -9,7 +9,7 @@ namespace hardware
       class CDevice : public IDevice
       {
       public:
-         CDevice(const LibUSB::Device& libusbppDevice);
+         explicit CDevice(std::shared_ptr<LibUSB::Device> libusbppDevice);
          virtual ~CDevice() = default;
 
          // IDevice implementation
@@ -18,11 +18,12 @@ namespace hardware
          int vendorId() const override;
          int productId() const override;
          std::string serialNumber() const override;
-         shared::CDataContainer toContainer() const override;
          // [END] IDevice implementation
 
       private:
-         const LibUSB::Device m_libusbppDevice;
+         static std::string wstringToString(const std::wstring& wstring);
+
+         std::shared_ptr<LibUSB::Device> m_libusbppDevice;
       };
    } // namespace usb
 } // namespace hardware

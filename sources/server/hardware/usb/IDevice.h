@@ -15,7 +15,6 @@ namespace hardware
          virtual int vendorId() const = 0;
          virtual int productId() const = 0;
          virtual std::string serialNumber() const = 0;
-         virtual shared::CDataContainer toContainer() const = 0;//TODO utile ?
       };
    } // namespace usb
 } // namespace hardware
