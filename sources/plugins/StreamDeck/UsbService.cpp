@@ -29,9 +29,6 @@ std::vector<std::string> CUsbService::splitStringToVectorOfString(std::string& w
 
 uint16_t CUsbService::decimalToHex(std::string& decimalValue) 
 {
-	uint16_t x;
-	sscanf_s(decimalValue.c_str(), "%d", &x);
-	std::stringstream sstream;
-	sstream << std::hex << x;
-	return x;
+	boost::cnv::cstream converter;
+	return boost::convert<int>(decimalValue, converter(std::showbase)(std::uppercase)(std::dec),0);
 }
