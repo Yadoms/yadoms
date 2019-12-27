@@ -49,7 +49,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	// Load configuration values (provided by database)
 	m_configuration.initializeWith(api->getConfiguration());
 	api->setPluginState(yApi::historization::EPluginState::kRunning);
-
+	// TODO : Only for testing  
 	try
 	{
 		auto foundedDevice = CUsbService::findDevice(m_configuration);
@@ -60,7 +60,18 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		YADOMS_LOG(error) << "Unknown or unsupported device :" << e.what();
 		throw;
 	}
-	
+	// TODO : Only for testing
+	try
+	{
+
+		auto foundedDevice = CUsbService::getStreamDeckDevices();
+	}
+	catch (std::exception& e)
+	{
+		api->setPluginState(yApi::historization::EPluginState::kError);
+		YADOMS_LOG(error) << "Unknown or unsupported device :" << e.what();
+		throw;
+	}
 	api->setPluginState(yApi::historization::EPluginState::kRunning);
 
 	// the main loop
