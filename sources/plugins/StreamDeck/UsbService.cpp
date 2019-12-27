@@ -25,7 +25,7 @@ std::list<std::shared_ptr<LibUSB::Device>> CUsbService::getStreamDeckDevices()
 	auto foundedDevice = LibUSB::LibUSB::FindAllDevices();
 	std::list<std::shared_ptr<LibUSB::Device>> deviceList;
 	
-	for (const auto device : foundedDevice)
+	for (const auto& device : foundedDevice)
 	{
 
 		if(StreamDeckVendorId == decimalToHex(std::to_string(device->vendorID())))
