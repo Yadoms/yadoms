@@ -19,7 +19,7 @@ namespace hardware
          const auto devices = LibUSB::LibUSB::FindAllDevices();
          std::vector<boost::shared_ptr<IDevice>> todo;
          for(const auto& device: devices)
-            todo.push_back(boost::make_shared<CDevice>(*device));
+            todo.push_back(boost::make_shared<CDevice>(device));
          return todo;
       }
    } // namespace usb
