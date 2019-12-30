@@ -132,6 +132,11 @@ if(WIN32)
    set(LIBS ${LIBS} legacy_stdio_definitions.lib Crypt32.lib)
 endif()
 
+## Yadoms dependencies
+if(WIN32)
+   set(LIBS ${LIBS} SetupApi.lib)
+endif()
+
 ## IOKIT (needed for Mac)
 if(APPLE)
    include(cmake/mac.cmake)
@@ -448,10 +453,14 @@ set(YADOMS_SRC
    server/i18n/ClientStrings.h
    server/i18n/ClientStrings.cpp
   
-   server/hardware/usb/Device.h
-   server/hardware/usb/Device.cpp
-   server/hardware/usb/DevicesLister.h
-   server/hardware/usb/DevicesLister.cpp
+   server/hardware/usb/LibusbppDevice.h
+   server/hardware/usb/LibusbppDevice.cpp
+   server/hardware/usb/LibusbppDevicesLister.h
+   server/hardware/usb/LibusbppDevicesLister.cpp
+   server/hardware/usb/WinapiDevicesLister.h
+   server/hardware/usb/WinapiDevicesLister.cpp
+   server/hardware/usb/DevicesListerFactory.h
+   server/hardware/usb/DevicesListerFactory.cpp
    server/hardware/usb/IDevice.h
    server/hardware/usb/IDevicesLister.h
    

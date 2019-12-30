@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/DataContainer.h>
 
 namespace hardware
 {

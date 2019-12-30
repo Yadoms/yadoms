@@ -5,10 +5,10 @@ namespace hardware
 {
    namespace usb
    {
-      class CDevicesLister : public IDevicesLister // TODO renommer CDevicesLister en CLibusbppDevicesLister
+      class CLibusbppDevicesLister : public IDevicesLister
       {
       public:
-         virtual ~CDevicesLister() = default;
+         virtual ~CLibusbppDevicesLister() = default;
 
          // IDevicesLister implementation
          std::vector<boost::shared_ptr<IDevice>> fromRequest(const shared::CDataContainer& request) const override;

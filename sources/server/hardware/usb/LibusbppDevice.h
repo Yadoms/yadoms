@@ -6,11 +6,11 @@ namespace hardware
 {
    namespace usb
    {
-      class CDevice : public IDevice
+      class CLibusbppDevice : public IDevice
       {
       public:
-         explicit CDevice(std::shared_ptr<LibUSB::Device> libusbppDevice);
-         virtual ~CDevice() = default;
+         explicit CLibusbppDevice(std::shared_ptr<LibUSB::Device> libusbppDevice);
+         virtual ~CLibusbppDevice() = default;
 
          // IDevice implementation
          std::string yadomsConnectionId() const override;
