@@ -1,14 +1,14 @@
 #pragma once
-#include "IDevicesLister.h"
+#include "../IDevicesLister.h"
 
 namespace hardware
 {
    namespace usb
    {
-      class CWinapiDevicesLister : public IDevicesLister
+      class CLibusbppDevicesLister : public IDevicesLister
       {
       public:
-         virtual ~CWinapiDevicesLister() = default;
+         virtual ~CLibusbppDevicesLister() = default;
 
          // IDevicesLister implementation
          std::vector<boost::shared_ptr<IDevice>> fromRequest(const shared::CDataContainer& request) const override;

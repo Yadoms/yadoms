@@ -453,14 +453,7 @@ set(YADOMS_SRC
    server/i18n/ClientStrings.h
    server/i18n/ClientStrings.cpp
   
-   server/hardware/usb/LibusbppDevice.h
-   server/hardware/usb/LibusbppDevice.cpp
-   server/hardware/usb/LibusbppDevicesLister.h
-   server/hardware/usb/LibusbppDevicesLister.cpp
-   server/hardware/usb/WinapiDevicesLister.h
-   server/hardware/usb/WinapiDevicesLister.cpp
    server/hardware/usb/DevicesListerFactory.h
-   server/hardware/usb/DevicesListerFactory.cpp
    server/hardware/usb/IDevice.h
    server/hardware/usb/IDevicesLister.h
    
@@ -719,6 +712,8 @@ source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\dateTime  server/dateTime/*.*)
 source_group(server\\i18n  server/i18n/*.*)
 source_group(server\\hardware\\usb  server/hardware/usb/*.*)
+source_group(server\\hardware\\usb\\libusb  server/hardware/usb/libusb/*.*)
+source_group(server\\hardware\\usb\\winapi  server/hardware/usb/winapi/*.*)
 source_group(server\\location  server/location/*.*)
 source_group(server\\logging  server/logging/*.*)
 source_group(server\\notification  server/notification/*.*)
@@ -757,28 +752,44 @@ IF(WIN32)
       # Add here server/tools/windows/tools/ sources
       server/tools/windows/tools/OperatingSystem.h
       server/tools/windows/tools/OperatingSystem.cpp
+      server/hardware/usb/winapi/DevicesListerFactory.cpp
+      server/hardware/usb/winapi/WinapiDevicesLister.h
+      server/hardware/usb/winapi/WinapiDevicesLister.cpp
    )   
 ELSEIF(APPLE)
    set(YADOMS_SRC ${YADOMS_SRC}
       # Add here server/tools/mac/tools/ sources
       server/tools/mac/tools/OperatingSystem.h
       server/tools/mac/tools/OperatingSystem.cpp
+      server/hardware/usb/libusb/DevicesListerFactory.cpp
+      server/hardware/usb/libusb/LibusbppDevice.h
+      server/hardware/usb/libusb/LibusbppDevice.cpp
+      server/hardware/usb/libusb/LibusbppDevicesLister.h
+      server/hardware/usb/libusb/LibusbppDevicesLister.cpp
    )   
 ELSE()
    set(YADOMS_SRC ${YADOMS_SRC}
       # Add here server/tools/linux/tools/ sources
       server/tools/linux/tools/OperatingSystem.h
       server/tools/linux/tools/OperatingSystem.cpp
+      server/hardware/usb/libusb/DevicesListerFactory.cpp
+      server/hardware/usb/libusb/LibusbppDevice.h
+      server/hardware/usb/libusb/LibusbppDevice.cpp
+      server/hardware/usb/libusb/LibusbppDevicesLister.h
+      server/hardware/usb/libusb/LibusbppDevicesLister.cpp
    )   
 ENDIF()
 
 # Define include directories
 IF(WIN32)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/windows)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/serverhardware/usb/winapi)
 ELSEIF(APPLE)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/mac)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/serverhardware/usb/libusb)
 ELSE()
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/serverhardware/usb/libusb)
 ENDIF()
 
 source_group(server\\tools tools/*.*)
@@ -1226,17 +1237,19 @@ FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
 ENDFOREACH(PostgreSqlDepend)
 
 #copy libusb library into build directory
-add_custom_command(TARGET yadoms POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                   ${LIBUSB1_BINARY} $<TARGET_FILE_DIR:yadoms>/)
-      
-if(COTIRE_USE)   
-   if(COTIRE_USE_UNITY)
-      add_custom_command(TARGET yadoms_unity POST_BUILD
-                         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                         ${LIBUSB1_BINARY} $<TARGET_FILE_DIR:yadoms_unity>/)
-   endif(COTIRE_USE_UNITY)
-endif(COTIRE_USE)
+if(NOT WIN32)
+   add_custom_command(TARGET yadoms POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                      ${LIBUSB1_BINARY} $<TARGET_FILE_DIR:yadoms>/)
+         
+   if(COTIRE_USE)   
+      if(COTIRE_USE_UNITY)
+         add_custom_command(TARGET yadoms_unity POST_BUILD
+                            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                            ${LIBUSB1_BINARY} $<TARGET_FILE_DIR:yadoms_unity>/)
+      endif(COTIRE_USE_UNITY)
+   endif(COTIRE_USE)
+endif(NOT WIN32)
 
 #copy www directory into build directory
 add_custom_command(TARGET yadoms POST_BUILD
@@ -1283,8 +1296,10 @@ if(USE_PGSQL_DATABASE AND PostgreSQL_FOUND)
 endif()
 
 #add libusb library
-install(PROGRAMS ${LIBUSB1_BINARY}
-	DESTINATION ${INSTALL_BINDIR})
+if(NOT WIN32)
+   install(PROGRAMS ${LIBUSB1_BINARY}
+      DESTINATION ${INSTALL_BINDIR})
+endif(NOT WIN32)
 
 
 #add www directory

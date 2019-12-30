@@ -36,6 +36,7 @@ set(PROTOBUF_ROOT "path/to/protobuf")
 
 
 ##### Libusb ######
+# TODO Really needed ? Server uses WinApi to access USB devices, but may be needed by some plugins
 #
 #define Libusb ROOT (only for Windows, ignored otherwise)
 set(LIBUSB_ROOT "path/to/libusb")

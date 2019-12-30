@@ -2,7 +2,6 @@
 #include "LibusbppDevice.h"
 #include <codecvt>
 
-//TODO https://zadig.akeo.ie/ is required under Windows ?
 namespace hardware
 {
    namespace usb

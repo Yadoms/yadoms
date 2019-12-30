@@ -1,5 +1,5 @@
 #pragma once
-#include "IDevice.h"
+#include "../IDevice.h"
 #include <libusbpp/Device.hpp>
 
 namespace hardware

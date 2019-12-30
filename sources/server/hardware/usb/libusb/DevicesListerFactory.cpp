@@ -1,7 +1,6 @@
 #include "stdafx.h"
-#include "DevicesListerFactory.h"
+#include "../DevicesListerFactory.h"
 #include "LibusbppDevicesLister.h"
-#include "WinapiDevicesLister.h"
 
 
 namespace hardware
@@ -10,8 +9,7 @@ namespace hardware
    {
       boost::shared_ptr<IDevicesLister> CDevicesListerFactory::createDeviceLister()
       {
-         return boost::make_shared<CWinapiDevicesLister>();
-//Non-windows-platform         return boost::make_shared<CLibusbppDevicesLister>();
+         return boost::make_shared<CLibusbppDevicesLister>();
       }
    } // namespace usb
 } // namespace hardware

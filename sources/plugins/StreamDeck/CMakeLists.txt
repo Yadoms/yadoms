@@ -2,6 +2,16 @@
 # include common plugin definitions
 include("../YadomsPluginsCommon.cmake")
 
+
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../external-libs/Libusbpp ${StreamDeck_BINARY_DIR}/Libusbpp)
+set(LIBUSBPP_INCLUDE_DIRS ${LIBUSBPP_INCLUDE_DIRECTORIES})
+set(LIBUSBPP_LIBRARIES ${LIBUSBPP_LIBRARIES})
+set(LIBUSB1_BINARY ${LIBUSB1_BINARY})
+    message(STATUS "LIBUSBPP_INCLUDE_DIRECTORIES=${LIBUSBPP_INCLUDE_DIRECTORIES}")
+    message(STATUS "LIBUSBPP_LIBRARIES=${LIBUSBPP_LIBRARIES}")
+    message(STATUS "LIBUSB1_BINARY=${LIBUSB1_BINARY}")
+
 #########################################
 ## Place here all the plugin source files
 #########################################
@@ -45,3 +55,6 @@ PLUGIN_SOURCES(StreamDeck ${STREAMDECK_PLUGIN_SOURCES})
 PLUGIN_INCLDIR(StreamDeck ${STREAMDECK_PLUGIN_INCLDIR})
 PLUGIN_LINK(StreamDeck ${STREAMDECK_PLUGIN_LINK})
 
+if(WIN32)
+   PLUGIN_POST_BUILD_COPY_FILE(StreamDeck ${LIBUSB1_BINARY})
+endif(WIN32)
