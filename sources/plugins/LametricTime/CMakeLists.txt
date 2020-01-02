@@ -22,6 +22,14 @@ set(LAMETRICTIME_PLUGIN_SOURCES
 	UrlManagerHelper.cpp
 	UrlManagerHelper.h
 	NotificationProperties.h
+	SsdpClient.cpp
+	SsdpClient.h
+	SsdpDiscoveredDevice.cpp
+	SsdpDiscoveredDevice.h
+	SsdpDiscoverService.cpp
+	SsdpDiscoverService.h
+	HttpResponseHelper.cpp
+	HttpResponseHelper.h
 )
 
 #########################################

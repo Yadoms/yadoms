@@ -47,18 +47,18 @@ namespace plugin_cpp_api
             throw std::runtime_error(
                (boost::format("CApiImplementation::send \"%1%\", request is not fully initialized") % msg.descriptor()->full_name()).str());
 
-         const auto pbMessageSize = msg.ByteSize();
+         const auto pbMessageSize = msg.ByteSizeLong();
          const auto serializedMessage = boost::make_shared<unsigned char[]>(pbMessageSize);
          if (!msg.SerializeWithCachedSizesToArray(serializedMessage.get()))
             throw std::runtime_error(
                (boost::format("CApiImplementation::send \"%1%\", fail to serialize request (too big ?)") % msg.descriptor()->full_name()).str());
 
-         const auto cuttedMessage = m_messageCutter->cut(serializedMessage,
+         const auto cutMessage = m_messageCutter->cut(serializedMessage,
                                                          pbMessageSize);
 
-         if (!cuttedMessage->empty())
+         if (!cutMessage->empty())
          {
-            for (const auto& part : *cuttedMessage)
+            for (const auto& part : *cutMessage)
             {
                m_sendMessageQueue->send(part->formattedMessage(),
                                         part->formattedSize(),
@@ -419,7 +419,7 @@ namespace plugin_cpp_api
       }
       request->set_custommessageid(customMessageId);
 
-      shared::CDataContainer dc(customMessageDataParams);
+      const shared::CDataContainer dc(customMessageDataParams);
       request->set_custommessagedata(dc.serialize());
       try
       {
@@ -776,7 +776,7 @@ namespace plugin_cpp_api
       }
       request->set_custommessageid(customMessageId);
       request->set_device(device);
-      shared::CDataContainer dc(customMessageDataParams);
+      const shared::CDataContainer dc(customMessageDataParams);
       request->set_custommessagedata(dc.serialize());
       try
       {

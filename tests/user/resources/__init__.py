@@ -12,7 +12,7 @@ def deleteTree(directory):
       try:
          tools.tryWhile(lambda : shutil.rmtree(directory))
       except:
-         print "Unable to delete ", directory, " path"
+         print ('Unable to delete {directory} path')
          raise
                
                
@@ -23,7 +23,7 @@ def deleteFile(file):
       try:
          tools.tryWhile(lambda : os.remove(file))
       except:
-         print "Unable to delete ", file, " file"
+         print ('Unable to delete {file} file')
          raise
 
 
@@ -36,6 +36,6 @@ def deployFile(srcFile, targetFile):
       deleteFile(targetFile)
       shutil.copyfile(srcFile, targetFile)
    except:
-      print 'Unable to deploy database file ', srcFile, ', ', sys.exc_info()[0]
+      print ('Unable to deploy database file {srcFile}, sys.exc_info()[0]')
       raise
    

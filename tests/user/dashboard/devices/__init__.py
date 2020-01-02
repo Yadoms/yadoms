@@ -181,7 +181,7 @@ class NewDeviceModal():
       for option in select.find_elements_by_tag_name('option'):
          if option.text == pluginName:
             return option
-      print "selectAttachedPlugin : Nothing to select, ", pluginName, " not found"
+      print ('selectAttachedPlugin : Nothing to select, {pluginName} not found')
       assert False
    
    def selectVirtualDevice(self):

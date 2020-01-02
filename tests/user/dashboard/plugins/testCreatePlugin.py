@@ -9,6 +9,7 @@ import config
 import scripts
 import yadomsServer
 import dashboard.plugins
+import tools
 
 class CreatePlugin(unittest.TestCase):
    """Create plugin test"""
@@ -19,21 +20,21 @@ class CreatePlugin(unittest.TestCase):
       config.deploy("withDeveloperMode")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
             
             
    def test_createOkPlugin(self):
-      print '=== Nominal test of plugin creation ==='
+      print ('=== Nominal test of plugin creation ===')
 
       pluginInstanceName = "My fakePlugin instance"
       pluginType = "dev-fakePlugin"
 
-      print 'Create created plugin'
+      print ('Create created plugin')
       dashboard.plugins.createPluginSequence(self.browser, pluginInstanceName, pluginType, lambda pluginInstanceName: dashboard.plugins.basicFillConfigurationSequence(self.browser, pluginInstanceName))
 
-      print 'Check created plugin'
+      print ('Check created plugin')
       dashboard.plugins.checkCreatedPluginSequence(self, pluginInstanceName, pluginType, True, True)
       
       

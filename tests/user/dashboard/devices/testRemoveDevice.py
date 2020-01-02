@@ -21,7 +21,7 @@ class RemoveDevice(unittest.TestCase):
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -31,45 +31,45 @@ class RemoveDevice(unittest.TestCase):
       
 
    def test_cancelRemoveDevice(self):
-      print '=== Cancel at confirm step when removing device ==='
+      print ('=== Cancel at confirm step when removing device ===')
       deviceName = u'fakeDimmableReadOnlySwitch'
       attachedPluginInstance = u'My fakePlugin instance'
      
-      print '  Remove the device'
+      print ('  Remove the device')
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getRemoveDeviceButton(devicesTable, deviceId).click()
 
-      print '  Cancel confirm modal'
+      print ('  Cancel confirm modal')
       confirmRemoveModal = dashboard.devices.waitRemoveDeviceConfirmationModal(self.browser)
       confirmRemoveModal.cancel()
 
-      print '  Check nothing has changed'
+      print ('  Check nothing has changed')
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       
-      print '  Test the modal open a new time after & cancel'
+      print ('  Test the modal open a new time after & cancel')
       dashboard.devices.getRemoveDeviceButton(devicesTable, deviceId).click()
       confirmRemoveModal = dashboard.devices.waitRemoveDeviceConfirmationModal(self.browser)
       confirmRemoveModal.cancel()      
       
 
    def test_confirmRemoveDevice(self):
-      print '=== Remove device ==='
+      print ('=== Remove device ===')
       deviceName = u'fakeDimmableReadOnlySwitch'
       attachedPluginInstance = u'My fakePlugin instance'
      
-      print '  Remove the device'
+      print ('  Remove the device')
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       devicesOriginalCount = dashboard.devices.countDevices(devicesTable)
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getRemoveDeviceButton(devicesTable, deviceId).click()
 
-      print '  Confirm removing'
+      print ('  Confirm removing')
       confirmRemoveModal = dashboard.devices.waitRemoveDeviceConfirmationModal(self.browser)
       confirmRemoveModal.ok()
 
-      print '  Check that device was removed from list'
+      print ('  Check that device was removed from list')
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       assert tools.waitUntil(lambda: dashboard.devices.countDevices(devicesTable) == (devicesOriginalCount - 1))
       time.sleep(1)

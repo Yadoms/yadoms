@@ -2,23 +2,52 @@
   "name": "LametricTime",
   "description": "Lametric Time devices support (see [site web](https://lametric.com/en-US/time/overview))",
   "configurationSchema": {
-    "IPAddress": {
-      "name": "IP Address",
-      "description": "the IP address of the equipment",
-      "regexErrorMessage": "this is not a valid IP address"
-    },
-    "Port": {
-      "name": "Port",
-      "description": "the Lametric local socket opened (example Http: 8080, Https: 4343)",
-      "values": {
-        "http": "8080",
-        "https": "4343"
-      }
-    },
     "APIKey": {
       "name": "API key",
-      "description": "This key is needed and provided by sign up on [Lametric website](https://developer.lametric.com/user/devices)",
+      "description":
+        "This key is needed and provided by sign up on [Lametric website](https://developer.lametric.com/user/devices)",
       "regexErrorMessage": ""
+    },
+    "PairingMode": {
+      "name": "Pairing mode",
+      "type": "comboSection",
+      "content": {
+        "Automatic": {
+          "name": "Automatic Pairing",
+          "description": "Automatic pairing using UPNP protocol",
+          "content": {
+            "Port": {
+              "name": "Port",
+              "description": "the Lametric local socket opened (example Http: 8080, Https: 4343)",
+              "values": {
+                "http": "8080",
+                "https": "4343"
+              },
+              "defaultValue": "Https"
+            }
+          },
+          "Manual": {
+            "name": "Manual Paring",
+            "description": "Manual Paring",
+            "content": {
+              "IPAddress": {
+                "name": "IP Address",
+                "description": "the IP address of the equipment",
+                "regexErrorMessage": "this is not a valid IP address"
+              },
+              "Port": {
+                "name": "Port",
+                "description": "the Lametric local socket opened (example Http: 8080, Https: 4343)",
+                "values": {
+                  "http": "8080",
+                  "https": "4343"
+                },
+                "defaultValue": "Https"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "customLabels": {

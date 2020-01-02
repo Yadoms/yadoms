@@ -20,7 +20,7 @@ class DatabaseMigration(unittest.TestCase):
       yadomsServer.ensureStopped()
       config.deploy("nominal")
       scripts.deleteAll()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       self.serverProcess = None
 
@@ -36,11 +36,11 @@ class DatabaseMigration(unittest.TestCase):
 
 
    def test_migration(self):
-      print '=== Test migration ==='
+      print ('=== Test migration ===')
       dbFiles = glob.glob(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'database_*.db3'))
       for dbFile in dbFiles:
          dbVersion = re.search('.*database_(.*)\.db3', dbFile).group(1).replace('_', '.')
-         print 'Test migration from database version ' + dbVersion + '...'
+         print ('Test migration from database version {dbVersion}...')
          if self.serverProcess:
             yadomsServer.stop(self.serverProcess)
          database.deployFromPath(dbFile)

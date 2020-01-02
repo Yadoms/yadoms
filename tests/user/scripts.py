@@ -5,7 +5,7 @@ import shutil
 import re
 
 def deleteAll():
-   print 'Remove all scripts and associated logs'
+   print ('Remove all scripts and associated logs')
    resources.deleteTree(yadomsServer.scriptsPath())
    resources.deleteTree(yadomsServer.scriptLogsPath())
             
@@ -13,7 +13,7 @@ def deleteAll():
 def deploy(scripts):
    
    deleteAll()
-   print 'Deploy scripts ', scripts
+   print ('Deploy scripts {scripts}')
    
    for index, script in enumerate(scripts):
       ruleTargetPath = os.path.join(yadomsServer.scriptsPath(), "locals", "rule_" + str(index + 1))
@@ -49,10 +49,10 @@ def checkLocalRuleCodeById(id, expectedCode):
       readCode[0] = readCode[0][3:]
       
    if (readCode != expectedCode):
-      print ">>>>>>>>>>> Read code : "
-      print readCode
-      print ">>>>>>>>>>> Expected code : "
-      print expectedCode
+      print ('>>>>>>>>>>> Read code : ')
+      print (readCode)
+      print ('>>>>>>>>>>> Expected code : ')
+      print (expectedCode)
       return False
       
    return True
@@ -78,8 +78,8 @@ def checkLocalRuleLogById(id, expectedLog):
          readLog.append(re.sub("\w{3}, \d{2}:\d{2}:\d{2} : ", "", line))
          
    if (readLog != expectedLog):
-      print ">>>>>>>>>>> Read log     :", readLog
-      print ">>>>>>>>>>> Expected log :", expectedLog
+      print ('>>>>>>>>>>> Read log     : {readLog}')
+      print ('>>>>>>>>>>> Expected log : {expectedLog}')
       return False         
 
    return True
