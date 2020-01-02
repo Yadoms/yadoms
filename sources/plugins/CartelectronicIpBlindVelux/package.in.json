@@ -36,6 +36,9 @@
 						},
 						"authentication": {
 							"type": "section",
+							"defaultValue": "false",
+                            "enableWithCheckBox": "true",
+                            "enableWithCheckBoxDefaultValue": "false",
 							"content": {
 								"User": {
 									"type": "string",

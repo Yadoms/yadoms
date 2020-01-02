@@ -19,10 +19,10 @@
 			"name": "Type",
 			"description": "Type de l'équipement",
 			"schemas": {
-				"WES": {
+				"CartelectronicIpBlindVelux": {
 					"types": {
-						"WES": {
-							"title": "module WES"
+						"CartelectronicIpBlindVelux": {
+							"title": "module Vélux"
 						}
 					},
 					"content": {
@@ -33,10 +33,10 @@
 						},
 						"Port": {
 							"name": "Port",
-							"description": "Le port de communication du WES (exemple: 80)"
+							"description": "Le port de communication de l'équipement (exemple: 80)"
 						},
 						"authentication": {
-							"name": "clé d'accès au module WES",
+							"name": "clé d'accès",
 							"description": "seulement si la clé est activée",
 							"content": {
 								"User": {

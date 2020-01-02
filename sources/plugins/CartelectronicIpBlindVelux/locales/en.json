@@ -19,10 +19,10 @@
 			"name": "Type",
 			"description": "Type of the device",
 			"schemas": {
-				"WES": {
+				"CartelectronicIpBlindVelux": {
 					"types": {
-						"WES": {
-							"title": "WES Module"
+						"CartelectronicIpBlindVelux": {
+							"title": "Velux Module"
 						}
 					},
 					"content": {
@@ -33,10 +33,10 @@
 						},
 						"Port": {
 							"name": "Port",
-							"description": "the WES local socket opened (example: 80)"
+							"description": "the Velux local socket opened (example: 80)"
 						},
 						"authentication": {
-							"name": "key to access the WES",
+							"name": "key to access the Velux module",
 							"description": "Only if the key is enabled",
 							"content": {
 								"User": {
