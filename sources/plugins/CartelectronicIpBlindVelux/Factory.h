@@ -12,18 +12,18 @@ namespace yApi = shared::plugin::yPluginApi;
 /// \brief	Class where all Keywords are created and updated
 /// \note   
 //--------------------------------------------------------------
-class CVRTIPFactory
+class Factory
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-	CVRTIPFactory();
+	Factory();
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CVRTIPFactory();
+   virtual ~Factory();
 
    //--------------------------------------------------------------
    /// \brief	    create all the configuration (all devices, ...)

@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "VRTIPFactory.h"
-#include "equipments/VRTIPEquipment.h"
+#include "Factory.h"
+#include "equipments/Equipment.h"
 #include "http/timeOutException.hpp"
 #include <shared/Log.h>
 
-CVRTIPFactory::CVRTIPFactory()
+Factory::Factory()
 {
 }
 
-boost::shared_ptr<CIOManager> CVRTIPFactory::loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api) const
+boost::shared_ptr<CIOManager> Factory::loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    std::vector<boost::shared_ptr<equipments::IEquipment>> deviceList;
    std::vector<std::string> deviceToRetry;
-   CVRTIPFactory factory;
+   Factory factory;
 
    // Create all devices and equipments
    for (const auto& device : api->getAllDevices()){
@@ -51,16 +51,16 @@ boost::shared_ptr<CIOManager> CVRTIPFactory::loadConfiguration(boost::shared_ptr
    return boost::make_shared<CIOManager>(deviceList, deviceToRetry);
 }
 
-boost::shared_ptr<equipments::IEquipment> CVRTIPFactory::createEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+boost::shared_ptr<equipments::IEquipment> Factory::createEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                                                                          const std::string& device)
 {
    // we create the equipment by sending a frame through the network to each device
-      return boost::make_shared<equipments::CVRTIPEquipment>(api,
+      return boost::make_shared<equipments::CEquipment>(api,
                                                              device,
                                                              api->getDeviceConfiguration(device));
 }
 
-std::string CVRTIPFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
+std::string Factory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
                                                 const boost::shared_ptr<CIOManager> ioManager,
                                                 const yApi::IManuallyDeviceCreationData& data) const
 {
@@ -69,7 +69,7 @@ std::string CVRTIPFactory::createDeviceManually(boost::shared_ptr<yApi::IYPlugin
    if (data.getDeviceType() == "WES")
    {
       // TODO : Manage the case where the device is not connected when restart. The device should be created with just the statuts in the plugin
-      equipment = boost::make_shared<equipments::CVRTIPEquipment>(api,
+      equipment = boost::make_shared<equipments::CEquipment>(api,
                                                                   data.getDeviceName(),
                                                                   data.getConfiguration());
       ioManager->addEquipment(equipment);
@@ -82,7 +82,7 @@ std::string CVRTIPFactory::createDeviceManually(boost::shared_ptr<yApi::IYPlugin
    return equipment->getDeviceName();
 }
 
-CVRTIPFactory::~CVRTIPFactory()
+Factory::~Factory()
 {
 }
 

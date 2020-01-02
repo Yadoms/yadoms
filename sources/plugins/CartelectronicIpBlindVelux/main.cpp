@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "VRTIP.h"
+#include "main.h"
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
@@ -13,16 +13,16 @@
 // Note that you have to provide some extra files, like package.json, and icon.png
 // This macro also defines the static PluginInformations value that can be used by plugin to get information values
 
-IMPLEMENT_PLUGIN(CVRTIP)
+IMPLEMENT_PLUGIN(CartelectronicIpBlindVelux)
 
 
-CVRTIP::CVRTIP()
-   : m_factory(boost::make_shared<CVRTIPFactory>()),
+CartelectronicIpBlindVelux::CartelectronicIpBlindVelux()
+   : m_factory(boost::make_shared<Factory>()),
      m_pluginState(kUndefined)
 {
 }
 
-CVRTIP::~CVRTIP()
+CartelectronicIpBlindVelux::~CartelectronicIpBlindVelux()
 {
 }
 
@@ -35,7 +35,7 @@ enum
    kAnswerTimeout
 };
 
-void CVRTIP::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
+void CartelectronicIpBlindVelux::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
@@ -233,14 +233,14 @@ void CVRTIP::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CVRTIP::analyzePluginState(boost::shared_ptr<yApi::IYPluginApi> api)
+void CartelectronicIpBlindVelux::analyzePluginState(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    auto newState = kRunning; // default state
 
    for (const auto& devicesStatus : m_ioManager->getDeviceStates())
    {
-      if (devicesStatus == specificHistorizers::EVRTIPdeviceStatus::kTimeOut ||
-         devicesStatus == specificHistorizers::EVRTIPdeviceStatus::kError)
+      if (devicesStatus == specificHistorizers::EdeviceStatus::kTimeOut ||
+         devicesStatus == specificHistorizers::EdeviceStatus::kError)
       {
          newState = kAtLeastOneConnectionFaulty;
       }
@@ -253,7 +253,7 @@ void CVRTIP::analyzePluginState(boost::shared_ptr<yApi::IYPluginApi> api)
    setPluginState(api, newState);
 }
 
-void CVRTIP::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EVRTIPPluginState newState)
+void CartelectronicIpBlindVelux::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EPluginState newState)
 {
    if (m_pluginState != newState)
    {

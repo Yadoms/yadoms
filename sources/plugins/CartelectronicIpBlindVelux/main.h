@@ -1,6 +1,6 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
-#include "VRTIPFactory.h"
+#include "Factory.h"
 #include "IOManager.h"
 #include <shared/event/EventTimer.h>
 
@@ -11,7 +11,7 @@ namespace yApi = shared::plugin::yPluginApi;
 ///\brief The plugin state
 //-----------------------------------------------------
 
-enum EVRTIPPluginState
+enum EPluginState
 {
    kUndefined = 0,
    kStop,
@@ -26,13 +26,13 @@ enum EVRTIPPluginState
 //--------------------------------------------------------------
 /// \brief	This class is the WES plugin
 //--------------------------------------------------------------
-class CVRTIP : public plugin_cpp_api::IPlugin
+class CartelectronicIpBlindVelux : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-	CVRTIP();
+	CartelectronicIpBlindVelux();
 
    //-----------------------------------------------------
    ///\brief                                      update the configuration
@@ -45,7 +45,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CVRTIP();
+   virtual ~CartelectronicIpBlindVelux();
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
@@ -65,12 +65,12 @@ private:
    ///\param[in] newState                        the new plugin state
    //-----------------------------------------------------
    void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api,
-                       EVRTIPPluginState newState);
+                       EPluginState newState);
 
    //--------------------------------------------------------------
    /// \brief The factory
    //--------------------------------------------------------------
-   boost::shared_ptr<CVRTIPFactory> m_factory;
+   boost::shared_ptr<Factory> m_factory;
 
    //--------------------------------------------------------------
    /// \brief The IO Manager
@@ -85,5 +85,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	PluginState
    //--------------------------------------------------------------
-   EVRTIPPluginState m_pluginState;
+   EPluginState m_pluginState;
 };

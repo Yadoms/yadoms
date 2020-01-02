@@ -5,21 +5,21 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 ## Place here all the plugin source files
 #########################################
-set(VRTIP_PLUGIN_SOURCES
+set(CARTELECTRONICIPBLINDVELUX_PLUGIN_SOURCES
    IOManager.cpp
    IOManager.h
    stdafx.cpp
    stdafx.h
    urlManager.cpp
    urlManager.h
-   VRTIP.cpp
-   VRTIP.h
-   VRTIPFactory.cpp
-   VRTIPFactory.h   
+   main.cpp
+   main.h
+   Factory.cpp
+   Factory.h   
    equipments/IdeviceConfiguration.h
    equipments/IEquipment.h
-   equipments/VRTIPEquipment.cpp
-   equipments/VRTIPEquipment.h
+   equipments/Equipment.cpp
+   equipments/Equipment.h
    equipments/manuallyDeviceCreationException.hpp
    equipments/deviceConfiguration.cpp
    equipments/deviceConfiguration.h	
@@ -43,14 +43,14 @@ source_group(sources\\http http/*.*)
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
 #########################################
-set(VRTIP_PLUGIN_INCLDIR
+set(CARTELECTRONICIPBLINDVELUX_PLUGIN_INCLDIR
 )
 
 #########################################
 ## Place here all additional libraries to link with
 ## (by default yadoms-shared and boost are included)
 #########################################
-set(VRTIP_PLUGIN_LINK
+set(CARTELECTRONICIPBLINDVELUX_PLUGIN_LINK
 )
 
 #########################################
@@ -60,8 +60,8 @@ set(VRTIP_PLUGIN_LINK
 
 #########################################
 ## Always leave these lines to configure plugin correctly
-## even if VRTIP_PLUGIN_INCLDIR or VRTIP_PLUGIN_LINK are empty
+## even if CARTELECTRONICIPBLINDVELUX_PLUGIN_INCLDIR or CARTELECTRONICIPBLINDVELUX_PLUGIN_LINK are empty
 #########################################
-PLUGIN_SOURCES(VRTIP ${VRTIP_PLUGIN_SOURCES})
-PLUGIN_INCLDIR(VRTIP ${VRTIP_PLUGIN_INCLDIR})
-PLUGIN_LINK   (VRTIP ${VRTIP_PLUGIN_LINK})
+PLUGIN_SOURCES(CartelectronicIpBlindVelux ${CARTELECTRONICIPBLINDVELUX_PLUGIN_SOURCES})
+PLUGIN_INCLDIR(CartelectronicIpBlindVelux ${CARTELECTRONICIPBLINDVELUX_PLUGIN_INCLDIR})
+PLUGIN_LINK   (CartelectronicIpBlindVelux ${CARTELECTRONICIPBLINDVELUX_PLUGIN_LINK})

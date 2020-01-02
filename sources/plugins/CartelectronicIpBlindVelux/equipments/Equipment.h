@@ -13,7 +13,7 @@ namespace equipments
    //-----------------------------------------------------
    ///\brief WES equipment
    //-----------------------------------------------------
-   class CVRTIPEquipment : public IEquipment
+   class CEquipment : public IEquipment
    {
    public:
 
@@ -24,9 +24,9 @@ namespace equipments
       ///\param[in] deviceConfiguration The device configuration
       ///\param[in] pluginConfiguration The plugin configuration
       //-----------------------------------------------------
-	   CVRTIPEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-                       const std::string& device,
-                       const shared::CDataContainer& deviceConfiguration);
+	   CEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+                  const std::string& device,
+                  const shared::CDataContainer& deviceConfiguration);
 
       // IEquipment implementation
       std::string getDeviceName() const override;
@@ -37,13 +37,13 @@ namespace equipments
       void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                        const std::string& keyword,
                        boost::shared_ptr<const yApi::IDeviceCommand> command) override;
-      specificHistorizers::EVRTIPdeviceStatus getStatus() const override;
+      specificHistorizers::EdeviceStatus getStatus() const override;
       // [END] IEquipment implementation
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CVRTIPEquipment();
+      virtual ~CEquipment();
 
    private:
 
@@ -52,7 +52,7 @@ namespace equipments
       ///\param[in] newState            the new state
       //-----------------------------------------------------
       void setDeviceState(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize, 
-                          specificHistorizers::EVRTIPdeviceStatus newState) const;
+                          specificHistorizers::EdeviceStatus newState) const;
 
       //-----------------------------------------------------
       ///\brief                     The device name

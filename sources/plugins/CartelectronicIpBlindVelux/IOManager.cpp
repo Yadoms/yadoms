@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "IOManager.h"
 #include "urlManager.h"
-#include "VRTIPFactory.h"
+#include "Factory.h"
 #include <boost/regex.hpp>
 #include <shared/Log.h>
 #include <algorithm>
@@ -43,7 +43,7 @@ int CIOManager::getWaitingEquipment() const
 
 void CIOManager::tryMissingEquipment(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   CVRTIPFactory factory;
+   Factory factory;
 
    auto deviceId = m_deviceToRetry.begin();
    while (deviceId != m_deviceToRetry.end()) {
@@ -51,8 +51,7 @@ void CIOManager::tryMissingEquipment(boost::shared_ptr<yApi::IYPluginApi> api)
 		   m_deviceManager.push_back(factory.createEquipment(api, *deviceId));
 		   deviceId = m_deviceToRetry.erase(deviceId); // Remove the device from the device to retry if all is running well
 	   }
-	   catch (std::exception&)
-	   {
+	   catch (std::exception&){
 		   deviceId++;
 	   }
    }
@@ -102,12 +101,10 @@ shared::CDataContainer CIOManager::bindMasterDevice()
    return en;
 }
 
-std::vector<specificHistorizers::EVRTIPdeviceStatus> CIOManager::getDeviceStates()
+std::vector<specificHistorizers::EdeviceStatus> CIOManager::getDeviceStates()
 {
-   std::vector<specificHistorizers::EVRTIPdeviceStatus> devicesStatus;
-
-   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
-   {
+   std::vector<specificHistorizers::EdeviceStatus> devicesStatus;
+   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice){
       devicesStatus.push_back((*iteratorDevice)->getStatus());
    }
 
@@ -117,9 +114,7 @@ std::vector<specificHistorizers::EVRTIPdeviceStatus> CIOManager::getDeviceStates
 bool CIOManager::deviceAlreadyExist(const std::string& deviceName)
 {
    std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice;
-
    for (iteratorDevice = m_deviceManager.begin(); (iteratorDevice != m_deviceManager.end() && (*iteratorDevice)->getDeviceName() != deviceName); ++iteratorDevice){}
-
    if (iteratorDevice != m_deviceManager.end())
       return true;
    

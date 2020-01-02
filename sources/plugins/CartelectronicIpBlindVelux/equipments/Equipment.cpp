@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "VRTIPEquipment.h"
+#include "Equipment.h"
 #include <shared/DataContainer.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
@@ -9,11 +9,11 @@
 
 namespace equipments
 {
-	const int CVRTIPEquipment::shuttersQty = 2;
+	const int CEquipment::shuttersQty = 2;
 
-	CVRTIPEquipment::CVRTIPEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-                                     const std::string& device,
-                                     const shared::CDataContainer& deviceConfiguration)
+	CEquipment::CEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+                           const std::string& device,
+		                   const shared::CDataContainer& deviceConfiguration)
       : m_deviceName(device),
         m_deviceType("VRTIP"),
         m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("Status"))
@@ -56,7 +56,7 @@ namespace equipments
       }
       catch (CTimeOutException& e){
          YADOMS_LOG(error) << e.what();
-         m_deviceStatus->set(specificHistorizers::EVRTIPdeviceStatus::kTimeOut);
+         m_deviceStatus->set(specificHistorizers::EdeviceStatus::kTimeOut);
          api->historizeData(m_deviceName, m_deviceStatus);
          throw e;
       }
@@ -66,26 +66,26 @@ namespace equipments
       }
    }
 
-   std::string CVRTIPEquipment::getDeviceName() const{
+   std::string CEquipment::getDeviceName() const{
       return m_deviceName;
    }
 
-   std::string CVRTIPEquipment::getDeviceType() const{
+   std::string CEquipment::getDeviceType() const{
       return m_deviceType;
    }
 
-   void CVRTIPEquipment::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           const shared::CDataContainer& newConfiguration,
-                                           const int refreshEvent)
+   void CEquipment::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                        const shared::CDataContainer& newConfiguration,
+                                        const int refreshEvent)
    {
       m_configuration.initializeWith(newConfiguration);
       api->updateDeviceConfiguration(m_deviceName, newConfiguration);
       YADOMS_LOG(information) << "Configuration updated for " << m_deviceName;
    }
 
-   void CVRTIPEquipment::sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   const std::string& keyword,
-                                   boost::shared_ptr<const yApi::IDeviceCommand> command)
+   void CEquipment::sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
+                                const std::string& keyword,
+                                boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize;
 
@@ -146,19 +146,19 @@ namespace equipments
             }
          }*/
 
-         setDeviceState(keywordsToHistorize, specificHistorizers::EVRTIPdeviceStatus::kOk);
+         setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kOk);
          api->historizeData(m_deviceName, keywordsToHistorize);
       }
       catch (std::exception& e){
          keywordsToHistorize.clear();
-         setDeviceState(keywordsToHistorize, specificHistorizers::EVRTIPdeviceStatus::kError);
+         setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kError);
          api->historizeData(m_deviceName, keywordsToHistorize);
          YADOMS_LOG(error) << e.what();
       }
    }
 
-   void CVRTIPEquipment::setDeviceState(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywordsToHistorize,
-                                      specificHistorizers::EVRTIPdeviceStatus newState) const
+   void CEquipment::setDeviceState(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywordsToHistorize,
+                                      specificHistorizers::EdeviceStatus newState) const
    {
       if (m_deviceStatus->get() != newState){
          m_deviceStatus->set(newState);
@@ -167,10 +167,10 @@ namespace equipments
       }
    }
 
-   specificHistorizers::EVRTIPdeviceStatus CVRTIPEquipment::getStatus() const{
+   specificHistorizers::EdeviceStatus CEquipment::getStatus() const{
       return m_deviceStatus->get();
    }
 
-   CVRTIPEquipment::~CVRTIPEquipment()
+   CEquipment::~CEquipment()
    {}
 }// namespace equipments

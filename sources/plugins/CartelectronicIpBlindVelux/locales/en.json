@@ -4,7 +4,7 @@
 	"configurationSchema": {
 	},
 	"enumerations": {
-		"EVRTIPdeviceStatus": {
+		"EdeviceStatus": {
 			"name" : "Device status",
 			"values" : {
 				"Undefined": "Undefined",

@@ -1,8 +1,8 @@
 {
-	"type": "VRTIP",
+	"type": "CartelectronicIpBlindVelux",
 	"version": "@PLUGIN_VERSION@",
 	"author": "Jean-Michel BERHAULT",
-	"url": "https://github.com/Yadoms/yadoms/wiki/VRTIP",
+	"url": "https://github.com/Yadoms/yadoms/wiki/CartelectronicIpBlindVelux",
 	"credits": "",
 	"supportedPlatforms": "all",
 	"dependencies": {
@@ -17,9 +17,9 @@
 	"deviceConfiguration": {
 		"staticConfigurationSchema": {
 			"schemas": {
-				"VRTIP": {
+				"CartelectronicIpBlindVelux": {
 					"types": {
-						"VRTIP": {
+						"CartelectronicIpBlindVelux": {
 							"canBeCreatedManually": "true"
 						}
 					},

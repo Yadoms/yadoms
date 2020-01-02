@@ -50,7 +50,7 @@ namespace equipments
       /// \brief                              get the device status (Ok, timeOut, Error, ...)
       ///\return                              the status
       //--------------------------------------------------------------
-      virtual specificHistorizers::EVRTIPdeviceStatus getStatus() const = 0;
+      virtual specificHistorizers::EdeviceStatus getStatus() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Destructor

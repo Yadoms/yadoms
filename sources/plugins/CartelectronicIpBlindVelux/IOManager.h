@@ -87,7 +87,7 @@ public:
    /// \brief	    getdeviceStates
    /// \return the number of servers
    //--------------------------------------------------------------
-   std::vector<specificHistorizers::EVRTIPdeviceStatus> getDeviceStates();
+   std::vector<specificHistorizers::EdeviceStatus> getDeviceStates();
 
    //--------------------------------------------------------------
    /// \brief	    bindMasterDevice
