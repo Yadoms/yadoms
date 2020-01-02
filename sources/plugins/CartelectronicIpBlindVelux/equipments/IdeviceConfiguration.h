@@ -37,4 +37,10 @@ public:
    /// \return     the user
    //--------------------------------------------------------------
    virtual std::string getUser() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief      return if authentification is active
+   /// \return     true if active else false
+   //--------------------------------------------------------------
+   virtual bool isAuthentificationActive() const = 0;
 };

@@ -22,7 +22,7 @@ boost::shared_ptr<CIOManager> Factory::loadConfiguration(boost::shared_ptr<yApi:
       try{
          type = api->getDeviceDetails(device).getWithDefault<std::string>("type", "");
 
-         if (type == "WES"){
+         if (type == "CartelectronicIpBlindVelux"){
             try{
                deviceList.push_back(factory.createEquipment(api, device));
             }
@@ -34,10 +34,6 @@ boost::shared_ptr<CIOManager> Factory::loadConfiguration(boost::shared_ptr<yApi:
 				//TODO : Try restart the plugin with the equipment connected => We should have a error
             }
          }
-
-         // Do Noting, all is done into CWESEquipments
-         if (type == "TIC")
-         {}
       }
       catch (std::exception& e){
          YADOMS_LOG(error) << e.what();
@@ -66,7 +62,7 @@ std::string Factory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> a
 {
    boost::shared_ptr<equipments::IEquipment> equipment;
 
-   if (data.getDeviceType() == "WES")
+   if (data.getDeviceType() == "CartelectronicIpBlindVelux")
    {
       // TODO : Manage the case where the device is not connected when restart. The device should be created with just the statuts in the plugin
       equipment = boost::make_shared<equipments::CEquipment>(api,

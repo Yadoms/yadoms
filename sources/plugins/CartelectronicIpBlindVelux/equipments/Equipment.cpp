@@ -15,7 +15,7 @@ namespace equipments
                            const std::string& device,
 		                   const shared::CDataContainer& deviceConfiguration)
       : m_deviceName(device),
-        m_deviceType("VRTIP"),
+        m_deviceType("CartelectronicIpBlindVelux"),
         m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("Status"))
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare;
@@ -95,15 +95,14 @@ namespace equipments
          std::string stringState;
          auto counter = 0;
 
-         credentials.set("user", m_configuration.getUser());
-         credentials.set("password", m_configuration.getPassword());
+		 if (m_configuration.isAuthentificationActive()) {
+			 credentials.set("user", m_configuration.getUser());
+			 credentials.set("password", m_configuration.getPassword());
+		 }
 
-         const auto newValue = boost::lexical_cast<bool>(command->getBody());
-         if (newValue)
-            stringState = "ON";
-         else
-            stringState = "OFF";
+		 YADOMS_LOG(information) << command->getBody();
 
+		 yApi::historization::ECurtainCommand newValue(command->getBody());
          std::vector<boost::shared_ptr<yApi::historization::CCurtain>>::const_iterator iteratorRelay;
          for (iteratorRelay = m_shutters.begin(); (iteratorRelay != m_shutters.end() && (command->getKeyword() != (*iteratorRelay)->getKeyword())); ++iteratorRelay)
             ++counter;
@@ -116,35 +115,10 @@ namespace equipments
          auto results = urlManager::setRelayState(
 			 m_configuration.getIPAddressWithSocket(),
              credentials,
-             parameters,
+			 newValue,
 			 m_httpContext);
 
-         // For security, we check if the results contain the value, with the corresponding new state
-		 /*
-         if (results.containsChild("Relai1"))
-         {
-            if (results.get<std::string>("Relai1") == "ON" && !m_shutters[0]->get())
-            {
-			   m_shutters[0]->set(true);
-               keywordsToHistorize.push_back(m_shutters[0]);
-            }
-            else if (results.get<std::string>("Relai1") == "OFF" && m_shutters[0]->get())
-            {
-				m_shutters[0]->set(false);
-               keywordsToHistorize.push_back(m_relaysList[0]);
-            }
-         }
-
-         if (results.containsChild("Relai2")){
-            if (results.get<std::string>("Relai2") == "ON" && !m_shutters[1]->get()){
-				m_shutters[1]->set(true);
-               keywordsToHistorize.push_back(m_relaysList[1]);
-            }
-            else if (results.get<std::string>("Relai2") == "OFF" && m_shutters[1]->get()){
-				m_shutters[1]->set(false);
-               keywordsToHistorize.push_back(m_relaysList[1]);
-            }
-         }*/
+		 results.printToLog(YADOMS_LOG(trace));
 
          setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kOk);
          api->historizeData(m_deviceName, keywordsToHistorize);
