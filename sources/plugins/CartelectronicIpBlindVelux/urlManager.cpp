@@ -28,6 +28,20 @@ shared::CDataContainer urlManager::setRelayState(
 	   url << "vr2=" << parameters.get<std::string>("shutter2");
    }
 
+   if (parameters.exists("tm1")) {
+	   auto delay = parameters.get<long>("tm1");
+	   if (delay != 0) {
+		   url << "&tm1=" << boost::lexical_cast<std::string>(delay);
+	   }
+   }
+
+   if (parameters.exists("tm2")) {
+	   auto delay = parameters.get<long>("tm2");
+	   if (delay != 0) {
+		   url << "&tm2=" << boost::lexical_cast<std::string>(delay);
+	   }
+   }
+
    YADOMS_LOG(information) << "URL : " << url.str();
 
    return http::CHttpMethods::SendGetRequest(

@@ -13,7 +13,6 @@ namespace specificHistorizers
 		    ((Close)(3))
 	);
 
-
 	//-----------------------------------------------------
 	///\brief A specific curtain historizable object
 	//-----------------------------------------------------

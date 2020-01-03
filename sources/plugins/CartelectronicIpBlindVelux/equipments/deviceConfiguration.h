@@ -25,6 +25,7 @@ public:
    std::string getPassword() const override;
    std::string getUser() const override;
    bool isAuthentificationActive() const override;
+   long getShutterDelay(int index) const override;
    // [END] IdeviceConfiguration implementation
 
 private:

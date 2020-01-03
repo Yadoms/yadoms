@@ -43,4 +43,11 @@ public:
    /// \return     true if active else false
    //--------------------------------------------------------------
    virtual bool isAuthentificationActive() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief      return the delay configured for a shutter
+   /// \param      the shutter desired [0-1]
+   /// \return     coeff of the 10s configured [0-9]
+   //--------------------------------------------------------------
+   virtual long getShutterDelay(int index) const = 0;
 };

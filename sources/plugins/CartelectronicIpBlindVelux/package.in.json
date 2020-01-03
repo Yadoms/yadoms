@@ -34,6 +34,43 @@
 							"required": "true",
 							"defaultValue": "80"
 						},
+						"delay": {
+						   "type": "section",
+						   "content":{
+								"shutter1": {
+									 "type": "enum",
+									 "values": {
+									    "0": "",
+										"1": "",
+										"2": "",
+										"3": "",
+										"4": "",
+										"5": "",
+										"6": "",
+										"7": "",
+										"8": "",
+										"9": ""
+									 },
+									 "defaultValue": "0"
+								},
+								"shutter2": {
+									 "type": "enum",
+									 "values": {
+									    "0": "",
+										"1": "",
+										"2": "",
+										"3": "",
+										"4": "",
+										"5": "",
+										"6": "",
+										"7": "",
+										"8": "",
+										"9": ""
+									 },
+									 "defaultValue": "0"
+								}
+							}
+						},
 						"authentication": {
 							"type": "section",
 							"defaultValue": "false",

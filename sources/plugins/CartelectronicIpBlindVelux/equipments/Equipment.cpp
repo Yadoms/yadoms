@@ -108,6 +108,7 @@ namespace equipments
             ++counter;
 
          parameters.set("shutter" + boost::lexical_cast<std::string>(counter + 1), boost::lexical_cast<std::string>(newValue.toInteger()));
+		 parameters.set("tm" + boost::lexical_cast<std::string>(counter + 1), m_configuration.getShutterDelay(counter + 1));
 
          if (iteratorRelay == m_shutters.end())
             throw shared::exception::CException("Failed to identify the shutter");

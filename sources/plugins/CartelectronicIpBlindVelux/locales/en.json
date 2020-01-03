@@ -43,6 +43,46 @@
 							"name": "Port",
 							"description": "the Velux local socket opened (example: 80)"
 						},
+						"delay": {
+						   "name": "activation delay of command",
+						   "description": "time duration configured to maintain the state open or close. If no time is configured, a 'stop' command must be sent at the end of the operation",
+						   "content":{
+								"shutter1": {
+						            "name": "activation delay for shutter 1",
+						            "description": "",
+									 "values": {
+									    "0": "No delay configured",
+										"1": "10s",
+										"2": "20s",
+										"3": "30s",
+										"4": "40s",
+										"5": "50s",
+										"6": "60s",
+										"7": "70s",
+										"8": "80s",
+										"9": "90s"
+									 },
+									 "defaultValue": "0"
+								},
+								"shutter2": {
+						            "name": "activation delay for shutter 2",
+						            "description": "",
+									 "values": {
+									    "0": "No delay configured",
+										"1": "10s",
+										"2": "20s",
+										"3": "30s",
+										"4": "40s",
+										"5": "50s",
+										"6": "60s",
+										"7": "70s",
+										"8": "80s",
+										"9": "90s"
+									 },
+									 "defaultValue": "0"
+								}
+							}
+						},
 						"authentication": {
 							"name": "key to access the Velux module",
 							"description": "Only if the key is enabled",

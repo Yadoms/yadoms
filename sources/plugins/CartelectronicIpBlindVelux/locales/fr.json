@@ -43,6 +43,46 @@
 							"name": "Port",
 							"description": "Le port de communication de l'équipement (exemple: 80)"
 						},
+						"delay": {
+						   "name": "Temps d'activation de la commande",
+						   "description": "Temps d'activation de la commande 'Ouvrir' et 'Fermer'. Si aucun temps n'est configuration, une commande 'Arrêt' doit être effectuée à la fin de l'opération",
+						   "content":{
+								"shutter1": {
+						            "name": "Temps d'activation pour le volet 1",
+						            "description": "",
+									 "values": {
+									    "0": "Pas de délai configuré",
+										"1": "10s",
+										"2": "20s",
+										"3": "30s",
+										"4": "40s",
+										"5": "50s",
+										"6": "60s",
+										"7": "70s",
+										"8": "80s",
+										"9": "90s"
+									 },
+									 "defaultValue": "0"
+								},
+								"shutter2": {
+						            "name": "Temps d'activation pour le volet 2",
+						            "description": "",
+									 "values": {
+									    "0": "Pas de délai configuré",
+										"1": "10s",
+										"2": "20s",
+										"3": "30s",
+										"4": "40s",
+										"5": "50s",
+										"6": "60s",
+										"7": "70s",
+										"8": "80s",
+										"9": "90s"
+									 },
+									 "defaultValue": "0"
+								}
+							}
+						},						
 						"authentication": {
 							"name": "clé d'accès",
 							"description": "seulement si la clé est activée",

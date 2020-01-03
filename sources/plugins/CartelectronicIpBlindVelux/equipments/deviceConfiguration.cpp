@@ -28,3 +28,7 @@ std::string CdeviceConfiguration::getUser() const{
 bool CdeviceConfiguration::isAuthentificationActive() const {
    return m_data.get<bool>("authentication.checkbox");
 }
+
+long CdeviceConfiguration::getShutterDelay(int index) const {
+	return m_data.get<long>("delay.content.shutter" + boost::lexical_cast<std::string>(index));
+}
