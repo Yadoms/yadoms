@@ -12,7 +12,15 @@
 				"Error": "Erreur",
 				"TimeOut": "Connection perdue"
 			}
-		}
+		},
+		"EVeluxCurtainCommand": {
+			"name" : "Velux Curtain",
+			"values" : {
+				"Open": "Ouvrir/Monter",
+				"Stop": "Arrêter",
+				"Close": "Fermer/Descendre"
+			}
+		}		
 	},
 	"deviceConfiguration": {
 		"staticConfigurationSchema": {

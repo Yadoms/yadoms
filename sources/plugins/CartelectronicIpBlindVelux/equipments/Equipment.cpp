@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "Equipment.h"
 #include <shared/DataContainer.h>
 #include <shared/Log.h>
@@ -33,7 +33,7 @@ namespace equipments
 
 		 // Relay Configuration
 		 for (auto counter = 0; counter < shuttersQty; ++counter) {
-			 const auto temp = boost::make_shared<yApi::historization::CCurtain>("shutter" + boost::lexical_cast<std::string>(counter));
+			 const auto temp = boost::make_shared<specificHistorizers::CVeluxCurtain>("shutter" + boost::lexical_cast<std::string>(counter));
 			 m_shutters.push_back(temp);
 			 keywordsToDeclare.push_back(temp);
 		 }
@@ -102,12 +102,12 @@ namespace equipments
 
 		 YADOMS_LOG(information) << command->getBody();
 
-		 yApi::historization::ECurtainCommand newValue(command->getBody());
-         std::vector<boost::shared_ptr<yApi::historization::CCurtain>>::const_iterator iteratorRelay;
+		 specificHistorizers::EVeluxCurtainCommand newValue(command->getBody());
+         std::vector<boost::shared_ptr<specificHistorizers::CVeluxCurtain>>::const_iterator iteratorRelay;
          for (iteratorRelay = m_shutters.begin(); (iteratorRelay != m_shutters.end() && (command->getKeyword() != (*iteratorRelay)->getKeyword())); ++iteratorRelay)
             ++counter;
 
-         parameters.set("shutter" + boost::lexical_cast<std::string>(counter + 1), stringState);
+         parameters.set("shutter" + boost::lexical_cast<std::string>(counter + 1), boost::lexical_cast<std::string>(newValue.toInteger()));
 
          if (iteratorRelay == m_shutters.end())
             throw shared::exception::CException("Failed to identify the shutter");
@@ -115,7 +115,7 @@ namespace equipments
          auto results = urlManager::setRelayState(
 			 m_configuration.getIPAddressWithSocket(),
              credentials,
-			 newValue,
+			 parameters,
 			 m_httpContext);
 
 		 results.printToLog(YADOMS_LOG(trace));

@@ -1,4 +1,5 @@
 #pragma once
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "specificHistorizers/deviceStatus.h"
 

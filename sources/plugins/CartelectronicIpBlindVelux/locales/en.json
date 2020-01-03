@@ -12,6 +12,14 @@
 				"Error": "Error",
 				"TimeOut": "Time out"
 			}
+		},
+		"EVeluxCurtainCommand": {
+			"name" : "Velux Curtain",
+			"values" : {
+				"Open": "Open",
+				"Stop": "Stop",
+				"Close": "Close"
+			}
 		}
 	},     
 	"deviceConfiguration": {

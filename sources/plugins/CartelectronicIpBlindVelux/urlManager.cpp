@@ -8,13 +8,26 @@ boost::posix_time::time_duration urlManager::httpRequestVRTIPTimeout(boost::posi
 shared::CDataContainer urlManager::setRelayState(
 	Poco::Net::SocketAddress socket,
     const shared::CDataContainer& credentials,
-	const yApi::historization::ECurtainCommand& state,
+	const shared::CDataContainer& parameters,
 	http::httpContext& context)
 {
    std::stringstream url;
 
+   parameters.printToLog(YADOMS_LOG(information));
+
    // create the URL
-   url << "http://" << socket.toString() << "/ctrl.cgi?vr1=" + boost::lexical_cast<std::string>(state.toInteger());
+   url << "http://" << socket.toString() << "/ctrl.cgi?";
+   if (parameters.exists("shutter1")) {
+	   url << "vr1=" << parameters.get<std::string>("shutter1");
+   }
+
+   if (parameters.exists("shutter2")) {
+	   if (parameters.exists("shutter1")) {
+		   url << "&";
+	   }
+	   url << "vr2=" << parameters.get<std::string>("shutter2");
+   }
+
    YADOMS_LOG(information) << "URL : " << url.str();
 
    return http::CHttpMethods::SendGetRequest(

@@ -24,7 +24,9 @@ set(CARTELECTRONICIPBLINDVELUX_PLUGIN_SOURCES
    equipments/deviceConfiguration.cpp
    equipments/deviceConfiguration.h	
    equipments/specificHistorizers/deviceStatus.cpp
-   equipments/specificHistorizers/deviceStatus.h   
+   equipments/specificHistorizers/deviceStatus.h
+   equipments/specificHistorizers/VeluxCurtain.cpp
+   equipments/specificHistorizers/VeluxCurtain.h
    http/HttpContext.cpp
    http/HttpContext.h   
    http/HttpMethods.cpp

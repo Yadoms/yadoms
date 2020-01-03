@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/enumeration/EnumHelpers.hpp>
+//#include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
 namespace specificHistorizers

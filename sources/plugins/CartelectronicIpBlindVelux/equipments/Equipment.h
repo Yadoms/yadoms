@@ -1,8 +1,9 @@
 #pragma once
 
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
+//#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IEquipment.h"
 #include "deviceConfiguration.h"
+#include "specificHistorizers/VeluxCurtain.h"
 #include "../http/httpContext.h"
 
 // Shortcut to yPluginApi namespace
@@ -72,7 +73,7 @@ namespace equipments
 	  //--------------------------------------------------------------
 	  /// \brief	vector of the 2 relays
 	  //--------------------------------------------------------------
-	  std::vector<boost::shared_ptr<yApi::historization::CCurtain>> m_shutters;
+	  std::vector<boost::shared_ptr<specificHistorizers::CVeluxCurtain>> m_shutters;
 
       //--------------------------------------------------------------
       /// \brief	status of the device

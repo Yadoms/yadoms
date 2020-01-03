@@ -24,13 +24,13 @@ public:
    /// \brief	    set relays state to the WES
    /// \param[in]  socket              the IP adress with the socket where to send the frame
    /// \param[in]  credentials         credentials(user, password) needed to access the WES
-   /// \param[in]  value               state to be applied
+   /// \param[in]  parameters          informations to be send
    /// \param[in]  context             context specific for each equipment for sending information
    /// \return     the answer of the request
    //--------------------------------------------------------------
    static shared::CDataContainer setRelayState(
 	   Poco::Net::SocketAddress socket,
        const shared::CDataContainer& credentials,
-       const yApi::historization::ECurtainCommand& state,
+	   const shared::CDataContainer& parameters,
 	   http::httpContext& context);
 };
