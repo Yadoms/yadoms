@@ -45,7 +45,7 @@ void CartelectronicIpBlindVelux::doWork(boost::shared_ptr<yApi::IYPluginApi> api
       // Create timer for refresh IOs
       m_refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
 
-      if (m_ioManager->getEquipment() == 0 && m_ioManager->getWaitingEquipment()){
+      if (m_ioManager->getEquipment() == 0 && m_ioManager->getWaitingEquipment() == 0){
          setPluginState(api, kReady);
          m_refreshTimer->stop();
       }
@@ -105,6 +105,8 @@ void CartelectronicIpBlindVelux::doWork(boost::shared_ptr<yApi::IYPluginApi> api
 
             if (m_ioManager->getWaitingEquipment() != 0)
                m_ioManager->tryMissingEquipment(api);
+
+			m_ioManager->readAllDevices(api, forceRefresh);
 
             analyzePluginState(api);
             break;

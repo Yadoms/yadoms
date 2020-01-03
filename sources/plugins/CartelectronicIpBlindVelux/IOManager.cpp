@@ -57,11 +57,16 @@ void CIOManager::tryMissingEquipment(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
+void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization){
+	for (unsigned char counter = 0; counter < m_deviceManager.size(); ++counter){
+		m_deviceManager[counter]->updateFromDevice(api, forceHistorization);
+	}
+}
+
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                            boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
    const auto deviceName = command->getDevice();
-
    YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command) ;
 
    for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice){

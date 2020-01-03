@@ -60,6 +60,13 @@ public:
                                     const int refreshEvent);
 
    //--------------------------------------------------------------
+   /// \brief	                     read all devices
+   /// \param [in] api                   Plugin execution context (Yadoms API)
+   /// \param [in] forceHistorization    force the historization of all keywords
+   //--------------------------------------------------------------
+   void readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization = false);
+
+   //--------------------------------------------------------------
    /// \brief	    addEquipment
    /// \param[in]  equipment              add a new equipment
    //--------------------------------------------------------------

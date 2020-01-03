@@ -9,6 +9,15 @@
 
 namespace equipments
 {
+	// TODO : To move elsewhere
+	enum
+	{
+		kEvtTimerRefreshCPULoad = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
+		kRefreshStatesReceived,
+		kConnectionRetryTimer,
+		kAnswerTimeout
+	};
+
 	const int CEquipment::shuttersQty = 2;
 
 	CEquipment::CEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -71,24 +80,33 @@ namespace equipments
       return m_deviceType;
    }
 
-   void CEquipment::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization)
-   {
+   void CEquipment::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization){
 	   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize;
 
 	   try {
-		   std::string results = urlManager::getRelayState(
-			   m_configuration.getIPAddressWithSocket());
+		   std::string response = urlManager::getRelayState(m_configuration.getIPAddressWithSocket());
+		   YADOMS_LOG(information) << response;
 
-		   YADOMS_LOG(information) << results;
-
-		   // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
-		   /*try {
-			   updateSwitchValue(keywordsToHistorize, m_relaysList[0], results.get<bool>("RL1"), forceHistorization);
-			   updateSwitchValue(keywordsToHistorize, m_relaysList[1], results.get<bool>("RL2"), forceHistorization);
+		   static const boost::regex Pattern("([a-zA-Z]+)! (\\d)-(\\d)");
+		   boost::smatch result;
+		   std::string extract;
+		   if (!boost::regex_search(response, result, Pattern)) {
+			   YADOMS_LOG(error) << "pattern don't match";
 		   }
-		   catch (std::exception& e) {
-			   YADOMS_LOG(warning) << "Exception reading relays" << e.what();
-		   }*/
+
+		   specificHistorizers::EVeluxCurtainCommand state;
+		   state = boost::lexical_cast<int>(std::string(result[2].first, result[2].second));
+
+		   if (state != m_shutters[0]->get()) {
+			   m_shutters[0]->set(state);
+			   keywordsToHistorize.push_back(m_shutters[0]);
+		   }  
+
+		   state = boost::lexical_cast<int>(std::string(result[3].first, result[3].second));
+		   if (state != m_shutters[1]->get()) {
+			   m_shutters[1]->set(state);
+			   keywordsToHistorize.push_back(m_shutters[1]);
+		   }
 
 		   setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kOk);
 		   api->historizeData(m_deviceName, keywordsToHistorize);
@@ -143,14 +161,40 @@ namespace equipments
          if (iteratorRelay == m_shutters.end())
             throw shared::exception::CException("Failed to identify the shutter");
 
-         auto results = urlManager::setRelayState(
+         auto response = urlManager::setRelayState(
 			 m_configuration.getIPAddressWithSocket(),
 			 parameters);
 
-		 YADOMS_LOG(information) << results;
+		 YADOMS_LOG(information) << response;
+
+		 static const boost::regex Pattern("([a-zA-Z]+)! (\\d)-(\\d)");
+		 boost::smatch result;
+		 std::string extract;
+		 if (!boost::regex_search(response, result, Pattern)) {
+			 YADOMS_LOG(error) << "pattern don't match";
+		 }
+
+		 specificHistorizers::EVeluxCurtainCommand state;
+		 state = boost::lexical_cast<int>(std::string(result[2].first, result[2].second));
+
+		 if (state != m_shutters[0]->get()) {
+			 m_shutters[0]->set(state);
+			 keywordsToHistorize.push_back(m_shutters[0]);
+		 }
+
+		 state = boost::lexical_cast<int>(std::string(result[3].first, result[3].second));
+		 if (state != m_shutters[1]->get()) {
+			 m_shutters[1]->set(state);
+			 keywordsToHistorize.push_back(m_shutters[1]);
+		 }
 
          setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kOk);
          api->historizeData(m_deviceName, keywordsToHistorize);
+
+		 // Refresh the display only if the duration is different of 0
+		 if (m_configuration.getShutterDelay(counter + 1) != 0) {
+			 api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(m_configuration.getShutterDelay(counter + 1) * 10 + 2));
+		 }
       }
       catch (std::exception& e){
          keywordsToHistorize.clear();
