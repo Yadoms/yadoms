@@ -1,19 +1,37 @@
 #include "stdafx.h"
 #include "urlManager.h"
 #include <shared/Log.h>
+#include <shared/http/HttpMethods.h>
 
 boost::posix_time::time_duration urlManager::httpRequestCreationTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(8)));
 boost::posix_time::time_duration urlManager::httpRequestVRTIPTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(25)));
 
-shared::CDataContainer urlManager::setRelayState(
+std::string urlManager::getRelayState(
+	const Poco::Net::SocketAddress& socket)
+{
+	std::string out;
+	shared::CDataContainer NoElements;
+
+	shared::CHttpMethods::sendGetRequest("http://" + socket.toString() + "/ctrl.cgi",
+		[&out](const Poco::Net::HTTPResponse& response, std::istream& receivedStream) {
+		    out = std::string(
+			std::istreambuf_iterator<char>(receivedStream), {});
+	    },
+		NoElements,
+		NoElements,
+		shared::CHttpMethods::ESessionType::kStandard,
+		httpRequestVRTIPTimeout);
+
+	return out;
+}
+
+std::string urlManager::setRelayState(
 	Poco::Net::SocketAddress socket,
-    const shared::CDataContainer& credentials,
-	const shared::CDataContainer& parameters,
-	http::httpContext& context)
+	const shared::CDataContainer& parameters)
 {
    std::stringstream url;
-
-   parameters.printToLog(YADOMS_LOG(information));
+   std::string out;
+   shared::CDataContainer NoElements;
 
    // create the URL
    url << "http://" << socket.toString() << "/ctrl.cgi?";
@@ -28,14 +46,14 @@ shared::CDataContainer urlManager::setRelayState(
 	   url << "vr2=" << parameters.get<std::string>("shutter2");
    }
 
-   if (parameters.exists("tm1")) {
+   if (parameters.exists("tm1") && parameters.exists("shutter1")) {
 	   auto delay = parameters.get<long>("tm1");
 	   if (delay != 0) {
 		   url << "&tm1=" << boost::lexical_cast<std::string>(delay);
 	   }
    }
 
-   if (parameters.exists("tm2")) {
+   if (parameters.exists("tm2") && parameters.exists("shutter2")) {
 	   auto delay = parameters.get<long>("tm2");
 	   if (delay != 0) {
 		   url << "&tm2=" << boost::lexical_cast<std::string>(delay);
@@ -44,10 +62,15 @@ shared::CDataContainer urlManager::setRelayState(
 
    YADOMS_LOG(information) << "URL : " << url.str();
 
-   return http::CHttpMethods::SendGetRequest(
-	   url.str(),
-       credentials, 
-	   shared::CDataContainer(),
-	   context,
-       httpRequestVRTIPTimeout);
+   shared::CHttpMethods::sendGetRequest(url.str(),
+	   [&out](const Poco::Net::HTTPResponse& response, std::istream& receivedStream) {
+	   out = std::string(
+		   std::istreambuf_iterator<char>(receivedStream), {});
+       },
+	   NoElements,
+	   NoElements,
+	   shared::CHttpMethods::ESessionType::kStandard,
+	   httpRequestVRTIPTimeout);
+
+   return out;
 }

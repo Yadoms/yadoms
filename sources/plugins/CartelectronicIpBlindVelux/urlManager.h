@@ -3,8 +3,6 @@
 #include <shared/DataContainer.h>
 #include <Poco/Net/NetworkInterface.h>
 #include <Poco/Net/Socket.h>
-#include "http/HttpMethods.h"
-#include "http/HttpContext.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 // Shortcut to yPluginApi namespace
@@ -23,28 +21,18 @@ public:
    //--------------------------------------------------------------
    /// \brief	    set relays state to the WES
    /// \param[in]  socket              the IP adress with the socket where to send the frame
-   /// \param[in]  credentials         credentials(user, password) needed to access the WES
-   /// \param[in]  parameters          informations to be send
-   /// \param[in]  context             context specific for each equipment for sending information
    /// \return     the answer of the request
    //--------------------------------------------------------------
-   static shared::CDataContainer getRelayState(
-	   Poco::Net::SocketAddress socket,
-	   const shared::CDataContainer& credentials,
-	   const shared::CDataContainer& parameters,
-	   http::httpContext& context);
+   static std::string getRelayState(
+	   const Poco::Net::SocketAddress& socket);
 
    //--------------------------------------------------------------
    /// \brief	    set relays state to the WES
    /// \param[in]  socket              the IP adress with the socket where to send the frame
-   /// \param[in]  credentials         credentials(user, password) needed to access the WES
    /// \param[in]  parameters          informations to be send
-   /// \param[in]  context             context specific for each equipment for sending information
    /// \return     the answer of the request
    //--------------------------------------------------------------
-   static shared::CDataContainer setRelayState(
+   static std::string setRelayState(
 	   Poco::Net::SocketAddress socket,
-       const shared::CDataContainer& credentials,
-	   const shared::CDataContainer& parameters,
-	   http::httpContext& context);
+	   const shared::CDataContainer& parameters);
 };

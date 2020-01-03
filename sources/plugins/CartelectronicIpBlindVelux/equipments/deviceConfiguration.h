@@ -22,9 +22,6 @@ public:
    // IdeviceConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
    virtual Poco::Net::SocketAddress getIPAddressWithSocket() const override;
-   std::string getPassword() const override;
-   std::string getUser() const override;
-   bool isAuthentificationActive() const override;
    long getShutterDelay(int index) const override;
    // [END] IdeviceConfiguration implementation
 

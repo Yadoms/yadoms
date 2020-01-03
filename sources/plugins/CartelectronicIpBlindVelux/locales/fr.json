@@ -1,5 +1,5 @@
 ﻿{
-	"name": "VRT IP",
+	"name": "VRT-IP",
 	"description": "Ce plugin permet de controler ses volets roulants de toit filaires par l'équipement VRT IP (https://www.cartelectronic.fr/home/25-commande-volet-type-velux-par-ethernet.html)",
 	"configurationSchema": {
 	},
@@ -39,10 +39,6 @@
 							"description": "L'adresse IP du module",
 							"regexErrorMessage": "Ce n'est pas une adresse IP valide"
 						},
-						"Port": {
-							"name": "Port",
-							"description": "Le port de communication de l'équipement (exemple: 80)"
-						},
 						"delay": {
 						   "name": "Temps d'activation de la commande",
 						   "description": "Temps d'activation de la commande 'Ouvrir' et 'Fermer'. Si aucun temps n'est configuration, une commande 'Arrêt' doit être effectuée à la fin de l'opération",
@@ -80,20 +76,6 @@
 										"9": "90s"
 									 },
 									 "defaultValue": "0"
-								}
-							}
-						},						
-						"authentication": {
-							"name": "clé d'accès",
-							"description": "seulement si la clé est activée",
-							"content": {
-								"User": {
-									"name": "Utilisateur",
-									"description": ""
-								},
-								"Password": {
-									"name": "Mot de passe",
-									"description": ""
 								}
 							}
 						}

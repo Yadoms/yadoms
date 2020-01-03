@@ -4,7 +4,6 @@
 #include "IEquipment.h"
 #include "deviceConfiguration.h"
 #include "specificHistorizers/VeluxCurtain.h"
-#include "../http/httpContext.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -32,6 +31,7 @@ namespace equipments
       // IEquipment implementation
       std::string getDeviceName() const override;
       std::string getDeviceType() const override;
+	  void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization) override;
       void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                const shared::CDataContainer& newConfiguration,
                                const int refreshEvent) override;
@@ -79,11 +79,6 @@ namespace equipments
       /// \brief	status of the device
       //--------------------------------------------------------------
       boost::shared_ptr<specificHistorizers::CdeviceStatus> m_deviceStatus;
-
-	  //--------------------------------------------------------------
-	  /// \brief	Context used by the equipment (Basic Auth, ...)
-	  //--------------------------------------------------------------
-	  http::httpContext m_httpContext;
 
 	  //--------------------------------------------------------------
 	  /// \brief	Definition of the number of shutters

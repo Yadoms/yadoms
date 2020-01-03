@@ -27,6 +27,14 @@ namespace equipments
       //--------------------------------------------------------------
       virtual std::string getDeviceType() const = 0;
 
+	  //--------------------------------------------------------------
+	  /// \brief      updateFromDevice
+	  ///\param[in]   api                     Yadoms API
+	  ///\param[in]   forceHistorization      force historization for all values (initialization of the device, reset of the device, ...)
+	  //--------------------------------------------------------------
+	  virtual void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+		  bool forceHistorization) = 0;
+
       //--------------------------------------------------------------
       /// \brief      updateConfiguration    build the message to send to the WES
       ///\param[in] api                       Yadoms API

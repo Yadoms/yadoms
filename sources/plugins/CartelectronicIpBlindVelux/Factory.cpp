@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Factory.h"
 #include "equipments/Equipment.h"
-#include "http/timeOutException.hpp"
 #include <shared/Log.h>
+#include "shared/http/HttpException.hpp"
 
 Factory::Factory()
 {
@@ -26,11 +26,13 @@ boost::shared_ptr<CIOManager> Factory::loadConfiguration(boost::shared_ptr<yApi:
             try{
                deviceList.push_back(factory.createEquipment(api, device));
             }
-            catch (CTimeOutException&){
-               deviceToRetry.push_back(device);
+            catch (shared::CHttpException& e){
+				YADOMS_LOG(error) << e.what();
+				if (boost::contains(e.what(), "Timeout")) {
+					deviceToRetry.push_back(device);
+				}
             }
-            catch (std::exception&)
-            {
+            catch (std::exception&){
 				//TODO : Try restart the plugin with the equipment connected => We should have a error
             }
          }
@@ -39,7 +41,6 @@ boost::shared_ptr<CIOManager> Factory::loadConfiguration(boost::shared_ptr<yApi:
          YADOMS_LOG(error) << e.what();
          throw;
       }
-
       YADOMS_LOG(information) << "Name : " << device;
       YADOMS_LOG(information) << "Model : " << type;
    }

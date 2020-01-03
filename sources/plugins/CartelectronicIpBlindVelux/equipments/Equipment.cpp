@@ -1,10 +1,10 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "Equipment.h"
 #include <shared/DataContainer.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "../urlManager.h"
-#include "../http/timeOutException.hpp"
+#include "shared/http/HttpException.hpp"
 #include "manuallyDeviceCreationException.hpp"
 
 namespace equipments
@@ -25,11 +25,6 @@ namespace equipments
          keywordsToDeclare.push_back(m_deviceStatus);
          m_configuration.initializeWith(deviceConfiguration);
          deviceConfiguration.printToLog(YADOMS_LOG(information));
-
-         shared::CDataContainer credentials;
-
-         credentials.set("user", m_configuration.getUser());
-         credentials.set("password", m_configuration.getPassword());
 
 		 // Relay Configuration
 		 for (auto counter = 0; counter < shuttersQty; ++counter) {
@@ -54,10 +49,12 @@ namespace equipments
          else
             api->declareDevice(m_deviceName, "VRTIP", "VRTIP", keywordsToDeclare, details);
       }
-      catch (CTimeOutException& e){
+      catch (shared::CHttpException& e){
          YADOMS_LOG(error) << e.what();
-         m_deviceStatus->set(specificHistorizers::EdeviceStatus::kTimeOut);
-         api->historizeData(m_deviceName, m_deviceStatus);
+		 if (boost::contains(e.what(), "Timeout")) {
+			 m_deviceStatus->set(specificHistorizers::EdeviceStatus::kTimeOut);
+			 api->historizeData(m_deviceName, m_deviceStatus);
+		 }
          throw e;
       }
       catch (std::exception& e){
@@ -72,6 +69,41 @@ namespace equipments
 
    std::string CEquipment::getDeviceType() const{
       return m_deviceType;
+   }
+
+   void CEquipment::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization)
+   {
+	   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize;
+
+	   try {
+		   std::string results = urlManager::getRelayState(
+			   m_configuration.getIPAddressWithSocket());
+
+		   YADOMS_LOG(information) << results;
+
+		   // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
+		   /*try {
+			   updateSwitchValue(keywordsToHistorize, m_relaysList[0], results.get<bool>("RL1"), forceHistorization);
+			   updateSwitchValue(keywordsToHistorize, m_relaysList[1], results.get<bool>("RL2"), forceHistorization);
+		   }
+		   catch (std::exception& e) {
+			   YADOMS_LOG(warning) << "Exception reading relays" << e.what();
+		   }*/
+
+		   setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kOk);
+		   api->historizeData(m_deviceName, keywordsToHistorize);
+	   }
+	   catch (shared::CHttpException& e) {
+		   if (boost::contains(e.what(), "Timeout")) {
+			   setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kTimeOut);
+			   api->historizeData(m_deviceName, keywordsToHistorize);
+		   }
+	   }
+	   catch (std::exception& e) {
+		   YADOMS_LOG(error) << e.what();
+		   setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kError);
+		   api->historizeData(m_deviceName, keywordsToHistorize);
+	   }
    }
 
    void CEquipment::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -90,15 +122,9 @@ namespace equipments
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize;
 
       try{
-         shared::CDataContainer credentials;
          shared::CDataContainer parameters;
          std::string stringState;
          auto counter = 0;
-
-		 if (m_configuration.isAuthentificationActive()) {
-			 credentials.set("user", m_configuration.getUser());
-			 credentials.set("password", m_configuration.getPassword());
-		 }
 
 		 YADOMS_LOG(information) << command->getBody();
 
@@ -108,18 +134,20 @@ namespace equipments
             ++counter;
 
          parameters.set("shutter" + boost::lexical_cast<std::string>(counter + 1), boost::lexical_cast<std::string>(newValue.toInteger()));
-		 parameters.set("tm" + boost::lexical_cast<std::string>(counter + 1), m_configuration.getShutterDelay(counter + 1));
+
+		 // Adding the activation delay only if the command is different of Stop
+		 if (newValue != specificHistorizers::EVeluxCurtainCommand::kStop) {
+			 parameters.set("tm" + boost::lexical_cast<std::string>(counter + 1), m_configuration.getShutterDelay(counter + 1));
+		 }
 
          if (iteratorRelay == m_shutters.end())
             throw shared::exception::CException("Failed to identify the shutter");
 
          auto results = urlManager::setRelayState(
 			 m_configuration.getIPAddressWithSocket(),
-             credentials,
-			 parameters,
-			 m_httpContext);
+			 parameters);
 
-		 results.printToLog(YADOMS_LOG(trace));
+		 YADOMS_LOG(information) << results;
 
          setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kOk);
          api->historizeData(m_deviceName, keywordsToHistorize);

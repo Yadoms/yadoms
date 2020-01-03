@@ -27,11 +27,6 @@ set(CARTELECTRONICIPBLINDVELUX_PLUGIN_SOURCES
    equipments/specificHistorizers/deviceStatus.h
    equipments/specificHistorizers/VeluxCurtain.cpp
    equipments/specificHistorizers/VeluxCurtain.h
-   http/HttpContext.cpp
-   http/HttpContext.h   
-   http/HttpMethods.cpp
-   http/HttpMethods.h
-   http/timeOutException.hpp
 )
 
 #########################################
