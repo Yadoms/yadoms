@@ -5,7 +5,6 @@
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "../urlManager.h"
-#include "../http/timeOutException.hpp"
 #include "tooLowRevisionException.hpp"
 #include "manuallyDeviceCreationException.hpp"
 
@@ -234,22 +233,24 @@ namespace equipments
          else
             api->declareDevice(m_deviceName, "WES", "WES", keywordsToDeclare, details);
       }
-      catch (CTimeOutException& e)
+      catch (shared::exception::CException& e)
       {
-         YADOMS_LOG(error) << e.what();
-         m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
-         api->historizeData(m_deviceName, m_deviceStatus);
+		  if (boost::contains(e.what(), "Timeout")) {
+			  YADOMS_LOG(error) << e.what();
+			  m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
+			  api->historizeData(m_deviceName, m_deviceStatus);
 
-         if (api->deviceExists(m_deviceName)){
-            details = api->getDeviceDetails(m_deviceName);  // We read TIC device names, to set the state for each
-            m_WESIOMapping = WESv2;                         // default mapping
+			  if (api->deviceExists(m_deviceName)) {
+				  details = api->getDeviceDetails(m_deviceName);  // We read TIC device names, to set the state for each
+				  m_WESIOMapping = WESv2;                         // default mapping
 
-            // TIC Counters SetDevice Timeout
-            for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter){
-               TICName[counter] = details.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
-               boost::make_shared<equipments::CTIC>(api,TICName[counter]);
-            }
-         }
+				  // TIC Counters SetDevice Timeout
+				  for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter) {
+					  TICName[counter] = details.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
+					  boost::make_shared<equipments::CTIC>(api, TICName[counter]);
+				  }
+			  }
+		  }
 
          throw e;
       }
@@ -372,17 +373,19 @@ namespace equipments
 				results.get<int>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1)));
          }
       }
-      catch (CTimeOutException&){
-         setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kTimeOut);
-         api->historizeData(m_deviceName, keywordsToHistorize);
-
-         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
-            m_TICList[counter]->setDeviceState(api, specificHistorizers::EWESdeviceStatus::kTimeOut);
-      }
       catch (std::exception& e){
-         YADOMS_LOG(error) << e.what();
-         setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kError);
-         api->historizeData(m_deviceName, keywordsToHistorize);
+		  if (boost::contains(e.what(), "Timeout")) {
+			  setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kTimeOut);
+			  api->historizeData(m_deviceName, keywordsToHistorize);
+
+			  for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
+				  m_TICList[counter]->setDeviceState(api, specificHistorizers::EWESdeviceStatus::kTimeOut);
+		  }
+		  else {
+			  YADOMS_LOG(error) << e.what();
+			  setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kError);
+			  api->historizeData(m_deviceName, keywordsToHistorize);
+		  }
       }
    }
 
