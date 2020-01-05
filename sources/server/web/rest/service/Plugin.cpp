@@ -695,29 +695,27 @@ namespace web
                                                                                                                       device->Name()));
 
                            // The plugin failed to process manually creation request, we have to remove the just created device
-                           m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
+						   m_deviceManager->removeDevice(device->Id());
                            return CResult::GenerateError(res.errorMessage);
                         }
 
                      case shared::event::kTimeout:
                         {
-                           m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
+                           m_deviceManager->removeDevice(device->Id());
                            return CResult::GenerateError("The plugin did not respond");
                         }
 
                      default:
                         {
-                           m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
+						   m_deviceManager->removeDevice(device->Id());
                            return CResult::GenerateError("Unknown plugin result");
                         }
                      }
                   }
                   catch (shared::exception::CException& ex)
                   {
-                     if (m_dataProvider->getDeviceRequester()->deviceExists(pluginId,
-                                                                            deviceName))
-                        m_dataProvider->getDeviceRequester()->removeDevice(pluginId,
-                                                                           deviceName);
+                     if (m_dataProvider->getDeviceRequester()->deviceExists(pluginId, deviceName))
+						 m_deviceManager->removeDevice(pluginId, deviceName);
                      return CResult::GenerateError(ex);
                   }
                }
