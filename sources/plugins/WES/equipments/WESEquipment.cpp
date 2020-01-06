@@ -239,10 +239,11 @@ namespace equipments
       {
 		  if (boost::contains(e.what(), "Timeout")) {
 			  YADOMS_LOG(error) << e.what();
-			  m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
-			  api->historizeData(m_deviceName, m_deviceStatus);
 
 			  if (api->deviceExists(m_deviceName)) {
+				  m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
+				  api->historizeData(m_deviceName, m_deviceStatus);
+
 				  details = api->getDeviceDetails(m_deviceName);  // We read TIC device names, to set the state for each
 				  m_WESIOMapping = WESv2;                         // default mapping
 
