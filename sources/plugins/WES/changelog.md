@@ -1,3 +1,7 @@
+### 1.2.0-beta.3
+* change Http timeout to 5 seconds
+* fix the configuration to accept no password
+
 ### 1.2.0-beta.2
 * fix plugin status when reading values when missing equipment at startup
 * fix devices to retry list when an equipment come back alive
