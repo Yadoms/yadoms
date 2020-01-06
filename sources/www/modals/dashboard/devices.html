@@ -148,7 +148,6 @@
                 indexToInsert = index + 1;
              }
 		  });
-          console.debug('indexToInsert:', indexToInsert);
           deviceList.splice(indexToInsert, 0, device.device);
           addDeviceToDom(device.device, indexToInsert);
 	  }
@@ -492,19 +491,17 @@
 
       // we add to the end, if the position is null (no insertion, the device list is empty, or the new position, is the end of the list)
       if (positionDevice == null || deviceList.length == 0 || positionDevice >= (deviceList.length - 1))
-         console.debug('append return:', $deviceList.append(frameworkDevice));
+         $deviceList.append(frameworkDevice);
 	  else if (positionDevice == -1){
 	     $deviceList.prepend(frameworkDevice);
       }else {
          var $row = null;
-		 debugger;
          $row = getDeviceDomRow(deviceList[positionDevice + 1]);
          $(frameworkDevice).insertBefore($row);
       }
 
       var $deviceRow = getDeviceDomRow(device);
 	  
-	  console.debug('deviceRow:', $deviceRow);
       //we fill the data
       $deviceRow.find("td.device-friendlyName").html(friendlyName);
       $deviceRow.find("td.device-model").html(model);
