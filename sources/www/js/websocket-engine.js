@@ -152,6 +152,7 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
         WebSocketEngine.webSocket_.onmessage = function(e) {
             if (!isNullOrUndefined(e)) {
                 var websocketData = JSON.parse(e.data);
+				console.debug('websocketData:', websocketData);
                 if (!isNullOrUndefined(websocketData)) {
                     switch (websocketData.type.toLowerCase()) {
                         case "acquisitionupdate":
