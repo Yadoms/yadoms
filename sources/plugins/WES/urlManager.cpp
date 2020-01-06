@@ -2,7 +2,7 @@
 #include "urlManager.h"
 #include <shared/Log.h>
 
-boost::posix_time::time_duration urlManager::httpRequestCreationTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(8)));
+boost::posix_time::time_duration urlManager::httpRequestCreationTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(5)));
 boost::posix_time::time_duration urlManager::httpRequestWESTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(25)));
 
 shared::CDataContainer urlManager::readFileState(

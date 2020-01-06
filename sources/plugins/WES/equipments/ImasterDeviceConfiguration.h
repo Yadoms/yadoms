@@ -27,6 +27,12 @@ public:
    virtual Poco::Net::SocketAddress getIPAddressWithSocket() const = 0;
 
    //--------------------------------------------------------------
+	  /// \brief      retrieve the password used to connect the WES
+	  /// \return     the password
+	  //--------------------------------------------------------------
+   virtual bool credentialActivated() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief      retrieve the password used to connect the WES
    /// \return     the password
    //--------------------------------------------------------------

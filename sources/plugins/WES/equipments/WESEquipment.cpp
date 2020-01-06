@@ -38,8 +38,10 @@ namespace equipments
 
          shared::CDataContainer credentials;
 
-         credentials.set("user", m_configuration.getUser());
-         credentials.set("password", m_configuration.getPassword());
+		 if (m_configuration.credentialActivated()) {
+			 credentials.set("user", m_configuration.getUser());
+			 credentials.set("password", m_configuration.getPassword());
+		 }
 
          // request to obtain the WES revision
          std::string CGXfileName = "WESVERSION.CGX";
@@ -237,10 +239,11 @@ namespace equipments
       {
 		  if (boost::contains(e.what(), "Timeout")) {
 			  YADOMS_LOG(error) << e.what();
-			  m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
-			  api->historizeData(m_deviceName, m_deviceStatus);
 
 			  if (api->deviceExists(m_deviceName)) {
+				  m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
+				  api->historizeData(m_deviceName, m_deviceStatus);
+
 				  details = api->getDeviceDetails(m_deviceName);  // We read TIC device names, to set the state for each
 				  m_WESIOMapping = WESv2;                         // default mapping
 
@@ -285,8 +288,11 @@ namespace equipments
          const auto CGXfileName = "WESVALUES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
 
          shared::CDataContainer credentials;
-         credentials.set("user", m_configuration.getUser());
-         credentials.set("password", m_configuration.getPassword());
+
+		 if (m_configuration.credentialActivated()) {
+			 credentials.set("user", m_configuration.getUser());
+			 credentials.set("password", m_configuration.getPassword());
+		 }
 
          auto results = urlManager::readFileState(
 			 m_configuration.getIPAddressWithSocket(),
@@ -459,8 +465,10 @@ namespace equipments
          std::string stringState;
          auto counter = 0;
 
-         credentials.set("user", m_configuration.getUser());
-         credentials.set("password", m_configuration.getPassword());
+		 if (m_configuration.credentialActivated()) {
+			 credentials.set("user", m_configuration.getUser());
+			 credentials.set("password", m_configuration.getPassword());
+		 }
 
          const auto newValue = boost::lexical_cast<bool>(command->getBody());
          if (newValue)
