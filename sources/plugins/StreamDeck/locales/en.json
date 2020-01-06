@@ -1,6 +1,6 @@
 {
 	"name": "Stream Deck",
-	"description": "Stream Deck devices support (see [site web](https://www.elgato.com/fr/gaming/stream-deck))"
+	"description": "Stream Deck devices support (see [site web](https://www.elgato.com/fr/gaming/stream-deck))",
   "configurationSchema": {
     "UsbDevices": {
       "name": "USB device",
