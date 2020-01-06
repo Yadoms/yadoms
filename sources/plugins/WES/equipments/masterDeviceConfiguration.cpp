@@ -25,7 +25,7 @@ std::string CmasterDeviceConfiguration::getPassword() const
 }
 
 bool CmasterDeviceConfiguration::credentialActivated() const {
-	return m_data.get<bool>("authentication.checkbox");
+	return m_data.getWithDefault<bool>("authentication.checkbox", true);
 }
 
 std::string CmasterDeviceConfiguration::getUser() const

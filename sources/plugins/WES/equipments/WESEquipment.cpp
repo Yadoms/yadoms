@@ -235,31 +235,34 @@ namespace equipments
          else
             api->declareDevice(m_deviceName, "WES", "WES", keywordsToDeclare, details);
       }
-      catch (shared::exception::CException& e)
-      {
-		  if (boost::contains(e.what(), "Timeout")) {
-			  YADOMS_LOG(error) << e.what();
+	  catch (CtooLowRevisionException& e) {
+		  YADOMS_LOG(error) << e.what();
+		  throw e;
+	  }
+      catch (shared::exception::CException& e){
+		  if (api->deviceExists(m_deviceName)) {
+			  if (boost::contains(e.what(), "Timeout")) {
+				  YADOMS_LOG(error) << e.what();
+				  YADOMS_LOG(error) << "Passage 1";
 
-			  if (api->deviceExists(m_deviceName)) {
 				  m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
 				  api->historizeData(m_deviceName, m_deviceStatus);
 
 				  details = api->getDeviceDetails(m_deviceName);  // We read TIC device names, to set the state for each
 				  m_WESIOMapping = WESv2;                         // default mapping
 
-				  // TIC Counters SetDevice Timeout
+				  // TIC Counters SetDevice Timeout if exist ! At creation time out, TIC devices doesn't exists
 				  for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter) {
-					  TICName[counter] = details.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
-					  boost::make_shared<equipments::CTIC>(api, TICName[counter]);
+					  if (details.exists("TIC" + boost::lexical_cast<std::string>(counter))) {
+						  TICName[counter] = details.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
+						  boost::make_shared<equipments::CTIC>(api, TICName[counter]);
+					  }
 				  }
+				  throw std::runtime_error("Time out");
 			  }
 		  }
 
-         throw e;
-      }
-      catch (CtooLowRevisionException& e){
-         YADOMS_LOG(error) << e.what();
-         throw e;
+		  throw e;
       }
       catch (std::exception& e){
          YADOMS_LOG(error) << e.what();
