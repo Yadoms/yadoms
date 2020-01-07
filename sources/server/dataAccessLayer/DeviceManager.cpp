@@ -82,6 +82,11 @@ namespace dataAccessLayer
       return m_deviceRequester->getDevices();
    }
 
+   std::vector<boost::shared_ptr<database::entities::CDevice>> CDeviceManager::getDevices(int pluginId, bool blacklistedIncluded) const
+   {
+       return m_deviceRequester->getDevices(pluginId, blacklistedIncluded);
+   }
+
    std::vector<std::string> CDeviceManager::getDevicesForPluginInstance(int pluginId) const
    {
       return m_deviceRequester->getDevicesNames(pluginId);

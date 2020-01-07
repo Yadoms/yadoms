@@ -31,6 +31,14 @@ namespace dataAccessLayer
       virtual boost::shared_ptr<database::entities::CDevice> getDevice(int deviceId) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          List all devices of a plugin
+      /// \param [in] pluginId            plugin Id
+      /// \param [in] blacklistedIncluded True to list blacklisted devices too
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<database::entities::CDevice>> getDevices(int pluginId,
+                                                                                     bool blacklistedIncluded) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief                          Get a device identified by (pluginId and name).
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)

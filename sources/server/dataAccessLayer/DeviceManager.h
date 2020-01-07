@@ -31,6 +31,8 @@ namespace dataAccessLayer
       bool deviceExists(int deviceId) const override;
       bool deviceExists(int pluginId, const std::string& deviceName) const override;
       boost::shared_ptr<database::entities::CDevice> getDevice(int deviceId) const override;
+      std::vector<boost::shared_ptr<database::entities::CDevice>> getDevices(int pluginId,
+                                                                             bool blacklistedIncluded) const override;
       boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(int pluginId, const std::string& name,
                                                                        bool includeBlacklistDevice) const override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,

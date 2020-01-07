@@ -387,7 +387,7 @@ namespace web
                {
                   const auto instanceId = boost::lexical_cast<int>(parameters[1]);
                   const auto deviceId = boost::lexical_cast<int>(parameters[3]);
-                  const auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+                  const auto device = m_deviceManager->getDevice(deviceId);
 
                   const auto query = parameters[4];
 
@@ -516,8 +516,8 @@ namespace web
                   const auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
                   shared::CDataContainer t;
-                  t.set("devices", m_dataProvider->getDeviceRequester()->getDevices(instanceId,
-                                                                                    true));
+                  t.set("devices", m_deviceManager->getDevices(instanceId,
+                                                               true));
                   return CResult::GenerateSuccess(t);
                }
 
@@ -625,8 +625,8 @@ namespace web
          std::string CPlugin::generateUniqueDeviceName(const int pluginId) const
          {
             static const boost::regex DeviceNamePattern("^manuallyCreatedDevice_([[:digit:]]*)$");
-            const auto& devices = m_dataProvider->getDeviceRequester()->getDevices(pluginId,
-                                                                                   true);
+            const auto& devices = m_deviceManager->getDevices(pluginId,
+                                                              true);
             unsigned int lastNumber = 0;
             for (const auto& device : devices)
             {
@@ -671,8 +671,8 @@ namespace web
                                                                         content.get<std::string>("type"),
                                                                         content.exists("model") ? content.get<std::string>("model") : "",
                                                                         shared::CDataContainer());
-                     m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
-                                                                                     content.get<shared::CDataContainer>("configuration"));
+                     m_deviceManager->updateDeviceConfiguration(device->Id(),
+                                      content.get<shared::CDataContainer>("configuration"));
 
                      // Send request to plugin
                      communication::callback::CSynchronousCallback<std::string> cb;
@@ -691,11 +691,12 @@ namespace web
                            const auto res = cb.getCallbackResult();
 
                            if (res.success)
-                              return CResult::GenerateSuccess(m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId,
-                                                                                                                      device->Name()));
+                              return CResult::GenerateSuccess(m_deviceManager->getDeviceInPlugin(pluginId,
+                                                                                                 device->Name(),
+                                                                                                 false));
 
                            // The plugin failed to process manually creation request, we have to remove the just created device
-						   m_deviceManager->removeDevice(device->Id());
+                           m_deviceManager->removeDevice(device->Id());
                            return CResult::GenerateError(res.errorMessage);
                         }
 
@@ -707,15 +708,15 @@ namespace web
 
                      default:
                         {
-						   m_deviceManager->removeDevice(device->Id());
+                           m_deviceManager->removeDevice(device->Id());
                            return CResult::GenerateError("Unknown plugin result");
                         }
                      }
                   }
                   catch (shared::exception::CException& ex)
                   {
-                     if (m_dataProvider->getDeviceRequester()->deviceExists(pluginId, deviceName))
-						 m_deviceManager->removeDevice(pluginId, deviceName);
+                     if (m_deviceManager->deviceExists(pluginId, deviceName))
+                        m_deviceManager->removeDevice(pluginId, deviceName);
                      return CResult::GenerateError(ex);
                   }
                }
