@@ -13,6 +13,11 @@ namespace hardware
          // IDevicesLister implementation
          std::vector<boost::shared_ptr<IDevice>> fromRequest(const shared::CDataContainer& request) const override;
          // [END] IDevicesLister implementation
+
+      private:
+         boost::shared_ptr<GUID> readUsbClassGuid() const;
+         static std::string getUsbDevice(boost::shared_ptr<const GUID> usbClassGuid,
+                                         int index);
       };
    } // namespace usb
 } // namespace hardware
