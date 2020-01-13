@@ -753,6 +753,8 @@ IF(WIN32)
       server/tools/windows/tools/OperatingSystem.h
       server/tools/windows/tools/OperatingSystem.cpp
       server/hardware/usb/winapi/DevicesListerFactory.cpp
+      server/hardware/usb/winapi/WinapiDevice.h
+      server/hardware/usb/winapi/WinapiDevice.cpp
       server/hardware/usb/winapi/WinapiDevicesLister.h
       server/hardware/usb/winapi/WinapiDevicesLister.cpp
    )   
