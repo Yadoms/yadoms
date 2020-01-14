@@ -1,5 +1,6 @@
 #pragma once
 #include "../IDevicesLister.h"
+#include <SetupAPI.h>
 
 namespace hardware
 {
@@ -15,9 +16,12 @@ namespace hardware
          // [END] IDevicesLister implementation
 
       private:
-         boost::shared_ptr<GUID> readUsbClassGuid() const;
-         static std::string getUsbDevice(boost::shared_ptr<const GUID> usbClassGuid,
-                                         int index);
+         static std::wstring CWinapiDevicesLister::toUtf8WideChar(const char* src);
+         static std::string toUtf8(const char* buffer);
+         static std::vector<boost::shared_ptr<IDevice>> listUsbDevices();
+         static std::string getDeviceProperty(const HDEVINFO deviceInfoSet,
+                                              PSP_DEVINFO_DATA deviceInfoData,
+                                              const DWORD property);
       };
    } // namespace usb
 } // namespace hardware

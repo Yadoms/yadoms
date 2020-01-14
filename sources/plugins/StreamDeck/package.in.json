@@ -17,8 +17,12 @@
           "type": "system",
           "query": "usbDevices",
           "content": {
-            "iManufacturer": { "matchExactly": "Elgato" },
-            "iProduct": { "matchRegex": "Stream Deck" }
+            "oneOf": [
+              {
+                "vendorId": 4057,
+                "productId": 96
+              }
+            ]
           }
         }
       }

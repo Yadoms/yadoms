@@ -1004,7 +1004,7 @@ IF(USE_POCO_WEBSERVER)
 ENDIF()
 
 ################################################
-#### Lubusbpp
+#### Libusbpp
 ################################################
 #TODO ménage
 set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} ${LIBUSBPP_LIBRARIES})

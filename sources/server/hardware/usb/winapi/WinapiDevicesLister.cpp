@@ -3,54 +3,124 @@
 #include "WinapiDevice.h"
 #include <shared/Log.h>
 #include <Windows.h>
-#include <SetupAPI.h>
 // ReSharper disable once CppUnusedIncludeDirective
 #include <initguid.h>
 #include <usbiodef.h>
+#include <codecvt>
 
 
 namespace hardware
 {
    namespace usb
    {
-      struct DEVICE_INFO_NODE //TODO virer ?
+      class CDeviceInterfaceDetailDataContainer final
       {
-         HDEVINFO DeviceInfo;
-         LIST_ENTRY ListEntry;
-         SP_DEVINFO_DATA DeviceInfoData;
-         SP_DEVICE_INTERFACE_DATA DeviceInterfaceData;
-         PSP_DEVICE_INTERFACE_DETAIL_DATA DeviceDetailData;
-         PSTR DeviceDescName;
-         ULONG DeviceDescNameLength;
-         PSTR DeviceDriverName;
-         ULONG DeviceDriverNameLength;
-         DEVICE_POWER_STATE LatestDevicePowerState;
+      public:
+         explicit CDeviceInterfaceDetailDataContainer(SIZE_T requiredLength)
+         {
+            m_deviceDetailData = static_cast<PSP_DEVICE_INTERFACE_DETAIL_DATA>(GlobalAlloc(
+               GPTR, requiredLength));
+            if (m_deviceDetailData == nullptr)
+               throw std::bad_alloc();
+            m_deviceDetailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
+         }
+
+         CDeviceInterfaceDetailDataContainer(const CDeviceInterfaceDetailDataContainer&) = delete;
+         CDeviceInterfaceDetailDataContainer(const CDeviceInterfaceDetailDataContainer&&) = delete;
+         CDeviceInterfaceDetailDataContainer& operator=(const CDeviceInterfaceDetailDataContainer&) = delete;
+         CDeviceInterfaceDetailDataContainer& operator=(const CDeviceInterfaceDetailDataContainer&&) = delete;
+
+         ~CDeviceInterfaceDetailDataContainer()
+         {
+            if (m_deviceDetailData != nullptr)
+               GlobalFree(m_deviceDetailData);
+         }
+
+         PSP_DEVICE_INTERFACE_DETAIL_DATA get() const
+         {
+            return m_deviceDetailData;
+         }
+
+      private:
+         PSP_DEVICE_INTERFACE_DETAIL_DATA m_deviceDetailData;
       };
 
-      VOID FreeDeviceInfoNode(DEVICE_INFO_NODE** ppNode)
+      class CLpstrBuffer final
       {
-         if (ppNode == nullptr)
-            return;
+      public:
+         explicit CLpstrBuffer(SIZE_T requiredLength)
+         {
+            m_buffer = static_cast<LPTSTR>(GlobalAlloc(GPTR, requiredLength));
+            if (m_buffer == nullptr)
+               throw std::bad_alloc();
+         }
 
-         if (*ppNode == nullptr)
-            return;
+         CLpstrBuffer(const CLpstrBuffer&) = delete;
+         CLpstrBuffer(const CLpstrBuffer&&) = delete;
+         CLpstrBuffer& operator=(const CLpstrBuffer&) = delete;
+         CLpstrBuffer& operator=(const CLpstrBuffer&&) = delete;
 
-         if ((*ppNode)->DeviceDetailData != nullptr)
-            GlobalFree((*ppNode)->DeviceDetailData);
+         ~CLpstrBuffer()
+         {
+            if (m_buffer != nullptr)
+               GlobalFree(m_buffer);
+         }
 
-         if ((*ppNode)->DeviceDescName != nullptr)
-            GlobalFree((*ppNode)->DeviceDescName);
+         LPTSTR get() const
+         {
+            return m_buffer;
+         }
 
-         if ((*ppNode)->DeviceDriverName != nullptr)
-            GlobalFree((*ppNode)->DeviceDriverName);
+      private:
+         LPTSTR m_buffer;
+      };
 
-         GlobalFree(*ppNode);
-         *ppNode = nullptr;
+      std::wstring CWinapiDevicesLister::toUtf8WideChar(const char* src)
+      {
+         if (!src)
+            throw std::runtime_error("Fail to convert string, src is null");
+
+         const int srcLen = strlen(src);
+         if (srcLen == 0)
+            return std::wstring();
+
+         const auto requiredSize = MultiByteToWideChar(GetACP(),
+                                                       0,
+                                                       src,
+                                                       srcLen,
+                                                       nullptr,
+                                                       0);
+
+         if (requiredSize == 0)
+            return std::wstring();
+
+         const auto wideCharArray = new wchar_t[requiredSize + 1];
+         wideCharArray[requiredSize] = 0;
+
+         if (!MultiByteToWideChar(GetACP(),
+                                  0,
+                                  src,
+                                  srcLen,
+                                  wideCharArray,
+                                  requiredSize))
+         {
+            delete[] wideCharArray;
+            return std::wstring();
+         }
+
+         std::wstring str(wideCharArray);
+         delete[] wideCharArray;
+         return str;
       }
 
-      std::string GetDeviceProperty(const HDEVINFO deviceInfoSet,
-                                    const PSP_DEVINFO_DATA deviceInfoData,
-                                    const DWORD property)
+      std::string CWinapiDevicesLister::toUtf8(const char* buffer)
+      {
+         return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>().to_bytes(toUtf8WideChar(buffer));
+      }
+
+      std::string CWinapiDevicesLister::getDeviceProperty(const HDEVINFO deviceInfoSet,
+                                                          PSP_DEVINFO_DATA deviceInfoData,
+                                                          const DWORD property)
       {
          DWORD requiredLength = 0;
          if (SetupDiGetDeviceRegistryProperty(deviceInfoSet,
@@ -59,36 +129,34 @@ namespace hardware
                                               nullptr,
                                               nullptr,
                                               0,
-                                              &requiredLength) != FALSE
-            && GetLastError() != ERROR_INSUFFICIENT_BUFFER)
-         {
-            throw std::runtime_error("SetupDiGetDeviceRegistryProperty failed with error " + GetLastError());
-         }
+                                              &requiredLength) != FALSE && GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+            throw std::runtime_error(
+               "SetupDiGetDeviceRegistryProperty failed with error " + std::to_string(GetLastError()));
 
-         const auto buffer = static_cast<LPTSTR>(GlobalAlloc(GPTR, requiredLength));
-         if (buffer == nullptr)
-         {
-            throw std::bad_alloc();
-         }
 
+         const CLpstrBuffer buffer(requiredLength);
          if (SetupDiGetDeviceRegistryProperty(deviceInfoSet,
                                               deviceInfoData,
                                               property,
                                               nullptr,
-                                              reinterpret_cast<PBYTE>(buffer),
+                                              reinterpret_cast<PBYTE>(buffer.get()),
                                               requiredLength,
                                               &requiredLength) == FALSE)
-         {
-            GlobalFree(buffer);
-            throw std::runtime_error("SetupDiGetDeviceRegistryProperty failed with error " + GetLastError());
-         }
+            throw std::runtime_error(
+               "SetupDiGetDeviceRegistryProperty failed with error " + std::to_string(GetLastError()));
 
-         return std::string(buffer);
+         try
+         {
+            return toUtf8(buffer.get());
+         }
+         catch (std::exception&)
+         {
+            //Default conversion
+            return std::string(buffer.get());
+         }
       }
 
-      std::vector<boost::shared_ptr<IDevice>>
-      listUsbDevices( //TODO mettre dans la classe
-      )
+      std::vector<boost::shared_ptr<IDevice>> CWinapiDevicesLister::listUsbDevices()
       {
          const auto deviceInfo = SetupDiGetClassDevs(const_cast<LPGUID>(&GUID_DEVINTERFACE_USB_DEVICE),
                                                      nullptr,
@@ -105,22 +173,15 @@ namespace hardware
          std::vector<boost::shared_ptr<IDevice>> deviceList;
          while (true)
          {
-            auto pNode = static_cast<DEVICE_INFO_NODE*>(GlobalAlloc(GPTR, sizeof(DEVICE_INFO_NODE)));
-            if (pNode == nullptr)
-               throw std::bad_alloc();
-
-            pNode->DeviceInfo = deviceInfo;
-            pNode->DeviceInterfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
-            pNode->DeviceInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
-
-            if (SetupDiEnumDeviceInfo(pNode->DeviceInfo,
+            SP_DEVINFO_DATA deviceInfoData = {0};
+            deviceInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
+            if (SetupDiEnumDeviceInfo(deviceInfo,
                                       index,
-                                      &pNode->DeviceInfoData) == FALSE)
+                                      &deviceInfoData) == FALSE)
             {
                if (GetLastError() != ERROR_NO_MORE_ITEMS)
                   continue;
 
-               FreeDeviceInfoNode(&pNode);
                return deviceList;
             }
 
@@ -128,57 +189,45 @@ namespace hardware
 
             try
             {
-               const auto deviceName = GetDeviceProperty(pNode->DeviceInfo,
-                                                         &pNode->DeviceInfoData,
+               const auto deviceName = getDeviceProperty(deviceInfo,
+                                                         &deviceInfoData,
                                                          SPDRP_DEVICEDESC);
 
-               pNode->DeviceInterfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
-
-               if (SetupDiEnumDeviceInterfaces(pNode->DeviceInfo,
+               SP_DEVICE_INTERFACE_DATA deviceInterfaceData = {0};
+               deviceInterfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
+               if (SetupDiEnumDeviceInterfaces(deviceInfo,
                                                nullptr,
                                                const_cast<LPGUID>(&GUID_DEVINTERFACE_USB_DEVICE),
                                                index - 1,
-                                               &pNode->DeviceInterfaceData) == FALSE)
+                                               &deviceInterfaceData) == FALSE)
                {
-                  FreeDeviceInfoNode(&pNode);
                   continue;
                }
 
                ULONG requiredLength;
-               if (SetupDiGetDeviceInterfaceDetail(pNode->DeviceInfo,
-                                                   &pNode->DeviceInterfaceData,
+               if (SetupDiGetDeviceInterfaceDetail(deviceInfo,
+                                                   &deviceInterfaceData,
                                                    nullptr,
                                                    0,
                                                    &requiredLength,
                                                    nullptr) == FALSE
                   && GetLastError() != ERROR_INSUFFICIENT_BUFFER)
                {
-                  FreeDeviceInfoNode(&pNode);
                   continue;
                }
 
-               pNode->DeviceDetailData = static_cast<PSP_DEVICE_INTERFACE_DETAIL_DATA>(GlobalAlloc(
-                  GPTR, requiredLength));
-               if (pNode->DeviceDetailData == nullptr)
-               {
-                  FreeDeviceInfoNode(&pNode);
-                  continue;
-               }
-
-               pNode->DeviceDetailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
-
-               if (SetupDiGetDeviceInterfaceDetail(pNode->DeviceInfo,
-                                                   &pNode->DeviceInterfaceData,
-                                                   pNode->DeviceDetailData,
+               CDeviceInterfaceDetailDataContainer deviceDetailData(requiredLength);
+               if (SetupDiGetDeviceInterfaceDetail(deviceInfo,
+                                                   &deviceInterfaceData,
+                                                   deviceDetailData.get(),
                                                    requiredLength,
                                                    &requiredLength,
                                                    nullptr) == FALSE)
                {
-                  FreeDeviceInfoNode(&pNode);
                   continue;
                }
 
-               const std::string devicePath(pNode->DeviceDetailData->DevicePath);
+               const std::string devicePath(deviceDetailData.get()->DevicePath);
 
                boost::regex pattern(
                   R"(\\\\\?\\usb#vid_([0-9a-fA-F]{4})&pid_([0-9a-fA-F]{4})#([[:graph:]]+)#{[0-9a-fA-F-]+})");
@@ -189,8 +238,8 @@ namespace hardware
                   continue;
                }
 
-               const auto vid = std::stoul(std::string(result[1].first, result[1].second), nullptr, 16);
-               const auto pid = std::stoul(std::string(result[2].first, result[2].second), nullptr, 16);
+               const auto vid = std::stoi(std::string(result[1].first, result[1].second), nullptr, 16);
+               const auto pid = std::stoi(std::string(result[2].first, result[2].second), nullptr, 16);
                const std::string serial(result[3].first, result[3].second);
 
                deviceList.emplace_back(boost::make_shared<CWinapiDevice>(deviceName,
@@ -201,7 +250,6 @@ namespace hardware
             }
             catch (std::exception& exception)
             {
-               FreeDeviceInfoNode(&pNode);
                YADOMS_LOG(trace) << "Unable to get USB device information, " << exception.what();
             }
          }
@@ -210,29 +258,41 @@ namespace hardware
       std::vector<boost::shared_ptr<IDevice>> CWinapiDevicesLister::fromRequest(
          const shared::CDataContainer& request) const
       {
-         //TODO virer
-         request.printToLog(YADOMS_LOG(debug));
-
-         auto usbDevices = listUsbDevices();
-         for (const auto& device : usbDevices)
+         const auto requestedDevices = request.get<std::vector<shared::CDataContainer>>("oneOf");
+         YADOMS_LOG(debug) << "USB requested devices :";
+         for (const auto& requestedDevice : requestedDevices)
          {
-            YADOMS_LOG(trace) << "USB device " << device->yadomsFriendlyName()
-               << ", path=" << device->yadomsConnectionId()
-               << ", vid=" << device->vendorId()
+            YADOMS_LOG(debug) << "  - "
+               << "vid=" << requestedDevice.get<int>("vendorId")
+               << ", pid=" << requestedDevice.get<int>("productId");
+         }
+
+         auto existingDevices = listUsbDevices();
+         YADOMS_LOG(debug) << "USB existing devices :";
+         for (const auto& device : existingDevices)
+         {
+            YADOMS_LOG(debug) << "  - "
+               << "vid=" << device->vendorId()
                << ", pid=" << device->productId()
+               << ", name=" << device->yadomsFriendlyName()
+               << ", path=" << device->yadomsConnectionId()
                << ", serial=" << device->serialNumber();
          }
-         usbDevices.erase(std::remove_if(usbDevices.begin(),
-                                         usbDevices.end(),
-                                         [](const boost::shared_ptr<IDevice> device)
-                                         {
-                                            //TODO appliquer les filtres
-                                            //if (device->productId())
-                                            return false;
-                                         }),
-                          usbDevices.end());
 
-         return usbDevices;
+         std::vector<boost::shared_ptr<IDevice>> matchingDevices;
+         for (const auto& requestedDevice : requestedDevices)
+         {
+            for (const auto& existingDevice : existingDevices)
+            {
+               if (existingDevice->vendorId() == requestedDevice.get<int>("vendorId")
+                  && existingDevice->productId() == requestedDevice.get<int>("productId"))
+               {
+                  matchingDevices.push_back(existingDevice);
+               }
+            }
+         }
+
+         return matchingDevices;
       }
    } // namespace usb
 } // namespace hardware
