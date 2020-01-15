@@ -9,13 +9,8 @@ namespace hardware
 {
    namespace usb
    {
-      std::vector<boost::shared_ptr<IDevice>> CLibusbppDevicesLister::fromRequest(const shared::CDataContainer& request) const
+      std::vector<boost::shared_ptr<IDevice>> CLibusbppDevicesLister::listUsbDevices() const
       {
-         //TODO virer
-         request.printToLog(YADOMS_LOG(debug));
-
-         //TODO appliquer les filtres
-
          const auto devices = LibUSB::LibUSB::FindAllDevices();
          std::vector<boost::shared_ptr<IDevice>> devicesList;
          for(const auto& device: devices)

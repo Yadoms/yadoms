@@ -11,7 +11,7 @@ namespace hardware
          virtual ~CLibusbppDevicesLister() = default;
 
          // IDevicesLister implementation
-         std::vector<boost::shared_ptr<IDevice>> fromRequest(const shared::CDataContainer& request) const override;
+         std::vector<boost::shared_ptr<IDevice>> listUsbDevices() override;
          // [END] IDevicesLister implementation
       };
    } // namespace usb
