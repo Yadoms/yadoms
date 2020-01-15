@@ -439,9 +439,6 @@ void CFT2xxSerialPort::setReceiveBufferHandler(boost::shared_ptr<shared::communi
 
 void CFT2xxSerialPort::flush()
 {
-   // Hardware flush
-   //CPeripherals::flushSerialPort(m_boostSerialPort);
-
    // Clear the receive buffer
    if (!!m_receiveBufferHandler)
       m_receiveBufferHandler->flush();

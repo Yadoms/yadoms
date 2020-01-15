@@ -752,6 +752,8 @@ IF(WIN32)
       # Add here server/tools/windows/tools/ sources
       server/tools/windows/tools/OperatingSystem.h
       server/tools/windows/tools/OperatingSystem.cpp
+      server/hardware/serial/windows/SerialPortsLister.h
+      server/hardware/serial/windows/SerialPortsLister.cpp
       server/hardware/usb/winapi/DevicesListerFactory.cpp
       server/hardware/usb/winapi/WinapiDevice.h
       server/hardware/usb/winapi/WinapiDevice.cpp
@@ -763,6 +765,8 @@ ELSEIF(APPLE)
       # Add here server/tools/mac/tools/ sources
       server/tools/mac/tools/OperatingSystem.h
       server/tools/mac/tools/OperatingSystem.cpp
+      server/hardware/serial/mac/SerialPortsLister.h
+      server/hardware/serial/mac/SerialPortsLister.cpp
       server/hardware/usb/libusb/DevicesListerFactory.cpp
       server/hardware/usb/libusb/LibusbppDevice.h
       server/hardware/usb/libusb/LibusbppDevice.cpp
@@ -774,6 +778,8 @@ ELSE()
       # Add here server/tools/linux/tools/ sources
       server/tools/linux/tools/OperatingSystem.h
       server/tools/linux/tools/OperatingSystem.cpp
+      server/hardware/serial/linux/SerialPortsLister.h
+      server/hardware/serial/linux/SerialPortsLister.cpp
       server/hardware/usb/libusb/DevicesListerFactory.cpp
       server/hardware/usb/libusb/LibusbppDevice.h
       server/hardware/usb/libusb/LibusbppDevice.cpp
@@ -785,13 +791,16 @@ ENDIF()
 # Define include directories
 IF(WIN32)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/windows)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/serverhardware/usb/winapi)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/windows)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/winapi)
 ELSEIF(APPLE)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/mac)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/serverhardware/usb/libusb)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/mac)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/libusb)
 ELSE()
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/serverhardware/usb/libusb)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/linux)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/libusb)
 ENDIF()
 
 source_group(server\\tools tools/*.*)
@@ -799,6 +808,9 @@ source_group(server\\tools\\platformSpecific\\windows server/tools/windows/tools
 source_group(server\\tools\\platformSpecific\\windows\\service server/tools/windows/tools/service/*.*)
 source_group(server\\tools\\platformSpecific\\linux server/tools/linux/tools/*.*)
 source_group(server\\tools\\platformSpecific\\mac server/tools/mac/tools/*.*)
+source_group(server\\hardware\\serial\\windows server/hardware/serial/windows/*.*)
+source_group(server\\hardware\\serial\\linux server/hardware/serial/linux/*.*)
+source_group(server\\hardware\\serial\\mac server/hardware/serial/mac/*.*)
 
 ################################################
 #### Database (common)

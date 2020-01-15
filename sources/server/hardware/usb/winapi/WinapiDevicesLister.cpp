@@ -254,45 +254,5 @@ namespace hardware
             }
          }
       }
-
-      std::vector<boost::shared_ptr<IDevice>> CWinapiDevicesLister::fromRequest(
-         const shared::CDataContainer& request) const
-      {
-         const auto requestedDevices = request.get<std::vector<shared::CDataContainer>>("oneOf");
-         YADOMS_LOG(debug) << "USB requested devices :";
-         for (const auto& requestedDevice : requestedDevices)
-         {
-            YADOMS_LOG(debug) << "  - "
-               << "vid=" << requestedDevice.get<int>("vendorId")
-               << ", pid=" << requestedDevice.get<int>("productId");
-         }
-
-         auto existingDevices = listUsbDevices();
-         YADOMS_LOG(debug) << "USB existing devices :";
-         for (const auto& device : existingDevices)
-         {
-            YADOMS_LOG(debug) << "  - "
-               << "vid=" << device->vendorId()
-               << ", pid=" << device->productId()
-               << ", name=" << device->yadomsFriendlyName()
-               << ", path=" << device->yadomsConnectionId()
-               << ", serial=" << device->serialNumber();
-         }
-
-         std::vector<boost::shared_ptr<IDevice>> matchingDevices;
-         for (const auto& requestedDevice : requestedDevices)
-         {
-            for (const auto& existingDevice : existingDevices)
-            {
-               if (existingDevice->vendorId() == requestedDevice.get<int>("vendorId")
-                  && existingDevice->productId() == requestedDevice.get<int>("productId"))
-               {
-                  matchingDevices.push_back(existingDevice);
-               }
-            }
-         }
-
-         return matchingDevices;
-      }
    } // namespace usb
 } // namespace hardware

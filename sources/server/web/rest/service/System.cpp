@@ -4,7 +4,7 @@
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/Result.h"
 #include "tools/OperatingSystem.h"
-#include <shared/Peripherals.h>
+#include "SerialPortsLister.h"
 #include <shared/currentTime/Provider.h>
 #include <Poco/Net/NetworkInterface.h>
 #include <shared/ServiceLocator.h>
@@ -75,7 +75,7 @@ namespace web
          {
             try
             {
-               const auto serialPorts = shared::CPeripherals::getSerialPorts();
+               const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
 
                shared::CDataContainer result;
                for (const auto& serialPort : *serialPorts)
@@ -100,11 +100,52 @@ namespace web
          {
             try
             {
-               shared::CDataContainer result;
-               const auto devices = m_usbDevicesLister->fromRequest(shared::CDataContainer(requestContent));
-               for (const auto& device:devices)
-                  result.set(device->yadomsConnectionId(), device->yadomsFriendlyName(), 0x00);
+               const auto request = shared::CDataContainer(requestContent);
+
+               auto existingDevices = m_usbDevicesLister->listUsbDevices();
+               YADOMS_LOG(debug) << "USB existing devices :";
+               for (const auto& device : existingDevices)
+               {
+                  YADOMS_LOG(debug) << "  - "
+                     << "vid=" << device->vendorId()
+                     << ", pid=" << device->productId()
+                     << ", name=" << device->yadomsFriendlyName()
+                     << ", path=" << device->yadomsConnectionId()
+                     << ", serial=" << device->serialNumber();
+               }
+
+               // If request content is empty, return all existing USB devices
+               if (request.empty())
+               {
+                  shared::CDataContainer result;
+                  for (const auto& device : existingDevices)
+                     result.set(device->yadomsConnectionId(), device->yadomsFriendlyName(), 0x00);
                   //in case of key contains a dot, just ensure the full key is taken into account
+                  return CResult::GenerateSuccess(result);
+               }
+
+               // Filter USB devices by request content
+
+               const auto requestedDevices = request.get<std::vector<shared::CDataContainer>>("oneOf");
+               shared::CDataContainer result;
+               YADOMS_LOG(debug) << "USB requested devices :";
+               for (const auto& requestedDevice : requestedDevices)
+               {
+                  YADOMS_LOG(debug) << "  - "
+                     << "vid=" << requestedDevice.get<int>("vendorId")
+                     << ", pid=" << requestedDevice.get<int>("productId");
+
+                  for (const auto& existingDevice : existingDevices)
+                  {
+                     if (existingDevice->vendorId() == requestedDevice.get<int>("vendorId")
+                        && existingDevice->productId() == requestedDevice.get<int>("productId"))
+                     {
+                        //in case of key contains a dot, just ensure the full key is taken into account
+                        result.set(existingDevice->yadomsConnectionId(), existingDevice->yadomsFriendlyName(), 0x00);
+                     }
+                  }
+               }
+
                return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
@@ -122,8 +163,8 @@ namespace web
             try
             {
                shared::CDataContainer result;
-               auto netlist = Poco::Net::NetworkInterface::list();
-               for (const auto& nit : netlist)
+               auto networkInterfaces = Poco::Net::NetworkInterface::list();
+               for (const auto& nit : networkInterfaces)
                {
                   if (includeLoopback || nit.address().isLoopback())
                      result.set(nit.name(),
