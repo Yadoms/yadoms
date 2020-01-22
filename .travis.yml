@@ -14,6 +14,10 @@ dist: trusty
 
 sudo: required
 
+addons:
+  sonarcloud:
+    organization: "yadoms" # the key of the org you chose at step #3
+    
 jobs:
   include:
   - name: "RaspberryPI"
@@ -26,6 +30,9 @@ jobs:
     env: DOCKER_IMAGE=yadoms/build_for_macos${DOCKER_TAG_MACOS}
   - name: "Synology 218+"
     env: DOCKER_IMAGE=yadoms/build_for_synology218p${DOCKER_TAG_SYNOLOGY218P}
+  - name: "Sonar analysis"
+    script:
+        - sonar-scanner
   
 services:
   - docker
