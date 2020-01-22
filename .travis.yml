@@ -45,6 +45,10 @@ script:
   - if [ ! "$ONLY_SONAR" = "TRUE" ]; then ls -al ./package/* ; fi
   - if [ "$ONLY_SONAR" = "TRUE" ]; then sonar-scanner ; fi
 
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
+    
 before_deploy:
   #setting the travis tag, ensure all upload are assigned to the same draft
   - export TRAVIS_TAG=`ls package/Yadoms*.tar.gz | head -1 | grep -oP '(?<=-).*(?=-)'`
