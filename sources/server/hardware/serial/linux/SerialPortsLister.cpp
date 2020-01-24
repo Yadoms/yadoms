@@ -1,9 +1,6 @@
 #include "stdafx.h"
-
-#include "../../shared/exception/NotSupported.hpp"
-#include "../../shared/Log.h"
+#include <shared/Log.h>
 #include "SerialPortsLister.h"
-
 #include <termios.h>
 
 namespace hardware

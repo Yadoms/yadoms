@@ -1,9 +1,6 @@
 #include "stdafx.h"
-
-#include "../../shared/exception/NotImplemented.hpp"
-#include "../../shared/Log.h"
+#include <shared/Log.h>
 #include "SerialPortsLister.h"
-
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -37,6 +34,7 @@ namespace hardware
 	      io_object_t     modemService;
 	      char deviceFilePath[512];
 	      char deviceFriendly[1024];
+          auto serialPorts(boost::make_shared<SerialPortsMap>());
           if (KERN_SUCCESS != IOMasterPort(MACH_PORT_NULL, &masterPort))
           {
               YADOMS_LOG(error) << "SerialPort::getSerialPortPaths : IOMasterPort failed";

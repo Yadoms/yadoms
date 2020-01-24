@@ -9,7 +9,7 @@ namespace hardware
 {
    namespace usb
    {
-      std::vector<boost::shared_ptr<IDevice>> CLibusbppDevicesLister::listUsbDevices() const
+      std::vector<boost::shared_ptr<IDevice>> CLibusbppDevicesLister::listUsbDevices()
       {
          const auto devices = LibUSB::LibUSB::FindAllDevices();
          std::vector<boost::shared_ptr<IDevice>> devicesList;

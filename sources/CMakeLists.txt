@@ -797,10 +797,12 @@ ELSEIF(APPLE)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/mac)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/mac)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/libusb)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${LIBUSBPP_INCLUDE_DIRS})
 ELSE()
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/linux)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/libusb)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${LIBUSBPP_INCLUDE_DIRS})
 ENDIF()
 
 source_group(server\\tools tools/*.*)
@@ -1018,7 +1020,7 @@ ENDIF()
 ################################################
 #### Libusbpp
 ################################################
-#TODO ménage
+#TODO mï¿½nage
 set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} ${LIBUSBPP_LIBRARIES})
 
 
@@ -1250,21 +1252,6 @@ FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
                           
 ENDFOREACH(PostgreSqlDepend)
 
-#copy libusb library into build directory
-if(NOT WIN32)
-   add_custom_command(TARGET yadoms POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                      ${LIBUSB1_BINARY} $<TARGET_FILE_DIR:yadoms>/)
-         
-   if(COTIRE_USE)   
-      if(COTIRE_USE_UNITY)
-         add_custom_command(TARGET yadoms_unity POST_BUILD
-                            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                            ${LIBUSB1_BINARY} $<TARGET_FILE_DIR:yadoms_unity>/)
-      endif(COTIRE_USE_UNITY)
-   endif(COTIRE_USE)
-endif(NOT WIN32)
-
 #copy www directory into build directory
 add_custom_command(TARGET yadoms POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -1310,10 +1297,10 @@ if(USE_PGSQL_DATABASE AND PostgreSQL_FOUND)
 endif()
 
 #add libusb library
-if(NOT WIN32)
-   install(PROGRAMS ${LIBUSB1_BINARY}
-      DESTINATION ${INSTALL_BINDIR})
-endif(NOT WIN32)
+#if(NOT WIN32)
+#   install(PROGRAMS ${LIBUSB_1_BINARY}
+#      DESTINATION ${INSTALL_BINDIR})
+#endif(NOT WIN32)
 
 
 #add www directory

@@ -410,8 +410,6 @@ set(SHARED_LIB_SRC
    mac/shared/FileSystemExtension.cpp
    mac/shared/NetworkHelper.h
    mac/shared/NetworkHelper.cpp
-   mac/shared/Peripherals.h
-   mac/shared/Peripherals.cpp
    mac/shared/SerialPortHelper.h
    mac/shared/SerialPortHelper.cpp
    mac/shared/Thread.h
@@ -434,8 +432,6 @@ set(SHARED_LIB_SRC
    linux/shared/FileSystemExtension.cpp
    linux/shared/NetworkHelper.h
    linux/shared/NetworkHelper.cpp
-   linux/shared/Peripherals.h
-   linux/shared/Peripherals.cpp
    linux/shared/SerialPortHelper.h
    linux/shared/SerialPortHelper.cpp
    linux/shared/Thread.h

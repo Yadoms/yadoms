@@ -1,8 +1,3 @@
-#
-# Required CMake modules
-include(CheckIncludeFile)#TODO conserver ?
-include(CheckFunctionExists)#TODO conserver ?
-
 
 set(LIBUSBPP_DIR_NAME Libusbpp-master-2017-10-17)
 
@@ -30,29 +25,30 @@ set(LIBUSBPP_SOURCES
    ${LIBUSBPP_DIR_NAME}/src/Wideconvert.hpp
 )
 
-#TODO il existe un FindLibUSB-1.0.cmake dans ${LIBUSBPP_DIR_NAME}/cmake ==> A utiliser !
-set(LIBUSB1_INCLUDE_DIR ${LIBUSB_ROOT}/include/libusb-1.0)
-set(LIBUSB1_LIBRARIES ${LIBUSB_ROOT}/MS32/dll/libusb-1.0.lib)#TODO pas bon, chemin vers la lib windows en dur
-set(LIBUSB1_BINARY ${LIBUSB_ROOT}/MS32/dll/libusb-1.0.dll)#TODO utiliser la lib statique ? Dans ce cas il faudra probablement recompiler libusb
+include (Findlibusb-1.0.cmake)
+
+if(NOT ${LIBUSB_1_FOUND})
+   message(FATAL_ERROR "libusb-1.0 required but not found")
+endif()
 
 set(LIBUSBPP_INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LIBUSBPP_DIR_NAME}/headers)
 
 include_directories(
-   ${LIBUSB1_INCLUDE_DIR}
+   ${LIBUSB_1_INCLUDE_DIR}
    ${LIBUSBPP_INCLUDE_DIRECTORY}
 )
 
 add_library(libusbpp STATIC ${LIBUSBPP_SOURCES})
 
-
-IF(WIN32)
-   SET_PROPERTY(TARGET libusbpp PROPERTY FOLDER "External Libs")
-
-install(FILES ${LIBUSB1_BINARY}
-   DESTINATION ${INSTALL_BINDIR})
-ENDIF()
+#target_link_libraries(libusbpp ${LIBUSB_1_LIBRARIES})
 
 
-set(LIBUSBPP_INCLUDE_DIRECTORIES ${LIBUSB1_INCLUDE_DIR} ${LIBUSBPP_INCLUDE_DIRECTORY} PARENT_SCOPE)
-set(LIBUSBPP_LIBRARIES libusbpp ${LIBUSB1_LIBRARIES} PARENT_SCOPE)
-set(LIBUSB1_BINARY ${LIBUSB1_BINARY} PARENT_SCOPE)
+SET_PROPERTY(TARGET libusbpp PROPERTY FOLDER "External Libs")
+
+#TODO nécessaire ?
+#install(FILES ${LIBUSB_1_LIBRARIES}
+#   DESTINATION ${INSTALL_BINDIR})
+
+set(LIBUSBPP_INCLUDE_DIRS ${LIBUSBPP_INCLUDE_DIRECTORY} PARENT_SCOPE)
+set(LIBUSBPP_LIBRARIES libusbpp ${LIBUSB_1_LIBRARIES} PARENT_SCOPE)
+set(LIBUSBPP_FOUND TRUE PARENT_SCOPE)
