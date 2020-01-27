@@ -27,8 +27,7 @@ std::list<std::shared_ptr<LibUSB::Device>> CUsbService::getStreamDeckDevices()
 	
 	for (const auto& device : foundedDevice)
 	{
-
-		if(StreamDeckVendorId == decimalToHex(std::to_string(device->vendorID())))
+		if(StreamDeckVendorId == device->vendorID())
 		{
 			deviceList.push_back(device);
 		}
@@ -40,7 +39,7 @@ std::list<std::shared_ptr<LibUSB::Device>> CUsbService::getStreamDeckDevices()
 	return deviceList;
 }
 // TODO : Move this Functions to a Helper
-std::vector<std::string> CUsbService::splitStringToVectorOfString(std::string& wordToSplit, const std::string separator)
+std::vector<std::string> CUsbService::splitStringToVectorOfString(const std::string& wordToSplit, const std::string& separator)
 {
 	std::vector<std::string> words;
 	return split(words, wordToSplit, boost::is_any_of(separator), boost::token_compress_on);
