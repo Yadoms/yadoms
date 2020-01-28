@@ -12,9 +12,19 @@ namespace hardware
       std::vector<boost::shared_ptr<IDevice>> CLibusbppDevicesLister::listUsbDevices()
       {
          const auto devices = LibUSB::LibUSB::FindAllDevices();
+         YADOMS_LOG(trace) << "ibUSB::LibUSB::FindAllDevices() returned " << devices.size() << " devices";
          std::vector<boost::shared_ptr<IDevice>> devicesList;
          for(const auto& device: devices)
-            devicesList.push_back(boost::make_shared<CLibusbppDevice>(device));
+         {
+            try
+            {
+               devicesList.push_back(boost::make_shared<CLibusbppDevice>(device));
+            }
+            catch(const std::exception& e)
+            {
+               YADOMS_LOG(warning) << "Unable to access device " << e.what();               
+            }
+         }
          return devicesList;
       }
    } // namespace usb

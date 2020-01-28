@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LibusbppDevice.h"
+#include <shared/Log.h>
 #include <codecvt>
 
 namespace hardware
@@ -9,6 +10,24 @@ namespace hardware
       CLibusbppDevice::CLibusbppDevice(std::shared_ptr<LibUSB::Device> libusbppDevice)
          :m_libusbppDevice(libusbppDevice)
       {
+         m_vendorId = m_libusbppDevice->vendorID();
+         m_productId = m_libusbppDevice->productID();
+
+         try
+         {
+            if (!m_libusbppDevice->isOpen())
+               m_libusbppDevice->Open(); //TODO trouver une solution pour accéder aux noms sans ouvrir le périph ? (lsusb y arrive, usb-devices aussi...)
+
+            m_yadomsFriendlyName = wstringToString(m_libusbppDevice->ProductString());
+            m_serialNumber = wstringToString(m_libusbppDevice->SerialString());
+         }
+         catch(const std::exception& e)
+         {
+            YADOMS_LOG(warning) << "Unable to open USB device " << m_vendorId << ":" << m_productId
+               << ", serial number and device name will not be available";
+            m_yadomsFriendlyName = std::string("USB device ") + std::to_string(m_vendorId) + ":" + std::to_string(m_productId);
+         }
+
       }
 
       std::string CLibusbppDevice::wstringToString(const std::wstring& wstring)
@@ -18,31 +37,27 @@ namespace hardware
 
       std::string CLibusbppDevice::yadomsConnectionId() const
       {
-         return std::to_string(vendorId()) + ";" + std::to_string(productId()) + ";" + serialNumber();
+         return std::to_string(vendorId()) + ";" + std::to_string(productId()) + ";" + serialNumber(); //TODO or endPoint number ?
       }
 
       std::string CLibusbppDevice::yadomsFriendlyName() const
       {
-         //TODO à tester
-         return wstringToString(m_libusbppDevice->ProductString());
+         return m_yadomsFriendlyName;
       }
 
       int CLibusbppDevice::vendorId() const
       {
-         //TODO à tester
-         return m_libusbppDevice->vendorID();
+         return m_vendorId;
       }
 
       int CLibusbppDevice::productId() const
       {
-         //TODO à tester
-         return m_libusbppDevice->productID();
+         return m_productId;
       }
 
       std::string CLibusbppDevice::serialNumber() const
       {
-         //TODO à tester
-         return wstringToString(m_libusbppDevice->SerialString());
+         return m_serialNumber;
       }
    } // namespace usb
 } // namespace hardware

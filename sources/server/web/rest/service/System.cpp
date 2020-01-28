@@ -110,7 +110,7 @@ namespace web
                      << "vid=" << device->vendorId()
                      << ", pid=" << device->productId()
                      << ", name=" << device->yadomsFriendlyName()
-                     << ", path=" << device->yadomsConnectionId()
+                     << ", connectionId=" << device->yadomsConnectionId()
                      << ", serial=" << device->serialNumber();
                }
 

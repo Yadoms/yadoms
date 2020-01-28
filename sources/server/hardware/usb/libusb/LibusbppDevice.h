@@ -24,6 +24,11 @@ namespace hardware
          static std::string wstringToString(const std::wstring& wstring);
 
          std::shared_ptr<LibUSB::Device> m_libusbppDevice;
+
+         std::string m_yadomsFriendlyName;
+         int m_vendorId;
+         int m_productId;
+         std::string m_serialNumber;
       };
    } // namespace usb
 } // namespace hardware
