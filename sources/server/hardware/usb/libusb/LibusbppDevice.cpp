@@ -23,30 +23,26 @@ namespace hardware
 
       std::string CLibusbppDevice::yadomsFriendlyName() const
       {
-         //TODO
-         //TODO need to open device, but doesn't work under windows return wstringToString(m_libusbppDevice->ProductString());
-         return "Stream Deck XL - CL30I1A03593";
+         //TODO à tester
+         return wstringToString(m_libusbppDevice->ProductString());
       }
 
       int CLibusbppDevice::vendorId() const
       {
-         //TODO
+         //TODO à tester
          return m_libusbppDevice->vendorID();
-         return 0x0fd9;
       }
 
       int CLibusbppDevice::productId() const
       {
-         //TODO
+         //TODO à tester
          return m_libusbppDevice->productID();
-         return 0x0060;
       }
 
       std::string CLibusbppDevice::serialNumber() const
       {
-         //TODO
-//TODO need to open device, but doesn't work under windows          return wstringToString(m_libusbppDevice->SerialString());
-         return "AL25I1C03149";
+         //TODO à tester
+         return wstringToString(m_libusbppDevice->SerialString());
       }
    } // namespace usb
 } // namespace hardware
