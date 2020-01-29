@@ -18,7 +18,7 @@ namespace hardware
             if (!m_libusbppDevice->isOpen())
                m_libusbppDevice->Open(); //TODO trouver une solution pour accéder aux noms sans ouvrir le périph ? (lsusb y arrive, usb-devices aussi...)
 
-            m_yadomsFriendlyName = wstringToString(m_libusbppDevice->ProductString());
+            m_yadomsFriendlyName = wstringToString(m_libusbppDevice->ManufacturerString()) + " - " + wstringToString(m_libusbppDevice->ProductString());
             m_serialNumber = wstringToString(m_libusbppDevice->SerialString());
          }
          catch(const std::exception& e)
@@ -37,7 +37,7 @@ namespace hardware
 
       std::string CLibusbppDevice::yadomsConnectionId() const
       {
-         return std::to_string(vendorId()) + ";" + std::to_string(productId()) + ";" + serialNumber(); //TODO or endPoint number ?
+         return std::to_string(vendorId()) + ";" + std::to_string(productId()) + ";" + serialNumber(); //TODO or endPoint number ? Device address ?
       }
 
       std::string CLibusbppDevice::yadomsFriendlyName() const
