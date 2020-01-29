@@ -25,9 +25,7 @@ namespace hardware
 	namespace serial
 	{
       boost::shared_ptr<CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSerialPorts()
-      {
-         boost::shared_ptr<CSerialPortsLister::SerialPortsMap> serialPorts(new CSerialPortsLister::SerialPortsMap);
-         
+      {         
 	      io_iterator_t matchingServices;
 	      mach_port_t         masterPort;
           CFMutableDictionaryRef  classesToMatch;
@@ -60,11 +58,9 @@ namespace hardware
 		      deviceFriendlyAsCFString = IORegistryEntryCreateCFProperty(modemService,CFSTR(kIOTTYDeviceKey), kCFAllocatorDefault, 0);
 		      if(deviceFilePathAsCFString)
 		      {
-                  //TODO: si type retour passe en map
 			      if(CFStringGetCString((const __CFString*)deviceFilePathAsCFString, deviceFilePath, 512, kCFStringEncodingASCII)
 			      && CFStringGetCString((const __CFString*)deviceFriendlyAsCFString, deviceFriendly, 1024, kCFStringEncodingASCII) )
                       serialPorts->insert(std::make_pair(std::string(deviceFilePath), std::string(deviceFriendly)));
-				      //SerialPortPaths.set(deviceFriendly, deviceFilePath);
 			      CFRelease(deviceFilePathAsCFString);
 			      CFRelease(deviceFriendlyAsCFString);
 		      }
