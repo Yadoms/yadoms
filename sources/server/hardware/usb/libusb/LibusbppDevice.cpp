@@ -18,8 +18,11 @@ namespace hardware
             if (!m_libusbppDevice->isOpen())
                m_libusbppDevice->Open(); //TODO trouver une solution pour accéder aux noms sans ouvrir le périph ? (lsusb y arrive, usb-devices aussi...)
 
-            m_yadomsFriendlyName = wstringToString(m_libusbppDevice->ManufacturerString()) + " - " + wstringToString(m_libusbppDevice->ProductString());
             m_serialNumber = wstringToString(m_libusbppDevice->SerialString());
+
+            m_yadomsFriendlyName = wstringToString(m_libusbppDevice->ManufacturerString()) + " - " + wstringToString(m_libusbppDevice->ProductString());
+            if (!m_serialNumber.empty())
+               m_yadomsFriendlyName += " - " + m_serialNumber;
          }
          catch(const std::exception& e)
          {
