@@ -780,11 +780,11 @@ ELSE()
       server/tools/linux/tools/OperatingSystem.cpp
       server/hardware/serial/linux/SerialPortsLister.h
       server/hardware/serial/linux/SerialPortsLister.cpp
-      server/hardware/usb/libusb/DevicesListerFactory.cpp
-      server/hardware/usb/libusb/LibusbppDevice.h
-      server/hardware/usb/libusb/LibusbppDevice.cpp
-      server/hardware/usb/libusb/LibusbppDevicesLister.h
-      server/hardware/usb/libusb/LibusbppDevicesLister.cpp
+      server/hardware/usb/lsusb/DevicesListerFactory.cpp
+      server/hardware/usb/lsusb/LsusbDevice.h
+      server/hardware/usb/lsusb/LsusbDevice.cpp
+      server/hardware/usb/lsusb/LsusbDevicesLister.h
+      server/hardware/usb/lsusb/LsusbDevicesLister.cpp
    )   
 ENDIF()
 
@@ -1295,12 +1295,6 @@ if(USE_PGSQL_DATABASE AND PostgreSQL_FOUND)
       endif()
    ENDFOREACH(PostgreSqlDepend)
 endif()
-
-#add libusb library
-#if(NOT WIN32)
-#   install(PROGRAMS ${LIBUSB_1_BINARY}
-#      DESTINATION ${INSTALL_BINDIR})
-#endif(NOT WIN32)
 
 
 #add www directory
