@@ -102,7 +102,7 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
 
 bool CPythonExecutable::isValidPythonVersion(const std::string& pythonVersion)
 {
-   const boost::regex reg("Python\\s*([3-9]\\.[2-9]\\d*|[4-9]\\.\\d\d+|[5-9](\\.\\d+)?|\\d\d+(\\.\\d+)?)");
+   const boost::regex reg("Python\\s*([3-9]\\.[7-9]\\d*|[4-9]\\.\\d\\d+|[5-9](\\.\\d+)?|\\d\\d+(\\.\\d+)?)");
    boost::smatch match;
    return regex_search(pythonVersion, match, reg);
 }
