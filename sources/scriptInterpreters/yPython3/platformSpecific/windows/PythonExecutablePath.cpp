@@ -2,107 +2,134 @@
 #include "PythonExecutablePath.h"
 #include <Poco/Util/WinRegistryKey.h>
 
+const std::string CPythonExecutablePath::PyLauncher32BitPath("SOFTWARE\\Python\\PyLauncher");
+const std::string CPythonExecutablePath::PyLauncher64BitPath("SOFTWARE\\Wow6432Node\\Python\\PyLauncher");
+const std::string CPythonExecutablePath::PythonCore32BitPath("SOFTWARE\\Python\\PythonCore");
+const std::string CPythonExecutablePath::PythonCore64BitPath("SOFTWARE\\Wow6432Node\\Python\\PythonCore");
+const std::string CPythonExecutablePath::Python37StandardPath("C:\\python37");
+const std::string CPythonExecutablePath::InstallDir("InstallDir");
+const std::string CPythonExecutablePath::InstallPath("InstallPath");
 
 void CPythonExecutablePath::getCommonPythonPaths(std::vector<boost::filesystem::path>& paths)
 {
-   try
-   {
-      Poco::Util::WinRegistryKey check32(HKEY_LOCAL_MACHINE, "SOFTWARE\\Python\\PyLauncher", true);
-      if (check32.exists())
-      {
-         const auto pythonPath = check32.getString("InstallDir");
-         if (!pythonPath.empty())
-            paths.push_back(boost::filesystem::path(pythonPath));
-      }
-   }
-   catch (std::exception&)
-   {
-   }
+	try
+	{
+		getPyLauncherPath(HKEY_LOCAL_MACHINE, paths);
+		getPyLauncherPath(HKEY_CURRENT_USER, paths);
 
+		getPythonCorePath(HKEY_LOCAL_MACHINE, paths);
+		getPythonCorePath(HKEY_CURRENT_USER, paths);
 
-   try
-   {
-      Poco::Util::WinRegistryKey check64(HKEY_LOCAL_MACHINE, "SOFTWARE\\Wow6432Node\\Python\\PyLauncher", true);
-      if (check64.exists())
-      {
-         const auto pythonPath = check64.getString("InstallDir");
-         if (!pythonPath.empty())
-            paths.push_back(boost::filesystem::path(pythonPath));
-      }
-   }
-   catch (std::exception&)
-   {
-   }
+		//try another standard path
+		paths.emplace_back(Python37StandardPath);
 
-   try
-   {
-      Poco::Util::WinRegistryKey pythonCore(HKEY_LOCAL_MACHINE, "SOFTWARE\\Wow6432Node\\Python\\PythonCore", true);
-      if (pythonCore.exists())
-      {
-         Poco::Util::WinRegistryKey::Keys installedPythonVersions;
-         pythonCore.subKeys(installedPythonVersions);
-         for (auto& installedPythonVersion : installedPythonVersions)
-         {
-            if (installedPythonVersion.find("3.7") != std::string::npos)
-            {
-               Poco::Util::WinRegistryKey currentversion(HKEY_LOCAL_MACHINE, "SOFTWARE\\Wow6432Node\\Python\\PythonCore\\" + installedPythonVersion, true);
-               if (currentversion.exists())
-               {
-                  Poco::Util::WinRegistryKey::Keys subdirs;
-                  currentversion.subKeys(subdirs);
-                  try
-                  {
-                     if (std::find(subdirs.begin(), subdirs.end(), "InstallDir") != subdirs.end())
-                     {
-                        Poco::Util::WinRegistryKey installPath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Wow6432Node\\Python\\PythonCore\\" + installedPythonVersion + "\\InstallDir", true);
-                        if (installPath.exists())
-                        {
-                           const auto pythonPath = installPath.getString("");
-                           if (!pythonPath.empty())
-                              paths.push_back(boost::filesystem::path(pythonPath));
-                        }
-                     }
-                  }
-                  catch (std::exception&)
-                  {
-                  }
-
-                  try
-                  {
-                     if (std::find(subdirs.begin(), subdirs.end(), "InstallPath") != subdirs.end())
-                     {
-                        
-                        Poco::Util::WinRegistryKey installPath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Wow6432Node\\Python\\PythonCore\\" + installedPythonVersion + "\\InstallPath", true);
-                        if (installPath.exists())
-                        {
-                           const auto pythonPath = installPath.getString(""); //default value
-                           if (!pythonPath.empty())
-                              paths.push_back(boost::filesystem::path(pythonPath));
-                        }
-                     }
-                  }
-                  catch (std::exception&)
-                  {
-                  }
-               }
-            }
-
-         }
-      }
-   }
-   catch (std::exception&)
-   {
-   }
-   //try another standard path
-   paths.push_back(boost::filesystem::path("C:\\python37"));
-
-   // Remove duplicates
-   std::sort(paths.begin(), paths.end());
-   paths.erase(std::unique(paths.begin(), paths.end()), paths.end());
+		// Remove duplicates
+		std::sort(paths.begin(), paths.end());
+		paths.erase(std::unique(paths.begin(), paths.end()), paths.end());
+	}
+	catch (std::exception&)
+	{
+	}
 }
 
 const std::string& CPythonExecutablePath::getExecutableName()
 {
-   static const std::string ExecutableName("python"); //without extension
-   return ExecutableName;
+	static const std::string ExecutableName("python"); //without extension
+	return ExecutableName;
+}
+
+void CPythonExecutablePath::getPyLauncherPath(const HKEY hKey, std::vector<boost::filesystem::path>& paths)
+{
+	Poco::Util::WinRegistryKey winRegistryKey32Bit(hKey, PyLauncher32BitPath, true);
+	fillPythonPath(winRegistryKey32Bit, paths);
+
+	Poco::Util::WinRegistryKey winRegistryKey64Bit(hKey, PyLauncher64BitPath, true);
+	fillPythonPath(winRegistryKey64Bit, paths);
+}
+
+void CPythonExecutablePath::fillPythonPath(Poco::Util::WinRegistryKey& winRegistryKey,
+                                           std::vector<boost::filesystem::path>& paths,
+                                           const bool defaultInstallDir)
+{
+	if (winRegistryKey.exists())
+	{
+		const auto pythonPath = winRegistryKey.getString(defaultInstallDir ? InstallDir : "");
+		if (!pythonPath.empty())
+			paths.emplace_back(pythonPath);
+	}
+}
+
+void CPythonExecutablePath::getPythonCorePath(const HKEY hKey, std::vector<boost::filesystem::path>& paths)
+{
+	Poco::Util::WinRegistryKey pythonCore32Bit(hKey, PythonCore32BitPath, true);
+
+	Poco::Util::WinRegistryKey pythonCore64Bit(hKey, PythonCore64BitPath, true);
+
+	if (pythonCore32Bit.exists())
+	{
+		getPythonCorePath(pythonCore32Bit, hKey, paths);
+	}
+	else if (pythonCore64Bit.exists())
+	{
+		getPythonCorePath(pythonCore64Bit, hKey, paths);
+	}
+}
+
+void CPythonExecutablePath::getPythonCorePath(Poco::Util::WinRegistryKey& winRegistryKey,
+                                              const HKEY& hKey,
+                                              std::vector<boost::filesystem::path>& paths)
+{
+	Poco::Util::WinRegistryKey::Keys installedPythonVersions;
+	winRegistryKey.subKeys(installedPythonVersions);
+	for (auto& installedPythonVersion : installedPythonVersions)
+	{
+		if (!installedPythonVersion.empty())
+		{
+			fillPythonPathByPyCore(hKey, PythonCore32BitPath, installedPythonVersion, paths);
+			fillPythonPathByPyCore(hKey, PythonCore64BitPath, installedPythonVersion, paths);
+		}
+	}
+}
+
+void CPythonExecutablePath::fillPythonPathByPyCore(const HKEY& hKey, const std::string& subKey,
+                                                   std::string& installedPythonVersion,
+                                                   std::vector<boost::filesystem::path>& paths)
+{
+	Poco::Util::WinRegistryKey currentVersion(
+		hKey, subKey + "\\" + installedPythonVersion, true);
+	if (currentVersion.exists())
+	{
+		Poco::Util::WinRegistryKey::Keys subdirs;
+		currentVersion.subKeys(subdirs);
+		try
+		{
+			if (std::find(subdirs.begin(), subdirs.end(), InstallDir) != subdirs.end())
+			{
+				Poco::Util::WinRegistryKey installPath(
+					hKey,
+					subKey + "\\" + installedPythonVersion + "\\" + InstallDir,
+					true);
+
+				fillPythonPath(installPath, paths, false);
+			}
+		}
+		catch (std::exception&)
+		{
+		}
+
+		try
+		{
+			if (std::find(subdirs.begin(), subdirs.end(), InstallPath) != subdirs.end())
+			{
+				Poco::Util::WinRegistryKey installPath(
+					hKey,
+					subKey + "\\" + installedPythonVersion + "\\" + InstallPath,
+					true);
+				fillPythonPath(installPath, paths, false);
+			}
+		}
+		catch (std::exception&)
+		{
+		}
+	}
 }
