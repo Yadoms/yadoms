@@ -40,7 +40,7 @@ include_directories(
 
 add_library(libusbpp STATIC ${LIBUSBPP_SOURCES})
 
-#target_link_libraries(libusbpp ${LIBUSB_1_LIBRARIES})
+#TODO utile ? target_link_libraries(libusbpp ${LIBUSB_1_LIBRARIES})
 
 
 SET_PROPERTY(TARGET libusbpp PROPERTY FOLDER "External Libs")
