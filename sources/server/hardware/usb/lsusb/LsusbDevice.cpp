@@ -37,8 +37,6 @@ CLsusbDevice::CLsusbDevice(int vendorId,
       {
          try
          {
-            YADOMS_LOG(debug) << ">>> " << line;
-
             std::smatch matches;
             if (!std::regex_search(line,
                                    matches,
