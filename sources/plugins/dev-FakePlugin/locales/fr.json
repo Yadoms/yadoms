@@ -46,6 +46,32 @@
       "name": "Un paramètre conditionnel",
       "description": "Ce paramètre n'est affiché que si une condition, validée par le serveur, est remplie. Dans ce cas présent, il n'est affiché que si le serveur est exécuté sous Windows.",
       "defaultValue": "Si vous voyez ceci, c'est que Yadoms toune sous Windows."
+    },
+    "SystemData": {
+      "name": "Données système",
+      "description": "Permet à l'utilisateur de sélectionner une ressource du serveur (port série, périphérique USB...)",
+      "content": {
+        "SerialPort": {
+          "name": "Port série",
+          "description": "Ce paramètre fournit la liste des ports série du serveur"
+        },
+        "UsbDevices": {
+          "name": "Périphérique USB",
+          "description": "Ce paramètre fournit la liste des péripéhriques USB, filtrés par fabricant et produit"
+        },
+        "NetworkInterfaces": {
+          "name": "Interface réseau",
+          "description": "Ce paramètre fournit la liste des interfaces réseau du serveur"
+        },
+        "NetworkInterfacesWithoutLoopback": {
+          "name": "Interface réseau hors boucle locale",
+          "description": "Ce paramètre fournit la liste des interfaces réseau du serveur, hors boucle locale"
+        },
+        "SupportedTimezones": {
+          "name": "Fuseau horaire",
+          "description": "Ce paramètre fournit la liste des fuseaux horaires"
+        }
+      }
     }
   },
   "enumerations": {
@@ -82,11 +108,11 @@
       "updateConfiguration": "Mise à jour de la configuration...",
       "newCustomStateMessage": "Un nouvel état avec le message {{messageFromExtraQuery}}"
     },
-    "asyncEQwithProgression" : {
-      "step1" : "Etape n°1",
-      "step2" : "Etape n°2",
-      "step3" : "Etape n°3",
-      "step4" : "Etape n°4"
+    "asyncEQwithProgression": {
+      "step1": "Etape n°1",
+      "step2": "Etape n°2",
+      "step3": "Etape n°3",
+      "step4": "Etape n°4"
     }
   },
   "extraQueries": {
@@ -143,71 +169,71 @@
         }
       }
     },
-   "asyncEQwithProgression": {
+    "asyncEQwithProgression": {
       "name": "Opération asynchrone",
       "commandData": {
-         "fileContent": {
-            "name": "Fichier",
-            "description": "Le fichier à envoyer au plugin"
-         }
+        "fileContent": {
+          "name": "Fichier",
+          "description": "Le fichier à envoyer au plugin"
+        }
       }
-   }
+    }
   },
   "deviceConfiguration": {
-   "staticConfigurationSchema": {
-      "title" : "Type d'équipements",
-      "description" : "Choisir le type d'équipment",
-      "schemas" : {
-        "fakeConfigurableDevice" : {
-           "types" : { 
-               "fakeConfigurableDeviceType" : {
-                  "title" : "équipement configurable",
-                  "description" : "compatible avec Chacon, DIO,..."
-               },
-               "anotherFakeConfigurableDeviceType" : {
-                  "title" : "un autre équipement configurable",
-                  "description" : "compatible avec Blyss, ..."
-               }
-           },
-           "content": {
-              "CounterDivider2": {
-               "name": "Prédiviseur n°2",
-               "description": "Prédiviseur permettant de diminuer la fréquence du compteur (tous les devices)"
-              },
-              "MySection": {
-               "name": "Une section",
-               "description": "Exemple d'utilisation d'une section de configuration.",
-               "content": {
-                  "SubIntParameter": {
-                     "name": "Entier dans une section",
-                     "description": "Un exemple de paramètre entier dans une section"
-                  },
-                  "SubStringParameter": {
-                     "name": "Chaîne dans une section",
-                     "description": "Un exemple de paramètre chaîne dans une section",
-                     "defaultValue": "Les sous-sections rendent la configuration vraiment puissante !"
-                  },
-                  "SubComboParameter": {
-                     "name": "Sous liste dans une section",
-                     "description": "Exemple d'une liste dans une sous-section",
-                     "content": {
-                        "first": {
-                           "name": "Première section",
-                           "description": "Première section de la liste : vous pouvez ajouter ici d'autres données de configuration"
-                        }, 
-                        "second": {
-                           "name": "Seconde section",
-                           "description": "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
-                        }, 
-                        "third": {
-                           "name": "Troisième section",
-                           "description": "Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration"
-                        }
-                     }
+    "staticConfigurationSchema": {
+      "title": "Type d'équipements",
+      "description": "Choisir le type d'équipment",
+      "schemas": {
+        "fakeConfigurableDevice": {
+          "types": {
+            "fakeConfigurableDeviceType": {
+              "title": "équipement configurable",
+              "description": "compatible avec Chacon, DIO,..."
+            },
+            "anotherFakeConfigurableDeviceType": {
+              "title": "un autre équipement configurable",
+              "description": "compatible avec Blyss, ..."
+            }
+          },
+          "content": {
+            "CounterDivider2": {
+              "name": "Prédiviseur n°2",
+              "description": "Prédiviseur permettant de diminuer la fréquence du compteur (tous les devices)"
+            },
+            "MySection": {
+              "name": "Une section",
+              "description": "Exemple d'utilisation d'une section de configuration.",
+              "content": {
+                "SubIntParameter": {
+                  "name": "Entier dans une section",
+                  "description": "Un exemple de paramètre entier dans une section"
+                },
+                "SubStringParameter": {
+                  "name": "Chaîne dans une section",
+                  "description": "Un exemple de paramètre chaîne dans une section",
+                  "defaultValue": "Les sous-sections rendent la configuration vraiment puissante !"
+                },
+                "SubComboParameter": {
+                  "name": "Sous liste dans une section",
+                  "description": "Exemple d'une liste dans une sous-section",
+                  "content": {
+                    "first": {
+                      "name": "Première section",
+                      "description": "Première section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                    },
+                    "second": {
+                      "name": "Seconde section",
+                      "description": "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                    },
+                    "third": {
+                      "name": "Troisième section",
+                      "description": "Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                    }
                   }
-               }
-             }           
-           }
+                }
+              }
+            }
+          }
         }
       }
     }

@@ -55,6 +55,68 @@
           "query": "platformIsWindows"
         }
       }
+    },
+    "SystemData": {
+      "type": "section",
+      "content": {
+        "SerialPort": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "serialPorts"
+            }
+          }
+        },
+        "UsbDevices": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "usbDevices",
+              "content": {
+                "oneOf": [
+                  {
+                    "vendorId": 16700,
+                    "productId": 33159
+                  },
+                  {
+                    "vendorId": 1133,
+                    "productId": 50475
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "NetworkInterfaces": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "NetworkInterfaces"
+            }
+          }
+        },
+        "NetworkInterfacesWithoutLoopback": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "NetworkInterfacesWithoutLoopback"
+            }
+          }
+        },
+        "SupportedTimezones": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "supportedTimezones"
+            }
+          }
+        }
+      }
     }
   },
   "supportManuallyDeviceCreation": "true",
