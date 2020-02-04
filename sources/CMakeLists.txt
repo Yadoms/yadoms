@@ -781,6 +781,8 @@ ELSE()
       server/hardware/serial/linux/SerialPortsLister.h
       server/hardware/serial/linux/SerialPortsLister.cpp
       server/hardware/usb/lsusb/DevicesListerFactory.cpp
+      server/hardware/usb/lsusb/LsusbCall.h
+      server/hardware/usb/lsusb/LsusbCall.cpp
       server/hardware/usb/lsusb/LsusbDevice.h
       server/hardware/usb/lsusb/LsusbDevice.cpp
       server/hardware/usb/lsusb/LsusbDevicesLister.h

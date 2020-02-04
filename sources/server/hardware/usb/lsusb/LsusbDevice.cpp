@@ -1,12 +1,22 @@
 #include "stdafx.h"
 #include "LsusbDevice.h"
+#include "LsusbCall.h"
 #include <shared/Log.h>
-#include <codecvt>
+#include <regex>
 
 namespace hardware
 {
 namespace usb
 {
+std::string CLsusbDevice::idToHexString(unsigned int value)
+{
+   std::stringstream ss;
+   ss << std::uppercase
+      << std::setfill('0') << std::setw(2)
+      << std::hex << value;
+   return ss.str();
+}
+
 CLsusbDevice::CLsusbDevice(int vendorId,
                            int productId,
                            const std::string &name)
@@ -14,31 +24,45 @@ CLsusbDevice::CLsusbDevice(int vendorId,
       m_productId(productId),
       m_yadomsFriendlyName(name)
 {
-   /*TODO
    try
    {
-      if (!m_libusbppDevice->isOpen())
-         m_libusbppDevice->Open(); //TODO trouver une solution pour accéder aux noms sans ouvrir le périph ? (lsusb y arrive, usb-devices aussi...)
+      std::vector<std::string> args;
+      args.push_back("-d " + idToHexString(m_vendorId) + ":" + idToHexString(m_productId));
+      args.push_back("-v");
 
-      m_serialNumber = (m_libusbppDevice->SerialString().empty() || m_libusbppDevice->SerialString() == L"Not supported.")
-                           ? std::string()
-                           : wstringToString(m_libusbppDevice->SerialString());
+      CLsusbCall libusbCall(args);
+      const auto lines = libusbCall.execute(true);
 
-      m_yadomsFriendlyName = wstringToString(m_libusbppDevice->ManufacturerString()) + " - " + wstringToString(m_libusbppDevice->ProductString());
-      if (!m_serialNumber.empty())
-         m_yadomsFriendlyName += " - " + m_serialNumber;
+      for (const auto &line : lines)
+      {
+         try
+         {
+            YADOMS_LOG(debug) << ">>> " << line;
+
+            std::smatch matches;
+            if (!std::regex_search(line,
+                                   matches,
+                                   std::regex(std::string("^ *iSerial *[[:digit:]]* ([[:xdigit:]]*)$"))) ||
+                matches.size() != 2)
+               continue;
+
+            m_serialNumber = matches[1];
+            return;
+         }
+         catch (const std::exception &e)
+         {
+            YADOMS_LOG(warning) << "Unable to access device " << e.what();
+         }
+      }
    }
    catch (const std::exception &e)
    {
-      YADOMS_LOG(warning) << "Unable to open USB device " << m_vendorId << ":" << m_productId
-                          << ", serial number and device name will not be available";
-      m_yadomsFriendlyName = std::string("USB device ") + std::to_string(m_vendorId) + ":" + std::to_string(m_productId);
-   }*/
+      YADOMS_LOG(warning) << "Unable to read USB device information, " << e.what();
+   }
 }
 
 std::string CLsusbDevice::yadomsConnectionId() const
 {
-   //TODO
    return std::to_string(vendorId()) + ";" + std::to_string(productId()) + ";" + serialNumber(); //TODO or endPoint number ? Device address ?
 }
 
