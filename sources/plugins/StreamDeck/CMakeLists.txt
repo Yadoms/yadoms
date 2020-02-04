@@ -1,11 +1,6 @@
 
 if(LIBUSBPP_FOUND)
 
-message(STATUS "LIBUSB_INCLUDE_DIRS=${LIBUSB_INCLUDE_DIRS}") #TODO virer
-message(STATUS "LIBUSB_LIBRARIES=${LIBUSB_LIBRARIES}") #TODO virer
-message(STATUS "LIBUSBPP_INCLUDE_DIRS=${LIBUSBPP_INCLUDE_DIRS}") #TODO virer
-message(STATUS "LIBUSBPP_LIBRARIES=${LIBUSBPP_LIBRARIES}") #TODO virer
-
 	# include common plugin definitions
 	include("../YadomsPluginsCommon.cmake")
 

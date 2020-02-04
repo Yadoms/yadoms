@@ -712,7 +712,7 @@ source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\dateTime  server/dateTime/*.*)
 source_group(server\\i18n  server/i18n/*.*)
 source_group(server\\hardware\\usb  server/hardware/usb/*.*)
-source_group(server\\hardware\\usb\\libusb  server/hardware/usb/libusb/*.*)
+source_group(server\\hardware\\usb\\lsusb  server/hardware/usb/lsusb/*.*)
 source_group(server\\hardware\\usb\\winapi  server/hardware/usb/winapi/*.*)
 source_group(server\\location  server/location/*.*)
 source_group(server\\logging  server/logging/*.*)
@@ -767,11 +767,12 @@ ELSEIF(APPLE)
       server/tools/mac/tools/OperatingSystem.cpp
       server/hardware/serial/mac/SerialPortsLister.h
       server/hardware/serial/mac/SerialPortsLister.cpp
-      server/hardware/usb/libusb/DevicesListerFactory.cpp
-      server/hardware/usb/libusb/LibusbppDevice.h
-      server/hardware/usb/libusb/LibusbppDevice.cpp
-      server/hardware/usb/libusb/LibusbppDevicesLister.h
-      server/hardware/usb/libusb/LibusbppDevicesLister.cpp
+      server/hardware/usb/lsusb/LsusbCall.h
+      server/hardware/usb/lsusb/LsusbCall.cpp
+      server/hardware/usb/lsusb/LsusbDevice.h
+      server/hardware/usb/lsusb/LsusbDevice.cpp
+      server/hardware/usb/lsusb/LsusbDevicesLister.h
+      server/hardware/usb/lsusb/LsusbDevicesLister.cpp
    )   
 ELSE()
    set(YADOMS_SRC ${YADOMS_SRC}
@@ -798,13 +799,11 @@ IF(WIN32)
 ELSEIF(APPLE)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/mac)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/mac)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/libusb)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${LIBUSBPP_INCLUDE_DIRS})
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/lsusb)
 ELSE()
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/linux)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/libusb)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${LIBUSBPP_INCLUDE_DIRS})
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/lsusb)
 ENDIF()
 
 source_group(server\\tools tools/*.*)
@@ -1019,14 +1018,6 @@ IF(USE_POCO_WEBSERVER)
    source_group(server\\web\\poco  server/web/poco/*.*)
 ENDIF()
 
-################################################
-#### Libusbpp
-################################################
-#TODO m�nage
-set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} ${LIBUSBPP_LIBRARIES})
-
-
-
 
 ##################################################################################################
 ## Resources
@@ -1142,7 +1133,6 @@ set(YADOMS_ALL_INCL_DIR
    ${BOOST_INCL_DIR} 
    ${OPENSSL_INCLUDE_DIR}
    ${Poco_INCLUDE_DIRS}
-   ${LIBUSBPP_INCLUDE_DIRS}
    ${YADOMS_INCL_DIR} 
 )
 
