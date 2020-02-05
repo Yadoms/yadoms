@@ -1,5 +1,6 @@
 
-if(NOT WIN32) # TODO à remettre quand Windows sera supporté
+if(LIBUSBPP_FOUND)
+
 	# include common plugin definitions
 	include("../YadomsPluginsCommon.cmake")
 
@@ -27,7 +28,7 @@ if(NOT WIN32) # TODO à remettre quand Windows sera supporté
 	## (by default yadoms-shared and boost are included)
 	#########################################
 	set(STREAMDECK_PLUGIN_INCLDIR
-	${LIBUSBPP_INCLUDE_DIRS}
+      ${LIBUSBPP_INCLUDE_DIRS}
 	)
 
 	#########################################
@@ -35,7 +36,7 @@ if(NOT WIN32) # TODO à remettre quand Windows sera supporté
 	## (by default yadoms-shared and boost are included)
 	#########################################
 	set(STREAMDECK_PLUGIN_LINK
-	${LIBUSBPP_LIBRARIES}
+      ${LIBUSBPP_LIBRARIES}
 	)
 
 	#########################################
@@ -45,4 +46,7 @@ if(NOT WIN32) # TODO à remettre quand Windows sera supporté
 	PLUGIN_SOURCES(StreamDeck ${STREAMDECK_PLUGIN_SOURCES})
 	PLUGIN_INCLDIR(StreamDeck ${STREAMDECK_PLUGIN_INCLDIR})
 	PLUGIN_LINK(StreamDeck ${STREAMDECK_PLUGIN_LINK})
+   
+else()
+   message(WARNING "StreamDeck plugin is not available. LibUsb is Missing")
 endif()

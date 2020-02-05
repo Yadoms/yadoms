@@ -100,7 +100,7 @@
       function loadSupportedTimezones() {
          var d = new $.Deferred();
 
-         RestEngine.getJson("/rest/system/binding/supportedTimezones")
+         RestEngine.postJson("/rest/system/binding/supportedTimezones")
                .done(function (data) {
                      d.resolve(data);
                })

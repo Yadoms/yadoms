@@ -1,49 +1,47 @@
-#TODO renommer LIBUSB_1 en LIBUSB
 
-if(LIBUSB_1_LIBRARIES AND LIBUSB_1_INCLUDE_DIRS)
+if(LIBUSB_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
+  
   # in cache already
   set(LIBUSB_FOUND TRUE)
-else(LIBUSB_1_LIBRARIES AND LIBUSB_1_INCLUDE_DIRS)
+  
+else()
+
   find_path(LIBUSB_1_INCLUDE_DIR
     NAMES
       libusb.h
     PATHS
-      ${LIBUSB_ROOT}/include/libusb-1.0
+      ${LIBUSB_ROOT}/libusb
   )
 
-  find_library(LIBUSB_1_LIBRARY
+  find_library(LIBUSB_1_LIBRARY_DEBUG
     NAMES
       usb-1.0
+      libusb-1.0
     PATHS
       ${LIBUSB_ROOT}/lib
+      ${LIBUSB_ROOT}/Win32/Debug/lib
+    NO_DEFAULT_PATH
+  )
+  find_library(LIBUSB_1_LIBRARY_RELEASE
+    NAMES
+      usb-1.0
+      libusb-1.0
+    PATHS
+      ${LIBUSB_ROOT}/lib
+      ${LIBUSB_ROOT}/Win32/Release/lib
     NO_DEFAULT_PATH
   )
 
-  set(LIBUSB_1_INCLUDE_DIRS
+  set(LIBUSB_INCLUDE_DIRS
     ${LIBUSB_1_INCLUDE_DIR}
   )
-  set(LIBUSB_1_LIBRARIES
-    ${LIBUSB_1_LIBRARY}
-)
+  set(LIBUSB_LIBRARIES
+    debug ${LIBUSB_1_LIBRARY_DEBUG}
+    optimized ${LIBUSB_1_LIBRARY_RELEASE}
+   )
 
-  if(LIBUSB_1_INCLUDE_DIRS AND LIBUSB_1_LIBRARIES)
-     set(LIBUSB_1_FOUND TRUE)
+  if(LIBUSB_INCLUDE_DIRS AND LIBUSB_LIBRARIES)
+     set(LIBUSB_FOUND TRUE)
   endif()
-
-  #TODO revoir les messages
-  if (LIBUSB_1_FOUND)
-    if (NOT libusb_1_FIND_QUIETLY)
-      message(STATUS "Found libusb-1.0:")
-message(STATUS " - Includes: ${LIBUSB_1_INCLUDE_DIRS}")
-message(STATUS " - Libraries: ${LIBUSB_1_LIBRARIES}")
-    endif (NOT libusb_1_FIND_QUIETLY)
-  else (LIBUSB_1_FOUND)
-    if (libusb_1_FIND_REQUIRED)
-      message(FATAL_ERROR "Could not find libusb")
-    endif (libusb_1_FIND_REQUIRED)
-  endif (LIBUSB_1_FOUND)
-
-  # show the LIBUSB_1_INCLUDE_DIRS and LIBUSB_1_LIBRARIES variables only in the advanced view
-  mark_as_advanced(LIBUSB_1_INCLUDE_DIRS LIBUSB_1_LIBRARIES)
 
 endif()

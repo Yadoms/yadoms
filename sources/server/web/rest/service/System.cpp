@@ -166,10 +166,12 @@ namespace web
                auto networkInterfaces = Poco::Net::NetworkInterface::list();
                for (const auto& nit : networkInterfaces)
                {
-                  if (includeLoopback || nit.address().isLoopback())
-                     result.set(nit.name(),
-                                (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
-                                0x00); //in case of key contains a dot, just ensure the full key is taken into account
+                  if (nit.address().isLoopback() && !includeLoopback)
+                     continue;
+
+                  result.set(nit.name(),
+                              (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
+                              0x00); //in case of key contains a dot, just ensure the full key is taken into account
                }
                return CResult::GenerateSuccess(result);
             }

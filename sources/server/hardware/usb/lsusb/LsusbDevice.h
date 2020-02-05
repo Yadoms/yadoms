@@ -22,6 +22,8 @@ public:
    // [END] IDevice implementation
 
 private:
+   static std::string idToHexString(unsigned int value);
+
    int m_vendorId;
    int m_productId;
    std::string m_yadomsFriendlyName;
