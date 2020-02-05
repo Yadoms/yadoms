@@ -10,7 +10,7 @@ else()
     NAMES
       libusb.h
     PATHS
-      ${LIBUSB_ROOT}/include/libusb-1.0
+      ${LIBUSB_ROOT}/libusb
   )
 
   find_library(LIBUSB_1_LIBRARY_DEBUG
