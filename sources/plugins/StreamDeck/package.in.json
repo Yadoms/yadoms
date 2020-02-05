@@ -1,55 +1,54 @@
 {
-  "type": "StreamDeck",
-  "version": "@PLUGIN_VERSION@",
-  "author": "Oussama DAHMAZ",
-  "credits": "[Libusb](https://libusb.info/), [Libusbpp](https://github.com/zarthcode/Libusbpp)",
-  "supportedPlatforms": "all",
-  "dependencies": {
-    "yadoms": {
-      "minimumVersion": "2.4.0-beta.1"
-    }
-  },
-  "configurationSchema": {
-    "UsbDevices": {
-      "type": "enum",
-      "values": {
-        "__Binding__": {
-          "type": "system",
-          "query": "usbDevices",
-          "content": {
-            "oneOf": [
-              {
-                "vendorId": 4057,
-                "productId": 96
-              }
-            ]
-          }
-        }
+   "type": "StreamDeck",
+   "version": "1.0.0",
+   "author": "Oussama DAHMAZ",
+   "credits": "[Libusb](https://libusb.info/), [Libusbpp](https://github.com/zarthcode/Libusbpp)",
+   "supportedPlatforms": "all",
+   "dependencies": {
+      "yadoms": {
+         "minimumVersion": "2.4.0-beta.1"
       }
-    },
-    "StringParameter": {
-      "type": "string"
-    },
-    "BoolParameter": {
-      "type": "bool",
-      "defaultValue": "false"
-    },
-    "IntParameter": {
-      "type": "int",
-      "defaultValue": "258"
-    },
-    "DecimalParameter": {
-      "type": "decimal",
-      "defaultValue": "25.3"
-    },
-    "EnumParameter": {
-      "type": "enum",
-      "values": {
-        "EnumValue1": "",
-        "EnumValue2": "",
-        "EnumValue3": ""
+   },
+   "configurationSchema": {
+      "UsbDevices": {
+         "type": "enum",
+         "values": {
+            "__Binding__": {
+               "type": "system",
+               "query": "usbDevices",
+               "content": {
+                  "oneOf": [
+                     {
+                        "vendorId": 4057,
+                        "productId": 96
+                     }
+                  ]
+               }
+            }
+         }
       },
-      "defaultValue": "EnumValue2"
-    }
-  }
+      "customText": {
+         "type": "string"
+      },
+      "keyCoordinates": {
+         "type": "enum",
+         "values": {
+            "key1": "",
+            "key2": "",
+            "key3": ""
+         },
+         "defaultValue": "key1"
+      }
+   },
+   "extraQueries": {
+      "createKey": {
+         "iconClass": "fa  fa-upload",
+         "iconPath": {
+            "fileContent": {
+               "type": "file",
+               "filter": ".txt"
+            }
+         }
+      }
+   }
 }
