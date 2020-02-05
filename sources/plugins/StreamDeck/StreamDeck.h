@@ -33,4 +33,6 @@ private:
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CConfiguration m_configuration;
+
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api);
 };
