@@ -18,7 +18,7 @@ namespace hardware
       {
       }
 
-      std::string CWinapiDevice::yadomsConnectionId() const
+      std::string CWinapiDevice::nativeConnectionString() const
       {
          return m_devicePath;
       }

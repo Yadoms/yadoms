@@ -14,7 +14,7 @@ public:
    virtual ~CLsusbDevice() = default;
 
    // IDevice implementation
-   std::string yadomsConnectionId() const override;
+   std::string nativeConnectionString() const override;
    std::string yadomsFriendlyName() const override;
    int vendorId() const override;
    int productId() const override;

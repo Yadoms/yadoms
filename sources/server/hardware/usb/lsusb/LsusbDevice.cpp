@@ -59,7 +59,7 @@ CLsusbDevice::CLsusbDevice(int vendorId,
    }
 }
 
-std::string CLsusbDevice::yadomsConnectionId() const
+std::string CLsusbDevice::nativeConnectionString() const
 {
    return std::to_string(vendorId()) + ";" + std::to_string(productId()) + ";" + serialNumber(); //TODO or endPoint number ? Device address ?
 }
