@@ -9,7 +9,7 @@ namespace hardware
       public:
          virtual ~IDevice() = default;
 
-         virtual std::string yadomsConnectionId() const = 0;
+         virtual std::string nativeConnectionString() const = 0;
          virtual std::string yadomsFriendlyName() const = 0;
          virtual int vendorId() const = 0;
          virtual int productId() const = 0;

@@ -110,7 +110,7 @@ namespace web
                      << "vid=" << device->vendorId()
                      << ", pid=" << device->productId()
                      << ", name=" << device->yadomsFriendlyName()
-                     << ", connectionId=" << device->yadomsConnectionId()
+                     << ", connectionId=" << device->nativeConnectionString()
                      << ", serial=" << device->serialNumber();
                }
 
@@ -119,7 +119,7 @@ namespace web
                {
                   shared::CDataContainer result;
                   for (const auto& device : existingDevices)
-                     result.set(device->yadomsConnectionId(), device->yadomsFriendlyName(), 0x00);
+                     result.set(device->nativeConnectionString(), device->yadomsFriendlyName(), 0x00);
                   //in case of key contains a dot, just ensure the full key is taken into account
                   return CResult::GenerateSuccess(result);
                }
@@ -141,7 +141,7 @@ namespace web
                         && existingDevice->productId() == requestedDevice.get<int>("productId"))
                      {
                         //in case of key contains a dot, just ensure the full key is taken into account
-                        result.set(existingDevice->yadomsConnectionId(), existingDevice->yadomsFriendlyName(), 0x00);
+                        result.set(existingDevice->nativeConnectionString(), existingDevice->yadomsFriendlyName(), 0x00);
                      }
                   }
                }
