@@ -24,16 +24,19 @@
 namespace pluginSystem
 {
    CManager::CManager(boost::shared_ptr<const IPathProvider> pathProvider,
+                      const shared::versioning::CSemVer& yadomsVersion,
                       boost::shared_ptr<database::IDataProvider> dataProvider,
                       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                       boost::shared_ptr<shared::ILocation> location,
                       boost::shared_ptr<task::CScheduler> taskScheduler)
       : m_factory(boost::make_shared<CFactory>(pathProvider,
+                                               yadomsVersion,
                                                location)),
         m_dataProvider(dataProvider),
         m_pluginDBTable(dataProvider->getPluginRequester()),
 #ifdef _DEBUG
-        m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
+        m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(),
+                                                        dataAccessLayer->getEventLogger())),
 #else
       m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
@@ -65,11 +68,12 @@ namespace pluginSystem
       // Wait for instances started or timeout
       YADOMS_LOG(debug) << "All plugin instances are started, wait for running...";
       enum
-         {
-            kStartInstancesTimeoutId = shared::event::kUserFirstId
-         };
+      {
+         kStartInstancesTimeoutId = shared::event::kUserFirstId
+      };
       shared::event::CEventHandler startInstancesEventHandler;
-      startInstancesEventHandler.createTimePoint(kStartInstancesTimeoutId, shared::currentTime::Provider().now() + timeout);
+      startInstancesEventHandler.createTimePoint(kStartInstancesTimeoutId,
+                                                 shared::currentTime::Provider().now() + timeout);
       while (true)
       {
          switch (startInstancesEventHandler.waitForEvents(boost::posix_time::seconds(2)))
@@ -108,11 +112,12 @@ namespace pluginSystem
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       if (!m_runningInstances.empty())
-         throw shared::exception::CException("Some plugins are already started, are you sure that manager was successfuly stopped ?");
+         throw shared::exception::CException(
+            "Some plugins are already started, are you sure that manager was successfuly stopped ?");
 
       if (!startInstances(getInstanceList(),
                           startedInstanceIds))
-      YADOMS_LOG(error) << "One or more plugins failed to start, check plugins page for details";
+         YADOMS_LOG(error) << "One or more plugins failed to start, check plugins page for details";
 
       //start the internal plugin
       startInternalPlugin();
@@ -202,7 +207,7 @@ namespace pluginSystem
          // Remove logs
          try
          {
-            boost::filesystem::remove_all(m_factory->pluginLogFile(id).parent_path());
+            remove_all(m_factory->pluginLogFile(id).parent_path());
          }
          catch (boost::filesystem::filesystem_error& ex)
          {
@@ -212,7 +217,7 @@ namespace pluginSystem
          // Remove data path
          try
          {
-            boost::filesystem::remove_all(m_factory->pluginDataPath(id));
+            remove_all(m_factory->pluginDataPath(id));
          }
          catch (boost::filesystem::filesystem_error& ex)
          {
@@ -235,7 +240,7 @@ namespace pluginSystem
 
          const auto logFile(m_factory->pluginLogFile(id));
 
-         if (!boost::filesystem::exists(logFile))
+         if (!exists(logFile))
             throw shared::exception::CInvalidParameter(logFile.string());
 
          std::ifstream file(logFile.string().c_str());
@@ -291,7 +296,8 @@ namespace pluginSystem
 
       // Last, apply modifications
       if (newData.Configuration.isDefined()
-         && previousData->Configuration() != newData.Configuration()) // No need to notify configuration if instance was just enabled/disabled
+         && previousData->Configuration() != newData.Configuration())
+         // No need to notify configuration if instance was just enabled/disabled
       {
          // Configuration was updated, notify the instance if running
          if (m_runningInstances.find(newData.Id()) != m_runningInstances.end())
@@ -311,7 +317,8 @@ namespace pluginSystem
       }
 
       // Start all instances of this plugin
-      for (auto instanceToStart = instancesToStart.begin(); instanceToStart != instancesToStart.end(); ++instanceToStart)
+      for (auto instanceToStart = instancesToStart.begin(); instanceToStart != instancesToStart.end(); ++instanceToStart
+      )
          startInstance(*instanceToStart);
    }
 
@@ -328,7 +335,8 @@ namespace pluginSystem
       }
 
       // Stop all instances of this plugin
-      for (std::vector<int>::const_iterator instanceToStop = instancesToStop.begin(); instanceToStop != instancesToStop.end(); ++instanceToStop)
+      for (std::vector<int>::const_iterator instanceToStop = instancesToStop.begin(); instanceToStop != instancesToStop.
+           end(); ++instanceToStop)
          requestStopInstance(*instanceToStop);
 
       return instancesToStop;
@@ -344,8 +352,9 @@ namespace pluginSystem
       auto someInstancesStillRunning = true;
       while (someInstancesStillRunning && shared::currentTime::Provider().now() <= endTime)
       {
-		  //if any instance is still running just wait for another second
-  	     someInstancesStillRunning = std::any_of(instancesToStop.begin(), instancesToStop.end(), [this](int instance) { return this->isInstanceRunning(instance); });
+         //if any instance is still running just wait for another second
+         someInstancesStillRunning = std::any_of(instancesToStop.begin(), instancesToStop.end(),
+                                                 [this](int instance) { return this->isInstanceRunning(instance); });
          if (someInstancesStillRunning)
             boost::this_thread::sleep(boost::posix_time::seconds(1));
       }
@@ -353,14 +362,15 @@ namespace pluginSystem
       if (someInstancesStillRunning)
       {
          YADOMS_LOG(error) << "Unable to stop all instances of plugin " << pluginName << ", try to kill...";
-         for (const auto instance:instancesToStop)
+         for (const auto instance : instancesToStop)
             if (isInstanceRunning(instance))
                killInstance(instance);
 
          boost::this_thread::sleep(boost::posix_time::seconds(1));
 
          // Check
-		 someInstancesStillRunning = std::any_of(instancesToStop.begin(), instancesToStop.end(), [this](int instance) { return this->isInstanceRunning(instance); });
+         someInstancesStillRunning = std::any_of(instancesToStop.begin(), instancesToStop.end(),
+                                                 [this](int instance) { return this->isInstanceRunning(instance); });
          if (someInstancesStillRunning)
             throw std::runtime_error((boost::format("Unable to stop all instances of plugin %1%") % pluginName).str());
       }
@@ -384,7 +394,8 @@ namespace pluginSystem
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
          auto instance(getRunningInstance(pluginInstanceId));
 
-         YADOMS_LOG(debug) << "Send removed device notification on device " << device->Name() << " to plugin " << instance->about()->DisplayName();
+         YADOMS_LOG(debug) << "Send removed device notification on device " << device->Name() << " to plugin " <<
+            instance->about()->DisplayName();
 
          if (instance->aboutPlugin()->getSupportDeviceRemovedNotification())
             instance->postDeviceRemoved(boost::make_shared<CDeviceRemoved>(device->Name(),
@@ -536,7 +547,8 @@ namespace pluginSystem
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
          if (m_runningInstances.find(id) != m_runningInstances.end())
          {
-            YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id << " didn't stop when requested. Will be killed.";
+            YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id <<
+               " didn't stop when requested. Will be killed.";
             killInstance(id);
          }
       }
@@ -563,13 +575,13 @@ namespace pluginSystem
    void CManager::onPluginStopped(int pluginInstanceId)
    {
       boost::thread([this, pluginInstanceId]()
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
-            const auto pluginInstance = m_runningInstances.find(pluginInstanceId);
-            if (pluginInstance != m_runningInstances.end())
-               m_runningInstances.erase(pluginInstance);
-         });
+         const auto pluginInstance = m_runningInstances.find(pluginInstanceId);
+         if (pluginInstance != m_runningInstances.end())
+            m_runningInstances.erase(pluginInstance);
+      });
    }
 
    void CManager::startInternalPlugin()
@@ -605,24 +617,28 @@ namespace pluginSystem
          try
          {
             auto stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
-            shared::plugin::yPluginApi::historization::EPluginState state(m_dataProvider->getKeywordRequester()->getKeywordLastData(stateKw->Id));
+            shared::plugin::yPluginApi::historization::EPluginState state(
+               m_dataProvider->getKeywordRequester()->getKeywordLastData(stateKw->Id));
             if (state == shared::plugin::yPluginApi::historization::EPluginState::kError)
             {
                // In error state
-               auto customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
+               auto customMessageIdKw = m_dataProvider
+                                        ->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
                shared::CDataContainer defaultState;
                defaultState.set("state", state);
 
                try
                {
-                  shared::CDataContainer dc(m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
+                  shared::CDataContainer dc(
+                     m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
                   defaultState.set("messageId", dc.getWithDefault("messageId", std::string()));
                   defaultState.set("messageData", dc.getWithDefault("messageData", std::string()));
                }
                catch (shared::exception::CJSONParse& jsonerror)
                {
                   YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
-                  defaultState.set("messageId", m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
+                  defaultState.set("messageId",
+                                   m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
                }
                return defaultState;
             }
@@ -672,7 +688,8 @@ namespace pluginSystem
          catch (shared::exception::CJSONParse& jsonerror)
          {
             YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
-            defaultState.set("messageId", m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
+            defaultState.set("messageId",
+                             m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
          }
 
          return defaultState;
@@ -698,7 +715,8 @@ namespace pluginSystem
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
 
-      YADOMS_LOG(debug) << "Send command " << shared::plugin::yPluginApi::IDeviceCommand::toString(command) << " to plugin " << instance->about()->DisplayName();
+      YADOMS_LOG(debug) << "Send command " << shared::plugin::yPluginApi::IDeviceCommand::toString(command) <<
+         " to plugin " << instance->about()->DisplayName();
 
       instance->postDeviceCommand(command);
    }
@@ -708,7 +726,9 @@ namespace pluginSystem
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
 
-      YADOMS_LOG(debug) << "Send extra query " << query->getData()->query() << " to plugin " << instance->about()->DisplayName();
+      YADOMS_LOG(debug) << "Send extra query " << query->getData()->query() << " to plugin " << instance
+                                                                                                ->about()->
+                                                                                                DisplayName();
 
       boost::shared_ptr<task::ITask> task(boost::make_shared<task::plugins::CExtraQuery>(instance, query));
 
@@ -716,7 +736,9 @@ namespace pluginSystem
       bool result = m_taskScheduler->runTask(task, taskUid);
       if (!result)
       {
-         YADOMS_LOG(error) << "Fail to send extra query " << query->getData()->query() << " to plugin " << instance->about()->DisplayName();
+         YADOMS_LOG(error) << "Fail to send extra query " << query->getData()->query() << " to plugin " << instance
+                                                                                                           ->about()->
+                                                                                                           DisplayName();
          //ensure taskId is set to ""
          taskUid = "";
       }
@@ -724,14 +746,16 @@ namespace pluginSystem
    }
 
    void CManager::postManuallyDeviceCreationRequest(int id,
-                                                    boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const
+                                                    boost::shared_ptr<shared::plugin::yPluginApi::
+                                                       IManuallyDeviceCreationRequest>& request) const
    {
       try
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
          auto instance = getRunningInstance(id);
 
-         YADOMS_LOG(debug) << "Send manually device (" << request->getData().getDeviceName() << ") creation request " << " to plugin " << instance->about()->DisplayName();
+         YADOMS_LOG(debug) << "Send manually device (" << request->getData().getDeviceName() << ") creation request " <<
+            " to plugin " << instance->about()->DisplayName();
 
          instance->postManuallyDeviceCreationRequest(request);
       }
@@ -742,14 +766,17 @@ namespace pluginSystem
    }
 
    void CManager::postBindingQueryRequest(int id,
-                                          boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const
+                                          boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request)
+   const
    {
       try
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
          auto instance = getRunningInstance(id);
 
-         YADOMS_LOG(debug) << "Send binding query " << request->getData().getQuery() << " to plugin " << instance->about()->DisplayName();
+         YADOMS_LOG(debug) << "Send binding query " << request->getData().getQuery() << " to plugin " << instance
+                                                                                                         ->about()->
+                                                                                                         DisplayName();
 
          instance->postBindingQueryRequest(request);
       }
@@ -760,25 +787,30 @@ namespace pluginSystem
    }
 
    void CManager::postDeviceConfigurationSchemaRequest(int deviceId,
-                                                       communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) const
+                                                       communication::callback::ISynchronousCallback<shared::
+                                                          CDataContainer>& callback) const
    {
       auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
 
-      boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request(boost::make_shared<pluginSystem::CDeviceConfigurationSchemaRequest>(device->Name(),
-                                                                                                                                                                   callback));
+      boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request(
+         boost::make_shared<CDeviceConfigurationSchemaRequest>(device->Name(),
+                                                               callback));
 
       try
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
          auto instance = getRunningInstance(device->PluginId);
 
-         YADOMS_LOG(debug) << "Send DeviceConfigurationSchema request on device \"" << device->Name() << "\" to plugin " << instance->about()->DisplayName();
+         YADOMS_LOG(debug) << "Send DeviceConfigurationSchema request on device \"" << device->Name() << "\" to plugin "
+            << instance->about()->DisplayName();
 
          instance->postDeviceConfigurationSchemaRequest(request);
       }
       catch (CPluginException& e)
       {
-         request->sendError((boost::format("Error when requesting DeviceConfigurationSchema on device %1% : %2%") % device->Name() % e.what()).str());
+         request->sendError(
+            (boost::format("Error when requesting DeviceConfigurationSchema on device %1% : %2%") % device->Name() % e.
+               what()).str());
       }
    }
 
@@ -787,16 +819,16 @@ namespace pluginSystem
    {
       auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
 
-      auto command(boost::make_shared<pluginSystem::CSetDeviceConfiguration>(device->Name(),
-                                                                             configuration));
+      auto command(boost::make_shared<CSetDeviceConfiguration>(device->Name(),
+                                                               configuration));
 
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(device->PluginId()));
 
-      YADOMS_LOG(debug) << "Set configuration to device \"" << device->Name() << "\" to plugin " << instance->about()->DisplayName();
+      YADOMS_LOG(debug) << "Set configuration to device \"" << device->Name() << "\" to plugin " << instance
+                                                                                                    ->about()->
+                                                                                                    DisplayName();
 
       instance->postSetDeviceConfiguration(command);
    }
 } // namespace pluginSystem
-
-

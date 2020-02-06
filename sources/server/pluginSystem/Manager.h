@@ -32,11 +32,14 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Constructor (protected, use newManager to create instance)
       /// \param [in]   pathProvider            Yadoms paths provider
+      /// \param [in]   yadomsVersion           The Yadoms version
       /// \param [in]   dataProvider            Database link
       /// \param [in]   dataAccessLayer         The database access layer
       /// \param [in]   locationProvider        The location provider
+      /// \param [in]   taskScheduler           The task scheduler
       //--------------------------------------------------------------
       CManager(boost::shared_ptr<const IPathProvider> pathProvider,
+               const shared::versioning::CSemVer& yadomsVersion,
                boost::shared_ptr<database::IDataProvider> dataProvider,
                boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                boost::shared_ptr<shared::ILocation> locationProvider,
@@ -206,7 +209,8 @@ namespace pluginSystem
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       void postManuallyDeviceCreationRequest(int id,
-                                             boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const;
+                                             boost::shared_ptr<shared::plugin::yPluginApi::
+                                                IManuallyDeviceCreationRequest>& request) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a binding query request to a plugin
@@ -222,7 +226,8 @@ namespace pluginSystem
       /// \param [in] callback   Request callback
       //--------------------------------------------------------------
       void postDeviceConfigurationSchemaRequest(int deviceId,
-                                                communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) const;
+                                                communication::callback::ISynchronousCallback<shared::CDataContainer>&
+                                                callback) const;
 
       //--------------------------------------------------------------
       /// \brief                       Post a new device configuration to a plugin
@@ -251,7 +256,8 @@ namespace pluginSystem
       /// \param [in] timeout    Timeout waiting plugin stop
       //--------------------------------------------------------------
       void stopAllInstancesOfPluginAndWaitForStopped(const std::string& pluginName,
-                                                     const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(30));
+                                                     const boost::posix_time::time_duration& timeout = boost::posix_time
+                                                        ::seconds(30));
 
       //--------------------------------------------------------------
       /// \brief                 Notify a plugin when a device is removed
@@ -333,5 +339,3 @@ namespace pluginSystem
       mutable boost::recursive_mutex m_runningInstancesMutex;
    };
 } // namespace pluginSystem
-
-

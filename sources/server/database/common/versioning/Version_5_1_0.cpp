@@ -2,7 +2,7 @@
 #include "Version_5_1_0.h"
 #include "database/common/Query.h"
 #include "database/common/DatabaseTables.h"
-#include <shared/versioning/Version.h>
+#include <shared/versioning/SemVer.h>
 #include "VersionException.h"
 #include <shared/Log.h>
 
@@ -13,10 +13,10 @@ namespace database
       namespace versioning
       {
          // Modify this version to a greater value, to force update of current version
-         const shared::versioning::CVersion CVersion_5_1_0::Version(5, 1, 0);
+         const shared::versioning::CSemVer CVersion_5_1_0::Version(5, 1, 0);
 
          void CVersion_5_1_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& requester,
-                                              const shared::versioning::CVersion& currentVersion)
+                                              const shared::versioning::CSemVer& currentVersion)
          {
             if (currentVersion < Version)
             {

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SupportedPlatformsChecker.h"
 #include <shared/exception/InvalidParameter.hpp>
-#include <shared/versioning/Version.h>
+#include <shared/versioning/SemVer.h>
 #include "tools/OperatingSystem.h"
 
 namespace tools
@@ -59,13 +59,13 @@ namespace tools
    {
       if (supportedPlatformsVersionNode.exists("from"))
       {
-         shared::versioning::CVersion fromVersion(supportedPlatformsVersionNode.get<std::string>("from"));
+         shared::versioning::CSemVer fromVersion(supportedPlatformsVersionNode.get<std::string>("from"));
          return COperatingSystem::getVersion() >= fromVersion;
       }
 
       if (supportedPlatformsVersionNode.exists("to"))
       {
-         shared::versioning::CVersion toVersion(supportedPlatformsVersionNode.get<std::string>("to"));
+         shared::versioning::CSemVer toVersion(supportedPlatformsVersionNode.get<std::string>("to"));
          return COperatingSystem::getVersion() <= toVersion;
       }
 

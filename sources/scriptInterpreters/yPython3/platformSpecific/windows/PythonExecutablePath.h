@@ -22,14 +22,14 @@ public:
 
 private:
 
-	static void getPyLauncherPath(HKEY hKey,
+	static void getPyLauncherPath(const HKEY& hKey,
 	                              std::vector<boost::filesystem::path>& paths);
 
 	static void fillPythonPath(Poco::Util::WinRegistryKey& winRegistryKey,
 	                           std::vector<boost::filesystem::path>& paths,
 	                           bool defaultInstallDir = true);
 
-	static void getPythonCorePath(HKEY hKey,
+	static void getPythonCorePath(const HKEY& hKey,
 	                              std::vector<boost::filesystem::path>& paths);
 
 

@@ -19,7 +19,7 @@ namespace interpreter_cpp_api
       const std::string& getType() const override;
       const std::string& getName() const override;
       const std::string& getDescription() const override;
-      const shared::versioning::CVersion& getVersion() const override;
+      const shared::versioning::CSemVer& getVersion() const override;
       const std::string& getAuthor() const override;
       const std::string& getUrl() const override;
       const std::string& getCredits() const override;

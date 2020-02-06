@@ -3,6 +3,9 @@
 #include "PythonExecutablePath.h"
 #include <shared/Executable.h>
 #include <shared/Log.h>
+#include <shared/versioning/SemVer.h>
+#include <regex>
+#include <algorithm>
 
 CPythonExecutable::CPythonExecutable()
    : m_inSystemPath(false),
@@ -49,7 +52,7 @@ bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirec
          return true;
    }
 
-   if (isPythonIn(boost::filesystem::path(), pythonDirectory, inSystemPath))// Empty directory to search in system path
+   if (isPythonIn(boost::filesystem::path(), pythonDirectory, inSystemPath)) // Empty directory to search in system path
       return true;
 
    YADOMS_LOG(error) << "Python 3 executable not found";
@@ -62,30 +65,33 @@ bool CPythonExecutable::isPythonIn(const boost::filesystem::path& directory,
 {
    const auto version = readPythonVersion(directory);
 
-	if(!isValidPythonVersion(version))
-	{
-      YADOMS_LOG(information) << "Python 3 executable not found in " << (directory.empty() ? "the system path" : directory.string());
+   if (!isValidPythonVersion(version))
+   {
+      YADOMS_LOG(information) << "Python 3 executable not found in " << (directory.empty()
+                                                                            ? "the system path"
+                                                                            : directory.string());
       return false;
-	}
-   YADOMS_LOG(information) << "Python 3 executable found in " << (directory.empty() ? "the system path" : directory.string());
+   }
+   YADOMS_LOG(information) << "Python 3 executable found in " << (directory.empty()
+                                                                     ? "the system path"
+                                                                     : directory.string());
    pythonDirectory = directory;
    inSystemPath = directory.empty();
    return true;
-
-
 }
 
 std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& initialDirectory)
 {
    try
    {
-      const auto& command = initialDirectory / shared::CExecutable::ToFileName(CPythonExecutablePath::getExecutableName());
+      const auto& command = initialDirectory / shared::CExecutable::ToFileName(
+         CPythonExecutablePath::getExecutableName());
 
       Poco::Process::Args args;
       args.push_back("--version");
 
       Poco::Pipe outPipe;
-      auto processHandle = Poco::Process::launch(command.string(), args, nullptr, &outPipe, &outPipe);
+      const auto processHandle = Poco::Process::launch(command.string(), args, nullptr, &outPipe, &outPipe);
       processHandle.wait();
 
       Poco::PipeInputStream iStr(outPipe);
@@ -102,8 +108,21 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
 
 bool CPythonExecutable::isValidPythonVersion(const std::string& pythonVersion)
 {
-   const boost::regex reg("Python\\s*([3-9]\\.[7-9]\\d*|[4-9]\\.\\d\\d+|[5-9](\\.\\d+)?|\\d\\d+(\\.\\d+)?)");
-   boost::smatch match;
-   return regex_search(pythonVersion, match, reg);
-}
+   std::smatch matches;
+   if (!std::regex_search(pythonVersion, matches, std::regex(R"(Python\s*(3\.\d+.\d+))")) ||
+      matches.size() != 2)
+      return false;
 
+   try
+   {
+      static const shared::versioning::CSemVer MinimalExpectedVersion("3.6.0");
+      const shared::versioning::CSemVer readVersion(matches[1]);
+
+      return readVersion >= MinimalExpectedVersion;
+   }
+   catch (const std::exception&)
+   {
+      YADOMS_LOG(information) << "Invalid Python version " << matches[1];
+      return false;
+   }
+}

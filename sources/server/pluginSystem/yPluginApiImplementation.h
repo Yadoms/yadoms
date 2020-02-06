@@ -20,7 +20,7 @@ namespace pluginSystem
    public:
       //-----------------------------------------------------
       ///\brief                                    Constructor
-      /// \param [in]   pluginInformations         the plugin informations (name, description, version, author...)
+      /// \param [in]   pluginInformation          the plugin information (name, description, version, author...)
       /// \param [in]   instanceData               the instance data
       /// \param [in]   dataPath                   the instance data path
       /// \param [in]   instanceStateHandler       the instance state handler
@@ -29,26 +29,26 @@ namespace pluginSystem
       /// \param [in]   keywordDataAccessLayer     the database keyword access layer
       /// \param [in]   acquisitionHistorizer      the acquisition historizer
       /// \param [in]   locationProvider           the location provider
+      /// \param [in]   yadomsVersion              the Yadoms version
       //-----------------------------------------------------
-      CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
-                                const boost::shared_ptr<const database::entities::CPlugin> instanceData,
+      CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                 const boost::filesystem::path& dataPath,
                                 boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
                                 boost::shared_ptr<database::IDataProvider> dataProvider,
                                 boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordDataAccessLayer,
                                 boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
-                                const boost::shared_ptr<const shared::ILocation> locationProvider);
+                                boost::shared_ptr<const shared::ILocation> locationProvider,
+                                const shared::versioning::CSemVer& yadomsVersion);
 
-      //-----------------------------------------------------
-      ///\brief Destructor
-      //-----------------------------------------------------
-      virtual ~CYPluginApiImplementation();
+      virtual ~CYPluginApiImplementation() = default;
 
       // IYPluginApi implementation
       void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
                           const std::string& customMessageId = std::string(),
-                          const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) override;
+                          const std::map<std::string, std::string>& customMessageDataParams = std::map<
+                             std::string, std::string>()) override;
       void declareDevice(const std::string& device,
                          const std::string& type,
                          const std::string& model,
@@ -57,7 +57,8 @@ namespace pluginSystem
       void declareDevice(const std::string& device,
                          const std::string& type,
                          const std::string& model,
-                         const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
+                         const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::
+                            IHistorizable>>& keywords,
                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
       std::vector<std::string> getAllDevices() const override;
       bool deviceExists(const std::string& device) const override;
@@ -70,18 +71,23 @@ namespace pluginSystem
       void updateDeviceModel(const std::string& device, const std::string& model) const override;
       std::string getDeviceType(const std::string& device) const override;
       void updateDeviceType(const std::string& device, const std::string& type) const override;
-      void updateDeviceState(const std::string& device, const shared::plugin::yPluginApi::historization::EDeviceState& state, const std::string& customMessageId = std::string(),
-         const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) const override;
+      void updateDeviceState(const std::string& device,
+                             const shared::plugin::yPluginApi::historization::EDeviceState& state,
+                             const std::string& customMessageId = std::string(),
+                             const std::map<std::string, std::string>& customMessageDataParams = std::map<
+                                std::string, std::string>()) const override;
       void removeDevice(const std::string& device) override;
       void declareKeyword(const std::string& device,
                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                           const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
       void declareKeywords(const std::string& device,
-                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) override;
+                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::
+                              IHistorizable>>& keywords) override;
       bool keywordExists(const std::string& device,
                          const std::string& keyword) const override;
       bool keywordExists(const std::string& device,
-                         boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword) const override;
+                         boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword)
+      const override;
       std::vector<std::string> getAllKeywords(const std::string& device) const override;
       void removeKeyword(const std::string& device,
                          const std::string& keyword) override;
@@ -91,9 +97,11 @@ namespace pluginSystem
                                                const std::string& expectedFieldValue) const override;
       bool recipientFieldExists(const std::string& fieldName) const override;
       void historizeData(const std::string& device,
-                         boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data) override;
+                         boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data)
+      override;
       void historizeData(const std::string& device,
-                         const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect) override;
+                         const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::
+                            IHistorizable>>& dataVect) override;
       boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const override;
       shared::CDataContainer getConfiguration() override;
       const boost::filesystem::path& getDataPath() const override;
@@ -105,9 +113,9 @@ namespace pluginSystem
 
    private:
       //--------------------------------------------------------------
-      /// \brief			Plugin informations
+      /// \brief			Plugin information
       //--------------------------------------------------------------
-      boost::shared_ptr<const shared::plugin::information::IInformation> m_informations;
+      boost::shared_ptr<const shared::plugin::information::IInformation> m_information;
 
       //--------------------------------------------------------------
       /// \brief			The instance data path
@@ -148,7 +156,10 @@ namespace pluginSystem
       /// \brief			The location provider
       //--------------------------------------------------------------
       const boost::shared_ptr<const shared::ILocation> m_location;
+
+      //--------------------------------------------------------------
+      /// \brief			The Yadoms version
+      //--------------------------------------------------------------
+      const shared::versioning::CSemVer m_yadomsVersion;
    };
 } // namespace pluginSystem	
-
-
