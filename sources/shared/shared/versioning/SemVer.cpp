@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Semver.h"
+#include "SemVer.h"
 #include <Poco/RegularExpression.h>
 #include <Poco/NumberParser.h>
 #include <shared/exception/Exception.hpp>
