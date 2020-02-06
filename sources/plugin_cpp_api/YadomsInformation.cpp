@@ -19,9 +19,9 @@ namespace plugin_cpp_api
       return m_buffer.developpermode();
    }
 
-   shared::versioning::CVersion CYadomsInformation::version() const
+   shared::versioning::CSemVer CYadomsInformation::version() const
    {
-      return shared::versioning::CVersion(m_buffer.version());
+      return shared::versioning::CSemVer(m_buffer.version());
    }
 
    boost::shared_ptr<const shared::ILocation> CYadomsInformation::location() const

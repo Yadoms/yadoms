@@ -1,7 +1,7 @@
 #pragma once
 
 #include "database/IDatabaseRequester.h"
-#include <shared/versioning/Version.h>
+#include <shared/versioning/SemVer.h>
 
 
 namespace database
@@ -30,7 +30,7 @@ namespace database
             ///\throw      CSQLiteVersionException if upgrade failed
             //-------------------------------------------------------------------
             virtual void checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester,
-                                         const shared::versioning::CVersion& currentVersion) =0;
+                                         const shared::versioning::CSemVer& currentVersion) =0;
          };
       } //namespace versioning
    } //namespace common

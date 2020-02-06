@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/DataContainer.h>
-#include <shared/versioning/Version.h>
+#include <shared/versioning/SemVer.h>
 
 namespace shared
 {
@@ -33,7 +33,7 @@ namespace shared
             /// \note       Version : Note that this value is string-comparable
             ///             to check the precedence of a version from a reference version.
             //--------------------------------------------------------------
-            virtual const versioning::CVersion& getVersion() const = 0;
+            virtual const versioning::CSemVer& getVersion() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    get the plugin author

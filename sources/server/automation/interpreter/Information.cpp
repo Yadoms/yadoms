@@ -35,7 +35,7 @@ namespace automation
             if (m_package->containsValue("description"))
                m_description = m_package->get<std::string>("description");
 
-            m_version = shared::versioning::CVersion(m_package->get<std::string>("version"));
+            m_version = shared::versioning::CSemVer(m_package->get<std::string>("version"));
 
             m_author = m_package->get<std::string>("author");
             if (m_author.empty())
@@ -87,7 +87,7 @@ namespace automation
          return m_description;
       }
 
-      const shared::versioning::CVersion& CInformation::getVersion() const
+      const shared::versioning::CSemVer& CInformation::getVersion() const
       {
          return m_version;
       }

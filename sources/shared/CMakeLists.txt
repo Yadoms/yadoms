@@ -357,8 +357,8 @@ set(SHARED_LIB_SRC
    shared/tools/Random.h
    shared/tools/Random.cpp
 
-   shared/versioning/Version.h
-   shared/versioning/Version.cpp
+   shared/versioning/SemVer.h
+   shared/versioning/SemVer.cpp
    shared/versioning/VersionInformation.h
    shared/versioning/VersionInformation.cpp
    

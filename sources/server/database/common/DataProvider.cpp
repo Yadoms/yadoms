@@ -26,7 +26,7 @@ namespace database
          CDataProvider::unload();
       }
 
-      shared::versioning::CVersion CDataProvider::getVersion() const
+      shared::versioning::CSemVer CDataProvider::getVersion() const
       {
          try
          {
@@ -34,7 +34,7 @@ namespace database
                && !m_databaseRequester->checkTableExists(CDatabaseTable("Configuration")))
             {
                // New database
-               return shared::versioning::CVersion();
+               return shared::versioning::CSemVer();
             }
 
             // Configuration table changed from Database 4.2.0 version (updated to 4.2.0 in Yadoms 2.1.0 version).
@@ -60,7 +60,7 @@ namespace database
                auto results = adapter.getResults();
 
                if (!results.empty())
-                  return shared::versioning::CVersion(results[0]);
+                  return shared::versioning::CSemVer(results[0]);
             }
             else
             {
@@ -74,7 +74,7 @@ namespace database
                auto results = adapter.getResults();
 
                if (!results.empty())
-                  return shared::versioning::CVersion(results[0]);
+                  return shared::versioning::CSemVer(results[0]);
             }
          }
          catch (std::exception& ex)
@@ -86,7 +86,7 @@ namespace database
             YADOMS_LOG(debug) << "Fail to get version of database : Unknown exception";
          }
 
-         return shared::versioning::CVersion();
+         return shared::versioning::CSemVer();
       }
 
       // IDatabaseProvider implementation

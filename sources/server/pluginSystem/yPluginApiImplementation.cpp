@@ -6,16 +6,18 @@
 
 namespace pluginSystem
 {
-   CYPluginApiImplementation::CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
-                                                        const boost::shared_ptr<const database::entities::CPlugin> instanceData,
-                                                        const boost::filesystem::path& dataPath,
-                                                        boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
-                                                        boost::shared_ptr<database::IDataProvider> dataProvider,
-                                                        boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-                                                        boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordDataAccessLayer,
-                                                        boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
-                                                        const boost::shared_ptr<const shared::ILocation> location)
-      : m_informations(pluginInformations),
+   CYPluginApiImplementation::CYPluginApiImplementation(
+      boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+      const boost::shared_ptr<const database::entities::CPlugin> instanceData,
+      const boost::filesystem::path& dataPath,
+      boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
+      boost::shared_ptr<database::IDataProvider> dataProvider,
+      boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+      boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordDataAccessLayer,
+      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
+      const boost::shared_ptr<const shared::ILocation> location,
+      const shared::versioning::CSemVer& yadomsVersion)
+      : m_information(pluginInformation),
         m_dataPath(dataPath),
         m_instanceData(instanceData),
         m_instanceStateHandler(instanceStateHandler),
@@ -23,11 +25,8 @@ namespace pluginSystem
         m_keywordDataAccessLayer(keywordDataAccessLayer),
         m_recipientRequester(dataProvider->getRecipientRequester()),
         m_acquisitionHistorizer(acquisitionHistorizer),
-        m_location(location)
-   {
-   }
-
-   CYPluginApiImplementation::~CYPluginApiImplementation()
+        m_location(location),
+        m_yadomsVersion(yadomsVersion)
    {
    }
 
@@ -47,7 +46,8 @@ namespace pluginSystem
    void CYPluginApiImplementation::declareDevice(const std::string& device,
                                                  const std::string& type,
                                                  const std::string& model,
-                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::
+                                                    IHistorizable> keyword,
                                                  const shared::CDataContainer& details)
    {
       if (!deviceExists(device))
@@ -60,7 +60,8 @@ namespace pluginSystem
    void CYPluginApiImplementation::declareDevice(const std::string& device,
                                                  const std::string& type,
                                                  const std::string& model,
-                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>&
+                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::
+                                                    historization::IHistorizable>>&
                                                  keywords,
                                                  const shared::CDataContainer& details)
    {
@@ -90,12 +91,14 @@ namespace pluginSystem
       return m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Configuration;
    }
 
-   void CYPluginApiImplementation::updateDeviceConfiguration(const std::string& device, const shared::CDataContainer& configuration) const
+   void CYPluginApiImplementation::updateDeviceConfiguration(const std::string& device,
+                                                             const shared::CDataContainer& configuration) const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device configuration : device doesn't exist.");
 
-      m_deviceManager->updateDeviceConfiguration(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), configuration);
+      m_deviceManager->updateDeviceConfiguration(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(),
+                                                 configuration);
    }
 
    shared::CDataContainer CYPluginApiImplementation::getDeviceDetails(const std::string& device) const
@@ -103,12 +106,14 @@ namespace pluginSystem
       return m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Details;
    }
 
-   void CYPluginApiImplementation::updateDeviceDetails(const std::string& device, const shared::CDataContainer& details) const
+   void CYPluginApiImplementation::updateDeviceDetails(const std::string& device,
+                                                       const shared::CDataContainer& details) const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device details : device doesn't exist.");
 
-      m_deviceManager->updateDeviceDetails(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), details);
+      m_deviceManager->updateDeviceDetails(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(),
+                                           details);
    }
 
    std::string CYPluginApiImplementation::getDeviceModel(const std::string& device) const
@@ -137,9 +142,12 @@ namespace pluginSystem
       m_deviceManager->updateDeviceType(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), type);
    }
 
-   void CYPluginApiImplementation::updateDeviceState(const std::string& device, const shared::plugin::yPluginApi::historization::EDeviceState& state,
+   void CYPluginApiImplementation::updateDeviceState(const std::string& device,
+                                                     const shared::plugin::yPluginApi::historization::EDeviceState&
+                                                     state,
                                                      const std::string& customMessageId,
-                                                     const std::map<std::string, std::string>& customMessageDataParams) const
+                                                     const std::map<std::string, std::string>& customMessageDataParams)
+   const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device state : device doesn't exist.");
@@ -149,7 +157,8 @@ namespace pluginSystem
       for (const auto& customMessageDataParam : customMessageDataParams)
          dc.set(customMessageDataParam.first, customMessageDataParam.second);
 
-      m_deviceManager->updateDeviceState(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), state, customMessageId, dc);
+      m_deviceManager->updateDeviceState(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), state,
+                                         customMessageId, dc);
    }
 
    void CYPluginApiImplementation::removeDevice(const std::string& device)
@@ -161,17 +170,21 @@ namespace pluginSystem
    }
 
    void CYPluginApiImplementation::declareKeyword(const std::string& device,
-                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::
+                                                     IHistorizable> keyword,
                                                   const shared::CDataContainer& details)
    {
       if (keywordExists(device, keyword))
-         throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
+         throw shared::exception::CEmptyResult(
+            (boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
 
-      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id(), *keyword, details);
+      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id(),
+                                           *keyword, details);
    }
 
    void CYPluginApiImplementation::declareKeywords(const std::string& device,
-                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>
+                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi
+                                                         ::historization::IHistorizable>
                                                    >& keywords)
    {
       std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywordsToDeclare;
@@ -185,7 +198,8 @@ namespace pluginSystem
       if (keywordsToDeclare.empty())
          return;
 
-      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id(), keywordsToDeclare);
+      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id(),
+                                            keywordsToDeclare);
    }
 
    bool CYPluginApiImplementation::keywordExists(const std::string& device, const std::string& keyword) const
@@ -193,11 +207,13 @@ namespace pluginSystem
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to check if keyword exists : owner device doesn't exist.");
 
-      return m_keywordDataAccessLayer->keywordExists(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id, keyword);
+      return m_keywordDataAccessLayer->keywordExists(
+         m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id, keyword);
    }
 
    bool CYPluginApiImplementation::keywordExists(const std::string& device,
-                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword) const
+                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::
+                                                    IHistorizable> keyword) const
    {
       return keywordExists(device, keyword->getKeyword());
    }
@@ -205,18 +221,21 @@ namespace pluginSystem
    std::vector<std::string> CYPluginApiImplementation::getAllKeywords(const std::string& device) const
    {
       std::vector<std::string> keywordNames;
-	  auto keywords = m_keywordDataAccessLayer->getKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id());
-	  std::transform(keywords.begin(), keywords.end(), std::back_inserter(keywordNames),
-		  [](auto &k) -> std::string { return k->Name(); });
+      auto keywords = m_keywordDataAccessLayer->getKeywords(
+         m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id());
+      std::transform(keywords.begin(), keywords.end(), std::back_inserter(keywordNames),
+                     [](auto& k) -> std::string { return k->Name(); });
       return keywordNames;
    }
 
    void CYPluginApiImplementation::removeKeyword(const std::string& device, const std::string& keyword)
    {
       if (!keywordExists(device, keyword))
-         throw shared::exception::CEmptyResult((boost::format("Fail to remove %1% keyword : keyword doesn't exists") % keyword).str());
+         throw shared::exception::CEmptyResult(
+            (boost::format("Fail to remove %1% keyword : keyword doesn't exists") % keyword).str());
 
-      m_keywordDataAccessLayer->removeKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id(), keyword);
+      m_keywordDataAccessLayer->removeKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id(),
+                                              keyword);
    }
 
    std::string CYPluginApiImplementation::getRecipientValue(int recipientId, const std::string& fieldName) const
@@ -237,7 +256,8 @@ namespace pluginSystem
          (boost::format("Cannot retrieve field %1% for recipient Id %2% in database") % fieldName % recipientId).str());
    }
 
-   std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const
+   std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::string& fieldName,
+                                                                       const std::string& expectedFieldValue) const
    {
       auto recipients = m_recipientRequester->findRecipientsFromField(fieldName, expectedFieldValue);
       std::vector<int> recipientIds;
@@ -255,7 +275,8 @@ namespace pluginSystem
 
 
    void CYPluginApiImplementation::historizeData(const std::string& device,
-                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data)
+                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::
+                                                    IHistorizable> data)
    {
       try
       {
@@ -284,8 +305,8 @@ namespace pluginSystem
    }
 
    void CYPluginApiImplementation::historizeData(const std::string& device,
-                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>&
-                                                 dataVect)
+                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::
+                                                    historization::IHistorizable>>& dataVect)
    {
       try
       {
@@ -294,7 +315,8 @@ namespace pluginSystem
          const auto deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device, true);
          if (!deviceEntity->Blacklist())
          {
-            std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> dataVectFilter;
+            std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>
+               dataVectFilter;
 
             for (const auto& item : dataVect)
             {
@@ -324,7 +346,7 @@ namespace pluginSystem
 
    boost::shared_ptr<const shared::plugin::information::IInformation> CYPluginApiImplementation::getInformation() const
    {
-      return m_informations;
+      return m_information;
    }
 
    shared::CDataContainer CYPluginApiImplementation::getConfiguration()
@@ -344,9 +366,11 @@ namespace pluginSystem
       return evtHandler;
    }
 
-   boost::shared_ptr<const shared::plugin::information::IYadomsInformation> CYPluginApiImplementation::getYadomsInformation() const
+   boost::shared_ptr<const shared::plugin::information::IYadomsInformation> CYPluginApiImplementation::
+   getYadomsInformation() const
    {
-      return boost::make_shared<CYadomsInformation>(m_location);
+      return boost::make_shared<CYadomsInformation>(m_location,
+                                                    m_yadomsVersion);
    }
 
    int CYPluginApiImplementation::getPluginId() const
