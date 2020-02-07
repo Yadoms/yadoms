@@ -2,7 +2,13 @@
 #include <libusbpp.hpp>
 #include "Configuration.h"
 
-class CUsbService
+struct UsbDeviceInformation
+{
+	uint16_t vendorID;
+	uint16_t productID;
+	std::string serialNumber;
+};
+class CUsbService final
 {
 public:
 	CUsbService();
@@ -15,7 +21,13 @@ public:
 
 	static uint16_t decimalToHex(std::string& decimalValue);
 
+	static boost::shared_ptr<UsbDeviceInformation> getDeviceInformation(CConfiguration& configuration);
 private:
 	static const uint16_t StreamDeckVendorId;
+	static std::string getOsName();
+	static uint16_t stringToUnsignedShort(std::string& value);
+	static std::string findUsbDeviceId(std::string& value, const std::string& identifierToFind);
+	static std::string getSerialNumber(std::string& value);
 };
 
+ 
