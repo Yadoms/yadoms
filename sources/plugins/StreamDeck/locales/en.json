@@ -5,30 +5,6 @@
       "UsbDevices": {
          "name": "USB device",
          "description": "Select a compatible device"
-      },
-      "keyCoordinates": {
-         "name": "Coordinates of the key",
-         "description": "Coordinates of the key",
-         "values": {
-            "key1": "(0,0)",
-            "key2": "(0,1)",
-            "key3": "(0,2)"
-         }
-      },
-      "customText": {
-         "name": "Custom text",
-         "description": "text to display under icon"
-      }
-   },
-   "extraQueries": {
-      "createKey": {
-         "name": "Key creation",
-         "iconPath": {
-            "fileContent": {
-               "name": "Icon",
-               "description": "icon to send to the plugin "
-            }
-         }
       }
    },
    "customLabels": {
@@ -42,6 +18,30 @@
       "step2": "Step n°2",
       "step3": "Step n°3",
       "step4": "Step n°4"
+   },
+   "extraQueries": {
+      "createKey": {
+         "name": "Key creation",
+         "commandData": {
+            "fileContent": {
+               "name": "Icon",
+               "description": "icon to send to the plugin "
+            }
+         },
+         "keyCoordinates": {
+            "name": "Coordinates of the key",
+            "description": "Coordinates of the key",
+            "values": {
+               "key1": "(0,0)",
+               "key2": "(0,1)",
+               "key3": "(0,2)"
+            }
+         },
+         "customText": {
+            "name": "Custom text",
+            "description": "text to display under icon"
+         }
+      }
    }
 }
 
