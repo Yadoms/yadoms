@@ -14,8 +14,8 @@ if(LIBUSBPP_FOUND)
 		StreamDeck.cpp 
 		Configuration.h
 		Configuration.cpp
-		UsbService.cpp
-		UsbService.h
+		DeviceManager.cpp
+		DeviceManager.h
 	)
 
 	#########################################

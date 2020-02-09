@@ -8,11 +8,11 @@ struct UsbDeviceInformation
 	uint16_t productID;
 	std::string serialNumber;
 };
-class CUsbService final
+class CDeviceManager final
 {
 public:
-	CUsbService();
-	virtual ~CUsbService() = default;
+	CDeviceManager();
+	virtual ~CDeviceManager() = default;
 
 	static std::list<std::shared_ptr<LibUSB::Device>> findDevice(CConfiguration& configuration);
 	static std::list<std::shared_ptr<LibUSB::Device>> getStreamDeckDevices();

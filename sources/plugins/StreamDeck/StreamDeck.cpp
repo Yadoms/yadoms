@@ -2,8 +2,7 @@
 #include "StreamDeck.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
-//#include <libusbpp.hpp>
-#include "UsbService.h"
+#include "DeviceManager.h"
 #include <shared/plugin/yPluginApi/configuration/File.h>
 
 /* ----------------------------------
@@ -51,7 +50,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	m_configuration.initializeWith(api->getConfiguration());
 	api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-	auto usbdevice = CUsbService::getDeviceInformation(m_configuration);
+	auto usbdevice = CDeviceManager::getDeviceInformation(m_configuration);
 
 	
 	declareDevice(api);

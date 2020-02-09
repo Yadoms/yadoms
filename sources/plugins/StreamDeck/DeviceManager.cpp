@@ -1,12 +1,12 @@
-#include "UsbService.h"
+#include "DeviceManager.h"
 #include <boost/convert.hpp>
 #include <boost/convert/stream.hpp>
 #include <regex>
 
-CUsbService::CUsbService() = default;
-const uint16_t CUsbService::StreamDeckVendorId = 0x0FD9;
+CDeviceManager::CDeviceManager() = default;
+const uint16_t CDeviceManager::StreamDeckVendorId = 0x0FD9;
 
-std::list<std::shared_ptr<LibUSB::Device>> CUsbService::findDevice(CConfiguration& configuration)
+std::list<std::shared_ptr<LibUSB::Device>> CDeviceManager::findDevice(CConfiguration& configuration)
 {
 	auto usbDeviceInformation = splitStringToVectorOfString(configuration.getUsbDevice(), ";");
 
@@ -22,7 +22,7 @@ std::list<std::shared_ptr<LibUSB::Device>> CUsbService::findDevice(CConfiguratio
 	return deviceList;
 }
 
-std::list<std::shared_ptr<LibUSB::Device>> CUsbService::getStreamDeckDevices()
+std::list<std::shared_ptr<LibUSB::Device>> CDeviceManager::getStreamDeckDevices()
 {
 	auto foundedDevice = LibUSB::LibUSB::FindAllDevices();
 	std::list<std::shared_ptr<LibUSB::Device>> deviceList;
@@ -42,20 +42,20 @@ std::list<std::shared_ptr<LibUSB::Device>> CUsbService::getStreamDeckDevices()
 }
 
 // TODO : Move this Functions to a Helper
-std::vector<std::string> CUsbService::splitStringToVectorOfString(const std::string& wordToSplit,
+std::vector<std::string> CDeviceManager::splitStringToVectorOfString(const std::string& wordToSplit,
                                                                   const std::string& separator)
 {
 	std::vector<std::string> words;
 	return split(words, wordToSplit, boost::is_any_of(separator), boost::token_compress_on);
 }
 
-uint16_t CUsbService::decimalToHex(std::string& decimalValue)
+uint16_t CDeviceManager::decimalToHex(std::string& decimalValue)
 {
 	boost::cnv::cstream converter;
 	return boost::convert<uint16_t>(decimalValue, converter(std::showbase)(std::uppercase)(std::dec), 0);
 }
 
-boost::shared_ptr<UsbDeviceInformation> CUsbService::getDeviceInformation(CConfiguration& configuration)
+boost::shared_ptr<UsbDeviceInformation> CDeviceManager::getDeviceInformation(CConfiguration& configuration)
 {
 	auto deviceInformation = boost::make_shared<UsbDeviceInformation>();
 	auto usbDevice = configuration.getUsbDevice();
@@ -75,7 +75,7 @@ boost::shared_ptr<UsbDeviceInformation> CUsbService::getDeviceInformation(CConfi
 	return deviceInformation;
 }
 
-std::string CUsbService::getOsName()
+std::string CDeviceManager::getOsName()
 {
 #ifdef WIN32
 	return "Windows";
@@ -92,12 +92,12 @@ std::string CUsbService::getOsName()
 #endif
 }
 
-uint16_t CUsbService::stringToUnsignedShort(std::string& value)
+uint16_t CDeviceManager::stringToUnsignedShort(std::string& value)
 {
 	return static_cast<uint16_t>(std::stoi(value, nullptr, 16));
 }
 
-std::string CUsbService::findUsbDeviceId(std::string& value, const std::string& identifierToFind)
+std::string CDeviceManager::findUsbDeviceId(std::string& value, const std::string& identifierToFind)
 {
 	std::smatch matches;
 	const std::regex reg(identifierToFind + "_(\\w+)");
@@ -108,7 +108,7 @@ std::string CUsbService::findUsbDeviceId(std::string& value, const std::string& 
 	return matches[1].str();
 }
 
-std::string CUsbService::getSerialNumber(std::string& value)
+std::string CDeviceManager::getSerialNumber(std::string& value)
 {
 	const auto serialNumberLenght = 12;
 	std::smatch matches;
