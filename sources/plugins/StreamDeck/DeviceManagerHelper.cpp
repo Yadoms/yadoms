@@ -77,7 +77,7 @@ std::string CDeviceManagerHelper::getSerialNumber(std::string& value)
 	std::smatch matches;
 	const std::regex reg("([[:alnum:]]+)");
 
-	std::regex_token_iterator<std::string::iterator> rend;
+	const std::regex_token_iterator<std::string::iterator> rend;
 	std::regex_token_iterator<std::string::iterator> a(value.begin(), value.end(), reg, 0);
 	while (a != rend)
 	{
@@ -89,4 +89,18 @@ std::string CDeviceManagerHelper::getSerialNumber(std::string& value)
 		break;
 	}
 	return *a;
+}
+
+std::vector<std::string> CDeviceManagerHelper::buildCoordinates(const int cols, const int rows)
+{
+	std::vector<std::string> coordinates;
+
+	for (auto i = 0; i < cols; i++)
+	{
+		for (auto j = 0; j < rows; j++)
+		{
+			coordinates.push_back("(" + std::to_string(i) + "," + std::to_string(j) + ")");
+		}
+	}
+	return coordinates;
 }

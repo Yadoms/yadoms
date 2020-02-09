@@ -100,7 +100,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 					YADOMS_LOG(information) << "    File date = " << fileFromClient.getLastModificationDate().getBoostDateTime();
 					YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
 
-					for (int i = 0; i < 100; ++i)
+					for (auto i = 0; i < 100; ++i)
 					{
 						if (i < 25)
 							extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step1");

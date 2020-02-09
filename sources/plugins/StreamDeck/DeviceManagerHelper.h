@@ -31,10 +31,14 @@ public:
 	
 	static std::string getSerialNumber(std::string& value);
 
+	static std::vector<std::string> buildCoordinates(int cols, int rows);
+	
 private:
+	
 	static const uint16_t StreamDeckVendorId;
 	static const uint16_t StreamDeckOriginalPoductId;
 	static const uint16_t StreamDeckOriginalV2PoductId;
 	static const uint16_t StreamDeckMiniPoductId;
 	static const uint16_t StreamDeckXLPoductId;
+	
 };
