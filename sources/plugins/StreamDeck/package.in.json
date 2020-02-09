@@ -30,23 +30,25 @@
    },
    "extraQueries": {
       "createKey": {
-         "iconClass": "fa  fa-upload",
+         "iconClass": "fa fa-rocket",
          "commandData": {
-            "customText": {
-               "type": "string"
+            "dynamicSection": {
+               "type": "section",
+               "content": {
+                  "__Binding__": {
+                     "type": "plugin",
+                     "query": "keyCreation"
+                  }
+               }
             },
-            "keyCoordinates": {
-               "type": "enum",
-               "values": {
-                  "key1": "",
-                  "key2": "",
-                  "key3": ""
-               },
-               "defaultValue": "key1"
+            "customText": {
+               "type": "string",
+               "required": "true"
             },
             "fileContent": {
                "type": "file",
-               "filter": ".txt"
+               "filter": ".png",
+               "required": "true"
             }
          }
       }

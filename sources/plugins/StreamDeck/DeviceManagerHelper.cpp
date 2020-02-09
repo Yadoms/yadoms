@@ -59,6 +59,31 @@ std::string CDeviceManagerHelper::getDeviceModel(uint16_t& vendorId, uint16_t& p
 	throw;
 }
 
+int CDeviceManagerHelper::getDeviceKeyCols(uint16_t& vendorId, uint16_t& productId)
+{
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalPoductId)
+		return 5;
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalV2PoductId)
+		return 5;
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckMiniPoductId)
+		return 3;
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckXLPoductId)
+		return 8;
+	throw;
+}
+
+int CDeviceManagerHelper::getDeviceKeyRows(uint16_t& vendorId, uint16_t& productId)
+{
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalPoductId)
+		return 3;
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalV2PoductId)
+		return 3;
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckMiniPoductId)
+		return 2;
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckXLPoductId)
+		return 4;
+	throw;
+}
 
 std::string CDeviceManagerHelper::findUsbDeviceId(std::string& value, const std::string& identifierToFind)
 {
@@ -95,12 +120,23 @@ std::vector<std::string> CDeviceManagerHelper::buildCoordinates(const int cols, 
 {
 	std::vector<std::string> coordinates;
 
-	for (auto i = 0; i < cols; i++)
+	for (auto i = 0; i < rows; i++)
 	{
-		for (auto j = 0; j < rows; j++)
+		for (auto j = 0; j < cols; j++)
 		{
 			coordinates.push_back("(" + std::to_string(i) + "," + std::to_string(j) + ")");
 		}
 	}
 	return coordinates;
+}
+
+std::vector<std::string> CDeviceManagerHelper::buildKeys(const int cols, const int rows)
+{
+	std::vector<std::string> keys;
+
+	for (auto i = 0; i < cols * rows; i++)
+	{
+		keys.emplace_back("KEY" + std::to_string(i));
+	}
+	return keys;
 }

@@ -21,24 +21,20 @@
    },
    "extraQueries": {
       "createKey": {
-         "name": "Key creation",
+         "name": "Create a key",
+         "description": "List of the keys coordinates",
          "commandData": {
-            "keyCoordinates": {
-               "name": "Coordinates of the key",
-               "description": "Coordinates of the key",
-               "values": {
-                  "key1": "(0,0)",
-                  "key2": "(0,1)",
-                  "key3": "(0,2)"
-               }
+            "dynamicSection": {
+               "name": "List of available coordinates",
+               "description": "The list of coordinates presented in the form of an index (i, j)"
             },
             "customText": {
-               "name": "Custom text",
-               "description": "text to display under icon"
+               "name": "Texte personnalisé",
+               "description": "Texte personnalisé à afficher en dessous de l'icône"
             },
             "fileContent": {
-               "name": "Icon",
-               "description": "Icon path to send to the plugin "
+               "name": "Icône",
+               "description": "Chemin de l'icône à envoyer au plugin"
             }
          }
       }

@@ -79,8 +79,44 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				break;
 			}
 
+		case yApi::IYPluginApi::kBindingQuery:
+		{
+			// Yadoms ask for a binding query 
+			auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
+			if (request->getData().getQuery() == "keyCreation")
+			{
+				auto keys = CDeviceManagerHelper::buildKeys(deviceInformation->keyCols, deviceInformation->keyRows);
+				auto coordinates =  CDeviceManagerHelper::buildCoordinates(deviceInformation->keyCols, deviceInformation->keyRows);
+				
+				shared::CDataContainer ev;
+				for (auto i = 0; i < keys.size(); i++)
+				{
+					ev.set(keys[i], coordinates[i]);
+				}
+
+				shared::CDataContainer en;
+				en.set("name", "Coordinates keys");
+				en.set("description", "List of coordinates");
+				en.set("type", "enum");
+				en.set("values", ev);
+				en.set("defaultValue", "KEY0");
+
+				shared::CDataContainer result;
+				result.set("interval", en);
+
+				request->sendSuccess(result);
+			}
+			else
+			{
+				const auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
+				request->sendError(errorMessage);
+				YADOMS_LOG(error) << errorMessage;
+			}
+			break;
+		}
 		case yApi::IYPluginApi::kEventExtraQuery:
 		{
+				
 			// Extra-command was received from Yadoms
 			auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
 
@@ -90,6 +126,8 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 				if (extraQuery->getData()->query() == "createKey")
 				{
+					const auto interval = extraQuery->getData()->data().get<std::string>("dynamicSection.content.interval");
+					YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
 					auto fileFromClient = extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
 					auto firmwareContent = fileFromClient.getContent();
 
@@ -116,6 +154,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 				extraQuery->sendSuccess(shared::CDataContainer());
 			}
+
 			else
 			{
 				extraQuery->sendError("error content");

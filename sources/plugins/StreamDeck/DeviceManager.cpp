@@ -58,6 +58,8 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManager::getDeviceInformation()
 		deviceInformation->productID = CDeviceManagerHelper::decimalToHex(usbDeviceInformation[1]);
 		deviceInformation->serialNumber = usbDeviceInformation[2];
 		deviceInformation->deviceModel = CDeviceManagerHelper::getDeviceModel(deviceInformation->vendorID, deviceInformation->productID);
+		deviceInformation->keyCols = CDeviceManagerHelper::getDeviceKeyCols(deviceInformation->vendorID, deviceInformation->productID);
+		deviceInformation->keyRows = CDeviceManagerHelper::getDeviceKeyRows(deviceInformation->vendorID, deviceInformation->productID);
 		return deviceInformation;
 	}
 
@@ -65,6 +67,8 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManager::getDeviceInformation()
 	deviceInformation->productID = CDeviceManagerHelper::stringToUnsignedShort(usbDevicePid);
 	deviceInformation->serialNumber = CDeviceManagerHelper::getSerialNumber(usbDevice);
 	deviceInformation->deviceModel = CDeviceManagerHelper::getDeviceModel(deviceInformation->vendorID, deviceInformation->productID);
+	deviceInformation->keyCols = CDeviceManagerHelper::getDeviceKeyCols(deviceInformation->vendorID, deviceInformation->productID);
+	deviceInformation->keyRows = CDeviceManagerHelper::getDeviceKeyRows(deviceInformation->vendorID, deviceInformation->productID);
 	return deviceInformation;
 }
 

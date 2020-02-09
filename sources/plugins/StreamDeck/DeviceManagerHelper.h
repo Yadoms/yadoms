@@ -8,6 +8,8 @@ struct UsbDeviceInformation
 	std::string deviceName = "Stream Deck";
 	std::string deviceModel;
 	std::string deviceType;
+	int keyCols;
+	int keyRows;
 };
 class CDeviceManagerHelper
 {
@@ -32,7 +34,12 @@ public:
 	static std::string getSerialNumber(std::string& value);
 
 	static std::vector<std::string> buildCoordinates(int cols, int rows);
-	
+
+	static std::vector<std::string> buildKeys(int cols, int rows);
+
+	static int getDeviceKeyCols(uint16_t& vendorId, uint16_t& productId);
+
+	static int getDeviceKeyRows(uint16_t& vendorId, uint16_t& productId);
 private:
 	
 	static const uint16_t StreamDeckVendorId;
