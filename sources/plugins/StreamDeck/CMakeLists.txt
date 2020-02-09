@@ -16,6 +16,11 @@ if(LIBUSBPP_FOUND)
 		Configuration.cpp
 		DeviceManager.cpp
 		DeviceManager.h
+		DeviceManagerHelper.cpp
+		DeviceManagerHelper.h
+		IDeviceManager.h
+		CFactory.cpp
+		CFactory.h
 	)
 
 	#########################################

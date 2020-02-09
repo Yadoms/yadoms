@@ -1,3 +1,4 @@
+#include "CFactory.h"
 #include "stdafx.h"
 #include "StreamDeck.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
@@ -28,15 +29,7 @@ CStreamDeck::~CStreamDeck()
 // Event IDs
 enum
 {
-	// Example of adding a custom event
 	kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
-	// Always start from yApi::IYPluginApi::kPluginFirstEventId
-
-	/* ----------------------------------
- 
-	Insert here all your events
- 
-	---------------------------------- */
 };
 
 void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -50,7 +43,9 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	m_configuration.initializeWith(api->getConfiguration());
 	api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-	auto usbdevice = CDeviceManager::getDeviceInformation(m_configuration);
+	m_deviceManager = CFactory::createDeviceManager(m_configuration);
+	
+	auto usbdevice = m_deviceManager->getDeviceInformation();
 
 	
 	declareDevice(api);

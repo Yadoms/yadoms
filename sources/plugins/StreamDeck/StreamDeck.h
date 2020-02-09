@@ -1,6 +1,7 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
 #include "Configuration.h"
+#include "IDeviceManager.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -33,6 +34,7 @@ private:
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CConfiguration m_configuration;
-
+   boost::shared_ptr<IDeviceManager> m_deviceManager;
+	
    void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api);
 };

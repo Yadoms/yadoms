@@ -1,17 +1,20 @@
 #include "DeviceManager.h"
-#include <boost/convert.hpp>
-#include <boost/convert/stream.hpp>
+#include "DeviceManagerHelper.h"
 #include <regex>
 
-CDeviceManager::CDeviceManager() = default;
 const uint16_t CDeviceManager::StreamDeckVendorId = 0x0FD9;
 
-std::list<std::shared_ptr<LibUSB::Device>> CDeviceManager::findDevice(CConfiguration& configuration)
+CDeviceManager::CDeviceManager(CConfiguration& configuration)
+	: m_configuration(configuration)
 {
-	auto usbDeviceInformation = splitStringToVectorOfString(configuration.getUsbDevice(), ";");
+}
 
-	const auto vendorId = decimalToHex(usbDeviceInformation[0]);
-	const auto productId = decimalToHex(usbDeviceInformation[1]);
+std::list<std::shared_ptr<LibUSB::Device>> CDeviceManager::findDevice() const
+{
+	auto usbDeviceInformation = CDeviceManagerHelper::splitStringToVectorOfString(m_configuration.getUsbDevice(), ";");
+
+	const auto vendorId = CDeviceManagerHelper::decimalToHex(usbDeviceInformation[0]);
+	const auto productId = CDeviceManagerHelper::decimalToHex(usbDeviceInformation[1]);
 
 	auto deviceList = LibUSB::LibUSB::FindDevice(vendorId, productId);
 
@@ -22,7 +25,7 @@ std::list<std::shared_ptr<LibUSB::Device>> CDeviceManager::findDevice(CConfigura
 	return deviceList;
 }
 
-std::list<std::shared_ptr<LibUSB::Device>> CDeviceManager::getStreamDeckDevices()
+std::list<std::shared_ptr<LibUSB::Device>> CDeviceManager::getStreamDeckDevices() const
 {
 	auto foundedDevice = LibUSB::LibUSB::FindAllDevices();
 	std::list<std::shared_ptr<LibUSB::Device>> deviceList;
@@ -41,61 +44,26 @@ std::list<std::shared_ptr<LibUSB::Device>> CDeviceManager::getStreamDeckDevices(
 	return deviceList;
 }
 
-// TODO : Move this Functions to a Helper
-std::vector<std::string> CDeviceManager::splitStringToVectorOfString(const std::string& wordToSplit,
-                                                                  const std::string& separator)
-{
-	std::vector<std::string> words;
-	return split(words, wordToSplit, boost::is_any_of(separator), boost::token_compress_on);
-}
-
-uint16_t CDeviceManager::decimalToHex(std::string& decimalValue)
-{
-	boost::cnv::cstream converter;
-	return boost::convert<uint16_t>(decimalValue, converter(std::showbase)(std::uppercase)(std::dec), 0);
-}
-
-boost::shared_ptr<UsbDeviceInformation> CDeviceManager::getDeviceInformation(CConfiguration& configuration)
+boost::shared_ptr<UsbDeviceInformation> CDeviceManager::getDeviceInformation()
 {
 	auto deviceInformation = boost::make_shared<UsbDeviceInformation>();
-	auto usbDevice = configuration.getUsbDevice();
-	if (getOsName() != "Windows")
+	auto usbDevice = m_configuration.getUsbDevice();
+	if (CDeviceManagerHelper::getOsName() != "Windows")
 	{
-		auto usbDeviceInformation = splitStringToVectorOfString(usbDevice, ";");
+		auto usbDeviceInformation = CDeviceManagerHelper::splitStringToVectorOfString(usbDevice, ";");
 
-		deviceInformation->vendorID = decimalToHex(usbDeviceInformation[0]);
-		deviceInformation->productID = decimalToHex(usbDeviceInformation[1]);
+		deviceInformation->vendorID = CDeviceManagerHelper::decimalToHex(usbDeviceInformation[0]);
+		deviceInformation->productID = CDeviceManagerHelper::decimalToHex(usbDeviceInformation[1]);
 		deviceInformation->serialNumber = usbDeviceInformation[2];
 		return deviceInformation;
 	}
 
-	deviceInformation->vendorID = stringToUnsignedShort(findUsbDeviceId(usbDevice, "vid"));
-	deviceInformation->productID = stringToUnsignedShort(findUsbDeviceId(usbDevice, "pid"));
+	deviceInformation->vendorID = CDeviceManagerHelper::stringToUnsignedShort(findUsbDeviceId(usbDevice, "vid"));
+	deviceInformation->productID = CDeviceManagerHelper::stringToUnsignedShort(findUsbDeviceId(usbDevice, "pid"));
 	deviceInformation->serialNumber = getSerialNumber(usbDevice);
 	return deviceInformation;
 }
 
-std::string CDeviceManager::getOsName()
-{
-#ifdef WIN32
-	return "Windows";
-#elif __APPLE__ || __MACH__
-	return "Mac OSX";
-#elif __linux__
-	return "Linux";
-#elif __FreeBSD__
-	return "FreeBSD";
-#elif __unix || __unix__
-	return "Unix";
-#else
-	return "Other";
-#endif
-}
-
-uint16_t CDeviceManager::stringToUnsignedShort(std::string& value)
-{
-	return static_cast<uint16_t>(std::stoi(value, nullptr, 16));
-}
 
 std::string CDeviceManager::findUsbDeviceId(std::string& value, const std::string& identifierToFind)
 {
@@ -115,8 +83,9 @@ std::string CDeviceManager::getSerialNumber(std::string& value)
 	const std::regex reg("([[:alnum:]]+)");
 
 	std::regex_token_iterator<std::string::iterator> rend;
-	std::regex_token_iterator<std::string::iterator> a(value.begin(), value.end(), reg,0);
-	while (a != rend) {
+	std::regex_token_iterator<std::string::iterator> a(value.begin(), value.end(), reg, 0);
+	while (a != rend)
+	{
 		if (a->length() != serialNumberLenght)
 		{
 			a++;

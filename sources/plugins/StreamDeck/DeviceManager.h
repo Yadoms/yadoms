@@ -1,33 +1,27 @@
 #pragma once
 #include <libusbpp.hpp>
 #include "Configuration.h"
+#include "IDeviceManager.h"
 
-struct UsbDeviceInformation
-{
-	uint16_t vendorID;
-	uint16_t productID;
-	std::string serialNumber;
-};
-class CDeviceManager final
+class CDeviceManager final : public IDeviceManager
 {
 public:
-	CDeviceManager();
+	
+	explicit CDeviceManager(CConfiguration& configuration);
 	virtual ~CDeviceManager() = default;
 
-	static std::list<std::shared_ptr<LibUSB::Device>> findDevice(CConfiguration& configuration);
-	static std::list<std::shared_ptr<LibUSB::Device>> getStreamDeckDevices();
+	std::list<std::shared_ptr<LibUSB::Device>> findDevice() const override;
 
-	static std::vector<std::string> splitStringToVectorOfString(const std::string& wordToSplit, const std::string& separator);
+	std::list<std::shared_ptr<LibUSB::Device>> getStreamDeckDevices() const override;
 
-	static uint16_t decimalToHex(std::string& decimalValue);
+	boost::shared_ptr<UsbDeviceInformation> getDeviceInformation() override;
 
-	static boost::shared_ptr<UsbDeviceInformation> getDeviceInformation(CConfiguration& configuration);
+
 private:
+	
+	CConfiguration m_configuration;
 	static const uint16_t StreamDeckVendorId;
-	static std::string getOsName();
-	static uint16_t stringToUnsignedShort(std::string& value);
+
 	static std::string findUsbDeviceId(std::string& value, const std::string& identifierToFind);
 	static std::string getSerialNumber(std::string& value);
 };
-
- 
