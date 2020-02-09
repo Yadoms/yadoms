@@ -15,26 +15,29 @@ namespace yApi = shared::plugin::yPluginApi;
 class CStreamDeck : public plugin_cpp_api::IPlugin
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
-   CStreamDeck();
+	//--------------------------------------------------------------
+	/// \brief	Constructor
+	//--------------------------------------------------------------
+	CStreamDeck();
 
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~CStreamDeck();
+	//--------------------------------------------------------------
+	/// \brief	Destructor
+	//--------------------------------------------------------------
+	virtual ~CStreamDeck();
 
-   // IPlugin implementation
-   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
-   // [END] IPlugin implementation
+	// IPlugin implementation
+	void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
+	// [END] IPlugin implementation
 
 private:
-   //--------------------------------------------------------------
-   /// \brief	The plugin configuration
-   //--------------------------------------------------------------
-   CConfiguration m_configuration;
-   boost::shared_ptr<IDeviceManager> m_deviceManager;
-	
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api);
+	//--------------------------------------------------------------
+	/// \brief	The plugin configuration
+	//--------------------------------------------------------------
+	CConfiguration m_configuration;
+	boost::shared_ptr<IDeviceManager> m_deviceManager;
+
+	static void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
+	                          boost::shared_ptr<UsbDeviceInformation>& deviceInformation);
+
+	boost::shared_ptr<UsbDeviceInformation> initDevice(boost::shared_ptr<yApi::IYPluginApi>& api) const;
 };

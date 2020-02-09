@@ -30,6 +30,18 @@
             }
          }
       }
+   },
+   "customLabels": {
+      "pluginState": {
+         "failedToConnect": "The connexion failed...",
+         "initializationError": "Initialization error"
+      }
+   },
+   "createKey": {
+      "step1": "Step n°1",
+      "step2": "Step n°2",
+      "step3": "Step n°3",
+      "step4": "Step n°4"
    }
 }
 

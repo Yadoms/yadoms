@@ -1,6 +1,5 @@
 #include "DeviceManager.h"
 #include "DeviceManagerHelper.h"
-#include <regex>
 
 const uint16_t CDeviceManager::StreamDeckVendorId = 0x0FD9;
 
@@ -48,6 +47,9 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManager::getDeviceInformation()
 {
 	auto deviceInformation = boost::make_shared<UsbDeviceInformation>();
 	auto usbDevice = m_configuration.getUsbDevice();
+	auto usbDeviceVid = CDeviceManagerHelper::findUsbDeviceId(usbDevice, "vid");
+	auto usbDevicePid = CDeviceManagerHelper::findUsbDeviceId(usbDevice, "pid");
+	
 	if (CDeviceManagerHelper::getOsName() != "Windows")
 	{
 		auto usbDeviceInformation = CDeviceManagerHelper::splitStringToVectorOfString(usbDevice, ";");
@@ -55,43 +57,14 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManager::getDeviceInformation()
 		deviceInformation->vendorID = CDeviceManagerHelper::decimalToHex(usbDeviceInformation[0]);
 		deviceInformation->productID = CDeviceManagerHelper::decimalToHex(usbDeviceInformation[1]);
 		deviceInformation->serialNumber = usbDeviceInformation[2];
+		deviceInformation->deviceModel = CDeviceManagerHelper::getDeviceModel(deviceInformation->vendorID, deviceInformation->productID);
 		return deviceInformation;
 	}
 
-	deviceInformation->vendorID = CDeviceManagerHelper::stringToUnsignedShort(findUsbDeviceId(usbDevice, "vid"));
-	deviceInformation->productID = CDeviceManagerHelper::stringToUnsignedShort(findUsbDeviceId(usbDevice, "pid"));
-	deviceInformation->serialNumber = getSerialNumber(usbDevice);
+	deviceInformation->vendorID = CDeviceManagerHelper::stringToUnsignedShort(usbDeviceVid);
+	deviceInformation->productID = CDeviceManagerHelper::stringToUnsignedShort(usbDevicePid);
+	deviceInformation->serialNumber = CDeviceManagerHelper::getSerialNumber(usbDevice);
+	deviceInformation->deviceModel = CDeviceManagerHelper::getDeviceModel(deviceInformation->vendorID, deviceInformation->productID);
 	return deviceInformation;
 }
 
-
-std::string CDeviceManager::findUsbDeviceId(std::string& value, const std::string& identifierToFind)
-{
-	std::smatch matches;
-	const std::regex reg(identifierToFind + "_(\\w+)");
-	if (!std::regex_search(value, matches, reg) || matches.empty())
-	{
-		throw;
-	}
-	return matches[1].str();
-}
-
-std::string CDeviceManager::getSerialNumber(std::string& value)
-{
-	const auto serialNumberLenght = 12;
-	std::smatch matches;
-	const std::regex reg("([[:alnum:]]+)");
-
-	std::regex_token_iterator<std::string::iterator> rend;
-	std::regex_token_iterator<std::string::iterator> a(value.begin(), value.end(), reg, 0);
-	while (a != rend)
-	{
-		if (a->length() != serialNumberLenght)
-		{
-			a++;
-			continue;
-		}
-		break;
-	}
-	return *a;
-}

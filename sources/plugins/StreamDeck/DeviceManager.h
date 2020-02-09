@@ -6,7 +6,7 @@
 class CDeviceManager final : public IDeviceManager
 {
 public:
-	
+
 	explicit CDeviceManager(CConfiguration& configuration);
 	virtual ~CDeviceManager() = default;
 
@@ -16,12 +16,8 @@ public:
 
 	boost::shared_ptr<UsbDeviceInformation> getDeviceInformation() override;
 
-
 private:
-	
+
 	CConfiguration m_configuration;
 	static const uint16_t StreamDeckVendorId;
-
-	static std::string findUsbDeviceId(std::string& value, const std::string& identifierToFind);
-	static std::string getSerialNumber(std::string& value);
 };

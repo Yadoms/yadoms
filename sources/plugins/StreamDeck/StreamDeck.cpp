@@ -6,17 +6,7 @@
 #include "DeviceManager.h"
 #include <shared/plugin/yPluginApi/configuration/File.h>
 
-/* ----------------------------------
-
-Insert here all include files
-
-   ---------------------------------- */
-
-
-// Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
-// Note that you have to provide some extra files, like package.json, and icon.png
 IMPLEMENT_PLUGIN(CStreamDeck)
-
 
 CStreamDeck::CStreamDeck()
 {
@@ -26,7 +16,6 @@ CStreamDeck::~CStreamDeck()
 {
 }
 
-// Event IDs
 enum
 {
 	kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
@@ -34,22 +23,14 @@ enum
 
 void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-	// Informs Yadoms about the plugin actual state
 	api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-	YADOMS_LOG(information) << "CStreamDeck is starting...";
+	YADOMS_LOG(information) << "StreamDeck is starting...";
 
-	// Load configuration values (provided by database)
 	m_configuration.initializeWith(api->getConfiguration());
-	api->setPluginState(yApi::historization::EPluginState::kRunning);
-
 	m_deviceManager = CFactory::createDeviceManager(m_configuration);
-	
-	auto usbdevice = m_deviceManager->getDeviceInformation();
 
-	
-	declareDevice(api);
-	api->setPluginState(yApi::historization::EPluginState::kRunning);
+	auto deviceInformation = initDevice(api);
 
 	// the main loop
 	while (true)
@@ -72,10 +53,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
 				YADOMS_LOG(information) << "Update configuration...";
 
-				// Take into account the new configuration
-				// - Restart the plugin if necessary,
-				// - Update some resources,
-				// - etc...
 				m_configuration.initializeWith(newConfiguration);
 
 				// Trace the configuration
@@ -154,9 +131,29 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		}
 	}
 }
-void CStreamDeck::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api)
+void CStreamDeck::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
+										boost::shared_ptr<UsbDeviceInformation>& deviceInformation)
 
 {
-	if (!api->deviceExists("streamDeck"))
-		api->declareDevice("streamDeck", "streamDeck", "streamDeck");
+	if (!api->deviceExists(deviceInformation->deviceName))
+		api->declareDevice(deviceInformation->deviceName, deviceInformation->serialNumber, deviceInformation->deviceModel);
+}
+
+boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_ptr<yApi::IYPluginApi>& api) const
+{
+	try
+	{
+		auto usbDeviceInformation = m_deviceManager->getDeviceInformation();
+
+		declareDevice(api, usbDeviceInformation);
+
+		api->setPluginState(yApi::historization::EPluginState::kRunning);
+		
+		return usbDeviceInformation;
+	}
+	catch (std::exception&)
+	{
+		api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
+		throw;
+	}
 }

@@ -1,13 +1,18 @@
 #include "DeviceManagerHelper.h"
 #include <boost/convert.hpp>
 #include <boost/convert/stream.hpp>
+#include <regex>
 
-CDeviceManagerHelper::CDeviceManagerHelper()
-{
-}
+const uint16_t CDeviceManagerHelper::StreamDeckVendorId = 0x0FD9;
+const uint16_t CDeviceManagerHelper::StreamDeckOriginalPoductId = 0x0060;
+const uint16_t CDeviceManagerHelper::StreamDeckOriginalV2PoductId = 0x006d;
+const uint16_t CDeviceManagerHelper::StreamDeckMiniPoductId = 0x0063;
+const uint16_t CDeviceManagerHelper::StreamDeckXLPoductId = 0x006c;
+
+CDeviceManagerHelper::CDeviceManagerHelper() = default;
 
 std::vector<std::string> CDeviceManagerHelper::splitStringToVectorOfString(const std::string& wordToSplit,
-	const std::string& separator)
+                                                                           const std::string& separator)
 {
 	std::vector<std::string> words;
 	return split(words, wordToSplit, boost::is_any_of(separator), boost::token_compress_on);
@@ -39,4 +44,49 @@ std::string CDeviceManagerHelper::getOsName()
 uint16_t CDeviceManagerHelper::stringToUnsignedShort(std::string& value)
 {
 	return static_cast<uint16_t>(std::stoi(value, nullptr, 16));
+}
+
+std::string CDeviceManagerHelper::getDeviceModel(uint16_t& vendorId, uint16_t& productId)
+{
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalPoductId)
+		return "Original";
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalV2PoductId)
+		return "Original V2";
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckMiniPoductId)
+		return "Mini";
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckXLPoductId)
+		return "XL";
+	throw;
+}
+
+
+std::string CDeviceManagerHelper::findUsbDeviceId(std::string& value, const std::string& identifierToFind)
+{
+	std::smatch matches;
+	const std::regex reg(identifierToFind + "_(\\w+)");
+	if (!std::regex_search(value, matches, reg) || matches.empty())
+	{
+		throw;
+	}
+	return matches[1].str();
+}
+
+std::string CDeviceManagerHelper::getSerialNumber(std::string& value)
+{
+	const auto serialNumberLenght = 12;
+	std::smatch matches;
+	const std::regex reg("([[:alnum:]]+)");
+
+	std::regex_token_iterator<std::string::iterator> rend;
+	std::regex_token_iterator<std::string::iterator> a(value.begin(), value.end(), reg, 0);
+	while (a != rend)
+	{
+		if (a->length() != serialNumberLenght)
+		{
+			a++;
+			continue;
+		}
+		break;
+	}
+	return *a;
 }
