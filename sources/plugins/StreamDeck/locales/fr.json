@@ -23,23 +23,23 @@
       "createKey": {
          "name": "Création de clé",
          "commandData": {
+            "keyCoordinates": {
+               "name": "Les coordonnées de la clé",
+               "description": "Les coordonnées de la clé",
+               "values": {
+                  "key1": "(0,0)",
+                  "key2": "(0,1)",
+                  "key3": "(0,2)"
+               }
+            },
+            "customText": {
+               "name": "Texte personnalisé",
+               "description": "Texte personnalisé à afficher en dessous de l'icône"
+            },
             "fileContent": {
-               "name": "Icon",
-               "description": "Icône à envoyer au plugin"
+               "name": "Icône",
+               "description": "Chemin de l'icône à envoyer au plugin"
             }
-         },
-         "keyCoordinates": {
-            "name": "Les coordonnées de la clé",
-            "description": "Les coordonnées de la clé",
-            "values": {
-               "key1": "(0,0)",
-               "key2": "(0,1)",
-               "key3": "(0,2)"
-            }
-         },
-         "customText": {
-            "name": "Texte personnalisé",
-            "description": "Texte personnalisé à afficher en dessous de l'icône"
          }
       }
    }

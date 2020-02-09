@@ -32,22 +32,22 @@
       "createKey": {
          "iconClass": "fa  fa-upload",
          "commandData": {
+            "customText": {
+               "type": "string"
+            },
+            "keyCoordinates": {
+               "type": "enum",
+               "values": {
+                  "key1": "",
+                  "key2": "",
+                  "key3": ""
+               },
+               "defaultValue": "key1"
+            },
             "fileContent": {
                "type": "file",
                "filter": ".txt"
             }
-         },
-         "customText": {
-            "type": "string"
-         },
-         "keyCoordinates": {
-            "type": "enum",
-            "values": {
-               "key1": "",
-               "key2": "",
-               "key3": ""
-            },
-            "defaultValue": "key1"
          }
       }
    }
