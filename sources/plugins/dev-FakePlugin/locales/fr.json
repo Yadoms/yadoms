@@ -51,25 +51,50 @@
       "name": "Données système",
       "description": "Permet à l'utilisateur de sélectionner une ressource du serveur (port série, périphérique USB...)",
       "content": {
-        "SerialPort": {
+        "SerialPortSection": {
           "name": "Port série",
-          "description": "Ce paramètre fournit la liste des ports série du serveur"
+          "content": {
+            "SerialPort": {
+              "name": "Sélectionner un port série",
+              "description": "Ce paramètre fournit la liste des ports série du serveur"
+            }
+          }
         },
-        "UsbDevices": {
+        "UsbDevicesSection": {
           "name": "Périphérique USB",
-          "description": "Ce paramètre fournit la liste des péripéhriques USB, filtrés par fabricant et produit"
+          "content": {
+            "UsbDevices": {
+              "name": "Sélectionner un périphérique USB",
+              "description": "Ce paramètre fournit la liste des péripéhriques USB, filtrés par fabricant et produit"
+            }
+          }
         },
-        "NetworkInterfaces": {
+        "NetworkInterfacesSection": {
           "name": "Interface réseau",
-          "description": "Ce paramètre fournit la liste des interfaces réseau du serveur"
+          "content": {
+            "NetworkInterfaces": {
+              "name": "Sélectionner une interface réseau",
+              "description": "Ce paramètre fournit la liste des interfaces réseau du serveur"
+            }
+          }
         },
-        "NetworkInterfacesWithoutLoopback": {
+        "NetworkInterfacesWithoutLoopbackSection": {
           "name": "Interface réseau hors boucle locale",
-          "description": "Ce paramètre fournit la liste des interfaces réseau du serveur, hors boucle locale"
+          "content": {
+            "NetworkInterfacesWithoutLoopback": {
+              "name": "Sélectionner une interface réseau (hors boucle locale)",
+              "description": "Ce paramètre fournit la liste des interfaces réseau du serveur, hors boucle locale"
+            }
+          }
         },
-        "SupportedTimezones": {
+        "SupportedTimezonesSection": {
           "name": "Fuseau horaire",
-          "description": "Ce paramètre fournit la liste des fuseaux horaires"
+          "content": {
+            "SupportedTimezones": {
+              "name": "Sélectionner un fuseau horaire",
+              "description": "Ce paramètre fournit la liste des fuseaux horaires"
+            }
+          }
         }
       }
     }

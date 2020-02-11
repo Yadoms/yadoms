@@ -48,16 +48,21 @@ void CFakePluginConfiguration::trace() const
                 : m_configuration.get<std::string>("MySection.content.SubStringParameter"));
 
       // SystemData sections
-      YADOMS_LOG(information) << "CFakePluginConfiguration::trace, parameter 'SystemData.SerialPort' is " << m_configuration.get<std::string>(
-         "SystemData.content.SerialPort");
-      YADOMS_LOG(information) << "CFakePluginConfiguration::trace, parameter 'SystemData.UsbDevices' is " << m_configuration.get<std::string>(
-         "SystemData.content.UsbDevices");
-      YADOMS_LOG(information) << "CFakePluginConfiguration::trace, parameter 'SystemData.NetworkInterfaces' is " << m_configuration.get<std::string>(
-         "SystemData.content.NetworkInterfaces");
-      YADOMS_LOG(information) << "CFakePluginConfiguration::trace, parameter 'SystemData.NetworkInterfacesWithoutLoopback' is " << m_configuration.get<std::string>(
-         "SystemData.content.NetworkInterfacesWithoutLoopback");
-      YADOMS_LOG(information) << "CFakePluginConfiguration::trace, parameter 'SystemData.SupportedTimezones' is " << m_configuration.get<std::string>(
-         "SystemData.content.SupportedTimezones");
+      if (m_configuration.get<bool>("SystemData.content.SerialPortSection.radio"))
+         YADOMS_LOG(information) << "CFakePluginConfiguration::trace, parameter 'SystemData.SerialPortSection.content.SerialPort' is " << m_configuration.get<std::string>(
+            "SystemData.content.SerialPortSection.content.SerialPort");
+      if (m_configuration.get<bool>("SystemData.content.UsbDevicesSection.radio"))
+         YADOMS_LOG(information) << "CFakePluginConfiguration::trace, parameter 'SystemData.UsbDevicesSection.content.UsbDevices' is " << m_configuration.get<std::string>(
+            "SystemData.content.UsbDevicesSection.content.UsbDevices");
+      if (m_configuration.get<bool>("SystemData.content.NetworkInterfacesSection.radio"))
+         YADOMS_LOG(information) << "CFakePluginConfiguration::trace, parameter 'SystemData.NetworkInterfacesSection.content.NetworkInterfaces' is " << m_configuration.get<std::string>(
+            "SystemData.content.NetworkInterfacesSection.content.NetworkInterfaces");
+      if (m_configuration.get<bool>("SystemData.content.NetworkInterfacesWithoutLoopbackSection.radio"))
+         YADOMS_LOG(information) << "CFakePluginConfiguration::trace, parameter 'SystemData.NetworkInterfacesWithoutLoopbackSection.content.NetworkInterfacesWithoutLoopback' is " << m_configuration.get<std::string>(
+            "SystemData.content.NetworkInterfacesWithoutLoopbackSection.content.NetworkInterfacesWithoutLoopback");
+      if (m_configuration.get<bool>("SystemData.content.SupportedTimezonesSection.radio"))
+         YADOMS_LOG(information) << "CFakePluginConfiguration::trace, parameter 'SystemData.SupportedTimezonesSection.content.SupportedTimezones' is " << m_configuration.get<std::string>(
+            "SystemData.content.SupportedTimezonesSection.content.SupportedTimezones");
    }
    catch (const shared::exception::CInvalidParameter& e)
    {

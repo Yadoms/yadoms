@@ -10,8 +10,8 @@ namespace shared
       namespace yPluginApi
       {
          //-----------------------------------------------------
-         ///\brief Manage a plugin configuration. This class is a helper
-         /// to retrieve a configuration value. If value is not present in the actual
+         ///\brief Manage a plugin configuration. This class is an helper
+         /// to retrieve a configuration value. If value is not present in the current
          /// configuration (probably because of plugin version was updated),
          /// this helper try to get a default value from package.json file of plugin.
          //-----------------------------------------------------
@@ -21,9 +21,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Destructor
             //-----------------------------------------------------
-            virtual ~YPluginConfiguration()
-            {
-            }
+            virtual ~YPluginConfiguration() = default;
 
             //--------------------------------------------------------------
             /// \brief		   Load configuration data

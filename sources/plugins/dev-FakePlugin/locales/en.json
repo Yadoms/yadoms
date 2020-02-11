@@ -51,25 +51,50 @@
       "name": "System data",
       "description": "Used to provide user server resource selection (serial port, usb device...)",
       "content": {
-        "SerialPort": {
+        "SerialPortSection": {
           "name": "Select a serial port",
-          "description": "This parameter provides a list of all serial ports available on the server"
+          "content": {
+            "SerialPort": {
+              "name": "Select a serial port",
+              "description": "This parameter provides a list of all serial ports available on the server"
+            }
+          }
         },
-        "UsbDevices": {
+        "UsbDevicesSection": {
           "name": "Select an USB device",
-          "description": "This parameter provides a list of USB devices available on the server, filtered by vendor and product Ids"
+          "content": {
+            "UsbDevices": {
+              "name": "Select an USB device",
+              "description": "This parameter provides a list of USB devices available on the server, filtered by vendor and product Ids"
+            }
+          }
         },
-        "NetworkInterfaces": {
+        "NetworkInterfacesSection": {
           "name": "Select a network interface",
-          "description": "This parameter provides a list of all server network interfaces"
+          "content": {
+            "NetworkInterfaces": {
+              "name": "Select a network interface",
+              "description": "This parameter provides a list of all server network interfaces"
+            }
+          }
         },
-        "NetworkInterfacesWithoutLoopback": {
+        "NetworkInterfacesWithoutLoopbackSection": {
           "name": "Select an external network interface",
-          "description": "This parameter provides a list of all server network interfaces, excluding loopback"
+          "content": {
+            "NetworkInterfacesWithoutLoopback": {
+              "name": "Select an external network interface",
+              "description": "This parameter provides a list of all server network interfaces, excluding loopback"
+            }
+          }
         },
-        "SupportedTimezones": {
+        "SupportedTimezonesSection": {
           "name": "Select a time zone",
-          "description": "This parameter provides a list of server supported time zones"
+          "content": {
+            "SupportedTimezones": {
+              "name": "Select a time zone",
+              "description": "This parameter provides a list of server supported time zones"
+            }
+          }
         }
       }
     }

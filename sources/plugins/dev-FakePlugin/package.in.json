@@ -57,62 +57,87 @@
       }
     },
     "SystemData": {
-      "type": "section",
+      "type": "radioSection",
       "content": {
-        "SerialPort": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "serialPorts"
-            }
-          }
-        },
-        "UsbDevices": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "usbDevices",
-              "content": {
-                "oneOf": [
-                  {
-                    "vendorId": 16700,
-                    "productId": 33159
-                  },
-                  {
-                    "vendorId": 1133,
-                    "productId": 50475
-                  }
-                ]
+        "SerialPortSection": {
+          "type": "section",
+          "content": {
+            "SerialPort": {
+              "type": "enum",
+              "values": {
+                "__Binding__": {
+                  "type": "system",
+                  "query": "serialPorts"
+                }
               }
             }
           }
         },
-        "NetworkInterfaces": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "NetworkInterfaces"
+        "UsbDevicesSection": {
+          "type": "section",
+          "content": {
+            "UsbDevices": {
+              "type": "enum",
+              "values": {
+                "__Binding__": {
+                  "type": "system",
+                  "query": "usbDevices",
+                  "content": {
+                    "oneOf": [
+                      {
+                        "vendorId": 16700,
+                        "productId": 33159
+                      },
+                      {
+                        "vendorId": 1133,
+                        "productId": 50475
+                      }
+                    ]
+                  }
+                }
+              }
             }
           }
         },
-        "NetworkInterfacesWithoutLoopback": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "NetworkInterfacesWithoutLoopback"
+        "NetworkInterfacesSection": {
+          "type": "section",
+          "content": {
+            "NetworkInterfaces": {
+              "type": "enum",
+              "values": {
+                "__Binding__": {
+                  "type": "system",
+                  "query": "NetworkInterfaces"
+                }
+              }
             }
           }
         },
-        "SupportedTimezones": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "supportedTimezones"
+        "NetworkInterfacesWithoutLoopbackSection": {
+          "type": "section",
+          "content": {
+            "NetworkInterfacesWithoutLoopback": {
+              "type": "enum",
+              "values": {
+                "__Binding__": {
+                  "type": "system",
+                  "query": "NetworkInterfacesWithoutLoopback"
+                }
+              }
+            }
+          }
+        },
+        "SupportedTimezonesSection": {
+          "type": "section",
+          "content": {
+            "SupportedTimezones": {
+              "type": "enum",
+              "values": {
+                "__Binding__": {
+                  "type": "system",
+                  "query": "supportedTimezones"
+                }
+              }
             }
           }
         }
