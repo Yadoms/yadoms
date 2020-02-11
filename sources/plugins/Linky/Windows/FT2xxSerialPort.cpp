@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FT2xxSerialPort.h"
 #include <shared/Log.h>
-#include <shared/Peripherals.h>
+#include <shared/SerialPortHelper.h>
 #include <shared/communication/PortException.hpp>
 #include <shared/communication/Buffer.hpp>
 #include <shared/exception/Exception.hpp>
@@ -435,9 +435,6 @@ namespace shared
 
       void CFT2xxSerialPort::flush()
       {
-         // Hardware flush
-         //CPeripherals::flushSerialPort(m_boostSerialPort);
-
          // Clear the receive buffer
          if (!!m_receiveBufferHandler)
             m_receiveBufferHandler->flush();

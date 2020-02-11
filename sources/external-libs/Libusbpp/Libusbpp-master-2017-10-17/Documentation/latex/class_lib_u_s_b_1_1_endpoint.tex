@@ -1,0 +1,53 @@
+\hypertarget{class_lib_u_s_b_1_1_endpoint}{\section{Lib\-U\-S\-B\-:\-:Endpoint Class Reference}
+\label{class_lib_u_s_b_1_1_endpoint}\index{Lib\-U\-S\-B\-::\-Endpoint@{Lib\-U\-S\-B\-::\-Endpoint}}
+}
+
+
+U\-S\-B endpoint class.  
+
+
+
+
+{\ttfamily \#include $<$Endpoint.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_lib_u_s_b_1_1_endpoint_a6916ca81cbe5dc84487041ef4269afb6}{{\bfseries Endpoint} (std\-::shared\-\_\-ptr$<$ Endpoint\-Impl $>$ p\-Impl)}\label{class_lib_u_s_b_1_1_endpoint_a6916ca81cbe5dc84487041ef4269afb6}
+
+\item 
+\hypertarget{class_lib_u_s_b_1_1_endpoint_a87324673d0521e6a87181d734843797a}{uint8\-\_\-t \hyperlink{class_lib_u_s_b_1_1_endpoint_a87324673d0521e6a87181d734843797a}{Address} () const }\label{class_lib_u_s_b_1_1_endpoint_a87324673d0521e6a87181d734843797a}
+
+\begin{DoxyCompactList}\small\item\em Raw \hyperlink{class_lib_u_s_b_1_1_endpoint}{Endpoint} Address. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_endpoint_a16f5d238ac0f007dbf22b51b2521278c}{int \hyperlink{class_lib_u_s_b_1_1_endpoint_a16f5d238ac0f007dbf22b51b2521278c}{Number} () const }\label{class_lib_u_s_b_1_1_endpoint_a16f5d238ac0f007dbf22b51b2521278c}
+
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_lib_u_s_b_1_1_endpoint}{Endpoint} Number. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_endpoint_a27e288784eaf72a217435e8f5d920d43}{Direction\-\_\-t \hyperlink{class_lib_u_s_b_1_1_endpoint_a27e288784eaf72a217435e8f5d920d43}{Direction} () const }\label{class_lib_u_s_b_1_1_endpoint_a27e288784eaf72a217435e8f5d920d43}
+
+\begin{DoxyCompactList}\small\item\em Returns the direction of this endpoint. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_endpoint_aa5b591898f33c0e2c684c22dadf50974}{Transfer\-\_\-t \hyperlink{class_lib_u_s_b_1_1_endpoint_aa5b591898f33c0e2c684c22dadf50974}{Transfer\-Type} () const }\label{class_lib_u_s_b_1_1_endpoint_aa5b591898f33c0e2c684c22dadf50974}
+
+\begin{DoxyCompactList}\small\item\em Returns the transfer type of this endpoint. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_endpoint_a7cfbe2c62da0e8c84587ed05dc82a1e6}{Synchronization\-\_\-t \hyperlink{class_lib_u_s_b_1_1_endpoint_a7cfbe2c62da0e8c84587ed05dc82a1e6}{Synchronization\-Type} () const }\label{class_lib_u_s_b_1_1_endpoint_a7cfbe2c62da0e8c84587ed05dc82a1e6}
+
+\begin{DoxyCompactList}\small\item\em Returns the synchronization type (I\-S\-O\-C\-H\-R\-O\-N\-O\-U\-S M\-O\-D\-E O\-N\-L\-Y!) \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_endpoint_ad25de43b4d384489061382311505deed}{Usage\-\_\-t \hyperlink{class_lib_u_s_b_1_1_endpoint_ad25de43b4d384489061382311505deed}{Usage\-Type} () const }\label{class_lib_u_s_b_1_1_endpoint_ad25de43b4d384489061382311505deed}
+
+\begin{DoxyCompactList}\small\item\em Returns the usage type (I\-S\-O\-C\-H\-R\-O\-N\-O\-U\-S M\-O\-D\-E O\-N\-L\-Y!) \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_endpoint_a82abc743029a6ae25950509b0a389c7b}{int \hyperlink{class_lib_u_s_b_1_1_endpoint_a82abc743029a6ae25950509b0a389c7b}{Max\-Packet\-Size} () const }\label{class_lib_u_s_b_1_1_endpoint_a82abc743029a6ae25950509b0a389c7b}
+
+\begin{DoxyCompactList}\small\item\em Returns the maximum packet size for this endpoint. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_endpoint_a5082b5c139a3585d8b7277a273c1effc}{int \hyperlink{class_lib_u_s_b_1_1_endpoint_a5082b5c139a3585d8b7277a273c1effc}{Polling\-Interval} () const }\label{class_lib_u_s_b_1_1_endpoint_a5082b5c139a3585d8b7277a273c1effc}
+
+\begin{DoxyCompactList}\small\item\em Returns the polling interval (in frames, 1f = 1m\-S @ low/full speed, 125u\-S at high), ignore for bulk/control, 1 for iso, 1-\/255 for interrupt. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_endpoint_a70135be407240a2577da526217f4d742}{std\-::shared\-\_\-ptr$<$ \hyperlink{class_lib_u_s_b_1_1_transfer}{Transfer} $>$ \hyperlink{class_lib_u_s_b_1_1_endpoint_a70135be407240a2577da526217f4d742}{Create\-Transfer} ()}\label{class_lib_u_s_b_1_1_endpoint_a70135be407240a2577da526217f4d742}
+
+\begin{DoxyCompactList}\small\item\em Creates a new data transfer object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+U\-S\-B endpoint class. 
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+headers/Endpoint.\-h\end{DoxyCompactItemize}

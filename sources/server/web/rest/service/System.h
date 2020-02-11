@@ -1,6 +1,7 @@
 #pragma once
 #include "IRestService.h"
 #include "web/rest/RestDispatcher.h"
+#include "hardware/usb/IDevicesLister.h"
 #include "IRunningInformation.h"
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
 #include "dateTime/TimeZoneDatabase.h"
@@ -15,8 +16,9 @@ namespace web
          class CSystem : public IRestService
          {
          public:
-            explicit CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase);
-            virtual ~CSystem();
+            explicit CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
+                             boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister);
+            virtual ~CSystem() = default;
 
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;
@@ -37,6 +39,7 @@ namespace web
 
          private:
             boost::shared_ptr<shared::serialization::IDataSerializable> getSerialPorts() const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getUsbDevices(const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getNetworkInterfaces(const bool includeLoopback) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> platformIs(const std::string& refPlatform) const;
             static void addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
@@ -46,12 +49,10 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getSupportedTimezones() const;
 
             static std::string m_restKeyword;
-
             boost::shared_ptr<IRunningInformation> m_runningInformation;
-
             static shared::CDataContainer m_virtualDevicesSupportedCapacities;
-
             boost::shared_ptr<dateTime::CTimeZoneDatabase> m_timezoneDatabase;
+            boost::shared_ptr<hardware::usb::IDevicesLister> m_usbDevicesLister;
          };
       } //namespace service
    } //namespace rest

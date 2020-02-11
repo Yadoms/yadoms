@@ -5,22 +5,22 @@
  * @constructor
  */
 function PluginInstance(id, displayName, type, configuration, autoStart, category, deviceConfiguration) {
-    //id is optional because null is used when creating new instance
-    assert(!isNullOrUndefined(displayName), "displayName of a pluginInstance must be defined");
-    assert(!isNullOrUndefined(type), "type of a pluginInstance must be defined");
-    assert(!isNullOrUndefined(configuration), "configuration of a pluginInstance must be defined");
-    assert(!isNullOrUndefined(autoStart), "autoStart of a pluginInstance must be defined");
-    assert(!isNullOrUndefined(category), "category of a pluginInstance must be defined");
+   //id is optional because null is used when creating new instance
+   assert(!isNullOrUndefined(displayName), "displayName of a pluginInstance must be defined");
+   assert(!isNullOrUndefined(type), "type of a pluginInstance must be defined");
+   assert(!isNullOrUndefined(configuration), "configuration of a pluginInstance must be defined");
+   assert(!isNullOrUndefined(autoStart), "autoStart of a pluginInstance must be defined");
+   assert(!isNullOrUndefined(category), "category of a pluginInstance must be defined");
 
-    this.id = id;
-    this.displayName = displayName;
-    this.type = type;
-    this.configuration = configuration;
-    this.autoStart = autoStart;
-    this.lastState = null;
-	this.lastMessageId = null;
-    this.category = category;
-    this.deviceConfiguration = deviceConfiguration;
+   this.id = id;
+   this.displayName = displayName;
+   this.type = type;
+   this.configuration = configuration;
+   this.autoStart = autoStart;
+   this.lastState = null;
+   this.lastMessageId = null;
+   this.category = category;
+   this.deviceConfiguration = deviceConfiguration;
 }
 
 /**
@@ -29,13 +29,13 @@ function PluginInstance(id, displayName, type, configuration, autoStart, categor
  */
 PluginInstance.prototype.toJSON = function () {
    return {
-      id : this.id,
+      id: this.id,
       displayName: this.displayName,
       type: this.type,
       configuration: this.configuration,
       autoStart: this.autoStart,
       category: this.category,
-      deviceConfiguration : this.deviceConfiguration
+      deviceConfiguration: this.deviceConfiguration
    };
 };
 
@@ -43,15 +43,15 @@ PluginInstance.prototype.toJSON = function () {
  * Tells if current instance is system category
  * @returns {boolean}
  */
-PluginInstance.prototype.isSystemCategory = function() {
-    return PluginInstanceManager.isSystemCategory(this);
+PluginInstance.prototype.isSystemCategory = function () {
+   return PluginInstanceManager.isSystemCategory(this);
 };
 
 /**
  * Get the bound package configuration schema
  * @returns {*} The configuration schema or undefined
  */
-PluginInstance.prototype.getBoundPackageConfigurationSchema = function() {
+PluginInstance.prototype.getBoundPackageConfigurationSchema = function () {
    var d = new $.Deferred();
 
    if (!isNullOrUndefined(this.package)) {
@@ -75,7 +75,7 @@ PluginInstance.prototype.getBoundPackageConfigurationSchema = function() {
  * Get the package device configuration schema
  * @returns {*} The device configuration schema or undefined
  */
-PluginInstance.prototype.getPackageDeviceConfigurationSchema = function() {
+PluginInstance.prototype.getPackageDeviceConfigurationSchema = function () {
    var d = new $.Deferred();
 
    if (!isNullOrUndefined(this.package)) {
@@ -95,14 +95,14 @@ PluginInstance.prototype.getPackageDeviceConfigurationSchema = function() {
  * @param {Boolean} system : true to allow system binding
  * @returns A promise
  */
-PluginInstance.prototype.applyBinding  = function(schema, plugin, system) {
-    var allowedTypes = [];
-    if(plugin)
-        allowedTypes.push("plugin");
-    if(system)
-        allowedTypes.push("system");
-        
-    return this.applyBindingPrivate(schema, allowedTypes);
+PluginInstance.prototype.applyBinding = function (schema, plugin, system) {
+   var allowedTypes = [];
+   if (plugin)
+      allowedTypes.push("plugin");
+   if (system)
+      allowedTypes.push("system");
+
+   return this.applyBindingPrivate(schema, allowedTypes);
 }
 
 /**
@@ -114,41 +114,48 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
    var d = new $.Deferred();
 
    if (!isNullOrUndefined(self.package)) {
-      if (  self.package.deviceConfiguration && 
-            self.package.deviceConfiguration.staticConfigurationSchema && 
-            self.package.deviceConfiguration.staticConfigurationSchema.schemas && 
-            Object.keys(self.package.deviceConfiguration.staticConfigurationSchema.schemas).length > 0) {
+      if (self.package.deviceConfiguration &&
+         self.package.deviceConfiguration.staticConfigurationSchema &&
+         self.package.deviceConfiguration.staticConfigurationSchema.schemas &&
+         Object.keys(self.package.deviceConfiguration.staticConfigurationSchema.schemas).length > 0) {
 
-        self.applyBindingPrivate(self.package.deviceConfiguration.staticConfigurationSchema.schemas, ["plugin", "system"])
-         .done(function(schema) {
-            var tmp = { 
-               type:
-               {
-                  type: "comboSection", 
-                  name: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.title", { defaultValue: $.t("configuration.manually-device-model.title") }), 
-                  name: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.description", { defaultValue: $.t("configuration.manually-device-model.description") }), 
-                  content : {}
-               }
-            };
-            for (var k in schema){
-                if (schema.hasOwnProperty(k)) {
-                   for(var typeName in schema[k].types) {
-                     if(parseBool(schema[k].types[typeName].canBeCreatedManually)) {
-                        tmp.type.content[typeName] = {
-                           type: "section",
-                           name: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".title", { defaultValue: typeName}),
-                           description: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".description", { defaultValue: ""}),
-                           content: schema[k].content,
-                           i18nBasePath: "plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas.",
-                           i18nKey: k
-                        };
+         self.applyBindingPrivate(self.package.deviceConfiguration.staticConfigurationSchema.schemas, ["plugin", "system"])
+            .done(function (schema) {
+               var tmp = {
+                  type: {
+                     type: "comboSection",
+                     name: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.title", {
+                        defaultValue: $.t("configuration.manually-device-model.title")
+                     }),
+                     name: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.description", {
+                        defaultValue: $.t("configuration.manually-device-model.description")
+                     }),
+                     content: {}
+                  }
+               };
+               for (var k in schema) {
+                  if (schema.hasOwnProperty(k)) {
+                     for (var typeName in schema[k].types) {
+                        if (parseBool(schema[k].types[typeName].canBeCreatedManually)) {
+                           tmp.type.content[typeName] = {
+                              type: "section",
+                              name: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".title", {
+                                 defaultValue: typeName
+                              }),
+                              description: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".description", {
+                                 defaultValue: ""
+                              }),
+                              content: schema[k].content,
+                              i18nBasePath: "plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas.",
+                              i18nKey: k
+                           };
+                        }
                      }
-                   }
-                }
-            }
-            d.resolve(tmp);
-         })
-         .fail(d.reject);
+                  }
+               }
+               d.resolve(tmp);
+            })
+            .fail(d.reject);
       } else {
          //if device configruation schema are not defined, to not try to do any binding...
          //just resolve with undefined
@@ -233,7 +240,7 @@ PluginInstance.prototype.containsDeviceExtraQuery = function () {
  * @param allowedTypes Allowed types for this item
  * @returns {*}
  */
-PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
+PluginInstance.prototype.applyBindingPrivate = function (item, allowedTypes) {
    assert(!isNullOrUndefined(item), "item must be defined");
    assert(!isNullOrUndefined(allowedTypes), "allowedTypes must be defined");
    var self = this;
@@ -242,7 +249,7 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
 
    var arrayOfDeffered = [];
 
-   $.each(item, function(key, confItem) {
+   $.each(item, function (key, confItem) {
       if ($.isPlainObject(confItem)) {
          if (!isNullOrUndefined(confItem.__Binding__)) {
             //we've got binding
@@ -253,35 +260,39 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
             assert(!isNullOrUndefined(confItem.__Binding__.query), "query must be defined in binding");
 
             switch (confItem.__Binding__.type.toLowerCase()) {
-            case "system":
-               //we ask synchronously the bound value
-               var deffered = RestEngine.getJson("/rest/system/binding/" + confItem.__Binding__.query);
-               arrayOfDeffered.push(deffered);
-               deffered.done(function(data) {
-                     //we replace the binded value by the result
-                  item[key] = data;
-                  })
-                  .fail(function(error) {
-                     notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
+               case "system":
+                  //we ask synchronously the bound value
+                  var deffered = RestEngine.postJson("/rest/system/binding/" + confItem.__Binding__.query, {
+                     data: JSON.stringify(confItem.__Binding__.content)
                   });
-               break;
-            case "plugin":
-               //we ask synchronously the binded value
-               var defferedPlugin = RestEngine.getJson("/rest/plugin/" + self.id + "/binding/" + confItem.__Binding__.query);
-               arrayOfDeffered.push(defferedPlugin);
-               defferedPlugin.done(function(data) {
-                     //we replace the binded value by the result
-                  item[key] = data;
-                  })
-                  .fail(function(error) {
-                     notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
+                  arrayOfDeffered.push(deffered);
+                  deffered.done(function (data) {
+                        //we replace the binded value by the result
+                        item[key] = data;
+                     })
+                     .fail(function (error) {
+                        notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
+                     });
+                  break;
+               case "plugin":
+                  //we ask synchronously the binded value
+                  var defferedPlugin = RestEngine.postJson("/rest/plugin/" + self.id + "/binding/" + confItem.__Binding__.query, {
+                     data: JSON.stringify(confItem.__Binding__.content)
                   });
-               break;
+                  arrayOfDeffered.push(defferedPlugin);
+                  defferedPlugin.done(function (data) {
+                        //we replace the binded value by the result
+                        item[key] = data;
+                     })
+                     .fail(function (error) {
+                        notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
+                     });
+                  break;
             }
          } else {
             var innerDeferred = self.applyBindingPrivate(confItem, allowedTypes);
             arrayOfDeffered.push(innerDeferred);
-            innerDeferred.done(function(data) {
+            innerDeferred.done(function (data) {
                confItem = data;
             });
          }
@@ -289,7 +300,7 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
    });
 
    if (arrayOfDeffered.length > 0) {
-      $.when.apply($, arrayOfDeffered).done(function() {
+      $.when.apply($, arrayOfDeffered).done(function () {
          d.resolve(item);
       });
    } else {

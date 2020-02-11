@@ -1,0 +1,54 @@
+{
+   "type": "StreamDeck",
+   "version": "1.0.0",
+   "author": "Oussama DAHMAZ",
+   "credits": "[Libusb](https://libusb.info/), [Libusbpp](https://github.com/zarthcode/Libusbpp)",
+   "supportedPlatforms": "all",
+   "dependencies": {
+      "yadoms": {
+         "minimumVersion": "2.4.0-beta.1"
+      }
+   },
+   "configurationSchema": {
+      "UsbDevices": {
+         "type": "enum",
+         "values": {
+            "__Binding__": {
+               "type": "system",
+               "query": "usbDevices",
+               "content": {
+                  "oneOf": [
+                     {
+                        "vendorId": 4057,
+                        "productId": 96
+                     }
+                  ]
+               }
+            }
+         }
+      },
+      "customText": {
+         "type": "string"
+      },
+      "keyCoordinates": {
+         "type": "enum",
+         "values": {
+            "key1": "",
+            "key2": "",
+            "key3": ""
+         },
+         "defaultValue": "key1"
+      }
+   },
+   "extraQueries": {
+      "createKey": {
+         "iconClass": "fa  fa-upload",
+         "iconPath": {
+            "fileContent": {
+               "type": "file",
+               "filter": ".txt"
+            }
+         }
+      }
+   }
+}

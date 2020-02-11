@@ -4,7 +4,7 @@
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/Result.h"
 #include "tools/OperatingSystem.h"
-#include <shared/Peripherals.h>
+#include "SerialPortsLister.h"
 #include <shared/currentTime/Provider.h>
 #include <Poco/Net/NetworkInterface.h>
 #include <shared/ServiceLocator.h>
@@ -21,34 +21,26 @@ namespace web
          std::string CSystem::m_restKeyword = std::string("system");
          shared::CDataContainer CSystem::m_virtualDevicesSupportedCapacities;
 
-         CSystem::CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase)
+         CSystem::CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
+                          boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister)
             : m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>()),
-              m_timezoneDatabase(timezoneDatabase)
+              m_timezoneDatabase(timezoneDatabase),
+              m_usbDevicesLister(usbDevicesLister)
          {
          }
-
-
-         CSystem::~CSystem()
-         {
-         }
-
 
          void CSystem::configureDispatcher(CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("binding")("*"), CSystem::getBinding);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation
-            );
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBinding);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"), CSystem
-               ::getVirtualDevicesSupportedCapacities);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"), CSystem::getVirtualDevicesSupportedCapacities);
          }
-
 
          const std::string& CSystem::getRestKeyword()
          {
             return m_restKeyword;
          }
-
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getBinding(const std::vector<std::string>& parameters,
                                                                                          const std::string& requestContent) const
@@ -57,8 +49,10 @@ namespace web
             {
                const auto query = parameters[2];
 
-               if (boost::iequals(query, "SerialPorts"))
+               if (boost::iequals(query, "serialPorts"))
                   return getSerialPorts();
+               if (boost::iequals(query, "usbDevices"))
+                  return getUsbDevices(requestContent);
                if (boost::iequals(query, "NetworkInterfaces"))
                   return getNetworkInterfaces(true);
                if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
@@ -81,7 +75,7 @@ namespace web
          {
             try
             {
-               const auto serialPorts = shared::CPeripherals::getSerialPorts();
+               const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
 
                shared::CDataContainer result;
                for (const auto& serialPort : *serialPorts)
@@ -102,18 +96,82 @@ namespace web
             }
          }
 
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(const std::string& requestContent) const
+         {
+            try
+            {
+               const auto request = shared::CDataContainer(requestContent);
+
+               auto existingDevices = m_usbDevicesLister->listUsbDevices();
+               YADOMS_LOG(debug) << "USB existing devices :";
+               for (const auto& device : existingDevices)
+               {
+                  YADOMS_LOG(debug) << "  - "
+                     << "vid=" << device->vendorId()
+                     << ", pid=" << device->productId()
+                     << ", name=" << device->yadomsFriendlyName()
+                     << ", connectionId=" << device->nativeConnectionString()
+                     << ", serial=" << device->serialNumber();
+               }
+
+               // If request content is empty, return all existing USB devices
+               if (request.empty())
+               {
+                  shared::CDataContainer result;
+                  for (const auto& device : existingDevices)
+                     result.set(device->nativeConnectionString(), device->yadomsFriendlyName(), 0x00);
+                  //in case of key contains a dot, just ensure the full key is taken into account
+                  return CResult::GenerateSuccess(result);
+               }
+
+               // Filter USB devices by request content
+
+               const auto requestedDevices = request.get<std::vector<shared::CDataContainer>>("oneOf");
+               shared::CDataContainer result;
+               YADOMS_LOG(debug) << "USB requested devices :";
+               for (const auto& requestedDevice : requestedDevices)
+               {
+                  YADOMS_LOG(debug) << "  - "
+                     << "vid=" << requestedDevice.get<int>("vendorId")
+                     << ", pid=" << requestedDevice.get<int>("productId");
+
+                  for (const auto& existingDevice : existingDevices)
+                  {
+                     if (existingDevice->vendorId() == requestedDevice.get<int>("vendorId")
+                        && existingDevice->productId() == requestedDevice.get<int>("productId"))
+                     {
+                        //in case of key contains a dot, just ensure the full key is taken into account
+                        result.set(existingDevice->nativeConnectionString(), existingDevice->yadomsFriendlyName(), 0x00);
+                     }
+                  }
+               }
+
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retrieving filtered USB devices");
+            }
+         }
+
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(const bool includeLoopback) const
          {
             try
             {
                shared::CDataContainer result;
-               auto netlist = Poco::Net::NetworkInterface::list();
-               for (const auto& nit : netlist)
+               auto networkInterfaces = Poco::Net::NetworkInterface::list();
+               for (const auto& nit : networkInterfaces)
                {
-                  if (includeLoopback || nit.address().isLoopback())
-                     result.set(nit.name(),
-                                (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
-                                0x00); //in case of key contains a dot, just ensure the full key is taken into account
+                  if (nit.address().isLoopback() && !includeLoopback)
+                     continue;
+
+                  result.set(nit.name(),
+                              (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
+                              0x00); //in case of key contains a dot, just ensure the full key is taken into account
                }
                return CResult::GenerateSuccess(result);
             }
@@ -223,8 +281,8 @@ namespace web
             if (!acceptedMeasureTypes.empty())
             {
                std::vector<std::string> strAcceptedMeasureTypes;
-			   std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(), std::back_inserter(strAcceptedMeasureTypes),
-				   [](const auto &acceptedMeasureType) -> std::string { return acceptedMeasureType.toString(); });
+               std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(), std::back_inserter(strAcceptedMeasureTypes),
+                              [](const auto& acceptedMeasureType) -> std::string { return acceptedMeasureType.toString(); });
 
                capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
             }

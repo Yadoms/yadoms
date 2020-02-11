@@ -29,8 +29,8 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
 	   )
       
       set(YADOMS_SOURCES ${YADOMS_SOURCES}
-         shared/Windows/shared/Peripherals.h
-         shared/Windows/shared/Peripherals.cpp
+         shared/Windows/shared/SerialPortHelper.h
+         shared/Windows/shared/SerialPortHelper.cpp
       )
       
       ADD_YADOMS_INCL_DIR(

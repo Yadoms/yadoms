@@ -1,31 +1,29 @@
 #pragma once
 
 
-namespace shared { namespace serialization {
-
-   //--------------------------------------------------------------
-   /// \brief	    Interface for a serializable object
-   //--------------------------------------------------------------
-   class IDataSerializable
+namespace shared
+{
+   namespace serialization
    {
-   public:
       //--------------------------------------------------------------
-      /// \brief	    Destructor
+      /// \brief	    Interface for a serializable object
       //--------------------------------------------------------------
-      virtual ~IDataSerializable() {}
+      class IDataSerializable
+      {
+      public:
+         virtual ~IDataSerializable() = default;
 
-      //--------------------------------------------------------------
-      /// \brief	    Serialize this CDataContainer instance
-      /// \return     the data serialized
-      //--------------------------------------------------------------
-      virtual std::string serialize() const = 0;
+         //--------------------------------------------------------------
+         /// \brief	    Serialize this CDataContainer instance
+         /// \return     the data serialized
+         //--------------------------------------------------------------
+         virtual std::string serialize() const = 0;
 
-      //--------------------------------------------------------------
-      /// \brief	    Deserialize a string and set data into this CDataContainer instance
-      /// \param [in] data    data to deserialize
-      //--------------------------------------------------------------
-      virtual void deserialize(const std::string & data) = 0;
-   };
-
-} // namespace serialization   
+         //--------------------------------------------------------------
+         /// \brief	    Deserialize a string and set data into this CDataContainer instance
+         /// \param [in] data    data to deserialize
+         //--------------------------------------------------------------
+         virtual void deserialize(const std::string& data) = 0;
+      };
+   } // namespace serialization   
 } // namespace shared   

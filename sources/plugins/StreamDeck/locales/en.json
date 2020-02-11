@@ -1,0 +1,35 @@
+{
+   "name": "Stream Deck",
+   "description": "Stream Deck devices support (see [site web](https://www.elgato.com/fr/gaming/stream-deck))",
+   "configurationSchema": {
+      "UsbDevices": {
+         "name": "USB device",
+         "description": "Select a compatible device"
+      },
+      "keyCoordinates": {
+         "name": "Coordinates of the key",
+         "description": "Coordinates of the key",
+         "values": {
+            "key1": "(0,0)",
+            "key2": "(0,1)",
+            "key3": "(0,2)"
+         }
+      },
+      "customText": {
+         "name": "Custom text",
+         "description": "text to display under icon"
+      }
+   },
+   "extraQueries": {
+      "createKey": {
+         "name": "Key creation",
+         "iconPath": {
+            "fileContent": {
+               "name": "Icon",
+               "description": "icon to send to the plugin "
+            }
+         }
+      }
+   }
+}
+
