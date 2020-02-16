@@ -767,6 +767,7 @@ ELSEIF(APPLE)
       server/tools/mac/tools/OperatingSystem.cpp
       server/hardware/serial/mac/SerialPortsLister.h
       server/hardware/serial/mac/SerialPortsLister.cpp
+      server/hardware/usb/lsusb/DevicesListerFactory.cpp
       server/hardware/usb/lsusb/LsusbCall.h
       server/hardware/usb/lsusb/LsusbCall.cpp
       server/hardware/usb/lsusb/LsusbDevice.h
