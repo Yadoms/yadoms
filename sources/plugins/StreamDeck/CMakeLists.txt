@@ -21,6 +21,8 @@ if(LIBUSBPP_FOUND)
 		IDeviceManager.h
 		CFactory.cpp
 		CFactory.h
+		StreamDeckOriginal.cpp
+		StreamDeckOriginal.h
 	)
 
 	#########################################

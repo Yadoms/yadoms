@@ -3,7 +3,7 @@
 #include "Configuration.h"
 #include "IDeviceManager.h"
 
-class CDeviceManager final : public IDeviceManager
+class CDeviceManager : public IDeviceManager
 {
 public:
 
@@ -15,6 +15,9 @@ public:
 	std::list<std::shared_ptr<LibUSB::Device>> getStreamDeckDevices() const override;
 
 	boost::shared_ptr<UsbDeviceInformation> getDeviceInformation() override;
+
+	void open();
+	//virtual void reset() = 0;
 
 private:
 

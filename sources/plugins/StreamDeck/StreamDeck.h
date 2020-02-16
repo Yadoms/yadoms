@@ -40,4 +40,6 @@ private:
 	                          boost::shared_ptr<UsbDeviceInformation>& deviceInformation);
 
 	boost::shared_ptr<UsbDeviceInformation> initDevice(boost::shared_ptr<yApi::IYPluginApi>& api) const;
+
+	std::shared_ptr<unsigned char> allocString(const char* pString, size_t& outSize);
 };

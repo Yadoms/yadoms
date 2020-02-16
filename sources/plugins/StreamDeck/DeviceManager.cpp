@@ -72,3 +72,17 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManager::getDeviceInformation()
 	return deviceInformation;
 }
 
+void CDeviceManager::open()
+{
+	auto deviceList = LibUSB::LibUSB::FindDevice(getDeviceInformation()->vendorID, getDeviceInformation()->productID);
+
+	if (deviceList.empty())
+	{
+		throw std::runtime_error("No compatible device found");
+	}
+
+	auto pDevice = *deviceList.begin();
+
+	pDevice->Open();
+}
+
