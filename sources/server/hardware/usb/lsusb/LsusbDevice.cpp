@@ -42,7 +42,14 @@ CLsusbDevice::CLsusbDevice(int vendorId,
                                    matches,
                                    std::regex(std::string("^ *iSerial *[[:digit:]]* ([[:xdigit:]]*)$"))) ||
                 matches.size() != 2)
-               continue;
+            {
+               // LsUsb output can be different depending on version or platform
+               if (!std::regex_search(line,
+                                    matches,
+                                    std::regex(std::string("^ *Serial Number: *(.*)$"))) ||
+                  matches.size() != 2)
+                  continue;
+            }
 
             m_serialNumber = matches[1];
             return;
