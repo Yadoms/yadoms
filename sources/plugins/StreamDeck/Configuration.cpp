@@ -50,3 +50,8 @@ void CConfiguration::trace() const
       YADOMS_LOG(error) << "Parameter value out of range : " << e.what();
    }
 }
+
+std::string CConfiguration::getUsbDevice() const
+{
+    return m_configuration.get<std::string>("UsbDevices");
+}

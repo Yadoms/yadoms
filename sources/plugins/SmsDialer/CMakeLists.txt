@@ -51,6 +51,15 @@ if(GAMMU_FOUND)
        ${GAMMU_LIBRARIES}
    )
 
+   if (NOT WIN32 AND NOT APPLE AND LIBUSBPP_FOUND)
+      set(SMS_DIALER_ADDITIONAL_LIB
+         ${SMS_DIALER_ADDITIONAL_LIB}
+         ${LIBUSBPP_LIBRARIES}
+         bluetooth
+         glib-2.0
+      )
+   endif()
+
    #########################################
    ## Always leave this three lines to configure plugin correctly
    ## even if SMS_DIALER_ADDITIONAL_INC_DIR or SMS_DIALER_ADDITIONAL_LIB are empty

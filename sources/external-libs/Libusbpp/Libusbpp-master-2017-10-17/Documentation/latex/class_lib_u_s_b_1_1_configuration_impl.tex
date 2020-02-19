@@ -1,0 +1,87 @@
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl}{\section{Lib\-U\-S\-B\-:\-:Configuration\-Impl Class Reference}
+\label{class_lib_u_s_b_1_1_configuration_impl}\index{Lib\-U\-S\-B\-::\-Configuration\-Impl@{Lib\-U\-S\-B\-::\-Configuration\-Impl}}
+}
+
+
+\hyperlink{class_lib_u_s_b_1_1_configuration}{Configuration} Implementation.  
+
+
+
+
+{\ttfamily \#include $<$Configuration\-Impl.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_a0b11de0d60d51f2f6c1d38124b34b04f}{\hyperlink{class_lib_u_s_b_1_1_configuration_impl_a0b11de0d60d51f2f6c1d38124b34b04f}{Configuration\-Impl} (libusb\-\_\-config\-\_\-descriptor $\ast$p\-Config\-Descriptor, std\-::weak\-\_\-ptr$<$ \hyperlink{class_lib_u_s_b_1_1_device_impl}{Device\-Impl} $>$ p\-Parent\-Device\-Impl)}\label{class_lib_u_s_b_1_1_configuration_impl_a0b11de0d60d51f2f6c1d38124b34b04f}
+
+\begin{DoxyCompactList}\small\item\em Constructor -\/ initializes. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_a67a1ec3e03c58c8ccc5a2dbb48449e57}{std\-::wstring \hyperlink{class_lib_u_s_b_1_1_configuration_impl_a67a1ec3e03c58c8ccc5a2dbb48449e57}{Descriptor\-String} (void) const }\label{class_lib_u_s_b_1_1_configuration_impl_a67a1ec3e03c58c8ccc5a2dbb48449e57}
+
+\begin{DoxyCompactList}\small\item\em Returns the string descriptor describing this configuration. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_a52098d1d98462e66d75c9d9ef3dd7554}{uint8\-\_\-t \hyperlink{class_lib_u_s_b_1_1_configuration_impl_a52098d1d98462e66d75c9d9ef3dd7554}{get\-Value} () const }\label{class_lib_u_s_b_1_1_configuration_impl_a52098d1d98462e66d75c9d9ef3dd7554}
+
+\begin{DoxyCompactList}\small\item\em Returns the identifier value of this configuration. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_ad51bb092ef0b3bad913512e874423037}{uint8\-\_\-t \hyperlink{class_lib_u_s_b_1_1_configuration_impl_ad51bb092ef0b3bad913512e874423037}{get\-Max\-Power} () const }\label{class_lib_u_s_b_1_1_configuration_impl_ad51bb092ef0b3bad913512e874423037}
+
+\begin{DoxyCompactList}\small\item\em Returns the maximum amount of power this device will consume while fully operational. (units of 2m\-A) \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_ac71f8ee195c25152e2cf376f012371f3}{void \hyperlink{class_lib_u_s_b_1_1_configuration_impl_ac71f8ee195c25152e2cf376f012371f3}{Set\-As\-Active} ()}\label{class_lib_u_s_b_1_1_configuration_impl_ac71f8ee195c25152e2cf376f012371f3}
+
+\begin{DoxyCompactList}\small\item\em Sets this configuration as the active configuration. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_a307a46829bab9de77f2d8810819443fd}{bool \hyperlink{class_lib_u_s_b_1_1_configuration_impl_a307a46829bab9de77f2d8810819443fd}{is\-Self\-Powered} () const }\label{class_lib_u_s_b_1_1_configuration_impl_a307a46829bab9de77f2d8810819443fd}
+
+\begin{DoxyCompactList}\small\item\em Returns T\-R\-U\-E if the device is self powered. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_a29578c0c764baa9e04e731caae125cd2}{bool \hyperlink{class_lib_u_s_b_1_1_configuration_impl_a29578c0c764baa9e04e731caae125cd2}{supports\-Remote\-Wakeup} () const }\label{class_lib_u_s_b_1_1_configuration_impl_a29578c0c764baa9e04e731caae125cd2}
+
+\begin{DoxyCompactList}\small\item\em Returns T\-R\-U\-E if the device supports remote wakeup. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_ac7028fac9d117779600cf247b8a2c6b3}{bool \hyperlink{class_lib_u_s_b_1_1_configuration_impl_ac7028fac9d117779600cf247b8a2c6b3}{has\-Extra\-Descriptors} () const }\label{class_lib_u_s_b_1_1_configuration_impl_ac7028fac9d117779600cf247b8a2c6b3}
+
+\begin{DoxyCompactList}\small\item\em Returns T\-R\-U\-E if there are extra descriptors present. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_afcdef14d116bd97afb749a8e38234d61}{const unsigned char $\ast$ \hyperlink{class_lib_u_s_b_1_1_configuration_impl_afcdef14d116bd97afb749a8e38234d61}{get\-Extra\-Descriptors} () const }\label{class_lib_u_s_b_1_1_configuration_impl_afcdef14d116bd97afb749a8e38234d61}
+
+\begin{DoxyCompactList}\small\item\em Returns a pointer the the extra descriptors. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_a0310d0d1b7e7dde89dce64a225ec05c4}{int \hyperlink{class_lib_u_s_b_1_1_configuration_impl_a0310d0d1b7e7dde89dce64a225ec05c4}{get\-Extra\-Descriptor\-Size} () const }\label{class_lib_u_s_b_1_1_configuration_impl_a0310d0d1b7e7dde89dce64a225ec05c4}
+
+\begin{DoxyCompactList}\small\item\em Returns the size of the extra descriptors, in bytes. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_af7ea2860cb4e707d20fd9de06ed18d22}{int \hyperlink{class_lib_u_s_b_1_1_configuration_impl_af7ea2860cb4e707d20fd9de06ed18d22}{Num\-Interfaces} () const }\label{class_lib_u_s_b_1_1_configuration_impl_af7ea2860cb4e707d20fd9de06ed18d22}
+
+\begin{DoxyCompactList}\small\item\em Returns the number of interfaces this configuration has. \end{DoxyCompactList}\item 
+std\-::shared\-\_\-ptr$<$ \hyperlink{class_lib_u_s_b_1_1_interface}{Interface} $>$ \hyperlink{class_lib_u_s_b_1_1_configuration_impl_a181693d8f225cf8020888bbf8984f670}{get\-Interface\-By\-Index} (int index) const 
+\begin{DoxyCompactList}\small\item\em Returns the requested interface (by index) \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_aa4e714a3d0c5ca0465840b35e59d2d34}{std\-::shared\-\_\-ptr$<$ \hyperlink{class_lib_u_s_b_1_1_interface}{Interface} $>$ \hyperlink{class_lib_u_s_b_1_1_configuration_impl_aa4e714a3d0c5ca0465840b35e59d2d34}{get\-Interface} (int Interface\-Number) const }\label{class_lib_u_s_b_1_1_configuration_impl_aa4e714a3d0c5ca0465840b35e59d2d34}
+
+\begin{DoxyCompactList}\small\item\em Returns the requested interface (by b\-Interface\-Number) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_ad5f1677bc19772fed0c1b5e7ac88421f}{void \hyperlink{class_lib_u_s_b_1_1_configuration_impl_ad5f1677bc19772fed0c1b5e7ac88421f}{Create\-Interfaces} ()}\label{class_lib_u_s_b_1_1_configuration_impl_ad5f1677bc19772fed0c1b5e7ac88421f}
+
+\begin{DoxyCompactList}\small\item\em Create all interfaces. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{class_lib_u_s_b_1_1_configuration}{Configuration} Implementation. 
+
+\subsection{Member Function Documentation}
+\hypertarget{class_lib_u_s_b_1_1_configuration_impl_a181693d8f225cf8020888bbf8984f670}{\index{Lib\-U\-S\-B\-::\-Configuration\-Impl@{Lib\-U\-S\-B\-::\-Configuration\-Impl}!get\-Interface\-By\-Index@{get\-Interface\-By\-Index}}
+\index{get\-Interface\-By\-Index@{get\-Interface\-By\-Index}!LibUSB::ConfigurationImpl@{Lib\-U\-S\-B\-::\-Configuration\-Impl}}
+\subsubsection[{get\-Interface\-By\-Index}]{\setlength{\rightskip}{0pt plus 5cm}std\-::shared\-\_\-ptr$<$ {\bf Lib\-U\-S\-B\-::\-Interface} $>$ Lib\-U\-S\-B\-::\-Configuration\-Impl\-::get\-Interface\-By\-Index (
+\begin{DoxyParamCaption}
+\item[{int}]{index}
+\end{DoxyParamCaption}
+) const}}\label{class_lib_u_s_b_1_1_configuration_impl_a181693d8f225cf8020888bbf8984f670}
+
+
+Returns the requested interface (by index) 
+
+\begin{DoxyNote}{Note}
+I'm at a loss determining if the (array) index is required to correspond to the interface number.
+
+\#1 Possibly iterate through the interfaces and check b\-Interface\-Number instead??? 
+\end{DoxyNote}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+src/Configuration\-Impl.\-h\item 
+src/Configuration\-Impl.\-cpp\end{DoxyCompactItemize}

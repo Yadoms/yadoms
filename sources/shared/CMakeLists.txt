@@ -384,8 +384,8 @@ set(SHARED_LIB_SRC
    windows/shared/iobFuncLegacyAdapter.cpp
    windows/shared/NetworkHelper.h
    windows/shared/NetworkHelper.cpp
-   windows/shared/Peripherals.h
-   windows/shared/Peripherals.cpp
+   windows/shared/SerialPortHelper.h
+   windows/shared/SerialPortHelper.cpp
    windows/shared/Thread.h
    windows/shared/Thread.cpp
    
@@ -410,8 +410,8 @@ set(SHARED_LIB_SRC
    mac/shared/FileSystemExtension.cpp
    mac/shared/NetworkHelper.h
    mac/shared/NetworkHelper.cpp
-   mac/shared/Peripherals.h
-   mac/shared/Peripherals.cpp
+   mac/shared/SerialPortHelper.h
+   mac/shared/SerialPortHelper.cpp
    mac/shared/Thread.h
    mac/shared/Thread.cpp
    
@@ -432,8 +432,8 @@ set(SHARED_LIB_SRC
    linux/shared/FileSystemExtension.cpp
    linux/shared/NetworkHelper.h
    linux/shared/NetworkHelper.cpp
-   linux/shared/Peripherals.h
-   linux/shared/Peripherals.cpp
+   linux/shared/SerialPortHelper.h
+   linux/shared/SerialPortHelper.cpp
    linux/shared/Thread.h
    linux/shared/Thread.cpp
    

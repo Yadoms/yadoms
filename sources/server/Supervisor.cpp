@@ -34,7 +34,7 @@
 #include "dateTime/TimeZoneProvider.h"
 #include "dateTime/TimeZoneDatabase.h"
 #include "automation/interpreter/Manager.h"
-#include "hardware/usb/DevicesLister.h"
+#include "hardware/usb/DevicesListerFactory.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider)
    : m_pathProvider(pathProvider)
@@ -151,7 +151,7 @@ void CSupervisor::run()
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPluginEventLogger>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CEventLogger>(dal->getEventLogger()));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CSystem>(timezoneDatabase,
-                                                                                                               boost::make_shared<hardware::usb::CDevicesLister>()));
+                                                                                                               hardware::usb::CDevicesListerFactory::createDeviceLister()));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CAcquisition>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CAutomationRule>(pDataProvider, automationRulesManager));

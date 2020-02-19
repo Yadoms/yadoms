@@ -1,35 +1,43 @@
 {
-	"name": "Stream Deck",
-	"description": "Stream Deck devices support (see [site web](https://www.elgato.com/fr/gaming/stream-deck))",
-  "configurationSchema": {
-    "UsbDevices": {
-      "name": "USB device",
-      "description": "Select a compatible device"
-    },
-    "StringParameter": {
-      "name": "A string example",
-      "description": "Just a string parameter"
-    },
-    "BoolParameter": {
-      "name": "A bool example",
-      "description": "Just a boolean example"
-    },
-    "IntParameter": {
-      "name": "An integer example",
-      "description": "This is my int parameter example"
-    },
-    "DecimalParameter": {
-      "name": "A decimal example",
-      "description": "Now a decimal"
-    },
-    "EnumParameter": {
-      "name": "A custom enum example",
-      "description": "Example of an enum with 3 values",
-      "values": {
-        "EnumValue1": "My first value",
-        "EnumValue2": "My second value",
-        "EnumValue3": "My third value"
+   "name": "Stream Deck",
+   "description": "Stream Deck devices support (see [site web](https://www.elgato.com/fr/gaming/stream-deck))",
+   "configurationSchema": {
+      "UsbDevices": {
+         "name": "USB device",
+         "description": "Select a compatible device"
       }
-    }
-  }
+   },
+   "customLabels": {
+      "pluginState": {
+         "failedToConnect": "The connexion failed...",
+         "initializationError": "Initialization error"
+      }
+   },
+   "createKey": {
+      "step1": "Step n°1",
+      "step2": "Step n°2",
+      "step3": "Step n°3",
+      "step4": "Step n°4"
+   },
+   "extraQueries": {
+      "createKey": {
+         "name": "Create a key",
+         "description": "List of the keys coordinates",
+         "commandData": {
+            "dynamicSection": {
+               "name": "List of available coordinates",
+               "description": "The list of coordinates presented in the form of an index (i, j)"
+            },
+            "customText": {
+               "name": "Texte personnalisé",
+               "description": "Texte personnalisé à afficher en dessous de l'icône"
+            },
+            "fileContent": {
+               "name": "Icône",
+               "description": "Chemin de l'icône à envoyer au plugin"
+            }
+         }
+      }
+   }
 }
+

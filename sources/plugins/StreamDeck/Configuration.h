@@ -50,6 +50,7 @@ public:
    //--------------------------------------------------------------
    EEnumType getEnumParameter() const;
 
+   std::string getUsbDevice() const;
 private:
    //--------------------------------------------------------------
    /// \brief	    Configuration getter

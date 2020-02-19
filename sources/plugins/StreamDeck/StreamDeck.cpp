@@ -1,19 +1,12 @@
+#include "CFactory.h"
 #include "stdafx.h"
 #include "StreamDeck.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
+#include "DeviceManager.h"
+#include <shared/plugin/yPluginApi/configuration/File.h>
 
-/* ----------------------------------
-
-Insert here all include files
-
-   ---------------------------------- */
-
-
-// Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
-// Note that you have to provide some extra files, like package.json, and icon.png
 IMPLEMENT_PLUGIN(CStreamDeck)
-
 
 CStreamDeck::CStreamDeck()
 {
@@ -23,106 +16,197 @@ CStreamDeck::~CStreamDeck()
 {
 }
 
-// Event IDs
 enum
 {
-   // Example of adding a custom event
-   kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
-
-   /* ----------------------------------
-
-   Insert here all your events
-
-   ---------------------------------- */
+	kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
 };
 
 void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   // Informs Yadoms about the plugin actual state
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+	api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   YADOMS_LOG(information) << "CStreamDeck is starting...";
+	YADOMS_LOG(information) << "StreamDeck is starting...";
 
-   // Load configuration values (provided by database)
-   m_configuration.initializeWith(api->getConfiguration());
-   api->getConfiguration().printToLog(YADOMS_LOG(debug)); //TODO pour test, à virer
+	m_configuration.initializeWith(api->getConfiguration());
+	m_deviceManager = CFactory::createDeviceManager(m_configuration);
 
-   /* -----------------------------
-   
-      Create & declare here all your devices and keywords.
-      Create timers.
+	auto deviceInformation = initDevice(api);
 
-      ----------------------------- */
+	m_deviceManager->open();
+	
+	m_deviceManager->reset();
 
-   api->setPluginState(yApi::historization::EPluginState::kRunning);
+	m_deviceManager->setBrightness(30);
 
-   // the main loop
-   while (true)
-   {
-      // Wait for an event
-      switch (api->getEventHandler().waitForEvents())
-      {
-      case yApi::IYPluginApi::kEventStopRequested:
-         {
-            // Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
-            YADOMS_LOG(information) << "Stop requested";
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
-            return;
-         }
 
-      case yApi::IYPluginApi::kEventUpdateConfiguration:
-         {
-            // Configuration was updated
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
-            YADOMS_LOG(information) << "Update configuration...";
+	// the main loop
+	while (true)
+	{
+		// Wait for an event
+		switch (api->getEventHandler().waitForEvents())
+		{
+		case yApi::IYPluginApi::kEventStopRequested:
+			{
+				// Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
+				YADOMS_LOG(information) << "Stop requested";
+				api->setPluginState(yApi::historization::EPluginState::kStopped);
+				return;
+			}
 
-            // Take into account the new configuration
-            // - Restart the plugin if necessary,
-            // - Update some resources,
-            // - etc...
-            m_configuration.initializeWith(newConfiguration);
+		case yApi::IYPluginApi::kEventUpdateConfiguration:
+			{
+				// Configuration was updated
+				api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+				const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
+				YADOMS_LOG(information) << "Update configuration...";
 
-            // Trace the configuration
-            m_configuration.trace();
+				m_deviceManager = CFactory::createDeviceManager(m_configuration);
 
-            api->setPluginState(yApi::historization::EPluginState::kRunning);
+				deviceInformation.reset();
+				deviceInformation = initDevice(api);
+				
+				m_configuration.initializeWith(newConfiguration);
 
-            break;
-         }
+				// Trace the configuration
+				m_configuration.trace();
 
-      case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // A command was received from Yadoms
-            const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-            YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
+				api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-            /*
+				break;
+			}
 
-            Process the command here (to drive a keyword for example)
+		case yApi::IYPluginApi::kEventDeviceCommand:
+			{
+				// A command was received from Yadoms
+				const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>
+				>();
+				YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
-            */
+				/*
+	
+				Process the command here (to drive a keyword for example)
+	
+				*/
 
-            break;
-         }
+				break;
+			}
 
-      case kCustomEvent:
-         {
-            /*
+		case yApi::IYPluginApi::kBindingQuery:
+		{
+			// Yadoms ask for a binding query 
+			auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
+			if (request->getData().getQuery() == "keyCreation")
+			{
+				auto keys = CDeviceManagerHelper::buildKeys(deviceInformation->keyCols, deviceInformation->keyRows);
+				auto coordinates =  CDeviceManagerHelper::buildCoordinates(deviceInformation->keyCols, deviceInformation->keyRows);
+				
+				shared::CDataContainer ev;
+				for (auto i = 0; i < keys.size(); i++)
+				{
+					ev.set(keys[i], coordinates[i]);
+				}
 
-            Process your custom event
+				shared::CDataContainer en;
+				en.set("name", "Coordinates keys");
+				en.set("description", "List of coordinates");
+				en.set("type", "enum");
+				en.set("values", ev);
+				en.set("defaultValue", "KEY0");
 
-            */
+				shared::CDataContainer result;
+				result.set("interval", en);
 
-            break;
-         }
+				request->sendSuccess(result);
+			}
+			else
+			{
+				const auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
+				request->sendError(errorMessage);
+				YADOMS_LOG(error) << errorMessage;
+			}
+			break;
+		}
+		case yApi::IYPluginApi::kEventExtraQuery:
+		{
+				
+			// Extra-command was received from Yadoms
+			auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
 
-      default:
-         {
-            YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
-            break;
-         }
-      }
-   }
+			if (extraQuery)
+			{
+				YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
+
+				if (extraQuery->getData()->query() == "createKey")
+				{
+					const auto interval = extraQuery->getData()->data().get<std::string>("dynamicSection.content.interval");
+					YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
+					
+					auto fileFromClient = extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
+					auto firmwareContent = fileFromClient.getContent();
+
+					YADOMS_LOG(information) << "File received from extra command";
+					YADOMS_LOG(information) << "    File name = " << fileFromClient.getFileName();
+					YADOMS_LOG(information) << "    File size = " << fileFromClient.getSize();
+					YADOMS_LOG(information) << "    File type = " << fileFromClient.getMimeType();
+					YADOMS_LOG(information) << "    File date = " << fileFromClient.getLastModificationDate().getBoostDateTime();
+					YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
+
+					for (auto i = 0; i < 100; ++i)
+					{
+						if (i < 25)
+							extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step1");
+						else if (i < 50)
+							extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step2");
+						else if (i < 75)
+							extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step3");
+						else
+							extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step4");
+						boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+					}
+				}
+
+				extraQuery->sendSuccess(shared::CDataContainer());
+			}
+
+			else
+			{
+				extraQuery->sendError("error content");
+			}
+			break;
+		}
+
+		default:
+			{
+				YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
+				break;
+			}
+		}
+	}
+}
+void CStreamDeck::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
+										boost::shared_ptr<UsbDeviceInformation>& deviceInformation)
+
+{
+	if (!api->deviceExists(deviceInformation->deviceName))
+		api->declareDevice(deviceInformation->deviceName, deviceInformation->serialNumber, deviceInformation->deviceModel);
+}
+
+boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_ptr<yApi::IYPluginApi>& api)
+{
+	try
+	{
+		auto usbDeviceInformation = CDeviceManagerHelper::getDeviceInformation(m_configuration);
+
+		declareDevice(api, usbDeviceInformation);
+
+		api->setPluginState(yApi::historization::EPluginState::kRunning);
+		
+		return usbDeviceInformation;
+	}
+	catch (std::exception&)
+	{
+		api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
+		throw;
+	}
 }
 

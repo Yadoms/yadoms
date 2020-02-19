@@ -1,35 +1,44 @@
-﻿{
-  "name": "Stream Deck",
-  "description": "Support de l'équipement Stream Deck (voir [site web Stream Deck](https://www.elgato.com/fr/gaming/stream-deck))",
-  "configurationSchema": {
-    "UsbDevices": {
-      "name": "Périphérique USB",
-      "description": "Sélectionner un périphérique compatible"
-    },
-    "StringParameter": {
-      "name": "Un exemple de chaîne",
-      "description": "Voici un exemple de paramètre chaîne"
-    },
-    "BoolParameter": {
-      "name": "Un exemple de booléen",
-      "description": "Voici un exemple de paramètre booléen"
-    },
-    "IntParameter": {
-      "name": "Un exemple d'entier",
-      "description": "Voici un exemple de paramètre entier"
-    },
-    "DecimalParameter": {
-      "name": "Un exemple de nombre décimal",
-      "description": "Maintenant un decimal"
-    },
-    "EnumParameter": {
-      "name": "Un exemple d'énuméré personnalisé",
-      "description": "Exemple d'énuméré avec 3 valeurs",
-      "values": {
-        "EnumValue1": "Ma première valeur",
-        "EnumValue2": "Ma seconde valeur",
-        "EnumValue3": "Ma troisième valeur"
+{
+   "name": "Stream Deck",
+   "description": "Support de l'équipement Stream Deck (voir [site web Stream Deck](https://www.elgato.com/fr/gaming/stream-deck))",
+   "configurationSchema": {
+      "UsbDevices": {
+         "name": "Périphérique USB",
+         "description": "Sélectionner un périphérique compatible"
+      } 
+   },
+   "customLabels": {
+      "pluginState": {
+         "failedToConnect": "La connexion a échoué...",
+         "initializationError": "Erreur d'initialisation"
       }
-    }
-  }
+   },
+   "createKey": {
+      "step1": "Etape n°1",
+      "step2": "Etape n°2",
+      "step3": "Etape n°3",
+      "step4": "Etape n°4"
+   },
+   "extraQueries": {
+      "createKey": {
+         "name": "Création de clé",
+         "description": "La liste des coordonnées des clés de l'équipement",
+         "commandData": {
+            "dynamicSection": {
+               "name": "La liste des Coordonnées disponoble",
+               "description": "La liste des coordonnées présentés sous forme d'index (i,j) "
+            },
+            "customText": {
+               "name": "Texte personnalisé",
+               "description": "Texte personnalisé à afficher en dessous de l'icône"
+            },
+            "fileContent": {
+               "name": "Icône",
+               "description": "Chemin de l'icône à envoyer au plugin"
+            }
+         }
+
+      }
+   }
 }
+

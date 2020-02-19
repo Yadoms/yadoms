@@ -1,0 +1,122 @@
+\hypertarget{class_lib_u_s_b_1_1_lib_u_s_b}{\section{Lib\-U\-S\-B\-:\-:Lib\-U\-S\-B Class Reference}
+\label{class_lib_u_s_b_1_1_lib_u_s_b}\index{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B@{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B}}
+}
+
+
+Contains static methods for enumerating devices.  
+
+
+
+
+{\ttfamily \#include $<$libusbpp.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\-::shared\-\_\-ptr$<$ \hyperlink{class_lib_u_s_b_1_1_device}{Device} $>$($\ast$ \hyperlink{class_lib_u_s_b_1_1_lib_u_s_b_a532d474d390477dffd2109e8540be558}{Device\-Factory\-\_\-t} )(std\-::shared\-\_\-ptr$<$ Device\-Impl $>$)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std\-::list\\*
+$<$ std\-::shared\-\_\-ptr$<$ \hyperlink{class_lib_u_s_b_1_1_device}{Device} $>$ $>$ \hyperlink{class_lib_u_s_b_1_1_lib_u_s_b_a1e96edfe8903783e33d572ff43ee8238}{Find\-Device} (uint16\-\_\-t vendor\-I\-D, uint16\-\_\-t product\-I\-D, \hyperlink{class_lib_u_s_b_1_1_lib_u_s_b_a532d474d390477dffd2109e8540be558}{Device\-Factory\-\_\-t} factory=nullptr)
+\begin{DoxyCompactList}\small\item\em Returns a list of devices (that can be opened) that match the given vendor/product id. \end{DoxyCompactList}\item 
+static std\-::list\\*
+$<$ std\-::shared\-\_\-ptr$<$ \hyperlink{class_lib_u_s_b_1_1_device}{Device} $>$ $>$ \hyperlink{class_lib_u_s_b_1_1_lib_u_s_b_aaf1f6d3a7df3a9fefd8b12ba25a7c3be}{Find\-Device} (uint16\-\_\-t vendor\-I\-D, uint16\-\_\-t product\-I\-D, std\-::wstring serial\-Str, \hyperlink{class_lib_u_s_b_1_1_lib_u_s_b_a532d474d390477dffd2109e8540be558}{Device\-Factory\-\_\-t} factory=nullptr)
+\begin{DoxyCompactList}\small\item\em Returns a list of devices (that can be opened) that match the given vendor/product id. \end{DoxyCompactList}\item 
+\hypertarget{class_lib_u_s_b_1_1_lib_u_s_b_acce20c7a3bd52fffe9df3ce23021858d}{static std\-::list\\*
+$<$ std\-::shared\-\_\-ptr$<$ \hyperlink{class_lib_u_s_b_1_1_device}{Device} $>$ $>$ \hyperlink{class_lib_u_s_b_1_1_lib_u_s_b_acce20c7a3bd52fffe9df3ce23021858d}{Find\-All\-Devices} (\hyperlink{class_lib_u_s_b_1_1_lib_u_s_b_a532d474d390477dffd2109e8540be558}{Device\-Factory\-\_\-t} factory=nullptr)}\label{class_lib_u_s_b_1_1_lib_u_s_b_acce20c7a3bd52fffe9df3ce23021858d}
+
+\begin{DoxyCompactList}\small\item\em Returns all devices attached to the system. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_lib_u_s_b_1_1_lib_u_s_b_aed9f2bd8ff81bd3986d935f9aa242d1b}{class {\bfseries Transfer\-Impl}}\label{class_lib_u_s_b_1_1_lib_u_s_b_aed9f2bd8ff81bd3986d935f9aa242d1b}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Contains static methods for enumerating devices. 
+
+\subsection{Member Typedef Documentation}
+\hypertarget{class_lib_u_s_b_1_1_lib_u_s_b_a532d474d390477dffd2109e8540be558}{\index{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B@{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B}!Device\-Factory\-\_\-t@{Device\-Factory\-\_\-t}}
+\index{Device\-Factory\-\_\-t@{Device\-Factory\-\_\-t}!LibUSB::LibUSB@{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B}}
+\subsubsection[{Device\-Factory\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\-::shared\-\_\-ptr$<${\bf Device}$>$($\ast$ Lib\-U\-S\-B\-::\-Lib\-U\-S\-B\-::\-Device\-Factory\-\_\-t)(std\-::shared\-\_\-ptr$<$ Device\-Impl $>$)}}\label{class_lib_u_s_b_1_1_lib_u_s_b_a532d474d390477dffd2109e8540be558}
+Function pointer to a \hyperlink{class_lib_u_s_b_1_1_lib_u_s_b}{Lib\-U\-S\-B} device object factory. \begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000001}{Todo}]Replace with std\-::function? \end{DoxyRefDesc}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_lib_u_s_b_1_1_lib_u_s_b_a1e96edfe8903783e33d572ff43ee8238}{\index{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B@{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B}!Find\-Device@{Find\-Device}}
+\index{Find\-Device@{Find\-Device}!LibUSB::LibUSB@{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B}}
+\subsubsection[{Find\-Device}]{\setlength{\rightskip}{0pt plus 5cm}static std\-::list$<$std\-::shared\-\_\-ptr$<${\bf Device}$>$ $>$ Lib\-U\-S\-B\-::\-Lib\-U\-S\-B\-::\-Find\-Device (
+\begin{DoxyParamCaption}
+\item[{uint16\-\_\-t}]{vendor\-I\-D, }
+\item[{uint16\-\_\-t}]{product\-I\-D, }
+\item[{{\bf Device\-Factory\-\_\-t}}]{factory = {\ttfamily nullptr}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_lib_u_s_b_1_1_lib_u_s_b_a1e96edfe8903783e33d572ff43ee8238}
+
+
+Returns a list of devices (that can be opened) that match the given vendor/product id. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vendor\-I\-D} & (uint16\-\_\-t)\-: U\-S\-B-\/\-I\-F vendor id of the desired device. \\
+\hline
+{\em device\-I\-D} & (uint16\-\_\-t)\-: U\-S\-B-\/\-I\-F product id of the desired device. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+(std\-::list$<$std\-::shared\-\_\-ptr$<$\-D$>$$>$)\-: List of shared pointers to \hyperlink{class_lib_u_s_b_1_1_device}{Lib\-U\-S\-B\-::\-Device} class objects. 
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See Also}
+
+\end{DoxySeeAlso}
+\begin{DoxyNote}{Note}
+
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+Multiple devices can be returned via this method, if attached. 
+\end{DoxyWarning}
+\hypertarget{class_lib_u_s_b_1_1_lib_u_s_b_aaf1f6d3a7df3a9fefd8b12ba25a7c3be}{\index{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B@{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B}!Find\-Device@{Find\-Device}}
+\index{Find\-Device@{Find\-Device}!LibUSB::LibUSB@{Lib\-U\-S\-B\-::\-Lib\-U\-S\-B}}
+\subsubsection[{Find\-Device}]{\setlength{\rightskip}{0pt plus 5cm}static std\-::list$<$std\-::shared\-\_\-ptr$<${\bf Device}$>$ $>$ Lib\-U\-S\-B\-::\-Lib\-U\-S\-B\-::\-Find\-Device (
+\begin{DoxyParamCaption}
+\item[{uint16\-\_\-t}]{vendor\-I\-D, }
+\item[{uint16\-\_\-t}]{product\-I\-D, }
+\item[{std\-::wstring}]{serial\-Str, }
+\item[{{\bf Device\-Factory\-\_\-t}}]{factory = {\ttfamily nullptr}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_lib_u_s_b_1_1_lib_u_s_b_aaf1f6d3a7df3a9fefd8b12ba25a7c3be}
+
+
+Returns a list of devices (that can be opened) that match the given vendor/product id. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vendor\-I\-D} & (uint16\-\_\-t)\-: U\-S\-B-\/\-I\-F vendor id of the desired device. \\
+\hline
+{\em device\-I\-D} & (uint16\-\_\-t)\-: U\-S\-B-\/\-I\-F product id of the desired device. \\
+\hline
+{\em serial\-Str} & (std\-::wstring)\-: \hyperlink{class_lib_u_s_b_1_1_device}{Device} unique serial number \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+(std\-::list$<$std\-::shared\-\_\-ptr$<$\-D$>$$>$)\-: List of shared pointers to \hyperlink{class_lib_u_s_b_1_1_device}{Lib\-U\-S\-B\-::\-Device} class objects. 
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See Also}
+
+\end{DoxySeeAlso}
+\begin{DoxyNote}{Note}
+
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+Multiple devices can be returned via this method, if attached. 
+\end{DoxyWarning}
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+headers/libusbpp.\-h\end{DoxyCompactItemize}
