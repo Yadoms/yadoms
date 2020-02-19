@@ -2,12 +2,12 @@
 #include "DeviceManager.h"
 #include "Configuration.h"
 
-class CStreamDeckOriginal : public CDeviceManager
+class CStreamDeckOriginalV2 final : public CDeviceManager
 {
 public:
-	explicit CStreamDeckOriginal(CConfiguration& configuration);
+	explicit CStreamDeckOriginalV2(CConfiguration& configuration);
 
-	virtual ~CStreamDeckOriginal();
+	virtual ~CStreamDeckOriginalV2();
 
 	void reset() override;
 
@@ -18,4 +18,3 @@ public:
 private:
 	static const int ImageReportLength;
 };
-

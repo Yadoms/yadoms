@@ -32,69 +32,12 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 	auto deviceInformation = initDevice(api);
 
-
-	//auto pDevice = *deviceList.begin();
-
-	//pDevice->Open();
-	try
-	{
-
-
-		std::wcout << L"Performing initial device test & transfer" << std::endl;
-
-		// ALWAYS start with find device! The overloads should allow you to quickly find/filter what you're looking for.
-		// The default factory will provide you with a newly-allocated (and initialized) LibUSB::Device object.
-		std::list<std::shared_ptr<LibUSB::Device>> deviceList = LibUSB::LibUSB::FindDevice(deviceInformation->vendorID, deviceInformation->productID,true);
-
-		if (deviceList.empty())
-		{
-			throw std::runtime_error("No compatible device found");
-		}
-
-		// For this demo, we'll just take the first one.
-		std::shared_ptr<LibUSB::Device> pDevice = *deviceList.begin();
-
-		// You will need to Open() the device to begin using it.
-		pDevice->Open();
-
-		// This is the fastest way to make transfers to the default control endpoint (endpoint 0).
-		std::shared_ptr<LibUSB::ControlTransfer> pTransfer = std::static_pointer_cast<LibUSB::ControlTransfer>(pDevice->getControlEndpoint()->CreateTransfer());
-
-		// This function is required.7
-		pTransfer->SetupPacket(0, 0, 0);
-
-		// No data for this example.
-
-		// Fire the event
-		std::wcout << L"Starting a transfer." << std::endl;
-		pTransfer->Start();	// This will start a synchronous transfer.
-
-		if (pTransfer->isComplete())	// Indicates that the transfer has been resolved.
-		{
-
-			if (pTransfer->isSuccessful())	// Indicates that data was sent (but not necessarily all of it!)
-			{
-				std::wcout << L"Completed successfully!" << std::endl;
-			}
-			else
-			{
-				std::wcout << "Transfer was unsuccessful." << std::endl;
-
-			}
-
-		}
-	}
-	catch (std::exception & e)
-	{
-
-		std::wcout << "Exception Thrown:\n\t" << e.what() << std::endl;
-		std::wstringstream errStream;
-		errStream << L"Exception Thrown:\t" << e.what();
-
-
-	}
-
+	m_deviceManager->open();
 	
+	m_deviceManager->reset();
+
+	m_deviceManager->setBrightness(30);
+
 
 	// the main loop
 	while (true)
@@ -248,11 +191,11 @@ void CStreamDeck::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
 		api->declareDevice(deviceInformation->deviceName, deviceInformation->serialNumber, deviceInformation->deviceModel);
 }
 
-boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_ptr<yApi::IYPluginApi>& api) const
+boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_ptr<yApi::IYPluginApi>& api)
 {
 	try
 	{
-		auto usbDeviceInformation = m_deviceManager->getDeviceInformation();
+		auto usbDeviceInformation = CDeviceManagerHelper::getDeviceInformation(m_configuration);
 
 		declareDevice(api, usbDeviceInformation);
 
@@ -267,18 +210,3 @@ boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_pt
 	}
 }
 
-
-std::shared_ptr<unsigned char> CStreamDeck::allocString(const char* pString, size_t& outSize)
-{
-
-	size_t strSize = strlen(pString);
-
-	outSize = (strSize * sizeof(char)) + 1;
-
-	std::shared_ptr<unsigned char> outString(new unsigned char[outSize], [](unsigned char* ptr) { delete[] ptr; });
-
-	strcpy((char*)outString.get(), pString);
-
-	return outString;
-
-}

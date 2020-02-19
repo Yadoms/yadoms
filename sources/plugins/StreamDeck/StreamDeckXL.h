@@ -2,12 +2,12 @@
 #include "DeviceManager.h"
 #include "Configuration.h"
 
-class CStreamDeckOriginal : public CDeviceManager
+class CStreamDeckXL final : public CDeviceManager
 {
 public:
-	explicit CStreamDeckOriginal(CConfiguration& configuration);
+	explicit CStreamDeckXL(CConfiguration& configuration);
 
-	virtual ~CStreamDeckOriginal();
+	virtual ~CStreamDeckXL();
 
 	void reset() override;
 

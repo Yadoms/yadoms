@@ -1,4 +1,5 @@
 #pragma once
+#include "Configuration.h"
 
 struct UsbDeviceInformation
 {
@@ -40,6 +41,10 @@ public:
 	static int getDeviceKeyCols(uint16_t& vendorId, uint16_t& productId);
 
 	static int getDeviceKeyRows(uint16_t& vendorId, uint16_t& productId);
+
+	static boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformation(CConfiguration& configuration);
+
+	static unsigned char integerToHex(int& value);
 private:
 	
 	static const uint16_t StreamDeckVendorId;

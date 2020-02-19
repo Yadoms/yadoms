@@ -42,6 +42,12 @@ set(PROTOBUF_ROOT "path/to/protobuf")
 # Not needed on Windows (Windows doesn't use LibUsb)
 set(LIBUSB_ROOT "path/to/libusb")
 
+##### Hidapi ######
+#
+#define Hidapi ROOT
+#
+#
+set(HIDAPI_ROOT "path/to/hidapi")
 
 ##### Database ######
 #

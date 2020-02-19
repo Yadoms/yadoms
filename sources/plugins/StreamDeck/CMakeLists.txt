@@ -3,7 +3,13 @@ if(LIBUSBPP_FOUND)
 
 	# include common plugin definitions
 	include("../YadomsPluginsCommon.cmake")
-
+	
+	set(LIBUSB1_INCLUDE_DIR ${HIDAPI_ROOT}/hidapi)
+	
+	if(WIN32)
+		set(HIDAPI_INC_DIR ${HIDAPI_ROOT}/windows/Release)
+		set(HIDAPI_LIBRARIES ${HIDAPI_ROOT}/windows/Release/hidapi.lib)
+	endif()	
 	#########################################
 	## Place here all the plugin source files
 	#########################################
@@ -18,12 +24,18 @@ if(LIBUSBPP_FOUND)
 		DeviceManager.h
 		DeviceManagerHelper.cpp
 		DeviceManagerHelper.h
-		IDeviceManager.h
 		CFactory.cpp
 		CFactory.h
 		StreamDeckOriginal.cpp
 		StreamDeckOriginal.h
+		StreamDeckOriginalV2.cpp
+		StreamDeckOriginalV2.h
+		StreamDeckMini.cpp
+		StreamDeckMini.h
+		StreamDeckXL.cpp
+		StreamDeckXL.h
 	)
+	
 
 	#########################################
 	## Place here all additional groups (solution folder)
@@ -36,6 +48,7 @@ if(LIBUSBPP_FOUND)
 	#########################################
 	set(STREAMDECK_PLUGIN_INCLDIR
       ${LIBUSBPP_INCLUDE_DIRS}
+	  ${LIBUSB1_INCLUDE_DIR}
 	)
 
 	#########################################
@@ -44,6 +57,7 @@ if(LIBUSBPP_FOUND)
 	#########################################
 	set(STREAMDECK_PLUGIN_LINK
       ${LIBUSBPP_LIBRARIES}
+	  ${HIDAPI_LIBRARIES}
 	)
 
 	#########################################

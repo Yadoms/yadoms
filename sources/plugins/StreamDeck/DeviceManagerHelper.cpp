@@ -140,3 +140,41 @@ std::vector<std::string> CDeviceManagerHelper::buildKeys(const int cols, const i
 	}
 	return keys;
 }
+
+boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformation(CConfiguration& configuration)
+{
+	auto deviceInformation = boost::make_shared<UsbDeviceInformation>();
+	auto usbDevice = configuration.getUsbDevice();
+	auto usbDeviceVid = findUsbDeviceId(usbDevice, "vid");
+	auto usbDevicePid = findUsbDeviceId(usbDevice, "pid");
+
+	if (getOsName() != "Windows")
+	{
+		auto usbDeviceInformation = splitStringToVectorOfString(usbDevice, ";");
+
+		deviceInformation->vendorID = decimalToHex(usbDeviceInformation[0]);
+		deviceInformation->productID = decimalToHex(usbDeviceInformation[1]);
+		deviceInformation->serialNumber = usbDeviceInformation[2];
+		deviceInformation->deviceModel = getDeviceModel(deviceInformation->vendorID, deviceInformation->productID);
+		deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->vendorID, deviceInformation->productID);
+		deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->vendorID, deviceInformation->productID);
+		return deviceInformation;
+	}
+
+	deviceInformation->vendorID = stringToUnsignedShort(usbDeviceVid);
+	deviceInformation->productID = stringToUnsignedShort(usbDevicePid);
+	deviceInformation->serialNumber = getSerialNumber(usbDevice);
+	deviceInformation->deviceModel = getDeviceModel(deviceInformation->vendorID, deviceInformation->productID);
+	deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->vendorID, deviceInformation->productID);
+	deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->vendorID, deviceInformation->productID);
+	return deviceInformation;
+}
+
+unsigned char CDeviceManagerHelper::integerToHex(int& value)
+{
+	std::stringstream ss;
+	ss << std::hex << value;
+	const auto res(ss.str());
+
+	return reinterpret_cast<unsigned char>(res.c_str());
+}

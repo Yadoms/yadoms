@@ -1,16 +1,16 @@
-﻿#include "StreamDeckOriginal.h"
+﻿#include "StreamDeckMini.h"
 #include "DeviceManagerHelper.h"
 
-const int CStreamDeckOriginal::ImageReportLength = 8191;
+const int CStreamDeckMini::ImageReportLength = 1024;
 
-CStreamDeckOriginal::CStreamDeckOriginal(CConfiguration& configuration)
+CStreamDeckMini::CStreamDeckMini(CConfiguration& configuration)
 	: CDeviceManager(configuration)
 {
 }
 
-CStreamDeckOriginal::~CStreamDeckOriginal() = default;
+CStreamDeckMini::~CStreamDeckMini() = default;
 
-void CStreamDeckOriginal::reset()
+void CStreamDeckMini::reset()
 {
 	unsigned char payload[17];
 	payload[0] = 0x0B;
@@ -19,13 +19,13 @@ void CStreamDeckOriginal::reset()
 	hid_send_feature_report(m_handle, payload, 17);
 }
 
-void CStreamDeckOriginal::resetKeyStream()
+void CStreamDeckMini::resetKeyStream()
 {
 	unsigned char payload[ImageReportLength] = {0x02};
 	hid_write(m_handle, payload, ImageReportLength);
 }
 
-void CStreamDeckOriginal::setBrightness(int percent)
+void CStreamDeckMini::setBrightness(int percent)
 {
 	unsigned char payload[17] = {0x05, 0x55, 0xaa, 0xd1, 0x01, CDeviceManagerHelper::integerToHex(percent)};
 	hid_send_feature_report(m_handle, payload, 17);

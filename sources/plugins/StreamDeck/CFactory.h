@@ -1,6 +1,6 @@
 #pragma once
-#include "IDeviceManager.h"
 #include "Configuration.h"
+#include "DeviceManager.h"
 class CFactory
 {
 public:
@@ -8,6 +8,6 @@ public:
    CFactory() = default;
    ~CFactory() = default;
 
-   static boost::shared_ptr<IDeviceManager> createDeviceManager(CConfiguration& configuration);
+   static boost::shared_ptr<CDeviceManager> CFactory::createDeviceManager(CConfiguration& configuration);
 };
 
