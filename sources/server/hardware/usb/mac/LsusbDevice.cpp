@@ -1,8 +1,5 @@
 #include "stdafx.h"
 #include "LsusbDevice.h"
-#include "LsusbCall.h"
-#include <shared/Log.h>
-#include <regex>
 
 namespace hardware
 {
