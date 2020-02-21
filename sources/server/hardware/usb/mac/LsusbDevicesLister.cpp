@@ -30,7 +30,7 @@ std::vector<boost::shared_ptr<IDevice>> CLsusbDevicesLister::listUsbDevices()
 
             const auto vid = std::stoi(std::string(matches[1].first, matches[1].second), nullptr, 16);
             const auto pid = std::stoi(std::string(matches[2].first, matches[2].second), nullptr, 16);
-            const auto nameWithSerial = matches[3];
+            const auto nameWithSerial = std::string(matches[3]);
             
             if (!std::regex_search(nameWithSerial,
                                    matches,
