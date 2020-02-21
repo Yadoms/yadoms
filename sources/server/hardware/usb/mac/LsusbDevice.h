@@ -11,7 +11,7 @@ public:
    explicit CLsusbDevice(int vendorId,
                          int productId,
                          const std::string &name,
-                         const std::stirng &serial);
+                         const std::string &serial);
    virtual ~CLsusbDevice() = default;
 
    // IDevice implementation

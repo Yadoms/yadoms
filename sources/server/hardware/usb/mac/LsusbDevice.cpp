@@ -8,7 +8,7 @@ namespace usb
 CLsusbDevice::CLsusbDevice(int vendorId,
                            int productId,
                            const std::string &name,
-                           const std::stirng &serial)
+                           const std::string &serial)
     : m_vendorId(vendorId),
       m_productId(productId),
       m_yadomsFriendlyName(name),
