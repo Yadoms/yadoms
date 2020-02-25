@@ -44,7 +44,9 @@ public:
 
 	static boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformation(CConfiguration& configuration);
 
-	static unsigned char integerToHex(int& value);
+
+	static unsigned char CDeviceManagerHelper::integerToHex(int& value);
+	
 private:
 	
 	static const uint16_t StreamDeckVendorId;

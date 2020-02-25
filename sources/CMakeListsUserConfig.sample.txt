@@ -36,18 +36,28 @@ set(PROTOBUF_ROOT "path/to/protobuf")
 
 
 ##### Libusb ######
+# optional
 #
-#define OpenSSL ROOT
+#define Libusb ROOT
 #
 # Not needed on Windows (Windows doesn't use LibUsb)
+
 set(LIBUSB_ROOT "path/to/libusb")
 
 ##### Hidapi ######
+# optional
 #
 #define Hidapi ROOT
 #
-#
 set(HIDAPI_ROOT "path/to/hidapi")
+
+##### OpenCV ######
+# optional
+#
+#define OpenCV ROOT
+#
+#
+set(OpenCV_DIR "path/to/opencvDir")
 
 ##### Database ######
 #

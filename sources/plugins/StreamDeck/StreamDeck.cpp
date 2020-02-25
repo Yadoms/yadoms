@@ -33,11 +33,10 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	auto deviceInformation = initDevice(api);
 
 	m_deviceManager->open();
-	
+
 	m_deviceManager->reset();
 
 	m_deviceManager->setBrightness(30);
-
 
 	// the main loop
 	while (true)
@@ -64,7 +63,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 				deviceInformation.reset();
 				deviceInformation = initDevice(api);
-				
+
 				m_configuration.initializeWith(newConfiguration);
 
 				// Trace the configuration
@@ -92,88 +91,95 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 			}
 
 		case yApi::IYPluginApi::kBindingQuery:
-		{
-			// Yadoms ask for a binding query 
-			auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
-			if (request->getData().getQuery() == "keyCreation")
 			{
-				auto keys = CDeviceManagerHelper::buildKeys(deviceInformation->keyCols, deviceInformation->keyRows);
-				auto coordinates =  CDeviceManagerHelper::buildCoordinates(deviceInformation->keyCols, deviceInformation->keyRows);
-				
-				shared::CDataContainer ev;
-				for (auto i = 0; i < keys.size(); i++)
+				// Yadoms ask for a binding query 
+				auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
+				// TODO : Handle Locals is that possible ??
+				if (request->getData().getQuery() == "keyCreation")
 				{
-					ev.set(keys[i], coordinates[i]);
-				}
+					auto keys = CDeviceManagerHelper::buildKeys(deviceInformation->keyCols, deviceInformation->keyRows);
+					auto coordinates = CDeviceManagerHelper::buildCoordinates(
+						deviceInformation->keyCols, deviceInformation->keyRows);
 
-				shared::CDataContainer en;
-				en.set("name", "Coordinates keys");
-				en.set("description", "List of coordinates");
-				en.set("type", "enum");
-				en.set("values", ev);
-				en.set("defaultValue", "KEY0");
-
-				shared::CDataContainer result;
-				result.set("interval", en);
-
-				request->sendSuccess(result);
-			}
-			else
-			{
-				const auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
-				request->sendError(errorMessage);
-				YADOMS_LOG(error) << errorMessage;
-			}
-			break;
-		}
-		case yApi::IYPluginApi::kEventExtraQuery:
-		{
-				
-			// Extra-command was received from Yadoms
-			auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
-
-			if (extraQuery)
-			{
-				YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
-
-				if (extraQuery->getData()->query() == "createKey")
-				{
-					const auto interval = extraQuery->getData()->data().get<std::string>("dynamicSection.content.interval");
-					YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
-					
-					auto fileFromClient = extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
-					auto firmwareContent = fileFromClient.getContent();
-
-					YADOMS_LOG(information) << "File received from extra command";
-					YADOMS_LOG(information) << "    File name = " << fileFromClient.getFileName();
-					YADOMS_LOG(information) << "    File size = " << fileFromClient.getSize();
-					YADOMS_LOG(information) << "    File type = " << fileFromClient.getMimeType();
-					YADOMS_LOG(information) << "    File date = " << fileFromClient.getLastModificationDate().getBoostDateTime();
-					YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
-
-					for (auto i = 0; i < 100; ++i)
+					shared::CDataContainer ev;
+					for (auto i = 0; i < keys.size(); i++)
 					{
-						if (i < 25)
-							extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step1");
-						else if (i < 50)
-							extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step2");
-						else if (i < 75)
-							extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step3");
-						else
-							extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step4");
-						boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+						ev.set(keys[i], coordinates[i]);
 					}
+
+					shared::CDataContainer en;
+					en.set("name", "Coordinates keys");
+					en.set("description", "List of coordinates");
+					en.set("type", "enum");
+					en.set("values", ev);
+					en.set("defaultValue", "KEY0");
+
+					shared::CDataContainer result;
+					result.set("interval", en);
+
+					request->sendSuccess(result);
+				}
+				else
+				{
+					const auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
+					request->sendError(errorMessage);
+					YADOMS_LOG(error) << errorMessage;
+				}
+				break;
+			}
+		case yApi::IYPluginApi::kEventExtraQuery:
+			{
+				// Extra-command was received from Yadoms
+				auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
+
+				if (extraQuery)
+				{
+					YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
+
+					if (extraQuery->getData()->query() == "createKey")
+					{
+						const auto interval = extraQuery->getData()->data().get<std::string>(
+							"dynamicSection.content.interval");
+						YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
+
+						auto fileFromClient = extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
+						auto firmwareContent = fileFromClient.getContent();
+
+						YADOMS_LOG(information) << "File received from extra command";
+						YADOMS_LOG(information) << "    File name = " << fileFromClient.getFileName();
+						YADOMS_LOG(information) << "    File size = " << fileFromClient.getSize();
+						YADOMS_LOG(information) << "    File type = " << fileFromClient.getMimeType();
+						YADOMS_LOG(information) << "    File date = " << fileFromClient
+						                                                 .getLastModificationDate().getBoostDateTime();
+						YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
+
+						// TODO : Pass text & key from configuration
+						m_deviceManager->setKeyImage(fileFromClient.getContent());
+
+						// TODO : Fix steps from schema
+						for (auto i = 0; i < 100; ++i)
+						{
+							if (i < 25)
+								extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step1");
+							else if (i < 50)
+								extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step2");
+							else if (i < 75)
+								extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step3");
+							else
+								extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step4");
+							boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+						}
+					}
+
+					extraQuery->sendSuccess(shared::CDataContainer());
 				}
 
-				extraQuery->sendSuccess(shared::CDataContainer());
+				else
+				{
+					extraQuery->sendError("error content");
+				}
+				break;
 			}
-
-			else
-			{
-				extraQuery->sendError("error content");
-			}
-			break;
-		}
 
 		default:
 			{
@@ -183,12 +189,14 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		}
 	}
 }
+
 void CStreamDeck::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
-										boost::shared_ptr<UsbDeviceInformation>& deviceInformation)
+                                boost::shared_ptr<UsbDeviceInformation>& deviceInformation)
 
 {
 	if (!api->deviceExists(deviceInformation->deviceName))
-		api->declareDevice(deviceInformation->deviceName, deviceInformation->serialNumber, deviceInformation->deviceModel);
+		api->declareDevice(deviceInformation->deviceName, deviceInformation->serialNumber,
+		                   deviceInformation->deviceModel);
 }
 
 boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_ptr<yApi::IYPluginApi>& api)
@@ -200,7 +208,7 @@ boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_pt
 		declareDevice(api, usbDeviceInformation);
 
 		api->setPluginState(yApi::historization::EPluginState::kRunning);
-		
+
 		return usbDeviceInformation;
 	}
 	catch (std::exception&)
@@ -209,4 +217,3 @@ boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_pt
 		throw;
 	}
 }
-

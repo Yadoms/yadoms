@@ -24,6 +24,7 @@ uint16_t CDeviceManagerHelper::decimalToHex(std::string& decimalValue)
 	return boost::convert<uint16_t>(decimalValue, converter(std::showbase)(std::uppercase)(std::dec), 0);
 }
 
+
 std::string CDeviceManagerHelper::getOsName()
 {
 #ifdef WIN32

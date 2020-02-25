@@ -19,6 +19,8 @@ public:
 
 	virtual void setBrightness(int percent) = 0;
 
+	virtual void setKeyImage(std::string& content) = 0;
+
 private:
 
 	CConfiguration m_configuration;

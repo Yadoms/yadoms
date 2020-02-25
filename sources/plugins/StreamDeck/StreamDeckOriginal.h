@@ -15,7 +15,10 @@ public:
 
 	void setBrightness(int percent) override;
 
+	void setKeyImage(std::string& content) override;
+
 private:
 	static const int ImageReportLength;
+
 };
 

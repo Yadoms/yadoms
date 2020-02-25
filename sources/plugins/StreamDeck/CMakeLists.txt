@@ -1,12 +1,12 @@
+find_package(OpenCV)
 
-if(LIBUSBPP_FOUND)
+if(LIBUSBPP_FOUND AND OpenCV_FOUND)
 
 	# include common plugin definitions
 	include("../YadomsPluginsCommon.cmake")
-	
-	set(LIBUSB1_INCLUDE_DIR ${HIDAPI_ROOT}/hidapi)
-	
-	if(WIN32)
+	# TODO : HANDLE Mac & linux platforms
+	if(WIN32)	
+		set(LIBUSB1_INCLUDE_DIR ${HIDAPI_ROOT}/hidapi)
 		set(HIDAPI_INC_DIR ${HIDAPI_ROOT}/windows/Release)
 		set(HIDAPI_LIBRARIES ${HIDAPI_ROOT}/windows/Release/hidapi.lib)
 	endif()	
@@ -34,8 +34,9 @@ if(LIBUSBPP_FOUND)
 		StreamDeckMini.h
 		StreamDeckXL.cpp
 		StreamDeckXL.h
+		ImageHelper.cpp
+		ImageHelper.h
 	)
-	
 
 	#########################################
 	## Place here all additional groups (solution folder)
@@ -49,6 +50,7 @@ if(LIBUSBPP_FOUND)
 	set(STREAMDECK_PLUGIN_INCLDIR
       ${LIBUSBPP_INCLUDE_DIRS}
 	  ${LIBUSB1_INCLUDE_DIR}
+	  ${OpenCV_INCLUDE_DIRS}
 	)
 
 	#########################################
@@ -58,6 +60,7 @@ if(LIBUSBPP_FOUND)
 	set(STREAMDECK_PLUGIN_LINK
       ${LIBUSBPP_LIBRARIES}
 	  ${HIDAPI_LIBRARIES}
+	  ${OpenCV_LIBS}
 	)
 
 	#########################################
@@ -69,5 +72,5 @@ if(LIBUSBPP_FOUND)
 	PLUGIN_LINK(StreamDeck ${STREAMDECK_PLUGIN_LINK})
    
 else()
-   message(WARNING "StreamDeck plugin is not available. LibUsb is Missing")
+   message(WARNING "StreamDeck plugin is not available. LibUsb or OpenCV are Missing")
 endif()
