@@ -4,6 +4,8 @@
 #include "ImageHelper.h"
 
 const int CStreamDeckOriginal::ImageReportLength = 8191;
+const int CStreamDeckOriginal::KeyCols = 5;
+const int CStreamDeckOriginal::KeyRows = 3;
 
 CStreamDeckOriginal::CStreamDeckOriginal(CConfiguration& configuration)
 	: CDeviceManager(configuration)
@@ -38,11 +40,11 @@ void CStreamDeckOriginal::setBrightness(int percent)
 	hid_send_feature_report(m_handle, payload, 17);
 }
 
-void CStreamDeckOriginal::setKeyImage(std::string& content)
+void CStreamDeckOriginal::setKeyImage(std::string& content, int& keyIndex, std::string& customText)
 {
 	// TODO : Pass text from configuration
 	auto data = CImageHelper::stringToVector(content);
-	auto img = CImageHelper::renderKeyImage(data);
+	auto img = CImageHelper::renderKeyImage(data, customText);
 
 	auto array = CImageHelper::cvMatToVector(img);
 
@@ -52,7 +54,7 @@ void CStreamDeckOriginal::setKeyImage(std::string& content)
 	CImageHelper::encodeBMP(bmp, &array[0], 72, 72);
 	const int imageReportPayloadLength = bmp.size() / 2;
 	// TODO : Handle keys
-	const auto key = 4;
+	const auto key = convertKeyIdOrigin(keyIndex);
 	auto pageNumber = 0;
 	int bytesRemaining = bmp.size();
 
@@ -104,4 +106,10 @@ void CStreamDeckOriginal::setKeyImage(std::string& content)
 		payload.clear();
 		datatosend.clear();
 	}
+}
+
+int CStreamDeckOriginal::convertKeyIdOrigin(int& keyIndex)
+{
+	const auto keyCol = keyIndex % KeyCols;
+	return (keyIndex - keyCol) + ((KeyCols - 1) - keyCol);
 }

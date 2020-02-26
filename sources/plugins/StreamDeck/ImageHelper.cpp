@@ -22,7 +22,7 @@ std::vector<uchar> CImageHelper::stringToVector(std::string& content)
 	return data;
 }
 
-cv::Mat CImageHelper::renderKeyImage(std::vector<uchar>& data)
+cv::Mat CImageHelper::renderKeyImage(std::vector<uchar>& data, std::string& customText)
 {
 	// TODO : Pass text from configuration
 	auto img = cv::imdecode(cv::Mat(data), cv::IMREAD_UNCHANGED);
@@ -33,7 +33,7 @@ cv::Mat CImageHelper::renderKeyImage(std::vector<uchar>& data)
 	img.copyTo(black(cv::Rect(10, 0, img.cols, img.rows)));
 
 	putText(black,
-	        "text HERE",
+	        customText,
 	        cv::Point(2, 65),
 	        cv::FONT_HERSHEY_TRIPLEX,
 	        0.4,

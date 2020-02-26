@@ -138,8 +138,14 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 					if (extraQuery->getData()->query() == "createKey")
 					{
-						const auto interval = extraQuery->getData()->data().get<std::string>(
+						auto interval = extraQuery->getData()->data().get<std::string>(
 							"dynamicSection.content.interval");
+
+						const auto keyIndex = CDeviceManagerHelper::getKeyIndex(interval);
+
+						auto customText = extraQuery->getData()->data().get<std::string>(
+							"customText");
+						
 						YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
 
 						auto fileFromClient = extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
@@ -154,7 +160,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 						YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
 
 						// TODO : Pass text & key from configuration
-						m_deviceManager->setKeyImage(fileFromClient.getContent());
+						m_deviceManager->setKeyImage(fileFromClient.getContent(), keyIndex, customText);
 
 						// TODO : Fix steps from schema
 						for (auto i = 0; i < 100; ++i)

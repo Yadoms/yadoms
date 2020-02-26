@@ -179,3 +179,8 @@ unsigned char CDeviceManagerHelper::integerToHex(int& value)
 
 	return reinterpret_cast<unsigned char>(res.c_str());
 }
+
+int CDeviceManagerHelper::getKeyIndex(std::string& key)
+{
+	return std::atoi(key.substr(3).c_str());
+}
