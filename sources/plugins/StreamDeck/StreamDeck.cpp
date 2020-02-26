@@ -156,7 +156,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 						                                                 .getLastModificationDate().getBoostDateTime();
 						YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
 
-						// TODO : Pass text & key from configuration
 						m_deviceManager->setKeyImage(fileFromClient.getContent(), keyIndex, customText);
 
 						// TODO : Fix steps from schema
@@ -170,7 +169,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 								extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step3");
 							else
 								extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step4");
-							boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+							boost::this_thread::sleep(boost::posix_time::milliseconds(35));
 						}
 					}
 

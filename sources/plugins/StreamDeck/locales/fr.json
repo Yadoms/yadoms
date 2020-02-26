@@ -11,13 +11,13 @@
       "pluginState": {
          "failedToConnect": "La connexion a échoué...",
          "initializationError": "Erreur d'initialisation"
+      },
+      "createKey": {
+         "step1": "Prétraitements",
+         "step2": "Encodage",
+         "step3": "Envoi des données",
+         "step4": "Affichage sur l'équipement"
       }
-   },
-   "createKey": {
-      "step1": "Etape n°1",
-      "step2": "Etape n°2",
-      "step3": "Etape n°3",
-      "step4": "Etape n°4"
    },
    "extraQueries": {
       "createKey": {
