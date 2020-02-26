@@ -26,7 +26,13 @@
          "commandData": {
             "dynamicSection": {
                "name": "List of available coordinates",
-               "description": "The list of coordinates presented in the form of an index (i, j)"
+               "description": "The list of coordinates presented in the form of an index (i, j)",
+               "content": {
+                  "interval": {
+                     "name": "Coordinates keys",
+                     "description": "List of coordinates"
+                  }
+               }
             },
             "customText": {
                "name": "Texte personnalisé",

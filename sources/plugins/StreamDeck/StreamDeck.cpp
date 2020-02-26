@@ -94,7 +94,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 			{
 				// Yadoms ask for a binding query 
 				auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
-				// TODO : Handle Locals is that possible ??
 				if (request->getData().getQuery() == "keyCreation")
 				{
 					auto keys = CDeviceManagerHelper::buildKeys(deviceInformation->keyCols, deviceInformation->keyRows);
@@ -108,8 +107,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 					}
 
 					shared::CDataContainer en;
-					en.set("name", "Coordinates keys");
-					en.set("description", "List of coordinates");
 					en.set("type", "enum");
 					en.set("values", ev);
 					en.set("defaultValue", "KEY0");
@@ -141,7 +138,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 						auto interval = extraQuery->getData()->data().get<std::string>(
 							"dynamicSection.content.interval");
 
-						const auto keyIndex = CDeviceManagerHelper::getKeyIndex(interval);
+						auto keyIndex = CDeviceManagerHelper::getKeyIndex(interval);
 
 						auto customText = extraQuery->getData()->data().get<std::string>(
 							"customText");

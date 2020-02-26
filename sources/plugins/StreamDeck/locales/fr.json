@@ -25,8 +25,14 @@
          "description": "La liste des coordonnées des clés de l'équipement",
          "commandData": {
             "dynamicSection": {
-               "name": "La liste des Coordonnées disponoble",
-               "description": "La liste des coordonnées présentés sous forme d'index (i,j) "
+               "name": "La liste des Coordonnées disponibles",
+               "description": "La liste des coordonnées présentées sous forme d'index (i,j) ",
+               "content": {
+                  "interval": {
+                     "name": "Les coordonnées des clés",
+                     "description": "La liste des coordonnées"
+                  }
+               }
             },
             "customText": {
                "name": "Texte personnalisé",
