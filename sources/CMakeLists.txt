@@ -1295,6 +1295,15 @@ ENDFOREACH(SCRIPTINTERPRETER)
 set(CPACK_COMPONENT_GROUP_SCRIPTINTERPRETERS_DISPLAY_NAME  "Script interpreters")
 set(CPACK_COMPONENT_GROUP_SCRIPTINTERPRETERS_DESCRIPTION  "All the script interpreters (allow to run custom scripts)")
 
+#add getting python embedded version
+if(WIN32)
+	add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/python
+					   COMMAND ../distribution/python/get_python_windows.cmd)
+endif(WIN32)
+
+install(DIRECTORY ${CMAKE_BINARY_DIR}/python 
+   DESTINATION ${INSTALL_BINDIR}/embeddedPython)
+
 IF(WIN32 AND NOT UNIX)
 
    # Custom target for packaging.
