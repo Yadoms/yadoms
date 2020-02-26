@@ -60,11 +60,17 @@ void CStreamDeckOriginal::setKeyImage(std::string& content)
 	{
 		const auto thisLength = std::min(bytesRemaining, imageReportPayloadLength);
 		const auto bytesSent = pageNumber * imageReportPayloadLength;
+		// Report ID for writing an image
 		header.push_back(0x02);
+		// Unknown but never changes
 		header.push_back(0x01);
+		// "Page" number. Each image is sent as 2 pages.
 		header.push_back(pageNumber + 1);
+		// This is padding
 		header.push_back(0);
+		//  This is 01 on the second page, Presumably its used to signal that the data is a continuation from the first page
 		header.push_back(thisLength == bytesRemaining ? 1 : 0);
+		// Hex value for the Button
 		header.push_back(key + 1);
 		header.push_back(0);
 		header.push_back(0);
