@@ -1447,4 +1447,256 @@ BOOST_AUTO_TEST_CASE(MapOfContainers)
    CHECK_MAPS<shared::CDataContainer>(input.getAsMap<shared::CDataContainer>(), expected);
 }
 
+double fRand(double fMin, double fMax)
+{
+   double f = (double)rand() / RAND_MAX;
+   return fMin + f * (fMax - fMin);
+}
+
+char __global_buffer_human_readable_test[10];
+char* get_human_readable_size(double size/*in bytes*/) {
+   int i = 0;
+   const char* units[] = { "B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+   while (size > 1024) {
+      size /= 1024;
+      i++;
+   }
+   sprintf(__global_buffer_human_readable_test, "%.*f %s", i, size, units[i]);
+   return __global_buffer_human_readable_test;
+}
+
+#define DEBUG_HEAP_INIT() \
+   _CrtMemState a;\
+   _CrtMemState b;\
+   _CrtMemCheckpoint(&a);\
+   _CrtMemCheckpoint(&b)
+
+#define DEBUG_HEAP_PRINT(title) \
+      if(i%1000 == 0 || i<10)  {\
+               _CrtMemCheckpoint(&a);\
+               std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << std::endl; \
+               memcpy(&b, &a, sizeof(a)); \
+      }
+
+
+
+BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
+{
+   std::vector<shared::CDataContainerSharedPtr> objectList;
+
+
+   unsigned int i = 0;
+   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+   try
+   {
+      DEBUG_HEAP_INIT();
+      DEBUG_HEAP_PRINT("Init");
+
+      for(i=0; i<1000000; ++i)
+      {
+         shared::CDataContainerSharedPtr result = boost::make_shared< shared::CDataContainer>();
+
+         //std::cout << "Before sizeof(dc)=" << sizeof(result) << " ";
+         //result.printSizeToLog(std::cout);
+
+         auto dt = boost::posix_time::to_iso_string(t1);
+        // std::cout << "Inserting 4+" << dt.size() << "chars. => ";
+         result->set("date", dt);
+         //result.printSizeToLog(std::cout);
+
+         auto val = std::to_string(fRand(0, 1000));
+         //std::cout << "Inserting 3+" << val.size() << "chars. => ";
+         result->set("key", val);
+         //result.printSizeToLog(std::cout);
+
+         objectList.push_back(result);
+         t1 += boost::posix_time::seconds(1);
+         DEBUG_HEAP_PRINT("Next");
+      }
+
+   }
+   catch(...)
+   {
+      BOOST_FAIL("Unknown exception");
+   }
+}
+
+BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
+{
+   shared::CDataContainer whole;
+
+   unsigned int i = 0;
+   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+   try
+   {
+      DEBUG_HEAP_INIT();
+      DEBUG_HEAP_PRINT("Init");
+
+      for (i = 0; i < 10000; ++i)
+      {
+         shared::CDataContainer result;
+         std::string dt = boost::posix_time::to_iso_string(t1);
+         result.set("date", dt);
+         result.set("key", std::to_string(fRand(0, 1000)));
+         whole.set(dt, result);
+         t1 += boost::posix_time::seconds(1);
+         DEBUG_HEAP_PRINT("Next");
+      }
+   }
+   catch (...)
+   {
+      BOOST_FAIL("Unknown exception");
+   }
+}
+
+
+
+BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
+{
+   shared::CDataContainer whole;
+
+   whole.createArray("data");
+
+   unsigned int i = 0;
+   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+   try
+   {
+      DEBUG_HEAP_INIT();
+      DEBUG_HEAP_PRINT("Init");
+
+      for (i = 0; i < 1000000; ++i)
+      {
+         shared::CDataContainer result;
+         result.set("date", boost::posix_time::to_iso_string(t1));
+         result.set("key", std::to_string(fRand(0, 1000)));
+         whole.appendArray("data", result);
+         t1 += boost::posix_time::seconds(1);
+         DEBUG_HEAP_PRINT("Next");
+      }
+   }
+   catch (...)
+   {
+      BOOST_FAIL("Unknown exception");
+   }
+}
+
+#define MEASURE_DURATION_INIT() \
+      boost::posix_time::ptime start, end;\
+      boost::posix_time::time_duration dur
+
+
+#define MEASURE_DURATION_START() start = boost::posix_time::microsec_clock::local_time();
+
+#define MEASURE_DURATION_STOP(name)\
+      end = boost::posix_time::microsec_clock::local_time(); \
+      dur = end - start;\
+      std::cout << "[ic=" << itemCount << "] Fonction=" << name << " Duration = " <<dur.total_milliseconds() << " ms (" << dur.total_microseconds() << " micro seconds)" << std::endl
+
+void bench_cdatacontainer(unsigned int itemCount)
+{
+   MEASURE_DURATION_INIT();
+
+   unsigned int i = 0;
+   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+   try
+   {
+      MEASURE_DURATION_START();
+
+      shared::CDataContainer dcgeneration;
+
+      dcgeneration.createArray("data");
+      dcgeneration.set<bool>("BoolParameter", true);
+      dcgeneration.set<double>("DecimalParameter", 18.4);
+      dcgeneration.set<EEnumType>("EnumParameter", kEnumValue2);
+      dcgeneration.set<std::string>("EnumAsStringParameter", "EnumValue1");
+      dcgeneration.set<int>("IntParameter", 42);
+      dcgeneration.set<std::string>("Serial port", "tty0");
+      dcgeneration.set<std::string>("StringParameter", "Yadoms is so powerful !");
+      dcgeneration.set<int>("MySection.SubIntParameter", 123);
+      dcgeneration.set<std::string>("MySection.SubStringParameter", "Just a string parameter in the sub-section");
+
+      for (i = 0; i < itemCount; ++i)
+      {
+         shared::CDataContainer result;
+         result.set("date", boost::posix_time::to_iso_string(t1));
+         result.set("key", std::to_string(fRand(0, 1000)));
+         result.set<bool>("BoolParameter", true);
+         result.set<double>("DecimalParameter", 18.4);
+         result.set<EEnumType>("EnumParameter", kEnumValue2);
+         result.set<std::string>("EnumAsStringParameter", "EnumValue1");
+         result.set<int>("IntParameter", 42);
+         result.set<std::string>("Serial port", "tty0");
+         result.set<std::string>("StringParameter", "Yadoms is so powerful !");
+         result.set<int>("MySection.SubIntParameter", 123);
+         result.set<std::string>("MySection.SubStringParameter", "Just a string parameter in the sub-section");
+         dcgeneration.appendArray("data", result);
+         t1 += boost::posix_time::seconds(1);
+      }
+
+      MEASURE_DURATION_STOP("Generating JSON in memory");
+
+      MEASURE_DURATION_START();
+      dcgeneration.serializeToFile("benchmark.json");
+      MEASURE_DURATION_STOP("Wrting to file benchmark.json");
+
+
+      MEASURE_DURATION_START();
+      shared::CDataContainer dcread;
+      dcread.deserializeFromFile("benchmark.json");
+      MEASURE_DURATION_STOP("Reading file benchmark.json");
+
+      std::cout << "[ic=" << itemCount << "] " << "Filesize is " << boost::filesystem::file_size("benchmark.json") << " bytes" << std::endl;
+      boost::filesystem::remove("benchmark.json");
+   }
+   catch (...)
+   {
+      BOOST_FAIL("Unknown exception");
+   }
+}
+
+BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
+{
+   std::cout << "Start benchmark of CDataContainer" << std::endl;
+   std::cout << "Config :" << BOOST_PP_STRINGIZE(RAPIDJSON_DEFAULT_ALLOCATOR) << std::endl;
+   std::cout << "    Allocator = " << BOOST_PP_STRINGIZE(RAPIDJSON_DEFAULT_ALLOCATOR) << std::endl;
+   std::cout << "    Object capacity = " << RAPIDJSON_VALUE_DEFAULT_OBJECT_CAPACITY << std::endl;
+   std::cout << "    Array capacity = " << RAPIDJSON_VALUE_DEFAULT_ARRAY_CAPACITY << std::endl;
+   std::cout << "    Chunck capacity = " << RAPIDJSON_ALLOCATOR_DEFAULT_CHUNK_CAPACITY << std::endl;
+   
+   bench_cdatacontainer(10);
+   bench_cdatacontainer(1000);
+   bench_cdatacontainer(100000);
+   bench_cdatacontainer(1000000);
+
+   std::cout << "End benchmark of CDataContainer" << std::endl;
+}
+
+
+
+
+
+BOOST_AUTO_TEST_CASE(DataContainer_Array)
+{
+   shared::CDataContainer dc;
+   auto actualDatetime = boost::posix_time::second_clock::universal_time();
+
+   BOOST_CHECK_EQUAL(dc.createArray("test.myArray"), true);
+
+   //insert all simple data
+   dc.appendArray("test.myArray", true);
+   dc.appendArray("test.myArray", 18.4);
+   dc.appendArray<EEnumType>("test.myArray", kEnumValue2);
+   dc.appendArray<std::string>("test.myArray", "EnumValue1");
+   dc.appendArray("test.myArray", 42);
+   dc.appendArray("test.myArray", "tty0");
+   dc.appendArray("DateTimeParameter", actualDatetime);
+
+   BOOST_CHECK_EQUAL(dc.isArray("test.myArray"), true);
+
+   dc.set("test.myArray", "tty0");
+   BOOST_CHECK_EQUAL(dc.isArray("test.myArray"), false);
+
+   //dc.printToLog(std::cout);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
