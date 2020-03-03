@@ -281,6 +281,25 @@ namespace shared
       template<class T>
       inline void set(const char* parameterName, const T & value, const char pathChar = '.');
 
+
+      //--------------------------------------------------------------
+      /// \brief	    Append value to an already existing array
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] value            Value of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      //--------------------------------------------------------------
+      template<class T>
+      void appendArray(const std::string& parameterName, const T& value, char pathChar = '.');
+
+      //--------------------------------------------------------------
+      /// \brief	    Append value to an already existing array
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] value            Value of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      //--------------------------------------------------------------
+      template<class T>
+      void appendArray(const char* parameterName, const T& value, char pathChar = '.');
+
       //--------------------------------------------------------------
       //
       //
@@ -305,6 +324,22 @@ namespace shared
       /// \param [in] value            Value of the parameter
       //--------------------------------------------------------------
       void set(const char* parameterName, const char* value, const char pathChar = '.');
+
+      //--------------------------------------------------------------
+      /// \brief	    Append a value to an array
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] value            Value of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      //--------------------------------------------------------------
+      void appendArray(const char* parameterName, const char* value, char pathChar = '.');
+
+      //--------------------------------------------------------------
+      /// \brief	    Append a value to an array
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] value            Value of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      //--------------------------------------------------------------
+      void appendArray(const std::string& parameterName, const char* value, char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
@@ -339,7 +374,8 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Find a sub-parameter with criteria
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] whereFct         Criteria : lambda must returns true if item is found
+      /// \param [in] where_fct         Criteria : lambda must returns true if item is found
+      /// \param [in] pathChar         The path spearator to use (default is '.')
       /// \return     The found parameter
       /// \throw      shared::exception::CEmptyResutl if no parameter matching criteria was found
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -439,20 +475,34 @@ namespace shared
       //--------------------------------------------------------------
       bool containsValue(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
-	  //--------------------------------------------------------------
-	  /// \brief	  Set a value as null
-	  /// \param [in] parameterName    Name of the parameter
-	  /// \param [in] pathChar         The path spearator to use (default is '.')
-	  //--------------------------------------------------------------
+	   //--------------------------------------------------------------
+	   /// \brief	  Set a value as null
+	   /// \param [in] parameterName    Name of the parameter
+	   /// \param [in] pathChar         The path spearator to use (default is '.')
+	   //--------------------------------------------------------------
       void setNull(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
-	  //--------------------------------------------------------------
-	  /// \brief	  Check if a value is null
-	  /// \param [in] parameterName    Name of the parameter
-	  /// \param [in] pathChar         The path spearator to use (default is '.')
-	  /// \return  true is the value is null
-	  //--------------------------------------------------------------
+	   //--------------------------------------------------------------
+	   /// \brief	  Check if a value is null
+	   /// \param [in] parameterName    Name of the parameter
+	   /// \param [in] pathChar         The path spearator to use (default is '.')
+	   /// \return  true is the value is null
+	   //--------------------------------------------------------------
 	  bool isNull(const std::string& parameterName = std::string(), const char pathChar = '.') const;
+
+      //--------------------------------------------------------------
+      /// \brief	  Create an empty array
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      //--------------------------------------------------------------
+      bool createArray(const std::string& parameterName, char pathChar = '.');
+
+      //--------------------------------------------------------------
+      /// \brief	  Check if targetted value is an array
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      //--------------------------------------------------------------
+      bool isArray(const std::string& parameterName, char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief		Equality operator
@@ -509,6 +559,12 @@ namespace shared
       /// \param [in] os      The out stream where to print out
       //--------------------------------------------------------------
       void printToLog(std::ostream& os) const;
+
+      //--------------------------------------------------------------
+      /// \brief		Print sizeto log
+      /// \param [in] os      The out stream where to print out
+      //--------------------------------------------------------------
+      void printSizeToLog(std::ostream& os) const;
 
       //--------------------------------------------------------------
       /// \brief	    Merge this container from another one
@@ -769,7 +825,7 @@ namespace shared
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       //--------------------------------------------------------------
       template<class T>
-      inline void setInternal(const std::string& parameterName, const T & value, const char pathChar);
+      void appendArrayInternal(const std::string& parameterName, const T& value, char pathChar);
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value (T is IDataContainable)
@@ -778,7 +834,7 @@ namespace shared
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       //--------------------------------------------------------------
       template<class T>
-      inline void setInternalIDataContainable(const std::string& parameterName, const T & value, const char pathChar);
+      void appendArrayInternalIDataContainable(const std::string& parameterName, const T& value, char pathChar);
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter values
@@ -885,6 +941,14 @@ namespace shared
             tree->setInternal<T>(parameterName, value, pathChar);
          }
 
+         //--------------------------------------------------------------
+         /// \brief	    APPEND Array Method for all standard types (int, double, std::string,...)
+         //--------------------------------------------------------------
+         static void appendArrayInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
+         {
+            tree->appendArrayInternal<T>(parameterName, value, pathChar);
+         }
+
       };
 
 
@@ -909,6 +973,14 @@ namespace shared
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const boost::shared_ptr< T > & value, const char pathChar)
          {
             helper<T>::setInternal(tree, parameterName, *value.get(), pathChar);
+         }
+
+         //--------------------------------------------------------------
+         /// \brief	    appendArray Method for boost::shared_ptr<T>
+         //--------------------------------------------------------------
+         static void appendArrayInternal(CDataContainer * tree, const std::string& parameterName, const boost::shared_ptr< T > & value, const char pathChar)
+         {
+            helper<T>::appendArrayInternal(tree, parameterName, *value.get(), pathChar);
          }
       };   
       
@@ -938,6 +1010,15 @@ namespace shared
             else
                tree->setNull(parameterName, pathChar);
          }
+
+         //--------------------------------------------------------------
+         /// \brief	    appendArray Method for boost::shared_ptr<T>
+         //--------------------------------------------------------------
+         static void appendArrayInternal(CDataContainer * tree, const std::string& parameterName, const boost::optional< T > & value, const char pathChar)
+         {
+            if (value)
+               helper<T>::appendArrayInternal(tree, parameterName, *value, pathChar);
+         }
       };
 
       //--------------------------------------------------------------
@@ -960,6 +1041,14 @@ namespace shared
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const CField< T > & value, const char pathChar)
          {
             helper<T>::setInternal(tree, parameterName, value(), pathChar);
+         }
+
+         //--------------------------------------------------------------
+         /// \brief	    appendArray Method for CField<T>
+         //--------------------------------------------------------------
+         static void appendArrayInternal(CDataContainer * tree, const std::string& parameterName, const CField< T > & value, const char pathChar)
+         {
+            helper<T>::appendArrayInternal(tree, parameterName, value(), pathChar);
          }
       };
 
@@ -985,6 +1074,14 @@ namespace shared
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
          {
             tree->setInternalIDataContainable<T>(parameterName, value, pathChar);
+         }
+         
+         //--------------------------------------------------------------
+         /// \brief	    appendArray Method for IDataContainable object
+         //--------------------------------------------------------------
+         static void appendArrayInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
+         {
+            tree->appendArrayInternalIDataContainable<T>(parameterName, value, pathChar);
          }
 
       };
@@ -1013,6 +1110,14 @@ namespace shared
             tree->setInternal<int>(parameterName, static_cast<int>(value), pathChar);
          }
 
+         //--------------------------------------------------------------
+         /// \brief	    appendArray Method for enumeration
+         //--------------------------------------------------------------
+         static void appendArrayInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
+         {
+            tree->appendArrayInternal<int>(parameterName, static_cast<int>(value), pathChar);
+         }
+
       };
 
 
@@ -1024,7 +1129,7 @@ namespace shared
       struct helper < T, typename boost::enable_if< boost::is_base_of< shared::enumeration::IExtendedEnum, T > >::type >
       {
          //--------------------------------------------------------------
-         /// \brief	    GET Method for IDataContainable object
+         /// \brief	    GET Method for IExtendedEnum object
          //--------------------------------------------------------------
          static T getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
@@ -1032,13 +1137,20 @@ namespace shared
          }
 
          //--------------------------------------------------------------
-         /// \brief	    SET Method for IDataContainable object
+         /// \brief	    SET Method for IExtendedEnum object
          //--------------------------------------------------------------
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
          {
             tree->setInternal<std::string>(parameterName, static_cast<std::string>(value), pathChar);
          }
 
+         //--------------------------------------------------------------
+         /// \brief	    appendArray Method for IExtendedEnum object
+         //--------------------------------------------------------------
+         static void appendArrayInternal(CDataContainer* tree, const std::string& parameterName, const T& value, const char pathChar)
+         {
+            tree->appendArrayInternal<std::string>(parameterName, static_cast<std::string>(value), pathChar);
+         }
       };
 
 
@@ -1290,15 +1402,41 @@ namespace shared
 
 
    template<class T>
-   inline void CDataContainer::set(const char* parameterName, const T & value, const char pathChar)
+   void CDataContainer::appendArray(const std::string& parameterName, const T& value, const char pathChar)
+   {
+      helper<T>::appendArrayInternal(this, parameterName, value, pathChar);
+   }
+
+   template<class T>
+   void CDataContainer::appendArray(const char* parameterName, const T& value, const char pathChar)
    {
       const std::string strParamName(parameterName);
-      set<T>(strParamName, value, pathChar);
+      appendArray<T>(strParamName, value, pathChar);
+   }
+
+   template<>
+   inline void CDataContainer::appendArray(const std::string& parameterName, const unsigned long& value, const char pathChar)
+   {
+      helper<unsigned int>::appendArrayInternal(this, parameterName, value, pathChar);
+   }
+
+   template<>
+   inline void CDataContainer::appendArray(const std::string& parameterName, const char& value, const char pathChar)
+   {
+      std::string s;
+      s += value;
+      appendArray<std::string>(parameterName, s, pathChar);
    }
 
 
 
-
+   template<class T>
+   void CDataContainer::set(const char* parameterName, const T & value, const char pathChar)
+   {
+      const std::string strParamName(parameterName);
+      set<T>(strParamName, value, pathChar);
+   }
+   
    template<typename T>
    inline void CDataContainer::set(const std::string& parameterName, const T & value, const char pathChar)
    {
@@ -1670,6 +1808,72 @@ namespace shared
          v.PushBack(*i->get(), allocator);
       }
    }
+
+   template<class T>
+   void CDataContainer::appendArrayInternal(const std::string& parameterName, const T& value, const char pathChar)
+   {
+      if (!m_tree.IsObject())
+         m_tree.SetObject();
+
+      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
+      if(ptr != NULL && ptr->IsArray())
+      {
+         ptr->PushBack(value, m_tree.GetAllocator());
+      }
+   }
+
+   template<>
+   inline void CDataContainer::appendArrayInternal(const std::string& parameterName, const std::string& value, const char pathChar)
+   {
+      if (!m_tree.IsObject())
+         m_tree.SetObject();
+
+      rapidjson::Value v(value, m_tree.GetAllocator());
+      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
+      if (ptr != NULL && ptr->IsArray())
+      {
+         ptr->PushBack(v, m_tree.GetAllocator());
+      }
+
+   }
+
+
+   template<>
+   inline void CDataContainer::appendArrayInternal(const std::string& parameterName, const CDataContainer& value, const char pathChar)
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Get(m_tree);
+      if (ptr != NULL && ptr->IsArray())
+      {
+         auto* treeToAppend = &value.m_tree;
+         ptr->PushBack(*((rapidjson::Document *)treeToAppend), m_tree.GetAllocator());
+      }
+   }
+
+
+   template<>
+   inline void CDataContainer::appendArrayInternal(const std::string& parameterName, const boost::posix_time::ptime& value, const char pathChar)
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Get(m_tree);
+      if (ptr != NULL && ptr->IsArray())
+      {
+         const std::string s = boost::posix_time::to_iso_string(value);
+         rapidjson::Value v(s, m_tree.GetAllocator());
+         ptr->PushBack(v, m_tree.GetAllocator());
+      }
+
+   }
+
+   template<class T>
+   void CDataContainer::appendArrayInternalIDataContainable(const std::string& parameterName, const T& value, const char pathChar)
+   {
+      CDataContainer subTree;
+      value.extractContent(subTree);
+      appendArrayInternal(parameterName, subTree, pathChar);
+   }
+
 
    template<class T>
    inline T CDataContainer::convert(rapidjson::Value* found) const

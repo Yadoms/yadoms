@@ -57,6 +57,16 @@ namespace shared
 
    CDataContainer::~CDataContainer() = default;
 
+	inline CDataContainerSharedPtr CDataContainer::getChild(const std::string& parameterName, const char pathChar) const
+	{
+		boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+		rapidjson::Value* found = findValue(parameterName, pathChar);
+		if (found)
+			return boost::make_shared<CDataContainer>(found);
+		throw exception::CInvalidParameter(parameterName + " : is not found");
+	}
+
 
 	CDataContainer::CDataContainer(const CDataContainer & initialData)
 	{
@@ -240,8 +250,13 @@ namespace shared
 		m_tree.Accept(writer);
 	}
 
-	std::string CDataContainer::generatePath(const std::string & parameterName, const char pathChar) const
+	void CDataContainer::printSizeToLog(std::ostream& os) const
 	{
+		//os << "Size=" << getPointer()->GetAllocator().Size() << " ChunkSize=" << getPointer()->GetAllocator().Capacity() << " StackCapcity=" << getPointer()->GetStackCapacity() << std::endl;
+	}
+
+	std::string CDataContainer::generatePath(const std::string & parameterName, const char pathChar)
+   {
 		std::string res = "/"; //pointer is still starting with /
 	   const int c = parameterName.size();
 		const char * s = parameterName.c_str();
@@ -417,6 +432,36 @@ namespace shared
 		if (v)
 			return v->IsNull();
 		throw exception::CInvalidParameter(parameterName + " : is not found");
+	}
+
+	bool CDataContainer::createArray(const std::string& parameterName, const char pathChar)
+	{
+		rapidjson::Value& v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
+		return v.IsArray();
+	}
+
+	bool CDataContainer::isArray(const std::string& parameterName, char pathChar)
+	{
+		const auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
+		if (ptr != NULL && ptr->IsArray())
+		{
+			return true;
+		}
+		return false;
+	}
+
+	void CDataContainer::appendArray(const char* parameterName, const char* value, const char pathChar)
+	{
+		const std::string strParamName(parameterName);
+		const std::string strValue(value);
+		appendArray<std::string>(strParamName, strValue, pathChar);
+	}
+
+
+	void CDataContainer::appendArray(const std::string& parameterName, const char* value, const char pathChar)
+	{
+		const std::string strValue(value);
+		appendArray<std::string>(parameterName, strValue, pathChar);
 	}
 
 	rapidjson::Document * CDataContainer::getPointer() const
@@ -999,7 +1044,7 @@ namespace shared
 		if (v.IsInt())
 		{
 			const int b = v.GetInt();
-			if (b< -FLT_MAX || b>FLT_MAX)
+			if (b< -FLT_MAX || b > FLT_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
 			return static_cast<float>(b);
 		}

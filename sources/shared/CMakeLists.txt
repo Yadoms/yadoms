@@ -323,6 +323,7 @@ set(SHARED_LIB_SRC
    shared/rapidjson/error/en.h
    shared/rapidjson/error/error.h
    shared/rapidjson/internal/biginteger.h
+   shared/rapidjson/internal/clzll.h
    shared/rapidjson/internal/diyfp.h
    shared/rapidjson/internal/dtoa.h
    shared/rapidjson/internal/ieee754.h
