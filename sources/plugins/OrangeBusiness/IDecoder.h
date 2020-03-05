@@ -35,5 +35,5 @@ public:
    /// \brief	                    return if we need to ask the server for new frames
    /// \param [in] message         the received message
    //--------------------------------------------------------------
-   virtual shared::CDataContainer getLastData(shared::CDataContainer& message) = 0;
+   virtual shared::CDataContainerSharedPtr getLastData(shared::CDataContainerSharedPtr& message) = 0;
 };

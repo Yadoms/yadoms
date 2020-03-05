@@ -36,7 +36,7 @@ namespace shared
                const EKeywordAccessMode& getAccessMode() const override;
                std::string formatValue() const override;
                const EMeasureType& getMeasureType() const override;
-               CDataContainer getTypeInfo() const override;
+               CDataContainerSharedPtr getTypeInfo() const override;
                const EHistoryDepth& getHistoryDepth() const override;
                // [END] IHistorizable implementation;
 

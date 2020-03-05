@@ -13,7 +13,9 @@
 
 namespace shared
 {
-	const CDataContainer CDataContainer::EmptyContainer;
+	const CDataContainerSharedPtr CDataContainer::EmptyContainerSharedPtr = boost::make_shared<CDataContainer>();
+	const CDataContainer CDataContainer::EmptyContainer = CDataContainer();
+
 
 	CDataContainer::CDataContainer()
 	{
@@ -55,9 +57,17 @@ namespace shared
 	}
 
 
-   CDataContainer::~CDataContainer() = default;
+	CDataContainer::~CDataContainer()
+	{
+		//m_tree.GetAllocator().Clear();
+	}
 
-	inline CDataContainerSharedPtr CDataContainer::getChild(const std::string& parameterName, const char pathChar) const
+	//CDataContainer::CDataContainer(const CDataContainer&& initialData)
+	//{
+	   
+	//}
+
+	CDataContainerSharedPtr CDataContainer::getChild(const std::string& parameterName, const char pathChar) const
 	{
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -67,13 +77,11 @@ namespace shared
 		throw exception::CInvalidParameter(parameterName + " : is not found");
 	}
 
-
 	CDataContainer::CDataContainer(const CDataContainer & initialData)
 	{
-		m_tree.SetObject();
-		m_tree.CopyFrom(initialData.m_tree, m_tree.GetAllocator(), true);
+		 m_tree.SetObject();
+		 m_tree.CopyFrom(initialData.m_tree, m_tree.GetAllocator(), true);
 	}
-
 
 	CDataContainer::CDataContainer(const rapidjson::Document & initialTree)
 	{
@@ -173,7 +181,7 @@ namespace shared
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
 		m_tree.RemoveAllMembers();
-		rapidjson::ParseResult parseError = m_tree.Parse(data.c_str());
+      const rapidjson::ParseResult parseError = m_tree.Parse(data.c_str());
 		if (!parseError)
 			throw exception::CJSONParse(rapidjson::GetParseError_En(parseError.Code()), parseError.Offset());
 	}
@@ -232,6 +240,13 @@ namespace shared
 	{
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
 		m_tree.CopyFrom(rhs.m_tree, m_tree.GetAllocator(), true);
+	}
+
+
+   void CDataContainer::initializeWith(CDataContainerSharedPtr &rhs)
+	{
+		boost::lock_guard<boost::mutex> lock(m_treeMutex);
+		m_tree.CopyFrom(rhs->m_tree, m_tree.GetAllocator(), true);
 	}
 
 
@@ -313,17 +328,17 @@ namespace shared
 		}
 
 
-	   auto path = generatePath(parameterName, pathChar);
+      const auto path = generatePath(parameterName, pathChar);
 		return const_cast<rapidjson::Value*>(rapidjson::Pointer(path.c_str()).Get(m_tree));
 	}
 
-	CDataContainer CDataContainer::find(const std::string& parameterName, const boost::function<bool(const CDataContainer&)> whereFct, const char pathChar) const
+	CDataContainer CDataContainer::find(const std::string& parameterName, const boost::function<bool(const CDataContainer&)> where_fct, const char pathChar) const
 	{
 		for (const auto& key : getKeys(parameterName, pathChar))
 		{
 			const auto path = parameterName + pathChar + key;
 			const auto container = get<CDataContainer>(path);
-			if (whereFct(container))
+			if (where_fct(container))
 			{
 				CDataContainer result;
 				result.set(key, container);
@@ -418,8 +433,14 @@ namespace shared
 		mergeObjects(m_tree, source.m_tree, allocator);
 	}
 
-	void CDataContainer::setNull(const std::string& parameterName, const char pathChar) const
+	void CDataContainer::mergeFrom(CDataContainerSharedPtr& from)
 	{
+		auto& allocator = m_tree.GetAllocator();
+		mergeObjects(m_tree, from.get()->m_tree, allocator);
+	}
+
+	void CDataContainer::setNull(const std::string& parameterName, const char pathChar) const
+   {
 		auto v = this->findValue(parameterName, pathChar);
 		if (v)
 			v->SetNull();
@@ -853,8 +874,6 @@ namespace shared
 		if (v.IsUint())
 		{
 			const unsigned int b = v.GetUint();
-			if (b< 0)
-				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
 			return static_cast<uint64_t>(b);
 		}
 

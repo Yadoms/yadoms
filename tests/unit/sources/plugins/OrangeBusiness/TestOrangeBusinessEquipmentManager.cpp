@@ -99,7 +99,7 @@ namespace yApi = shared::plugin::yPluginApi;
                   \"created\" : \"2017-04-03T16:05:06.026Z\"\
       } ]";
 
-      shared::CDataContainer messageRecu(message);
+      shared::CDataContainerSharedPtr messageRecu = new_CDataContainerSharedPtrP(message);
       m_urlManager->addRegisteredEquipmentsMessageReturned(MessageEquipmentInformation());
       m_urlManager->addMessagesForEquipment(messageRecu);
 

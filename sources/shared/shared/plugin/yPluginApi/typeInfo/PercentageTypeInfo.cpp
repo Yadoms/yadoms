@@ -14,7 +14,7 @@ namespace shared
             {
             }
 
-            CDataContainer CPercentageTypeInfo::serialize() const
+            CDataContainerSharedPtr CPercentageTypeInfo::serialize() const
             {
                return m_intTypeInfo.serialize();
             }

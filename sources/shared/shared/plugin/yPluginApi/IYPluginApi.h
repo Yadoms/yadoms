@@ -219,7 +219,7 @@ namespace shared
                                        const std::string& type,
                                        const std::string& model,
                                        boost::shared_ptr<const historization::IHistorizable> keyword,
-                                       const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+                                       CDataContainerSharedPtr details = CDataContainer::EmptyContainerSharedPtr) = 0;
 
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keywords (all-in-one function)
@@ -234,7 +234,7 @@ namespace shared
                                        const std::string& type,
                                        const std::string& model,
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable>>(),
-                                       const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+                                       CDataContainerSharedPtr details = CDataContainer::EmptyContainerSharedPtr) = 0;
 
             //-----------------------------------------------------
             ///\brief Get all devices attached to this plugin instance
@@ -255,7 +255,7 @@ namespace shared
             ///\return the device configuration
             ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
-            virtual CDataContainer getDeviceConfiguration(const std::string& device) const = 0;
+            virtual CDataContainerSharedPtr getDeviceConfiguration(const std::string& device) const = 0;
 
             //-----------------------------------------------------
             ///\brief Update the configuration of a device (replace the existing configuration)
@@ -264,7 +264,7 @@ namespace shared
             ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
             virtual void updateDeviceConfiguration(const std::string& device,
-                                                   const CDataContainer& configuration) const = 0;
+                                                   CDataContainerSharedPtr configuration) const = 0;
 
             //-----------------------------------------------------
             ///\brief Get the details of a device
@@ -272,7 +272,7 @@ namespace shared
             ///\return the device details
             ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
-            virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
+            virtual CDataContainerSharedPtr getDeviceDetails(const std::string& device) const = 0;
 
             //-----------------------------------------------------
             ///\brief Update the details of a device (replace the existing details)
@@ -281,7 +281,7 @@ namespace shared
             ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
             virtual void updateDeviceDetails(const std::string& device,
-                                             const CDataContainer& details) const = 0;
+                                             CDataContainerSharedPtr details) const = 0;
 
             //-----------------------------------------------------
             ///\brief Get the model of a device
@@ -363,7 +363,7 @@ namespace shared
             //-----------------------------------------------------
             virtual void declareKeyword(const std::string& device,
                                         boost::shared_ptr<const historization::IHistorizable> keyword,
-                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+                                        CDataContainerSharedPtr details = CDataContainer::EmptyContainerSharedPtr) = 0;
 
             //-----------------------------------------------------
             ///\brief Declare a list of keywords for a device
@@ -530,7 +530,7 @@ namespace shared
             ///\brief Get the current plugin configuration
             ///\return The current plugin configuration
             //-----------------------------------------------------
-            virtual CDataContainer getConfiguration() = 0;
+            virtual CDataContainerSharedPtr getConfiguration() = 0;
 
             //-----------------------------------------------------
             /// \brief	    Get the plugin instance data path

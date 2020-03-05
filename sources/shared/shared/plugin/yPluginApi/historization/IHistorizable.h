@@ -58,7 +58,7 @@ namespace shared
                ///\brief                     The type information
                ///\return                    Type information
                //-----------------------------------------------------
-               virtual CDataContainer getTypeInfo() const = 0;
+               virtual CDataContainerSharedPtr getTypeInfo() const = 0;
 
                //-----------------------------------------------------
                ///\brief                     The history depth policy

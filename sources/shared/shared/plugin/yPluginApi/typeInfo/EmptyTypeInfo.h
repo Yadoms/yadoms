@@ -24,7 +24,7 @@ namespace shared
                CEmptyTypeInfo() = default;
                virtual ~CEmptyTypeInfo() = default;
 
-               CDataContainer serialize() const override;
+               CDataContainerSharedPtr serialize() const override;
             };
          }
       }
