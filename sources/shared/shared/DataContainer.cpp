@@ -11,6 +11,8 @@
 #include "rapidjson/error/error.h"
 #include "rapidjson/error/en.h"
 
+#define MIN_USER_BUFFER_SIZE(itemcount) (12  + (32*itemcount))
+
 namespace shared
 {
 	const CDataContainerSharedPtr CDataContainer::EmptyContainerSharedPtr = boost::make_shared<CDataContainer>();
@@ -18,18 +20,29 @@ namespace shared
 
 
 	CDataContainer::CDataContainer()
+		:m_tree_allocator_initial_buffer(NULL), m_tree_allocator(NULL)
 	{
 		m_tree.SetObject();
 
 	}
 
+	CDataContainer::CDataContainer(unsigned int estimatedDataSize, unsigned int estimatedItemCount)
+		:m_tree_allocator_initial_buffer(operator new(estimatedDataSize + MIN_USER_BUFFER_SIZE(estimatedItemCount))),
+      m_tree_allocator(new rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>(m_tree_allocator_initial_buffer, estimatedDataSize + MIN_USER_BUFFER_SIZE(estimatedItemCount))),
+	   m_tree(m_tree_allocator)
+	{
+		m_tree.SetObject();
+	}
+
 	CDataContainer::CDataContainer(const std::string & initialData)
+		:m_tree_allocator_initial_buffer(NULL), m_tree_allocator(NULL)
 	{
 		m_tree.SetObject();
 		CDataContainer::deserialize(initialData);
 	}
 
 	CDataContainer::CDataContainer(rapidjson::Value & d)
+		:m_tree_allocator_initial_buffer(NULL), m_tree_allocator(NULL)
 	{
 		m_tree.SetObject();
 		rapidjson::Document::AllocatorType& a = m_tree.GetAllocator();
@@ -37,12 +50,14 @@ namespace shared
 	}
 
 	CDataContainer::CDataContainer(rapidjson::Value * d)
+		:m_tree_allocator_initial_buffer(NULL), m_tree_allocator(NULL)
 	{
 		m_tree.SetObject();
 		m_tree.CopyFrom(*d, m_tree.GetAllocator(), true);
 	}
 
 	CDataContainer::CDataContainer(rapidjson::Document & d)
+		:m_tree_allocator_initial_buffer(NULL), m_tree_allocator(NULL)
 	{
 		m_tree.SetObject();
 		m_tree.CopyFrom(d, m_tree.GetAllocator(), true);
@@ -50,6 +65,7 @@ namespace shared
 
 
 	CDataContainer::CDataContainer(const std::map<std::string, std::string> & initialData)
+		:m_tree_allocator_initial_buffer(NULL), m_tree_allocator(NULL)
 	{
 		m_tree.SetObject();
 	   for (const auto& i : initialData)
@@ -59,13 +75,16 @@ namespace shared
 
 	CDataContainer::~CDataContainer()
 	{
-		//m_tree.GetAllocator().Clear();
-	}
+		m_tree.GetAllocator().Clear();
 
-	//CDataContainer::CDataContainer(const CDataContainer&& initialData)
-	//{
-	   
-	//}
+		if(m_tree_allocator != NULL)
+		   delete m_tree_allocator;
+
+		if (m_tree_allocator_initial_buffer != NULL)
+			operator delete(m_tree_allocator_initial_buffer);
+
+
+	}
 
 	CDataContainerSharedPtr CDataContainer::getChild(const std::string& parameterName, const char pathChar) const
 	{
@@ -78,12 +97,14 @@ namespace shared
 	}
 
 	CDataContainer::CDataContainer(const CDataContainer & initialData)
+		:m_tree_allocator_initial_buffer(NULL), m_tree_allocator(NULL)
 	{
 		 m_tree.SetObject();
 		 m_tree.CopyFrom(initialData.m_tree, m_tree.GetAllocator(), true);
 	}
 
 	CDataContainer::CDataContainer(const rapidjson::Document & initialTree)
+		:m_tree_allocator_initial_buffer(NULL), m_tree_allocator(NULL)
 	{
 		m_tree.SetObject();
 		m_tree.CopyFrom(initialTree, m_tree.GetAllocator(), true);
