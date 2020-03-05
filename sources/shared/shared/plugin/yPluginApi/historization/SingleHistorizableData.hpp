@@ -225,6 +225,24 @@ namespace shared
                ///\brief     Helpers specialization for bool
                //-----------------------------------------------------      
                template <typename TData>
+               struct helper<TData, typename boost::enable_if<boost::is_same<CDataContainerSharedPtr, TData>>::type>
+               {
+                  static CDataContainerSharedPtr getInternal(const std::string& value)
+                  {
+                     return new_CDataContainerSharedPtrP(value);
+                  }
+
+                  static CDataContainerSharedPtr createDefaultTypeInfo()
+                  {
+                     return boost::make_shared<shared::CDataContainer>();
+                  }
+               };
+
+
+               //-----------------------------------------------------
+               ///\brief     Helpers specialization for bool
+               //-----------------------------------------------------      
+               template <typename TData>
                struct helper<TData, typename boost::enable_if<boost::is_same<bool, TData>>::type>
                {
                   static bool getInternal(const std::string& value)

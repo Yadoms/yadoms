@@ -289,18 +289,16 @@ namespace web
                   auto allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId,
                                                                                            timeFrom,
                                                                                            timeTo);
-                  std::vector<shared::CDataContainer> objectList;
+                  shared::CDataContainerSharedPtr result = new_CDataContainerSharedPtrOptimized(32, allData.size());
+                  result->createArray("data");
 
                   for (auto& i : allData)
                   {
-                     shared::CDataContainer result;
+                     shared::CDataContainer result(32,2);
                      result.set("date", boost::posix_time::to_iso_string(i.get<0>()));
                      result.set("key", i.get<1>());
-                     objectList.push_back(result);
+                     result.appendArray("data", result);
                   }
-
-                  shared::CDataContainer result;
-                  result.set<std::vector<shared::CDataContainer>>("data", objectList);
                   return CResult::GenerateSuccess(result);
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");

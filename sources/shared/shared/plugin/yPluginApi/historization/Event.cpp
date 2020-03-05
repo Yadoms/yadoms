@@ -44,9 +44,9 @@ namespace shared
                return MeasureType;
             }
 
-            CDataContainer CEvent::getTypeInfo() const
+            CDataContainerSharedPtr CEvent::getTypeInfo() const
             {
-               return CDataContainer();
+               return new_CDataContainerSharedPtr();
             }
 
             const EHistoryDepth& CEvent::getHistoryDepth() const

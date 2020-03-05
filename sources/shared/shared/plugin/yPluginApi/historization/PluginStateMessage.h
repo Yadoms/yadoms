@@ -13,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief The plugin state historizable object
             //-----------------------------------------------------
-            class CPluginStateMessage : public CSingleHistorizableData<CDataContainer>
+            class CPluginStateMessage : public CSingleHistorizableData<CDataContainerSharedPtr>
             {
             public:
                //-----------------------------------------------------
