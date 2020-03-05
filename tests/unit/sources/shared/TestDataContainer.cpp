@@ -523,6 +523,70 @@ BOOST_AUTO_TEST_CASE(DataCopy)
 }
 
 
+BOOST_AUTO_TEST_CASE(DataCopy2)
+{
+   shared::CDataContainer dc1;
+   dc1.set("key1", "value1_dc1");
+   dc1.set("key2", "value2_dc1");
+
+   auto dc2 = dc1.copy();
+   dc2->set("key1", "value1_dc2");
+   dc2->set("key2", "value2_dc2");
+
+   BOOST_CHECK_EQUAL(dc1.get<std::string>("key1"), "value1_dc1");
+   BOOST_CHECK_EQUAL(dc1.get<std::string>("key2"), "value2_dc1");
+   BOOST_CHECK_EQUAL(dc2->get<std::string>("key1"), "value1_dc2");
+   BOOST_CHECK_EQUAL(dc2->get<std::string>("key2"), "value2_dc2");
+
+   dc1.set("key2", "value3_dc1");
+   BOOST_CHECK_EQUAL(dc1.get<std::string>("key2"), "value3_dc1");
+   BOOST_CHECK_EQUAL(dc2->get<std::string>("key2"), "value2_dc2");
+
+   dc2->set("key2", "value3_dc2");
+   BOOST_CHECK_EQUAL(dc1.get<std::string>("key2"), "value3_dc1");
+   BOOST_CHECK_EQUAL(dc2->get<std::string>("key2"), "value3_dc2");
+}
+
+
+BOOST_AUTO_TEST_CASE(DataCopy3)
+{
+   shared::CDataContainerSharedPtr dc;
+   const unsigned int testcount = 10;
+
+   //ensure braces are used => in that case, inner container will be deleted to brace close
+   {
+      //check vector of std::string
+      shared::CDataContainer test;
+      std::vector<std::string> vstr;
+      for (unsigned int i = 0; i < testcount; ++i)
+         vstr.push_back((boost::format("string %1%") % i).str());
+      test.set("vectorstring", vstr);
+      dc = test.copy();
+   }
+
+   auto vstr2 = dc->get<std::vector<std::string>>("vectorstring");
+   BOOST_CHECK_EQUAL(vstr2.size(), testcount);
+   for (unsigned int i = 0; i < vstr2.size(); ++i)
+   {
+      std::string loc = (boost::format("string %1%") % i).str();
+      BOOST_CHECK_EQUAL(vstr2[i] == loc, true);
+   }
+
+   //the following test illustrate a bad string allocation (normally datacontainer copy should keep allocation; 
+   //but if a string is copied into rapidjson value without allocator, then the string is kept as a simple reference
+   //and this test fails if string are destroyed
+   auto k = maketest(testcount);
+   shared::CDataContainer dc2(k->serialize());
+   auto vstr = dc2.get<std::vector<std::string>>("data.plugins");
+   BOOST_CHECK_EQUAL(vstr.size(), testcount);
+   for (unsigned int i = 0; i < vstr.size(); ++i)
+   {
+      std::string loc = (boost::format("plugin %1%") % i).str();
+      BOOST_CHECK_EQUAL(vstr[i] == loc, true);
+   }
+}
+
+
 BOOST_AUTO_TEST_CASE(Serialization)
 {
    const std::string defaultConf("{"
