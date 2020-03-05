@@ -369,6 +369,12 @@ namespace shared
 		throw exception::CEmptyResult("No parameter matches criteria");
 	}
 
+
+	CDataContainerSharedPtr CDataContainer::copy()
+	{
+		return new_CDataContainerSharedPtrP(m_tree);
+	}
+
 	void CDataContainer::mergeObjects(rapidjson::Value &dstObject, const rapidjson::Value &srcObject, rapidjson::Document::AllocatorType &allocator)
 	{
 		for (auto srcIt = srcObject.MemberBegin(); srcIt != srcObject.MemberEnd(); ++srcIt)

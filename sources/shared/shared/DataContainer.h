@@ -415,6 +415,13 @@ namespace shared
       //--------------------------------------------------------------
       CDataContainer find(const std::string& parameterName, boost::function<bool(const CDataContainer&)> where_fct, char pathChar = '.') const;
 
+
+      //--------------------------------------------------------------
+      /// \brief	    Make a full copy of current container
+      /// \return     The newly created container
+      //--------------------------------------------------------------
+      CDataContainerSharedPtr copy();
+
       //--------------------------------------------------------------
       //
       //
