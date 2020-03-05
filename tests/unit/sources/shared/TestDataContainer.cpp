@@ -453,6 +453,7 @@ BOOST_AUTO_TEST_CASE(RapidJsonInitAndCopy)
 
       //directly access with []
       DeviceInfoAndState &c = m_deviceCache["mydevice2"];
+      c.first = boost::make_shared< shared::CDataContainer>();
       c.first->mergeFrom(info);
 
       m_deviceCache["mydevice2"].first->set("test1", "test2");
@@ -1514,9 +1515,9 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
       DEBUG_HEAP_INIT();
       DEBUG_HEAP_PRINT("Init");
 
-      for(i=0; i<100000; ++i)
+      for(i=0; i<1000000; ++i)
       {
-         shared::CDataContainerSharedPtr result = boost::make_shared< shared::CDataContainer>();
+         shared::CDataContainerSharedPtr result = new_CDataContainerSharedPtrOptimized(30, 2);
 
          //std::cout << "Before sizeof(dc)=" << sizeof(result) << " ";
          //result.printSizeToLog(std::cout);
@@ -1545,7 +1546,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 {
-   shared::CDataContainer whole;
+   shared::CDataContainer whole(30, 10000);
 
    unsigned int i = 0;
    boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
@@ -1556,7 +1557,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 
       for (i = 0; i < 10000; ++i)
       {
-         shared::CDataContainer result;
+         shared::CDataContainer result(30,2);
          std::string dt = boost::posix_time::to_iso_string(t1);
          result.set("date", dt);
          result.set("key", std::to_string(fRand(0, 1000)));
@@ -1575,7 +1576,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 {
-   shared::CDataContainer whole;
+   shared::CDataContainer whole(100, 1000000);
 
    whole.createArray("data");
 
@@ -1588,7 +1589,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 
       for (i = 0; i < 1000000; ++i)
       {
-         shared::CDataContainer result;
+         shared::CDataContainer result(50, 2);
          result.set("date", boost::posix_time::to_iso_string(t1));
          result.set("key", std::to_string(fRand(0, 1000)));
          whole.appendArray("data", result);

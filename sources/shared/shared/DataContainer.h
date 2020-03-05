@@ -1,5 +1,5 @@
 #pragma once
-
+#define RAPIDJSON_VALUE_DEFAULT_OBJECT_CAPACITY 1
 #include <shared/exception/OutOfRange.hpp>
 #include <shared/exception/InvalidParameter.hpp>
 #include "serialization/IDataSerializable.h"
@@ -178,6 +178,7 @@ namespace shared
    typedef boost::shared_ptr<CDataContainer> CDataContainerSharedPtr;
 
    #define new_CDataContainerSharedPtr() boost::make_shared<shared::CDataContainer>()
+   #define new_CDataContainerSharedPtrOptimized(estimatedDataSize,estimatedItemCount) boost::make_shared<shared::CDataContainer>(estimatedDataSize,estimatedItemCount)
    #define new_CDataContainerSharedPtrP(P) boost::make_shared<shared::CDataContainer>(P)
 
    class CDataContainer : public serialization::IDataSerializable, public serialization::IDataFileSerializable /*, public IDataContainable*/
@@ -197,6 +198,13 @@ namespace shared
       /// \brief		Constructor. Empty data
       //--------------------------------------------------------------
       CDataContainer();
+      
+      //--------------------------------------------------------------
+      /// \brief		Constructor. Empty data
+      ///            With preallocated buffer (!! important if use of
+      ///            huge number of items)
+      //--------------------------------------------------------------
+      CDataContainer(unsigned int estimatedDataSize, unsigned int estimatedItemCount);
 
       //--------------------------------------------------------------
       /// \brief		Constructor. 
@@ -1458,6 +1466,16 @@ namespace shared
 
    private:
       //--------------------------------------------------------------
+      /// \brief	   The rapidjson tree allocator initial buffer
+      //--------------------------------------------------------------
+      void* m_tree_allocator_initial_buffer;
+
+      //--------------------------------------------------------------
+      /// \brief	   The rapidjson tree allocator
+      //--------------------------------------------------------------
+      rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> * m_tree_allocator;
+
+      //--------------------------------------------------------------
       /// \brief	   The configuration content
       //--------------------------------------------------------------
       rapidjson::Document m_tree;
@@ -1872,7 +1890,7 @@ namespace shared
       if (!m_tree.IsObject())
          m_tree.SetObject();
 
-      const rapidjson::Value v(value, m_tree.GetAllocator());
+      rapidjson::Value v(value, m_tree.GetAllocator());
       rapidjson::Pointer(generatePath(parameterName, pathChar)).Set(m_tree, v);
    }
 
@@ -2036,10 +2054,12 @@ namespace shared
       if (ptr != NULL && ptr->IsArray())
       {
          rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-         CDataContainer t;
-         value.extractContent(t);
+//         CDataContainer t;
+  //       value.extractContent(t);
+    //     value.m_tree.CopyFrom();
+
          rapidjson::Value a;
-         a.CopyFrom(t.m_tree, allocator);
+         a.CopyFrom(value.m_tree, allocator);
          ptr->PushBack(a, allocator);
       }
    }
