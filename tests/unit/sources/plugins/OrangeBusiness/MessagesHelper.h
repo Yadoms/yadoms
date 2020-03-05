@@ -2,5 +2,5 @@
 
 #include <shared/DataContainer.h>
 
-shared::CDataContainer MessageEquipmentsList();
-shared::CDataContainer MessageEquipmentInformation();
+shared::CDataContainerSharedPtr MessageEquipmentsList();
+shared::CDataContainerSharedPtr MessageEquipmentInformation();

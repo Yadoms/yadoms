@@ -23,7 +23,7 @@ namespace web { namespace rest {
       ///\param [in] data : optionnal additionnal data
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static boost::shared_ptr<shared::CDataContainer> GenerateError(const std::string & errorMessage = std::string(), const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
+      static shared::CDataContainerSharedPtr GenerateError(const std::string & errorMessage = std::string(), const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
 
       //-----------------------------------------
       ///\brief   Generate an error JSON message
@@ -31,21 +31,21 @@ namespace web { namespace rest {
       ///\param [in] data : optionnal additionnal data
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static boost::shared_ptr<shared::CDataContainer> GenerateError(const std::exception & error, const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
+      static shared::CDataContainerSharedPtr GenerateError(const std::exception & error, const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
 
       //-----------------------------------------
       ///\brief   Generate a success JSON message
       ///\param [in] data : optionnal additionnal data
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static boost::shared_ptr<shared::CDataContainer> GenerateSuccess(const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
+      static shared::CDataContainerSharedPtr GenerateSuccess(const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
       
       //-----------------------------------------
       ///\brief   Generate a success JSON message
       ///\param [in] stringData : data as string
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static boost::shared_ptr<shared::CDataContainer> GenerateSuccess(const std::string & stringData);
+      static shared::CDataContainerSharedPtr GenerateSuccess(const std::string & stringData);
 
       //-----------------------------------------
       ///\brief   Generate a success JSON message

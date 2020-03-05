@@ -24,12 +24,12 @@ std::map<std::string, boost::shared_ptr<equipments::IEquipment>> CDecoder::decod
    if (!errorCode.empty())
       throw shared::exception::CException(message.get<std::string>("message"));
 
-   auto equipments = message.get<std::vector<shared::CDataContainer>>("data");
+   auto equipments = message.get<std::vector<shared::CDataContainerSharedPtr>>("data");
 
    for (const auto& equipmentIterator : equipments)
    {
-      auto name = equipmentIterator.get<std::string>("name");
-      auto devEUI = equipmentIterator.get<std::string>("devEUI");
+      auto name = equipmentIterator->get<std::string>("name");
+      auto devEUI = equipmentIterator->get<std::string>("devEUI");
       auto newEquipment(boost::make_shared<equipments::CDefaultEquipment>(name, devEUI, api));
 	   equipmentList.insert(std::pair<std::string, boost::shared_ptr<equipments::IEquipment>>(name, newEquipment));
       YADOMS_LOG(information) << "create device name = " << name << " devEUI = " << devEUI;
@@ -49,10 +49,10 @@ bool CDecoder::isFrameComplete(shared::CDataContainer& message)
       return false;
 }
 
-shared::CDataContainer CDecoder::getLastData(shared::CDataContainer& response)
+shared::CDataContainerSharedPtr CDecoder::getLastData(shared::CDataContainerSharedPtr& response)
 {
-   auto messages = response.get<std::vector<shared::CDataContainer>>("");
-   shared::CDataContainer lastData;
+   auto messages = response->get<std::vector<shared::CDataContainerSharedPtr>>("");
+   shared::CDataContainerSharedPtr lastData = boost::make_shared<shared::CDataContainer>();
 
    if (!messages.empty())
    {
@@ -60,12 +60,12 @@ shared::CDataContainer CDecoder::getLastData(shared::CDataContainer& response)
       auto message = *messages.begin();
 
       //Copy to the answer needed information
-      lastData.set("id", message.get<std::string>("id"));
-      lastData.set("timestamp", message.get<std::string>("timestamp"));
-      lastData.set("payload", message.get<std::string>("value.payload"));
-      lastData.set("rssi", message.get<double>("metadata.network.lora.rssi"));
-      lastData.set("snr", message.get<double>("metadata.network.lora.snr"));
-      lastData.set("signalLevel", message.get<int>("value.signalLevel"));
+      lastData->set("id", message->get<std::string>("id"));
+      lastData->set("timestamp", message->get<std::string>("timestamp"));
+      lastData->set("payload", message->get<std::string>("value.payload"));
+      lastData->set("rssi", message->get<double>("metadata.network.lora.rssi"));
+      lastData->set("snr", message->get<double>("metadata.network.lora.snr"));
+      lastData->set("signalLevel", message->get<int>("value.signalLevel"));
    }
    return lastData;
 }

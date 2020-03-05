@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "MessagesHelper.h"
 
-shared::CDataContainer MessageEquipmentsList()
+shared::CDataContainerSharedPtr MessageEquipmentsList()
 {
-   shared::CDataContainer messageRecu;
-   messageRecu.set("page", "0");
-   messageRecu.set("size", "20");
-   messageRecu.set("totalCount", "2");
+   shared::CDataContainerSharedPtr messageRecu = new_CDataContainerSharedPtr();
+   messageRecu->set("page", "0");
+   messageRecu->set("size", "20");
+   messageRecu->set("totalCount", "2");
 
    shared::CDataContainer device1, device2;
 
@@ -44,15 +44,14 @@ shared::CDataContainer MessageEquipmentsList()
    device2.set("creationTs", "2016-06-03T15:20:53.803Z");
    device2.set("updateTs", "2016-06-09T08:04:37.971Z");
    // add the devices
-   std::vector<shared::CDataContainer> equipments;
-   equipments.push_back(device1);
-   equipments.push_back(device2);
-   messageRecu.set("data", equipments);
+   messageRecu->createArray("data");
+   messageRecu->appendArray("data", device1);
+   messageRecu->appendArray("data", device2);
 
    return messageRecu;
 }
 
-shared::CDataContainer MessageEquipmentInformation()
+shared::CDataContainerSharedPtr MessageEquipmentInformation()
 {
    std::string message = " {\
       \"devEUI\" : \"70B3D532600013B5\",\
@@ -71,5 +70,5 @@ shared::CDataContainer MessageEquipmentInformation()
          \"updateTs\" : \"2017-03-10T21:03:54.583Z\"\
    }";
 
-   return shared::CDataContainer(message);
+   return new_CDataContainerSharedPtrP(message);
 }

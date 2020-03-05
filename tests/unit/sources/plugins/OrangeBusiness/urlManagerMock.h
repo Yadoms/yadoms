@@ -13,8 +13,8 @@ public:
 
    urlManagerMock();
 
-   void addRegisteredEquipmentsMessageReturned(shared::CDataContainer newMessage);
-   void addMessagesForEquipment(shared::CDataContainer newMessage);
+   void addRegisteredEquipmentsMessageReturned(shared::CDataContainerSharedPtr newMessage);
+   void addMessagesForEquipment(shared::CDataContainerSharedPtr newMessage);
 
    //--------------------------------------------------------------
    /// \brief	    get all equipments from the website
@@ -24,7 +24,7 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer getRegisteredEquipments(const std::string &apikey,
+   shared::CDataContainerSharedPtr getRegisteredEquipments(const std::string &apikey,
                                                   const int page,
                                                   const bool activated,
                                                   const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
@@ -36,7 +36,7 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer getDeviceInformation(const std::string &apikey, 
+   shared::CDataContainerSharedPtr getDeviceInformation(const std::string &apikey,
                                                const std::string &devEUI,
                                                const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
 
@@ -47,7 +47,7 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer listDeviceCommands(const std::string &apikey,
+   shared::CDataContainerSharedPtr listDeviceCommands(const std::string &apikey,
                                              const std::string &devEUI,
                                              const int page,
                                              const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
@@ -55,7 +55,7 @@ public:
 private:
 
    // All simulated messages
-   shared::CDataContainer RegisteredEquipments;
-   shared::CDataContainer DeviceInformation;
-   shared::CDataContainer DeviceMessages;
+   shared::CDataContainerSharedPtr RegisteredEquipments;
+   shared::CDataContainerSharedPtr DeviceInformation;
+   shared::CDataContainerSharedPtr DeviceMessages;
 };

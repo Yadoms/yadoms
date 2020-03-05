@@ -11,9 +11,9 @@ namespace shared
          {
             const CEmptyTypeInfo CEmptyTypeInfo::Empty;
 
-            CDataContainer CEmptyTypeInfo::serialize() const
+            CDataContainerSharedPtr CEmptyTypeInfo::serialize() const
             {
-               return CDataContainer();
+               return new_CDataContainerSharedPtr();
             }
          }
       }

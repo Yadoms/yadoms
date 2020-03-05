@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include <boost/test/unit_test.hpp>
+#include <random>
+
 
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/DataContainer.h"
@@ -189,21 +191,21 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
 
    //check vector of CDataContainer
 
-   shared::CDataContainer cond1;
-   cond1.set("is.keyword", 8);
-   cond1.set("is.expectedValue", "32");
+   shared::CDataContainerSharedPtr cond1 = boost::make_shared<shared::CDataContainer>();
+   cond1->set("is.keyword", 8);
+   cond1->set("is.expectedValue", "32");
 
-   shared::CDataContainer cond2;
-   cond2.set("is.keyword", 9);
-   cond2.set("is.expectedValue", 34);
+   shared::CDataContainerSharedPtr cond2 = boost::make_shared<shared::CDataContainer>();
+   cond2->set("is.keyword", 9);
+   cond2->set("is.expectedValue", 34);
 
-   shared::CDataContainer cond3;
-   cond3.set("is.keyword", 10);
-   cond3.set("is.expectedValue", ve);
+   shared::CDataContainerSharedPtr cond3 = boost::make_shared<shared::CDataContainer>();
+   cond3->set("is.keyword", 10);
+   cond3->set("is.expectedValue", ve);
 
    shared::CDataContainer conditions;
 
-   std::vector<shared::CDataContainer> allconditions;
+   std::vector<shared::CDataContainerSharedPtr> allconditions;
    allconditions.push_back(cond1);
    allconditions.push_back(cond2);
    allconditions.push_back(cond3);
@@ -211,7 +213,7 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
    conditions.set("and", allconditions);
 
    //do checks
-   auto getAllCond = conditions.get<std::vector<shared::CDataContainer>>("and");
+   auto getAllCond = conditions.get<std::vector<shared::CDataContainerSharedPtr>>("and");
 
    BOOST_CHECK_EQUAL(allconditions.size(), getAllCond.size());
 
@@ -219,11 +221,14 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
    auto getCond2 = getAllCond[1];
    auto getCond3 = getAllCond[2];
 
-   BOOST_CHECK_EQUAL(cond1, getCond1);
-   BOOST_CHECK_EQUAL(cond2, getCond2);
-   BOOST_CHECK_EQUAL(cond3, getCond3);
+   BOOST_CHECK_EQUAL(*cond1.get(), *getCond1.get());
+   BOOST_CHECK_EQUAL(*cond2.get(), *getCond2.get());
+   BOOST_CHECK_EQUAL(*cond3.get(), *getCond3.get());
 
-   BOOST_CHECK_EQUAL_COLLECTIONS(allconditions.begin(), allconditions.end(), getAllCond.begin(), getAllCond.end());
+   for(unsigned int i=0; i< allconditions.size(); ++i)
+   {
+      BOOST_CHECK_EQUAL(*getAllCond[i].get(), *allconditions[i].get());
+   }
 }
 
 BOOST_AUTO_TEST_CASE(ContainerToVectorOfContainers)
@@ -252,7 +257,7 @@ BOOST_AUTO_TEST_CASE(ContainerToVectorOfContainers)
             \"version\": \"1.0.1\"\
          }\
       }");
-   BOOST_CHECK_THROW(const auto out = inIsNotAnArray.get<std::vector<shared::CDataContainer>>(), shared::exception::COutOfRange);
+   BOOST_CHECK_THROW(const auto out = inIsNotAnArray.get<std::vector<shared::CDataContainerSharedPtr>>(), shared::exception::COutOfRange);
 }
 
 
@@ -294,9 +299,9 @@ const std::string & getString2() { return str2; }
 shared::CDataContainer globalContainer;
 shared::CDataContainer& getGlobalContainer() { return globalContainer; }
 
-shared::CDataContainer getDeviceInfo()
+shared::CDataContainerSharedPtr getDeviceInfo()
 {
-   shared::CDataContainer d;
+   shared::CDataContainerSharedPtr d = boost::make_shared<shared::CDataContainer>();
 
    {
       std::string id = "id";
@@ -313,8 +318,8 @@ shared::CDataContainer getDeviceInfo()
       std::string sNodeDeviceTypeString = "sNodeDeviceTypeString";
       std::string sNodeRole = "sNodeRole";
 
-      d.set("name", id);
-      d.set("friendlyName", sNodeName);
+      d->set("name", id);
+      d->set("friendlyName", sNodeName);
 
       shared::CDataContainer details;
       details.set("Manufacturer", sNodeManufacturer);
@@ -342,7 +347,7 @@ shared::CDataContainer getDeviceInfo()
       details.set("str1", getString1());
       details.set("str2", getString2());
 
-      d.set("details", details);
+      d->set("details", details);
    }
 
    return d;
@@ -396,10 +401,10 @@ BOOST_AUTO_TEST_CASE(RapidJsonStringMemory)
 
 
    {
-      shared::CDataContainer info = getDeviceInfo();
+      shared::CDataContainerSharedPtr info = getDeviceInfo();
 
-      BOOST_CHECK_EQUAL(info.get<std::string>("details.str1"), "str1");
-      BOOST_CHECK_EQUAL(info.get<std::string>("details.str2"), "str2");
+      BOOST_CHECK_EQUAL(info->get<std::string>("details.str1"), "str1");
+      BOOST_CHECK_EQUAL(info->get<std::string>("details.str2"), "str2");
 
       shared::CDataContainer plop;
 
@@ -438,43 +443,43 @@ BOOST_AUTO_TEST_CASE(RapidJsonInitAndCopy)
    /*
    This test case is an example from Zwave plugin which illustrate a bad object copy.
    */
-   typedef std::pair<shared::CDataContainer, int> DeviceInfoAndState;
+   typedef std::pair<shared::CDataContainerSharedPtr, int> DeviceInfoAndState;
    typedef std::map<std::string, DeviceInfoAndState > DeviceCache;
    DeviceCache m_deviceCache;
 
    {
-      shared::CDataContainer info = getDeviceInfo();
+      shared::CDataContainerSharedPtr info = getDeviceInfo();
       std::string l("test3");
 
       //directly access with []
       DeviceInfoAndState &c = m_deviceCache["mydevice2"];
-      c.first.mergeFrom(info);
+      c.first->mergeFrom(info);
 
-      m_deviceCache["mydevice2"].first.set("test1", "test2");
-      m_deviceCache["mydevice2"].first.set("test2", l);
+      m_deviceCache["mydevice2"].first->set("test1", "test2");
+      m_deviceCache["mydevice2"].first->set("test2", l);
       
       //insert pair instead of []
-      shared::CDataContainer a("{}");
+      shared::CDataContainerSharedPtr a = boost::make_shared<shared::CDataContainer>("{}");
       m_deviceCache.insert(std::make_pair("mydevice", std::make_pair(a, 42)));
 
       DeviceInfoAndState & b = m_deviceCache["mydevice"];
-      b.first.mergeFrom(info);
+      b.first->mergeFrom(info);
    }
 
    {
-      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first.get("test1"), "test2");
+      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first->get("test1"), "test2");
 
       auto &d = m_deviceCache["mydevice2"];
       auto &e = m_deviceCache["mydevice2"].first;
 
-      BOOST_CHECK_EQUAL(e.exists("test2"), true);
-      BOOST_CHECK_EQUAL(e.get("test2"), "test3");
+      BOOST_CHECK_EQUAL(e->exists("test2"), true);
+      BOOST_CHECK_EQUAL(e->get("test2"), "test3");
 
-      BOOST_CHECK_EQUAL(d.first.exists("test2"), true);
-      BOOST_CHECK_EQUAL(d.first.get("test2"), "test3");
+      BOOST_CHECK_EQUAL(d.first->exists("test2"), true);
+      BOOST_CHECK_EQUAL(d.first->get("test2"), "test3");
 
-      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first.exists("test2"), true);
-      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first.get("test2"), "test3");
+      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first->exists("test2"), true);
+      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first->get("test2"), "test3");
    }
 }
 
@@ -636,19 +641,19 @@ BOOST_AUTO_TEST_CASE(CurrentNodeTests)
 
    //subnode test
    BOOST_CHECK_EQUAL(testPf.exists("supportedPlatforms"), true);
-   auto supportedPf = testPf.get<shared::CDataContainer>("supportedPlatforms");
-   BOOST_CHECK_EQUAL(supportedPf.containsChild(), true);
-   BOOST_CHECK_EQUAL(supportedPf.containsValue(), false);
-   BOOST_CHECK_EQUAL(supportedPf.get<std::string>("mac"), "none");
-   BOOST_CHECK_EQUAL(supportedPf.get<std::string>("raspberry"), "all");
+   auto supportedPf = testPf.get<shared::CDataContainerSharedPtr>("supportedPlatforms");
+   BOOST_CHECK_EQUAL(supportedPf->containsChild(), true);
+   BOOST_CHECK_EQUAL(supportedPf->containsValue(), false);
+   BOOST_CHECK_EQUAL(supportedPf->get<std::string>("mac"), "none");
+   BOOST_CHECK_EQUAL(supportedPf->get<std::string>("raspberry"), "all");
 
    //value test
    BOOST_CHECK_EQUAL(testPf.exists("supportedPlatforms2"), true);
-   auto supportedPf2 = testPf.get<shared::CDataContainer>("supportedPlatforms2");
-   BOOST_CHECK_EQUAL(supportedPf2.containsChild(), false);
-   BOOST_CHECK_EQUAL(supportedPf2.containsValue(), true);
-   BOOST_CHECK_EQUAL(supportedPf2.get<std::string>(), "all");
-}
+   auto supportedPf2 = testPf.get<shared::CDataContainerSharedPtr>("supportedPlatforms2");
+   BOOST_CHECK_EQUAL(supportedPf2->containsChild(), false);
+   BOOST_CHECK_EQUAL(supportedPf2->containsValue(), true);
+   BOOST_CHECK_EQUAL(supportedPf2->get<std::string>(), "all");
+}                                
 
 class CTestClass : public shared::IDataContainable
 {
@@ -1390,6 +1395,21 @@ void CHECK_MAPS(const std::map<std::string, T>& input, const std::map<std::strin
    }
 }
 
+
+
+template <typename T>
+void CHECK_MAPS_SHARED_PTR(const std::map<std::string, boost::shared_ptr<T>>& input, const std::map<std::string, boost::shared_ptr<T>>& output)
+{
+   BOOST_CHECK_EQUAL(input.size(), output.size());
+   std::map<std::string, boost::shared_ptr<T>>::const_iterator io = output.begin();
+   for (const auto& ii : input)
+   {
+      BOOST_CHECK_EQUAL(ii.first, io->first);
+      BOOST_CHECK_EQUAL(*ii.second.get(), *io->second.get());
+      ++io;
+   }
+}
+
 BOOST_AUTO_TEST_CASE(Map)
 {
    std::map<std::string, std::string> input = { {"key1", "value1"},{"key2", "value2"},{"key3", "value3"},{"key4", "value4"} };
@@ -1425,26 +1445,28 @@ BOOST_AUTO_TEST_CASE(MapOfContainers)
          }\
       }");
 
-   const std::map<std::string, shared::CDataContainer> expected =
+   const std::map<std::string, shared::CDataContainerSharedPtr> expected =
    {
-      {"0", shared::CDataContainer("{\
+      {"0", boost::make_shared<shared::CDataContainer>("{\
             \"name\": \"moon\",\
             \"description\": null,\
             \"version\": \"1.0.0\"\
          }")},
-         {"1", shared::CDataContainer("{\
+         {"1", boost::make_shared<shared::CDataContainer>("{\
             \"name\": \"moon\",\
             \"description\": null,\
             \"version\": \"1.0.2\"\
          }")},
-         {"2", shared::CDataContainer("{\
+         {"2", boost::make_shared<shared::CDataContainer>("{\
             \"name\": \"moon\",\
             \"description\": null,\
             \"version\": \"1.0.0-rc.1\"\
          }")}
    };
 
-   CHECK_MAPS<shared::CDataContainer>(input.getAsMap<shared::CDataContainer>(), expected);
+   std::map<std::string, boost::shared_ptr<shared::CDataContainer>> grab = input.getAsMap<shared::CDataContainerSharedPtr>();
+
+   CHECK_MAPS_SHARED_PTR<shared::CDataContainer>(grab, expected);
 }
 
 double fRand(double fMin, double fMax)
@@ -1492,7 +1514,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
       DEBUG_HEAP_INIT();
       DEBUG_HEAP_PRINT("Init");
 
-      for(i=0; i<1000000; ++i)
+      for(i=0; i<100000; ++i)
       {
          shared::CDataContainerSharedPtr result = boost::make_shared< shared::CDataContainer>();
 
@@ -1700,3 +1722,5 @@ BOOST_AUTO_TEST_CASE(DataContainer_Array)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DefaultEquipment.h"
-#include <shared/DataContainer.h>
 
 namespace equipments
 {
@@ -37,9 +36,9 @@ namespace equipments
       };
 
       // Save names into details
-      shared::CDataContainer details;
-      details.set("devEUI", m_devEUI);
-      details.set("id", "");            // initial value -> no id defined
+      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      details->set("devEUI", m_devEUI);
+      details->set("id", "");            // initial value -> no id defined
 
       api->declareDevice(m_name, "Orange Business", "Orange Business", keywordsToDeclare, details);
    }
@@ -60,16 +59,16 @@ namespace equipments
    void CDefaultEquipment::updatelastMessageId(boost::shared_ptr<yApi::IYPluginApi> api,
                                                const std::string& id)
    {
-      shared::CDataContainer details;
-      details.set("devEUI", m_devEUI);
-      details.set("id", id);
+      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      details->set("devEUI", m_devEUI);
+      details->set("id", id);
 
       api->updateDeviceDetails(m_name, details);
    }
 
    std::string CDefaultEquipment::getlastMessageId(boost::shared_ptr<yApi::IYPluginApi> api)
    {
-      return api->getDeviceDetails(m_name).get<std::string>("id");
+      return api->getDeviceDetails(m_name)->get<std::string>("id");
    }
 
    void CDefaultEquipment::updateData(boost::shared_ptr<yApi::IYPluginApi> api,

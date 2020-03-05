@@ -70,17 +70,16 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
       device2.set("creationTs", "2016-06-03T15:20:53.803Z");
       device2.set("updateTs", "2016-06-09T08:04:37.971Z");
       // add the devices
-      std::vector<shared::CDataContainer> equipments;
-      equipments.push_back(device1);
-      equipments.push_back(device2);
-      messageRecu.set("data", equipments);
+      messageRecu.createArray("data");
+      messageRecu.appendArray("data", device1);
+      messageRecu.appendArray("data", device2);
 
       std::map<std::string, boost::shared_ptr<equipments::IEquipment>> devicesRegistered = decoder.decodeDevicesMessage(api, messageRecu);
       BOOST_CHECK_EQUAL(decoder.isFrameComplete(messageRecu), true);
 
       BOOST_CHECK_EQUAL(devicesRegistered.size(), static_cast<unsigned int>(2));
-      BOOST_CHECK_NO_THROW(devicesRegistered.at("DeviceTest1")); // If present, no exception std::out_of_range
-      BOOST_CHECK_NO_THROW(devicesRegistered.at("DeviceTest2"));
+      BOOST_CHECK_NO_THROW(auto v1 = devicesRegistered.at("DeviceTest1")); // If present, no exception std::out_of_range
+      BOOST_CHECK_NO_THROW(auto v2 = devicesRegistered.at("DeviceTest2"));
       BOOST_CHECK_EQUAL(devicesRegistered.at("DeviceTest2")->getEUI(), "0018B20000000272");
       BOOST_CHECK_EQUAL(devicesRegistered.at("DeviceTest1")->getEUI(), "0018B20000000274");
    }
@@ -145,17 +144,17 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
                   \"created\" : \"2017-04-03T16:05:06.026Z\"\
       } ]";
 
-      shared::CDataContainer messageRecu(message);
+      shared::CDataContainerSharedPtr messageRecu = new_CDataContainerSharedPtrP(message);
 
       CDecoder decoder;
-      shared::CDataContainer response = decoder.getLastData(messageRecu);
+      shared::CDataContainerSharedPtr response = decoder.getLastData(messageRecu);
 
-      BOOST_CHECK_EQUAL(response.get<std::string>("id") == "58e276370cf2cabaf8221840", true);
-      BOOST_CHECK_EQUAL(response.get<std::string>("payload") == "03000000000004", true);
-      BOOST_CHECK_EQUAL(response.get<std::string>("timestamp") == "2017-04-03T16:20:07.513Z", true);
-      BOOST_CHECK_EQUAL(response.get<int>("signalLevel"), 5);
-      BOOST_CHECK_EQUAL(response.get<double>("rssi"), -92);
-      BOOST_CHECK_EQUAL(response.get<double>("snr"), 13);
+      BOOST_CHECK_EQUAL(response->get<std::string>("id") == "58e276370cf2cabaf8221840", true);
+      BOOST_CHECK_EQUAL(response->get<std::string>("payload") == "03000000000004", true);
+      BOOST_CHECK_EQUAL(response->get<std::string>("timestamp") == "2017-04-03T16:20:07.513Z", true);
+      BOOST_CHECK_EQUAL(response->get<int>("signalLevel"), 5);
+      BOOST_CHECK_EQUAL(response->get<double>("rssi"), -92);
+      BOOST_CHECK_EQUAL(response->get<double>("snr"), 13);
    }
 
 BOOST_AUTO_TEST_SUITE_END()

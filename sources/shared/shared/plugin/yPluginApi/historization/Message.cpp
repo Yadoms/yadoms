@@ -75,10 +75,10 @@ namespace shared
                return MeasureType;
             }
 
-            CDataContainer CMessage::getTypeInfo() const
+            CDataContainerSharedPtr CMessage::getTypeInfo() const
             {
-               CDataContainer info;
-               info.set("associatedRecipientField", m_associatedRecipientField);
+               CDataContainerSharedPtr info = new_CDataContainerSharedPtr();
+               info->set("associatedRecipientField", m_associatedRecipientField);
                return info;
             }
 

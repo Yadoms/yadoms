@@ -17,11 +17,11 @@ namespace shared
                return *this;
             }
 
-            CDataContainer CStringTypeInfo::serialize() const
+            CDataContainerSharedPtr CStringTypeInfo::serialize() const
             {
-               CDataContainer serializedData;
+               CDataContainerSharedPtr serializedData = new_CDataContainerSharedPtr();
                if (m_regex.isDefined())
-                  serializedData.set("regex", m_regex());
+                  serializedData->set("regex", m_regex());
                return serializedData;
             }
          }

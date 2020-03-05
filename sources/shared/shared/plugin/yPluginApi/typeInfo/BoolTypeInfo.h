@@ -24,7 +24,7 @@ namespace shared
                virtual ~CBoolTypeInfo() = default;
 
                // ITypeInfo implementation 
-               CDataContainer serialize() const override;
+               CDataContainerSharedPtr serialize() const override;
                // END ITypeInfo implementation 
             };
          }
