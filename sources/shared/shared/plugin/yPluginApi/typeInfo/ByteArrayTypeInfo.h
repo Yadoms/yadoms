@@ -27,7 +27,7 @@ namespace shared
                CByteArrayTypeInfo& setMaxLength(const int maxLength);
 
                // ITypeInfo implementation 
-               CDataContainer serialize() const override;
+               CDataContainerSharedPtr serialize() const override;
                // END ITypeInfo implementation 
 
             private:

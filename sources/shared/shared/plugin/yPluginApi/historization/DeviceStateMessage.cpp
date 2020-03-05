@@ -17,9 +17,10 @@ namespace shared
             CDeviceStateMessage::CDeviceStateMessage(const std::string& keywordName,
                                                      const EKeywordAccessMode& accessMode,
                                                      const EHistoryDepth& historyDepth)
-               : CSingleHistorizableData<CDataContainer>(keywordName,
+               : CSingleHistorizableData<CDataContainerSharedPtr>(keywordName,
                                                          DeviceStateMessageCapacity(),
                                                          accessMode,
+                                                         new_CDataContainerSharedPtr(),
                                                          EMeasureType::kAbsolute,
                                                          typeInfo::CEmptyTypeInfo::Empty,
                                                          historyDepth)
@@ -34,9 +35,9 @@ namespace shared
             void CDeviceStateMessage::setMessage(const std::string& messageId,
                                                  const std::string& messageData)
             {
-               CDataContainer dc;
-               dc.set("messageId", messageId);
-               dc.set("messageData", messageData);
+               CDataContainerSharedPtr dc = new_CDataContainerSharedPtr();
+               dc->set("messageId", messageId);
+               dc->set("messageData", messageData);
                set(dc);
             }
 
@@ -65,13 +66,13 @@ namespace shared
 
             std::string CDeviceStateMessage::getMessageId() const
             {
-               return get().getWithDefault("messageId",
+               return get()->getWithDefault("messageId",
                                            std::string());
             }
 
             std::string CDeviceStateMessage::getMessageData() const
             {
-               return get().getWithDefault("messageData",
+               return get()->getWithDefault("messageData",
                                            std::string());
             }
          }

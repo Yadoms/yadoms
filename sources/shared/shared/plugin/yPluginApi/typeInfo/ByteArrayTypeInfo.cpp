@@ -17,11 +17,11 @@ namespace shared
                return *this;
             }
 
-            CDataContainer CByteArrayTypeInfo::serialize() const
+            CDataContainerSharedPtr CByteArrayTypeInfo::serialize() const
             {
-               CDataContainer serializedData;
+               CDataContainerSharedPtr serializedData = new_CDataContainerSharedPtr();
                if (m_maxLength.isDefined())
-                  serializedData.set("maxLength", m_maxLength());
+                  serializedData->set("maxLength", m_maxLength());
                return serializedData;
             }
          }
