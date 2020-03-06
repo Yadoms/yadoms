@@ -26,7 +26,7 @@ namespace database
          bool isValueNull(const int columnIndex) override;
          boost::posix_time::ptime extractValueAsBoostTime(const int columnIndex) override;
          Poco::DateTime extractValueAsPocoTime(const int columnIndex) override;
-         shared::CDataContainer extractValueAsDataContainer(const int columnIndex) override;
+         shared::CDataContainerSharedPtr extractValueAsDataContainer(const int columnIndex) override;
          // [END] - database::common::IResultHandler implementation
 
       private:

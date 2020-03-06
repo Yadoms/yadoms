@@ -595,7 +595,7 @@ namespace pluginSystem
       return m_runningInstances.find(id) != m_runningInstances.end();
    }
 
-   shared::CDataContainer CManager::getInstanceFullState(int id) const
+   shared::CDataContainerSharedPtr CManager::getInstanceFullState(int id) const
    {
       if (!isInstanceRunning(id))
       {
@@ -609,8 +609,8 @@ namespace pluginSystem
          catch (shared::exception::CEmptyResult&)
          {
             // Device doesn't exist, probably not supported by plugin. Plugin is then considered as stopped.
-            shared::CDataContainer defaultState;
-            defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
+            shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+            defaultState->set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
             return defaultState;
          }
 
@@ -624,35 +624,35 @@ namespace pluginSystem
                // In error state
                auto customMessageIdKw = m_dataProvider
                                         ->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
-               shared::CDataContainer defaultState;
-               defaultState.set("state", state);
+               shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+               defaultState->set("state", state);
 
                try
                {
-                  shared::CDataContainer dc(
+                  shared::CDataContainerSharedPtr dc = new_CDataContainerSharedPtrP(
                      m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
-                  defaultState.set("messageId", dc.getWithDefault("messageId", std::string()));
-                  defaultState.set("messageData", dc.getWithDefault("messageData", std::string()));
+                  defaultState->set("messageId", dc->getWithDefault("messageId", std::string()));
+                  defaultState->set("messageData", dc->getWithDefault("messageData", std::string()));
                }
                catch (shared::exception::CJSONParse& jsonerror)
                {
                   YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
-                  defaultState.set("messageId",
+                  defaultState->set("messageId",
                                    m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
                }
                return defaultState;
             }
 
             // Normaly stopped
-            shared::CDataContainer defaultState;
-            defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
+            shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+            defaultState->set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
             return defaultState;
          }
          catch (shared::exception::CEmptyResult&)
          {
             // pluginState keyword exist, but was never historized, so considered as stopped.
-            shared::CDataContainer defaultState;
-            defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
+            shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+            defaultState->set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
             return defaultState;
          }
       }
@@ -667,8 +667,8 @@ namespace pluginSystem
       catch (shared::exception::CEmptyResult&)
       {
          // Device doesn't exist, probably not supported by plugin. Plugin is then considered as running.
-         shared::CDataContainer defaultState;
-         defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kRunning);
+         shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+         defaultState->set("state", shared::plugin::yPluginApi::historization::EPluginState::kRunning);
          return defaultState;
       }
 
@@ -676,19 +676,19 @@ namespace pluginSystem
       {
          auto stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
          auto customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
-         shared::CDataContainer defaultState;
-         defaultState.set("state", m_dataProvider->getKeywordRequester()->getKeywordLastData(stateKw->Id));
+         shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+         defaultState->set("state", m_dataProvider->getKeywordRequester()->getKeywordLastData(stateKw->Id));
 
          try
          {
-            shared::CDataContainer dc(m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
-            defaultState.set("messageId", dc.getWithDefault("messageId", std::string()));
-            defaultState.set("messageData", dc.getWithDefault("messageData", std::string()));
+            shared::CDataContainerSharedPtr dc = new_CDataContainerSharedPtrP(m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
+            defaultState->set("messageId", dc->getWithDefault("messageId", std::string()));
+            defaultState->set("messageData", dc->getWithDefault("messageData", std::string()));
          }
          catch (shared::exception::CJSONParse& jsonerror)
          {
             YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
-            defaultState.set("messageId",
+            defaultState->set("messageId",
                              m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
          }
 
@@ -697,8 +697,8 @@ namespace pluginSystem
       catch (shared::exception::CEmptyResult&)
       {
          // pluginState keyword exist, but was never historized, so considered as unknown.
-         shared::CDataContainer defaultState;
-         defaultState.set("state", shared::plugin::yPluginApi::historization::EPluginState::kUnknown);
+         shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+         defaultState->set("state", shared::plugin::yPluginApi::historization::EPluginState::kUnknown);
          return defaultState;
       }
    }
@@ -706,7 +706,7 @@ namespace pluginSystem
    shared::plugin::yPluginApi::historization::EPluginState CManager::getInstanceState(int id) const
    {
       auto fullState = getInstanceFullState(id);
-      return fullState.get<shared::plugin::yPluginApi::historization::EPluginState>("state");
+      return fullState->get<shared::plugin::yPluginApi::historization::EPluginState>("state");
    }
 
    void CManager::postCommand(int id,
@@ -788,7 +788,7 @@ namespace pluginSystem
 
    void CManager::postDeviceConfigurationSchemaRequest(int deviceId,
                                                        communication::callback::ISynchronousCallback<shared::
-                                                          CDataContainer>& callback) const
+                                                          CDataContainerSharedPtr>& callback) const
    {
       auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
 
@@ -815,7 +815,7 @@ namespace pluginSystem
    }
 
    void CManager::postSetDeviceConfiguration(int deviceId,
-                                             const shared::CDataContainer& configuration) const
+                                             const shared::CDataContainerSharedPtr& configuration) const
    {
       auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
 

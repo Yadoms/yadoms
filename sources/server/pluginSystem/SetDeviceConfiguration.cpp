@@ -3,7 +3,7 @@
 
 namespace pluginSystem
 {
-   CSetDeviceConfiguration::CSetDeviceConfiguration(const std::string& device, const shared::CDataContainer& configuration)
+   CSetDeviceConfiguration::CSetDeviceConfiguration(const std::string& device, const shared::CDataContainerSharedPtr& configuration)
       : m_device(device), m_configuration(configuration)
    {
    }
@@ -17,7 +17,7 @@ namespace pluginSystem
       return m_device;
    }
 
-   const shared::CDataContainer& CSetDeviceConfiguration::configuration() const
+   const shared::CDataContainerSharedPtr& CSetDeviceConfiguration::configuration() const
    {
       return m_configuration;
    }

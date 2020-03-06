@@ -20,10 +20,10 @@ namespace pluginSystem
          virtual ~CCustomEnumTypeInfo();
 
          // yApi::typeInfo::ITypeInfo implementation 
-         shared::CDataContainer serialize() const override;
+         shared::CDataContainerSharedPtr serialize() const override;
          // END yApi::typeInfo::ITypeInfo implementation 
 
-         shared::CDataContainer m_data;
+         shared::CDataContainerSharedPtr m_data;
       };
    }
 } // namespace pluginSystem::internalPlugin

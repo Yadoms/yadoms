@@ -23,25 +23,25 @@ namespace update
          ///\brief   Get all the available versions of Yadoms
          ///\return the list of Yadoms versions
          //---------------------------------------------
-         static shared::CDataContainer getAllYadomsVersions();
+         static shared::CDataContainerSharedPtr getAllYadomsVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for a plugin
          ///\return the list of plugin version
          //---------------------------------------------
-         static shared::CDataContainer getAllPluginVersions();
+         static shared::CDataContainerSharedPtr getAllPluginVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for widgets
          ///\return the list of widgets version
          //---------------------------------------------
-         static shared::CDataContainer getAllWidgetVersions();
+         static shared::CDataContainerSharedPtr getAllWidgetVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for a scriptInterpreter
          ///\return the list of scriptInterpreter version
          //---------------------------------------------
-         static shared::CDataContainer getAllScriptInterpreterVersions();
+         static shared::CDataContainerSharedPtr getAllScriptInterpreterVersions();
 
       private:
          //---------------------------------------------
@@ -51,7 +51,7 @@ namespace update
          ///\param [in] resultFieldToReturn  The field to return
          ///\return                          The field in script result json
          //---------------------------------------------
-         static shared::CDataContainer callDistantScript(const std::string& script,
+         static shared::CDataContainerSharedPtr callDistantScript(const std::string& script,
                                                          bool includeOsAndArch,
                                                          const std::string& resultFieldToReturn);
 

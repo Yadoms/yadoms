@@ -57,7 +57,7 @@ namespace web
             try
             {
                auto result = m_databaseRequester->getInformation();
-               result.set("backupSupport", m_databaseRequester->backupSupported());
+               result->set("backupSupport", m_databaseRequester->backupSupported());
                return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
@@ -113,7 +113,8 @@ namespace web
 
                   if (!backup.empty() && boost::filesystem::exists(backup) && boost::filesystem::is_directory(backup))
                   {
-                     std::vector<shared::CDataContainer> files;
+                     shared::CDataContainer result;
+                     result.createArray("backups");
                      // Check all subdirectories in plugin path
                      for (boost::filesystem::directory_iterator i(backup); i != boost::filesystem::directory_iterator(); ++i)
                      {
@@ -134,12 +135,10 @@ namespace web
                            file.set("path", i->path().string());
                            file.set("url", i->path().filename().string());
                            file.set("inprogress", boost::iends_with(i->path().filename().string(), ".inprogress"));
-                           files.push_back(file);
+                           result.appendArray("backups", file);
                         }
                      }
 
-                     shared::CDataContainer result;
-                     result.set("backups", files);
                      return CResult::GenerateSuccess(result);
                   }
                   //backup do not exists

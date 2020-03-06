@@ -30,7 +30,7 @@ namespace shared
             ///\brief               Get the new configuration
             ///\return              The configuration
             //-----------------------------------------------------
-            virtual const CDataContainer& configuration() const = 0;
+            virtual const CDataContainerSharedPtr& configuration() const = 0;
          };
       }
    }

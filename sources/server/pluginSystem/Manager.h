@@ -179,7 +179,7 @@ namespace pluginSystem
       /// \return          The instance state data
       /// \throw           CInvalidParameter if id is unknown
       //--------------------------------------------------------------
-      shared::CDataContainer getInstanceFullState(int id) const;
+      shared::CDataContainerSharedPtr getInstanceFullState(int id) const;
 
 
       //--------------------------------------------------------------
@@ -226,7 +226,7 @@ namespace pluginSystem
       /// \param [in] callback   Request callback
       //--------------------------------------------------------------
       void postDeviceConfigurationSchemaRequest(int deviceId,
-                                                communication::callback::ISynchronousCallback<shared::CDataContainer>&
+                                                communication::callback::ISynchronousCallback<shared::CDataContainerSharedPtr>&
                                                 callback) const;
 
       //--------------------------------------------------------------
@@ -235,7 +235,7 @@ namespace pluginSystem
       /// \param [in] configuration    New device configuration
       //--------------------------------------------------------------
       void postSetDeviceConfiguration(int deviceId,
-                                      const shared::CDataContainer& configuration) const;
+                                      const shared::CDataContainerSharedPtr& configuration) const;
 
       //--------------------------------------------------------------
       /// \brief                 Start all instances matching the plugin name

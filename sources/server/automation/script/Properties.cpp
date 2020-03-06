@@ -50,7 +50,7 @@ namespace automation
          return m_scriptPath;
       }
 
-      const shared::CDataContainer& CProperties::configuration() const
+      const shared::CDataContainerSharedPtr& CProperties::configuration() const
       {
          return m_configuration;
       }

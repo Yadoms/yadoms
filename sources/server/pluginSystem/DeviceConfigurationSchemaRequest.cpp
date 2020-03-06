@@ -5,8 +5,8 @@
 namespace pluginSystem
 {
    CDeviceConfigurationSchemaRequest::CDeviceConfigurationSchemaRequest(const std::string& device,
-                                                                        communication::callback::ISynchronousCallback<shared::CDataContainer>& callback)
-      : m_requestPtr(boost::make_shared<communication::callback::CCallbackRequest<const std::string&, shared::CDataContainer> >(device, callback))
+                                                                        communication::callback::ISynchronousCallback<shared::CDataContainerSharedPtr>& callback)
+      : m_requestPtr(boost::make_shared<communication::callback::CCallbackRequest<const std::string&, shared::CDataContainerSharedPtr> >(device, callback))
    {
    }
 
@@ -19,7 +19,7 @@ namespace pluginSystem
       return m_requestPtr->getData();
    }
 
-   void CDeviceConfigurationSchemaRequest::sendSuccess(const shared::CDataContainer& newDeviceName)
+   void CDeviceConfigurationSchemaRequest::sendSuccess(const shared::CDataContainerSharedPtr& newDeviceName)
    {
       m_requestPtr->sendSuccess(newDeviceName);
    }

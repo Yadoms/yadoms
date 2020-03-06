@@ -245,7 +245,7 @@ namespace web
 
                if (boost::filesystem::exists(someDir) && boost::filesystem::is_directory(someDir))
                {
-                  std::vector<shared::CDataContainer> allData;
+                  result.createArray("package");
                   for (boost::filesystem::directory_iterator dirItr(someDir); dirItr != endItr; ++dirItr)
                   {
                      if (boost::filesystem::is_directory(*dirItr))
@@ -263,11 +263,11 @@ namespace web
                            std::ifstream ifs(packageFile.c_str(), std::ios::in);
                            std::stringstream ss;
                            ss << ifs.rdbuf();
-                           allData.push_back(shared::CDataContainer(ss.str()));
+                           result.appendArray("package", shared::CDataContainer(ss.str()));
                         }
                      }
                   }
-                  result.set("package", allData);
+                  
                   return CResult::GenerateSuccess(result);
                }
                return CResult::GenerateError(widgetPath + " is not a valid directory.");

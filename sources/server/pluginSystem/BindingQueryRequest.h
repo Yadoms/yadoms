@@ -18,7 +18,7 @@ namespace pluginSystem
       ///\param [in]  data       The data container
       //-----------------------------------------------------
       CBindingQueryRequest(const shared::plugin::yPluginApi::IBindingQueryData& data,
-                           communication::callback::ISynchronousCallback<shared::CDataContainer>& callback);
+                           communication::callback::ISynchronousCallback<shared::CDataContainerSharedPtr>& callback);
 
       //-----------------------------------------------------
       ///\brief Destructor
@@ -27,7 +27,7 @@ namespace pluginSystem
 
       // IBindingQueryRequest implementation
       const shared::plugin::yPluginApi::IBindingQueryData& getData() override;
-      void sendSuccess(const shared::CDataContainer& newDeviceName) override;
+      void sendSuccess(const shared::CDataContainerSharedPtr& newDeviceName) override;
       void sendError(const std::string& errorMessage) override;
       // [END] - IBindingQueryRequest implementation
 
@@ -35,7 +35,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief Internal data
       //-----------------------------------------------------
-      boost::shared_ptr<communication::callback::ICallbackRequest<shared::plugin::yPluginApi::IBindingQueryData, shared::CDataContainer> > m_requestPtr;
+      boost::shared_ptr<communication::callback::ICallbackRequest<shared::plugin::yPluginApi::IBindingQueryData, shared::CDataContainerSharedPtr> > m_requestPtr;
    };
 } // namespace pluginSystem
 

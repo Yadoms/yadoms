@@ -86,7 +86,7 @@ namespace shared
 
 	}
 
-	CDataContainerSharedPtr CDataContainer::getChild(const std::string& parameterName, const char pathChar) const
+	CDataContainerSharedPtr CDataContainer::getChild(const std::string& parameterName, char pathChar) const
 	{
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -370,9 +370,9 @@ namespace shared
 	}
 
 
-	CDataContainerSharedPtr CDataContainer::copy()
+	CDataContainerSharedPtr CDataContainer::copy() const
 	{
-		return new_CDataContainerSharedPtrP(m_tree);
+		return new_CDataContainerSharedPtrP(*getPointer());
 	}
 
 	void CDataContainer::mergeObjects(rapidjson::Value &dstObject, const rapidjson::Value &srcObject, rapidjson::Document::AllocatorType &allocator)

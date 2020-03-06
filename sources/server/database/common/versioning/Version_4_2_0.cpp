@@ -127,7 +127,7 @@ namespace database
             }
          }
 
-         void CVersion_4_2_0::updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> requester,
+         void CVersion_4_2_0::updateDatabaseVersion(boost::shared_ptr<IDatabaseRequester> requester,
                                                     const shared::versioning::CSemVer& newVersion,
                                                     const boost::posix_time::ptime& insertDate)
          {
@@ -155,7 +155,7 @@ namespace database
 
             adapters::CSingleValueAdapter<T> adapter;
             requester->queryEntities(&adapter, *loadQuery);
-            return adapter.getResults().size() == 0 ? boost::optional<T>() : boost::optional<T>(adapter.getResults()[0]);
+            return adapter.getResults().empty() ? boost::optional<T>() : boost::optional<T>(adapter.getResults()[0]);
          }
 
          boost::optional<bool> CVersion_4_2_0::loadFirstStart(const boost::shared_ptr<IDatabaseRequester>& requester)
@@ -207,29 +207,29 @@ namespace database
                                                        "basicAuthentication");
          }
 
-         boost::optional<shared::CDataContainer> CVersion_4_2_0::convertLocation(const boost::optional<std::string>& oldLocation)
+         boost::optional<shared::CDataContainerSharedPtr> CVersion_4_2_0::convertLocation(const boost::optional<std::string>& oldLocation)
          {
             if (!oldLocation)
-               return boost::optional<shared::CDataContainer>();
+               return boost::optional<shared::CDataContainerSharedPtr>();
 
-            boost::optional<shared::CDataContainer> oldLocationContainer(*oldLocation);
-            shared::CDataContainer newLocation;
+            boost::optional<shared::CDataContainerSharedPtr> oldLocationContainer(new_CDataContainerSharedPtrP(*oldLocation));
+            shared::CDataContainerSharedPtr newLocation = new_CDataContainerSharedPtr();
 
-            newLocation.set("status", "userDefined");
-            newLocation.set("latitude", oldLocationContainer->get<std::string>("latitude"));
-            newLocation.set("longitude", oldLocationContainer->get<std::string>("longitude"));
-            newLocation.set("altitude", oldLocationContainer->get<std::string>("altitude"));
-            newLocation.set("timezone", oldLocationContainer->getWithDefault<std::string>("timezone", "Europe/Paris"));
+            newLocation->set("status", "userDefined");
+            newLocation->set("latitude", (*oldLocationContainer)->get<std::string>("latitude"));
+            newLocation->set("longitude", (*oldLocationContainer)->get<std::string>("longitude"));
+            newLocation->set("altitude", (*oldLocationContainer)->get<std::string>("altitude"));
+            newLocation->set("timezone", (*oldLocationContainer)->getWithDefault<std::string>("timezone", "Europe/Paris"));
 
             return newLocation;
          }
 
-         boost::optional<shared::CDataContainer> CVersion_4_2_0::convertBasicAuthentication(
+         boost::optional<shared::CDataContainerSharedPtr> CVersion_4_2_0::convertBasicAuthentication(
             const boost::optional<std::string>& oldBasicAuthentication)
          {
             if (!oldBasicAuthentication)
-               return boost::optional<shared::CDataContainer>();
-            return boost::optional<shared::CDataContainer>(*oldBasicAuthentication);
+               return boost::optional<shared::CDataContainerSharedPtr>();
+            return boost::optional<shared::CDataContainerSharedPtr>(new_CDataContainerSharedPtrP(*oldBasicAuthentication));
          }
 
          void CVersion_4_2_0::insertConfigurationValue(const boost::shared_ptr<IDatabaseRequester> requester,

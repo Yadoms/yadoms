@@ -45,7 +45,7 @@ namespace location
       /// \return          The current location (from database, or auto-located if not found in database)
       /// \throw shared::exception::CEmptyResult if location not available
       //--------------------------------------------------------------
-      shared::CDataContainer getLocation() const;
+      shared::CDataContainerSharedPtr getLocation() const;
 
    private:
       //--------------------------------------------------------------

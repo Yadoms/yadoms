@@ -328,7 +328,7 @@ namespace pluginSystem
    {
       plugin_IPC::toPlugin::msg ans;
       auto answer = ans.mutable_configurationanswer();
-      answer->set_configuration(m_pluginApi->getConfiguration().serialize());
+      answer->set_configuration(m_pluginApi->getConfiguration()->serialize());
       send(ans);
    }
 
@@ -347,7 +347,7 @@ namespace pluginSystem
       try
       {
          auto answer = ans.mutable_devicedetails();
-         answer->set_details(m_pluginApi->getDeviceDetails(msg.device()).serialize());
+         answer->set_details(m_pluginApi->getDeviceDetails(msg.device())->serialize());
       }
       catch (const std::exception& e)
       {
@@ -358,8 +358,7 @@ namespace pluginSystem
 
    void CIpcAdapter::processUpdateDeviceDetails(const plugin_IPC::toYadoms::UpdateDeviceDetails& msg) const
    {
-      m_pluginApi->updateDeviceDetails(msg.device(),
-                                       shared::CDataContainer(msg.details()));
+      m_pluginApi->updateDeviceDetails(msg.device(), new_CDataContainerSharedPtrP(msg.details()));
    }
 
    void CIpcAdapter::processAllDevicesRequest(const plugin_IPC::toYadoms::AllDevicesRequest& msg)
@@ -389,14 +388,14 @@ namespace pluginSystem
                                  msg.type(),
                                  msg.model(),
                                  keywords,
-                                 msg.details().empty() ? shared::CDataContainer::EmptyContainer : shared::CDataContainer(msg.details()));
+                                 msg.details().empty() ? new_CDataContainerSharedPtr() : new_CDataContainerSharedPtrP(msg.details()));
    }
 
    void CIpcAdapter::processDeclareKeyword(const plugin_IPC::toYadoms::DeclareKeyword& msg) const
    {
       m_pluginApi->declareKeyword(msg.device(),
                                   boost::make_shared<CFromPluginHistorizer>(msg.keyword()),
-                                  msg.details().empty() ? shared::CDataContainer::EmptyContainer : shared::CDataContainer(msg.details()));
+                                  msg.details().empty() ? new_CDataContainerSharedPtr() : new_CDataContainerSharedPtrP(msg.details()));
    }
 
    void CIpcAdapter::processRecipientValueRequest(const plugin_IPC::toYadoms::RecipientValueRequest& msg)
@@ -530,14 +529,13 @@ namespace pluginSystem
    {
       plugin_IPC::toPlugin::msg ans;
       auto answer = ans.mutable_deviceconfigurationanswer();
-      answer->set_configuration(m_pluginApi->getDeviceConfiguration(msg.device()).serialize());
+      answer->set_configuration(m_pluginApi->getDeviceConfiguration(msg.device())->serialize());
       send(ans);
    }
 
    void CIpcAdapter::processUpdateDeviceConfiguration(const plugin_IPC::toYadoms::UpdateDeviceConfiguration& msg) const
    {
-      m_pluginApi->updateDeviceConfiguration(msg.device(),
-                                             shared::CDataContainer(msg.configuration()));
+      m_pluginApi->updateDeviceConfiguration(msg.device(), new_CDataContainerSharedPtrP(msg.configuration()));
    }
 
    void CIpcAdapter::processExtraQueryProgression(const plugin_IPC::toYadoms::ExtraQueryProgression& msg) const
@@ -591,11 +589,11 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postUpdateConfiguration(const shared::CDataContainer& newConfiguration)
+   void CIpcAdapter::postUpdateConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
    {
       plugin_IPC::toPlugin::msg msg;
       auto message = msg.mutable_updateconfiguration();
-      message->set_configuration(newConfiguration.serialize());
+      message->set_configuration(newConfiguration->serialize());
       send(msg);
    }
 
@@ -628,7 +626,7 @@ namespace pluginSystem
       }
 
       if (success)
-         request->sendSuccess(shared::CDataContainer(result));
+         request->sendSuccess(new_CDataContainerSharedPtrP(result));
       else
          request->sendError(result);
    }
@@ -662,7 +660,7 @@ namespace pluginSystem
       }
 
       if (success)
-         request->sendSuccess(shared::CDataContainer(result));
+         request->sendSuccess(new_CDataContainerSharedPtrP(result));
       else
          request->sendError(result);
    }
@@ -672,7 +670,7 @@ namespace pluginSystem
       plugin_IPC::toPlugin::msg msg;
       auto message = msg.mutable_setdeviceconfiguration();
       message->set_device(command->name());
-      message->set_configuration(command->configuration().serialize());
+      message->set_configuration(command->configuration()->serialize());
       send(msg);
    }
 
@@ -691,7 +689,7 @@ namespace pluginSystem
       plugin_IPC::toPlugin::msg req;
       auto message = req.mutable_extraquery();
       message->set_query(extraQuery->getData()->query());
-      message->set_data(extraQuery->getData()->data().serialize());
+      message->set_data(extraQuery->getData()->data()->serialize());
       message->set_device(extraQuery->getData()->device());
       message->set_taskid(taskId);
 
@@ -715,7 +713,7 @@ namespace pluginSystem
                     result = ans.extraqueryanswer().result();
 
                     if (success)
-                       extraQuery->sendSuccess(shared::CDataContainer(result));
+                       extraQuery->sendSuccess(new_CDataContainerSharedPtrP(result));
                     else
                        extraQuery->sendError(result);
 
@@ -739,7 +737,7 @@ namespace pluginSystem
       auto message = req.mutable_manuallydevicecreation();
       message->set_name(request->getData().getDeviceName());
       message->set_type(request->getData().getDeviceType());
-      message->set_configuration(request->getData().getConfiguration().serialize());
+      message->set_configuration(request->getData().getConfiguration()->serialize());
 
       auto success = false;
       std::string result;
@@ -774,7 +772,7 @@ namespace pluginSystem
       plugin_IPC::toPlugin::msg msg;
       auto message = msg.mutable_deviceremoved();
       message->set_device(event->device());
-      message->set_details(event->details().serialize());
+      message->set_details(event->details()->serialize());
       send(msg);
    }
 } // namespace pluginSystem

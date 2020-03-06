@@ -26,7 +26,7 @@ namespace pluginSystem
       return m_data;
    }
 
-   void CExtraQuery::sendSuccess(const shared::CDataContainer& data)
+   void CExtraQuery::sendSuccess(const shared::CDataContainerSharedPtr & data)
    {
       m_eventHandler.postEvent(kFinished, data);
    }
@@ -50,11 +50,11 @@ namespace pluginSystem
          switch (m_eventHandler.waitForEvents())
          {
          case kFinished:
-            m_progressNotifier(true, 100, i18n::CClientStrings::ExtraQuerySuccess, "", m_eventHandler.getEventData<shared::CDataContainer>());
+            m_progressNotifier(true, 100, i18n::CClientStrings::ExtraQuerySuccess, "", m_eventHandler.getEventData<shared::CDataContainerSharedPtr>());
             running = false;
             break;
          case kError:
-            m_progressNotifier(false, 100, i18n::CClientStrings::ExtraQueryFail, m_eventHandler.getEventData<std::string>(), shared::CDataContainer());
+            m_progressNotifier(false, 100, i18n::CClientStrings::ExtraQueryFail, m_eventHandler.getEventData<std::string>(), new_CDataContainerSharedPtr());
             running = false;
             break;
          }
@@ -64,7 +64,7 @@ namespace pluginSystem
    void CExtraQuery::reportProgress(const float progression, const std::string& message)
    {
       //use callback directly (if using m_eventHadler, there are bad side effects)
-      m_progressNotifier(true, progression, message, "", shared::CDataContainer());
+      m_progressNotifier(true, progression, message, "", new_CDataContainerSharedPtr());
    }
 
 } // namespace pluginSystem	

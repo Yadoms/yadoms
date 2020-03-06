@@ -82,9 +82,9 @@ namespace database {
          return Poco::DateTimeParser::parse("%Y%m%dT%H%M%S", extractValueAsString(columnIndex), timeZoneDifferential);
       }
 
-      shared::CDataContainer CSQLiteResultHandler::extractValueAsDataContainer(const int columnIndex)
+      shared::CDataContainerSharedPtr CSQLiteResultHandler::extractValueAsDataContainer(const int columnIndex)
       {
-         return shared::CDataContainer(extractValueAsString(columnIndex));
+         return new_CDataContainerSharedPtrP(extractValueAsString(columnIndex));
       }
 
 

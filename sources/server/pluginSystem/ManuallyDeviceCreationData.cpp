@@ -4,7 +4,7 @@
 namespace pluginSystem
 {
 
-   CManuallyDeviceCreationData::CManuallyDeviceCreationData(const std::string& deviceName, const std::string& deviceType, const shared::CDataContainer & configuration)
+   CManuallyDeviceCreationData::CManuallyDeviceCreationData(const std::string& deviceName, const std::string& deviceType, const shared::CDataContainerSharedPtr& configuration)
       :m_deviceName(deviceName), m_deviceType(deviceType), m_configuration(configuration)
    {
    }
@@ -23,7 +23,7 @@ namespace pluginSystem
       return m_deviceType;
    }
 
-   const shared::CDataContainer& CManuallyDeviceCreationData::getConfiguration() const
+   const shared::CDataContainerSharedPtr& CManuallyDeviceCreationData::getConfiguration() const
    {
       return m_configuration;
    }

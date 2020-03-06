@@ -31,7 +31,7 @@ namespace shared
             ///\brief Answer the request with success, providing query answer data
             ///\param [in] data      The answer data
             //-----------------------------------------------------
-            virtual void sendSuccess(const CDataContainer& data) = 0;
+            virtual void sendSuccess(const CDataContainerSharedPtr& data) = 0;
 
             //-----------------------------------------------------
             ///\brief Answer the request with error

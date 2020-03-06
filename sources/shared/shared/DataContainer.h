@@ -176,6 +176,7 @@ namespace shared
    //--------------------------------------------------------------
 
    typedef boost::shared_ptr<CDataContainer> CDataContainerSharedPtr;
+   typedef boost::shared_ptr<const CDataContainer> CDataContainerSharedPtrConst;
 
    #define new_CDataContainerSharedPtr() boost::make_shared<shared::CDataContainer>()
    #define new_CDataContainerSharedPtrOptimized(estimatedDataSize,estimatedItemCount) boost::make_shared<shared::CDataContainer>(estimatedDataSize,estimatedItemCount)
@@ -289,7 +290,7 @@ namespace shared
       /// \param [in] pathChar         The path spearator to use (default is '.')
       /// \return     The child as CDataContainerSharedPtr
       //--------------------------------------------------------------
-      CDataContainerSharedPtr getChild(const std::string& parameterName, const char pathChar) const;
+      CDataContainerSharedPtr getChild(const std::string& parameterName, char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
@@ -420,7 +421,7 @@ namespace shared
       /// \brief	    Make a full copy of current container
       /// \return     The newly created container
       //--------------------------------------------------------------
-      CDataContainerSharedPtr copy();
+      CDataContainerSharedPtr copy() const;
 
       //--------------------------------------------------------------
       //

@@ -34,7 +34,7 @@ namespace task
 		  if (m_reportRealProgress)
 		  {
 			  const auto progression = currentPart + (total != 0 ? static_cast<float>(total - remaining) * static_cast<float>(totalPart - currentPart) / static_cast<float>(total) : 0);
-			  m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::EmptyContainer);
+			  m_reportRealProgress(true, progression, message, std::string(), new_CDataContainerSharedPtr());
 		  }
       }
 

@@ -124,7 +124,7 @@ namespace dataAccessLayer
    }
 
    void CKeywordManager::addKeyword(int deviceId,
-                                    const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
+                                    const shared::plugin::yPluginApi::historization::IHistorizable& keyword, shared::CDataContainerSharedPtr details)
    {
       addKeyword(*makeKeywordEntity(deviceId, keyword, details));
    }
@@ -208,7 +208,7 @@ namespace dataAccessLayer
    boost::shared_ptr<database::entities::CKeyword> CKeywordManager::makeKeywordEntity(int deviceId,
                                                                                       const shared::plugin::yPluginApi::historization::IHistorizable&
                                                                                       keyword,
-                                                                                      const shared::CDataContainer& details)
+                                                                                      shared::CDataContainerSharedPtr details)
    {
       // Validate keyword and capacity names. They must match URI pattern
       try

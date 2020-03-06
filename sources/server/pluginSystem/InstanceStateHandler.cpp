@@ -110,7 +110,7 @@ namespace pluginSystem
       static const std::string PluginStateDeviceName("pluginState");
 
       if (!m_deviceManager->deviceExists(m_instanceData->Id(), PluginStateDeviceName))
-         m_deviceManager->createDevice(m_instanceData->Id(), PluginStateDeviceName, m_instanceData->DisplayName() + " plugin state", "pluginstate", "Plugin state", shared::CDataContainer::EmptyContainer);
+         m_deviceManager->createDevice(m_instanceData->Id(), PluginStateDeviceName, m_instanceData->DisplayName() + " plugin state", "pluginstate", "Plugin state", new_CDataContainerSharedPtr());
 
       return m_deviceManager->getDeviceInPlugin(m_instanceData->Id(), PluginStateDeviceName, true)->Id();
    }
