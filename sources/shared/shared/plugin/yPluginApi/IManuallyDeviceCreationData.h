@@ -37,7 +37,7 @@ namespace shared
             ///\brief               Get the device configuration
             ///\return              The device parameters (in data container)
             //-----------------------------------------------------
-            virtual const CDataContainer& getConfiguration() const = 0;
+            virtual const CDataContainerSharedPtr& getConfiguration() const = 0;
          };
       }
    }

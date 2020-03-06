@@ -294,10 +294,10 @@ namespace web
 
                   for (auto& i : allData)
                   {
-                     shared::CDataContainer result(32,2);
-                     result.set("date", boost::posix_time::to_iso_string(i.get<0>()));
-                     result.set("key", i.get<1>());
-                     result.appendArray("data", result);
+                     shared::CDataContainer currentVal(32,2);
+                     currentVal.set("date", boost::posix_time::to_iso_string(i.get<0>()));
+                     currentVal.set("key", i.get<1>());
+                     result->appendArray("data", currentVal);
                   }
                   return CResult::GenerateSuccess(result);
                }

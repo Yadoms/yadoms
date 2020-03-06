@@ -78,7 +78,7 @@ namespace pluginSystem
          return false;
       }
 
-      boost::shared_ptr<const shared::CDataContainer> CInformation::getPackage() const
+      shared::CDataContainerSharedPtrConst CInformation::getPackage() const
       {
          return m_package;
       }

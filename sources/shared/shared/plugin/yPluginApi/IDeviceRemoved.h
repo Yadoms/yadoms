@@ -30,7 +30,7 @@ namespace shared
             ///\brief               Get the removed device details
             ///\return              The removed device details
             //-----------------------------------------------------
-            virtual const CDataContainer& details() const = 0;
+            virtual const CDataContainerSharedPtr& details() const = 0;
          };
       }
    }

@@ -26,7 +26,7 @@ namespace web { namespace rest { namespace service {
       boost::shared_ptr<task::CScheduler> m_taskManager;
       static std::string m_restKeyword;
 
-      shared::CDataContainer serialize(boost::shared_ptr<task::IInstance> instance) const;
+      shared::CDataContainerSharedPtr serialize(boost::shared_ptr<task::IInstance> instance) const;
    };
 
 

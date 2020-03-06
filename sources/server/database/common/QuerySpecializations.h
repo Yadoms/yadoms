@@ -238,6 +238,31 @@ struct queryhelper<CQuery>
    }
 };
 
+//-------------------------------------------------------------- 
+/// \brief	    Helper structure for converting boost::shared_ptr<T> to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper<shared::CDataContainer>
+{
+   static std::string format(CQuery* obj, const shared::CDataContainer& anyValue)
+   {
+      return anyValue.serialize();
+   }
+};
+
+//-------------------------------------------------------------- 
+/// \brief	    Helper structure for converting boost::shared_ptr<T> to sql string
+//--------------------------------------------------------------
+template <>
+struct queryhelper<shared::CDataContainerSharedPtr>
+{
+   static std::string format(CQuery* obj, const shared::CDataContainerSharedPtr& anyValue)
+   {
+      return anyValue->serialize();
+   }
+};
+
+
 
 //--------------------------------------------------------------
 /// \brief	    Helper structure for converting IExtendedEnum to sql string

@@ -30,7 +30,7 @@ namespace shared
             ///\brief Answer the request with success, providing the device configuration schema
             ///\param [in] deviceConfigurationSchema  The device configuration schema
             //-----------------------------------------------------
-            virtual void sendSuccess(const CDataContainer& deviceConfigurationSchema) = 0;
+            virtual void sendSuccess(const CDataContainerSharedPtr& deviceConfigurationSchema) = 0;
 
             //-----------------------------------------------------
             ///\brief Answer the request with error

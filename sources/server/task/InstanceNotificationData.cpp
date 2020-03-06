@@ -49,7 +49,7 @@ namespace task {
       return m_name;
    }
 
-   shared::CDataContainer CInstanceNotificationData::getTaskData() const
+   shared::CDataContainerSharedPtr CInstanceNotificationData::getTaskData() const
    {
       return m_taskData;
    }

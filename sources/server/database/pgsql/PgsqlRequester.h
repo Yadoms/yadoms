@@ -17,7 +17,7 @@ namespace database
          // IDatabaseEngine implementation
          void initialize() override;
          void finalize() override;
-         shared::CDataContainer getInformation() override;
+         shared::CDataContainerSharedPtr getInformation() override;
          // [END] IDatabaseEngine implementation
 
          // IDatabaseRequester implementation

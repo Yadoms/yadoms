@@ -38,9 +38,9 @@ namespace pluginSystem
       return m_keyword->Measure();
    }
 
-   shared::CDataContainer CCommandHistorizer::getTypeInfo() const
+   shared::CDataContainerSharedPtr CCommandHistorizer::getTypeInfo() const
    {
-      return shared::CDataContainer();
+      return new_CDataContainerSharedPtr();
    }
 
    const shared::plugin::yPluginApi::EHistoryDepth& CCommandHistorizer::getHistoryDepth() const

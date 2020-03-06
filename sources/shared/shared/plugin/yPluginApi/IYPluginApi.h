@@ -219,7 +219,7 @@ namespace shared
                                        const std::string& type,
                                        const std::string& model,
                                        boost::shared_ptr<const historization::IHistorizable> keyword,
-                                       CDataContainerSharedPtr details = CDataContainer::EmptyContainerSharedPtr) = 0;
+                                       CDataContainerSharedPtr details = new_CDataContainerSharedPtr()) = 0;
 
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keywords (all-in-one function)
@@ -234,7 +234,7 @@ namespace shared
                                        const std::string& type,
                                        const std::string& model,
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable>>(),
-                                       CDataContainerSharedPtr details = CDataContainer::EmptyContainerSharedPtr) = 0;
+                                       CDataContainerSharedPtr details = new_CDataContainerSharedPtr()) = 0;
 
             //-----------------------------------------------------
             ///\brief Get all devices attached to this plugin instance
@@ -363,7 +363,7 @@ namespace shared
             //-----------------------------------------------------
             virtual void declareKeyword(const std::string& device,
                                         boost::shared_ptr<const historization::IHistorizable> keyword,
-                                        CDataContainerSharedPtr details = CDataContainer::EmptyContainerSharedPtr) = 0;
+                                        CDataContainerSharedPtr details = new_CDataContainerSharedPtr()) = 0;
 
             //-----------------------------------------------------
             ///\brief Declare a list of keywords for a device

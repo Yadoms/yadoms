@@ -25,7 +25,7 @@ namespace pluginSystem
          bool isSupportedOnThisPlatform() const override;
          bool getSupportManuallyCreatedDevice() const override;
          bool getSupportDeviceRemovedNotification() const override;
-         boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
+         shared::CDataContainerSharedPtrConst getPackage() const override;
          const boost::filesystem::path& getPath() const override;
          // [END] shared::plugin::IInformation implementation
 
@@ -34,7 +34,7 @@ namespace pluginSystem
          shared::versioning::CSemVer m_version;
          std::string m_author;
          std::string m_url;
-         boost::shared_ptr<shared::CDataContainer> m_package;
+         shared::CDataContainerSharedPtr m_package;
       };
    }
 } // namespace pluginSystem::internalPlugin

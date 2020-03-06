@@ -7,18 +7,19 @@ namespace pluginSystem
    {
       CCustomEnumTypeInfo::CCustomEnumTypeInfo(const std::string& typeName,
                                                const std::vector<std::string>& values)
+         :m_data(new_CDataContainerSharedPtr())
       {
-         m_data.set("name", typeName);
+         m_data->set("name", typeName);
          if (values.empty())
             throw std::invalid_argument("Custom enum must have values");
-         m_data.set("values", values);
+         m_data->set("values", values);
       }
 
       CCustomEnumTypeInfo::~CCustomEnumTypeInfo()
       {
       }
 
-      shared::CDataContainer CCustomEnumTypeInfo::serialize() const
+      shared::CDataContainerSharedPtr CCustomEnumTypeInfo::serialize() const
       {
          return m_data;
       }

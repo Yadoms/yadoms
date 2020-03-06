@@ -69,7 +69,7 @@ namespace task {
       return m_task->getName();
    }
 
-   shared::CDataContainer CInstance::getTaskData() const
+   shared::CDataContainerSharedPtr CInstance::getTaskData() const
    {
       return m_taskData;
    }
@@ -79,7 +79,7 @@ namespace task {
       return m_creationDate;
    }
 
-   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, const std::string& message, const std::string& exception, const shared::CDataContainer& taskData)
+   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, const std::string& message, const std::string& exception, shared::CDataContainerSharedPtr taskData)
    {
       if (!isRunning)
          m_currentStatus = ETaskStatus::kFail;
@@ -118,7 +118,7 @@ namespace task {
          m_currentStatus = ETaskStatus::kStarted;
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
-         OnTaskProgressUpdated(true, 0.0f, i18n::CClientStrings::TaskStarted, std::string(), shared::CDataContainer::EmptyContainer);
+         OnTaskProgressUpdated(true, 0.0f, i18n::CClientStrings::TaskStarted, std::string(), new_CDataContainerSharedPtr());
 
          // Execute task code
          m_task->onSetTaskId(getGuid());
@@ -128,7 +128,7 @@ namespace task {
          if (m_currentIsRunning && m_currentStatus != ETaskStatus::kSuccess)
          {
             m_currentStatus = ETaskStatus::kSuccess;
-            OnTaskProgressUpdated(true, 100.0, i18n::CClientStrings::TaskEnd, std::string(), shared::CDataContainer::EmptyContainer);
+            OnTaskProgressUpdated(true, 100.0, i18n::CClientStrings::TaskEnd, std::string(), new_CDataContainerSharedPtr());
          }
 
          //task event stopped
@@ -139,21 +139,21 @@ namespace task {
          // End-of-thread exception was not catch by task,
          // it's a developer's error, we have to report it
          YADOMS_LOG(error) << m_task->getName() << " didn't catch boost::thread_interrupted.";
-         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskInterrupted, "Task interrupted.", shared::CDataContainer::EmptyContainer);
+         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskInterrupted, "Task interrupted.", new_CDataContainerSharedPtr());
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
       catch (std::exception& e)
       {
          // Task crashed
          YADOMS_LOG(error) << m_task->getName() << " crashed in doWork with exception : " << e.what();
-         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskCrashed, e.what(), shared::CDataContainer::EmptyContainer);
+         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskCrashed, e.what(), new_CDataContainerSharedPtr());
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
       catch (...)
       {
          // Plugin crashed
          YADOMS_LOG(error) << m_task->getName() << " crashed in doWork with unknown exception.";
-         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskUnkownError, "unknown exception not catched", shared::CDataContainer::EmptyContainer);
+         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskUnkownError, "unknown exception not catched", new_CDataContainerSharedPtr());
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
    }

@@ -22,26 +22,26 @@ namespace database
          {
             try
             {
-               getDevice(deviceId, true);
+               const auto f= getDevice(deviceId, true);
+               return f && f.get() != NULL;
             }
             catch (shared::exception::CEmptyResult&)
             {
                return false;
             }
-            return true;
          }
 
          bool CDevice::deviceExists(int pluginId, const std::string& deviceName) const
          {
             try
             {
-               getDeviceInPlugin(pluginId, deviceName, true);
+               const auto f = getDeviceInPlugin(pluginId, deviceName, true);
+               return f && f.get() != NULL;
             }
             catch (shared::exception::CEmptyResult&)
             {
                return false;
             }
-            return true;
          }
 
          boost::shared_ptr<entities::CDevice> CDevice::getDevice(int deviceId, bool blacklistedIncluded) const
@@ -227,7 +227,7 @@ namespace database
 
          boost::shared_ptr<entities::CDevice> CDevice::createDevice(int pluginId, const std::string& name, const std::string& friendlyName,
                                                                     const std::string& type, const std::string& model,
-                                                                    const shared::CDataContainer& details)
+                                                                    shared::CDataContainerSharedPtr details)
          {
             if (deviceExists(pluginId, name))
                throw shared::exception::CEmptyResult("The device already exists, cannot create it a new time");
@@ -253,7 +253,7 @@ namespace database
                             realFriendlyName,
                             type,
                             model,
-                            details.serialize());
+                            details->serialize());
             if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                throw shared::exception::CEmptyResult("Fail to insert new device");
 
@@ -303,28 +303,28 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update device name");
          }
 
-         void CDevice::updateDeviceConfiguration(int deviceId, const shared::CDataContainer& configuration)
+         void CDevice::updateDeviceConfiguration(int deviceId, shared::CDataContainerSharedPtr configuration)
          {
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
 
             auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
-                     Set(CDeviceTable::getConfigurationColumnName(), configuration.serialize()).
+                     Set(CDeviceTable::getConfigurationColumnName(), configuration->serialize()).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
 
             if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                throw shared::exception::CEmptyResult("Fail to update device configuration");
          }
 
-         void CDevice::updateDeviceDetails(int deviceId, const shared::CDataContainer& details)
+         void CDevice::updateDeviceDetails(int deviceId, shared::CDataContainerSharedPtr details)
          {
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
 
             auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
-                     Set(CDeviceTable::getDetailsColumnName(), details.serialize()).
+                     Set(CDeviceTable::getDetailsColumnName(), details->serialize()).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
 
             if (m_databaseRequester->queryStatement(*qUpdate) <= 0)

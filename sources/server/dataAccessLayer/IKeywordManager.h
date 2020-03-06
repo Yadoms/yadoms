@@ -140,7 +140,7 @@ namespace dataAccessLayer
       //--------------------------------------------------------------
       virtual void addKeyword(int deviceId,
                               const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
-                              const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
+                              shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr()) = 0;
 
       //--------------------------------------------------------------
       /// \brief                    Add new keywords to a device

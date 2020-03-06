@@ -4,7 +4,7 @@
 namespace pluginSystem
 {
    CDeviceRemoved::CDeviceRemoved(const std::string& device,
-                                  const shared::CDataContainer& details)
+                                  const shared::CDataContainerSharedPtr& details)
       : m_device(device),
         m_details(details)
    {
@@ -19,7 +19,7 @@ namespace pluginSystem
       return m_device;
    }
 
-   const shared::CDataContainer& CDeviceRemoved::details() const
+   const shared::CDataContainerSharedPtr& CDeviceRemoved::details() const
    {
       return m_details;
    }

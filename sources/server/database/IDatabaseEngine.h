@@ -23,7 +23,7 @@ namespace database {
       /// \Brief	Get database system information
       /// \return shared::CDataContainer Some database information
       //--------------------------------------------------------------
-      virtual shared::CDataContainer getInformation() = 0;
+      virtual shared::CDataContainerSharedPtr getInformation() = 0;
 
       //--------------------------------------------------------------
       /// \Brief	Virtual destructor

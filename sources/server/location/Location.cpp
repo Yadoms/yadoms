@@ -11,7 +11,7 @@ namespace location
       : m_configurationManager(configurationManager),
         m_autoLocationService(autoLocationService)
    {
-      shared::CDataContainer location;
+      shared::CDataContainerSharedPtr location;
       try
       {
          location = m_configurationManager->getLocation();
@@ -21,7 +21,7 @@ namespace location
          // Not found in database ==> let location empty
       }
 
-      if (location.empty() || location.get<std::string>("status") == "default")
+      if (location->empty() || location->get<std::string>("status") == "default")
       {
          YADOMS_LOG(information) << "Location was not found in database, try to auto-locate...";
          tryAutoLocate();
@@ -45,23 +45,23 @@ namespace location
       }
    }
 
-   shared::CDataContainer CLocation::getLocation() const
+   shared::CDataContainerSharedPtr CLocation::getLocation() const
    {
       return m_configurationManager->getLocation();
    }
 
    double CLocation::latitude() const
    {
-      return getLocation().get<double>("latitude");
+      return getLocation()->get<double>("latitude");
    }
 
    double CLocation::longitude() const
    {
-      return getLocation().get<double>("longitude");
+      return getLocation()->get<double>("longitude");
    }
 
    double CLocation::altitude() const
    {
-      return getLocation().get<double>("altitude");
+      return getLocation()->get<double>("altitude");
    }
 } // namespace location

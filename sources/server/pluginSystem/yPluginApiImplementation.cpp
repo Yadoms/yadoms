@@ -48,7 +48,7 @@ namespace pluginSystem
                                                  const std::string& model,
                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::
                                                     IHistorizable> keyword,
-                                                 const shared::CDataContainer& details)
+                                                 shared::CDataContainerSharedPtr details)
    {
       if (!deviceExists(device))
          m_deviceManager->createDevice(getPluginId(), device, device, type, model, details);
@@ -63,7 +63,7 @@ namespace pluginSystem
                                                  const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::
                                                     historization::IHistorizable>>&
                                                  keywords,
-                                                 const shared::CDataContainer& details)
+                                                 shared::CDataContainerSharedPtr details)
    {
       if (!deviceExists(device))
          m_deviceManager->createDevice(getPluginId(),
@@ -86,13 +86,13 @@ namespace pluginSystem
       return m_deviceManager->deviceExists(getPluginId(), device);
    }
 
-   shared::CDataContainer CYPluginApiImplementation::getDeviceConfiguration(const std::string& device) const
+   shared::CDataContainerSharedPtr CYPluginApiImplementation::getDeviceConfiguration(const std::string& device) const
    {
       return m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Configuration;
    }
 
    void CYPluginApiImplementation::updateDeviceConfiguration(const std::string& device,
-                                                             const shared::CDataContainer& configuration) const
+                                                             shared::CDataContainerSharedPtr configuration) const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device configuration : device doesn't exist.");
@@ -101,13 +101,13 @@ namespace pluginSystem
                                                  configuration);
    }
 
-   shared::CDataContainer CYPluginApiImplementation::getDeviceDetails(const std::string& device) const
+   shared::CDataContainerSharedPtr CYPluginApiImplementation::getDeviceDetails(const std::string& device) const
    {
       return m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Details;
    }
 
    void CYPluginApiImplementation::updateDeviceDetails(const std::string& device,
-                                                       const shared::CDataContainer& details) const
+                                                       shared::CDataContainerSharedPtr details) const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device details : device doesn't exist.");
@@ -153,9 +153,9 @@ namespace pluginSystem
          throw shared::exception::CEmptyResult("Fail to update device state : device doesn't exist.");
 
       //convert map to dataContainer
-      shared::CDataContainer dc;
+      shared::CDataContainerSharedPtr dc = new_CDataContainerSharedPtr();
       for (const auto& customMessageDataParam : customMessageDataParams)
-         dc.set(customMessageDataParam.first, customMessageDataParam.second);
+         dc->set(customMessageDataParam.first, customMessageDataParam.second);
 
       m_deviceManager->updateDeviceState(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), state,
                                          customMessageId, dc);
@@ -172,7 +172,7 @@ namespace pluginSystem
    void CYPluginApiImplementation::declareKeyword(const std::string& device,
                                                   boost::shared_ptr<const shared::plugin::yPluginApi::historization::
                                                      IHistorizable> keyword,
-                                                  const shared::CDataContainer& details)
+                                                  shared::CDataContainerSharedPtr details)
    {
       if (keywordExists(device, keyword))
          throw shared::exception::CEmptyResult(
@@ -349,7 +349,7 @@ namespace pluginSystem
       return m_information;
    }
 
-   shared::CDataContainer CYPluginApiImplementation::getConfiguration()
+   shared::CDataContainerSharedPtr CYPluginApiImplementation::getConfiguration()
    {
       return m_instanceData->Configuration;
    }
