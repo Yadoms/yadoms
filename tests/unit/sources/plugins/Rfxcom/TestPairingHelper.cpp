@@ -14,7 +14,7 @@ public:
 
    boost::shared_ptr<yApi::IExtraQueryData> getData() const override { return boost::shared_ptr<yApi::IExtraQueryData>(); }
 
-   void sendSuccess(const shared::CDataContainer& data) override
+   void sendSuccess(const shared::CDataContainerSharedPtr& data) override
    {
    }
 
