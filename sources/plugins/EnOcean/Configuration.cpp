@@ -5,7 +5,7 @@ CConfiguration::~CConfiguration()
 {
 }
 
-void CConfiguration::initializeWith(shared::CDataContainerSharedPtr data)
+void CConfiguration::initializeWith(const shared::CDataContainerSharedPtr & data)
 {
    m_data.initializeWith(data);
 }

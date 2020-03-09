@@ -51,12 +51,12 @@ void CIOManager::readAllIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, b
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                            boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   shared::CDataContainer parameters;
+   shared::CDataContainerSharedPtr parameters = new_CDataContainerSharedPtr();
 
    YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command) ;
 
    const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
-   const auto deviceType = deviceDetails.get<std::string>("type");
+   const auto deviceType = deviceDetails->get<std::string>("type");
 
    for (std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension = m_devicesList.begin();
       iteratorExtension != m_devicesList.end();
@@ -65,12 +65,12 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
       if (deviceType == (*iteratorExtension)->getDeviceType())
       {
          if (m_isPasswordActivated)
-            parameters.set("key", m_password);
+            parameters->set("key", m_password);
 
          auto results = urlManager::sendCommand(m_socketAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
 
          // If the answer is a success, we historize the data
-         if (results.containsValue("Success"))
+         if (results->containsValue("Success"))
             (*iteratorExtension)->historizePendingCommand(api, command);
          else
          {
@@ -87,13 +87,13 @@ void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const std::string& type,
                                   bool forceHistorization)
 {
-   shared::CDataContainer parameters;
+   shared::CDataContainerSharedPtr parameters = new_CDataContainerSharedPtr();
 
    // add the password if activated
    if (m_isPasswordActivated)
-      parameters.set("key", m_password);
+      parameters->set("key", m_password);
 
-   parameters.set("Get", type);
+   parameters->set("Get", type);
 
    auto results = urlManager::sendCommand( m_socketAddress, parameters);
 

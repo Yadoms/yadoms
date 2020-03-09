@@ -472,7 +472,7 @@ namespace shared
       /// \brief		Copy another container to this instance
       /// \param [in] rhs  The container to copy
       //--------------------------------------------------------------
-      void initializeWith(CDataContainerSharedPtr& rhs);
+      void initializeWith(const CDataContainerSharedPtr& rhs);
 
       //--------------------------------------------------------------
       //

@@ -36,12 +36,12 @@ namespace equipments
       int getSlot() const override;
       void updateFromDevice(const std::string& type, 
                             boost::shared_ptr<yApi::IYPluginApi> api, 
-                            shared::CDataContainer& values,
+                            shared::CDataContainerSharedPtr& values,
                             bool forceHistorization = false) override;
       void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
       void resetPendingCommand() override;
-      shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& parameters, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
-      void setNewConfiguration(const shared::CDataContainer& newConfiguration) override;
+      shared::CDataContainerSharedPtr buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainerSharedPtr& parameters, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
+      void setNewConfiguration(const shared::CDataContainerSharedPtr& newConfiguration) override;
       // [END] IExtension implementation
 
       //-----------------------------------------------------
@@ -61,7 +61,7 @@ namespace equipments
       //-----------------------------------------------------
       template<class T1, class T2>
       void updateIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                              shared::CDataContainer& values,
+                              shared::CDataContainerSharedPtr& values,
                               std::vector<boost::shared_ptr<T1> >& keywordsList,
                               std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& ToHistorize,
                               bool forceHistorization = false);
@@ -78,7 +78,7 @@ namespace equipments
                         std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& keywordsList,
                         boost::shared_ptr<const yApi::IDeviceCommand> command,
                         const std::string& pinNumber,
-                        shared::CDataContainer& parameters);
+                        shared::CDataContainerSharedPtr& parameters);
 
       //-----------------------------------------------------
       ///\brief                     Create the parameter to send to the device for a CCounter keyword (couter type)
@@ -93,7 +93,7 @@ namespace equipments
                          std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& keywordsList,
                          boost::shared_ptr<const yApi::IDeviceCommand> command,
                          const std::string& value,
-                         shared::CDataContainer& parameters);
+                         shared::CDataContainerSharedPtr& parameters);
 
       //-----------------------------------------------------
       ///\brief                     The device name

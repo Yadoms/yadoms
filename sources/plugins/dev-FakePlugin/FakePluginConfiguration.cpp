@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 
 
-void CFakePluginConfiguration::initializeWith(shared::CDataContainerSharedPtr data)
+void CFakePluginConfiguration::initializeWith(const shared::CDataContainerSharedPtr & data)
 {
    m_configuration.initializeWith(data);
 }
