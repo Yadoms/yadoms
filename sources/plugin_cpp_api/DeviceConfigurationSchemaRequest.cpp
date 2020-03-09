@@ -5,7 +5,7 @@
 namespace plugin_cpp_api
 {
    CDeviceConfigurationSchemaRequest::CDeviceConfigurationSchemaRequest(const plugin_IPC::toPlugin::DeviceConfigurationSchemaRequest& msg,
-                                                                        boost::function1<void, const shared::CDataContainer&> sucessCallback,
+                                                                        boost::function1<void, const shared::CDataContainerSharedPtr&> sucessCallback,
                                                                         boost::function1<void, const std::string&> errorCallback)
       : m_device(msg.device()),
         m_sucessCallback(sucessCallback),
@@ -22,7 +22,7 @@ namespace plugin_cpp_api
       return m_device;
    }
 
-   void CDeviceConfigurationSchemaRequest::sendSuccess(const shared::CDataContainer& deviceConfigurationSchema)
+   void CDeviceConfigurationSchemaRequest::sendSuccess(const shared::CDataContainerSharedPtr& deviceConfigurationSchema)
    {
       m_sucessCallback(deviceConfigurationSchema);
    }
