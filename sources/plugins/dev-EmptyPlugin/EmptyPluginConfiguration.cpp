@@ -6,7 +6,7 @@ CEmptyPluginConfiguration::~CEmptyPluginConfiguration()
 {
 }
 
-void CEmptyPluginConfiguration::initializeWith(const shared::CDataContainer& data)
+void CEmptyPluginConfiguration::initializeWith(shared::CDataContainerSharedPtr data)
 {
    m_configuration.initializeWith(data);
 }
