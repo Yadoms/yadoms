@@ -29,14 +29,14 @@ public:
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   void initializeWith(const shared::CDataContainer& data);
+   void initializeWith(shared::CDataContainerSharedPtr data);
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    /// \param [in] packageJsonPath The package.json path
    //--------------------------------------------------------------
-   void initializeWith(const shared::CDataContainer& data,
+   void initializeWith(shared::CDataContainerSharedPtr data,
                        const boost::filesystem::path& packageJsonPath);
 
    //--------------------------------------------------------------

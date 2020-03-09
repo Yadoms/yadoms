@@ -18,7 +18,7 @@ public:
    /// \param[in] configuration The device configuration
    //--------------------------------------------------------------
    explicit CFakeDynamicallyConfigurableDevice(const std::string& deviceName,
-                                               const shared::CDataContainer& configuration);
+                                               const shared::CDataContainerSharedPtr& configuration);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -58,7 +58,7 @@ public:
    /// \brief	    Change the device configuration
    /// \param[in] newConfiguration  The new configuration
    //--------------------------------------------------------------
-   void setConfiguration(const shared::CDataContainer& newConfiguration);
+   void setConfiguration(const shared::CDataContainerSharedPtr& newConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    Get the historizers
@@ -70,10 +70,10 @@ public:
    /// \brief	            Get the device dynamic configuration schema
    /// \return             The device dynmaic configuration schema
    //--------------------------------------------------------------
-   static shared::CDataContainer getDynamicConfigurationSchema();
+   static shared::CDataContainerSharedPtr getDynamicConfigurationSchema();
 
 protected:
-   static double readDividerConfiguration(const shared::CDataContainer& configuration);
+   static double readDividerConfiguration(const shared::CDataContainerSharedPtr& configuration);
 
 
 private:

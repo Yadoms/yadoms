@@ -3,12 +3,12 @@
 #include <shared/Log.h>
 
 
-void CFakePluginConfiguration::initializeWith(const shared::CDataContainer& data)
+void CFakePluginConfiguration::initializeWith(shared::CDataContainerSharedPtr data)
 {
    m_configuration.initializeWith(data);
 }
 
-void CFakePluginConfiguration::initializeWith(const shared::CDataContainer& data,
+void CFakePluginConfiguration::initializeWith(shared::CDataContainerSharedPtr data,
                                               const boost::filesystem::path& packageJsonPath)
 {
    m_configuration.initializeWith(data, packageJsonPath);
