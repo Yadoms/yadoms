@@ -23,13 +23,13 @@ public:
    /// \param [in] api             Plugin execution context (Yadoms API)
    /// \param [in] message         the received message
    //--------------------------------------------------------------
-   virtual std::map<std::string, boost::shared_ptr<equipments::IEquipment>> decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& message) = 0;
+   virtual std::map<std::string, boost::shared_ptr<equipments::IEquipment>> decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainerSharedPtr& message) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                    return if we need to ask the server for new frames
    /// \param [in] message         the received message
    //--------------------------------------------------------------
-   virtual bool isFrameComplete(shared::CDataContainer& message) = 0;
+   virtual bool isFrameComplete(shared::CDataContainerSharedPtr& message) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                    return if we need to ask the server for new frames
