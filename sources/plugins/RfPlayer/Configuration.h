@@ -10,6 +10,11 @@ class CConfiguration
 {
 public:
    //--------------------------------------------------------------
+   /// \brief	    Constructor
+   //--------------------------------------------------------------
+   CConfiguration();
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CConfiguration();
@@ -185,12 +190,12 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Initialize configuration
    //--------------------------------------------------------------
-   void initializeWith(shared::CDataContainer container);
+   void initializeWith(const shared::CDataContainerSharedPtr& container);
 
 private :
    //--------------------------------------------------------------
    /// \brief	    The container
    //--------------------------------------------------------------
-   shared::CDataContainer m_container;
+   shared::CDataContainerSharedPtr m_container;
 };
 

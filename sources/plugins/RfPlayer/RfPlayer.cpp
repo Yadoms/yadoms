@@ -130,9 +130,9 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Configuration was updated
                api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
+               auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>();
                YADOMS_LOG(information) << "Update configuration...";
-               BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+               BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection
 
@@ -411,7 +411,7 @@ void CRfPlayer::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi>& api,
    */
 
 
-   yApi::configuration::CFile fileFromClient = extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
+   yApi::configuration::CFile fileFromClient = extraQuery->getData()->data()->get<yApi::configuration::CFile>("fileContent");
    std::string firmwareContent = fileFromClient.getContent();
 
    const std::string stepi18nSendingFile = "customLabels.firmwareUpdate.writeFile";
@@ -487,7 +487,7 @@ void CRfPlayer::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi>& api,
 
    const std::string stepi18nUpgradedFail = "customLabels.firmwareUpdate.fail";
    if (isReady)
-      extraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
+      extraQuery->sendSuccess(new_CDataContainerSharedPtr());
    else
       extraQuery->sendError(stepi18nUpgradedFail);
 }

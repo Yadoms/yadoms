@@ -36,7 +36,7 @@ namespace incoming {
 
 
    CBinaryFrame::CBinaryFrame(char sourceDest, boost::shared_ptr<shared::communication::CByteBuffer> content)
-      :m_sourceDest(sourceDest), m_content(content)
+      :m_sourceDest(sourceDest), m_content(content), m_deviceDetails(new_CDataContainerSharedPtr())
    {
 
    }
@@ -252,8 +252,8 @@ namespace incoming {
       }
 
       m_deviceName = (boost::format("%1%") % (channel >> 8)).str();
-      m_deviceDetails.set("adr_channel", channel);
-      m_deviceDetails.set("idPhy", idPhy);
+      m_deviceDetails->set("adr_channel", channel);
+      m_deviceDetails->set("idPhy", idPhy);
    }
 
    void CBinaryFrame::manageOregonBatteryFromQualifier(unsigned short qualifier)
@@ -272,9 +272,9 @@ namespace incoming {
       case REGULAR_INCOMING_BINARY_USB_FRAME_TYPE:
       {
          if (pFrame->header.dataFlag == 0)
-            m_deviceDetails.set("frequency", 433);
+            m_deviceDetails->set("frequency", 433);
          if (pFrame->header.dataFlag == 1)
-            m_deviceDetails.set("frequency", 866);
+            m_deviceDetails->set("frequency", 866);
 
 
          auto rssiKeyword = boost::make_shared<yApi::historization::CSignalPower>("rfQuality");
@@ -295,51 +295,51 @@ namespace incoming {
          case RECEIVED_PROTOCOL_UNDEFINED: m_deviceModel = "";  break;
          case RECEIVED_PROTOCOL_X10: 
             m_deviceModel = "X10";  
-            m_deviceDetails.set("protocol", "x10"); 
+            m_deviceDetails->set("protocol", "x10"); 
             break;
          case RECEIVED_PROTOCOL_VISONIC: 
             m_deviceModel = "VISONIC";  
-            m_deviceDetails.set("protocol", "visonic");
+            m_deviceDetails->set("protocol", "visonic");
             break;
          case RECEIVED_PROTOCOL_BLYSS:
             m_deviceModel = "BLYSS";  
-            m_deviceDetails.set("protocol", "blyss");
+            m_deviceDetails->set("protocol", "blyss");
             break;
          case RECEIVED_PROTOCOL_CHACON: 
             m_deviceModel = "CHACON";  
-            m_deviceDetails.set("protocol", "chacon");
+            m_deviceDetails->set("protocol", "chacon");
             break;
          case RECEIVED_PROTOCOL_OREGON: 
             m_deviceModel = "OREGON";  
-            m_deviceDetails.set("protocol", "oregon");
+            m_deviceDetails->set("protocol", "oregon");
             break;
          case RECEIVED_PROTOCOL_DOMIA:  
             m_deviceModel = "DOMIA";  
-            m_deviceDetails.set("protocol", "domia");
+            m_deviceDetails->set("protocol", "domia");
             break;
          case RECEIVED_PROTOCOL_OWL:    
             m_deviceModel = "OWL";  
-            m_deviceDetails.set("protocol", "owl");
+            m_deviceDetails->set("protocol", "owl");
             break;
          case RECEIVED_PROTOCOL_X2D:    
             m_deviceModel = "X2D";  
-            m_deviceDetails.set("protocol", "x2d");
+            m_deviceDetails->set("protocol", "x2d");
             break;
          case RECEIVED_PROTOCOL_RFY:    
             m_deviceModel = "RFY";  
-            m_deviceDetails.set("protocol", "rfy");
+            m_deviceDetails->set("protocol", "rfy");
             break;
          case RECEIVED_PROTOCOL_KD101:  
             m_deviceModel = "KD101";  
-            m_deviceDetails.set("protocol", "kd101");
+            m_deviceDetails->set("protocol", "kd101");
             break;
          case RECEIVED_PROTOCOL_PARROT: 
             m_deviceModel = "PARROT";  
-            m_deviceDetails.set("protocol", "parrot");
+            m_deviceDetails->set("protocol", "parrot");
             break;
          case RECEIVED_PROTOCOL_DIGIMAX:
             m_deviceModel = "DIGIMAX";  
-            m_deviceDetails.set("protocol", "digimax");
+            m_deviceDetails->set("protocol", "digimax");
             break;
          }
 
@@ -351,7 +351,7 @@ namespace incoming {
             char houseCode = static_cast<char>((pFrame->infos.type0.id & 0x00F0) >> 4) + 0x30;
             unsigned char device = static_cast<unsigned char>(pFrame->infos.type0.id & 0x000F);
             m_deviceName = (boost::format("%1%%2%") % houseCode % device).str();
-            m_deviceDetails.set("id", pFrame->infos.type0.id);
+            m_deviceDetails->set("id", pFrame->infos.type0.id);
 
             auto stateKeyword = boost::make_shared<specificHistorizers::incoming::CType0State>("state");
             specificHistorizers::incoming::EType0StateValues state(static_cast<int>(pFrame->infos.type0.subtype));
@@ -366,7 +366,7 @@ namespace incoming {
          {
             unsigned int device = (pFrame->infos.type1.idMsb << 16) + pFrame->infos.type1.idLsb;
             m_deviceName = (boost::format("%1%") % device).str();
-            m_deviceDetails.set("id", device);
+            m_deviceDetails->set("id", device);
 
             auto stateKeyword = boost::make_shared<specificHistorizers::incoming::CType1State>("state");
             specificHistorizers::incoming::EType1StateValues state(static_cast<int>(pFrame->infos.type1.subtype));
@@ -530,7 +530,7 @@ namespace incoming {
                   break;
                }
                m_deviceName = (boost::format("%1%") % (pFrame->infos.type8.idChannel >> 4)).str();
-               m_deviceDetails.set("adr_channel", pFrame->infos.type8.idChannel);
+               m_deviceDetails->set("adr_channel", pFrame->infos.type8.idChannel);
 
                manageOregonBatteryFromQualifier(pFrame->infos.type8.qualifier);
 
@@ -597,8 +597,8 @@ namespace incoming {
 
             unsigned char area = pFrame->infos.type10.idLsb & 0x000F;
             unsigned int device = (pFrame->infos.type10.idMsb << 16) + pFrame->infos.type10.idLsb;
-            m_deviceDetails.set("id", device);
-            m_deviceDetails.set("area", static_cast<int>(area));
+            m_deviceDetails->set("id", device);
+            m_deviceDetails->set("area", static_cast<int>(area));
             m_deviceName = (boost::format("%1%") % device).str();
 
             auto batteryLevelKeyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery");

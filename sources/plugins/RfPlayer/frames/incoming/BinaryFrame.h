@@ -94,7 +94,7 @@ namespace incoming {
       //--------------------------------------------------------------
       /// \brief	               The device details
       //--------------------------------------------------------------
-      shared::CDataContainer m_deviceDetails;
+      shared::CDataContainerSharedPtr m_deviceDetails;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
