@@ -7,7 +7,7 @@ urlManager::urlManager():
 {
 }
 
-shared::CDataContainer urlManager::getRegisteredEquipments(const std::string& apikey,
+shared::CDataContainerSharedPtr urlManager::getRegisteredEquipments(const std::string& apikey,
                                                            const int page,
                                                            const bool activated,
                                                            const boost::posix_time::time_duration& timeout)
@@ -33,7 +33,7 @@ shared::CDataContainer urlManager::getRegisteredEquipments(const std::string& ap
                                                timeout);
 }
 
-shared::CDataContainer urlManager::getDeviceInformation(const std::string& apikey,
+shared::CDataContainerSharedPtr urlManager::getDeviceInformation(const std::string& apikey,
                                                         const std::string& devEUI,
                                                         const boost::posix_time::time_duration& timeout)
 {
@@ -53,7 +53,7 @@ shared::CDataContainer urlManager::getDeviceInformation(const std::string& apike
                                                timeout);
 }
 
-shared::CDataContainer urlManager::listDeviceCommands(const std::string& apikey,
+shared::CDataContainerSharedPtr urlManager::listDeviceCommands(const std::string& apikey,
                                                       const std::string& devEUI,
                                                       const int page,
                                                       const boost::posix_time::time_duration& timeout)

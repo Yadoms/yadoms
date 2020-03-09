@@ -24,5 +24,5 @@ public:
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   virtual void initializeWith(const shared::CDataContainer& data) = 0;
+   virtual void initializeWith(const shared::CDataContainerSharedPtr& data) = 0;
 };
