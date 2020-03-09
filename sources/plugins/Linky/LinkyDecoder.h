@@ -46,7 +46,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  Details for the device
    //--------------------------------------------------------------
-   shared::CDataContainer m_DeviceDetails;
+   shared::CDataContainerSharedPtr m_DeviceDetails;
 
    //--------------------------------------------------------------
    /// \brief  Keywords

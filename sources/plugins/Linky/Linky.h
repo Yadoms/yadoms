@@ -46,7 +46,7 @@ protected:
    /// \param [in] newConfigurationData The new configuration
    //--------------------------------------------------------------
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const shared::CDataContainer& newConfigurationData);
+                              const shared::CDataContainerSharedPtr& newConfigurationData);
 
    //--------------------------------------------------------------
    /// \brief	                     Destroy the serial connection
