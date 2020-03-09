@@ -12,8 +12,8 @@ public:
                               const std::string& manufacturerName);
    virtual ~CDeviceConfigurationHelper();
 
-   const shared::CDataContainer& configuration() const;
+   const shared::CDataContainerSharedPtr& configuration() const;
 
 private:
-   shared::CDataContainer m_deviceConfiguration;
+   shared::CDataContainerSharedPtr m_deviceConfiguration;
 };
