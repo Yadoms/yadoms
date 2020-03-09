@@ -28,14 +28,14 @@ void CNotificationSender::displayText(const std::string& text,
 
 
 	auto headerPostParameters = m_urlManagerHelper->buildCommonHeaderParameters(m_configuration);
-	headerPostParameters.set("Content-Length", body.length());
+	headerPostParameters->set("Content-Length", body.length());
 
 	try
 	{
 		shared::CHttpMethods::sendPostRequest(url,
 		                                      body,
-		                                      headerPostParameters,
-		                                      shared::CDataContainer(),
+		                                      *headerPostParameters.get(),
+		                                      shared::CDataContainer::EmptyContainer,
 		                                      m_configuration.getPort() == kHttp
 			                                      ? shared::CHttpMethods::ESessionType::kStandard
 			                                      : shared::CHttpMethods::ESessionType::kSecured);
@@ -65,12 +65,10 @@ std::string CNotificationSender::buildMessageBody(const std::string& priorityMes
 	frame2.set("text", text);
 	frame2.set("icon", "i31581");
 
-	std::vector<shared::CDataContainer> frames;
-	frames.push_back(frame1);
-	frames.push_back(frame2);
-
 	shared::CDataContainer model;
-	model.set("frames", frames);
+	model.createArray("frames");
+	model.appendArray("frames", frame1);
+	model.appendArray("frames", frame2);
 
 	body.set("model", model);
 
