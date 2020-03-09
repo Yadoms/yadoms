@@ -13,12 +13,12 @@ namespace plugin_cpp_api
 
       // IDeviceRemoved Implementation
       const std::string& device() const override;
-      const shared::CDataContainer& details() const override;
+      const shared::CDataContainerSharedPtr& details() const override;
       // [END] IDeviceRemoved Implementation
 
    private:
 
       const std::string m_device;
-      const shared::CDataContainer m_details;
+      const shared::CDataContainerSharedPtr m_details;
    };
 } // namespace plugin_cpp_api	

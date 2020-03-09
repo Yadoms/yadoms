@@ -13,7 +13,7 @@ namespace plugin_cpp_api
       // IManuallyDeviceCreationData Implementation
       const std::string& getDeviceName() const override;
       const std::string& getDeviceType() const override;
-      const shared::CDataContainer& getConfiguration() const override;
+      const shared::CDataContainerSharedPtr& getConfiguration() const override;
       // [END] IManuallyDeviceCreationData Implementation
 
    private:
@@ -30,7 +30,7 @@ namespace plugin_cpp_api
       //-----------------------------------------------------
       ///\brief               Device configuration
       //-----------------------------------------------------
-      const shared::CDataContainer m_configuration;
+      const shared::CDataContainerSharedPtr m_configuration;
    };
 } // namespace plugin_cpp_api	
 
