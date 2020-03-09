@@ -2,7 +2,7 @@
 #include "urlManager.h"
 #include "http/HttpMethods.h"
 
-shared::CDataContainer urlManager::sendCommand(Poco::Net::SocketAddress socket, shared::CDataContainer parameters)
+shared::CDataContainerSharedPtr urlManager::sendCommand(Poco::Net::SocketAddress socket, shared::CDataContainerSharedPtr parameters)
 {
    std::stringstream url;
 

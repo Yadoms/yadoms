@@ -13,14 +13,14 @@
 
 namespace http
 {
-   shared::CDataContainer CHttpMethods::SendGetRequest(const std::string & url, shared::CDataContainer & parameters)
+   shared::CDataContainerSharedPtr CHttpMethods::SendGetRequest(const std::string & url, shared::CDataContainerSharedPtr & parameters)
    {
       try
       {
-         std::map<std::string, std::string> mapParameters = parameters.getAsMap<std::string>();
+         std::map<std::string, std::string> mapParameters = parameters->getAsMap<std::string>();
          Poco::URI uri(url);
 
-         if (!parameters.empty())
+         if (!parameters->empty())
          {
             for (std::map<std::string, std::string>::iterator parametersIterator = mapParameters.begin(); parametersIterator != mapParameters.end(); ++parametersIterator)
                uri.addQueryParameter(parametersIterator->first, parametersIterator->second);
@@ -54,11 +54,11 @@ namespace http
             size_t successFind = buff.find("Success");
 
             if (successFind == std::string::npos)
-               return shared::CDataContainer(oss.str());
+               return new_CDataContainerSharedPtrP(oss.str());
             else
             {
                buff.insert(successFind + 8, ": \"0\"");
-               return shared::CDataContainer(buff);
+               return new_CDataContainerSharedPtrP(buff);
             }
 //----------------------------------------------------------------
          }

@@ -29,7 +29,7 @@ public:
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   void initializeWith(shared::CDataContainerSharedPtr data);
+   void initializeWith(const shared::CDataContainerSharedPtr & data);
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data

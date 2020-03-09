@@ -39,7 +39,7 @@ namespace shared
             /// \param [in] configurationData The raw configuration data (from Yadoms database)
             /// \param [in] packagePath The package path (default to "package.json" from module path)
             //--------------------------------------------------------------
-            void initializeWith(CDataContainerSharedPtr& configurationData,
+            void initializeWith(const CDataContainerSharedPtr& configurationData,
                                 const boost::filesystem::path& packagePath = CFileSystemExtension::getModulePath() / boost::filesystem::path("package.json"))
             {
                // Reload package file

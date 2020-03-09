@@ -264,7 +264,7 @@ namespace shared
 	}
 
 
-   void CDataContainer::initializeWith(CDataContainerSharedPtr &rhs)
+   void CDataContainer::initializeWith(const CDataContainerSharedPtr &rhs)
 	{
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
 		m_tree.CopyFrom(rhs->m_tree, m_tree.GetAllocator(), true);

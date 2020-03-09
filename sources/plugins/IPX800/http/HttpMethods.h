@@ -18,7 +18,7 @@ namespace http
       /// \param[in]  parameters          parameters at the end of the url
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static shared::CDataContainer SendGetRequest(const std::string & url, shared::CDataContainer & parameters);
+      static shared::CDataContainerSharedPtr SendGetRequest(const std::string & url, shared::CDataContainerSharedPtr& parameters);
    };
 
 } // namespace http

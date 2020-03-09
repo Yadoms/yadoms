@@ -19,7 +19,7 @@ public:
    virtual ~CConfiguration();
 
    // IConfiguration implementation
-   void initializeWith(shared::CDataContainerSharedPtr data) override;
+   void initializeWith(const shared::CDataContainerSharedPtr & data) override;
    std::string getSerialPort() const override;
    CPairingHelper::EPairingMode getPairingMode() const override;
    // [END] IConfiguration implementation

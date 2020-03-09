@@ -21,7 +21,7 @@ public:
    virtual ~CIPX800Configuration();
 
    // IIPX800Configuration implementation
-   void initializeWith(const shared::CDataContainer& data) override;
+   void initializeWith(const shared::CDataContainerSharedPtr& data) override;
    virtual Poco::Net::SocketAddress getIPAddressWithSocket() const override;
    bool isPasswordActivated() const override;
    std::string getPassword() const override;
@@ -31,6 +31,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
-   shared::CDataContainer m_data;
+   shared::CDataContainerSharedPtr m_data;
 };
 
