@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 
 CFakeAnotherConfigurableDevice::CFakeAnotherConfigurableDevice(const std::string& deviceName,
-                                                               const shared::CDataContainer& configuration)
+                                                               const shared::CDataContainerSharedPtr& configuration)
    : m_deviceName(deviceName),
      m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
      m_internalCounter(0),
@@ -50,7 +50,7 @@ const std::string& CFakeAnotherConfigurableDevice::getModel()
    return model;
 }
 
-void CFakeAnotherConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
+void CFakeAnotherConfigurableDevice::setConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
 {
    m_divider = readDividerConfiguration(newConfiguration);
 }
@@ -60,13 +60,13 @@ std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::I
    return m_historizers;
 }
 
-int CFakeAnotherConfigurableDevice::readDividerConfiguration(const shared::CDataContainer& configuration)
+int CFakeAnotherConfigurableDevice::readDividerConfiguration(const shared::CDataContainerSharedPtr& configuration)
 {
    try
    {
-      YADOMS_LOG(information) << "Configuration = " << configuration.serialize();
-      if (configuration.containsValue("CounterDivider2"))
-         return configuration.get<int>("CounterDivider2");
+      YADOMS_LOG(information) << "Configuration = " << configuration->serialize();
+      if (configuration->containsValue("CounterDivider2"))
+         return configuration->get<int>("CounterDivider2");
    }
    catch (std::exception&)
    {
