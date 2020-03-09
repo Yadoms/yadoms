@@ -14,7 +14,7 @@ public:
    virtual ~CMegatecUpsConfiguration();
 
    // IMegatecUpsConfiguration implementation
-   void initializeWith(const shared::CDataContainer& data) override;
+   void initializeWith(const shared::CDataContainerSharedPtr& data) override;
    std::string getSerialPort() const override;
    bool upsBeepEnable() const override;
    bool autotestEnable() const override;

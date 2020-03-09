@@ -5,7 +5,7 @@ CMegatecUpsConfiguration::~CMegatecUpsConfiguration()
 {
 }
 
-void CMegatecUpsConfiguration::initializeWith(const shared::CDataContainer& data)
+void CMegatecUpsConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
 {
    m_data.initializeWith(data);
 }
