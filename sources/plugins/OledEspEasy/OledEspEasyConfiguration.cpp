@@ -6,7 +6,7 @@ COledEspEasyConfiguration::~COledEspEasyConfiguration()
 {
 }
 
-void COledEspEasyConfiguration::initializeWith(const shared::CDataContainer& data)
+void COledEspEasyConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
 {
    m_configuration.initializeWith(data);
 }
