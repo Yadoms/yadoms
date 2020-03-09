@@ -35,7 +35,8 @@ CLinkyDecoder::CLinkyDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    m_tomorrowColorChanged(true),
    m_todayColorChanged(true),
    m_firstRun(true),
-   m_ADSCalreadyReceived(false)
+   m_ADSCalreadyReceived(false),
+   m_DeviceDetails(new_CDataContainerSharedPtr())
 {
    m_activeIndex[0] = 0;
    m_activeIndex[1] = 0;

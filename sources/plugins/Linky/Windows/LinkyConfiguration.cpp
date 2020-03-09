@@ -10,7 +10,7 @@ CLinkyConfiguration::~CLinkyConfiguration()
 {
 }
 
-void CLinkyConfiguration::initializeWith(const shared::CDataContainer& data)
+void CLinkyConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
 {
    m_data.initializeWith(data);
 }
