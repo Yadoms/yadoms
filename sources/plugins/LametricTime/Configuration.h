@@ -33,7 +33,7 @@ public:
 	/// \brief		   Load configuration data
 	/// \param [in]    Data The data container
 	//--------------------------------------------------------------
-	void initializeWith(const shared::CDataContainer& data);
+	void initializeWith(const shared::CDataContainerSharedPtr& data);
 
 	//--------------------------------------------------------------
 	/// \brief	    Just for test, not needed for real plugin
