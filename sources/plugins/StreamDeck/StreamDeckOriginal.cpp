@@ -6,6 +6,8 @@
 const int CStreamDeckOriginal::ImageReportLength = 8191;
 const int CStreamDeckOriginal::KeyCols = 5;
 const int CStreamDeckOriginal::KeyRows = 3;
+const int CStreamDeckOriginal::KeyCount = KeyCols * KeyRows;
+const int CStreamDeckOriginal::DataToSendLength = 17;
 
 CStreamDeckOriginal::CStreamDeckOriginal(CConfiguration& configuration)
 	: CDeviceManager(configuration)
@@ -17,11 +19,11 @@ CStreamDeckOriginal::~CStreamDeckOriginal() = default;
 void CStreamDeckOriginal::reset()
 {
 	resetKeyStream();
-	unsigned char payload[17];
+	unsigned char payload[DataToSendLength];
 	payload[0] = 0x0B;
 	payload[1] = 0x63;
 
-	hid_send_feature_report(m_handle, payload, 17);
+	hid_send_feature_report(m_handle, payload, DataToSendLength);
 }
 
 void CStreamDeckOriginal::resetKeyStream()
@@ -37,7 +39,7 @@ void CStreamDeckOriginal::setBrightness(int percent)
 		0x05, 0x55, 0xaa, 0xd1, 0x01, CDeviceManagerHelper::decimalToHex(std::to_string(percent))
 	};
 	//unsigned char payload[17] = { 0x05, 0x55, 0xaa, 0xd1, 0x01, percent };
-	hid_send_feature_report(m_handle, payload, 17);
+	hid_send_feature_report(m_handle, payload, DataToSendLength);
 }
 
 void CStreamDeckOriginal::setKeyImage(std::string& content, int& keyIndex, std::string& customText)
@@ -112,4 +114,10 @@ int CStreamDeckOriginal::convertKeyIdOrigin(int& keyIndex)
 {
 	const auto keyCol = keyIndex % KeyCols;
 	return (keyIndex - keyCol) + ((KeyCols - 1) - keyCol);
+}
+
+void CStreamDeckOriginal::readKeyStates()
+{
+	unsigned char readData[KeyCount + 1] = {};
+	hid_read(m_handle, readData, DataToSendLength);
 }

@@ -20,7 +20,8 @@ public:
 	virtual void setBrightness(int percent) = 0;
 
 	virtual void setKeyImage(std::string& content, int& keyIndex, std::string& customText) = 0;
-
+	
+	virtual void readKeyStates() = 0;
 private:
 
 	CConfiguration m_configuration;

@@ -19,6 +19,7 @@ CStreamDeck::~CStreamDeck()
 enum
 {
 	kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
+	kEvtPortDataReceived,
 };
 
 void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -37,6 +38,8 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	m_deviceManager->reset();
 
 	m_deviceManager->setBrightness(30);
+
+	m_deviceManager->readKeyStates();
 
 	// the main loop
 	while (true)
@@ -89,7 +92,9 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 				break;
 			}
-
+		case kEvtPortDataReceived:
+			{
+			}
 		case yApi::IYPluginApi::kBindingQuery:
 			{
 				// Yadoms ask for a binding query 
@@ -142,7 +147,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 						auto customText = extraQuery->getData()->data().get<std::string>(
 							"customText");
-						
+
 						YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
 
 						auto fileFromClient = extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
