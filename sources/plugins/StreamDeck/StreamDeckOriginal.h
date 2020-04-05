@@ -5,7 +5,7 @@
 class CStreamDeckOriginal : public CDeviceManager
 {
 public:
-	explicit CStreamDeckOriginal(CConfiguration& configuration);
+	explicit CStreamDeckOriginal(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived);
 
 	virtual ~CStreamDeckOriginal();
 
@@ -17,8 +17,11 @@ public:
 
 	void setKeyImage(std::string& content, int& keyIndex, std::string& customText) override;
 
-	void readKeyStates() override;
+	std::vector<bool> readKeyStates() override;
 
+	int getKeyIndex(std::vector<bool>& states);
+	template <typename T>
+	std::pair<bool, int > findInVector(const std::vector<T>& vecOfElements, const T& element);
 private:
 	static const int ImageReportLength;
 	static const int KeyCols;

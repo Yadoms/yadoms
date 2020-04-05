@@ -3,8 +3,8 @@
 
 const int CStreamDeckOriginalV2::ImageReportLength = 1024;
 
-CStreamDeckOriginalV2::CStreamDeckOriginalV2(CConfiguration& configuration)
-	: CDeviceManager(configuration)
+CStreamDeckOriginalV2::CStreamDeckOriginalV2(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived)
+	: CDeviceManager(configuration, mainEventHandler, evtKeyStateReceived)
 {
 }
 

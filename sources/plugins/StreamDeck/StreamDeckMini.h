@@ -5,7 +5,7 @@
 class CStreamDeckMini final : public CDeviceManager
 {
 public:
-	explicit CStreamDeckMini(CConfiguration& configuration);
+	explicit CStreamDeckMini(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived);
 
 	virtual ~CStreamDeckMini();
 

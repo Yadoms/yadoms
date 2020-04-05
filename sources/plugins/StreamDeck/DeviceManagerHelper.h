@@ -42,12 +42,34 @@ public:
 
 	static int getDeviceKeyRows(uint16_t& vendorId, uint16_t& productId);
 
-	static boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformation(CConfiguration& configuration);
+	static boost::shared_ptr<UsbDeviceInformation> getDeviceInformation(CConfiguration& configuration);
 
 	static unsigned char integerToHex(int& value);
 
 	static int getKeyIndex(std::string& key);
-	
+
+	template <typename T>
+	static std::pair<bool, int> findInVector(const std::vector<T>& vecOfElements, const T& element)
+	{
+		std::pair<bool, int> result;
+
+		// Find given element in vector
+		auto it = std::find(vecOfElements.begin(), vecOfElements.end(), element);
+
+		if (it != vecOfElements.end())
+		{
+			result.second = distance(vecOfElements.begin(), it);
+			result.first = true;
+		}
+		else
+		{
+			result.first = false;
+			result.second = -1;
+		}
+
+		return result;
+	}
+
 private:
 	
 	static const uint16_t StreamDeckVendorId;

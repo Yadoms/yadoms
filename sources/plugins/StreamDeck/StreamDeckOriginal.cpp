@@ -9,8 +9,8 @@ const int CStreamDeckOriginal::KeyRows = 3;
 const int CStreamDeckOriginal::KeyCount = KeyCols * KeyRows;
 const int CStreamDeckOriginal::DataToSendLength = 17;
 
-CStreamDeckOriginal::CStreamDeckOriginal(CConfiguration& configuration)
-	: CDeviceManager(configuration)
+CStreamDeckOriginal::CStreamDeckOriginal(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived)
+	: CDeviceManager(configuration, mainEventHandler, evtKeyStateReceived)
 {
 }
 
@@ -116,8 +116,55 @@ int CStreamDeckOriginal::convertKeyIdOrigin(int& keyIndex)
 	return (keyIndex - keyCol) + ((KeyCols - 1) - keyCol);
 }
 
-void CStreamDeckOriginal::readKeyStates()
+std::vector<bool> CStreamDeckOriginal::readKeyStates()
 {
-	unsigned char readData[KeyCount + 1] = {};
+	std::vector<bool> states(KeyCount, false);
+	unsigned char readData[DataToSendLength] = {};
+
+	// TODO: ajouter mutex ? (ou vérifier que la lib est thread-safe)
+	// in case of read error stop thread
 	hid_read(m_handle, readData, DataToSendLength);
+
+	for (size_t i = 1; i <= states.size(); i++)
+	{
+		if (readData[i] != 0)
+		{
+			states[i] = true;
+		}
+	}
+
+	return states;
+}
+
+int CStreamDeckOriginal::getKeyIndex(std::vector<bool>& states)
+{
+	auto result = findInVector<bool>(states, true);
+
+	if (result.first)
+	{
+		return result.second;
+	}
+	return -1;
+}
+
+template <typename T>
+std::pair<bool, int> CStreamDeckOriginal::findInVector(const std::vector<T>& vecOfElements, const T& element)
+{
+	std::pair<bool, int> result;
+
+	// Find given element in vector
+	auto it = std::find(vecOfElements.begin(), vecOfElements.end(), element);
+
+	if (it != vecOfElements.end())
+	{
+		result.second = distance(vecOfElements.begin(), it);
+		result.first = true;
+	}
+	else
+	{
+		result.first = false;
+		result.second = -1;
+	}
+
+	return result;
 }

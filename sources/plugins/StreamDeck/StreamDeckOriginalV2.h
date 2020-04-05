@@ -5,7 +5,7 @@
 class CStreamDeckOriginalV2 final : public CDeviceManager
 {
 public:
-	explicit CStreamDeckOriginalV2(CConfiguration& configuration);
+	explicit CStreamDeckOriginalV2(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived);
 
 	virtual ~CStreamDeckOriginalV2();
 

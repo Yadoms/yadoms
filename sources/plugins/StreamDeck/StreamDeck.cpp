@@ -19,7 +19,7 @@ CStreamDeck::~CStreamDeck()
 enum
 {
 	kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
-	kEvtPortDataReceived,
+	kEvtKeyStateReceived,
 };
 
 void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -29,7 +29,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	YADOMS_LOG(information) << "StreamDeck is starting...";
 
 	m_configuration.initializeWith(api->getConfiguration());
-	m_deviceManager = CFactory::createDeviceManager(m_configuration);
+	m_deviceManager = CFactory::createDeviceManager(m_configuration, api->getEventHandler(), kEvtKeyStateReceived);
 
 	auto deviceInformation = initDevice(api);
 
@@ -39,7 +39,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 	m_deviceManager->setBrightness(30);
 
-	m_deviceManager->readKeyStates();
+	m_deviceManager->runKeyStateThread();
 
 	// the main loop
 	while (true)
@@ -52,6 +52,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				// Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
 				YADOMS_LOG(information) << "Stop requested";
 				api->setPluginState(yApi::historization::EPluginState::kStopped);
+				m_deviceManager->close();
 				return;
 			}
 
@@ -62,7 +63,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
 				YADOMS_LOG(information) << "Update configuration...";
 
-				m_deviceManager = CFactory::createDeviceManager(m_configuration);
+				m_deviceManager = CFactory::createDeviceManager(m_configuration, api->getEventHandler(), kEvtKeyStateReceived);
 
 				deviceInformation.reset();
 				deviceInformation = initDevice(api);
@@ -92,8 +93,10 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 				break;
 			}
-		case kEvtPortDataReceived:
+		case kEvtKeyStateReceived:
 			{
+			std::cout << "data received" << std::endl;
+			break;
 			}
 		case yApi::IYPluginApi::kBindingQuery:
 			{

@@ -5,7 +5,7 @@
 class CStreamDeckXL final : public CDeviceManager
 {
 public:
-	explicit CStreamDeckXL(CConfiguration& configuration);
+	explicit CStreamDeckXL(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived);
 
 	virtual ~CStreamDeckXL();
 
