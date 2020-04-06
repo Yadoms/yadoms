@@ -38,6 +38,12 @@ private:
 	static void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
 	                          boost::shared_ptr<UsbDeviceInformation>& deviceInformation);
 
+
+	void declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api);
+
 	boost::shared_ptr<UsbDeviceInformation> initDevice(boost::shared_ptr<yApi::IYPluginApi>& api);
 
+	boost::shared_ptr<yApi::historization::CEvent> m_keyStateEvent;
+
+	boost::shared_ptr<UsbDeviceInformation> m_usbDeviceInformation;
 };

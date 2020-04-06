@@ -63,7 +63,8 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
 				YADOMS_LOG(information) << "Update configuration...";
 
-				m_deviceManager = CFactory::createDeviceManager(m_configuration, api->getEventHandler(), kEvtKeyStateReceived);
+				m_deviceManager = CFactory::createDeviceManager(m_configuration, api->getEventHandler(),
+				                                                kEvtKeyStateReceived);
 
 				deviceInformation.reset();
 				deviceInformation = initDevice(api);
@@ -95,8 +96,9 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 			}
 		case kEvtKeyStateReceived:
 			{
-			std::cout << "data received" << std::endl;
-			break;
+				auto keyIndex = api->getEventHandler().getEventData<int>();
+				std::cout << "data received" << std::endl;
+				break;
 			}
 		case yApi::IYPluginApi::kBindingQuery:
 			{
@@ -179,6 +181,11 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 								extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step4");
 							boost::this_thread::sleep(boost::posix_time::milliseconds(35));
 						}
+
+						// TODO: declare key word
+						m_keyStateEvent = boost::make_shared<yApi::historization::CEvent>(interval,
+						                                                                  yApi::EKeywordAccessMode::kGetSet);
+						declareKeyword(api);
 					}
 
 					extraQuery->sendSuccess(shared::CDataContainer());
@@ -209,21 +216,29 @@ void CStreamDeck::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
 		                   deviceInformation->deviceModel);
 }
 
+
 boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_ptr<yApi::IYPluginApi>& api)
 {
 	try
 	{
-		auto usbDeviceInformation = CDeviceManagerHelper::getDeviceInformation(m_configuration);
+		m_usbDeviceInformation = CDeviceManagerHelper::getDeviceInformation(m_configuration);
 
-		declareDevice(api, usbDeviceInformation);
+		declareDevice(api, m_usbDeviceInformation);
 
 		api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-		return usbDeviceInformation;
+		return m_usbDeviceInformation;
 	}
 	catch (std::exception&)
 	{
 		api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
 		throw;
 	}
+}
+
+
+void CStreamDeck::declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api)
+{
+	if (!api->keywordExists(m_usbDeviceInformation->deviceName, m_keyStateEvent))
+		api->declareKeyword(m_usbDeviceInformation->deviceName, m_keyStateEvent);
 }
