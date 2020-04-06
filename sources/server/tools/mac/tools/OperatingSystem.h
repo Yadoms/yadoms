@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/versioning/SemVer.h>
+#include <shared/versioning/Version.h>
 #include <Poco/Process.h>
 
 namespace tools
@@ -21,11 +21,11 @@ namespace tools
       static std::string getName();
 
       //--------------------------------------------------------------
-      /// \brief	                  Get the system version (converted to CSemVer)
+      /// \brief	                  Get the system version (converted to CVersion)
       /// \return                   System version
       /// \throw shared::exception::CException if error getting OS version
       //--------------------------------------------------------------
-      static shared::versioning::CSemVer getVersion();
+      static shared::versioning::CVersion getVersion();
 
       //--------------------------------------------------------------
       /// \brief	                  Launch native script (batch for Windows, bash for Linux)

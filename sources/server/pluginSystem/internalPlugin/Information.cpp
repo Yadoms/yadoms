@@ -27,7 +27,7 @@ namespace pluginSystem
          return m_type;
       }
 
-      const shared::versioning::CSemVer& CInformation::getVersion() const
+      const shared::versioning::CVersion& CInformation::getVersion() const
       {
          return m_version;
       }

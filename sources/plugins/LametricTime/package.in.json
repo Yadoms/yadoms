@@ -10,47 +10,22 @@
     }
   },
   "configurationSchema": {
+    "IPAddress": {
+      "type": "string",
+      "regex": "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$",
+      "required": "true"
+    },
+    "Port": {
+      "type": "enum",
+      "values": {
+        "Http": "8080",
+        "Https": "4343"
+      },
+      "defaultValue": "Http"
+    },
     "APIKey": {
       "type": "string",
       "required": "true"
-    },
-    "PairingMode": {
-      "type": "comboSection",
-      "content": {
-        "Automatic": {
-          "name": "Auto",
-          "type": "section",
-          "content": {
-            "Port": {
-              "type": "enum",
-              "values": {
-                "Http": "8080",
-                "Https": "4343"
-              },
-              "defaultValue": "Https"
-            }
-          }
-        },
-        "Manual": {
-          "name": "Manual",
-          "type": "section",
-          "content": {
-            "IPAddress": {
-              "type": "string",
-              "regex": "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$",
-              "required": "true"
-            },
-            "Port": {
-              "type": "enum",
-              "values": {
-                "Http": "8080",
-                "Https": "4343"
-              },
-              "defaultValue": "Https"
-            }
-          }
-        }
-      }
     }
   }
 }

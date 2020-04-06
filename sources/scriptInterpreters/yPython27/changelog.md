@@ -1,6 +1,3 @@
-### 1.0.6
-* Fix scriptUtilities.readKeywordValue exception when no value found
-
 ### 1.0.5
 * Fix scriptUtilities.readKeywordDetails method to return native types (int for ids, datetime.datetime for lastAcquisitionDate)
 * Fix startup in debug mode

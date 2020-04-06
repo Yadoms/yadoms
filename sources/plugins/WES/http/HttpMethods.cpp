@@ -6,6 +6,7 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
 #include <Poco/StreamCopier.h>
+#include "timeOutException.hpp"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -90,9 +91,18 @@ namespace http
       }
       catch (Poco::Exception& e)
       {
-         const std::string message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.displayText()).str();
-		 YADOMS_LOG(error) << message;
-         throw shared::exception::CException(message);
+         std::string message;
+
+         // Sometimes message return nothing. In this case, we return what()
+         if (e.message().size() != 0)
+            message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
+         else
+            message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.what()).str();
+
+         if (boost::contains(e.what(),"Timeout"))
+            throw CTimeOutException(message);
+         else
+            throw shared::exception::CException(message);
       }
    }
 

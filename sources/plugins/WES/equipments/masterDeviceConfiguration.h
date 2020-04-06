@@ -21,8 +21,7 @@ public:
 
    // ImasterDeviceConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
-   Poco::Net::SocketAddress getIPAddressWithSocket() const override;
-   bool credentialActivated() const override;
+   virtual Poco::Net::SocketAddress getIPAddressWithSocket() const override;
    std::string getPassword() const override;
    std::string getUser() const override;
    bool isAnalogInputsActivated() const override;

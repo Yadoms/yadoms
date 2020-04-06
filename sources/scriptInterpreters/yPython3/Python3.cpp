@@ -22,6 +22,14 @@ enum
    kEventScriptStopped = yApi::IYInterpreterApi::kPluginFirstEventId
 };
 
+CPython3::CPython3()
+{
+}
+
+CPython3::~CPython3()
+{
+}
+
 void CPython3::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 {
    m_api = api;
@@ -136,7 +144,22 @@ const std::string& CPython3::getScriptTemplate() const
 
 bool CPython3::isAvailable() const
 {
-   return m_pythonExecutable->found();
+   if (!m_pythonExecutable->found())
+      return false;
+
+   // Now check version
+   try
+   {
+      boost::smatch result;
+      if (!boost::regex_search(m_pythonExecutable->version(), result, boost::regex("Python ([[:digit:]\\.]+)")))
+         return false;
+
+      return shared::versioning::CVersion(std::string(result[1].first, result[1].second)) >= shared::versioning::CVersion(3, 0, 0);
+   }
+   catch (std::exception&)
+   {
+      return false;
+   }
 }
 
 std::string CPython3::loadScriptContent(const std::string& scriptPath) const
@@ -144,14 +167,14 @@ std::string CPython3::loadScriptContent(const std::string& scriptPath) const
    if (scriptPath.empty())
       return getScriptTemplate();
 
-   const CScriptFile file(scriptPath);
+   CScriptFile file(scriptPath);
    return file.read();
 }
 
 void CPython3::saveScriptContent(const std::string& scriptPath,
                                  const std::string& content)
 {
-   const CScriptFile file(scriptPath);
+   CScriptFile file(scriptPath);
    file.write(content);
 }
 

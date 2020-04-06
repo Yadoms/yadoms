@@ -11,8 +11,8 @@
 class CPython3 : public interpreter_cpp_api::IInterpreter
 {
 public:
-   CPython3() = default;
-   virtual ~CPython3() = default;
+   CPython3();
+   virtual ~CPython3();
 
    // IInterpreter implementation
    void doWork(boost::shared_ptr<yApi::IYInterpreterApi> api) override;

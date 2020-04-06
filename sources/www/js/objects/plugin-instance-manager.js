@@ -14,7 +14,6 @@ function PluginInstanceManager() { }
  * @private
  */
 PluginInstanceManager._systemCategory = "system";
-PluginInstanceManager.instances = {};
 
 /**
  * Create a plugin instance object from server JSON
@@ -49,22 +48,17 @@ PluginInstanceManager.get = function (pluginInstanceId) {
     assert(!isNullOrUndefined(pluginInstanceId), "pluginInstanceId must be defined");
 
     var d = new $.Deferred();
-	if (!isNullOrUndefinedOrEmpty(PluginInstanceManager.instances[pluginInstanceId])){
-		d.resolve(PluginInstanceManager.factory(PluginInstanceManager.instances[pluginInstanceId]));
-	}else{
-		RestEngine.getJson("rest/plugin/" + pluginInstanceId)
-			.done(function (data) {
-				if (!isNullOrUndefinedOrEmpty(data)){
-					PluginInstanceManager.instances[pluginInstanceId] = data;
-					d.resolve(PluginInstanceManager.factory(data));
-				}else
-					d.reject($.t("objects.generic.errorGetting", { objectName: "Plugin with Id = " + pluginInstanceId }));
-			})
-		.fail(function (errorMessage) {
-			notifyError($.t("objects.generic.errorGetting", { objectName: "Plugin with Id = " + pluginInstanceId }), errorMessage);
-			d.reject(errorMessage);
-		});
-	}
+    RestEngine.getJson("rest/plugin/" + pluginInstanceId)
+        .done(function (data) {
+            if (!isNullOrUndefinedOrEmpty(data))
+                d.resolve(PluginInstanceManager.factory(data));
+            else
+                d.reject($.t("objects.generic.errorGetting", { objectName: "Plugin with Id = " + pluginInstanceId }));
+        })
+    .fail(function (errorMessage) {
+        notifyError($.t("objects.generic.errorGetting", { objectName: "Plugin with Id = " + pluginInstanceId }), errorMessage);
+        d.reject(errorMessage);
+    });
     return d.promise();
 };
 
@@ -80,7 +74,6 @@ PluginInstanceManager.getAll = function () {
            var result = [];
            var endOfDownloadDefereds = [];
            data.plugin.forEach(function (value) {
-			   PluginInstanceManager.instances[value.id] = value;
                try {
                    var pi = PluginInstanceManager.factory(value);
                    var packageDownloadDefered = PluginInstanceManager.downloadPackage(pi);
@@ -214,10 +207,7 @@ PluginInstanceManager.deleteFromServer = function (pluginInstance) {
 
     if (!pluginInstance.isSystemCategory()) {
         RestEngine.deleteJson("/rest/plugin/" + pluginInstance.id)
-        .done(function(data) {
-			delete PluginInstanceManager.instances[pluginInstance.id];
-			d.resolve();
-		})
+        .done(d.resolve)
         .fail(d.reject);
     } else {
         d.resolve();

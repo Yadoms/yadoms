@@ -10,15 +10,13 @@ public:
    //-----------------------------------------------------------------------------
    /// \brief		      Constructor
    /// \param [in] path The executable path
-   /// \param [in] yadomsVersion The Yadoms version
    //-----------------------------------------------------------------------------
-   explicit CRunningInformation(const std::string& path,
-                                const shared::versioning::CSemVer& yadomsVersion);
+   explicit CRunningInformation(const std::string& path);
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
    //-----------------------------------------------------------------------------
-   virtual ~CRunningInformation() = default;
+   virtual ~CRunningInformation();
 
    // IRunningInformation implementation
    const boost::posix_time::ptime& getStartupDateTime() const override;
@@ -38,7 +36,7 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief		                     Yadoms version
    //-----------------------------------------------------------------------------
-   const shared::versioning::CVersionInformation m_softwareVersion;
+   shared::versioning::CVersionInformation m_softwareVersion;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Yadoms executable path

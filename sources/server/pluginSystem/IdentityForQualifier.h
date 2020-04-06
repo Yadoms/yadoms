@@ -6,7 +6,7 @@
 #pragma once
 
 #include "IQualifier.h"
-#include <shared/versioning/SemVer.h>
+#include <shared/versioning/Version.h>
 
 namespace pluginSystem
 {
@@ -25,7 +25,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Constructor
       //--------------------------------------------------------------
-      CIdentityForQualifier(const std::string& name, const shared::versioning::CSemVer& version);
+      CIdentityForQualifier(const std::string& name, const shared::versioning::CVersion& version);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -42,11 +42,11 @@ namespace pluginSystem
       /// \brief	   Version getter
       /// \return    Plugin version
       //--------------------------------------------------------------
-      const shared::versioning::CSemVer& getVersion() const;
+      const shared::versioning::CVersion& getVersion() const;
 
    private:
       const std::string m_type;
-      const shared::versioning::CSemVer m_version;
+      const shared::versioning::CVersion m_version;
    };
 
    //--------------------------------------------------------------

@@ -17,7 +17,7 @@ namespace pluginSystem
 
          // shared::plugin::IInformation implementation
          const std::string& getType() const override;
-         const shared::versioning::CSemVer& getVersion() const override;
+         const shared::versioning::CVersion& getVersion() const override;
          const std::string& getAuthor() const override;
          const std::string& getUrl() const override;
          std::string toString() const override;
@@ -31,7 +31,7 @@ namespace pluginSystem
 
       private:
          std::string m_type;
-         shared::versioning::CSemVer m_version;
+         shared::versioning::CVersion m_version;
          std::string m_author;
          std::string m_url;
          boost::shared_ptr<shared::CDataContainer> m_package;

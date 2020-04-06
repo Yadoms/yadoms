@@ -20,7 +20,7 @@ namespace plugin_cpp_api
       return m_buffer->type();
    }
 
-   const shared::versioning::CSemVer& CPluginInformation::getVersion() const
+   const shared::versioning::CVersion& CPluginInformation::getVersion() const
    {
       return m_version;
    }

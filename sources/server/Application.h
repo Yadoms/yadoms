@@ -1,5 +1,6 @@
 #pragma once
 #include <Poco/Util/ServerApplication.h>
+#include <Poco/Util/OptionSet.h>
 #include "startupOptions/StartupOptions.h"
 #include "IRunningInformation.h"
 #include "IPathProvider.h"
@@ -11,15 +12,22 @@
 class CYadomsServer : public Poco::Util::ServerApplication
 {
 public:
+   //-----------------------------
+   ///\brief Constructor
+   //-----------------------------
    CYadomsServer();
-   virtual ~CYadomsServer() = default;
+
+   //-----------------------------
+   ///\brief Destructor
+   //-----------------------------
+   virtual ~CYadomsServer();
 
 protected:
    // Poco::Util::ServerApplication implementation
    void initialize(Poco::Util::Application& self) override;
    void uninitialize() override;
    void defineOptions(Poco::Util::OptionSet& options) override;
-   int main(const ArgVec&) override;
+   int main(const ArgVec& args) override;
    // [END] Poco::Util::ServerApplication implementation
 
    void handleHelp(const std::string& name, const std::string& value);

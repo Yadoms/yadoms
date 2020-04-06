@@ -1,12 +1,10 @@
 #pragma once
 #include <shared/event/EventHandler.hpp>
-#include <shared/versioning/SemVer.h>
 #include <Poco/Runnable.h>
 #include "IPathProvider.h"
 
-
 //-----------------------------------------------------------------------------
-/// \brief              Yadoms supervisor
+/// \class              Yadoms supervisor
 //-----------------------------------------------------------------------------
 class CSupervisor : public Poco::Runnable
 {
@@ -15,23 +13,20 @@ class CSupervisor : public Poco::Runnable
    //--------------------------------------------------------------
    enum
    {
-      kStopRequested = shared::event::kUserFirstId,
-      // Yadoms stop was required
+      kStopRequested = shared::event::kUserFirstId,   // Yadoms stop was required
    };
 
 public:
    //-----------------------------------------------------------------------------
    /// \brief		                        Constructor
    /// \param[in] pathProvider            The Yadoms paths provider
-   /// \param[in] yadomsVersion           The Yadoms version
    //-----------------------------------------------------------------------------
-   explicit CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
-                        const shared::versioning::CSemVer& yadomsVersion);
+   explicit CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider);
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
    //-----------------------------------------------------------------------------
-   virtual ~CSupervisor() = default;
+   virtual ~CSupervisor();
 
    //-----------------------------------------------------------------------------
    /// \brief		                     The main method (blocking, returns at Yadoms exit)
@@ -47,12 +42,11 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief		                     The supervisor event handler
    //-----------------------------------------------------------------------------
-   shared::event::CEventHandler m_eventHandler;
+   shared::event::CEventHandler m_EventHandler;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     The Yadoms paths provider
    //-----------------------------------------------------------------------------
    boost::shared_ptr<const IPathProvider> m_pathProvider;
-
-   const shared::versioning::CSemVer m_yadomsVersion;
 };
+

@@ -27,11 +27,11 @@ namespace database
 
             // ISQLiteVersionUpgrade implementation
             void checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& requester,
-                                 const shared::versioning::CSemVer& currentVersion) override;
+                                 const shared::versioning::CVersion& currentVersion) override;
             // [END] ISQLiteVersionUpgrade implementation
 
          private:
-            static const shared::versioning::CSemVer Version;
+            static const shared::versioning::CVersion Version;
 
             static void updateFrom4_4_0(const boost::shared_ptr<IDatabaseRequester>& requester);
          };

@@ -181,7 +181,7 @@ namespace update
    }
 
    shared::CDataContainer CUpdateManager::buildUpdates(bool includePrereleases,
-                                                       const shared::versioning::CSemVer& yadomsLocalVersion,
+                                                       const shared::versioning::CVersion& yadomsLocalVersion,
                                                        const shared::CDataContainer& yadomsAvailableVersions,
                                                        const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
                                                        const shared::CDataContainer& pluginsAvailableVersions,
@@ -217,7 +217,7 @@ namespace update
       return updates;
    }
 
-   shared::CDataContainer CUpdateManager::buildYadomsList(const shared::versioning::CSemVer& localVersion,
+   shared::CDataContainer CUpdateManager::buildYadomsList(const shared::versioning::CVersion& localVersion,
                                                           const shared::CDataContainer& availableVersions,
                                                           bool includePrereleases) const
    {
@@ -291,7 +291,7 @@ namespace update
       return list;
    }
 
-   shared::CDataContainer CUpdateManager::addUpdateableYadoms(const shared::versioning::CSemVer& localVersion,
+   shared::CDataContainer CUpdateManager::addUpdateableYadoms(const shared::versioning::CVersion& localVersion,
                                                               const shared::CDataContainer& availableVersions,
                                                               bool includePrereleases) const
    {
@@ -307,7 +307,7 @@ namespace update
       {
          try
          {
-            shared::versioning::CSemVer v(version.get<std::string>("version"));
+            shared::versioning::CVersion v(version.get<std::string>("version"));
 
             // Don't add prereleases versions if not asked
             if (!v.getPrerelease().empty() && !includePrereleases)
@@ -393,7 +393,7 @@ namespace update
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
                   for (auto& version : availableVersionsForItem)
                   {
-                     shared::versioning::CSemVer v(version.get<std::string>("version"));
+                     shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
                      if (!v.getPrerelease().empty() && !includePrereleases)
@@ -455,7 +455,7 @@ namespace update
             const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
             for (auto& version : availableVersionsForItem)
             {
-               shared::versioning::CSemVer v(version.get<std::string>("version"));
+               shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
                if (!v.getPrerelease().empty() && !includePrereleases)
@@ -548,7 +548,7 @@ namespace update
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
                   for (auto& version : availableVersionsForItem)
                   {
-                     shared::versioning::CSemVer v(version.get<std::string>("version"));
+                     shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
                      if (!v.getPrerelease().empty() && !includePrereleases)
@@ -610,7 +610,7 @@ namespace update
             const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
             for (auto& version : availableVersionsForModule)
             {
-               shared::versioning::CSemVer v(version.get<std::string>("version"));
+               shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
                if (!v.getPrerelease().empty() && !includePrereleases)
@@ -698,7 +698,7 @@ namespace update
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
                   for (auto& version : availableVersionsForItem)
                   {
-                     shared::versioning::CSemVer v(version.get<std::string>("version"));
+                     shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
                      if (!v.getPrerelease().empty() && !includePrereleases)
@@ -761,7 +761,7 @@ namespace update
             const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType + ".versions");
             for (auto& version : availableVersionsForModule)
             {
-               shared::versioning::CSemVer v(version.get<std::string>("version"));
+               shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
                if (!v.getPrerelease().empty() && !includePrereleases)
@@ -1069,7 +1069,7 @@ namespace update
          return true;
 
       // For now, only Yadoms minimum version check is supported
-      const shared::versioning::CSemVer minSupportedYadomsVersion(itemVersionNode.get<std::string>("dependencies.yadoms.minimumVersion"));
+      const shared::versioning::CVersion minSupportedYadomsVersion(itemVersionNode.get<std::string>("dependencies.yadoms.minimumVersion"));
       const auto& actualYadomsVersion = shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().getVersion();
 
       return actualYadomsVersion >= minSupportedYadomsVersion;

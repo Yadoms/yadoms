@@ -68,11 +68,5 @@ private:
    /// \details string containing the Python version, as returned by Python (something like "Python 3.7.3")
    //--------------------------------------------------------------
    const std::string m_version;
-
-   //--------------------------------------------------------------
-	/// \brief	Check if the version of python is equal or grater than 3.7
-	/// \param[in] pythonVersion is the Readed Python version
-	//--------------------------------------------------------------
-   static bool isValidPythonVersion(const std::string& pythonVersion);
 };
 

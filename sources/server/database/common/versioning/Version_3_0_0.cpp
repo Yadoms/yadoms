@@ -2,7 +2,7 @@
 #include "Version_3_0_0.h"
 #include "database/common/Query.h"
 #include "database/common/DatabaseTables.h"
-#include <shared/versioning/SemVer.h>
+#include <shared/versioning/Version.h>
 #include "VersionException.h"
 #include <shared/Log.h>
 #include "database/sqlite/SQLiteRequester.h"
@@ -14,7 +14,7 @@ namespace database
       namespace versioning
       {
          // Modify this version to a greater value, to force update of current version
-         const shared::versioning::CSemVer CVersion_3_0_0::Version(3, 0, 0);
+         const shared::versioning::CVersion CVersion_3_0_0::Version(3, 0, 0);
 
          CVersion_3_0_0::CVersion_3_0_0()
          {
@@ -25,7 +25,7 @@ namespace database
          }
 
          // ISQLiteVersionUpgrade implementation
-         void CVersion_3_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester, const shared::versioning::CSemVer& currentVersion)
+         void CVersion_3_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester, const shared::versioning::CVersion& currentVersion)
          {
             if (currentVersion < Version)
             {

@@ -27,6 +27,4 @@ private:
    CConfiguration m_configuration;
 
    boost::shared_ptr<CUrlManagerHelper> m_urlManagerHelper;
-
-   static std::string buildMessageBody(const std::string& priorityMessage, const std::string& iconToDisplay, const std::string& text);
 };

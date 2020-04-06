@@ -27,14 +27,14 @@ namespace database
 
             // ISQLiteVersionUpgrade implementation
             void checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester,
-                                 const shared::versioning::CSemVer& currentVersion) override;
+                                 const shared::versioning::CVersion& currentVersion) override;
             // [END] ISQLiteVersionUpgrade implementation
 
          private:
             //-----------------------------------
             /// \brief     The version
             //-----------------------------------
-            static const shared::versioning::CSemVer Version;
+            static const shared::versioning::CVersion Version;
 
             //-----------------------------------
             /// \brief     Create the database (when tables are not found)

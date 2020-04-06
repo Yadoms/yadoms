@@ -1,54 +1,25 @@
 ﻿{
   "name": "LametricTime",
-  "description":
-    "Support de l'équipement Lametric Time (voir [site web Lametric](https://lametric.com/en-US/time/overview))",
+  "description": "Support de l'équipement Lametric Time (voir [site web Lametric](https://lametric.com/en-US/time/overview))",
   "configurationSchema": {
+    "IPAddress": {
+      "name": "Adresse IP",
+      "description": "L'adresse IP du module",
+      "regexErrorMessage": "Ce n'est pas une adresse IP valide"
+    },
+    "Port": {
+      "name": "Port",
+      "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)",
+      "values": {
+        "Http": "8080",
+        "Https": "4343"
+      },
+      "defaultValue": "Http"
+    },
     "APIKey": {
       "name": "Clé d'API",
-      "description":
-        "Cette clé est nécessaire pour le fonctionnement de votre plugin. Elle peut être obtenue sur simple inscription (gratuite) au [Lametric](https://developer.lametric.com/user/devices).",
+      "description": "Cette clé est nécessaire pour le fonctionnement de votre plugin. Elle peut être obtenue sur simple inscription (gratuite) au [Lametric](https://developer.lametric.com/user/devices).",
       "regexErrorMessage": ""
-    },
-    "PairingMode": {
-      "name": "Mode d'appairage",
-      "type": "comboSection",
-      "content": {
-        "Automatic": {
-          "name": "Appairage automatique",
-          "description": "Appairage automatique en utilisant le protocole UPNP",
-          "content": {
-            "Port": {
-              "name": "Port",
-              "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)",
-              "values": {
-                "Http": "8080",
-                "Https": "4343"
-              },
-              "defaultValue": "Https"
-            }
-          }
-        },
-        "Manual": {
-          "name": "Appairage manuel",
-          "description": "Appairage manuel",
-          "content": {
-            "IPAddress": {
-              "name": "Adresse IP",
-              "description": "L'adresse IP du module",
-              "regexErrorMessage": "Ce n'est pas une adresse IP valide"
-            },
-            "Port": {
-              "name": "Port",
-              "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)",
-              "values": {
-                "Http": "8080",
-                "Https": "4343"
-              },
-              "defaultValue": "Https"
-            }
-          }
-        }
-      }
     }
   },
   "customLabels": {

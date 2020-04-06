@@ -143,7 +143,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   }
                }
                else{
-                  request->sendError("device name already exist");
+                  request->sendError("device Name already exist");
                }
             }
             catch (CtooLowRevisionException& e){

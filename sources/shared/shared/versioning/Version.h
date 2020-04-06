@@ -8,19 +8,19 @@ namespace shared
       ///\brief Class which handle and parse versions
       ///       Version format: using SEMVER 2.0 http://semver.org/
       //---------------------------------------------
-      class CSemVer
+      class CVersion
       {
       public:
          //---------------------------------------------
-         ///\brief empty constructor (version is set to 0.0.0)
+         ///\brief empty constructor (version is set to 0.0.0.0)
          //---------------------------------------------
-         CSemVer();
+         CVersion();
 
          //---------------------------------------------
          ///\brief Constructor from a string version
          ///\param[in] stringVersion the version as a string. Separators between version digits must be . or ,
          //---------------------------------------------
-         explicit CSemVer(const std::string& stringVersion) noexcept(false);
+         explicit CVersion(const std::string& stringVersion) noexcept(false);
 
          //---------------------------------------------
          ///\brief Constructor
@@ -28,7 +28,7 @@ namespace shared
          ///\param[in] minor       the minor version number (when you add functionality in a backwards-compatible manner)
          ///\param[in] patch       the patch version number (when you make backwards-compatible bug fixes)
          //---------------------------------------------
-         CSemVer(int major, int minor, int patch);
+         CVersion(int major, int minor, int patch);
 
          //---------------------------------------------
          ///\brief Constructor
@@ -37,7 +37,7 @@ namespace shared
          ///\param[in] patch          the patch version number (when you make backwards-compatible bug fixes)
          ///\param[in] prerelease     the prerelease information
          //---------------------------------------------
-         CSemVer(int major, int minor, int patch, const std::string& prerelease);
+         CVersion(int major, int minor, int patch, const std::string& prerelease);
 
          //---------------------------------------------
          ///\brief Constructor
@@ -47,54 +47,64 @@ namespace shared
          ///\param[in] prerelease     the prerelease information
          ///\param[in] buildMetadata  the build metadata
          //---------------------------------------------
-         CSemVer(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetadata);
+         CVersion(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetadata);
 
-         CSemVer(const CSemVer& rhs) = default;
-         CSemVer& operator=(const CSemVer& rhs) = default;
-         virtual ~CSemVer() = default;
+         //---------------------------------------------
+         ///\brief Copy constructor
+         //---------------------------------------------
+         CVersion(const CVersion& rhs) = default;
+
+         //---------------------------------------------
+         ///\brief Copy operator
+         //---------------------------------------------
+         CVersion& operator=(const CVersion& rhs) = default;
+
+         //---------------------------------------------
+         ///\brief Destructor
+         //---------------------------------------------
+         virtual ~CVersion() = default;
 
          //---------------------------------------------
          ///\brief Compare if current Version is strictly less than parameter version
          ///\param[in] rhs the version object to compare
          ///\return  true is current Version is strictly less than parameter version
          //---------------------------------------------
-         bool operator<(CSemVer const& rhs) const;
+         bool operator<(CVersion const& rhs) const;
 
          //---------------------------------------------
          ///\brief Compare if current Version is less or equal to parameter version
          ///\param[in] rhs the version object to compare
          ///\return  true is current Version is less or equal to parameter version
          //---------------------------------------------
-         bool operator<=(CSemVer const& rhs) const;
+         bool operator<=(CVersion const& rhs) const;
 
          //---------------------------------------------
          ///\brief Compare if current Version is greater or equal to parameter version
          ///\param[in] rhs the version object to compare
          ///\return  true is current Version is greater or equal to parameter version
          //---------------------------------------------
-         bool operator>=(CSemVer const& rhs) const;
+         bool operator>=(CVersion const& rhs) const;
 
          //---------------------------------------------
          ///\brief Compare if current Version is strictly greater than parameter version
          ///\param[in] rhs the version object to compare
          ///\return  true is current Version is strictly greater than parameter version
          //---------------------------------------------
-         bool operator>(CSemVer const& rhs) const;
+         bool operator>(CVersion const& rhs) const;
 
          //---------------------------------------------
          ///\brief Compare if current Version is equal to parameter version
          ///\param[in] rhs the version object to compare
          ///\return  true is current Version is equal to parameter version
          //---------------------------------------------
-         bool operator==(CSemVer const& rhs) const;
+         bool operator==(CVersion const& rhs) const;
 
          //---------------------------------------------
          ///\brief Operator to print out version to a stream
          ///\param [in] oss the target stream
-         ///\param [rhs] rhs  the version object to serialize
          ///\return  the target stream
          //---------------------------------------------
-         friend std::ostream& operator<<(std::ostream& oss, const CSemVer& rhs);
+         friend std::ostream& operator<<(std::ostream& oss, const CVersion& rhs);
 
          //---------------------------------------------
          ///\brief Get the version as a string
@@ -134,11 +144,11 @@ namespace shared
 
       protected:
          //---------------------------------------------
-         ///\brief Compare the current object to another CSemVer
+         ///\brief Compare the current object to another CVersion
          ///\param[in] rhs the version object to compare
          ///\return  0 if equals, -1 if this<rhs, +1 if this>rhs
          //---------------------------------------------
-         int compare(CSemVer const& rhs) const;
+         int compare(CVersion const& rhs) const;
 
       private:
 

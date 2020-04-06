@@ -15,6 +15,7 @@
 #include "PathProvider.h"
 #include <shared/ServiceLocator.h>
 #include <shared/process/ApplicationStopHandler.h>
+#include "Version.h"
 #include <openssl/opensslv.h>
 #include <Poco/Environment.h>
 #include <Poco/Format.h>
@@ -22,8 +23,6 @@
 
 //define the main entry point
 POCO_SERVER_MAIN(CYadomsServer)
-
-static const shared::versioning::CSemVer YadomsVersion(YADOMS_VERSION);
 
 
 CYadomsServer::CYadomsServer()
@@ -35,6 +34,9 @@ CYadomsServer::CYadomsServer()
    setUnixOptions(true);
 }
 
+CYadomsServer::~CYadomsServer()
+= default;
+
 
 void CYadomsServer::initialize(Application& self)
 {
@@ -44,11 +46,11 @@ void CYadomsServer::initialize(Application& self)
    //[END] INITIALIZE POCO; DO NOT EDIT THIS CODE
 
    //Do application initialization from here...
-
-   //first of all, change the working dir
+   
+   //first of all, chng ethe working dir
    //in daemon mode, poco change dir to '/', (path provider create logs, data, dirs => so fails if working dir is '/')
    const boost::filesystem::path workingDir(config().getString("application.path"));
-   current_path(workingDir.parent_path());
+   boost::filesystem::current_path(workingDir.parent_path());
 
    m_pathProvider = boost::make_shared<CPathProvider>(m_startupOptions);
    logging::CLogConfiguration::configure(m_startupOptions->getLogLevel(), m_pathProvider->logsPath());
@@ -91,7 +93,7 @@ void CYadomsServer::uninitialize()
    ServerApplication::uninitialize();
    if (!m_helpRequested)
    {
-      std::cout << "Yadoms is stopped" << std::endl;
+      std::cout << "Yadoms is shutted down" << std::endl;
    }
 }
 
@@ -143,26 +145,24 @@ void CYadomsServer::handleVersion(const std::string& name, const std::string& va
 
 void CYadomsServer::displayVersion() const
 {
-   //output string on standard output
+   //output string on std::cout
    //because log is not defined (and will not => after calling "yadoms --version", it show version and exit)
    std::cout << "Yadoms version " << YadomsVersion << std::endl;
 
    std::cout << "Libraries: " << std::endl;
-   std::cout << "    boost: " << (BOOST_VERSION / 100000) << "." << ((BOOST_VERSION / 100) % 1000) << "." << (
-      BOOST_VERSION % 100) << std::endl;
+   std::cout << "    boost: " << (BOOST_VERSION / 100000) << "." << ((BOOST_VERSION / 100) % 1000) << "." << (BOOST_VERSION % 100) << std::endl;
    std::cout << "    " << OPENSSL_VERSION_TEXT << std::endl;
 
    const std::string version = Poco::format("%d.%d.%d",
-                                            static_cast<int>(Poco::Environment::libraryVersion() >> 24),
-                                            static_cast<int>((Poco::Environment::libraryVersion() >> 16) & 0xFF),
-                                            static_cast<int>((Poco::Environment::libraryVersion() >> 8) & 0xFF));
+      static_cast<int>(Poco::Environment::libraryVersion() >> 24),
+      static_cast<int>((Poco::Environment::libraryVersion() >> 16) & 0xFF),
+      static_cast<int>((Poco::Environment::libraryVersion() >> 8) & 0xFF));
    std::cout << "    poco: " << version << std::endl;
-   std::cout << "    protobuf: " << GOOGLE_PROTOBUF_VERSION_SUFFIX << " " << google::protobuf::internal::
-      VersionString(GOOGLE_PROTOBUF_VERSION) << std::endl;
+   std::cout << "    protobuf: " << GOOGLE_PROTOBUF_VERSION_SUFFIX << " " << google::protobuf::internal::VersionString(GOOGLE_PROTOBUF_VERSION) << std::endl;
 }
 
 
-int CYadomsServer::main(const ArgVec&)
+int CYadomsServer::main(const ArgVec& /*args*/)
 {
    try
    {
@@ -175,8 +175,7 @@ int CYadomsServer::main(const ArgVec&)
       if (!m_helpRequested)
       {
          auto executablePath = config().getString("application.path");
-         m_runningInformation = boost::make_shared<CRunningInformation>(executablePath,
-                                                                        YadomsVersion);
+         m_runningInformation = boost::make_shared<CRunningInformation>(executablePath);
 
 
          YADOMS_LOG_CONFIGURE("Main");
@@ -206,8 +205,7 @@ int CYadomsServer::main(const ArgVec&)
             YADOMS_LOG(information) << "\t\tSqlite Database path = " << m_startupOptions->getDatabaseSqliteFile();
             break;
          case startupOptions::EDatabaseEngine::kPostgresqlValue:
-            YADOMS_LOG(information) << "\t\tPostgresql host = " << m_startupOptions->getDatabasePostgresqlHost() << ":"
-               << m_startupOptions->getDatabasePostgresqlPort();
+            YADOMS_LOG(information) << "\t\tPostgresql host = " << m_startupOptions->getDatabasePostgresqlHost() << ":" << m_startupOptions->getDatabasePostgresqlPort();
             YADOMS_LOG(information) << "\t\tPostgresql database = " << m_startupOptions->getDatabasePostgresqlDbName();
             YADOMS_LOG(information) << "\t\tPostgresql login = " << m_startupOptions->getDatabasePostgresqlLogin();
             break;
@@ -227,7 +225,7 @@ int CYadomsServer::main(const ArgVec&)
 
          //configure the Poco ErrorHandler
          CErrorHandler eh;
-         const auto oldErrorHandler = Poco::ErrorHandler::set(&eh);
+         const auto pOldEH = Poco::ErrorHandler::set(&eh);
 
          //configure stop handler
          enum
@@ -235,23 +233,20 @@ int CYadomsServer::main(const ArgVec&)
             kTerminationRequested = shared::event::kUserFirstId
          };
          auto stopRequestEventHandler = boost::make_shared<shared::event::CEventHandler>();
-         auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(
-            m_startupOptions->getIsRunningAsService());
+         auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(m_startupOptions->getIsRunningAsService());
          stopHandler->setApplicationStopHandler([stopRequestEventHandler, stoppedEventHandler]() -> bool
-         {
-            // Ask for application stop and wait for application full stop
-            YADOMS_LOG(debug) << "Receive termination request";
-            stopRequestEventHandler->postEvent(kTerminationRequested);
-            const auto stopSuccess = stoppedEventHandler->waitForEvents(boost::posix_time::seconds(30)) ==
-               kApplicationFullyStopped;
-            if (!stopSuccess)
-               YADOMS_LOG(error) << "Fail to wait the app end event";
-            return stopSuccess;
-         });
+            {
+               // Ask for application stop and wait for application full stop
+               YADOMS_LOG(debug) << "Receive termination request";
+               stopRequestEventHandler->postEvent(kTerminationRequested);
+               const auto stopSuccess = stoppedEventHandler->waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
+               if (!stopSuccess)
+                  YADOMS_LOG(error) << "Fail to wait the app end event";
+               return stopSuccess;
+            });
 
          //create supervisor
-         CSupervisor supervisor(m_pathProvider,
-                                YadomsVersion);
+         CSupervisor supervisor(m_pathProvider);
          Poco::Thread supervisorThread("Supervisor");
          supervisorThread.start(supervisor);
 
@@ -272,7 +267,7 @@ int CYadomsServer::main(const ArgVec&)
          YADOMS_LOG(debug) << "Supervisor stopped";
 
          //restore Poco ErrorHandler
-         Poco::ErrorHandler::set(oldErrorHandler);
+         Poco::ErrorHandler::set(pOldEH);
       }
 
       if (!m_helpRequested)
@@ -282,8 +277,9 @@ int CYadomsServer::main(const ArgVec&)
       stoppedEventHandler->postEvent(kApplicationFullyStopped);
       return EXIT_OK;
    }
-   catch (...)
+   catch(...)
    {
       return EXIT_FAILURE;
    }
 }
+

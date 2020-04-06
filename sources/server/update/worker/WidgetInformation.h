@@ -13,14 +13,14 @@ namespace update
 
          // IWidgetInformation Implementation
          const std::string& getType() const override;
-         const shared::versioning::CSemVer& getVersion() const override;
+         const shared::versioning::CVersion& getVersion() const override;
          const boost::filesystem::path& getPath() const override;
          // [END] IWidgetInformation Implementation
 
       private:
          const boost::filesystem::path m_path;
          std::string m_type;
-         shared::versioning::CSemVer m_version;
+         shared::versioning::CVersion m_version;
       };
    } // namespace worker
 } // namespace update

@@ -34,7 +34,7 @@ namespace update
 
             try
             {
-               m_version = shared::versioning::CSemVer(package.get<std::string>("version"));
+               m_version = shared::versioning::CVersion(package.get<std::string>("version"));
             }
             catch (std::exception&)
             {
@@ -52,7 +52,7 @@ namespace update
       {
       }
 
-      const shared::versioning::CSemVer& CWidgetInformation::getVersion() const
+      const shared::versioning::CVersion& CWidgetInformation::getVersion() const
       {
          return m_version;
       }

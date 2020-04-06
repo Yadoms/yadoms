@@ -15,9 +15,9 @@ public:
       return str;
    }
 
-   const shared::versioning::CSemVer& getVersion() const override
+   const shared::versioning::CVersion& getVersion() const override
    {
-      static const shared::versioning::CSemVer version("1.2.3-beta");
+      static const shared::versioning::CVersion version("1.2.3-beta");
       return version;
    }
 

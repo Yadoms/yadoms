@@ -27,7 +27,6 @@
 
 <script>
    var deviceList = [];
-   var pluginInstancesState = {};
    var actionsBtns = "<div class=\"btn-group\">\n" +
       "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
       "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
@@ -77,9 +76,11 @@
 
          if ($deviceRow.length != 0) {
             if ($("table#keyword-list").length != 0) { // If the table exist, we clean up the table
-               $("table#keyword-list").find("tr:gt(0)").remove(); //we remove all rows except header
+               //we remove all rows except header
+               $("table#keyword-list").find("tr:gt(0)").remove();
             } else {
                $("p.nokeyword-for-device").remove();
+               // create the table
                createKeywordsTable(device, $deviceRow);
             }
 
@@ -101,7 +102,9 @@
                         }
                      });
                   });
-                  updateWebSocketFilter(keywordIds); //subscribe new keywords for display
+
+                  //subscribe new keywords for display
+                  updateWebSocketFilter(keywordIds);
                })
                .fail(function (error) {
                   notifyError($.t("objects.generic.errorGetting", {
@@ -132,26 +135,33 @@
             $.each(deviceList[i].keywords, function (idx, keyword) {
                keywords.push(keyword.id);
             });
-            updateWebSocketFilter(keywords); // update the new query to the server
+
+            // update the new query to the server
+            updateWebSocketFilter(keywords);
          }
       }
    };
 
    dispatchDevicesNewToDevicesView = function (device) {
-      var i = deviceList.map(function (e) {
-         return e.id;
-      }).indexOf(device.device.id);
-      if (i == -1) {
-		  var indexToInsert = -1;
-		  $.each(deviceList, function (index, element) {
-		     var friendlyName = element.friendlyName;
-             if (device.device.friendlyName.toLowerCase() > friendlyName.toLowerCase()) {
-                indexToInsert = index + 1;
-             }
-		  });
-          deviceList.splice(indexToInsert, 0, device.device);
-          addDeviceToDom(device.device, indexToInsert, true);
-	  }
+      var indexToInsert = 0;
+      //Insert into the tab
+      $.each(deviceList, function (index, element) {
+         var $deviceRow = getDeviceDomRow(element);
+         var $span = $deviceRow.find("td.device-friendlyName").find("span");
+
+         if ($span.length != 0) {
+            var friendlyName = $span[1].innerText;
+            if (device.device.friendlyName.toLowerCase() > friendlyName.toLowerCase()) {
+               indexToInsert = index;
+            }
+         }
+      });
+      DeviceManager.getAttachedPlugin(device.device, true)
+         .done(function () {
+            addDeviceToDom(device.device, indexToInsert);
+            deviceList.push(device.device);
+            deviceList = sortListItemsWithFriendlyName(deviceList);
+         });
    };
 
    dispatchDevicesBlacklistedToDevicesView = function (device) {
@@ -178,7 +188,8 @@
       }).indexOf(device.device.id);
       if (i !== -1) {
          deviceList.splice(i, 1);
-         updateWebSocketFilter(); // update the new query to the server
+         // update the new query to the server
+         updateWebSocketFilter();
       }
    };
 
@@ -412,6 +423,7 @@
       //we remove all rows except header
       $("table#device-list").find("tr:gt(0)").remove();
 
+      //we clear pluginInstance array
       var tempList = [];
       var arrayOfDeffered = [];
       var isDeveloperMode = false;
@@ -421,26 +433,6 @@
       deffered2.done(function (data) {
          isDeveloperMode = data.developerMode;
       });
-	  
-	  var defferedPluginStates = new $.Deferred();
-	  arrayOfDeffered.push(defferedPluginStates);
-	  PluginInstanceManager.getAll()
-       .done(function (pluginInstances) {
-	      var arrayOfStatesDeffered = [];
-		  var defferedState = {};
-          $.each(pluginInstances, function (index, instance) {
-		      defferedState[index] = PluginInstanceManager.getState(instance);
-			  arrayOfStatesDeffered.push(defferedState[index]);
-			  defferedState[index].done(function (instanceState) {
-				   if (!instance.isSystemCategory()) {
-				      pluginInstancesState[instance.id] = instanceState.state;
-				   }
-				});
-          });
-		  $.when.apply($, arrayOfStatesDeffered).done(function () {
-		     defferedPluginStates.resolve();
-		  });
-       })
 
       var deffered1 = DeviceManager.getAll();
       arrayOfDeffered.push(deffered1);
@@ -457,7 +449,7 @@
                         "Plugin state")) || isDeveloperMode) {
                      if (showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) ===
                            false)) {
-                        addDeviceToDom(value, null, false);
+                        addDeviceToDom(value, null);
                         deviceList.push(value);
                      }
                   }
@@ -495,7 +487,7 @@
       return undefined;
    }
 
-   function addDeviceToDom(device, positionDevice, forceGetPluginState) {
+   function addDeviceToDom(device, positionDevice) {
       //in case the device is blacklisted, then strike it
       var fn = device.friendlyName;
       if (parseBool(device.blacklist) === true)
@@ -512,16 +504,13 @@
       // we add to the end, if the position is null (no insertion, the device list is empty, or the new position, is the end of the list)
       if (positionDevice == null || deviceList.length == 0 || positionDevice >= (deviceList.length - 1))
          $deviceList.append(frameworkDevice);
-	  else if (positionDevice == -1){
-	     $deviceList.prepend(frameworkDevice);
-      }else {
+      else {
          var $row = null;
          $row = getDeviceDomRow(deviceList[positionDevice + 1]);
          $(frameworkDevice).insertBefore($row);
       }
 
       var $deviceRow = getDeviceDomRow(device);
-	  
       //we fill the data
       $deviceRow.find("td.device-friendlyName").html(friendlyName);
       $deviceRow.find("td.device-model").html(model);
@@ -554,18 +543,12 @@
 
                //disable it before async update
                $deviceRow.find("button.btn-configure").prop('disabled', true);
-			   if (forceGetPluginState || isNullOrUndefined(pluginInstancesState[device.attachedPlugin.id])){
-				   PluginInstanceManager.getState(device.attachedPlugin)
-					  .done(function (instanceState) {
-						 if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
-							$deviceRow.find("button.btn-configure").prop('disabled', false);
-						 }
-					  });
-			   }else{
-				 if (pluginInstancesState[device.attachedPlugin.id] !== "Stopped" && pluginInstancesState[device.attachedPlugin.id] !== "Error" && pluginInstancesState[device.attachedPlugin.id]) {
-					$deviceRow.find("button.btn-configure").prop('disabled', false);
-				 }				  
-			   }
+               PluginInstanceManager.getState(device.attachedPlugin)
+                  .done(function (instanceState) {
+                     if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
+                        $deviceRow.find("button.btn-configure").prop('disabled', false);
+                     }
+                  });
             } else {
                //we use application logo
                iconName = "img/icon_256.png";
@@ -619,19 +602,22 @@
                   });
                   d.resolve();
                } else {
-                  DeviceManager.getAttachedPlugin(device, true) // TODO : Check if this could be remove
+                  DeviceManager.getAttachedPlugin(device, true)
                      .done(function () {
-                        // remove keywords table displayed and element
+                        // remove keywords table displayed
                         $("p.nokeyword-for-device").remove();
                         getDeviceDetailsDomRow().remove();
+
+                        // we remove the element
                         $row.remove();
+
                         // we replace the new element into the list and sort
                         deviceList[i] = updateDevice;
                         deviceList = sortListItemsWithFriendlyName(deviceList);
                         var newPosition = deviceList.map(function (e) {
                            return e.id;
                         }).indexOf(updateDevice.id);
-                        addDeviceToDom(device, newPosition, true);
+                        addDeviceToDom(device, newPosition);
                         d.resolve();
                      });
                }

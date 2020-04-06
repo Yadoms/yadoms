@@ -236,7 +236,7 @@ void CZWave::checkVersionUpgrade(const boost::shared_ptr<yApi::IYPluginApi>& api
     */
    YADOMS_LOG(information) << "The ZWave plugin starting... checking version upgrade...";
 
-   shared::versioning::CSemVer currentRunningVersion = api->getInformation()->getVersion();
+   shared::versioning::CVersion currentRunningVersion = api->getInformation()->getVersion();
 
    const auto dataVersionFile = api->getDataPath() / "currentVersion.json";
    shared::CDataContainer dvc;
@@ -249,7 +249,7 @@ void CZWave::checkVersionUpgrade(const boost::shared_ptr<yApi::IYPluginApi>& api
          if (dvc.containsValue("version"))
          {
             const auto versionAsString = dvc.get<std::string>("version");
-            shared::versioning::CSemVer localVersion(versionAsString);
+            shared::versioning::CVersion localVersion(versionAsString);
             if (currentRunningVersion > localVersion)
             {
                try

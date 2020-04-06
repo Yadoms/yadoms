@@ -20,7 +20,7 @@ cmake_policy(SET CMP0078 NEW)
 cmake_policy(SET CMP0086 NEW)
 
 ##################################################################################################
-## Extract Yadoms version from changelog.md file
+## Extract Yadoms version from Version.h
 ##################################################################################################
 include(cmake/version.cmake)
 GET_PACKAGE_VERSION("${CMAKE_SOURCE_DIR}/server/changelog.md" YADOMS_VERSION)
@@ -320,6 +320,7 @@ set(YADOMS_SRC
    server/RunningInformation.h   
    server/Supervisor.cpp
    server/Supervisor.h
+   server/Version.h
 
    server/authentication/IAuthentication.h
    server/authentication/BasicAuthentication.h

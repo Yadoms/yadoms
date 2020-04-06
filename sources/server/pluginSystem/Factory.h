@@ -19,17 +19,14 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Constructor
       /// \param[in] pathProvider      The path provider
-      /// \param[in] yadomsVersion     The Yadoms version
-      /// \param[in] locationProvider  The location provider
       //--------------------------------------------------------------
       CFactory(boost::shared_ptr<const IPathProvider> pathProvider,
-               const shared::versioning::CSemVer& yadomsVersion,
-               const boost::shared_ptr<shared::ILocation> locationProvider);
+               boost::shared_ptr<shared::ILocation> locationProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CFactory() = default;
+      virtual ~CFactory();
 
       // IFactory Implementation
       AvailablePluginMap findAvailablePlugins() const override;
@@ -44,55 +41,50 @@ namespace pluginSystem
 
 
    private:
-      boost::shared_ptr<IInstance> createInternalPluginInstance(
-         boost::shared_ptr<const database::entities::CPlugin> instanceData,
-         boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-         boost::shared_ptr<IQualifier> qualifier,
-         boost::function1<void, int> onPluginsStoppedFct) const;
+      boost::shared_ptr<IInstance> createInternalPluginInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+                                                                boost::shared_ptr<IQualifier> qualifier,
+                                                                boost::function1<void, int> onPluginsStoppedFct) const;
 
-      boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(
-         const std::string& pluginName) const;
+      boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const;
 
 
-      boost::shared_ptr<shared::process::ICommandLine> createCommandLine(
-         boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-         const std::string& messageQueueId) const;
+      boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                         const std::string& messageQueueId) const;
 
       boost::shared_ptr<shared::process::IExternalProcessLogger> createLogger(const std::string& loggerName) const;
 
-      boost::shared_ptr<CInstanceStateHandler> createInstanceStateHandler(
-         boost::shared_ptr<const database::entities::CPlugin> instanceData,
-         boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-         boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-         boost::shared_ptr<IQualifier> qualifier,
-         boost::function1<void, int> onPluginsStoppedFct) const;
+      boost::shared_ptr<CInstanceStateHandler> createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                          boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                          boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+                                                                          boost::shared_ptr<IQualifier> qualifier,
+                                                                          boost::function1<void, int> onPluginsStoppedFct) const;
 
-      boost::shared_ptr<shared::process::IProcess> createInstanceProcess(
-         boost::shared_ptr<shared::process::ICommandLine> commandLine,
-         boost::shared_ptr<CInstanceStateHandler> instanceStateHandler,
-         boost::shared_ptr<shared::process::IExternalProcessLogger> logger) const;
+      boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
+                                                                         boost::shared_ptr<CInstanceStateHandler> instanceStatteHandler,
+                                                                         boost::shared_ptr<shared::process::IExternalProcessLogger> logger) const;
 
-      boost::shared_ptr<CYPluginApiImplementation> createApiPluginImplementation(
-         boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-         boost::shared_ptr<const database::entities::CPlugin> instanceData,
-         boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
-         boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
+      boost::shared_ptr<CYPluginApiImplementation> createApiPluginImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                                 boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                                 boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
+                                                                                 boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                                 boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
 
-      boost::shared_ptr<IIpcAdapter> createInstanceRunningContext(
-         boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-         boost::shared_ptr<const database::entities::CPlugin> instanceData,
-         boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
-         boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
+      boost::shared_ptr<IIpcAdapter> createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                  boost::shared_ptr<const database::entities::CPlugin> instanceData,
+                                                                  boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
+                                                                  boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                  boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
 
       bool isValidPlugin(const boost::filesystem::path& directory) const;
       std::vector<boost::filesystem::path> findPluginDirectories() const;
 
-      const shared::versioning::CSemVer m_yadomsVersion;
+
       boost::shared_ptr<const IPathProvider> m_pathProvider;
       const boost::shared_ptr<const shared::ILocation> m_location;
    };
 } // namespace pluginSystem
+
+

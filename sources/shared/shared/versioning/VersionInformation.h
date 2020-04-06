@@ -1,5 +1,5 @@
 #pragma once
-#include "SemVer.h"
+#include "Version.h"
 #include <shared/DataContainer.h>
 
 namespace shared
@@ -16,13 +16,13 @@ namespace shared
          ///\brief Constructor
          ///\param [in] version     The version
          //---------------------------------------------
-         explicit CVersionInformation(const CSemVer& version);
+         explicit CVersionInformation(const CVersion& version);
 
          //---------------------------------------------
          ///\brief Get the version
          ///\return the version
          //---------------------------------------------
-         CSemVer getVersion() const;
+         CVersion getVersion() const;
 
          //---------------------------------------------
          ///\brief Serialize the object as string

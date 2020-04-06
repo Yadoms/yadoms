@@ -5,6 +5,7 @@
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "../urlManager.h"
+#include "../http/timeOutException.hpp"
 #include "tooLowRevisionException.hpp"
 #include "manuallyDeviceCreationException.hpp"
 
@@ -38,10 +39,8 @@ namespace equipments
 
          shared::CDataContainer credentials;
 
-		 if (m_configuration.credentialActivated()) {
-			 credentials.set("user", m_configuration.getUser());
-			 credentials.set("password", m_configuration.getPassword());
-		 }
+         credentials.set("user", m_configuration.getUser());
+         credentials.set("password", m_configuration.getPassword());
 
          // request to obtain the WES revision
          std::string CGXfileName = "WESVERSION.CGX";
@@ -235,34 +234,28 @@ namespace equipments
          else
             api->declareDevice(m_deviceName, "WES", "WES", keywordsToDeclare, details);
       }
-	  catch (CtooLowRevisionException& e) {
-		  YADOMS_LOG(error) << e.what();
-		  throw e;
-	  }
-      catch (shared::exception::CException& e){
-		  if (api->deviceExists(m_deviceName)) {
-			  if (boost::contains(e.what(), "Timeout")) {
-				  YADOMS_LOG(error) << e.what();
-				  YADOMS_LOG(error) << "Passage 1";
+      catch (CTimeOutException& e)
+      {
+         YADOMS_LOG(error) << e.what();
+         m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
+         api->historizeData(m_deviceName, m_deviceStatus);
 
-				  m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
-				  api->historizeData(m_deviceName, m_deviceStatus);
+         if (api->deviceExists(m_deviceName)){
+            details = api->getDeviceDetails(m_deviceName);  // We read TIC device names, to set the state for each
+            m_WESIOMapping = WESv2;                         // default mapping
 
-				  details = api->getDeviceDetails(m_deviceName);  // We read TIC device names, to set the state for each
-				  m_WESIOMapping = WESv2;                         // default mapping
+            // TIC Counters SetDevice Timeout
+            for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter){
+               TICName[counter] = details.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
+               boost::make_shared<equipments::CTIC>(api,TICName[counter]);
+            }
+         }
 
-				  // TIC Counters SetDevice Timeout if exist ! At creation time out, TIC devices doesn't exists
-				  for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter) {
-					  if (details.exists("TIC" + boost::lexical_cast<std::string>(counter))) {
-						  TICName[counter] = details.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
-						  boost::make_shared<equipments::CTIC>(api, TICName[counter]);
-					  }
-				  }
-				  throw std::runtime_error("Time out");
-			  }
-		  }
-
-		  throw e;
+         throw e;
+      }
+      catch (CtooLowRevisionException& e){
+         YADOMS_LOG(error) << e.what();
+         throw e;
       }
       catch (std::exception& e){
          YADOMS_LOG(error) << e.what();
@@ -291,11 +284,8 @@ namespace equipments
          const auto CGXfileName = "WESVALUES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
 
          shared::CDataContainer credentials;
-
-		 if (m_configuration.credentialActivated()) {
-			 credentials.set("user", m_configuration.getUser());
-			 credentials.set("password", m_configuration.getPassword());
-		 }
+         credentials.set("user", m_configuration.getUser());
+         credentials.set("password", m_configuration.getPassword());
 
          auto results = urlManager::readFileState(
 			 m_configuration.getIPAddressWithSocket(),
@@ -382,19 +372,17 @@ namespace equipments
 				results.get<int>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1)));
          }
       }
-      catch (std::exception& e){
-		  if (boost::contains(e.what(), "Timeout")) {
-			  setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kTimeOut);
-			  api->historizeData(m_deviceName, keywordsToHistorize);
+      catch (CTimeOutException&){
+         setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kTimeOut);
+         api->historizeData(m_deviceName, keywordsToHistorize);
 
-			  for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
-				  m_TICList[counter]->setDeviceState(api, specificHistorizers::EWESdeviceStatus::kTimeOut);
-		  }
-		  else {
-			  YADOMS_LOG(error) << e.what();
-			  setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kError);
-			  api->historizeData(m_deviceName, keywordsToHistorize);
-		  }
+         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
+            m_TICList[counter]->setDeviceState(api, specificHistorizers::EWESdeviceStatus::kTimeOut);
+      }
+      catch (std::exception& e){
+         YADOMS_LOG(error) << e.what();
+         setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kError);
+         api->historizeData(m_deviceName, keywordsToHistorize);
       }
    }
 
@@ -468,10 +456,8 @@ namespace equipments
          std::string stringState;
          auto counter = 0;
 
-		 if (m_configuration.credentialActivated()) {
-			 credentials.set("user", m_configuration.getUser());
-			 credentials.set("password", m_configuration.getPassword());
-		 }
+         credentials.set("user", m_configuration.getUser());
+         credentials.set("password", m_configuration.getPassword());
 
          const auto newValue = boost::lexical_cast<bool>(command->getBody());
          if (newValue)

@@ -2,7 +2,7 @@
 #include "Version_4_2_0.h"
 #include "database/common/Query.h"
 #include "database/common/DatabaseTables.h"
-#include <shared/versioning/SemVer.h>
+#include <shared/versioning/Version.h>
 #include "VersionException.h"
 #include <shared/Log.h>
 #include "database/common/adapters/SingleValueAdapter.hpp"
@@ -15,7 +15,7 @@ namespace database
       namespace versioning
       {
          // Modify this version to a greater value, to force update of current version
-         const shared::versioning::CSemVer CVersion_4_2_0::Version(4, 2, 0);
+         const shared::versioning::CVersion CVersion_4_2_0::Version(4, 2, 0);
 
          CVersion_4_2_0::CVersion_4_2_0()
          {
@@ -26,7 +26,7 @@ namespace database
          }
 
          void CVersion_4_2_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& requester,
-                                              const shared::versioning::CSemVer& currentVersion)
+                                              const shared::versioning::CVersion& currentVersion)
          {
             if (currentVersion < Version)
             {
@@ -128,7 +128,7 @@ namespace database
          }
 
          void CVersion_4_2_0::updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> requester,
-                                                    const shared::versioning::CSemVer& newVersion,
+                                                    const shared::versioning::CVersion& newVersion,
                                                     const boost::posix_time::ptime& insertDate)
          {
             auto qInsert = requester->newQuery();
