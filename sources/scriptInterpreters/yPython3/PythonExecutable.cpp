@@ -60,18 +60,19 @@ bool CPythonExecutable::isPythonIn(const boost::filesystem::path& directory,
                                    boost::filesystem::path& pythonDirectory,
                                    bool& inSystemPath)
 {
-   static const std::string ExpectedVersionString("Python 3.7");
-   const std::string version = readPythonVersion(directory);
+   const auto version = readPythonVersion(directory);
 
-	if (!version.empty() && version.find(ExpectedVersionString) != std::string::npos)
-   {
-      YADOMS_LOG(information) << "Python 3 executable found in " << (directory.empty() ? "the system path" : directory.string());
-      pythonDirectory = directory;
-      inSystemPath = directory.empty();
-      return true;
-   }
-   YADOMS_LOG(information) << "Python 3 executable not found in " << (directory.empty() ? "the system path" : directory.string());
-   return false;
+	if(!isValidPythonVersion(version))
+	{
+      YADOMS_LOG(information) << "Python 3 executable not found in " << (directory.empty() ? "the system path" : directory.string());
+      return false;
+	}
+   YADOMS_LOG(information) << "Python 3 executable found in " << (directory.empty() ? "the system path" : directory.string());
+   pythonDirectory = directory;
+   inSystemPath = directory.empty();
+   return true;
+
+
 }
 
 std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& initialDirectory)
@@ -97,5 +98,12 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
       YADOMS_LOG(information) << "Unable to read Python 3 version, " << ex.what();
       return std::string();
    }
+}
+
+bool CPythonExecutable::isValidPythonVersion(const std::string& pythonVersion)
+{
+   const boost::regex reg("Python\\s*([3-9]\\.[2-9]\\d*|[4-9]\\.\\d\d+|[5-9](\\.\\d+)?|\\d\d+(\\.\\d+)?)");
+   boost::smatch match;
+   return regex_search(pythonVersion, match, reg);
 }
 
