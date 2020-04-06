@@ -136,35 +136,3 @@ std::vector<bool> CStreamDeckOriginal::readKeyStates()
 	return states;
 }
 
-int CStreamDeckOriginal::getKeyIndex(std::vector<bool>& states)
-{
-	auto result = findInVector<bool>(states, true);
-
-	if (result.first)
-	{
-		return result.second;
-	}
-	return -1;
-}
-
-template <typename T>
-std::pair<bool, int> CStreamDeckOriginal::findInVector(const std::vector<T>& vecOfElements, const T& element)
-{
-	std::pair<bool, int> result;
-
-	// Find given element in vector
-	auto it = std::find(vecOfElements.begin(), vecOfElements.end(), element);
-
-	if (it != vecOfElements.end())
-	{
-		result.second = distance(vecOfElements.begin(), it);
-		result.first = true;
-	}
-	else
-	{
-		result.first = false;
-		result.second = -1;
-	}
-
-	return result;
-}
