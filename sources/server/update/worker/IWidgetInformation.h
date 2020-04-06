@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/versioning/Version.h>
+#include <shared/versioning/SemVer.h>
 
 namespace update
 {
@@ -14,7 +14,7 @@ namespace update
          
          virtual const std::string& getType() const = 0;
 
-         virtual const shared::versioning::CVersion& getVersion() const = 0;
+         virtual const shared::versioning::CSemVer& getVersion() const = 0;
 
          virtual const boost::filesystem::path& getPath() const = 0;
       };

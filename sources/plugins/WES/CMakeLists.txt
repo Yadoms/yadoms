@@ -72,7 +72,6 @@ set(WES_PLUGIN_SOURCES
    http/httpContext.h
    http/HttpMethods.cpp
    http/HttpMethods.h
-   http/timeOutException.hpp
 )
 
 #########################################

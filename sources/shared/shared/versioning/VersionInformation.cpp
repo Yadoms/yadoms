@@ -6,14 +6,14 @@ namespace shared
 {
    namespace versioning
    {
-      CVersionInformation::CVersionInformation(const CVersion& version)
+      CVersionInformation::CVersionInformation(const CSemVer& version)
       {
          m_container.set("version", version.toString());
       }
 
-      CVersion CVersionInformation::getVersion() const
+      CSemVer CVersionInformation::getVersion() const
       {
-         return CVersion(m_container.get<std::string>("version"));
+         return CSemVer(m_container.get<std::string>("version"));
       }
 
       std::string CVersionInformation::serialize() const

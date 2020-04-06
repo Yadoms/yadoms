@@ -154,8 +154,14 @@
       "description": "Cette commande requiert un choix de la part de l'utilisateur, à partir d'une liste fournie par le plugin",
       "commandData": {
         "dynamicSection": {
-          "name": "A dynamic section",
-          "description": "Exemple de section renseignée par la méthode 'test' du plugin en utilisant le binding."
+          "name": "Une section dynamique",
+          "description": "Exemple de section renseignée par la méthode 'test' du plugin en utilisant le binding.",
+          "content": {
+            "interval": {
+              "name": "Intervale du graphique",
+              "description": "Permet la modification de l'intervale de l'ensemble des graphiques" 
+            } 
+          } 
         }
       }
     },

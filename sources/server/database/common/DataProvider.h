@@ -13,7 +13,7 @@
 #include "requesters/Acquisition.h"
 #include "requesters/Recipient.h"
 #include <Poco/Util/Timer.h>
-#include <shared/versioning/Version.h>
+#include <shared/versioning/SemVer.h>
 
 
 namespace database
@@ -105,7 +105,7 @@ namespace database
 
          // [END] IDatabaseProvider implementation
 
-         shared::versioning::CVersion getVersion() const;
+         shared::versioning::CSemVer getVersion() const;
       private:
          //--------------------------------------------------------------
          /// \Brief		Load all requesters

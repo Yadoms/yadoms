@@ -1,6 +1,6 @@
 #pragma once
 #include <shared//ILocation.h>
-#include <shared/versioning/Version.h>
+#include <shared/versioning/SemVer.h>
 
 namespace shared
 {
@@ -33,7 +33,7 @@ namespace shared
             /// \note       Version : Note that this value is string-comparable
             ///             to check the precedence of a version from a reference version.
             //--------------------------------------------------------------
-            virtual shared::versioning::CVersion version() const = 0;
+            virtual shared::versioning::CSemVer version() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    get location

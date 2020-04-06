@@ -2,13 +2,14 @@
 #include "YadomsInformation.h"
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
-#include "Version.h"
 
 
 namespace pluginSystem
 {
-   CYadomsInformation::CYadomsInformation(const boost::shared_ptr<const shared::ILocation> locationProvider)
-      : m_locationProvider(locationProvider)
+   CYadomsInformation::CYadomsInformation(const boost::shared_ptr<const shared::ILocation> locationProvider,
+                                          const shared::versioning::CSemVer& yadomsVersion)
+      : m_locationProvider(locationProvider),
+        m_yadomsVersion(yadomsVersion)
    {
    }
 
@@ -21,9 +22,9 @@ namespace pluginSystem
       return shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode();
    }
 
-   shared::versioning::CVersion CYadomsInformation::version() const
+   shared::versioning::CSemVer CYadomsInformation::version() const
    {
-      return YadomsVersion;
+      return m_yadomsVersion;
    }
 
    boost::shared_ptr<const shared::ILocation> CYadomsInformation::location() const
@@ -31,5 +32,3 @@ namespace pluginSystem
       return m_locationProvider;
    }
 } // namespace pluginSystem
-
-

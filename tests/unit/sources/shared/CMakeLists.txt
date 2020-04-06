@@ -15,12 +15,12 @@ IF(NOT DISABLE_TEST_DATACONTAINER)
 ENDIF()
 
 #dd current directory tests
-IF(NOT DISABLE_TEST_VERSION)
+IF(NOT DISABLE_TEST_SEMVER)
    ADD_YADOMS_SOURCES(
-      shared/shared/versioning/Version.h
-      shared/shared/versioning/Version.cpp
+      shared/shared/versioning/SemVer.h
+      shared/shared/versioning/SemVer.cpp
    )
-   ADD_SOURCES(TestVersion.cpp)
+   ADD_SOURCES(TestSemVer.cpp)
    
 ENDIF()
 

@@ -24,6 +24,10 @@ std::string CmasterDeviceConfiguration::getPassword() const
    return shared::encryption::CXor::decryptBase64(m_data.get<std::string>("authentication.content.Password"));
 }
 
+bool CmasterDeviceConfiguration::credentialActivated() const {
+	return m_data.getWithDefault<bool>("authentication.checkbox", true);
+}
+
 std::string CmasterDeviceConfiguration::getUser() const
 {
    return m_data.get<std::string>("authentication.content.User");

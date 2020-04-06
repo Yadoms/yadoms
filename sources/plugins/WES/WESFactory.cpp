@@ -2,7 +2,6 @@
 #include "WESFactory.h"
 #include "equipments/WESEquipment.h"
 #include "equipments/tooLowRevisionException.hpp"
-#include "http/timeOutException.hpp"
 #include <shared/Log.h>
 
 CWESFactory::CWESFactory()
@@ -28,11 +27,11 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
             try{
                deviceList.push_back(factory.createEquipment(api, device, configuration));
             }
-            catch (CTimeOutException&){
-               deviceToRetry.push_back(device);
-            }
-            catch (std::exception&)
+            catch (std::exception& e)
             {
+				if (boost::contains(e.what(), "Timeout")) {
+					deviceToRetry.push_back(device);
+				}
 				//TODO : Try restart the plugin with the equipment connected => We should have a error
             }
          }

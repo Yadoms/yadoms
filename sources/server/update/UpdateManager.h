@@ -43,7 +43,7 @@ namespace update
       bool scan(boost::shared_ptr<const IPathProvider> pathProvider);
       void scanForUpdates(worker::CWorkerTools::WorkerProgressFunc progressCallback);
       shared::CDataContainer buildUpdates(bool includePrereleases,
-                                          const shared::versioning::CVersion& yadomsLocalVersion,
+                                          const shared::versioning::CSemVer& yadomsLocalVersion,
                                           const shared::CDataContainer& yadomsAvailableVersions,
                                           const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
                                           const shared::CDataContainer& pluginsAvailableVersions,
@@ -52,7 +52,7 @@ namespace update
                                           const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>&
                                           scriptInterpretersLocalVersions,
                                           const shared::CDataContainer& scriptInterpretersAvailableVersions) const;
-      shared::CDataContainer buildYadomsList(const shared::versioning::CVersion& localVersion,
+      shared::CDataContainer buildYadomsList(const shared::versioning::CSemVer& localVersion,
                                              const shared::CDataContainer& availableVersions,
                                              bool includePrereleases) const;
       shared::CDataContainer buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
@@ -65,7 +65,7 @@ namespace update
          const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
          const shared::CDataContainer& availableVersions,
          bool includePrereleases) const;
-      shared::CDataContainer addUpdateableYadoms(const shared::versioning::CVersion& localVersion,
+      shared::CDataContainer addUpdateableYadoms(const shared::versioning::CSemVer& localVersion,
                                                  const shared::CDataContainer& availableVersions,
                                                  bool includePrereleases) const;
       shared::CDataContainer addUpdateablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
