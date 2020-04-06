@@ -22,24 +22,31 @@ std::vector<uchar> CImageHelper::stringToVector(std::string& content)
 	return data;
 }
 
-cv::Mat CImageHelper::renderKeyImage(std::vector<uchar>& data, std::string& customText)
+cv::Mat CImageHelper::renderKeyImage(std::vector<uchar>& data, const int keyPixelSize, std::string& customText)
 {
 	// TODO : Pass text from configuration
 	auto img = cv::imdecode(cv::Mat(data), cv::IMREAD_UNCHANGED);
 	cvtColor(img, img, cv::COLOR_BGRA2RGB);
-	resize(img, img, cv::Size(52, 52));
 
-	cv::Mat black(72, 72, img.type(), cv::Scalar(0, 0, 0));
-	img.copyTo(black(cv::Rect(10, 0, img.cols, img.rows)));
+	const auto imgSize = !customText.empty() ? keyPixelSize - 20 : keyPixelSize;
 
-	putText(black,
-	        customText,
-	        cv::Point(2, 65),
-	        cv::FONT_HERSHEY_TRIPLEX,
-	        0.4,
-	        cv::Scalar(255, 255, 255),
-	        1,
-	        cv::LINE_AA);
+	resize(img, img, cv::Size(imgSize, imgSize));
+
+	cv::Mat black(keyPixelSize, keyPixelSize, img.type(), cv::Scalar(0, 0, 0));
+	img.copyTo(black(cv::Rect(!customText.empty() ? 10 : 0, 0, img.cols, img.rows)));
+
+	if (!customText.empty())
+	{
+		putText(black,
+		        customText,
+		        cv::Point(2, 65),
+		        cv::FONT_HERSHEY_TRIPLEX,
+		        0.4,
+		        cv::Scalar(255, 255, 255),
+		        1,
+		        cv::LINE_AA);
+	}
+
 
 	rotate(black, black, cv::ROTATE_180);
 	return black;

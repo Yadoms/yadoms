@@ -43,7 +43,7 @@
             },
             "customText": {
                "type": "string",
-               "required": "true"
+               "required": "false"
             },
             "fileContent": {
                "type": "file",

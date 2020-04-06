@@ -9,6 +9,7 @@ const int CStreamDeckOriginal::KeyCols = 5;
 const int CStreamDeckOriginal::KeyRows = 3;
 const int CStreamDeckOriginal::KeyCount = KeyCols * KeyRows;
 const int CStreamDeckOriginal::DataToSendLength = 17;
+const int CStreamDeckOriginal::KeyPixelSize = 72;
 
 CStreamDeckOriginal::CStreamDeckOriginal(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived)
 	: CDeviceManager(configuration, mainEventHandler, evtKeyStateReceived)
@@ -47,7 +48,7 @@ void CStreamDeckOriginal::setKeyImage(std::string& content, int& keyIndex, std::
 {
 	// TODO : Pass text from configuration
 	auto data = CImageHelper::stringToVector(content);
-	auto img = CImageHelper::renderKeyImage(data, customText);
+	auto img = CImageHelper::renderKeyImage(data, KeyPixelSize, customText);
 
 	auto array = CImageHelper::cvMatToVector(img);
 
