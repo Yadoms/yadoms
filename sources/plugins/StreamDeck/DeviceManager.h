@@ -29,7 +29,7 @@ public:
 
 	virtual void setKeyImage(std::string& content, int& keyIndex, std::string& customText) = 0;
 
-	virtual std::vector<bool> readKeyStates() = 0;
+	virtual std::pair<bool, int> readKeyStates() = 0;
 private:
 
 	CConfiguration m_configuration;

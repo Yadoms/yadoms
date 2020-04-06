@@ -2,6 +2,7 @@
 #include "DeviceManagerHelper.h"
 #include <opencv2/opencv.hpp>
 #include "ImageHelper.h"
+#include <algorithm>
 
 const int CStreamDeckOriginal::ImageReportLength = 8191;
 const int CStreamDeckOriginal::KeyCols = 5;
@@ -116,23 +117,17 @@ int CStreamDeckOriginal::convertKeyIdOrigin(int& keyIndex)
 	return (keyIndex - keyCol) + ((KeyCols - 1) - keyCol);
 }
 
-std::vector<bool> CStreamDeckOriginal::readKeyStates()
+std::pair<bool, int> CStreamDeckOriginal::readKeyStates()
 {
-	std::vector<bool> states(KeyCount, false);
 	unsigned char readData[DataToSendLength] = {};
-
+	// First byte is the report ID
+	const auto offset = 1;
 	// TODO: ajouter mutex ? (ou vérifier que la lib est thread-safe)
 	// in case of read error stop thread
 	hid_read(m_handle, readData, DataToSendLength);
 
-	for (size_t i = 1; i <= states.size(); i++)
-	{
-		if (readData[i] != 0)
-		{
-			states[i] = true;
-		}
-	}
+	const auto readDataVector = CDeviceManagerHelper::unsignedCharToVectorOfUnsignedChar(readData, offset, DataToSendLength);
 
-	return states;
+	return CDeviceManagerHelper::findInVector<unsigned char>(readDataVector, 1);
+
 }
-

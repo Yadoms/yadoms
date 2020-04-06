@@ -69,7 +69,7 @@ public:
 
 		return result;
 	}
-
+	static std::vector<unsigned char> unsignedCharToVectorOfUnsignedChar(unsigned char* input, int offset, int size);
 private:
 	
 	static const uint16_t StreamDeckVendorId;

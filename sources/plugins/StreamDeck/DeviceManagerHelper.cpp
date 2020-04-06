@@ -184,3 +184,10 @@ int CDeviceManagerHelper::getKeyIndex(std::string& key)
 {
 	return std::atoi(key.substr(3).c_str());
 }
+
+std::vector<unsigned char> CDeviceManagerHelper::unsignedCharToVectorOfUnsignedChar(unsigned char* input,
+                                                                                    const int offset,
+                                                                                    const int size)
+{
+	return std::vector<unsigned char>(input + offset, input + size);
+}

@@ -17,9 +17,7 @@ public:
 
 	void setKeyImage(std::string& content, int& keyIndex, std::string& customText) override;
 
-	std::vector<bool> readKeyStates() override;
-
-	int getKeyIndex(std::vector<bool>& states);
+	std::pair<bool, int> readKeyStates() override;
 
 private:
 	static const int ImageReportLength;

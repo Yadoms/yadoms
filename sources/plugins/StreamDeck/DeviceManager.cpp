@@ -34,12 +34,12 @@ void CDeviceManager::close()
 {
 	hid_close(m_handle);
 	m_readKeyThread->interrupt();
-	m_readKeyThread->join();		
+	m_readKeyThread->join();
 }
+
 void CDeviceManager::runKeyStateThread()
 {
 	m_readKeyThread = boost::make_shared<boost::thread>(boost::bind(&CDeviceManager::readHandler, this));
-
 }
 
 void CDeviceManager::readHandler()
@@ -48,13 +48,11 @@ void CDeviceManager::readHandler()
 	{
 		while (true)
 		{
-			auto states = readKeyStates();
+			auto keyState = readKeyStates();
 
-			const auto result = CDeviceManagerHelper::findInVector<bool>(states, true);
-			if (result.first)
+			if (keyState.first)
 			{
-				std::cout << "The Key Is pressed" << result.second << std::endl;
-				m_mainEventHandler.postEvent(m_mainEvtKeyStateReceived, result.second);
+				m_mainEventHandler.postEvent(m_mainEvtKeyStateReceived, keyState.second);
 			}
 		}
 	}
@@ -62,7 +60,7 @@ void CDeviceManager::readHandler()
 	{
 		YADOMS_LOG(error) << "Error readHandler, " << e.what();
 	}
-	catch(...)
+	catch (...)
 	{
 		YADOMS_LOG(error) << "Error readHandler, unknown error";
 	}
