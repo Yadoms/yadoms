@@ -11,6 +11,7 @@ struct UsbDeviceInformation
 	std::string deviceType;
 	int keyCols;
 	int keyRows;
+	int keyCount;
 };
 class CDeviceManagerHelper
 {
@@ -42,6 +43,8 @@ public:
 
 	static int getDeviceKeyRows(uint16_t& vendorId, uint16_t& productId);
 
+	static int getDeviceKeyCount(uint16_t& vendorId, uint16_t& productId);
+
 	static boost::shared_ptr<UsbDeviceInformation> getDeviceInformation(CConfiguration& configuration);
 
 	static unsigned char integerToHex(int& value);
@@ -68,6 +71,11 @@ public:
 		}
 
 		return result;
+	}
+	template <typename K, typename V>
+	static V secondValueFromPair(std::pair<K, V> const& pair)
+	{
+		return pair.second;
 	}
 	static std::vector<unsigned char> unsignedCharToVectorOfUnsignedChar(unsigned char* input, int offset, int size);
 private:

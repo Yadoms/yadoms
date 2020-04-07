@@ -97,11 +97,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		case kEvtKeyStateReceived:
 			{
 				auto keyIndex = api->getEventHandler().getEventData<int>();
-			
-				m_data = boost::make_shared<int>(keyIndex);
-				
-				api->historizeData(m_usbDeviceInformation->deviceName, m_data);
-				std::cout << "data received" << std::endl;
+				api->historizeData(m_usbDeviceInformation->deviceName, m_keywords[keyIndex]);
 				break;
 			}
 		case yApi::IYPluginApi::kBindingQuery:
@@ -172,7 +168,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 						m_deviceManager->setKeyImage(fileFromClient.getContent(), keyIndex, customText);
 
-						// TODO : Fix steps from schema
 						for (auto i = 0; i < 100; ++i)
 						{
 							if (i < 25)
@@ -186,10 +181,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 							boost::this_thread::sleep(boost::posix_time::milliseconds(35));
 						}
 
-						// TODO: declare key word
-						m_keyStateEvent = boost::make_shared<yApi::historization::CEvent>(interval,
-						                                                                  yApi::EKeywordAccessMode::kGetSet);
-						declareKeyword(api);
 					}
 
 					extraQuery->sendSuccess(shared::CDataContainer());
@@ -211,13 +202,26 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	}
 }
 
-void CStreamDeck::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
+void CStreamDeck::declareDeviceAndKeywords(boost::shared_ptr<yApi::IYPluginApi>& api,
                                 boost::shared_ptr<UsbDeviceInformation>& deviceInformation)
 
 {
 	if (!api->deviceExists(deviceInformation->deviceName))
+	{
+		for (auto i = 0; i < deviceInformation->keyCount; ++i)
+			m_keywords[i] = boost::make_shared<yApi::historization::CEvent>("Key #" + std::to_string(i));
+
+		std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsAsList;
+		keywordsAsList.reserve(m_keywords.size());
+
+		std::transform(m_keywords.begin(), m_keywords.end(),
+		               back_inserter(keywordsAsList),
+		               &CDeviceManagerHelper::secondValueFromPair<
+			               int, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>);
+
 		api->declareDevice(deviceInformation->deviceName, deviceInformation->serialNumber,
-		                   deviceInformation->deviceModel);
+		                   deviceInformation->deviceModel, keywordsAsList);
+	}
 }
 
 
@@ -227,7 +231,7 @@ boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_pt
 	{
 		m_usbDeviceInformation = CDeviceManagerHelper::getDeviceInformation(m_configuration);
 
-		declareDevice(api, m_usbDeviceInformation);
+		declareDeviceAndKeywords(api, m_usbDeviceInformation);
 
 		api->setPluginState(yApi::historization::EPluginState::kRunning);
 
@@ -238,11 +242,4 @@ boost::shared_ptr<UsbDeviceInformation> CStreamDeck::initDevice(boost::shared_pt
 		api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
 		throw;
 	}
-}
-
-
-void CStreamDeck::declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api)
-{
-	if (!api->keywordExists(m_usbDeviceInformation->deviceName, m_keyStateEvent))
-		api->declareKeyword(m_usbDeviceInformation->deviceName, m_keyStateEvent);
 }

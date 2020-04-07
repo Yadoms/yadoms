@@ -86,6 +86,18 @@ int CDeviceManagerHelper::getDeviceKeyRows(uint16_t& vendorId, uint16_t& product
 	throw;
 }
 
+int CDeviceManagerHelper::getDeviceKeyCount(uint16_t& vendorId, uint16_t& productId)
+{
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalPoductId)
+		return 15;
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalV2PoductId)
+		return 15;
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckMiniPoductId)
+		return 6;
+	if (vendorId == StreamDeckVendorId && productId == StreamDeckXLPoductId)
+		return 32;
+	throw;
+}
 std::string CDeviceManagerHelper::findUsbDeviceId(std::string& value, const std::string& identifierToFind)
 {
 	std::smatch matches;
@@ -159,6 +171,7 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformati
 		deviceInformation->deviceModel = getDeviceModel(deviceInformation->vendorID, deviceInformation->productID);
 		deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->vendorID, deviceInformation->productID);
 		deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->vendorID, deviceInformation->productID);
+		deviceInformation->keyCount = getDeviceKeyCount(deviceInformation->vendorID, deviceInformation->productID);
 		return deviceInformation;
 	}
 
@@ -168,6 +181,7 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformati
 	deviceInformation->deviceModel = getDeviceModel(deviceInformation->vendorID, deviceInformation->productID);
 	deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->vendorID, deviceInformation->productID);
 	deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->vendorID, deviceInformation->productID);
+	deviceInformation->keyCount = getDeviceKeyCount(deviceInformation->vendorID, deviceInformation->productID);
 	return deviceInformation;
 }
 
