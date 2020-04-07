@@ -45,5 +45,7 @@ private:
 
 	boost::shared_ptr<yApi::historization::CEvent> m_keyStateEvent;
 
+	boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> m_data;
+	
 	boost::shared_ptr<UsbDeviceInformation> m_usbDeviceInformation;
 };

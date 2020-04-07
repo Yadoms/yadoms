@@ -97,6 +97,10 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		case kEvtKeyStateReceived:
 			{
 				auto keyIndex = api->getEventHandler().getEventData<int>();
+			
+				m_data = boost::make_shared<int>(keyIndex);
+				
+				api->historizeData(m_usbDeviceInformation->deviceName, m_data);
 				std::cout << "data received" << std::endl;
 				break;
 			}
