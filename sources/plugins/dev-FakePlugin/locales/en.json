@@ -180,7 +180,13 @@
       "commandData": {
         "dynamicSection": {
           "name": "A dynamic section",
-          "description": "Example of section filled by 'test' method from the plugin using binding."
+          "description": "Example of section filled by 'test' method from the plugin using binding.",
+          "content": {
+            "interval": {
+              "name": "Chart interval",
+              "description": "Used to change chart interval"
+            }
+          }
         }
       }
     },
