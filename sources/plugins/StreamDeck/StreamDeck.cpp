@@ -180,7 +180,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 								extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step4");
 							boost::this_thread::sleep(boost::posix_time::milliseconds(35));
 						}
-
 					}
 
 					extraQuery->sendSuccess(shared::CDataContainer());
@@ -203,7 +202,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 }
 
 void CStreamDeck::declareDeviceAndKeywords(boost::shared_ptr<yApi::IYPluginApi>& api,
-                                boost::shared_ptr<UsbDeviceInformation>& deviceInformation)
+                                           boost::shared_ptr<UsbDeviceInformation>& deviceInformation)
 
 {
 	if (!api->deviceExists(deviceInformation->deviceName))
@@ -211,16 +210,10 @@ void CStreamDeck::declareDeviceAndKeywords(boost::shared_ptr<yApi::IYPluginApi>&
 		for (auto i = 0; i < deviceInformation->keyCount; ++i)
 			m_keywords[i] = boost::make_shared<yApi::historization::CEvent>("Key #" + std::to_string(i));
 
-		std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsAsList;
-		keywordsAsList.reserve(m_keywords.size());
-
-		std::transform(m_keywords.begin(), m_keywords.end(),
-		               back_inserter(keywordsAsList),
-		               &CDeviceManagerHelper::secondValueFromPair<
-			               int, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>);
+		const auto keywordsAsVecor = CDeviceManagerHelper::mapToHistorizableVector(m_keywords);
 
 		api->declareDevice(deviceInformation->deviceName, deviceInformation->serialNumber,
-		                   deviceInformation->deviceModel, keywordsAsList);
+		                   deviceInformation->deviceModel, keywordsAsVecor);
 	}
 }
 

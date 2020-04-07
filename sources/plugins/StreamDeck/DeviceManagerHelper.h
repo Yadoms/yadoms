@@ -1,5 +1,6 @@
 #pragma once
 #include "Configuration.h"
+#include "shared/plugin/yPluginApi/historization/IHistorizable.h"
 
 struct UsbDeviceInformation
 {
@@ -13,6 +14,7 @@ struct UsbDeviceInformation
 	int keyRows;
 	int keyCount;
 };
+
 class CDeviceManagerHelper
 {
 public:
@@ -32,7 +34,7 @@ public:
 	static std::string getDeviceModel(uint16_t& vendorId, uint16_t& productId);
 
 	static std::string findUsbDeviceId(std::string& value, const std::string& identifierToFind);
-	
+
 	static std::string getSerialNumber(std::string& value);
 
 	static std::vector<std::string> buildCoordinates(int cols, int rows);
@@ -72,18 +74,22 @@ public:
 
 		return result;
 	}
+
 	template <typename K, typename V>
 	static V secondValueFromPair(std::pair<K, V> const& pair)
 	{
 		return pair.second;
 	}
+
+	static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> mapToHistorizableVector(
+		std::map<int, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& map);
+	
 	static std::vector<unsigned char> unsignedCharToVectorOfUnsignedChar(unsigned char* input, int offset, int size);
 private:
-	
+
 	static const uint16_t StreamDeckVendorId;
 	static const uint16_t StreamDeckOriginalPoductId;
 	static const uint16_t StreamDeckOriginalV2PoductId;
 	static const uint16_t StreamDeckMiniPoductId;
 	static const uint16_t StreamDeckXLPoductId;
-	
 };

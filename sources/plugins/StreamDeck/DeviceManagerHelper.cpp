@@ -98,6 +98,7 @@ int CDeviceManagerHelper::getDeviceKeyCount(uint16_t& vendorId, uint16_t& produc
 		return 32;
 	throw;
 }
+
 std::string CDeviceManagerHelper::findUsbDeviceId(std::string& value, const std::string& identifierToFind)
 {
 	std::smatch matches;
@@ -204,4 +205,17 @@ std::vector<unsigned char> CDeviceManagerHelper::unsignedCharToVectorOfUnsignedC
                                                                                     const int size)
 {
 	return std::vector<unsigned char>(input + offset, input + size);
+}
+
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CDeviceManagerHelper::mapToHistorizableVector(
+	std::map<int, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& map)
+{
+	std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsAsVector;
+	keywordsAsVector.reserve(map.size());
+
+	std::transform(map.begin(), map.end(),
+	               back_inserter(keywordsAsVector),
+	               &secondValueFromPair<
+		               int, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>);
+	return keywordsAsVector;
 }
