@@ -12,6 +12,7 @@
 * Fix #594 : GUI : Refresh widgets when closing configuration pannel
 * Fix #595 : GUI : Fix data export
 * Fix #615 : GUI : Precise coordonates format and units
+* Fix #668 : GUI : Fix display on event keyword and keywords without acquisition
 * Known issue #617 : No more progression displayed when downloading file
 
 #### Plugins and widgets

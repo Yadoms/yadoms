@@ -121,7 +121,7 @@ namespace web
                else if (info == "lastValueDate")
                {
                   const auto lastAcq = m_dataProvider->getKeywordRequester()->getKeywordLastAcquisition(keywordId, false);
-                  if (lastAcq)
+                  if (lastAcq && lastAcq->Date != boost::posix_time::not_a_date_time)
                      keywordResult.set(info, lastAcq->Date);
                   else
                      keywordResult.set(info, std::string());

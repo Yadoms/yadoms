@@ -91,7 +91,7 @@ namespace database
             ((Details)(shared::CDataContainer)(shared::CDataContainer()))
             ((Blacklist)(bool)(false))
             ((LastAcquisitionValue)(std::string)(""))
-            ((LastAcquisitionDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
+            ((LastAcquisitionDate)(boost::posix_time::ptime)(boost::posix_time::not_a_date_time))
             ((HistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth::kDefault)(
                std::string))
          );

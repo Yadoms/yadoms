@@ -1,9 +1,12 @@
 <div id="dashboard-devices">
-   <h1 class="page-header"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></h1>
+   <h1 class="page-header"><span class="fa fa-tasks"></span>&nbsp;<span
+         data-i18n="modals.dashboard.sub-windows.devices.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
-   <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span
+   <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span
+         class="fa fa-tasks"></span>&nbsp;&nbsp;<span
          data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
-   <button id="btn-merge-devices" type="button" class="btn btn-primary dashboard-btn-new"><span class="fa fa-compress"></span>&nbsp;&nbsp;<span
+   <button id="btn-merge-devices" type="button" class="btn btn-primary dashboard-btn-new"><span
+         class="fa fa-compress"></span>&nbsp;&nbsp;<span
          data-i18n="modals.dashboard.sub-windows.devices.merge"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
       <thead>
@@ -142,16 +145,16 @@
          return e.id;
       }).indexOf(device.device.id);
       if (i == -1) {
-		  var indexToInsert = -1;
-		  $.each(deviceList, function (index, element) {
-		     var friendlyName = element.friendlyName;
-             if (device.device.friendlyName.toLowerCase() > friendlyName.toLowerCase()) {
-                indexToInsert = index + 1;
-             }
-		  });
-          deviceList.splice(indexToInsert, 0, device.device);
-          addDeviceToDom(device.device, indexToInsert, true);
-	  }
+         var indexToInsert = -1;
+         $.each(deviceList, function (index, element) {
+            var friendlyName = element.friendlyName;
+            if (device.device.friendlyName.toLowerCase() > friendlyName.toLowerCase()) {
+               indexToInsert = index + 1;
+            }
+         });
+         deviceList.splice(indexToInsert, 0, device.device);
+         addDeviceToDom(device.device, indexToInsert, true);
+      }
    };
 
    dispatchDevicesBlacklistedToDevicesView = function (device) {
@@ -167,9 +170,9 @@
    dispatchDevicesDeletedToDevicesView = function (device) {
       // remove device and device-details if any ...
       getDeviceDomRow(device.device).remove();
-	  if (parseInt(getDeviceDetailsDomRow().attr("device-id")) == parseInt(device.device.id)){
+      if (parseInt(getDeviceDetailsDomRow().attr("device-id")) == parseInt(device.device.id)) {
          getDeviceDetailsDomRow().remove();
-	  }
+      }
       $("p.nokeyword-for-device").remove();
 
       // Remove the device from the device list to display
@@ -370,13 +373,13 @@
                   // 3. try directly
                   var translatedMessage = $.t("plugins." + device.attachedPlugin.type + ":" +
                      taskUpdateInformation.message, {
-                        defaultValue: $.t("core." +
-                           taskUpdateInformation.message, {
-                              defaultValue: $.t(taskUpdateInformation.message),
-                              extraquery: $.t(taskUpdateInformation.name)
-                           }),
+                     defaultValue: $.t("core." +
+                        taskUpdateInformation.message, {
+                        defaultValue: $.t(taskUpdateInformation.message),
                         extraquery: $.t(taskUpdateInformation.name)
-                     });
+                     }),
+                     extraquery: $.t(taskUpdateInformation.name)
+                  });
                   //we manage the end of the task
                   if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
                      console.error("Unable to realize extra query : " + taskUpdateInformation.exception);
@@ -421,26 +424,26 @@
       deffered2.done(function (data) {
          isDeveloperMode = data.developerMode;
       });
-	  
-	  var defferedPluginStates = new $.Deferred();
-	  arrayOfDeffered.push(defferedPluginStates);
-	  PluginInstanceManager.getAll()
-       .done(function (pluginInstances) {
-	      var arrayOfStatesDeffered = [];
-		  var defferedState = {};
-          $.each(pluginInstances, function (index, instance) {
-		      defferedState[index] = PluginInstanceManager.getState(instance);
-			  arrayOfStatesDeffered.push(defferedState[index]);
-			  defferedState[index].done(function (instanceState) {
-				   if (!instance.isSystemCategory()) {
-				      pluginInstancesState[instance.id] = instanceState.state;
-				   }
-				});
-          });
-		  $.when.apply($, arrayOfStatesDeffered).done(function () {
-		     defferedPluginStates.resolve();
-		  });
-       })
+
+      var defferedPluginStates = new $.Deferred();
+      arrayOfDeffered.push(defferedPluginStates);
+      PluginInstanceManager.getAll()
+         .done(function (pluginInstances) {
+            var arrayOfStatesDeffered = [];
+            var defferedState = {};
+            $.each(pluginInstances, function (index, instance) {
+               defferedState[index] = PluginInstanceManager.getState(instance);
+               arrayOfStatesDeffered.push(defferedState[index]);
+               defferedState[index].done(function (instanceState) {
+                  if (!instance.isSystemCategory()) {
+                     pluginInstancesState[instance.id] = instanceState.state;
+                  }
+               });
+            });
+            $.when.apply($, arrayOfStatesDeffered).done(function () {
+               defferedPluginStates.resolve();
+            });
+         })
 
       var deffered1 = DeviceManager.getAll();
       arrayOfDeffered.push(deffered1);
@@ -451,19 +454,19 @@
 
          // The "when.apply" is here to wait the deffered3
          $.when.apply($, arrayOfDeffered).done(function () {
-               //foreach result we append a <tr>
-               $.each(tempList, function (index, value) {
-                  if ((!isDeveloperMode && (value.name !== "pluginState" || value.model !==
-                        "Plugin state")) || isDeveloperMode) {
-                     if (showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) ===
-                           false)) {
-                        addDeviceToDom(value, null, false);
-                        deviceList.push(value);
-                     }
+            //foreach result we append a <tr>
+            $.each(tempList, function (index, value) {
+               if ((!isDeveloperMode && (value.name !== "pluginState" || value.model !==
+                  "Plugin state")) || isDeveloperMode) {
+                  if (showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) ===
+                     false)) {
+                     addDeviceToDom(value, null, false);
+                     deviceList.push(value);
                   }
-               });
-               d.resolve();
-            })
+               }
+            });
+            d.resolve();
+         })
             .fail(function (error) {
                notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
                d.reject();
@@ -512,16 +515,16 @@
       // we add to the end, if the position is null (no insertion, the device list is empty, or the new position, is the end of the list)
       if (positionDevice == null || deviceList.length == 0 || positionDevice >= (deviceList.length - 1))
          $deviceList.append(frameworkDevice);
-	  else if (positionDevice == -1){
-	     $deviceList.prepend(frameworkDevice);
-      }else {
+      else if (positionDevice == -1) {
+         $deviceList.prepend(frameworkDevice);
+      } else {
          var $row = null;
          $row = getDeviceDomRow(deviceList[positionDevice + 1]);
          $(frameworkDevice).insertBefore($row);
       }
 
       var $deviceRow = getDeviceDomRow(device);
-	  
+
       //we fill the data
       $deviceRow.find("td.device-friendlyName").html(friendlyName);
       $deviceRow.find("td.device-model").html(model);
@@ -554,18 +557,18 @@
 
                //disable it before async update
                $deviceRow.find("button.btn-configure").prop('disabled', true);
-			   if (forceGetPluginState || isNullOrUndefined(pluginInstancesState[device.attachedPlugin.id])){
-				   PluginInstanceManager.getState(device.attachedPlugin)
-					  .done(function (instanceState) {
-						 if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
-							$deviceRow.find("button.btn-configure").prop('disabled', false);
-						 }
-					  });
-			   }else{
-				 if (pluginInstancesState[device.attachedPlugin.id] !== "Stopped" && pluginInstancesState[device.attachedPlugin.id] !== "Error" && pluginInstancesState[device.attachedPlugin.id]) {
-					$deviceRow.find("button.btn-configure").prop('disabled', false);
-				 }				  
-			   }
+               if (forceGetPluginState || isNullOrUndefined(pluginInstancesState[device.attachedPlugin.id])) {
+                  PluginInstanceManager.getState(device.attachedPlugin)
+                     .done(function (instanceState) {
+                        if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
+                           $deviceRow.find("button.btn-configure").prop('disabled', false);
+                        }
+                     });
+               } else {
+                  if (pluginInstancesState[device.attachedPlugin.id] !== "Stopped" && pluginInstancesState[device.attachedPlugin.id] !== "Error" && pluginInstancesState[device.attachedPlugin.id]) {
+                     $deviceRow.find("button.btn-configure").prop('disabled', false);
+                  }
+               }
             } else {
                //we use application logo
                iconName = "img/icon_256.png";
@@ -670,11 +673,11 @@
                arrayOfDeffered.push(DeviceManager.get(device.id));
 
                $.when.apply($, arrayOfDeffered).done(function (configurationSchema, deviceInfos) {
-                     device.configuration = deviceInfos.configuration;
-                     Yadoms.showConfigurationDeviceModal(device, configurationSchema, function (modifiedDevice) {
-                        recordAndDisplayNewDeviceConfiguration(modifiedDevice);
-                     });
-                  })
+                  device.configuration = deviceInfos.configuration;
+                  Yadoms.showConfigurationDeviceModal(device, configurationSchema, function (modifiedDevice) {
+                     recordAndDisplayNewDeviceConfiguration(modifiedDevice);
+                  });
+               })
                   .fail(function (error) {
                      notifyError($.t("objects.deviceManager.errorUpdating", {
                         deviceName: device.friendlyName
@@ -861,8 +864,8 @@
             .done(function () {
                Yadoms.showConfirmModal(Yadoms.btnKind.confirmCancel, $.t("modals.confirm-delete-device.title"), $.t(
                   "modals.confirm-delete-device.text", {
-                     deviceName: device.friendlyName
-                  }), function () {
+                  deviceName: device.friendlyName
+               }), function () {
                   DeviceManager.deleteDevice(device, true)
                      .fail(function (error) {
                         notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", {
@@ -951,7 +954,7 @@
          Yadoms.modals.keywordSetValue.loadAsync()
             .done(function () {
                Yadoms.showSetKeywordValueModal(keyword, keyword.measure.toLowerCase() === "increment" ? 0 : value,
-                     device)
+                  device)
                   .done(function (keyword, newValue) {
                      KeywordManager.sendCommand(keyword.id, newValue.toString());
                   })
@@ -973,12 +976,12 @@
                         Yadoms.showVirtualDeviceConfigurationModal(null, true, function (newDeviceName,
                            newDeviceModel, newDeviceConfiguration) {
                            PluginInstanceManager.createManuallyDevice(pi, newDeviceName,
-                                 newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
+                              newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
                               .fail(function (error) {
                                  notifyError($.t(
                                     "objects.pluginInstance.errorCreatingManuallyDevice", {
-                                       deviceName: newDeviceName
-                                    }), error);
+                                    deviceName: newDeviceName
+                                 }), error);
                               });
                         });
                      });
@@ -995,12 +998,12 @@
                         newDeviceModel, newDeviceType, newDeviceConfiguration) {
                         //we ask for manually device creation
                         PluginInstanceManager.createManuallyDevice(pi, newDeviceName,
-                              newDeviceModel, newDeviceType, newDeviceConfiguration)
+                           newDeviceModel, newDeviceType, newDeviceConfiguration)
                            .fail(function (error) {
                               notifyError($.t(
                                  "objects.pluginInstance.errorCreatingManuallyDevice", {
-                                    deviceName: newDeviceName
-                                 }), error);
+                                 deviceName: newDeviceName
+                              }), error);
                            });
                      });
                   });
@@ -1035,7 +1038,6 @@
    }
 
    function updateKeywordDomLine($keywordRow, acquisition, keyword, pluginInstance) {
-      var keywordValue = "<span></span>";
       if (acquisition.value) {
          try {
             //manage boolean keyword
@@ -1050,8 +1052,8 @@
             } else if (keyword.type.toLowerCase() === "enum") {
                var translatedEnumValue = $.t("plugins." + pluginInstance.type + ":enumerations." + keyword.typeInfo.name +
                   ".values." + acquisition.value, {
-                     defaultValue: acquisition.value
-                  });
+                  defaultValue: acquisition.value
+               });
                keywordValue = "<span>" + translatedEnumValue + "</span>";
             } else if (keyword.type.toLowerCase() === "json") {
                keywordValue = "<pre class=\"json-value-container\">" + library.json.prettyPrint(JSON.parse(acquisition.value)) +
@@ -1071,12 +1073,11 @@
             keywordValue = "<span>" + acquisition.value + "</span>";
          } // If catch error, the string is not a JSON String
 
-         var acquisitionDate = isNullOrUndefinedOrEmpty(acquisition.date) ? $.t(
-            "modals.dashboard.sub-windows.devices.noAcquisition") : DateTimeFormatter.isoDateToString(acquisition.date);
-         var lastStateValue = "<span>" + acquisitionDate + "</span>";
+         $keywordRow.find("td.keyword-value").html(keywordValue);
       }
 
-      $keywordRow.find("td.keyword-value").html(keywordValue);
-      $keywordRow.find("td.keyword-update").html(lastStateValue);
+      var acquisitionDate = isNullOrUndefinedOrEmpty(acquisition.date) ? $.t(
+         "modals.dashboard.sub-windows.devices.noAcquisition") : DateTimeFormatter.isoDateToString(acquisition.date);
+      $keywordRow.find("td.keyword-update").html("<span>" + acquisitionDate + "</span>");
    }
 </script>
