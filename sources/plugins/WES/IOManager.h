@@ -68,7 +68,7 @@ public:
    //--------------------------------------------------------------
    void OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const std::string& deviceName,
-                                    const shared::CDataContainer& newConfiguration,
+                                    const shared::CDataContainerSharedPtr& newConfiguration,
                                     const int refreshEvent);
 
    //--------------------------------------------------------------
@@ -105,7 +105,7 @@ public:
    /// \brief	    bindMasterDevice
    /// \return a container with all servers equipments that could be used to add a sub-equipment
    //--------------------------------------------------------------
-   shared::CDataContainer bindMasterDevice();
+   shared::CDataContainerSharedPtr bindMasterDevice();
 
 private:
 

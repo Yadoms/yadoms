@@ -5,16 +5,16 @@
 boost::posix_time::time_duration urlManager::httpRequestCreationTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(5)));
 boost::posix_time::time_duration urlManager::httpRequestWESTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(25)));
 
-shared::CDataContainer urlManager::readFileState(
+shared::CDataContainerSharedPtr urlManager::readFileState(
 	Poco::Net::SocketAddress socket,
-    const shared::CDataContainer& credentials,
+    const shared::CDataContainerSharedPtr& credentials,
     const std::string &file,
 	http::httpContext& context,
     const boost::posix_time::time_duration& timeout)
 {
    std::stringstream url;
-   shared::CDataContainer noParameters;
-   shared::CDataContainer response;
+   shared::CDataContainerSharedPtr noParameters = new_CDataContainerSharedPtr();
+   shared::CDataContainerSharedPtr response;
 
    // create the URL
    url << "http://" << socket.toString() << "/WEBPROG/CGX/YADOMS/" + file;
@@ -23,29 +23,29 @@ shared::CDataContainer urlManager::readFileState(
    return response;
 }
 
-shared::CDataContainer urlManager::setRelayState(
+shared::CDataContainerSharedPtr urlManager::setRelayState(
 	Poco::Net::SocketAddress socket,
-    const shared::CDataContainer& credentials,
-    const shared::CDataContainer& parameters,
+    const shared::CDataContainerSharedPtr& credentials,
+    const shared::CDataContainerSharedPtr& parameters,
 	http::httpContext& context)
 {
    std::stringstream url;
-   shared::CDataContainer response;
+   shared::CDataContainerSharedPtr response = new_CDataContainerSharedPtr();
 
    // create the URL
    url << "http://" << socket.toString() << "/RL.cgx";
    YADOMS_LOG(trace) << "URL : " << url.str();
 
-   shared::CDataContainer responseTree = http::CHttpMethods::SendGetRequest(
+   shared::CDataContainerSharedPtr responseTree = http::CHttpMethods::SendGetRequest(
 	   url.str(),
        credentials, 
        parameters,
 	   context,
        httpRequestWESTimeout);
 
-   response.set("Relai1", responseTree.get<std::string>("data.relais.RELAIS1"));
-   response.set("Relai2", responseTree.get<std::string>("data.relais.RELAIS2"));
-   response.printToLog(YADOMS_LOG(trace));
+   response->set("Relai1", responseTree->get<std::string>("data.relais.RELAIS1"));
+   response->set("Relai2", responseTree->get<std::string>("data.relais.RELAIS2"));
+   response->printToLog(YADOMS_LOG(trace));
 
    return response;
 }
