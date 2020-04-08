@@ -84,7 +84,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             setPluginState(api, kupdateConfiguration);
-            onUpdateConfiguration(api->getEventHandler().getEventData<shared::CDataContainer>());
+            onUpdateConfiguration(api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
             setPluginState(api, kRunning);
             break;
          }
@@ -223,7 +223,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             // Extra-query can return success or error indicator. In case of success, can also return data.
             // Return here a success without data (=empty container)
-            extraQuery->sendSuccess(shared::CDataContainer());
+            extraQuery->sendSuccess(new_CDataContainerSharedPtr());
             break;
          }
       case yApi::IYPluginApi::kSetDeviceConfiguration:
@@ -250,11 +250,11 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CWES::onUpdateConfiguration(const shared::CDataContainer& newConfigurationData) const
+void CWES::onUpdateConfiguration(const shared::CDataContainerSharedPtr& newConfigurationData) const
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";
-   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
    m_configuration->initializeWith(newConfigurationData); // Update configuration
 }
 

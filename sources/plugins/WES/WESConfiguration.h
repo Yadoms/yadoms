@@ -21,7 +21,7 @@ public:
    virtual ~CWESConfiguration();
 
    // IWESConfiguration implementation
-   void initializeWith(const shared::CDataContainer& data) override;
+   void initializeWith(const shared::CDataContainerSharedPtr& data) override;
    bool isRetrieveNamesFromdevice() const override;
    // [END] IWESConfiguration implementation
 
@@ -29,5 +29,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
-   shared::CDataContainer m_data;
+   shared::CDataContainerSharedPtr m_data;
 };

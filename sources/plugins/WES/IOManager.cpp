@@ -87,7 +87,7 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 
 void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                              const std::string& deviceName,
-                                             const shared::CDataContainer& newConfiguration,
+                                             const shared::CDataContainerSharedPtr& newConfiguration,
                                              const int refreshEvent)
 {
    for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice){
@@ -97,19 +97,19 @@ void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi
    }
 }
 
-shared::CDataContainer CIOManager::bindMasterDevice()
+shared::CDataContainerSharedPtr CIOManager::bindMasterDevice()
 {
-   shared::CDataContainer ev;
+   shared::CDataContainerSharedPtr ev = new_CDataContainerSharedPtr();
    const auto counter = 0;
 
    for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice){
-      ev.set(boost::lexical_cast<std::string>(counter + 1), (*iteratorDevice)->getDeviceName());
+      ev->set(boost::lexical_cast<std::string>(counter + 1), (*iteratorDevice)->getDeviceName());
    }
 
-   shared::CDataContainer en;
-   en.set("type", "enum");
-   en.set("values", ev);
-   en.set("defaultValue", "1");
+   shared::CDataContainerSharedPtr en = new_CDataContainerSharedPtr();
+   en->set("type", "enum");
+   en->set("values", ev);
+   en->set("defaultValue", "1");
 
    return en;
 }

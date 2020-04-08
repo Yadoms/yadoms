@@ -120,8 +120,8 @@ namespace equipments
 	   m_keywords.push_back(m_teleInfoStatus);
 
 	   std::string model = "TIC Id = " + counterId;
-	   shared::CDataContainer details;
-	   details.set("type", m_deviceType);
+	   shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+	   details->set("type", m_deviceType);
 
 	   //Déclaration of all IOs
 	   if (!api->deviceExists(m_deviceName)) {

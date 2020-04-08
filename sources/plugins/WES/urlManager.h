@@ -25,9 +25,9 @@ public:
    /// \param[in]  timeout             time out of the request
    /// \return     the preprocess answer of the request
    //--------------------------------------------------------------
-   static shared::CDataContainer readFileState(
+   static shared::CDataContainerSharedPtr readFileState(
 	   Poco::Net::SocketAddress socket,
-       const shared::CDataContainer& credentials,
+       const shared::CDataContainerSharedPtr& credentials,
        const std::string &file,
 	   http::httpContext& context,
        const boost::posix_time::time_duration& timeout = http::CHttpMethods::httpRequestDefaultTimeout);
@@ -40,9 +40,9 @@ public:
    /// \param[in]  context             context specific for each equipment for sending information
    /// \return     the answer of the request
    //--------------------------------------------------------------
-   static shared::CDataContainer setRelayState(
+   static shared::CDataContainerSharedPtr setRelayState(
 	   Poco::Net::SocketAddress socket,
-       const shared::CDataContainer& credentials,
-       const shared::CDataContainer& parameters,
+       const shared::CDataContainerSharedPtr& credentials,
+       const shared::CDataContainerSharedPtr& parameters,
 	   http::httpContext& context);
 };

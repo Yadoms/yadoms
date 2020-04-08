@@ -16,17 +16,17 @@ namespace http
 
    bool CHttpMethods::SendGetRequest(
 	   const std::string& url,
-       const shared::CDataContainer& credentials,
-       const shared::CDataContainer& parameters,
-       boost::function1<void, shared::CDataContainer&> onReceive,
+       const shared::CDataContainerSharedPtr& credentials,
+       const shared::CDataContainerSharedPtr& parameters,
+       boost::function1<void, shared::CDataContainerSharedPtr&> onReceive,
 	   http::httpContext& context,
        const boost::posix_time::time_duration& timeout)
    {
       try{
-         auto mapParameters = parameters.getAsMap<std::string>();
+         auto mapParameters = parameters->getAsMap<std::string>();
          Poco::URI uri(url);
 
-         if (!parameters.empty()){
+         if (!parameters->empty()){
             for (const auto& parametersIterator : mapParameters)
                uri.addQueryParameter(parametersIterator.first, parametersIterator.second);
          }
@@ -52,7 +52,7 @@ namespace http
 
 		 std::string buffer;
 		 if (context.basicCredential()){
-			Poco::Net::HTTPBasicCredentials creds(credentials.get<std::string>("user"),credentials.get<std::string>("password"));
+			Poco::Net::HTTPBasicCredentials creds(credentials->get<std::string>("user"),credentials->get<std::string>("password"));
 			creds.authenticate(request);
             session.sendRequest(request);
             auto& receiveSecureStream = session.receiveResponse(response);
@@ -63,9 +63,9 @@ namespace http
          }
 
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK){
-            shared::CDataContainer data;
+            shared::CDataContainerSharedPtr data;
             std::istringstream oss1(buffer);
-            shared::CDataContainer treeResponse;
+            shared::CDataContainerSharedPtr treeResponse;
 
             if (XmlResponseReader(oss1, response, treeResponse)){
                onReceive(treeResponse);
@@ -96,20 +96,20 @@ namespace http
       }
    }
 
-   shared::CDataContainer CHttpMethods::SendGetRequest(
+   shared::CDataContainerSharedPtr CHttpMethods::SendGetRequest(
 	   const std::string& url,
-       const shared::CDataContainer& parameters,
+       const shared::CDataContainerSharedPtr& parameters,
 	   http::httpContext& context,
        const boost::posix_time::time_duration& timeout)
    {
-      shared::CDataContainer responseData;
-      shared::CDataContainer credentials;
+      shared::CDataContainerSharedPtr responseData;
+      shared::CDataContainerSharedPtr credentials;
 
       SendGetRequest(
 		  url,
           credentials,
           parameters,
-          [&](shared::CDataContainer& data)
+          [&](shared::CDataContainerSharedPtr& data)
           {
              responseData = data;
           },
@@ -119,20 +119,20 @@ namespace http
       return responseData;
    }
 
-   shared::CDataContainer CHttpMethods::SendGetRequest(
+   shared::CDataContainerSharedPtr CHttpMethods::SendGetRequest(
 	   const std::string& url,
-       const shared::CDataContainer& credentials,
-       const shared::CDataContainer& parameters,
+       const shared::CDataContainerSharedPtr& credentials,
+       const shared::CDataContainerSharedPtr& parameters,
 	   http::httpContext& context,
        const boost::posix_time::time_duration& timeout)
    {
-      shared::CDataContainer responseData;
+      shared::CDataContainerSharedPtr responseData;
 
       SendGetRequest(
 		  url,
           credentials,
           parameters,
-          [&](shared::CDataContainer& data)
+          [&](shared::CDataContainerSharedPtr& data)
           {
               responseData = data;
           },
@@ -143,7 +143,7 @@ namespace http
    }
 
    //keep this method out of class scope, to avoid including boot/property_tree headers
-   void parseNode(shared::CDataContainer &container, boost::property_tree::ptree node)
+   void parseNode(shared::CDataContainerSharedPtr &container, boost::property_tree::ptree node)
    {
       boost::property_tree::ptree::const_iterator end = node.end();
       std::string attributeName;
@@ -153,7 +153,7 @@ namespace http
       {
          if (it->second.size() != 0)
          {
-            shared::CDataContainer subNode;
+            shared::CDataContainerSharedPtr subNode;
             parseNode(container, it->second);
          }
          else
@@ -166,12 +166,12 @@ namespace http
          }
       }
 
-      container.set(attributeName, attributeValue);
+      container->set(attributeName, attributeValue);
    }
 
    bool CHttpMethods::XmlResponseReader(std::istream& stream,
                                         Poco::Net::HTTPResponse& httpresponse,
-                                        shared::CDataContainer& treeResponse)
+                                        shared::CDataContainerSharedPtr& treeResponse)
    {
       if (boost::icontains(httpresponse.getContentType(), "text/xml"))
       {
