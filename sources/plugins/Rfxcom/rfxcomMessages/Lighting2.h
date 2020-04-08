@@ -17,12 +17,12 @@ namespace rfxcomMessages
    public:
       CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                  boost::shared_ptr<const yApi::IDeviceCommand> command,
-                 const shared::CDataContainer& deviceDetails);
+                 const shared::CDataContainerSharedPtr& deviceDetails);
 
       CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                  unsigned int subType,
                  const std::string& name,
-                 const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+                 const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration);
 
       CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                  const RBUF& rbuf,
@@ -57,7 +57,7 @@ namespace rfxcomMessages
                                          unsigned int id,
                                          unsigned char unitCode);
 
-      static shared::CDataContainer buildDeviceDetails(unsigned char subType,
+      static shared::CDataContainerSharedPtr buildDeviceDetails(unsigned char subType,
                                                        unsigned char houseCode,
                                                        unsigned int id,
                                                        unsigned char unitCode);
@@ -88,7 +88,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       std::string m_deviceName;
 
-      shared::CDataContainer m_deviceDetails;
+      shared::CDataContainerSharedPtr m_deviceDetails;
 
       //--------------------------------------------------------------
       /// \brief	The sub-type management

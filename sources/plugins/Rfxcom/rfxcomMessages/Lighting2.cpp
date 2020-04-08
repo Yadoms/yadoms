@@ -10,14 +10,14 @@ namespace rfxcomMessages
 {
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           boost::shared_ptr<const yApi::IDeviceCommand> command,
-                          const shared::CDataContainer& deviceDetails)
+                          const shared::CDataContainerSharedPtr& deviceDetails)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
    {
-      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
-      m_houseCode = (m_subType == sTypeKambrook) ? static_cast<unsigned char>(deviceDetails.get<unsigned int>("houseCode")) : 0;
-      m_id = deviceDetails.get<unsigned int>("id");
-      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
+      m_subType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType"));
+      m_houseCode = (m_subType == sTypeKambrook) ? static_cast<unsigned char>(deviceDetails->get<unsigned int>("houseCode")) : 0;
+      m_id = deviceDetails->get<unsigned int>("id");
+      m_unitCode = static_cast<unsigned char>(deviceDetails->get<unsigned int>("unitCode"));
 
       m_subTypeManager = createSubType(m_subType);
       m_subTypeManager->set(command);
@@ -31,16 +31,16 @@ namespace rfxcomMessages
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const std::string& name,
-                          const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                          const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
    {
       m_subType = static_cast<unsigned char>(subType);
-      m_houseCode = m_subType == sTypeKambrook ? (manuallyDeviceCreationConfiguration.get<char>("houseCode", 0) - 'A') : 0;
-      m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
-      const auto deviceType = manuallyDeviceCreationConfiguration.get<std::string>("type") == "onOff" ? ILighting2Subtype::kOnOff : ILighting2Subtype::kDimmable;
+      m_houseCode = m_subType == sTypeKambrook ? (manuallyDeviceCreationConfiguration->get<char>("houseCode", 0) - 'A') : 0;
+      m_id = manuallyDeviceCreationConfiguration->get<unsigned int>("id");
+      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration->get<unsigned int>("unitCode"));
+      const auto deviceType = manuallyDeviceCreationConfiguration->get<std::string>("type") == "onOff" ? ILighting2Subtype::kOnOff : ILighting2Subtype::kDimmable;
       m_deviceDetails = buildDeviceDetails(m_subType,
                                            m_houseCode,
                                            m_id,
@@ -147,7 +147,7 @@ namespace rfxcomMessages
       const auto model = m_subTypeManager->getModel();
       api->declareDevice(m_deviceName, model, model);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
+      m_deviceDetails->printToLog(YADOMS_LOG(information));
 
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
       api->declareKeywords(m_deviceName, m_keywords);
@@ -178,20 +178,20 @@ namespace rfxcomMessages
       return ssdeviceName.str();
    }
 
-   shared::CDataContainer CLighting2::buildDeviceDetails(unsigned char subType,
+   shared::CDataContainerSharedPtr CLighting2::buildDeviceDetails(unsigned char subType,
                                                          unsigned char houseCode,
                                                          unsigned int id,
                                                          unsigned char unitCode)
    {
-      shared::CDataContainer deviceDetails;
-      if (deviceDetails.empty())
+      shared::CDataContainerSharedPtr deviceDetails = new_CDataContainerSharedPtr();
+      if (deviceDetails->empty())
       {
-         deviceDetails.set("type", pTypeLighting2);
-         deviceDetails.set("subType", subType);
+         deviceDetails->set("type", pTypeLighting2);
+         deviceDetails->set("subType", subType);
          if (subType == sTypeKambrook)
-            deviceDetails.set("houseCode", houseCode);
-         deviceDetails.set("id", id);
-         deviceDetails.set("unitCode", unitCode);
+            deviceDetails->set("houseCode", houseCode);
+         deviceDetails->set("id", id);
+         deviceDetails->set("unitCode", unitCode);
       }
       return deviceDetails;
    }

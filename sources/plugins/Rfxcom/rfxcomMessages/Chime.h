@@ -18,12 +18,12 @@ namespace rfxcomMessages
    public:
       CChime(boost::shared_ptr<yApi::IYPluginApi> api,
              const std::string& command,
-             const shared::CDataContainer& deviceDetails);
+             const shared::CDataContainerSharedPtr& deviceDetails);
 
       CChime(boost::shared_ptr<yApi::IYPluginApi> api,
              unsigned int subType,
              const std::string& name,
-             const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+             const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration);
 
       CChime(boost::shared_ptr<yApi::IYPluginApi> api,
              const RBUF& rbuf,
@@ -70,7 +70,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       std::string m_deviceName;
 
-      shared::CDataContainer m_deviceDetails;
+      shared::CDataContainerSharedPtr m_deviceDetails;
 
       //--------------------------------------------------------------
       /// \brief	The sub-type management

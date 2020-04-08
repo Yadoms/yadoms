@@ -20,7 +20,7 @@ public:
    virtual ~CSigfoxConfiguration();
 
    // ISigfoxConfiguration implementation
-   void initializeWith(const shared::CDataContainer& data) override;
+   void initializeWith(const shared::CDataContainerSharedPtr& data) override;
    double getRssiMin() const override;
    double getRssiMax() const override;
    double getTensionMin() const override;
@@ -32,5 +32,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
-   shared::CDataContainer m_data;
+   shared::CDataContainerSharedPtr m_data;
 };

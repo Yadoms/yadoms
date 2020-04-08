@@ -66,8 +66,8 @@ namespace rfxcomMessages
       return m_cmndByte;
    }
 
-   unsigned long CFanItho::idFromConfiguration(const shared::CDataContainer& configuration) const
+   unsigned long CFanItho::idFromConfiguration(const shared::CDataContainerSharedPtr& configuration) const
    {
-      return configuration.get<unsigned int>("id");
+      return configuration->get<unsigned int>("id");
    }
 } // namespace rfxcomMessages

@@ -126,7 +126,7 @@ namespace rfxcomMessages
    {
    }
 
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCartelectronicTIC::keywords(const shared::CDataContainer& deviceConfiguration)
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCartelectronicTIC::keywords(const shared::CDataContainerSharedPtr& deviceConfiguration)
    {
       return m_keywords;
    }

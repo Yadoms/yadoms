@@ -10,19 +10,20 @@ namespace rfxcomMessages
 {
    CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string& command,
-                      const shared::CDataContainer& deviceDetails)
+                      const shared::CDataContainerSharedPtr& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state, m_batteryLevel, m_signalPower})
+        m_keywords({m_state, m_batteryLevel, m_signalPower}),
+        m_deviceDetails(new_CDataContainerSharedPtr())
    {
       m_state->setCommand(command);
       m_batteryLevel->set(100);
       m_signalPower->set(0);
 
-      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
-      m_id = deviceDetails.get<unsigned int>("id");
-      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
+      m_subType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType"));
+      m_id = deviceDetails->get<unsigned int>("id");
+      m_unitCode = static_cast<unsigned char>(deviceDetails->get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
@@ -33,12 +34,13 @@ namespace rfxcomMessages
    CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
                       unsigned int subType,
                       const std::string& name,
-                      const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                      const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state, m_batteryLevel, m_signalPower})
+        m_keywords({m_state, m_batteryLevel, m_signalPower}),
+        m_deviceDetails(new_CDataContainerSharedPtr())
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
       m_batteryLevel->set(100);
@@ -68,8 +70,8 @@ namespace rfxcomMessages
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
 
-      m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-      m_unitCode = manuallyDeviceCreationConfiguration.getWithDefault<unsigned char>("unitCode", 0);
+      m_id = manuallyDeviceCreationConfiguration->get<unsigned int>("id");
+      m_unitCode = manuallyDeviceCreationConfiguration->getWithDefault<unsigned char>("unitCode", 0);
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -169,12 +171,12 @@ namespace rfxcomMessages
 
    void CBlinds1::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeBlinds);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_id);
-         m_deviceDetails.set("unitCode", m_unitCode);
+         m_deviceDetails->set("type", pTypeBlinds);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_id);
+         m_deviceDetails->set("unitCode", m_unitCode);
       }
    }
 
@@ -284,7 +286,7 @@ namespace rfxcomMessages
                          m_keywords,
                          m_deviceDetails);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
+      m_deviceDetails->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CBlinds1::getDeviceName() const

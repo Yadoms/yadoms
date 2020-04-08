@@ -70,13 +70,13 @@ namespace rfxcomMessages
    }
 
    const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCartelectronicEncoder::keywords(
-      const shared::CDataContainer& deviceConfiguration)
+      const shared::CDataContainerSharedPtr& deviceConfiguration)
    {
       m_keywords.clear();
 
-      if (!deviceConfiguration.empty() && deviceConfiguration.exists("counter1Configuration"))
+      if (!deviceConfiguration->empty() && deviceConfiguration->exists("counter1Configuration"))
       {
-         const auto counter1Configuration = deviceConfiguration.get<std::string>("counter1Configuration");
+         const auto counter1Configuration = deviceConfiguration->get<std::string>("counter1Configuration");
          if (counter1Configuration == "energyWh")
             m_keywords.push_back(m_energyKw1);
          else if (counter1Configuration == "waterLiter")
@@ -90,7 +90,7 @@ namespace rfxcomMessages
          else
             m_keywords.push_back(m_counterKw1);
 
-         const auto counter2Configuration = deviceConfiguration.get<std::string>("counter2Configuration");
+         const auto counter2Configuration = deviceConfiguration->get<std::string>("counter2Configuration");
          if (counter2Configuration == "energyWh")
             m_keywords.push_back(m_energyKw2);
          else if (counter2Configuration == "waterLiter")

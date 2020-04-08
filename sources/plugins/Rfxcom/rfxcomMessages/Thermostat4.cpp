@@ -10,7 +10,7 @@ namespace rfxcomMessages
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
                               const std::string& keyword,
                               const std::string& command,
-                              const shared::CDataContainer& deviceDetails)
+                              const shared::CDataContainerSharedPtr& deviceDetails)
       : m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
         m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
@@ -37,7 +37,7 @@ namespace rfxcomMessages
          return;
       }
 
-      m_unitCode = deviceDetails.get<unsigned int>("unitCode");
+      m_unitCode = deviceDetails->get<unsigned int>("unitCode");
 
       // Build device description
       buildDeviceModel();
@@ -48,7 +48,7 @@ namespace rfxcomMessages
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
                               const std::string& name,
-                              const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                              const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
@@ -80,7 +80,7 @@ namespace rfxcomMessages
       if (m_subType != sTypeMCZ1 && m_subType != sTypeMCZ2 && m_subType != sTypeMCZ3)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode");
+      m_unitCode = manuallyDeviceCreationConfiguration->get<unsigned int>("unitCode");
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -113,11 +113,11 @@ namespace rfxcomMessages
 
    void CThermostat4::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeThermostat4);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("unitCode", m_unitCode);
+         m_deviceDetails->set("type", pTypeThermostat4);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("unitCode", m_unitCode);
       }
    }
 
