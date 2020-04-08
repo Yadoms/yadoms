@@ -25,7 +25,7 @@ public:
    CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
                   const std::string& device,
                   const ISIConfiguration& configuration,
-                  shared::CDataContainer details);
+                  shared::CDataContainerSharedPtr details);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -54,7 +54,7 @@ public:
    //--------------------------------------------------------------
    void OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                               const ISIConfiguration& configuration,
-                              shared::CDataContainer details);
+                              shared::CDataContainerSharedPtr details);
 
 private:
    //--------------------------------------------------------------
