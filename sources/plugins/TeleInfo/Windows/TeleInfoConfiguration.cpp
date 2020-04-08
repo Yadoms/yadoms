@@ -3,6 +3,7 @@
 #include <shared/Log.h>
 
 CTeleInfoConfiguration::CTeleInfoConfiguration()
+   :m_data(new_CDataContainerSharedPtr())
 {
 }
 
@@ -10,20 +11,20 @@ CTeleInfoConfiguration::~CTeleInfoConfiguration()
 {
 }
 
-void CTeleInfoConfiguration::initializeWith(const shared::CDataContainer& data)
+void CTeleInfoConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
 {
-   m_data.initializeWith(data);
+   m_data->initializeWith(data);
 }
 
 std::string CTeleInfoConfiguration::getSerialPort() const
 {
-   return m_data.get<std::string>("SerialPort");
+   return m_data->get<std::string>("SerialPort");
 }
 
 EEquipmentType CTeleInfoConfiguration::getEquipmentType() const
 {
    try {
-      std::string temp = m_data.get<std::string>("EquipmentType.activeSectionText");
+      std::string temp = m_data->get<std::string>("EquipmentType.activeSectionText");
       if (temp == "1xTIC")
          return OneInput;
       else
@@ -43,7 +44,7 @@ EInputsActivated CTeleInfoConfiguration::getInputsActivated() const
    try {
       if (getEquipmentType() == TwoInputs)
       {
-         std::string temp = m_data.get<std::string>("EquipmentType.content.second.content.portEnabled");
+         std::string temp = m_data->get<std::string>("EquipmentType.content.second.content.portEnabled");
          if (temp == "1xInputEnabled")
             return Input1Activated;
          else if (temp == "2xInputsEnabled")

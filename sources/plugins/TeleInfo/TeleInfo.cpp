@@ -131,7 +131,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             setPluginState(api, ETeleInfoPluginState::kupdateConfiguration);
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
             setPluginState(api, ETeleInfoPluginState::kRunning);
             break;
          }
@@ -203,11 +203,11 @@ void CTeleInfo::destroyConnection()
 }
 
 void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                      const shared::CDataContainer& newConfigurationData)
+                                      const shared::CDataContainerSharedPtr& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;
-   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // If plugin instance is not running, just update configuration
    if (!m_port)
