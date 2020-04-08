@@ -3,6 +3,7 @@
 #include "../OpenZWaveHelpers.h"
 
 CStringTypeInfo::CStringTypeInfo(OpenZWave::ValueID& vID)
+   :m_data(new_CDataContainerSharedPtr())
 {
    initialize(vID);
 }
@@ -11,7 +12,7 @@ CStringTypeInfo::~CStringTypeInfo()
 {
 }
 
-shared::CDataContainer CStringTypeInfo::serialize() const
+shared::CDataContainerSharedPtr CStringTypeInfo::serialize() const
 {
    return m_data;
 }
@@ -23,7 +24,7 @@ void CStringTypeInfo::initialize(OpenZWave::ValueID& vID)
    std::string description;
    COpenZWaveHelpers::GetStringValueInfo(vID, name, description);
 
-   m_data.set("name", name);
-   m_data.set("description", description);
+   m_data->set("name", name);
+   m_data->set("description", description);
 }
 
