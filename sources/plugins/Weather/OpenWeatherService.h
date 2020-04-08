@@ -22,18 +22,18 @@ public:
 private:
    std::string getForecastWeatherDeviceNameForDay(unsigned int forecastDay) const;
    std::string getForecastWeatherDeviceNameForHour(unsigned int forecastHour) const;
-   static shared::CDataContainer syncRequest(const std::string& url);
+   static shared::CDataContainerSharedPtr syncRequest(const std::string& url);
    void requestLiveWeather(boost::shared_ptr<const shared::ILocation> forLocation) const;
-   void processLiveWeatherAnswer(const shared::CDataContainer& weatherData,
-                                 const shared::CDataContainer& uvIndexData) const;
+   void processLiveWeatherAnswer(const shared::CDataContainerSharedPtr& weatherData,
+                                 const shared::CDataContainerSharedPtr& uvIndexData) const;
    void requestForecastWeather(boost::shared_ptr<const shared::ILocation> forLocation) const;
    void historize3HoursForecast(unsigned int hourIndex,
                                 const boost::posix_time::ptime& forecastDatetime,
-                                const shared::CDataContainer& forecast) const;
-   void historizeDaysForecast(const std::map<int, std::vector<shared::CDataContainer>>& forecastDataByDay,
+                                const shared::CDataContainerSharedPtr& forecast) const;
+   void historizeDaysForecast(const std::map<int, std::vector<shared::CDataContainerSharedPtr>>& forecastDataByDay,
                               const std::map<int, double>& uvIndexByDay) const;
-   void processForecastWeatherAnswer(const shared::CDataContainer& weatherData,
-                                     const shared::CDataContainer& uvIndexData) const;
+   void processForecastWeatherAnswer(const shared::CDataContainerSharedPtr& weatherData,
+                                     const shared::CDataContainerSharedPtr& uvIndexData) const;
    static yApi::historization::EWeatherCondition toYadomsCondition(int owConditionCode);
    static yApi::historization::EWeatherCondition toYadomsConditionsFromOwThunderstorm(int owConditionCode);
    static yApi::historization::EWeatherCondition toYadomsConditionsFromOwDrizzle(int owConditionCode);
