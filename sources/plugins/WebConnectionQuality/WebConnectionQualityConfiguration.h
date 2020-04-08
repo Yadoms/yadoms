@@ -11,7 +11,7 @@ class CWebConnectionQualityConfiguration
 public:
    virtual ~CWebConnectionQualityConfiguration();
 
-   void initializeWith(const shared::CDataContainer& data);
+   void initializeWith(const shared::CDataContainerSharedPtr& data);
    void trace() const;
 
    unsigned int periodicityInMinutes() const;

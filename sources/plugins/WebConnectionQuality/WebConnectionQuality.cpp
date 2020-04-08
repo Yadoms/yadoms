@@ -66,7 +66,7 @@ void CWebConnectionQuality::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
+            const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>();
             YADOMS_LOG(information) << "Update configuration...";
 
             m_configuration.initializeWith(newConfiguration);
