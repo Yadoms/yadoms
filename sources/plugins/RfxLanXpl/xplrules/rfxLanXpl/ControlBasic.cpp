@@ -54,8 +54,8 @@ namespace xplrules
             break;
          }
 
-         shared::CDataContainer innerDetails;
-         innerDetails.set("type", type);
+         shared::CDataContainerSharedPtr innerDetails = new_CDataContainerSharedPtr();
+         innerDetails->set("type", type);
          return CDeviceIdentifier(msg.getBodyValue(m_keywordDevice),
                                   commercialName,
                                   CSensorBasic::getProtocol(),
@@ -88,7 +88,7 @@ namespace xplrules
       // ICommandRule implemntation
       boost::shared_ptr<xplcore::CXplMessage> CControlBasic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand>& commandData,
                                                                               const std::string& rfxAddress,
-                                                                              const shared::CDataContainer& innerDetails)
+                                                                              const shared::CDataContainerSharedPtr& innerDetails)
       {
          ////////////////////////////
          // create the message
@@ -116,7 +116,7 @@ namespace xplrules
          //set the device address and unit (parse from argetDevice.Address)
          newMessage->addToBody(m_keywordDevice, device);
 
-         auto type = innerDetails.get<EType>("type");
+         auto type = innerDetails->get<EType>("type");
          switch (type)
          {
          case EType::kMertikValue:

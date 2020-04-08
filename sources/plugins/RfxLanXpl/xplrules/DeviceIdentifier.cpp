@@ -7,7 +7,7 @@ namespace xplrules
                                         const std::string& commercialName,
                                         const xplcore::CXplMessageSchemaIdentifier& readingProtocol,
                                         const xplcore::CXplMessageSchemaIdentifier& writingProtocol,
-                                        const shared::CDataContainer& innerDetails)
+                                        const shared::CDataContainerSharedPtr& innerDetails)
       : m_id(id),
         m_commercialName(commercialName),
         m_xplProtocolReading(readingProtocol),
@@ -44,7 +44,7 @@ namespace xplrules
       return m_xplProtocolWriting;
    }
 
-   const shared::CDataContainer& CDeviceIdentifier::getInnerDetails() const
+   const shared::CDataContainerSharedPtr& CDeviceIdentifier::getInnerDetails() const
    {
       return m_innerDetails;
    }
