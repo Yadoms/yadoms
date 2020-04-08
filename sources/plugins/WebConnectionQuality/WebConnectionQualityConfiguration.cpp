@@ -6,7 +6,7 @@ CWebConnectionQualityConfiguration::~CWebConnectionQualityConfiguration()
 {
 }
 
-void CWebConnectionQualityConfiguration::initializeWith(const shared::CDataContainer& data)
+void CWebConnectionQualityConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
 {
    m_configuration.initializeWith(data);
 }
