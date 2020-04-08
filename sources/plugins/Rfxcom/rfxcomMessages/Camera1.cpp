@@ -10,16 +10,17 @@ namespace rfxcomMessages
 {
    CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string& command,
-                      const shared::CDataContainer& deviceDetails)
+                      const shared::CDataContainerSharedPtr& deviceDetails)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_camera , m_signalPower})
+        m_keywords({m_camera , m_signalPower}),
+        m_deviceDetails(new_CDataContainerSharedPtr())
    {
       m_camera->setCommand(command);
       m_signalPower->set(0);
 
-      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
-      m_houseCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("houseCode"));
+      m_subType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType"));
+      m_houseCode = static_cast<unsigned char>(deviceDetails->get<unsigned int>("houseCode"));
 
       // Build device description
       buildDeviceModel();
@@ -30,11 +31,13 @@ namespace rfxcomMessages
    CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> api,
                       unsigned int subType,
                       const std::string& name,
-                      const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                      const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_camera , m_signalPower})
+        m_keywords({m_camera , m_signalPower}),
+        m_deviceDetails(new_CDataContainerSharedPtr())
+
    {
       m_camera->set(yApi::historization::ECameraMoveCommand::kCenterPosition);
       m_signalPower->set(0);
@@ -43,7 +46,7 @@ namespace rfxcomMessages
       if (m_subType != sTypeNinja)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
-      m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("houseCode"));
+      m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration->get<char>("houseCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -55,7 +58,8 @@ namespace rfxcomMessages
                       size_t rbufSize)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_camera , m_signalPower})
+        m_keywords({m_camera , m_signalPower}),
+        m_deviceDetails(new_CDataContainerSharedPtr())
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -81,11 +85,11 @@ namespace rfxcomMessages
 
    void CCamera1::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeCamera);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("houseCode", m_houseCode);
+         m_deviceDetails->set("type", pTypeCamera);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("houseCode", m_houseCode);
       }
    }
 
@@ -123,7 +127,7 @@ namespace rfxcomMessages
                          m_keywords,
                          m_deviceDetails);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
+      m_deviceDetails->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CCamera1::getDeviceName() const

@@ -15,15 +15,15 @@ namespace rfxcomMessages
 {
    CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
                     const std::string& command,
-                    const shared::CDataContainer& deviceDetails)
+                    const shared::CDataContainerSharedPtr& deviceDetails)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
    {
       m_signalPower->set(0);
 
-      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
+      createSubType(static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType")));
       m_subTypeManager->set(command);
-      m_id = deviceDetails.get<unsigned int>("id");
+      m_id = deviceDetails->get<unsigned int>("id");
 
       buildDeviceName();
    }
@@ -102,14 +102,14 @@ namespace rfxcomMessages
 
    void CRemote::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      shared::CDataContainer details;
-      details.set("type", pTypeRemote);
-      details.set("subType", m_subType);
-      details.set("id", m_id);
+      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      details->set("type", pTypeRemote);
+      details->set("subType", m_subType);
+      details->set("id", m_id);
       auto model = m_subTypeManager->getModel();
       api->declareDevice(m_deviceName, model, model, m_keywords, details);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-      details.printToLog(YADOMS_LOG(information));
+      details->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CRemote::getDeviceName() const

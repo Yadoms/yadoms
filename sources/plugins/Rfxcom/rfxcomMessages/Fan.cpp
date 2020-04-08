@@ -18,11 +18,11 @@ namespace rfxcomMessages
    CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& keyword,
               const std::string& command,
-              const shared::CDataContainer& deviceDetails)
+              const shared::CDataContainerSharedPtr& deviceDetails)
    {
-      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
+      createSubType(static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType")));
       m_subTypeManager->set(keyword, command);
-      m_id = deviceDetails.get<unsigned int>("id");
+      m_id = deviceDetails->get<unsigned int>("id");
 
       // Build device description
       buildDeviceName();
@@ -32,7 +32,7 @@ namespace rfxcomMessages
    CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api,
               unsigned int subType,
               const std::string& name,
-              const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+              const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
       : m_deviceName(name)
    {
       createSubType(static_cast<unsigned char>(subType));
@@ -61,11 +61,11 @@ namespace rfxcomMessages
 
    void CFan::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeFan);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_id);
+         m_deviceDetails->set("type", pTypeFan);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_id);
       }
    }
 

@@ -10,14 +10,14 @@ namespace rfxcomMessages
 {
    CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api,
                         const std::string& command,
-                        const shared::CDataContainer& deviceDetails)
+                        const shared::CDataContainerSharedPtr& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
    {
       m_state->setCommand(command);
 
-      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
-      m_houseCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("houseCode"));
-      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
+      m_subType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType"));
+      m_houseCode = static_cast<unsigned char>(deviceDetails->get<unsigned int>("houseCode"));
+      m_unitCode = static_cast<unsigned char>(deviceDetails->get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
@@ -28,7 +28,7 @@ namespace rfxcomMessages
    CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api,
                         unsigned int subType,
                         const std::string& name,
-                        const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                        const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
       : m_subType(0),
         m_houseCode(0),
         m_unitCode(0),
@@ -41,8 +41,8 @@ namespace rfxcomMessages
       if (m_subType != sTypeHarrison)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
-      m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("houseCode"));
-      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
+      m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration->get<char>("houseCode"));
+      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration->get<unsigned int>("unitCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -67,12 +67,12 @@ namespace rfxcomMessages
 
    void CCurtain1::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeCurtain);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("houseCode", m_houseCode);
-         m_deviceDetails.set("unitCode", m_unitCode);
+         m_deviceDetails->set("type", pTypeCurtain);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("houseCode", m_houseCode);
+         m_deviceDetails->set("unitCode", m_unitCode);
       }
    }
 

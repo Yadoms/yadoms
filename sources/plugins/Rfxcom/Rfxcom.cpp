@@ -110,7 +110,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                setPluginState(api, yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
 
                break;
             }
@@ -282,11 +282,11 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const shared::CDataContainer& newConfigurationData)
+                                    const shared::CDataContainerSharedPtr& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";
-   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // If plugin instance is not running, just update configuration
    if (!m_port)
@@ -453,7 +453,7 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
       updater->update();
 
       YADOMS_LOG(information) << "RFXCom firmware successufuly updated";
-      extraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
+      extraQuery->sendSuccess(new_CDataContainerSharedPtr());
    }
    catch (std::exception& e)
    {

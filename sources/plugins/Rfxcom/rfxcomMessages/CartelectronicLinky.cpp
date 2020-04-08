@@ -90,7 +90,7 @@ namespace rfxcomMessages
    {
    }
 
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCartelectronicLinky::keywords(const shared::CDataContainer& deviceConfiguration)
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCartelectronicLinky::keywords(const shared::CDataContainerSharedPtr& deviceConfiguration)
    {
       return m_keywords;
    }

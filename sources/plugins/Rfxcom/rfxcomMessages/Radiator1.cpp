@@ -11,7 +11,7 @@ namespace rfxcomMessages
    CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& keyword,
                           const std::string& command,
-                          const shared::CDataContainer& deviceDetails)
+                          const shared::CDataContainerSharedPtr& deviceDetails)
       : m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
         m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
@@ -32,9 +32,9 @@ namespace rfxcomMessages
 
       m_signalPower->set(0);
 
-      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
-      m_id = deviceDetails.get<unsigned int>("id");
-      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
+      m_subType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType"));
+      m_id = deviceDetails->get<unsigned int>("id");
+      m_unitCode = static_cast<unsigned char>(deviceDetails->get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
@@ -45,7 +45,7 @@ namespace rfxcomMessages
    CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const std::string& name,
-                          const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                          const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_dayNightCmd(false),
         m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
@@ -66,8 +66,8 @@ namespace rfxcomMessages
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
 
-      m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
+      m_id = manuallyDeviceCreationConfiguration->get<unsigned int>("id");
+      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration->get<unsigned int>("unitCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -96,12 +96,12 @@ namespace rfxcomMessages
 
    void CRadiator1::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeRadiator1);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_id);
-         m_deviceDetails.set("unitCode", m_unitCode);
+         m_deviceDetails->set("type", pTypeRadiator1);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_id);
+         m_deviceDetails->set("unitCode", m_unitCode);
       }
    }
 

@@ -17,7 +17,7 @@ namespace rfxcomMessages
    public:
       CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& command,
-              const shared::CDataContainer& deviceDetails);
+              const shared::CDataContainerSharedPtr& deviceDetails);
 
       CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
               const RBUF& rbuf,

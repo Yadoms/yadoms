@@ -10,10 +10,11 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace rfxcomMessages
 {
    CWeather::CWeather(boost::shared_ptr<yApi::IYPluginApi> api,
-                      const RBUF& rbuf,
-                      size_t rbufSize)
+      const RBUF& rbuf,
+      size_t rbufSize)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("batteryLevel")),
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("batteryLevel")),
+      m_deviceDetails(new_CDataContainerSharedPtr()),
         m_keywords({m_signalPower})
    {
       CheckReceivedMessage(rbuf,
@@ -47,11 +48,11 @@ namespace rfxcomMessages
 
    void CWeather::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeWEATHER);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_id);
+         m_deviceDetails->set("type", pTypeWEATHER);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_id);
       }
    }
 
@@ -93,7 +94,7 @@ namespace rfxcomMessages
       const auto model = m_subTypeManager->getModel();
       api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
+      m_deviceDetails->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CWeather::getDeviceName() const

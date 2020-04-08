@@ -16,12 +16,12 @@ namespace rfxcomMessages
    public:
       CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
                const std::string& command,
-               const shared::CDataContainer& deviceDetails);
+               const shared::CDataContainerSharedPtr& deviceDetails);
 
       CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
                unsigned int subType,
                const std::string& name,
-               const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+               const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration);
 
       CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
                const RBUF& rbuf,
@@ -85,7 +85,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       std::string m_deviceModel;
 
-      shared::CDataContainer m_deviceDetails;
+      shared::CDataContainerSharedPtr m_deviceDetails;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state

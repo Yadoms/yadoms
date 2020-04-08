@@ -11,15 +11,15 @@ namespace rfxcomMessages
 {
    CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& command,
-                          const shared::CDataContainer& deviceDetails)
+                          const shared::CDataContainerSharedPtr& deviceDetails)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_keyword , m_signalPower})
    {
       m_signalPower->set(0);
 
-      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
-      m_id = deviceDetails.get<unsigned int>("id");
+      m_subType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType"));
+      m_id = deviceDetails->get<unsigned int>("id");
 
       // Build device description
       buildDeviceModel();
@@ -30,7 +30,7 @@ namespace rfxcomMessages
    CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const std::string& name,
-                          const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                          const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
@@ -42,7 +42,7 @@ namespace rfxcomMessages
       if (m_subType != sTypePT2262)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
-      m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
+      m_id = manuallyDeviceCreationConfiguration->get<unsigned int>("id");
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -87,11 +87,11 @@ namespace rfxcomMessages
 
    void CLighting4::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeLighting4);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_id);
+         m_deviceDetails->set("type", pTypeLighting4);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_id);
       }
    }
 
@@ -133,7 +133,7 @@ namespace rfxcomMessages
    {
       api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
+      m_deviceDetails->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CLighting4::getDeviceName() const
