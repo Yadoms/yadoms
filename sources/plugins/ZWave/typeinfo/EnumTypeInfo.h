@@ -20,7 +20,7 @@ public:
    virtual ~CEnumTypeInfo();
 
    // shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
-   shared::CDataContainer serialize() const override;
+   shared::CDataContainerSharedPtr serialize() const override;
    // END shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
 
 private:
@@ -34,6 +34,6 @@ private:
    //-----------------------------------------------------
    ///\brief   The typeInfo content
    //-----------------------------------------------------
-   shared::CDataContainer m_data;
+   shared::CDataContainerSharedPtr m_data;
 };
 

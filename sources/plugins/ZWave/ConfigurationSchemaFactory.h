@@ -15,13 +15,13 @@ public:
    virtual ~CConfigurationSchemaFactory() {}
 
    
-   static shared::CDataContainer generateForHistorizer(boost::shared_ptr<IOpenZWaveNodeKeyword> historizer);
+   static shared::CDataContainerSharedPtr generateForHistorizer(boost::shared_ptr<IOpenZWaveNodeKeyword> historizer);
    static std::string generateValidKeyName(const std::string & keyname);
 private:
-   static shared::CDataContainer generateForDouble(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass);
-   static shared::CDataContainer generateForInteger(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass);
-   static shared::CDataContainer generateForBool(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass);
-   static shared::CDataContainer generateForString(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass);
-   static shared::CDataContainer generateForEnum(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass);
-   static std::string generateDescription(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass);
+   static shared::CDataContainerSharedPtr generateForDouble(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
+   static shared::CDataContainerSharedPtr generateForInteger(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
+   static shared::CDataContainerSharedPtr generateForBool(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
+   static shared::CDataContainerSharedPtr generateForString(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
+   static shared::CDataContainerSharedPtr generateForEnum(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
+   static std::string generateDescription(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
 };

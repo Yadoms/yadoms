@@ -129,22 +129,22 @@ uint8 COpenZWaveNode::getNodeId() const
    return m_nodeId;
 }
 
-shared::CDataContainer COpenZWaveNode::getConfigurationSchema()
+shared::CDataContainerSharedPtr COpenZWaveNode::getConfigurationSchema()
 {
    return m_configuration.generateConfigurationSchema();
 }
 
-shared::CDataContainer COpenZWaveNode::getConfigurationValues()
+shared::CDataContainerSharedPtr COpenZWaveNode::getConfigurationValues()
 {
    return m_configuration.saveValuesToDatabase();
 }
 
-void COpenZWaveNode::setConfigurationValues(const shared::CDataContainer &configuration)
+void COpenZWaveNode::setConfigurationValues(const shared::CDataContainerSharedPtr&configuration)
 {
    m_configuration.setConfigurationValues(configuration);
 }
 
-void COpenZWaveNode::updateNodeConfiguration(const std::string& keyword, const std::string& value, shared::CDataContainer & configuration)
+void COpenZWaveNode::updateNodeConfiguration(const std::string& keyword, const std::string& value, shared::CDataContainerSharedPtr& configuration)
 {
    m_configuration.updateNodeConfiguration(keyword, value, configuration);
 }
@@ -166,7 +166,7 @@ void COpenZWaveNode::getPluginExtraQueries(std::vector<std::string> & extraQueri
    }
 }
 
-bool COpenZWaveNode::onExtraQuery(const std::string & query, const shared::CDataContainer &data)
+bool COpenZWaveNode::onExtraQuery(const std::string & query, const shared::CDataContainerSharedPtr&data)
 {
    //qeury must be: pluginName.extraQuery
    std::vector<std::string> result;

@@ -32,11 +32,11 @@ public:
    void testNetwork(int count) override;
    void cancelCurrentCommand() override;
    void healNetwork() override;
-   shared::CDataContainer getNodeConfigurationSchema(const std::string & device) override;
-   void setNodeConfiguration(const std::string & device, const shared::CDataContainer &configuration) override;
-   void updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainer & configuration) override;
+   shared::CDataContainerSharedPtr getNodeConfigurationSchema(const std::string & device) override;
+   void setNodeConfiguration(const std::string & device, const shared::CDataContainerSharedPtr&configuration) override;
+   void updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainerSharedPtr& configuration) override;
    NodeListType & getNodeList() override;
-   bool onDeviceExtraQuery(const std::string & targetDevice, const std::string & extraQuery, const shared::CDataContainer &data) override;
+   bool onDeviceExtraQuery(const std::string & targetDevice, const std::string & extraQuery, const shared::CDataContainerSharedPtr&data) override;
    // [END] IZWaveController implementation
 
 
@@ -61,12 +61,12 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief	Return the Node information
    //-----------------------------------------------------------------------------   
-   shared::CDataContainer getNodeInfo(uint32 homeId, uint8 nodeId);
+   shared::CDataContainerSharedPtr getNodeInfo(uint32 homeId, uint8 nodeId);
 
    //-----------------------------------------------------------------------------
    /// \brief	Return the Node meta data
    //-----------------------------------------------------------------------------   
-   static void getNodeMetaData(uint32 homeId, uint8 nodeId, shared::CDataContainer &result);
+   static void getNodeMetaData(uint32 homeId, uint8 nodeId, shared::CDataContainerSharedPtr&result);
 
    //-----------------------------------------------------------------------------
    /// \brief	Configure the value refresh mode depending on the device listening state
@@ -74,7 +74,7 @@ private:
    static void setupValue(const boost::shared_ptr<COpenZWaveNode>& node, OpenZWave::ValueID & vid);
 
 
-   void manageDeviceValue(const std::string & deviceName, shared::CDataContainer &container);
+   void manageDeviceValue(const std::string & deviceName, shared::CDataContainerSharedPtr&container);
    void manageDeviceState(const std::string & deviceName, shared::plugin::yPluginApi::historization::EDeviceState &container);
    void manageKeywordValue(const std::string & deviceName, boost::shared_ptr<CKeywordContainer> &container);
 
@@ -91,7 +91,7 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief	Return the command classes of the device
    //-----------------------------------------------------------------------------   
-   static std::vector<shared::CDataContainer> getDeviceCommandClasses(uint32 homeId, const uint8 nodeId);
+   static std::vector<shared::CDataContainerSharedPtr> getDeviceCommandClasses(uint32 homeId, const uint8 nodeId);
 
    //-----------------------------------------------------------------------------
    /// \brief	Ask configuration parameters to each found node

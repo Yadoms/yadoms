@@ -486,7 +486,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       if (nodeInfo)
       {
          std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-         shared::CDataContainer d = getNodeInfo(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+         auto d = getNodeInfo(nodeInfo->getHomeId(), nodeInfo->getNodeId());
          m_cache.AddDeviceInfo(deviceName, d);
       }
       break;
@@ -688,7 +688,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          YADOMS_LOG(debug) << "NodeQueriesComplete : " << nodeInfo->getHomeId() << ":" << static_cast<int>(nodeInfo->getNodeId());
 
          std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-         shared::CDataContainer d = getNodeInfo(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+         auto d = getNodeInfo(nodeInfo->getHomeId(), nodeInfo->getNodeId());
          manageDeviceValue(deviceName, d);
       }
       break;
@@ -734,7 +734,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    }
    case OpenZWave::Notification::Type_UserAlerts:
    {
-      shared::CDataContainer alert;
+      shared::CDataContainerSharedPtr alert;
 
       std::string alertContent;
       shared::CDataContainer alertData;
@@ -785,9 +785,9 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
       if (!alertContent.empty())
       {
-         alert.set("type", alertContent);
+         alert->set("type", alertContent);
          if(!alertData.empty())
-            alert.set("data", alertData);
+            alert->set("data", alertData);
          m_handler->postEvent(CZWave::kUserAlert, alert);
       }
       break;
@@ -799,7 +799,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    }
 }
 
-shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, const uint8 nodeId)
+shared::CDataContainerSharedPtr COpenZWaveController::getNodeInfo(const uint32 homeId, const uint8 nodeId)
 {
    std::string sNodeName = OpenZWave::Manager::Get()->GetNodeName(homeId, nodeId);
    std::string sNodeManufacturerId = OpenZWave::Manager::Get()->GetNodeManufacturerId(homeId, nodeId);
@@ -850,39 +850,39 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
    YADOMS_LOG(debug) << "ZWave : NodeInfo : ZWave+ node " << iszwplus;
 
 
-   shared::CDataContainer d;
-   d.set("name", id);
+   shared::CDataContainerSharedPtr d = new_CDataContainerSharedPtr();
+   d->set("name", id);
 
    if (!sNodeName.empty())
-      d.set("friendlyName", sNodeName);
+      d->set("friendlyName", sNodeName);
    else if (!sNodeProductName.empty())
-      d.set("friendlyName", sNodeProductName);
+      d->set("friendlyName", sNodeProductName);
    else
-      d.set("friendlyName", id);
+      d->set("friendlyName", id);
 
-   shared::CDataContainer details;
-   details.set("Manufacturer", sNodeManufacturer);
-   details.set("ManufacturerId", sNodeManufacturerId);
-   details.set("Product", sNodeProductName);
-   details.set("ProductId", sNodeProductId);
-   details.set("ProductType", sNodeProductType);
-   details.set("Location", sNodeLocation);
-   details.set("Type", sNodeType);
-   details.set("Version", sNodeVersion);
-   details.set("ZWave+Type", sNodePlusType);
-   details.set("DeviceType", sNodeDeviceTypeString);
-   details.set("Role", sNodeRole);
+   shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+   details->set("Manufacturer", sNodeManufacturer);
+   details->set("ManufacturerId", sNodeManufacturerId);
+   details->set("Product", sNodeProductName);
+   details->set("ProductId", sNodeProductId);
+   details->set("ProductType", sNodeProductType);
+   details->set("Location", sNodeLocation);
+   details->set("Type", sNodeType);
+   details->set("Version", sNodeVersion);
+   details->set("ZWave+Type", sNodePlusType);
+   details->set("DeviceType", sNodeDeviceTypeString);
+   details->set("Role", sNodeRole);
 
-   details.set("IsRouting", isrouting);
-   details.set("IsListening", isrouting);
-   details.set("IsFLiRS", islisteningfrequent);
-   details.set("IsBeaming", isbeaming);
-   details.set("IsAwake", isawake);
-   details.set("IsFailed", isfailed);
-   details.set("IsSecurity", issecurity);
-   details.set("IsZWave+", iszwplus);
+   details->set("IsRouting", isrouting);
+   details->set("IsListening", isrouting);
+   details->set("IsFLiRS", islisteningfrequent);
+   details->set("IsBeaming", isbeaming);
+   details->set("IsAwake", isawake);
+   details->set("IsFailed", isfailed);
+   details->set("IsSecurity", issecurity);
+   details->set("IsZWave+", iszwplus);
 
-   details.set("classes", getDeviceCommandClasses(homeId, nodeId));
+   details->set("classes", getDeviceCommandClasses(homeId, nodeId));
 
    std::vector<std::string> extraQueries;
    getNode(homeId, nodeId)->getPluginExtraQueries(extraQueries);
@@ -894,18 +894,18 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
    }
    eqSingleLine = eqSingleLine.substr(0, eqSingleLine.size() - 1);
    if (!extraQueries.empty())
-      details.set("extraQueries", eqSingleLine);
+      details->set("extraQueries", eqSingleLine);
 
-   shared::CDataContainer meta;
+   shared::CDataContainerSharedPtr meta = new_CDataContainerSharedPtr();
    getNodeMetaData(homeId, nodeId, meta);
-   details.set("metadata", meta);
+   details->set("metadata", meta);
 
-   d.set("details", details);
+   d->set("details", details);
 
    return d;
 }
 
-void COpenZWaveController::getNodeMetaData(uint32 homeId, uint8 nodeId, shared::CDataContainer& result)
+void COpenZWaveController::getNodeMetaData(uint32 homeId, uint8 nodeId, shared::CDataContainerSharedPtr& result)
 {
    for (int i = 0; i < OpenZWave::Node::MetaData_Invalid; ++i)
    {
@@ -922,7 +922,7 @@ void COpenZWaveController::getNodeMetaData(uint32 homeId, uint8 nodeId, shared::
             std::string metaValue = OpenZWave::Manager::Get()->GetMetaData(homeId, nodeId, mdi);
             if (!metaValue.empty())
             {
-               result.set(metaName, metaValue);
+               result->set(metaName, metaValue);
             }
          }
       }
@@ -933,9 +933,9 @@ void COpenZWaveController::getNodeMetaData(uint32 homeId, uint8 nodeId, shared::
    }
 }
 
-std::vector<shared::CDataContainer> COpenZWaveController::getDeviceCommandClasses(const uint32 homeId, const uint8 nodeId)
+std::vector<shared::CDataContainerSharedPtr> COpenZWaveController::getDeviceCommandClasses(const uint32 homeId, const uint8 nodeId)
 {
-   std::vector<shared::CDataContainer> allClasses;
+   std::vector<shared::CDataContainerSharedPtr> allClasses;
    //const std::multimap<int, std::string> 
    auto allclasses = ECommandClass().getAllValues();
    for (auto& allclasse : allclasses)
@@ -944,9 +944,9 @@ std::vector<shared::CDataContainer> COpenZWaveController::getDeviceCommandClasse
       unsigned char version;
       if (OpenZWave::Manager::Get()->GetNodeClassInformation(homeId, nodeId, static_cast<uint8>(allclasse), &name, &version))
       {
-         shared::CDataContainer c;
-         c.set("name", name);
-         c.set("version", static_cast<int>(version));
+         shared::CDataContainerSharedPtr c = new_CDataContainerSharedPtr();
+         c->set("name", name);
+         c->set("version", static_cast<int>(version));
          allClasses.push_back(c);
       }
    }
@@ -990,7 +990,7 @@ void COpenZWaveController::sendCommand(const std::string& device, const std::str
    auto node = getNode(homeId, nodeId);
    if (node)
    {
-      getNodeInfo(node->getHomeId(), node->getNodeId()).printToLog(YADOMS_LOG(debug));
+      getNodeInfo(node->getHomeId(), node->getNodeId())->printToLog(YADOMS_LOG(debug));
 
       YADOMS_LOG(information) << "Sending command to ZWave keyword : " << keyword << " Value : " << value << " home.node = " << COpenZWaveHelpers::GenerateDeviceId(node->getHomeId(), node->getNodeId());
       if (!node->sendCommand(keyword, value))
@@ -1062,7 +1062,7 @@ void COpenZWaveController::healNetwork()
    cachePopAll();
 }
 
-shared::CDataContainer COpenZWaveController::getNodeConfigurationSchema(const std::string & device)
+shared::CDataContainerSharedPtr COpenZWaveController::getNodeConfigurationSchema(const std::string & device)
 {
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -1081,7 +1081,7 @@ shared::CDataContainer COpenZWaveController::getNodeConfigurationSchema(const st
    throw shared::exception::CException((boost::format("Fail to ask configuration for device %1% ") % device).str());
 }
 
-void COpenZWaveController::setNodeConfiguration(const std::string & device, const shared::CDataContainer &configuration)
+void COpenZWaveController::setNodeConfiguration(const std::string & device, const shared::CDataContainerSharedPtr& configuration)
 {
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -1100,7 +1100,7 @@ void COpenZWaveController::setNodeConfiguration(const std::string & device, cons
    throw shared::exception::CException((boost::format("Fail to ask configuration for device %1% ") % device).str());
 }
 
-void COpenZWaveController::updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainer & configuration)
+void COpenZWaveController::updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainerSharedPtr& configuration)
 {
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -1124,7 +1124,7 @@ IZWaveController::NodeListType & COpenZWaveController::getNodeList()
    return m_nodes;
 }
 
-void COpenZWaveController::manageDeviceValue(const std::string & deviceName, shared::CDataContainer &container)
+void COpenZWaveController::manageDeviceValue(const std::string & deviceName, shared::CDataContainerSharedPtr& container)
 {
    m_cache.AddDeviceInfo(deviceName, container);
 
@@ -1160,20 +1160,20 @@ void COpenZWaveController::manageKeywordValue(const std::string & deviceName, bo
 void COpenZWaveController::cachePop(const std::string & deviceName)
 {
    auto& deviceInfo = m_cache.getDeviceInfo(deviceName);
-   shared::CDataContainer& deviceInfoRef = deviceInfo.getDeviceInfo();
+   auto& deviceInfoRef = deviceInfo.getDeviceInfo();
 
    if (m_handler != nullptr)
    {
-      if (!deviceInfoRef.empty())
+      if (!deviceInfoRef->empty())
       {
-         deviceInfoRef.printToLog(YADOMS_LOG(debug) << "[CACHE] declare device ");
+         deviceInfoRef->printToLog(YADOMS_LOG(debug) << "[CACHE] declare device ");
          m_handler->postEvent(CZWave::kDeclareDevice, deviceInfoRef);
 
          if (deviceInfo.getDeviceState() != shared::plugin::yPluginApi::historization::EDeviceState::kUnknown)
          {
-            shared::CDataContainer a;
-            a.set("name", deviceName);
-            a.set("state", deviceInfo.getDeviceState());
+            shared::CDataContainerSharedPtr a = new_CDataContainerSharedPtr();
+            a->set("name", deviceName);
+            a->set("state", deviceInfo.getDeviceState());
             m_handler->postEvent(CZWave::kUpdateDeviceState, a);
          }
 
@@ -1205,7 +1205,7 @@ void COpenZWaveController::cachePopAll()
    }
 }
 
-bool COpenZWaveController::onDeviceExtraQuery(const std::string & targetDevice, const std::string & extraQuery, const shared::CDataContainer &data)
+bool COpenZWaveController::onDeviceExtraQuery(const std::string & targetDevice, const std::string & extraQuery, const shared::CDataContainerSharedPtr&data)
 {
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 

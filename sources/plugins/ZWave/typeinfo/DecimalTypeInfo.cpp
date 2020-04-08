@@ -3,6 +3,7 @@
 #include "../OpenZWaveHelpers.h"
 
 CDecimalTypeInfo::CDecimalTypeInfo(OpenZWave::ValueID& vID)
+   :m_data(new_CDataContainerSharedPtr())
 {
    initialize(vID);
 }
@@ -11,7 +12,7 @@ CDecimalTypeInfo::~CDecimalTypeInfo()
 {
 }
 
-shared::CDataContainer CDecimalTypeInfo::serialize() const
+shared::CDataContainerSharedPtr CDecimalTypeInfo::serialize() const
 {
    return m_data;
 }
@@ -28,12 +29,12 @@ void CDecimalTypeInfo::initialize(OpenZWave::ValueID& vID)
    COpenZWaveHelpers::GetDecimalValueInfo(vID, name, description, min, max, unit, precision);
 
    //fill container
-   m_data.set("name", name);
-   m_data.set("description", description);
-   m_data.set("unit", unit);
-   m_data.set("min", min);
-   m_data.set("max", max);
-   m_data.set("precision", precision);
+   m_data->set("name", name);
+   m_data->set("description", description);
+   m_data->set("unit", unit);
+   m_data->set("min", min);
+   m_data->set("max", max);
+   m_data->set("precision", precision);
 
 
 }
