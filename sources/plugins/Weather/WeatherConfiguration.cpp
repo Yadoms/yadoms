@@ -4,9 +4,9 @@
 #include "WeatherLocation.h"
 
 
-void CWeatherConfiguration::initializeWith(const shared::CDataContainer& data)
+void CWeatherConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
 {
-   data.printToLog(YADOMS_LOG(debug));
+   data->printToLog(YADOMS_LOG(debug));
    m_configuration.initializeWith(data);
 }
 
