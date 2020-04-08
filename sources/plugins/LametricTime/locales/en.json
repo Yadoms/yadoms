@@ -18,32 +18,22 @@
           "content": {
             "Port": {
               "name": "Port",
-              "description": "the Lametric local socket opened (example Http: 8080, Https: 4343)",
-              "values": {
-                "http": "8080",
-                "https": "4343"
-              },
-              "defaultValue": "Https"
+              "description": "the Lametric local socket opened (example Http: 8080, Https: 4343)"
             }
-          },
-          "Manual": {
-            "name": "Manual Paring",
-            "description": "Manual Paring",
-            "content": {
-              "IPAddress": {
-                "name": "IP Address",
-                "description": "the IP address of the equipment",
-                "regexErrorMessage": "this is not a valid IP address"
-              },
-              "Port": {
-                "name": "Port",
-                "description": "the Lametric local socket opened (example Http: 8080, Https: 4343)",
-                "values": {
-                  "http": "8080",
-                  "https": "4343"
-                },
-                "defaultValue": "Https"
-              }
+          }
+        },
+        "Manual": {
+          "name": "Manual Paring",
+          "description": "Manual Paring",
+          "content": {
+            "IPAddress": {
+              "name": "IP Address",
+              "description": "the IP address of the equipment",
+              "regexErrorMessage": "this is not a valid IP address"
+            },
+            "Port": {
+              "name": "Port",
+              "description": "the Lametric local socket opened (example Http: 8080, Https: 4343)"
             }
           }
         }

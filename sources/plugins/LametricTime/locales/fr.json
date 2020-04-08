@@ -19,12 +19,7 @@
           "content": {
             "Port": {
               "name": "Port",
-              "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)",
-              "values": {
-                "Http": "8080",
-                "Https": "4343"
-              },
-              "defaultValue": "Https"
+              "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)"
             }
           }
         },
@@ -39,12 +34,7 @@
             },
             "Port": {
               "name": "Port",
-              "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)",
-              "values": {
-                "Http": "8080",
-                "Https": "4343"
-              },
-              "defaultValue": "Https"
+              "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)"
             }
           }
         }
