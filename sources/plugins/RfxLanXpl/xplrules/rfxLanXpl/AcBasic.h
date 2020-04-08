@@ -37,12 +37,12 @@ namespace xplrules
          // ICommandRule implemntation
          boost::shared_ptr<xplcore::CXplMessage> createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand>& commandData,
                                                                   const std::string& rfxAddress,
-                                                                  const shared::CDataContainer& innerDetails) override;
+                                                                  const shared::CDataContainerSharedPtr& innerDetails) override;
          std::string generateVirtualDeviceIdentifier() override;
          // [END] ICommandRule implemntation
 
          // ISupportManuallyDeviceCreationRule implementation
-         CDeviceContainer generateDeviceParameters(shared::CDataContainer& configuration) const override;
+         CDeviceContainer generateDeviceParameters(shared::CDataContainerSharedPtr& configuration) const override;
          // [END] ISupportManuallyDeviceCreationRule implementation  
 
          //-----------------------------------------------------

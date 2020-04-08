@@ -97,8 +97,8 @@ namespace xplrules
                commercialName = commercialNameFromProtocol;
          }
 
-         shared::CDataContainer innerDetails;
-         innerDetails.set("x10protocol", protocol);
+         shared::CDataContainerSharedPtr innerDetails = new_CDataContainerSharedPtr();
+         innerDetails->set("x10protocol", protocol);
 
          return CDeviceIdentifier(msg.getBodyValue(m_keywordDevice), commercialName, m_protocol, m_protocol, innerDetails);
       }
@@ -230,7 +230,7 @@ namespace xplrules
       // ICommandRule implemntation
       boost::shared_ptr<xplcore::CXplMessage> CX10Basic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand>& commandData,
                                                                           const std::string& rfxAddress,
-                                                                          const shared::CDataContainer& innerDetails)
+                                                                          const shared::CDataContainerSharedPtr& innerDetails)
       {
          ////////////////////////////
          // create the message
@@ -258,7 +258,7 @@ namespace xplrules
          //set the device address and unit (parse from argetDevice.Address)
          newMessage->addToBody(m_keywordDevice, device);
 
-         auto protocol = innerDetails.get<EProtocol>("x10protocol");
+         auto protocol = innerDetails->get<EProtocol>("x10protocol");
 
          switch (protocol)
          {
@@ -336,11 +336,11 @@ namespace xplrules
       // [END] ICommandRule implemntation
 
 
-      CDeviceContainer CX10Basic::generateDeviceParameters(shared::CDataContainer& configuration) const
+      CDeviceContainer CX10Basic::generateDeviceParameters(shared::CDataContainerSharedPtr& configuration) const
       {
-         auto chosenProtocol = configuration.get<std::string>("Protocol.activeSection");
+         auto chosenProtocol = configuration->get<std::string>("Protocol.activeSection");
 
-         auto deviceId = configuration.get<std::string>("Protocol.content." + chosenProtocol + ".content.HouseCode") + configuration.get<std::string>("Protocol.content." + chosenProtocol + ".content.UnitCode");
+         auto deviceId = configuration->get<std::string>("Protocol.content." + chosenProtocol + ".content.HouseCode") + configuration->get<std::string>("Protocol.content." + chosenProtocol + ".content.UnitCode");
 
 
          EProtocol p;
@@ -366,8 +366,8 @@ namespace xplrules
          if (commercialName.empty())
             commercialName = deviceId;
 
-         shared::CDataContainer innerDetails;
-         innerDetails.set("x10protocol", p);
+         shared::CDataContainerSharedPtr innerDetails = new_CDataContainerSharedPtr();
+         innerDetails->set("x10protocol", p);
 
          CDeviceIdentifier device(deviceId, commercialName, m_protocol, m_protocol, innerDetails);
 

@@ -132,9 +132,9 @@ namespace xplrules
             return MeasureType;
          }
 
-         shared::CDataContainer CSecurity::getTypeInfo() const
+         shared::CDataContainerSharedPtr CSecurity::getTypeInfo() const
          {
-            return shared::CDataContainer();
+            return new_CDataContainerSharedPtr();
          }
 
          const shared::plugin::yPluginApi::EHistoryDepth& CSecurity::getHistoryDepth() const
