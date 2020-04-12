@@ -8,7 +8,6 @@ class CDeviceManager
 {
 public:
 	
-	typedef boost::function<int()> OnKeyPressedCallback;
 	CDeviceManager(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived);
 
 	virtual ~CDeviceManager();

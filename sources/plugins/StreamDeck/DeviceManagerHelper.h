@@ -25,7 +25,7 @@ public:
 	static std::vector<std::string> splitStringToVectorOfString(const std::string& wordToSplit,
 	                                                            const std::string& separator);
 
-	static uint16_t decimalToHex(std::string& decimalValue);
+	static uint16_t decimalToHex(std::string decimalValue);
 
 	static std::string getOsName();
 

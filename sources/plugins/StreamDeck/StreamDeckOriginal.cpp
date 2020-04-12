@@ -36,9 +36,11 @@ void CStreamDeckOriginal::resetKeyStream()
 
 void CStreamDeckOriginal::setBrightness(int percent)
 {
+
 	// TODO : Create a specific function to convert int to hex
+	auto percenut = CDeviceManagerHelper::decimalToHex(std::to_string(percent));
 	unsigned char payload[17] = {
-		0x05, 0x55, 0xaa, 0xd1, 0x01, CDeviceManagerHelper::decimalToHex(std::to_string(percent))
+		0x05, 0x55, 0xaa, 0xd1, 0x01, percenut
 	};
 	//unsigned char payload[17] = { 0x05, 0x55, 0xaa, 0xd1, 0x01, percent };
 	hid_send_feature_report(m_handle, payload, DataToSendLength);

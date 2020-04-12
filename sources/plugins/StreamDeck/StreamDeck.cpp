@@ -111,7 +111,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 						deviceInformation->keyCols, deviceInformation->keyRows);
 
 					shared::CDataContainer ev;
-					for (auto i = 0; i < keys.size(); i++)
+					for (size_t i = 0; i < keys.size(); i++)
 					{
 						ev.set(keys[i], coordinates[i]);
 					}
@@ -166,7 +166,8 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 						                                                 .getLastModificationDate().getBoostDateTime();
 						YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
 
-						m_deviceManager->setKeyImage(fileFromClient.getContent(), keyIndex, customText);
+						auto img = fileFromClient.getContent();
+						m_deviceManager->setKeyImage(img, keyIndex, customText);
 
 						for (auto i = 0; i < 100; ++i)
 						{

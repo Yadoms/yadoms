@@ -40,6 +40,7 @@ void CDeviceManager::close()
 void CDeviceManager::runKeyStateThread()
 {
 	m_readKeyThread = boost::make_shared<boost::thread>(boost::bind(&CDeviceManager::readHandler, this));
+	m_readKeyThread->detach();
 }
 
 void CDeviceManager::readHandler()
@@ -55,6 +56,10 @@ void CDeviceManager::readHandler()
 				m_mainEventHandler.postEvent(m_mainEvtKeyStateReceived, keyState.second);
 			}
 		}
+	}
+	catch (boost::thread_interrupted&)
+	{
+		YADOMS_LOG(error) << "StreamDeck thread interrupted";
 	}
 	catch (const std::exception& e)
 	{
