@@ -4,12 +4,7 @@ if(OpenCV_FOUND)
 
 	# include common plugin definitions
 	include("../YadomsPluginsCommon.cmake")
-	# TODO : HANDLE Mac & linux platforms
-	if(WIN32)	
-		set(LIBUSB1_INCLUDE_DIR ${HIDAPI_ROOT}/hidapi)
-		set(HIDAPI_INC_DIR ${HIDAPI_ROOT}/windows/Release)
-		set(HIDAPI_LIBRARIES ${HIDAPI_ROOT}/windows/Release/hidapi.lib)
-	endif()	
+
 	#########################################
 	## Place here all the plugin source files
 	#########################################
@@ -36,6 +31,27 @@ if(OpenCV_FOUND)
 		StreamDeckXL.h
 		ImageHelper.cpp
 		ImageHelper.h
+		hidapi/header/hidapi.h
+
+	)
+	if(WIN32)
+		set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
+			 ${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/windows/hid.c
+		)
+	elseif(UNIX AND NOT APPLE)
+		set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
+			 ${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/linux/hid.c
+		)
+	elseif(APPLE)
+		set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
+			 ${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/mac/hid.c
+		)
+	else()
+		message(WARNING "Platform not handled")
+	endif()
+
+	set(HIDAPI_INC_DIR 
+		${CMAKE_CURRENT_SOURCE_DIR}/hidapi/header
 	)
 
 	#########################################
@@ -48,9 +64,8 @@ if(OpenCV_FOUND)
 	## (by default yadoms-shared and boost are included)
 	#########################################
 	set(STREAMDECK_PLUGIN_INCLDIR
-      ${LIBUSBPP_INCLUDE_DIRS}
-	  ${LIBUSB1_INCLUDE_DIR}
 	  ${OpenCV_INCLUDE_DIRS}
+	  ${HIDAPI_INC_DIR}
 	)
 
 	#########################################
@@ -58,8 +73,6 @@ if(OpenCV_FOUND)
 	## (by default yadoms-shared and boost are included)
 	#########################################
 	set(STREAMDECK_PLUGIN_LINK
-      ${LIBUSBPP_LIBRARIES}
-	  ${HIDAPI_LIBRARIES}
 	  ${OpenCV_LIBS}
 	)
 
@@ -72,5 +85,5 @@ if(OpenCV_FOUND)
 	PLUGIN_LINK(StreamDeck ${STREAMDECK_PLUGIN_LINK})
    
 else()
-   message(WARNING "StreamDeck plugin is not available. LibUsb or OpenCV are Missing")
+   message(WARNING "StreamDeck plugin is not available. OpenCV are Missing")
 endif()
