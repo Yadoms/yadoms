@@ -1,5 +1,4 @@
 #pragma once
-#include <libusbpp.hpp>
 #include "Configuration.h"
 #include <hidapi.h>
 #include "shared/event/EventHandler.hpp"

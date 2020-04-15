@@ -1,6 +1,6 @@
 find_package(OpenCV)
 
-if(LIBUSBPP_FOUND AND OpenCV_FOUND)
+if(OpenCV_FOUND)
 
 	# include common plugin definitions
 	include("../YadomsPluginsCommon.cmake")

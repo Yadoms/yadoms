@@ -1,8 +1,6 @@
 #include "DeviceManager.h"
 #include "DeviceManagerHelper.h"
 #include <hidapi.h>
-#include <future>
-#include <thread>
 #include <shared/Log.h>
 
 const uint16_t CDeviceManager::StreamDeckVendorId = 0x0FD9;
