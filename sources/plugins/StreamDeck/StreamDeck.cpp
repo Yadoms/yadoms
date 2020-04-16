@@ -32,8 +32,17 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	m_deviceManager = CFactory::createDeviceManager(m_configuration, api->getEventHandler(), kEvtKeyStateReceived);
 
 	auto deviceInformation = initDevice(api);
-
-	m_deviceManager->open();
+	
+	try
+	{
+		m_deviceManager->open();
+	}
+	catch (const std::exception & exception)
+	{
+		YADOMS_LOG(error) << exception.what();
+		api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
+		throw;
+	}
 
 	m_deviceManager->reset();
 

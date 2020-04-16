@@ -26,6 +26,11 @@ void CDeviceManager::open()
 {
 	m_handle = hid_open(CDeviceManagerHelper::getDeviceInformation(m_configuration)->vendorID,
 	                    CDeviceManagerHelper::getDeviceInformation(m_configuration)->productID, nullptr);
+
+	if(m_handle == nullptr)
+	{
+		throw std::runtime_error("Unable to open device");
+	}
 }
 
 void CDeviceManager::close()
