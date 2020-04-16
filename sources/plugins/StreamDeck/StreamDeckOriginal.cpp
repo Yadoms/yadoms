@@ -127,8 +127,10 @@ std::pair<bool, int> CStreamDeckOriginal::readKeyStates()
 	const auto offset = 1;
 	// TODO: ajouter mutex ? (ou vérifier que la lib est thread-safe)
 	// in case of read error stop thread
+	std::mutex lock;
+	lock.lock();
 	hid_read(m_handle, readData, DataToSendLength);
-
+	lock.unlock();
 	const auto readDataVector = CDeviceManagerHelper::unsignedCharToVectorOfUnsignedChar(readData, offset, DataToSendLength);
 
 	return CDeviceManagerHelper::findInVector<unsigned char>(readDataVector, 1);

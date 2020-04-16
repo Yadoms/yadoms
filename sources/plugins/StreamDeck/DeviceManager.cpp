@@ -27,6 +27,7 @@ void CDeviceManager::open()
 	m_handle = hid_open(CDeviceManagerHelper::getDeviceInformation(m_configuration)->vendorID,
 	                    CDeviceManagerHelper::getDeviceInformation(m_configuration)->productID, nullptr);
 
+	hid_set_nonblocking(m_handle, 1);
 	if(m_handle == nullptr)
 	{
 		throw std::runtime_error("Unable to open device");
@@ -36,6 +37,7 @@ void CDeviceManager::open()
 void CDeviceManager::close()
 {
 	hid_close(m_handle);
+	hid_exit();
 	m_readKeyThread->interrupt();
 	m_readKeyThread->join();
 }
@@ -43,7 +45,6 @@ void CDeviceManager::close()
 void CDeviceManager::runKeyStateThread()
 {
 	m_readKeyThread = boost::make_shared<boost::thread>(boost::bind(&CDeviceManager::readHandler, this));
-	m_readKeyThread->detach();
 }
 
 void CDeviceManager::readHandler()
