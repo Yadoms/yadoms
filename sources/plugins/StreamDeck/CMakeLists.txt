@@ -1,10 +1,6 @@
 find_package(OpenCV)
-include(FindLibUdev.cmake)
 
 if(OpenCV_FOUND)
-	if(UNIX AND NOT LIBUDEV_FOUND)
-		message(WARNING "StreamDeck plugin is not available. LIBUDEV is Missing")
-	else()
 		# include common plugin definitions
 		include("../YadomsPluginsCommon.cmake")
 		#########################################
@@ -41,9 +37,17 @@ if(OpenCV_FOUND)
 			 	${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/windows/hid.c
 			)
 		elseif(UNIX AND NOT APPLE)
+			include(FindLibUdev.cmake)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
 			 	${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/linux/hid.c
 			)
+			if(UDEV_FOUND)
+				set(STREAMDECK_PLUGIN_INCLDIR ${UDEV_INCLUDE_DIR})
+				set(STREAMDECK_PLUGIN_LINK ${UDEV_LIBRARIES})
+			else()
+				message(WARNING "StreamDeck plugin is not available. LIBUDEV is Missing")
+			endif()
+	
 		elseif(APPLE)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
 				 ${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/mac/hid.c
@@ -66,9 +70,9 @@ if(OpenCV_FOUND)
 		## (by default yadoms-shared and boost are included)
 		#########################################
 		set(STREAMDECK_PLUGIN_INCLDIR
+			${STREAMDECK_PLUGIN_INCLDIR}
 	  		${OpenCV_INCLUDE_DIRS}
 	  		${HIDAPI_INCLUDE_DIR}
-	  		${LIBUDEV_INCLUDE_DIR}
 		)
 
 		#########################################
@@ -76,8 +80,8 @@ if(OpenCV_FOUND)
 		## (by default yadoms-shared and boost are included)
 		#########################################
 		set(STREAMDECK_PLUGIN_LINK
+			${STREAMDECK_PLUGIN_LINK}
 	  		${OpenCV_LIBS}
-	  		${LIBUDEV_LIBRARY}
 		)
 
 		#########################################
@@ -87,7 +91,6 @@ if(OpenCV_FOUND)
 		PLUGIN_SOURCES(StreamDeck ${STREAMDECK_PLUGIN_SOURCES})
 		PLUGIN_INCLDIR(StreamDeck ${STREAMDECK_PLUGIN_INCLDIR})
 		PLUGIN_LINK(StreamDeck ${STREAMDECK_PLUGIN_LINK})
-	endif()	
 else()
    message(WARNING "StreamDeck plugin is not available. OpenCV is Missing")
 endif()
