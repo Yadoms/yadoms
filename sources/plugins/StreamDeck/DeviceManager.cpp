@@ -4,7 +4,7 @@
 #include <shared/Log.h>
 
 const uint16_t CDeviceManager::StreamDeckVendorId = 0x0FD9;
-
+const bool CDeviceManager::isNonBlocking = true;
 
 CDeviceManager::CDeviceManager(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler,
                                int evtKeyStateReceived)
@@ -27,7 +27,6 @@ void CDeviceManager::open()
 	m_handle = hid_open(CDeviceManagerHelper::getDeviceInformation(m_configuration)->vendorID,
 	                    CDeviceManagerHelper::getDeviceInformation(m_configuration)->productID, nullptr);
 
-	hid_set_nonblocking(m_handle, 1);
 	if(m_handle == nullptr)
 	{
 		throw std::runtime_error("Unable to open device");
@@ -49,6 +48,7 @@ void CDeviceManager::runKeyStateThread()
 
 void CDeviceManager::readHandler()
 {
+	hid_set_nonblocking(m_handle, isNonBlocking);
 	try
 	{
 		while (true)
