@@ -27,6 +27,8 @@ void CStreamDeckMini::resetKeyStream()
 
 void CStreamDeckMini::setBrightness(int percent)
 {
-	unsigned char payload[17] = {0x05, 0x55, 0xaa, 0xd1, 0x01, CDeviceManagerHelper::integerToHex(percent)};
+	const auto percentInUnsignedCharValue = CDeviceManagerHelper::integerToHex(percent);
+	
+	unsigned char payload[17] = {0x05, 0x55, 0xaa, 0xd1, 0x01, percentInUnsignedCharValue};
 	hid_send_feature_report(m_handle, payload, 17);
 }

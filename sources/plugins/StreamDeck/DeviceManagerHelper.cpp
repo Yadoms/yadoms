@@ -3,7 +3,7 @@
 #include <boost/convert/stream.hpp>
 #include <regex>
 
-const uint16_t CDeviceManagerHelper::StreamDeckVendorId = 0x0FD9;
+const uint16_t CDeviceManagerHelper::StreamDeckVendorId = 0x0fd9;
 const uint16_t CDeviceManagerHelper::StreamDeckOriginalPoductId = 0x0060;
 const uint16_t CDeviceManagerHelper::StreamDeckOriginalV2PoductId = 0x006d;
 const uint16_t CDeviceManagerHelper::StreamDeckMiniPoductId = 0x0063;
@@ -188,11 +188,8 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformati
 
 unsigned char CDeviceManagerHelper::integerToHex(int& value)
 {
-	std::stringstream ss;
-	ss << std::hex << value;
-	const auto res(ss.str());
-
-	return reinterpret_cast<unsigned char>(res.c_str());
+	boost::cnv::cstream converter;
+	return boost::convert<uint16_t>(std::to_string(value), converter(std::showbase)(std::uppercase)(std::dec), 0);
 }
 
 int CDeviceManagerHelper::getKeyIndex(std::string& key)

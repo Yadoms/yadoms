@@ -3,7 +3,8 @@
 
 const int CStreamDeckXL::ImageReportLength = 1024;
 
-CStreamDeckXL::CStreamDeckXL(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived)
+CStreamDeckXL::CStreamDeckXL(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler,
+                             int evtKeyStateReceived)
 	: CDeviceManager(configuration, mainEventHandler, evtKeyStateReceived)
 {
 }
@@ -27,6 +28,7 @@ void CStreamDeckXL::resetKeyStream()
 
 void CStreamDeckXL::setBrightness(int percent)
 {
-	unsigned char payload[32] = {0x03, 0x08, CDeviceManagerHelper::integerToHex(percent)};
+	const auto percentInUnsignedCharValue = CDeviceManagerHelper::integerToHex(percent);
+	unsigned char payload[32] = {0x03, 0x08, percentInUnsignedCharValue};
 	hid_send_feature_report(m_handle, payload, 32);
 }

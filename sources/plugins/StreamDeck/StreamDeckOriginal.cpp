@@ -11,7 +11,8 @@ const int CStreamDeckOriginal::KeyCount = KeyCols * KeyRows;
 const int CStreamDeckOriginal::DataToSendLength = 17;
 const int CStreamDeckOriginal::KeyPixelSize = 72;
 
-CStreamDeckOriginal::CStreamDeckOriginal(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived)
+CStreamDeckOriginal::CStreamDeckOriginal(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler,
+                                         int evtKeyStateReceived)
 	: CDeviceManager(configuration, mainEventHandler, evtKeyStateReceived)
 {
 }
@@ -36,19 +37,16 @@ void CStreamDeckOriginal::resetKeyStream()
 
 void CStreamDeckOriginal::setBrightness(int percent)
 {
+	const auto percentInUnsignedCharValue = CDeviceManagerHelper::integerToHex(percent);
 
-	// TODO : Create a specific function to convert int to hex
-	auto percenut = CDeviceManagerHelper::decimalToHex(std::to_string(percent));
-	unsigned char payload[17] = {
-		0x05, 0x55, 0xaa, 0xd1, 0x01, percenut
+	unsigned char payload[DataToSendLength] = {
+		0x05, 0x55, 0xaa, 0xd1, 0x01, percentInUnsignedCharValue
 	};
-	//unsigned char payload[17] = { 0x05, 0x55, 0xaa, 0xd1, 0x01, percent };
 	hid_send_feature_report(m_handle, payload, DataToSendLength);
 }
 
 void CStreamDeckOriginal::setKeyImage(std::string& content, int& keyIndex, std::string& customText)
 {
-	// TODO : Pass text from configuration
 	auto data = CImageHelper::stringToVector(content);
 	auto img = CImageHelper::renderKeyImage(data, KeyPixelSize, customText);
 
@@ -57,7 +55,7 @@ void CStreamDeckOriginal::setKeyImage(std::string& content, int& keyIndex, std::
 	std::vector<unsigned char> bmp;
 	std::vector<unsigned char> header;
 
-	CImageHelper::encodeBMP(bmp, &array[0], 72, 72);
+	CImageHelper::encodeBMP(bmp, &array[0], KeyPixelSize, KeyPixelSize);
 	const int imageReportPayloadLength = bmp.size() / 2;
 	// TODO : Handle keys
 	const auto key = convertKeyIdOrigin(keyIndex);
@@ -131,8 +129,8 @@ std::pair<bool, int> CStreamDeckOriginal::readKeyStates()
 	lock.lock();
 	hid_read(m_handle, readData, DataToSendLength);
 	lock.unlock();
-	const auto readDataVector = CDeviceManagerHelper::unsignedCharToVectorOfUnsignedChar(readData, offset, DataToSendLength);
+	const auto readDataVector = CDeviceManagerHelper::unsignedCharToVectorOfUnsignedChar(
+		readData, offset, DataToSendLength);
 
 	return CDeviceManagerHelper::findInVector<unsigned char>(readDataVector, 1);
-
 }
