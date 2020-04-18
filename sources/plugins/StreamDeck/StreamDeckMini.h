@@ -26,4 +26,6 @@ private:
 	static const int KeyCount;
 	static const int DataToSendLength;
 	static const int KeyPixelSize;
+	static const int ImageReportHeaderLength;
+	static const int ImageReportPayloadLength;
 };

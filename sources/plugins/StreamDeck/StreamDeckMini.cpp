@@ -8,6 +8,8 @@ const int CStreamDeckMini::KeyRows = 2;
 const int CStreamDeckMini::KeyCount = KeyCols * KeyRows;
 const int CStreamDeckMini::DataToSendLength = 17;
 const int CStreamDeckMini::KeyPixelSize = 80;
+const int CStreamDeckMini::ImageReportHeaderLength = 16;
+const int CStreamDeckMini::ImageReportPayloadLength = ImageReportLength - ImageReportHeaderLength;
 
 CStreamDeckMini::CStreamDeckMini(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived)
 	: CDeviceManager(configuration, mainEventHandler, evtKeyStateReceived)
@@ -49,7 +51,7 @@ void CStreamDeckMini::setBrightness(int percent)
 {
 	const auto percentInUnsignedCharValue = CDeviceManagerHelper::integerToHex(percent);
 	
-	unsigned char payload[17] = {0x05, 0x55, 0xaa, 0xd1, 0x01, percentInUnsignedCharValue};
+	unsigned char payload[DataToSendLength] = {0x05, 0x55, 0xaa, 0xd1, 0x01, percentInUnsignedCharValue};
 	const auto res = hid_send_feature_report(m_handle, payload, DataToSendLength);
 
 	if (res == CDeviceManagerHelper::EHidError::kTrue)
@@ -72,14 +74,14 @@ void CStreamDeckMini::setKeyImage(std::string& content, int& keyIndex, std::stri
 	std::vector<unsigned char> header;
 
 	CImageHelper::encodeBMP(bmp, &array[0], KeyPixelSize, KeyPixelSize);
-	const int imageReportPayloadLength = bmp.size() / 2;
+
 	auto pageNumber = 0;
 	int bytesRemaining = bmp.size();
 
 	while (bytesRemaining > 0)
 	{
-		const auto thisLength = std::min(bytesRemaining, imageReportPayloadLength);
-		const auto bytesSent = pageNumber * imageReportPayloadLength;
+		const auto thisLength = std::min(bytesRemaining, ImageReportPayloadLength);
+		const auto bytesSent = pageNumber * ImageReportPayloadLength;
 		// Report ID for writing an image
 		header.push_back(0x02);
 		// Unknown but never changes

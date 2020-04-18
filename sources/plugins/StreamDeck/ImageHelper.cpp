@@ -154,3 +154,14 @@ void CImageHelper::encodeBMP(std::vector<unsigned char>& bmp, const unsigned cha
 	bmp[4] = (bmp.size() / 65536) % 256;
 	bmp[5] = bmp.size() / 16777216;
 }
+
+std::vector<unsigned char> CImageHelper::encodeCvMatVectorToJpegFormat(std::vector<unsigned char>& img)
+{
+	std::vector<unsigned char> buff;
+	std::vector<int> param(2);
+	param[0] = cv::IMWRITE_JPEG_QUALITY;
+	param[1] = 95; //default(95) 0-100
+	cv::imencode(".jpg", img, buff, param);
+
+	return buff;
+}
