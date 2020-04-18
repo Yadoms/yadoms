@@ -220,10 +220,10 @@ void CStreamDeck::declareDeviceAndKeywords(boost::shared_ptr<yApi::IYPluginApi>&
 		for (auto i = 0; i < deviceInformation->keyCount; ++i)
 			m_keywords[i] = boost::make_shared<yApi::historization::CEvent>("Key #" + std::to_string(i), shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
 
-		const auto keywordsAsVecor = CDeviceManagerHelper::mapToHistorizableVector(m_keywords);
+		const auto keywordsAsVector = CDeviceManagerHelper::mapToHistorizableVector(m_keywords);
 
 		api->declareDevice(deviceInformation->deviceName, deviceInformation->serialNumber,
-		                   deviceInformation->deviceModel, keywordsAsVecor);
+		                   deviceInformation->deviceModel, keywordsAsVector);
 	}
 }
 
