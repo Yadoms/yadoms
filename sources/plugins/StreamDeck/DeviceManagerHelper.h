@@ -37,8 +37,6 @@ public:
 
 	static std::string getSerialNumber(std::string& value);
 
-	static std::vector<std::string> buildCoordinates(int cols, int rows);
-
 	static std::vector<std::string> buildKeys(int cols, int rows);
 
 	static int getDeviceKeyCols(uint16_t& vendorId, uint16_t& productId);

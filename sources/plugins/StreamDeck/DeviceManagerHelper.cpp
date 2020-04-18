@@ -130,27 +130,13 @@ std::string CDeviceManagerHelper::getSerialNumber(std::string& value)
 	return *a;
 }
 
-std::vector<std::string> CDeviceManagerHelper::buildCoordinates(const int cols, const int rows)
-{
-	std::vector<std::string> coordinates;
-
-	for (auto i = 0; i < rows; i++)
-	{
-		for (auto j = 0; j < cols; j++)
-		{
-			coordinates.push_back("(" + std::to_string(i) + "," + std::to_string(j) + ")");
-		}
-	}
-	return coordinates;
-}
-
 std::vector<std::string> CDeviceManagerHelper::buildKeys(const int cols, const int rows)
 {
 	std::vector<std::string> keys;
 
 	for (auto i = 0; i < cols * rows; i++)
 	{
-		keys.emplace_back("KEY" + std::to_string(i));
+		keys.emplace_back("KEY #" + std::to_string(i));
 	}
 	return keys;
 }
@@ -194,7 +180,7 @@ unsigned char CDeviceManagerHelper::integerToHex(int& value)
 
 int CDeviceManagerHelper::getKeyIndex(std::string& key)
 {
-	return std::atoi(key.substr(3).c_str());
+	return std::atoi(key.substr(5).c_str());
 }
 
 std::vector<unsigned char> CDeviceManagerHelper::unsignedCharToVectorOfUnsignedChar(unsigned char* input,

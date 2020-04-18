@@ -116,19 +116,17 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				if (request->getData().getQuery() == "keyCreation")
 				{
 					auto keys = CDeviceManagerHelper::buildKeys(deviceInformation->keyCols, deviceInformation->keyRows);
-					auto coordinates = CDeviceManagerHelper::buildCoordinates(
-						deviceInformation->keyCols, deviceInformation->keyRows);
 
 					shared::CDataContainer ev;
-					for (size_t i = 0; i < keys.size(); i++)
+					for (const auto& key : keys)
 					{
-						ev.set(keys[i], coordinates[i]);
+						ev.set(key, key);
 					}
 
 					shared::CDataContainer en;
 					en.set("type", "enum");
 					en.set("values", ev);
-					en.set("defaultValue", "KEY0");
+					en.set("defaultValue", "KEY #0");
 
 					shared::CDataContainer result;
 					result.set("interval", en);

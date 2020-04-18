@@ -78,8 +78,6 @@ void CStreamDeckOriginal::setKeyImage(std::string& content, int& keyIndex, std::
 
 	CImageHelper::encodeBMP(bmp, &array[0], KeyPixelSize, KeyPixelSize);
 	const int imageReportPayloadLength = bmp.size() / 2;
-	// TODO : Handle keys
-	const auto key = convertKeyIdOrigin(keyIndex);
 	auto pageNumber = 0;
 	int bytesRemaining = bmp.size();
 
@@ -98,7 +96,7 @@ void CStreamDeckOriginal::setKeyImage(std::string& content, int& keyIndex, std::
 		//  This is 01 on the second page, Presumably its used to signal that the data is a continuation from the first page
 		header.push_back(thisLength == bytesRemaining ? 1 : 0);
 		// Hex value for the Button
-		header.push_back(key + 1);
+		header.push_back(keyIndex + 1);
 		header.push_back(0);
 		header.push_back(0);
 		header.push_back(0);
@@ -138,12 +136,6 @@ void CStreamDeckOriginal::setKeyImage(std::string& content, int& keyIndex, std::
 		payload.clear();
 		datatosend.clear();
 	}
-}
-
-int CStreamDeckOriginal::convertKeyIdOrigin(int& keyIndex)
-{
-	const auto keyCol = keyIndex % KeyCols;
-	return (keyIndex - keyCol) + ((KeyCols - 1) - keyCol);
 }
 
 std::pair<bool, int> CStreamDeckOriginal::readKeyStates()

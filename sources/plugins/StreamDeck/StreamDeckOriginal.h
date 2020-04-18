@@ -26,6 +26,6 @@ private:
 	static const int KeyCount;
 	static const int DataToSendLength;
 	static const int KeyPixelSize;
-	static int convertKeyIdOrigin(int& keyIndex);
+
 };
 
