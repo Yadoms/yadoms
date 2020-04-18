@@ -47,56 +47,72 @@ uint16_t CDeviceManagerHelper::stringToUnsignedShort(std::string& value)
 	return static_cast<uint16_t>(std::stoi(value, nullptr, 16));
 }
 
-std::string CDeviceManagerHelper::getDeviceModel(uint16_t& vendorId, uint16_t& productId)
+CStreamDeckFactory::EStreamDeckModel CDeviceManagerHelper::getDeviceModel(uint16_t& productId)
 {
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalPoductId)
-		return "Original";
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalV2PoductId)
-		return "Original V2";
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckMiniPoductId)
-		return "Mini";
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckXLPoductId)
-		return "XL";
-	throw;
+	switch (productId)
+	{
+	case(StreamDeckOriginalPoductId):
+		return CStreamDeckFactory::EStreamDeckModel::kOriginal;
+	case(StreamDeckOriginalV2PoductId):
+		return CStreamDeckFactory::EStreamDeckModel::kOriginalV2;
+	case(StreamDeckMiniPoductId):
+		return CStreamDeckFactory::EStreamDeckModel::kMini;
+	case(StreamDeckXLPoductId):
+		return CStreamDeckFactory::EStreamDeckModel::kXl;
+	default:
+		throw std::runtime_error("Unknown device model");
+	}
 }
 
-int CDeviceManagerHelper::getDeviceKeyCols(uint16_t& vendorId, uint16_t& productId)
+int CDeviceManagerHelper::getDeviceKeyCols(uint16_t& productId)
 {
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalPoductId)
+	switch (productId)
+	{
+	case(StreamDeckOriginalPoductId):
 		return 5;
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalV2PoductId)
+	case(StreamDeckOriginalV2PoductId):
 		return 5;
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckMiniPoductId)
+	case(StreamDeckMiniPoductId):
 		return 3;
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckXLPoductId)
+	case(StreamDeckXLPoductId):
 		return 8;
-	throw;
+	default:
+		throw std::runtime_error("Unknown device model");
+	}
 }
 
-int CDeviceManagerHelper::getDeviceKeyRows(uint16_t& vendorId, uint16_t& productId)
+int CDeviceManagerHelper::getDeviceKeyRows(uint16_t& productId)
 {
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalPoductId)
+	switch (productId)
+	{
+	case(StreamDeckOriginalPoductId):
 		return 3;
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalV2PoductId)
+	case(StreamDeckOriginalV2PoductId):
 		return 3;
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckMiniPoductId)
+	case(StreamDeckMiniPoductId):
 		return 2;
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckXLPoductId)
+	case(StreamDeckXLPoductId):
 		return 4;
-	throw;
+	default:
+		throw std::runtime_error("Unknown device model");
+	}
 }
 
-int CDeviceManagerHelper::getDeviceKeyCount(uint16_t& vendorId, uint16_t& productId)
+int CDeviceManagerHelper::getDeviceKeyCount(uint16_t& productId)
 {
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalPoductId)
+	switch (productId)
+	{
+	case(StreamDeckOriginalPoductId):
 		return 15;
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckOriginalV2PoductId)
+	case(StreamDeckOriginalV2PoductId):
 		return 15;
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckMiniPoductId)
+	case(StreamDeckMiniPoductId):
 		return 6;
-	if (vendorId == StreamDeckVendorId && productId == StreamDeckXLPoductId)
+	case(StreamDeckXLPoductId):
 		return 32;
-	throw;
+	default:
+		throw std::runtime_error("Unknown device model");
+	}
 }
 
 std::string CDeviceManagerHelper::findUsbDeviceId(std::string& value, const std::string& identifierToFind)
@@ -155,20 +171,20 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformati
 		deviceInformation->vendorID = decimalToHex(usbDeviceInformation[0]);
 		deviceInformation->productID = decimalToHex(usbDeviceInformation[1]);
 		deviceInformation->serialNumber = usbDeviceInformation[2];
-		deviceInformation->deviceModel = getDeviceModel(deviceInformation->vendorID, deviceInformation->productID);
-		deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->vendorID, deviceInformation->productID);
-		deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->vendorID, deviceInformation->productID);
-		deviceInformation->keyCount = getDeviceKeyCount(deviceInformation->vendorID, deviceInformation->productID);
+		deviceInformation->deviceModel = getDeviceModel(deviceInformation->productID);
+		deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->productID);
+		deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->productID);
+		deviceInformation->keyCount = getDeviceKeyCount(deviceInformation->productID);
 		return deviceInformation;
 	}
 
 	deviceInformation->vendorID = stringToUnsignedShort(usbDeviceVid);
 	deviceInformation->productID = stringToUnsignedShort(usbDevicePid);
 	deviceInformation->serialNumber = getSerialNumber(usbDevice);
-	deviceInformation->deviceModel = getDeviceModel(deviceInformation->vendorID, deviceInformation->productID);
-	deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->vendorID, deviceInformation->productID);
-	deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->vendorID, deviceInformation->productID);
-	deviceInformation->keyCount = getDeviceKeyCount(deviceInformation->vendorID, deviceInformation->productID);
+	deviceInformation->deviceModel = getDeviceModel(deviceInformation->productID);
+	deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->productID);
+	deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->productID);
+	deviceInformation->keyCount = getDeviceKeyCount(deviceInformation->productID);
 	return deviceInformation;
 }
 
@@ -201,4 +217,22 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CDevice
 	               &secondValueFromPair<
 		               int, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>);
 	return keywordsAsVector;
+}
+
+
+std::string CDeviceManagerHelper::getDeviceModelAsAString(uint16_t& productId)
+{
+	switch (productId)
+	{
+	case(StreamDeckOriginalPoductId):
+		return "Original";
+	case(StreamDeckOriginalV2PoductId):
+		return "Original V2";
+	case(StreamDeckMiniPoductId):
+		return "Mini";
+	case(StreamDeckXLPoductId):
+		return "Xl";
+	default:
+		throw std::runtime_error("Unknown device model");
+	}
 }

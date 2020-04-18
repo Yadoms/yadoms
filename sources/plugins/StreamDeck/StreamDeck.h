@@ -39,7 +39,7 @@ private:
 	                          boost::shared_ptr<UsbDeviceInformation>& deviceInformation);
 
 
-	boost::shared_ptr<UsbDeviceInformation> initDevice(boost::shared_ptr<yApi::IYPluginApi>& api);
+	void initDevice(boost::shared_ptr<yApi::IYPluginApi>& api);
 
 	boost::shared_ptr<yApi::historization::CEvent> m_keyStateEvent;
 
