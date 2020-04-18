@@ -2,7 +2,7 @@
 #include "DeviceManager.h"
 #include "Configuration.h"
 
-class CStreamDeckOriginal : public CDeviceManager
+class CStreamDeckOriginal final : public CDeviceManager
 {
 public:
 	explicit CStreamDeckOriginal(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived);
