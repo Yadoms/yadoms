@@ -22,7 +22,7 @@ std::vector<uchar> CImageHelper::stringToVector(std::string& content)
 	return data;
 }
 
-cv::Mat CImageHelper::renderKeyImage(std::vector<uchar>& data, const int keyPixelSize, std::string& customText)
+cv::Mat CImageHelper::renderKeyImage(std::vector<uchar>& data, const int keyPixelSize, std::string& customText, cv::RotateFlags rotateFlag)
 {
 	// TODO : Pass text from configuration
 	auto img = cv::imdecode(cv::Mat(data), cv::IMREAD_UNCHANGED);
@@ -48,7 +48,7 @@ cv::Mat CImageHelper::renderKeyImage(std::vector<uchar>& data, const int keyPixe
 	}
 
 
-	rotate(black, black, cv::ROTATE_180);
+	rotate(black, black, rotateFlag);
 	return black;
 }
 

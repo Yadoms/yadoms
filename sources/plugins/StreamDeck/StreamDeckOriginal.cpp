@@ -28,7 +28,7 @@ void CStreamDeckOriginal::reset()
 
 	const auto res = hid_send_feature_report(m_handle, payload, DataToSendLength);
 
-	if(res == CDeviceManagerHelper::EHidError::kTrue)
+	if (res == CDeviceManagerHelper::EHidError::kTrue)
 	{
 		hid_close(m_handle);
 		hid_exit();
@@ -45,7 +45,8 @@ void CStreamDeckOriginal::resetKeyStream()
 	{
 		hid_close(m_handle);
 		hid_exit();
-		throw std::runtime_error("HID ERROR : Unable to write an output report to a HID device when resetting key stream");
+		throw std::runtime_error(
+			"HID ERROR : Unable to write an output report to a HID device when resetting key stream");
 	}
 }
 
@@ -69,7 +70,7 @@ void CStreamDeckOriginal::setBrightness(int percent)
 void CStreamDeckOriginal::setKeyImage(std::string& content, int& keyIndex, std::string& customText)
 {
 	auto data = CImageHelper::stringToVector(content);
-	auto img = CImageHelper::renderKeyImage(data, KeyPixelSize, customText);
+	auto img = CImageHelper::renderKeyImage(data, KeyPixelSize, customText, cv::RotateFlags::ROTATE_180);
 
 	auto array = CImageHelper::cvMatToVector(img);
 
@@ -126,7 +127,8 @@ void CStreamDeckOriginal::setKeyImage(std::string& content, int& keyIndex, std::
 		{
 			hid_close(m_handle);
 			hid_exit();
-			throw std::runtime_error("HID ERROR : Unable to write an output report to a HID device when setting key image");
+			throw std::runtime_error(
+				"HID ERROR : Unable to write an output report to a HID device when setting key image");
 		}
 
 		bytesRemaining = bytesRemaining - thisLength;
@@ -147,18 +149,18 @@ std::pair<bool, int> CStreamDeckOriginal::readKeyStates()
 	// in case of read error stop thread
 	std::mutex lock;
 	lock.lock();
-	
+
 	const auto res = hid_read(m_handle, readData, DataToSendLength);
-	
+
 	if (res == CDeviceManagerHelper::EHidError::kTrue)
 	{
 		hid_close(m_handle);
 		hid_exit();
 		throw std::runtime_error("HID ERROR : Unable to read an Input report from a HID device when reading key states");
 	}
-	
+
 	lock.unlock();
-	
+
 	const auto readDataVector = CDeviceManagerHelper::unsignedCharToVectorOfUnsignedChar(
 		readData, offset, DataToSendLength);
 
