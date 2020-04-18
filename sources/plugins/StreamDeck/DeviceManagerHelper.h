@@ -85,6 +85,13 @@ public:
 		std::map<int, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& map);
 	
 	static std::vector<unsigned char> unsignedCharToVectorOfUnsignedChar(unsigned char* input, int offset, int size);
+
+	enum EHidError
+	{
+		kFalse,
+		kTrue = -1,
+
+	};
 private:
 
 	static const uint16_t StreamDeckVendorId;

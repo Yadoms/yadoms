@@ -36,6 +36,12 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	try
 	{
 		m_deviceManager->open();
+		
+		m_deviceManager->reset();
+
+		m_deviceManager->setBrightness(30);
+
+		m_deviceManager->runKeyStateThread();
 	}
 	catch (const std::exception & exception)
 	{
@@ -43,12 +49,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
 		throw;
 	}
-
-	m_deviceManager->reset();
-
-	m_deviceManager->setBrightness(30);
-
-	m_deviceManager->runKeyStateThread();
 
 	// the main loop
 	while (true)
