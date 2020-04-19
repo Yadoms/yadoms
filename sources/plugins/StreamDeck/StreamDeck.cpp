@@ -38,10 +38,12 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		                                                kEvtKeyStateReceived);
 
 		m_deviceManager->open();
-
-		m_deviceManager->reset();
-
-		m_deviceManager->setBrightness(30);
+		
+		if (!api->deviceExists(m_usbDeviceInformation->deviceName))
+		{
+			m_deviceManager->reset();
+			m_deviceManager->setBrightness(30);
+		}
 
 		m_deviceManager->runKeyStateThread();
 	}
@@ -79,6 +81,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				                                                kEvtKeyStateReceived);
 
 				m_usbDeviceInformation.reset();
+				
 				initDevice(api);
 
 				m_configuration.initializeWith(newConfiguration);
