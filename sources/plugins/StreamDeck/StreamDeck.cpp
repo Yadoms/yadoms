@@ -167,7 +167,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 						YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
 
 						auto fileFromClient = extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
-						auto firmwareContent = fileFromClient.getContent();
 
 						YADOMS_LOG(information) << "File received from extra command";
 						YADOMS_LOG(information) << "    File name = " << fileFromClient.getFileName();
@@ -178,6 +177,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 						YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
 
 						auto img = fileFromClient.getContent();
+						
 						m_deviceManager->setKeyImage(img, keyIndex, customText);
 
 						for (auto i = 0; i < 100; ++i)
