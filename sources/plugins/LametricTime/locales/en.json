@@ -2,12 +2,11 @@
   "name": "LametricTime",
   "description": "Lametric Time devices support (see [site web](https://lametric.com/en-US/time/overview))",
   "configurationSchema": {
-    "APIKey": {
+   "APIKey": {
       "name": "API key",
-      "description":
-        "This key is needed and provided by sign up on [Lametric website](https://developer.lametric.com/user/devices)",
-      "regexErrorMessage": ""
-    },
+      "description": "This key is needed and provided by sign up on [Lametric website](https://developer.lametric.com/user/devices)",
+      "regexErrorMessage": "this is not a valid API KEY"
+   },
     "PairingMode": {
       "name": "Pairing mode",
       "type": "comboSection",
