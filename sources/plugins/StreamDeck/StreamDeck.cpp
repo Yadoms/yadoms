@@ -177,7 +177,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 						YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
 
 						auto img = fileFromClient.getContent();
-						
+
 						m_deviceManager->setKeyImage(img, keyIndex, customText);
 
 						for (auto i = 0; i < 100; ++i)
@@ -216,12 +216,11 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CStreamDeck::declareDeviceAndKeywords(boost::shared_ptr<yApi::IYPluginApi>& api)
 
 {
+	for (auto i = 0; i < m_usbDeviceInformation->keyCount; ++i)
+		m_keywords[i] = boost::make_shared<yApi::historization::CEvent>(
+			"Key #" + std::to_string(i), shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
 	if (!api->deviceExists(m_usbDeviceInformation->deviceName))
 	{
-		for (auto i = 0; i < m_usbDeviceInformation->keyCount; ++i)
-			m_keywords[i] = boost::make_shared<yApi::historization::CEvent>(
-				"Key #" + std::to_string(i), shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
-
 		const auto keywordsAsVector = CDeviceManagerHelper::mapToHistorizableVector(m_keywords);
 
 		const auto deviceModel = CDeviceManagerHelper::getDeviceModelAsAString(m_usbDeviceInformation->productID);
