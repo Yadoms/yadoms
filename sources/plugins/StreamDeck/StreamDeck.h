@@ -35,8 +35,7 @@ private:
 	CConfiguration m_configuration;
 	boost::shared_ptr<CDeviceManager> m_deviceManager;
 
-	void declareDeviceAndKeywords(boost::shared_ptr<yApi::IYPluginApi>& api,
-	                          boost::shared_ptr<UsbDeviceInformation>& deviceInformation);
+	void declareDeviceAndKeywords(boost::shared_ptr<yApi::IYPluginApi>& api);
 
 
 	void initDevice(boost::shared_ptr<yApi::IYPluginApi>& api);
