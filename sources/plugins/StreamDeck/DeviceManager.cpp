@@ -48,9 +48,9 @@ void CDeviceManager::runKeyStateThread()
 
 void CDeviceManager::readHandler()
 {
-	hid_set_nonblocking(m_handle, isNonBlocking);
 	try
 	{
+		hid_set_nonblocking(m_handle, isNonBlocking);
 		while (true)
 		{
 			auto keyState = readKeyStates();
