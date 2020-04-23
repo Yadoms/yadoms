@@ -1,0 +1,33 @@
+{
+  "name": "Deported HTTP screen",
+  "description": "Plugin for screen through an HTTP api",
+  "configurationSchema": {
+    "ipAddress": {
+      "name": "IP Address of ESPEasy",
+      "description": "Enter IP address of screen",
+      "regexErrorMessage": "Must be an ipv4 adress like 192.168.0.12"
+    },
+    "screenSpecs": {
+      "name": "Screen specifications",
+      "description": "Screen type, size,...",
+      "content": {
+        "screenType": {
+          "name": "Screen type",
+          "description": "",
+		  "values" : {
+		  	"TFT" : "TFT color",
+			"EINK" : "e-Ink, ePaper"
+		  }
+        },
+        "screenWidth": {
+          "name": "Width",
+          "description": "Number of pixels in width"
+        },
+        "screenHeight": {
+          "name": "Height",
+          "description": "Number of pixels in height"
+        }
+      }
+    }
+  }
+}
