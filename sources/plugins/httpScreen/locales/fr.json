@@ -1,0 +1,33 @@
+﻿{
+  "name": "Ecran déporté HTTP",
+  "description": "Plugin d'écran déporté commandé à travers une api HTTP",
+  "configurationSchema": {
+    "ipAddress": {
+      "name": "Adresse IP de la carte ESPEasy",
+      "description": "Entrer l'adresse IP de la carte avec le formware ESPEasy",
+      "regexErrorMessage": "U ne IPv4 est requise (exemple 192.168.0.12)"
+    },
+    "screenSpecs": {
+      "name": "Spécifications de l'écran",
+      "description": "Type d'écran, taille d'affichage...",
+      "content": {
+        "screenType": {
+          "name": "Type d'écran",
+          "description": "",
+		  "values" : {
+		  	"TFT" : "TFT couleur",
+			"EINK" : "Encre électronique (eInk, ePaper) monochrome"
+		  }
+        },
+        "screenWidth": {
+          "name": "Largeur",
+          "description": "Nombre de pixels en largeur"
+        },
+        "screenHeight": {
+          "name": "Hauteur",
+          "description": "Nombre de pixels en hauteur"
+        }
+      }
+    }
+  }
+}
