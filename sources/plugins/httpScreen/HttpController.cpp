@@ -22,7 +22,9 @@ void CHttpController::sendCommand(const std::string& ip, const std::string& comm
       cmd << "http://" << ip;
       cmd << "/control?cmd=" << commandMode;
       cmd << "," << commandData;
-      shared::CHttpMethods::sendGetRequest(cmd.str());
+      std::string urlToCall = cmd.str();
+      urlToCall = processText(urlToCall);
+      shared::CHttpMethods::sendGetRequest(urlToCall);
    }
    catch (std::exception& ex)
    {
@@ -37,6 +39,5 @@ void CHttpController::sendCommand(const std::string& ip, const std::string& comm
 std::string CHttpController::processText(const std::string& text)
 {
    std::string t = boost::replace_all_copy(text, " ", "%20");
-
    return t;
 }

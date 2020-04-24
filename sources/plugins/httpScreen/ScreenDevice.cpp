@@ -10,7 +10,11 @@
 
 CScreenDevice::CScreenDevice(const CConfiguration& config, boost::shared_ptr<CHttpController> controller, std::string deviceName)
 	: m_controller(controller), m_deviceName(std::move(deviceName)),
-	  m_update_screen_event(boost::make_shared<yApi::historization::CEvent>("updateScreen", yApi::EKeywordAccessMode::kGetSet))
+	  m_update_screen_event(boost::make_shared<yApi::historization::CText>(	"updateScreen", 
+		                                                                     yApi::EKeywordAccessMode::kGetSet,
+		                                                                     yApi::EMeasureType::kAbsolute,
+		                                                                     yApi::typeInfo::CStringTypeInfo::Empty,
+		                                                                     yApi::EHistoryDepth::kNoHistory))
 
 {
 	if(config.getSceenType() == kTft)

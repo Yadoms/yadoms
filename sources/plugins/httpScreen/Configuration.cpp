@@ -19,7 +19,7 @@ std::string CConfiguration::getIPAddress() const
 
 EScreenType CConfiguration::getSceenType() const
 {
-   if (m_configuration.exists("specificOledSize.content.screenType"))
+   if (m_configuration.exists("screenSpecs.content.screenType"))
    {
 
       // Enum type, declare keys labels
@@ -37,9 +37,9 @@ EScreenType CConfiguration::getSceenType() const
 //--------------------------------------------------------------
 unsigned int CConfiguration::getSceenWidth() const
 {
-   if (m_configuration.exists("specificOledSize.content.screenWidth"))
+   if (m_configuration.exists("screenSpecs.content.screenWidth"))
    {
-      return m_configuration.get<int>("specificOledSize.content.screenWidth");
+      return m_configuration.get<int>("screenSpecs.content.screenWidth");
    }
    return 250;
 }
@@ -48,9 +48,9 @@ unsigned int CConfiguration::getSceenWidth() const
 //--------------------------------------------------------------
 unsigned int  CConfiguration::getSceenHeight() const
 {
-   if (m_configuration.exists("specificOledSize.content.screenHeight"))
+   if (m_configuration.exists("screenSpecs.content.screenHeight"))
    {
-      return m_configuration.get<int>("specificOledSize.content.screenHeight");
+      return m_configuration.get<int>("screenSpecs.content.screenHeight");
    }
    return 250;
 }

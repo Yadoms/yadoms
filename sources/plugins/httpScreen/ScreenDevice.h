@@ -24,7 +24,7 @@ public:
 private:
 	boost::shared_ptr<CHttpController> m_controller;
 	std::string m_deviceName;
-	boost::shared_ptr< yApi::historization::CEvent> m_update_screen_event;
+	boost::shared_ptr< yApi::historization::CText> m_update_screen_event;
 
 	boost::shared_ptr<IRealScreen> m_realScreen;
 };
