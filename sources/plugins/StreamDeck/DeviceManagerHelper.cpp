@@ -121,7 +121,7 @@ std::string CDeviceManagerHelper::findUsbDeviceId(std::string& value, const std:
 	const std::regex reg(identifierToFind + "_(\\w+)");
 	if (!std::regex_search(value, matches, reg) || matches.empty())
 	{
-		throw;
+		throw std::runtime_error("Cannot find usb device ID");;
 	}
 	return matches[1].str();
 }
@@ -161,8 +161,6 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformati
 {
 	auto deviceInformation = boost::make_shared<UsbDeviceInformation>();
 	auto usbDevice = configuration.getUsbDevice();
-	auto usbDeviceVid = findUsbDeviceId(usbDevice, "vid");
-	auto usbDevicePid = findUsbDeviceId(usbDevice, "pid");
 
 	if (getOsName() != "Windows")
 	{
@@ -177,7 +175,8 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformati
 		deviceInformation->keyCount = getDeviceKeyCount(deviceInformation->productID);
 		return deviceInformation;
 	}
-
+	auto usbDeviceVid = findUsbDeviceId(usbDevice, "vid");
+	auto usbDevicePid = findUsbDeviceId(usbDevice, "pid");
 	deviceInformation->vendorID = stringToUnsignedShort(usbDeviceVid);
 	deviceInformation->productID = stringToUnsignedShort(usbDevicePid);
 	deviceInformation->serialNumber = getSerialNumber(usbDevice);
