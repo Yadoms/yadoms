@@ -40,8 +40,6 @@ public:
 
 	static uint16_t decimalToHex(std::string decimalValue);
 
-	static std::string getOsName();
-
 	static uint16_t stringToUnsignedShort(std::string& value);
 
 	static CStreamDeckFactory::EStreamDeckModel getDeviceModel(uint16_t& productId);

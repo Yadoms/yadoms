@@ -24,24 +24,6 @@ uint16_t CDeviceManagerHelper::decimalToHex(std::string decimalValue)
 	return boost::convert<uint16_t>(decimalValue, converter(std::showbase)(std::uppercase)(std::dec), 0);
 }
 
-
-std::string CDeviceManagerHelper::getOsName()
-{
-#ifdef WIN32
-	return "Windows";
-#elif __APPLE__ || __MACH__
-	return "Mac OSX";
-#elif __linux__
-	return "Linux";
-#elif __FreeBSD__
-	return "FreeBSD";
-#elif __unix || __unix__
-	return "Unix";
-#else
-	return "Other";
-#endif
-}
-
 uint16_t CDeviceManagerHelper::stringToUnsignedShort(std::string& value)
 {
 	return static_cast<uint16_t>(std::stoi(value, nullptr, 16));
@@ -161,30 +143,18 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformati
 {
 	auto deviceInformation = boost::make_shared<UsbDeviceInformation>();
 	auto usbDevice = configuration.getUsbDevice();
+	auto usbDeviceInformation = splitStringToVectorOfString(usbDevice, ";");
 
-	if (getOsName() != "Windows")
-	{
-		auto usbDeviceInformation = splitStringToVectorOfString(usbDevice, ";");
-
-		deviceInformation->vendorID = decimalToHex(usbDeviceInformation[0]);
-		deviceInformation->productID = decimalToHex(usbDeviceInformation[1]);
-		deviceInformation->serialNumber = usbDeviceInformation[2];
-		deviceInformation->deviceModel = getDeviceModel(deviceInformation->productID);
-		deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->productID);
-		deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->productID);
-		deviceInformation->keyCount = getDeviceKeyCount(deviceInformation->productID);
-		return deviceInformation;
-	}
-	auto usbDeviceVid = findUsbDeviceId(usbDevice, "vid");
-	auto usbDevicePid = findUsbDeviceId(usbDevice, "pid");
-	deviceInformation->vendorID = stringToUnsignedShort(usbDeviceVid);
-	deviceInformation->productID = stringToUnsignedShort(usbDevicePid);
-	deviceInformation->serialNumber = getSerialNumber(usbDevice);
+	deviceInformation->vendorID = decimalToHex(usbDeviceInformation[0]);
+	deviceInformation->productID = decimalToHex(usbDeviceInformation[1]);
+	deviceInformation->serialNumber = usbDeviceInformation[2];
 	deviceInformation->deviceModel = getDeviceModel(deviceInformation->productID);
 	deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->productID);
 	deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->productID);
 	deviceInformation->keyCount = getDeviceKeyCount(deviceInformation->productID);
+	
 	return deviceInformation;
+
 }
 
 unsigned char CDeviceManagerHelper::integerToHex(int& value)
