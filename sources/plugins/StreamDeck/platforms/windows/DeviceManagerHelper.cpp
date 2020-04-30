@@ -11,13 +11,6 @@ const uint16_t CDeviceManagerHelper::StreamDeckXLPoductId = 0x006c;
 
 CDeviceManagerHelper::CDeviceManagerHelper() = default;
 
-std::vector<std::string> CDeviceManagerHelper::splitStringToVectorOfString(const std::string& wordToSplit,
-                                                                           const std::string& separator)
-{
-	std::vector<std::string> words;
-	return split(words, wordToSplit, boost::is_any_of(separator), boost::token_compress_on);
-}
-
 uint16_t CDeviceManagerHelper::decimalToHex(std::string decimalValue)
 {
 	boost::cnv::cstream converter;

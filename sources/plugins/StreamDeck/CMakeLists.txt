@@ -37,18 +37,19 @@ if(OpenCV_FOUND)
 			ImageHelper.cpp
 			ImageHelper.h
 			hidapi/header/hidapi.h
-			platforms/DeviceManagerHelper.h
 		)
 		if(WIN32)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
 			 	${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/windows/hid.c
 				${CMAKE_CURRENT_SOURCE_DIR}/platforms/windows/DeviceManagerHelper.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/platforms/windows/DeviceManagerHelper.h
 			)
 		elseif(UNIX AND NOT APPLE)
 			include(FindLibUdev.cmake)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
 			 	${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/linux/hid.c
 				${CMAKE_CURRENT_SOURCE_DIR}/platforms/linux/DeviceManagerHelper.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/platforms/linux/DeviceManagerHelper.h
 			)
 			if(UDEV_FOUND)
 				set(STREAMDECK_PLUGIN_INCLDIR ${UDEV_INCLUDE_DIR})
@@ -61,6 +62,7 @@ if(OpenCV_FOUND)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
 				 ${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/mac/hid.c
 				 ${CMAKE_CURRENT_SOURCE_DIR}/platforms/linux/DeviceManagerHelper.cpp
+				 ${CMAKE_CURRENT_SOURCE_DIR}/platforms/linux/DeviceManagerHelper.h
 			)
 		else()
 			message(WARNING "Platform not handled")

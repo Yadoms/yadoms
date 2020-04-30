@@ -97,37 +97,6 @@ int CDeviceManagerHelper::getDeviceKeyCount(uint16_t& productId)
 	}
 }
 
-std::string CDeviceManagerHelper::findUsbDeviceId(std::string& value, const std::string& identifierToFind)
-{
-	std::smatch matches;
-	const std::regex reg(identifierToFind + "_(\\w+)");
-	if (!std::regex_search(value, matches, reg) || matches.empty())
-	{
-		throw std::runtime_error("Cannot find usb device ID");;
-	}
-	return matches[1].str();
-}
-
-std::string CDeviceManagerHelper::getSerialNumber(std::string& value)
-{
-	const auto serialNumberLenght = 12;
-	std::smatch matches;
-	const std::regex reg("([[:alnum:]]+)");
-
-	const std::regex_token_iterator<std::string::iterator> rend;
-	std::regex_token_iterator<std::string::iterator> a(value.begin(), value.end(), reg, 0);
-	while (a != rend)
-	{
-		if (a->length() != serialNumberLenght)
-		{
-			a++;
-			continue;
-		}
-		break;
-	}
-	return *a;
-}
-
 std::vector<std::string> CDeviceManagerHelper::buildKeys(const int cols, const int rows)
 {
 	std::vector<std::string> keys;
