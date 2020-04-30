@@ -6,6 +6,14 @@ if(OpenCV_FOUND)
 		#########################################
 		## Place here all the plugin source files
 		#########################################
+		if(ImageMagick_FOUND)
+		
+				message(STATUS "ImageMagick_INCLUDE_DIRS = " ${ImageMagick_INCLUDE_DIRS})
+				message(STATUS "ImageMagick_LIBRARIES = " ${ImageMagick_LIBRARIES})
+		
+		else()
+		   message(WARNING "ImageMagick is Missing")
+		endif()
 		set(STREAMDECK_PLUGIN_SOURCES
 			stdafx.h
 			stdafx.cpp
@@ -73,6 +81,7 @@ if(OpenCV_FOUND)
 			${STREAMDECK_PLUGIN_INCLDIR}
 	  		${OpenCV_INCLUDE_DIRS}
 	  		${HIDAPI_INCLUDE_DIR}
+			${ImageMagick_INCLUDE_DIRS}
 		)
 
 		#########################################
@@ -82,6 +91,7 @@ if(OpenCV_FOUND)
 		set(STREAMDECK_PLUGIN_LINK
 			${STREAMDECK_PLUGIN_LINK}
 	  		${OpenCV_LIBS}
+			${ImageMagick_LIBRARIES}
 		)
 
 		#########################################
