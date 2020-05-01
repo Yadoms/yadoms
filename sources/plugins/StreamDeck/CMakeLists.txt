@@ -23,7 +23,6 @@ if(OpenCV_FOUND)
 			Configuration.cpp
 			DeviceManager.cpp
 			DeviceManager.h
-			DeviceManagerHelper.h
 			CFactory.cpp
 			CFactory.h
 			StreamDeckOriginal.cpp
@@ -40,17 +39,21 @@ if(OpenCV_FOUND)
 		)
 		if(WIN32)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
-			 	${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/windows/hid.c
-				${CMAKE_CURRENT_SOURCE_DIR}/platforms/windows/DeviceManagerHelper.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/platforms/windows/DeviceManagerHelper.h
+			 	hidapi/sources/windows/hid.c
+				windows/DeviceManagerHelper.cpp
+				windows/DeviceManagerHelper.h
 			)
+			source_group(sources\\windows windows/*.*)
+
 		elseif(UNIX AND NOT APPLE)
 			include(FindLibUdev.cmake)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
-			 	${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/linux/hid.c
-				${CMAKE_CURRENT_SOURCE_DIR}/platforms/linux/DeviceManagerHelper.cpp
-				${CMAKE_CURRENT_SOURCE_DIR}/platforms/linux/DeviceManagerHelper.h
+			 	hidapi/sources/linux/hid.c
+				linux/DeviceManagerHelper.cpp
+				linux/DeviceManagerHelper.h
 			)
+			source_group(sources\\linux linux/*.*)
+
 			if(UDEV_FOUND)
 				set(STREAMDECK_PLUGIN_INCLDIR ${UDEV_INCLUDE_DIR})
 				set(STREAMDECK_PLUGIN_LINK ${UDEV_LIBRARIES})
@@ -61,9 +64,10 @@ if(OpenCV_FOUND)
 		elseif(APPLE)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
 				 ${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/mac/hid.c
-				 ${CMAKE_CURRENT_SOURCE_DIR}/platforms/linux/DeviceManagerHelper.cpp
-				 ${CMAKE_CURRENT_SOURCE_DIR}/platforms/linux/DeviceManagerHelper.h
+				 ${CMAKE_CURRENT_SOURCE_DIR}/linux/DeviceManagerHelper.cpp
+				 ${CMAKE_CURRENT_SOURCE_DIR}/linux/DeviceManagerHelper.h
 			)
+			source_group(sources\\linux linux/*.*)
 		else()
 			message(WARNING "Platform not handled")
 		endif()
@@ -81,8 +85,18 @@ if(OpenCV_FOUND)
 		## Place here all additional include directories
 		## (by default yadoms-shared and boost are included)
 		#########################################
+		if(WIN32)
+			set(STREAMDECK_ADDITIONAL_INC_DIR
+				${CMAKE_CURRENT_SOURCE_DIR}/windows
+		)
+		elseif(UNIX)
+			set(STREAMDECK_ADDITIONAL_INC_DIR
+				${CMAKE_CURRENT_SOURCE_DIR}/linux
+		endif()
+
 		set(STREAMDECK_PLUGIN_INCLDIR
 			${STREAMDECK_PLUGIN_INCLDIR}
+			${STREAMDECK_ADDITIONAL_INC_DIR}
 	  		${OpenCV_INCLUDE_DIRS}
 	  		${HIDAPI_INCLUDE_DIR}
 			${ImageMagick_INCLUDE_DIRS}
