@@ -85,6 +85,7 @@ if(OpenCV_FOUND)
 		elseif(UNIX)
 			set(STREAMDECK_ADDITIONAL_INC_DIR
 				${CMAKE_CURRENT_SOURCE_DIR}/linux
+			)
 		endif()
 
 		set(STREAMDECK_PLUGIN_INCLDIR
