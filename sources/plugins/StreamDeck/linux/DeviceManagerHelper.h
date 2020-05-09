@@ -1,5 +1,5 @@
 #pragma once
-#include "Configuration.h"
+#include "../Configuration.h"
 #include "shared/plugin/yPluginApi/historization/IHistorizable.h"
 
 class CStreamDeckFactory
