@@ -93,7 +93,6 @@ if(OpenCV_FOUND)
 			${STREAMDECK_ADDITIONAL_INC_DIR}
 	  		${OpenCV_INCLUDE_DIRS}
 	  		${HIDAPI_INCLUDE_DIR}
-			${ImageMagick_INCLUDE_DIRS}
 		)
 
 		#########################################
@@ -103,7 +102,6 @@ if(OpenCV_FOUND)
 		set(STREAMDECK_PLUGIN_LINK
 			${STREAMDECK_PLUGIN_LINK}
 	  		${OpenCV_LIBS}
-			${ImageMagick_LIBRARIES}
 		)
 
 		#########################################
