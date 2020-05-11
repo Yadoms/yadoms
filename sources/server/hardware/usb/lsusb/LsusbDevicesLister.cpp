@@ -38,14 +38,14 @@ std::vector<boost::shared_ptr<IDevice>> CLsusbDevicesLister::listUsbDevices()
          }
          catch (const std::exception &e)
          {
-            YADOMS_LOG(warning) << "Unable to access device " << e.what();
+            YADOMS_LOG(warning) << "Unable to access device, " << e.what();
          }
       }
       return devicesList;
    }
    catch (const std::exception &e)
    {
-      YADOMS_LOG(warning) << "Unable to list USB devices";
+      YADOMS_LOG(warning) << "Unable to list USB devices, " << e.what();
       return std::vector<boost::shared_ptr<IDevice>>();
    }
 }
