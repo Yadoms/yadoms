@@ -2,7 +2,7 @@
    "type": "StreamDeck",
    "version": "1.0.0",
    "author": "Oussama DAHMAZ",
-   "credits": "[Libusb](https://libusb.info/), [Libusbpp](https://github.com/zarthcode/Libusbpp)",
+   "credits": "[OpenCV](https://opencv.org/), [libusb/hidapi](https://github.com/libusb/hidapi), [python-elgato-streamdeck](https://github.com/abcminiuser/python-elgato-streamdeck), [node-elgato-stream-deck](https://github.com/Lange/node-elgato-stream-deck)",
    "supportedPlatforms": "all",
    "dependencies": {
       "yadoms": {
