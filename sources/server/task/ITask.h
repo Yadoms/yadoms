@@ -21,7 +21,7 @@ namespace task
       //    -> param 4 : std::string               : the exception message (should not be i18n messages; only when param1 is false)
       //    -> param 5 : shared::CDataContainer    : Some free data provided by task implementation (specific for each task)
       //---------------------------------
-      typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, shared::CDataContainerSharedPtr> TaskProgressFunc;
+      typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, boost::shared_ptr<shared::CDataContainer>> TaskProgressFunc;
 
       //------------------------------
       ///\brief Get the task name

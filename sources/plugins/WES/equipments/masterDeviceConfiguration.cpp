@@ -4,13 +4,13 @@
 #include <shared/encryption/Xor.h>
 
 CmasterDeviceConfiguration::CmasterDeviceConfiguration()
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {}
 
 CmasterDeviceConfiguration::~CmasterDeviceConfiguration()
 {}
 
-void CmasterDeviceConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
+void CmasterDeviceConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_data->initializeWith(data);
 }

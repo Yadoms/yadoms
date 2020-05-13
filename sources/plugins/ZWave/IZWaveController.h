@@ -95,14 +95,14 @@ public:
    /// \param [in] 	device   the targetted device
    /// \return The configuration schema
    //--------------------------------------------------------------
-   virtual shared::CDataContainerSharedPtr getNodeConfigurationSchema(const std::string & device) = 0;
+   virtual boost::shared_ptr<shared::CDataContainer> getNodeConfigurationSchema(const std::string & device) = 0;
 
    //--------------------------------------------------------------
    /// \brief	Update device configuration
    /// \param [in] 	device         The targetted device
    /// \param [in]   configuration  The configuration values
    //--------------------------------------------------------------
-   virtual void setNodeConfiguration(const std::string & device, const shared::CDataContainerSharedPtr&configuration) =0;
+   virtual void setNodeConfiguration(const std::string & device, const boost::shared_ptr<shared::CDataContainer>&configuration) =0;
 
    //--------------------------------------------------------------
    /// \brief	Update device configuration (self update, from a device notification) => updates only configuration container
@@ -111,7 +111,7 @@ public:
    /// \param [in] 	   value          The new value
    /// \param [in-out]  configuration  The initial and output configuration values
    //--------------------------------------------------------------
-   virtual void updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainerSharedPtr& configuration) = 0;
+   virtual void updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, boost::shared_ptr<shared::CDataContainer>& configuration) = 0;
 
    //--------------------------------------------------------------
    /// \brief	Get all the nodes
@@ -126,6 +126,6 @@ public:
    /// \param [in] 	   value          The extra query data
    /// \return true if successfull
    //--------------------------------------------------------------
-   virtual bool onDeviceExtraQuery(const std::string & targetDevice, const std::string & extraQuery, const shared::CDataContainerSharedPtr&data) = 0;
+   virtual bool onDeviceExtraQuery(const std::string & targetDevice, const std::string & extraQuery, const boost::shared_ptr<shared::CDataContainer>&data) = 0;
 
 };

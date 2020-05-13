@@ -51,7 +51,7 @@ void CIOManager::readAllIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, b
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                            boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   shared::CDataContainerSharedPtr parameters = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> parameters = shared::CDataContainer::make();
 
    YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command) ;
 
@@ -87,7 +87,7 @@ void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const std::string& type,
                                   bool forceHistorization)
 {
-   shared::CDataContainerSharedPtr parameters = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> parameters = shared::CDataContainer::make();
 
    // add the password if activated
    if (m_isPasswordActivated)

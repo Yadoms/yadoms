@@ -56,7 +56,7 @@ namespace rfxcomMessages
 
    void CBarometric::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("type", pTypeBARO);
       details->set("subType", m_subType);
       details->set("id", m_id);

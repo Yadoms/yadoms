@@ -13,7 +13,7 @@ namespace equipments
       m_deviceName(device),
       m_position(position)
    {
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("provider", "IPX800");
       details->set("shortProvider", "ipx");;
       details->set("type", deviceType());
@@ -58,7 +58,7 @@ namespace equipments
 
    void CX8DExtension::updateFromDevice(const std::string& type,
                                         boost::shared_ptr<yApi::IYPluginApi> api,
-                                        shared::CDataContainerSharedPtr& values,
+                                        boost::shared_ptr<shared::CDataContainer>& values,
                                         bool forceHistorization)
    {
       if (type == "D")
@@ -94,8 +94,8 @@ namespace equipments
       }
    }
 
-   shared::CDataContainerSharedPtr CX8DExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                              shared::CDataContainerSharedPtr& parameters,
+   boost::shared_ptr<shared::CDataContainer> CX8DExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                              boost::shared_ptr<shared::CDataContainer>& parameters,
                                                               boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
       throw shared::exception::CException("Extension module X-8D have no keyword to set");
@@ -112,7 +112,7 @@ namespace equipments
       throw shared::exception::CException("Extension module X-8D have no pending operation");
    }
 
-   void CX8DExtension::setNewConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
+   void CX8DExtension::setNewConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
    {
       std::vector<boost::shared_ptr<specificHistorizers::CInputOuput>>::const_iterator iterator;
 

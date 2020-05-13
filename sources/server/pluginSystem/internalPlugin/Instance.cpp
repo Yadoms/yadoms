@@ -66,7 +66,7 @@ namespace pluginSystem
                                    extraQuery);
       }
 
-      void CInstance::updateConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
+      void CInstance::updateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
       {
          m_eventHandler->postEvent(yApi::IYPluginApi::kEventUpdateConfiguration,
                                    newConfiguration);
@@ -208,7 +208,7 @@ namespace pluginSystem
 
       void CInstance::createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                                    const std::string& deviceName,
-                                                   const shared::CDataContainerSharedPtr& standardCapacity) const
+                                                   const boost::shared_ptr<shared::CDataContainer>& standardCapacity) const
       {
          boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
 

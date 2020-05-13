@@ -6,7 +6,7 @@ namespace plugin_cpp_api
 {
    CDeviceRemoved::CDeviceRemoved(const plugin_IPC::toPlugin::DeviceRemoved& msg)
       : m_device(msg.device()),
-        m_details(new_CDataContainerSharedPtrP(msg.details()))
+        m_details(shared::CDataContainer::make(msg.details()))
    {
    }
 
@@ -19,7 +19,7 @@ namespace plugin_cpp_api
       return m_device;
    }
 
-   const shared::CDataContainerSharedPtr& CDeviceRemoved::details() const
+   const boost::shared_ptr<shared::CDataContainer>& CDeviceRemoved::details() const
    {
       return m_details;
    }

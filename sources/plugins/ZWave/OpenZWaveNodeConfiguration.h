@@ -45,19 +45,19 @@ public:
    /// \brief	      Generate the configuration schema for the device
    /// \return       The configuration schema
    //--------------------------------------------------------------   
-   shared::CDataContainerSharedPtr generateConfigurationSchema();
+   boost::shared_ptr<shared::CDataContainer> generateConfigurationSchema();
 
    //--------------------------------------------------------------
    /// \brief	      Generate the configuration values for the device
    /// \return       The configuration values (all conf-keyword values)
    //--------------------------------------------------------------   
-   shared::CDataContainerSharedPtr saveValuesToDatabase();
+   boost::shared_ptr<shared::CDataContainer> saveValuesToDatabase();
 
    //--------------------------------------------------------------
    /// \brief	      Set the configuration values
    /// \param [in]   configuration     the configuration values
    //--------------------------------------------------------------      
-   void setConfigurationValues(const shared::CDataContainerSharedPtr&configuration);
+   void setConfigurationValues(const boost::shared_ptr<shared::CDataContainer>&configuration);
 
    //--------------------------------------------------------------
    /// \brief	Update device configuration (self update, from a device notification.) => updates only configuration container
@@ -65,7 +65,7 @@ public:
    /// \param [in] 	   value          The new value
    /// \param [in-out]  configuration  The initial and output configuration values
    //--------------------------------------------------------------
-   void updateNodeConfiguration(const std::string& keyword, const std::string& value, shared::CDataContainerSharedPtr& configuration);
+   void updateNodeConfiguration(const std::string& keyword, const std::string& value, boost::shared_ptr<shared::CDataContainer>& configuration);
 
 private:
    //--------------------------------------------------------------

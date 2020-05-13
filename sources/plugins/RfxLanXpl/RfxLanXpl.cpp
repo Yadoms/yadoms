@@ -35,7 +35,7 @@ enum
    kXplHubFound,
 };
 
-void print(shared::CDataContainerSharedPtr const& pt)
+void print(boost::shared_ptr<shared::CDataContainer> const& pt)
 {
    YADOMS_LOG(information) << pt->serialize() ;
 }
@@ -92,7 +92,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Configuration was updated
                api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>();
+               auto newConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
                YADOMS_LOG(information) << "Update configuration..." ;
 
                //read new conf and
@@ -223,7 +223,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage& xplMessage,
 
             if (!api->deviceExists(deviceAddress.getId()))
             {
-               shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+               boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
                details->set("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
                details->set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
                details->set("innerDetails", deviceAddress.getInnerDetails());
@@ -294,9 +294,9 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
          auto protocol = details->get<std::string>("writingProtocol");
          auto source = details->get<std::string>("source");
 
-         auto innerDetails = new_CDataContainerSharedPtr();
+         auto innerDetails = shared::CDataContainer::make();
          if (details->exists("innerDetails"))
-            innerDetails = details->get<shared::CDataContainerSharedPtr>("innerDetails");
+            innerDetails = details->get<boost::shared_ptr<shared::CDataContainer>>("innerDetails");
 
          if (m_deviceManager->isHandled(source))
          {
@@ -380,7 +380,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
             auto deviceContainer = deviceCreationRule->generateDeviceParameters(innerContent);
             const auto& deviceAddress = deviceContainer.getDeviceIdentifier();
 
-            shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+            boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
             details->set("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
             details->set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
             details->set("source", std::string("yadomssource!"));
@@ -432,7 +432,7 @@ void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequ
       if (data->getData().getQuery() == "RfxLanList")
       {
          //send created device
-         shared::CDataContainerSharedPtr result = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make();
          for (auto i = m_connectedRfxLans.begin(); i != m_connectedRfxLans.end(); ++i)
             result->set(*i, *i, 0);
 

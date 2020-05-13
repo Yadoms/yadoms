@@ -16,8 +16,8 @@ namespace outgoing {
       
       const std::string COutgoingFrame::generateAsciiCommand(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
       {
-         shared::CDataContainerSharedPtr details = api->getDeviceDetails(command->getDevice());
-         shared::CDataContainerSharedPtr config = api->getDeviceConfiguration(command->getDevice());
+         boost::shared_ptr<shared::CDataContainer> details = api->getDeviceDetails(command->getDevice());
+         boost::shared_ptr<shared::CDataContainer> config = api->getDeviceConfiguration(command->getDevice());
 
          const std::string cmd = command->getBody();
 

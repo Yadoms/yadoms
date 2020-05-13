@@ -37,7 +37,7 @@ namespace database
                                                               const std::string& friendlyName,
                                                               const std::string& type,
                                                               const std::string& model,
-                                                              shared::CDataContainerSharedPtr details) override;
+                                                              boost::shared_ptr<shared::CDataContainer> details) override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(bool blacklistedIncluded = false) const
             override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(const std::set<int>& deviceIds) const override;
@@ -64,9 +64,9 @@ namespace database
                                           const std::string& newFriendlyName) override;
             void rename(int deviceId, const std::string& newName) override;
             void updateDeviceConfiguration(int deviceId,
-                                           shared::CDataContainerSharedPtr configuration) override;
+                                           boost::shared_ptr<shared::CDataContainer> configuration) override;
             void updateDeviceDetails(int deviceId,
-                                     shared::CDataContainerSharedPtr details) override;
+                                     boost::shared_ptr<shared::CDataContainer> details) override;
             void updateDeviceModel(int deviceId,
                                    const std::string& model) override;
             void updateDeviceType(int deviceId,

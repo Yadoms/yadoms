@@ -48,13 +48,13 @@ bool COpenZWaveNodeConfiguration::sendCommand(const std::string& keyword, const 
    throw shared::exception::CException("The keyword is not registered for this zwave node");
 }
 
-shared::CDataContainerSharedPtr COpenZWaveNodeConfiguration::generateConfigurationSchema()
+boost::shared_ptr<shared::CDataContainer> COpenZWaveNodeConfiguration::generateConfigurationSchema()
 {
    std::map<int, std::string> orderedKeywordsByIndex;
    for (auto j = m_configurationItems.begin(); j != m_configurationItems.end(); ++j)
 	   orderedKeywordsByIndex[j->second->getIndex()] = j->first;
 
-   shared::CDataContainerSharedPtr result = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make();
    for (auto i = orderedKeywordsByIndex.begin(); i != orderedKeywordsByIndex.end(); ++i)
    {
 	
@@ -80,9 +80,9 @@ shared::CDataContainerSharedPtr COpenZWaveNodeConfiguration::generateConfigurati
    return result;
 }
 
-shared::CDataContainerSharedPtr COpenZWaveNodeConfiguration::saveValuesToDatabase()
+boost::shared_ptr<shared::CDataContainer> COpenZWaveNodeConfiguration::saveValuesToDatabase()
 {
-   shared::CDataContainerSharedPtr result = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make();
    for (auto i = m_configurationItems.begin(); i != m_configurationItems.end(); ++i)
    {
       if (i->second != nullptr)
@@ -107,9 +107,9 @@ shared::CDataContainerSharedPtr COpenZWaveNodeConfiguration::saveValuesToDatabas
    return result;
 }
 
-void COpenZWaveNodeConfiguration::setConfigurationValues(const shared::CDataContainerSharedPtr&configuration)
+void COpenZWaveNodeConfiguration::setConfigurationValues(const boost::shared_ptr<shared::CDataContainer>&configuration)
 {
-   shared::CDataContainerSharedPtr result = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make();
    for (auto i = m_configurationItems.begin(); i != m_configurationItems.end(); ++i)
    {
       if (i->second != nullptr)
@@ -146,7 +146,7 @@ void COpenZWaveNodeConfiguration::setConfigurationValues(const shared::CDataCont
    }
 }
 
-void COpenZWaveNodeConfiguration::updateNodeConfiguration(const std::string& keyword, const std::string& value, shared::CDataContainerSharedPtr& configuration)
+void COpenZWaveNodeConfiguration::updateNodeConfiguration(const std::string& keyword, const std::string& value, boost::shared_ptr<shared::CDataContainer>& configuration)
 {
    configuration->set(CConfigurationSchemaFactory::generateValidKeyName(keyword), value);
 }

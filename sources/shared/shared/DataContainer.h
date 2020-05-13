@@ -17,17 +17,6 @@
 namespace shared
 {
    //--------------------------------------------------------------
-   /// \brief	This class should be used as a data container
-   ///			The aim is to handle any data; like configuration
-   ///			
-   ///			The container should contains data by a get/set method
-   ///			Each data is associated to a key name
-   ///			The data could be a simple type, a list of data, or a DataContainer child
-   ///
-   ///			The container has the serialize feature
-   ///			This is done be serializing/deserializing a string,
-   ///			or a file
-   ///			
    ///			***********************
    ///			** USAGE
    ///			***********************
@@ -175,21 +164,71 @@ namespace shared
    ///
    //--------------------------------------------------------------
 
-   typedef boost::shared_ptr<CDataContainer> CDataContainerSharedPtr;
-   typedef boost::shared_ptr<const CDataContainer> CDataContainerSharedPtrConst;
-
-   #define new_CDataContainerSharedPtr() boost::make_shared<shared::CDataContainer>()
-   #define new_CDataContainerSharedPtrOptimized(estimatedDataSize,estimatedItemCount) boost::make_shared<shared::CDataContainer>(estimatedDataSize,estimatedItemCount)
-   #define new_CDataContainerSharedPtrP(P) boost::make_shared<shared::CDataContainer>(P)
-
+   //--------------------------------------------------------------
+   /// \brief	This class should be used as a data container
+   ///			The container should contains data by a get/set method
+   ///			Each data is associated to a key name
+   ///			The data could be a simple type, a list of data, or a DataContainer child
+   ///
+   ///			The container has the serialize feature
+   ///			This is done be serializing/deserializing a string,
+   ///			or a file
+   //--------------------------------------------------------------
    class CDataContainer : public serialization::IDataSerializable, public serialization::IDataFileSerializable /*, public IDataContainable*/
    {
    public:
       //--------------------------------------------------------------
+      /// \brief		Constructor
+      //--------------------------------------------------------------
+      static boost::shared_ptr<CDataContainer> make();
+
+      //--------------------------------------------------------------
+      /// \brief		Constructor (optimized for huge data)
+      /// \param [in] estimatedDataSize    Estimated size of one item of data
+      /// \param [in] estimatedItemCount   Estimated item count
+      ///
+      ///   This ctor preallocate buffer to limit heap usage (really optimized for huge data set)
+      ///
+      ///   By default, each item is allocated with 65000 bytes on heap (rapidjson impl) which may not be possible for thousands of items...
+      ///   (heap is generally of 4Gb on computer, so around 61000 items it will fault)
+      //--------------------------------------------------------------
+      static boost::shared_ptr<CDataContainer> make(unsigned int estimatedDataSize, unsigned int estimatedItemCount);
+
+      //--------------------------------------------------------------
+      /// \brief		Constructor
+      /// \param [in] d    Initial data for this container (json data)
+      //--------------------------------------------------------------
+      static boost::shared_ptr<CDataContainer> make(const std::string& initialData);
+
+      //--------------------------------------------------------------
+      /// \brief		Constructor
+      /// \param [in] d    Initial data for this container (key,value)
+      //--------------------------------------------------------------
+      static boost::shared_ptr<CDataContainer> make(const std::map<std::string, std::string>& initialData);
+
+      //--------------------------------------------------------------
+      /// \brief		Constructor
+      /// \param [in] d    Initial data for this container (rapidjson::Value&)
+      //--------------------------------------------------------------
+      static boost::shared_ptr<CDataContainer> make(rapidjson::Value& d);
+      
+      //--------------------------------------------------------------
+      /// \brief		Constructor
+      /// \param [in] d    Initial data for this container (rapidjson::Value*)
+      //--------------------------------------------------------------
+      static boost::shared_ptr<CDataContainer> make(rapidjson::Value* d);
+
+      //--------------------------------------------------------------
+      /// \brief		Constructor
+      /// \param [in] d    Initial data for this container (rapidjson::Document&)
+      //--------------------------------------------------------------
+      static boost::shared_ptr<CDataContainer> make(rapidjson::Document& d);
+
+      //--------------------------------------------------------------
       //
       //
       //
-      // Constructors & destructor
+      // Constructors & destructor (internal use ONLY prefer use shared::CDataContainer::make(...) )
       //
       //
       //
@@ -197,6 +236,9 @@ namespace shared
 
       //--------------------------------------------------------------
       /// \brief		Constructor. Empty data
+      // ************************************************************************************
+      // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
+      // ************************************************************************************
       //--------------------------------------------------------------
       CDataContainer();
       
@@ -204,18 +246,27 @@ namespace shared
       /// \brief		Constructor. Empty data
       ///            With preallocated buffer (!! important if use of
       ///            huge number of items)
+      // ************************************************************************************
+      // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
+      // ************************************************************************************
       //--------------------------------------------------------------
       CDataContainer(unsigned int estimatedDataSize, unsigned int estimatedItemCount);
 
       //--------------------------------------------------------------
       /// \brief		Constructor. 
       /// \param [in] initialData    Initial data for this container (will be deserialized)
+      // ************************************************************************************
+      // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
+      // ************************************************************************************
       //--------------------------------------------------------------
       explicit CDataContainer(const std::string & initialData);
 
       //--------------------------------------------------------------
       /// \brief		Constructor. 
       /// \param [in] initialData    Initial map data
+      // ************************************************************************************
+      // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
+      // ************************************************************************************
       //--------------------------------------------------------------
       explicit CDataContainer(const std::map<std::string, std::string> & initialData);
 
@@ -231,19 +282,28 @@ namespace shared
 	  //--------------------------------------------------------------
 	  /// \brief		Constructor
 	  /// \param [in] d    Initial data for this container (rapidjson::Value&)
+     // ************************************************************************************
+     // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
+     // ************************************************************************************
 	  //--------------------------------------------------------------
       explicit CDataContainer(rapidjson::Value & d);
 
 	  //--------------------------------------------------------------
 	  /// \brief		Constructor
 	  /// \param [in] d    Initial data for this container (rapidjson::Value*)
-	  //--------------------------------------------------------------
+     // ************************************************************************************
+     // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
+     // ************************************************************************************
+     //--------------------------------------------------------------
 	  explicit CDataContainer(rapidjson::Value * d);
       
 	  //--------------------------------------------------------------
 	  /// \brief		Constructor
 	  /// \param [in] d    Initial data for this container (rapidjson::Document&)
-	  //--------------------------------------------------------------
+     // ************************************************************************************
+     // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
+     // ************************************************************************************
+     //--------------------------------------------------------------
 	  explicit CDataContainer(rapidjson::Document & d);
 
    public:
@@ -288,9 +348,9 @@ namespace shared
       /// \brief	    Get child value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] pathChar         The path spearator to use (default is '.')
-      /// \return     The child as CDataContainerSharedPtr
+      /// \return     The child as boost::shared_ptr<CDataContainer>
       //--------------------------------------------------------------
-      CDataContainerSharedPtr getChild(const std::string& parameterName, char pathChar = '.') const;
+      boost::shared_ptr<CDataContainer> getChild(const std::string& parameterName, char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
@@ -421,7 +481,7 @@ namespace shared
       /// \brief	    Make a full copy of current container
       /// \return     The newly created container
       //--------------------------------------------------------------
-      CDataContainerSharedPtr copy() const;
+      boost::shared_ptr<CDataContainer> copy() const;
 
       //--------------------------------------------------------------
       //
@@ -472,7 +532,7 @@ namespace shared
       /// \brief		Copy another container to this instance
       /// \param [in] rhs  The container to copy
       //--------------------------------------------------------------
-      void initializeWith(const CDataContainerSharedPtr& rhs);
+      void initializeWith(const boost::shared_ptr<CDataContainer>& rhs);
 
       //--------------------------------------------------------------
       //
@@ -627,7 +687,7 @@ namespace shared
       /// \desc       Add non-exisiting (or replace existing) values of "from" container into this container
       ///             Values of this container not present in "from" container will be kept
       //--------------------------------------------------------------
-      void mergeFrom(CDataContainerSharedPtr & from);
+      void mergeFrom(boost::shared_ptr<CDataContainer> & from);
 
       //--------------------------------------------------------------
       //
@@ -671,7 +731,7 @@ namespace shared
       /// \brief		An empty container which could be used as default method parameter
       //--------------------------------------------------------------
       const static CDataContainer EmptyContainer;
-      const static CDataContainerSharedPtr EmptyContainerSharedPtr;
+      const static boost::shared_ptr<CDataContainer> EmptyContainerSharedPtr;
 
    protected:
       //--------------------------------------------------------------
@@ -1064,12 +1124,12 @@ namespace shared
       /// \brief	    Helper structure for get/set with boost::shared_ptr
       //--------------------------------------------------------------
       template <>
-      struct helper < CDataContainerSharedPtr >
+      struct helper < boost::shared_ptr<CDataContainer> >
       {
          //--------------------------------------------------------------
          /// \brief	    GET Method for boost::shared_ptr<T>
          //--------------------------------------------------------------
-         static CDataContainerSharedPtr getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
+         static boost::shared_ptr<CDataContainer> getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
             return tree->getChild(parameterName, pathChar);
          }
@@ -1077,7 +1137,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    SET Method for boost::shared_ptr<T>
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const CDataContainerSharedPtr & value, const char pathChar)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const boost::shared_ptr<CDataContainer> & value, const char pathChar)
          {
             auto & a = *value.get();
             tree->set(parameterName, a, pathChar);
@@ -1086,7 +1146,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    appendArray Method for boost::shared_ptr<T>
          //--------------------------------------------------------------
-         static void appendArrayInternal(CDataContainer * tree, const std::string& parameterName, const CDataContainerSharedPtr& value, const char pathChar)
+         static void appendArrayInternal(CDataContainer * tree, const std::string& parameterName, const boost::shared_ptr<CDataContainer>& value, const char pathChar)
          {
             auto& a = *value.get();
             tree->appendArray(parameterName, a, pathChar);
@@ -1443,12 +1503,12 @@ namespace shared
       /// \brief	    Helper structure for get/set with vector of value type ( std::vector< boost::shared_ptr<T> > )
       //--------------------------------------------------------------
       template <>
-      struct helper < std::vector< CDataContainerSharedPtr > >
+      struct helper < std::vector< boost::shared_ptr<CDataContainer> > >
       {
          //--------------------------------------------------------------
          /// \brief	    GET Method for std::vector< boost::shared_ptr<T> >
          //--------------------------------------------------------------
-         static std::vector< CDataContainerSharedPtr > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
+         static std::vector< boost::shared_ptr<CDataContainer> > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
             return vhelper<CDataContainer>::getInternal(tree, parameterName, pathChar);
          }
@@ -1456,7 +1516,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    SET Method for std::vector< boost::shared_ptr<T> >
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< CDataContainerSharedPtr > & value, const char pathChar)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< boost::shared_ptr<CDataContainer> > & value, const char pathChar)
          {
             vhelper<CDataContainer>::setInternal(tree, parameterName, value, pathChar);
          }
@@ -1713,17 +1773,17 @@ namespace shared
    */
 
    template<>
-   inline std::vector< CDataContainerSharedPtr > CDataContainer::getValuesInternal(const std::string& parameterName, const char pathChar) const
+   inline std::vector< boost::shared_ptr<CDataContainer> > CDataContainer::getValuesInternal(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
-      std::vector< CDataContainerSharedPtr > result;
+      std::vector< boost::shared_ptr<CDataContainer> > result;
       rapidjson::Value* found = findValue(parameterName, pathChar);
       if (found)
       {
          if (found->IsArray())
          {
             std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
-               [](auto& v) -> CDataContainerSharedPtr { return boost::make_shared<CDataContainer>(v); });
+               [](auto& v) -> boost::shared_ptr<CDataContainer> { return boost::make_shared<CDataContainer>(v); });
          }
          else
             throw exception::COutOfRange(parameterName + " is not an array");
@@ -1787,11 +1847,11 @@ namespace shared
    }
 
    template<>
-   inline std::vector< CDataContainerSharedPtr > CDataContainer::getValuesSPInternal(const std::string& parameterName, const char pathChar) const
+   inline std::vector< boost::shared_ptr<CDataContainer> > CDataContainer::getValuesSPInternal(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      std::vector<CDataContainerSharedPtr > result;
+      std::vector<boost::shared_ptr<CDataContainer> > result;
       rapidjson::Value* found = findValue(parameterName, pathChar);
       if (found)
       {
@@ -1799,7 +1859,7 @@ namespace shared
          {
             for (auto& v : found->GetArray())
             {
-               CDataContainerSharedPtr sp = boost::make_shared<CDataContainer>(&v);
+               boost::shared_ptr<CDataContainer> sp = CDataContainer::make(&v);
                result.push_back(sp);
             }
          }
@@ -2006,13 +2066,13 @@ namespace shared
 
    /*
    template<>
-   inline void CDataContainer::setValuesSPInternal(const std::string& parameterName, const std::vector< CDataContainerSharedPtr > & values, const char pathChar)
+   inline void CDataContainer::setValuesSPInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<CDataContainer> > & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      for (std::vector<CDataContainerSharedPtr>::const_iterator i = values.begin(); i != values.end(); ++i)
+      for (std::vector<boost::shared_ptr<CDataContainer>>::const_iterator i = values.begin(); i != values.end(); ++i)
       {
          rapidjson::Value a;
          a.CopyFrom((*i).get()->m_tree, allocator);
@@ -2239,7 +2299,7 @@ namespace shared
 
 
    template<>
-   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<CDataContainerSharedPtr> & values, const char pathChar)
+   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<boost::shared_ptr<CDataContainer>> & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 

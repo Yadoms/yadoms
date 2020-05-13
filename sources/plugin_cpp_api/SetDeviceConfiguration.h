@@ -13,11 +13,11 @@ namespace plugin_cpp_api
 
       // ISetDeviceConfiguration Implementation
       const std::string& name() const override;
-      const shared::CDataContainerSharedPtr& configuration() const override;
+      const boost::shared_ptr<shared::CDataContainer>& configuration() const override;
       // [END] ISetDeviceConfiguration Implementation
 
    private:
       const std::string m_device;
-      const shared::CDataContainerSharedPtr m_configuration;
+      const boost::shared_ptr<shared::CDataContainer> m_configuration;
    };
 } // namespace plugin_cpp_api	

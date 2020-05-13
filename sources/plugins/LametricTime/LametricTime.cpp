@@ -53,7 +53,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				try
 				{
 					api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-					onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
+					onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
 					api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
 					                                   boost::posix_time::seconds(30));
 					deviceInformation = initLametricTime(api);
@@ -229,9 +229,9 @@ boost::shared_ptr<DeviceInformation> CLametricTime::manualInit(boost::shared_ptr
 }
 
 void CLametricTime::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi>& api,
-                                          const shared::CDataContainerSharedPtr& newConfigurationData)
+                                          const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
-	const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>();
+	const auto newConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
 	YADOMS_LOG(information) << "Update configuration...";
 
 	m_configuration.initializeWith(newConfiguration);

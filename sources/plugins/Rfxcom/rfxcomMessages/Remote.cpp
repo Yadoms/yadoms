@@ -15,7 +15,7 @@ namespace rfxcomMessages
 {
    CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
                     const std::string& command,
-                    const shared::CDataContainerSharedPtr& deviceDetails)
+                    const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
    {
@@ -102,7 +102,7 @@ namespace rfxcomMessages
 
    void CRemote::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("type", pTypeRemote);
       details->set("subType", m_subType);
       details->set("id", m_id);

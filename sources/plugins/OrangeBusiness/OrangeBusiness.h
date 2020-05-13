@@ -47,7 +47,7 @@ public:
    /// \param[in] newConfigurationData  The new configuration of the module
    //--------------------------------------------------------------
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const shared::CDataContainerSharedPtr& newConfigurationData);
+                              const boost::shared_ptr<shared::CDataContainer>& newConfigurationData);
 
 private:
 

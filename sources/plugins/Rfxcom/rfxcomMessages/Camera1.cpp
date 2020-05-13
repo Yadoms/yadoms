@@ -10,11 +10,11 @@ namespace rfxcomMessages
 {
    CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string& command,
-                      const shared::CDataContainerSharedPtr& deviceDetails)
+                      const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_camera , m_signalPower}),
-        m_deviceDetails(new_CDataContainerSharedPtr())
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_camera->setCommand(command);
       m_signalPower->set(0);
@@ -31,12 +31,12 @@ namespace rfxcomMessages
    CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> api,
                       unsigned int subType,
                       const std::string& name,
-                      const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
+                      const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_camera , m_signalPower}),
-        m_deviceDetails(new_CDataContainerSharedPtr())
+        m_deviceDetails(shared::CDataContainer::make())
 
    {
       m_camera->set(yApi::historization::ECameraMoveCommand::kCenterPosition);
@@ -59,7 +59,7 @@ namespace rfxcomMessages
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_camera , m_signalPower}),
-        m_deviceDetails(new_CDataContainerSharedPtr())
+        m_deviceDetails(shared::CDataContainer::make())
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

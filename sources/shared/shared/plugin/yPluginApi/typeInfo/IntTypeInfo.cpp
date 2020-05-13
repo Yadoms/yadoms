@@ -45,9 +45,9 @@ namespace shared
                return *this;
             }
 
-            CDataContainerSharedPtr CIntTypeInfo::serialize() const
+            boost::shared_ptr<CDataContainer> CIntTypeInfo::serialize() const
             {
-               CDataContainerSharedPtr serializedData = new_CDataContainerSharedPtr();
+               boost::shared_ptr<CDataContainer> serializedData = shared::CDataContainer::make();
                if (m_min.isDefined())
                   serializedData->set("min", m_min());
                if (m_max.isDefined())

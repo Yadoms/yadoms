@@ -7,7 +7,7 @@ namespace outgoing {
    
    boost::shared_ptr<IOutgoingFrame> CFactory::make(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
    {
-         shared::CDataContainerSharedPtr details = api->getDeviceDetails(command->getDevice());
+         boost::shared_ptr<shared::CDataContainer> details = api->getDeviceDetails(command->getDevice());
          if (details->get<std::string>("protocol") == "blyss")
          {
             return boost::make_shared<COutgoingFrame>("BLYSS");

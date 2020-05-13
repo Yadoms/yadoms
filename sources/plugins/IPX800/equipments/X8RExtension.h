@@ -31,11 +31,11 @@ namespace equipments
       std::string getDeviceName() const override;
       std::string getDeviceType() const override;
       int getSlot() const override;
-      void updateFromDevice(const std::string& type, boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainerSharedPtr& value, bool forceHistorization = false) override;
+      void updateFromDevice(const std::string& type, boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::CDataContainer>& value, bool forceHistorization = false) override;
       void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
       void resetPendingCommand() override;
-      shared::CDataContainerSharedPtr buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainerSharedPtr& parameters, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
-      void setNewConfiguration(const shared::CDataContainerSharedPtr& newConfiguration) override;
+      boost::shared_ptr<shared::CDataContainer> buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::CDataContainer>& parameters, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
+      void setNewConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration) override;
       // [END] IExtension implementation
 
       static const std::string& deviceType();

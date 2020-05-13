@@ -16,7 +16,7 @@ namespace shared
 
             CPluginStateMessage::CPluginStateMessage(const std::string& keywordName,
                                                      const EKeywordAccessMode& accessMode)
-               : CSingleHistorizableData<CDataContainerSharedPtr>(keywordName,
+               : CSingleHistorizableData<boost::shared_ptr<CDataContainer>>(keywordName,
                                                          PluginStateMessageCapacity(),
                                                          accessMode)
             {
@@ -31,7 +31,7 @@ namespace shared
             void CPluginStateMessage::setMessage(const std::string& messageId,
                                                  const std::string& messageData)
             {
-               CDataContainerSharedPtr dc = new_CDataContainerSharedPtr();
+               boost::shared_ptr<CDataContainer> dc = shared::CDataContainer::make();
                dc->set("messageId", messageId);
                dc->set("messageData", messageData);
                set(dc);

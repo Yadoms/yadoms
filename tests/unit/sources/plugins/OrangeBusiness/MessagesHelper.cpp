@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "MessagesHelper.h"
 
-shared::CDataContainerSharedPtr MessageEquipmentsList()
+boost::shared_ptr<shared::CDataContainer> MessageEquipmentsList()
 {
-   shared::CDataContainerSharedPtr messageRecu = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> messageRecu = shared::CDataContainer::make();
    messageRecu->set("page", "0");
    messageRecu->set("size", "20");
    messageRecu->set("totalCount", "2");
@@ -51,7 +51,7 @@ shared::CDataContainerSharedPtr MessageEquipmentsList()
    return messageRecu;
 }
 
-shared::CDataContainerSharedPtr MessageEquipmentInformation()
+boost::shared_ptr<shared::CDataContainer> MessageEquipmentInformation()
 {
    std::string message = " {\
       \"devEUI\" : \"70B3D532600013B5\",\
@@ -70,5 +70,5 @@ shared::CDataContainerSharedPtr MessageEquipmentInformation()
          \"updateTs\" : \"2017-03-10T21:03:54.583Z\"\
    }";
 
-   return new_CDataContainerSharedPtrP(message);
+   return shared::CDataContainer::make(message);
 }

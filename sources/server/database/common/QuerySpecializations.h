@@ -254,9 +254,9 @@ struct queryhelper<shared::CDataContainer>
 /// \brief	    Helper structure for converting boost::shared_ptr<T> to sql string
 //--------------------------------------------------------------
 template <>
-struct queryhelper<shared::CDataContainerSharedPtr>
+struct queryhelper<boost::shared_ptr<shared::CDataContainer>>
 {
-   static std::string format(CQuery* obj, const shared::CDataContainerSharedPtr& anyValue)
+   static std::string format(CQuery* obj, const boost::shared_ptr<shared::CDataContainer>& anyValue)
    {
       return anyValue->serialize();
    }

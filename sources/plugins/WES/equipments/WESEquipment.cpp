@@ -15,7 +15,7 @@ namespace equipments
 
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
-                                const shared::CDataContainerSharedPtr& deviceConfiguration,
+                                const boost::shared_ptr<shared::CDataContainer>& deviceConfiguration,
                                 const boost::shared_ptr<IWESConfiguration> pluginConfiguration)
       : m_deviceName(device),
         m_deviceType("WES"),
@@ -28,7 +28,7 @@ namespace equipments
       subdevices::EUnit PulseType[4];
       std::string PulseName[4];
       std::string counterId[3];
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
 
       try
       {
@@ -36,7 +36,7 @@ namespace equipments
          m_configuration.initializeWith(deviceConfiguration);
          deviceConfiguration->printToLog(YADOMS_LOG(information));
 
-         shared::CDataContainerSharedPtr credentials = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> credentials = shared::CDataContainer::make();
 
 		 if (m_configuration.credentialActivated()) {
 			 credentials->set("user", m_configuration.getUser());
@@ -290,7 +290,7 @@ namespace equipments
 
          const auto CGXfileName = "WESVALUES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
 
-         shared::CDataContainerSharedPtr credentials = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> credentials = shared::CDataContainer::make();
 
 		 if (m_configuration.credentialActivated()) {
 			 credentials->set("user", m_configuration.getUser());
@@ -413,7 +413,7 @@ namespace equipments
    }
 
    void CWESEquipment::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           const shared::CDataContainerSharedPtr& newConfiguration,
+                                           const boost::shared_ptr<shared::CDataContainer>& newConfiguration,
                                            const int refreshEvent)
    {
       m_configuration.initializeWith(newConfiguration);
@@ -463,8 +463,8 @@ namespace equipments
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize;
 
       try{
-         shared::CDataContainerSharedPtr credentials = new_CDataContainerSharedPtr();
-         shared::CDataContainerSharedPtr parameters = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> credentials = shared::CDataContainer::make();
+         boost::shared_ptr<shared::CDataContainer> parameters = shared::CDataContainer::make();
          std::string stringState;
          auto counter = 0;
 

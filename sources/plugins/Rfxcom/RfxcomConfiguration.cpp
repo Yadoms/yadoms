@@ -5,7 +5,7 @@ CRfxcomConfiguration::~CRfxcomConfiguration()
 {
 }
 
-void CRfxcomConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
+void CRfxcomConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_configuration.initializeWith(data);
 }

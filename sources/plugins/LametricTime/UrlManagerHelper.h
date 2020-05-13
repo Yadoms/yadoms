@@ -51,11 +51,11 @@ public:
     * \param[in] lametricConfiguration              Lametric Configuration
     * \return    the common Headers parameters
     */
-   static shared::CDataContainerSharedPtr buildCommonHeaderParameters(const CConfiguration& lametricConfiguration);
+   static boost::shared_ptr<shared::CDataContainer> buildCommonHeaderParameters(const CConfiguration& lametricConfiguration);
 
 private:
    const CConfiguration m_lametricConfiguration;
-   const shared::CDataContainerSharedPtr m_commonHeaderParameters;
+   const boost::shared_ptr<shared::CDataContainer> m_commonHeaderParameters;
    static const std::string DevicePath;
    static const std::string WifiPath;
    static const std::string BluetoothPath;

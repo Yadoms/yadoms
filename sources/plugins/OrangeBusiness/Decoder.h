@@ -28,9 +28,9 @@ public:
    virtual ~CDecoder();
 
    // IDecoder implementation
-   std::map<std::string, boost::shared_ptr<equipments::IEquipment>> decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainerSharedPtr& message) override;
-   bool isFrameComplete(shared::CDataContainerSharedPtr& message) override;
-   shared::CDataContainerSharedPtr getLastData(shared::CDataContainerSharedPtr & message) override;
+   std::map<std::string, boost::shared_ptr<equipments::IEquipment>> decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::CDataContainer>& message) override;
+   bool isFrameComplete(boost::shared_ptr<shared::CDataContainer>& message) override;
+   boost::shared_ptr<shared::CDataContainer> getLastData(boost::shared_ptr<shared::CDataContainer> & message) override;
    // [END] IDecoder implementation
 
 private:

@@ -23,9 +23,9 @@ std::string COpenZWaveNodeKeywordBase::getUnit() const
 
 
 
-shared::CDataContainerSharedPtr COpenZWaveNodeKeywordBase::serialize()
+boost::shared_ptr<shared::CDataContainer> COpenZWaveNodeKeywordBase::serialize()
 {
-   return new_CDataContainerSharedPtr();
+   return shared::CDataContainer::make();
 }
 
 boost::shared_ptr<shared::plugin::yPluginApi::typeInfo::ITypeInfo> & COpenZWaveNodeKeywordBase::getTypeInformation()

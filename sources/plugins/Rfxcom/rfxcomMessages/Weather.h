@@ -60,7 +60,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       std::string m_deviceName;
 
-      shared::CDataContainerSharedPtr m_deviceDetails;
+      boost::shared_ptr<shared::CDataContainer> m_deviceDetails;
 
       //--------------------------------------------------------------
       /// \brief	The sub-type management

@@ -48,7 +48,7 @@ namespace task {
       //-------------------------------------
       /// \brief	Obtain the task custom data
       //-------------------------------------
-      virtual shared::CDataContainerSharedPtr getTaskData() const = 0;
+      virtual boost::shared_ptr<shared::CDataContainer> getTaskData() const = 0;
 
       //---------------------------------
       ///\brief Get the creation date of the task

@@ -10,7 +10,7 @@ namespace rfxcomMessages
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
                               const std::string& keyword,
                               const std::string& command,
-                              const shared::CDataContainerSharedPtr& deviceDetails)
+                              const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
         m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
@@ -48,7 +48,7 @@ namespace rfxcomMessages
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
                               const std::string& name,
-                              const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
+                              const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),

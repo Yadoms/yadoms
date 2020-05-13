@@ -23,7 +23,7 @@ boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpe
    return m_keyword;
 }
 
-shared::CDataContainerSharedPtr COpenZWaveNodeKeywordEvent::serialize()
+boost::shared_ptr<shared::CDataContainer> COpenZWaveNodeKeywordEvent::serialize()
 {
    return m_keyword->getTypeInfo();
 }

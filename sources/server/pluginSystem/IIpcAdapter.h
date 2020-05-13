@@ -62,7 +62,7 @@ namespace pluginSystem
       /// \brief                 Post a configuration update to plugin instance
       /// \param [in] newConfiguration The new configuration
       //--------------------------------------------------------------
-      virtual void postUpdateConfiguration(const shared::CDataContainerSharedPtr& newConfiguration) = 0;
+      virtual void postUpdateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a custom query request to a plugin

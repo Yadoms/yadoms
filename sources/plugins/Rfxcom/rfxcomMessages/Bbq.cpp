@@ -58,7 +58,7 @@ namespace rfxcomMessages
 
    void CBbq::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      shared::CDataContainerSharedPtr details;
+      boost::shared_ptr<shared::CDataContainer> details;
       details->set("type", pTypeBBQ);
       details->set("subType", m_subType);
       details->set("id", m_id);

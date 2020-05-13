@@ -15,9 +15,42 @@
 
 namespace shared
 {
-	const CDataContainerSharedPtr CDataContainer::EmptyContainerSharedPtr = boost::make_shared<CDataContainer>();
-	const CDataContainer CDataContainer::EmptyContainer = CDataContainer();
 
+	boost::shared_ptr<CDataContainer> CDataContainer::make()
+	{
+		return boost::make_shared<CDataContainer>();
+	}
+
+	boost::shared_ptr<CDataContainer> CDataContainer::make(unsigned int estimatedDataSize, unsigned int estimatedItemCount)
+	{
+		return boost::make_shared<CDataContainer>(estimatedDataSize, estimatedItemCount);
+	}
+	boost::shared_ptr<CDataContainer> CDataContainer::make(const std::string& initialData)
+	{
+		return boost::make_shared<CDataContainer>(initialData);
+	}
+	boost::shared_ptr<CDataContainer> CDataContainer::make(const std::map<std::string, std::string>& initialData)
+	{
+		return boost::make_shared<CDataContainer>(initialData);
+	}
+
+	boost::shared_ptr<CDataContainer> CDataContainer::make(rapidjson::Value& d)
+	{
+		return boost::make_shared<CDataContainer>(d);
+	}
+	
+	boost::shared_ptr<CDataContainer> CDataContainer::make(rapidjson::Value* d)
+	{
+		return boost::make_shared<CDataContainer>(d);
+	}
+	
+	boost::shared_ptr<CDataContainer> CDataContainer::make(rapidjson::Document& d)
+	{
+		return boost::make_shared<CDataContainer>(d);
+	}
+
+	const boost::shared_ptr<CDataContainer> CDataContainer::EmptyContainerSharedPtr = CDataContainer::make();
+	const CDataContainer CDataContainer::EmptyContainer = CDataContainer();
 
 	CDataContainer::CDataContainer()
 		:m_tree_allocator_initial_buffer(NULL), m_tree_allocator(NULL)
@@ -86,7 +119,7 @@ namespace shared
 
 	}
 
-	CDataContainerSharedPtr CDataContainer::getChild(const std::string& parameterName, char pathChar) const
+	boost::shared_ptr<CDataContainer> CDataContainer::getChild(const std::string& parameterName, char pathChar) const
 	{
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -264,7 +297,7 @@ namespace shared
 	}
 
 
-   void CDataContainer::initializeWith(const CDataContainerSharedPtr &rhs)
+   void CDataContainer::initializeWith(const boost::shared_ptr<CDataContainer> &rhs)
 	{
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
 		m_tree.CopyFrom(rhs->m_tree, m_tree.GetAllocator(), true);
@@ -370,9 +403,9 @@ namespace shared
 	}
 
 
-	CDataContainerSharedPtr CDataContainer::copy() const
+	boost::shared_ptr<CDataContainer> CDataContainer::copy() const
 	{
-		return new_CDataContainerSharedPtrP(*getPointer());
+		return boost::make_shared<CDataContainer>(*getPointer());
 	}
 
 	void CDataContainer::mergeObjects(rapidjson::Value &dstObject, const rapidjson::Value &srcObject, rapidjson::Document::AllocatorType &allocator)
@@ -460,7 +493,7 @@ namespace shared
 		mergeObjects(m_tree, source.m_tree, allocator);
 	}
 
-	void CDataContainer::mergeFrom(CDataContainerSharedPtr& from)
+	void CDataContainer::mergeFrom(boost::shared_ptr<CDataContainer>& from)
 	{
 		auto& allocator = m_tree.GetAllocator();
 		mergeObjects(m_tree, from.get()->m_tree, allocator);

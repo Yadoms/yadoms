@@ -4,7 +4,7 @@
 #include "OpenZWaveNodeKeywordBase.h"
 #include "OpenZWaveNodeKeywordGeneric.h"
 
-shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForHistorizer(boost::shared_ptr<IOpenZWaveNodeKeyword> historizer)
+boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateForHistorizer(boost::shared_ptr<IOpenZWaveNodeKeyword> historizer)
 {
    if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<double> >(historizer))
    {
@@ -43,7 +43,7 @@ std::string CConfigurationSchemaFactory::generateValidKeyName(const std::string 
    return boost::replace_all_copy(val, ".", "_");
 }
 
-shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForDouble(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass)
+boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateForDouble(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass)
 {
 /*
    "CurrentCoefficient" : {
@@ -56,7 +56,7 @@ shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForDouble(s
       "precision" : "2"
    }
 */
-   shared::CDataContainerSharedPtr options = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> options = shared::CDataContainer::make();
    options->set("type", "decimal");
    options->set("name", zwaveTypeInfo->get<std::string>("name"));
    options->set("description", generateDescription(zwaveTypeInfo, commandclass));
@@ -71,7 +71,7 @@ shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForDouble(s
    return options;
 }
 
-shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForInteger(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass)
+boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateForInteger(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass)
 {
    /*
    "offsetHour" : {
@@ -84,7 +84,7 @@ shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForInteger(
    }
 
    */
-   shared::CDataContainerSharedPtr options = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> options = shared::CDataContainer::make();
    options->set("type", "int");
    options->set("name", zwaveTypeInfo->get<std::string>("name"));
    options->set("description", generateDescription(zwaveTypeInfo, commandclass));
@@ -100,7 +100,7 @@ shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForInteger(
 
    return options;
 }
-shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForBool(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass)
+boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateForBool(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass)
 {
    /*
    "enabled" : {
@@ -111,13 +111,13 @@ shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForBool(sha
    }
 
    */
-   shared::CDataContainerSharedPtr options = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> options = shared::CDataContainer::make();
    options->set("type", "bool");
    options->set("name", zwaveTypeInfo->get<std::string>("name"));
    options->set("description", generateDescription(zwaveTypeInfo, commandclass));
    return options;
 }
-shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForString(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass)
+boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateForString(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass)
 {
    /*
    "ipAddress" : {
@@ -129,13 +129,13 @@ shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForString(s
       "required" : "true"
    }
    */
-   shared::CDataContainerSharedPtr options = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> options = shared::CDataContainer::make();
    options->set("type", "string");
    options->set("name", zwaveTypeInfo->get<std::string>("name"));
    options->set("description", generateDescription(zwaveTypeInfo, commandclass));
    return options;
 }
-shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForEnum(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass)
+boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateForEnum(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass)
 {
    /*
    "timeFormat" : {
@@ -150,7 +150,7 @@ shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForEnum(sha
    }
    */
 
-   shared::CDataContainerSharedPtr options = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> options = shared::CDataContainer::make();
    options->set("type", "enum");
    options->set("name", zwaveTypeInfo->get<std::string>("name"));
    options->set("description", generateDescription(zwaveTypeInfo, commandclass));
@@ -161,7 +161,7 @@ shared::CDataContainerSharedPtr CConfigurationSchemaFactory::generateForEnum(sha
    return options;
 }
 
-std::string CConfigurationSchemaFactory::generateDescription(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass)
+std::string CConfigurationSchemaFactory::generateDescription(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass)
 {
 	std::string descr = (boost::format("0x%02X %s") % commandclass.toInteger() % commandclass.toString()).str();
 	if (zwaveTypeInfo->containsValue("description")) {

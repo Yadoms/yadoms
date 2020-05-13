@@ -2,7 +2,7 @@
 #include "Configuration.h"
 
 CConfiguration::CConfiguration()
-   :m_container(new_CDataContainerSharedPtr())
+   :m_container(shared::CDataContainer::make())
 {
    
 }
@@ -11,7 +11,7 @@ CConfiguration::~CConfiguration()
 {
 }
 
-void CConfiguration::initializeWith(const shared::CDataContainerSharedPtr& container)
+void CConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& container)
 {
    m_container->initializeWith(container);
 }

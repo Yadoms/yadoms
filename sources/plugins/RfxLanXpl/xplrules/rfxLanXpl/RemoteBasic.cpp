@@ -113,7 +113,7 @@ namespace xplrules { namespace rfxLanXpl {
    // ICommandRule implemntation
    boost::shared_ptr< xplcore::CXplMessage > CRemoteBasic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData,
       const std::string & rfxAddress,
-      const shared::CDataContainerSharedPtr& innerDetails)
+      const boost::shared_ptr<shared::CDataContainer>& innerDetails)
    {
      
       ////////////////////////////
@@ -186,7 +186,7 @@ namespace xplrules { namespace rfxLanXpl {
    // [END] ICommandRule implemntation
 
 
-   CDeviceContainer CRemoteBasic::generateDeviceParameters(shared::CDataContainerSharedPtr& configuration) const
+   CDeviceContainer CRemoteBasic::generateDeviceParameters(boost::shared_ptr<shared::CDataContainer>& configuration) const
    {
       throw shared::exception::CException("fail to generate a device from user configuration.");
    }

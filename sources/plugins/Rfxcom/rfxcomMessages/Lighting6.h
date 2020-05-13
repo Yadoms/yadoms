@@ -15,12 +15,12 @@ namespace rfxcomMessages
    public:
       CLighting6(boost::shared_ptr<yApi::IYPluginApi> api,
                  const std::string& command,
-                 const shared::CDataContainerSharedPtr& deviceDetails);
+                 const boost::shared_ptr<shared::CDataContainer>& deviceDetails);
 
       CLighting6(boost::shared_ptr<yApi::IYPluginApi> api,
                  unsigned int subType,
                  const std::string& name,
-                 const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration);
+                 const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration);
 
       CLighting6(boost::shared_ptr<yApi::IYPluginApi> api,
                  const RBUF& rbuf,
@@ -102,7 +102,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       std::string m_deviceModel;
 
-      shared::CDataContainerSharedPtr m_deviceDetails;
+      boost::shared_ptr<shared::CDataContainer> m_deviceDetails;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state

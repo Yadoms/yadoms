@@ -248,7 +248,7 @@ namespace web
                      result.appendArray("plugins", *plugin.second->getPackage());
                   else
                   {
-                     auto pluginData = new_CDataContainerSharedPtr();
+                     auto pluginData = shared::CDataContainer::make();
                      for (auto& field : fields)
                         pluginData->set(field, plugin.second->getPackage()->get<std::string>(field));
 
@@ -351,7 +351,7 @@ namespace web
                   const auto query = parameters[3];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                      requestContent.empty() ? new_CDataContainerSharedPtr() : new_CDataContainerSharedPtrP(requestContent),
+                                                                                      requestContent.empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(requestContent),
                                                                                       "");
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
@@ -390,7 +390,7 @@ namespace web
                   const auto query = parameters[4];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                      requestContent.empty() ? new_CDataContainerSharedPtr() : new_CDataContainerSharedPtrP(requestContent),
+                                                                                      requestContent.empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(requestContent),
                                                                                       device->Name());
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
@@ -666,15 +666,15 @@ namespace web
                                                                         content.get<std::string>("name"),
                                                                         content.get<std::string>("type"),
                                                                         content.exists("model") ? content.get<std::string>("model") : "",
-                                                                        new_CDataContainerSharedPtr());
+                                                                        shared::CDataContainer::make());
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
-                                                                                     content.get<shared::CDataContainerSharedPtr>("configuration"));
+                                                                                     content.get<boost::shared_ptr<shared::CDataContainer>>("configuration"));
 
                      // Send request to plugin
                      communication::callback::CSynchronousCallback<std::string> cb;
                      const pluginSystem::CManuallyDeviceCreationData data(deviceName,
                                                                           content.get<std::string>("type"),
-                                                                          content.get<shared::CDataContainerSharedPtr>("configuration"));
+                                                                          content.get<boost::shared_ptr<shared::CDataContainer>>("configuration"));
                      m_messageSender.sendManuallyDeviceCreationRequest(pluginId,
                                                                        data,
                                                                        cb);
@@ -743,7 +743,7 @@ namespace web
                   try
                   {
                      //create a callback (allow waiting for result)              
-                     communication::callback::CSynchronousCallback<shared::CDataContainerSharedPtr> cb;
+                     communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>> cb;
 
                      //create the data container to send to plugin
                      const pluginSystem::CBindingQueryData data(query);
@@ -754,7 +754,7 @@ namespace web
                      //wait for result
                      switch (cb.waitForResult())
                      {
-                     case communication::callback::CSynchronousCallback<shared::CDataContainerSharedPtr>::kResult:
+                     case communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>>::kResult:
                         {
                            const auto res = cb.getCallbackResult();
 

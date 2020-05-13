@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 
 CSomfySituoConfiguration::CSomfySituoConfiguration()
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {
 }
 
@@ -11,7 +11,7 @@ CSomfySituoConfiguration::~CSomfySituoConfiguration()
 {
 }
 
-void CSomfySituoConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
+void CSomfySituoConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_data->initializeWith(data);
 }

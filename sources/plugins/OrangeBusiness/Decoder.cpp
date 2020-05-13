@@ -11,7 +11,7 @@ CDecoder::~CDecoder()
 {}
 
 std::map<std::string, boost::shared_ptr<equipments::IEquipment>> CDecoder::decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    shared::CDataContainerSharedPtr& message)
+                                    boost::shared_ptr<shared::CDataContainer>& message)
 {
 	std::map<std::string, boost::shared_ptr<equipments::IEquipment>> equipmentList;
    message->printToLog(YADOMS_LOG(trace));
@@ -24,7 +24,7 @@ std::map<std::string, boost::shared_ptr<equipments::IEquipment>> CDecoder::decod
    if (!errorCode.empty())
       throw shared::exception::CException(message->get<std::string>("message"));
 
-   auto equipments = message->get<std::vector<shared::CDataContainerSharedPtr>>("data");
+   auto equipments = message->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("data");
 
    for (const auto& equipmentIterator : equipments)
    {
@@ -38,7 +38,7 @@ std::map<std::string, boost::shared_ptr<equipments::IEquipment>> CDecoder::decod
    return equipmentList;
 }
 
-bool CDecoder::isFrameComplete(shared::CDataContainerSharedPtr& message)
+bool CDecoder::isFrameComplete(boost::shared_ptr<shared::CDataContainer>& message)
 {
    int page = message->get<int>("page");
    int pageSize = message->get<int>("size");
@@ -49,10 +49,10 @@ bool CDecoder::isFrameComplete(shared::CDataContainerSharedPtr& message)
       return false;
 }
 
-shared::CDataContainerSharedPtr CDecoder::getLastData(shared::CDataContainerSharedPtr& response)
+boost::shared_ptr<shared::CDataContainer> CDecoder::getLastData(boost::shared_ptr<shared::CDataContainer>& response)
 {
-   auto messages = response->get<std::vector<shared::CDataContainerSharedPtr>>("");
-   shared::CDataContainerSharedPtr lastData = boost::make_shared<shared::CDataContainer>();
+   auto messages = response->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("");
+   boost::shared_ptr<shared::CDataContainer> lastData = boost::make_shared<shared::CDataContainer>();
 
    if (!messages.empty())
    {

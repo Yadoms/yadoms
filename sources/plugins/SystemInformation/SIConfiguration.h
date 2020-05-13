@@ -20,13 +20,13 @@ public:
    virtual ~CSIConfiguration();
 
    // ISIConfiguration implementation
-   void initializeWith(const shared::CDataContainerSharedPtr& data) override;
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data) override;
    // [END] ISIConfiguration implementation
 
 private:
    //--------------------------------------------------------------
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
-   shared::CDataContainerSharedPtr m_data;
+   boost::shared_ptr<shared::CDataContainer> m_data;
 };
 

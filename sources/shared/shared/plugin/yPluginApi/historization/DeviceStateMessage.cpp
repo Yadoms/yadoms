@@ -17,10 +17,10 @@ namespace shared
             CDeviceStateMessage::CDeviceStateMessage(const std::string& keywordName,
                                                      const EKeywordAccessMode& accessMode,
                                                      const EHistoryDepth& historyDepth)
-               : CSingleHistorizableData<CDataContainerSharedPtr>(keywordName,
+               : CSingleHistorizableData<boost::shared_ptr<CDataContainer>>(keywordName,
                                                          DeviceStateMessageCapacity(),
                                                          accessMode,
-                                                         new_CDataContainerSharedPtr(),
+                                                         shared::CDataContainer::make(),
                                                          EMeasureType::kAbsolute,
                                                          typeInfo::CEmptyTypeInfo::Empty,
                                                          historyDepth)
@@ -35,7 +35,7 @@ namespace shared
             void CDeviceStateMessage::setMessage(const std::string& messageId,
                                                  const std::string& messageData)
             {
-               CDataContainerSharedPtr dc = new_CDataContainerSharedPtr();
+               boost::shared_ptr<CDataContainer> dc = shared::CDataContainer::make();
                dc->set("messageId", messageId);
                dc->set("messageData", messageData);
                set(dc);

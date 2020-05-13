@@ -2,7 +2,7 @@
 #include "SigfoxConfiguration.h"
 
 CSigfoxConfiguration::CSigfoxConfiguration()
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {
 }
 
@@ -10,7 +10,7 @@ CSigfoxConfiguration::~CSigfoxConfiguration()
 {
 }
 
-void CSigfoxConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
+void CSigfoxConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_data->initializeWith(data);
 }

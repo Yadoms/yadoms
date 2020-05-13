@@ -2,7 +2,7 @@
 #include "urlManager.h"
 #include "http/HttpMethods.h"
 
-shared::CDataContainerSharedPtr urlManager::sendCommand(Poco::Net::SocketAddress socket, shared::CDataContainerSharedPtr parameters)
+boost::shared_ptr<shared::CDataContainer> urlManager::sendCommand(Poco::Net::SocketAddress socket, boost::shared_ptr<shared::CDataContainer> parameters)
 {
    std::stringstream url;
 

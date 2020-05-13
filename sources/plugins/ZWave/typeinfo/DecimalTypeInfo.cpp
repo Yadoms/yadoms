@@ -3,7 +3,7 @@
 #include "../OpenZWaveHelpers.h"
 
 CDecimalTypeInfo::CDecimalTypeInfo(OpenZWave::ValueID& vID)
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {
    initialize(vID);
 }
@@ -12,7 +12,7 @@ CDecimalTypeInfo::~CDecimalTypeInfo()
 {
 }
 
-shared::CDataContainerSharedPtr CDecimalTypeInfo::serialize() const
+boost::shared_ptr<shared::CDataContainer> CDecimalTypeInfo::serialize() const
 {
    return m_data;
 }

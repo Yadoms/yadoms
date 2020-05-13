@@ -15,7 +15,7 @@ namespace rfxcomMessages
       virtual void set(const std::string& keyword, const std::string& yadomsCommand) = 0;
       virtual void reset() = 0;
       virtual unsigned char toProtocolCmnd() const = 0;
-      virtual unsigned long idFromConfiguration(const shared::CDataContainerSharedPtr& configuration) const = 0;
+      virtual unsigned long idFromConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration) const = 0;
    };
 
 } // namespace rfxcomMessages

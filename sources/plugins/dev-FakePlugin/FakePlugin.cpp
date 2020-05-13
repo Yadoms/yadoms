@@ -56,7 +56,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    CFakeController fakeController("fakeController1");
    CFakeConfigurableDevice configurableDevice("configurableDevice");
    CFakeDynamicallyConfigurableDevice dynamicallyConfigurableDevice("dynamicallyConfigurableDevice",
-                                                                    new_CDataContainerSharedPtr());
+                                                                    shared::CDataContainer::make());
    CFakeCurtain fakeCurtain("fakeCurtain");
    CFakeNoHistorySensor noHistorySensor("noHistorySensor");
 
@@ -134,7 +134,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Configuration was updated
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>();
+            const auto newConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
             YADOMS_LOG(information) << "Update configuration...";
 
             // Take into account the new configuration
@@ -217,7 +217,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                // Extra-query can return success or error indicator. In case of success, can also return data.
                // Return here a success without data (=empty container)
-               extraQuery->sendSuccess(new_CDataContainerSharedPtr());
+               extraQuery->sendSuccess(shared::CDataContainer::make());
             }
             else
             {
@@ -249,7 +249,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                en.set("values", ev);
                en.set("defaultValue", "DAY");
 
-               shared::CDataContainerSharedPtr result = new_CDataContainerSharedPtr();
+               boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make();
                result->set("interval", en);
 
                request->sendSuccess(result);
@@ -366,7 +366,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                else
                {
                   YADOMS_LOG(information) << "This device is not dynamically configurable, return an empty schema to device configuration schema request";
-                  deviceConfigurationSchemaRequest->sendSuccess(new_CDataContainerSharedPtr());
+                  deviceConfigurationSchemaRequest->sendSuccess(shared::CDataContainer::make());
                }
             }
 

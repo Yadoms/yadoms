@@ -103,9 +103,9 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainerSharedPtr CTask::serialize(boost::shared_ptr<task::IInstance> instance) const
+   boost::shared_ptr<shared::CDataContainer> CTask::serialize(boost::shared_ptr<task::IInstance> instance) const
    {
-      shared::CDataContainerSharedPtr container = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> container = shared::CDataContainer::make();
       container->set("uuid", instance->getGuid());
       container->set("name", instance->getName());
       container->set("progression", instance->getProgression());

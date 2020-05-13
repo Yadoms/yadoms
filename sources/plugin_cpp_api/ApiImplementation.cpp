@@ -249,7 +249,7 @@ namespace plugin_cpp_api
 
    void CApiImplementation::processUpdateConfiguration(const plugin_IPC::toPlugin::Configuration& msg)
    {
-      m_pluginEventHandler.postEvent(kEventUpdateConfiguration, new_CDataContainerSharedPtrP(msg.configuration()));
+      m_pluginEventHandler.postEvent(kEventUpdateConfiguration, shared::CDataContainer::make(msg.configuration()));
    }
 
    void CApiImplementation::setInitialized()
@@ -266,7 +266,7 @@ namespace plugin_cpp_api
    {
       const boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> query =
          boost::make_shared<CBindingQuery>(msg,
-                                           [&](const shared::CDataContainerSharedPtr& r)
+                                           [&](const boost::shared_ptr<shared::CDataContainer>& r)
                                            {
                                               plugin_IPC::toYadoms::msg ans;
                                               auto answer = ans.mutable_bindingqueryanswer();
@@ -290,7 +290,7 @@ namespace plugin_cpp_api
    {
       const boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> query =
          boost::make_shared<CDeviceConfigurationSchemaRequest>(msg,
-                                                               [&](const shared::CDataContainerSharedPtr& r)
+                                                               [&](const boost::shared_ptr<shared::CDataContainer>& r)
                                                                {
                                                                   plugin_IPC::toYadoms::msg ans;
                                                                   auto answer = ans.mutable_deviceconfigurationschemaanswer();
@@ -327,7 +327,7 @@ namespace plugin_cpp_api
       const auto& taskId = msg.taskid();
       const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> command =
          boost::make_shared<CExtraQuery>(msg,
-                                         [&, taskId](const shared::CDataContainerSharedPtr& r)
+                                         [&, taskId](const boost::shared_ptr<shared::CDataContainer>& r)
                                          {
                                             plugin_IPC::toYadoms::msg ans;
                                             auto answer = ans.mutable_extraqueryanswer();
@@ -444,7 +444,7 @@ namespace plugin_cpp_api
                                           const std::string& type,
                                           const std::string& model,
                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                                          shared::CDataContainerSharedPtr details)
+                                          boost::shared_ptr<shared::CDataContainer> details)
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declaredevice();
@@ -472,7 +472,7 @@ namespace plugin_cpp_api
                                           const std::string& model,
                                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>&
                                           keywords,
-                                          shared::CDataContainerSharedPtr details)
+                                          boost::shared_ptr<shared::CDataContainer> details)
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declaredevice();
@@ -558,13 +558,13 @@ namespace plugin_cpp_api
       return exists;
    }
 
-   shared::CDataContainerSharedPtr CApiImplementation::getDeviceConfiguration(const std::string& device) const
+   boost::shared_ptr<shared::CDataContainer> CApiImplementation::getDeviceConfiguration(const std::string& device) const
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_deviceconfigurationrequest();
       request->set_device(device);
 
-      shared::CDataContainerSharedPtr configuration = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> configuration = shared::CDataContainer::make();
       try
       {
          send(req,
@@ -587,7 +587,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::updateDeviceConfiguration(const std::string& device,
-                                                      shared::CDataContainerSharedPtr configuration) const
+                                                      boost::shared_ptr<shared::CDataContainer> configuration) const
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_updatedeviceconfiguration();
@@ -605,13 +605,13 @@ namespace plugin_cpp_api
       }
    }
 
-   shared::CDataContainerSharedPtr CApiImplementation::getDeviceDetails(const std::string& device) const
+   boost::shared_ptr<shared::CDataContainer> CApiImplementation::getDeviceDetails(const std::string& device) const
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_devicedetails();
       request->set_device(device);
 
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       try
       {
          send(req,
@@ -634,7 +634,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::updateDeviceDetails(const std::string& device,
-                                                shared::CDataContainerSharedPtr details) const
+                                                boost::shared_ptr<shared::CDataContainer> details) const
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_updatedevicedetails();
@@ -846,7 +846,7 @@ namespace plugin_cpp_api
 
    void CApiImplementation::declareKeyword(const std::string& device,
                                            boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                                           shared::CDataContainerSharedPtr details)
+                                           boost::shared_ptr<shared::CDataContainer> details)
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declarekeyword();
@@ -1126,12 +1126,12 @@ namespace plugin_cpp_api
       return m_pluginInformation;
    }
 
-   shared::CDataContainerSharedPtr CApiImplementation::getConfiguration()
+   boost::shared_ptr<shared::CDataContainer> CApiImplementation::getConfiguration()
    {
       plugin_IPC::toYadoms::msg req;
       req.mutable_configurationrequest();
 
-      shared::CDataContainerSharedPtr configuration = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> configuration = shared::CDataContainer::make();
       try
       {
          send(req,

@@ -18,7 +18,7 @@ public:
    virtual ~CRfxcomConfiguration();
 
    // IRfxcomConfiguration implementation
-   void initializeWith(const shared::CDataContainerSharedPtr &data) override;
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer> &data) override;
    bool comIsEthernet() const override;
    std::string getEthernetAddress() const override;
    std::string getEthernetPort() const override;

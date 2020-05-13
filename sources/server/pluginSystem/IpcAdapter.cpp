@@ -358,7 +358,7 @@ namespace pluginSystem
 
    void CIpcAdapter::processUpdateDeviceDetails(const plugin_IPC::toYadoms::UpdateDeviceDetails& msg) const
    {
-      m_pluginApi->updateDeviceDetails(msg.device(), new_CDataContainerSharedPtrP(msg.details()));
+      m_pluginApi->updateDeviceDetails(msg.device(), shared::CDataContainer::make(msg.details()));
    }
 
    void CIpcAdapter::processAllDevicesRequest(const plugin_IPC::toYadoms::AllDevicesRequest& msg)
@@ -388,14 +388,14 @@ namespace pluginSystem
                                  msg.type(),
                                  msg.model(),
                                  keywords,
-                                 msg.details().empty() ? new_CDataContainerSharedPtr() : new_CDataContainerSharedPtrP(msg.details()));
+                                 msg.details().empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(msg.details()));
    }
 
    void CIpcAdapter::processDeclareKeyword(const plugin_IPC::toYadoms::DeclareKeyword& msg) const
    {
       m_pluginApi->declareKeyword(msg.device(),
                                   boost::make_shared<CFromPluginHistorizer>(msg.keyword()),
-                                  msg.details().empty() ? new_CDataContainerSharedPtr() : new_CDataContainerSharedPtrP(msg.details()));
+                                  msg.details().empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(msg.details()));
    }
 
    void CIpcAdapter::processRecipientValueRequest(const plugin_IPC::toYadoms::RecipientValueRequest& msg)
@@ -535,7 +535,7 @@ namespace pluginSystem
 
    void CIpcAdapter::processUpdateDeviceConfiguration(const plugin_IPC::toYadoms::UpdateDeviceConfiguration& msg) const
    {
-      m_pluginApi->updateDeviceConfiguration(msg.device(), new_CDataContainerSharedPtrP(msg.configuration()));
+      m_pluginApi->updateDeviceConfiguration(msg.device(), shared::CDataContainer::make(msg.configuration()));
    }
 
    void CIpcAdapter::processExtraQueryProgression(const plugin_IPC::toYadoms::ExtraQueryProgression& msg) const
@@ -589,7 +589,7 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postUpdateConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
+   void CIpcAdapter::postUpdateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
    {
       plugin_IPC::toPlugin::msg msg;
       auto message = msg.mutable_updateconfiguration();
@@ -626,7 +626,7 @@ namespace pluginSystem
       }
 
       if (success)
-         request->sendSuccess(new_CDataContainerSharedPtrP(result));
+         request->sendSuccess(shared::CDataContainer::make(result));
       else
          request->sendError(result);
    }
@@ -660,7 +660,7 @@ namespace pluginSystem
       }
 
       if (success)
-         request->sendSuccess(new_CDataContainerSharedPtrP(result));
+         request->sendSuccess(shared::CDataContainer::make(result));
       else
          request->sendError(result);
    }
@@ -713,7 +713,7 @@ namespace pluginSystem
                     result = ans.extraqueryanswer().result();
 
                     if (success)
-                       extraQuery->sendSuccess(new_CDataContainerSharedPtrP(result));
+                       extraQuery->sendSuccess(shared::CDataContainer::make(result));
                     else
                        extraQuery->sendError(result);
 

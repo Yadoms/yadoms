@@ -4,13 +4,13 @@
 #include <shared/encryption/Xor.h>
 
 CIPX800Configuration::CIPX800Configuration()
-   : m_data(new_CDataContainerSharedPtr())
+   : m_data(shared::CDataContainer::make())
 {}
 
 CIPX800Configuration::~CIPX800Configuration()
 {}
 
-void CIPX800Configuration::initializeWith(const shared::CDataContainerSharedPtr& data)
+void CIPX800Configuration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_data->initializeWith(data);
 }

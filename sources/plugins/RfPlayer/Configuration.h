@@ -190,12 +190,12 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Initialize configuration
    //--------------------------------------------------------------
-   void initializeWith(const shared::CDataContainerSharedPtr& container);
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer>& container);
 
 private :
    //--------------------------------------------------------------
    /// \brief	    The container
    //--------------------------------------------------------------
-   shared::CDataContainerSharedPtr m_container;
+   boost::shared_ptr<shared::CDataContainer> m_container;
 };
 

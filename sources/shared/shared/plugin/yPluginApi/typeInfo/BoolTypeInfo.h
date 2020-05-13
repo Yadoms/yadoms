@@ -24,7 +24,7 @@ namespace shared
                virtual ~CBoolTypeInfo() = default;
 
                // ITypeInfo implementation 
-               CDataContainerSharedPtr serialize() const override;
+               boost::shared_ptr<CDataContainer> serialize() const override;
                // END ITypeInfo implementation 
             };
          }

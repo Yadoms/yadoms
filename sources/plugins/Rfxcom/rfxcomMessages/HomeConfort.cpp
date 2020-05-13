@@ -9,7 +9,7 @@ namespace rfxcomMessages
 {
    CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api,
                               const std::string& command,
-                              const shared::CDataContainerSharedPtr& deviceDetails)
+                              const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_state , m_signalPower})
@@ -31,7 +31,7 @@ namespace rfxcomMessages
    CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
                               const std::string& name,
-                              const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
+                              const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),

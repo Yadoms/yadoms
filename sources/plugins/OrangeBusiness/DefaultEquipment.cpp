@@ -36,7 +36,7 @@ namespace equipments
       };
 
       // Save names into details
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("devEUI", m_devEUI);
       details->set("id", "");            // initial value -> no id defined
 
@@ -59,7 +59,7 @@ namespace equipments
    void CDefaultEquipment::updatelastMessageId(boost::shared_ptr<yApi::IYPluginApi> api,
                                                const std::string& id)
    {
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("devEUI", m_devEUI);
       details->set("id", id);
 

@@ -37,7 +37,7 @@ namespace shared
             ///\brief               Get the device configuration
             ///\return              The device parameters (in data container)
             //-----------------------------------------------------
-            virtual const CDataContainerSharedPtr& getConfiguration() const = 0;
+            virtual const boost::shared_ptr<CDataContainer>& getConfiguration() const = 0;
          };
       }
    }

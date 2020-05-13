@@ -26,9 +26,9 @@ namespace http
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static shared::CDataContainerSharedPtr SendGetRequest(
+      static boost::shared_ptr<shared::CDataContainer> SendGetRequest(
 		  const std::string & url,
-          const shared::CDataContainerSharedPtr& parameters,
+          const boost::shared_ptr<shared::CDataContainer>& parameters,
 		  http::httpContext& context,
           const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
@@ -40,10 +40,10 @@ namespace http
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static shared::CDataContainerSharedPtr SendGetRequest(
+      static boost::shared_ptr<shared::CDataContainer> SendGetRequest(
 		  const std::string & url,
-          const shared::CDataContainerSharedPtr& credentials,
-          const shared::CDataContainerSharedPtr& parameters,
+          const boost::shared_ptr<shared::CDataContainer>& credentials,
+          const boost::shared_ptr<shared::CDataContainer>& parameters,
 		  http::httpContext& context,
           const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
@@ -58,9 +58,9 @@ namespace http
       //--------------------------------------------------------------
       static bool SendGetRequest(
 		  const std::string & url, 
-          const shared::CDataContainerSharedPtr& credentials,
-          const shared::CDataContainerSharedPtr& parameters,
-          boost::function1<void, shared::CDataContainerSharedPtr&> onReceive,
+          const boost::shared_ptr<shared::CDataContainer>& credentials,
+          const boost::shared_ptr<shared::CDataContainer>& parameters,
+          boost::function1<void, boost::shared_ptr<shared::CDataContainer>&> onReceive,
 		  http::httpContext& context,
           const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
@@ -72,6 +72,6 @@ namespace http
       //--------------------------------------------------------------
       static bool XmlResponseReader(std::istream& stream,
                                     Poco::Net::HTTPResponse& httpresponse,
-                                    shared::CDataContainerSharedPtr& treeResponse);
+                                    boost::shared_ptr<shared::CDataContainer>& treeResponse);
    };
 } // namespace http

@@ -23,7 +23,7 @@ namespace xplrules
       ///\param [in] configuration  The configuration of device
       ///\return the device container (device identifier and keywords)
       //------------------------------------
-      virtual CDeviceContainer generateDeviceParameters(shared::CDataContainerSharedPtr& configuration) const = 0;
+      virtual CDeviceContainer generateDeviceParameters(boost::shared_ptr<shared::CDataContainer>& configuration) const = 0;
    };
 } //namespace xplrules
 

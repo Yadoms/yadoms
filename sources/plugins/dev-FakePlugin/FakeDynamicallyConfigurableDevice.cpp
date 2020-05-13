@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 
 CFakeDynamicallyConfigurableDevice::CFakeDynamicallyConfigurableDevice(const std::string& deviceName,
-                                                                       const shared::CDataContainerSharedPtr& configuration)
+                                                                       const boost::shared_ptr<shared::CDataContainer>& configuration)
    : m_deviceName(deviceName),
      m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
      m_internalCounter(0),
@@ -50,11 +50,11 @@ const std::string& CFakeDynamicallyConfigurableDevice::getModel()
    return model;
 }
 
-shared::CDataContainerSharedPtr CFakeDynamicallyConfigurableDevice::getDynamicConfigurationSchema()
+boost::shared_ptr<shared::CDataContainer> CFakeDynamicallyConfigurableDevice::getDynamicConfigurationSchema()
 {
    //this code must be runtime dynamic.
    //in case of static configration, define the configuration schema in package.json
-   shared::CDataContainerSharedPtr results = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> results = shared::CDataContainer::make();
 
    shared::CDataContainer options;
    options.set("type", "decimal");
@@ -68,7 +68,7 @@ shared::CDataContainerSharedPtr CFakeDynamicallyConfigurableDevice::getDynamicCo
    return results;
 }
 
-void CFakeDynamicallyConfigurableDevice::setConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
+void CFakeDynamicallyConfigurableDevice::setConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
 {
    m_divider = readDividerConfiguration(newConfiguration);
 }
@@ -78,7 +78,7 @@ std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::I
    return m_historizers;
 }
 
-double CFakeDynamicallyConfigurableDevice::readDividerConfiguration(const shared::CDataContainerSharedPtr& configuration)
+double CFakeDynamicallyConfigurableDevice::readDividerConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration)
 {
    try
    {

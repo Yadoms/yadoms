@@ -34,7 +34,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       
    m_configuration.initializeWith(api->getConfiguration());
 
-   shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
    details->set("provider", "SystemInformation");
    details->set("shortProvider", "si");
 
@@ -77,7 +77,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
             Factory.OnConfigurationUpdate(api, m_configuration, details);
             api->setPluginState(yApi::historization::EPluginState::kRunning);
             break;
@@ -91,7 +91,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CSystemInformation::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainerSharedPtr& newConfigurationData)
+void CSystemInformation::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;

@@ -97,7 +97,7 @@ namespace xplrules
                commercialName = commercialNameFromProtocol;
          }
 
-         shared::CDataContainerSharedPtr innerDetails = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> innerDetails = shared::CDataContainer::make();
          innerDetails->set("x10protocol", protocol);
 
          return CDeviceIdentifier(msg.getBodyValue(m_keywordDevice), commercialName, m_protocol, m_protocol, innerDetails);
@@ -230,7 +230,7 @@ namespace xplrules
       // ICommandRule implemntation
       boost::shared_ptr<xplcore::CXplMessage> CX10Basic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand>& commandData,
                                                                           const std::string& rfxAddress,
-                                                                          const shared::CDataContainerSharedPtr& innerDetails)
+                                                                          const boost::shared_ptr<shared::CDataContainer>& innerDetails)
       {
          ////////////////////////////
          // create the message
@@ -336,7 +336,7 @@ namespace xplrules
       // [END] ICommandRule implemntation
 
 
-      CDeviceContainer CX10Basic::generateDeviceParameters(shared::CDataContainerSharedPtr& configuration) const
+      CDeviceContainer CX10Basic::generateDeviceParameters(boost::shared_ptr<shared::CDataContainer>& configuration) const
       {
          auto chosenProtocol = configuration->get<std::string>("Protocol.activeSection");
 
@@ -366,7 +366,7 @@ namespace xplrules
          if (commercialName.empty())
             commercialName = deviceId;
 
-         shared::CDataContainerSharedPtr innerDetails = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> innerDetails = shared::CDataContainer::make();
          innerDetails->set("x10protocol", p);
 
          CDeviceIdentifier device(deviceId, commercialName, m_protocol, m_protocol, innerDetails);

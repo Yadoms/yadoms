@@ -36,7 +36,7 @@ namespace incoming {
 
 
    CBinaryFrame::CBinaryFrame(char sourceDest, boost::shared_ptr<shared::communication::CByteBuffer> content)
-      :m_sourceDest(sourceDest), m_content(content), m_deviceDetails(new_CDataContainerSharedPtr())
+      :m_sourceDest(sourceDest), m_content(content), m_deviceDetails(shared::CDataContainer::make())
    {
 
    }

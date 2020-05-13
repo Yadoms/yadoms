@@ -16,7 +16,7 @@ namespace pluginSystem
       ///\param deviceId
       //-----------------------------------------------------
       explicit CExtraQueryData(const std::string& query,
-                               const shared::CDataContainerSharedPtr& data,
+                               const boost::shared_ptr<shared::CDataContainer>& data,
                                const std::string& deviceId);
 
       //-----------------------------------------------------
@@ -26,7 +26,7 @@ namespace pluginSystem
 
       // IExtraQueryData implementation
       const std::string& query() const override;
-      const shared::CDataContainerSharedPtr& data() const override;
+      const boost::shared_ptr<shared::CDataContainer>& data() const override;
       const std::string& device() const override;
       // [END] IExtraQueryData implementation
 
@@ -39,7 +39,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               Data
       //-----------------------------------------------------
-      shared::CDataContainerSharedPtr m_data;
+      boost::shared_ptr<shared::CDataContainer> m_data;
 
       //-----------------------------------------------------
       ///\brief               Query for devices ?

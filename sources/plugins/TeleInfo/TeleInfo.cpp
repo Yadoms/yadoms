@@ -131,7 +131,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             setPluginState(api, ETeleInfoPluginState::kupdateConfiguration);
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
             setPluginState(api, ETeleInfoPluginState::kRunning);
             break;
          }
@@ -203,7 +203,7 @@ void CTeleInfo::destroyConnection()
 }
 
 void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                      const shared::CDataContainerSharedPtr& newConfigurationData)
+                                      const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;

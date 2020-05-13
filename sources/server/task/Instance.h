@@ -37,7 +37,7 @@ namespace task
       std::string getMessage() const override;
       std::string getExceptionMessage() const override;
       ETaskStatus getStatus() const override;
-      shared::CDataContainerSharedPtr getTaskData() const override;
+      boost::shared_ptr<shared::CDataContainer> getTaskData() const override;
       std::string getName() const override;
       boost::posix_time::ptime getCreationDate() const override;
       // [END] - IInstance implementation
@@ -55,7 +55,7 @@ namespace task
                                  boost::optional<float> progression,
                                  const std::string& message,
                                  const std::string& exception,
-                                 shared::CDataContainerSharedPtr taskData);
+                                 boost::shared_ptr<shared::CDataContainer> taskData);
 
 
       //--------------------------------------------------------------
@@ -81,7 +81,7 @@ namespace task
       //--------------------------------------------------------------
       /// \brief			The current task custom data
       //--------------------------------------------------------------
-      shared::CDataContainerSharedPtr m_taskData;
+      boost::shared_ptr<shared::CDataContainer> m_taskData;
 
    protected:
       //--------------------------------------------------------------

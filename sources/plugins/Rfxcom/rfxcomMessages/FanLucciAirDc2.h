@@ -31,7 +31,7 @@ namespace rfxcomMessages
       void set(const std::string& keyword, const std::string& yadomsCommand) override;
       void reset() override;
       unsigned char toProtocolCmnd() const override;
-      unsigned long idFromConfiguration(const shared::CDataContainerSharedPtr& configuration) const override;
+      unsigned long idFromConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration) const override;
       // [END] IFanSubtype implementation
 
    private:

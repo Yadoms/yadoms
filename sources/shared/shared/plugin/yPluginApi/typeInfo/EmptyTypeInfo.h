@@ -24,7 +24,7 @@ namespace shared
                CEmptyTypeInfo() = default;
                virtual ~CEmptyTypeInfo() = default;
 
-               CDataContainerSharedPtr serialize() const override;
+               boost::shared_ptr<CDataContainer> serialize() const override;
             };
          }
       }

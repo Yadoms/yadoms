@@ -73,7 +73,7 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          try {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             if (m_webServer) m_webServer->stop();
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
 
             if (m_webServer)
             {
@@ -104,13 +104,13 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                processIncomingMessage(api, extraQuery->getData()->data());
             }
          }
-         extraQuery->sendSuccess(new_CDataContainerSharedPtr());
+         extraQuery->sendSuccess(shared::CDataContainer::make());
          break;
       }
       case kDataReceived:
       {
          try {
-            auto data = api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>();
+            auto data = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
             processIncomingMessage(api, data);
          }
          catch (std::exception &e)
@@ -133,7 +133,7 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainerSharedPtr& newMessage) const
+void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newMessage) const
 {
    newMessage->printToLog(YADOMS_LOG(trace));
 
@@ -199,7 +199,7 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
    }
 }
 
-void CSigfox::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainerSharedPtr& newConfigurationData)
+void CSigfox::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";

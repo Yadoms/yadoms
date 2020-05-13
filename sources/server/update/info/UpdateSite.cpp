@@ -28,14 +28,14 @@ namespace update
       const std::string CUpdateSite::DistantScriptResult("result");
 
 
-      shared::CDataContainerSharedPtr CUpdateSite::getAllYadomsVersions()
+      boost::shared_ptr<shared::CDataContainer> CUpdateSite::getAllYadomsVersions()
       {
          return callDistantScript(DistantYadomsListScript,
                                   true,
                                   DistantYadomsScriptResultField);
       }
 
-      shared::CDataContainerSharedPtr CUpdateSite::getAllPluginVersions()
+      boost::shared_ptr<shared::CDataContainer> CUpdateSite::getAllPluginVersions()
       {
          return callDistantScript(DistantPluginsListScript,
                                   true,
@@ -43,7 +43,7 @@ namespace update
       }
 
 
-      shared::CDataContainerSharedPtr CUpdateSite::getAllScriptInterpreterVersions()
+      boost::shared_ptr<shared::CDataContainer> CUpdateSite::getAllScriptInterpreterVersions()
       {
          return callDistantScript(DistantScriptInterpretersListScript,
                                   true,
@@ -51,14 +51,14 @@ namespace update
       }
 
 
-      shared::CDataContainerSharedPtr CUpdateSite::getAllWidgetVersions()
+      boost::shared_ptr<shared::CDataContainer> CUpdateSite::getAllWidgetVersions()
       {
          return callDistantScript(DistantWidgetsListScript,
                                   false,
                                   DistantWidgetsScriptResultField);
       }
 
-      shared::CDataContainerSharedPtr CUpdateSite::callDistantScript(const std::string& script,
+      boost::shared_ptr<shared::CDataContainer> CUpdateSite::callDistantScript(const std::string& script,
                                                             bool includeOsAndArch,
                                                             const std::string& resultFieldToReturn)
       {

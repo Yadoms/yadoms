@@ -13,7 +13,7 @@ public:
    {
       std::string m_type;
       std::string m_model;
-      shared::CDataContainerSharedPtr m_details;
+      boost::shared_ptr<shared::CDataContainer> m_details;
    };
 
    struct Keyword
@@ -21,7 +21,7 @@ public:
       std::string m_device;
       std::string m_keyword;
       std::string m_capacity;
-      shared::CDataContainerSharedPtr m_details;
+      boost::shared_ptr<shared::CDataContainer> m_details;
    };
 
    struct Data
@@ -33,7 +33,7 @@ public:
    };
 
    CDefaultYPluginApiMock()
-      : m_defaultInformation(boost::make_shared<CDefaultInformationMock>()), m_defaultConfiguration(new_CDataContainerSharedPtr())
+      : m_defaultInformation(boost::make_shared<CDefaultInformationMock>()), m_defaultConfiguration(shared::CDataContainer::make())
    {
    }
 
@@ -57,7 +57,7 @@ public:
                       const std::string& type,
                       const std::string& model,
                       boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                      shared::CDataContainerSharedPtr details = shared::CDataContainer::EmptyContainerSharedPtr) override
+                      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::EmptyContainerSharedPtr) override
    {
       const Device dev = {type, model, details};
       m_devices[device] = dev;
@@ -67,7 +67,7 @@ public:
                       const std::string& type,
                       const std::string& model,
                       const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
-                      shared::CDataContainerSharedPtr details = shared::CDataContainer::EmptyContainerSharedPtr) override
+                      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::EmptyContainerSharedPtr) override
    {
       const Device dev = {type, model, details};
       m_devices[device] = dev;
@@ -93,23 +93,23 @@ public:
       return m_devices.find(device) != m_devices.end();
    }
 
-   shared::CDataContainerSharedPtr getDeviceConfiguration(const std::string& device) const override
+   boost::shared_ptr<shared::CDataContainer> getDeviceConfiguration(const std::string& device) const override
    {
-      return new_CDataContainerSharedPtr();
+      return shared::CDataContainer::make();
    }
 
    void updateDeviceConfiguration(const std::string& device,
-                                  shared::CDataContainerSharedPtr configuration) const override
+                                  boost::shared_ptr<shared::CDataContainer> configuration) const override
    {
    }
 
-   shared::CDataContainerSharedPtr getDeviceDetails(const std::string& device) const override
+   boost::shared_ptr<shared::CDataContainer> getDeviceDetails(const std::string& device) const override
    {
       return m_devices.find(device)->second.m_details;
    }
 
    void updateDeviceDetails(const std::string& device,
-                            shared::CDataContainerSharedPtr details) const override
+                            boost::shared_ptr<shared::CDataContainer> details) const override
    {
       m_devices.find(device)->second.m_details->initializeWith(details);
    }
@@ -174,7 +174,7 @@ public:
 
    void declareKeyword(const std::string& device,
                        boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                       shared::CDataContainerSharedPtr details = shared::CDataContainer::EmptyContainerSharedPtr) override
+                       boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::EmptyContainerSharedPtr) override
    {
       const Keyword kw = {device, keyword->getKeyword(), keyword->getCapacity(), details};
       m_keywords[keyword->getKeyword()] = kw;
@@ -229,7 +229,7 @@ public:
       return m_defaultInformation;
    }
 
-   shared::CDataContainerSharedPtr getConfiguration() override
+   boost::shared_ptr<shared::CDataContainer> getConfiguration() override
    {
       return m_defaultConfiguration;
    }
@@ -265,7 +265,7 @@ public:
 protected:
    shared::event::CEventHandler m_defaultEventHandler;
    boost::shared_ptr<const shared::plugin::information::IInformation> m_defaultInformation;
-   shared::CDataContainerSharedPtr m_defaultConfiguration;
+   boost::shared_ptr<shared::CDataContainer> m_defaultConfiguration;
    mutable std::map<std::string, Device> m_devices;
    std::map<std::string, Keyword> m_keywords;
    std::vector<Data> m_data;

@@ -12,7 +12,7 @@ namespace equipments
       m_deviceType("IPX800")
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("provider", "IPX800");
       details->set("shortProvider", "ipx");
       details->set("type", m_deviceType);
@@ -90,7 +90,7 @@ namespace equipments
 
    void CIPX800Equipment::updateFromDevice(const std::string& type,
                                            boost::shared_ptr<yApi::IYPluginApi> api,
-                                           shared::CDataContainerSharedPtr& values,
+                                           boost::shared_ptr<shared::CDataContainer>& values,
                                            bool forceHistorization)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
@@ -105,7 +105,7 @@ namespace equipments
 
    template<class T1, class T2>
    void CIPX800Equipment::updateIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                             shared::CDataContainerSharedPtr& values,
+                                             boost::shared_ptr<shared::CDataContainer>& values,
                                              std::vector<boost::shared_ptr<T1> >& keywordsList,
                                              std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& ToHistorize,
                                              bool forceHistorization)
@@ -178,8 +178,8 @@ namespace equipments
       m_pendingCounterHistorizer.reset();
    }
 
-   shared::CDataContainerSharedPtr CIPX800Equipment::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                                 shared::CDataContainerSharedPtr& parameters,
+   boost::shared_ptr<shared::CDataContainer> CIPX800Equipment::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                 boost::shared_ptr<shared::CDataContainer>& parameters,
                                                                  boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
       std::string keywordName = command->getKeyword();
@@ -205,7 +205,7 @@ namespace equipments
                                        std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& keywordsList,
                                        boost::shared_ptr<const yApi::IDeviceCommand> command,
                                        const std::string& pinNumber,
-                                       shared::CDataContainerSharedPtr& parameters)
+                                       boost::shared_ptr<shared::CDataContainer>& parameters)
    {
       std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
 
@@ -238,7 +238,7 @@ namespace equipments
                                        std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& keywordsList,
                                        boost::shared_ptr<const yApi::IDeviceCommand> command,
                                        const std::string& value,
-                                       shared::CDataContainerSharedPtr& parameters)
+                                       boost::shared_ptr<shared::CDataContainer>& parameters)
    {
       std::vector<boost::shared_ptr<specificHistorizers::CCounter> >::const_iterator diIterator;
 
@@ -263,7 +263,7 @@ namespace equipments
       }
    }
 
-   void CIPX800Equipment::setNewConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
+   void CIPX800Equipment::setNewConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
    {
       // No need to change anything for this one
    }

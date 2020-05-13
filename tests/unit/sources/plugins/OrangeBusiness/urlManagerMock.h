@@ -13,8 +13,8 @@ public:
 
    urlManagerMock();
 
-   void addRegisteredEquipmentsMessageReturned(shared::CDataContainerSharedPtr newMessage);
-   void addMessagesForEquipment(shared::CDataContainerSharedPtr newMessage);
+   void addRegisteredEquipmentsMessageReturned(boost::shared_ptr<shared::CDataContainer> newMessage);
+   void addMessagesForEquipment(boost::shared_ptr<shared::CDataContainer> newMessage);
 
    //--------------------------------------------------------------
    /// \brief	    get all equipments from the website
@@ -24,7 +24,7 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainerSharedPtr getRegisteredEquipments(const std::string &apikey,
+   boost::shared_ptr<shared::CDataContainer> getRegisteredEquipments(const std::string &apikey,
                                                   const int page,
                                                   const bool activated,
                                                   const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
@@ -36,7 +36,7 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainerSharedPtr getDeviceInformation(const std::string &apikey,
+   boost::shared_ptr<shared::CDataContainer> getDeviceInformation(const std::string &apikey,
                                                const std::string &devEUI,
                                                const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
 
@@ -47,7 +47,7 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainerSharedPtr listDeviceCommands(const std::string &apikey,
+   boost::shared_ptr<shared::CDataContainer> listDeviceCommands(const std::string &apikey,
                                              const std::string &devEUI,
                                              const int page,
                                              const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
@@ -55,7 +55,7 @@ public:
 private:
 
    // All simulated messages
-   shared::CDataContainerSharedPtr RegisteredEquipments;
-   shared::CDataContainerSharedPtr DeviceInformation;
-   shared::CDataContainerSharedPtr DeviceMessages;
+   boost::shared_ptr<shared::CDataContainer> RegisteredEquipments;
+   boost::shared_ptr<shared::CDataContainer> DeviceInformation;
+   boost::shared_ptr<shared::CDataContainer> DeviceMessages;
 };

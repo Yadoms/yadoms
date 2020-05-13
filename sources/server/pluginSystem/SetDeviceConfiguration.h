@@ -14,7 +14,7 @@ namespace pluginSystem
       ///\param[in] device          The target device
       ///\param[in] configuration   The device configuration
       //-----------------------------------------------------
-      CSetDeviceConfiguration(const std::string& device, const shared::CDataContainerSharedPtr& configuration);
+      CSetDeviceConfiguration(const std::string& device, const boost::shared_ptr<shared::CDataContainer>& configuration);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -23,7 +23,7 @@ namespace pluginSystem
 
       // ISetDeviceConfiguration implementation
       const std::string& name() const override;
-      const shared::CDataContainerSharedPtr&  configuration() const override;
+      const boost::shared_ptr<shared::CDataContainer>&  configuration() const override;
       // [END] ISetDeviceConfiguration implementation
 
    private:
@@ -35,7 +35,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               Configuration
       //-----------------------------------------------------
-      const shared::CDataContainerSharedPtr m_configuration;
+      const boost::shared_ptr<shared::CDataContainer> m_configuration;
    };
 } // namespace pluginSystem	
 

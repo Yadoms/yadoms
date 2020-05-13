@@ -85,7 +85,7 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          try {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
             if (m_equipmentManager->size() > 0)
                api->setPluginState(yApi::historization::EPluginState::kRunning);
             else
@@ -157,7 +157,7 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   api->setPluginState(yApi::historization::EPluginState::kCustom, "ready"); // No more devices, so ready
                }
 
-               extraQuery->sendSuccess(new_CDataContainerSharedPtr());
+               extraQuery->sendSuccess(shared::CDataContainer::make());
             }
             catch (shared::CHttpException &e)
             {
@@ -196,7 +196,7 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    int page = 0;
-   shared::CDataContainerSharedPtr response;
+   boost::shared_ptr<shared::CDataContainer> response;
 
    do {
       response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, false); //http://liveobjects.orange-business.com
@@ -209,7 +209,7 @@ void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> ap
 void COrangeBusiness::registerActivatedDevices(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    int page = 0;
-   shared::CDataContainerSharedPtr response;
+   boost::shared_ptr<shared::CDataContainer> response;
 
    do {
       response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, true); //http://liveobjects.orange-business.com
@@ -219,7 +219,7 @@ void COrangeBusiness::registerActivatedDevices(boost::shared_ptr<yApi::IYPluginA
    } while (!m_decoder->isFrameComplete(response));;
 }
 
-void COrangeBusiness::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainerSharedPtr& newConfigurationData)
+void COrangeBusiness::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";

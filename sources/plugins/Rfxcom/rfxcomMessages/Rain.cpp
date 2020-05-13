@@ -79,7 +79,7 @@ namespace rfxcomMessages
 
    void CRain::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("type", pTypeRAIN);
       details->set("subType", m_subType);
       details->set("id", m_id);

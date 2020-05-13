@@ -127,7 +127,7 @@ namespace web
                                     const boost::shared_ptr<database::entities::CDevice>& candidateDevice)
                                     {
                                        auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
-                                       std::vector<shared::CDataContainerSharedPtr> commonKeywords;
+                                       std::vector<boost::shared_ptr<shared::CDataContainer>> commonKeywords;
                                        // Iterate through reference keywords to find a common keyword in candidateDevice
                                        for (const auto& refKeyword : refKeywords)
                                        {
@@ -151,7 +151,7 @@ namespace web
                                                                   refKeyword->Details == candidateKeyword->Details)
                                                                {
                                                                   // A common device was found
-                                                                  shared::CDataContainerSharedPtr commonKeyword = new_CDataContainerSharedPtr();
+                                                                  boost::shared_ptr<shared::CDataContainer> commonKeyword = shared::CDataContainer::make();
                                                                   commonKeyword->set("from", refKeyword);
                                                                   commonKeyword->set("to", candidateKeyword);
                                                                   commonKeywords.push_back(commonKeyword);
@@ -201,7 +201,7 @@ namespace web
                   try
                   {
                      //create a callback (allow waiting for result)              
-                     communication::callback::CSynchronousCallback<shared::CDataContainerSharedPtr> cb;
+                     communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>> cb;
 
                      //send request to plugin
                      m_messageSender.sendDeviceConfigurationSchemaRequest(deviceId, cb);
@@ -209,7 +209,7 @@ namespace web
                      //wait for result
                      switch (cb.waitForResult())
                      {
-                     case communication::callback::CSynchronousCallback<shared::CDataContainerSharedPtr>::kResult:
+                     case communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>>::kResult:
                         {
                            const auto res = cb.getCallbackResult();
                            if (res.success)
@@ -280,7 +280,7 @@ namespace web
             {
                if (parameters.size() >= 2)
                {
-                  const auto keywordIds = new_CDataContainerSharedPtrP(requestContent);
+                  const auto keywordIds = shared::CDataContainer::make(requestContent);
                   const auto keywordListLastData = m_keywordManager->getKeywordListLastData(
                      keywordIds->get<std::vector<int>>("keywordIds"));
                   shared::CDataContainer result;
@@ -465,7 +465,7 @@ namespace web
                //    "keywords" : [ keywordEntity1, keywordEntity2... ]
                // }
                //
-               const auto criteria = new_CDataContainerSharedPtrP(requestContent);
+               const auto criteria = shared::CDataContainer::make(requestContent);
 
                std::vector<shared::plugin::yPluginApi::EKeywordDataType> expectedKeywordTypes;
                if (criteria->exists("expectedKeywordType"))
@@ -748,7 +748,7 @@ namespace web
                const shared::CDataContainer content(requestContent);
                const auto sourceDeviceId = content.get<int>("sourceDeviceId");
                const auto targetDeviceId = content.get<int>("targetDeviceId");
-               const auto keywordCorrespondences = content.get<std::vector<shared::CDataContainerSharedPtr>>(
+               const auto keywordCorrespondences = content.get<std::vector<boost::shared_ptr<shared::CDataContainer>>>(
                   "keywordCorrespondences");
 
                // Merge acquisitions

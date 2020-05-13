@@ -15,7 +15,7 @@ namespace pluginSystem
       ///\param[in] details      The removed device details
       //-----------------------------------------------------
       CDeviceRemoved(const std::string& device,
-                     const shared::CDataContainerSharedPtr& details);
+                     const boost::shared_ptr<shared::CDataContainer>& details);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -24,7 +24,7 @@ namespace pluginSystem
 
       // IDeviceRemoved implementation
       const std::string& device() const override;
-      const shared::CDataContainerSharedPtr& details() const override;
+      const boost::shared_ptr<shared::CDataContainer>& details() const override;
       // [END] IDeviceRemoved implementation
 
    private:
@@ -36,7 +36,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               Device details
       //-----------------------------------------------------
-      shared::CDataContainerSharedPtr m_details;
+      boost::shared_ptr<shared::CDataContainer> m_details;
    };
 } // namespace pluginSystem	
 

@@ -95,7 +95,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             try
             {
                api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
                api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
             }
             catch (...)
@@ -258,7 +258,7 @@ void CIPX800::initIPX800(boost::shared_ptr<yApi::IYPluginApi> api) const
    }
 }
 
-void CIPX800::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainerSharedPtr& newConfigurationData)
+void CIPX800::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;

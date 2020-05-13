@@ -19,9 +19,9 @@ namespace update
                                        const boost::filesystem::path& scriptInterpretersPath)
       {
          YADOMS_LOG(information) << "Installing new scriptInterpreter from " << downloadUrl;
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterInstall, std::string(), new_CDataContainerSharedPtr());
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterInstall, std::string(), shared::CDataContainer::make());
 
-         shared::CDataContainerSharedPtr callbackData = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
          callbackData->set("downloadUrl", downloadUrl);
          /////////////////////////////////////////////
          //1. download package
@@ -54,7 +54,7 @@ namespace update
 
                YADOMS_LOG(information) << "ScriptInterpreter installed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, std::string(),
-                  new_CDataContainerSharedPtr());
+                  shared::CDataContainer::make());
             }
             catch (std::exception& ex)
             {
@@ -86,7 +86,7 @@ namespace update
       {
          YADOMS_LOG(information) << "Updating scriptInterpreter " << scriptInterpreterName << " from " << downloadUrl;
 
-         shared::CDataContainerSharedPtr callbackData = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
          callbackData->set("scriptInterpreterName", scriptInterpreterName);
          callbackData->set("downloadUrl", downloadUrl);
 
@@ -139,7 +139,7 @@ namespace update
                if (automationRuleManager)
                   automationRuleManager->startAllRulesMatchingInterpreter(scriptInterpreterName);
 
-               progressCallback(true, 100.0f, "ScriptInterpreter updated with success", std::string(), new_CDataContainerSharedPtr());
+               progressCallback(true, 100.0f, "ScriptInterpreter updated with success", std::string(), shared::CDataContainer::make());
                YADOMS_LOG(information) << "ScriptInterpreter installed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, std::string(), callbackData);
             }
@@ -172,7 +172,7 @@ namespace update
       {
          YADOMS_LOG(information) << "Removing scriptInterpreter " << scriptInterpreterName;
 
-         shared::CDataContainerSharedPtr callbackData = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
          callbackData->set("scriptInterpreterName", scriptInterpreterName);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterRemove, std::string(), callbackData);

@@ -21,7 +21,7 @@ public:
    virtual ~CMSConfiguration();
 
    // IMSConfiguration implementation
-   void initializeWith(const shared::CDataContainerSharedPtr& data) override;
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data) override;
    std::string getSenderEmail() const override;
    std::string getHost() const override;
    Poco::UInt16 getPort() const override;

@@ -25,7 +25,7 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
    if (request.getDeviceType() == "blyss")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CBlyssKeyword>("command");
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("groupCode", request.getConfiguration()->get<std::string>("groupCode"));
       details->set("unitCode", request.getConfiguration()->get<int>("unitCode"));
       details->set("frequency", "433");
@@ -41,7 +41,7 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
    if (request.getDeviceType() == "x10")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CX10Keyword>("command");
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("id", request.getConfiguration()->get<int>("id"));
       details->set("frequency", "433");
       details->set("protocol", "x10");
@@ -56,7 +56,7 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
    if (request.getDeviceType() == "domia")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CDomiaKeyword>("command");
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("id", request.getConfiguration()->get<int>("id"));
       details->set("frequency", "433");
       details->set("protocol", "domia");
@@ -71,7 +71,7 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
    if (request.getDeviceType() == "chacon")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CChaconKeyword>("command");
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("id", request.getConfiguration()->get<int>("id"));
       details->set("frequency", "433");
       details->set("protocol", "chacon");
@@ -86,7 +86,7 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
    if (request.getDeviceType() == "kd101")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CKd101Keyword>("command");
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("id", request.getConfiguration()->get<int>("id"));
       details->set("frequency", "433");
       details->set("protocol", "kd101");
@@ -101,7 +101,7 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
    if (request.getDeviceType() == "parrot")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CParrotKeyword>("command");
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("id", request.getConfiguration()->get<int>("id"));
       details->set("protocol", "parrot");
       details->set("burst", request.getConfiguration()->getWithDefault<std::string>("burst", ""));
@@ -115,7 +115,7 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
    if (request.getDeviceType() == "visonic")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CVisonicKeyword>("command");
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("id", request.getConfiguration()->get<int>("id"));
       details->set("frequency", request.getConfiguration()->get<int>("frequency"));
       details->set("protocol", "visonic");
@@ -131,7 +131,7 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
    if (request.getDeviceType() == "x2dAlarm433" || request.getDeviceType() == "x2dAlarm866" || request.getDeviceType() == "x2dShutter" || request.getDeviceType() == "x2dElec" || request.getDeviceType() == "x2dGas")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CX2DKeyword>("command");
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("id", request.getConfiguration()->get<int>("id"));
 
       if (request.getDeviceType() == "x2dAlarm433")
@@ -152,7 +152,7 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
    {
       request.getConfiguration()->printToLog(YADOMS_LOG(information));
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CRtsKeyword>("command");
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       if (request.getConfiguration()->get<std::string>("identifier.activeSection") == "id32")
       {
          details->set("identifier", request.getConfiguration()->get<int>("identifier.content.id32.content.id"));

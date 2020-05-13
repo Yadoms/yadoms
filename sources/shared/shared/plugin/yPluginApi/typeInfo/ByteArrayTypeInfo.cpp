@@ -17,9 +17,9 @@ namespace shared
                return *this;
             }
 
-            CDataContainerSharedPtr CByteArrayTypeInfo::serialize() const
+            boost::shared_ptr<CDataContainer> CByteArrayTypeInfo::serialize() const
             {
-               CDataContainerSharedPtr serializedData = new_CDataContainerSharedPtr();
+               boost::shared_ptr<CDataContainer> serializedData = shared::CDataContainer::make();
                if (m_maxLength.isDefined())
                   serializedData->set("maxLength", m_maxLength());
                return serializedData;

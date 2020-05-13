@@ -17,7 +17,7 @@ namespace database
             ((Id)(int)(0))
             ((DisplayName)(std::string)(""))
             ((Type)(std::string)(""))
-            ((Configuration)(shared::CDataContainerSharedPtr)(new_CDataContainerSharedPtr()))
+            ((Configuration)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
             ((AutoStart)(bool)(true))
             ((Category)(database::entities::EPluginCategory)(database::entities::EPluginCategory::kUser)(std::string))
          );
@@ -43,7 +43,7 @@ namespace database
             ((SizeY)(int)(1))
             ((Position)(int)(0))
             ((Title)(std::string)(""))
-            ((Configuration)(shared::CDataContainerSharedPtr)(new_CDataContainerSharedPtr()))
+            ((Configuration)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
          );
 
          DECLARE_ADAPTER_IMPLEMENTATION(PluginEventLogger,
@@ -70,8 +70,8 @@ namespace database
             ((Name)(std::string)(""))
             ((FriendlyName)(std::string)(""))
             ((Model)(std::string)(""))
-            ((Details)(shared::CDataContainerSharedPtr)(new_CDataContainerSharedPtr()))
-            ((Configuration)(shared::CDataContainerSharedPtr)(new_CDataContainerSharedPtr()))
+            ((Details)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
+            ((Configuration)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
             ((Type)(std::string)(""))
             ((Blacklist)(bool)(false))
          );
@@ -85,10 +85,10 @@ namespace database
             ((FriendlyName)(std::string)(""))
             ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)(std::string))
             ((Units)(std::string)(""))
-            ((TypeInfo)(shared::CDataContainerSharedPtr)(new_CDataContainerSharedPtr()))
+            ((TypeInfo)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
             ((Measure)(shared::plugin::yPluginApi::EMeasureType)(shared::plugin::yPluginApi::EMeasureType::kAbsolute)(
                std::string))
-            ((Details)(shared::CDataContainerSharedPtr)(new_CDataContainerSharedPtr()))
+            ((Details)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
             ((Blacklist)(bool)(false))
             ((LastAcquisitionValue)(std::string)(""))
             ((LastAcquisitionDate)(boost::posix_time::ptime)(boost::posix_time::not_a_date_time))
@@ -122,7 +122,7 @@ namespace database
             ((Editor)(std::string)(""))
             ((Model)(std::string)(""))
             ((Content)(std::string)(""))
-            ((Configuration)(shared::CDataContainerSharedPtr)(new_CDataContainerSharedPtr()))
+            ((Configuration)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
             ((AutoStart)(bool)(true))
             ((State)(database::entities::ERuleState)(database::entities::ERuleState::kStopped)(std::string))
             ((ErrorMessage)(std::string)(""))
