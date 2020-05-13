@@ -1,3 +1,6 @@
+### 1.3.0
+* Fix #562  : update usage of CDataContainer for better memory optimizations
+
 ### 1.2.2
 * Update to RFXCom SDK v9.24 (2019-03-16) : add support for weather stations (Alecto ACH2010, WS5500, WH2900), solar sensors (Davis)
 

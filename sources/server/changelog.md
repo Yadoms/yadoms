@@ -6,6 +6,7 @@
 * New feature (plugin API) : Web requests done by plugins now uses proxy settings from Yadoms (just need to rebuild plugin to make your plugin support this function)
 * New feature #604 : Proxy supported for file downloading (used in install & update page)
 * New platform supported : Synology DS218+
+* Fix #562 : update usage of CDataContainer for better memory optimizations
 * Fix #564 : GUI : Devices page / deletion and equipment with details
 * Fix #584 : GUI : Fix loading of translated labels for not already loaded modules
 * Fix #593 : GUI : Fix plugin icon display in devices configuration page

@@ -1,3 +1,6 @@
+### 1.7.0.beta.1
+* Fix #562  : update usage of CDataContainer for better memory optimizations
+
 ### 1.6.0.beta2
 * **Update OpenZwave to 1.6.962**
 * Enhance SensorBinary class (fix #592)
