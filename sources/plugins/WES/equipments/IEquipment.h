@@ -44,7 +44,7 @@ namespace equipments
       ///\param[in] refreshEvent              Event to fire a device refresh after updating configuration
       //--------------------------------------------------------------
       virtual void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                       const shared::CDataContainerSharedPtr& newConfiguration,
+                                       const boost::shared_ptr<shared::CDataContainer>& newConfiguration,
                                        const int refreshEvent) = 0;
 
       //--------------------------------------------------------------

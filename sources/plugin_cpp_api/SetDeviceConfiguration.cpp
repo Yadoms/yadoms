@@ -5,7 +5,7 @@
 namespace plugin_cpp_api
 {
    CSetDeviceConfiguration::CSetDeviceConfiguration(const plugin_IPC::toPlugin::SetDeviceConfiguration& msg)
-      : m_device(msg.device()), m_configuration(new_CDataContainerSharedPtrP(msg.configuration()))
+      : m_device(msg.device()), m_configuration(shared::CDataContainer::make(msg.configuration()))
    {
    }
 
@@ -18,7 +18,7 @@ namespace plugin_cpp_api
       return m_device;
    }
 
-   const shared::CDataContainerSharedPtr& CSetDeviceConfiguration::configuration() const
+   const boost::shared_ptr<shared::CDataContainer>& CSetDeviceConfiguration::configuration() const
    {
       return m_configuration;
    }

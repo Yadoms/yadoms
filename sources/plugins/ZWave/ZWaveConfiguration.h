@@ -32,7 +32,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Initialize configuration
    //--------------------------------------------------------------
-   void initializeWith(shared::CDataContainerSharedPtr container);
+   void initializeWith(boost::shared_ptr<shared::CDataContainer> container);
 
    //--------------------------------------------------------------
    /// \brief	    Get the library path
@@ -75,6 +75,6 @@ private :
    //--------------------------------------------------------------
    /// \brief	    The container
    //--------------------------------------------------------------
-   shared::CDataContainerSharedPtr m_container;
+   boost::shared_ptr<shared::CDataContainer> m_container;
 };
 

@@ -10,12 +10,12 @@ namespace rfxcomMessages
 {
    CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string& command,
-                      const shared::CDataContainerSharedPtr& deviceDetails)
+                      const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_state, m_batteryLevel, m_signalPower}),
-        m_deviceDetails(new_CDataContainerSharedPtr())
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_state->setCommand(command);
       m_batteryLevel->set(100);
@@ -34,13 +34,13 @@ namespace rfxcomMessages
    CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
                       unsigned int subType,
                       const std::string& name,
-                      const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
+                      const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_state, m_batteryLevel, m_signalPower}),
-        m_deviceDetails(new_CDataContainerSharedPtr())
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
       m_batteryLevel->set(100);

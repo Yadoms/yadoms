@@ -49,17 +49,17 @@ namespace dataAccessLayer
                                                                   const std::string& friendlyName,
                                                                   const std::string& type,
                                                                   const std::string& model,
-                                                                  shared::CDataContainerSharedPtr details) override;
+                                                                  boost::shared_ptr<shared::CDataContainer> details) override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDevices() const override;
       std::vector<std::string> getDevicesForPluginInstance(int pluginId) const override;
       void updateDeviceFriendlyName(int deviceId, const std::string& newFriendlyName) override;
-      void updateDeviceConfiguration(int deviceId, shared::CDataContainerSharedPtr configuration) override;
-      void updateDeviceDetails(int deviceId, shared::CDataContainerSharedPtr details) override;
+      void updateDeviceConfiguration(int deviceId, boost::shared_ptr<shared::CDataContainer> configuration) override;
+      void updateDeviceDetails(int deviceId, boost::shared_ptr<shared::CDataContainer> details) override;
       void updateDeviceModel(int deviceId, const std::string& model) override;
       void updateDeviceType(int deviceId, const std::string& type) override;
       void updateDeviceBlacklistState(int deviceId, bool blacklist) override;
       void updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state,
-                             const std::string& customMessageId, shared::CDataContainerSharedPtr data) const override;
+                             const std::string& customMessageId, boost::shared_ptr<shared::CDataContainer> data) const override;
       void removeDevice(int deviceId) override;
       void removeDevice(int pluginId, const std::string& deviceName) override;
       void removeAllDeviceForPlugin(int pluginId) override;

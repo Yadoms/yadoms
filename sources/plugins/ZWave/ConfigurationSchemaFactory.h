@@ -15,13 +15,13 @@ public:
    virtual ~CConfigurationSchemaFactory() {}
 
    
-   static shared::CDataContainerSharedPtr generateForHistorizer(boost::shared_ptr<IOpenZWaveNodeKeyword> historizer);
+   static boost::shared_ptr<shared::CDataContainer> generateForHistorizer(boost::shared_ptr<IOpenZWaveNodeKeyword> historizer);
    static std::string generateValidKeyName(const std::string & keyname);
 private:
-   static shared::CDataContainerSharedPtr generateForDouble(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
-   static shared::CDataContainerSharedPtr generateForInteger(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
-   static shared::CDataContainerSharedPtr generateForBool(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
-   static shared::CDataContainerSharedPtr generateForString(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
-   static shared::CDataContainerSharedPtr generateForEnum(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
-   static std::string generateDescription(shared::CDataContainerSharedPtr zwaveTypeInfo, ECommandClass commandclass);
+   static boost::shared_ptr<shared::CDataContainer> generateForDouble(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass);
+   static boost::shared_ptr<shared::CDataContainer> generateForInteger(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass);
+   static boost::shared_ptr<shared::CDataContainer> generateForBool(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass);
+   static boost::shared_ptr<shared::CDataContainer> generateForString(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass);
+   static boost::shared_ptr<shared::CDataContainer> generateForEnum(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass);
+   static std::string generateDescription(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass);
 };

@@ -23,7 +23,7 @@ namespace update
 
          YADOMS_LOG(information) << "Updating Yadoms from " << downloadUrl;
 
-         shared::CDataContainerSharedPtr callbackData = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
          callbackData->set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsUpdate, std::string(), callbackData);

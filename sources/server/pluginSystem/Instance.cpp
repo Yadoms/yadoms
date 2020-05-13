@@ -90,7 +90,7 @@ namespace pluginSystem
       m_ipcAdapter->postExtraQuery(extraQuery, taskId);
    }
 
-   void CInstance::updateConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
+   void CInstance::updateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
    {
       m_ipcAdapter->postUpdateConfiguration(newConfiguration);
    }

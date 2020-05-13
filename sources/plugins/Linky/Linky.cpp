@@ -131,7 +131,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             setPluginState(api, kupdateConfiguration);
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
             setPluginState(api, kRunning);
             break;
          }
@@ -224,7 +224,7 @@ void CLinky::destroyConnection()
 }
 
 void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   const shared::CDataContainerSharedPtr& newConfigurationData)
+                                   const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;

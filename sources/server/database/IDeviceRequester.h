@@ -124,7 +124,7 @@ namespace database
                                                                 const std::string& friendlyName,
                                                                 const std::string& type,
                                                                 const std::string& model,
-                                                                shared::CDataContainerSharedPtr details) = 0;
+                                                                boost::shared_ptr<shared::CDataContainer> details) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices
@@ -193,7 +193,7 @@ namespace database
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateDeviceConfiguration(int deviceId,
-                                             shared::CDataContainerSharedPtr configuration) = 0;
+                                             boost::shared_ptr<shared::CDataContainer> configuration) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device details
@@ -202,7 +202,7 @@ namespace database
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateDeviceDetails(int deviceId,
-                                       shared::CDataContainerSharedPtr details) = 0;
+                                       boost::shared_ptr<shared::CDataContainer> details) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device model

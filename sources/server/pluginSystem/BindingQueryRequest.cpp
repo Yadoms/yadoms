@@ -5,8 +5,8 @@
 namespace pluginSystem
 {
    CBindingQueryRequest::CBindingQueryRequest(const shared::plugin::yPluginApi::IBindingQueryData& data,
-                                              communication::callback::ISynchronousCallback<shared::CDataContainerSharedPtr>& callback)
-      : m_requestPtr(boost::make_shared<communication::callback::CCallbackRequest<shared::plugin::yPluginApi::IBindingQueryData, shared::CDataContainerSharedPtr>>(data, callback))
+                                              communication::callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback)
+      : m_requestPtr(boost::make_shared<communication::callback::CCallbackRequest<shared::plugin::yPluginApi::IBindingQueryData, boost::shared_ptr<shared::CDataContainer>>>(data, callback))
    {
    }
 
@@ -19,7 +19,7 @@ namespace pluginSystem
       return m_requestPtr->getData();
    }
 
-   void CBindingQueryRequest::sendSuccess(const shared::CDataContainerSharedPtr& newDeviceName)
+   void CBindingQueryRequest::sendSuccess(const boost::shared_ptr<shared::CDataContainer>& newDeviceName)
    {
       m_requestPtr->sendSuccess(newDeviceName);
    }

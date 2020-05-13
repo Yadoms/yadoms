@@ -11,7 +11,7 @@ namespace rfxcomMessages
 {
    CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& command,
-                          const shared::CDataContainerSharedPtr& deviceDetails)
+                          const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_keyword , m_signalPower})
@@ -30,7 +30,7 @@ namespace rfxcomMessages
    CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const std::string& name,
-                          const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
+                          const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),

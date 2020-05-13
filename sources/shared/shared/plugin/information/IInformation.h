@@ -85,7 +85,7 @@ namespace shared
             /// \brief	    Provide the package.json content
             /// \return     the package.json content
             //--------------------------------------------------------------
-            virtual shared::CDataContainerSharedPtrConst getPackage() const = 0;
+            virtual boost::shared_ptr<const shared::CDataContainer> getPackage() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    Get the plugin path

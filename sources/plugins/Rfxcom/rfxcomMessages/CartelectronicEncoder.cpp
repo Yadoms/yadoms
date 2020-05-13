@@ -70,7 +70,7 @@ namespace rfxcomMessages
    }
 
    const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCartelectronicEncoder::keywords(
-      const shared::CDataContainerSharedPtr& deviceConfiguration)
+      const boost::shared_ptr<shared::CDataContainer>& deviceConfiguration)
    {
       m_keywords.clear();
 

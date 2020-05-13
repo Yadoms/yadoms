@@ -22,7 +22,7 @@ namespace xplrules
                         const std::string& commercialName,
                         const xplcore::CXplMessageSchemaIdentifier& readingProtocol,
                         const xplcore::CXplMessageSchemaIdentifier& writingProtocol,
-                        const shared::CDataContainerSharedPtr& innerDetails = new_CDataContainerSharedPtr());
+                        const boost::shared_ptr<shared::CDataContainer>& innerDetails = shared::CDataContainer::make());
 
       //------------------------------------
       ///\brief Destructor
@@ -58,7 +58,7 @@ namespace xplrules
       ///\brief Get the xpl protocol specific details
       ///\return the xpl protocol specific details
       //------------------------------------
-      const shared::CDataContainerSharedPtr& getInnerDetails() const;
+      const boost::shared_ptr<shared::CDataContainer>& getInnerDetails() const;
 
    private:
       //------------------------------------
@@ -84,7 +84,7 @@ namespace xplrules
       //------------------------------------
       ///\brief Somme more data which are protocol specific
       //------------------------------------
-      shared::CDataContainerSharedPtr m_innerDetails;
+      boost::shared_ptr<shared::CDataContainer> m_innerDetails;
    };
 } //namespace xplrules
 

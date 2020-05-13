@@ -120,7 +120,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          // Configuration was updated
          api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-         auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>();
+         auto newConfigurationData = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
          YADOMS_LOG(information) << "Update configuration...";
          BOOST_ASSERT(!newConfigurationData->empty());
          // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
@@ -152,7 +152,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
          if (request->getData().getQuery() == "channels")
          {
             std::vector<std::string> allDevices = api->getAllDevices();
-            shared::CDataContainerSharedPtr ev = new_CDataContainerSharedPtr();
+            boost::shared_ptr<shared::CDataContainer> ev = shared::CDataContainer::make();
             for (std::string& str : api->getAllDevices())
             {
                if (str.find(DeviceName) != std::string::npos)
@@ -190,7 +190,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   YADOMS_LOG(information) << "Channel : " << chanToProg;
                   sendQuickProgCmd(chanToProg);
-                  extraQuery->sendSuccess(new_CDataContainerSharedPtr());
+                  extraQuery->sendSuccess(shared::CDataContainer::make());
                }
             }
             else

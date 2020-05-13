@@ -13,7 +13,7 @@
 
 namespace http
 {
-   shared::CDataContainerSharedPtr CHttpMethods::SendGetRequest(const std::string & url, shared::CDataContainerSharedPtr & parameters)
+   boost::shared_ptr<shared::CDataContainer> CHttpMethods::SendGetRequest(const std::string & url, boost::shared_ptr<shared::CDataContainer> & parameters)
    {
       try
       {
@@ -54,11 +54,11 @@ namespace http
             size_t successFind = buff.find("Success");
 
             if (successFind == std::string::npos)
-               return new_CDataContainerSharedPtrP(oss.str());
+               return shared::CDataContainer::make(oss.str());
             else
             {
                buff.insert(successFind + 8, ": \"0\"");
-               return new_CDataContainerSharedPtrP(buff);
+               return shared::CDataContainer::make(buff);
             }
 //----------------------------------------------------------------
          }

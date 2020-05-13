@@ -22,7 +22,7 @@ namespace shared
             ///\brief Constructor
             //-----------------------------------------------------
             YPluginConfiguration()
-               :m_packageData(new_CDataContainerSharedPtr()), m_configurationData(new_CDataContainerSharedPtr())
+               :m_packageData(shared::CDataContainer::make()), m_configurationData(shared::CDataContainer::make())
             {
                
             }
@@ -39,7 +39,7 @@ namespace shared
             /// \param [in] configurationData The raw configuration data (from Yadoms database)
             /// \param [in] packagePath The package path (default to "package.json" from module path)
             //--------------------------------------------------------------
-            void initializeWith(const CDataContainerSharedPtr& configurationData,
+            void initializeWith(const boost::shared_ptr<CDataContainer>& configurationData,
                                 const boost::filesystem::path& packagePath = CFileSystemExtension::getModulePath() / boost::filesystem::path("package.json"))
             {
                // Reload package file
@@ -107,12 +107,12 @@ namespace shared
             //--------------------------------------------------------------
             /// \brief	    Configuration raw data
             //--------------------------------------------------------------
-            CDataContainerSharedPtr m_configurationData;
+            boost::shared_ptr<CDataContainer> m_configurationData;
 
             //--------------------------------------------------------------
             /// \brief	    Package raw data
             //--------------------------------------------------------------
-            CDataContainerSharedPtr m_packageData;
+            boost::shared_ptr<CDataContainer> m_packageData;
          };
       }
    }

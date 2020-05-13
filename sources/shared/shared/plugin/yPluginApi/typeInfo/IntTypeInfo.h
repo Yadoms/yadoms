@@ -28,7 +28,7 @@ namespace shared
                CIntTypeInfo& setStep(int stepValue);
 
                // ITypeInfo implementation 
-               CDataContainerSharedPtr serialize() const override;
+               boost::shared_ptr<CDataContainer> serialize() const override;
                // END ITypeInfo implementation 
 
             private:

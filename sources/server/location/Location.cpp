@@ -11,7 +11,7 @@ namespace location
       : m_configurationManager(configurationManager),
         m_autoLocationService(autoLocationService)
    {
-      shared::CDataContainerSharedPtr location;
+      boost::shared_ptr<shared::CDataContainer> location;
       try
       {
          location = m_configurationManager->getLocation();
@@ -45,7 +45,7 @@ namespace location
       }
    }
 
-   shared::CDataContainerSharedPtr CLocation::getLocation() const
+   boost::shared_ptr<shared::CDataContainer> CLocation::getLocation() const
    {
       return m_configurationManager->getLocation();
    }

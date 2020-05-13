@@ -89,19 +89,19 @@ public:
    /// \brief	      Get the configuration schema
    /// \return       the configuration schema
    //--------------------------------------------------------------      
-   shared::CDataContainerSharedPtr getConfigurationSchema();
+   boost::shared_ptr<shared::CDataContainer> getConfigurationSchema();
 
    //--------------------------------------------------------------
    /// \brief	      Get the configuration values
    /// \return       the configuration values
    //--------------------------------------------------------------      
-   shared::CDataContainerSharedPtr getConfigurationValues();
+   boost::shared_ptr<shared::CDataContainer> getConfigurationValues();
 
    //--------------------------------------------------------------
    /// \brief	      Set the configuration values
    /// \param [in]   configuration     the configuration values
    //--------------------------------------------------------------      
-   void setConfigurationValues(const shared::CDataContainerSharedPtr&configuration);
+   void setConfigurationValues(const boost::shared_ptr<shared::CDataContainer>&configuration);
 
    //--------------------------------------------------------------
    /// \brief	Update device configuration (self update, from a device notification.) => updates only configuration container
@@ -109,7 +109,7 @@ public:
    /// \param [in] 	   value          The new value
    /// \param [in-out]  configuration  The initial and output configuration values
    //--------------------------------------------------------------
-   void updateNodeConfiguration(const std::string& keyword, const std::string& value, shared::CDataContainerSharedPtr& configuration);
+   void updateNodeConfiguration(const std::string& keyword, const std::string& value, boost::shared_ptr<shared::CDataContainer>& configuration);
 
    //--------------------------------------------------------------
    /// \brief	Get the node extra query from plugins
@@ -123,7 +123,7 @@ public:
    /// \param [in] 	   data           The query data (may be empty)
    /// \return true if successfull
    //--------------------------------------------------------------
-   bool onExtraQuery(const std::string & query, const shared::CDataContainerSharedPtr&data);
+   bool onExtraQuery(const std::string & query, const boost::shared_ptr<shared::CDataContainer>&data);
 
 private:
    //--------------------------------------------------------------

@@ -227,7 +227,7 @@ namespace database
 
          boost::shared_ptr<entities::CDevice> CDevice::createDevice(int pluginId, const std::string& name, const std::string& friendlyName,
                                                                     const std::string& type, const std::string& model,
-                                                                    shared::CDataContainerSharedPtr details)
+                                                                    boost::shared_ptr<shared::CDataContainer> details)
          {
             if (deviceExists(pluginId, name))
                throw shared::exception::CEmptyResult("The device already exists, cannot create it a new time");
@@ -303,7 +303,7 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update device name");
          }
 
-         void CDevice::updateDeviceConfiguration(int deviceId, shared::CDataContainerSharedPtr configuration)
+         void CDevice::updateDeviceConfiguration(int deviceId, boost::shared_ptr<shared::CDataContainer> configuration)
          {
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
@@ -317,7 +317,7 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update device configuration");
          }
 
-         void CDevice::updateDeviceDetails(int deviceId, shared::CDataContainerSharedPtr details)
+         void CDevice::updateDeviceDetails(int deviceId, boost::shared_ptr<shared::CDataContainer> details)
          {
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");

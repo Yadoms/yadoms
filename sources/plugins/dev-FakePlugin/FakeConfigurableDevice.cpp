@@ -68,7 +68,7 @@ const std::string& CFakeConfigurableDevice::getType()
    return type;
 }
 
-void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
+void CFakeConfigurableDevice::setConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
 {
    YADOMS_LOG(information) << "Configuration = " << newConfiguration->serialize();
    if(newConfiguration->containsValue("CounterDivider2"))

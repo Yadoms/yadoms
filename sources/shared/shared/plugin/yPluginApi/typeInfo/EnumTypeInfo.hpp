@@ -25,7 +25,7 @@ namespace shared
                virtual ~CEnumTypeInfo() = default;
 
                // ITypeInfo implementation 
-               CDataContainerSharedPtr serialize() const override
+               boost::shared_ptr<CDataContainer> serialize() const override
                {
                   return m_data;
                }
@@ -33,7 +33,7 @@ namespace shared
                // END ITypeInfo implementation 
 
             private:
-               CDataContainerSharedPtr m_data;
+               boost::shared_ptr<CDataContainer> m_data;
 
 
                //-----------------------------------------------------
@@ -42,7 +42,7 @@ namespace shared
                template <typename T, class Enable = void>
                struct helper
                {
-                  static CDataContainerSharedPtr getTypeInfo()
+                  static boost::shared_ptr<CDataContainer> getTypeInfo()
                   {
                      return boost::make_shared<shared::CDataContainer>();
                   }
@@ -51,9 +51,9 @@ namespace shared
                template <typename T>
                struct helper<T, typename boost::enable_if<boost::is_base_of<enumeration::IExtendedEnum, T>>::type>
                {
-                  static CDataContainerSharedPtr getTypeInfo()
+                  static boost::shared_ptr<CDataContainer> getTypeInfo()
                   {
-                     CDataContainerSharedPtr result = boost::make_shared<shared::CDataContainer>();
+                     boost::shared_ptr<CDataContainer> result = boost::make_shared<shared::CDataContainer>();
                      T value; //extended enum are ctor parameterless
                      result->set("name", value.getName());
                      result->set("values", value.getAllStrings());

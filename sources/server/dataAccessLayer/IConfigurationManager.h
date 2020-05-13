@@ -31,7 +31,7 @@ namespace dataAccessLayer
       /// \brief      Load server configuration
       /// \return     The stored configuration if exist, else the default values
       //--------------------------------------------------------------
-      virtual shared::CDataContainerSharedPtr getServerConfiguration() const = 0;
+      virtual boost::shared_ptr<shared::CDataContainer> getServerConfiguration() const = 0;
 
       //--------------------------------------------------------------
       /// \brief      Save system configuration
@@ -53,13 +53,13 @@ namespace dataAccessLayer
       //--------------------------------------------------------------
       /// \brief      Subscribe to system configuration changes
       //--------------------------------------------------------------
-      virtual void subscribeOnServerConfigurationChanged(boost::function1<void, shared::CDataContainerSharedPtr> onServerConfigurationChangedFct) = 0;
+      virtual void subscribeOnServerConfigurationChanged(boost::function1<void, boost::shared_ptr<shared::CDataContainer>> onServerConfigurationChangedFct) = 0;
 
       //--------------------------------------------------------------
       /// \brief      High-level server configuration accessors
       //--------------------------------------------------------------
-      virtual shared::CDataContainerSharedPtr getLocation() const = 0;
+      virtual boost::shared_ptr<shared::CDataContainer> getLocation() const = 0;
       virtual void saveAutoDetectedLocation(const shared::CDataContainer& newLocation) = 0;
-      virtual shared::CDataContainerSharedPtr getBasicAuthentication() const = 0;
+      virtual boost::shared_ptr<shared::CDataContainer> getBasicAuthentication() const = 0;
    };
 } //namespace dataAccessLayer 

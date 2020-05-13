@@ -27,7 +27,7 @@ namespace pluginSystem
 
       // IExtraQuery implementation
       boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> getData() const override;
-      void sendSuccess(const shared::CDataContainerSharedPtr& data) override;
+      void sendSuccess(const boost::shared_ptr<shared::CDataContainer>& data) override;
       void sendError(const std::string& errorMessage) override;
       void reportProgress(const float progression, const std::string& message) override;
       // [END] IExtraQuery implementation

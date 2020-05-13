@@ -11,7 +11,7 @@ namespace pluginSystem
                                                                  shared::plugin::yPluginApi::EKeywordDataType(historizable.capacity().type()))),
         m_accessMode(shared::plugin::yPluginApi::EKeywordAccessMode(historizable.accessmode())),
         m_measureType(shared::plugin::yPluginApi::EMeasureType(historizable.measure())),
-        m_typeInfo(historizable.typeinfo().empty() ? new_CDataContainerSharedPtr() : new_CDataContainerSharedPtrP(historizable.typeinfo())),
+        m_typeInfo(historizable.typeinfo().empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(historizable.typeinfo())),
         m_historyDepth(historizable.historydepth().empty()
                           ? shared::plugin::yPluginApi::EHistoryDepth::kDefault
                           : shared::plugin::yPluginApi::EHistoryDepth(historizable.historydepth())),
@@ -44,7 +44,7 @@ namespace pluginSystem
       return m_measureType;
    }
 
-   shared::CDataContainerSharedPtr CFromPluginHistorizer::getTypeInfo() const
+   boost::shared_ptr<shared::CDataContainer> CFromPluginHistorizer::getTypeInfo() const
    {
       return m_typeInfo;
    }

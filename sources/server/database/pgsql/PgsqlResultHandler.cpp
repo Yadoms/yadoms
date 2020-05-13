@@ -116,9 +116,9 @@ namespace database
          return Poco::DateTimeParser::parse("%Y%m%dT%H%M%S", extractValueAsString(columnIndex), timeZoneDifferential);
       }
 
-      shared::CDataContainerSharedPtr CPgsqlResultHandler::extractValueAsDataContainer(const int columnIndex)
+      boost::shared_ptr<shared::CDataContainer> CPgsqlResultHandler::extractValueAsDataContainer(const int columnIndex)
       {
-         return new_CDataContainerSharedPtrP(extractValueAsString(columnIndex));
+         return shared::CDataContainer::make(extractValueAsString(columnIndex));
       }
    } //namespace sqlite
 } //namespace database 

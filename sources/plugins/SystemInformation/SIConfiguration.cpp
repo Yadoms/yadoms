@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 
 CSIConfiguration::CSIConfiguration()
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {
 }
 
@@ -11,7 +11,7 @@ CSIConfiguration::~CSIConfiguration()
 {
 }
 
-void CSIConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
+void CSIConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_data->initializeWith(data);
 }

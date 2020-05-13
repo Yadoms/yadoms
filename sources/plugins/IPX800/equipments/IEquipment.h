@@ -53,7 +53,7 @@ namespace equipments
       //--------------------------------------------------------------
       virtual void updateFromDevice(const std::string& type, 
                                     boost::shared_ptr<yApi::IYPluginApi> api, 
-                                    shared::CDataContainerSharedPtr& values,
+                                    boost::shared_ptr<shared::CDataContainer>& values,
                                     bool forceHistorization) = 0;
 
       //--------------------------------------------------------------
@@ -62,15 +62,15 @@ namespace equipments
       ///\param[in] parameters                parameters that have to be included in addition of elements processed into this function
       ///\param[in] command                   the command received from the Yadoms web client
       //--------------------------------------------------------------
-      virtual shared::CDataContainerSharedPtr buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                          shared::CDataContainerSharedPtr& parameters,
+      virtual boost::shared_ptr<shared::CDataContainer> buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                          boost::shared_ptr<shared::CDataContainer>& parameters,
                                                           boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
 
       //--------------------------------------------------------------
       /// \brief      setNewConfiguration
       ///\param[in]   newConfiguration        the new Configuration
       //--------------------------------------------------------------
-      virtual void setNewConfiguration(const shared::CDataContainerSharedPtr& newConfiguration) = 0;
+      virtual void setNewConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration) = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Destructor

@@ -17,7 +17,7 @@ void COpenZWaveControllerCache::AddKeywordValue(const std::string & deviceName, 
    m_keywordCache[deviceName].push_back(info);
 }
 
-void COpenZWaveControllerCache::AddDeviceInfo(const std::string & deviceName, shared::CDataContainerSharedPtr& info)
+void COpenZWaveControllerCache::AddDeviceInfo(const std::string & deviceName, boost::shared_ptr<shared::CDataContainer>& info)
 {
 	if (m_deviceCache.find(deviceName) == m_deviceCache.end())
 	{
@@ -34,7 +34,7 @@ void COpenZWaveControllerCache::UpdateDeviceState(const std::string & deviceName
 {
 	if (m_deviceCache.find(deviceName) == m_deviceCache.end())
 	{
-		m_deviceCache.insert(std::make_pair(deviceName, CDeviceInfoAndState(new_CDataContainerSharedPtr(), state)));
+		m_deviceCache.insert(std::make_pair(deviceName, CDeviceInfoAndState(shared::CDataContainer::make(), state)));
 	}
 	else
 	{

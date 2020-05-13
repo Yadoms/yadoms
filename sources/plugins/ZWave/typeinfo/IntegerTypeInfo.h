@@ -19,7 +19,7 @@ public:
    //-----------------------------------------------------
    virtual ~CIntegerTypeInfo();
    // shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
-   shared::CDataContainerSharedPtr serialize() const override;
+   boost::shared_ptr<shared::CDataContainer> serialize() const override;
    // END shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
 
 private:
@@ -32,6 +32,6 @@ private:
    //-----------------------------------------------------
    ///\brief   The typeInfo content
    //-----------------------------------------------------
-   shared::CDataContainerSharedPtr m_data;
+   boost::shared_ptr<shared::CDataContainer> m_data;
 };
 

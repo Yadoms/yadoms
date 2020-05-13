@@ -26,7 +26,7 @@ namespace pluginSystem
       const shared::plugin::yPluginApi::EKeywordAccessMode& getAccessMode() const override;
       std::string formatValue() const override;
       const shared::plugin::yPluginApi::EMeasureType& getMeasureType() const override;
-      shared::CDataContainerSharedPtr getTypeInfo() const override;
+      boost::shared_ptr<shared::CDataContainer> getTypeInfo() const override;
       const shared::plugin::yPluginApi::EHistoryDepth& getHistoryDepth() const override;
       // [END] IHistorizable implementation
 

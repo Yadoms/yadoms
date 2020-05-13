@@ -40,7 +40,7 @@ std::string COpenZWaveNodeRefreshPlugin::getName()
    return "base";
 }
 
-bool COpenZWaveNodeRefreshPlugin::onExtraQuery(const std::string & query, const shared::CDataContainerSharedPtr& data)
+bool COpenZWaveNodeRefreshPlugin::onExtraQuery(const std::string & query, const boost::shared_ptr<shared::CDataContainer>& data)
 {
    if (boost::iequals(query, "refresh"))
    {

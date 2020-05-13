@@ -595,7 +595,7 @@ namespace pluginSystem
       return m_runningInstances.find(id) != m_runningInstances.end();
    }
 
-   shared::CDataContainerSharedPtr CManager::getInstanceFullState(int id) const
+   boost::shared_ptr<shared::CDataContainer> CManager::getInstanceFullState(int id) const
    {
       if (!isInstanceRunning(id))
       {
@@ -609,7 +609,7 @@ namespace pluginSystem
          catch (shared::exception::CEmptyResult&)
          {
             // Device doesn't exist, probably not supported by plugin. Plugin is then considered as stopped.
-            shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+            boost::shared_ptr<shared::CDataContainer> defaultState = shared::CDataContainer::make();
             defaultState->set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
             return defaultState;
          }
@@ -624,12 +624,12 @@ namespace pluginSystem
                // In error state
                auto customMessageIdKw = m_dataProvider
                                         ->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
-               shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+               boost::shared_ptr<shared::CDataContainer> defaultState = shared::CDataContainer::make();
                defaultState->set("state", state);
 
                try
                {
-                  shared::CDataContainerSharedPtr dc = new_CDataContainerSharedPtrP(
+                  boost::shared_ptr<shared::CDataContainer> dc = shared::CDataContainer::make(
                      m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
                   defaultState->set("messageId", dc->getWithDefault("messageId", std::string()));
                   defaultState->set("messageData", dc->getWithDefault("messageData", std::string()));
@@ -644,14 +644,14 @@ namespace pluginSystem
             }
 
             // Normaly stopped
-            shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+            boost::shared_ptr<shared::CDataContainer> defaultState = shared::CDataContainer::make();
             defaultState->set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
             return defaultState;
          }
          catch (shared::exception::CEmptyResult&)
          {
             // pluginState keyword exist, but was never historized, so considered as stopped.
-            shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+            boost::shared_ptr<shared::CDataContainer> defaultState = shared::CDataContainer::make();
             defaultState->set("state", shared::plugin::yPluginApi::historization::EPluginState::kStopped);
             return defaultState;
          }
@@ -667,7 +667,7 @@ namespace pluginSystem
       catch (shared::exception::CEmptyResult&)
       {
          // Device doesn't exist, probably not supported by plugin. Plugin is then considered as running.
-         shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> defaultState = shared::CDataContainer::make();
          defaultState->set("state", shared::plugin::yPluginApi::historization::EPluginState::kRunning);
          return defaultState;
       }
@@ -676,12 +676,12 @@ namespace pluginSystem
       {
          auto stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
          auto customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
-         shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> defaultState = shared::CDataContainer::make();
          defaultState->set("state", m_dataProvider->getKeywordRequester()->getKeywordLastData(stateKw->Id));
 
          try
          {
-            shared::CDataContainerSharedPtr dc = new_CDataContainerSharedPtrP(m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
+            boost::shared_ptr<shared::CDataContainer> dc = shared::CDataContainer::make(m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
             defaultState->set("messageId", dc->getWithDefault("messageId", std::string()));
             defaultState->set("messageData", dc->getWithDefault("messageData", std::string()));
          }
@@ -697,7 +697,7 @@ namespace pluginSystem
       catch (shared::exception::CEmptyResult&)
       {
          // pluginState keyword exist, but was never historized, so considered as unknown.
-         shared::CDataContainerSharedPtr defaultState = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> defaultState = shared::CDataContainer::make();
          defaultState->set("state", shared::plugin::yPluginApi::historization::EPluginState::kUnknown);
          return defaultState;
       }
@@ -786,9 +786,7 @@ namespace pluginSystem
       }
    }
 
-   void CManager::postDeviceConfigurationSchemaRequest(int deviceId,
-                                                       communication::callback::ISynchronousCallback<shared::
-                                                          CDataContainerSharedPtr>& callback) const
+   void CManager::postDeviceConfigurationSchemaRequest(int deviceId, communication::callback::ISynchronousCallback< boost::shared_ptr<shared::CDataContainer> >& callback) const
    {
       auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
 
@@ -815,7 +813,7 @@ namespace pluginSystem
    }
 
    void CManager::postSetDeviceConfiguration(int deviceId,
-                                             const shared::CDataContainerSharedPtr& configuration) const
+                                             const boost::shared_ptr<shared::CDataContainer>& configuration) const
    {
       auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
 

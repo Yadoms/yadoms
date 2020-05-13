@@ -80,7 +80,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Configuration was updated
                m_api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               const auto newConfigurationData = m_api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>();
+               const auto newConfigurationData = m_api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
                YADOMS_LOG(information) << "Update configuration...";
                BOOST_ASSERT(!newConfigurationData->empty());
                // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
@@ -403,7 +403,7 @@ void CEnOcean::processDeviceRemoved(const std::string& deviceId)
 }
 
 void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
-                                          const shared::CDataContainerSharedPtr& configuration)
+                                          const boost::shared_ptr<shared::CDataContainer>& configuration)
 {
    try
    {

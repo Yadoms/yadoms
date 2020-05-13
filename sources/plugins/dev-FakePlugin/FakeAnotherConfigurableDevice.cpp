@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 
 CFakeAnotherConfigurableDevice::CFakeAnotherConfigurableDevice(const std::string& deviceName,
-                                                               const shared::CDataContainerSharedPtr& configuration)
+                                                               const boost::shared_ptr<shared::CDataContainer>& configuration)
    : m_deviceName(deviceName),
      m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
      m_internalCounter(0),
@@ -50,7 +50,7 @@ const std::string& CFakeAnotherConfigurableDevice::getModel()
    return model;
 }
 
-void CFakeAnotherConfigurableDevice::setConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
+void CFakeAnotherConfigurableDevice::setConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
 {
    m_divider = readDividerConfiguration(newConfiguration);
 }
@@ -60,7 +60,7 @@ std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::I
    return m_historizers;
 }
 
-int CFakeAnotherConfigurableDevice::readDividerConfiguration(const shared::CDataContainerSharedPtr& configuration)
+int CFakeAnotherConfigurableDevice::readDividerConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration)
 {
    try
    {

@@ -53,7 +53,7 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
             break;
          }
 
@@ -95,7 +95,7 @@ void CMailSender::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 }
 
 void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                        const shared::CDataContainerSharedPtr& newConfigurationData) const
+                                        const boost::shared_ptr<shared::CDataContainer>& newConfigurationData) const
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Configuration was updated..." ;

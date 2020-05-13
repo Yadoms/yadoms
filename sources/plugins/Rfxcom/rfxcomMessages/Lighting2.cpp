@@ -10,7 +10,7 @@ namespace rfxcomMessages
 {
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           boost::shared_ptr<const yApi::IDeviceCommand> command,
-                          const shared::CDataContainerSharedPtr& deviceDetails)
+                          const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
    {
@@ -31,7 +31,7 @@ namespace rfxcomMessages
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const std::string& name,
-                          const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
+                          const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
@@ -178,12 +178,12 @@ namespace rfxcomMessages
       return ssdeviceName.str();
    }
 
-   shared::CDataContainerSharedPtr CLighting2::buildDeviceDetails(unsigned char subType,
+   boost::shared_ptr<shared::CDataContainer> CLighting2::buildDeviceDetails(unsigned char subType,
                                                          unsigned char houseCode,
                                                          unsigned int id,
                                                          unsigned char unitCode)
    {
-      shared::CDataContainerSharedPtr deviceDetails = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> deviceDetails = shared::CDataContainer::make();
       if (deviceDetails->empty())
       {
          deviceDetails->set("type", pTypeLighting2);

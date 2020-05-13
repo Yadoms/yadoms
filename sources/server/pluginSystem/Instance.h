@@ -43,7 +43,7 @@ namespace pluginSystem
       virtual ~CInstance();
 
       // IInstance Implementation
-      void updateConfiguration(const shared::CDataContainerSharedPtr& newConfiguration) override;
+      void updateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration) override;
       void requestStop() override;
       void kill() override;
       boost::shared_ptr<const database::entities::CPlugin> about() const override;

@@ -4,7 +4,7 @@
 TeleInfoConfigurationMock::TeleInfoConfigurationMock()
 {}
 
-void TeleInfoConfigurationMock::initializeWith(const shared::CDataContainer& data)
+void TeleInfoConfigurationMock::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {}
 
 std::string TeleInfoConfigurationMock::getSerialPort() const

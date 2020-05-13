@@ -3,7 +3,7 @@
 
 
 CZWaveConfiguration::CZWaveConfiguration()
-   :m_container(new_CDataContainerSharedPtr())
+   :m_container(shared::CDataContainer::make())
 {
 }
 
@@ -11,7 +11,7 @@ CZWaveConfiguration::~CZWaveConfiguration()
 {
 }
 
-void CZWaveConfiguration::initializeWith(shared::CDataContainerSharedPtr container)
+void CZWaveConfiguration::initializeWith(boost::shared_ptr<shared::CDataContainer> container)
 {
    m_container->initializeWith(container);
 }

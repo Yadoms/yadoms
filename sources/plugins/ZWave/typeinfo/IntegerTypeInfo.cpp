@@ -4,7 +4,7 @@
 #include <shared/Log.h>
 
 CIntegerTypeInfo::CIntegerTypeInfo(OpenZWave::ValueID& vID)
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {
    initialize(vID);
 }
@@ -13,7 +13,7 @@ CIntegerTypeInfo::~CIntegerTypeInfo()
 {
 }
 
-shared::CDataContainerSharedPtr CIntegerTypeInfo::serialize() const
+boost::shared_ptr<shared::CDataContainer> CIntegerTypeInfo::serialize() const
 {
    return m_data;
 }

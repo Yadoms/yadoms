@@ -63,7 +63,7 @@ public:
    /// \brief	    Change the device configuration
    /// \param[in] newConfiguration  The new configuration
    //--------------------------------------------------------------
-   void setConfiguration(const shared::CDataContainerSharedPtr& newConfiguration);
+   void setConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration);
 
 private:
    //--------------------------------------------------------------

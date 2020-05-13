@@ -12,7 +12,7 @@ class CWeatherConfiguration
 public:
    virtual ~CWeatherConfiguration() = default;
 
-   void initializeWith(const shared::CDataContainerSharedPtr& data);
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data);
    void trace() const;
 
    std::string apiKey() const;

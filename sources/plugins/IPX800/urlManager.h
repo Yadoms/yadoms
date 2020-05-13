@@ -17,6 +17,6 @@ public:
    /// \param[in]  parameters          extra-parameters to the url
    /// \return     the answer of the request
    //--------------------------------------------------------------
-   static shared::CDataContainerSharedPtr sendCommand(Poco::Net::SocketAddress socket, shared::CDataContainerSharedPtr parameters);
+   static boost::shared_ptr<shared::CDataContainer> sendCommand(Poco::Net::SocketAddress socket, boost::shared_ptr<shared::CDataContainer> parameters);
 
 };

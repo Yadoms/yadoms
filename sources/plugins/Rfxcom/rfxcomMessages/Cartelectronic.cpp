@@ -91,7 +91,7 @@ namespace rfxcomMessages
       }
 
       const auto id = m_subTypeManager->idFromProtocol(rbuf);
-      const auto subTypeKeywords = m_subTypeManager->keywords(api->deviceExists(id) ? api->getDeviceConfiguration(id) : new_CDataContainerSharedPtr());
+      const auto subTypeKeywords = m_subTypeManager->keywords(api->deviceExists(id) ? api->getDeviceConfiguration(id) : shared::CDataContainer::make());
       m_keywords.insert(m_keywords.end(),
                         subTypeKeywords.begin(),
                         subTypeKeywords.end());
@@ -123,7 +123,7 @@ namespace rfxcomMessages
       // Create device and keywords if needed
       if (!api->deviceExists(m_id))
       {
-         shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
          details->set("type", pTypeCARTELECTRONIC);
          details->set("subType", m_subType);
          details->set("id", m_id);

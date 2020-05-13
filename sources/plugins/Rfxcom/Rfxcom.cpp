@@ -110,7 +110,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                setPluginState(api, yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainerSharedPtr>());
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
 
                break;
             }
@@ -282,7 +282,7 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const shared::CDataContainerSharedPtr& newConfigurationData)
+                                    const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";
@@ -453,7 +453,7 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
       updater->update();
 
       YADOMS_LOG(information) << "RFXCom firmware successufuly updated";
-      extraQuery->sendSuccess(new_CDataContainerSharedPtr());
+      extraQuery->sendSuccess(shared::CDataContainer::make());
    }
    catch (std::exception& e)
    {

@@ -4,7 +4,7 @@
 #include <shared/Log.h>
 
 CEnumTypeInfo::CEnumTypeInfo(OpenZWave::ValueID& vID)
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {
    initialize(vID);
 }
@@ -13,7 +13,7 @@ CEnumTypeInfo::~CEnumTypeInfo()
 {
 }
 
-shared::CDataContainerSharedPtr CEnumTypeInfo::serialize() const
+boost::shared_ptr<shared::CDataContainer> CEnumTypeInfo::serialize() const
 {
    return m_data;
 }

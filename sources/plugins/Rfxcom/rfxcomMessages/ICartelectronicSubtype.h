@@ -24,7 +24,7 @@ namespace rfxcomMessages
       /// \return                         The keyword list
       //--------------------------------------------------------------
       virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords(
-         const shared::CDataContainerSharedPtr& deviceConfiguration) = 0;
+         const boost::shared_ptr<shared::CDataContainer>& deviceConfiguration) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get ID from protocol data

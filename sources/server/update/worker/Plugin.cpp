@@ -19,10 +19,10 @@ namespace update
       {
          YADOMS_LOG(information) << "Installing new plugin from " << downloadUrl;
 
-         shared::CDataContainerSharedPtr callbackData = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
          callbackData->set("downloadUrl", downloadUrl);
 
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginInstall, std::string(), new_CDataContainerSharedPtr());
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginInstall, std::string(), shared::CDataContainer::make());
 
          /////////////////////////////////////////////
          //1. download package
@@ -91,7 +91,7 @@ namespace update
       {
          YADOMS_LOG(information) << "Updating plugin " << pluginName << " from " << downloadUrl;
 
-         shared::CDataContainerSharedPtr callbackData = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
          callbackData->set("pluginName", pluginName);
          callbackData->set("downloadUrl", downloadUrl);
 
@@ -170,7 +170,7 @@ namespace update
       {
          YADOMS_LOG(information) << "Removing plugin " << pluginName;
 
-         shared::CDataContainerSharedPtr callbackData = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
          callbackData->set("pluginName", pluginName);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginRemove, std::string(), callbackData);

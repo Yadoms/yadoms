@@ -48,8 +48,8 @@ namespace database
             static boost::optional<bool> loadRefreshPage(const boost::shared_ptr<IDatabaseRequester>& requester);
             static boost::optional<std::string> loadBasicAuthentication(const boost::shared_ptr<IDatabaseRequester>& requester);
 
-            static boost::optional<shared::CDataContainerSharedPtr> convertLocation(const boost::optional<std::string>& oldLocation);
-            static boost::optional<shared::CDataContainerSharedPtr> convertBasicAuthentication(const boost::optional<std::string>& oldBasicAuthentication);
+            static boost::optional<boost::shared_ptr<shared::CDataContainer>> convertLocation(const boost::optional<std::string>& oldLocation);
+            static boost::optional<boost::shared_ptr<shared::CDataContainer>> convertBasicAuthentication(const boost::optional<std::string>& oldBasicAuthentication);
 
             static void insertConfigurationValue(const boost::shared_ptr<IDatabaseRequester> requester,
                                                  const std::string& section,

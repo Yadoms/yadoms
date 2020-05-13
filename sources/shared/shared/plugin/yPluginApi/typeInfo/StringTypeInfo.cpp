@@ -17,9 +17,9 @@ namespace shared
                return *this;
             }
 
-            CDataContainerSharedPtr CStringTypeInfo::serialize() const
+            boost::shared_ptr<CDataContainer> CStringTypeInfo::serialize() const
             {
-               CDataContainerSharedPtr serializedData = new_CDataContainerSharedPtr();
+               boost::shared_ptr<CDataContainer> serializedData = shared::CDataContainer::make();
                if (m_regex.isDefined())
                   serializedData->set("regex", m_regex());
                return serializedData;

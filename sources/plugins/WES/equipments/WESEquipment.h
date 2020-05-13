@@ -31,7 +31,7 @@ namespace equipments
       //-----------------------------------------------------
       CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                     const std::string& device,
-                    const shared::CDataContainerSharedPtr& deviceConfiguration,
+                    const boost::shared_ptr<shared::CDataContainer>& deviceConfiguration,
                     const boost::shared_ptr<IWESConfiguration> pluginConfiguration);
 
       // IEquipment implementation
@@ -41,7 +41,7 @@ namespace equipments
                             const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                             bool forceHistorization = false) override;
       void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                               const shared::CDataContainerSharedPtr& newConfiguration,
+                               const boost::shared_ptr<shared::CDataContainer>& newConfiguration,
                                const int refreshEvent) override;
       void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                        const std::string& keyword,

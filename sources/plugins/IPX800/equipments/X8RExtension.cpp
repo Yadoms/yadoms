@@ -13,7 +13,7 @@ namespace equipments
       m_deviceName(device),
       m_position(position)
    {
-      shared::CDataContainerSharedPtr details = new_CDataContainerSharedPtr();
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("provider", "IPX800");
       details->set("shortProvider", "ipx");
       details->set("type", deviceType());
@@ -58,7 +58,7 @@ namespace equipments
 
    void CX8RExtension::updateFromDevice(const std::string& type,
                                         boost::shared_ptr<yApi::IYPluginApi> api,
-                                        shared::CDataContainerSharedPtr& values,
+                                        boost::shared_ptr<shared::CDataContainer>& values,
                                         bool forceHistorization)
    {
       if (type == "R")
@@ -93,8 +93,8 @@ namespace equipments
       }
    }
 
-   shared::CDataContainerSharedPtr CX8RExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                              shared::CDataContainerSharedPtr& parametersToCopy,
+   boost::shared_ptr<shared::CDataContainer> CX8RExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                              boost::shared_ptr<shared::CDataContainer>& parametersToCopy,
                                                               boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
       auto parameters = parametersToCopy->copy();
@@ -155,7 +155,7 @@ namespace equipments
       m_pendingHistorizer.reset();
    }
 
-   void CX8RExtension::setNewConfiguration(const shared::CDataContainerSharedPtr& newConfiguration)
+   void CX8RExtension::setNewConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
    {
       std::vector<boost::shared_ptr<specificHistorizers::CInputOuput>>::const_iterator iterator;
 

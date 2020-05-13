@@ -7,7 +7,7 @@ CDeviceState::CDeviceState(CConfiguration& lametricConfiguration)
 {
 }
 
-shared::CDataContainerSharedPtr CDeviceState::getState(const CUrlManagerHelper::ERequestType requestType)
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getState(const CUrlManagerHelper::ERequestType requestType)
 {
    m_urlManagerHelper = boost::make_shared<CUrlManagerHelper>(m_lametricConfiguration);
 
@@ -23,22 +23,22 @@ shared::CDataContainerSharedPtr CDeviceState::getState(const CUrlManagerHelper::
                                                   : shared::CHttpMethods::ESessionType::kSecured);
 }
 
-shared::CDataContainerSharedPtr CDeviceState::getDeviceState()
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getDeviceState()
 {
    return getState(CUrlManagerHelper::kRequestDevice);
 }
 
-shared::CDataContainerSharedPtr CDeviceState::getWifiState()
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getWifiState()
 {
    return getState(CUrlManagerHelper::kRequestWifi);
 }
 
-shared::CDataContainerSharedPtr CDeviceState::getBluetoothState()
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getBluetoothState()
 {
    return getState(CUrlManagerHelper::kRequestBluetooth);
 }
 
-shared::CDataContainerSharedPtr CDeviceState::getAudioState()
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getAudioState()
 {
    return getState(CUrlManagerHelper::kRequestAudio);
 }

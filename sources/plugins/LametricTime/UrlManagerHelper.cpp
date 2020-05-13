@@ -51,7 +51,7 @@ std::string CUrlManagerHelper::getRequestUrl(const CConfiguration& lametricConfi
 }
 
 
-shared::CDataContainerSharedPtr CUrlManagerHelper::buildCommonHeaderParameters(const CConfiguration& lametricConfiguration)
+boost::shared_ptr<shared::CDataContainer> CUrlManagerHelper::buildCommonHeaderParameters(const CConfiguration& lametricConfiguration)
 {
    const auto apiKey = lametricConfiguration.getAPIKey();
 
@@ -60,7 +60,7 @@ shared::CDataContainerSharedPtr CUrlManagerHelper::buildCommonHeaderParameters(c
    const auto authorizationHeader = Username + ":" + apiKey;
 
 
-   shared::CDataContainerSharedPtr headerParameters = new_CDataContainerSharedPtr();
+   boost::shared_ptr<shared::CDataContainer> headerParameters = shared::CDataContainer::make();
    headerParameters->set("Authorization",
                         authorizationType + shared::encryption::CBase64::encode(
                            reinterpret_cast<const unsigned char*>(authorizationHeader.c_str()),

@@ -63,7 +63,7 @@ namespace rfxcomMessages
       return m_cmndByte;
    }
 
-   unsigned long CFanSiemensSf01::idFromConfiguration(const shared::CDataContainerSharedPtr& configuration) const
+   unsigned long CFanSiemensSf01::idFromConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration) const
    {
       return configuration->get<unsigned int>("id");
    }

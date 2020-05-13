@@ -75,9 +75,9 @@ namespace shared
                return MeasureType;
             }
 
-            CDataContainerSharedPtr CMessage::getTypeInfo() const
+            boost::shared_ptr<CDataContainer> CMessage::getTypeInfo() const
             {
-               CDataContainerSharedPtr info = new_CDataContainerSharedPtr();
+               boost::shared_ptr<CDataContainer> info = shared::CDataContainer::make();
                info->set("associatedRecipientField", m_associatedRecipientField);
                return info;
             }

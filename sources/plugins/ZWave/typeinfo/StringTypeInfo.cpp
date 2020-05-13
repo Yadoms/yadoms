@@ -3,7 +3,7 @@
 #include "../OpenZWaveHelpers.h"
 
 CStringTypeInfo::CStringTypeInfo(OpenZWave::ValueID& vID)
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {
    initialize(vID);
 }
@@ -12,7 +12,7 @@ CStringTypeInfo::~CStringTypeInfo()
 {
 }
 
-shared::CDataContainerSharedPtr CStringTypeInfo::serialize() const
+boost::shared_ptr<shared::CDataContainer> CStringTypeInfo::serialize() const
 {
    return m_data;
 }

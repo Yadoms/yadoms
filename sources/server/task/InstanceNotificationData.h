@@ -26,7 +26,7 @@ namespace task {
       std::string getMessage() const;
       std::string getExceptionMessage() const;
       ETaskStatus getStatus() const;
-      shared::CDataContainerSharedPtr getTaskData() const;
+      boost::shared_ptr<shared::CDataContainer> getTaskData() const;
       std::string getName() const;
       boost::posix_time::ptime getCreationDate() const;
       
@@ -59,7 +59,7 @@ namespace task {
       //--------------------------------------------------------------
       /// \brief			The current task custom data
       //--------------------------------------------------------------
-      shared::CDataContainerSharedPtr m_taskData;      
+      boost::shared_ptr<shared::CDataContainer> m_taskData;      
       
       //--------------------------------------------------------------
       /// \brief			The current exception given by the task

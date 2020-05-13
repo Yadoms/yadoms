@@ -75,7 +75,7 @@ namespace rfxcomMessages
       return m_cmndByte;
    }
 
-   unsigned long CFanLucciAirWestinghouseCasafan::idFromConfiguration(const shared::CDataContainerSharedPtr& configuration) const
+   unsigned long CFanLucciAirWestinghouseCasafan::idFromConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration) const
    {
       return configuration->get<unsigned int>("id");
    }

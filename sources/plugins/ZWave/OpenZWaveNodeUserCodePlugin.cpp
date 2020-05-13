@@ -128,7 +128,7 @@ std::string COpenZWaveNodeUserCodePlugin::getName()
    return ECommandClass::kUserCode;
 }
 
-bool COpenZWaveNodeUserCodePlugin::onExtraQuery(const std::string & query, const shared::CDataContainerSharedPtr& data)
+bool COpenZWaveNodeUserCodePlugin::onExtraQuery(const std::string & query, const boost::shared_ptr<shared::CDataContainer>& data)
 {
    if (boost::iequals(query, "enroll"))
    {

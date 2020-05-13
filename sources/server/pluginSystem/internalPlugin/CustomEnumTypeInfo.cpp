@@ -7,7 +7,7 @@ namespace pluginSystem
    {
       CCustomEnumTypeInfo::CCustomEnumTypeInfo(const std::string& typeName,
                                                const std::vector<std::string>& values)
-         :m_data(new_CDataContainerSharedPtr())
+         :m_data(shared::CDataContainer::make())
       {
          m_data->set("name", typeName);
          if (values.empty())
@@ -19,7 +19,7 @@ namespace pluginSystem
       {
       }
 
-      shared::CDataContainerSharedPtr CCustomEnumTypeInfo::serialize() const
+      boost::shared_ptr<shared::CDataContainer> CCustomEnumTypeInfo::serialize() const
       {
          return m_data;
       }

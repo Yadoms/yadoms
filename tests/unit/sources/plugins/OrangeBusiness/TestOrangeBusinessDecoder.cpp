@@ -11,7 +11,7 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
    BOOST_AUTO_TEST_CASE(DecoderisFrameCompleteEmpty)
    {
       CDecoder decoder;
-      shared::CDataContainer messageRecu;
+      boost::shared_ptr<shared::CDataContainer> messageRecu = shared::CDataContainer::make();
       BOOST_REQUIRE_THROW(decoder.isFrameComplete(messageRecu), shared::exception::CInvalidParameter);
    }
 
@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
       CDecoder decoder;
       auto api(boost::make_shared<CDefaultYPluginApiMock>());
 
-      shared::CDataContainer messageRecu;
+      boost::shared_ptr<shared::CDataContainer> messageRecu = shared::CDataContainer::make();
       BOOST_REQUIRE_THROW(decoder.decodeDevicesMessage(api, messageRecu), shared::exception::CInvalidParameter);
    }
 
@@ -29,10 +29,10 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
       const auto api(boost::make_shared<CDefaultYPluginApiMock>());
       CDecoder decoder;
 
-      shared::CDataContainer messageRecu;
-      messageRecu.set("page", 0);
-      messageRecu.set("size", 20);
-      messageRecu.set("totalCount", 2);
+      boost::shared_ptr<shared::CDataContainer> messageRecu = shared::CDataContainer::make();
+      messageRecu->set("page", 0);
+      messageRecu->set("size", 20);
+      messageRecu->set("totalCount", 2);
 
       shared::CDataContainer device1, device2;
 
@@ -70,9 +70,9 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
       device2.set("creationTs", "2016-06-03T15:20:53.803Z");
       device2.set("updateTs", "2016-06-09T08:04:37.971Z");
       // add the devices
-      messageRecu.createArray("data");
-      messageRecu.appendArray("data", device1);
-      messageRecu.appendArray("data", device2);
+      messageRecu->createArray("data");
+      messageRecu->appendArray("data", device1);
+      messageRecu->appendArray("data", device2);
 
       std::map<std::string, boost::shared_ptr<equipments::IEquipment>> devicesRegistered = decoder.decodeDevicesMessage(api, messageRecu);
       BOOST_CHECK_EQUAL(decoder.isFrameComplete(messageRecu), true);
@@ -144,10 +144,10 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
                   \"created\" : \"2017-04-03T16:05:06.026Z\"\
       } ]";
 
-      shared::CDataContainerSharedPtr messageRecu = new_CDataContainerSharedPtrP(message);
+      boost::shared_ptr<shared::CDataContainer> messageRecu = shared::CDataContainer::make(message);
 
       CDecoder decoder;
-      shared::CDataContainerSharedPtr response = decoder.getLastData(messageRecu);
+      boost::shared_ptr<shared::CDataContainer> response = decoder.getLastData(messageRecu);
 
       BOOST_CHECK_EQUAL(response->get<std::string>("id") == "58e276370cf2cabaf8221840", true);
       BOOST_CHECK_EQUAL(response->get<std::string>("payload") == "03000000000004", true);

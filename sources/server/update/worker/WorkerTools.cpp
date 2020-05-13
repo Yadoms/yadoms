@@ -163,7 +163,7 @@ namespace update
       void CWorkerTools::reportDownloadProgress(const std::string& file, float progress, WorkerProgressFunc callback, const std::string& function,
                                                 float min, float max)
       {
-         shared::CDataContainerSharedPtr callbackData = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
          callbackData->set("file", file);
          callbackData->set("progress", progress);
          //progress is the progression of pure download (from 0 to 100)

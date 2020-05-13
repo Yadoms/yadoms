@@ -4,13 +4,13 @@
 #include <shared/encryption/Xor.h>
 
 CWESConfiguration::CWESConfiguration()
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {}
 
 CWESConfiguration::~CWESConfiguration()
 {}
 
-void CWESConfiguration::initializeWith(const shared::CDataContainerSharedPtr& data)
+void CWESConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_data->initializeWith(data);
 }

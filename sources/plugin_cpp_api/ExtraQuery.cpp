@@ -6,10 +6,10 @@
 namespace plugin_cpp_api
 {
    CExtraQuery::CExtraQuery(const plugin_IPC::toPlugin::ExtraQuery& msg,
-                            boost::function1<void, const shared::CDataContainerSharedPtr&> sucessCallback,
+                            boost::function1<void, const boost::shared_ptr<shared::CDataContainer>&> sucessCallback,
                             boost::function1<void, const std::string&> errorCallback,
                            boost::function2<void, const float, const std::string&> progressionCallback)
-      : m_data(boost::make_shared<CExtraQueryData>(msg.query(), new_CDataContainerSharedPtrP(msg.data()), msg.device())),
+      : m_data(boost::make_shared<CExtraQueryData>(msg.query(), shared::CDataContainer::make(msg.data()), msg.device())),
         m_sucessCallback(sucessCallback),
         m_errorCallback(errorCallback),
         m_progressionCallback(progressionCallback)
@@ -25,7 +25,7 @@ namespace plugin_cpp_api
       return m_data;
    }
 
-   void CExtraQuery::sendSuccess(const shared::CDataContainerSharedPtr& result)
+   void CExtraQuery::sendSuccess(const boost::shared_ptr<shared::CDataContainer>& result)
    {
       m_sucessCallback(result);
    }

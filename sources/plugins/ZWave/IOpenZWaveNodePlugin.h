@@ -28,6 +28,6 @@ public:
 
    virtual std::string getName() = 0;
    
-   virtual bool onExtraQuery(const std::string & query, const shared::CDataContainerSharedPtr &data) = 0;
+   virtual bool onExtraQuery(const std::string & query, const boost::shared_ptr<shared::CDataContainer> &data) = 0;
 };
 

@@ -3,7 +3,7 @@
 #include "../OpenZWaveHelpers.h"
 
 CBoolTypeInfo::CBoolTypeInfo(OpenZWave::ValueID& vID)
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {
    initialize(vID);
 }
@@ -12,7 +12,7 @@ CBoolTypeInfo::~CBoolTypeInfo()
 {
 }
 
-shared::CDataContainerSharedPtr CBoolTypeInfo::serialize() const
+boost::shared_ptr<shared::CDataContainer> CBoolTypeInfo::serialize() const
 {
    return m_data;
 }

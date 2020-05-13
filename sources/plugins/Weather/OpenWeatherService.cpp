@@ -67,7 +67,7 @@ void COpenWeatherService::requestWeather(boost::shared_ptr<const shared::ILocati
    requestForecastWeather(forLocation);
 }
 
-shared::CDataContainerSharedPtr COpenWeatherService::syncRequest(const std::string& url)
+boost::shared_ptr<shared::CDataContainer> COpenWeatherService::syncRequest(const std::string& url)
 {
    try
    {
@@ -105,7 +105,7 @@ void COpenWeatherService::requestLiveWeather(boost::shared_ptr<const shared::ILo
       + "&units=metric"
       + "&lat=" + std::to_string(forLocation->latitude())
       + "&lon=" + std::to_string(forLocation->longitude()));   
-   shared::CDataContainerSharedPtr uvIndexData;
+   boost::shared_ptr<shared::CDataContainer> uvIndexData;
    try
    {
       uvIndexData = syncRequest(uvIndexUrl);
@@ -119,8 +119,8 @@ void COpenWeatherService::requestLiveWeather(boost::shared_ptr<const shared::ILo
                             uvIndexData);
 }
 
-void COpenWeatherService::processLiveWeatherAnswer(const shared::CDataContainerSharedPtr& weatherData,
-                                                   const shared::CDataContainerSharedPtr& uvIndexData) const
+void COpenWeatherService::processLiveWeatherAnswer(const boost::shared_ptr<shared::CDataContainer>& weatherData,
+                                                   const boost::shared_ptr<shared::CDataContainer>& uvIndexData) const
 {
    try
    {
@@ -132,7 +132,7 @@ void COpenWeatherService::processLiveWeatherAnswer(const shared::CDataContainerS
       {
          try
          {
-            weatherDevice.setCondition(toYadomsCondition(weatherData->get<std::vector<shared::CDataContainerSharedPtr>>("weather")[0]->get<int>("id")));
+            weatherDevice.setCondition(toYadomsCondition(weatherData->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("weather")[0]->get<int>("id")));
          }
          catch (const std::out_of_range& exOutOfRange)
          {
@@ -191,7 +191,7 @@ void COpenWeatherService::requestForecastWeather(boost::shared_ptr<const shared:
       + "&units=metric"
       + "&lat=" + std::to_string(forLocation->latitude())
       + "&lon=" + std::to_string(forLocation->longitude()));
-   shared::CDataContainerSharedPtr uvIndexData;
+   boost::shared_ptr<shared::CDataContainer> uvIndexData;
    try
    {
       uvIndexData = syncRequest(uvIndexUrl);
@@ -207,7 +207,7 @@ void COpenWeatherService::requestForecastWeather(boost::shared_ptr<const shared:
 
 void COpenWeatherService::historize3HoursForecast(unsigned int hourIndex,
                                                   const boost::posix_time::ptime& forecastDatetime,
-                                                  const shared::CDataContainerSharedPtr& forecast) const
+                                                  const boost::shared_ptr<shared::CDataContainer>& forecast) const
 {
    CForecastWeatherDevice weatherDevice(getForecastWeatherDeviceNameForHour(hourIndex));
 
@@ -217,7 +217,7 @@ void COpenWeatherService::historize3HoursForecast(unsigned int hourIndex,
    {
       try
       {
-         weatherDevice.setCondition(toYadomsCondition(forecast->get<std::vector<shared::CDataContainerSharedPtr>>("weather")[0]->get<int>("id")));
+         weatherDevice.setCondition(toYadomsCondition(forecast->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("weather")[0]->get<int>("id")));
       }
       catch (const std::out_of_range& exOutOfRange)
       {
@@ -251,7 +251,7 @@ void COpenWeatherService::historize3HoursForecast(unsigned int hourIndex,
    weatherDevice.historize(m_api);
 }
 
-void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<shared::CDataContainerSharedPtr>>& forecastDataByDay,
+void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<boost::shared_ptr<shared::CDataContainer>>>& forecastDataByDay,
                                                 const std::map<int, double>& uvIndexByDay) const
 {
    for (const auto& forecastDataForOneDay:forecastDataByDay)
@@ -287,7 +287,7 @@ void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<
 
          try
          {
-            averageWeatherCondition += toYadomsCondition(forecastData->get<std::vector<shared::CDataContainerSharedPtr>>("weather")[0]->get<int>("id"));
+            averageWeatherCondition += toYadomsCondition(forecastData->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("weather")[0]->get<int>("id"));
             ++averageWeatherConditionDataCount;
          }
          catch (const std::out_of_range& exOutOfRange)
@@ -399,19 +399,19 @@ void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<
    }
 }
 
-void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContainerSharedPtr& weatherData,
-                                                       const shared::CDataContainerSharedPtr& uvIndexData) const
+void COpenWeatherService::processForecastWeatherAnswer(const boost::shared_ptr<shared::CDataContainer>& weatherData,
+                                                       const boost::shared_ptr<shared::CDataContainer>& uvIndexData) const
 {
    try
    {
       YADOMS_LOG(information) << "Location name " << weatherData->get<std::string>("city.name");
 
-      auto forecastDataByDay = std::map<int, std::vector<shared::CDataContainerSharedPtr>>();
+      auto forecastDataByDay = std::map<int, std::vector<boost::shared_ptr<shared::CDataContainer>>>();
       auto uvIndexByDay = std::map<int, double>();
 
       if (weatherData->containsChildArray("list"))
       {
-         const auto& forecasts = weatherData->get<std::vector<shared::CDataContainerSharedPtr>>("list");
+         const auto& forecasts = weatherData->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("list");
 
          unsigned int hourIndex = 0;
          for (const auto& forecast:forecasts)
@@ -436,7 +436,7 @@ void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContai
          }
       }
 
-      for (const auto& dayUvIndex:uvIndexData->get<std::vector<shared::CDataContainerSharedPtr>>())
+      for (const auto& dayUvIndex:uvIndexData->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>())
       {
          auto uvDate = dayUvIndex->get<std::string>("date_iso");
          // Not compliant with Boost

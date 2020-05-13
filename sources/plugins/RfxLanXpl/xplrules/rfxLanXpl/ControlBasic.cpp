@@ -54,7 +54,7 @@ namespace xplrules
             break;
          }
 
-         shared::CDataContainerSharedPtr innerDetails = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> innerDetails = shared::CDataContainer::make();
          innerDetails->set("type", type);
          return CDeviceIdentifier(msg.getBodyValue(m_keywordDevice),
                                   commercialName,
@@ -88,7 +88,7 @@ namespace xplrules
       // ICommandRule implemntation
       boost::shared_ptr<xplcore::CXplMessage> CControlBasic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand>& commandData,
                                                                               const std::string& rfxAddress,
-                                                                              const shared::CDataContainerSharedPtr& innerDetails)
+                                                                              const boost::shared_ptr<shared::CDataContainer>& innerDetails)
       {
          ////////////////////////////
          // create the message

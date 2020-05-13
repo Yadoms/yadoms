@@ -7,13 +7,13 @@ namespace dataAccessLayer
    class CDefaultServerConfiguration
    {
    public:
-      shared::CDataContainerSharedPtr get() const
+      boost::shared_ptr<shared::CDataContainer> get() const
       {
          return m_configuration;
       }
 
       CDefaultServerConfiguration()
-         : m_configuration(new_CDataContainerSharedPtr())
+         : m_configuration(shared::CDataContainer::make())
       {
          m_configuration->set("firstStart", true);
 
@@ -37,7 +37,7 @@ namespace dataAccessLayer
       }
 
    private:
-      const shared::CDataContainerSharedPtr m_configuration;
+      const boost::shared_ptr<shared::CDataContainer> m_configuration;
    };
 
    CConfigurationManager::CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester)
@@ -62,13 +62,13 @@ namespace dataAccessLayer
                         value);
    }
 
-   void CConfigurationManager::notifyServerConfigurationChanged(shared::CDataContainerSharedPtr serverConfiguration)
+   void CConfigurationManager::notifyServerConfigurationChanged(boost::shared_ptr<shared::CDataContainer> serverConfiguration)
    {
       for (const auto& fct : m_onServerConfigurationChangedObservers)
          fct(serverConfiguration);
    }
 
-   shared::CDataContainerSharedPtr CConfigurationManager::getServerConfiguration() const
+   boost::shared_ptr<shared::CDataContainer> CConfigurationManager::getServerConfiguration() const
    {
       try
       {
@@ -116,14 +116,14 @@ namespace dataAccessLayer
       return getConfiguration("databaseVersion");
    }
 
-   void CConfigurationManager::subscribeOnServerConfigurationChanged(boost::function1<void, shared::CDataContainerSharedPtr> onServerConfigurationChangedFct)
+   void CConfigurationManager::subscribeOnServerConfigurationChanged(boost::function1<void, boost::shared_ptr<shared::CDataContainer>> onServerConfigurationChangedFct)
    {
       m_onServerConfigurationChangedObservers.push_back(onServerConfigurationChangedFct);
    }
 
-   shared::CDataContainerSharedPtr CConfigurationManager::getLocation() const
+   boost::shared_ptr<shared::CDataContainer> CConfigurationManager::getLocation() const
    {
-      return getServerConfiguration()->get<shared::CDataContainerSharedPtr>("location");
+      return getServerConfiguration()->get<boost::shared_ptr<shared::CDataContainer>>("location");
    }
 
    void CConfigurationManager::saveAutoDetectedLocation(const shared::CDataContainer& newLocation)
@@ -145,9 +145,9 @@ namespace dataAccessLayer
       notifyServerConfigurationChanged(getServerConfiguration());
    }
 
-   shared::CDataContainerSharedPtr CConfigurationManager::getBasicAuthentication() const
+   boost::shared_ptr<shared::CDataContainer> CConfigurationManager::getBasicAuthentication() const
    {
-      return getServerConfiguration()->get<shared::CDataContainerSharedPtr>("basicAuthentication");
+      return getServerConfiguration()->get<boost::shared_ptr<shared::CDataContainer>>("basicAuthentication");
    }
 
    std::string CConfigurationManager::getConfiguration(const std::string& section) const

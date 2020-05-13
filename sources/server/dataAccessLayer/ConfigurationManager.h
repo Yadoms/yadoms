@@ -14,14 +14,14 @@ namespace dataAccessLayer
       std::string getExternalConfiguration(const std::string& section) const override;
       void saveExternalConfiguration(const std::string& section,
                                      const shared::CDataContainer& value) override;
-      shared::CDataContainerSharedPtr getServerConfiguration() const override;
+      boost::shared_ptr<shared::CDataContainer> getServerConfiguration() const override;
       void saveServerConfiguration(const shared::CDataContainer& newConfiguration) override;
       void resetServerConfiguration() override;
       std::string getDatabaseVersion() const override;
-      void subscribeOnServerConfigurationChanged(boost::function1<void, shared::CDataContainerSharedPtr > onServerConfigurationChangedFct) override;
-      shared::CDataContainerSharedPtr getLocation() const override;
+      void subscribeOnServerConfigurationChanged(boost::function1<void, boost::shared_ptr<shared::CDataContainer> > onServerConfigurationChangedFct) override;
+      boost::shared_ptr<shared::CDataContainer> getLocation() const override;
       void saveAutoDetectedLocation(const shared::CDataContainer& newLocation) override;
-      shared::CDataContainerSharedPtr getBasicAuthentication() const override;
+      boost::shared_ptr<shared::CDataContainer> getBasicAuthentication() const override;
       // [END] - IConfigurationManager implementation
 
    protected:
@@ -29,14 +29,14 @@ namespace dataAccessLayer
       void saveConfiguration(const std::string& section,
                              const shared::CDataContainer& value) const;
 
-      void notifyServerConfigurationChanged(shared::CDataContainerSharedPtr serverConfiguration);
+      void notifyServerConfigurationChanged(boost::shared_ptr<shared::CDataContainer> serverConfiguration);
 
    private:
       boost::shared_ptr<database::IConfigurationRequester> m_configurationRequester;
       mutable boost::recursive_mutex m_configurationMutex;
 
-      const shared::CDataContainerSharedPtr m_defaultServerConfiguration;
+      const boost::shared_ptr<shared::CDataContainer> m_defaultServerConfiguration;
 
-      std::vector<boost::function1<void, shared::CDataContainerSharedPtr>> m_onServerConfigurationChangedObservers;
+      std::vector<boost::function1<void, boost::shared_ptr<shared::CDataContainer>>> m_onServerConfigurationChangedObservers;
    };
 } //namespace dataAccessLayer 

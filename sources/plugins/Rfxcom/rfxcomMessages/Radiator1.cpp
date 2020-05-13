@@ -11,7 +11,7 @@ namespace rfxcomMessages
    CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& keyword,
                           const std::string& command,
-                          const shared::CDataContainerSharedPtr& deviceDetails)
+                          const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
         m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
@@ -45,7 +45,7 @@ namespace rfxcomMessages
    CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const std::string& name,
-                          const shared::CDataContainerSharedPtr& manuallyDeviceCreationConfiguration)
+                          const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_dayNightCmd(false),
         m_day(boost::make_shared<yApi::historization::CSwitch>("day")),

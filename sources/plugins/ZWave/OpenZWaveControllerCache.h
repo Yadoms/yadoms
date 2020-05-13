@@ -36,7 +36,7 @@ public:
    /// \param [in] nodeId  The node ID
    /// \param [in] info    The device info container
    //--------------------------------------------------------------
-   void AddDeviceInfo(const std::string & device, shared::CDataContainerSharedPtr& info);
+   void AddDeviceInfo(const std::string & device, boost::shared_ptr<shared::CDataContainer>& info);
    void UpdateDeviceState(const std::string & device, shared::plugin::yPluginApi::historization::EDeviceState & state);
 
 public:
@@ -44,11 +44,11 @@ public:
 	{
 	public:
 		CDeviceInfoAndState()
-         :m_deviceInfo(new_CDataContainerSharedPtr())
+         :m_deviceInfo(shared::CDataContainer::make())
 		{
 		}
 
-		CDeviceInfoAndState(shared::CDataContainerSharedPtr deviceInfo, shared::plugin::yPluginApi::historization::EDeviceState deviceState)
+		CDeviceInfoAndState(boost::shared_ptr<shared::CDataContainer> deviceInfo, shared::plugin::yPluginApi::historization::EDeviceState deviceState)
 			:m_deviceInfo(deviceInfo), m_deviceState(deviceState)
 		{
 		}
@@ -57,13 +57,13 @@ public:
 		{
 		}
 
-		shared::CDataContainerSharedPtr& getDeviceInfo() { return m_deviceInfo; }
-		void setDeviceInfo(shared::CDataContainerSharedPtr&deviceInfo) { m_deviceInfo = deviceInfo; }
+		boost::shared_ptr<shared::CDataContainer>& getDeviceInfo() { return m_deviceInfo; }
+		void setDeviceInfo(boost::shared_ptr<shared::CDataContainer>&deviceInfo) { m_deviceInfo = deviceInfo; }
 
 		shared::plugin::yPluginApi::historization::EDeviceState& getDeviceState() { return m_deviceState; }
 		void setDeviceState(shared::plugin::yPluginApi::historization::EDeviceState &deviceState) { m_deviceState = deviceState; }
 	private:
-		shared::CDataContainerSharedPtr m_deviceInfo;
+		boost::shared_ptr<shared::CDataContainer> m_deviceInfo;
 		shared::plugin::yPluginApi::historization::EDeviceState m_deviceState;
 	};
 

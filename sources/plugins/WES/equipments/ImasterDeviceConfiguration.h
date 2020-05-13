@@ -18,7 +18,7 @@ public:
    /// \brief      Load configuration data
    /// \param [in] data The new configuration
    //--------------------------------------------------------------
-   virtual void initializeWith(const shared::CDataContainerSharedPtr& data) = 0;
+   virtual void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data) = 0;
 
    //--------------------------------------------------------------
    /// \brief      retrieve the IP address with the port from the configuration

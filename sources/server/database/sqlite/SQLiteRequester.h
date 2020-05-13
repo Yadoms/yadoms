@@ -18,7 +18,7 @@ namespace database
          // IDatabaseEngine implementation
          void initialize() override;
          void finalize() override;
-         shared::CDataContainerSharedPtr getInformation() override;
+         boost::shared_ptr<shared::CDataContainer> getInformation() override;
          // [END] IDatabaseEngine implementation
 
          // IDatabaseRequester implementation

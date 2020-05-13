@@ -249,9 +249,9 @@ namespace database
          closeAllConnections();
       }
 
-      shared::CDataContainerSharedPtr CPgsqlRequester::getInformation()
+      boost::shared_ptr<shared::CDataContainer> CPgsqlRequester::getInformation()
       {
-         shared::CDataContainerSharedPtr results = new_CDataContainerSharedPtr();
+         boost::shared_ptr<shared::CDataContainer> results = shared::CDataContainer::make();
          try
          {
             results->set("type", "PostgreSQL");
