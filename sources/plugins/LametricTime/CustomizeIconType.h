@@ -7,10 +7,12 @@ namespace specificHistorizers
 {
 	DECLARE_ENUM_HEADER(ECustomizeIconType,
 	                    ((Battery))
+	                    ((Email))
 	);
 
 	class CCustomizeIconType : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<ECustomizeIconType>
 	{
+	public:
 		CCustomizeIconType(const std::string& keywordName);
 		virtual ~CCustomizeIconType();
 	};

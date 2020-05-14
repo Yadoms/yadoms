@@ -6,6 +6,7 @@ namespace specificHistorizers
 {
 	DECLARE_ENUM_IMPLEMENTATION(ECustomizeIconType,
 	                            ((Battery))
+	                            ((Email))
 
 	);
 
@@ -24,4 +25,4 @@ namespace specificHistorizers
 	CCustomizeIconType::~CCustomizeIconType()
 	{
 	}
-}// namespace specificHistorizers
+} // namespace specificHistorizers
