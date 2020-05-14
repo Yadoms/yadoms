@@ -23,7 +23,8 @@ enum
 
 CLametricTime::CLametricTime()
 	: m_text(boost::make_shared<yApi::historization::CText>(TextKeywordName,
-	                                                        yApi::EKeywordAccessMode::kGetSet))
+	                                                        yApi::EKeywordAccessMode::kGetSet)),
+	  m_iconType(boost::make_shared<specificHistorizers::CCustomizeIconType>("iconType"))
 {
 }
 
@@ -123,6 +124,8 @@ void CLametricTime::declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api,
 	// TODO : Declare icon & priority keywords
 	if (!api->keywordExists(deviceInformation->m_deviceName, m_text))
 		api->declareKeyword(deviceInformation->m_deviceName, m_text);
+	if (!api->keywordExists(deviceInformation->m_deviceName, m_iconType))
+		api->declareKeyword(deviceInformation->m_deviceName, m_iconType);
 }
 
 boost::shared_ptr<DeviceInformation> CLametricTime::fillDeviceInformationManually() const
