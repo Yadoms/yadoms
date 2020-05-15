@@ -246,7 +246,7 @@ struct queryhelper<shared::CDataContainer>
 {
    static std::string format(CQuery* obj, const shared::CDataContainer& anyValue)
    {
-      return anyValue.serialize();
+      return obj->formatStringToSql(anyValue.serialize());
    }
 };
 
@@ -258,7 +258,7 @@ struct queryhelper<boost::shared_ptr<shared::CDataContainer>>
 {
    static std::string format(CQuery* obj, const boost::shared_ptr<shared::CDataContainer>& anyValue)
    {
-      return anyValue->serialize();
+      return obj->formatStringToSql(anyValue->serialize());
    }
 };
 
