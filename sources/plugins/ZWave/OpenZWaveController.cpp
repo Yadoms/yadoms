@@ -734,7 +734,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    }
    case OpenZWave::Notification::Type_UserAlerts:
    {
-      boost::shared_ptr<shared::CDataContainer> alert;
+      boost::shared_ptr<shared::CDataContainer> alert = shared::CDataContainer::make();
 
       std::string alertContent;
       shared::CDataContainer alertData;

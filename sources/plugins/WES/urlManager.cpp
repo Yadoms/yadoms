@@ -14,12 +14,11 @@ boost::shared_ptr<shared::CDataContainer> urlManager::readFileState(
 {
    std::stringstream url;
    boost::shared_ptr<shared::CDataContainer> noParameters = shared::CDataContainer::make();
-   boost::shared_ptr<shared::CDataContainer> response;
 
    // create the URL
    url << "http://" << socket.toString() << "/WEBPROG/CGX/YADOMS/" + file;
    YADOMS_LOG(trace) << "URL : " << url.str();
-   response =  http::CHttpMethods::SendGetRequest(url.str(), credentials,  noParameters, context, timeout);
+   boost::shared_ptr<shared::CDataContainer> response =  http::CHttpMethods::SendGetRequest(url.str(), credentials,  noParameters, context, timeout);
    return response;
 }
 

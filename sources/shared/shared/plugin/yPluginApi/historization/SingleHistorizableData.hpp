@@ -217,7 +217,7 @@ namespace shared
 
                   static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return boost::make_shared<shared::CDataContainer>();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -234,7 +234,7 @@ namespace shared
 
                   static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return boost::make_shared<shared::CDataContainer>();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -252,7 +252,7 @@ namespace shared
 
                   static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return boost::make_shared<shared::CDataContainer>();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -276,7 +276,7 @@ namespace shared
 
                   static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return boost::make_shared<shared::CDataContainer>();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -302,7 +302,7 @@ namespace shared
 
                   static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return boost::make_shared<shared::CDataContainer>();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -337,7 +337,7 @@ namespace shared
 
                   static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return boost::make_shared<shared::CDataContainer>();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -354,7 +354,7 @@ namespace shared
 
                   static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return boost::make_shared<shared::CDataContainer>();
+                     return shared::CDataContainer::make();
                   }
                };
             };

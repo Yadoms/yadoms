@@ -2,7 +2,11 @@
 #include "urlManagerMock.h"
 
 urlManagerMock::urlManagerMock()
-{}
+:  RegisteredEquipments(shared::CDataContainer::make()), 
+   DeviceInformation(shared::CDataContainer::make()),
+   DeviceMessages(shared::CDataContainer::make())
+{
+}
 
 boost::shared_ptr<shared::CDataContainer> urlManagerMock::getRegisteredEquipments(const std::string &apikey,
                                                                const int page,

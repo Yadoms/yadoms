@@ -19,7 +19,8 @@ namespace rfxcomMessages
         m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
         m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
         m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
-        m_keywords({m_onOff, m_flame, m_fan1, m_fan1AutoMode, m_fan2, m_fan2AutoMode, m_fan3, m_fan3AutoMode})
+        m_keywords({m_onOff, m_flame, m_fan1, m_fan1AutoMode, m_fan2, m_fan2AutoMode, m_fan3, m_fan3AutoMode}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       if (boost::iequals(keyword, m_onOff->getKeyword()))
       {
@@ -58,7 +59,8 @@ namespace rfxcomMessages
         m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
         m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
         m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
-        m_keywords({m_onOff, m_flame, m_fan1, m_fan1AutoMode})
+        m_keywords({m_onOff, m_flame, m_fan1, m_fan1AutoMode}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_onOff->set(false);
       m_flame->set(0);
@@ -98,7 +100,8 @@ namespace rfxcomMessages
         m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
         m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
         m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
-        m_keywords({m_onOff, m_flame})
+        m_keywords({m_onOff, m_flame}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_subType = 0;
       m_unitCode = 0;

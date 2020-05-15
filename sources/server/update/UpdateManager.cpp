@@ -318,7 +318,7 @@ namespace update
             if (v == localVersion)
                continue;
 
-            boost::shared_ptr<shared::CDataContainer> versionData;
+            boost::shared_ptr<shared::CDataContainer> versionData = shared::CDataContainer::make();
             versionData->set("downloadUrl", version->get<std::string>("downloadUrl"));
             versionData->set("md5Hash", version->get<std::string>("md5Hash"));
 
@@ -407,7 +407,7 @@ namespace update
                      if (!checkDependencies(version))
                         continue;
 
-                     boost::shared_ptr<shared::CDataContainer> versionData;
+                     boost::shared_ptr<shared::CDataContainer> versionData = shared::CDataContainer::make();
                      versionData->set("downloadUrl", version->get<std::string>("downloadUrl"));
 
                      if (v < localVersion.second->getVersion())

@@ -44,7 +44,7 @@ namespace shared
                {
                   static boost::shared_ptr<CDataContainer> getTypeInfo()
                   {
-                     return boost::make_shared<shared::CDataContainer>();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -53,7 +53,7 @@ namespace shared
                {
                   static boost::shared_ptr<CDataContainer> getTypeInfo()
                   {
-                     boost::shared_ptr<CDataContainer> result = boost::make_shared<shared::CDataContainer>();
+                     boost::shared_ptr<CDataContainer> result = shared::CDataContainer::make();
                      T value; //extended enum are ctor parameterless
                      result->set("name", value.getName());
                      result->set("values", value.getAllStrings());

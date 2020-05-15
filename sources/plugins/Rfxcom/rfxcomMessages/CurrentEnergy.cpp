@@ -90,7 +90,7 @@ namespace rfxcomMessages
 
    void CCurrentEnergy::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      boost::shared_ptr<shared::CDataContainer> details;
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       details->set("type", pTypeCURRENTENERGY);
       details->set("subType", m_subType);
       details->set("id", m_id);

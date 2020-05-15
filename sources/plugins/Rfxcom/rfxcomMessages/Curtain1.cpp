@@ -11,7 +11,8 @@ namespace rfxcomMessages
    CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api,
                         const std::string& command,
                         const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
-      : m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+      : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_state->setCommand(command);
 
@@ -33,7 +34,8 @@ namespace rfxcomMessages
         m_houseCode(0),
         m_unitCode(0),
         m_deviceName(name),
-        m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+        m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
 
@@ -55,7 +57,8 @@ namespace rfxcomMessages
       : m_subType(0),
         m_houseCode(0),
         m_unitCode(0),
-        m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+        m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       // Should not be called (transmitter-only device)
       throw std::logic_error("Constructing Curtain1 object from received buffer is not possible, Curtain1 is transmitter-only device");

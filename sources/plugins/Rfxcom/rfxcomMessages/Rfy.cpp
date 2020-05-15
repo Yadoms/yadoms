@@ -13,7 +13,8 @@ namespace rfxcomMessages
               const std::string& command,
               const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
-        m_keywords{m_state}
+        m_keywords{m_state},
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_state->setCommand(command);
 
@@ -33,7 +34,8 @@ namespace rfxcomMessages
               const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
-        m_keywords{m_state}
+        m_keywords{m_state},
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
 
@@ -63,7 +65,8 @@ namespace rfxcomMessages
         m_unitCode(0),
         m_id(0),
         m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
-        m_keywords{m_state}
+        m_keywords{m_state},
+        m_deviceDetails(shared::CDataContainer::make())
    {
       // Should not be called (transmitter-only device)
       throw std::logic_error("Constructing CRfy object from received buffer is not possible, CRfy is transmitter-only device");

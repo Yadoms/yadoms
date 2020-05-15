@@ -12,7 +12,8 @@ namespace rfxcomMessages
                           boost::shared_ptr<const yApi::IDeviceCommand> command,
                           const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_signalPower})
+        m_keywords({m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_subType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType"));
       m_houseCode = (m_subType == sTypeKambrook) ? static_cast<unsigned char>(deviceDetails->get<unsigned int>("houseCode")) : 0;
@@ -34,7 +35,8 @@ namespace rfxcomMessages
                           const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_signalPower})
+        m_keywords({m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_subType = static_cast<unsigned char>(subType);
       m_houseCode = m_subType == sTypeKambrook ? (manuallyDeviceCreationConfiguration->get<char>("houseCode", 0) - 'A') : 0;
@@ -61,7 +63,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_signalPower})
+        m_keywords({m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

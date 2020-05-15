@@ -22,7 +22,8 @@ namespace rfxcomMessages
                           const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_batteryLevel, m_signalPower})
+        m_keywords({m_batteryLevel, m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_batteryLevel->set(100);
       m_signalPower->set(0);
@@ -43,7 +44,8 @@ namespace rfxcomMessages
       : m_deviceName(name),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_batteryLevel, m_signalPower})
+        m_keywords({m_batteryLevel, m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_batteryLevel->set(100);
       m_signalPower->set(0);
@@ -65,7 +67,8 @@ namespace rfxcomMessages
       : m_messageFilter(messageFilter),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_batteryLevel, m_signalPower})
+        m_keywords({m_batteryLevel, m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

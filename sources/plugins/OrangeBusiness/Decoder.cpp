@@ -52,7 +52,7 @@ bool CDecoder::isFrameComplete(boost::shared_ptr<shared::CDataContainer>& messag
 boost::shared_ptr<shared::CDataContainer> CDecoder::getLastData(boost::shared_ptr<shared::CDataContainer>& response)
 {
    auto messages = response->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("");
-   boost::shared_ptr<shared::CDataContainer> lastData = boost::make_shared<shared::CDataContainer>();
+   boost::shared_ptr<shared::CDataContainer> lastData = shared::CDataContainer::make();
 
    if (!messages.empty())
    {

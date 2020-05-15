@@ -13,7 +13,8 @@ namespace rfxcomMessages
                   const std::string& command,
                   const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_signalPower})
+        m_keywords({m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_signalPower->set(0);
 
@@ -32,7 +33,8 @@ namespace rfxcomMessages
                   const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_signalPower})
+        m_keywords({m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_signalPower->set(0);
 
@@ -50,7 +52,8 @@ namespace rfxcomMessages
                   const RBUF& rbuf,
                   size_t rbufSize)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_signalPower})
+        m_keywords({m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

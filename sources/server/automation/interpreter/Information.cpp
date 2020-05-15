@@ -8,7 +8,7 @@ namespace automation
    {
       CInformation::CInformation(const boost::filesystem::path& interpreterPath)
          : m_isSupportedOnThisPlatform(true),
-           m_package(boost::make_shared<shared::CDataContainer>()),
+           m_package(shared::CDataContainer::make()),
            m_path(interpreterPath)
       {
          try

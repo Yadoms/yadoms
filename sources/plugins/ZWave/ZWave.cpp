@@ -430,7 +430,7 @@ void CZWave::onEventUpdateConfiguration(const boost::shared_ptr<yApi::IYPluginAp
 
 void CZWave::onDeclareDevice(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
-   boost::shared_ptr<shared::CDataContainer> deviceData;
+   boost::shared_ptr<shared::CDataContainer> deviceData = shared::CDataContainer::make();
    try
    {
       deviceData = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();

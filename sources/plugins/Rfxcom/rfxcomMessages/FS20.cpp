@@ -29,7 +29,8 @@ namespace rfxcomMessages
                 const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower})
+        m_keywords({m_state , m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_state->set(command);
       m_signalPower->set(0);
@@ -52,7 +53,8 @@ namespace rfxcomMessages
       : m_deviceName(name),
         m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower})
+        m_keywords({m_state , m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_state->set(0);
       m_signalPower->set(0);
@@ -82,7 +84,8 @@ namespace rfxcomMessages
                 size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower})
+        m_keywords({m_state , m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

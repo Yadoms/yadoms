@@ -84,7 +84,8 @@ namespace rfxcomMessages
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state, m_batteryLevel, m_signalPower})
+        m_keywords({m_state, m_batteryLevel, m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

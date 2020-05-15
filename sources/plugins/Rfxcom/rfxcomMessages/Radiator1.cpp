@@ -15,7 +15,8 @@ namespace rfxcomMessages
       : m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
         m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_day , m_setPoint , m_signalPower})
+        m_keywords({m_day , m_setPoint , m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       if (boost::iequals(keyword, m_day->getKeyword()))
       {
@@ -51,7 +52,8 @@ namespace rfxcomMessages
         m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
         m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_day , m_setPoint , m_signalPower})
+        m_keywords({m_day , m_setPoint , m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_day->set(false);
       m_setPoint->set(0.0);
@@ -84,7 +86,8 @@ namespace rfxcomMessages
         m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
         m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_day , m_setPoint , m_signalPower})
+        m_keywords({m_day , m_setPoint , m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       // Should not be called (transmitter-only device)
       throw std::logic_error("Constructing CRadiator1 object from received buffer is not possible, CRadiator1 is transmitter-only device");
