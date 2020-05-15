@@ -76,10 +76,12 @@ def checkLocalRuleLogById(id, expectedLog):
       for line in ruleFile:
          # Remove date/time for comparison
          readLog.append(re.sub("\w{3}, \d{2}:\d{2}:\d{2} : ", "", line))
-         
+      
    if (readLog != expectedLog):
-      print ('>>>>>>>>>>> Read log     : {readLog}')
-      print ('>>>>>>>>>>> Expected log : {expectedLog}')
+      print ('>>>>>>>>>>> Read log : ')
+      print (readLog)
+      print ('>>>>>>>>>>> Expected log : ')
+      print (expectedLog)
       return False         
 
    return True
