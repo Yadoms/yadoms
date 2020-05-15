@@ -32,6 +32,8 @@ set(LAMETRICTIME_PLUGIN_SOURCES
 	HttpResponseHelper.h
 	CustomizeIconType.cpp
 	CustomizeIconType.h
+	CustomizeIconHelper.cpp
+	CustomizeIconHelper.h
 )
 
 #########################################

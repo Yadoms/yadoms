@@ -7,6 +7,7 @@ namespace specificHistorizers
 	DECLARE_ENUM_IMPLEMENTATION(ECustomizeIconType,
 	                            ((Battery))
 	                            ((Email))
+	                            ((None))
 
 	);
 
