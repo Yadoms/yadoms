@@ -6,8 +6,20 @@
 namespace specificHistorizers
 {
 	DECLARE_ENUM_HEADER(ECustomizeIconType,
-	                    ((Battery))
 	                    ((Email))
+	                    ((Battery100))
+	                    ((Battery80))
+	                    ((Battery60))
+	                    ((Battery40))
+	                    ((Battery20))
+	                    ((BatteryLowAnimated))
+	                    ((ThermometerLow))
+	                    ((ThermometerOutdoor))
+	                    ((ThermometerAnimated))
+	                    ((WaterDrop))
+	                    ((WaterDropAnimated))
+	                    ((Sun))
+	                    ((CloudySunAnimated))
 	                    ((None))
 	);
 
