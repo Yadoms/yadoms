@@ -8,11 +8,12 @@
 #include "NotificationSender.h"
 #include "CFactory.h"
 
+
 IMPLEMENT_PLUGIN(CLametricTime)
 
 const std::string CLametricTime::DeviceName("LaMetric Time");
 const std::string CLametricTime::TextKeywordName("Message");
-
+const std::string CLametricTime::IconTypeName("iconType");
 // Event IDs
 enum
 {
@@ -24,7 +25,7 @@ enum
 CLametricTime::CLametricTime()
 	: m_text(boost::make_shared<yApi::historization::CText>(TextKeywordName,
 	                                                        yApi::EKeywordAccessMode::kGetSet)),
-	  m_iconType(boost::make_shared<specificHistorizers::CCustomizeIconType>("iconType"))
+	  m_iconType(boost::make_shared<specificHistorizers::CCustomizeIconType>(IconTypeName))
 {
 }
 
@@ -75,9 +76,16 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 					api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
 				YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
-				if (boost::iequals(command->getDevice(), deviceInformation->m_deviceName))
+				auto commandBody = command->getBody();
+				
+				if(command->getKeyword() == IconTypeName)
 				{
-					m_senderManager->displayText(command->getBody());
+					m_senderManager->setCustomizeIcon(commandBody);
+				}
+			
+				if (boost::iequals(command->getDevice(), deviceInformation->m_deviceName) && command->getKeyword() != IconTypeName)
+				{
+					m_senderManager->displayText(commandBody);
 				}
 
 				break;

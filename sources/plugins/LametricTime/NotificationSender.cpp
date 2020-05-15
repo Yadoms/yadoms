@@ -2,7 +2,9 @@
 #include "shared/http/HttpMethods.h"
 #include "shared/Log.h"
 #include "shared/http/HttpException.hpp"
+#include "CustomizeIconHelper.h"
 
+const std::string CNotificationSender::IconTypeName("iconType");
 CNotificationSender::CNotificationSender(CConfiguration& lametricConfiguration)
 	: m_configuration(lametricConfiguration)
 {
@@ -50,20 +52,21 @@ void CNotificationSender::displayText(const std::string& text,
 }
 
 std::string CNotificationSender::buildMessageBody(const std::string& priorityMessage, const std::string& iconToDisplay,
-                                                  const std::string& text)
+                                                  const std::string& text) const
 {
+	std::string secondFrameIcon = !getCustomizeIcon().empty() ? m_customizeIcon : CCustomizeIconHelper::YadomsIcon;
 	shared::CDataContainer body;
 	body.set("prority", priorityMessage);
 	body.set("icon_type", iconToDisplay);
 
 	shared::CDataContainer frame1;
 	frame1.set("text", "Yadoms");
-	frame1.set("icon", "i31581");
+	frame1.set("icon", CCustomizeIconHelper::YadomsIcon);
 	frame1.set("index", 0);
 
 	shared::CDataContainer frame2;
 	frame2.set("text", text);
-	frame2.set("icon", "i31581");
+	frame2.set("icon", secondFrameIcon);
 
 	std::vector<shared::CDataContainer> frames;
 	frames.push_back(frame1);
@@ -75,4 +78,14 @@ std::string CNotificationSender::buildMessageBody(const std::string& priorityMes
 	body.set("model", model);
 
 	return body.serialize();
+}
+
+void CNotificationSender::setCustomizeIcon(std::string& customizeIcon)
+{
+	m_customizeIcon = CCustomizeIconHelper::getIconType(customizeIcon);;
+}
+
+std::string CNotificationSender::getCustomizeIcon() const
+{
+	return m_customizeIcon;
 }
