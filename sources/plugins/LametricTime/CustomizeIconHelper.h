@@ -22,4 +22,6 @@ public:
 	const static std::string WaterDropAnimatedIcon;
 	const static std::string SunIcon;
 	const static std::string CloudySunAnimatedIcon;
+	const static std::string BeerIcon;
+	const static std::string BeerAnimatedIcon;
 };

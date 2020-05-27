@@ -15,12 +15,22 @@ const std::string CCustomizeIconHelper::WaterDropIcon("8990");
 const std::string CCustomizeIconHelper::WaterDropAnimatedIcon("12989");
 const std::string CCustomizeIconHelper::SunIcon("13189");
 const std::string CCustomizeIconHelper::CloudySunAnimatedIcon("8756");
+const std::string CCustomizeIconHelper::BeerIcon("3253");
+const std::string CCustomizeIconHelper::BeerAnimatedIcon("9676");
 
 std::string CCustomizeIconHelper::getIconType(std::string& iconType)
 {
 	if (iconType == specificHistorizers::ECustomizeIconType::kYadoms.toString())
 	{
 		return YadomsIcon;
+	}
+	if (iconType == specificHistorizers::ECustomizeIconType::kBeer.toString())
+	{
+		return BeerIcon;
+	}
+	if (iconType == specificHistorizers::ECustomizeIconType::kBeerAnimated.toString())
+	{
+		return BeerAnimatedIcon;
 	}
 	if (iconType == specificHistorizers::ECustomizeIconType::kEmail.toString())
 	{
