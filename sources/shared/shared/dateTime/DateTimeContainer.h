@@ -20,13 +20,13 @@ namespace shared { namespace dateTime {
       /// \brief	Constructor
       /// \param [in]   time  The initialization value
       //--------------------------------------------------------------
-      explicit CDateTimeContainer(boost::posix_time::ptime & time);
+      explicit CDateTimeContainer(const boost::posix_time::ptime & time);
 
       //--------------------------------------------------------------
       /// \brief	Constructor
       /// \param [in]   time  The initialization value
       //--------------------------------------------------------------
-      explicit CDateTimeContainer(Poco::DateTime & time);
+      explicit CDateTimeContainer(const Poco::DateTime & time);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

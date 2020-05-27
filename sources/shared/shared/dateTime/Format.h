@@ -15,13 +15,13 @@ namespace shared { namespace dateTime {
 		/// \brief	Format a Poco time with given format 
 		/// \return	a string
 		//--------------------------------------------------------------
-		static std::string format(Poco::DateTime& time, const std::string& boostFormat);
+		static std::string format(const Poco::DateTime& time, const std::string& boostFormat);
 
 		//--------------------------------------------------------------
 		/// \brief	Format a boost time with given format 
 		/// \return	a string
 		//--------------------------------------------------------------
-		static std::string format(boost::posix_time::ptime& time, const std::string& boostFormat);
+		static std::string format(const boost::posix_time::ptime& time, const std::string& boostFormat);
 
 		//--------------------------------------------------------------
 		/// \brief	Format a the NOW dataTime with given format 
