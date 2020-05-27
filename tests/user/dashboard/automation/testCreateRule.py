@@ -69,7 +69,7 @@ class CreateRule(unittest.TestCase):
           "",
           "def yMain(yApi):",
           "   while(True):",
-          "      print 'Some log entry...'",
+          "      print ('Some log entry...')",
           "      while(True):",
           "         time.sleep(1)"],
          lambda ruleName, ruleDescription, ruleCode: self.checkCreateOkRule(ruleName, ruleDescription, ruleCode,
@@ -120,13 +120,13 @@ class CreateRule(unittest.TestCase):
           "",
           "def yMain(yApi):",
           "   while(True)",
-          "      print 'Some log entry...'",
+          "      print ('Some log entry...')",
           "      while(True):",
           "         time.sleep(1)"],
          lambda ruleName, ruleDescription, ruleCode: self.checkCreateErroneousRule(ruleName, ruleDescription, ruleCode,
             ['[Information] : #### START ####\n',
              '[Error] : Traceback (most recent call last):\n',
-             '[Error] :   File "scriptCaller.py", line 36, in <module>\n',
+             '[Error] :   File "scriptCaller.py", line 38, in <module>\n',
              '[Error] :     script = __import__(scriptModule)\n',
              '[Error] :   File "' + os.path.abspath(scripts.ruleFullPath(1)) + '", line 4\n',
              '[Error] :     while(True)\n',
@@ -146,7 +146,7 @@ class CreateRule(unittest.TestCase):
       newRuleModal = dashboard.automation.waitNewRuleModal(self.browser)
       
       print ('Select code')
-      newRuleModal.getEditorSelectionButton('code.yPython27').click()
+      newRuleModal.getEditorSelectionButton('code.yPython3').click()
 
       print ('Configure rule')
       editRuleModal = dashboard.automation.waitEditRuleModal(self.browser)

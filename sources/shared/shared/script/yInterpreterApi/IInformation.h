@@ -14,12 +14,7 @@ namespace shared
          class IInformation
          {
          public:
-            //--------------------------------------------------------------
-            /// \brief	    Destructor
-            //--------------------------------------------------------------
-            virtual ~IInformation()
-            {
-            }
+            virtual ~IInformation() = default;
 
             //--------------------------------------------------------------
             /// \brief	    get the interpreter type
