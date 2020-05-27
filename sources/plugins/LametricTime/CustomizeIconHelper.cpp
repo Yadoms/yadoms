@@ -8,7 +8,7 @@ const std::string CCustomizeIconHelper::Battery60Icon("6356");
 const std::string CCustomizeIconHelper::Battery40Icon("6355");
 const std::string CCustomizeIconHelper::Battery20Icon("6354");
 const std::string CCustomizeIconHelper::BatteryLowAnimatedIcon("12123");
-const std::string CCustomizeIconHelper::ThermometerLowIcon("26776");
+const std::string CCustomizeIconHelper::ThermometerLowIcon("37833");
 const std::string CCustomizeIconHelper::ThermometerOutdoorIcon("21180");
 const std::string CCustomizeIconHelper::ThermometerAnimatedIcon("12144");
 const std::string CCustomizeIconHelper::WaterDropIcon("8990");
