@@ -2,7 +2,6 @@
 #include "task/ITask.h"
 #include "ExportData.h"
 #include <Poco/Zip/Compress.h>
-#include <shared/currentTime/Provider.h>
 #include <Poco/Zip/ZipException.h>
 #include <Poco/Delegate.h>
 #include "i18n/ClientStrings.h"
@@ -16,9 +15,11 @@ namespace task
       std::string CExportData::m_taskName = "exportData";
 
       CExportData::CExportData(boost::shared_ptr<const IPathProvider> pathProvider,
+                               boost::shared_ptr<database::IKeywordRequester> keywordRequester,
                                boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                                int keywordId)
          : m_pathProvider(pathProvider),
+           m_keywordRequester(keywordRequester),
            m_acquisitionRequester(acquisitionRequester),
            m_keywordId(keywordId)
       {
@@ -33,7 +34,7 @@ namespace task
                                                      const std::string& message) const
       {
          if (m_reportRealProgress)
-            m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::EmptyContainer);
+            m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::make());
       }
 
       void CExportData::doWork(TaskProgressFunc functor)
@@ -95,24 +96,36 @@ namespace task
          outfile << "keyword,date,value";
 
          // Data lines
-         m_acquisitionRequester->exportAcquisitions(m_keywordId,
-                                                    [this, &outfile, &nbLinesDone](const boost::posix_time::ptime& date,
-                                                                                   const std::string& value,
-                                                                                   const int nbTotalLines)
-                                                    {
-                                                       outfile << std::endl << m_keywordId << "," << date << "," << value;
+         static const auto TotalPercentToExportAcquisition = 70.0;
+         const auto keywords = m_keywordRequester->getKeyword(m_keywordId);
+         if (keywords->HistoryDepth() == shared::plugin::yPluginApi::EHistoryDepth::kNoHistory)
+         {
+            outfile << std::endl << m_keywordId << "," << keywords->LastAcquisitionDate() << "," << keywords->LastAcquisitionValue();
 
-                                                       // Progress from 0 to 70 for this step
-                                                       ++nbLinesDone;
-                                                       const auto progress = nbLinesDone * 70 / nbTotalLines;
-                                                       static auto lastProgressSent = -1;
-                                                       if (progress != lastProgressSent)
+            onProgressionUpdatedInternal(TotalPercentToExportAcquisition,
+                                         i18n::CClientStrings::ExportDataCreateFile);
+         }
+         else
+         {
+            m_acquisitionRequester->exportAcquisitions(m_keywordId,
+                                                       [this, &outfile, &nbLinesDone](const boost::posix_time::ptime& date,
+                                                                                      const std::string& value,
+                                                                                      const int nbTotalLines)
                                                        {
-                                                          lastProgressSent = progress;
-                                                          onProgressionUpdatedInternal(static_cast<float>(progress),
-                                                                                       i18n::CClientStrings::ExportDataCreateFile);
-                                                       }
-                                                    });
+                                                          outfile << std::endl << m_keywordId << "," << date << "," << value;
+
+                                                          // Progress from 0 to 70 for this step
+                                                          ++nbLinesDone;
+                                                          const auto progress = nbLinesDone * TotalPercentToExportAcquisition / nbTotalLines;
+                                                          static auto lastProgressSent = -1;
+                                                          if (progress != lastProgressSent)
+                                                          {
+                                                             lastProgressSent = progress;
+                                                             onProgressionUpdatedInternal(static_cast<float>(progress),
+                                                                                          i18n::CClientStrings::ExportDataCreateFile);
+                                                          }
+                                                       });
+         }
       }
 
       boost::filesystem::path CExportData::makeZipArchive(boost::filesystem::path& exportDataTempFolder)
@@ -129,7 +142,7 @@ namespace task
 
          //zip folder content (51 -> 98)
          auto zipFilenameFinal = m_pathProvider->backupPath() / "exportData.zip";
-         auto zipFilename = m_pathProvider->backupPath() / "exportData.zip.inprogress";
+         const auto zipFilename = m_pathProvider->backupPath() / "exportData.zip.inprogress";
 
          boost::filesystem::remove(zipFilenameFinal);
          boost::filesystem::remove(zipFilename);

@@ -52,7 +52,7 @@
          "deployFailed": "Deploy Yadoms failed",
          "exit": "Exiting Yadoms ...",
          "information": "Yadoms information",
-		 "disconnected" : "Server - Disconnected"
+         "disconnected": "Server - Disconnected"
       },
       "task": {
          "name": "task",
@@ -185,13 +185,7 @@
             "name": "Title",
             "description": "Text displayed for the widget"
          },
-         "errorDuringGettingDeviceList": "Error during getting device list",
-         "errorDuringGettingDeviceListMatchCapacity": "Error during getting device list that match capacity {{expectedCapacityAccess}} {{expectedCapacity}}",
-         "errorDuringGettingDeviceListMatchCapacityType": "Error during getting device list that match capacity type {{expectedCapacityAccess}} {{expectedCapacityType}}",
-         "errorDuringGettingDeviceListMatchKeywordAccess": "Error during getting device list that match keyword with access mode {{expectedKeywordAccess}}",
-         "errorDuringGettingKeywordList": "Error during getting keyword list",
-         "errorDuringGettingKeywordListMatchCapacity": "Error during getting keyword list that match capacity {{expectedCapacityAccess}} {{expectedCapacity}}",
-         "errorDuringGettingSerialPortList": "Error during getting serial port list"
+         "errorDuringGettingDeviceList": "Error during getting device list"
       },
       "delete-widget": {
          "title": "Delete widget confirmation",
@@ -623,11 +617,11 @@
                   },
                   "latitude": {
                      "name": "Latitude",
-                     "description": ""
+                     "description": "Latitude in decimal degrees (DDD), as used by [Google Map](https://www.google.fr/maps)"
                   },
                   "longitude": {
                      "name": "Longitude",
-                     "description": ""
+                     "description": "Longitude in decimal degrees (DDD), as used by [Google Map](https://www.google.fr/maps)"
                   }
                },
                "confirmResetToDefault": "This operation will restore all default configuration. Continue ?",
@@ -754,6 +748,14 @@
                   },
                   "blockly": {
                      "name": "Blockly"
+                  }
+               },
+               "interpreters": {
+                  "yPython27": {
+                     "name": "Python 2.7"
+                  },
+                  "yPython3": {
+                     "name": "Python 3.x"
                   }
                }
             },

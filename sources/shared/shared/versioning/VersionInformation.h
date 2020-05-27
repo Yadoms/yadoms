@@ -1,6 +1,5 @@
 #pragma once
-#include <shared/Export.h>
-#include "Version.h"
+#include "SemVer.h"
 #include <shared/DataContainer.h>
 
 namespace shared
@@ -10,20 +9,20 @@ namespace shared
       //---------------------------------------------
       ///\brief Class which contains a version and a releaseType
       //---------------------------------------------
-      class YADOMS_SHARED_EXPORT CVersionInformation
+      class CVersionInformation
       {
       public:
          //---------------------------------------------
          ///\brief Constructor
          ///\param [in] version     The version
          //---------------------------------------------
-         explicit CVersionInformation(const CVersion& version);
+         explicit CVersionInformation(const CSemVer& version);
 
          //---------------------------------------------
          ///\brief Get the version
          ///\return the version
          //---------------------------------------------
-         CVersion getVersion() const;
+         CSemVer getVersion() const;
 
          //---------------------------------------------
          ///\brief Serialize the object as string

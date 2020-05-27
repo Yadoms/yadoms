@@ -18,7 +18,7 @@ COpenZWaveNodeUserCodePlugin::~COpenZWaveNodeUserCodePlugin()
 
 bool COpenZWaveNodeUserCodePlugin::isKeywordManagedByPlugin(OpenZWave::ValueID& vID, const uint32 homeId, const uint8 nodeId)
 {
-   ECommandClass commandClass(static_cast<int>(vID.GetCommandClassId()));
+   const ECommandClass commandClass(static_cast<int>(vID.GetCommandClassId()));
    if (commandClass == ECommandClass::kUserCode)
       return true;
    return false;
@@ -26,10 +26,10 @@ bool COpenZWaveNodeUserCodePlugin::isKeywordManagedByPlugin(OpenZWave::ValueID& 
 
 boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeUserCodePlugin::createKeyword(OpenZWave::ValueID& vID, uint32 homeId, uint8 nodeId, bool includeSystemKeywords)
 {
-   auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
-   boost::regex reg("Code (\\d*):");
+   const auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
+   const boost::regex reg("Code (\\d*):");
    boost::smatch match;
-
+   
    //Set parameters
    if (boost::regex_search(vLabel, match, reg))
    {
@@ -39,11 +39,13 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeUserCodePlugin::createKey
       m_codeSlots.insert(std::make_pair(slot, vID));
       
 
-      uint8 *d = NULL;
+      uint8 *d = nullptr;
       uint8 size;
       if (OpenZWave::Manager::Get()->GetValueAsRaw(vID, &d, &size))
       {
-         if (size >= 2 && d[0] == 0 && d[1] == 0)
+      	//check both decimal or ascii value
+         if ((size >= 2 && d[0] == 0 && d[1] == 0) || 
+			 (size >= 4 && d[0] == '0' && d[1] == '0' && d[2] == '0' && d[3] == '0'))
          {
             delete d; //free memory
 
@@ -63,7 +65,7 @@ int COpenZWaveNodeUserCodePlugin::findFirstFreeSlot()
 {
    for (auto i = m_codeSlots.begin(); i != m_codeSlots.end(); ++i)
    {
-      uint8 *d = NULL;
+      uint8 *d = nullptr;
       uint8 size;
       if (OpenZWave::Manager::Get()->GetValueAsRaw(i->second, &d, &size))
       {
@@ -85,14 +87,14 @@ std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHisto
    std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > result;
    if (m_bEnrollmentMode)
    {
-      auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
+      const auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
       if (boost::istarts_with(vLabel, "Enrollment Code"))
       {
-         uint8 *d = NULL;
+         uint8 *d = nullptr;
          uint8 size;
          if (OpenZWave::Manager::Get()->GetValueAsRaw(vID, &d, &size))
          {
-            int slot = findFirstFreeSlot();
+            const int slot = findFirstFreeSlot();
             if (slot >= 0)
             {
                OpenZWave::ValueID slotNode = m_codeSlots.at(slot);
@@ -101,7 +103,7 @@ std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHisto
                auto kw = m_pMasterNode->getKeyword(slotNode, false);
                if (kw)
                {
-                  auto historizer = kw->getLastKeywordValue();
+                  const auto historizer = kw->getLastKeywordValue();
                   result.push_back(historizer);
                }
                else
@@ -126,7 +128,7 @@ std::string COpenZWaveNodeUserCodePlugin::getName()
    return ECommandClass::kUserCode;
 }
 
-bool COpenZWaveNodeUserCodePlugin::onExtraQuery(const std::string & query, const shared::CDataContainer &data)
+bool COpenZWaveNodeUserCodePlugin::onExtraQuery(const std::string & query, const boost::shared_ptr<shared::CDataContainer>& data)
 {
    if (boost::iequals(query, "enroll"))
    {

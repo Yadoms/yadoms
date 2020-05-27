@@ -4,7 +4,7 @@
 
 namespace plugin_cpp_api
 {
-   CExtraQueryData::CExtraQueryData(const std::string& query, const shared::CDataContainer& data, const std::string& device)
+   CExtraQueryData::CExtraQueryData(const std::string& query, const boost::shared_ptr<shared::CDataContainer>& data, const std::string& device)
       : m_query(query), m_data(data), m_device(device)
    {
    }
@@ -18,7 +18,7 @@ namespace plugin_cpp_api
       return m_query;
    }
 
-   const shared::CDataContainer& CExtraQueryData::data() const
+   const boost::shared_ptr<shared::CDataContainer>& CExtraQueryData::data() const
    {
       return m_data;
    }

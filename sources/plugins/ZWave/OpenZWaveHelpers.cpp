@@ -6,8 +6,8 @@
 
 std::string COpenZWaveHelpers::GenerateKeywordName(OpenZWave::ValueID& value)
 {
-   ECommandClass commandClass(static_cast<int>(value.GetCommandClassId()));
-   auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(value);
+   const ECommandClass commandClass(static_cast<int>(value.GetCommandClassId()));
+   const auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(value);
    return (boost::format("%1%.%2%.%3%") % commandClass.toString() % vLabel % static_cast<int>(value.GetInstance())).str();
 }
 
@@ -81,7 +81,7 @@ void COpenZWaveHelpers::GetEnumValueInfo(OpenZWave::ValueID& value, std::string 
    OpenZWave::Manager::Get()->GetValueListItems(value, &valuesList);
    
    values.clear();
-   for (auto i = 0; i < valuesList.size(); ++i)
+   for (unsigned int i = 0; i < valuesList.size(); ++i)
    {
       values[keys[i]] = valuesList[i];
    }

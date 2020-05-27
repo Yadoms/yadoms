@@ -24,8 +24,8 @@ public:
    virtual bool sendCommand(const std::string& commandData) = 0;
    virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue() = 0;
    virtual void updateValue(OpenZWave::ValueID& value);
-   virtual shared::CDataContainer serialize();
-   virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo> & getTypeInformation() override;
+   virtual boost::shared_ptr<shared::CDataContainer> serialize();
+   virtual boost::shared_ptr<shared::plugin::yPluginApi::typeInfo::ITypeInfo> & getTypeInformation() override;
    int getIndex() override;
    ECommandClass getCommandClass() override;
    // [END] IOpenZWaveKeyword implementation
@@ -44,13 +44,13 @@ protected:
    /// \brief	      Send a button command (press).
    /// \return       true if command is sent (just sent, not applied), false other cases
    //--------------------------------------------------------------
-   bool pressButton();
+   bool pressButton() const;
 
    //--------------------------------------------------------------
    /// \brief	      Send a button command (press).
    /// \return       true if command is sent (just sent, not applied), false other cases
    //--------------------------------------------------------------
-   bool releaseButton();
+   bool releaseButton() const;
 
    //--------------------------------------------------------------
    /// \brief	      Extract a typed value from the OpenZWave::ValueID container 
@@ -64,7 +64,7 @@ protected:
    /// \brief	      Get the unit of the data
    /// \return       The data unit
    //--------------------------------------------------------------
-   const std::string getUnit();
+   std::string getUnit() const;
 
 private:
    //--------------------------------------------------------------
@@ -75,7 +75,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	      The type information
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo> m_typeInformation;
+   boost::shared_ptr<shared::plugin::yPluginApi::typeInfo::ITypeInfo> m_typeInformation;
 };
 
 

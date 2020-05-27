@@ -15,103 +15,97 @@ namespace update
          //---------------------------------------------
          ///\brief  Private ctor to disallow it
          //---------------------------------------------
-         CUpdateSite();
+         CUpdateSite() = delete;
+         virtual ~CUpdateSite() = default;
 
       public:
          //---------------------------------------------
          ///\brief   Get all the available versions of Yadoms
-         ///\param [in] displayLanguage The language used for display
          ///\return the list of Yadoms versions
          //---------------------------------------------
-         static shared::CDataContainer getAllYadomsVersions();
+         static boost::shared_ptr<shared::CDataContainer> getAllYadomsVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for a plugin
-         ///\param [in] displayLanguage The language used for display
          ///\return the list of plugin version
          //---------------------------------------------
-         static shared::CDataContainer getAllPluginVersions();
+         static boost::shared_ptr<shared::CDataContainer> getAllPluginVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for widgets
-         ///\param [in] displayLanguage The language used for display
          ///\return the list of widgets version
          //---------------------------------------------
-         static shared::CDataContainer getAllWidgetVersions();
+         static boost::shared_ptr<shared::CDataContainer> getAllWidgetVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for a scriptInterpreter
-         ///\param [in] displayLanguage The language used for display
          ///\return the list of scriptInterpreter version
          //---------------------------------------------
-         static shared::CDataContainer getAllScriptInterpreterVersions();
+         static boost::shared_ptr<shared::CDataContainer> getAllScriptInterpreterVersions();
 
       private:
          //---------------------------------------------
          ///\brief                           Call the distant script
          ///\param [in] script               The script to call (i.e.: yadoms.php)
          ///\param [in] includeOsAndArch     If true : parameters LANG, OS and ARCH are passed to script, otherwise only LANG is passed
-         ///\param [in] displayLanguage      The language used for display
          ///\param [in] resultFieldToReturn  The field to return
          ///\return                          The field in script result json
          //---------------------------------------------
-         static shared::CDataContainer callDistantScript(const std::string& script,
+         static boost::shared_ptr<shared::CDataContainer> callDistantScript(const std::string& script,
                                                          bool includeOsAndArch,
                                                          const std::string& resultFieldToReturn);
 
          //---------------------------------------------
          ///\brief   The script to list available yadoms versions
          //---------------------------------------------
-         static std::string m_distantYadomsListScript;
+         static const std::string DistantYadomsListScript;
          //---------------------------------------------
          ///\brief   The script to list available plugins versions
          //---------------------------------------------
-         static std::string m_distantPluginsListScript;
+         static const std::string DistantPluginsListScript;
          //---------------------------------------------
          ///\brief   The script to list available script interpreters versions
          //---------------------------------------------
-         static std::string m_distantScriptInterpretersListScript;
+         static const std::string DistantScriptInterpretersListScript;
          //---------------------------------------------
          ///\brief   The script to list available widgets versions
          //---------------------------------------------
-         static std::string m_distantWidgetsListScript;
+         static const std::string DistantWidgetsListScript;
 
          //---------------------------------------------
          ///\brief   The result field for yadoms script
          //---------------------------------------------
-         static std::string m_distantYadomsScriptResultField;
+         static const std::string DistantYadomsScriptResultField;
          //---------------------------------------------
          ///\brief   The result field for plugins script
          //---------------------------------------------
-         static std::string m_distantPluginsScriptResultField;
+         static const std::string DistantPluginsScriptResultField;
          //---------------------------------------------
          ///\brief   The result field for script interpreters script
          //---------------------------------------------
-         static std::string m_distantScriptInterpretersScriptResultField;
+         static const std::string DistantScriptInterpretersScriptResultField;
          //---------------------------------------------
          ///\brief   The result field for widgets script
          //---------------------------------------------
-         static std::string m_distantWidgetsScriptResultField;
+         static const std::string DistantWidgetsScriptResultField;
 
          //---------------------------------------------
          ///\brief   The parameter OS for distant scripts
          //---------------------------------------------
-         static std::string m_distantScriptParamOs;
+         static const std::string DistantScriptParamOs;
          //---------------------------------------------
          ///\brief   The parameter ARCH for distant scripts
          //---------------------------------------------
-         static std::string m_distantScriptParamArch;
+         static const std::string DistantScriptParamArch;
          //---------------------------------------------
-         ///\brief   The parameter DEMMODE for distant scripts
+         ///\brief   The parameter DEVMODE for distant scripts
          //---------------------------------------------
-         static std::string m_distantScriptParamDevMode;
+         static const std::string DistantScriptParamDevMode;
 
          //---------------------------------------------
          ///\brief   The result field for distant scripts
          //---------------------------------------------
-         static std::string m_distantScriptResult;
+         static const std::string DistantScriptResult;
       };
    }
 } // namespace update::info
-
-

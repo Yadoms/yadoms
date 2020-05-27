@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 #include <shared/DataContainer.h>
 
 namespace http
@@ -19,7 +18,7 @@ namespace http
       /// \param[in]  parameters          parameters at the end of the url
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static shared::CDataContainer SendGetRequest(const std::string & url, shared::CDataContainer & parameters);
+      static boost::shared_ptr<shared::CDataContainer> SendGetRequest(const std::string & url, boost::shared_ptr<shared::CDataContainer>& parameters);
    };
 
 } // namespace http

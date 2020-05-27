@@ -27,9 +27,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Destructor
             //-----------------------------------------------------
-            virtual ~IYPluginApi()
-            {
-            }
+            virtual ~IYPluginApi() = default;
 
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
@@ -173,9 +171,19 @@ namespace shared
 
             ///\brief Set the current plugin state
             ///\param    [in]    state                   The new state
-            ///\param    [in]    customMessageId         The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message __something__ received')
+            ///\param    [in]    customMessageId         The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message {{something}} received')
             ///\param    [in]    customMessageDataParams The message data parameters (map<name, value> ) (used as translation parameters). Ignored if state != kCustom or kError.
             ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
+            ///\details Example of a call with custom message containing a parameter :
+            /// api->setPluginState(yApi::historization::EPluginState::kCustom,
+            ///                     "lastRequestFailed",
+            ///                     {{"error", exception.what()}});
+            /// with "lastRequestFailed" declared in your locale file (ie en.json), like :
+            ///  "customLabels": {
+            ///    "pluginState": {
+            ///      "lastRequestFailed": "Error ({{error}}) detected",
+            ///    }
+            ///  }
             //-----------------------------------------------------
             virtual void setPluginState(const historization::EPluginState& state,
                                         const std::string& customMessageId = std::string(),
@@ -201,7 +209,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keyword (all-in-one function)
             ///\param    [in]    device            The device name
-            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retrieve configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
+            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retrieve configuration schema package.json (deviceConfiguration.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185"). Displayed and editable by user
             ///\param    [in]    keyword           Keyword to declare for this device
             ///\param    [in]    details           Device details
@@ -211,12 +219,12 @@ namespace shared
                                        const std::string& type,
                                        const std::string& model,
                                        boost::shared_ptr<const historization::IHistorizable> keyword,
-                                       const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+                                       boost::shared_ptr<CDataContainer> details = shared::CDataContainer::make()) = 0;
 
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keywords (all-in-one function)
             ///\param    [in]    device            The device name
-            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retrieve configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
+            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retrieve configuration schema package.json (deviceConfiguration.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185"). Displayed and editable by user
             ///\param    [in]    keywords          List of keywords to declare for this device
             ///\param    [in]    details           Device details
@@ -226,7 +234,7 @@ namespace shared
                                        const std::string& type,
                                        const std::string& model,
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable>>(),
-                                       const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+                                       boost::shared_ptr<CDataContainer> details = shared::CDataContainer::make()) = 0;
 
             //-----------------------------------------------------
             ///\brief Get all devices attached to this plugin instance
@@ -245,41 +253,41 @@ namespace shared
             ///\brief Get the configuration of a device
             ///\param    [in]    device            The device name
             ///\return the device configuration
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
+            ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
-            virtual CDataContainer getDeviceConfiguration(const std::string& device) const = 0;
+            virtual boost::shared_ptr<CDataContainer> getDeviceConfiguration(const std::string& device) const = 0;
 
             //-----------------------------------------------------
             ///\brief Update the configuration of a device (replace the existing configuration)
             ///\param    [in]    device            The device name
             ///\param    [in]    configuration     Device configuration
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
+            ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
             virtual void updateDeviceConfiguration(const std::string& device,
-                                                   const CDataContainer& configuration) const = 0;
+                                                   boost::shared_ptr<CDataContainer> configuration) const = 0;
 
             //-----------------------------------------------------
             ///\brief Get the details of a device
             ///\param    [in]    device            The device name
             ///\return the device details
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
+            ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
-            virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
+            virtual boost::shared_ptr<CDataContainer> getDeviceDetails(const std::string& device) const = 0;
 
             //-----------------------------------------------------
             ///\brief Update the details of a device (replace the existing details)
             ///\param    [in]    device            The device name
             ///\param    [in]    details           Device details
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
+            ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
             virtual void updateDeviceDetails(const std::string& device,
-                                             const CDataContainer& details) const = 0;
+                                             boost::shared_ptr<CDataContainer> details) const = 0;
 
             //-----------------------------------------------------
             ///\brief Get the model of a device
             ///\param    [in]    device            The device model (could have been edited by user)
             ///\return the device model
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
+            ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
             virtual std::string getDeviceModel(const std::string& device) const = 0;
 
@@ -287,7 +295,7 @@ namespace shared
             ///\brief Update the model of a device (replace the existing model)
             ///\param    [in]    device            The device name
             ///\param    [in]    model             Device model
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
+            ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
             virtual void updateDeviceModel(const std::string& device, const std::string& model) const = 0;
 
@@ -295,7 +303,7 @@ namespace shared
             ///\brief Get the type of a device
             ///\param    [in]    device            The device type
             ///\return the device type
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
+            ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
             virtual std::string getDeviceType(const std::string& device) const = 0;
 
@@ -303,7 +311,7 @@ namespace shared
             ///\brief Update the type of a device (replace the existing type)
             ///\param    [in]    device            The device name
             ///\param    [in]    model             Device type
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
+            ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
             virtual void updateDeviceType(const std::string& device, const std::string& model) const = 0;
 
@@ -323,7 +331,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Remove device (and remove all associated keywords and acquisitions)
             ///\param    [in]    device            The device name
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
+            ///\throw shared::exception::CEmptyResult if device does not exist
             ///\note  This call will not send a kEventDeviceRemoved event
             //-----------------------------------------------------
             virtual void removeDevice(const std::string& device) = 0;
@@ -355,7 +363,7 @@ namespace shared
             //-----------------------------------------------------
             virtual void declareKeyword(const std::string& device,
                                         boost::shared_ptr<const historization::IHistorizable> keyword,
-                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+                                        boost::shared_ptr<CDataContainer> details = shared::CDataContainer::make()) = 0;
 
             //-----------------------------------------------------
             ///\brief Declare a list of keywords for a device
@@ -396,7 +404,7 @@ namespace shared
             ///\brief Remove keyword (and remove all associated acquisitions)
             ///\param    [in]    device             The device name owner of the keyword
             ///\param    [in]    keyword            The keyword name
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
+            ///\throw shared::exception::CEmptyResult if device does not exist
             //-----------------------------------------------------
             virtual void removeKeyword(const std::string& device,
                                        const std::string& keyword) = 0;
@@ -522,14 +530,14 @@ namespace shared
             ///\brief Get the current plugin configuration
             ///\return The current plugin configuration
             //-----------------------------------------------------
-            virtual CDataContainer getConfiguration() = 0;
+            virtual boost::shared_ptr<CDataContainer> getConfiguration() = 0;
 
             //-----------------------------------------------------
             /// \brief	    Get the plugin instance data path
             /// \return     The plugin instance data path (folder)
             /// \note       This folder can be used by plugin to store any data it needs.
             ///             This folder is unique per each plugin instance.
-            ///             Note that this is folder is not backuped.
+            ///             Note that this is folder is included in backup.
             //-----------------------------------------------------
             virtual const boost::filesystem::path& getDataPath() const = 0;
 
@@ -540,7 +548,7 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
             //--
-            //-- Yadoms informations
+            //-- Yadoms information
             //--
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
@@ -550,7 +558,7 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
 
             //-----------------------------------------------------
-            /// \brief	    return information on Yadoms (version, developper mode state, location...)
+            /// \brief	    return information on Yadoms (version, developer mode state, location...)
             /// \return     Yadoms information
             //-----------------------------------------------------
             virtual boost::shared_ptr<const information::IYadomsInformation> getYadomsInformation() const = 0;
@@ -558,5 +566,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi
-
-

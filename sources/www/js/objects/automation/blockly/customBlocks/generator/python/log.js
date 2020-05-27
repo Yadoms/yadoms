@@ -4,6 +4,6 @@
   */
 Blockly.Python["yadoms_log"] = function (block) {
     var valueName = Blockly.Python.valueToCode(block, "LogContent", Blockly.Python.ORDER_ATOMIC) || "''";
-    return "print " + valueName + "\n";
+    return "print (" + valueName + ")\n";
 };
 

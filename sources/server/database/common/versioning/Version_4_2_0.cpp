@@ -2,7 +2,7 @@
 #include "Version_4_2_0.h"
 #include "database/common/Query.h"
 #include "database/common/DatabaseTables.h"
-#include <shared/versioning/Version.h>
+#include <shared/versioning/SemVer.h>
 #include "VersionException.h"
 #include <shared/Log.h>
 #include "database/common/adapters/SingleValueAdapter.hpp"
@@ -15,7 +15,7 @@ namespace database
       namespace versioning
       {
          // Modify this version to a greater value, to force update of current version
-         const shared::versioning::CVersion CVersion_4_2_0::Version(4, 2, 0);
+         const shared::versioning::CSemVer CVersion_4_2_0::Version(4, 2, 0);
 
          CVersion_4_2_0::CVersion_4_2_0()
          {
@@ -26,7 +26,7 @@ namespace database
          }
 
          void CVersion_4_2_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& requester,
-                                              const shared::versioning::CVersion& currentVersion)
+                                              const shared::versioning::CSemVer& currentVersion)
          {
             if (currentVersion < Version)
             {
@@ -127,8 +127,8 @@ namespace database
             }
          }
 
-         void CVersion_4_2_0::updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> requester,
-                                                    const shared::versioning::CVersion& newVersion,
+         void CVersion_4_2_0::updateDatabaseVersion(boost::shared_ptr<IDatabaseRequester> requester,
+                                                    const shared::versioning::CSemVer& newVersion,
                                                     const boost::posix_time::ptime& insertDate)
          {
             auto qInsert = requester->newQuery();
@@ -155,7 +155,7 @@ namespace database
 
             adapters::CSingleValueAdapter<T> adapter;
             requester->queryEntities(&adapter, *loadQuery);
-            return adapter.getResults().size() == 0 ? boost::optional<T>() : boost::optional<T>(adapter.getResults()[0]);
+            return adapter.getResults().empty() ? boost::optional<T>() : boost::optional<T>(adapter.getResults()[0]);
          }
 
          boost::optional<bool> CVersion_4_2_0::loadFirstStart(const boost::shared_ptr<IDatabaseRequester>& requester)
@@ -207,29 +207,29 @@ namespace database
                                                        "basicAuthentication");
          }
 
-         boost::optional<shared::CDataContainer> CVersion_4_2_0::convertLocation(const boost::optional<std::string>& oldLocation)
+         boost::optional<boost::shared_ptr<shared::CDataContainer>> CVersion_4_2_0::convertLocation(const boost::optional<std::string>& oldLocation)
          {
             if (!oldLocation)
-               return boost::optional<shared::CDataContainer>();
+               return boost::optional<boost::shared_ptr<shared::CDataContainer>>();
 
-            boost::optional<shared::CDataContainer> oldLocationContainer(*oldLocation);
-            shared::CDataContainer newLocation;
+            boost::optional<boost::shared_ptr<shared::CDataContainer>> oldLocationContainer(shared::CDataContainer::make(*oldLocation));
+            boost::shared_ptr<shared::CDataContainer> newLocation = shared::CDataContainer::make();
 
-            newLocation.set("status", "userDefined");
-            newLocation.set("latitude", oldLocationContainer->get<std::string>("latitude"));
-            newLocation.set("longitude", oldLocationContainer->get<std::string>("longitude"));
-            newLocation.set("altitude", oldLocationContainer->get<std::string>("altitude"));
-            newLocation.set("timezone", oldLocationContainer->getWithDefault<std::string>("timezone", "Europe/Paris"));
+            newLocation->set("status", "userDefined");
+            newLocation->set("latitude", (*oldLocationContainer)->get<std::string>("latitude"));
+            newLocation->set("longitude", (*oldLocationContainer)->get<std::string>("longitude"));
+            newLocation->set("altitude", (*oldLocationContainer)->get<std::string>("altitude"));
+            newLocation->set("timezone", (*oldLocationContainer)->getWithDefault<std::string>("timezone", "Europe/Paris"));
 
             return newLocation;
          }
 
-         boost::optional<shared::CDataContainer> CVersion_4_2_0::convertBasicAuthentication(
+         boost::optional<boost::shared_ptr<shared::CDataContainer>> CVersion_4_2_0::convertBasicAuthentication(
             const boost::optional<std::string>& oldBasicAuthentication)
          {
             if (!oldBasicAuthentication)
-               return boost::optional<shared::CDataContainer>();
-            return boost::optional<shared::CDataContainer>(*oldBasicAuthentication);
+               return boost::optional<boost::shared_ptr<shared::CDataContainer>>();
+            return boost::optional<boost::shared_ptr<shared::CDataContainer>>(shared::CDataContainer::make(*oldBasicAuthentication));
          }
 
          void CVersion_4_2_0::insertConfigurationValue(const boost::shared_ptr<IDatabaseRequester> requester,

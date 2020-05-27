@@ -45,7 +45,7 @@ include (SelectLibraryConfigurations)
 # Read the version information from the VERSION file
 file (STRINGS "${POCO_DIR_SEARCH}/VERSION" POCO_VERSION_FULL )
 string(REGEX REPLACE "([0-9]+)\\.[0-9]+\\.[0-9]+.*$" "\\1" CPACK_PACKAGE_VERSION_MAJOR ${POCO_VERSION_FULL})
-string(REGEX REPLACE "[0-9]+\\.([0-9])+\\.[0-9]+.*$" "\\1" CPACK_PACKAGE_VERSION_MINOR ${POCO_VERSION_FULL})
+string(REGEX REPLACE "[0-9]+\\.([0-9]+)\\.[0-9]+.*$" "\\1" CPACK_PACKAGE_VERSION_MINOR ${POCO_VERSION_FULL})
 string(REGEX REPLACE "[0-9]+\\.[0-9]+\\.([0-9]+).*$" "\\1" CPACK_PACKAGE_VERSION_PATCH ${POCO_VERSION_FULL})
 
 set(POCO_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
@@ -84,6 +84,7 @@ if(POCO_VERSION_CHECKED_SUCCESS)
       lib/Linux/x86_64
       lib/Linux/ARM
       lib/Darwin/x86_64
+      lib/darwin/x86_64
       lib/Linux/armv6l
       lib/Linux/armv7l
    )

@@ -64,9 +64,9 @@ namespace authentication
       {
          boost::lock_guard<boost::mutex> lock(m_configurationMutex);
          const auto basicAuthenConfiguration(m_configurationManager->getBasicAuthentication());
-         m_isAuthenticationActive = basicAuthenConfiguration.getWithDefault<bool>("active", false);
-         m_currentAuthenticationUsername = basicAuthenConfiguration.get<std::string>("user");
-         m_currentAuthenticationPassword = basicAuthenConfiguration.get<std::string>("password");
+         m_isAuthenticationActive = basicAuthenConfiguration->getWithDefault<bool>("active", false);
+         m_currentAuthenticationUsername = basicAuthenConfiguration->get<std::string>("user");
+         m_currentAuthenticationPassword = basicAuthenConfiguration->get<std::string>("password");
       }
       catch (std::exception& ex)
       {

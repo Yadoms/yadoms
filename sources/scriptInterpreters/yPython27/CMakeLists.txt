@@ -1,9 +1,36 @@
 # Check dependencies
 
-set (PYTHON_REQUIRED_VERSION 2.7)
-include(findPython.cmake)
-  
-if(PYTHONLIBS_FOUND)
+if(${Python2_ManualSetup})
+	if(EXISTS ${Python2_EXECUTABLE})
+		set(Python2_Interpreter_FOUND TRUE)
+		if(EXISTS ${Python2_LIBRARIES})
+				if(EXISTS ${Python2_INCLUDE_DIRS})
+					#append Include and include dirs (to cover cross compile contexts)
+					set(Python2_INCLUDE_DIRS 
+							${Python2_INCLUDE_DIRS}
+							${Python2_INCLUDE_DIRS}/Include
+							${Python2_INCLUDE_DIRS}/include
+					)
+				
+					set(Python2_FOUND TRUE)
+				else(EXISTS ${Python2_INCLUDE_DIRS})
+					message(FATAL_ERROR "The specified Python2_INCLUDE_DIRS is not found : ${Python2_INCLUDE_DIRS}")
+				endif(EXISTS ${Python2_INCLUDE_DIRS})
+
+		else(EXISTS ${Python2_LIBRARIES})
+			message(FATAL_ERROR "The specified Python2_LIBRARIES is not found : ${Python2_LIBRARIES}")
+		endif(EXISTS ${Python2_LIBRARIES})
+	else(EXISTS ${Python2_EXECUTABLE})
+		message(FATAL_ERROR "The specified Python2 executable is not found : ${Python2_EXECUTABLE}")
+	endif(EXISTS ${Python2_EXECUTABLE})
+else(${Python2_ManualSetup})
+	find_package (Python2 COMPONENTS Interpreter Development)
+endif(${Python2_ManualSetup})
+
+
+
+
+if(${Python2_FOUND})
 
    # include common script interpreters definitions
    include("../YadomsScriptInterpertersCommon.cmake")   
@@ -69,11 +96,11 @@ if(PYTHONLIBS_FOUND)
    
    #########################################
    ## Always leave these lines to configure script interpreter correctly
-   ## even if YPYTHON27_INCLDIR or YPYTHON27_LINK are empty
+   ## even if YPYTHON3_INCLDIR or YPYTHON3_LINK are empty
    #########################################
    SCRIPT_INTERPRETER_SOURCES(yPython27 ${YPYTHON27_SOURCES})
-   SCRIPT_INTERPRETER_INCLDIR(yPython27 ${YPYTHON27_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS})
-   SCRIPT_INTERPRETER_LINK(yPython27 ${YPYTHON27_LINK})
+   SCRIPT_INTERPRETER_INCLDIR(yPython27 ${YPYTHON2_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS})
+   SCRIPT_INTERPRETER_LINK(yPython27 ${YPYTHON2_LINK})
 
    #########################################
    ## Post-build commands
@@ -89,5 +116,15 @@ if(PYTHONLIBS_FOUND)
    add_subdirectory(yScriptApiWrapper)
    
 else()
-   message(SEND_ERROR "yPython27 interpreter is not available. Python library is Mssing")
+   message("==================================================================")
+   message("Python2_ROOT: ${Python2_ROOT}")
+   message("Python2_FOUND: ${Python2_FOUND}")
+   message("Python2_INCLUDE_DIRS: ${Python2_INCLUDE_DIRS}")
+   message("Python2_LIBRARIES: ${Python2_LIBRARIES}")
+   message("Python2_Interpreter_FOUND: ${Python2_Interpreter_FOUND}")
+   message("Python2_EXECUTABLE: ${Python2_EXECUTABLE}")  
+
+   message(NOTICE "yPython27 interpreter is not available. Python 2.7.x library is Mssing")
+  
+
 endif()

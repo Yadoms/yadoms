@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <Poco/DateTime.h>
 
 namespace shared { namespace dateTime {
@@ -9,7 +8,7 @@ namespace shared { namespace dateTime {
    /// The aim is to make it compatible between boost dateTime and Poco::DateTime
    /// and make boost::posix_time::ptime usable in notification (boost::posix_time::ptime can not be used as template type)
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CDateTimeContainer
+   class CDateTimeContainer
    {
    public:
       //--------------------------------------------------------------
@@ -21,13 +20,13 @@ namespace shared { namespace dateTime {
       /// \brief	Constructor
       /// \param [in]   time  The initialization value
       //--------------------------------------------------------------
-      explicit CDateTimeContainer(boost::posix_time::ptime & time);
+      explicit CDateTimeContainer(const boost::posix_time::ptime & time);
 
       //--------------------------------------------------------------
       /// \brief	Constructor
       /// \param [in]   time  The initialization value
       //--------------------------------------------------------------
-      explicit CDateTimeContainer(Poco::DateTime & time);
+      explicit CDateTimeContainer(const Poco::DateTime & time);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

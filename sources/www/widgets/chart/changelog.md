@@ -1,3 +1,13 @@
+### 1.4.0-beta.1
+* new feature #536 - Navigate into data
+* Fix #585 - tab "1h" : elements are no more updated continuously
+* Fix continuous display for enum data
+* new feature : tab "1h" : Don't connect points when no data during a time > 2x (mean time of the interval of the returned data)
+* Better scale display
+
+### 1.3.4
+* Better keyword selection filtering
+
 ### 1.3.3
 * Fix #521 - adapt the widget to display duration with the new format
 

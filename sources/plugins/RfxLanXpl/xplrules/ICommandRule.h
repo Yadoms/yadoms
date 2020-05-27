@@ -29,7 +29,7 @@ namespace xplrules
       //------------------------------------
       virtual boost::shared_ptr<xplcore::CXplMessage> createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand>& commandData,
                                                                        const std::string& rfxAddress,
-                                                                       const shared::CDataContainer& innerDetails) = 0;
+                                                                       const boost::shared_ptr<shared::CDataContainer>& innerDetails) = 0;
 
       //--------------------------------
       ///\brief generate a random virtual device identifier (i.e. : 0x123456-2)

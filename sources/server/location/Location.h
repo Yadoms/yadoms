@@ -23,7 +23,7 @@ namespace location
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CLocation();
+      virtual ~CLocation() = default;
 
    protected:
       // ILocation Implementation
@@ -45,7 +45,7 @@ namespace location
       /// \return          The current location (from database, or auto-located if not found in database)
       /// \throw shared::exception::CEmptyResult if location not available
       //--------------------------------------------------------------
-      shared::CDataContainer getLocation() const;
+      boost::shared_ptr<shared::CDataContainer> getLocation() const;
 
    private:
       //--------------------------------------------------------------
@@ -54,7 +54,7 @@ namespace location
       boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
 
       //--------------------------------------------------------------
-      /// \brief           The autolocation service
+      /// \brief           The auto-location service
       //--------------------------------------------------------------
       boost::shared_ptr<IAutoLocation> m_autoLocationService;
    };

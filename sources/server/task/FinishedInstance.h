@@ -13,7 +13,7 @@ namespace task {
       //------------------------------------------
       ///\brief   Constructor
       //------------------------------------------
-      CFinishedInstance(const std::string & guid, const std::string & name, ETaskStatus status, boost::optional< float > progression, const std::string & message, const std::string & messageException, const shared::CDataContainer & data, const boost::posix_time::ptime & creationDate);
+      CFinishedInstance(const std::string & guid, const std::string & name, ETaskStatus status, boost::optional< float > progression, const std::string & message, const std::string & messageException, boost::shared_ptr<shared::CDataContainer> data, const boost::posix_time::ptime & creationDate);
 
       //------------------------------------------
       ///\brief   Destructor
@@ -27,7 +27,7 @@ namespace task {
       std::string getMessage() const override;
       std::string getExceptionMessage() const override;
       ETaskStatus getStatus() const override;
-      shared::CDataContainer getTaskData() const override;
+      boost::shared_ptr<shared::CDataContainer> getTaskData() const override;
       std::string getName() const override;
       boost::posix_time::ptime getCreationDate() const override;
       // [END] - IInstance implementation
@@ -67,7 +67,7 @@ namespace task {
       //------------------------------------------
       ///\brief   The task data
       //------------------------------------------
-      shared::CDataContainer m_data;
+      boost::shared_ptr<shared::CDataContainer> m_data;
 
       //------------------------------------------
       ///\brief   The creation date

@@ -77,11 +77,11 @@
 		}
 	},
 	"customLabels": {
-		"pluginState": {
-			"connecting": "Connecting...",
-			"updateConfiguration": "Configuration updating...",
-			"anotherMessageWithData" : "New state with message {{messageFromExtraQuery}}"
-		},
+    "pluginState": {
+      "connecting": "Connecting...",
+      "updateConfiguration": "Configuration updating...",
+      "newCustomStateMessage": "New state with message {{messageFromExtraQuery}}"
+    },
       "asyncEQwithProgression" : {
          "step1" : "Step n°1",
          "step2" : "Step n°2",
@@ -127,11 +127,16 @@
 			"name" : "Command with binded data to plugin",
       "description": "This command ask user to choose from a list provided from the plugin",
 			"commandData" : {
-				"dynamicSection": {
-					"name": "A dynamic section",
-					"description": "Example of section filled by 'test' method from the plugin using binding."
-				}
-			}
+        "dynamicSection": {
+          "name": "A dynamic section",
+          "description": "Example of section filled by 'test' method from the plugin using binding.",
+          "content": {
+            "interval": {
+              "name": "Chart interval",
+              "description": "Used to change chart interval"
+            }
+          }
+        }
 		},
 		"changePluginStateMessage" : {
 			"name" : "Change plugin state",

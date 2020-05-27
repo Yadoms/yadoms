@@ -1,7 +1,6 @@
 #pragma once
 
 #include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -83,12 +82,12 @@ private:
    boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
 
    //--------------------------------------------------------------
-   /// \brief	The keyword associated with current comsumption
+   /// \brief	The keyword associated with current consumption
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CCurrent> m_current;
 
    //--------------------------------------------------------------
-   /// \brief	The keyword associated with signal strengh
+   /// \brief	The keyword associated with signal strength
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
 

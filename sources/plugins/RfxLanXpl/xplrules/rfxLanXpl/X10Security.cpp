@@ -85,7 +85,7 @@ namespace xplrules
       // ICommandRule implemntation
       boost::shared_ptr<xplcore::CXplMessage> CX10Security::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand>& commandData,
                                                                              const std::string& rfxAddress,
-                                                                             const shared::CDataContainer& innerDetails)
+                                                                             const boost::shared_ptr<shared::CDataContainer>& innerDetails)
       {
          ////////////////////////////
          // Parse command data
@@ -142,7 +142,7 @@ namespace xplrules
       // [END] ICommandRule implemntation
 
 
-      CDeviceContainer CX10Security::generateDeviceParameters(shared::CDataContainer& configuration) const
+      CDeviceContainer CX10Security::generateDeviceParameters(boost::shared_ptr<shared::CDataContainer>& configuration) const
       {
          throw shared::exception::CException("fail to generate a device from user configuration.");
       }

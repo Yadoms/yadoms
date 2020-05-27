@@ -1,12 +1,12 @@
 #pragma once
-#include <shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.h>
+#include <shared/plugin/yPluginApi/typeInfo/StringTypeInfo.h>
 #include <shared/DataContainer.h>
 #include <value_classes/ValueID.h>
 
 //-----------------------------------------------------
 ///\brief Interface for keyword type information
 //-----------------------------------------------------
-class CStringTypeInfo : public shared::plugin::yPluginApi::historization::typeInfo::CStringTypeInfo
+class CStringTypeInfo : public shared::plugin::yPluginApi::typeInfo::CStringTypeInfo
 {
 public:
    //-----------------------------------------------------
@@ -19,9 +19,9 @@ public:
    //-----------------------------------------------------
    virtual ~CStringTypeInfo();
 
-   // shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo implementation 
-   shared::CDataContainer serialize() const override;
-   // END shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo implementation 
+   // shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
+   boost::shared_ptr<shared::CDataContainer> serialize() const override;
+   // END shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
 
 private:
    //-----------------------------------------------------
@@ -34,6 +34,6 @@ private:
    //-----------------------------------------------------
    ///\brief   The typeInfo content
    //-----------------------------------------------------
-   shared::CDataContainer m_data;
+   boost::shared_ptr<shared::CDataContainer> m_data;
 };
 

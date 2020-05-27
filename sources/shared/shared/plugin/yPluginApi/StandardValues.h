@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -10,7 +9,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief		Standard values
          //--------------------------------------------------------------
-         class YADOMS_SHARED_EXPORT CStandardValues
+         class CStandardValues
          {
          public:
             //        value                                 |    Apply on...        |     Description

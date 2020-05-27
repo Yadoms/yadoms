@@ -18,7 +18,8 @@ public:
    /// \brief	   Constructor
    /// \param[in]  deviceList   list of all devices managed by this plugin
    //--------------------------------------------------------------
-   explicit CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList);
+   explicit CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList,
+                       std::vector<std::string>& deviceToRetry);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -44,6 +45,14 @@ public:
                        bool forceHistorization = false);
 
    //--------------------------------------------------------------
+   /// \brief	                     try to connect missing equipments
+   /// \param [in] api                   Plugin execution context (Yadoms API)
+   /// \param [in] pluginConfiguration   plugin configuration
+   //--------------------------------------------------------------
+   void tryMissingEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const boost::shared_ptr<IWESConfiguration> pluginConfiguration);
+
+   //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] deviceRemoved    the name of the device removed
@@ -59,7 +68,8 @@ public:
    //--------------------------------------------------------------
    void OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const std::string& deviceName,
-                                    const shared::CDataContainer& newConfiguration);
+                                    const boost::shared_ptr<shared::CDataContainer>& newConfiguration,
+                                    const int refreshEvent);
 
    //--------------------------------------------------------------
    /// \brief	    addEquipment
@@ -72,6 +82,12 @@ public:
    /// \return the number of servers
    //--------------------------------------------------------------
    int getMasterEquipment() const;
+
+   //--------------------------------------------------------------
+   /// \brief	    getMasterEquipment
+   /// \return the number of servers
+   //--------------------------------------------------------------
+   int getWaitingEquipment() const;
 
    //--------------------------------------------------------------
    /// \brief	    check if a device with the same name already exist into the CioManager
@@ -89,7 +105,7 @@ public:
    /// \brief	    bindMasterDevice
    /// \return a container with all servers equipments that could be used to add a sub-equipment
    //--------------------------------------------------------------
-   shared::CDataContainer bindMasterDevice();
+   boost::shared_ptr<shared::CDataContainer> bindMasterDevice();
 
 private:
 
@@ -97,4 +113,9 @@ private:
    /// \brief The device Manager
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<equipments::IEquipment>> m_deviceManager;
+
+   //--------------------------------------------------------------
+   /// \brief The device Manager
+   //--------------------------------------------------------------
+   std::vector<std::string> m_deviceToRetry;
 };

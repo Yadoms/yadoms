@@ -19,7 +19,7 @@ public:
    virtual ~CTeleInfoConfiguration();
 
    // ITeleInfoConfiguration implementation
-   void initializeWith(const shared::CDataContainer& data) override;
+   void initializeWith(const shared::CDataContainerSharedPtr& data) override;
    std::string getSerialPort() const override;
    EEquipmentType getEquipmentType() const override;
    EInputsActivated getInputsActivated() const override;
@@ -29,5 +29,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
-   shared::CDataContainer m_data;
+   shared::CDataContainerSharedPtr m_data;
 };

@@ -31,7 +31,7 @@ namespace shared
             ///\brief Answer the request with success, providing the result
             ///\param [in] result  The query result
             //-----------------------------------------------------
-            virtual void sendSuccess(const CDataContainer& result) = 0;
+            virtual void sendSuccess(const boost::shared_ptr<CDataContainer>& result) = 0;
 
             //-----------------------------------------------------
             ///\brief Answer the request with error

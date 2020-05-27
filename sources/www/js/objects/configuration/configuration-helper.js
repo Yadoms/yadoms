@@ -1,56 +1,57 @@
 /**
  * Created by nicolasHILAIRE on 06/03/14.
  */
-function ConfigurationHelper(){}
+function ConfigurationHelper() { }
 
-ConfigurationHelper.loadConfigurationLibs = function() {
-    var d = new $.Deferred();
-    var arrayOfDeffered = [];
-    arrayOfDeffered.push(asyncLoadJSLibs([
-        "js/objects/configuration/configuration-control-manager.js",
-        "js/objects/configuration/int-parameter-handler.js",
-        "js/objects/configuration/decimal-parameter-handler.js",
-        "js/objects/configuration/duration-parameter-handler.js",
-        "js/objects/configuration/enum-parameter-handler.js",
-        "js/objects/configuration/string-parameter-handler.js",
-        "js/objects/configuration/file-parameter-handler.js",
-        "js/objects/configuration/bool-parameter-handler.js",
-        "js/objects/configuration/section-parameter-handler.js",
-        "js/objects/configuration/keyword-parameter-handler.js",
-        "js/objects/configuration/keywordValue-parameter-handler.js",
-        "js/objects/configuration/radio-section-parameter-handler.js",
-        "js/objects/configuration/combo-section-parameter-handler.js",
-        "js/objects/configuration/color-parameter-handler.js",
-        "js/objects/configuration/icon-parameter-handler.js",
-        "js/objects/configuration/list-parameter-handler.js",
-        "js/objects/encryption-manager.js"
-    ]));
-    
-    arrayOfDeffered.push(asyncLoadJSGzLibs([
-        "libs/markdown-it/markdown-it.min.js.gz",
-        "libs/markdown-it/markdown-it-for-inline.min.js.gz",
-        "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js.gz",
-        "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js.gz",
-        "libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js.gz"]));
-    
-    arrayOfDeffered.push(asyncLoadManyGzCss([
-        "libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css.gz",
-        "libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css.gz"]));
+ConfigurationHelper.loadConfigurationLibs = function () {
+   var d = new $.Deferred();
+   var arrayOfDeffered = [];
+   arrayOfDeffered.push(asyncLoadJSLibs([
+      "js/objects/configuration/configuration-control-manager.js",
+      "js/objects/configuration/int-parameter-handler.js",
+      "js/objects/configuration/decimal-parameter-handler.js",
+      "js/objects/configuration/duration-parameter-handler.js",
+      "js/objects/configuration/enum-parameter-handler.js",
+      "js/objects/configuration/string-parameter-handler.js",
+      "js/objects/configuration/file-parameter-handler.js",
+      "js/objects/configuration/bool-parameter-handler.js",
+      "js/objects/configuration/section-parameter-handler.js",
+      "js/objects/configuration/keyword-parameter-handler.js",
+      "js/objects/configuration/device-parameter-handler.js",
+      "js/objects/configuration/keywordValue-parameter-handler.js",
+      "js/objects/configuration/radio-section-parameter-handler.js",
+      "js/objects/configuration/combo-section-parameter-handler.js",
+      "js/objects/configuration/color-parameter-handler.js",
+      "js/objects/configuration/icon-parameter-handler.js",
+      "js/objects/configuration/list-parameter-handler.js",
+      "js/objects/encryption-manager.js"
+   ]));
 
-    $.when.apply($, arrayOfDeffered)
-    .done(function () {
-       d.resolve();
-    })
-    .fail(function () {
-       d.reject();
-    });
-    return d.promise();
+   arrayOfDeffered.push(asyncLoadJSGzLibs([
+      "libs/markdown-it/markdown-it.min.js.gz",
+      "libs/markdown-it/markdown-it-for-inline.min.js.gz",
+      "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js.gz",
+      "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js.gz",
+      "libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js.gz"]));
+
+   arrayOfDeffered.push(asyncLoadManyGzCss([
+      "libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css.gz",
+      "libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css.gz"]));
+
+   $.when.apply($, arrayOfDeffered)
+      .done(function () {
+         d.resolve();
+      })
+      .fail(function () {
+         d.reject();
+      });
+   return d.promise();
 }
 
 ConfigurationHelper.createControlGroup = function (parameterHandler, controlToInsert, placeInsideLabel, classOfControlGroup) {
    assert(parameterHandler !== undefined, "parameterHandler must be defined");
    assert(controlToInsert !== undefined, "controlToInsert must be defined");
-      
+
    //if we don't ask to place the label inside the div we place it outside
    if (isNullOrUndefined(placeInsideLabel))
       placeInsideLabel = false;
@@ -70,15 +71,15 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
 
    // Convert markdown for the designation field.
    var result = "";
-   if ( !isNullOrUndefined ( parameterHandler ))
-      result = ConfigurationHelper.makdownIt( $.t(parameterHandler.i18nContext + parameterHandler.paramName + ".description", {defaultValue: parameterHandler.description}) );
-   
+   if (!isNullOrUndefined(parameterHandler))
+      result = ConfigurationHelper.makdownIt($.t(parameterHandler.i18nContext + parameterHandler.paramName + ".description", { defaultValue: parameterHandler.description }));
+
    s += "<span class=\"configuration-label-content configuration-label-name\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.paramName + ".name\">" + parameterHandler.name + "</span>" +
       "<span class=\"configuration-label-content configuration-label-description\"\">" + result + "</span>" +
       "</label>" +
       "</div>";
    if (!placeInsideLabel) {
-        s += "<div class=\"controls col-sm-6 control-label\" style=\"text-align: left;\">" +
+      s += "<div class=\"controls col-sm-6 control-label\" style=\"text-align: left;\">" +
          controlToInsert +
          "</div>";
    }
@@ -103,75 +104,63 @@ ConfigurationHelper.createParameterHandler = function (i18nCtxt, i18nKey, paramN
    assert(content !== undefined, "content must be defined in " + paramName + " parameter");
    assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");
    assert(i18nCtxt !== undefined, "i18nCtxt must contain path of i18n " + paramName + " parameter");
-   
+
    if (content.show !== undefined && !parseBool(content.show.result))
       return null;
 
    var i18nContext = i18nCtxt;
-   if(content.i18nBasePath)
+   if (content.i18nBasePath)
       i18nContext = content.i18nBasePath;
-   
+
    switch (content.type.toLowerCase()) {
-      case "int" :
-      case "numeric" :
+      case "int":
+      case "numeric":
          return new IntParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
 
-      case "decimal" :
+      case "decimal":
          return new DecimalParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
 
-      case "enum" :
+      case "enum":
          return new EnumParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
 
-      case "string" :
+      case "string":
          return new StringParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
 
-      case "file" :
+      case "file":
          return new FileParameterHandler(i18nContext, paramName, content, currentValue);
-         break;
 
-      case "bool" :
+      case "bool":
          return new BoolParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
 
-      case "section" :
+      case "section":
          return new SectionParameterHandler(i18nContext, i18nKey, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
-         break;
 
-      case "radiosection" :
+      case "radiosection":
          return new RadioSectionParameterHandler(i18nContext, i18nKey, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
-         break;
 
-      case "combosection" :
+      case "combosection":
          return new ComboSectionParameterHandler(i18nContext, i18nKey, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
-         break;
 
-      case "keyword" :
+      case "keyword":
          return new KeywordParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
 
-      case "keywordvalue" :
+      case "device":
+         return new DeviceParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
+
+      case "keywordvalue":
          return new KeywordValueParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
 
-      case "color" :
+      case "color":
          return new ColorParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
 
-      case "icon" :
+      case "icon":
          return new IconParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
 
-      case "list" :
+      case "list":
          return new ListParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
 
-      default :
+      default:
          throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
-         break;
    }
 };
 
@@ -191,19 +180,19 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
    assert(keyword.type !== undefined, "type field must be found in " + paramName + " parameter");
    assert(i18NContext !== undefined, "i18nContext must contain path of i18n " + paramName + " parameter");
 
-   var obj  = {
+   var obj = {
       name: keyword.friendlyName,
       description: $.t(keyword.units, { defaultValue: keyword.units }),
       type: keyword.type,
-      values : keyword.typeInfo.values,
-      minimumValue : keyword.typeInfo.min,
-      maximumValue : keyword.typeInfo.max,
-      precision : keyword.typeInfo.precision,
+      values: keyword.typeInfo.values,
+      minimumValue: keyword.typeInfo.min,
+      maximumValue: keyword.typeInfo.max,
+      precision: keyword.typeInfo.precision,
    }
-   
+
    switch (keyword.type.toLowerCase()) {
       case "numeric":
-         if (keyword.capacityName === "duration"){
+         if (keyword.capacityName === "duration") {
             return new DurationParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);
          }
          else
@@ -212,11 +201,10 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
       case "enum":
          var enumValues = {};
          if (obj.values) {
-            for(var i in obj.values) { // don't use for(.. of obj.values) because it fails when values is less than 2 elements
-               if (obj.values.hasOwnProperty(i))
-               {
-                  var item = obj.values[i]; 
-                  enumValues[item]=item;
+            for (var i in obj.values) { // don't use for(.. of obj.values) because it fails when values is less than 2 elements
+               if (obj.values.hasOwnProperty(i)) {
+                  var item = obj.values[i];
+                  enumValues[item] = item;
                }
             }
          }
@@ -251,15 +239,15 @@ ConfigurationHelper.isContainer = function (content) {
  * @param str Text to render
  * @returns Rendered text (HTML format)
  */
-ConfigurationHelper.makdownIt = function(str) {
+ConfigurationHelper.makdownIt = function (str) {
    var iterator = window.markdownitForInline;
    var md = window.markdownit({
-     breaks:true,
-     linkify:true
+      breaks: true,
+      linkify: true
    })
-   .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
-     tokens[idx].attrPush([ 'target', '_blank' ]);
-   });    
-   
+      .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
+         tokens[idx].attrPush(['target', '_blank']);
+      });
+
    return md.renderInline(str);
 }

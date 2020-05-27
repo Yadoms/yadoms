@@ -4,7 +4,7 @@
 CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
                                const std::string & device,
                                const ISIConfiguration& configuration,
-                               shared::CDataContainer details)
+                               shared::CDataContainerSharedPtr details)
 {
 }
 
@@ -27,7 +27,7 @@ void CSystemFactory::OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> a
 
 void CSystemFactory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                            const ISIConfiguration& configuration,
-                           shared::CDataContainer details)
+                           shared::CDataContainerSharedPtr details)
 {
    
 }

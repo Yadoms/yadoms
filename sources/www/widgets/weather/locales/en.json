@@ -2,9 +2,19 @@
 	"name": "Weather",
 	"description": "This widget display the live weather",
 	"configurationSchema": {
-		"device": {
+		"conditionKeyword": {
 			"name": "Weather",
 			"description": "The live conditions of the weather"
+		},
+		"temperatureSection": {
+			"name": "Temperature",
+			"description": "Display the temperature",
+         "content": {
+            "temperatureKeyword": {
+               "name": "Temperature",
+               "description": "The current temperature"
+            }
+         }
 		}
 	}
 }

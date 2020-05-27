@@ -19,7 +19,7 @@ class AutostartCheckboxPlugin(unittest.TestCase):
       database.deploy('OneFakePlugin')
       config.deploy("nominal")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -29,29 +29,29 @@ class AutostartCheckboxPlugin(unittest.TestCase):
       
 
    def test_autostartCheckbox(self):
-      print '=== Autostart Checkbox test ==='
-      print 'ref Issues : #182'
+      print ('=== Autostart Checkbox test ===')
+      print ('ref Issues : #182')
       pluginNumber = 0
      
-      print '  Verify initial state'
+      print ('  Verify initial state')
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       self.assertTrue(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
       
-      print '  Uncheck the box'
+      print ('  Uncheck the box')
       dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber).click()
       tools.waitUntil(lambda: dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber) is False)
 
-      print '  Reload page and check box state'
+      print ('  Reload page and check box state')
       dashboard.openSummary(self.browser)
       dashboard.openPlugin(self.browser)
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       tools.waitUntil(lambda: dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber) is False)
       
-      print '  Check the box'
+      print ('  Check the box')
       dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber).click()
       tools.waitUntil(lambda: dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber) is True)
 
-      print '  Reload page and check box state'
+      print ('  Reload page and check box state')
       dashboard.openPlugin(self.browser)
       tools.waitUntil(lambda: dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber) is True)
       

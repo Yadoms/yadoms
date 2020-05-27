@@ -1,13 +1,60 @@
+#Parameters for current TRAVIS jobs
+# -> YADOMS_REPO : the repository complete address on github : https://github.com/MyOrg/yadoms.git
+# -> DOCKER_TAG_LINUX: the docker TAG (including ':') for Linux build
+# -> DOCKER_TAG_RPI: the docker TAG (including ':') for RaspberryPI build
+# -> DOCKER_TAG_MACOS: the docker TAG (including ':') for MacOSX build
+# -> DOCKER_TAG_SYNOLOGY218P: the docker TAG (including ':') for Synology218+ build
+# -> PARAM1 : any parameter passed to docker container
+# -> PARAM2 : any parameter passed to docker container
+# -> PARAM3 : any parameter passed to docker container
+# -> PARAM4 : any parameter passed to docker container
+
 language: cpp
 dist: trusty
 
 sudo: required
 
+jobs:
+  include:
+  - name: "RaspberryPI"
+    env: 
+      - DOCKER_IMAGE=yadoms/build_for_raspberrypi${DOCKER_TAG_RPI}
+      - DOCKER_FLAG=--privileged
+  - name: "Linux"
+    env: DOCKER_IMAGE=yadoms/build_for_ubuntu${DOCKER_TAG_LINUX}
+  - name: "MacOSX"
+    env: DOCKER_IMAGE=yadoms/build_for_macos${DOCKER_TAG_MACOS}
+  - name: "Synology 218+"
+    env: DOCKER_IMAGE=yadoms/build_for_synology218p${DOCKER_TAG_SYNOLOGY218P}
+  
 services:
   - docker
-  
+
 before_install:
-  - docker pull yadoms/build_for_ubuntu
+  - docker pull ${DOCKER_IMAGE}
   
 script:
-  - docker run -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} yadoms/build_for_ubuntu
+  - docker run ${DOCKER_FLAG} --name docCon -e MAKE_PACKAGE=true -e YADOMS_REPO=${YADOMS_REPO} -e YADOMS_BUILD_BRANCH=${TRAVIS_BRANCH} -e PARAM1=${PARAM1} -e PARAM2=${PARAM2} -e PARAM3=${PARAM3} -e PARAM4=${PARAM4} ${DOCKER_IMAGE} /entrypoint.sh
+  - docker cp docCon:/yadoms/builds/package .
+  - ls -al ./package/* 
+
+before_deploy:
+  #setting the travis tag, ensure all upload are assigned to the same draft
+  - export TRAVIS_TAG=`ls package/Yadoms*.tar.gz | head -1 | grep -oP '(?<=-).*(?=-)'`
+  
+deploy:
+  #Deploy for Github Release
+  # -> create a draft for each new version
+  # -> all job push to the same draft
+  # -> in case of job re-run, files are overwritten
+  # -> deploy is systematic (not only on tags) and for all branches
+  provider: releases
+  api_key: "${GH_OAUTH}"
+  file_glob: true
+  file: package/*
+  skip_cleanup: true  
+  draft: true
+  overwrite: true
+  on:
+    all_branches: true
+    

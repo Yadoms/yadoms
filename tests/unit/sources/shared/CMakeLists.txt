@@ -7,20 +7,20 @@ IF(NOT DISABLE_TEST_DATACONTAINER)
       shared/shared/Log.cpp
       shared/shared/logInternal/LogStreamEnhanced.h
       shared/shared/logInternal/LogStreamEnhanced.cpp
-	  server/web/rest/Result.h
-	  server/web/rest/Result.cpp
+	   server/web/rest/Result.h
+	   server/web/rest/Result.cpp
    )
    ADD_SOURCES(TestDataContainer.cpp)
    
 ENDIF()
 
 #dd current directory tests
-IF(NOT DISABLE_TEST_VERSION)
+IF(NOT DISABLE_TEST_SEMVER)
    ADD_YADOMS_SOURCES(
-      shared/shared/versioning/Version.h
-      shared/shared/versioning/Version.cpp
+      shared/shared/versioning/SemVer.h
+      shared/shared/versioning/SemVer.cpp
    )
-   ADD_SOURCES(TestVersion.cpp)
+   ADD_SOURCES(TestSemVer.cpp)
    
 ENDIF()
 

@@ -69,13 +69,13 @@ namespace rfxcomMessages
 
    void CEnergy::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      shared::CDataContainer details;
-      details.set("type", pTypeENERGY);
-      details.set("subType", m_subType);
-      details.set("id", m_id);
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
+      details->set("type", pTypeENERGY);
+      details->set("subType", m_subType);
+      details->set("id", m_id);
       api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-      details.printToLog(YADOMS_LOG(information));
+      details->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CEnergy::getDeviceName() const

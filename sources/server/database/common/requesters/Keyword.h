@@ -23,14 +23,12 @@ namespace database
             //--------------------------------------------------------------
             explicit CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 
-            //--------------------------------------------------------------
-            /// \Brief		   Destructor
-            //--------------------------------------------------------------
-            virtual ~CKeyword();
+            virtual ~CKeyword() = default;
 
             // IKeywordRequester implementation
             void addKeyword(const entities::CKeyword& newKeyword) override;
             std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCapacity(const std::string& capacity) const override;
+            std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCriteria(const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes, const std::vector<std::string>& expectedCapacities, const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses, const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth, bool blacklisted) const override;
             boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId, const std::string& keyword) const override;
             boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const override;
             std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId, const std::string& friendlyName) const override;
@@ -38,8 +36,8 @@ namespace database
             std::vector<boost::shared_ptr<entities::CKeyword>> getAllKeywords() const override;
             std::vector<boost::shared_ptr<entities::CKeyword>> getDeviceKeywordsWithCapacity(int deviceId, const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const override;
             boost::shared_ptr<entities::CAcquisition> getKeywordLastAcquisition(const int keywordId, bool throwIfNotExists = true) override;
-            std::string getKeywordLastData(const int keywordId, bool throwIfNotExists = true) override;
-            std::vector<boost::tuple<int, std::string>> getKeywordListLastData(const std::vector<int> keywordIds) override;
+            std::string getKeywordLastData(int keywordId, bool throwIfNotExists = true) override;
+            std::vector<boost::tuple<int, std::string>> getKeywordListLastData(const std::vector<int>& keywordIds) override;
             void updateKeywordBlacklistState(int keywordId, const bool blacklist) override;
             void removeKeyword(int keywordId) override;
             void updateKeywordFriendlyName(int keywordId, const std::string& newFriendlyName) override;

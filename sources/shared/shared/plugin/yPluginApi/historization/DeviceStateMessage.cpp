@@ -15,14 +15,15 @@ namespace shared
             DECLARE_CAPACITY(DeviceStateMessageCapacity, "deviceStateMessage_capacity", CStandardUnits::NoUnit(), EKeywordDataType::kJson);
 
             CDeviceStateMessage::CDeviceStateMessage(const std::string& keywordName,
-                                                     const EKeywordAccessMode& accessMode)
-               : CSingleHistorizableData<CDataContainer>(keywordName,
+                                                     const EKeywordAccessMode& accessMode,
+                                                     const EHistoryDepth& historyDepth)
+               : CSingleHistorizableData<boost::shared_ptr<CDataContainer>>(keywordName,
                                                          DeviceStateMessageCapacity(),
-                                                         accessMode)
-            {
-            }
-
-            CDeviceStateMessage::~CDeviceStateMessage()
+                                                         accessMode,
+                                                         shared::CDataContainer::make(),
+                                                         EMeasureType::kAbsolute,
+                                                         typeInfo::CEmptyTypeInfo::Empty,
+                                                         historyDepth)
             {
             }
 
@@ -34,9 +35,9 @@ namespace shared
             void CDeviceStateMessage::setMessage(const std::string& messageId,
                                                  const std::string& messageData)
             {
-               CDataContainer dc;
-               dc.set("messageId", messageId);
-               dc.set("messageData", messageData);
+               boost::shared_ptr<CDataContainer> dc = shared::CDataContainer::make();
+               dc->set("messageId", messageId);
+               dc->set("messageData", messageData);
                set(dc);
             }
 
@@ -65,18 +66,16 @@ namespace shared
 
             std::string CDeviceStateMessage::getMessageId() const
             {
-               return get().getWithDefault("messageId",
+               return get()->getWithDefault("messageId",
                                            std::string());
             }
 
             std::string CDeviceStateMessage::getMessageData() const
             {
-               return get().getWithDefault("messageData",
+               return get()->getWithDefault("messageData",
                                            std::string());
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

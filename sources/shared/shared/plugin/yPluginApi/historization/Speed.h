@@ -1,7 +1,6 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/DoubleTypeInfo.h"
+#include "../typeInfo/DoubleTypeInfo.h"
 
 namespace shared
 {
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A speed historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CSpeed : public CSingleHistorizableData<double>
+            class CSpeed : public CSingleHistorizableData<double>
             {
             public:
                //-----------------------------------------------------
@@ -23,20 +22,17 @@ namespace shared
                ///\param[in] accessMode      The access mode
                ///\param[in] measureType     The measure type (normally kAbsolute)
                ///\param[in] additionalInfo  Additional information
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CSpeed(const std::string& keywordName,
                                const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                                const EMeasureType& measureType = EMeasureType::kAbsolute,
-                               typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty);
+                               const typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
+                               const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CSpeed();
+               virtual ~CSpeed() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

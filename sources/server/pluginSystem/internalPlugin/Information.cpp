@@ -10,7 +10,7 @@ namespace pluginSystem
            m_version("1.0.0"),
            m_author("Yadoms team"),
            m_url("http://www.yadoms.com"),
-           m_package(boost::make_shared<shared::CDataContainer>())
+           m_package(shared::CDataContainer::make())
       {
          m_package->set("type", m_type);
          m_package->set("version", m_version.toString());
@@ -27,7 +27,7 @@ namespace pluginSystem
          return m_type;
       }
 
-      const shared::versioning::CVersion& CInformation::getVersion() const
+      const shared::versioning::CSemVer& CInformation::getVersion() const
       {
          return m_version;
       }

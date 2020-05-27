@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "IProcess.h"
 #include "ICommandLine.h"
 #include "IProcessObserver.h"
@@ -14,7 +13,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	Python executable
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CProcess : public IProcess
+      class CProcess : public IProcess
       {
       public:
          //--------------------------------------------------------------

@@ -18,24 +18,24 @@ COpenZWaveNodeKeywordColor::~COpenZWaveNodeKeywordColor()
 bool COpenZWaveNodeKeywordColor::sendCommand(const std::string& commandData)
 {
    //commandData should contain an integer (unsigned) value 287454020
-   Poco::UInt32 value = shared::plugin::yPluginApi::IDeviceCommand::simpleNumericCommandHelperToUInt(commandData);
+   const Poco::UInt32 value = shared::plugin::yPluginApi::IDeviceCommand::simpleNumericCommandHelperToUInt(commandData);
    m_keyword->set(value);
 
    //it must be converted to "#11223344"
-   std::string toRgbwFormat = (boost::format("#%08X") % value).str();
+   const std::string toRgbwFormat = (boost::format("#%08X") % value).str();
    return realSendCommand<std::string>(toRgbwFormat);
 
 }
 
 boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpenZWaveNodeKeywordColor::getLastKeywordValue()
 {
-   std::string val  = extractLastValue<std::string>(); //#RRGGBBWW
+   const std::string val  = extractLastValue<std::string>(); //#RRGGBBWW
 
    const std::string regex1_11 = "#(?<color>[0-9a-fA-F]{8})";
 
-   Poco::RegularExpression re(regex1_11);
+   const Poco::RegularExpression re(regex1_11);
    std::vector<std::string> results;
-   int resultCount = re.split(val, results);
+   const int resultCount = re.split(val, results);
    if (resultCount == 2)
    {
       std::stringstream ss;
@@ -52,7 +52,7 @@ boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpe
    return m_keyword;
 }
 
-shared::CDataContainer COpenZWaveNodeKeywordColor::serialize()
+boost::shared_ptr<shared::CDataContainer> COpenZWaveNodeKeywordColor::serialize()
 {
    return m_keyword->getTypeInfo();
 }

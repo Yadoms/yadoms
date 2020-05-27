@@ -2,9 +2,9 @@
 
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 #include <shared/enumeration/IExtendedEnum.h>
-#include "typeInfo/ITypeInfo.h"
-#include "typeInfo/EnumTypeInfo.hpp"
-#include "typeInfo/EmptyTypeInfo.h"
+#include "../typeInfo/ITypeInfo.h"
+#include "../typeInfo/EnumTypeInfo.hpp"
+#include "../typeInfo/EmptyTypeInfo.h"
 #include <shared/StringExtension.h>
 
 namespace shared
@@ -28,18 +28,22 @@ namespace shared
                ///\param[in] capacity           the capacity
                ///\param[in] accessMode         The access mode
                ///\param[in] measureType        The measure type
+               ///\param[in] typeInfo           The type information
+               ///\param[in] historyDepth       The history depth policy
                //-----------------------------------------------------
                CSingleHistorizableData(const std::string& keywordName,
                                        const CStandardCapacity& capacity,
                                        const EKeywordAccessMode& accessMode,
                                        const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                       const typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty)
+                                       const typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty,
+                                       const EHistoryDepth& historyDepth = EHistoryDepth::kDefault)
                   : m_keywordName(keywordName),
                     m_capacity(capacity),
                     m_value(),
                     m_accessMode(accessMode),
                     m_measureType(measureType),
-                    m_typeInfo(typeInfo.serialize())
+                    m_typeInfo(typeInfo.serialize()),
+                    m_historyDepth(historyDepth)
                {
                }
 
@@ -50,19 +54,23 @@ namespace shared
                ///\param[in] accessMode         The access mode
                ///\param[in] initialValue       the initial value
                ///\param[in] measureType        The measure type
+               ///\param typeInfo               The type information
+               ///\param historyDepth           The history depth policy
                //-----------------------------------------------------
                CSingleHistorizableData(const std::string& keywordName,
                                        const CStandardCapacity& capacity,
                                        const EKeywordAccessMode& accessMode,
                                        const T& initialValue,
                                        const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                       const typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty)
+                                       const typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty,
+                                       const EHistoryDepth& historyDepth = EHistoryDepth::kDefault)
                   : m_keywordName(keywordName),
                     m_capacity(capacity),
                     m_value(initialValue),
                     m_accessMode(accessMode),
                     m_measureType(measureType),
-                    m_typeInfo(typeInfo.serialize())
+                    m_typeInfo(typeInfo.serialize()),
+                    m_historyDepth(historyDepth)
                {
                }
 
@@ -77,15 +85,14 @@ namespace shared
                     m_value(rhs.m_value),
                     m_accessMode(rhs.m_accessMode),
                     m_measureType(rhs.m_measureType),
-                    m_typeInfo(rhs.m_typeInfo)
+                    m_typeInfo(rhs.m_typeInfo),
+                    m_historyDepth(rhs.m_historyDepth)
                {
                }
 
-               virtual ~CSingleHistorizableData()
-               {
-               }
+               virtual ~CSingleHistorizableData() = default;
 
-               CSingleHistorizableData& operator = (const CSingleHistorizableData<T>& rhs) = delete;
+               CSingleHistorizableData& operator =(const CSingleHistorizableData<T>& rhs) = delete;
 
                // IHistorizable implementation
                const std::string& getKeyword() const override
@@ -113,12 +120,17 @@ namespace shared
                   return m_measureType;
                }
 
-               CDataContainer getTypeInfo() const override
+               boost::shared_ptr<CDataContainer> getTypeInfo() const override
                {
                   //if not defined, use empty result
-                  if (m_typeInfo.empty())
+                  if (!m_typeInfo || m_typeInfo->empty())
                      return helper<T>::createDefaultTypeInfo();
                   return m_typeInfo;
+               }
+
+               const EHistoryDepth& getHistoryDepth() const override
+               {
+                  return m_historyDepth;
                }
 
                // [END] IHistorizable implementation   
@@ -184,39 +196,16 @@ namespace shared
 
 
             private:
-               //-----------------------------------------------------
-               ///\brief                     The keyword name
-               //-----------------------------------------------------
                const std::string m_keywordName;
-
-               //-----------------------------------------------------
-               ///\brief               The capacity
-               //-----------------------------------------------------      
                const CStandardCapacity& m_capacity;
-
-               //-----------------------------------------------------
-               ///\brief               The command value
-               //-----------------------------------------------------
                T m_value;
-
-               //-----------------------------------------------------
-               ///\brief               The access mode
-               ///\note Should not be kept as reference
-               //-----------------------------------------------------
                const EKeywordAccessMode m_accessMode;
-
-               //-----------------------------------------------------
-               ///\brief               The measure type
-               //-----------------------------------------------------     
                const EMeasureType m_measureType;
+               const boost::shared_ptr<CDataContainer> m_typeInfo;
+               const EHistoryDepth m_historyDepth;
 
                //-----------------------------------------------------
-               ///\brief               The type information
-               //-----------------------------------------------------
-               const CDataContainer m_typeInfo;
-
-               //-----------------------------------------------------
-               ///\brief     Helpers to uniformise access to simple value and enum values
+               ///\brief     Helpers to normalize access to simple value and enum values
                //-----------------------------------------------------
                template <typename TData, class Enable = void>
                struct helper
@@ -226,9 +215,9 @@ namespace shared
                      return boost::lexical_cast<TData>(value);
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -236,16 +225,34 @@ namespace shared
                ///\brief     Helpers specialization for bool
                //-----------------------------------------------------      
                template <typename TData>
-               struct helper<TData, typename boost::enable_if<boost::is_same<bool, TData> >::type>
+               struct helper<TData, typename boost::enable_if<boost::is_same<boost::shared_ptr<CDataContainer>, TData>>::type>
+               {
+                  static boost::shared_ptr<CDataContainer> getInternal(const std::string& value)
+                  {
+                     return shared::CDataContainer::make(value);
+                  }
+
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
+                  {
+                     return shared::CDataContainer::make();
+                  }
+               };
+
+
+               //-----------------------------------------------------
+               ///\brief     Helpers specialization for bool
+               //-----------------------------------------------------      
+               template <typename TData>
+               struct helper<TData, typename boost::enable_if<boost::is_same<bool, TData>>::type>
                {
                   static bool getInternal(const std::string& value)
                   {
                      return (value == "1" || boost::to_lower_copy(value) == "true");
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -253,7 +260,7 @@ namespace shared
                ///\brief     Helpers specialization for int
                //-----------------------------------------------------      
                template <typename TData>
-               struct helper<TData, typename boost::enable_if<boost::is_same<int, TData> >::type>
+               struct helper<TData, typename boost::enable_if<boost::is_same<int, TData>>::type>
                {
                   static int getInternal(const std::string& value)
                   {
@@ -267,9 +274,9 @@ namespace shared
                      }
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -277,7 +284,7 @@ namespace shared
                ///\brief     Helpers specialization for unsigned char
                //-----------------------------------------------------      
                template <typename TData>
-               struct helper<TData, typename boost::enable_if<boost::is_same<unsigned char, TData> >::type>
+               struct helper<TData, typename boost::enable_if<boost::is_same<unsigned char, TData>>::type>
                {
                   static unsigned char getInternal(const std::string& value)
                   {
@@ -293,9 +300,9 @@ namespace shared
                      }
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -303,14 +310,14 @@ namespace shared
                ///\brief     Helpers specialization for ExtendedEnum
                //-----------------------------------------------------      
                template <typename TData>
-               struct helper<TData, typename boost::enable_if<boost::is_base_of<enumeration::IExtendedEnum, TData> >::type>
+               struct helper<TData, typename boost::enable_if<boost::is_base_of<enumeration::IExtendedEnum, TData>>::type>
                {
                   static TData getInternal(const std::string& value)
                   {
                      return TData(value);
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
                      typeInfo::CEnumTypeInfo<TData> ti;
                      return ti.serialize();
@@ -321,33 +328,33 @@ namespace shared
                ///\brief     Helpers specialization for boost::posix_time::ptime
                //-----------------------------------------------------      
                template <typename TData>
-               struct helper<TData, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, TData> >::type>
+               struct helper<TData, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, TData>>::type>
                {
                   static TData getInternal(const std::string& value)
                   {
                      return TData(boost::posix_time::from_iso_string(value));
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
-               
+
                //-----------------------------------------------------
                ///\brief     Helpers specialization for unsigned char*
                //-----------------------------------------------------      
                template <typename TData>
-               struct helper<TData, typename boost::enable_if<boost::is_base_of<unsigned char *, TData> >::type>
+               struct helper<TData, typename boost::enable_if<boost::is_base_of<unsigned char *, TData>>::type>
                {
                   static TData getInternal(const std::string& value)
                   {
-                     return ;
+                     return;
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
             };
@@ -355,5 +362,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

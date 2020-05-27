@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "exception/Exception.hpp"
 #include <stdarg.h>
 #include <Poco/Types.h>
@@ -9,7 +8,7 @@ namespace shared
    //
    /// \brief Static class that provide converters from const char * to data type 
    //
-   class YADOMS_SHARED_EXPORT CStringExtension
+   class CStringExtension
    {
    public:
       /////////////////////////////////////////////////////////////////////////////////////////////////////////

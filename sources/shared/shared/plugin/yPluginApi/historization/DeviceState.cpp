@@ -21,19 +21,21 @@ namespace shared
                ((Custom))
             );
 
-            DECLARE_CAPACITY(DeviceStateCapacity, "deviceState_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+            DECLARE_CAPACITY(DeviceStateCapacity, "deviceState_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::
+               yPluginApi::EKeywordDataType::kEnum);
 
-            CDeviceState::CDeviceState(const std::string& keywordName, const EKeywordAccessMode& accessMode)
-               : CSingleHistorizableData<EDeviceState>(keywordName, DeviceStateCapacity(), accessMode)
-            {
-            }
-
-            CDeviceState::~CDeviceState()
+            CDeviceState::CDeviceState(const std::string& keywordName,
+                                       const EKeywordAccessMode& accessMode,
+                                       const EHistoryDepth& historyDepth)
+               : CSingleHistorizableData<EDeviceState>(keywordName,
+                                                       DeviceStateCapacity(),
+                                                       accessMode,
+                                                       EMeasureType::kAbsolute,
+                                                       typeInfo::CEmptyTypeInfo::Empty,
+                                                       historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

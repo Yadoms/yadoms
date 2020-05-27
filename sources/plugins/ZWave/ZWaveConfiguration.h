@@ -10,6 +10,11 @@ class CZWaveConfiguration
 {
 public:
    //--------------------------------------------------------------
+   /// \brief	    Constructor
+   //--------------------------------------------------------------
+   CZWaveConfiguration();
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CZWaveConfiguration();
@@ -27,7 +32,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Initialize configuration
    //--------------------------------------------------------------
-   void initializeWith(shared::CDataContainer container);
+   void initializeWith(boost::shared_ptr<shared::CDataContainer> container);
 
    //--------------------------------------------------------------
    /// \brief	    Get the library path
@@ -50,14 +55,26 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Set the data path
-   /// \param [in] path    The data path
+   /// \param [in] dataPath    The data path
    //--------------------------------------------------------------
-   void setDataPath(const std::string & dataPath); 
+   void setDataPath(const std::string & dataPath);
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the initialization timeout
+   /// \return	    The initialization timeout
+   //--------------------------------------------------------------
+   int getInitTimeout() const;
+
+   //--------------------------------------------------------------
+   /// \brief	    Set the initialization timeout
+   /// \param [in] timeOut    The initialization timeout (seconds)
+   //--------------------------------------------------------------
+   void setInitTimeout(int timeOut);
 
 private :
    //--------------------------------------------------------------
    /// \brief	    The container
    //--------------------------------------------------------------
-   shared::CDataContainer m_container;
+   boost::shared_ptr<shared::CDataContainer> m_container;
 };
 

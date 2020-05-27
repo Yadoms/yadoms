@@ -42,10 +42,17 @@ namespace pluginSystem
                             const boost::filesystem::path& dataPath,
                             const boost::filesystem::path& logPath) const
    {
+      const auto& startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
+
       m_ipcAdapter->postInit(information,
                              dataPath,
                              logPath,
-                             shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getLogLevel());
+                             startupOptions->getLogLevel(),
+                             startupOptions->getProxyHost(),
+                             startupOptions->getProxyPort(),
+                             startupOptions->getProxyUsername(),
+                             startupOptions->getProxyPassword(),
+                             startupOptions->getProxyBypass());
    }
 
    void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
@@ -78,12 +85,12 @@ namespace pluginSystem
       m_ipcAdapter->postDeviceRemoved(event);
    }
 
-   void CInstance::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId)
+   void CInstance::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string& taskId)
    {
       m_ipcAdapter->postExtraQuery(extraQuery, taskId);
    }
 
-   void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration)
+   void CInstance::updateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
    {
       m_ipcAdapter->postUpdateConfiguration(newConfiguration);
    }

@@ -85,7 +85,7 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          try {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
             if (m_equipmentManager->size() > 0)
                api->setPluginState(yApi::historization::EPluginState::kRunning);
             else
@@ -157,7 +157,7 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   api->setPluginState(yApi::historization::EPluginState::kCustom, "ready"); // No more devices, so ready
                }
 
-               extraQuery->sendSuccess(shared::CDataContainer());
+               extraQuery->sendSuccess(shared::CDataContainer::make());
             }
             catch (shared::CHttpException &e)
             {
@@ -196,12 +196,12 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    int page = 0;
-   shared::CDataContainer response;
+   boost::shared_ptr<shared::CDataContainer> response;
 
    do {
       response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, false); //http://liveobjects.orange-business.com
       m_equipmentManager = boost::make_shared<CEquipmentManager>(m_decoder->decodeDevicesMessage(api, response));
-      response.printToLog(YADOMS_LOG(information));
+      response->printToLog(YADOMS_LOG(information));
       ++page;
    } while (!m_decoder->isFrameComplete(response));
 }
@@ -209,21 +209,21 @@ void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> ap
 void COrangeBusiness::registerActivatedDevices(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    int page = 0;
-   shared::CDataContainer response;
+   boost::shared_ptr<shared::CDataContainer> response;
 
    do {
       response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, true); //http://liveobjects.orange-business.com
       m_decoder->decodeDevicesMessage(api, response);
-      response.printToLog(YADOMS_LOG(information));
+      response->printToLog(YADOMS_LOG(information));
       ++page;
    } while (!m_decoder->isFrameComplete(response));;
 }
 
-void COrangeBusiness::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
+void COrangeBusiness::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";
-   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);

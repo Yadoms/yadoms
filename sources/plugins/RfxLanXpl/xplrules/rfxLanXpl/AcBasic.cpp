@@ -88,7 +88,7 @@ namespace xplrules
       // ICommandRule implementation
       boost::shared_ptr<xplcore::CXplMessage> CAcBasic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand>& commandData,
                                                                          const std::string& rfxAddress,
-                                                                         const shared::CDataContainer& innerDetails)
+                                                                         const boost::shared_ptr<shared::CDataContainer>& innerDetails)
       {
          ////////////////////////////
          // do some checks
@@ -164,9 +164,9 @@ namespace xplrules
       // [END] ICommandRule implemntation
 
 
-      CDeviceContainer CAcBasic::generateDeviceParameters(shared::CDataContainer& configuration) const
+      CDeviceContainer CAcBasic::generateDeviceParameters(boost::shared_ptr<shared::CDataContainer>& configuration) const
       {
-         auto deviceId = configuration.get<std::string>("deviceAddress");
+         auto deviceId = configuration->get<std::string>("deviceAddress");
          std::string commercialName("ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, Düwi, HomeEasy UK/EU");
 
          CDeviceIdentifier device(deviceId, commercialName, m_protocol, m_protocol);

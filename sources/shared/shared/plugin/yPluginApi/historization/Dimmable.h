@@ -1,6 +1,5 @@
 #pragma once
-#include <shared/Export.h>
-#include "typeInfo/IntTypeInfo.h"
+#include "../typeInfo/IntTypeInfo.h"
 #include "SingleHistorizableData.hpp"
 
 namespace shared
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A dimmable switch historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CDimmable : public CSingleHistorizableData<int>
+            class CDimmable : public CSingleHistorizableData<int>
             {
             public:
                static const typeInfo::CIntTypeInfo DimmableDefaultTypeInfo;
@@ -24,16 +23,16 @@ namespace shared
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
                ///\param[in] measureType     The measure type (normally kAbsolute)
+               ///\param[in] additionalInfo  The type information
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CDimmable(const std::string& keywordName,
                                   const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet,
                                   const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                  const typeInfo::CIntTypeInfo& additionalInfo = DimmableDefaultTypeInfo);
+                                  const typeInfo::CIntTypeInfo& additionalInfo = DimmableDefaultTypeInfo,
+                                  const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CDimmable();
+               virtual ~CDimmable() = default;
 
                //-----------------------------------------------------
                ///\brief                     Set value from Yadoms command

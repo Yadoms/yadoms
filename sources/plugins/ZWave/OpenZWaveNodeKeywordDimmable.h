@@ -21,7 +21,7 @@ public:
    // IOpenZWaveKeyword implementation
    bool sendCommand(const std::string& commandData) override;
    boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue() override;
-   shared::CDataContainer serialize() override;
+   boost::shared_ptr<shared::CDataContainer> serialize() override;
    // [END] IOpenZWaveKeyword implementation
 
 private:
@@ -30,7 +30,7 @@ private:
    /// \param [in]   value The initial value
    /// \return       The value in full range
    //--------------------------------------------------------------
-   int fixValue(int value);
+   static int fixValue(int value);
 
    boost::shared_ptr<shared::plugin::yPluginApi::historization::CDimmable> m_keyword;
 };

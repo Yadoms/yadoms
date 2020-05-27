@@ -13,8 +13,8 @@ public:
 
    urlManagerMock();
 
-   void addRegisteredEquipmentsMessageReturned(shared::CDataContainer newMessage);
-   void addMessagesForEquipment(shared::CDataContainer newMessage);
+   void addRegisteredEquipmentsMessageReturned(boost::shared_ptr<shared::CDataContainer> newMessage);
+   void addMessagesForEquipment(boost::shared_ptr<shared::CDataContainer> newMessage);
 
    //--------------------------------------------------------------
    /// \brief	    get all equipments from the website
@@ -24,10 +24,10 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer getRegisteredEquipments(const std::string &apikey,
+   boost::shared_ptr<shared::CDataContainer> getRegisteredEquipments(const std::string &apikey,
                                                   const int page,
                                                   const bool activated,
-                                                  const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+                                                  const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
 
    //--------------------------------------------------------------
    /// \brief	    get information from a specific device
@@ -36,9 +36,9 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer getDeviceInformation(const std::string &apikey, 
+   boost::shared_ptr<shared::CDataContainer> getDeviceInformation(const std::string &apikey,
                                                const std::string &devEUI,
-                                               const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+                                               const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
 
    //--------------------------------------------------------------
    /// \brief	    list command information
@@ -47,15 +47,15 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer listDeviceCommands(const std::string &apikey,
+   boost::shared_ptr<shared::CDataContainer> listDeviceCommands(const std::string &apikey,
                                              const std::string &devEUI,
                                              const int page,
-                                             const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+                                             const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
 
 private:
 
    // All simulated messages
-   shared::CDataContainer RegisteredEquipments;
-   shared::CDataContainer DeviceInformation;
-   shared::CDataContainer DeviceMessages;
+   boost::shared_ptr<shared::CDataContainer> RegisteredEquipments;
+   boost::shared_ptr<shared::CDataContainer> DeviceInformation;
+   boost::shared_ptr<shared::CDataContainer> DeviceMessages;
 };

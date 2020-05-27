@@ -8,7 +8,7 @@ namespace pluginSystem
    CInformation::CInformation(const boost::filesystem::path& pluginPath)
       : m_path(pluginPath),
         m_isSupportedOnThisPlatform(true),
-        m_package(boost::make_shared<shared::CDataContainer>())
+        m_package(shared::CDataContainer::make())
    {
       try
       {
@@ -30,7 +30,7 @@ namespace pluginSystem
 
          try
          {
-            m_version = shared::versioning::CVersion(m_package->get<std::string>("version"));
+            m_version = shared::versioning::CSemVer(m_package->get<std::string>("version"));
          }
          catch (std::exception&)
          {
@@ -86,7 +86,7 @@ namespace pluginSystem
       return m_type;
    }
 
-   const shared::versioning::CVersion& CInformation::getVersion() const
+   const shared::versioning::CSemVer& CInformation::getVersion() const
    {
       return m_version;
    }

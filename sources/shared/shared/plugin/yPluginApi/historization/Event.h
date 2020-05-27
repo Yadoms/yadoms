@@ -1,8 +1,5 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/DataContainer.h>
-#include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/Field.hpp>
 #include "IHistorizable.h"
 
 namespace shared
@@ -16,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A event historizable object (no data)
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CEvent : public IHistorizable
+            class CEvent : public IHistorizable
             {
             public:
                //-----------------------------------------------------
@@ -27,10 +24,7 @@ namespace shared
                explicit CEvent(const std::string& keywordName,
                                const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CEvent();
+               virtual ~CEvent() = default;
 
                // IHistorizable implementation
                const std::string& getKeyword() const override;
@@ -38,7 +32,8 @@ namespace shared
                const EKeywordAccessMode& getAccessMode() const override;
                std::string formatValue() const override;
                const EMeasureType& getMeasureType() const override;
-               CDataContainer getTypeInfo() const override;
+               boost::shared_ptr<CDataContainer> getTypeInfo() const override;
+               const EHistoryDepth& getHistoryDepth() const override;
                // [END] IHistorizable implementation
 
             private:

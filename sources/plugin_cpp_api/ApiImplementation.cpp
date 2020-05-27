@@ -11,16 +11,13 @@
 #include "DeviceRemoved.h"
 #include "YadomsInformation.h"
 #include <shared/communication/SmallHeaderMessageCutter.h>
+#include <Poco/Net/HTTPClientSession.h>
 
 namespace plugin_cpp_api
 {
    CApiImplementation::CApiImplementation()
       : m_initialized(false),
         m_stopRequested(false)
-   {
-   }
-
-   CApiImplementation::~CApiImplementation()
    {
    }
 
@@ -50,18 +47,18 @@ namespace plugin_cpp_api
             throw std::runtime_error(
                (boost::format("CApiImplementation::send \"%1%\", request is not fully initialized") % msg.descriptor()->full_name()).str());
 
-         const auto pbMessageSize = msg.ByteSize();
+         const auto pbMessageSize = msg.ByteSizeLong();
          const auto serializedMessage = boost::make_shared<unsigned char[]>(pbMessageSize);
          if (!msg.SerializeWithCachedSizesToArray(serializedMessage.get()))
             throw std::runtime_error(
                (boost::format("CApiImplementation::send \"%1%\", fail to serialize request (too big ?)") % msg.descriptor()->full_name()).str());
 
-         const auto cuttedMessage = m_messageCutter->cut(serializedMessage,
+         const auto cutMessage = m_messageCutter->cut(serializedMessage,
                                                          pbMessageSize);
 
-         if (!cuttedMessage->empty())
+         if (!cutMessage->empty())
          {
-            for (const auto& part : *cuttedMessage)
+            for (const auto& part : *cutMessage)
             {
                m_sendMessageQueue->send(part->formattedMessage(),
                                         part->formattedSize(),
@@ -226,12 +223,33 @@ namespace plugin_cpp_api
       m_dataPath = boost::make_shared<const boost::filesystem::path>(msg.datapath());
       m_logFile = boost::make_shared<const boost::filesystem::path>(msg.logfile());
       m_logLevel = boost::make_shared<const std::string>(msg.loglevel());
+      if (msg.has_proxysettings())
+      {
+         Poco::Net::HTTPClientSession::ProxyConfig proxySettings;
+         const auto& providedProxySettings = msg.proxysettings();
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName("host")))
+            proxySettings.host = providedProxySettings.host();
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName("port")))
+            proxySettings.port = static_cast<unsigned short>(providedProxySettings.port());
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName("username")))
+            proxySettings.username = providedProxySettings.username();
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName("password")))
+            proxySettings.password = providedProxySettings.password();
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName("bypassRegex")))
+            proxySettings.nonProxyHosts = providedProxySettings.bypassregex();
+         Poco::Net::HTTPClientSession::setGlobalProxyConfig(proxySettings);
+      }
       setInitialized();
    }
 
    void CApiImplementation::processUpdateConfiguration(const plugin_IPC::toPlugin::Configuration& msg)
    {
-      m_pluginEventHandler.postEvent(kEventUpdateConfiguration, shared::CDataContainer(msg.configuration()));
+      m_pluginEventHandler.postEvent(kEventUpdateConfiguration, shared::CDataContainer::make(msg.configuration()));
    }
 
    void CApiImplementation::setInitialized()
@@ -248,12 +266,12 @@ namespace plugin_cpp_api
    {
       const boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> query =
          boost::make_shared<CBindingQuery>(msg,
-                                           [&](const shared::CDataContainer& r)
+                                           [&](const boost::shared_ptr<shared::CDataContainer>& r)
                                            {
                                               plugin_IPC::toYadoms::msg ans;
                                               auto answer = ans.mutable_bindingqueryanswer();
                                               answer->set_success(true);
-                                              answer->set_result(r.serialize());
+                                              answer->set_result(r->serialize());
                                               send(ans);
                                            },
                                            [&](const std::string& r)
@@ -272,12 +290,12 @@ namespace plugin_cpp_api
    {
       const boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> query =
          boost::make_shared<CDeviceConfigurationSchemaRequest>(msg,
-                                                               [&](const shared::CDataContainer& r)
+                                                               [&](const boost::shared_ptr<shared::CDataContainer>& r)
                                                                {
                                                                   plugin_IPC::toYadoms::msg ans;
                                                                   auto answer = ans.mutable_deviceconfigurationschemaanswer();
                                                                   answer->set_success(true);
-                                                                  answer->set_result(r.serialize());
+                                                                  answer->set_result(r->serialize());
                                                                   send(ans);
                                                                },
                                                                [&](const std::string& r)
@@ -306,15 +324,15 @@ namespace plugin_cpp_api
 
    void CApiImplementation::processExtraQuery(const plugin_IPC::toPlugin::ExtraQuery& msg)
    {
-      auto taskId = msg.taskid();
+      const auto& taskId = msg.taskid();
       const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> command =
          boost::make_shared<CExtraQuery>(msg,
-                                         [&, taskId](const shared::CDataContainer& r)
+                                         [&, taskId](const boost::shared_ptr<shared::CDataContainer>& r)
                                          {
                                             plugin_IPC::toYadoms::msg ans;
                                             auto answer = ans.mutable_extraqueryanswer();
                                             answer->set_success(true);
-                                            answer->set_result(r.serialize());
+                                            answer->set_result(r->serialize());
                                             answer->set_taskid(taskId);
                                             send(ans);
                                          },
@@ -401,7 +419,7 @@ namespace plugin_cpp_api
       }
       request->set_custommessageid(customMessageId);
 
-      shared::CDataContainer dc(customMessageDataParams);
+      const shared::CDataContainer dc(customMessageDataParams);
       request->set_custommessagedata(dc.serialize());
       try
       {
@@ -426,7 +444,7 @@ namespace plugin_cpp_api
                                           const std::string& type,
                                           const std::string& model,
                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                                          const shared::CDataContainer& details)
+                                          boost::shared_ptr<shared::CDataContainer> details)
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declaredevice();
@@ -434,8 +452,8 @@ namespace plugin_cpp_api
       request->set_type(type);
       request->set_model(model);
       fillHistorizable(keyword, request->add_keywords());
-      if (!details.empty())
-         request->set_details(details.serialize());
+      if (!details->empty())
+         request->set_details(details->serialize());
       try
       {
          send(req);
@@ -443,7 +461,7 @@ namespace plugin_cpp_api
       catch (std::exception& e)
       {
          std::cerr << "Exception " << e.what() << std::endl;
-         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", " << keyword->getKeyword() << ", " << details.serialize() << ")" <<
+         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", " << keyword->getKeyword() << ", " << details->serialize() << ")" <<
             std::endl;
          throw;
       }
@@ -454,7 +472,7 @@ namespace plugin_cpp_api
                                           const std::string& model,
                                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>&
                                           keywords,
-                                          const shared::CDataContainer& details)
+                                          boost::shared_ptr<shared::CDataContainer> details)
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declaredevice();
@@ -463,8 +481,8 @@ namespace plugin_cpp_api
       request->set_model(model);
       for (const auto& keyword : keywords)
          fillHistorizable(keyword, request->add_keywords());
-      if (!details.empty())
-         request->set_details(details.serialize());
+      if (!details->empty())
+         request->set_details(details->serialize());
       try
       {
          send(req);
@@ -479,7 +497,7 @@ namespace plugin_cpp_api
                        {
                           std::cerr << keyword->getKeyword() << ", ";
                        });
-         std::cerr << "}, " << details.serialize() << ")" << std::endl;
+         std::cerr << "}, " << details->serialize() << ")" << std::endl;
          throw;
       }
    }
@@ -540,13 +558,13 @@ namespace plugin_cpp_api
       return exists;
    }
 
-   shared::CDataContainer CApiImplementation::getDeviceConfiguration(const std::string& device) const
+   boost::shared_ptr<shared::CDataContainer> CApiImplementation::getDeviceConfiguration(const std::string& device) const
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_deviceconfigurationrequest();
       request->set_device(device);
 
-      shared::CDataContainer configuration;
+      boost::shared_ptr<shared::CDataContainer> configuration = shared::CDataContainer::make();
       try
       {
          send(req,
@@ -556,7 +574,7 @@ namespace plugin_cpp_api
               },
               [&](const plugin_IPC::toPlugin::msg& ans) -> void
               {
-                 configuration.deserialize(ans.deviceconfigurationanswer().configuration());
+                 configuration->deserialize(ans.deviceconfigurationanswer().configuration());
               });
       }
       catch (std::exception& e)
@@ -569,12 +587,12 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::updateDeviceConfiguration(const std::string& device,
-                                                      const shared::CDataContainer& configuration) const
+                                                      boost::shared_ptr<shared::CDataContainer> configuration) const
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_updatedeviceconfiguration();
       request->set_device(device);
-      request->set_configuration(configuration.serialize());
+      request->set_configuration(configuration->serialize());
       try
       {
          send(req);
@@ -582,18 +600,18 @@ namespace plugin_cpp_api
       catch (std::exception& e)
       {
          std::cerr << "Exception " << e.what() << std::endl;
-         std::cerr << "Call was : updateDeviceConfiguration(" << device << ", " << configuration.serialize() << ")" << std::endl;
+         std::cerr << "Call was : updateDeviceConfiguration(" << device << ", " << configuration->serialize() << ")" << std::endl;
          throw;
       }
    }
 
-   shared::CDataContainer CApiImplementation::getDeviceDetails(const std::string& device) const
+   boost::shared_ptr<shared::CDataContainer> CApiImplementation::getDeviceDetails(const std::string& device) const
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_devicedetails();
       request->set_device(device);
 
-      shared::CDataContainer details;
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
       try
       {
          send(req,
@@ -603,7 +621,7 @@ namespace plugin_cpp_api
               },
               [&](const plugin_IPC::toPlugin::msg& ans) -> void
               {
-                 details.deserialize(ans.devicedetails().details());
+                 details->deserialize(ans.devicedetails().details());
               });
       }
       catch (std::exception& e)
@@ -616,12 +634,12 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::updateDeviceDetails(const std::string& device,
-                                                const shared::CDataContainer& details) const
+                                                boost::shared_ptr<shared::CDataContainer> details) const
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_updatedevicedetails();
       request->set_device(device);
-      request->set_details(details.serialize());
+      request->set_details(details->serialize());
       try
       {
          send(req);
@@ -629,7 +647,7 @@ namespace plugin_cpp_api
       catch (std::exception& e)
       {
          std::cerr << "Exception " << e.what() << std::endl;
-         std::cerr << "Call was : updateDeviceDetails(" << device << ", " << details.serialize() << ")" << std::endl;
+         std::cerr << "Call was : updateDeviceDetails(" << device << ", " << details->serialize() << ")" << std::endl;
          throw;
       }
    }
@@ -758,7 +776,7 @@ namespace plugin_cpp_api
       }
       request->set_custommessageid(customMessageId);
       request->set_device(device);
-      shared::CDataContainer dc(customMessageDataParams);
+      const shared::CDataContainer dc(customMessageDataParams);
       request->set_custommessagedata(dc.serialize());
       try
       {
@@ -804,8 +822,8 @@ namespace plugin_cpp_api
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declarekeywords();
       request->set_device(device);
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         fillHistorizable(*keyword, request->add_keywords());
+      for (const auto& keyword : keywords)
+         fillHistorizable(keyword, request->add_keywords());
 
       try
       {
@@ -828,14 +846,14 @@ namespace plugin_cpp_api
 
    void CApiImplementation::declareKeyword(const std::string& device,
                                            boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                                           const shared::CDataContainer& details)
+                                           boost::shared_ptr<shared::CDataContainer> details)
    {
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declarekeyword();
       request->set_device(device);
       fillHistorizable(keyword, request->mutable_keyword());
-      if (!details.empty())
-         request->set_details(details.serialize());
+      if (!details->empty())
+         request->set_details(details->serialize());
       try
       {
          send(req);
@@ -843,7 +861,7 @@ namespace plugin_cpp_api
       catch (std::exception& e)
       {
          std::cerr << "Exception " << e.what() << std::endl;
-         std::cerr << "Call was : declareKeyword(" << device << ", " << keyword << ", " << details.serialize() << ")" << std::endl;
+         std::cerr << "Call was : declareKeyword(" << device << ", " << keyword << ", " << details->serialize() << ")" << std::endl;
          throw;
       }
    }
@@ -942,8 +960,9 @@ namespace plugin_cpp_api
       out->set_name(in->getKeyword());
       out->set_type(in->getCapacity().getType().toString());
       out->set_units(in->getCapacity().getUnit());
-      out->set_typeinfo(in->getTypeInfo().serialize());
+      out->set_typeinfo(in->getTypeInfo()->serialize());
       out->set_measure(in->getMeasureType().toString());
+      out->set_historydepth(in->getHistoryDepth().toString());
    }
 
    void CApiImplementation::fillCapacity(const shared::plugin::yPluginApi::CStandardCapacity& in,
@@ -1074,11 +1093,11 @@ namespace plugin_cpp_api
       plugin_IPC::toYadoms::msg msg;
       auto message = msg.mutable_historizedata();
       message->set_device(device);
-      for (auto data = dataVect.begin(); data != dataVect.end(); ++data)
+      for (const auto& data : dataVect)
       {
          auto value = message->add_value();
-         fillHistorizable(*data, value->mutable_historizable());
-         value->set_formattedvalue((*data)->formatValue());
+         fillHistorizable(data, value->mutable_historizable());
+         value->set_formattedvalue(data->formatValue());
       }
       try
       {
@@ -1107,12 +1126,12 @@ namespace plugin_cpp_api
       return m_pluginInformation;
    }
 
-   shared::CDataContainer CApiImplementation::getConfiguration()
+   boost::shared_ptr<shared::CDataContainer> CApiImplementation::getConfiguration()
    {
       plugin_IPC::toYadoms::msg req;
       req.mutable_configurationrequest();
 
-      shared::CDataContainer configuration;
+      boost::shared_ptr<shared::CDataContainer> configuration = shared::CDataContainer::make();
       try
       {
          send(req,
@@ -1122,7 +1141,7 @@ namespace plugin_cpp_api
               },
               [&](const plugin_IPC::toPlugin::msg& ans) -> void
               {
-                 configuration.deserialize(ans.configurationanswer().configuration());
+                 configuration->deserialize(ans.configurationanswer().configuration());
               });
       }
       catch (std::exception& e)

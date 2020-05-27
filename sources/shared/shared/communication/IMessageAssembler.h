@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	This interface manage assembling of cutted messages
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT IMessageAssembler
+      class IMessageAssembler
       {
       public:
          virtual ~IMessageAssembler()

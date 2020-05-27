@@ -54,7 +54,6 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	      Send a command to a keyword
-   /// \param [in]   classIdentifier   The class identifier for the keyword
    /// \param [in]   keyword           The keyword name
    /// \param [in]   commandData       The command data
    //--------------------------------------------------------------   
@@ -62,10 +61,10 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	      get the last value of a keyword
-   /// \param [in]   classIdentifier   The class identifier for the keyword
    /// \param [in]   keyword           The keyword name
    //--------------------------------------------------------------   
-   const boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue(const std::string& keyword);
+   boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue(
+      const std::string& keyword);
 
    //--------------------------------------------------------------
    /// \brief	      Check if this node match to a pair [home,node]
@@ -73,36 +72,36 @@ public:
    /// \param [in]   nodeId   The node id
    /// \return       true if current node as the same homeId and nodeId
    //--------------------------------------------------------------     
-   const bool match(const uint32 homeId, const uint8 nodeId);
+   bool match(const uint32 homeId, const uint8 nodeId) const;
 
    //--------------------------------------------------------------
    /// \brief	      Get the homeId
    /// \return       The homeId
-   //--------------------------------------------------------------      
-   const uint32 getHomeId();
+   //--------------------------------------------------------------
+   uint32 getHomeId() const;
    //--------------------------------------------------------------
    /// \brief	      Get the nodeId
    /// \return       The nodeId
    //--------------------------------------------------------------      
-   const uint8 getNodeId();
+   uint8 getNodeId() const;
 
    //--------------------------------------------------------------
    /// \brief	      Get the configuration schema
    /// \return       the configuration schema
    //--------------------------------------------------------------      
-   shared::CDataContainer getConfigurationSchema();
+   boost::shared_ptr<shared::CDataContainer> getConfigurationSchema();
 
    //--------------------------------------------------------------
    /// \brief	      Get the configuration values
    /// \return       the configuration values
    //--------------------------------------------------------------      
-   shared::CDataContainer getConfigurationValues();
+   boost::shared_ptr<shared::CDataContainer> getConfigurationValues();
 
    //--------------------------------------------------------------
    /// \brief	      Set the configuration values
    /// \param [in]   configuration     the configuration values
    //--------------------------------------------------------------      
-   void setConfigurationValues(const shared::CDataContainer &configuration);
+   void setConfigurationValues(const boost::shared_ptr<shared::CDataContainer>&configuration);
 
    //--------------------------------------------------------------
    /// \brief	Update device configuration (self update, from a device notification.) => updates only configuration container
@@ -110,7 +109,7 @@ public:
    /// \param [in] 	   value          The new value
    /// \param [in-out]  configuration  The initial and output configuration values
    //--------------------------------------------------------------
-   void updateNodeConfiguration(const std::string& keyword, const std::string& value, shared::CDataContainer & configuration);
+   void updateNodeConfiguration(const std::string& keyword, const std::string& value, boost::shared_ptr<shared::CDataContainer>& configuration);
 
    //--------------------------------------------------------------
    /// \brief	Get the node extra query from plugins
@@ -124,7 +123,7 @@ public:
    /// \param [in] 	   data           The query data (may be empty)
    /// \return true if successfull
    //--------------------------------------------------------------
-   bool onExtraQuery(const std::string & query, const shared::CDataContainer &data);
+   bool onExtraQuery(const std::string & query, const boost::shared_ptr<shared::CDataContainer>&data);
 
 private:
    //--------------------------------------------------------------

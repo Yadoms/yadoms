@@ -18,15 +18,16 @@ namespace pluginSystem
          CCustomEnumHistorizer(const std::string& keywordName,
                                const yApi::EKeywordAccessMode& keywordAccessMode,
                                const std::vector<std::string>& values);
-         virtual ~CCustomEnumHistorizer();
+         virtual ~CCustomEnumHistorizer() = default;
 
          // yApi::historization::IHistorizable Implementation
          const std::string& getKeyword() const override;
          const yApi::CStandardCapacity& getCapacity() const override;
          const yApi::EKeywordAccessMode& getAccessMode() const override;
          std::string formatValue() const override;
-         const yApi::historization::EMeasureType& getMeasureType() const override;
-         shared::CDataContainer getTypeInfo() const override;
+         const yApi::EMeasureType& getMeasureType() const override;
+         boost::shared_ptr<shared::CDataContainer> getTypeInfo() const override;
+         const yApi::EHistoryDepth& getHistoryDepth() const override;
          // [END]yApi::historization::IHistorizable Implementation
 
       private:

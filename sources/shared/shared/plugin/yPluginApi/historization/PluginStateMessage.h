@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
 #include <shared/DataContainer.h>
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief The plugin state historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CPluginStateMessage : public CSingleHistorizableData<CDataContainer>
+            class CPluginStateMessage : public CSingleHistorizableData<boost::shared_ptr<CDataContainer>>
             {
             public:
                //-----------------------------------------------------
@@ -25,10 +24,7 @@ namespace shared
                explicit CPluginStateMessage(const std::string& keywordName,
                                             const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CPluginStateMessage();
+               virtual ~CPluginStateMessage() = default;
 
                //-----------------------------------------------------
                ///\brief                     Set message
@@ -39,7 +35,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief                     Set message
                ///\param[in] messageId       The message (can be i18n code)
-               ///\param[in] accessMode      The message data (can be used to customize i18n code)
+               ///\param[in] messageData     The message data (can be used to customize i18n code)
                //-----------------------------------------------------
                void setMessage(const std::string& messageId,
                                const std::string& messageData);
@@ -78,5 +74,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

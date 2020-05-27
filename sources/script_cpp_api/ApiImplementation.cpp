@@ -42,7 +42,7 @@ CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptA
 
 CYScriptApiImplementation::~CYScriptApiImplementation()
 {
-   // Delete all global objects allocated by libprotobuf.
+   // Delete all global objects allocated by Protobuf.
    google::protobuf::ShutdownProtobufLibrary();
 }
 
@@ -58,17 +58,17 @@ void CYScriptApiImplementation::sendRequest(const script_IPC::toYadoms::msg& req
       if (!request.IsInitialized())
          throw std::runtime_error((boost::format("CYScriptApiImplementation::send \"%1%\", request is not fully initialized") % request.descriptor()->full_name()).str());
 
-      const auto pbMessageSize = request.ByteSize();
+      const auto pbMessageSize = request.ByteSizeLong();
       const auto serializedMessage = boost::make_shared<unsigned char[]>(pbMessageSize);
       if (!request.SerializeWithCachedSizesToArray(serializedMessage.get()))
          throw std::runtime_error((boost::format("CYScriptApiImplementation::send \"%1%\", fail to serialize request (too big ?)") % request.descriptor()->full_name()).str());
 
-      const auto cuttedMessage = m_messageCutter->cut(serializedMessage,
+      const auto cutMessage = m_messageCutter->cut(serializedMessage,
                                                       pbMessageSize);
 
-      if (!cuttedMessage->empty())
+      if (!cutMessage->empty())
       {
-         for (const auto& part : *cuttedMessage)
+         for (const auto& part : *cutMessage)
          {
             m_sendMessageQueue->send(part->formattedMessage(),
                                      part->formattedSize(),
@@ -85,7 +85,7 @@ void CYScriptApiImplementation::sendRequest(const script_IPC::toYadoms::msg& req
 void CYScriptApiImplementation::receiveAnswer(script_IPC::toScript::msg& answer) const
 {
    // Wait answer
-   auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
+   const auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
    size_t messageSize;
    unsigned int messagePriority;
    const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(m_receiveMessageQueue->get_max_msg_size());

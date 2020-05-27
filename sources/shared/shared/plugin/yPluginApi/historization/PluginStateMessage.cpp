@@ -16,13 +16,9 @@ namespace shared
 
             CPluginStateMessage::CPluginStateMessage(const std::string& keywordName,
                                                      const EKeywordAccessMode& accessMode)
-               : CSingleHistorizableData<CDataContainer>(keywordName,
+               : CSingleHistorizableData<boost::shared_ptr<CDataContainer>>(keywordName,
                                                          PluginStateMessageCapacity(),
                                                          accessMode)
-            {
-            }
-
-            CPluginStateMessage::~CPluginStateMessage()
             {
             }
 
@@ -35,9 +31,9 @@ namespace shared
             void CPluginStateMessage::setMessage(const std::string& messageId,
                                                  const std::string& messageData)
             {
-               CDataContainer dc;
-               dc.set("messageId", messageId);
-               dc.set("messageData", messageData);
+               boost::shared_ptr<CDataContainer> dc = shared::CDataContainer::make();
+               dc->set("messageId", messageId);
+               dc->set("messageData", messageData);
                set(dc);
             }
 
@@ -66,18 +62,16 @@ namespace shared
 
             std::string CPluginStateMessage::getMessageId() const
             {
-               return get().getWithDefault("messageId",
+               return get()->getWithDefault("messageId",
                                            std::string());
             }
 
             std::string CPluginStateMessage::getMessageData() const
             {
-               return get().getWithDefault("messageData",
+               return get()->getWithDefault("messageData",
                                            std::string());
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

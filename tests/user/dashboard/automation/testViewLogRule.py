@@ -26,20 +26,20 @@ class ViewLogRule(unittest.TestCase):
       config.deploy("nominal")
       scripts.deploy(["DisplayServerVersion"])
       self.serverProcess = yadomsServer.start(["logLevel=information"])
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
       
    def test_viewLogStoppedRule(self):
-      print '=== view log of stopped rule test ==='
+      print ('=== view log of stopped rule test ===')
 
-      print '  Open rules dashboard'
+      print ('  Open rules dashboard')
       dashboard.open(self.browser)
       dashboard.openAutomation(self.browser)
       ruleNumber = 0
 
-      print '  Start and stop the rule (to have some log)'
+      print ('  Start and stop the rule (to have some log)')
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).is_enabled())
       dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).click()
@@ -48,57 +48,57 @@ class ViewLogRule(unittest.TestCase):
       dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).click()
       WebDriverWait(self.browser, 10).until(lambda browser: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped)
       
-      print '  View log'
+      print ('  View log')
       dashboard.automation.getRuleLogButton(rulesTable, ruleNumber).click()
 
-      print '  Check log'
+      print ('  Check log')
       logModal = dashboard.automation.waitLogRuleModal(self.browser)
       self.assertIsNotNone(re.match(r'.*#### START ####.*', logModal.getLogContent(), re.DOTALL))
 
-      print '  Clear log'
+      print ('  Clear log')
       logModal.getClearButton().click()
       confirmationModal = modals.waitOkCancelModal(self.browser)
       confirmationModal.ok()
 
-      print '  Reopen log modal'
+      print ('  Reopen log modal')
       dashboard.automation.getRuleLogButton(rulesTable, ruleNumber).click()
       self.assertIsNone(re.match(r'.*#### START ####.*', logModal.getLogContent(), re.DOTALL))
 
-      print '  Close log modal'
+      print ('  Close log modal')
       logModal.getConfirmButton().click()
       
       
    def test_viewLogRunningRule(self):
-      print '=== view log of running rule test ==='
+      print ('=== view log of running rule test ===')
 
-      print '  Open rules dashboard'
+      print ('  Open rules dashboard')
       dashboard.open(self.browser)
       dashboard.openAutomation(self.browser)
       ruleNumber = 0
 
-      print '  Start the rule'
+      print ('  Start the rule')
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).is_enabled())
       dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).click()
       WebDriverWait(self.browser, 10).until(lambda browser: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)
       
-      print '  View log'
+      print ('  View log')
       dashboard.automation.getRuleLogButton(rulesTable, ruleNumber).click()
 
-      print '  Check log'
+      print ('  Check log')
       logModal = dashboard.automation.waitLogRuleModal(self.browser)
       self.assertIsNotNone(re.match(r'.*#### START ####.*', logModal.getLogContent(), re.DOTALL))
 
-      print '  Clear log'
+      print ('  Clear log')
       logModal.getClearButton().click()
       confirmationModal = modals.waitOkCancelModal(self.browser)
       confirmationModal.ok()
 
-      print '  Reopen log modal'
+      print ('  Reopen log modal')
       dashboard.automation.getRuleLogButton(rulesTable, ruleNumber).click()
       self.assertIsNone(re.match(r'.*#### START ####.*', logModal.getLogContent(), re.DOTALL))
 
-      print '  Close log modal'
+      print ('  Close log modal')
       logModal.getConfirmButton().click()
 
    def tearDown(self):

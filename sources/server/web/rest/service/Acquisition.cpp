@@ -21,10 +21,6 @@ namespace web
          {
          }
 
-         CAcquisition::~CAcquisition()
-         {
-         }
-
          void CAcquisition::configureDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("keyword")("lastdata"), CAcquisition::getKeywordListLastData);
@@ -108,6 +104,7 @@ namespace web
                {
                   try
                   {
+                     // ReSharper disable once CppExpressionWithoutSideEffects
                      m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
                      keywordResult.set(info, true);
                   }
@@ -124,7 +121,7 @@ namespace web
                else if (info == "lastValueDate")
                {
                   const auto lastAcq = m_dataProvider->getKeywordRequester()->getKeywordLastAcquisition(keywordId, false);
-                  if (lastAcq)
+                  if (lastAcq && lastAcq->Date != boost::posix_time::not_a_date_time)
                      keywordResult.set(info, lastAcq->Date);
                   else
                      keywordResult.set(info, std::string());
@@ -182,8 +179,8 @@ namespace web
                }
                else
                {
-               YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
-                  "\", ignored : unknown info label";
+                  YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
+                     "\", ignored : unknown info label";
                }
             }
             catch (std::exception& exception)
@@ -199,30 +196,21 @@ namespace web
          {
             try
             {
-               if (parameters.size() > 1)
+               shared::CDataContainer content(requestContent);
+               auto keywords = content.get<std::vector<int>>("keywords");
+
+               // erase all duplicates, if any
+               keywords.erase(unique(keywords.begin(), keywords.end()), keywords.end());
+
+               shared::CDataContainer result;
+               for (const auto& keywordId : keywords)
                {
-                  shared::CDataContainer content(requestContent);
-                  if (content.containsChild("keywords"))
-                  {
-                     auto keywords = content.get<std::vector<int>>("keywords");
-
-                     // erase all duplicates, if any
-                     sort(keywords.begin(), keywords.end());
-                     keywords.erase(unique(keywords.begin(), keywords.end()), keywords.end());
-
-                     shared::CDataContainer result;
-                     for (const auto& keywordId : keywords)
-                     {
-                        shared::CDataContainer keywordResult;
-                        readKeywordInfo(keywordId, "lastValue", keywordResult);
-                        result.set(boost::lexical_cast<std::string>(keywordId),
-                                   keywordResult);
-                     }
-                     return CResult::GenerateSuccess(result);
-                  }
-                  return CResult::GenerateError("invalid parameter. Can not retrieve keywords in request content");
+                  shared::CDataContainer keywordResult;
+                  readKeywordInfo(keywordId, "lastValue", keywordResult);
+                  result.set(std::to_string(keywordId),
+                             keywordResult);
                }
-               return CResult::GenerateError("invalid parameter.");
+               return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
@@ -259,7 +247,7 @@ namespace web
                         for (const auto& info : infoRequested)
                            readKeywordInfo(keywordId, info, keywordResult);
 
-                        result.set(boost::lexical_cast<std::string>(keywordId),
+                        result.set(std::to_string(keywordId),
                                    keywordResult);
                      }
                      return CResult::GenerateSuccess(result);
@@ -301,18 +289,16 @@ namespace web
                   auto allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId,
                                                                                            timeFrom,
                                                                                            timeTo);
-                  std::vector<shared::CDataContainer> objectList;
+                  boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make(32, allData.size());
+                  result->createArray("data");
 
                   for (auto& i : allData)
                   {
-                     shared::CDataContainer result;
-                     result.set("date", boost::posix_time::to_iso_string(i.get<0>()));
-                     result.set("key", i.get<1>());
-                     objectList.push_back(result);
+                     shared::CDataContainer currentVal(32,2);
+                     currentVal.set("date", boost::posix_time::to_iso_string(i.get<0>()));
+                     currentVal.set("key", i.get<1>());
+                     result->appendArray("data", currentVal);
                   }
-
-                  shared::CDataContainer result;
-                  result.set<std::vector<shared::CDataContainer>>("data", objectList);
                   return CResult::GenerateSuccess(result);
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
@@ -346,7 +332,7 @@ namespace web
                   for (const auto& info : infoRequested)
                      readKeywordInfo(keywordId, info, keywordResult);
 
-                  result.set(boost::lexical_cast<std::string>(keywordId),
+                  result.set(std::to_string(keywordId),
                              keywordResult);
 
                   return CResult::GenerateSuccess(result);

@@ -24,10 +24,6 @@ namespace pluginSystem
       {
       }
 
-      CCustomEnumHistorizer::~CCustomEnumHistorizer()
-      {
-      }
-
       const std::string& CCustomEnumHistorizer::getKeyword() const
       {
          return m_keywordName;
@@ -48,16 +44,19 @@ namespace pluginSystem
          return shared::CStringExtension::cultureInvariantToString(m_value);
       }
 
-      const yApi::historization::EMeasureType& CCustomEnumHistorizer::getMeasureType() const
+      const yApi::EMeasureType& CCustomEnumHistorizer::getMeasureType() const
       {
-         return yApi::historization::EMeasureType::kAbsolute;
+         return yApi::EMeasureType::kAbsolute;
       }
 
-      shared::CDataContainer CCustomEnumHistorizer::getTypeInfo() const
+      boost::shared_ptr<shared::CDataContainer> CCustomEnumHistorizer::getTypeInfo() const
       {
          return m_typeInfo.serialize();
       }
+
+      const yApi::EHistoryDepth& CCustomEnumHistorizer::getHistoryDepth() const
+      {
+         return yApi::EHistoryDepth::kDefault;
+      }
    }
 } // namespace pluginSystem::internalPlugin
-
-

@@ -8,13 +8,14 @@ namespace database
    class IDeviceRequester
    {
    public:
+      virtual ~IDeviceRequester() = default;
 
       //--------------------------------------------------------------
       /// \brief                          Check if device exists
       /// \param [in] deviceId            The device Id
       /// \return                         true if exist, else false
       //--------------------------------------------------------------
-      virtual bool deviceExists(const int deviceId) const = 0;
+      virtual bool deviceExists(int deviceId) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Check if device exists
@@ -22,13 +23,13 @@ namespace database
       /// \param [in] deviceName          The device name (plugin internal name)
       /// \return                         true if exist, else false
       //--------------------------------------------------------------
-      virtual bool deviceExists(const int pluginId,
+      virtual bool deviceExists(int pluginId,
                                 const std::string& deviceName) const = 0;
 
       //--------------------------------------------------------------
-      /// \brief                          Get device informations
+      /// \brief                          Get device information
       /// \param [in] deviceId            Device Id
-      /// \param [in] blacklistedIncluded Even if device is blaklisted
+      /// \param [in] blacklistedIncluded Even if device is blacklisted
       /// \throw                          shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CDevice> getDevice(int deviceId,
@@ -38,7 +39,7 @@ namespace database
       /// \brief                          Get a device identified by (pluginId and name).
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
-      /// \param [in] blacklistedIncluded Even if device is blaklisted
+      /// \param [in] blacklistedIncluded Even if device is blacklisted
       /// \return                         The device found
       /// \throw                          shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
@@ -53,7 +54,8 @@ namespace database
       /// \return                         The list of found devices
       /// \throw                          shared::exception::CEmptyResult if none found
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevicesIdFromFriendlyName(const std::string& friendlyName) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevicesIdFromFriendlyName(
+         const std::string& friendlyName) const = 0;
 
 
       //--------------------------------------------------------------
@@ -64,7 +66,8 @@ namespace database
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,
-                                                                                      const shared::plugin::yPluginApi::EKeywordAccessMode&
+                                                                                      const shared::plugin::yPluginApi::
+                                                                                      EKeywordAccessMode&
                                                                                       capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
@@ -88,6 +91,16 @@ namespace database
          const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Get the device list which contains at least one keyword with matching history depth policy
+      /// \param [in] historyDepth        The history depth
+      /// \return                         the device list
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithKeywordHistoryDepth(
+         const shared::plugin::yPluginApi::EHistoryDepth& historyDepth) const = 0;
+
+
+      //--------------------------------------------------------------
       /// \brief                          Get the compatible device list which is compatible to a given device
       /// \param [in] refDevice           The reference device ID
       /// \return                         the device list
@@ -100,16 +113,18 @@ namespace database
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
       /// \param [in] friendlyName        The user friendly device name
+      /// \param [in] type                The device type
       /// \param [in] model               The device model or description (ex : "Oregon Scientific CN185")
-      /// \param [in] model               A free string managed by plugin
+      /// \param [in] details             The device details
       /// \return                         The device created (null if creation failed)
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId,
                                                                 const std::string& name,
                                                                 const std::string& friendlyName,
-                                                                const std::string& type, const std::string& model,
-                                                                const shared::CDataContainer& details) = 0;
+                                                                const std::string& type,
+                                                                const std::string& model,
+                                                                boost::shared_ptr<shared::CDataContainer> details) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices
@@ -119,12 +134,28 @@ namespace database
       virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(bool blacklistedIncluded = false) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief           Get devices with their properties from device ID list
+      /// \param [in] deviceIds Device IDs list
+      /// \return          List of registered devices
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(const std::set<int>& deviceIds) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief           List all devices attached to a plugin instance
       /// \param [in] pluginId            The pluginId
       /// \param [in] blacklistedIncluded Return also blacklisted devices
       /// \return          List of registered devices attached to a plugin instance
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(int pluginId,
+                                                                           bool blacklistedIncluded = false) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief           List all devices matching a list of names
+      /// \param [in] names            The expected names list
+      /// \param [in] blacklistedIncluded Return also blacklisted devices
+      /// \return          List of registered devices matching at least one of names
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(const std::vector<std::string>& names,
                                                                            bool blacklistedIncluded = false) const = 0;
 
       //--------------------------------------------------------------
@@ -146,7 +177,7 @@ namespace database
                                             const std::string& newFriendlyName) = 0;
 
       //--------------------------------------------------------------
-      /// \brief                          Rename a device (use carefully, this name is use by plugin to historize data)
+      /// \brief                          Rename a device (use carefully, this name is used by plugin to historize data)
       /// \param [in] deviceId            The device id
       /// \param [in] newName             The new name
       /// \throw  shared::exception::CEmptyResult if fails
@@ -162,7 +193,7 @@ namespace database
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateDeviceConfiguration(int deviceId,
-                                             const shared::CDataContainer& configuration) = 0;
+                                             boost::shared_ptr<shared::CDataContainer> configuration) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device details
@@ -171,7 +202,7 @@ namespace database
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateDeviceDetails(int deviceId,
-                                       const shared::CDataContainer& details) = 0;
+                                       boost::shared_ptr<shared::CDataContainer> details) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device model
@@ -198,7 +229,7 @@ namespace database
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateDeviceBlacklistState(int deviceId,
-                                              const bool blacklist) = 0;
+                                              bool blacklist) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Check if device is blacklisted
@@ -229,12 +260,5 @@ namespace database
       /// \param [in]      pluginId   plugin  Id
       //--------------------------------------------------------------
       virtual void removeAllDeviceForPlugin(int pluginId) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~IDeviceRequester()
-      {
-      }
    };
 } //namespace database 

@@ -28,7 +28,7 @@ namespace rfxcomMessages
 
       m_rain = boost::make_shared<yApi::historization::CRain>("rain",
                                                               yApi::EKeywordAccessMode::kGet,
-                                                              (m_subType == sTypeRAIN6) ? (yApi::historization::EMeasureType::kIncrement) : (yApi::historization::EMeasureType::kCumulative));
+                                                              (m_subType == sTypeRAIN6) ? (yApi::EMeasureType::kIncrement) : (yApi::EMeasureType::kCumulative));
       m_keywords.push_back(m_rain);
 
       switch (m_subType)
@@ -79,13 +79,13 @@ namespace rfxcomMessages
 
    void CRain::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      shared::CDataContainer details;
-      details.set("type", pTypeRAIN);
-      details.set("subType", m_subType);
-      details.set("id", m_id);
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
+      details->set("type", pTypeRAIN);
+      details->set("subType", m_subType);
+      details->set("id", m_id);
       api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-      details.printToLog(YADOMS_LOG(information));
+      details->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CRain::getDeviceName() const

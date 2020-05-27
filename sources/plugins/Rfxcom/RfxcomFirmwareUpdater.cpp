@@ -49,7 +49,7 @@ void CRfxcomFirmwareUpdater::update()
    // - 10-94% : write RFXCom
    // - 95-100% : reboot RFXCom
 
-   const auto hexFile = m_extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
+   const auto hexFile = m_extraQuery->getData()->data()->get<yApi::configuration::CFile>("fileContent");
 
    // Load input file
    m_extraQuery->reportProgress(0.0f, "customLabels.firmwareUpdate.loadInputFile");

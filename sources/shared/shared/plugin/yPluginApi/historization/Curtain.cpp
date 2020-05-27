@@ -17,20 +17,18 @@ namespace shared
                ((Close))
             );
 
-            CCurtain::CCurtain(const std::string& keywordName)
+            CCurtain::CCurtain(const std::string& keywordName,
+                               const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<ECurtainCommand>(keywordName,
                                                           CStandardCapacities::Curtain(),
                                                           EKeywordAccessMode::kGetSet,
-                                                          ECurtainCommand::kStop)
-            {
-            }
-
-            CCurtain::~CCurtain()
+                                                          ECurtainCommand::kStop,
+                                                          EMeasureType::kAbsolute,
+                                                          typeInfo::CEmptyTypeInfo::Empty,
+                                                          historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

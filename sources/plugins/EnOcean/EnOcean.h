@@ -78,7 +78,7 @@ protected:
    /// \param [in] configuration    The device configuration
    //--------------------------------------------------------------
    void processDeviceConfiguration(const std::string& deviceId,
-                                   const shared::CDataContainer& configuration);
+                                   const boost::shared_ptr<shared::CDataContainer>& configuration);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS

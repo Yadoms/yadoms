@@ -93,7 +93,7 @@ namespace web { namespace rest {
       template<class T>
       static boost::shared_ptr<shared::CDataContainer> GenerateInternal(const bool result, const std::string & message, boost::shared_ptr<T> data)
       {
-         boost::shared_ptr<shared::CDataContainer> error = boost::make_shared<shared::CDataContainer>();
+         boost::shared_ptr<shared::CDataContainer> error = shared::CDataContainer::make();
          error->set(m_resultFieldName, result);
          error->set(m_errorMessageFieldName, message);
          error->set(m_dataFieldName, data);

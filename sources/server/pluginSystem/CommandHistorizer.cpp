@@ -11,10 +11,6 @@ namespace pluginSystem
    {
    }
 
-   CCommandHistorizer::~CCommandHistorizer()
-   {
-   }
-
    const std::string& CCommandHistorizer::getKeyword() const
    {
       return m_keyword->Name();
@@ -37,13 +33,18 @@ namespace pluginSystem
       return m_value;
    }
 
-   const shared::plugin::yPluginApi::historization::EMeasureType& CCommandHistorizer::getMeasureType() const
+   const shared::plugin::yPluginApi::EMeasureType& CCommandHistorizer::getMeasureType() const
    {
       return m_keyword->Measure();
    }
 
-   shared::CDataContainer CCommandHistorizer::getTypeInfo() const
+   boost::shared_ptr<shared::CDataContainer> CCommandHistorizer::getTypeInfo() const
    {
-      return shared::CDataContainer();
+      return shared::CDataContainer::make();
+   }
+
+   const shared::plugin::yPluginApi::EHistoryDepth& CCommandHistorizer::getHistoryDepth() const
+   {
+      return shared::plugin::yPluginApi::EHistoryDepth::kDefault;
    }
 } // namespace pluginSystem	

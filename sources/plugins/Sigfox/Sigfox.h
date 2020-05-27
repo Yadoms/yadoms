@@ -34,7 +34,7 @@ public:
    /// \param[in] neMessage             The new message to be processed
    //--------------------------------------------------------------
    void processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api,
-                               const shared::CDataContainer& newMessage) const;
+                               const boost::shared_ptr<shared::CDataContainer>& newMessage) const;
 
    //--------------------------------------------------------------
    /// \brief Update the configuration of the plugin after a change
@@ -42,7 +42,7 @@ public:
    /// \param[in] newConfigurationData  The new configuration of the module
    //--------------------------------------------------------------
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const shared::CDataContainer& newConfigurationData);
+                              const boost::shared_ptr<shared::CDataContainer>& newConfigurationData);
 
 private:
 

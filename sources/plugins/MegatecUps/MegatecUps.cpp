@@ -140,9 +140,9 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Configuration was updated
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
+            auto newConfigurationData = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
             YADOMS_LOG(information) << "Update configuration...";
-            BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+            BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
             // Close connection
             CMegatecUpsConfiguration newConfiguration;

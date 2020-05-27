@@ -4,20 +4,20 @@
 
 namespace shared
 {
-   class IHTTPSession
+   class IHttpSession
    {
    public:
-      virtual ~IHTTPSession() = default;
+      virtual ~IHttpSession() = default;
 
       //--------------------------------------------------------------
-      /// \brief	    set the time out time for the request reponse
+      /// \brief	    set the time out time for the request response
       /// \param[in]  timeout             the timeout for the request
       //--------------------------------------------------------------
 	   virtual void setTimeout(const boost::posix_time::time_duration& timeout) = 0;
 
       //--------------------------------------------------------------
       /// \brief	    send the request
-      /// \param[in]  request             the timeout for the request
+      /// \param[in]  request             the request
       /// \return     the stream of the request
       //--------------------------------------------------------------
 	   virtual std::ostream& sendRequest(Poco::Net::HTTPRequest& request) = 0;

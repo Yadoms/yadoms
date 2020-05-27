@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -9,7 +8,7 @@ namespace shared
       /// \brief	The small header description
       /// \note Just one byte for the part number, and one for the part count
       //--------------------------------------------------------------
-      struct YADOMS_SHARED_EXPORT SmallHeader
+      struct SmallHeader
       {
          SmallHeader()
             : m_partNumber(0),

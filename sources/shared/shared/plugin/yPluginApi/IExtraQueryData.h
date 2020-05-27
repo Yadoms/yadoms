@@ -31,7 +31,7 @@ namespace shared
             ///\brief               Get the query data
             ///\return              The query data
             //-----------------------------------------------------
-            virtual const CDataContainer& data() const = 0;
+            virtual const boost::shared_ptr<CDataContainer>& data() const = 0;
 
             //-----------------------------------------------------
             ///\brief               Get the device name (may be empty for plugin extra queries)

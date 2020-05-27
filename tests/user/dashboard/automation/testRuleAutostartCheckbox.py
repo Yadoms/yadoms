@@ -19,7 +19,7 @@ class AutostartCheckboxRule(unittest.TestCase):
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -29,29 +29,29 @@ class AutostartCheckboxRule(unittest.TestCase):
       
 
    def test_autostartCheckbox(self):
-      print '=== Autostart Checkbox test ==='
-      print 'ref Issues : #182'
+      print ('=== Autostart Checkbox test ===')
+      print ('ref Issues : #182')
       ruleNumber = 0
      
-      print '  Verify initial state'
+      print ('  Verify initial state')
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       self.assertFalse(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
       
-      print '  Uncheck the box'
+      print ('  Uncheck the box')
       dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber).click()
       tools.waitUntil(lambda: dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber) is True)
 
-      print '  Reload page and check box state'
+      print ('  Reload page and check box state')
       dashboard.openSummary(self.browser)
       dashboard.openAutomation(self.browser)
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       tools.waitUntil(lambda: dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber) is True)
       
-      print '  Check the box'
+      print ('  Check the box')
       dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber).click()
       tools.waitUntil(lambda: dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber) is False)
 
-      print '  Reload page and check box state'
+      print ('  Reload page and check box state')
       dashboard.openAutomation(self.browser)
       tools.waitUntil(lambda: dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber) is False)
       

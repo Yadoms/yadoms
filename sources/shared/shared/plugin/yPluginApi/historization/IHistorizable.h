@@ -1,7 +1,8 @@
 #pragma once
 #include "../StandardCapacities.h"
 #include "../KeywordAccessMode.h"
-#include "MeasureType.h"
+#include "../MeasureType.h"
+#include "../HistoryDepth.h"
 #include <shared/DataContainer.h>
 
 namespace shared
@@ -15,15 +16,13 @@ namespace shared
             //-----------------------------------------------------
             ///\brief The historizable object interface
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT IHistorizable
+            class IHistorizable
             {
             public:
                //-----------------------------------------------------
                ///\brief               Destructor
                //-----------------------------------------------------
-               virtual ~IHistorizable()
-               {
-               }
+               virtual ~IHistorizable() = default;
 
                //-----------------------------------------------------
                ///\brief                     Get the keyword name
@@ -59,11 +58,15 @@ namespace shared
                ///\brief                     The type information
                ///\return                    Type information
                //-----------------------------------------------------
-               virtual CDataContainer getTypeInfo() const = 0;
+               virtual boost::shared_ptr<CDataContainer> getTypeInfo() const = 0;
+
+               //-----------------------------------------------------
+               ///\brief                     The history depth policy
+               ///\return                    History depth policy
+               //-----------------------------------------------------
+               virtual const EHistoryDepth& getHistoryDepth() const = 0;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

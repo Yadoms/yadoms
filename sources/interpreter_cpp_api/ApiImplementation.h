@@ -23,7 +23,7 @@ namespace interpreter_cpp_api
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CApiImplementation();
+      virtual ~CApiImplementation() = default;
 
       void setSendingMessageQueue(boost::shared_ptr<boost::interprocess::message_queue> sendMessageQueue);
 
@@ -89,5 +89,3 @@ namespace interpreter_cpp_api
       boost::shared_ptr<const std::string> m_logLevel;
    };
 } // namespace interpreter_cpp_api	
-
-

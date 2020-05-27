@@ -24,7 +24,7 @@ namespace update
 
       // IUpdateManager implementation
       std::string scanForUpdatesAsync() override;
-      shared::CDataContainer getUpdates(bool includePrereleases) const override;
+      boost::shared_ptr<shared::CDataContainer> getUpdates(bool includePrereleases) const override;
       std::string updatePluginAsync(const std::string& pluginName, const std::string& downloadUrl) const override;
       std::string installPluginAsync(const std::string& downloadUrl) const override;
       std::string removePluginAsync(const std::string& pluginName) const override;
@@ -41,59 +41,59 @@ namespace update
    protected:
       void doWork(const boost::posix_time::time_duration& scanPeriod);
       bool scan(boost::shared_ptr<const IPathProvider> pathProvider);
-      void scanForUpdates(worker::CWorkerTools::WorkerProgressFunc progressCallback);
-      shared::CDataContainer buildUpdates(bool includePrereleases,
-                                          const shared::versioning::CVersion& yadomsLocalVersion,
-                                          const shared::CDataContainer& yadomsAvailableVersions,
+      void scanForUpdates(worker::CWorkerTools::WorkerProgressFunc progress_callback);
+      boost::shared_ptr<shared::CDataContainer> buildUpdates(bool includePrereleases,
+                                          const shared::versioning::CSemVer& yadomsLocalVersion,
+                                          boost::shared_ptr<shared::CDataContainer> yadomsAvailableVersions,
                                           const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
-                                          const shared::CDataContainer& pluginsAvailableVersions,
+                                          boost::shared_ptr<shared::CDataContainer> pluginsAvailableVersions,
                                           const worker::CWidget::AvailableWidgetMap& widgetsLocalVersions,
-                                          const shared::CDataContainer& widgetsAvailableVersions,
+                                          boost::shared_ptr<shared::CDataContainer> widgetsAvailableVersions,
                                           const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>&
                                           scriptInterpretersLocalVersions,
-                                          const shared::CDataContainer& scriptInterpretersAvailableVersions) const;
-      shared::CDataContainer buildYadomsList(const shared::versioning::CVersion& localVersion,
-                                             const shared::CDataContainer& availableVersions,
+                                          boost::shared_ptr<shared::CDataContainer> scriptInterpretersAvailableVersions) const;
+      boost::shared_ptr<shared::CDataContainer> buildYadomsList(const shared::versioning::CSemVer& localVersion,
+                                             boost::shared_ptr<shared::CDataContainer> availableVersions,
                                              bool includePrereleases) const;
-      shared::CDataContainer buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
-                                             const shared::CDataContainer& availableVersions,
+      boost::shared_ptr<shared::CDataContainer> buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                             boost::shared_ptr<shared::CDataContainer> available_versions,
                                              bool includePrereleases) const;
-      shared::CDataContainer buildWidgetList(const worker::CWidget::AvailableWidgetMap& localVersions,
-                                             const shared::CDataContainer& availableVersions,
+      boost::shared_ptr<shared::CDataContainer> buildWidgetList(const worker::CWidget::AvailableWidgetMap& localVersions,
+                                             boost::shared_ptr<shared::CDataContainer> available_versions,
                                              bool includePrereleases) const;
-      shared::CDataContainer buildScriptInterpreterList(
+      boost::shared_ptr<shared::CDataContainer> buildScriptInterpreterList(
          const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
-         const shared::CDataContainer& availableVersions,
+         boost::shared_ptr<shared::CDataContainer> available_versions,
          bool includePrereleases) const;
-      shared::CDataContainer addUpdateableYadoms(const shared::versioning::CVersion& localVersion,
-                                                 const shared::CDataContainer& availableVersions,
+      boost::shared_ptr<shared::CDataContainer> addUpdateableYadoms(const shared::versioning::CSemVer& localVersion,
+                                                 boost::shared_ptr<shared::CDataContainer> available_versions,
                                                  bool includePrereleases) const;
-      shared::CDataContainer addUpdateablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
-                                                  const shared::CDataContainer& availableVersions,
+      boost::shared_ptr<shared::CDataContainer> addUpdateablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                                  boost::shared_ptr<shared::CDataContainer> available_versions,
                                                   bool includePrereleases) const;
-      static shared::CDataContainer addNewPlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
-                                                  const shared::CDataContainer& availableVersions,
+      static boost::shared_ptr<shared::CDataContainer> addNewPlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                                  boost::shared_ptr<shared::CDataContainer> available_versions,
                                                   bool includePrereleases);
-      shared::CDataContainer addUpdateableWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
-                                                  const shared::CDataContainer& availableVersions,
+      boost::shared_ptr<shared::CDataContainer> addUpdateableWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
+                                                  boost::shared_ptr<shared::CDataContainer> available_versions,
                                                   bool includePrereleases) const;
-      static shared::CDataContainer addNewWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
-                                                  const shared::CDataContainer& availableVersions,
+      static boost::shared_ptr<shared::CDataContainer> addNewWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
+                                                  boost::shared_ptr<shared::CDataContainer> available_versions,
                                                   bool includePrereleases);
-      shared::CDataContainer addUpdateableScriptInterpreters(
+      boost::shared_ptr<shared::CDataContainer> addUpdateableScriptInterpreters(
          const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
-         const shared::CDataContainer& availableVersions,
+         boost::shared_ptr<shared::CDataContainer> available_versions,
          bool includePrereleases) const;
-      static shared::CDataContainer addNewScriptInterpreters(
+      static boost::shared_ptr<shared::CDataContainer> addNewScriptInterpreters(
          const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
-         const shared::CDataContainer& availableVersions,
+         boost::shared_ptr<shared::CDataContainer> available_versions,
          bool includePrereleases);
-      static shared::CDataContainer buildUpdateableVersionsNode(const std::string& installed,
-                                                                std::map<std::string, shared::CDataContainer> older,
-                                                                std::map<std::string, shared::CDataContainer> newer);
-      static shared::CDataContainer buildNewVersionsNode(const std::map<std::string, shared::CDataContainer>& newItemAvailableVersions);
+      static boost::shared_ptr<shared::CDataContainer> buildUpdateableVersionsNode(const std::string& installed,
+                                                                std::map<std::string, boost::shared_ptr<shared::CDataContainer>> older,
+                                                                std::map<std::string, boost::shared_ptr<shared::CDataContainer>> newer);
+      static boost::shared_ptr<shared::CDataContainer> buildNewVersionsNode(const std::map<std::string, boost::shared_ptr<shared::CDataContainer>>& newItemAvailableVersions);
       void notifyNewUpdateAvailable() const;
-      static bool checkDependencies(const shared::CDataContainer& itemVersionNode);
+      static bool checkDependencies(boost::shared_ptr<shared::CDataContainer> item_version_node);
       std::string findMd5HashAssociatedTo(const std::string& downloadUrl,
                                           const std::string& allUpdatesNode) const;
 
@@ -132,7 +132,7 @@ namespace update
       shared::event::CEventHandler m_evtHandler;
 
       mutable boost::recursive_mutex m_updateMutex;
-      shared::CDataContainer m_allUpdates;
-      shared::CDataContainer m_releasesOnlyUpdates;
+      boost::shared_ptr<shared::CDataContainer> m_allUpdates;
+      boost::shared_ptr<shared::CDataContainer> m_releasesOnlyUpdates;
    };
 } // namespace update

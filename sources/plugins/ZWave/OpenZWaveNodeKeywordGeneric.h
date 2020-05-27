@@ -62,6 +62,7 @@ public:
    /// \param [in] units         The keyword units
    /// \param [in] dataType      The keyword data type
    /// \param [in] measureType   The keyword measure type (absolute, cumulative,..)
+   /// \param [in] ti            The keyword type information
    /// \return    A IOpenZWaveNodeKeyword shared pointer
    //--------------------------------------------------------------
    static boost::shared_ptr<IOpenZWaveNodeKeyword> createFromDataType(OpenZWave::ValueID& vID,
@@ -69,8 +70,8 @@ public:
                                                                       shared::plugin::yPluginApi::EKeywordAccessMode accessMode,
                                                                       const std::string& units,
                                                                       shared::plugin::yPluginApi::EKeywordDataType dataType,
-                                                                      shared::plugin::yPluginApi::historization::EMeasureType measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
-                                                                      shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo& ti = shared::plugin::yPluginApi::historization::typeInfo::CEmptyTypeInfo::Empty)
+                                                                      shared::plugin::yPluginApi::EMeasureType measureType = shared::plugin::yPluginApi::EMeasureType::kAbsolute,
+                                                                      const shared::plugin::yPluginApi::typeInfo::ITypeInfo& ti = shared::plugin::yPluginApi::typeInfo::CEmptyTypeInfo::Empty)
    {
       auto keyword(boost::make_shared<COpenZWaveNodeKeywordGenericByType<T> >(COpenZWaveHelpers::GenerateKeywordName(vID), COpenZWaveNodeKeywordFactory::getCapacity(vLabel, units, dataType), accessMode, measureType, ti));
       auto historizer(boost::make_shared<COpenZWaveSingleHistorizableData<T> >(keyword));

@@ -29,9 +29,9 @@ namespace interpreter_cpp_api
       return m_buffer->description();
    }
 
-   const shared::versioning::CVersion& CInformation::getVersion() const
+   const shared::versioning::CSemVer& CInformation::getVersion() const
    {
-      static const shared::versioning::CVersion version(m_buffer->version());
+      static const shared::versioning::CSemVer version(m_buffer->version());
       return version;
    }
 

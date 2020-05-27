@@ -13,11 +13,7 @@ namespace shared
       {
          m_onStopRequestedFct = onStopRequestedFct;
 
-#if defined(POCO_WIN32_UTF8) && !defined(POCO_NO_WSTRING)
-         m_serviceStatusHandle = RegisterServiceCtrlHandlerW(L"", reinterpret_cast<LPHANDLER_FUNCTION>(ServiceControlHandler));
-#else
-         m_serviceStatusHandle = RegisterServiceCtrlHandlerA("", ServiceControlHandler);
-#endif
+         m_serviceStatusHandle = RegisterServiceCtrlHandler("", reinterpret_cast<LPHANDLER_FUNCTION>(ServiceControlHandler));
       }
 
       SERVICE_STATUS CServiceControlHandler::m_serviceStatus;

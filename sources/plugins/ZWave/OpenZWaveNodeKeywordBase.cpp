@@ -16,25 +16,24 @@ void COpenZWaveNodeKeywordBase::updateValue(OpenZWave::ValueID& value)
    m_valueId = value;
 }
 
-const std::string COpenZWaveNodeKeywordBase::getUnit()
+std::string COpenZWaveNodeKeywordBase::getUnit() const
 {
    return OpenZWave::Manager::Get()->GetValueUnits(m_valueId);
 }
 
 
 
-shared::CDataContainer COpenZWaveNodeKeywordBase::serialize()
+boost::shared_ptr<shared::CDataContainer> COpenZWaveNodeKeywordBase::serialize()
 {
-   shared::CDataContainer result;
-   return result;
+   return shared::CDataContainer::make();
 }
 
-boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo> & COpenZWaveNodeKeywordBase::getTypeInformation()
+boost::shared_ptr<shared::plugin::yPluginApi::typeInfo::ITypeInfo> & COpenZWaveNodeKeywordBase::getTypeInformation()
 {
    return m_typeInformation;
 }
 
-bool COpenZWaveNodeKeywordBase::pressButton()
+bool COpenZWaveNodeKeywordBase::pressButton() const
 {
    try
    {
@@ -55,7 +54,7 @@ bool COpenZWaveNodeKeywordBase::pressButton()
    return false;
 }
 
-bool COpenZWaveNodeKeywordBase::releaseButton()
+bool COpenZWaveNodeKeywordBase::releaseButton() const
 {
    try
    {

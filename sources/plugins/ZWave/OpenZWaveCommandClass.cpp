@@ -70,13 +70,11 @@
       ((TimeParameters))
       ((GeographicLocation))
       ((Composite))
-      ((MultiInstanceAssociation))
       ((MultiCmd))
       ((EnergyProduction))
       ((ManufacturerProprietary))
       ((ScreenMd))
       ((ScreenAttributes))
-      ((SimpleAvControl))
       ((AvContentDirectoryMd))
       ((AvRendererStatus))
       ((AvContentSearchMd))
@@ -88,5 +86,9 @@
       ((SilenceAlarm))
       ((SensorConfiguration))
       ((NonInteroperable))
+	  ((BarrierOperator))
+	  ((MultiChannelAssociation))
+	  ((SimpleAV))
+	  ((SoundSwitch))
    );  
    

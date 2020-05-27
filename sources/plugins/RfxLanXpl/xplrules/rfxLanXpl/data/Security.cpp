@@ -126,15 +126,21 @@ namespace xplrules
             return m_delay;
          }
 
-         const shared::plugin::yPluginApi::historization::EMeasureType& CSecurity::getMeasureType() const
+         const shared::plugin::yPluginApi::EMeasureType& CSecurity::getMeasureType() const
          {
-            static const auto MeasureType(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
+            static const auto MeasureType(shared::plugin::yPluginApi::EMeasureType::kAbsolute);
             return MeasureType;
          }
 
-         shared::CDataContainer CSecurity::getTypeInfo() const
+         boost::shared_ptr<shared::CDataContainer> CSecurity::getTypeInfo() const
          {
-            return shared::CDataContainer();
+            return shared::CDataContainer::make();
+         }
+
+         const shared::plugin::yPluginApi::EHistoryDepth& CSecurity::getHistoryDepth() const
+         {
+            static const auto DefaultHistoryDepth(shared::plugin::yPluginApi::EHistoryDepth::kDefault);
+            return DefaultHistoryDepth;
          }
       }
    }

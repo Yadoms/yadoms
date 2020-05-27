@@ -18,13 +18,19 @@ public:
    /// \brief      Load configuration data
    /// \param [in] data The new configuration
    //--------------------------------------------------------------
-   virtual void initializeWith(const shared::CDataContainer& data) = 0;
+   virtual void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data) = 0;
 
    //--------------------------------------------------------------
    /// \brief      retrieve the IP address with the port from the configuration
    /// \return     the IP address with the port
    //--------------------------------------------------------------
    virtual Poco::Net::SocketAddress getIPAddressWithSocket() const = 0;
+
+   //--------------------------------------------------------------
+	  /// \brief      retrieve the password used to connect the WES
+	  /// \return     the password
+	  //--------------------------------------------------------------
+   virtual bool credentialActivated() const = 0;
 
    //--------------------------------------------------------------
    /// \brief      retrieve the password used to connect the WES
@@ -37,4 +43,16 @@ public:
    /// \return     the user
    //--------------------------------------------------------------
    virtual std::string getUser() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief      return true, if analog section is activated
+   /// \return     true if analog inputs are activated
+   //--------------------------------------------------------------
+   virtual bool isAnalogInputsActivated() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief      return the type of the keyword used for the input
+   /// \return     the type return
+   //--------------------------------------------------------------
+   virtual std::string analogInputsType(int index) const = 0;
 };

@@ -15,15 +15,16 @@ namespace rfxcomMessages
 {
    CLighting5::CLighting5(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& command,
-                          const shared::CDataContainer& deviceDetails)
+                          const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_signalPower})
+        m_keywords({m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_signalPower->set(0);
 
-      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
-      m_id = deviceDetails.get<unsigned int>("id");
-      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
+      createSubType(static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType")));
+      m_id = deviceDetails->get<unsigned int>("id");
+      m_unitCode = static_cast<unsigned char>(deviceDetails->get<unsigned int>("unitCode"));
       m_subTypeManager->set(command);
 
       // Build device description
@@ -34,17 +35,18 @@ namespace rfxcomMessages
    CLighting5::CLighting5(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const std::string& name,
-                          const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                          const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_subType(static_cast<unsigned char>(subType)),
         m_deviceName(name),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_signalPower})
+        m_keywords({m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_signalPower->set(0);
 
       createSubType(static_cast<unsigned char>(subType));
 
-      m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
+      m_id = manuallyDeviceCreationConfiguration->get<unsigned int>("id");
 
       switch (m_subType)
       {
@@ -60,7 +62,7 @@ namespace rfxcomMessages
          m_unitCode = 0;
          break;
       default:
-         m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
+         m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration->get<unsigned int>("unitCode"));
          break;
       }
 
@@ -77,7 +79,8 @@ namespace rfxcomMessages
                           boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter)
       : m_messageFilter(messageFilter),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_signalPower})
+        m_keywords({m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -109,12 +112,12 @@ namespace rfxcomMessages
 
    void CLighting5::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeLighting5);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_id);
-         m_deviceDetails.set("unitCode", m_unitCode);
+         m_deviceDetails->set("type", pTypeLighting5);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_id);
+         m_deviceDetails->set("unitCode", m_unitCode);
       }
    }
 
@@ -207,7 +210,7 @@ namespace rfxcomMessages
    {
       api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_subTypeManager->getModel(), m_keywords, m_deviceDetails);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_subTypeManager->getModel() << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
+      m_deviceDetails->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CLighting5::getDeviceName() const

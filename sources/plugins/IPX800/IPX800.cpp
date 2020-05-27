@@ -42,7 +42,8 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    try
    {
-      m_configuration.initializeWith(api->getConfiguration());
+      auto cfg = api->getConfiguration();
+      m_configuration.initializeWith(cfg);
 
       //Factory : Creation of all the needed
       m_factory = boost::make_shared<CIPX800Factory>(api, m_deviceName, m_configuration);
@@ -94,7 +95,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             try
             {
                api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
                api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
             }
             catch (...)
@@ -257,11 +258,11 @@ void CIPX800::initIPX800(boost::shared_ptr<yApi::IYPluginApi> api) const
    }
 }
 
-void CIPX800::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
+void CIPX800::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;
-   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);

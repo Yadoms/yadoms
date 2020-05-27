@@ -85,15 +85,21 @@ namespace xplrules
          }
 
 
-         const shared::plugin::yPluginApi::historization::EMeasureType& CLog::getMeasureType() const
+         const shared::plugin::yPluginApi::EMeasureType& CLog::getMeasureType() const
          {
-            static const auto MeasureType(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
+            static const auto MeasureType(shared::plugin::yPluginApi::EMeasureType::kAbsolute);
             return MeasureType;
          }
 
-         shared::CDataContainer CLog::getTypeInfo() const
+         boost::shared_ptr<shared::CDataContainer> CLog::getTypeInfo() const
          {
-            return shared::CDataContainer();
+            return shared::CDataContainer::make();
+         }
+
+         const shared::plugin::yPluginApi::EHistoryDepth& CLog::getHistoryDepth() const
+         {
+            static const auto DefaultHistoryDepth(shared::plugin::yPluginApi::EHistoryDepth::kDefault);
+            return DefaultHistoryDepth;
          }
       }
    }

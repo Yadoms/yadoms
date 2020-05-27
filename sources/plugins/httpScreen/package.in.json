@@ -1,0 +1,41 @@
+{
+  "type": "httpScreen",
+  "version": "@PLUGIN_VERSION@",
+  "author": "Jano42",
+  "credits": "",
+  "supportedPlatforms": "all",
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.4.0-beta.1"
+    }
+  },
+  "configurationSchema": {
+    "ipAddress": {
+      "type": "string",
+      "regex": "([0-9]{1,3}\\.){3}[0-9]{1,3}"
+    },
+    "screenSpecs": {
+      "type": "section",
+      "content": {
+        "screenType": {
+		  "type" : "enum",
+		  "values" : {
+			 "TFT" : "TFT",
+			 "EINK" : "E-Ink"
+		  },
+		  "defaultValue" : "EINK"        
+		},
+		"screenWidth" : {
+		  "type" : "int",
+		  "defaultValue" : "250",
+		  "minimumValue" : "1"
+		},
+		"screenHeight" : {
+		  "type" : "int",
+		  "defaultValue" : "122",
+		  "minimumValue" : "1"
+		}
+      }
+    }
+  }
+}

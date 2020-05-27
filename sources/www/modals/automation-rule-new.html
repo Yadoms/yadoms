@@ -34,16 +34,21 @@
       //we create buttons to select language
       var $area = $modalBody.find("div.editor-btns");
       $area.empty();
+      
+      $.each(editors, function(key, editor) {
+         $.each(editor.activeSupportedInterpreters, function(key, interpreter) {
+            var tempUuid = createUUID();
+            $buttonHtml = "<button class=\"btn btn-primary btn-lg btn-editor-choice\" type=\"button\" id=\"" + tempUuid + "\">" +
+               "<span class=\"" + editor.getClassIcon() + "\" id=\"" + editor.getName() + "." + interpreter.name + "\"></span>&nbsp;&nbsp;" +
+               $.t("modals.dashboard.sub-windows.automation-center.editors." + editor.getName() + ".name");
+            if (editor instanceof AutomationEditorCode)
+               $buttonHtml += "<div>" + $.t("modals.dashboard.sub-windows.automation-center.interpreters." + interpreter.name + ".name") + "</div>";
+            $buttonHtml += "</button>"; 
+            $area.append($buttonHtml);
 
-      $.each(editors, function(key, value) {
-         var tempUuid = createUUID();
-         $area.append("<button class=\"btn btn-primary btn-lg btn-editor-choice\" type=\"button\" id=\"" + tempUuid + "\">" +
-            "<span class=\"" + value.getClassIcon() + "\" id=\"" + value.getName() + "\"></span>&nbsp;&nbsp;" +
-            $.t("modals.dashboard.sub-windows.automation-center.editors." + value.getName() + ".name") +
-            "</button>");
-
-         var $btn = $area.find("button#" + tempUuid);
-         $btn.bind("click", newAutomationRuleButtonClicked(value, $btn, callback));
+            var $btn = $area.find("button#" + tempUuid);
+            $btn.bind("click", newAutomationRuleButtonClicked(interpreter.name, editor.getName(), $btn, callback));
+         });
       });
 
       //i18n
@@ -53,10 +58,10 @@
       $("div#automation-rule-new-modal").modal({ backdrop: 'static' });
    };
 
-   function newAutomationRuleButtonClicked(editor, button, callback) {
+   function newAutomationRuleButtonClicked(interpreterName, editorName, button, callback) {
       return function() {
          //we create the empty rule and go to edition
-         var r = new AutomationRule(-1, "", "", editor.getActiveSupportedInterpreters()[0].name, editor.getName(),
+         var r = new AutomationRule(-1, "", "", interpreterName, editorName,
                                     "", "", "", true);
          callback(r, $("div#automation-rule-new-modal"), button);
       };

@@ -24,9 +24,9 @@ namespace rfxcomMessages
       return m_keywords;
    }
 
-   void CChimeByronSx::set(const std::string& /*yadomsCommand*/, const shared::CDataContainer& deviceDetails)
+   void CChimeByronSx::set(const std::string& /*yadomsCommand*/, const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
    {
-      auto sound = deviceDetails.get<std::string>("sound");
+      auto sound = deviceDetails->get<std::string>("sound");
       if (sound == "Tubular 3 Notes") m_sound = kTubular3Notes;
       else if (sound == "Big Ben") m_sound = kBigBen;
       else if (sound == "Tubular 2 Notes") m_sound = kTubular2Notes;

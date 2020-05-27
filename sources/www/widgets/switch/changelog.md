@@ -1,3 +1,6 @@
+### 1.3.1
+* Better keyword selection filtering
+
 ### 1.3.0
 * Restore single device target (simplify code)
 * Manage indeterminate style when using switch with dimmable keyword (any value other than 0 and 100 is considered as indeterminate)

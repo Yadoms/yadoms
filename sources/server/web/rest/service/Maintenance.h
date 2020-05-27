@@ -5,6 +5,7 @@
 #include "IPathProvider.h"
 #include "database/IAcquisitionRequester.h"
 #include "database/IDatabaseRequester.h"
+#include "database/IKeywordRequester.h"
 
 namespace web
 {
@@ -17,6 +18,7 @@ namespace web
          public:
             explicit CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider,
                                   boost::shared_ptr<database::IDatabaseRequester> databaseRequester,
+                                  boost::shared_ptr<database::IKeywordRequester> keywordRequester,
                                   boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                                   boost::shared_ptr<task::CScheduler> taskScheduler);
             virtual ~CMaintenance() = default;
@@ -52,6 +54,7 @@ namespace web
             static std::string m_restKeyword;
             boost::shared_ptr<const IPathProvider> m_pathProvider;
             boost::shared_ptr<database::IDatabaseRequester> m_databaseRequester;
+            boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
             boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
             boost::shared_ptr<task::CScheduler> m_taskScheduler;
          };

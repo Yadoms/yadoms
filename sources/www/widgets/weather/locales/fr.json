@@ -2,9 +2,19 @@
 	"name": "Conditions Météo",
 	"description": "Ce widget permet d'afficher les conditions météorologiques actuelles",
 	"configurationSchema": {
-		"device": {
+		"conditionKeyword": {
 			"name": "Conditions Météo",
 			"description": "Conditions Météorologiques actuelles"
+		},
+		"temperatureSection": {
+			"name": "Température",
+			"description": "Affiche la temperature",
+         "content": {
+            "temperatureKeyword": {
+               "name": "Température",
+               "description": "La température courante"
+            }
+         }
 		}
 	}
 }

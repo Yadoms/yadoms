@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
-#include <shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.h>
+#include <shared/plugin/yPluginApi/typeInfo/IntTypeInfo.h>
 
 namespace shared
 {
@@ -25,12 +25,9 @@ namespace shared
                explicit CByte(const std::string& keywordName,
                               const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                               const EMeasureType& measureType = EMeasureType::kCumulative,
-                              typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
+                              const typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CByte();
+               virtual ~CByte() = default;
             };
          }
       }

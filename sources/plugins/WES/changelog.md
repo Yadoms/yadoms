@@ -1,3 +1,23 @@
+### 1.3.0-beta.1
+* Fix #562  : update usage of CDataContainer for better memory optimizations
+
+### 1.2.0-beta.3
+* change Http timeout to 5 seconds
+* fix the configuration to accept no password
+
+### 1.2.0-beta.2
+* fix plugin status when reading values when missing equipment at startup
+* fix devices to retry list when an equipment come back alive
+* enhance basic authenticate with equipment.
+
+### 1.2.0-beta.1
+* newFeature #469 - Read units when reading analog input for WES v2
+* add some PMEPMI contracts
+* add ZEN & ZEN+ contracts
+* fix mismatch tempo counters with periods
+* fix colors translation not defined
+* fix model and details device update for teleInfo counters
+
 ### 1.1.0
 * New feature #553 : use of full compliant Json
 
@@ -9,7 +29,7 @@
 * remove analog values for WES v1
 * fix conversion for pulse value
 * fix conversion for tele-info counters
-* fix conversion for analof value
+* fix conversion for analog value
 
 ### 1.0.0
 * First release

@@ -1,7 +1,6 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/DoubleTypeInfo.h"
+#include "../typeInfo/DoubleTypeInfo.h"
 
 namespace shared
 {
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A pressure historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CPressure : public CSingleHistorizableData<double>
+            class CPressure : public CSingleHistorizableData<double>
             {
             public:
                //-----------------------------------------------------
@@ -22,20 +21,18 @@ namespace shared
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
                ///\param[in] measureType     The measure type (normally kAbsolute)
+               ///\param[in] additionalInfo  The type information
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CPressure(const std::string& keywordName,
                                   const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                                   const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                  typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty);
+                                  const typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
+                                  const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CPressure();
+               virtual ~CPressure() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

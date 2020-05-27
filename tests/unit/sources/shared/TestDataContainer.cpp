@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include <boost/test/unit_test.hpp>
+#include <random>
+
 
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/DataContainer.h"
@@ -189,21 +191,21 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
 
    //check vector of CDataContainer
 
-   shared::CDataContainer cond1;
-   cond1.set("is.keyword", 8);
-   cond1.set("is.expectedValue", "32");
+   boost::shared_ptr<shared::CDataContainer> cond1 = boost::make_shared<shared::CDataContainer>();
+   cond1->set("is.keyword", 8);
+   cond1->set("is.expectedValue", "32");
 
-   shared::CDataContainer cond2;
-   cond2.set("is.keyword", 9);
-   cond2.set("is.expectedValue", 34);
+   boost::shared_ptr<shared::CDataContainer> cond2 = boost::make_shared<shared::CDataContainer>();
+   cond2->set("is.keyword", 9);
+   cond2->set("is.expectedValue", 34);
 
-   shared::CDataContainer cond3;
-   cond3.set("is.keyword", 10);
-   cond3.set("is.expectedValue", ve);
+   boost::shared_ptr<shared::CDataContainer> cond3 = boost::make_shared<shared::CDataContainer>();
+   cond3->set("is.keyword", 10);
+   cond3->set("is.expectedValue", ve);
 
    shared::CDataContainer conditions;
 
-   std::vector<shared::CDataContainer> allconditions;
+   std::vector<boost::shared_ptr<shared::CDataContainer>> allconditions;
    allconditions.push_back(cond1);
    allconditions.push_back(cond2);
    allconditions.push_back(cond3);
@@ -211,7 +213,7 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
    conditions.set("and", allconditions);
 
    //do checks
-   auto getAllCond = conditions.get<std::vector<shared::CDataContainer>>("and");
+   auto getAllCond = conditions.get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("and");
 
    BOOST_CHECK_EQUAL(allconditions.size(), getAllCond.size());
 
@@ -219,11 +221,14 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
    auto getCond2 = getAllCond[1];
    auto getCond3 = getAllCond[2];
 
-   BOOST_CHECK_EQUAL(cond1, getCond1);
-   BOOST_CHECK_EQUAL(cond2, getCond2);
-   BOOST_CHECK_EQUAL(cond3, getCond3);
+   BOOST_CHECK_EQUAL(*cond1.get(), *getCond1.get());
+   BOOST_CHECK_EQUAL(*cond2.get(), *getCond2.get());
+   BOOST_CHECK_EQUAL(*cond3.get(), *getCond3.get());
 
-   BOOST_CHECK_EQUAL_COLLECTIONS(allconditions.begin(), allconditions.end(), getAllCond.begin(), getAllCond.end());
+   for(unsigned int i=0; i< allconditions.size(); ++i)
+   {
+      BOOST_CHECK_EQUAL(*getAllCond[i].get(), *allconditions[i].get());
+   }
 }
 
 BOOST_AUTO_TEST_CASE(ContainerToVectorOfContainers)
@@ -252,7 +257,7 @@ BOOST_AUTO_TEST_CASE(ContainerToVectorOfContainers)
             \"version\": \"1.0.1\"\
          }\
       }");
-   BOOST_CHECK_THROW(const auto out = inIsNotAnArray.get<std::vector<shared::CDataContainer>>(), shared::exception::COutOfRange);
+   BOOST_CHECK_THROW(const auto out = inIsNotAnArray.get<std::vector<boost::shared_ptr<shared::CDataContainer>>>(), shared::exception::COutOfRange);
 }
 
 
@@ -294,9 +299,9 @@ const std::string & getString2() { return str2; }
 shared::CDataContainer globalContainer;
 shared::CDataContainer& getGlobalContainer() { return globalContainer; }
 
-shared::CDataContainer getDeviceInfo()
+boost::shared_ptr<shared::CDataContainer> getDeviceInfo()
 {
-   shared::CDataContainer d;
+   boost::shared_ptr<shared::CDataContainer> d = boost::make_shared<shared::CDataContainer>();
 
    {
       std::string id = "id";
@@ -313,8 +318,8 @@ shared::CDataContainer getDeviceInfo()
       std::string sNodeDeviceTypeString = "sNodeDeviceTypeString";
       std::string sNodeRole = "sNodeRole";
 
-      d.set("name", id);
-      d.set("friendlyName", sNodeName);
+      d->set("name", id);
+      d->set("friendlyName", sNodeName);
 
       shared::CDataContainer details;
       details.set("Manufacturer", sNodeManufacturer);
@@ -342,7 +347,7 @@ shared::CDataContainer getDeviceInfo()
       details.set("str1", getString1());
       details.set("str2", getString2());
 
-      d.set("details", details);
+      d->set("details", details);
    }
 
    return d;
@@ -396,10 +401,10 @@ BOOST_AUTO_TEST_CASE(RapidJsonStringMemory)
 
 
    {
-      shared::CDataContainer info = getDeviceInfo();
+      boost::shared_ptr<shared::CDataContainer> info = getDeviceInfo();
 
-      BOOST_CHECK_EQUAL(info.get<std::string>("details.str1"), "str1");
-      BOOST_CHECK_EQUAL(info.get<std::string>("details.str2"), "str2");
+      BOOST_CHECK_EQUAL(info->get<std::string>("details.str1"), "str1");
+      BOOST_CHECK_EQUAL(info->get<std::string>("details.str2"), "str2");
 
       shared::CDataContainer plop;
 
@@ -438,43 +443,44 @@ BOOST_AUTO_TEST_CASE(RapidJsonInitAndCopy)
    /*
    This test case is an example from Zwave plugin which illustrate a bad object copy.
    */
-   typedef std::pair<shared::CDataContainer, int> DeviceInfoAndState;
+   typedef std::pair<boost::shared_ptr<shared::CDataContainer>, int> DeviceInfoAndState;
    typedef std::map<std::string, DeviceInfoAndState > DeviceCache;
    DeviceCache m_deviceCache;
 
    {
-      shared::CDataContainer info = getDeviceInfo();
+      boost::shared_ptr<shared::CDataContainer> info = getDeviceInfo();
       std::string l("test3");
 
       //directly access with []
       DeviceInfoAndState &c = m_deviceCache["mydevice2"];
-      c.first.mergeFrom(info);
+      c.first = boost::make_shared< shared::CDataContainer>();
+      c.first->mergeFrom(info);
 
-      m_deviceCache["mydevice2"].first.set("test1", "test2");
-      m_deviceCache["mydevice2"].first.set("test2", l);
+      m_deviceCache["mydevice2"].first->set("test1", "test2");
+      m_deviceCache["mydevice2"].first->set("test2", l);
       
       //insert pair instead of []
-      shared::CDataContainer a("{}");
+      boost::shared_ptr<shared::CDataContainer> a = boost::make_shared<shared::CDataContainer>("{}");
       m_deviceCache.insert(std::make_pair("mydevice", std::make_pair(a, 42)));
 
       DeviceInfoAndState & b = m_deviceCache["mydevice"];
-      b.first.mergeFrom(info);
+      b.first->mergeFrom(info);
    }
 
    {
-      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first.get("test1"), "test2");
+      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first->get("test1"), "test2");
 
       auto &d = m_deviceCache["mydevice2"];
       auto &e = m_deviceCache["mydevice2"].first;
 
-      BOOST_CHECK_EQUAL(e.exists("test2"), true);
-      BOOST_CHECK_EQUAL(e.get("test2"), "test3");
+      BOOST_CHECK_EQUAL(e->exists("test2"), true);
+      BOOST_CHECK_EQUAL(e->get("test2"), "test3");
 
-      BOOST_CHECK_EQUAL(d.first.exists("test2"), true);
-      BOOST_CHECK_EQUAL(d.first.get("test2"), "test3");
+      BOOST_CHECK_EQUAL(d.first->exists("test2"), true);
+      BOOST_CHECK_EQUAL(d.first->get("test2"), "test3");
 
-      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first.exists("test2"), true);
-      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first.get("test2"), "test3");
+      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first->exists("test2"), true);
+      BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first->get("test2"), "test3");
    }
 }
 
@@ -495,6 +501,70 @@ BOOST_AUTO_TEST_CASE(DataCopy)
    }
 
    auto vstr2 = dc.get<std::vector<std::string>>("vectorstring");
+   BOOST_CHECK_EQUAL(vstr2.size(), testcount);
+   for (unsigned int i = 0; i < vstr2.size(); ++i)
+   {
+      std::string loc = (boost::format("string %1%") % i).str();
+      BOOST_CHECK_EQUAL(vstr2[i] == loc, true);
+   }
+
+   //the following test illustrate a bad string allocation (normally datacontainer copy should keep allocation; 
+   //but if a string is copied into rapidjson value without allocator, then the string is kept as a simple reference
+   //and this test fails if string are destroyed
+   auto k = maketest(testcount);
+   shared::CDataContainer dc2(k->serialize());
+   auto vstr = dc2.get<std::vector<std::string>>("data.plugins");
+   BOOST_CHECK_EQUAL(vstr.size(), testcount);
+   for (unsigned int i = 0; i < vstr.size(); ++i)
+   {
+      std::string loc = (boost::format("plugin %1%") % i).str();
+      BOOST_CHECK_EQUAL(vstr[i] == loc, true);
+   }
+}
+
+
+BOOST_AUTO_TEST_CASE(DataCopy2)
+{
+   shared::CDataContainer dc1;
+   dc1.set("key1", "value1_dc1");
+   dc1.set("key2", "value2_dc1");
+
+   auto dc2 = dc1.copy();
+   dc2->set("key1", "value1_dc2");
+   dc2->set("key2", "value2_dc2");
+
+   BOOST_CHECK_EQUAL(dc1.get<std::string>("key1"), "value1_dc1");
+   BOOST_CHECK_EQUAL(dc1.get<std::string>("key2"), "value2_dc1");
+   BOOST_CHECK_EQUAL(dc2->get<std::string>("key1"), "value1_dc2");
+   BOOST_CHECK_EQUAL(dc2->get<std::string>("key2"), "value2_dc2");
+
+   dc1.set("key2", "value3_dc1");
+   BOOST_CHECK_EQUAL(dc1.get<std::string>("key2"), "value3_dc1");
+   BOOST_CHECK_EQUAL(dc2->get<std::string>("key2"), "value2_dc2");
+
+   dc2->set("key2", "value3_dc2");
+   BOOST_CHECK_EQUAL(dc1.get<std::string>("key2"), "value3_dc1");
+   BOOST_CHECK_EQUAL(dc2->get<std::string>("key2"), "value3_dc2");
+}
+
+
+BOOST_AUTO_TEST_CASE(DataCopy3)
+{
+   boost::shared_ptr<shared::CDataContainer> dc;
+   const unsigned int testcount = 10;
+
+   //ensure braces are used => in that case, inner container will be deleted to brace close
+   {
+      //check vector of std::string
+      shared::CDataContainer test;
+      std::vector<std::string> vstr;
+      for (unsigned int i = 0; i < testcount; ++i)
+         vstr.push_back((boost::format("string %1%") % i).str());
+      test.set("vectorstring", vstr);
+      dc = test.copy();
+   }
+
+   auto vstr2 = dc->get<std::vector<std::string>>("vectorstring");
    BOOST_CHECK_EQUAL(vstr2.size(), testcount);
    for (unsigned int i = 0; i < vstr2.size(); ++i)
    {
@@ -636,19 +706,19 @@ BOOST_AUTO_TEST_CASE(CurrentNodeTests)
 
    //subnode test
    BOOST_CHECK_EQUAL(testPf.exists("supportedPlatforms"), true);
-   auto supportedPf = testPf.get<shared::CDataContainer>("supportedPlatforms");
-   BOOST_CHECK_EQUAL(supportedPf.containsChild(), true);
-   BOOST_CHECK_EQUAL(supportedPf.containsValue(), false);
-   BOOST_CHECK_EQUAL(supportedPf.get<std::string>("mac"), "none");
-   BOOST_CHECK_EQUAL(supportedPf.get<std::string>("raspberry"), "all");
+   auto supportedPf = testPf.get<boost::shared_ptr<shared::CDataContainer>>("supportedPlatforms");
+   BOOST_CHECK_EQUAL(supportedPf->containsChild(), true);
+   BOOST_CHECK_EQUAL(supportedPf->containsValue(), false);
+   BOOST_CHECK_EQUAL(supportedPf->get<std::string>("mac"), "none");
+   BOOST_CHECK_EQUAL(supportedPf->get<std::string>("raspberry"), "all");
 
    //value test
    BOOST_CHECK_EQUAL(testPf.exists("supportedPlatforms2"), true);
-   auto supportedPf2 = testPf.get<shared::CDataContainer>("supportedPlatforms2");
-   BOOST_CHECK_EQUAL(supportedPf2.containsChild(), false);
-   BOOST_CHECK_EQUAL(supportedPf2.containsValue(), true);
-   BOOST_CHECK_EQUAL(supportedPf2.get<std::string>(), "all");
-}
+   auto supportedPf2 = testPf.get<boost::shared_ptr<shared::CDataContainer>>("supportedPlatforms2");
+   BOOST_CHECK_EQUAL(supportedPf2->containsChild(), false);
+   BOOST_CHECK_EQUAL(supportedPf2->containsValue(), true);
+   BOOST_CHECK_EQUAL(supportedPf2->get<std::string>(), "all");
+}                                
 
 class CTestClass : public shared::IDataContainable
 {
@@ -1390,6 +1460,21 @@ void CHECK_MAPS(const std::map<std::string, T>& input, const std::map<std::strin
    }
 }
 
+
+
+template <typename T>
+void CHECK_MAPS_SHARED_PTR(const std::map<std::string, boost::shared_ptr<T>>& input, const std::map<std::string, boost::shared_ptr<T>>& output)
+{
+   BOOST_CHECK_EQUAL(input.size(), output.size());
+   std::map<std::string, boost::shared_ptr<T>>::const_iterator io = output.begin();
+   for (const auto& ii : input)
+   {
+      BOOST_CHECK_EQUAL(ii.first, io->first);
+      BOOST_CHECK_EQUAL(*ii.second.get(), *io->second.get());
+      ++io;
+   }
+}
+
 BOOST_AUTO_TEST_CASE(Map)
 {
    std::map<std::string, std::string> input = { {"key1", "value1"},{"key2", "value2"},{"key3", "value3"},{"key4", "value4"} };
@@ -1425,26 +1510,282 @@ BOOST_AUTO_TEST_CASE(MapOfContainers)
          }\
       }");
 
-   const std::map<std::string, shared::CDataContainer> expected =
+   const std::map<std::string, boost::shared_ptr<shared::CDataContainer>> expected =
    {
-      {"0", shared::CDataContainer("{\
+      {"0", boost::make_shared<shared::CDataContainer>("{\
             \"name\": \"moon\",\
             \"description\": null,\
             \"version\": \"1.0.0\"\
          }")},
-         {"1", shared::CDataContainer("{\
+         {"1", boost::make_shared<shared::CDataContainer>("{\
             \"name\": \"moon\",\
             \"description\": null,\
             \"version\": \"1.0.2\"\
          }")},
-         {"2", shared::CDataContainer("{\
+         {"2", boost::make_shared<shared::CDataContainer>("{\
             \"name\": \"moon\",\
             \"description\": null,\
             \"version\": \"1.0.0-rc.1\"\
          }")}
    };
 
-   CHECK_MAPS<shared::CDataContainer>(input.getAsMap<shared::CDataContainer>(), expected);
+   std::map<std::string, boost::shared_ptr<shared::CDataContainer>> grab = input.getAsMap<boost::shared_ptr<shared::CDataContainer>>();
+
+   CHECK_MAPS_SHARED_PTR<shared::CDataContainer>(grab, expected);
+}
+
+double fRand(double fMin, double fMax)
+{
+   double f = (double)rand() / RAND_MAX;
+   return fMin + f * (fMax - fMin);
+}
+
+char __global_buffer_human_readable_test[10];
+char* get_human_readable_size(double size/*in bytes*/) {
+   int i = 0;
+   const char* units[] = { "B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+   while (size > 1024) {
+      size /= 1024;
+      i++;
+   }
+   sprintf(__global_buffer_human_readable_test, "%.*f %s", i, size, units[i]);
+   return __global_buffer_human_readable_test;
+}
+
+#define DEBUG_HEAP_INIT() \
+   _CrtMemState a;\
+   _CrtMemState b;\
+   _CrtMemCheckpoint(&a);\
+   _CrtMemCheckpoint(&b)
+
+#define DEBUG_HEAP_PRINT(title) \
+      if(i%1000 == 0 || i<10)  {\
+               _CrtMemCheckpoint(&a);\
+               std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << std::endl; \
+               memcpy(&b, &a, sizeof(a)); \
+      }
+
+
+
+BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
+{
+   std::vector<boost::shared_ptr<shared::CDataContainer>> objectList;
+
+
+   unsigned int i = 0;
+   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+   try
+   {
+      DEBUG_HEAP_INIT();
+      DEBUG_HEAP_PRINT("Init");
+
+      for(i=0; i<1000000; ++i)
+      {
+         boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make(30, 2);
+
+         //std::cout << "Before sizeof(dc)=" << sizeof(result) << " ";
+         //result.printSizeToLog(std::cout);
+
+         auto dt = boost::posix_time::to_iso_string(t1);
+        // std::cout << "Inserting 4+" << dt.size() << "chars. => ";
+         result->set("date", dt);
+         //result.printSizeToLog(std::cout);
+
+         auto val = std::to_string(fRand(0, 1000));
+         //std::cout << "Inserting 3+" << val.size() << "chars. => ";
+         result->set("key", val);
+         //result.printSizeToLog(std::cout);
+
+         objectList.push_back(result);
+         t1 += boost::posix_time::seconds(1);
+         DEBUG_HEAP_PRINT("Next");
+      }
+
+   }
+   catch(...)
+   {
+      BOOST_FAIL("Unknown exception");
+   }
+}
+
+BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
+{
+   shared::CDataContainer whole(30, 10000);
+
+   unsigned int i = 0;
+   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+   try
+   {
+      DEBUG_HEAP_INIT();
+      DEBUG_HEAP_PRINT("Init");
+
+      for (i = 0; i < 10000; ++i)
+      {
+         shared::CDataContainer result(30,2);
+         std::string dt = boost::posix_time::to_iso_string(t1);
+         result.set("date", dt);
+         result.set("key", std::to_string(fRand(0, 1000)));
+         whole.set(dt, result);
+         t1 += boost::posix_time::seconds(1);
+         DEBUG_HEAP_PRINT("Next");
+      }
+   }
+   catch (...)
+   {
+      BOOST_FAIL("Unknown exception");
+   }
+}
+
+
+
+BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
+{
+   shared::CDataContainer whole(100, 1000000);
+
+   whole.createArray("data");
+
+   unsigned int i = 0;
+   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+   try
+   {
+      DEBUG_HEAP_INIT();
+      DEBUG_HEAP_PRINT("Init");
+
+      for (i = 0; i < 1000000; ++i)
+      {
+         shared::CDataContainer result(50, 2);
+         result.set("date", boost::posix_time::to_iso_string(t1));
+         result.set("key", std::to_string(fRand(0, 1000)));
+         whole.appendArray("data", result);
+         t1 += boost::posix_time::seconds(1);
+         DEBUG_HEAP_PRINT("Next");
+      }
+   }
+   catch (...)
+   {
+      BOOST_FAIL("Unknown exception");
+   }
+}
+
+#define MEASURE_DURATION_INIT() \
+      boost::posix_time::ptime start, end;\
+      boost::posix_time::time_duration dur
+
+
+#define MEASURE_DURATION_START() start = boost::posix_time::microsec_clock::local_time();
+
+#define MEASURE_DURATION_STOP(name)\
+      end = boost::posix_time::microsec_clock::local_time(); \
+      dur = end - start;\
+      std::cout << "[ic=" << itemCount << "] Fonction=" << name << " Duration = " <<dur.total_milliseconds() << " ms (" << dur.total_microseconds() << " micro seconds)" << std::endl
+
+void bench_cdatacontainer(unsigned int itemCount)
+{
+   MEASURE_DURATION_INIT();
+
+   unsigned int i = 0;
+   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+   try
+   {
+      MEASURE_DURATION_START();
+
+      shared::CDataContainer dcgeneration;
+
+      dcgeneration.createArray("data");
+      dcgeneration.set<bool>("BoolParameter", true);
+      dcgeneration.set<double>("DecimalParameter", 18.4);
+      dcgeneration.set<EEnumType>("EnumParameter", kEnumValue2);
+      dcgeneration.set<std::string>("EnumAsStringParameter", "EnumValue1");
+      dcgeneration.set<int>("IntParameter", 42);
+      dcgeneration.set<std::string>("Serial port", "tty0");
+      dcgeneration.set<std::string>("StringParameter", "Yadoms is so powerful !");
+      dcgeneration.set<int>("MySection.SubIntParameter", 123);
+      dcgeneration.set<std::string>("MySection.SubStringParameter", "Just a string parameter in the sub-section");
+
+      for (i = 0; i < itemCount; ++i)
+      {
+         shared::CDataContainer result;
+         result.set("date", boost::posix_time::to_iso_string(t1));
+         result.set("key", std::to_string(fRand(0, 1000)));
+         result.set<bool>("BoolParameter", true);
+         result.set<double>("DecimalParameter", 18.4);
+         result.set<EEnumType>("EnumParameter", kEnumValue2);
+         result.set<std::string>("EnumAsStringParameter", "EnumValue1");
+         result.set<int>("IntParameter", 42);
+         result.set<std::string>("Serial port", "tty0");
+         result.set<std::string>("StringParameter", "Yadoms is so powerful !");
+         result.set<int>("MySection.SubIntParameter", 123);
+         result.set<std::string>("MySection.SubStringParameter", "Just a string parameter in the sub-section");
+         dcgeneration.appendArray("data", result);
+         t1 += boost::posix_time::seconds(1);
+      }
+
+      MEASURE_DURATION_STOP("Generating JSON in memory");
+
+      MEASURE_DURATION_START();
+      dcgeneration.serializeToFile("benchmark.json");
+      MEASURE_DURATION_STOP("Wrting to file benchmark.json");
+
+
+      MEASURE_DURATION_START();
+      shared::CDataContainer dcread;
+      dcread.deserializeFromFile("benchmark.json");
+      MEASURE_DURATION_STOP("Reading file benchmark.json");
+
+      std::cout << "[ic=" << itemCount << "] " << "Filesize is " << boost::filesystem::file_size("benchmark.json") << " bytes" << std::endl;
+      boost::filesystem::remove("benchmark.json");
+   }
+   catch (...)
+   {
+      BOOST_FAIL("Unknown exception");
+   }
+}
+
+BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
+{
+   std::cout << "Start benchmark of CDataContainer" << std::endl;
+   std::cout << "Config :" << BOOST_PP_STRINGIZE(RAPIDJSON_DEFAULT_ALLOCATOR) << std::endl;
+   std::cout << "    Allocator = " << BOOST_PP_STRINGIZE(RAPIDJSON_DEFAULT_ALLOCATOR) << std::endl;
+   std::cout << "    Object capacity = " << RAPIDJSON_VALUE_DEFAULT_OBJECT_CAPACITY << std::endl;
+   std::cout << "    Array capacity = " << RAPIDJSON_VALUE_DEFAULT_ARRAY_CAPACITY << std::endl;
+   std::cout << "    Chunck capacity = " << RAPIDJSON_ALLOCATOR_DEFAULT_CHUNK_CAPACITY << std::endl;
+   
+   bench_cdatacontainer(10);
+   bench_cdatacontainer(1000);
+   bench_cdatacontainer(100000);
+   bench_cdatacontainer(1000000);
+
+   std::cout << "End benchmark of CDataContainer" << std::endl;
+}
+
+
+
+
+
+BOOST_AUTO_TEST_CASE(DataContainer_Array)
+{
+   shared::CDataContainer dc;
+   auto actualDatetime = boost::posix_time::second_clock::universal_time();
+
+   BOOST_CHECK_EQUAL(dc.createArray("test.myArray"), true);
+
+   //insert all simple data
+   dc.appendArray("test.myArray", true);
+   dc.appendArray("test.myArray", 18.4);
+   dc.appendArray<EEnumType>("test.myArray", kEnumValue2);
+   dc.appendArray<std::string>("test.myArray", "EnumValue1");
+   dc.appendArray("test.myArray", 42);
+   dc.appendArray("test.myArray", "tty0");
+   dc.appendArray("DateTimeParameter", actualDatetime);
+
+   BOOST_CHECK_EQUAL(dc.isArray("test.myArray"), true);
+
+   dc.set("test.myArray", "tty0");
+   BOOST_CHECK_EQUAL(dc.isArray("test.myArray"), false);
+
+   //dc.printToLog(std::cout);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+

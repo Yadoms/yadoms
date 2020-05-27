@@ -1,12 +1,12 @@
 #pragma once
-#include <shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.h>
+#include <shared/plugin/yPluginApi/typeInfo/BoolTypeInfo.h>
 #include <shared/DataContainer.h>
 #include <value_classes/ValueID.h>
 
 //-----------------------------------------------------
 ///\brief Interface for keyword type information
 //-----------------------------------------------------
-class CBoolTypeInfo : public shared::plugin::yPluginApi::historization::typeInfo::CBoolTypeInfo
+class CBoolTypeInfo : public shared::plugin::yPluginApi::typeInfo::CBoolTypeInfo
 {
 public:
    //-----------------------------------------------------
@@ -19,9 +19,9 @@ public:
    //-----------------------------------------------------
    virtual ~CBoolTypeInfo();
 
-   // shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo implementation 
-   shared::CDataContainer serialize() const override;
-   // END shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo implementation 
+   // shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
+   boost::shared_ptr<shared::CDataContainer> serialize() const override;
+   // END shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
 
 private:
    //-----------------------------------------------------
@@ -33,6 +33,6 @@ private:
    //-----------------------------------------------------
    ///\brief   The typeInfo content
    //-----------------------------------------------------
-   shared::CDataContainer m_data;
+   boost::shared_ptr<shared::CDataContainer> m_data;
 };
 

@@ -1,7 +1,6 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/DoubleTypeInfo.h"
+#include "../typeInfo/DoubleTypeInfo.h"
 
 namespace shared
 {
@@ -14,26 +13,24 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A distance (meter) historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CDistance : public CSingleHistorizableData<double>
+            class CDistance : public CSingleHistorizableData<double>
             {
             public:
                //-----------------------------------------------------
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      Access mode
+               ///\param[in] additionalInfo  The type information
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CDistance(const std::string& keywordName,
                                   const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
-                                  typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty);
+                                  const typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
+                                  const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CDistance();
+               virtual ~CDistance() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

@@ -2,5 +2,5 @@
 
 def yMain(yApi):
    while True:
-      print 'Yadoms server OS = ', yApi.getInfo(yApi.kYadomsServerOS)
+      print ('Yadoms server OS = {yApi.getInfo(yApi.kYadomsServerOS)}')
       time.sleep(5)

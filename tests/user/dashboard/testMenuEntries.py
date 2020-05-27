@@ -7,6 +7,7 @@ import scripts
 import yadomsServer
 import dashboard
 from selenium import webdriver
+import tools
 
 class MenuEntries(unittest.TestCase):
    """Check entries of the dashboard main menu"""
@@ -17,7 +18,7 @@ class MenuEntries(unittest.TestCase):
       config.deploy("nominal")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = webdriver.Chrome(options=tools.ChromeOptionsHelper.get())
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
 
@@ -28,14 +29,14 @@ class MenuEntries(unittest.TestCase):
       self.assertEqual(entry.is_selected(), False)
       
    def test_checkEntries(self):
-      print '=== Main dashboard menu test ==='
+      print ('=== Main dashboard menu test ===')
 
       self.assertIn("Yadoms", self.browser.title)
       
-      print '  Enter dashboard'
+      print ('  Enter dashboard')
       dashboard.open(self.browser)
    
-      print '  Check summary page'
+      print ('  Check summary page')
       dashboard_boutons = self.browser.find_element_by_id("dashboard-btns")
       menuEntries = dashboard_boutons.find_elements_by_xpath("./child::*")
       self.assertEqual(len(menuEntries), 9)

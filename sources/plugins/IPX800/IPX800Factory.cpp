@@ -36,7 +36,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
       // plugin state have no type
       try
       {
-         type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
+         type = api->getDeviceDetails(*devicesIterator)->get<std::string>("type");
       }
       catch (...)
       {
@@ -48,7 +48,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
       if (type == "X-8R")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
-         int position = details.get<int>("position");
+         int position = details->get<int>("position");
          api->declareDevice(*devicesIterator, equipments::CX8RExtension::deviceType(), equipments::CX8RExtension::deviceType());
          extension = boost::make_shared<equipments::CX8RExtension>(api, *devicesIterator, position);
          m_devicesList.push_back(extension);
@@ -57,7 +57,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
       else if (type == "X-8D")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
-         int position = details.get<int>("position");
+         int position = details->get<int>("position");
          api->declareDevice(*devicesIterator, equipments::CX8DExtension::deviceType(), equipments::CX8DExtension::deviceType());
          extension = boost::make_shared<equipments::CX8DExtension>(api, *devicesIterator, position);
          m_devicesList.push_back(extension);
@@ -66,7 +66,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
       else if (type == "X-24D")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
-         int position = details.get<int>("position");
+         int position = details->get<int>("position");
          api->declareDevice(*devicesIterator, equipments::CX24DExtension::deviceType(), equipments::CX24DExtension::deviceType());
          extension = boost::make_shared<equipments::CX24DExtension>(api, *devicesIterator, position);
          m_devicesList.push_back(extension);
@@ -90,19 +90,19 @@ void CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> a
    {
       if (data.getDeviceType() == "X8R")
       {
-         int position = data.getConfiguration().get<int>("Position");
+         int position = data.getConfiguration()->get<int>("Position");
          extension = boost::make_shared<equipments::CX8RExtension>(api, data.getDeviceName(), position);
          X8RSlotused[position - 1] = true;
       }
       else if (data.getDeviceType() == "X8D")
       {
-         int position = data.getConfiguration().get<int>("Position");
+         int position = data.getConfiguration()->get<int>("Position");
          extension = boost::make_shared<equipments::CX8DExtension>(api, data.getDeviceName(), position);
          X8DSlotused[position - 1] = true;
       }
       else if (data.getDeviceType() == "X24D")
       {
-         int position = data.getConfiguration().get<int>("Position");
+         int position = data.getConfiguration()->get<int>("Position");
          extension = boost::make_shared<equipments::CX24DExtension>(api, data.getDeviceName(), position);
 
          // The corresponding slots for X-8D could not be installed
@@ -123,7 +123,7 @@ void CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> a
    m_ioManager->Initialize(m_devicesList);
 }
 
-shared::CDataContainer CIPX800Factory::bindSlotsX8R()
+boost::shared_ptr<shared::CDataContainer> CIPX800Factory::bindSlotsX8R()
 {
    shared::CDataContainer ev;
    std::string defaultValue = "";
@@ -139,17 +139,17 @@ shared::CDataContainer CIPX800Factory::bindSlotsX8R()
       }
    }
 
-   shared::CDataContainer en;
-   en.set("type", "enum");
-   en.set("name", "Slot");
-   en.set("description", "Choose the slot");
-   en.set("values", ev);
-   en.set("defaultValue", defaultValue);
+   boost::shared_ptr<shared::CDataContainer> en = shared::CDataContainer::make();
+   en->set("type", "enum");
+   en->set("name", "Slot");
+   en->set("description", "Choose the slot");
+   en->set("values", ev);
+   en->set("defaultValue", defaultValue);
 
    return en;
 }
 
-shared::CDataContainer CIPX800Factory::bindSlotsX8D()
+boost::shared_ptr<shared::CDataContainer> CIPX800Factory::bindSlotsX8D()
 {
    shared::CDataContainer ev;
    std::string defaultValue = "";
@@ -166,17 +166,17 @@ shared::CDataContainer CIPX800Factory::bindSlotsX8D()
       }
    }
 
-   shared::CDataContainer en;
-   en.set("type", "enum");
-   en.set("name", "Slot");
-   en.set("description", "Choose the slot");
-   en.set("values", ev);
-   en.set("defaultValue", defaultValue);
+   boost::shared_ptr<shared::CDataContainer> en = shared::CDataContainer::make();
+   en->set("type", "enum");
+   en->set("name", "Slot");
+   en->set("description", "Choose the slot");
+   en->set("values", ev);
+   en->set("defaultValue", defaultValue);
 
    return en;
 }
 
-shared::CDataContainer CIPX800Factory::bindSlotsX24D()
+boost::shared_ptr<shared::CDataContainer> CIPX800Factory::bindSlotsX24D()
 {
    shared::CDataContainer ev;
    std::string defaultValue = "";
@@ -193,12 +193,12 @@ shared::CDataContainer CIPX800Factory::bindSlotsX24D()
       }
    }
 
-   shared::CDataContainer en;
-   en.set("type", "enum");
-   en.set("name", "Slot");
-   en.set("description", "Choose the slot");
-   en.set("values", ev);
-   en.set("defaultValue", defaultValue);
+   boost::shared_ptr<shared::CDataContainer> en = shared::CDataContainer::make();
+   en->set("type", "enum");
+   en->set("name", "Slot");
+   en->set("description", "Choose the slot");
+   en->set("values", ev);
+   en->set("defaultValue", defaultValue);
    return en;
 }
 
@@ -243,7 +243,7 @@ void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, cons
 }
 
 void CIPX800Factory::onDeviceConfigurationChange(const std::string& name,
-                                                 const shared::CDataContainer& newConfiguration)
+                                                 const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
 {
    for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorExtension = m_devicesList.begin();
       iteratorExtension != m_devicesList.end();
@@ -270,7 +270,7 @@ void CIPX800Factory::onDeviceConfigurationChange(const std::string& name,
 
          (*iteratorExtension)->setNewConfiguration(newConfiguration);
 
-         position = newConfiguration.get<int>("Position");
+         position = newConfiguration->get<int>("Position");
 
          if (type == "X-8R") X8RSlotused[position - 1] = true;
          if (type == "X-8D") X8DSlotused[position - 1] = true;

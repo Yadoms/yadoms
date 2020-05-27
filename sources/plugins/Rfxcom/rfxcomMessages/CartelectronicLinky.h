@@ -32,7 +32,7 @@ namespace rfxcomMessages
       virtual ~CCartelectronicLinky();
 
       // ICartelectronicSubtype implementation
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords(const shared::CDataContainer& deviceConfiguration) override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords(const boost::shared_ptr<shared::CDataContainer>& deviceConfiguration) override;
       std::string idFromProtocol(const RBUF& rbuf) const override;
       char batteryLevelFromProtocol(const RBUF& rbuf) override;
       char signalPowerFromProtocol(const RBUF& rbuf) override;

@@ -17,21 +17,18 @@ namespace shared
             );
 
             CArmingAlarm::CArmingAlarm(const std::string& keywordName,
-                                       const EKeywordAccessMode& accessMode)
+                                       const EKeywordAccessMode& accessMode,
+                                       const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<EArmingAlarmStatus>(keywordName,
                                                              CStandardCapacities::ArmingAlarm(),
                                                              accessMode,
                                                              EArmingAlarmStatus::kDisarmed,
-                                                             EMeasureType::kAbsolute)
-            {
-            }
-
-            CArmingAlarm::~CArmingAlarm()
+                                                             EMeasureType::kAbsolute,
+                                                             typeInfo::CEmptyTypeInfo::Empty,
+                                                             historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

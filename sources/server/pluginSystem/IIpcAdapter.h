@@ -7,6 +7,7 @@
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
+#include <Poco/Nullable.h>
 
 
 namespace pluginSystem
@@ -41,17 +42,27 @@ namespace pluginSystem
       /// \param[in] dataPath    The plugin instance data path
       /// \param[in] logFile     The plugin instance log file path
       /// \param[in] logLevel    The log level to use
+      /// \param[in] proxyHost   The proxy host (empty if no proxy)
+      /// \param[in] proxyPort   The proxy port
+      /// \param[in] proxyUsername  The proxy username
+      /// \param[in] proxyPassword  The proxy password
+      /// \param[in] proxyBypass    The proxy bypass regex
       //--------------------------------------------------------------
       virtual void postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
                             const boost::filesystem::path& dataPath,
                             const boost::filesystem::path& logFile,
-                            const std::string& logLevel) = 0;
+                            const std::string& logLevel,
+                            Poco::Nullable<std::string> proxyHost,
+                            Poco::Nullable<Poco::UInt16> proxyPort,
+                            Poco::Nullable<std::string> proxyUsername,
+                            Poco::Nullable<std::string> proxyPassword,
+                            Poco::Nullable<std::string> proxyBypass) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a configuration update to plugin instance
       /// \param [in] newConfiguration The new configuration
       //--------------------------------------------------------------
-      virtual void postUpdateConfiguration(const shared::CDataContainer& newConfiguration) = 0;
+      virtual void postUpdateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a custom query request to a plugin
@@ -81,7 +92,7 @@ namespace pluginSystem
       /// \brief                 Post an extra command to a plugin
       /// \param [in] extraQuery The command
       //--------------------------------------------------------------
-      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId) = 0;
+      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string& taskId) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin

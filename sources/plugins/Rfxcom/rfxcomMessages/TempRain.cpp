@@ -14,7 +14,7 @@ namespace rfxcomMessages
       : m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
         m_rain(boost::make_shared<yApi::historization::CRain>("rain",
                                                               yApi::EKeywordAccessMode::kGet,
-                                                              yApi::historization::EMeasureType::kCumulative)),
+                                                              yApi::EMeasureType::kCumulative)),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_temperature , m_rain, m_batteryLevel , m_signalPower})
@@ -59,13 +59,13 @@ namespace rfxcomMessages
 
    void CTempRain::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      shared::CDataContainer details;
-      details.set("type", pTypeTEMP_RAIN);
-      details.set("subType", m_subType);
-      details.set("id", m_id);
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
+      details->set("type", pTypeTEMP_RAIN);
+      details->set("subType", m_subType);
+      details->set("id", m_id);
       api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-      details.printToLog(YADOMS_LOG(information));
+      details->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CTempRain::getDeviceName() const

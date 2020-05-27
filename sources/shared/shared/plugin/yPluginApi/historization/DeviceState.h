@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "SingleHistorizableData.hpp"
 
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Device state
             //-----------------------------------------------------
-            DECLARE_ENUM_HEADER_SHARED(EDeviceState, YADOMS_SHARED_EXPORT,
+            DECLARE_ENUM_HEADER(EDeviceState,
                ((Unknown))
                ((Active))
                ((Busy))
@@ -27,25 +26,22 @@ namespace shared
             //-----------------------------------------------------
             ///\brief The device state historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CDeviceState : public CSingleHistorizableData<EDeviceState>
+            class CDeviceState : public CSingleHistorizableData<EDeviceState>
             {
             public:
                //-----------------------------------------------------
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CDeviceState(const std::string& keywordName,
-                                     const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
+                                     const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
+                                     const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CDeviceState();
+               virtual ~CDeviceState() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

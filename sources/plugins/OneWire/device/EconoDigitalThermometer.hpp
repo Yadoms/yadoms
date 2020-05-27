@@ -5,30 +5,25 @@
 
 namespace device
 {
+//--------------------------------------------------------------
+/// \brief	Temperature Device (Family 22)
+//--------------------------------------------------------------
+class CEconoDigitalThermometer : public CSingleTemperature
+{
+public:
    //--------------------------------------------------------------
-   /// \brief	Temperature Device (Family 22)
+   /// \brief	Constructor
+   /// \param[in]	family Device family
+   /// \param[in]	id Device serial number
+   /// \param[in]	reader I/O access object
    //--------------------------------------------------------------
-   class CEconoDigitalThermometer : public CSingleTemperature
+   CEconoDigitalThermometer(EOneWireFamily family,
+                            const std::string &id,
+                            boost::shared_ptr<ioInterfaces::ITemperature> io)
+       : CSingleTemperature(family, id, "DS1922", io, kEconoDigitalThermometer)
    {
-   public:
-      //--------------------------------------------------------------
-      /// \brief	Constructor
-      /// \param[in]	family Device family
-      /// \param[in]	id Device serial number
-      /// \param[in]	reader I/O access object
-      //--------------------------------------------------------------
-      CEconoDigitalThermometer(EOneWireFamily family,
-                               const std::string& id,
-                               boost::shared_ptr<ioInterfaces::ITemperature> io)
-         :CSingleTemperature(family, id, "DS1922", io, kEconoDigitalThermometer)
-      {
-      }
+   }
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~CEconoDigitalThermometer()
-      {
-      }
-   };
+   virtual ~CEconoDigitalThermometer() = default;
+};
 } // namespace device

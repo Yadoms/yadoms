@@ -23,23 +23,21 @@ enum EEnumType
 class CFakePluginConfiguration
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	    Destructor
-   //--------------------------------------------------------------
-   virtual ~CFakePluginConfiguration();
+   virtual ~CFakePluginConfiguration() = default;
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   void initializeWith(const shared::CDataContainer& data);
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer> & data);
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    /// \param [in] packageJsonPath The package.json path
    //--------------------------------------------------------------
-   void initializeWith(const shared::CDataContainer& data, boost::filesystem::path & packageJsonPath);
+   void initializeWith(boost::shared_ptr<shared::CDataContainer> data,
+                       const boost::filesystem::path& packageJsonPath);
 
    //--------------------------------------------------------------
    /// \brief	    Just for test, not needed for real plugin
@@ -63,4 +61,3 @@ private:
    //--------------------------------------------------------------
    yApi::YPluginConfiguration m_configuration;
 };
-

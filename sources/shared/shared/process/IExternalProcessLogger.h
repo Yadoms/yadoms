@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 
 namespace shared
 {
@@ -8,7 +7,7 @@ namespace shared
       //-----------------------------------------------------
       ///\brief The process logger interface
       //-----------------------------------------------------
-      class YADOMS_SHARED_EXPORT IExternalProcessLogger
+      class IExternalProcessLogger
       {
       public:
          //-----------------------------------------------------

@@ -42,13 +42,13 @@ namespace web { namespace rest { namespace service {
          std::string taskUid = parameters[1];
          boost::shared_ptr<task::IInstance> taskFound = m_taskManager->getTask(taskUid);
          if (taskFound == NULL)
-            return web::rest::CResult::GenerateError("Task not found");
+            return CResult::GenerateError("Task not found");
 
-         return web::rest::CResult::GenerateSuccess(serialize(taskFound));
+         return CResult::GenerateSuccess(serialize(taskFound));
       }
       else
       {
-         return web::rest::CResult::GenerateError("Invalid parameter count (need guid of the task in url)");
+         return CResult::GenerateError("Invalid parameter count (need guid of the task in url)");
       }
    }
 
@@ -57,19 +57,16 @@ namespace web { namespace rest { namespace service {
       std::vector< boost::shared_ptr< task::IInstance > > taskList = m_taskManager->getAllTasks();
 
       //we build the collection answer
-      std::vector< shared::CDataContainer > internalList;
-
+      shared::CDataContainer collection;
+      collection.createArray("task");
       
       std::vector< boost::shared_ptr< task::IInstance > >::iterator it;
       for (it = taskList.begin(); it != taskList.end(); ++it)
       {
-         internalList.push_back(serialize(*it));
+         collection.appendArray("task", serialize(*it));
       }
 
-      shared::CDataContainer collection;
-      collection.set< std::vector< shared::CDataContainer > >("task", internalList);
-
-      return web::rest::CResult::GenerateSuccess(collection);
+      return CResult::GenerateSuccess(collection);
    }
 
    boost::shared_ptr<shared::serialization::IDataSerializable> CTask::addTask(const std::vector<std::string> & parameters, const std::string & requestContent)
@@ -82,7 +79,7 @@ namespace web { namespace rest { namespace service {
 
          if (t == NULL)
          {
-            return web::rest::CResult::GenerateError("Type of task doesn't exist: " + type);
+            return CResult::GenerateError("Type of task doesn't exist: " + type);
          }
 
          //the task has been created we ask to run it
@@ -92,29 +89,29 @@ namespace web { namespace rest { namespace service {
 
          boost::shared_ptr<task::IInstance> taskFound = m_taskManager->getTask(taskUid);
          if (taskFound == NULL)
-            return web::rest::CResult::GenerateError("Task not found");
+            return CResult::GenerateError("Task not found");
 
-         return web::rest::CResult::GenerateSuccess(serialize(taskFound));
+         return CResult::GenerateSuccess(serialize(taskFound));
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in creating a new Task");
+         return CResult::GenerateError("unknown exception in creating a new Task");
       }
    }
 
-   shared::CDataContainer CTask::serialize(boost::shared_ptr<task::IInstance> instance) const
+   boost::shared_ptr<shared::CDataContainer> CTask::serialize(boost::shared_ptr<task::IInstance> instance) const
    {
-      shared::CDataContainer container;
-      container.set("uuid", instance->getGuid());
-      container.set("name", instance->getName());
-      container.set("progression", instance->getProgression());
-      container.set("message", instance->getMessage());
-      container.set("status", instance->getStatus());
-      container.set("creationDate", instance->getCreationDate());
+      boost::shared_ptr<shared::CDataContainer> container = shared::CDataContainer::make();
+      container->set("uuid", instance->getGuid());
+      container->set("name", instance->getName());
+      container->set("progression", instance->getProgression());
+      container->set("message", instance->getMessage());
+      container->set("status", instance->getStatus());
+      container->set("creationDate", instance->getCreationDate());
       return container;
    }
 

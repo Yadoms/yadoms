@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace shared
@@ -11,7 +10,7 @@ namespace shared
          //-----------------------------------------------------
          ///\brief Keyword access mode
          //-----------------------------------------------------
-         DECLARE_ENUM_HEADER_SHARED(EKeywordAccessMode, YADOMS_SHARED_EXPORT,
+         DECLARE_ENUM_HEADER(EKeywordAccessMode,
             ((NoAccess))
             ((Get))
             ((GetSet))

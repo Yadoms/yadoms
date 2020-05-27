@@ -1,7 +1,6 @@
 #pragma once
-#include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/IntTypeInfo.h"
+#include "../typeInfo/IntTypeInfo.h"
 
 namespace shared
 {
@@ -14,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A direction historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CDirection : public CSingleHistorizableData<int>
+            class CDirection : public CSingleHistorizableData<int>
             {
             public:
                //-----------------------------------------------------
@@ -23,20 +22,17 @@ namespace shared
                ///\param[in] accessMode      The access mode
                ///\param[in] measureType     The measure type (normally kAbsolute)
                ///\param[in] additionalInfo  Additional information
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CDirection(const std::string& keywordName,
                                    const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                                    const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                   typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
+                                   const typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty,
+                                   const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CDirection();
+               virtual ~CDirection() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

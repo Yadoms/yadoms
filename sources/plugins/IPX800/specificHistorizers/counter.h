@@ -1,7 +1,5 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
-#include <shared/plugin/yPluginApi/KeywordAccessMode.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -25,19 +23,16 @@ namespace specificHistorizers
 	   explicit CCounter(const std::string& keywordName,
                         const std::string& hardwareName,
 						      const yApi::EKeywordAccessMode& accessMode = yApi::EKeywordAccessMode::kGetSet,
-						      const yApi::historization::EMeasureType& measureType = yApi::historization::EMeasureType::kAbsolute,
-                        yApi::historization::typeInfo::ITypeInfo& additionalInfo = yApi::historization::typeInfo::CEmptyTypeInfo::Empty);
+						      const yApi::EMeasureType& measureType = yApi::EMeasureType::kAbsolute,
+                        const yApi::typeInfo::ITypeInfo& additionalInfo = yApi::typeInfo::CEmptyTypeInfo::Empty);
+
+      virtual ~CCounter() = default;
 
       //-----------------------------------------------------
       ///\brief                     get the hardware name
       ///\return return the name used by the IPX800 to address this information.
       //-----------------------------------------------------
       std::string getHardwareName() const;
-
-      //-----------------------------------------------------
-      ///\brief                     Destructor
-      //-----------------------------------------------------
-      virtual ~CCounter();
 
    private:
       std::string m_hardwareName;
