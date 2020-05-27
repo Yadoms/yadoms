@@ -1467,29 +1467,6 @@ namespace shared
 
       };
 
-      //--------------------------------------------------------------
-      /// \brief	    Helper structure for get/set with vector of value type ( std::vector< boost::shared_ptr<T> > )
-      //--------------------------------------------------------------
-      template <>
-      struct helper < std::vector< boost::shared_ptr<CDataContainer> > >
-      {
-         //--------------------------------------------------------------
-         /// \brief	    GET Method for std::vector< boost::shared_ptr<T> >
-         //--------------------------------------------------------------
-         static std::vector< boost::shared_ptr<CDataContainer> > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
-         {
-            return vhelper<CDataContainer>::getInternal(tree, parameterName, pathChar);
-         }
-
-         //--------------------------------------------------------------
-         /// \brief	    SET Method for std::vector< boost::shared_ptr<T> >
-         //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< boost::shared_ptr<CDataContainer> > & value, const char pathChar)
-         {
-            vhelper<CDataContainer>::setInternal(tree, parameterName, value, pathChar);
-         }
-
-      };
 
    private:
       //--------------------------------------------------------------
@@ -1557,6 +1534,31 @@ namespace shared
          auto& a = *value.get();
          tree->appendArray(parameterName, a, pathChar);
       }
+   };
+
+
+   //--------------------------------------------------------------
+   /// \brief	    Helper structure for get/set with vector of value type ( std::vector< boost::shared_ptr<T> > )
+   //--------------------------------------------------------------
+   template <>
+   struct CDataContainer::helper < std::vector< boost::shared_ptr<CDataContainer> > >
+   {
+      //--------------------------------------------------------------
+      /// \brief	    GET Method for std::vector< boost::shared_ptr<T> >
+      //--------------------------------------------------------------
+      static std::vector< boost::shared_ptr<CDataContainer> > getInternal(const CDataContainer* tree, const std::string& parameterName, const char pathChar)
+      {
+         return vhelper<CDataContainer>::getInternal(tree, parameterName, pathChar);
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	    SET Method for std::vector< boost::shared_ptr<T> >
+      //--------------------------------------------------------------
+      static void setInternal(CDataContainer* tree, const std::string& parameterName, const std::vector< boost::shared_ptr<CDataContainer> >& value, const char pathChar)
+      {
+         vhelper<CDataContainer>::setInternal(tree, parameterName, value, pathChar);
+      }
+
    };
 
    //--------------------------------------------------------------
