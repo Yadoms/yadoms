@@ -1,3 +1,6 @@
+### 1.3.0-beta.1
+* Fix #562  : update usage of CDataContainer for better memory optimizations
+
 ### 1.2.0-beta.3
 * change Http timeout to 5 seconds
 * fix the configuration to accept no password

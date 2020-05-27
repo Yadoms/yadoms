@@ -28,7 +28,7 @@ namespace task
                                                    const std::string& message) const
       {
          if (m_reportRealProgress)
-            m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::EmptyContainer);
+            m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::make());
       }
 
       void CPackLogs::doWork(TaskProgressFunc functor)

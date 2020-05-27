@@ -9,6 +9,11 @@ class CSomfySituoConfiguration : public ISomfySituoConfiguration
 {
 public:
    //--------------------------------------------------------------
+   /// \brief	    Constructor
+   //--------------------------------------------------------------
+   CSomfySituoConfiguration();
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CSomfySituoConfiguration();
@@ -17,7 +22,7 @@ public:
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   void initializeWith(const shared::CDataContainer& data) override;
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data) override;
    std::string getSerialPort() const override;
 
 
@@ -25,5 +30,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Configuration getter
    //--------------------------------------------------------------
-   shared::CDataContainer m_data;
+   boost::shared_ptr<shared::CDataContainer> m_data;
 };

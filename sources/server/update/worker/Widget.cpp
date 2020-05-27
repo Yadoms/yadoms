@@ -17,8 +17,8 @@ namespace update
       {
          YADOMS_LOG(information) << "Installing new widget from " << downloadUrl;
 
-         shared::CDataContainer callbackData;
-         callbackData.set("downloadUrl", downloadUrl);
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         callbackData->set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetInstall, std::string(), callbackData);
          /////////////////////////////////////////////
@@ -44,7 +44,7 @@ namespace update
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, std::string(), callbackData);
                const auto widgetPath = CWorkerTools::deployPackage(downloadedPackage, widgetsPath.string());
                YADOMS_LOG(information) << "Widget deployed with success";
-               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), shared::CDataContainer::EmptyContainer);
+               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), shared::CDataContainer::make());
             }
             catch (std::exception& ex)
             {
@@ -77,9 +77,9 @@ namespace update
       {
          YADOMS_LOG(information) << "Updating widget " << widgetName << " from " << downloadUrl;
 
-         shared::CDataContainer callbackData;
-         callbackData.set("widgetName", widgetName);
-         callbackData.set("downloadUrl", downloadUrl);
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         callbackData->set("widgetName", widgetName);
+         callbackData->set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetUpdate, std::string(), callbackData);
          /////////////////////////////////////////////
@@ -136,8 +136,8 @@ namespace update
       {
          YADOMS_LOG(information) << "Removing widget " << widgetName;
 
-         shared::CDataContainer callbackData;
-         callbackData.set("widgetName", widgetName);
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         callbackData->set("widgetName", widgetName);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetRemove, std::string(), callbackData);
 

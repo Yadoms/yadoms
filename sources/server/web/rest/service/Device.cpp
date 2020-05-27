@@ -127,7 +127,7 @@ namespace web
                                     const boost::shared_ptr<database::entities::CDevice>& candidateDevice)
                                     {
                                        auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
-                                       std::vector<shared::CDataContainer> commonKeywords;
+                                       std::vector<boost::shared_ptr<shared::CDataContainer>> commonKeywords;
                                        // Iterate through reference keywords to find a common keyword in candidateDevice
                                        for (const auto& refKeyword : refKeywords)
                                        {
@@ -151,9 +151,9 @@ namespace web
                                                                   refKeyword->Details == candidateKeyword->Details)
                                                                {
                                                                   // A common device was found
-                                                                  shared::CDataContainer commonKeyword;
-                                                                  commonKeyword.set("from", refKeyword);
-                                                                  commonKeyword.set("to", candidateKeyword);
+                                                                  boost::shared_ptr<shared::CDataContainer> commonKeyword = shared::CDataContainer::make();
+                                                                  commonKeyword->set("from", refKeyword);
+                                                                  commonKeyword->set("to", candidateKeyword);
                                                                   commonKeywords.push_back(commonKeyword);
                                                                   return true;
                                                                }
@@ -201,7 +201,7 @@ namespace web
                   try
                   {
                      //create a callback (allow waiting for result)              
-                     communication::callback::CSynchronousCallback<shared::CDataContainer> cb;
+                     communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>> cb;
 
                      //send request to plugin
                      m_messageSender.sendDeviceConfigurationSchemaRequest(deviceId, cb);
@@ -209,11 +209,11 @@ namespace web
                      //wait for result
                      switch (cb.waitForResult())
                      {
-                     case communication::callback::CSynchronousCallback<shared::CDataContainer>::kResult:
+                     case communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>>::kResult:
                         {
                            const auto res = cb.getCallbackResult();
                            if (res.success)
-                              return CResult::GenerateSuccess(res.result);
+                              return CResult::GenerateSuccess(res.result());
                            return CResult::GenerateError(res.errorMessage);
                         }
                      case shared::event::kTimeout:
@@ -280,9 +280,9 @@ namespace web
             {
                if (parameters.size() >= 2)
                {
-                  const auto keywordIds = shared::CDataContainer(requestContent);
+                  const auto keywordIds = shared::CDataContainer::make(requestContent);
                   const auto keywordListLastData = m_keywordManager->getKeywordListLastData(
-                     keywordIds.get<std::vector<int>>("keywordIds"));
+                     keywordIds->get<std::vector<int>>("keywordIds"));
                   shared::CDataContainer result;
                   for (auto keywordLastData : keywordListLastData)
                   {
@@ -465,30 +465,30 @@ namespace web
                //    "keywords" : [ keywordEntity1, keywordEntity2... ]
                // }
                //
-               const auto criteria = shared::CDataContainer(requestContent);
+               const auto criteria = shared::CDataContainer::make(requestContent);
 
                std::vector<shared::plugin::yPluginApi::EKeywordDataType> expectedKeywordTypes;
-               if (criteria.exists("expectedKeywordType"))
+               if (criteria->exists("expectedKeywordType"))
                {
-                  for (const auto& node : criteria.get<std::vector<std::string>>("expectedKeywordType"))
+                  for (const auto& node : criteria->get<std::vector<std::string>>("expectedKeywordType"))
                      expectedKeywordTypes.emplace_back(node);
                }
 
-               const auto expectedCapacities = criteria.exists("expectedCapacity")
-                                                  ? criteria.get<std::vector<std::string>>("expectedCapacity")
+               const auto expectedCapacities = criteria->exists("expectedCapacity")
+                                                  ? criteria->get<std::vector<std::string>>("expectedCapacity")
                                                   : std::vector<std::string>();
 
                std::vector<shared::plugin::yPluginApi::EKeywordAccessMode> expectedKeywordAccesses;
-               if (criteria.exists("expectedKeywordAccess"))
+               if (criteria->exists("expectedKeywordAccess"))
                {
-                  for (const auto& node : criteria.get<std::vector<std::string>>("expectedKeywordAccess"))
+                  for (const auto& node : criteria->get<std::vector<std::string>>("expectedKeywordAccess"))
                      expectedKeywordAccesses.emplace_back(node);
                }
 
                std::vector<shared::plugin::yPluginApi::EHistoryDepth> expectedKeywordHistoryDepth;
-               if (criteria.exists("expectedKeywordHistoryDepth"))
+               if (criteria->exists("expectedKeywordHistoryDepth"))
                {
-                  for (const auto& node : criteria.get<std::vector<std::string>>("expectedKeywordHistoryDepth"))
+                  for (const auto& node : criteria->get<std::vector<std::string>>("expectedKeywordHistoryDepth"))
                      expectedKeywordHistoryDepth.emplace_back(node);
                }
 
@@ -748,7 +748,7 @@ namespace web
                const shared::CDataContainer content(requestContent);
                const auto sourceDeviceId = content.get<int>("sourceDeviceId");
                const auto targetDeviceId = content.get<int>("targetDeviceId");
-               const auto keywordCorrespondences = content.get<std::vector<shared::CDataContainer>>(
+               const auto keywordCorrespondences = content.get<std::vector<boost::shared_ptr<shared::CDataContainer>>>(
                   "keywordCorrespondences");
 
                // Merge acquisitions
@@ -756,8 +756,8 @@ namespace web
                for (const auto& keywordCorrespondence : keywordCorrespondences)
                {
                   // Move acquisitions
-                  const auto fromKw = keywordCorrespondence.get<int>("from");
-                  const auto toKw = keywordCorrespondence.get<int>("to");
+                  const auto fromKw = keywordCorrespondence->get<int>("from");
+                  const auto toKw = keywordCorrespondence->get<int>("to");
                   m_dataProvider->getAcquisitionRequester()->moveAllData(fromKw, toKw);
                   // Update last acquisition in keyword table
                   const auto lastData = m_dataProvider->getAcquisitionRequester()->getKeywordData(toKw,

@@ -92,7 +92,7 @@ namespace dataAccessLayer
                                                                           const std::string& friendlyName,
                                                                           const std::string& type,
                                                                           const std::string& model,
-                                                                          const shared::CDataContainer& details) = 0;
+                                                                          boost::shared_ptr<shared::CDataContainer> details) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices
@@ -123,7 +123,7 @@ namespace dataAccessLayer
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateDeviceConfiguration(int deviceId,
-                                             const shared::CDataContainer& configuration) = 0;
+                                             boost::shared_ptr<shared::CDataContainer> configuration) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device details
@@ -132,7 +132,7 @@ namespace dataAccessLayer
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateDeviceDetails(int deviceId,
-                                       const shared::CDataContainer& details) = 0;
+                                       boost::shared_ptr<shared::CDataContainer> details) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device model
@@ -170,7 +170,7 @@ namespace dataAccessLayer
       virtual void updateDeviceState(int deviceId,
                                      const shared::plugin::yPluginApi::historization::EDeviceState& state,
                                      const std::string& customMessageId,
-                                     const shared::CDataContainer& data) const = 0;
+                                     boost::shared_ptr<shared::CDataContainer> data) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove device 

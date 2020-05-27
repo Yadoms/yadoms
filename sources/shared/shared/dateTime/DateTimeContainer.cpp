@@ -10,12 +10,12 @@ namespace shared { namespace dateTime {
    {
    }
 
-   CDateTimeContainer::CDateTimeContainer(boost::posix_time::ptime & time)
+   CDateTimeContainer::CDateTimeContainer(const boost::posix_time::ptime & time)
       :m_time(time)
    {
    }
 
-   CDateTimeContainer::CDateTimeContainer(Poco::DateTime & time)
+   CDateTimeContainer::CDateTimeContainer(const Poco::DateTime & time)
       :m_time(boost::posix_time::from_time_t(Poco::LocalDateTime(time).timestamp().epochTime()))
    {
       

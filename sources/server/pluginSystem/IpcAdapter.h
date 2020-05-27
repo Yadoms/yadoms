@@ -38,7 +38,7 @@ namespace pluginSystem
                     Poco::Nullable<std::string> proxyUsername,
                     Poco::Nullable<std::string> proxyPassword,
                     Poco::Nullable<std::string> proxyBypass) override;
-      void postUpdateConfiguration(const shared::CDataContainer& newConfiguration) override;
+      void postUpdateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration) override;
       void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
       void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) override;
       void postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command) override;

@@ -67,7 +67,7 @@ namespace dataAccessLayer
                                                                                const std::string& friendlyName,
                                                                                const std::string& type,
                                                                                const std::string& model,
-                                                                               const shared::CDataContainer& details)
+                                                                               boost::shared_ptr<shared::CDataContainer> details)
    {
       //create the device
       auto result = m_deviceRequester->createDevice(pluginId, name, friendlyName, type, model, details);
@@ -94,7 +94,7 @@ namespace dataAccessLayer
    }
 
    void CDeviceManager::updateDeviceConfiguration(int deviceId,
-                                                  const shared::CDataContainer& configuration)
+                                                  boost::shared_ptr<shared::CDataContainer> configuration)
    {
       m_deviceRequester->updateDeviceConfiguration(deviceId,
                                                    configuration);
@@ -107,7 +107,7 @@ namespace dataAccessLayer
    }
 
    void CDeviceManager::updateDeviceDetails(int deviceId,
-                                            const shared::CDataContainer& details)
+                                            boost::shared_ptr<shared::CDataContainer> details)
    {
       m_deviceRequester->updateDeviceDetails(deviceId,
                                              details);
@@ -155,7 +155,7 @@ namespace dataAccessLayer
 
    void CDeviceManager::updateDeviceState(int deviceId,
                                           const shared::plugin::yPluginApi::historization::EDeviceState& state,
-                                          const std::string& customMessageId, const shared::CDataContainer& data) const
+                                          const std::string& customMessageId, boost::shared_ptr<shared::CDataContainer> data) const
    {
       //if keywords do exist, create them
       shared::plugin::yPluginApi::historization::CDeviceState ds("deviceState");

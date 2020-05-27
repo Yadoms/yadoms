@@ -9,7 +9,7 @@ COrangeBusinessConfiguration::~COrangeBusinessConfiguration()
 {
 }
 
-void COrangeBusinessConfiguration::initializeWith(const shared::CDataContainer& data)
+void COrangeBusinessConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_data.initializeWith(data);
 }

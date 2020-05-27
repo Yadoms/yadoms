@@ -50,7 +50,7 @@ namespace automation
          return m_scriptPath;
       }
 
-      const shared::CDataContainer& CProperties::configuration() const
+      const boost::shared_ptr<shared::CDataContainer>& CProperties::configuration() const
       {
          return m_configuration;
       }

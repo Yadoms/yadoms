@@ -53,7 +53,7 @@ namespace shared
                CDoubleTypeInfo& setPrecision(const double precisionValue);
 
                // ITypeInfo implementation 
-               CDataContainer serialize() const override;
+               boost::shared_ptr<CDataContainer> serialize() const override;
                // END ITypeInfo implementation 
 
             private:

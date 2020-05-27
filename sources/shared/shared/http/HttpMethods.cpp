@@ -13,13 +13,13 @@
 
 namespace shared
 {
-   CDataContainer CHttpMethods::sendGetRequest(const std::string& url,
+   boost::shared_ptr<CDataContainer> CHttpMethods::sendGetRequest(const std::string& url,
                                                const CDataContainer& headerParameters,
                                                const CDataContainer& parameters,
                                                const ESessionType& sessionType,
                                                const boost::posix_time::time_duration& timeout)
    {
-      CDataContainer out;
+      boost::shared_ptr<CDataContainer> out;
       sendGetRequest(url,
                      [&out](const Poco::Net::HTTPResponse& response,
                             std::istream& receivedStream)
@@ -108,14 +108,14 @@ namespace shared
       }
    }
 
-   CDataContainer CHttpMethods::sendPostRequest(const std::string& url,
+   boost::shared_ptr<CDataContainer> CHttpMethods::sendPostRequest(const std::string& url,
                                                 const std::string& body,
                                                 const CDataContainer& headerParameters,
                                                 const CDataContainer& parameters,
                                                 const ESessionType& sessionType,
                                                 const boost::posix_time::time_duration& timeout)
    {
-      CDataContainer out;
+      boost::shared_ptr<CDataContainer> out;
       sendPostRequest(url,
                       body,
                       [&out](const Poco::Net::HTTPResponse& response,
@@ -235,7 +235,7 @@ namespace shared
       return session;
    }
 
-   CDataContainer CHttpMethods::processJsonResponse(const Poco::Net::HTTPResponse& response,
+   boost::shared_ptr<CDataContainer> CHttpMethods::processJsonResponse(const Poco::Net::HTTPResponse& response,
                                                     std::istream& receivedStream)
    {
       if (!boost::icontains(response.getContentType(), "application/json") &&
@@ -246,6 +246,6 @@ namespace shared
 
       // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength
       static const std::istreambuf_iterator<char> Eos;
-      return CDataContainer(std::string(std::istreambuf_iterator<char>(receivedStream), Eos));
+      return shared::CDataContainer::make(std::string(std::istreambuf_iterator<char>(receivedStream), Eos));
    }
 } // namespace shared

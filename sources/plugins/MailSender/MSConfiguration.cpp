@@ -18,7 +18,7 @@ CMSConfiguration::~CMSConfiguration()
 {
 }
 
-void CMSConfiguration::initializeWith(const shared::CDataContainer& data)
+void CMSConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    try
    {

@@ -21,7 +21,7 @@ namespace shared
                ///\brief   Serialize
                ///\return  A data container of the typeInfo
                //-----------------------------------------------------
-               virtual CDataContainer serialize() const = 0;
+               virtual boost::shared_ptr<CDataContainer> serialize() const = 0;
             };
          }
       }

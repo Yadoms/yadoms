@@ -48,7 +48,8 @@ CHistoricDecoder::CHistoricDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    m_todayColorChanged(true),
    m_firstRun(true),
    m_newWarningEJPValue(false),
-   m_ADCOalreadyReceived(false)
+   m_ADCOalreadyReceived(false),
+   m_DeviceDetails(shared::CDataContainer::make())
 {
    m_instantCurrentPhase[0] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase1");
    m_instantCurrentPhase[1] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase2");

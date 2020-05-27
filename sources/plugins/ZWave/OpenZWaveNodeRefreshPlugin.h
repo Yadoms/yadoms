@@ -28,7 +28,7 @@ public:
    std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > onKeywordValueUpdated(OpenZWave::ValueID& value) override;
    void getExtraQueries(std::vector<std::string> & extraQueriesNames) override;
    std::string getName() override;
-   bool onExtraQuery(const std::string & query, const shared::CDataContainer &data) override;
+   bool onExtraQuery(const std::string & query, const boost::shared_ptr<shared::CDataContainer> &data) override;
    // [END] IOpenZWaveNodePlugin implementation
    
 private:

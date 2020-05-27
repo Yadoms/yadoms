@@ -20,7 +20,8 @@ namespace task {
    CInstance::CInstance(boost::shared_ptr<ITask> task, boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int eventCode, const std::string & guid)
       : CThreadBase("Task " + task->getName()), m_currentIsRunning(false), m_currentProgression(0.0f), m_currentMessage(""), m_task(task), m_eventHandler(eventHandler), m_eventCode(eventCode),
       m_guid(guid), m_currentStatus(ETaskStatus::kStarted), 
-      m_creationDate(shared::currentTime::Provider().now())
+      m_creationDate(shared::currentTime::Provider().now()),
+      m_taskData(shared::CDataContainer::make())
    {
       BOOST_ASSERT(m_task);
       start();
@@ -69,7 +70,7 @@ namespace task {
       return m_task->getName();
    }
 
-   shared::CDataContainer CInstance::getTaskData() const
+   boost::shared_ptr<shared::CDataContainer> CInstance::getTaskData() const
    {
       return m_taskData;
    }
@@ -79,7 +80,7 @@ namespace task {
       return m_creationDate;
    }
 
-   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, const std::string& message, const std::string& exception, const shared::CDataContainer& taskData)
+   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, const std::string& message, const std::string& exception, boost::shared_ptr<shared::CDataContainer> taskData)
    {
       if (!isRunning)
          m_currentStatus = ETaskStatus::kFail;
@@ -118,7 +119,7 @@ namespace task {
          m_currentStatus = ETaskStatus::kStarted;
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
-         OnTaskProgressUpdated(true, 0.0f, i18n::CClientStrings::TaskStarted, std::string(), shared::CDataContainer::EmptyContainer);
+         OnTaskProgressUpdated(true, 0.0f, i18n::CClientStrings::TaskStarted, std::string(), shared::CDataContainer::make());
 
          // Execute task code
          m_task->onSetTaskId(getGuid());
@@ -128,7 +129,7 @@ namespace task {
          if (m_currentIsRunning && m_currentStatus != ETaskStatus::kSuccess)
          {
             m_currentStatus = ETaskStatus::kSuccess;
-            OnTaskProgressUpdated(true, 100.0, i18n::CClientStrings::TaskEnd, std::string(), shared::CDataContainer::EmptyContainer);
+            OnTaskProgressUpdated(true, 100.0, i18n::CClientStrings::TaskEnd, std::string(), shared::CDataContainer::make());
          }
 
          //task event stopped
@@ -139,21 +140,21 @@ namespace task {
          // End-of-thread exception was not catch by task,
          // it's a developer's error, we have to report it
          YADOMS_LOG(error) << m_task->getName() << " didn't catch boost::thread_interrupted.";
-         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskInterrupted, "Task interrupted.", shared::CDataContainer::EmptyContainer);
+         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskInterrupted, "Task interrupted.", shared::CDataContainer::make());
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
       catch (std::exception& e)
       {
          // Task crashed
          YADOMS_LOG(error) << m_task->getName() << " crashed in doWork with exception : " << e.what();
-         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskCrashed, e.what(), shared::CDataContainer::EmptyContainer);
+         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskCrashed, e.what(), shared::CDataContainer::make());
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
       catch (...)
       {
          // Plugin crashed
          YADOMS_LOG(error) << m_task->getName() << " crashed in doWork with unknown exception.";
-         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskUnkownError, "unknown exception not catched", shared::CDataContainer::EmptyContainer);
+         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskUnkownError, "unknown exception not catched", shared::CDataContainer::make());
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
    }

@@ -18,10 +18,10 @@ public:
    virtual ~CDeviceState() = default;
 
    // ILametricDeviceState implementation
-   shared::CDataContainer getDeviceState() override;
-   shared::CDataContainer getWifiState() override;
-   shared::CDataContainer getBluetoothState() override;
-   shared::CDataContainer getAudioState() override;
+   boost::shared_ptr<shared::CDataContainer> getDeviceState() override;
+   boost::shared_ptr<shared::CDataContainer> getWifiState() override;
+   boost::shared_ptr<shared::CDataContainer> getBluetoothState() override;
+   boost::shared_ptr<shared::CDataContainer> getAudioState() override;
    // [END] ILametricDeviceState implementation
 private:
 
@@ -29,5 +29,5 @@ private:
 
    boost::shared_ptr<CUrlManagerHelper> m_urlManagerHelper;
 
-   shared::CDataContainer getState(CUrlManagerHelper::ERequestType requestType);
+   boost::shared_ptr<shared::CDataContainer> getState(CUrlManagerHelper::ERequestType requestType);
 };

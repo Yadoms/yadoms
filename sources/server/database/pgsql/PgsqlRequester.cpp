@@ -249,12 +249,12 @@ namespace database
          closeAllConnections();
       }
 
-      shared::CDataContainer CPgsqlRequester::getInformation()
+      boost::shared_ptr<shared::CDataContainer> CPgsqlRequester::getInformation()
       {
-         shared::CDataContainer results;
+         boost::shared_ptr<shared::CDataContainer> results = shared::CDataContainer::make();
          try
          {
-            results.set("type", "PostgreSQL");
+            results->set("type", "PostgreSQL");
 
             const auto pcon = getConnection();
 
@@ -266,13 +266,13 @@ namespace database
             version /= 100;
             const auto major = version % 100;
 
-            results.set("version", (boost::format("%1%.%2%.%3%") % major % minor % revision).str());
+            results->set("version", (boost::format("%1%.%2%.%3%") % major % minor % revision).str());
 
-            results.set("host", m_pgsqlLibrary->PQhost(pcon));
-            results.set("port", m_pgsqlLibrary->PQport(pcon));
-            results.set("name", m_pgsqlLibrary->PQdb(pcon));
-            results.set("user", m_pgsqlLibrary->PQuser(pcon));
-            results.set("secured", (m_pgsqlLibrary->PQgetssl(pcon) != nullptr));
+            results->set("host", m_pgsqlLibrary->PQhost(pcon));
+            results->set("port", m_pgsqlLibrary->PQport(pcon));
+            results->set("name", m_pgsqlLibrary->PQdb(pcon));
+            results->set("user", m_pgsqlLibrary->PQuser(pcon));
+            results->set("secured", (m_pgsqlLibrary->PQgetssl(pcon) != nullptr));
          }
          catch (std::exception& ex)
          {

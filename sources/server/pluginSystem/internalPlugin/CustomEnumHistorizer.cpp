@@ -49,7 +49,7 @@ namespace pluginSystem
          return yApi::EMeasureType::kAbsolute;
       }
 
-      shared::CDataContainer CCustomEnumHistorizer::getTypeInfo() const
+      boost::shared_ptr<shared::CDataContainer> CCustomEnumHistorizer::getTypeInfo() const
       {
          return m_typeInfo.serialize();
       }

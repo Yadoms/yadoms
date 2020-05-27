@@ -134,17 +134,17 @@ namespace web
          {
             try
             {
-               std::vector<shared::CDataContainer> list;
+               shared::CDataContainer result;
+               result.createArray(getRestKeyword());
+
                for (const auto& instance : m_pluginManager->getInstanceList())
                {
                   shared::CDataContainer item;
                   item.set("instance", instance);
                   item.set("state", m_pluginManager->getInstanceFullState(instance->Id()));
-                  list.push_back(item);
+                  result.appendArray(getRestKeyword(), item);
                }
 
-               shared::CDataContainer result;
-               result.set(getRestKeyword(), list);
                return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
@@ -231,7 +231,10 @@ namespace web
                auto pluginList = m_pluginManager->getPluginList();
 
                // Filter plugins
-               std::vector<shared::CDataContainer> pluginCollection;
+
+               shared::CDataContainer result;
+               result.createArray("plugins");
+
                for (auto& plugin : pluginList)
                {
                   if (!plugin.second->isSupportedOnThisPlatform())
@@ -242,19 +245,17 @@ namespace web
 
                   // Filter returned data (fields)
                   if (fields.empty())
-                     pluginCollection.push_back(*plugin.second->getPackage());
+                     result.appendArray("plugins", *plugin.second->getPackage());
                   else
                   {
-                     auto pluginData = boost::make_shared<shared::CDataContainer>();
+                     auto pluginData = shared::CDataContainer::make();
                      for (auto& field : fields)
                         pluginData->set(field, plugin.second->getPackage()->get<std::string>(field));
 
-                     pluginCollection.push_back(*pluginData);
+                     result.appendArray("plugins", *pluginData);
                   }
                }
 
-               shared::CDataContainer result;
-               result.set("plugins", pluginCollection);
                return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
@@ -276,16 +277,15 @@ namespace web
                auto pluginList = m_pluginManager->getPluginList();
 
                shared::CDataContainer result;
-               std::vector<shared::CDataContainer> pluginCollection;
+               result.createArray("plugins");
                for (auto& plugin : pluginList)
                {
                   shared::CDataContainer pluginInfo;
                   pluginInfo.set("type", plugin.first);
                   pluginInfo.set("package", *(plugin.second->getPackage()));
-                  pluginCollection.push_back(pluginInfo);
+                  result.appendArray("plugins", pluginInfo);
                }
 
-               result.set("plugins", pluginCollection);
                return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
@@ -351,9 +351,7 @@ namespace web
                   const auto query = parameters[3];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                      requestContent.empty()
-                                                                                         ? shared::CDataContainer()
-                                                                                         : shared::CDataContainer(requestContent),
+                                                                                      requestContent.empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(requestContent),
                                                                                       "");
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
@@ -392,9 +390,7 @@ namespace web
                   const auto query = parameters[4];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                      requestContent.empty()
-                                                                                         ? shared::CDataContainer()
-                                                                                         : shared::CDataContainer(requestContent),
+                                                                                      requestContent.empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(requestContent),
                                                                                       device->Name());
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
@@ -670,15 +666,15 @@ namespace web
                                                                         content.get<std::string>("name"),
                                                                         content.get<std::string>("type"),
                                                                         content.exists("model") ? content.get<std::string>("model") : "",
-                                                                        shared::CDataContainer());
+                                                                        shared::CDataContainer::make());
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
-                                                                                     content.get<shared::CDataContainer>("configuration"));
+                                                                                     content.get<boost::shared_ptr<shared::CDataContainer>>("configuration"));
 
                      // Send request to plugin
                      communication::callback::CSynchronousCallback<std::string> cb;
                      const pluginSystem::CManuallyDeviceCreationData data(deviceName,
                                                                           content.get<std::string>("type"),
-                                                                          content.get<shared::CDataContainer>("configuration"));
+                                                                          content.get<boost::shared_ptr<shared::CDataContainer>>("configuration"));
                      m_messageSender.sendManuallyDeviceCreationRequest(pluginId,
                                                                        data,
                                                                        cb);
@@ -747,7 +743,7 @@ namespace web
                   try
                   {
                      //create a callback (allow waiting for result)              
-                     communication::callback::CSynchronousCallback<shared::CDataContainer> cb;
+                     communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>> cb;
 
                      //create the data container to send to plugin
                      const pluginSystem::CBindingQueryData data(query);
@@ -758,12 +754,12 @@ namespace web
                      //wait for result
                      switch (cb.waitForResult())
                      {
-                     case communication::callback::CSynchronousCallback<shared::CDataContainer>::kResult:
+                     case communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>>::kResult:
                         {
                            const auto res = cb.getCallbackResult();
 
                            if (res.success)
-                              return CResult::GenerateSuccess(res.result);
+                              return CResult::GenerateSuccess(res.result());
 
                            return CResult::GenerateError(res.errorMessage);
                         }

@@ -83,7 +83,7 @@ void COledEspEasy::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Configuration was updated
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
+            const auto newConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
             YADOMS_LOG(information) << "Update configuration...";
 
             // Take into account the new configuration

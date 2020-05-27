@@ -80,9 +80,9 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Configuration was updated
                m_api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               auto newConfigurationData = m_api->getEventHandler().getEventData<shared::CDataContainer>();
+               const auto newConfigurationData = m_api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
                YADOMS_LOG(information) << "Update configuration...";
-               BOOST_ASSERT(!newConfigurationData.empty());
+               BOOST_ASSERT(!newConfigurationData->empty());
                // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection
@@ -223,11 +223,11 @@ void CEnOcean::loadAllDevices()
    {
       try
       {
-         auto deviceConfiguration = m_api->getDeviceConfiguration(deviceId);
-         if (deviceId == "pluginState" || deviceConfiguration.empty())
+         const auto deviceConfiguration = m_api->getDeviceConfiguration(deviceId);
+         if (deviceId == "pluginState" || deviceConfiguration->empty())
             continue; // Not configured device
 
-         const CProfileHelper profileHelper(deviceConfiguration.get<std::string>("profile.activeSection"));
+         const CProfileHelper profileHelper(deviceConfiguration->get<std::string>("profile.activeSection"));
          const auto device = createDevice(deviceId,
                                           profileHelper);
 
@@ -250,7 +250,7 @@ void CEnOcean::loadAllDevices()
 void CEnOcean::createNewKeywords(const std::string& deviceName,
                                  const boost::shared_ptr<IType>& loadedDevice) const
 {
-   for (const auto historizer : loadedDevice->allHistorizers())
+   for (const auto& historizer : loadedDevice->allHistorizers())
    {
       if (!m_api->keywordExists(deviceName, historizer->getKeyword()))
          m_api->declareKeyword(deviceName, historizer);
@@ -318,7 +318,7 @@ std::string CEnOcean::generateModel(const std::string& model,
    return generatedModel;
 }
 
-void CEnOcean::processDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
+void CEnOcean::processDeviceCommand(const boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
 {
    if (!m_port)
    {
@@ -403,12 +403,12 @@ void CEnOcean::processDeviceRemoved(const std::string& deviceId)
 }
 
 void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
-                                          const shared::CDataContainer& configuration)
+                                          const boost::shared_ptr<shared::CDataContainer>& configuration)
 {
    try
    {
-      auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
-      auto manufacturer = configuration.get<std::string>("manufacturer");
+      auto selectedProfile = CProfileHelper(configuration->get<std::string>("profile.activeSection"));
+      auto manufacturer = configuration->get<std::string>("manufacturer");
 
       YADOMS_LOG(information) << "Device \"" << deviceId << "\" is configured as " << selectedProfile.profile();
 
@@ -430,9 +430,9 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
       // Send configuration to device
       try
       {
-         if (configuration.exists("profile.content." + m_devices[deviceId]->profile() + ".content"))
+         if (configuration->exists("profile.content." + m_devices[deviceId]->profile() + ".content"))
             m_devices[deviceId]->sendConfiguration(
-               configuration.get<shared::CDataContainer>("profile.content." + m_devices[deviceId]->profile() + ".content"),
+               configuration->get<shared::CDataContainer>("profile.content." + m_devices[deviceId]->profile() + ".content"),
                m_senderId,
                m_messageHandler);
       }

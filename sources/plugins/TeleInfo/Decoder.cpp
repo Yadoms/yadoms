@@ -41,6 +41,7 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api) :
    m_TimePeriod(boost::make_shared<CRunningPeriod>(api, "RunningPeriod")),
    m_ForecastPeriod(boost::make_shared<CForecastTomorrow>(api, "ForecastColor")),
    m_warningEJP(boost::make_shared<yApi::historization::CSwitch>("warningEJP")),
+   m_DeviceDetails(shared::CDataContainer::make()),
    m_api(api),
    m_teleinfoEnableInCounter(false),
    m_deviceCreated(false),

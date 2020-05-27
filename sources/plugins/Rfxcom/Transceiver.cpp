@@ -193,7 +193,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::
    try
    {
       const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
-      const auto deviceType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("type"));
+      const auto deviceType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("type"));
 
       // Create the RFXCom message
       switch (deviceType)
@@ -619,13 +619,13 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
    catch (shared::exception::CInvalidParameter& e)
    {
       YADOMS_LOG(error) << "Fail to create device manually, invalid parameter : " << e.what();
-      YADOMS_LOG(error) << "data : " << data.getConfiguration().serialize();
+      YADOMS_LOG(error) << "data : " << data.getConfiguration()->serialize();
       throw CManuallyDeviceCreationException("invalid parameter");
    }
    catch (shared::exception::COutOfRange& e)
    {
       YADOMS_LOG(error) << "Fail to create device manually, out of range : " << e.what();
-      YADOMS_LOG(error) << "data : " << data.getConfiguration().serialize();
+      YADOMS_LOG(error) << "data : " << data.getConfiguration()->serialize();
       throw CManuallyDeviceCreationException("out of range");
    }
 
@@ -647,7 +647,7 @@ void CTransceiver::changeDeviceConfiguration(const boost::shared_ptr<yApi::IYPlu
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Fail to update device configuration of " << deviceConfiguration->name() << " : " << e.what();
-      YADOMS_LOG(error) << "device configuration : " << deviceConfiguration->configuration().serialize();
+      YADOMS_LOG(error) << "device configuration : " << deviceConfiguration->configuration()->serialize();
    }
 }
 

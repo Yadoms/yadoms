@@ -18,7 +18,7 @@ public:
    /// \param[in] configuration The device configuration
    //--------------------------------------------------------------
    explicit CFakeAnotherConfigurableDevice(const std::string& deviceName,
-                                           const shared::CDataContainer& configuration);
+                                           const boost::shared_ptr<shared::CDataContainer>& configuration);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -58,7 +58,7 @@ public:
    /// \brief	    Change the device configuration
    /// \param[in] newConfiguration  The new configuration
    //--------------------------------------------------------------
-   void setConfiguration(const shared::CDataContainer& newConfiguration);
+   void setConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    Get the historizers
@@ -68,7 +68,7 @@ public:
 
 
 protected:
-   static int readDividerConfiguration(const shared::CDataContainer& configuration);
+   static int readDividerConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration);
 
 private:
    //--------------------------------------------------------------

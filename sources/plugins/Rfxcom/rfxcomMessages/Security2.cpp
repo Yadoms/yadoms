@@ -11,17 +11,18 @@ namespace rfxcomMessages
    CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& keyword,
                           const std::string& command,
-                          const shared::CDataContainer& deviceDetails)
+                          const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_batteryLevel, m_signalPower})
+        m_keywords({m_batteryLevel, m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_batteryLevel->set(100);
       m_signalPower->set(0);
 
-      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
+      createSubType(static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType")));
       m_subTypeManager->set(keyword, command);
-      m_subTypeManager->setId(deviceDetails.get<unsigned int>("id"));
+      m_subTypeManager->setId(deviceDetails->get<unsigned int>("id"));
 
       // Build device description
       buildDeviceName();
@@ -32,17 +33,18 @@ namespace rfxcomMessages
    CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const std::string& name,
-                          const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                          const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_batteryLevel, m_signalPower})
+        m_keywords({m_batteryLevel, m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_batteryLevel->set(100);
       m_signalPower->set(0);
 
       createSubType(static_cast<unsigned char>(subType));
-      m_subTypeManager->setId(manuallyDeviceCreationConfiguration.get<unsigned int>("id"));
+      m_subTypeManager->setId(manuallyDeviceCreationConfiguration->get<unsigned int>("id"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -56,7 +58,8 @@ namespace rfxcomMessages
                           size_t rbufSize)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_batteryLevel, m_signalPower})
+        m_keywords({m_batteryLevel, m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -81,11 +84,11 @@ namespace rfxcomMessages
 
    void CSecurity2::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeSecurity2);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_subTypeManager->getId());
+         m_deviceDetails->set("type", pTypeSecurity2);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_subTypeManager->getId());
       }
    }
 
@@ -130,7 +133,7 @@ namespace rfxcomMessages
    {
       api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_subTypeManager->getModel(), m_keywords, m_deviceDetails);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_subTypeManager->getModel() << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
+      m_deviceDetails->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CSecurity2::getDeviceName() const

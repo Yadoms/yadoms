@@ -26,18 +26,19 @@ namespace rfxcomMessages
 {
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
                 const std::string& command,
-                const shared::CDataContainer& deviceDetails)
+                const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower})
+        m_keywords({m_state , m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_state->set(command);
       m_signalPower->set(0);
 
-      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
-      m_houseCode = deviceDetails.get<std::string>("houseCode");
-      m_groupAddress = deviceDetails.get<std::string>("groupAddress");
-      m_subAddress = deviceDetails.get<std::string>("subAddress");
+      m_subType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType"));
+      m_houseCode = deviceDetails->get<std::string>("houseCode");
+      m_groupAddress = deviceDetails->get<std::string>("groupAddress");
+      m_subAddress = deviceDetails->get<std::string>("subAddress");
 
       // Build device description
       buildDeviceModel();
@@ -48,11 +49,12 @@ namespace rfxcomMessages
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
                 unsigned int subType,
                 const std::string& name,
-                const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
         m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower})
+        m_keywords({m_state , m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       m_state->set(0);
       m_signalPower->set(0);
@@ -68,9 +70,9 @@ namespace rfxcomMessages
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
 
-      m_houseCode = manuallyDeviceCreationConfiguration.get<std::string>("houseCode");
-      m_groupAddress = manuallyDeviceCreationConfiguration.get<std::string>("groupAddress");
-      m_subAddress = manuallyDeviceCreationConfiguration.get<std::string>("subAddress");
+      m_houseCode = manuallyDeviceCreationConfiguration->get<std::string>("houseCode");
+      m_groupAddress = manuallyDeviceCreationConfiguration->get<std::string>("groupAddress");
+      m_subAddress = manuallyDeviceCreationConfiguration->get<std::string>("subAddress");
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -82,7 +84,8 @@ namespace rfxcomMessages
                 size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower})
+        m_keywords({m_state , m_signalPower}),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -191,13 +194,13 @@ namespace rfxcomMessages
 
    void CFS20::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeFS20);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("houseCode", m_houseCode);
-         m_deviceDetails.set("groupAddress", m_groupAddress);
-         m_deviceDetails.set("subAddress", m_subAddress);
+         m_deviceDetails->set("type", pTypeFS20);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("houseCode", m_houseCode);
+         m_deviceDetails->set("groupAddress", m_groupAddress);
+         m_deviceDetails->set("subAddress", m_subAddress);
       }
    }
 
@@ -361,7 +364,7 @@ namespace rfxcomMessages
    {
       api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
+      m_deviceDetails->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CFS20::getDeviceName() const

@@ -20,7 +20,7 @@ public:
    virtual ~CmasterDeviceConfiguration();
 
    // ImasterDeviceConfiguration implementation
-   void initializeWith(const shared::CDataContainer& data) override;
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data) override;
    Poco::Net::SocketAddress getIPAddressWithSocket() const override;
    bool credentialActivated() const override;
    std::string getPassword() const override;
@@ -33,5 +33,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
-   shared::CDataContainer m_data;
+   boost::shared_ptr<shared::CDataContainer> m_data;
 };

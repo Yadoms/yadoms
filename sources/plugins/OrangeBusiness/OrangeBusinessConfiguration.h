@@ -20,7 +20,7 @@ public:
    virtual ~COrangeBusinessConfiguration();
 
    // ISigfoxConfiguration implementation
-   void initializeWith(const shared::CDataContainer& data) override;
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data) override;
    const std::string getAPIKey() const override;
    // [END] ISigfoxConfiguration implementation
 

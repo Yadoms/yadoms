@@ -36,7 +36,7 @@ namespace rfxcomMessages
       /// \param[in] yadomsCommand        The command from Yadoms
       /// \param[in] deviceDetails        Device details
       //--------------------------------------------------------------
-      virtual void set(const std::string& yadomsCommand, const shared::CDataContainer& deviceDetails) = 0;
+      virtual void set(const std::string& yadomsCommand, const boost::shared_ptr<shared::CDataContainer>& deviceDetails) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from default value

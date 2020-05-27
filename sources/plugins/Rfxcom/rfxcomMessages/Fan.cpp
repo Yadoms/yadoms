@@ -18,11 +18,12 @@ namespace rfxcomMessages
    CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& keyword,
               const std::string& command,
-              const shared::CDataContainer& deviceDetails)
+              const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
+      :m_deviceDetails(shared::CDataContainer::make())
    {
-      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
+      createSubType(static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType")));
       m_subTypeManager->set(keyword, command);
-      m_id = deviceDetails.get<unsigned int>("id");
+      m_id = deviceDetails->get<unsigned int>("id");
 
       // Build device description
       buildDeviceName();
@@ -32,8 +33,9 @@ namespace rfxcomMessages
    CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api,
               unsigned int subType,
               const std::string& name,
-              const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_deviceName(name)
+              const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
+      : m_deviceName(name), 
+        m_deviceDetails(shared::CDataContainer::make())
    {
       createSubType(static_cast<unsigned char>(subType));
       m_id = m_subTypeManager->idFromConfiguration(manuallyDeviceCreationConfiguration);
@@ -49,7 +51,8 @@ namespace rfxcomMessages
               const RBUF& rbuf,
               size_t rbufSize)
       : m_subType(0),
-        m_id(0)
+        m_id(0),
+        m_deviceDetails(shared::CDataContainer::make())
    {
       // Should not be called (transmitter-only device)
       throw std::logic_error("Constructing CFan object from received buffer is not possible, Cfan is transmitter-only device");
@@ -61,11 +64,11 @@ namespace rfxcomMessages
 
    void CFan::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeFan);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_id);
+         m_deviceDetails->set("type", pTypeFan);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_id);
       }
    }
 

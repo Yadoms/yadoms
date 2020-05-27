@@ -2,7 +2,7 @@
 #include "Configuration.h"
 #include <shared/Log.h>
 
-void CConfiguration::initializeWith(const shared::CDataContainer& data)
+void CConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
 	m_configuration.initializeWith(data);
 }

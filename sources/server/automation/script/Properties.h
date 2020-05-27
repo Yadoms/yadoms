@@ -28,7 +28,7 @@ namespace automation
          std::string interpreterName() const override;
          bool isModelBased() const override;
          boost::filesystem::path scriptPath() const override;
-         const shared::CDataContainer& configuration() const override;
+         const boost::shared_ptr<shared::CDataContainer>& configuration() const override;
          // [END] IProperties Implementation
 
       protected:
@@ -58,7 +58,7 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               The configuration
          //-----------------------------------------------------
-         const shared::CDataContainer& m_configuration;
+         const boost::shared_ptr<shared::CDataContainer>& m_configuration;
       };
    }
 } // namespace automation::script

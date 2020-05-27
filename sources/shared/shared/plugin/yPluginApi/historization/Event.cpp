@@ -44,9 +44,9 @@ namespace shared
                return MeasureType;
             }
 
-            CDataContainer CEvent::getTypeInfo() const
+            boost::shared_ptr<CDataContainer> CEvent::getTypeInfo() const
             {
-               return CDataContainer();
+               return shared::CDataContainer::make();
             }
 
             const EHistoryDepth& CEvent::getHistoryDepth() const

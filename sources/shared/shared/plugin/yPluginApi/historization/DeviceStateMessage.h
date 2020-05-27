@@ -13,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief The plugin state historizable object
             //-----------------------------------------------------
-            class CDeviceStateMessage : public CSingleHistorizableData<CDataContainer>
+            class CDeviceStateMessage : public CSingleHistorizableData<boost::shared_ptr<CDataContainer>>
             {
             public:
                //-----------------------------------------------------

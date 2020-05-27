@@ -32,7 +32,7 @@ namespace shared
                CStringTypeInfo& setRegexString(const std::string& regexString);
 
                // ITypeInfo implementation 
-               CDataContainer serialize() const override;
+               boost::shared_ptr<CDataContainer> serialize() const override;
                // END ITypeInfo implementation 
 
             private:

@@ -40,7 +40,7 @@ namespace shared
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static CDataContainer sendGetRequest(const std::string& url,
+      static boost::shared_ptr<CDataContainer> sendGetRequest(const std::string& url,
                                            const CDataContainer& headerParameters = CDataContainer(),
                                            const CDataContainer& parameters = CDataContainer(),
                                            const ESessionType& sessionType = kStandard,
@@ -74,7 +74,7 @@ namespace shared
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static CDataContainer sendPostRequest(const std::string& url,
+      static boost::shared_ptr<CDataContainer> sendPostRequest(const std::string& url,
                                             const std::string& body,
                                             const CDataContainer& headerParameters = CDataContainer(),
                                             const CDataContainer& parameters = CDataContainer(),
@@ -106,7 +106,7 @@ namespace shared
                                                            const std::string& url,
                                                            const boost::posix_time::time_duration& timeout);
 
-      static CDataContainer processJsonResponse(const Poco::Net::HTTPResponse& response,
+      static boost::shared_ptr<CDataContainer> processJsonResponse(const Poco::Net::HTTPResponse& response,
                                                 std::istream& receivedStream);
    };
 } // namespace shared

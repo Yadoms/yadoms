@@ -93,8 +93,8 @@ namespace rfxcomMessages
       return m_cmndByte;
    }
 
-   unsigned long CFanFalmec::idFromConfiguration(const shared::CDataContainer& configuration) const
+   unsigned long CFanFalmec::idFromConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration) const
    {
-      return configuration.get<unsigned int>("id");
+      return configuration->get<unsigned int>("id");
    }
 } // namespace rfxcomMessages

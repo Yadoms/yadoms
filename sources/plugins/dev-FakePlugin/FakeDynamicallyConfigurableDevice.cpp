@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 
 CFakeDynamicallyConfigurableDevice::CFakeDynamicallyConfigurableDevice(const std::string& deviceName,
-                                                                       const shared::CDataContainer& configuration)
+                                                                       const boost::shared_ptr<shared::CDataContainer>& configuration)
    : m_deviceName(deviceName),
      m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
      m_internalCounter(0),
@@ -50,11 +50,11 @@ const std::string& CFakeDynamicallyConfigurableDevice::getModel()
    return model;
 }
 
-shared::CDataContainer CFakeDynamicallyConfigurableDevice::getDynamicConfigurationSchema()
+boost::shared_ptr<shared::CDataContainer> CFakeDynamicallyConfigurableDevice::getDynamicConfigurationSchema()
 {
    //this code must be runtime dynamic.
    //in case of static configration, define the configuration schema in package.json
-   shared::CDataContainer results;
+   boost::shared_ptr<shared::CDataContainer> results = shared::CDataContainer::make();
 
    shared::CDataContainer options;
    options.set("type", "decimal");
@@ -63,12 +63,12 @@ shared::CDataContainer CFakeDynamicallyConfigurableDevice::getDynamicConfigurati
    options.set("maximumValue", "20.0");
    options.set("precision", "2");
 
-   results.set("DynamicDivider", options);
+   results->set("DynamicDivider", options);
 
    return results;
 }
 
-void CFakeDynamicallyConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
+void CFakeDynamicallyConfigurableDevice::setConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
 {
    m_divider = readDividerConfiguration(newConfiguration);
 }
@@ -78,12 +78,12 @@ std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::I
    return m_historizers;
 }
 
-double CFakeDynamicallyConfigurableDevice::readDividerConfiguration(const shared::CDataContainer& configuration)
+double CFakeDynamicallyConfigurableDevice::readDividerConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration)
 {
    try
    {
-      YADOMS_LOG(information) << "Configuration = " << configuration.serialize();
-      return configuration.get<double>("DynamicDivider");
+      YADOMS_LOG(information) << "Configuration = " << configuration->serialize();
+      return configuration->get<double>("DynamicDivider");
    }
    catch (std::exception&)
    {

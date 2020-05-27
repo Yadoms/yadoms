@@ -28,14 +28,14 @@ namespace update
       const std::string CUpdateSite::DistantScriptResult("result");
 
 
-      shared::CDataContainer CUpdateSite::getAllYadomsVersions()
+      boost::shared_ptr<shared::CDataContainer> CUpdateSite::getAllYadomsVersions()
       {
          return callDistantScript(DistantYadomsListScript,
                                   true,
                                   DistantYadomsScriptResultField);
       }
 
-      shared::CDataContainer CUpdateSite::getAllPluginVersions()
+      boost::shared_ptr<shared::CDataContainer> CUpdateSite::getAllPluginVersions()
       {
          return callDistantScript(DistantPluginsListScript,
                                   true,
@@ -43,7 +43,7 @@ namespace update
       }
 
 
-      shared::CDataContainer CUpdateSite::getAllScriptInterpreterVersions()
+      boost::shared_ptr<shared::CDataContainer> CUpdateSite::getAllScriptInterpreterVersions()
       {
          return callDistantScript(DistantScriptInterpretersListScript,
                                   true,
@@ -51,14 +51,14 @@ namespace update
       }
 
 
-      shared::CDataContainer CUpdateSite::getAllWidgetVersions()
+      boost::shared_ptr<shared::CDataContainer> CUpdateSite::getAllWidgetVersions()
       {
          return callDistantScript(DistantWidgetsListScript,
                                   false,
                                   DistantWidgetsScriptResultField);
       }
 
-      shared::CDataContainer CUpdateSite::callDistantScript(const std::string& script,
+      boost::shared_ptr<shared::CDataContainer> CUpdateSite::callDistantScript(const std::string& script,
                                                             bool includeOsAndArch,
                                                             const std::string& resultFieldToReturn)
       {
@@ -86,14 +86,14 @@ namespace update
                                                                                    headerParameters,
                                                                                    parameters));
 
-            if (!lastVersionInformation.containsValue(DistantScriptResult))
+            if (!lastVersionInformation->containsValue(DistantScriptResult))
                throw std::runtime_error("Fail to get data from " + url);
 
-            if (!lastVersionInformation.get<bool>(DistantScriptResult))
+            if (!lastVersionInformation->get<bool>(DistantScriptResult))
                throw std::runtime_error(
-                  "Error in calling " + url + " : " + lastVersionInformation.get<std::string>("message"));
+                  "Error in calling " + url + " : " + lastVersionInformation->get<std::string>("message"));
 
-            return lastVersionInformation.get<shared::CDataContainer>(resultFieldToReturn);
+            return lastVersionInformation->getChild(resultFieldToReturn);
          }
          catch (std::exception& e)
          {

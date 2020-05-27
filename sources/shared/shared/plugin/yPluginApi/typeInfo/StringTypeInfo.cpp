@@ -17,11 +17,11 @@ namespace shared
                return *this;
             }
 
-            CDataContainer CStringTypeInfo::serialize() const
+            boost::shared_ptr<CDataContainer> CStringTypeInfo::serialize() const
             {
-               CDataContainer serializedData;
+               boost::shared_ptr<CDataContainer> serializedData = shared::CDataContainer::make();
                if (m_regex.isDefined())
-                  serializedData.set("regex", m_regex());
+                  serializedData->set("regex", m_regex());
                return serializedData;
             }
          }
