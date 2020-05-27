@@ -5,6 +5,7 @@
 namespace specificHistorizers
 {
 	DECLARE_ENUM_IMPLEMENTATION(ECustomizeIconType,
+										 ((Yadoms))
 	                            ((Email))
 	                            ((Battery100))
 	                            ((Battery80))

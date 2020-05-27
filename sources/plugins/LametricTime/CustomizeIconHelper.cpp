@@ -18,6 +18,10 @@ const std::string CCustomizeIconHelper::CloudySunAnimatedIcon("8756");
 
 std::string CCustomizeIconHelper::getIconType(std::string& iconType)
 {
+	if (iconType == specificHistorizers::ECustomizeIconType::kYadoms.toString())
+	{
+		return YadomsIcon;
+	}
 	if (iconType == specificHistorizers::ECustomizeIconType::kEmail.toString())
 	{
 		return EmailIcon;
