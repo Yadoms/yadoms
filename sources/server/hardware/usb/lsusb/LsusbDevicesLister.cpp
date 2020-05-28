@@ -13,8 +13,8 @@ std::vector<boost::shared_ptr<IDevice>> CLsusbDevicesLister::listUsbDevices()
 {
    try
    {
-      CLsusbCall libusbCall;
-      const auto lines = libusbCall.execute();
+      CLsusbCall lsUsbCall;
+      const auto lines = lsUsbCall.execute();
 
       std::vector<boost::shared_ptr<IDevice>> devicesList;
       for (const auto &line : lines)

@@ -30,8 +30,8 @@ CLsusbDevice::CLsusbDevice(int vendorId,
       args.push_back("-d " + idToHexString(m_vendorId) + ":" + idToHexString(m_productId));
       args.push_back("-v");
 
-      CLsusbCall libusbCall(args);
-      const auto lines = libusbCall.execute(true);
+      CLsusbCall lsUsbCall(args);
+      const auto lines = lsUsbCall.execute(true);
 
       for (const auto &line : lines)
       {

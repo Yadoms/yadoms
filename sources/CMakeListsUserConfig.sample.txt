@@ -35,15 +35,6 @@ set(PROTOBUF_ROOT "path/to/protobuf")
 #set(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY ON)
 
 
-##### Libusb ######
-# optional
-#
-#define Libusb ROOT
-#
-# Not needed on Windows (Windows doesn't use LibUsb)
-
-set(LIBUSB_ROOT "path/to/libusb")
-
 ##### Hidapi ######
 # optional
 #
