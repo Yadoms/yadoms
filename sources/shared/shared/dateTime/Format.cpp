@@ -18,10 +18,17 @@ namespace shared { namespace dateTime {
 		std::stringstream s;
 		std::time_t t = to_time_t(time);
 
-		std::tm tm = *localtime(&t);
-		s.imbue(std::locale(""));
-		s << std::put_time(&tm, boostFormat.c_str());
+		std::locale::global(std::locale(""));
+        char mbstr[1024];
+		memset(mbstr, 0, sizeof(mbstr));
+		strftime(mbstr, sizeof(mbstr), boostFormat.c_str(), std::localtime(&t));
+		s << mbstr;
 		return s.str();
+
+		/* c++11 equivalent  (but some gcc <5 do not handle std::put_time)
+		s.imbue(std::locale(""));
+		s << std::put_time(localtime(&t), boostFormat.c_str());
+		*/
 	}
 
 	std::string CFormat::formatNow(const std::string& boostFormat)
