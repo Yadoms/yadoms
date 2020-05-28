@@ -31,9 +31,9 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    
    m_configuration.initializeWith(api->getConfiguration());
 
-   shared::CDataContainer details;
-   details.set("provider", "PiFace2");
-   details.set("shortProvider", "pf2");
+   boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
+   details->set("provider", "PiFace2");
+   details->set("shortProvider", "pf2");
 
    try 
    {
@@ -94,7 +94,7 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (!initializationError) 
             {
                setPluginState(api, EPiface2PluginState::kupdateConfiguration);
-               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>(), details);
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>(), details);
                setPluginState(api, EPiface2PluginState::kRunning);
             }
             break;
@@ -108,7 +108,7 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CPiface2::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData, shared::CDataContainer& details)
+void CPiface2::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newConfigurationData, boost::shared_ptr<shared::CDataContainer>& details)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";
