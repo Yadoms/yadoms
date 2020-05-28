@@ -11,7 +11,7 @@ static const std::string Model("Piface2");
 CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const std::string& device,
                                  const IPf2Configuration& configuration,
-                                 shared::CDataContainer details):
+                                 boost::shared_ptr<shared::CDataContainer> details):
    m_ioManager(boost::make_shared<CIOManager>(device))
 {
    // IO Configuration
@@ -44,7 +44,7 @@ boost::shared_ptr<CIOManager> CPiface2Factory::getIOManager(void)
 
 void CPiface2Factory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                             const IPf2Configuration& configuration,
-                                            shared::CDataContainer details)
+                                            boost::shared_ptr<shared::CDataContainer> details)
 {
    for (int counter=0; counter<NB_INPUTS; ++counter)
       m_DigitalInput[counter]->ConfigurePullResistance( configuration.PullResistanceState(counter) );
