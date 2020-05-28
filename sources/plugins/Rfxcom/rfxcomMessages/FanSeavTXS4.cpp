@@ -61,10 +61,10 @@ namespace rfxcomMessages
       return m_cmndByte;
    }
 
-   unsigned long CFanSeavTxs4::idFromConfiguration(const shared::CDataContainer& configuration) const
+   unsigned long CFanSeavTxs4::idFromConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration) const
    {
-      return configuration.get<unsigned int>("id") |
-         ((configuration.get<bool>("sw2-1") ? 0x80 : 0x00) |
-            (configuration.get<bool>("sw2-2") ? 0x40 : 0x00) << 16);
+      return configuration->get<unsigned int>("id") |
+         ((configuration->get<bool>("sw2-1") ? 0x80 : 0x00) |
+            (configuration->get<bool>("sw2-2") ? 0x40 : 0x00) << 16);
    }
 } // namespace rfxcomMessages

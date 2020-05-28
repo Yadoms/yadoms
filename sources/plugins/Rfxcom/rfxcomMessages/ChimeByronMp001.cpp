@@ -22,7 +22,7 @@ namespace rfxcomMessages
       return m_keywords;
    }
 
-   void CChimeByronMp001::set(const std::string& /*yadomsCommand*/, const shared::CDataContainer& /*deviceDetails*/)
+   void CChimeByronMp001::set(const std::string& /*yadomsCommand*/, const boost::shared_ptr<shared::CDataContainer>& /*deviceDetails*/)
    {
    }
 

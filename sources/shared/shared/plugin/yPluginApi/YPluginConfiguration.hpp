@@ -19,6 +19,15 @@ namespace shared
          {
          public:
             //-----------------------------------------------------
+            ///\brief Constructor
+            //-----------------------------------------------------
+            YPluginConfiguration()
+               :m_configurationData(shared::CDataContainer::make()), m_packageData(shared::CDataContainer::make())
+            {
+               
+            }
+
+            //-----------------------------------------------------
             ///\brief Destructor
             //-----------------------------------------------------
             virtual ~YPluginConfiguration()
@@ -30,13 +39,13 @@ namespace shared
             /// \param [in] configurationData The raw configuration data (from Yadoms database)
             /// \param [in] packagePath The package path (default to "package.json" from module path)
             //--------------------------------------------------------------
-            void initializeWith(const CDataContainer& configurationData,
+            void initializeWith(const boost::shared_ptr<CDataContainer>& configurationData,
                                 const boost::filesystem::path& packagePath = CFileSystemExtension::getModulePath() / boost::filesystem::path("package.json"))
             {
                // Reload package file
-               m_packageData.deserializeFromFile(packagePath.string());
+               m_packageData->deserializeFromFile(packagePath.string());
 
-               m_configurationData.initializeWith(configurationData);
+               m_configurationData->initializeWith(configurationData);
             }
 
             //--------------------------------------------------------------
@@ -46,7 +55,7 @@ namespace shared
             //--------------------------------------------------------------
             bool exists(const std::string& parameterName) const
             {
-               return m_configurationData.exists(parameterName);
+               return m_configurationData->exists(parameterName);
             }
 
             //--------------------------------------------------------------
@@ -61,14 +70,14 @@ namespace shared
             {
                try
                {
-                  return m_configurationData.get<T>(parameterName);
+                  return m_configurationData->get<T>(parameterName);
                }
                catch (exception::CInvalidParameter&)
                {
                   // Not found in configuration            
                }
 
-               return m_packageData.get<T>(std::string("configurationSchema.") + parameterName + (".defaultValue"));
+               return m_packageData->get<T>(std::string("configurationSchema.") + parameterName + (".defaultValue"));
             }
 
             //--------------------------------------------------------------
@@ -84,26 +93,26 @@ namespace shared
             {
                try
                {
-                  return m_configurationData.getEnumValue<EnumType>(parameterName, valuesNames);
+                  return m_configurationData->getEnumValue<EnumType>(parameterName, valuesNames);
                }
                catch (exception::CInvalidParameter&)
                {
                   // Not found in configuration            
                }
 
-               return m_packageData.getEnumValue<EnumType>(std::string("configurationSchema.") + parameterName + (".defaultValue"), valuesNames);
+               return m_packageData->getEnumValue<EnumType>(std::string("configurationSchema.") + parameterName + (".defaultValue"), valuesNames);
             }
 
          private:
             //--------------------------------------------------------------
             /// \brief	    Configuration raw data
             //--------------------------------------------------------------
-            CDataContainer m_configurationData;
+            boost::shared_ptr<CDataContainer> m_configurationData;
 
             //--------------------------------------------------------------
             /// \brief	    Package raw data
             //--------------------------------------------------------------
-            CDataContainer m_packageData;
+            boost::shared_ptr<CDataContainer> m_packageData;
          };
       }
    }

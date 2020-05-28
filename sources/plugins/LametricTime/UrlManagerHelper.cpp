@@ -51,7 +51,7 @@ std::string CUrlManagerHelper::getRequestUrl(const CConfiguration& lametricConfi
 }
 
 
-shared::CDataContainer CUrlManagerHelper::buildCommonHeaderParameters(const CConfiguration& lametricConfiguration)
+boost::shared_ptr<shared::CDataContainer> CUrlManagerHelper::buildCommonHeaderParameters(const CConfiguration& lametricConfiguration)
 {
    const auto apiKey = lametricConfiguration.getAPIKey();
 
@@ -60,15 +60,15 @@ shared::CDataContainer CUrlManagerHelper::buildCommonHeaderParameters(const CCon
    const auto authorizationHeader = Username + ":" + apiKey;
 
 
-   shared::CDataContainer headerParameters;
-   headerParameters.set("Authorization",
+   boost::shared_ptr<shared::CDataContainer> headerParameters = shared::CDataContainer::make();
+   headerParameters->set("Authorization",
                         authorizationType + shared::encryption::CBase64::encode(
                            reinterpret_cast<const unsigned char*>(authorizationHeader.c_str()),
                            authorizationHeader.length()));
 
-   headerParameters.set("User-Agent", "yadoms");
-   headerParameters.set("Accept", "application/json");
-   headerParameters.set("Connection", "close");
+   headerParameters->set("User-Agent", "yadoms");
+   headerParameters->set("Accept", "application/json");
+   headerParameters->set("Connection", "close");
 
    return headerParameters;
 }

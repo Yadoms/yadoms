@@ -25,6 +25,7 @@ const std::string CDecoder::m_tag_DEMAIN = "DEMAIN"; // Color of the next day
 const std::string CDecoder::m_tag_PEJP = "PEJP"; // EJP Warning
 
 CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api) :
+   m_DeviceDetails(shared::CDataContainer::make()),
    m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
    m_lowCostCounter(boost::make_shared<yApi::historization::CEnergy>("LowCostCounter")),
    m_normalCostCounter(boost::make_shared<yApi::historization::CEnergy>("NormalCostCounter")),

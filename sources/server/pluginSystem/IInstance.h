@@ -35,7 +35,7 @@ namespace pluginSystem
       /// \brief			            Notify the plugin about its configuration changed
       /// \param  newConfiguration  The new configuration to apply
       //--------------------------------------------------------------
-      virtual void updateConfiguration(const shared::CDataContainer & newConfiguration) = 0;
+      virtual void updateConfiguration(const boost::shared_ptr<shared::CDataContainer> & newConfiguration) = 0;
 
       //-----------------------------------------------------
       ///\brief               Get information about this instance

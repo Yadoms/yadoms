@@ -7,8 +7,7 @@
 
 BOOST_AUTO_TEST_SUITE(TestFakePluginConfiguration)
 
-
-const shared::CDataContainer conf("{"
+const boost::shared_ptr<shared::CDataContainer> conf = shared::CDataContainer::make("{"
 	"\"EnumParameter\": \"EnumValue1\""
 	"}");
 

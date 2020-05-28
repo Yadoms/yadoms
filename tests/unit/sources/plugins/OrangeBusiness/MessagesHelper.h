@@ -2,5 +2,5 @@
 
 #include <shared/DataContainer.h>
 
-shared::CDataContainer MessageEquipmentsList();
-shared::CDataContainer MessageEquipmentInformation();
+boost::shared_ptr<shared::CDataContainer> MessageEquipmentsList();
+boost::shared_ptr<shared::CDataContainer> MessageEquipmentInformation();

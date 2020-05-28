@@ -126,7 +126,7 @@ namespace adapters {
    ///\brief  Override method for type = shared::CDataContainer (use specific sqlite3 function)
    //--------------------------------------------------------------
    template<>
-   inline shared::CDataContainer CSqlExtension::extractData(boost::shared_ptr<IResultHandler> resultHandler, int nCol)
+   inline boost::shared_ptr<shared::CDataContainer> CSqlExtension::extractData(boost::shared_ptr<IResultHandler> resultHandler, int nCol)
    {
       return resultHandler->extractValueAsDataContainer(nCol);
    }

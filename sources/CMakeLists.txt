@@ -106,7 +106,6 @@ set(BOOST_LIBS
    date_time 
    chrono 
    regex
-   locale
 )
 
 # search boost libs
@@ -201,6 +200,13 @@ SET (POCO_LIBS
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
 set(POCO_USE_STATIC_RUNTIME 1)
 add_definitions(-DPOCO_STATIC)
+add_definitions(-DPOCO_NO_AUTOMATIC_LIBS)
+if(MSVC)
+	#fix for linking with external OpenSSL
+	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libcrypto.lib ")
+	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libssl.lib ")
+endif(MSVC)
+
 add_definitions(-DPOCO_EXTERNAL_OPENSSL=42) #force an unknown value (empty value do not work correctly)
 include(cmake/FindPoco.cmake)
 

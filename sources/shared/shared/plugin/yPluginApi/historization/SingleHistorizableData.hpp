@@ -120,10 +120,10 @@ namespace shared
                   return m_measureType;
                }
 
-               CDataContainer getTypeInfo() const override
+               boost::shared_ptr<CDataContainer> getTypeInfo() const override
                {
                   //if not defined, use empty result
-                  if (m_typeInfo.empty())
+                  if (!m_typeInfo || m_typeInfo->empty())
                      return helper<T>::createDefaultTypeInfo();
                   return m_typeInfo;
                }
@@ -201,7 +201,7 @@ namespace shared
                T m_value;
                const EKeywordAccessMode m_accessMode;
                const EMeasureType m_measureType;
-               const CDataContainer m_typeInfo;
+               const boost::shared_ptr<CDataContainer> m_typeInfo;
                const EHistoryDepth m_historyDepth;
 
                //-----------------------------------------------------
@@ -215,11 +215,29 @@ namespace shared
                      return boost::lexical_cast<TData>(value);
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
+
+               //-----------------------------------------------------
+               ///\brief     Helpers specialization for bool
+               //-----------------------------------------------------      
+               template <typename TData>
+               struct helper<TData, typename boost::enable_if<boost::is_same<boost::shared_ptr<CDataContainer>, TData>>::type>
+               {
+                  static boost::shared_ptr<CDataContainer> getInternal(const std::string& value)
+                  {
+                     return shared::CDataContainer::make(value);
+                  }
+
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
+                  {
+                     return shared::CDataContainer::make();
+                  }
+               };
+
 
                //-----------------------------------------------------
                ///\brief     Helpers specialization for bool
@@ -232,9 +250,9 @@ namespace shared
                      return (value == "1" || boost::to_lower_copy(value) == "true");
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -256,9 +274,9 @@ namespace shared
                      }
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -282,9 +300,9 @@ namespace shared
                      }
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -299,7 +317,7 @@ namespace shared
                      return TData(value);
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
                      typeInfo::CEnumTypeInfo<TData> ti;
                      return ti.serialize();
@@ -317,9 +335,9 @@ namespace shared
                      return TData(boost::posix_time::from_iso_string(value));
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
 
@@ -334,9 +352,9 @@ namespace shared
                      return;
                   }
 
-                  static CDataContainer createDefaultTypeInfo()
+                  static boost::shared_ptr<CDataContainer> createDefaultTypeInfo()
                   {
-                     return CDataContainer();
+                     return shared::CDataContainer::make();
                   }
                };
             };

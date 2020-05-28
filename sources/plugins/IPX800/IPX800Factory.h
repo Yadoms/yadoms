@@ -33,19 +33,19 @@ public:
    /// \brief	    bindSlotsX8R
    /// \return     slots available for X8R
    //--------------------------------------------------------------
-   shared::CDataContainer bindSlotsX8R();
+   boost::shared_ptr<shared::CDataContainer> bindSlotsX8R();
 
    //--------------------------------------------------------------
    /// \brief	    bindSlotsX8D
    /// \return     slots available for X8D
    //--------------------------------------------------------------
-   shared::CDataContainer bindSlotsX8D();
+   boost::shared_ptr<shared::CDataContainer> bindSlotsX8D();
 
    //--------------------------------------------------------------
    /// \brief	    bindSlotsX24D
    /// \return     slots available for X8D
    //--------------------------------------------------------------
-   shared::CDataContainer bindSlotsX24D();
+   boost::shared_ptr<shared::CDataContainer> bindSlotsX24D();
 
    //--------------------------------------------------------------
    /// \brief	    createDeviceManually
@@ -75,7 +75,7 @@ public:
    /// \param [in] newConfiguration new slot position of the device
    //--------------------------------------------------------------
    void onDeviceConfigurationChange(const std::string& name,
-                                    const shared::CDataContainer& newConfiguration);
+                                    const boost::shared_ptr<shared::CDataContainer>& newConfiguration);
 
 private:
 

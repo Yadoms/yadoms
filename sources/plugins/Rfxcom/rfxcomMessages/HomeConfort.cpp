@@ -9,18 +9,19 @@ namespace rfxcomMessages
 {
    CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api,
                               const std::string& command,
-                              const shared::CDataContainer& deviceDetails)
-      : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
+                              const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower})
+        m_keywords({m_state , m_signalPower})        
    {
       m_state->setCommand(command);
       m_signalPower->set(0);
 
-      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
-      m_id = deviceDetails.get<unsigned int>("id");
-      m_houseCode = deviceDetails.get<char>("houseCode");
-      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
+      m_subType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType"));
+      m_id = deviceDetails->get<unsigned int>("id");
+      m_houseCode = deviceDetails->get<char>("houseCode");
+      m_unitCode = static_cast<unsigned char>(deviceDetails->get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
@@ -31,8 +32,9 @@ namespace rfxcomMessages
    CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
                               const std::string& name,
-                              const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                              const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_state , m_signalPower})
@@ -44,9 +46,9 @@ namespace rfxcomMessages
       if (m_subType != sTypeHomeConfortTEL010)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
-      m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-      m_houseCode = manuallyDeviceCreationConfiguration.get<char>("houseCode");
-      m_unitCode =static_cast<unsigned char>( manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
+      m_id = manuallyDeviceCreationConfiguration->get<unsigned int>("id");
+      m_houseCode = manuallyDeviceCreationConfiguration->get<char>("houseCode");
+      m_unitCode =static_cast<unsigned char>( manuallyDeviceCreationConfiguration->get<unsigned int>("unitCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -56,9 +58,10 @@ namespace rfxcomMessages
    CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api,
                               const RBUF& rbuf,
                               size_t rbufSize)
-      : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower})
+        m_keywords({m_state , m_signalPower})        
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -86,13 +89,13 @@ namespace rfxcomMessages
 
    void CHomeConfort::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeHomeConfort);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_id);
-         m_deviceDetails.set("houseCode", m_houseCode);
-         m_deviceDetails.set("unitCode", m_unitCode);
+         m_deviceDetails->set("type", pTypeHomeConfort);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_id);
+         m_deviceDetails->set("houseCode", m_houseCode);
+         m_deviceDetails->set("unitCode", m_unitCode);
       }
    }
 
@@ -130,7 +133,7 @@ namespace rfxcomMessages
    {
       api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
+      m_deviceDetails->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CHomeConfort::getDeviceName() const

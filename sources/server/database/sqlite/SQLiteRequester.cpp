@@ -77,12 +77,12 @@ namespace database
             sqlite3_close(m_pDatabaseHandler);
       }
 
-      shared::CDataContainer CSQLiteRequester::getInformation()
+      boost::shared_ptr<shared::CDataContainer> CSQLiteRequester::getInformation()
       {
-         shared::CDataContainer results;
-         results.set("type", "SQLite");
-         results.set("version", sqlite3_libversion());
-         results.set("size", boost::filesystem::file_size(boost::filesystem::path(m_dbFile)));
+         boost::shared_ptr<shared::CDataContainer> results = shared::CDataContainer::make();
+         results->set("type", "SQLite");
+         results->set("version", sqlite3_libversion());
+         results->set("size", boost::filesystem::file_size(boost::filesystem::path(m_dbFile)));
          return results;
       }
 

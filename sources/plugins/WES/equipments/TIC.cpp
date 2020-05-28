@@ -120,10 +120,10 @@ namespace equipments
 	   m_keywords.push_back(m_teleInfoStatus);
 
 	   std::string model = "TIC Id = " + counterId;
-	   shared::CDataContainer details;
-	   details.set("type", m_deviceType);
+	   boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
+	   details->set("type", m_deviceType);
 
-	   //Déclaration of all IOs
+	   //Dï¿½claration of all IOs
 	   if (!api->deviceExists(m_deviceName)) {
 		   api->declareDevice(m_deviceName, "TeleInfo", model, m_keywords, details);
 	   }
@@ -167,7 +167,7 @@ namespace equipments
 			  }
 
 			  auto size = m_counterNames.find(m_contractName)->second.size();
-			  for (auto index = 0; index < size; index++) {
+			  for (unsigned int index = 0; index < size; ++index) {
 				  m_Counter[index]->set(counters[index]);
 			  }
 

@@ -97,7 +97,7 @@ void CPairingHelper::stopPairing(const std::string& devicePaired)
    {
       m_manualPairingExtraQuery->reportProgress(99.0f, devicePaired.empty() ? "customLabels.pairing.noDevicePaired" : "customLabels.pairing.devicePaired");
 
-      m_manualPairingExtraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
+      m_manualPairingExtraQuery->sendSuccess(shared::CDataContainer::make());
    }
    m_manualPairingExtraQuery.reset();
 

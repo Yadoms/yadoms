@@ -11,15 +11,16 @@ namespace rfxcomMessages
 {
    CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& command,
-              const shared::CDataContainer& deviceDetails)
-      : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
+              const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
         m_keywords{m_state}
    {
       m_state->setCommand(command);
 
-      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
-      m_id = deviceDetails.get<unsigned int>("id");
-      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
+      m_subType = static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType"));
+      m_id = deviceDetails->get<unsigned int>("id");
+      m_unitCode = static_cast<unsigned char>(deviceDetails->get<unsigned int>("unitCode"));
       
       // Build device description
       buildDeviceModel();
@@ -30,8 +31,9 @@ namespace rfxcomMessages
    CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
               unsigned int subType,
               const std::string& name,
-              const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+              const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
         m_keywords{m_state}
    {
@@ -48,8 +50,8 @@ namespace rfxcomMessages
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
 
-      m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
+      m_id = manuallyDeviceCreationConfiguration->get<unsigned int>("id");
+      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration->get<unsigned int>("unitCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -62,8 +64,9 @@ namespace rfxcomMessages
       : m_subType(0),
         m_unitCode(0),
         m_id(0),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
-        m_keywords{m_state}
+        m_keywords{m_state}        
    {
       // Should not be called (transmitter-only device)
       throw std::logic_error("Constructing CRfy object from received buffer is not possible, CRfy is transmitter-only device");
@@ -75,12 +78,12 @@ namespace rfxcomMessages
 
    void CRfy::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeRFY);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_id);
-         m_deviceDetails.set("unitCode", m_unitCode);
+         m_deviceDetails->set("type", pTypeRFY);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_id);
+         m_deviceDetails->set("unitCode", m_unitCode);
       }
    }
 

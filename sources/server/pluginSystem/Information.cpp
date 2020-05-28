@@ -8,7 +8,7 @@ namespace pluginSystem
    CInformation::CInformation(const boost::filesystem::path& pluginPath)
       : m_path(pluginPath),
         m_isSupportedOnThisPlatform(true),
-        m_package(boost::make_shared<shared::CDataContainer>())
+        m_package(shared::CDataContainer::make())
    {
       try
       {

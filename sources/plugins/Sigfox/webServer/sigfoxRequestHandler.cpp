@@ -34,8 +34,8 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
          const auto buffer = new char[len];
          i.read(buffer, len);
 
-         m_receiveDataEventHandler.postEvent<shared::CDataContainer>(m_receiveDataEventId,
-                                                                     shared::CDataContainer(buffer));
+         m_receiveDataEventHandler.postEvent<boost::shared_ptr<shared::CDataContainer>>(m_receiveDataEventId,
+                                                                     shared::CDataContainer::make(buffer));
       }
       else
       {

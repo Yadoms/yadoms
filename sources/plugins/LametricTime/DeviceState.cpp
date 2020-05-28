@@ -7,7 +7,7 @@ CDeviceState::CDeviceState(CConfiguration& lametricConfiguration)
 {
 }
 
-shared::CDataContainer CDeviceState::getState(const CUrlManagerHelper::ERequestType requestType)
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getState(const CUrlManagerHelper::ERequestType requestType)
 {
    m_urlManagerHelper = boost::make_shared<CUrlManagerHelper>(m_lametricConfiguration);
 
@@ -16,29 +16,29 @@ shared::CDataContainer CDeviceState::getState(const CUrlManagerHelper::ERequestT
    const auto url = m_urlManagerHelper->getRequestUrl(m_lametricConfiguration, requestPath);
 
    return shared::CHttpMethods::sendGetRequest(url,
-                                               m_urlManagerHelper->buildCommonHeaderParameters(
-                                                  m_lametricConfiguration), shared::CDataContainer(),
+                                               *m_urlManagerHelper->buildCommonHeaderParameters(
+                                                  m_lametricConfiguration).get(), shared::CDataContainer::EmptyContainer,
                                                m_lametricConfiguration.getPort() == kHttp
                                                   ? shared::CHttpMethods::ESessionType::kStandard
                                                   : shared::CHttpMethods::ESessionType::kSecured);
 }
 
-shared::CDataContainer CDeviceState::getDeviceState()
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getDeviceState()
 {
    return getState(CUrlManagerHelper::kRequestDevice);
 }
 
-shared::CDataContainer CDeviceState::getWifiState()
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getWifiState()
 {
    return getState(CUrlManagerHelper::kRequestWifi);
 }
 
-shared::CDataContainer CDeviceState::getBluetoothState()
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getBluetoothState()
 {
    return getState(CUrlManagerHelper::kRequestBluetooth);
 }
 
-shared::CDataContainer CDeviceState::getAudioState()
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getAudioState()
 {
    return getState(CUrlManagerHelper::kRequestAudio);
 }

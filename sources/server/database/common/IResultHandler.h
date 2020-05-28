@@ -23,7 +23,7 @@ namespace common {
       virtual bool isValueNull(const int columnIndex) = 0;
       virtual boost::posix_time::ptime extractValueAsBoostTime(const int columnIndex) = 0;
       virtual Poco::DateTime extractValueAsPocoTime(const int columnIndex) = 0;
-      virtual shared::CDataContainer extractValueAsDataContainer(const int columnIndex) = 0;
+      virtual boost::shared_ptr<shared::CDataContainer> extractValueAsDataContainer(const int columnIndex) = 0;
    };
 
 

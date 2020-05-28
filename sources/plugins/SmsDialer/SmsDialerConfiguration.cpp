@@ -7,7 +7,7 @@ CSmsDialerConfiguration::~CSmsDialerConfiguration()
 {
 }
 
-void CSmsDialerConfiguration::initializeWith(const shared::CDataContainer &data)
+void CSmsDialerConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer> &data)
 {
    m_data.initializeWith(data);
 }

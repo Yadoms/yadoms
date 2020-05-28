@@ -1,3 +1,6 @@
+### 1.6.0
+* Fix #562  : update usage of CDataContainer for better memory optimizations
+
 ### 1.5.0
 * Issue #557 : D2-05-00 profile : fix the blinds direction (was inverted)
 

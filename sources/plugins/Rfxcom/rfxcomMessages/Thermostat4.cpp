@@ -10,8 +10,9 @@ namespace rfxcomMessages
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
                               const std::string& keyword,
                               const std::string& command,
-                              const shared::CDataContainer& deviceDetails)
-      : m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
+                              const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
         m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
         m_fan1AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 1 auto mode")),
@@ -37,7 +38,7 @@ namespace rfxcomMessages
          return;
       }
 
-      m_unitCode = deviceDetails.get<unsigned int>("unitCode");
+      m_unitCode = deviceDetails->get<unsigned int>("unitCode");
 
       // Build device description
       buildDeviceModel();
@@ -48,8 +49,9 @@ namespace rfxcomMessages
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
                               const std::string& name,
-                              const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                              const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
         m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
@@ -80,7 +82,7 @@ namespace rfxcomMessages
       if (m_subType != sTypeMCZ1 && m_subType != sTypeMCZ2 && m_subType != sTypeMCZ3)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode");
+      m_unitCode = manuallyDeviceCreationConfiguration->get<unsigned int>("unitCode");
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -90,7 +92,8 @@ namespace rfxcomMessages
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
                               const RBUF& rbuf,
                               size_t rbufSize)
-      : m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
         m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
         m_fan1AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 1 auto mode")),
@@ -98,7 +101,7 @@ namespace rfxcomMessages
         m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
         m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
         m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
-        m_keywords({m_onOff, m_flame})
+        m_keywords({m_onOff, m_flame})        
    {
       m_subType = 0;
       m_unitCode = 0;
@@ -113,11 +116,11 @@ namespace rfxcomMessages
 
    void CThermostat4::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeThermostat4);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("unitCode", m_unitCode);
+         m_deviceDetails->set("type", pTypeThermostat4);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("unitCode", m_unitCode);
       }
    }
 

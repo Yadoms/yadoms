@@ -16,7 +16,7 @@ namespace shared
                virtual ~CPercentageTypeInfo() = default;
 
                // ITypeInfo implementation 
-               CDataContainer serialize() const override;
+               boost::shared_ptr<CDataContainer> serialize() const override;
                // END ITypeInfo implementation 
             private:
                const CIntTypeInfo m_intTypeInfo;

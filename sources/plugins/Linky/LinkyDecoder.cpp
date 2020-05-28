@@ -22,6 +22,7 @@ const std::string CLinkyDecoder::m_tag_UMOY3  = "UMOY3"; // mean voltage for pha
 
 CLinkyDecoder::CLinkyDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    :
+   m_DeviceDetails(shared::CDataContainer::make()),
    m_activeEnergyInjected(boost::make_shared<yApi::historization::CEnergy>("activeEnergyInjected")),
    m_runningPeriod(boost::make_shared<yApi::historization::CText>("runningPeriod")),
    m_runningIndex(boost::make_shared<yApi::historization::CCounter>("runningIndex")),
@@ -35,7 +36,7 @@ CLinkyDecoder::CLinkyDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    m_tomorrowColorChanged(true),
    m_todayColorChanged(true),
    m_firstRun(true),
-   m_ADSCalreadyReceived(false)
+   m_ADSCalreadyReceived(false)   
 {
    m_activeIndex[0] = 0;
    m_activeIndex[1] = 0;

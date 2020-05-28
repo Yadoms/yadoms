@@ -31,7 +31,7 @@ namespace web { namespace rest {
 
    boost::shared_ptr<shared::CDataContainer> CResult::GenerateInternal(const bool result, const std::string & message, const shared::CDataContainer & data)
    {
-      boost::shared_ptr<shared::CDataContainer> error = boost::make_shared<shared::CDataContainer>();
+      boost::shared_ptr<shared::CDataContainer> error = shared::CDataContainer::make();
 	   error->set(m_resultFieldName, result);
       error->set(m_errorMessageFieldName, message);
       error->set(m_dataFieldName, data);
@@ -40,7 +40,7 @@ namespace web { namespace rest {
 
    boost::shared_ptr<shared::CDataContainer> CResult::GenerateInternal(const bool result, const std::string & message, const std::string & data)
    {
-      boost::shared_ptr<shared::CDataContainer> error = boost::make_shared<shared::CDataContainer>();
+      boost::shared_ptr<shared::CDataContainer> error = shared::CDataContainer::make();
 	   error->set(m_resultFieldName, result);
       error->set(m_errorMessageFieldName, message);
       error->set(m_dataFieldName, data);

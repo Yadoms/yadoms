@@ -7,7 +7,7 @@
 #include <shared/Field.hpp>
 #include "database/DatabaseException.hpp"
 #include "DatabaseColumn.h"
-
+#include <shared/DataContainer.h>
 namespace database
 {
    namespace common

@@ -2,12 +2,8 @@
 #include "Plugin.h"
 #include <shared/Log.h>
 #include <shared/Executable.h>
-
-#include <shared/ServiceLocator.h>
-
 #include "WorkerTools.h"
 #include <Poco/File.h>
-
 #include "pluginSystem/Manager.h"
 #include "i18n/ClientStrings.h"
 #include "pluginSystem/Information.h"
@@ -23,10 +19,10 @@ namespace update
       {
          YADOMS_LOG(information) << "Installing new plugin from " << downloadUrl;
 
-         shared::CDataContainer callbackData;
-         callbackData.set("downloadUrl", downloadUrl);
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         callbackData->set("downloadUrl", downloadUrl);
 
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginInstall, std::string(), shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginInstall, std::string(), shared::CDataContainer::make());
 
          /////////////////////////////////////////////
          //1. download package
@@ -95,9 +91,9 @@ namespace update
       {
          YADOMS_LOG(information) << "Updating plugin " << pluginName << " from " << downloadUrl;
 
-         shared::CDataContainer callbackData;
-         callbackData.set("pluginName", pluginName);
-         callbackData.set("downloadUrl", downloadUrl);
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         callbackData->set("pluginName", pluginName);
+         callbackData->set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginUpdate, std::string(), callbackData);
 
@@ -174,8 +170,8 @@ namespace update
       {
          YADOMS_LOG(information) << "Removing plugin " << pluginName;
 
-         shared::CDataContainer callbackData;
-         callbackData.set("pluginName", pluginName);
+         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         callbackData->set("pluginName", pluginName);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginRemove, std::string(), callbackData);
 

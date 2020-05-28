@@ -15,12 +15,12 @@ namespace rfxcomMessages
    public:
       CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api,
                  const std::string& keyword,
-                 const std::string& command, const shared::CDataContainer& deviceDetails);
+                 const std::string& command, const boost::shared_ptr<shared::CDataContainer>& deviceDetails);
 
       CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api,
                  unsigned int subType,
                  const std::string& name,
-                 const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+                 const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration);
 
       CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api,
                  const RBUF& rbuf,
@@ -83,7 +83,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       std::string m_deviceModel;
 
-      shared::CDataContainer m_deviceDetails;
+      boost::shared_ptr<shared::CDataContainer> m_deviceDetails;
 
       //--------------------------------------------------------------
       /// \brief	The command type

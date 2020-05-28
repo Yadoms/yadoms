@@ -27,7 +27,7 @@ protected:
    std::string id() const override;
    const std::string &deviceName() const override;
    const std::string &model() const override;
-   const shared::CDataContainer &details() const override;
+   const boost::shared_ptr<shared::CDataContainer> &details() const override;
    // [END] IDevice implementation
 
 private:
@@ -54,7 +54,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Details
    //--------------------------------------------------------------
-   const shared::CDataContainer m_details;
+   const boost::shared_ptr<shared::CDataContainer> m_details;
 };
 
 } // namespace device

@@ -40,7 +40,7 @@ namespace pluginSystem
          virtual ~CInstance() = default;
 
          // IInstance Implementation
-         void updateConfiguration(const shared::CDataContainer& newConfiguration) override;
+         void updateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration) override;
          void requestStop() override;
          void kill() override;
          boost::shared_ptr<const database::entities::CPlugin> about() const override;
@@ -66,7 +66,7 @@ namespace pluginSystem
                                   const yApi::IManuallyDeviceCreationData& data) const;
          void createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                            const std::string& deviceName,
-                                           const shared::CDataContainer& standardCapacity) const;
+                                           const boost::shared_ptr<shared::CDataContainer>& standardCapacity) const;
          void createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                              const std::string& deviceName,
                                              const std::string& commaSeparatedValues) const;

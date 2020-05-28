@@ -21,7 +21,7 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
 
       // plugin state have no type
       try{
-         type = api->getDeviceDetails(device).getWithDefault<std::string>("type", "");
+         type = api->getDeviceDetails(device)->getWithDefault<std::string>("type", "");
 
          if (type == "WES"){
             try{
