@@ -8,7 +8,7 @@ static const std::string Model("SystemInformation");
 CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
                                const std::string& device,
                                const ISIConfiguration& configuration,
-                               shared::CDataContainerSharedPtr details)
+                               boost::shared_ptr<shared::CDataContainer> details)
    : m_deviceName(device),
      m_memoryLoad(boost::make_shared<CMemoryLoad>("MemoryLoad")),
      m_cpuLoad(boost::make_shared<CCPULoad>("CPULoad")),
@@ -53,6 +53,6 @@ void CSystemFactory::OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> a
 
 void CSystemFactory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                            const ISIConfiguration& configuration,
-                                           shared::CDataContainerSharedPtr details)
+                                           boost::shared_ptr<shared::CDataContainer> details)
 {}
 

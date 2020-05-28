@@ -18,8 +18,7 @@ namespace shared { namespace dateTime {
 		std::stringstream s;
 		std::time_t t = to_time_t(time);
 
-		std::tm tm;
-		localtime_s(&tm, &t);
+		std::tm tm = *localtime(&t);
 		s.imbue(std::locale(""));
 		s << std::put_time(&tm, boostFormat.c_str());
 		return s.str();

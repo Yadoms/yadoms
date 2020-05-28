@@ -26,7 +26,7 @@ protected:
    /// \param [in] newConfigurationData  The new configuration of the module
    //--------------------------------------------------------------
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const shared::CDataContainer& newConfigurationData);
+                              const boost::shared_ptr<shared::CDataContainer>& newConfigurationData);
 
    //--------------------------------------------------------------
    /// \brief Update the configuration of a device

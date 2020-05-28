@@ -8,7 +8,6 @@
 #include <Poco/StreamCopier.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-#include <boost/property_tree/json_parser.hpp>
 
 namespace http
 {

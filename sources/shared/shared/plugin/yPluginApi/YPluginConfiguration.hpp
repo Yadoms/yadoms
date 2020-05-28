@@ -22,7 +22,7 @@ namespace shared
             ///\brief Constructor
             //-----------------------------------------------------
             YPluginConfiguration()
-               :m_packageData(shared::CDataContainer::make()), m_configurationData(shared::CDataContainer::make())
+               :m_configurationData(shared::CDataContainer::make()), m_packageData(shared::CDataContainer::make())
             {
                
             }
