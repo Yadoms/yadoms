@@ -12,10 +12,10 @@ namespace rfxcomMessages
    CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& command,
                           const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
-      : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_keyword , m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_keyword , m_signalPower})        
    {
       m_signalPower->set(0);
 
@@ -33,10 +33,10 @@ namespace rfxcomMessages
                           const std::string& name,
                           const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_keyword , m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_keyword , m_signalPower})
    {
       m_signalPower->set(0);
 
@@ -56,10 +56,10 @@ namespace rfxcomMessages
                           size_t rbufSize,
                           boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter)
       : m_messageFilter(messageFilter),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_keyword , m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_keyword , m_signalPower})        
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

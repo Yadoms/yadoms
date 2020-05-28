@@ -15,16 +15,16 @@ namespace device
       return std::string(ss.str());
    }
 
-   shared::CDataContainer buildDeviceDetails(EOneWireFamily family,
+   boost::shared_ptr<shared::CDataContainer> buildDeviceDetails(EOneWireFamily family,
                                              const std::string& id)
    {
-      shared::CDataContainer details;
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
 
       std::stringstream ss;
       ss << std::hex << family;
-      details.set("Family", ss.str());
+      details->set("Family", ss.str());
 
-      details.set("Serial", id);
+      details->set("Serial", id);
 
       return details;
    }
@@ -60,7 +60,7 @@ namespace device
       return m_model;
    }
 
-   const shared::CDataContainer& CIdentification::details() const
+   const boost::shared_ptr<shared::CDataContainer>& CIdentification::details() const
    {
       return m_details;
    }
