@@ -13,7 +13,7 @@ CPf2Configuration::~CPf2Configuration()
 
 void CPf2Configuration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
-   m_data.initializeWith(data);
+   m_data->initializeWith(data);
 }
 
 EPullResistance CPf2Configuration::PullResistanceState(int pin) const
