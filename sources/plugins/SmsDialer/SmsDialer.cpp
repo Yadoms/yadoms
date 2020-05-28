@@ -114,7 +114,7 @@ bool CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> a
                m_phone.reset();
 
                // Update configuration
-               m_configuration.initializeWith(shared::CDataContainer(newConfiguration));
+               m_configuration.initializeWith(shared::CDataContainer::make(newConfiguration));
 
                // Create new phone
                m_phone = CSmsDialerFactory::constructPhone(m_configuration);
@@ -228,7 +228,7 @@ bool CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
                m_phone.reset();
 
                // Update configuration
-               m_configuration.initializeWith(shared::CDataContainer(newConfiguration));
+               m_configuration.initializeWith(shared::CDataContainer::make(newConfiguration));
 
                // Create new phone
                m_phone = CSmsDialerFactory::constructPhone(m_configuration);

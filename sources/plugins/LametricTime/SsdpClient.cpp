@@ -1,5 +1,5 @@
 ﻿#include "SsdpClient.h"
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <chrono>
 #include <Poco/Net/IPAddress.h>
 #include "shared/http/HttpMethods.h"

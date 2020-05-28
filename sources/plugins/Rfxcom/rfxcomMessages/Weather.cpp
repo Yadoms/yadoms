@@ -12,9 +12,9 @@ namespace rfxcomMessages
    CWeather::CWeather(boost::shared_ptr<yApi::IYPluginApi> api,
       const RBUF& rbuf,
       size_t rbufSize)
-      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("batteryLevel")),
-        m_deviceDetails(shared::CDataContainer::make()),
         m_keywords({m_signalPower})
    {
       CheckReceivedMessage(rbuf,

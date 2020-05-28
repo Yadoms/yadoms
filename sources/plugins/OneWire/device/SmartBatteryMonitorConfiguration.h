@@ -22,7 +22,7 @@ public:
    };
 
 public:
-   explicit CSmartBatteryMonitorConfiguration(const shared::CDataContainer &configuration);
+   explicit CSmartBatteryMonitorConfiguration(const boost::shared_ptr<shared::CDataContainer> &configuration);
    virtual ~CSmartBatteryMonitorConfiguration() = default;
 
    EVadSensorType vadSensor() const;

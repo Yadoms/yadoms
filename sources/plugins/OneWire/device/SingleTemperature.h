@@ -45,7 +45,7 @@ protected:
       return *m_keywords;
    }
    void setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                         const shared::CDataContainer &configuration) override;
+                         const boost::shared_ptr<shared::CDataContainer> &configuration) override;
    void read() const override;
    void write(const std::string &keyword, const std::string &command) override;
    bool hasRelevantValue() override;

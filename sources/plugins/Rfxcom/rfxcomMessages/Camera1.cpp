@@ -11,10 +11,10 @@ namespace rfxcomMessages
    CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string& command,
                       const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
-      : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_camera , m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_camera , m_signalPower})        
    {
       m_camera->setCommand(command);
       m_signalPower->set(0);
@@ -33,10 +33,10 @@ namespace rfxcomMessages
                       const std::string& name,
                       const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_camera , m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_camera , m_signalPower})
 
    {
       m_camera->set(yApi::historization::ECameraMoveCommand::kCenterPosition);
@@ -56,10 +56,10 @@ namespace rfxcomMessages
    CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> api,
                       const RBUF& rbuf,
                       size_t rbufSize)
-      : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_camera , m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_camera , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

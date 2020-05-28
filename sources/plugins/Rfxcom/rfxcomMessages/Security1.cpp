@@ -20,10 +20,10 @@ namespace rfxcomMessages
                           const std::string& keyword,
                           const std::string& command,
                           const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
-      : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_batteryLevel, m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_batteryLevel, m_signalPower})
    {
       m_batteryLevel->set(100);
       m_signalPower->set(0);
@@ -42,10 +42,10 @@ namespace rfxcomMessages
                           const std::string& name,
                           const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_batteryLevel, m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_batteryLevel, m_signalPower})
    {
       m_batteryLevel->set(100);
       m_signalPower->set(0);
@@ -65,10 +65,10 @@ namespace rfxcomMessages
                           size_t rbufSize,
                           boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter)
       : m_messageFilter(messageFilter),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_batteryLevel, m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_batteryLevel, m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
