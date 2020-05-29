@@ -8,11 +8,14 @@
 # -> PARAM2 : any parameter passed to docker container
 # -> PARAM3 : any parameter passed to docker container
 # -> PARAM4 : any parameter passed to docker container
+#
+# Deployment
+#   -> when master branch is tagged, binaries are pushed to Github Release
+#   -> if DEPLOY_SPECIFIC_BRANCH is set to a branch name, then the binaries are pushed to Github Release
 
 language: cpp
-dist: trusty
-
-sudo: required
+os: linux
+dist: bionic
 
 jobs:
   include:
@@ -41,20 +44,42 @@ script:
 before_deploy:
   #setting the travis tag, ensure all upload are assigned to the same draft
   - export TRAVIS_TAG=`ls package/Yadoms*.tar.gz | head -1 | grep -oP '(?<=-).*(?=-)'`
-  
+    
+  - if [ env(DEPLOY_SPECIFIC_BRANCH) IS present AND env(DEPLOY_SPECIFIC_BRANCH) IS NOT blank AND branch != master  ]; then
+      #ensure DEPLOY_SPECIFIC_BRANCH can be used later
+      export TRAVIS_TAG=$TRAVIS_TAG-$TRAVIS_BRANCH
+    fi
+    
 deploy:
   #Deploy for Github Release
   # -> create a draft for each new version
   # -> all job push to the same draft
   # -> in case of job re-run, files are overwritten
-  # -> deploy is systematic (not only on tags) and for all branches
-  provider: releases
-  api_key: "${GH_OAUTH}"
-  file_glob: true
-  file: package/*
-  skip_cleanup: true  
-  draft: true
-  overwrite: true
-  on:
-    all_branches: true
-    
+  # Two ways for deploying to Github:
+  #    1/ on tags and master branch
+  #    2/ on any branch if DEPLOY_SPECIFIC_BRANCH env var is set to the branch to deploy
+  
+  #Deploy MASTER/TAG
+  - provider: releases
+    token: "${GH_OAUTH}"
+    file_glob: true
+    file: package/*
+    cleanup: false
+    draft: true
+    overwrite: true
+    name: "$TRAVIS_TAG"
+    on:
+       branch: master
+       tags: true
+
+  #Deploy forced
+  - provider: releases
+    token: "${GH_OAUTH}"
+    file_glob: true
+    file: package/*
+    cleanup: false  
+    draft: true
+    overwrite: true
+    name: "$TRAVIS_TAG"
+    on:
+      branch: $DEPLOY_SPECIFIC_BRANCH
