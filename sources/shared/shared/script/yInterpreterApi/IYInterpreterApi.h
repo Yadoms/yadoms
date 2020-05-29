@@ -14,12 +14,7 @@ namespace shared
          class IYInterpreterApi
          {
          public:
-            //-----------------------------------------------------
-            ///\brief Destructor
-            //-----------------------------------------------------
-            virtual ~IYInterpreterApi()
-            {
-            }
+            virtual ~IYInterpreterApi() = default;
 
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
@@ -56,12 +51,12 @@ namespace shared
                kEventStopRequested = event::kUserFirstId,
 
                //-----------------------------------------------------
-               ///\brief Yadoms requests the interpreter for its avalaibility (ressources fully installed and working)
+               ///\brief Yadoms requests the interpreter for its availability (resources fully installed and working)
                ///\usage Required
                ///\note Data : none
                ///\note Interpreter must process the specified request, and return result within 10 seconds, by calling request->sendSuccess or sendError
                //-----------------------------------------------------
-               kEventAvalaibleRequest,
+               kEventAvailableRequest,
 
                //-----------------------------------------------------
                ///\brief Yadoms requests a script content

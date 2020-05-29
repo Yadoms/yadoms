@@ -340,6 +340,14 @@ namespace startupOptions
          .repeatable(false)
          .noArgument()
          .binding("server.developerMode", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("python3Path", "", "Force the Python3.x path")
+         .required(false)
+         .repeatable(false)
+         .argument("python3Path")
+         .validator(new CMustExistPathValidator())
+         .binding("server.python3Path", &m_configContainer));
    }
 
    std::string CStartupOptions::getLogLevel() const
@@ -637,6 +645,16 @@ namespace startupOptions
    bool CStartupOptions::getDeveloperMode() const
    {
       return m_configContainer.getBool("server.developerMode", false);
+   }
+
+   std::string CStartupOptions::getPython2Path() const
+   {
+      return m_configContainer.getString("interpreter/python2.pythonPath", std::string());
+   }
+
+   std::string CStartupOptions::getPython3Path() const
+   {
+      return m_configContainer.getString("interpreter/python3.pythonPath", std::string());
    }
 
 } // namespace startupOptions
