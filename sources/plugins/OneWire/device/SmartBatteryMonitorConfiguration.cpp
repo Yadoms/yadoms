@@ -3,7 +3,7 @@
 
 namespace device
 {
-   CSmartBatteryMonitorConfiguration::CSmartBatteryMonitorConfiguration(const shared::CDataContainer& configuration)
+   CSmartBatteryMonitorConfiguration::CSmartBatteryMonitorConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration)
    {
       static const shared::CDataContainer::EnumValuesNames EVadSensorTypeNames = boost::assign::map_list_of
          ("none", kNone)
@@ -15,9 +15,9 @@ namespace device
          ("B1-R1-A-pressure", kB1_R1_A)
          ("raw", kRaw);
 
-      m_vadSensor = configuration.getEnumValue<EVadSensorType>("vadSensor", EVadSensorTypeNames);
+      m_vadSensor = configuration->getEnumValue<EVadSensorType>("vadSensor", EVadSensorTypeNames);
 
-      m_visInput = configuration.get<bool>("visSensor");
+      m_visInput = configuration->get<bool>("visSensor");
    }
 
    CSmartBatteryMonitorConfiguration::EVadSensorType CSmartBatteryMonitorConfiguration::vadSensor() const

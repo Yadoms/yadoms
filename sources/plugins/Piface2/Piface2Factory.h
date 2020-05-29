@@ -24,7 +24,7 @@ public:
    CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                    const std::string& device,
                    const IPf2Configuration& configuration,
-                   shared::CDataContainer details);
+                   boost::shared_ptr<shared::CDataContainer> details);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -39,7 +39,7 @@ public:
    //--------------------------------------------------------------
    void OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                               const IPf2Configuration& configuration,
-                              shared::CDataContainer details);
+                              boost::shared_ptr<shared::CDataContainer> details);
 
    //--------------------------------------------------------------
    /// \brief	    getIOManager

@@ -29,7 +29,7 @@ namespace kernel
 
    protected:
       // IEngine implementation
-      bool newConfigurationRequireRestart(const shared::CDataContainer& newConfigurationData) const override;
+      bool newConfigurationRequireRestart(const boost::shared_ptr<shared::CDataContainer>& newConfigurationData) const override;
       std::map<std::string, boost::shared_ptr<device::IDevice> > scanNetwork() override;
       // [END] IEngine implementation
 

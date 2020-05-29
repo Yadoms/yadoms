@@ -42,7 +42,7 @@ namespace shared
          ///\return the number of bytes read
          ///\throw   boost::system::system_error : if download fails
          ///\throw   shared::exception::CException : if url is not valid
-         ///\example: tools::web::CFileDownloader::downloadFile("http://yadoms.com/download/file1.zip", outfile, boost::bind(&tools::web::CFileDownloader::reportProgressToLog, _1, _2));
+         ///\example: tools::web::CFileDownloader::downloadFile("http://yadoms.com/download/file1.zip", outfile, boost::bind(&tools::web::CFileDownloader::reportProgressToLog, boost::placeholders::_1, boost::placeholders::_2));
          //---------------------------------
          static int downloadFile(const std::string& url,
                                  std::ostream& output,

@@ -49,7 +49,7 @@ namespace notification
    ///      void COtherClass::onCMyClassNotif(boost::shared_ptr<CMyClass> object) { //do something }
    ///
    ///      // Subscribe to new device notifications
-   ///      observer = notification::CHelpers::subscribeBasicObserver< CMyClass >(boost::bind(&COtherClass::onCMyClassNotif, this, _1) );
+   ///      observer = notification::CHelpers::subscribeBasicObserver< CMyClass >(boost::bind(&COtherClass::onCMyClassNotif, this, boost::placeholders::_1) );
    ///
    /// Sample usage 5 : subscribe for new device creation notification with EventHandler callback (match sample usage 2)
    ///
@@ -61,7 +61,7 @@ namespace notification
    ///      void CMyClass::onNewDevice(boost::shared_ptr<database::entities::CDevice> newDevice) { //do something }
    ///
    ///      // Subscribe to new device notifications
-   ///      observer = notification::CHelpers::subscribeChangeObserver< database::entities::CDevice >(notification::change::EChangeType::kCreate, boost::bind(&CMyClass::onNewDevice, this, _1) );
+   ///      observer = notification::CHelpers::subscribeChangeObserver< database::entities::CDevice >(notification::change::EChangeType::kCreate, boost::bind(&CMyClass::onNewDevice, this, boost::placeholders::_1) );
    ///
    /// Sample usage 7 : unsubscribe observer (matching sample 3, 4, 5 and 6)
    ///

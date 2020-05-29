@@ -20,7 +20,7 @@ public:
    virtual ~CPf2Configuration();
 
    // IPf2Configuration implementation
-   void initializeWith(const shared::CDataContainer& data) override;
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data) override;
    EPullResistance PullResistanceState(int pin) const override;
    // [END] IPf2Configuration implementation
 
@@ -28,6 +28,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
-   shared::CDataContainer m_data;
+   boost::shared_ptr<shared::CDataContainer> m_data;
 };
 

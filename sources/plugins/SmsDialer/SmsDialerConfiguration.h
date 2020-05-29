@@ -19,7 +19,7 @@ public:
    virtual ~CSmsDialerConfiguration();
 
    // ISmsDialerConfiguration implementation
-   virtual void initializeWith(const shared::CDataContainer &data);
+   virtual void initializeWith(const boost::shared_ptr<shared::CDataContainer> &data);
    virtual std::string getGammuPort() const;
    virtual std::string getGammuProtocol() const;
    virtual std::string getPhonePIN() const;

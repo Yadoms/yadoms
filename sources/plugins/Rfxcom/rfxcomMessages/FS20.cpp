@@ -27,10 +27,10 @@ namespace rfxcomMessages
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
                 const std::string& command,
                 const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
-      : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_state , m_signalPower})        
    {
       m_state->set(command);
       m_signalPower->set(0);
@@ -51,10 +51,10 @@ namespace rfxcomMessages
                 const std::string& name,
                 const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_state , m_signalPower})
    {
       m_state->set(0);
       m_signalPower->set(0);
@@ -82,10 +82,10 @@ namespace rfxcomMessages
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
                 const RBUF& rbuf,
                 size_t rbufSize)
-      : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_state , m_signalPower}),
-        m_deviceDetails(shared::CDataContainer::make())
+        m_keywords({m_state , m_signalPower})        
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

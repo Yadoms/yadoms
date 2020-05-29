@@ -30,7 +30,7 @@ namespace kernel
    {
    }
 
-   bool CEngine::newConfigurationRequireRestart(const shared::CDataContainer& newConfigurationData) const
+   bool CEngine::newConfigurationRequireRestart(const boost::shared_ptr<shared::CDataContainer>& newConfigurationData) const
    {
       CConfiguration newConfiguration;
       newConfiguration.initializeWith(newConfigurationData);

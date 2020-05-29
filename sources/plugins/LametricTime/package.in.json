@@ -10,10 +10,11 @@
     }
   },
   "configurationSchema": {
-    "APIKey": {
+   "APIKey": {
       "type": "string",
-      "required": "true"
-    },
+      "required": "true",
+      "regex": "[a-zA-Z0-9]{64}"
+   },
     "PairingMode": {
       "type": "comboSection",
       "content": {

@@ -1,50 +1,48 @@
 ﻿{
-  "name": "LametricTime",
-  "description":
-    "Support de l'équipement Lametric Time (voir [site web Lametric](https://lametric.com/en-US/time/overview))",
-  "configurationSchema": {
-    "APIKey": {
-      "name": "Clé d'API",
-      "description":
-        "Cette clé est nécessaire pour le fonctionnement de votre plugin. Elle peut être obtenue sur simple inscription (gratuite) au [Lametric](https://developer.lametric.com/user/devices).",
-      "regexErrorMessage": ""
-    },
-    "PairingMode": {
-      "name": "Mode d'appairage",
-      "type": "comboSection",
-      "content": {
-        "Automatic": {
-          "name": "Appairage automatique",
-          "description": "Appairage automatique en utilisant le protocole UPNP",
-          "content": {
-            "Port": {
-              "name": "Port",
-              "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)"
-            }
-          }
-        },
-        "Manual": {
-          "name": "Appairage manuel",
-          "description": "Appairage manuel",
-          "content": {
-            "IPAddress": {
-              "name": "Adresse IP",
-              "description": "L'adresse IP du module",
-              "regexErrorMessage": "Ce n'est pas une adresse IP valide"
+   "name": "LametricTime",
+   "description": "Support de l'équipement Lametric Time (voir [site web Lametric](https://lametric.com/en-US/time/overview), comment utiliser le [plugin LametricTime](https://github.com/Yadoms/yadoms/wiki/LametricTime))",
+   "configurationSchema": {
+      "APIKey": {
+         "name": "Clé d'API",
+         "description": "Cette clé est nécessaire pour le fonctionnement de votre plugin. Elle peut être obtenue sur simple inscription (gratuite) au [Lametric](https://developer.lametric.com/user/devices).",
+         "regexErrorMessage": "Ce n'est pas une API KEY valide"
+      },
+      "PairingMode": {
+         "name": "Mode d'appairage",
+         "type": "comboSection",
+         "content": {
+            "Automatic": {
+               "name": "Appairage automatique",
+               "description": "Appairage automatique en utilisant le protocole UPNP",
+               "content": {
+                  "Port": {
+                     "name": "Port",
+                     "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)"
+                  }
+               }
             },
-            "Port": {
-              "name": "Port",
-              "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)"
+            "Manual": {
+               "name": "Appairage manuel",
+               "description": "Appairage manuel",
+               "content": {
+                  "IPAddress": {
+                     "name": "Adresse IP",
+                     "description": "L'adresse IP du module",
+                     "regexErrorMessage": "Ce n'est pas une adresse IP valide"
+                  },
+                  "Port": {
+                     "name": "Port",
+                     "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)"
+                  }
+               }
             }
-          }
-        }
+         }
       }
-    }
-  },
-  "customLabels": {
-    "pluginState": {
-      "failedToConnect": "La connexion a échoué...",
-      "initializationError": "Erreur d'initialisation"
-    }
-  }
+   },
+   "customLabels": {
+      "pluginState": {
+         "failedToConnect": "La connexion a échoué...",
+         "initializationError": "Erreur d'initialisation"
+      }
+   }
 }

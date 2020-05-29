@@ -98,7 +98,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
             break;
          }
          case yApi::IYPluginApi::kSetDeviceConfiguration:
@@ -124,9 +124,9 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 }
 
 void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                     const shared::CDataContainer &newConfigurationData)
+                                     const boost::shared_ptr<shared::CDataContainer> &newConfigurationData)
 {
-   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Configuration was updated
    YADOMS_LOG(information) << "Configuration was updated...";
@@ -200,7 +200,7 @@ void COneWire::updateNetwork(boost::shared_ptr<yApi::IYPluginApi> api,
          try
          {
             const auto deviceConfiguration = api->getDeviceConfiguration(newDevice->ident()->deviceName());
-            if (!deviceConfiguration.empty())
+            if (!deviceConfiguration->empty())
                newDevice->setConfiguration(api,
                                            deviceConfiguration);
          }
