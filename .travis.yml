@@ -15,7 +15,7 @@
 
 language: cpp
 os: linux
-dist: trusty
+dist: bionic
 
 jobs:
   include:
@@ -23,10 +23,13 @@ jobs:
     env: 
       - DOCKER_IMAGE=yadoms/build_for_raspberrypi${DOCKER_TAG_RPI}
       - DOCKER_FLAG=--privileged
+      
   - name: "Linux"
     env: DOCKER_IMAGE=yadoms/build_for_ubuntu${DOCKER_TAG_LINUX}
+    
   - name: "MacOSX"
     env: DOCKER_IMAGE=yadoms/build_for_macos${DOCKER_TAG_MACOS}
+    
   - name: "Synology 218+"
     env: DOCKER_IMAGE=yadoms/build_for_synology218p${DOCKER_TAG_SYNOLOGY218P}
   
@@ -44,9 +47,9 @@ script:
 before_deploy:
   #setting the travis tag, ensure all upload are assigned to the same draft
   - export TRAVIS_TAG=`ls package/Yadoms*.tar.gz | head -1 | grep -oP '(?<=-).*(?=-)'`
-    
+
+  #manage DEPLOY_SPECIFIC_BRANCH parameter    
   - if [ env(DEPLOY_SPECIFIC_BRANCH) IS present AND env(DEPLOY_SPECIFIC_BRANCH) IS NOT blank AND branch != master  ]; then
-      #ensure DEPLOY_SPECIFIC_BRANCH can be used later
       export TRAVIS_TAG=$TRAVIS_TAG-$TRAVIS_BRANCH
     fi
     
