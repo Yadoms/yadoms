@@ -249,7 +249,7 @@ namespace interpreter_cpp_api
                                                   send(ans);
                                                });
 
-      m_interpreterEventHandler.postEvent(kEventAvalaibleRequest, request);
+      m_interpreterEventHandler.postEvent(kEventAvailableRequest, request);
    }
 
    void CApiImplementation::processLoadScriptContentRequest(const interpreter_IPC::toInterpreter::LoadScriptContentRequest& msg)

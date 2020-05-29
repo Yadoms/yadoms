@@ -13,6 +13,8 @@
 #include <shared/Log.h>
 #include "ScriptProcess.h"
 #include <ScriptLogger.h>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 
 // Declare the script interpreter
 IMPLEMENT_INTERPRETER(CPython3)
@@ -28,7 +30,7 @@ void CPython3::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 
    //initialize in doWork => allow to debug (if in ctor, unable to debug)
    m_factory = boost::make_shared<CFactory>();
-   m_pythonExecutable = m_factory->createPythonExecutable();
+   m_pythonExecutable = m_factory->createPythonExecutable(getPythonForcedPath());
 
    YADOMS_LOG(information) << "Python 3 interpreter is starting...";
 
@@ -45,7 +47,7 @@ void CPython3::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
             return;
          }
 
-      case yApi::IYInterpreterApi::kEventAvalaibleRequest:
+      case yApi::IYInterpreterApi::kEventAvailableRequest:
          {
             auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IAvalaibleRequest>>();
             request->sendSuccess(isAvailable());
@@ -119,6 +121,25 @@ void CPython3::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
             break;
          }
       }
+   }
+}
+
+std::string CPython3::getPythonForcedPath() const
+{
+   try
+   {
+      const auto yadomsIniPath = getInterpreterPath().parent_path().parent_path() / "yadoms.ini";
+      if (!boost::filesystem::exists(yadomsIniPath))
+         return std::string();
+
+      boost::property_tree::ptree pt;
+      boost::property_tree::ini_parser::read_ini(yadomsIniPath.string(), pt);
+      return pt.get<std::string>("interpreter/python3.pythonPath", std::string());
+   }
+   catch (...)
+   {
+      YADOMS_LOG(error) << "Error reading Python3 forced path from yadoms.ini file";
+      return std::string();
    }
 }
 

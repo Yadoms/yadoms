@@ -14,7 +14,7 @@ public:
    {
    }
 
-   virtual boost::shared_ptr<IPythonExecutable> createPythonExecutable() const = 0;
+   virtual boost::shared_ptr<IPythonExecutable> createPythonExecutable(const std::string& pythonForcedPath) const = 0;
    virtual boost::shared_ptr<shared::process::IProcess> createScriptProcess(int scriptInstanceId,
                                                                             const boost::filesystem::path& scriptPath,
                                                                             boost::shared_ptr<IPythonExecutable> pythonExecutable,

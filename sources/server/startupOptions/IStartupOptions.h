@@ -315,10 +315,22 @@ namespace startupOptions
       virtual int getDatabaseAcquisitionLifetime() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Tell if the developer pode is enabled
-      /// \return     true the developer pode is enabled
+      /// \brief	    Tell if the developer mode is enabled
+      /// \return     true the developer mode is enabled
       //--------------------------------------------------------------
       virtual bool getDeveloperMode() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the Python 2.x path (optional)
+      /// \return     The Python 2.x path, or empty string if not defined
+      //--------------------------------------------------------------
+      virtual std::string getPython2Path() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the Python 3.x path (optional)
+      /// \return     The Python 3.x path, or empty string if not defined
+      //--------------------------------------------------------------
+      virtual std::string getPython3Path() const = 0;
    };
 } // namespace startupOptions
 
