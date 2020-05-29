@@ -30,6 +30,10 @@ set(LAMETRICTIME_PLUGIN_SOURCES
 	SsdpDiscoverService.h
 	HttpResponseHelper.cpp
 	HttpResponseHelper.h
+	CustomizeIconType.cpp
+	CustomizeIconType.h
+	CustomizeIconHelper.cpp
+	CustomizeIconHelper.h
 )
 
 #########################################

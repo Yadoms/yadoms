@@ -5,6 +5,8 @@
 #include "IDeviceState.h"
 #include "INotificationSender.h"
 #include "SsdpDiscoverService.h"
+#include "CustomizeIconType.h"
+
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -91,7 +93,9 @@ private:
 	boost::shared_ptr<IDeviceState> m_deviceManager;
 	boost::shared_ptr<INotificationSender> m_senderManager;
 	boost::shared_ptr<yApi::historization::CText> m_text;
+	boost::shared_ptr<specificHistorizers::CCustomizeIconType> m_iconType;
 
 	static const std::string DeviceName;
 	static const std::string TextKeywordName;
+	static const std::string IconTypeName;
 };
