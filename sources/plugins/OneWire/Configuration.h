@@ -20,7 +20,7 @@ public:
    virtual ~CConfiguration();
 
    // IConfiguration implementation
-   void initializeWith(const shared::CDataContainer &data) override;
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer> &data) override;
    bool isOwfsMode() const override;
    bool isKernelMode() const override;
    const boost::filesystem::path& getOwfsMountPoint() const override;

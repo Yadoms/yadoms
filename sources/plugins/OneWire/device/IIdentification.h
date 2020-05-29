@@ -35,6 +35,6 @@ public:
    //--------------------------------------------------------------
    /// \brief	Details (1-wire specific data)
    //--------------------------------------------------------------
-   virtual const shared::CDataContainer &details() const = 0;
+   virtual const boost::shared_ptr<shared::CDataContainer> &details() const = 0;
 };
 } // namespace device

@@ -22,7 +22,7 @@ CHighPrecisionLiBatteryMonitor::CHighPrecisionLiBatteryMonitor(EOneWireFamily fa
 }
 
 void CHighPrecisionLiBatteryMonitor::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                      const shared::CDataContainer &configuration)
+                                                      const boost::shared_ptr<shared::CDataContainer> &configuration)
 {
    YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
 }

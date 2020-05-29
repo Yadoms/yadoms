@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 
 CTeleInfoConfiguration::CTeleInfoConfiguration()
-   :m_data(new_CDataContainerSharedPtr())
+   :m_data(shared::CDataContainer::make())
 {
 }
 
@@ -11,7 +11,7 @@ CTeleInfoConfiguration::~CTeleInfoConfiguration()
 {
 }
 
-void CTeleInfoConfiguration::initializeWith(const shared::CDataContainer& data)
+void CTeleInfoConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_data->initializeWith(data);
 }

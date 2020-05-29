@@ -25,19 +25,19 @@ namespace update
       Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl, WorkerProgressFunc callback, const std::string& function, float min,
                                                float max)
       {
-         return downloadPackage(downloadUrl, boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min, max));
+         return downloadPackage(downloadUrl, boost::bind(&CWorkerTools::reportDownloadProgress, boost::placeholders::_1, boost::placeholders::_2, callback, function, min, max));
       }
 
       Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl, const std::string& md5Hash, WorkerProgressFunc callback,
                                                         const std::string& function, float min, float max)
       {
          return downloadPackageAndVerify(downloadUrl, md5Hash,
-                                         boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min, max));
+                                         boost::bind(&CWorkerTools::reportDownloadProgress, boost::placeholders::_1, boost::placeholders::_2, callback, function, min, max));
       }
 
       Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl)
       {
-         return downloadPackage(downloadUrl, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
+         return downloadPackage(downloadUrl, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, boost::placeholders::_1, boost::placeholders::_2));
       }
 
       Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl, shared::web::CFileDownloader::ProgressFunc progressReporter)

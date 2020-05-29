@@ -18,7 +18,7 @@ public:
    /// \param[in] newConfigurationData  The new configuration
    /// \return bool if restart is required
    //--------------------------------------------------------------
-   virtual bool newConfigurationRequireRestart(const shared::CDataContainer& newConfigurationData) const = 0;
+   virtual bool newConfigurationRequireRestart(const boost::shared_ptr<shared::CDataContainer>& newConfigurationData) const = 0;
 
    //--------------------------------------------------------------
    /// \brief Scan 1-wire network to list connected devices

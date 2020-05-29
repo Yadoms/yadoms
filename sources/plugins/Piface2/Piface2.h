@@ -48,8 +48,8 @@ public:
    /// \param[in] newConfigurationData The new configuration
    //--------------------------------------------------------------
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, 
-                              const shared::CDataContainer& newConfigurationData,
-                              shared::CDataContainer& details);
+                              const boost::shared_ptr<shared::CDataContainer>& newConfigurationData,
+                              boost::shared_ptr<shared::CDataContainer>& details);
 
 protected:
 
