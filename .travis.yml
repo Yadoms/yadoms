@@ -15,7 +15,7 @@
 
 language: cpp
 os: linux
-dist: bionic
+dist: trusty
 
 jobs:
   include:
