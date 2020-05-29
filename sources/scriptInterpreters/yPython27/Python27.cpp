@@ -124,7 +124,7 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
    }
 } 
  
-std::string CPython3::getPythonForcedPath() const
+std::string CPython27::getPythonForcedPath() const
 {
    try
    {
