@@ -42,6 +42,7 @@ class HardCodedProfiles():
 
    def __init__(self, profilePath):
       self.__hardCodedProfiles__ = []
+      self.__hardCodedProfilesOverridenFromXml__ = []
       self.__profileHardCodedFiles__ = set()
       pattern = re.compile(r'^class CProfile_(.*) : public IType')
       for profilePath in glob.glob(os.path.join(profilePath, "hardCoded", '*.h')):
@@ -60,4 +61,10 @@ class HardCodedProfiles():
 
    def getProfilesHardCoded(self):
       return self.__hardCodedProfiles__
+
+   def setOverrideFromXml(self, profile):
+      self.__hardCodedProfilesOverridenFromXml__.append(profile)
+
+   def getProfilesNotInXml(self):
+      return list(filter(lambda p: p not in self.__hardCodedProfilesOverridenFromXml__, self.__hardCodedProfiles__))
 

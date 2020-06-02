@@ -10,10 +10,8 @@
 import sys
 import os.path
 import xml.etree.ElementTree
-import string
 import codecs
 import re
-import json
 import copy
 
 import cppClass
@@ -166,15 +164,29 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       "      return UnknownFunc;\n" \
       "   }"))
 
+   def getETypeIdsEnumValues(xmlRorgNode, xmlFuncNode):
+      # Add types found in XML file
+      enumValues = xmlHelper.getEnumValues(inNode=xmlFuncNode, foreachSubNode="type", enumValueNameTag="number", enumValueTag="number")
+      # Add hard-coded types not present in XML file
+      profilePattern = profileHelper.profileFuncPattern(xmlRorgNode, xmlFuncNode)
+      hardCodedProfilesNotInXml = list(filter(lambda p:re.match(profilePattern, p), hardCodedProfiles.getProfilesNotInXml()))
+      for profile in hardCodedProfilesNotInXml:
+         enumValues.append(["0x" + profileHelper.getType(profile), "0x" + profileHelper.getType(profile)])
+      return enumValues
 
    #------------------------------------------------------------------------
    # Func cppTypes
    for xmlFuncNode in xmlRorgNode.findall("func"):
+      for xmlTypeNode in xmlFuncNode.findall("type"):
+         profileName = profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode)
+         if hardCodedProfiles.isProfileHardCoded(profileName):
+            hardCodedProfiles.setOverrideFromXml(profileName)
+
       funcClass = cppClass.CppClass("C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("number").text))
       funcClass.addComment(cppHelper.toCppName(xmlFuncNode.find("title").text))
       funcClass.inheritFrom("IFunc", cppClass.PUBLIC)
       rorgClass.addDependency(funcClass)
-      funcClass.addSubType(cppClass.CppEnumType("ETypeIds", xmlHelper.getEnumValues(inNode=xmlFuncNode, foreachSubNode="type", enumValueNameTag="number", enumValueTag="number"), cppClass.PUBLIC))
+      funcClass.addSubType(cppClass.CppEnumType("ETypeIds", getETypeIdsEnumValues(xmlRorgNode, xmlFuncNode), cppClass.PUBLIC))
       funcClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlFuncNode.find("number").text + ";"))
       funcClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
          "   static const std::string title(\"" + xmlFuncNode.find("title").text + "\");\n" \
@@ -397,19 +409,30 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
       def createTypeCode(xmlRorgNode, xmlFuncNode):
          itemNumber = 0
+         # Add types found in XML file
          for xmlTypeNode in xmlFuncNode.findall("type"):
             if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) in supportedProfiles:
                itemNumber += 1
+         # Add hard-coded types not present in XML file
+         profilePattern = profileHelper.profileFuncPattern(xmlRorgNode, xmlFuncNode)
+         hardCodedProfilesNotInXml = list(filter(lambda p:re.match(profilePattern, p), hardCodedProfiles.getProfilesNotInXml()))
+         itemNumber += len(hardCodedProfilesNotInXml)
          if itemNumber == 0:
             return "   throw std::out_of_range(\"Invalid EFuncIds\");"
 
          code = "   switch(static_cast<ETypeIds>(typeId))\n"
          code += "   {\n"
+         # Add types found in XML file
          for xmlTypeNode in xmlFuncNode.findall("type"):
             if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) not in supportedProfiles:
                continue
             enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
             className = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
+            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">(deviceId, api);\n"
+         # Add hard-coded types not present in XML file
+         for profile in hardCodedProfilesNotInXml:
+            enumValue = cppHelper.toEnumValueName("0x" + profileHelper.getType(profile))
+            className = cppHelper.toCppName("CProfile_" + profile)
             code += "   case " + enumValue + ": return boost::make_shared<" + className + ">(deviceId, api);\n"
          code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
          code += "   }"

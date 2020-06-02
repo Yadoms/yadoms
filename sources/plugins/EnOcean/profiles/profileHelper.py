@@ -17,3 +17,15 @@ def profileName(rorgXmlNode, funcXmlNode, typeXmlNode):
    type = __normalizeItem__(typeXmlNode.find("number").text)
    return rorg + "-" + func + "-" + type
 
+#-------------------------------------------------------------------------------
+def profileFuncPattern(rorgXmlNode, funcXmlNode):
+   """ Return a profile pattern matching all types of a RORG/FUNC (ie ^F6-05-[0-9A-F]{2}$) """
+   rorg = __normalizeItem__(rorgXmlNode.find("number").text)
+   func = __normalizeItem__(funcXmlNode.find("number").text)
+   return "^" + rorg + "-" + func + "-[0-9A-F]{2}$"
+
+#-------------------------------------------------------------------------------
+def getType(profile):
+   """ the type from a profile name """
+   return profile[-2:]
+
