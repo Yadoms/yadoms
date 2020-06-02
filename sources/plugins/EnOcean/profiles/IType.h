@@ -7,9 +7,7 @@ namespace yApi = shared::plugin::yPluginApi;
 class IType
 {
 public:
-   virtual ~IType()
-   {
-   }
+   virtual ~IType() = default;
 
    virtual const std::string& profile() const = 0;
    virtual const std::string& title() const = 0;

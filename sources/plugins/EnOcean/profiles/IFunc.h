@@ -7,9 +7,7 @@ namespace yApi = shared::plugin::yPluginApi;
 class IFunc
 {
 public:
-   virtual ~IFunc()
-   {
-   }
+   virtual ~IFunc() = default;
 
    virtual unsigned int id() const = 0;
    virtual const std::string& title() const = 0;
