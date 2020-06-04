@@ -6,12 +6,7 @@
 class ISequenceNumber
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~ISequenceNumber()
-   {
-   }
+   virtual ~ISequenceNumber() = default;
 
    //--------------------------------------------------------------
    /// \brief     Reset the sequence number
@@ -36,5 +31,5 @@ public:
    /// \param[in] value Value to check
    /// \return    Current sequence number
    //--------------------------------------------------------------
-   virtual bool isExpected(unsigned char value) const = 0;
+   virtual bool isExpected(unsigned char value) = 0;
 };

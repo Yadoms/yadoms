@@ -230,6 +230,7 @@ set(RFXCOM_SOURCES
    stdafx.cpp
    IPairingHelper.h
    IncrementSequenceNumber.h
+   IncrementSequenceNumberQueued.h
    IRfxcomConfiguration.h
    IRfxcomFirmwareUpdater.h
    ISequenceNumber.h

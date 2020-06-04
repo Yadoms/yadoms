@@ -37,7 +37,7 @@ public:
       return 0;
    }
 
-   bool isExpected(unsigned char) const override
+   bool isExpected(unsigned char) override
    {
       return true;
    }
