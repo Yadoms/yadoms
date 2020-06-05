@@ -13,10 +13,11 @@ IF(NOT DISABLE_TEST_RFXCOM)
    )
    
    ADD_SOURCES(
+      TestIncrementSequenceNumber.cpp
       TestRareDeviceIdFilter.cpp
       TestRfxComReceiveBufferHandler.cpp
-      TestPicBootReceiveBufferHandler.cpp
       TestPairingHelper.cpp
+      TestPicBootReceiveBufferHandler.cpp
    )
    
 ENDIF()

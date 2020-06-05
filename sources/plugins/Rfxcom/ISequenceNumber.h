@@ -6,12 +6,7 @@
 class ISequenceNumber
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~ISequenceNumber()
-   {
-   }
+   virtual ~ISequenceNumber() = default;
 
    //--------------------------------------------------------------
    /// \brief     Reset the sequence number

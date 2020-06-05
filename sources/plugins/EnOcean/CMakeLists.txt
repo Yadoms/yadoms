@@ -173,6 +173,12 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_F6_02_01.h
    profiles/hardCoded/Profile_F6_02_02.cpp
    profiles/hardCoded/Profile_F6_02_02.h
+   profiles/hardCoded/Profile_F6_05_00.cpp
+   profiles/hardCoded/Profile_F6_05_00.h
+   profiles/hardCoded/Profile_F6_05_01.cpp
+   profiles/hardCoded/Profile_F6_05_01.h
+   profiles/hardCoded/Profile_F6_05_02.cpp
+   profiles/hardCoded/Profile_F6_05_02.h
    
    package.in.json
 

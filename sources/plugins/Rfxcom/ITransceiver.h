@@ -51,7 +51,7 @@ public:
    /// \brief	                     Build a message to device
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] command          The received command
-   /// \return                      RFXCom command to send (can be constitued of several messages)
+   /// \return                      RFXCom command to send (can be constituted of several messages)
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
    virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -61,7 +61,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	                     Build a RFY-specific message to device
    /// \param [in] lastRequest      Last RFY request who failed because of unknown remote
-   /// \return                      RFXCom command to send (can be constitued of several messages)
+   /// \return                      RFXCom command to send (can be constituted of several messages)
    //--------------------------------------------------------------
    virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> buildRfyProgramMessage(
       const shared::communication::CByteBuffer& lastRequest) const = 0;

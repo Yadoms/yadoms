@@ -127,6 +127,7 @@ def stop(yadomsProcess):
    print ('Stop Yadoms...')
    # Sending signal.CTRL_C_EVENT doesn't work, so kill process tree
    killProcTree(yadomsProcess.pid)
+   yadomsProcess.wait()
    print ('Yadoms stopped')
       
   
