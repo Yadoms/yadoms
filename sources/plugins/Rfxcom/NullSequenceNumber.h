@@ -8,19 +8,8 @@
 class CNullSequenceNumber : public ISequenceNumber
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
-   CNullSequenceNumber()
-   {
-   }
-
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~CNullSequenceNumber()
-   {
-   }
+   CNullSequenceNumber() = default;
+   virtual ~CNullSequenceNumber() = default;
 
    // ISequenceNumber implementation
    void reset(unsigned char value = 0) override

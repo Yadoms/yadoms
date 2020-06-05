@@ -1,3 +1,6 @@
+### 1.7.0
+* New feature #614 : add F6-05-00, F6-05-01, F6-05-02 profiles support
+
 ### 1.6.0
 * Fix #562  : update usage of CDataContainer for better memory optimizations
 

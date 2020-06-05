@@ -53,7 +53,10 @@ void CheckReceivedMessage(const RBUF& rbuf,
 
    if (!sequenceNumberChecker->isExpected(rbuf.RXRESPONSE.seqnbr))
    {
-      YADOMS_LOG(information) << "Wrong message sequence number, received : " << static_cast<unsigned int>(rbuf.RXRESPONSE.seqnbr) << ", expected : " << static_cast<unsigned int>(sequenceNumberChecker->last());
+      YADOMS_LOG(information) << "Wrong message sequence number, received : " <<
+         static_cast<unsigned int>(rbuf.RXRESPONSE.seqnbr) <<
+         ", expected : " << static_cast<unsigned int>(sequenceNumberChecker->last()) <<
+         ". Ignore this warning if it comes when second message was sent before receiving answer from RFXcom (see https://github.com/Yadoms/yadoms/issues/504)";
       sequenceNumberChecker->reset(rbuf.RXRESPONSE.seqnbr);
    }
 }
