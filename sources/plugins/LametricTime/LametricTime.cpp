@@ -166,7 +166,7 @@ void CLametricTime::declareAllDevicesAndKeywords(boost::shared_ptr<yApi::IYPlugi
                                                  CSsdpDiscoveredDevice& foundDevices,
                                                  std::vector<DeviceInformation>& devicesInformation) const
 {
-	for (auto i = 0; i < foundDevices.getDevicesDescription().size(); i++)
+	for (size_t i = 0; i < foundDevices.getDevicesDescription().size(); i++)
 	{
 		YADOMS_LOG(information) << "Creating the device :" << devicesInformation[i].m_deviceName;
 		if (!api->deviceExists(devicesInformation[i].m_deviceName))
@@ -205,7 +205,7 @@ std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatic
 {
 	std::vector<DeviceInformation> devicesInformation;
 	DeviceInformation deviceInformation;
-	for (auto i = 0; i < foundDevices.getDevicesDescription().size(); i++)
+	for (size_t i = 0; i < foundDevices.getDevicesDescription().size(); i++)
 	{
 		deviceInformation.m_deviceName = foundDevices.findTag("modelName", i) + " " + foundDevices.getIp(i);
 		deviceInformation.m_deviceModel = foundDevices.findTag("friendlyName", i);
