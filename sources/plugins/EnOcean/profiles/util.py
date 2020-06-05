@@ -10,6 +10,8 @@ import string
 import sys
 import inspect
 
+EnableMessages = False
+
 
 #-------------------------------------------------------------------------------
 def createParentDir(path):
@@ -32,9 +34,13 @@ __nb_warnings__ = 0
 __nb_errors__ = 0
 
 def info(s):
+   if not EnableMessages:
+      return
    print(__FILE__() + "(" + str(__LINE__()) + "):" + " information: " + s)
 
 def warning(s):
+   if not EnableMessages:
+      return
    print(__FILE__() + "(" + str(__LINE__()) + "):" + " warning: " + s)
    global __nb_warnings__
    __nb_warnings__ += 1
