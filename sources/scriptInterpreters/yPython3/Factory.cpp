@@ -7,9 +7,9 @@
 #include "ScriptFile.h"
 
 
-boost::shared_ptr<IPythonExecutable> CFactory::createPythonExecutable() const
+boost::shared_ptr<IPythonExecutable> CFactory::createPythonExecutable(const std::string& pythonForcedPath) const
 {
-   return boost::make_shared<CPythonExecutable>();
+   return boost::make_shared<CPythonExecutable>(pythonForcedPath);
 }
 
 boost::shared_ptr<shared::process::IProcessObserver> CFactory::createScriptProcessObserver(int scriptInstanceId,

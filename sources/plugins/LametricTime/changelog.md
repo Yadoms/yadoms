@@ -3,3 +3,4 @@
 * New feature #652 : Detect all connected devices using upnp 
 ### 1.0.0
 * First release
+

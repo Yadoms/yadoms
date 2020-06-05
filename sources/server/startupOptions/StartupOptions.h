@@ -87,6 +87,8 @@ namespace startupOptions
       int getDatabaseAcquisitionLifetime() const override;
       bool getDeveloperMode() const override;
       bool getNoWebServerCacheFlag() const override;
+      std::string getPython2Path() const override;
+      std::string getPython3Path() const override;
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------
 

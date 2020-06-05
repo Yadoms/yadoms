@@ -7,9 +7,9 @@
 #include <regex>
 #include <algorithm>
 
-CPythonExecutable::CPythonExecutable()
+CPythonExecutable::CPythonExecutable(const std::string& pythonForcedPath)
    : m_inSystemPath(false),
-     m_found(findPythonDirectory(m_executableDirectory, m_inSystemPath)),
+     m_found(findPythonDirectory(pythonForcedPath, m_executableDirectory, m_inSystemPath)),
      m_version(readPythonVersion(m_executableDirectory))
 {
 }
@@ -39,9 +39,19 @@ std::string CPythonExecutable::filename() const
    return shared::CExecutable::ToFileName(CPythonExecutablePath::getExecutableName());
 }
 
-bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirectory,
+bool CPythonExecutable::findPythonDirectory(const std::string& pythonForcedPath,
+                                            boost::filesystem::path& pythonDirectory,
                                             bool& inSystemPath)
 {
+   // First search for path configured in configuration file
+   if (!pythonForcedPath.empty())
+   {
+      // Python path is forced (defined in yadoms.ini), use it in priority
+      if (isPythonIn(pythonForcedPath, pythonDirectory, inSystemPath))
+         return true;
+   }
+
+   // Now try to auto-detect path
    //retrieve common path for the system
    std::vector<boost::filesystem::path> commonPaths;
    CPythonExecutablePath::getCommonPythonPaths(commonPaths);

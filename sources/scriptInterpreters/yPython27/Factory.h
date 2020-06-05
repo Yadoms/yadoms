@@ -14,7 +14,7 @@ public:
    virtual ~CFactory();
 
    // IFactory implementation
-   boost::shared_ptr<IPythonExecutable> createPythonExecutable() const override;
+   boost::shared_ptr<IPythonExecutable> createPythonExecutable(const std::string& pythonForcedPath) const override;
    boost::shared_ptr<shared::process::IProcess> createScriptProcess(int scriptInstanceId,
                                                                     const boost::filesystem::path& scriptPath,
                                                                     boost::shared_ptr<IPythonExecutable> pythonExecutable,

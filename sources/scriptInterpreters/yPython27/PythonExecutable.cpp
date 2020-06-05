@@ -4,14 +4,10 @@
 #include <shared/Executable.h>
 #include <shared/Log.h>
 
-CPythonExecutable::CPythonExecutable()
+CPythonExecutable::CPythonExecutable(const std::string& pythonForcedPath)
    : m_inSystemPath(false),
-     m_found(findPythonDirectory(m_executableDirectory, m_inSystemPath)),
+     m_found(findPythonDirectory(pythonForcedPath, m_executableDirectory, m_inSystemPath)),
      m_version(readPythonVersion(m_executableDirectory))
-{
-}
-
-CPythonExecutable::~CPythonExecutable()
 {
 }
 
@@ -40,9 +36,19 @@ std::string CPythonExecutable::filename() const
    return shared::CExecutable::ToFileName("python");
 }
 
-bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirectory,
+bool CPythonExecutable::findPythonDirectory(const std::string& pythonForcedPath,
+                                            boost::filesystem::path& pythonDirectory,
                                             bool& inSystemPath)
-{
+{ 
+   // First search for path configured in configuration file
+   if (!pythonForcedPath.empty())
+   {
+      // Python path is forced (defined in yadoms.ini), use it in priority
+      if (isPythonIn(pythonForcedPath, pythonDirectory, inSystemPath))
+         return true;
+   }
+
+   // Now try to auto-detect path
    if (isPythonIn(boost::filesystem::path(), pythonDirectory, inSystemPath))// Empty directory to search in system path
       return true;
 

@@ -47,9 +47,18 @@ if(GAMMU_FOUND)
    ## Place here all additional libraries to link with
    ## (by default yadoms-shared and boost are included)
    #########################################
-   set(SMS_DIALER_ADDITIONAL_LIB
-       ${GAMMU_LIBRARIES}
-   )
+   if(WIN32 OR APPLE)
+	   set(SMS_DIALER_ADDITIONAL_LIB
+		   ${GAMMU_LIBRARIES}
+	   )
+   else()
+	   set(SMS_DIALER_ADDITIONAL_LIB
+		   ${GAMMU_LIBRARIES}
+		   usb-1.0
+		   bluetooth
+		   glib-2.0
+	   )
+   endif()
 
    #########################################
    ## Always leave this three lines to configure plugin correctly

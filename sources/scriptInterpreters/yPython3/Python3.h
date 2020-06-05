@@ -19,6 +19,7 @@ public:
    // [END] IInterpreter implementation
 
 protected:
+   std::string getPythonForcedPath() const;
    const boost::filesystem::path& getInterpreterPath() const;
    const std::string& getScriptTemplate() const;
    bool isAvailable() const;
