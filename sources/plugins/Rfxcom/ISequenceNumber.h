@@ -31,5 +31,5 @@ public:
    /// \param[in] value Value to check
    /// \return    Current sequence number
    //--------------------------------------------------------------
-   virtual bool isExpected(unsigned char value) = 0;
+   virtual bool isExpected(unsigned char value) const = 0;
 };

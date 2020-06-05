@@ -30,7 +30,7 @@ public:
       return m_seqNumber;
    }
 
-   bool isExpected(unsigned char value) override
+   bool isExpected(unsigned char value) const override
    {
       return value == m_seqNumber;
    }
