@@ -1,3 +1,9 @@
+### 2.4.0-beta.2
+
+#### Yadoms
+* Add possibility to force Python 2.7 and Python 3.x paths in yadoms.ini
+
+
 ### 2.4.0-beta.1
 
 #### Yadoms
