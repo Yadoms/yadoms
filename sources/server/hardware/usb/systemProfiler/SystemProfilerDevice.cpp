@@ -39,8 +39,7 @@ CSystemProfilerDevice::CSystemProfilerDevice(int vendorId,
             std::smatch matches;
             if (!std::regex_search(line,
                                    matches,
-                                   std::regex(std::string("^ *iSerial *[[:digit:]]* ([[:xdigit:]]*)$"))) ||
-                matches.size() != 2)
+                                   std::regex(std::string("Serial Number: ([a-zA-Z0-9]+)"))))
                continue;
 
             m_serialNumber = matches[1];
