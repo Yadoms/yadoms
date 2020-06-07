@@ -27,8 +27,7 @@ CSystemProfilerDevice::CSystemProfilerDevice(int vendorId,
    try
    {
       std::vector<std::string> args;
-      args.push_back("-d " + idToHexString(m_vendorId) + ":" + idToHexString(m_productId));
-      args.push_back("-v");
+      args.push_back("SPUSBDataType");
 
       CSystemProfilerCall SystemProfilerCall(args);
       const auto lines = SystemProfilerCall.execute(true);

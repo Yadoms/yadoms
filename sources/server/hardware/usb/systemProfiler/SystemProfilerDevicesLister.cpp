@@ -13,7 +13,10 @@ std::vector<boost::shared_ptr<IDevice>> CSystemProfilerDevicesLister::listUsbDev
 {
    try
    {
-      CSystemProfilerCall SystemProfilerCall;
+      std::vector<std::string> args;
+      args.push_back("SPUSBDataType");
+
+      CSystemProfilerCall SystemProfilerCall(args);
       const auto lines = SystemProfilerCall.execute();
 
       std::vector<boost::shared_ptr<IDevice>> devicesList;
