@@ -68,7 +68,7 @@ CSystemProfilerCall::CSystemProfilerCall(const std::vector<std::string> &paramet
 
 std::vector<std::string> CSystemProfilerCall::execute(bool ignoreError)
 {
-   const auto commandLine = boost::make_shared<shared::process::CNativeExecutableCommandLine>("SystemProfiler",
+   const auto commandLine = boost::make_shared<shared::process::CNativeExecutableCommandLine>("system_profiler",
                                                                                               ".",
                                                                                               m_parameters);
    const auto processOut = boost::make_shared<CSystemProfilerProcessLogger>();
