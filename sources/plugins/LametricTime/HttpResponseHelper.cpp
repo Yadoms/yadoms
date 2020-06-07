@@ -3,7 +3,7 @@
 std::string CHttpResponseHelper::getHttpResponseHeaderField(const std::string& headerFieldName,
                                                             const std::string& httpResponse)
 {
-	const boost::regex pattern(headerFieldName + ": ([^\\n$\\\\\\r]+)");
+	const boost::regex pattern(headerFieldName + ": ([^\\n$\\\\\\r]+)", boost::regex::icase);
 	boost::smatch match;
 
 	if (!boost::regex_search(httpResponse, match, pattern))

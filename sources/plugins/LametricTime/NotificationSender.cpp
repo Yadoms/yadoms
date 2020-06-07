@@ -5,6 +5,7 @@
 #include "CustomizeIconHelper.h"
 
 const std::string CNotificationSender::IconTypeName("iconType");
+
 CNotificationSender::CNotificationSender(CConfiguration& lametricConfiguration)
 	: m_configuration(lametricConfiguration)
 {
