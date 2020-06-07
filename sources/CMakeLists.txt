@@ -714,6 +714,7 @@ source_group(server\\i18n  server/i18n/*.*)
 source_group(server\\hardware\\usb  server/hardware/usb/*.*)
 source_group(server\\hardware\\usb\\lsusb  server/hardware/usb/lsusb/*.*)
 source_group(server\\hardware\\usb\\winapi  server/hardware/usb/winapi/*.*)
+source_group(server\\hardware\\usb\\systemProfiler  server/hardware/usb/systemProfiler/*.*)
 source_group(server\\location  server/location/*.*)
 source_group(server\\logging  server/logging/*.*)
 source_group(server\\notification  server/notification/*.*)
@@ -767,13 +768,13 @@ ELSEIF(APPLE)
       server/tools/mac/tools/OperatingSystem.cpp
       server/hardware/serial/mac/SerialPortsLister.h
       server/hardware/serial/mac/SerialPortsLister.cpp
-      server/hardware/usb/lsusb/DevicesListerFactory.cpp
-      server/hardware/usb/lsusb/LsusbCall.h
-      server/hardware/usb/lsusb/LsusbCall.cpp
-      server/hardware/usb/lsusb/LsusbDevice.h
-      server/hardware/usb/lsusb/LsusbDevice.cpp
-      server/hardware/usb/lsusb/LsusbDevicesLister.h
-      server/hardware/usb/lsusb/LsusbDevicesLister.cpp
+      server/hardware/usb/systemProfiler/DevicesListerFactory.cpp
+      server/hardware/usb/systemProfiler/SystemProfilerCall.h
+      server/hardware/usb/systemProfiler/SystemProfilerCall.cpp
+      server/hardware/usb/systemProfiler/SystemProfilerDevice.h
+      server/hardware/usb/systemProfiler/SystemProfilerDevice.cpp
+      server/hardware/usb/systemProfiler/SystemProfilerDevicesLister.h
+      server/hardware/usb/systemProfiler/SystemProfilerDevicesLister.cpp
    )   
 ELSE()
    set(YADOMS_SRC ${YADOMS_SRC}
@@ -800,7 +801,7 @@ IF(WIN32)
 ELSEIF(APPLE)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/mac)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/mac)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/lsusb)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/systemProfiler)
 ELSE()
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/linux)
