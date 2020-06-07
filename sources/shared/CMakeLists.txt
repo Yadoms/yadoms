@@ -492,8 +492,16 @@ source_group(platformSpecific\\mac\\process shared/mac/shared/process/*.*)
 ########################
 add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 
-target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
-set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}  ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS} curlpp_static libcurl)
+
+set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
+   ${BOOST_INCL_DIR}
+   ${CMAKE_CURRENT_SOURCE_DIR}
+   ${PLATFORM_SPECIFIC_INCL_DIR}
+   ${Poco_INCLUDE_DIRS}
+   ${OPENSSL_INCLUDE_DIR}
+   ${CURLPP_INCLUDE_DIRECTORIES}
+)
 
 if(COTIRE_USE)
    set_target_properties(yadoms-shared PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")

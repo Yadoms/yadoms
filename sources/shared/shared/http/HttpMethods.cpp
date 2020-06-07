@@ -10,9 +10,24 @@
 #include <Poco/URI.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <curlpp/cURLpp.hpp>
 
 namespace shared
 {
+   class CCurlRessources
+   {
+   public:
+      CCurlRessources()
+      {
+         cURLpp::initialize(CURL_GLOBAL_ALL);
+      }
+      virtual ~CCurlRessources()
+      {
+         cURLpp::terminate();
+      }
+   };
+   static CCurlRessources CurlRessources;
+
    boost::shared_ptr<CDataContainer> CHttpMethods::sendGetRequest(const std::string& url,
                                                const CDataContainer& headerParameters,
                                                const CDataContainer& parameters,
