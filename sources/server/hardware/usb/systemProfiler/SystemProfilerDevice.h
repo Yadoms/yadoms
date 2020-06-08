@@ -9,8 +9,10 @@ class CSystemProfilerDevice : public IDevice
 {
 public:
    explicit CSystemProfilerDevice(int vendorId,
-                         int productId,
-                         const std::string &name);
+                                  int productId,
+                                  const std::string &name,
+                                  const std::string &serialNumber);
+    
    virtual ~CSystemProfilerDevice() = default;
 
    // IDevice implementation

@@ -19,42 +19,14 @@ std::string CSystemProfilerDevice::idToHexString(unsigned int value)
 
 CSystemProfilerDevice::CSystemProfilerDevice(int vendorId,
                            int productId,
-                           const std::string &name)
+                           const std::string &name,
+                           const std::string &serialNumber)
     : m_vendorId(vendorId),
       m_productId(productId),
-      m_yadomsFriendlyName(name)
+      m_yadomsFriendlyName(name),
+      m_serialNumber(serialNumber)
 {
-   try
-   {
-      std::vector<std::string> args;
-      args.push_back("SPUSBDataType");
-
-      CSystemProfilerCall SystemProfilerCall(args);
-      const auto lines = SystemProfilerCall.execute(true);
-
-      for (const auto &line : lines)
-      {
-         try
-         {
-            std::smatch matches;
-            if (!std::regex_search(line,
-                                   matches,
-                                   std::regex(std::string("Serial Number: ([a-zA-Z0-9]+)"))))
-               continue;
-
-            m_serialNumber = matches[1];
-            return;
-         }
-         catch (const std::exception &e)
-         {
-            YADOMS_LOG(warning) << "Unable to access device " << e.what();
-         }
-      }
-   }
-   catch (const std::exception &e)
-   {
-      YADOMS_LOG(warning) << "Unable to read USB device information, " << e.what();
-   }
+   
 }
 
 std::string CSystemProfilerDevice::nativeConnectionString() const
