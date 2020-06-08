@@ -172,7 +172,7 @@ deploy:
     draft: true
     force_update: true                #overwrite already existing file
     on:
-        DEPLOY_SPECIFIC_BRANCH: $APPVEYOR_REPO_BRANCH
+        DEPLOY_ALL_BRANCHES: true
   
 
   
