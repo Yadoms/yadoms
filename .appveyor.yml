@@ -89,6 +89,7 @@ before_build:
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(COTIRE_USE ON)')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(COTIRE_USE_UNITY ON)')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PYTHON_USE_SOURCES OFF)')
+  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(USE_NSIS ON)')
   - ps: cat 'sources/CMakeListsUserConfig.txt'
 
   # Create solution
@@ -115,14 +116,14 @@ before_deploy:
   - ps: ls 'builds/package'
   #generate update package
   - ps: New-Item package -type directory
-  - ps: Move-Item builds\RELEASE .\package\package
+  - ps: Move-Item builds\$env:configuration .\package\package
   - ps: Copy-Item update\scripts\update.cmd .\package\
   
   #   get version and last commit date
   - ps: $gitDate = git --git-dir=.git log -1 --format=%cI 
   - ps: Write-Host "Generating package.zip for Yadoms $yadomsVersion release on $gitDate"
   - ps: cd package
-  - ps: $content = Get-Content '..\package.json.in'
+  - ps: $content = Get-Content 'distribution\package.json.in'
   - ps: $content = $content -replace "__version__", $yadomsVersion
   - ps: $content = $content -replace "__gitdate__", $gitDate
   - ps: Out-File -InputObject $content -FilePath .\package.json -Encoding UTF8
