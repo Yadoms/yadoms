@@ -115,8 +115,9 @@ notifications:
 before_deploy:
   # get the tag name to deploy to
   - ps : $tagYadomsVersionName = dir -Name builds/package/Yadoms*.zip | Select-String -Pattern "Yadoms-(.*)-Windows\.zip" | % { $($_.matches.groups[1].value) }
+  - ps : echo $tagYadomsVersionName
   - ps : $tagYadomsVersionNameSpecificBranch = '$tagYadomsVersionName-{{branch}}'
-  - ps : echo "Deploy tagnames : $tagYadomsVersionName and $tagYadomsVersionNameSpecificBranch"
+  - ps : echo $tagYadomsVersionNameSpecificBranch
 
 #deploy for master branch
 deploy:
