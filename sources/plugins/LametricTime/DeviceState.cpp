@@ -15,12 +15,13 @@ boost::shared_ptr<shared::CDataContainer> CDeviceState::getState(const CUrlManag
 
    const auto url = m_urlManagerHelper->getRequestUrl(m_lametricConfiguration, requestPath);
 
-   return shared::CHttpMethods::sendGetRequest(url,
-                                               *m_urlManagerHelper->buildCommonHeaderParameters(
-                                                  m_lametricConfiguration).get(), shared::CDataContainer::EmptyContainer,
-                                               m_lametricConfiguration.getPort() == kHttp
-                                                  ? shared::CHttpMethods::ESessionType::kStandard
-                                                  : shared::CHttpMethods::ESessionType::kSecured);
+   return shared::CHttpMethods::sendJsonGetRequest(
+      url,
+      m_urlManagerHelper->buildCommonHeaderParameters(m_lametricConfiguration),
+      std::map<std::string, std::string>(),
+      m_lametricConfiguration.getPort() == kHttp
+         ? shared::CHttpMethods::ESessionType::kStandard
+         : shared::CHttpMethods::ESessionType::kSecured);
 }
 
 boost::shared_ptr<shared::CDataContainer> CDeviceState::getDeviceState()

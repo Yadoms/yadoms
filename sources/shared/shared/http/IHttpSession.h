@@ -4,7 +4,7 @@
 
 namespace shared
 {
-   class IHttpSession
+   class IHttpSession //TODO utile ?
    {
    public:
       virtual ~IHttpSession() = default;
