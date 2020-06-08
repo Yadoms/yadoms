@@ -96,23 +96,56 @@ before_build:
   - cmd: cmake_windows.cmd
   
   
-build:
-  parallel: false
-  project: projects/yadoms.sln    # path to Visual Studio solution or project
-
-  # MSBuild verbosity level
-  verbosity: normal
-
+build: off
+  # Use custom build
   
-notifications:
-  - provider: Email
-    subject: 'Build {{status}}: {{projectName}}, branch {{branch}}, {{buildVersion}}'
-    to:
-      - '{{commitAuthorEmail}}'
-    on_build_status_changed: true
-    
+build_script:
+  # Build and create installer
+  - ps: pushd projects
+  - ps: echo 'Build...'
+  - ps: msbuild shared/all_unity.vcxproj /p:Configuration=$env:configuration /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  
 # scripts to run before deployment
 before_deploy:
+  - ps: echo 'Finalize output...'
+  - ps: cp ../config/yadoms.ini ../builds/$env:configuration/
+  - ps: echo 'Create packages...'
+  - ps: msbuild PACKAGE.vcxproj /p:Configuration=$env:configuration /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - ps: popd
+  - ps: ls 'builds/package'
+  #generate update package
+  - ps: New-Item package -type directory
+  - ps: Move-Item builds\RELEASE .\package\package
+  - ps: Copy-Item update\scripts\update.cmd .\package\
+  
+  #   get version and last commit date
+  - ps: $gitDate = git --git-dir=.git log -1 --format=%cI 
+  - ps: Write-Host "Generating package.zip for Yadoms $yadomsVersion release on $gitDate"
+  - ps: cd package
+  - ps: $content = Get-Content '..\package.json.in'
+  - ps: $content = $content -replace "__version__", $yadomsVersion
+  - ps: $content = $content -replace "__gitdate__", $gitDate
+  - ps: Out-File -InputObject $content -FilePath .\package.json -Encoding UTF8
+  - ps: Copy-Item ..\sources\server\changelog.md .\
+  - ps: Get-ChildItem * -Include *.ilk -Recurse | Remove-Item
+  - ps: Get-ChildItem * -Include yadoms.ini -Recurse | Remove-Item
+  - ps: 7z a -tzip ..\package.zip .\
+  - ps: cd ..
+  
+  - ps: |
+     $packageFile = Get-ChildItem "builds/package" -Name -Filter *.exe
+     Push-AppveyorArtifact builds/package/$packageFile -FileName $packageFile -DeploymentName 'Yadoms installer'
+     $packageFile = Get-ChildItem "builds/package" -Name -Filter *.zip
+     Push-AppveyorArtifact builds/package/$packageFile -FileName $packageFile -DeploymentName 'Yadoms portable'
+     $packageFile = Get-ChildItem "." -Name -Filter *.zip
+     Push-AppveyorArtifact $packageFile -FileName $packageFile -DeploymentName 'Yadoms Update package'
+# artifacts:
+  # - path: yadoms/builds/package/Yadoms-*.exe
+    # name: 'Yadoms installer'
+    
+  # - path: yadoms/builds/package/Yadoms-*.zip
+    # name: 'Yadoms portable'
+
   # get the tag name to deploy to
   - ps : $tagYadomsVersionName = dir -Name builds/package/Yadoms*.zip | Select-String -Pattern "Yadoms-(.*)-Windows\.zip" | % { $($_.matches.groups[1].value) }
   - ps : echo $tagYadomsVersionName
@@ -139,7 +172,13 @@ deploy:
     draft: true
     force_update: true                #overwrite already existing file
     on:
-        branch: $DEPLOY_SPECIFIC_BRANCH                 # release from specific branch only
-
+        DEPLOY_SPECIFIC_BRANCH: APPVEYOR_REPO_BRANCH
   
 
+  
+notifications:
+  - provider: Email
+    subject: 'Build {{status}}: {{projectName}}, branch {{branch}}, {{buildVersion}}'
+    to:
+      - '{{commitAuthorEmail}}'
+    on_build_status_changed: true
