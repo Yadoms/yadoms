@@ -110,4 +110,36 @@ notifications:
     to:
       - '{{commitAuthorEmail}}'
     on_build_status_changed: true
+    
+# scripts to run before deployment
+before_deploy:
+  # get the tag name to deploy to
+  - ps : $tagYadomsVersionName = dir -Name builds/package/Yadoms*.zip | Select-String -Pattern "Yadoms-(.*)-Windows\.zip" | % { $($_.matches.groups[1].value) }
+  - ps : $tagYadomsVersionNameSpecificBranch = '$tagYadomsVersionName-{{branch}}'
+
+#deploy for master branch
+deploy:
+  tag: $tagYadomsVersionName
+  provider: GitHub
+  auth_token:
+    secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
+  artifact: /builds/package/.*\.*/            # upload all NuGet packages to release assets
+  draft: true
+  force_update: true                #overwrite already existing file
+  on:
+    branch: master                 # release from master branch only
+
+ #deploy on specific branch
+deploy:
+  tag: $tagYadomsVersionNameSpecificBranch
+  provider: GitHub
+  auth_token:
+    secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
+  artifact: /builds/package/.*\.*/            # upload all NuGet packages to release assets
+  draft: true
+  force_update: true                #overwrite already existing file
+  on:
+    branch: $DEPLOY_SPECIFIC_BRANCH                 # release from master branch only
+
   
+
