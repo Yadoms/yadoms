@@ -26,4 +26,4 @@ set(CMAKE_USE_OPENSSL ON)
 
 add_subdirectory(curl-curl-7_70_0)
 
-source_group("External Libs\\curl"  "external-libs/curl/curl-curl-7_70_0/*.*")
+SET_PROPERTY(TARGET libcurl PROPERTY FOLDER "External Libs")

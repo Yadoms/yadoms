@@ -14,4 +14,5 @@ set(CURLPP_INCLUDE_DIRECTORIES ${CURLPP_INCLUDE_DIRECTORIES} PARENT_SCOPE)
 get_target_property(CURLPP_LIBRARY_DIRECTORY curlpp_static TARGET_NAME)
 set(CURLPP_LIBRARY_DIRECTORY ${CURLPP_LIBRARY_DIRECTORY} PARENT_SCOPE)
 
-source_group("External Libs\\curlpp"  "external-libs/curlpp/curlpp-0.8.1/*.*")
+SET_PROPERTY(TARGET curlpp_static PROPERTY FOLDER "External Libs")
+#TODO  source_group("External Libs\\curlpp"  "external-libs/curlpp/curlpp-0.8.1/*.*")
