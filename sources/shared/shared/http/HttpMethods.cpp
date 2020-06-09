@@ -67,7 +67,6 @@ namespace shared
                                         const std::string& data)>& responseHandlerFct,
                                      const std::map<std::string, std::string>& headerParameters,
                                      const std::map<std::string, std::string>& parameters,
-                                     const ESessionType& sessionType,
                                      int timeoutSeconds)
    {
       curlpp::Easy request;
@@ -77,7 +76,7 @@ namespace shared
       request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
 
       if (!ProxyHost.empty() &&
-         (ProxyBypassRegex.empty() || !std::regex_match(url, std::regex(ProxyBypassRegex)))) //TODO tester le filtrage
+         (ProxyBypassRegex.empty() || !std::regex_search(url, std::regex(ProxyBypassRegex))))
       {
          request.setOpt(new curlpp::options::Proxy(ProxyHost));
          if (ProxyPort != kUseProxyDefaultPort)
@@ -170,7 +169,6 @@ namespace shared
    std::string CHttpMethods::sendGetRequest(const std::string& url,
                                             const std::map<std::string, std::string>& headerParameters,
                                             const std::map<std::string, std::string>& parameters,
-                                            const ESessionType& sessionType,
                                             int timeoutSeconds)
    {
       std::string out;
@@ -182,7 +180,6 @@ namespace shared
                      },
                      headerParameters,
                      parameters,
-                     sessionType,
                      timeoutSeconds);
 
       return out;
@@ -192,7 +189,6 @@ namespace shared
       const std::string& url,
       const std::map<std::string, std::string>& headerParameters,
       const std::map<std::string, std::string>& parameters,
-      const ESessionType& sessionType,
       int timeoutSeconds)
    {
       boost::shared_ptr<CDataContainer> out;
@@ -205,7 +201,6 @@ namespace shared
                      },
                      headerParameters,
                      parameters,
-                     sessionType,
                      timeoutSeconds);
 
       return out;
@@ -218,9 +213,9 @@ namespace shared
                                          const std::string& data)>& responseHandlerFct,
                                       const std::map<std::string, std::string>& headerParameters,
                                       const std::map<std::string, std::string>& parameters,
-                                      const ESessionType& sessionType,
                                       int timeoutSeconds)
    {
+      //TODO mettre du code en commun avec GET
       curlpp::Easy request;
 
       request.setOpt(new curlpp::options::PostFields(body));
@@ -228,7 +223,7 @@ namespace shared
       request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
 
       if (!ProxyHost.empty() &&
-         (ProxyBypassRegex.empty() || !std::regex_match(url, std::regex(ProxyBypassRegex)))) //TODO tester le filtrage
+         (ProxyBypassRegex.empty() || !std::regex_search(url, std::regex(ProxyBypassRegex))))
       {
          request.setOpt(new curlpp::options::Proxy(ProxyHost));
          if (ProxyPort != kUseProxyDefaultPort)
@@ -323,7 +318,6 @@ namespace shared
       const std::string& body,
       const std::map<std::string, std::string>& headerParameters,
       const std::map<std::string, std::string>& parameters,
-      const ESessionType& sessionType,
       int timeoutSeconds)
    {
       std::string out;
@@ -336,7 +330,6 @@ namespace shared
                       },
                       headerParameters,
                       parameters,
-                      sessionType,
                       timeoutSeconds);
 
       return out;
@@ -347,7 +340,6 @@ namespace shared
       const std::string& body,
       const std::map<std::string, std::string>& headerParameters,
       const std::map<std::string, std::string>& parameters,
-      const ESessionType& sessionType,
       int timeoutSeconds)
    {
       boost::shared_ptr<CDataContainer> out;
@@ -361,7 +353,6 @@ namespace shared
                       },
                       headerParameters,
                       parameters,
-                      sessionType,
                       timeoutSeconds);
 
       return out;

@@ -13,15 +13,6 @@ namespace shared
    {
    public:
       //--------------------------------------------------------------
-      /// \brief	    Session type to use with request
-      //--------------------------------------------------------------
-      enum ESessionType
-      {
-         kStandard,
-         kSecured
-      };
-
-      //--------------------------------------------------------------
       /// \brief	default value for HTTP Request default timeout
       //--------------------------------------------------------------
       static const int HttpRequestDefaultTimeoutSeconds = 45;
@@ -65,7 +56,6 @@ namespace shared
       /// \param[in]  responseHandlerFct  lambda for response processing
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  sessionType         the session type to use
       /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
       /// \return     the answer of the request
       //--------------------------------------------------------------
@@ -76,7 +66,6 @@ namespace shared
             const std::string& data)>& responseHandlerFct,
          const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
          const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-         const ESessionType& sessionType = kStandard,
          int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
       //--------------------------------------------------------------
@@ -84,7 +73,6 @@ namespace shared
       /// \param[in]  url                 the url to send the request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  sessionType         the session type to use
       /// \param[in]  timeoutSeconds      timeout for the request (seconds)
       /// \return     the answer of the request
       //--------------------------------------------------------------
@@ -92,7 +80,6 @@ namespace shared
          const std::string& url,
          const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
          const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-         const ESessionType& sessionType = kStandard,
          int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
       //--------------------------------------------------------------
@@ -100,7 +87,6 @@ namespace shared
       /// \param[in]  url                 the url to send the request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  sessionType         the session type to use
       /// \param[in]  timeoutSeconds      timeout for the request (seconds)
       /// \return     the answer of the request
       //--------------------------------------------------------------
@@ -108,7 +94,6 @@ namespace shared
          const std::string& url,
          const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
          const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-         const ESessionType& sessionType = kStandard,
          int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
 
@@ -125,7 +110,6 @@ namespace shared
       /// \param[in]  responseHandlerFct  lambda for response processing
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  sessionType         the session type to use
       /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
       /// \return     the answer of the request
       //--------------------------------------------------------------
@@ -137,7 +121,6 @@ namespace shared
             const std::string& data)>& responseHandlerFct,
          const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
          const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-         const ESessionType& sessionType = kStandard,
          int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
       //--------------------------------------------------------------
@@ -146,7 +129,6 @@ namespace shared
       /// \param[in]  body                the body of request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  sessionType         the session type to use
       /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
       /// \return     the answer of the request
       //--------------------------------------------------------------
@@ -155,7 +137,6 @@ namespace shared
          const std::string& body,
          const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
          const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-         const ESessionType& sessionType = kStandard,
          int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
       //--------------------------------------------------------------
@@ -163,7 +144,6 @@ namespace shared
       /// \param[in]  url                 the url to send the request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  sessionType         the session type to use
       /// \param[in]  timeoutSeconds      timeout for the request (seconds)
       /// \return     the answer of the request
       //--------------------------------------------------------------
@@ -172,7 +152,6 @@ namespace shared
          const std::string& body,
          const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
          const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-         const ESessionType& sessionType = kStandard,
          int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
 

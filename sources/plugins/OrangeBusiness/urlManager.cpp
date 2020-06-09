@@ -29,7 +29,6 @@ boost::shared_ptr<shared::CDataContainer> urlManager::getRegisteredEquipments(co
    return shared::CHttpMethods::sendJsonGetRequest(deviceUrl,
                                                    headerParameters,
                                                    parameters,
-                                                   shared::CHttpMethods::kSecured,
                                                    timeoutSeconds);
 }
 
@@ -47,7 +46,6 @@ boost::shared_ptr<shared::CDataContainer> urlManager::getDeviceInformation(const
    return shared::CHttpMethods::sendJsonGetRequest(deviceUrl,
                                                    headerParameters,
                                                    std::map<std::string, std::string>(),
-                                                   shared::CHttpMethods::kSecured,
                                                    timeoutSeconds);
 }
 
@@ -70,6 +68,5 @@ boost::shared_ptr<shared::CDataContainer> urlManager::listDeviceCommands(const s
    return shared::CHttpMethods::sendJsonGetRequest(deviceUrl,
                                                    headerParameters,
                                                    parameters,
-                                                   shared::CHttpMethods::kSecured,
                                                    timeoutSeconds);
 }
