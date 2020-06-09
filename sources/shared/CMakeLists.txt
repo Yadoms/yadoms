@@ -117,6 +117,8 @@ set(SHARED_LIB_SRC
    shared/exception/JSONParse.hpp
    
    shared/http/HttpException.hpp
+   shared/http/curlppHelpers.h
+   shared/http/curlppHelpers.cpp
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp
 

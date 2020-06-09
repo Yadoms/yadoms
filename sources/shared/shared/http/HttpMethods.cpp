@@ -3,10 +3,10 @@
 #include "HttpException.hpp"
 #include <shared/Log.h>
 #include <curlpp/cURLpp.hpp>
-#include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
 #include <curlpp/Infos.hpp>
 #include <regex>
+#include "curlppHelpers.h"
 
 namespace shared
 {
@@ -47,20 +47,6 @@ namespace shared
       ProxyBypassRegex = bypassRegex;
    }
 
-   std::string CHttpMethods::stringifyParameters(const std::map<std::string, std::string>& parameters)
-   {
-      if (parameters.empty())
-         return std::string();
-
-      std::string urlSuffix;
-      for (const auto& parameter : parameters)
-      {
-         urlSuffix += urlSuffix.empty() ? "?" : "&";
-         urlSuffix += curlpp::escape(parameter.first) + "=" + curlpp::escape(parameter.second);
-      }
-      return urlSuffix;
-   }
-
    void CHttpMethods::sendGetRequest(const std::string& url,
                                      const boost::function<void(
                                         const std::map<std::string, std::string>& receivedHeaders,
@@ -75,57 +61,34 @@ namespace shared
 
       request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
 
-      if (!ProxyHost.empty() &&
-         (ProxyBypassRegex.empty() || !std::regex_search(url, std::regex(ProxyBypassRegex))))
-      {
-         request.setOpt(new curlpp::options::Proxy(ProxyHost));
-         if (ProxyPort != kUseProxyDefaultPort)
-            request.setOpt(new curlpp::options::ProxyPort(ProxyPort));
-         if (!ProxyUsername.empty() && !ProxyPassword.empty())
-            request.setOpt(new curlpp::options::ProxyUserPwd(ProxyUsername + ":" + ProxyPassword));
-      }
+      // Proxy
+      if (!ProxyHost.empty())
+         CCurlppHelpers::setProxy(request, url, ProxyHost, ProxyPort, ProxyUsername, ProxyPassword, ProxyBypassRegex);
 
       // URL + parameters
       request.setOpt(
-         new curlpp::options::Url(url + stringifyParameters(parameters)));
+         new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
 
       // Headers
-      if (!headerParameters.empty())
-      {
-         std::list<std::string> headers;
-         for (const auto& headerParametersIterator : headerParameters)
-            headers.push_back(headerParametersIterator.first + ": " + headerParametersIterator.second);
-
-         request.setOpt(new curlpp::options::HttpHeader(headers));
-      }
+      CCurlppHelpers::setHeaders(request, headerParameters);
 
       // Response headers
-      char* headersBuffer = nullptr;
-      size_t headersBufferSize = 0;
+      std::string headersBuffer;
       request.setOpt(curlpp::options::HeaderFunction(
-         [&headersBuffer, &headersBufferSize](char* ptr, size_t size, size_t nbItems)
+         [&headersBuffer](char* ptr, size_t size, size_t nbItems)
          {
             const auto incomingSize = size * nbItems;
-            headersBuffer = static_cast<char*>(realloc(headersBuffer, headersBufferSize + incomingSize));
-            if (headersBuffer == nullptr)
-               throw std::runtime_error("No enough memory");
-            memcpy(&headersBuffer[headersBufferSize], ptr, incomingSize);
-            headersBufferSize += incomingSize;
+            headersBuffer.append(ptr, incomingSize);
             return incomingSize;
          }));
 
       // Response data
-      char* dataBuffer = nullptr;
-      size_t dataBufferSize = 0;
+      std::string dataBuffer;
       request.setOpt(curlpp::options::WriteFunction(
-         [&dataBuffer, &dataBufferSize](char* ptr, size_t size, size_t nbItems)
+         [&dataBuffer](char* ptr, size_t size, size_t nbItems)
          {
             const auto incomingSize = size * nbItems;
-            dataBuffer = static_cast<char*>(realloc(dataBuffer, dataBufferSize + incomingSize));
-            if (dataBuffer == nullptr)
-               throw std::runtime_error("No enough memory");
-            memcpy(&dataBuffer[dataBufferSize], ptr, incomingSize);
-            dataBufferSize += incomingSize;
+            dataBuffer.append(ptr, incomingSize);
             return incomingSize;
          }));
 
@@ -141,29 +104,10 @@ namespace shared
          throw CHttpException(message);
       }
 
-      if (curlpp::infos::ResponseCode::get(request) != 200)
-      {
-         const auto message = (boost::format("Invalid HTTP result : %1%") % curlpp::infos::ResponseCode::get(request)
-         ).str();
-         YADOMS_LOG(warning) << message;
-         throw CHttpException(message);
-      }
+      CCurlppHelpers::checkResult(request);
 
-      // Format headers
-      std::vector<std::string> headerKeyValues;
-      std::map<std::string, std::string> responseHeaders;
-      split(headerKeyValues, headersBuffer, boost::is_any_of("\n"), boost::algorithm::token_compress_on);
-      for (const auto& headerKeyValue : headerKeyValues)
-      {
-         const auto separatorIterator = headerKeyValue.find(':');
-         if (separatorIterator == std::string::npos)
-            continue;
-         responseHeaders[headerKeyValue.substr(0, separatorIterator)] = headerKeyValue.substr(
-            separatorIterator + 1, std::string::npos);
-      }
-
-      responseHandlerFct(responseHeaders,
-                         std::string(dataBuffer, dataBufferSize));
+      responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer),
+                         dataBuffer);
    }
 
    std::string CHttpMethods::sendGetRequest(const std::string& url,
@@ -215,64 +159,40 @@ namespace shared
                                       const std::map<std::string, std::string>& parameters,
                                       int timeoutSeconds)
    {
-      //TODO mettre du code en commun avec GET
       curlpp::Easy request;
 
       request.setOpt(new curlpp::options::PostFields(body));
 
       request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
 
-      if (!ProxyHost.empty() &&
-         (ProxyBypassRegex.empty() || !std::regex_search(url, std::regex(ProxyBypassRegex))))
-      {
-         request.setOpt(new curlpp::options::Proxy(ProxyHost));
-         if (ProxyPort != kUseProxyDefaultPort)
-            request.setOpt(new curlpp::options::ProxyPort(ProxyPort));
-         if (!ProxyUsername.empty() && !ProxyPassword.empty())
-            request.setOpt(new curlpp::options::ProxyUserPwd(ProxyUsername + ":" + ProxyPassword));
-      }
+      // Proxy
+      if (!ProxyHost.empty())
+         CCurlppHelpers::setProxy(request, url, ProxyHost, ProxyPort, ProxyUsername, ProxyPassword, ProxyBypassRegex);
 
       // URL + parameters
       request.setOpt(
-         new curlpp::options::Url(url + stringifyParameters(parameters)));
+         new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
 
       // Headers
-      if (!headerParameters.empty())
-      {
-         std::list<std::string> headers;
-         for (const auto& headerParametersIterator : headerParameters)
-            headers.push_back(headerParametersIterator.first + ": " + headerParametersIterator.second);
-
-         request.setOpt(new curlpp::options::HttpHeader(headers));
-      }
+      CCurlppHelpers::setHeaders(request, headerParameters);
 
       // Response headers
-      char* headersBuffer = nullptr;
-      size_t headersBufferSize = 0;
+      std::string headersBuffer;
       request.setOpt(curlpp::options::HeaderFunction(
-         [&headersBuffer, &headersBufferSize](char* ptr, size_t size, size_t nbItems)
+         [&headersBuffer](char* ptr, size_t size, size_t nbItems)
          {
             const auto incomingSize = size * nbItems;
-            headersBuffer = static_cast<char*>(realloc(headersBuffer, headersBufferSize + incomingSize));
-            if (headersBuffer == nullptr)
-               throw std::runtime_error("No enough memory");
-            memcpy(&headersBuffer[headersBufferSize], ptr, incomingSize);
-            headersBufferSize += incomingSize;
+            headersBuffer.append(ptr, incomingSize);
             return incomingSize;
          }));
 
       // Response data
-      char* dataBuffer = nullptr;
-      size_t dataBufferSize = 0;
+      std::string dataBuffer;
       request.setOpt(curlpp::options::WriteFunction(
-         [&dataBuffer, &dataBufferSize](char* ptr, size_t size, size_t nbItems)
+         [&dataBuffer](char* ptr, size_t size, size_t nbItems)
          {
             const auto incomingSize = size * nbItems;
-            dataBuffer = static_cast<char*>(realloc(dataBuffer, dataBufferSize + incomingSize));
-            if (dataBuffer == nullptr)
-               throw std::runtime_error("No enough memory");
-            memcpy(&dataBuffer[dataBufferSize], ptr, incomingSize);
-            dataBufferSize += incomingSize;
+            dataBuffer.append(ptr, incomingSize);
             return incomingSize;
          }));
 
@@ -288,29 +208,10 @@ namespace shared
          throw CHttpException(message);
       }
 
-      if (curlpp::infos::ResponseCode::get(request) != 200 && curlpp::infos::ResponseCode::get(request) != 201)
-      {
-         const auto message = (boost::format("Invalid HTTP result : %1%") % curlpp::infos::ResponseCode::get(request)
-         ).str();
-         YADOMS_LOG(warning) << message;
-         throw CHttpException(message);
-      }
+      CCurlppHelpers::checkResult(request);
 
-      // Format headers
-      std::vector<std::string> headerKeyValues;
-      std::map<std::string, std::string> responseHeaders;
-      split(headerKeyValues, headersBuffer, boost::is_any_of("\n"), boost::algorithm::token_compress_on);
-      for (const auto& headerKeyValue : headerKeyValues)
-      {
-         const auto separatorIterator = headerKeyValue.find(':');
-         if (separatorIterator == std::string::npos)
-            continue;
-         responseHeaders[headerKeyValue.substr(0, separatorIterator)] = headerKeyValue.substr(
-            separatorIterator + 1, std::string::npos);
-      }
-
-      responseHandlerFct(responseHeaders,
-                         std::string(dataBuffer, dataBufferSize));
+      responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer),
+                         dataBuffer);
    }
 
    std::string CHttpMethods::sendPostRequest(

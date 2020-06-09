@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/DataContainer.h>
-
 #include <boost/property_tree/exceptions.hpp>
 
 
@@ -126,7 +125,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Send POST request to remote server
       /// \param[in]  url                 the url to send the request
-      /// \param[in]  body                the body of request
+      /// \param[in]  body                The request content
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
       /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
@@ -142,6 +141,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Send POST request to remote server (for JSON answer)
       /// \param[in]  url                 the url to send the request
+      /// \param[in]  body                The request content
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
       /// \param[in]  timeoutSeconds      timeout for the request (seconds)
@@ -159,8 +159,6 @@ namespace shared
       static boost::shared_ptr<CDataContainer> processJsonResponse(
          const std::map<std::string, std::string>& receivedHeaders,
          const std::string& data);
-
-      static std::string stringifyParameters(const std::map<std::string, std::string>& parameters);
 
    private:
       // Proxy settings
