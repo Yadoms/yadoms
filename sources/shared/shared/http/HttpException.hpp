@@ -18,11 +18,6 @@ namespace shared
       {
       }
 
-      //--------------------------------------------------------------
-      /// \brief      Destructor
-      //--------------------------------------------------------------
-      virtual ~CHttpException() throw()
-      {
-      }
+      virtual ~CHttpException() throw() = default;
    };
 };

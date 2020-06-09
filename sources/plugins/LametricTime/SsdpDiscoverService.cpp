@@ -8,15 +8,10 @@ std::string CSsdpDiscoverService::getDeviceDescription(std::string& descriptionU
 {
    if (descriptionUrl.empty())
       return "";
-   std::string outXml;
+
    try
    {
-      shared::CHttpMethods::sendGetRequest(descriptionUrl,
-                                           [&outXml](const std::map<std::string, std::string>& receivedHeaders,
-                                                     const std::string& data)
-                                           {
-                                              outXml = data;
-                                           });
+      return shared::CHttpMethods::sendGetRequest(descriptionUrl);
    }
    catch (std::exception& e)
    {
@@ -26,8 +21,6 @@ std::string CSsdpDiscoverService::getDeviceDescription(std::string& descriptionU
       YADOMS_LOG(error) << message;
       throw shared::CHttpException(message);
    }
-
-   return outXml;
 }
 
 bool CSsdpDiscoverService::discover(std::string searchTarget,

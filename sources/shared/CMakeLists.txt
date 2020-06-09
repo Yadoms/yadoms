@@ -116,14 +116,9 @@ set(SHARED_LIB_SRC
    shared/exception/Parse.hpp
    shared/exception/JSONParse.hpp
    
-   shared/http/IHttpSession.h
    shared/http/HttpException.hpp
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp
-   shared/http/SecureSession.h
-   shared/http/SecureSession.cpp
-   shared/http/StandardSession.h
-   shared/http/StandardSession.cpp
 
    shared/plugin/information/IInformation.h
    shared/plugin/information/IYadomsInformation.h

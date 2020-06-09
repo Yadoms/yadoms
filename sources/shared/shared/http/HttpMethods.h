@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/DataContainer.h>
 
-#include "IHttpSession.h" //TODO virer
 #include <boost/property_tree/exceptions.hpp>
 
 
@@ -26,10 +25,16 @@ namespace shared
       /// \brief	default value for HTTP Request default timeout
       //--------------------------------------------------------------
       static const int HttpRequestDefaultTimeoutSeconds = 45;
-      static boost::posix_time::time_duration HttpRequestDefaultTimeout; //TODO virer
 
       CHttpMethods() = delete;
       virtual ~CHttpMethods() = default;
+
+
+      //--------------------------------------------------------------
+      //--------------------------------------------------------------
+      // Proxy
+      //--------------------------------------------------------------
+      //--------------------------------------------------------------
 
       //--------------------------------------------------------------
       /// \brief	    Send the proxy config
@@ -47,8 +52,35 @@ namespace shared
                                        const std::string& password,
                                        const std::string& bypassRegex);
 
+
       //--------------------------------------------------------------
-      /// \brief	    Send get request to remote server
+      //--------------------------------------------------------------
+      // GET
+      //--------------------------------------------------------------
+      //--------------------------------------------------------------
+
+      //--------------------------------------------------------------
+      /// \brief	    Send GET request to remote server with response processing injection
+      /// \param[in]  url                 the url to send the request
+      /// \param[in]  responseHandlerFct  lambda for response processing
+      /// \param[in]  headerParameters    parameters included into the frame
+      /// \param[in]  parameters          parameters at the end of the url
+      /// \param[in]  sessionType         the session type to use
+      /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
+      /// \return     the answer of the request
+      //--------------------------------------------------------------
+      static void sendGetRequest(
+         const std::string& url,
+         const boost::function<void(
+            const std::map<std::string, std::string>& receivedHeaders,
+            const std::string& data)>& responseHandlerFct,
+         const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+         const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+         const ESessionType& sessionType = kStandard,
+         int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+
+      //--------------------------------------------------------------
+      /// \brief	    Send GET request to remote server
       /// \param[in]  url                 the url to send the request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
@@ -64,7 +96,7 @@ namespace shared
          int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
       //--------------------------------------------------------------
-      /// \brief	    Send get request to remote server (for JSON answer)
+      /// \brief	    Send GET request to remote server (for JSON answer)
       /// \param[in]  url                 the url to send the request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
@@ -79,9 +111,17 @@ namespace shared
          const ESessionType& sessionType = kStandard,
          int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
+
       //--------------------------------------------------------------
-      /// \brief	    Send get request to remote server with response processing injection
+      //--------------------------------------------------------------
+      // POST
+      //--------------------------------------------------------------
+      //--------------------------------------------------------------
+
+      //--------------------------------------------------------------
+      /// \brief	    Send POST request to remote server with response processing injection
       /// \param[in]  url                 the url to send the request
+      /// \param[in]  body                the body of request
       /// \param[in]  responseHandlerFct  lambda for response processing
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
@@ -89,60 +129,54 @@ namespace shared
       /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static void sendGetRequest(
+      static void sendPostRequest(
          const std::string& url,
-         const boost::function<void(const std::map<std::string, std::string>& receivedHeaders,
-                                    const std::string& data)>& responseHandlerFct,
+         const std::string& body,
+         const boost::function<void(
+            const std::map<std::string, std::string>& receivedHeaders,
+            const std::string& data)>& responseHandlerFct,
          const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
          const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
          const ESessionType& sessionType = kStandard,
          int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
       //--------------------------------------------------------------
-      /// \brief	    Send post request to remote server (for JSON answer)
+      /// \brief	    Send POST request to remote server
       /// \param[in]  url                 the url to send the request
       /// \param[in]  body                the body of request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
       /// \param[in]  sessionType         the session type to use
-      /// \param[in]  timeout             timeout for the request
+      /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static boost::shared_ptr<CDataContainer> sendPostRequest(const std::string& url,
-                                                               const std::string& body,
-                                                               const CDataContainer& headerParameters =
-                                                                  CDataContainer(),
-                                                               const CDataContainer& parameters = CDataContainer(),
-                                                               const ESessionType& sessionType = kStandard,
-                                                               const boost::posix_time::time_duration& timeout =
-                                                                  HttpRequestDefaultTimeout);
+      static std::string sendPostRequest(
+         const std::string& url,
+         const std::string& body,
+         const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+         const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+         const ESessionType& sessionType = kStandard,
+         int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
       //--------------------------------------------------------------
-      /// \brief	    Send get request to remote server with response processing injection
+      /// \brief	    Send POST request to remote server (for JSON answer)
       /// \param[in]  url                 the url to send the request
-      /// \param[in]  body                the body of request
-      /// \param[in]  responseHandlerFct  lambda for response processing
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
       /// \param[in]  sessionType         the session type to use
-      /// \param[in]  timeout             timeout for the request
+      /// \param[in]  timeoutSeconds      timeout for the request (seconds)
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static void sendPostRequest(const std::string& url,
-                                  const std::string& body,
-                                  const boost::function<void(const Poco::Net::HTTPResponse& response,
-                                                             std::istream& receivedStream)>& responseHandlerFct,
-                                  const CDataContainer& headerParameters = CDataContainer(),
-                                  const CDataContainer& parameters = CDataContainer(),
-                                  const ESessionType& sessionType = kStandard,
-                                  const boost::posix_time::time_duration& timeout = HttpRequestDefaultTimeout);
+      static boost::shared_ptr<CDataContainer> sendJsonPostRequest(
+         const std::string& url,
+         const std::string& body,
+         const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+         const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+         const ESessionType& sessionType = kStandard,
+         int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+
 
    protected:
-      //TODO virer ? Ainsi que les classes Session ?
-      static boost::shared_ptr<IHttpSession> createSession(const ESessionType& sessionType,
-                                                           const std::string& url,
-                                                           const boost::posix_time::time_duration& timeout);
-
       static boost::shared_ptr<CDataContainer> processJsonResponse(
          const std::map<std::string, std::string>& receivedHeaders,
          const std::string& data);

@@ -2,7 +2,6 @@
 #include "OpenWeatherService.h"
 #include "ForecastWeatherDevice.h"
 #include "LiveWeatherDevice.h"
-#include <shared/http/StandardSession.h>
 #include <shared/http/HttpMethods.h>
 #include <algorithm>
 

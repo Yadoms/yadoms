@@ -31,17 +31,13 @@ void CNotificationSender::displayText(const std::string& text,
 
 
    auto headerPostParameters = m_urlManagerHelper->buildCommonHeaderParameters(m_configuration);
-   headerPostParameters["Content-Length"] = body.length();
+   headerPostParameters["Content-Length"] = body.length(); //TODO probably not useful (already set by shared::CHttpMethods), to be tested
 
    try
    {
       shared::CHttpMethods::sendPostRequest(url,
                                             body,
-                                            headerPostParameters,
-                                            std::map<std::string, std::string>(),
-                                            m_configuration.getPort() == kHttp
-                                               ? shared::CHttpMethods::ESessionType::kStandard
-                                               : shared::CHttpMethods::ESessionType::kSecured);
+                                            headerPostParameters);
    }
    catch (std::exception& e)
    {
