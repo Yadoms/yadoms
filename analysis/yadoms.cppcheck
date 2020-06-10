@@ -39,6 +39,7 @@
     <exclude>
         <path name="../sources/plugins/ZWave/OpenZWave/"/>
         <path name="../sources/external-libs/"/>
+        <path name="../sources/plugins/ZWave/OpenZWave/openzwave-1.6.962/"/>
     </exclude>
     <suppressions>
         <suppression>unknownMacro</suppression>
