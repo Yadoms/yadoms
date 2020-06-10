@@ -252,7 +252,7 @@ namespace plugin_cpp_api
       {
          const auto& providedProxySettings = msg.proxysettings();
 
-         if (plugin_IPC::toPlugin::ProxySettings::GetReflection()->HasField(providedProxySettings,
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
                                                                             msg.proxysettings().GetDescriptor()->FindFieldByName(
                                                                                "host")))
          {
@@ -262,19 +262,19 @@ namespace plugin_cpp_api
             std::string password;
             std::string bypassRegex;
 
-            if (plugin_IPC::toPlugin::ProxySettings::GetReflection()->HasField(providedProxySettings,
+            if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
                                                                                msg.proxysettings().GetDescriptor()->FindFieldByName(
                                                                                   "port")))
                port = static_cast<unsigned short>(providedProxySettings.port());
-            if (plugin_IPC::toPlugin::ProxySettings::GetReflection()->HasField(providedProxySettings,
+            if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
                                                                                msg.proxysettings().GetDescriptor()->FindFieldByName(
                                                                                   "username")))
                username = providedProxySettings.username();
-            if (plugin_IPC::toPlugin::ProxySettings::GetReflection()->HasField(providedProxySettings,
+            if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
                                                                                msg.proxysettings().GetDescriptor()->FindFieldByName(
                                                                                   "password")))
                password = providedProxySettings.password();
-            if (plugin_IPC::toPlugin::ProxySettings::GetReflection()->HasField(providedProxySettings,
+            if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
                                                                                msg.proxysettings().GetDescriptor()->FindFieldByName(
                                                                                   "bypassRegex")))
                bypassRegex = providedProxySettings.bypassregex();

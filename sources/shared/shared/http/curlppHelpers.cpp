@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CurlppHelpers.h"
+#include "curlppHelpers.h"
 #include <regex>
 #include <shared/Log.h>
 #include "HttpMethods.h"
