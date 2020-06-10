@@ -25,7 +25,7 @@ public:
    boost::shared_ptr<shared::CDataContainer> getRegisteredEquipments(const std::string& apikey,
                                                                      int page,
                                                                      bool activated,
-                                                                     int timeoutSeconds = shared::CHttpMethods::
+                                                                     int timeoutSeconds = shared::http::CHttpMethods::
                                                                         HttpRequestDefaultTimeoutSeconds) override;
 
    //--------------------------------------------------------------
@@ -37,7 +37,7 @@ public:
    //--------------------------------------------------------------
    boost::shared_ptr<shared::CDataContainer> getDeviceInformation(const std::string& apikey,
                                                                   const std::string& devEUI,
-                                                                  int timeoutSeconds = shared::CHttpMethods::
+                                                                  int timeoutSeconds = shared::http::CHttpMethods::
                                                                      HttpRequestDefaultTimeoutSeconds) override;
 
    //--------------------------------------------------------------
@@ -50,7 +50,7 @@ public:
    boost::shared_ptr<shared::CDataContainer> listDeviceCommands(const std::string& apikey,
                                                                 const std::string& devEUI,
                                                                 int page,
-                                                                int timeoutSeconds = shared::CHttpMethods::
+                                                                int timeoutSeconds = shared::http::CHttpMethods::
                                                                    HttpRequestDefaultTimeoutSeconds) override;
 
 private:

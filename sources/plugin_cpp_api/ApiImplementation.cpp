@@ -257,7 +257,7 @@ namespace plugin_cpp_api
                                                                                "host")))
          {
             const auto& host = providedProxySettings.host();
-            int port = shared::CHttpMethods::kUseProxyDefaultPort;
+            int port = shared::http::CHttpMethods::kUseProxyDefaultPort;
             std::string username;
             std::string password;
             std::string bypassRegex;
@@ -279,7 +279,7 @@ namespace plugin_cpp_api
                                                                                   "bypassRegex")))
                bypassRegex = providedProxySettings.bypassregex();
 
-            shared::CHttpMethods::setGlobalProxyConfig(host,
+            shared::http::CHttpMethods::setGlobalProxyConfig(host,
                                                        port,
                                                        username,
                                                        password,

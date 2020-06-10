@@ -26,10 +26,10 @@ boost::shared_ptr<shared::CDataContainer> urlManager::getRegisteredEquipments(co
       parameters["status"] = "ACTIVATED";
 
    const auto deviceUrl = m_url.str() + "/vendors/lora/devices";
-   return shared::CHttpMethods::sendJsonGetRequest(deviceUrl,
-                                                   headerParameters,
-                                                   parameters,
-                                                   timeoutSeconds);
+   return shared::http::CHttpMethods::sendJsonGetRequest(deviceUrl,
+                                                         headerParameters,
+                                                         parameters,
+                                                         timeoutSeconds);
 }
 
 boost::shared_ptr<shared::CDataContainer> urlManager::getDeviceInformation(const std::string& apikey,
@@ -43,10 +43,10 @@ boost::shared_ptr<shared::CDataContainer> urlManager::getDeviceInformation(const
    };
 
    const auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI;
-   return shared::CHttpMethods::sendJsonGetRequest(deviceUrl,
-                                                   headerParameters,
-                                                   std::map<std::string, std::string>(),
-                                                   timeoutSeconds);
+   return shared::http::CHttpMethods::sendJsonGetRequest(deviceUrl,
+                                                         headerParameters,
+                                                         std::map<std::string, std::string>(),
+                                                         timeoutSeconds);
 }
 
 boost::shared_ptr<shared::CDataContainer> urlManager::listDeviceCommands(const std::string& apikey,
@@ -65,8 +65,8 @@ boost::shared_ptr<shared::CDataContainer> urlManager::listDeviceCommands(const s
    };
 
    const auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/data/streams/urn:lora:" + devEUI + "!uplink";
-   return shared::CHttpMethods::sendJsonGetRequest(deviceUrl,
-                                                   headerParameters,
-                                                   parameters,
-                                                   timeoutSeconds);
+   return shared::http::CHttpMethods::sendJsonGetRequest(deviceUrl,
+                                                         headerParameters,
+                                                         parameters,
+                                                         timeoutSeconds);
 }

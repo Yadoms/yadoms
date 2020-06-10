@@ -23,7 +23,7 @@ public:
       const std::string& apikey,
       int page,
       bool activated,
-      int timeoutSeconds = shared::CHttpMethods::HttpRequestDefaultTimeoutSeconds) = 0;
+      int timeoutSeconds = shared::http::CHttpMethods::HttpRequestDefaultTimeoutSeconds) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    get information from a specific device
@@ -35,7 +35,7 @@ public:
    virtual boost::shared_ptr<shared::CDataContainer> getDeviceInformation(
       const std::string& apikey,
       const std::string& devEUI,
-      int timeoutSeconds = shared::CHttpMethods::HttpRequestDefaultTimeoutSeconds) = 0;
+      int timeoutSeconds = shared::http::CHttpMethods::HttpRequestDefaultTimeoutSeconds) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    list command information
@@ -48,5 +48,5 @@ public:
       const std::string& apikey,
       const std::string& devEUI,
       int page,
-      int timeoutSeconds = shared::CHttpMethods::HttpRequestDefaultTimeoutSeconds) = 0;
+      int timeoutSeconds = shared::http::CHttpMethods::HttpRequestDefaultTimeoutSeconds) = 0;
 };

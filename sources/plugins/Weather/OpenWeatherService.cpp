@@ -71,7 +71,7 @@ boost::shared_ptr<shared::CDataContainer> COpenWeatherService::syncRequest(const
    try
    {
       YADOMS_LOG(debug) << "URL = " << url;
-      const auto answer = shared::CHttpMethods::sendJsonGetRequest(url);
+      const auto answer = shared::http::CHttpMethods::sendJsonGetRequest(url);
 
       answer->printToLog(YADOMS_LOG(debug));
 

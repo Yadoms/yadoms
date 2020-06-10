@@ -3,84 +3,88 @@
 #include <regex>
 #include <shared/Log.h>
 #include "HttpMethods.h"
-#include "HttpException.hpp"
 #include <curlpp/Options.hpp>
 #include <curlpp/Infos.hpp>
 #include "curlpp/cURLpp.hpp"
+#include <shared/exception/HttpException.hpp>
 
 namespace shared
 {
-   void CCurlppHelpers::setProxy(curlpp::Easy& request,
-                                 const std::string& url,
-                                 const std::string& proxyHost,
-                                 int proxyPort,
-                                 const std::string& proxyUsername,
-                                 const std::string& proxyPassword,
-                                 const std::string& proxyBypassRegex)
+   namespace http
    {
-      if (!proxyBypassRegex.empty() && std::regex_search(url, std::regex(proxyBypassRegex)))
-         return;
-
-      request.setOpt(new curlpp::options::Proxy(proxyHost));
-      if (proxyPort != CHttpMethods::kUseProxyDefaultPort)
-         request.setOpt(new curlpp::options::ProxyPort(proxyPort));
-      if (!proxyUsername.empty() && !proxyPassword.empty())
-         request.setOpt(new curlpp::options::ProxyUserPwd(proxyUsername + ":" + proxyPassword));
-   }
-
-   void CCurlppHelpers::setHeaders(curlpp::Easy& request,
-                                   const std::map<std::basic_string<char>, std::basic_string<char>>& headerParameters)
-   {
-      if (headerParameters.empty())
-         return;
-
-      std::list<std::string> headers;
-      for (const auto& headerParametersIterator : headerParameters)
-         headers.push_back(headerParametersIterator.first + ": " + headerParametersIterator.second);
-
-      request.setOpt(new curlpp::options::HttpHeader(headers));
-   }
-
-   std::string CCurlppHelpers::stringifyParameters(const std::map<std::string, std::string>& parameters)
-   {
-      if (parameters.empty())
-         return std::string();
-
-      std::string urlSuffix;
-      for (const auto& parameter : parameters)
+      void CCurlppHelpers::setProxy(curlpp::Easy& request,
+                                    const std::string& url,
+                                    const std::string& proxyHost,
+                                    int proxyPort,
+                                    const std::string& proxyUsername,
+                                    const std::string& proxyPassword,
+                                    const std::string& proxyBypassRegex)
       {
-         urlSuffix += urlSuffix.empty() ? "?" : "&";
-         urlSuffix += curlpp::escape(parameter.first) + "=" + curlpp::escape(parameter.second);
+         if (!proxyBypassRegex.empty() && std::regex_search(url, std::regex(proxyBypassRegex)))
+            return;
+
+         request.setOpt(new curlpp::options::Proxy(proxyHost));
+         if (proxyPort != CHttpMethods::kUseProxyDefaultPort)
+            request.setOpt(new curlpp::options::ProxyPort(proxyPort));
+         if (!proxyUsername.empty() && !proxyPassword.empty())
+            request.setOpt(new curlpp::options::ProxyUserPwd(proxyUsername + ":" + proxyPassword));
       }
-      return urlSuffix;
-   }
 
-   void CCurlppHelpers::checkResult(const curlpp::Easy& request)
-   {
-      if (curlpp::infos::ResponseCode::get(request) != 200 && curlpp::infos::ResponseCode::get(request) != 201)
+      void CCurlppHelpers::setHeaders(curlpp::Easy& request,
+                                      const std::map<std::basic_string<char>, std::basic_string<char>>&
+                                      headerParameters)
       {
-         const auto message = (boost::format("Invalid HTTP result : %1%") % curlpp::infos::ResponseCode::get(request)
+         if (headerParameters.empty())
+            return;
+
+         std::list<std::string> headers;
+         for (const auto& headerParametersIterator : headerParameters)
+            headers.push_back(headerParametersIterator.first + ": " + headerParametersIterator.second);
+
+         request.setOpt(new curlpp::options::HttpHeader(headers));
+      }
+
+      std::string CCurlppHelpers::stringifyParameters(const std::map<std::string, std::string>& parameters)
+      {
+         if (parameters.empty())
+            return std::string();
+
+         std::string urlSuffix;
+         for (const auto& parameter : parameters)
+         {
+            urlSuffix += urlSuffix.empty() ? "?" : "&";
+            urlSuffix += curlpp::escape(parameter.first) + "=" + curlpp::escape(parameter.second);
+         }
+         return urlSuffix;
+      }
+
+      void CCurlppHelpers::checkResult(const curlpp::Easy& request)
+      {
+         if (curlpp::infos::ResponseCode::get(request) != 200 && curlpp::infos::ResponseCode::get(request) != 201)
+         {
+            const auto message = (boost::format("Invalid HTTP result : %1%") % curlpp::infos::ResponseCode::get(request)
             ).str();
-         YADOMS_LOG(warning) << message;
-         throw CHttpException(message);
+            YADOMS_LOG(warning) << message;
+            throw exception::CHttpException(message);
+         }
       }
-   }
 
-   std::map<std::string, std::string> CCurlppHelpers::formatResponseHeaders(const std::string& headersBuffer)
-   {
-      std::vector<std::string> headerKeyValues;
-      split(headerKeyValues, headersBuffer, boost::is_any_of("\n"), boost::algorithm::token_compress_on);
-
-      std::map<std::string, std::string> responseHeaders;
-      for (const auto& headerKeyValue : headerKeyValues)
+      std::map<std::string, std::string> CCurlppHelpers::formatResponseHeaders(const std::string& headersBuffer)
       {
-         const auto separatorIterator = headerKeyValue.find(':');
-         if (separatorIterator == std::string::npos)
-            continue;
-         responseHeaders[headerKeyValue.substr(0, separatorIterator)] = headerKeyValue.substr(
-            separatorIterator + 1, std::string::npos);
-      }
+         std::vector<std::string> headerKeyValues;
+         split(headerKeyValues, headersBuffer, boost::is_any_of("\n"), boost::algorithm::token_compress_on);
 
-      return responseHeaders;
+         std::map<std::string, std::string> responseHeaders;
+         for (const auto& headerKeyValue : headerKeyValues)
+         {
+            const auto separatorIterator = headerKeyValue.find(':');
+            if (separatorIterator == std::string::npos)
+               continue;
+            responseHeaders[headerKeyValue.substr(0, separatorIterator)] = headerKeyValue.substr(
+               separatorIterator + 1, std::string::npos);
+         }
+
+         return responseHeaders;
+      }
    }
-} // namespace shared
+} // namespace shared::http

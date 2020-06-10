@@ -1,6 +1,6 @@
 #include "shared/Log.h"
 #include "shared/http/HttpMethods.h"
-#include "shared/http/HttpException.hpp"
+#include "shared/exception/HttpException.hpp"
 #include "SsdpClient.h"
 #include "SsdpDiscoverService.h"
 
@@ -11,7 +11,7 @@ std::string CSsdpDiscoverService::getDeviceDescription(std::string& descriptionU
 
    try
    {
-      return shared::CHttpMethods::sendGetRequest(descriptionUrl);
+      return shared::http::CHttpMethods::sendGetRequest(descriptionUrl);
    }
    catch (std::exception& e)
    {
@@ -19,7 +19,7 @@ std::string CSsdpDiscoverService::getDeviceDescription(std::string& descriptionU
          descriptionUrl %
          e.what()).str();
       YADOMS_LOG(error) << message;
-      throw shared::CHttpException(message);
+      throw shared::exception::CHttpException(message);
    }
 }
 

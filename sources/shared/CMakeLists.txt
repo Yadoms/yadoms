@@ -105,22 +105,28 @@ set(SHARED_LIB_SRC
    shared/event/ITimeEvent.h
 
    shared/exception/BadConversion.hpp
+   shared/exception/DownloadFailed.hpp
    shared/exception/EmptyResult.hpp
    shared/exception/Exception.hpp
    shared/exception/Extract.hpp
+   shared/exception/HttpException.hpp
+   shared/exception/InvalidHash.hpp
    shared/exception/InvalidParameter.hpp
+   shared/exception/JSONParse.hpp
    shared/exception/NotImplemented.hpp
    shared/exception/NotSupported.hpp
    shared/exception/NullReference.hpp
    shared/exception/OutOfRange.hpp
    shared/exception/Parse.hpp
-   shared/exception/JSONParse.hpp
    
-   shared/http/HttpException.hpp
    shared/http/curlppHelpers.h
    shared/http/curlppHelpers.cpp
+   shared/http/FileDownloader.h
+   shared/http/FileDownloader.cpp
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp
+   shared/http/UrlHelpers.h
+   shared/http/UrlHelpers.cpp
 
    shared/plugin/information/IInformation.h
    shared/plugin/information/IYadomsInformation.h
@@ -359,13 +365,6 @@ set(SHARED_LIB_SRC
    shared/versioning/SemVer.cpp
    shared/versioning/VersionInformation.h
    shared/versioning/VersionInformation.cpp
-   
-   shared/web/FileDownloader.h
-   shared/web/FileDownloader.cpp
-   shared/web/UrlHelpers.h
-   shared/web/UrlHelpers.cpp
-   shared/web/exception/InvalidHash.hpp
-   shared/web/exception/DownloadFailed.hpp
 )
 
 #Append platform specific files
@@ -469,9 +468,7 @@ source_group(serialization shared/shared/serialization/*.* )
 source_group(script shared/shared/script/*.* )	
 source_group(script\\yScriptApi shared/shared/script/yScriptApi/*.* )	
 source_group(tools shared/shared/tools/*.* )	
-source_group(versioning shared/shared/versioning/*.* )	
-source_group(web shared/shared/web/*.* )	
-source_group(web\\exception shared/shared/web/exception/*.* )	
+source_group(versioning shared/shared/versioning/*.* )
 
 source_group(platformSpecific\\windows shared/windows/shared/*.*)
 source_group(platformSpecific\\windows\\process shared/windows/shared/process/*.*)

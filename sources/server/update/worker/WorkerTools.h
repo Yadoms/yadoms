@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/DataContainer.h>
-#include <shared/web/FileDownloader.h>
+#include <shared/http/FileDownloader.h>
 
 namespace update
 {
@@ -61,7 +61,7 @@ namespace update
          ///\return The package local path
          //---------------------------------------------
          static boost::filesystem::path downloadPackage(const std::string& downloadUrl,
-                                                        shared::web::CFileDownloader::ProgressFunc progressReporter);
+                                                        shared::http::CFileDownloader::ProgressFunc progressReporter);
 
          //---------------------------------------------
          ///\brief   Download a package
@@ -72,7 +72,7 @@ namespace update
          //---------------------------------------------
          static boost::filesystem::path downloadPackageAndVerify(const std::string& downloadUrl,
                                                                  const std::string& md5Hash,
-                                                                 shared::web::CFileDownloader::ProgressFunc
+                                                                 shared::http::CFileDownloader::ProgressFunc
                                                                  progressReporter);
 
          //---------------------------------------------

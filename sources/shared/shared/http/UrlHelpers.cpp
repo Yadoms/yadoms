@@ -4,7 +4,7 @@
 
 namespace shared
 {
-   namespace web
+   namespace http
    {
       void CUrlHelpers::appendPath(std::string& url, const std::string& pathToAppend)
       {
@@ -26,5 +26,5 @@ namespace shared
          }
          return std::string();
       }
-   } //namespace web
+   } //namespace http
 } //namespace shared

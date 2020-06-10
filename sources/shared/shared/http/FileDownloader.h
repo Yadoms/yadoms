@@ -2,7 +2,7 @@
 
 namespace shared
 {
-   namespace web
+   namespace http
    {
       //---------------------------------
       ///\brief Utility (static) class for downloading files
@@ -68,5 +68,5 @@ namespace shared
                                                      const boost::filesystem::path& location,
                                                      ProgressFunc reporter);
       };
-   } //namespace web
+   } //namespace http
 } //namespace shared

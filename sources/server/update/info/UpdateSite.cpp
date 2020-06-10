@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "UpdateSite.h"
-#include <shared/web/FileDownloader.h>
 #include <Poco/Environment.h>
 #include "startupOptions/IStartupOptions.h"
 #include <shared/http/HttpMethods.h>
@@ -82,9 +81,9 @@ namespace update
                {"Accept", "application/json"},
                {"Connection", "close"}
             };
-            const auto lastVersionInformation(shared::CHttpMethods::sendJsonGetRequest(url,
-                                                                                       headerParameters,
-                                                                                       parameters));
+            const auto lastVersionInformation(shared::http::CHttpMethods::sendJsonGetRequest(url,
+                                                                                             headerParameters,
+                                                                                             parameters));
 
             if (!lastVersionInformation->containsValue(DistantScriptResult))
                throw std::runtime_error("Fail to get data from " + url);

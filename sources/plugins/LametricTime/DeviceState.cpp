@@ -15,7 +15,7 @@ boost::shared_ptr<shared::CDataContainer> CDeviceState::getState(const CUrlManag
 
    const auto url = m_urlManagerHelper->getRequestUrl(m_lametricConfiguration, requestPath);
 
-   return shared::CHttpMethods::sendJsonGetRequest(
+   return shared::http::CHttpMethods::sendJsonGetRequest(
       url,
       m_urlManagerHelper->buildCommonHeaderParameters(m_lametricConfiguration));
 }

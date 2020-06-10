@@ -2,7 +2,7 @@
 
 namespace shared
 {
-   namespace web
+   namespace http
    {
       //---------------------------------
       ///\brief Helpers class around url management
@@ -29,5 +29,5 @@ namespace shared
          //---------------------------------
          static std::string getFileName(const std::string& url);
       };
-   } //namespace web
+   } //namespace http
 } //namespace shared

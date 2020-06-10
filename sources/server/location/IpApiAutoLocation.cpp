@@ -16,7 +16,7 @@ namespace location
    {
       try
       {
-         const auto ipApiResult(shared::CHttpMethods::sendJsonGetRequest("http://ip-api.com/json/?fields=status,lat,lon,timezone"));
+         const auto ipApiResult(shared::http::CHttpMethods::sendJsonGetRequest("http://ip-api.com/json/?fields=status,lat,lon,timezone"));
          
          if (ipApiResult->get<std::string>("status") == "fail")
             throw shared::exception::CException("ip-api.com service failed with error : " + ipApiResult->get<std::string>("message"));

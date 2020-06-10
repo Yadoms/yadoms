@@ -7,8 +7,8 @@
 #include <shared/Log.h>
 #include <shared/DataContainer.h>
 #include "tools/FileSystem.h"
-#include <shared/web/UrlHelpers.h>
-#include <shared/web/FileDownloader.h>
+#include <shared/http/UrlHelpers.h>
+#include <shared/http/FileDownloader.h>
 #include <shared/compression/Extract.h>
 
 #include "startupOptions/IStartupOptions.h"
@@ -48,42 +48,43 @@ namespace update
       boost::filesystem::path CWorkerTools::downloadPackage(const std::string& downloadUrl)
       {
          return downloadPackage(downloadUrl,
-                                boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
+                                boost::bind(&shared::http::CFileDownloader::reportProgressToLog, _1, _2));
       }
 
       boost::filesystem::path CWorkerTools::downloadPackage(const std::string& downloadUrl,
-                                                            shared::web::CFileDownloader::ProgressFunc progressReporter)
+                                                            shared::http::CFileDownloader::ProgressFunc
+                                                            progressReporter)
       {
-         auto packageName = shared::web::CUrlHelpers::getFileName(downloadUrl);
+         auto packageName = shared::http::CUrlHelpers::getFileName(downloadUrl);
          if (packageName.empty())
             packageName = "temp.zip";
 
          auto targetPath(tools::CFileSystem::createTemporaryFolder());
          targetPath /= packageName;
 
-         shared::web::CFileDownloader::downloadFile(downloadUrl,
-                                                    targetPath,
-                                                    progressReporter);
+         shared::http::CFileDownloader::downloadFile(downloadUrl,
+                                                     targetPath,
+                                                     progressReporter);
          return targetPath;
       }
 
 
       boost::filesystem::path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl,
                                                                      const std::string& md5Hash,
-                                                                     shared::web::CFileDownloader::ProgressFunc
+                                                                     shared::http::CFileDownloader::ProgressFunc
                                                                      progressReporter)
       {
-         auto packageName = shared::web::CUrlHelpers::getFileName(downloadUrl);
+         auto packageName = shared::http::CUrlHelpers::getFileName(downloadUrl);
          if (packageName.empty())
             packageName = "temp.zip";
 
          auto targetPath(tools::CFileSystem::createTemporaryFolder());
          targetPath /= packageName;
 
-         shared::web::CFileDownloader::downloadFileAndVerify(downloadUrl,
-                                                             targetPath,
-                                                             md5Hash,
-                                                             progressReporter);
+         shared::http::CFileDownloader::downloadFileAndVerify(downloadUrl,
+                                                              targetPath,
+                                                              md5Hash,
+                                                              progressReporter);
          return targetPath;
       }
 

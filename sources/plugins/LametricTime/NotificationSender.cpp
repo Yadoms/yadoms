@@ -1,7 +1,7 @@
 #include "NotificationSender.h"
 #include "shared/http/HttpMethods.h"
 #include "shared/Log.h"
-#include "shared/http/HttpException.hpp"
+#include "shared/exception/HttpException.hpp"
 #include "CustomizeIconHelper.h"
 
 const std::string CNotificationSender::IconTypeName("iconType");
@@ -35,16 +35,16 @@ void CNotificationSender::displayText(const std::string& text,
 
    try
    {
-      shared::CHttpMethods::sendPostRequest(url,
-                                            body,
-                                            headerPostParameters);
+      shared::http::CHttpMethods::sendPostRequest(url,
+                                                  body,
+                                                  headerPostParameters);
    }
    catch (std::exception& e)
    {
       const auto message = (boost::format("Fail to send Post http request or interpret answer \"%1%\" : %2%") % url %
          e.what()).str();
       YADOMS_LOG(error) << message;
-      throw shared::CHttpException(message);
+      throw shared::exception::CHttpException(message);
    }
 }
 

@@ -2,13 +2,12 @@
 #include "FileDownloader.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
+#include <shared/exception/InvalidHash.hpp>
+#include <shared/exception/DownloadFailed.hpp>
 #include <shared/encryption/Md5.h>
 #include <Poco/URI.h>
 #include <Poco/URIStreamOpener.h>
-#include <Poco/File.h>
 #include <Poco/StreamCopier.h>
-#include "exception/InvalidHash.hpp"
-#include "exception/DownloadFailed.hpp"
 #include <fstream>
 #include <shared/http/HttpMethods.h>
 
@@ -16,7 +15,7 @@ using boost::asio::ip::tcp;
 
 namespace shared
 {
-   namespace web
+   namespace http
    {
       void CFileDownloader::reportProgressToLog(const std::string& info,
                                                 float progression)
@@ -92,5 +91,5 @@ namespace shared
 
          return result;
       }
-   } //namespace web
+   } //namespace http
 } //namespace shared
