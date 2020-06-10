@@ -169,6 +169,10 @@ namespace shared
       if (!ProxyHost.empty())
          CCurlppHelpers::setProxy(request, url, ProxyHost, ProxyPort, ProxyUsername, ProxyPassword, ProxyBypassRegex);
 
+      // Follow redirections
+      request.setOpt(new curlpp::options::FollowLocation(true));
+      request.setOpt(new curlpp::options::MaxRedirs(3));
+
       // URL + parameters
       request.setOpt(
          new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
