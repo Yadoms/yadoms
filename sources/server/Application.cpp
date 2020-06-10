@@ -20,6 +20,7 @@
 #include <Poco/Format.h>
 #include <google/protobuf/stubs/common.h>
 #include "shared/http/HttpMethods.h"
+#include "shared/http/Proxy.h"
 
 //define the main entry point
 POCO_SERVER_MAIN(CYadomsServer)
@@ -66,7 +67,7 @@ void CYadomsServer::setupProxy() const
 
    const auto host = m_startupOptions->getProxyHost().value();
    const auto port = m_startupOptions->getProxyPort().isNull()
-                        ? shared::http::CHttpMethods::kUseProxyDefaultPort
+                        ? shared::http::CProxy::kUseProxyDefaultPort
                         : m_startupOptions->getProxyPort().value();
    const auto username = m_startupOptions->getProxyUsername().isNull()
                             ? std::string()
@@ -77,11 +78,11 @@ void CYadomsServer::setupProxy() const
    const auto bypassRegex = m_startupOptions->getProxyBypass().isNull()
                                ? std::string()
                                : m_startupOptions->getProxyBypass().value();
-   shared::http::CHttpMethods::setGlobalProxyConfig(host,
-                                                    port,
-                                                    username,
-                                                    password,
-                                                    bypassRegex);
+   shared::http::CProxy::setGlobalProxyConfig(host,
+                                              port,
+                                              username,
+                                              password,
+                                              bypassRegex);
 }
 
 void CYadomsServer::uninitialize()

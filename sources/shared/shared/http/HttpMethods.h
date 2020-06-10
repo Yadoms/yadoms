@@ -24,29 +24,6 @@ namespace shared
 
          //--------------------------------------------------------------
          //--------------------------------------------------------------
-         // Proxy
-         //--------------------------------------------------------------
-         //--------------------------------------------------------------
-
-         //--------------------------------------------------------------
-         /// \brief	    Send the proxy config
-         /// \param[in]  host                The proxy server host name or IP address
-         /// \param[in]  port                The proxy server TCP port (can use default port with kUseProxyDefaultPort)
-         /// \param[in]  username            The proxy server user name
-         /// \param[in]  password            The proxy server password
-         /// \param[in]  bypassRegex         Regex defining hosts for which the proxy should be bypassed ("localhost|127\.0\.0\.1|192\.168\.0\.\d+");
-         //--------------------------------------------------------------
-         enum { kUseProxyDefaultPort = -1 };
-
-         static void setGlobalProxyConfig(const std::string& host,
-                                          int port,
-                                          const std::string& username,
-                                          const std::string& password,
-                                          const std::string& bypassRegex);
-
-
-         //--------------------------------------------------------------
-         //--------------------------------------------------------------
          // GET
          //--------------------------------------------------------------
          //--------------------------------------------------------------
@@ -161,14 +138,6 @@ namespace shared
          static boost::shared_ptr<CDataContainer> processJsonResponse(
             const std::map<std::string, std::string>& receivedHeaders,
             const std::string& data);
-
-      private:
-         // Proxy settings
-         static std::string ProxyHost;
-         static int ProxyPort;
-         static std::string ProxyUsername;
-         static std::string ProxyPassword;
-         static std::string ProxyBypassRegex;
       };
    }
 } // namespace shared::http

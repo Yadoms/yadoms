@@ -7,6 +7,7 @@
 #include <curlpp/Infos.hpp>
 #include <regex>
 #include "curlppHelpers.h"
+#include "Proxy.h"
 
 namespace shared
 {
@@ -29,25 +30,6 @@ namespace shared
       // ReSharper disable once CppDeclaratorNeverUsed
       static CCurlResources CurlResources;
 
-      std::string CHttpMethods::ProxyHost;
-      int CHttpMethods::ProxyPort = kUseProxyDefaultPort;
-      std::string CHttpMethods::ProxyUsername;
-      std::string CHttpMethods::ProxyPassword;
-      std::string CHttpMethods::ProxyBypassRegex;
-
-
-      void CHttpMethods::setGlobalProxyConfig(const std::string& host,
-                                              int port,
-                                              const std::string& username,
-                                              const std::string& password,
-                                              const std::string& bypassRegex)
-      {
-         ProxyHost = host;
-         ProxyPort = port;
-         ProxyUsername = username;
-         ProxyPassword = password;
-         ProxyBypassRegex = bypassRegex;
-      }
 
       void CHttpMethods::sendGetRequest(const std::string& url,
                                         const boost::function<void(
@@ -64,9 +46,14 @@ namespace shared
          request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
 
          // Proxy
-         if (!ProxyHost.empty())
-            CCurlppHelpers::setProxy(request, url, ProxyHost, ProxyPort, ProxyUsername, ProxyPassword,
-                                     ProxyBypassRegex);
+         if (CProxy::available())
+            CCurlppHelpers::setProxy(request,
+               url,
+               CProxy::getHost(),
+               CProxy::getPort(),
+               CProxy::getUsername(),
+               CProxy::getPassword(),
+               CProxy::getBypassRegex());
 
          // URL + parameters
          request.setOpt(
@@ -169,9 +156,14 @@ namespace shared
          request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
 
          // Proxy
-         if (!ProxyHost.empty())
-            CCurlppHelpers::setProxy(request, url, ProxyHost, ProxyPort, ProxyUsername, ProxyPassword,
-                                     ProxyBypassRegex);
+         if (CProxy::available())
+            CCurlppHelpers::setProxy(request,
+               url,
+               CProxy::getHost(),
+               CProxy::getPort(),
+               CProxy::getUsername(),
+               CProxy::getPassword(),
+               CProxy::getBypassRegex());
 
          // Follow redirections
          request.setOpt(new curlpp::options::FollowLocation(true));

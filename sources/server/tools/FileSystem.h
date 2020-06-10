@@ -5,7 +5,8 @@ namespace tools
    //---------------------------------------------
    ///\brief Class which provide file system methods
    //---------------------------------------------
-   class CFileSystem
+   class CFileSystem //TODO déplacer dans shared::tools ?
+   //TODO faire en sorte que ces fonctions soient utilisées partout dans le code plutôt que poco ou boost
    {
    public:
 

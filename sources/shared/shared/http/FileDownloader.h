@@ -23,21 +23,19 @@ namespace shared
          ///\param [in] info : the filename which is downloading
          ///\param [in] progression : the actual progression
          //---------------------------------
-         static void reportProgressToLog(const std::string& info, float progression);
+         static void reportProgressToLog(const std::string& info,
+                                         float progression);
 
          //---------------------------------
          ///\brief Download a file
-         ///\param [in] url : the url to download : http://yadoms.com/download/file1.zip
-         ///\param [in] output : a stream which will receive download bytes
-         ///\param [in] reporter : a function pointer for reporting progress (can be used with CFileDownloader::reportProgressToLog)
-         ///\return the number of bytes read
-         ///\throw   boost::system::system_error : if download fails
-         ///\throw   shared::exception::CException : if url is not valid
-         ///\example: tools::web::CFileDownloader::downloadFile("http://yadoms.com/download/file1.zip", outfile, boost::bind(&tools::web::CFileDownloader::reportProgressToLog, boost::placeholders::_1, boost::placeholders::_2));
+         ///\param [in] url               URL to download : http://yadoms.com/download/file1.zip
+         ///\param [in] location          The file download location (file will be created)
+         ///\param [in] reporter          A function pointer for reporting progress (can be used with CFileDownloader::reportProgressToLog)
+         ///\return The downloaded location
          //---------------------------------
-         static long long downloadFile(const std::string& url,
-                                       std::ostream& output,
-                                       ProgressFunc reporter);
+         static boost::filesystem::path downloadFile(const std::string& url,
+                                                     const boost::filesystem::path& location,
+                                                     ProgressFunc reporter);
 
          //---------------------------------
          ///\brief Download a file and check MD5 hash
@@ -54,19 +52,6 @@ namespace shared
                                                               const boost::filesystem::path& location,
                                                               const std::string& md5HashExpected,
                                                               ProgressFunc reporter);
-
-         //---------------------------------
-         ///\brief Download a file
-         ///\param [in] url               The URL to download
-         ///\param [in] location          The file download location (file will be created)
-         ///\param [in] reporter          A function pointer for reporting progress (can be used with CFileDownloader::reportProgressToLog)
-         ///\return The downloaded location
-         ///\throw   boost::system::system_error : if download fails
-         ///\throw   shared::exception::CException : if url is not valid
-         //---------------------------------
-         static boost::filesystem::path downloadFile(const std::string& url,
-                                                     const boost::filesystem::path& location,
-                                                     ProgressFunc reporter);
       };
    } //namespace http
 } //namespace shared

@@ -12,7 +12,7 @@
 #include "YadomsInformation.h"
 #include <shared/communication/SmallHeaderMessageCutter.h>
 #include <Poco/Net/HTTPClientSession.h>
-#include "shared/http/HttpMethods.h"
+#include "shared/http/Proxy.h"
 
 namespace plugin_cpp_api
 {
@@ -257,7 +257,7 @@ namespace plugin_cpp_api
                                                                                "host")))
          {
             const auto& host = providedProxySettings.host();
-            int port = shared::http::CHttpMethods::kUseProxyDefaultPort;
+            int port = shared::http::CProxy::kUseProxyDefaultPort;
             std::string username;
             std::string password;
             std::string bypassRegex;
@@ -279,7 +279,7 @@ namespace plugin_cpp_api
                                                                                   "bypassRegex")))
                bypassRegex = providedProxySettings.bypassregex();
 
-            shared::http::CHttpMethods::setGlobalProxyConfig(host,
+            shared::http::CProxy::setGlobalProxyConfig(host,
                                                        port,
                                                        username,
                                                        password,

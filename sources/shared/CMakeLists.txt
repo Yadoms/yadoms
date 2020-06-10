@@ -125,6 +125,8 @@ set(SHARED_LIB_SRC
    shared/http/FileDownloader.cpp
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp
+   shared/http/Proxy.h
+   shared/http/Proxy.cpp
    shared/http/UrlHelpers.h
    shared/http/UrlHelpers.cpp
 

@@ -7,6 +7,7 @@
 #include <curlpp/Infos.hpp>
 #include "curlpp/cURLpp.hpp"
 #include <shared/exception/HttpException.hpp>
+#include "Proxy.h"
 
 namespace shared
 {
@@ -24,7 +25,7 @@ namespace shared
             return;
 
          request.setOpt(new curlpp::options::Proxy(proxyHost));
-         if (proxyPort != CHttpMethods::kUseProxyDefaultPort)
+         if (proxyPort != CProxy::kUseProxyDefaultPort)
             request.setOpt(new curlpp::options::ProxyPort(proxyPort));
          if (!proxyUsername.empty() && !proxyPassword.empty())
             request.setOpt(new curlpp::options::ProxyUserPwd(proxyUsername + ":" + proxyPassword));
