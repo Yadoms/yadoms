@@ -13,7 +13,7 @@ void COpenZWaveHttpClient::downloadAsync(OpenZWave::Internal::HttpDownload* tran
 
    try
    {
-      shared::web::CFileDownloader::downloadFile(Poco::URI(transfer->url), Poco::Path(transfer->filename),
+      shared::web::CFileDownloader::downloadFile(transfer->url, boost::filesystem::path(transfer->filename),
          [&](const std::string& file, float progress) -> void
          {
 
