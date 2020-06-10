@@ -34,8 +34,13 @@
         <dir name="../sources/server"/>
         <dir name="../sources/shared"/>
         <dir name="../sources/plugins"/>
+        <dir name="../sources/scriptInterpreters"/>
     </paths>
     <exclude>
         <path name="../sources/plugins/ZWave/OpenZWave/"/>
+        <path name="../sources/external-libs/"/>
     </exclude>
+    <suppressions>
+        <suppression>unknownMacro</suppression>
+    </suppressions>
 </project>
