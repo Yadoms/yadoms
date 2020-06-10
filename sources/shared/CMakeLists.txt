@@ -362,8 +362,8 @@ set(SHARED_LIB_SRC
    
    shared/web/FileDownloader.h
    shared/web/FileDownloader.cpp
-   shared/web/UriHelpers.h
-   shared/web/UriHelpers.cpp
+   shared/web/UrlHelpers.h
+   shared/web/UrlHelpers.cpp
    shared/web/exception/InvalidHash.hpp
    shared/web/exception/DownloadFailed.hpp
 )

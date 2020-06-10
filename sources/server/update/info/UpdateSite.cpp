@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "UpdateSite.h"
-#include <shared/web/UriHelpers.h>
 #include <shared/web/FileDownloader.h>
 #include <Poco/Environment.h>
 #include "startupOptions/IStartupOptions.h"
