@@ -123,7 +123,7 @@ before_deploy:
   - ps: $gitDate = git --git-dir=.git log -1 --format=%cI 
   - ps: Write-Host "Generating package.zip for Yadoms $yadomsVersion release on $gitDate"
   - ps: cd package
-  - ps: $content = Get-Content 'distribution\package.json.in'
+  - ps: $content = Get-Content '..\distribution\package.json.in'
   - ps: $content = $content -replace "__version__", $yadomsVersion
   - ps: $content = $content -replace "__gitdate__", $gitDate
   - ps: Out-File -InputObject $content -FilePath .\package.json -Encoding UTF8
