@@ -2,8 +2,8 @@
 #include "Plugin.h"
 #include <shared/Log.h>
 #include <shared/Executable.h>
+#include "tools/FileSystem.h"
 #include "WorkerTools.h"
-#include <Poco/File.h>
 #include "pluginSystem/Manager.h"
 #include "i18n/ClientStrings.h"
 #include "pluginSystem/Information.h"
@@ -27,7 +27,7 @@ namespace update
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
-         Poco::Path downloadedPackage;
+         boost::filesystem::path downloadedPackage;
          try
          {
             YADOMS_LOG(information) << "Downloading package";
@@ -41,13 +41,13 @@ namespace update
             /////////////////////////////////////////////
             try
             {
-               YADOMS_LOG(information) << "Deploy package " << downloadedPackage.toString();
+               YADOMS_LOG(information) << "Deploy package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, std::string(), callbackData);
                const auto pluginPath = CWorkerTools::deployPackage(downloadedPackage, pluginsPath.string());
                YADOMS_LOG(information) << "Plugin deployed with success";
 
                // Change executable file permission to authorize execution
-               pluginSystem::CInformation pluginInformation(pluginPath.toString());
+               const pluginSystem::CInformation pluginInformation(pluginPath.string());
                boost::filesystem::permissions(pluginInformation.getPath() / shared::CExecutable::ToFileName(pluginInformation.getType()),
                                               boost::filesystem::perms::add_perms
                                               | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
@@ -75,12 +75,8 @@ namespace update
          }
 
          //delete downloaded zip file
-         if (!downloadedPackage.toString().empty())
-         {
-            Poco::File toDelete(downloadedPackage.toString());
-            if (toDelete.exists())
-               toDelete.remove();
-         }
+         if (!downloadedPackage.empty())
+            tools::CFileSystem::remove(downloadedPackage);
       }
 
       void CPlugin::update(CWorkerTools::WorkerProgressFunc progressCallback,
@@ -100,7 +96,7 @@ namespace update
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
-         Poco::Path downloadedPackage;
+         boost::filesystem::path downloadedPackage;
          try
          {
             YADOMS_LOG(information) << "Downloading package";
@@ -120,9 +116,9 @@ namespace update
             /////////////////////////////////////////////
             try
             {
-               YADOMS_LOG(information) << "Deploy package " << downloadedPackage.toString();
+               YADOMS_LOG(information) << "Deploy package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, std::string(), callbackData);
-               Poco::Path pluginPath = CWorkerTools::deployPackage(downloadedPackage, pluginsPath.string());
+               auto pluginPath = CWorkerTools::deployPackage(downloadedPackage, pluginsPath.string());
                YADOMS_LOG(information) << "Plugin deployed with success";
 
 
@@ -155,12 +151,8 @@ namespace update
          }
 
          //delete downloaded zip file
-         if (!downloadedPackage.toString().empty())
-         {
-            Poco::File toDelete(downloadedPackage.toString());
-            if (toDelete.exists())
-               toDelete.remove();
-         }
+         if (!downloadedPackage.empty())
+            tools::CFileSystem::remove(downloadedPackage);
       }
 
       void CPlugin::remove(CWorkerTools::WorkerProgressFunc progressCallback,
@@ -170,7 +162,7 @@ namespace update
       {
          YADOMS_LOG(information) << "Removing plugin " << pluginName;
 
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("pluginName", pluginName);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginRemove, std::string(), callbackData);
@@ -186,12 +178,7 @@ namespace update
             /////////////////////////////////////////////
             //2. remove plugin folder
             /////////////////////////////////////////////
-            Poco::Path pluginPath(pluginsPath.string());
-            pluginPath.append(pluginName);
-
-            Poco::File toDelete(pluginPath);
-            if (toDelete.exists())
-               toDelete.remove(true);
+            tools::CFileSystem::remove(pluginsPath / pluginName);
 
             /////////////////////////////////////////////
             //3. update plugin manager

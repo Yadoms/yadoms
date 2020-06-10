@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Widget.h"
 #include "WorkerTools.h"
+#include "tools/FileSystem.h"
 #include <Poco/File.h>
 #include <Poco/DirectoryIterator.h>
 #include "i18n/ClientStrings.h"
@@ -24,7 +25,7 @@ namespace update
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
-         Poco::Path downloadedPackage;
+         boost::filesystem::path downloadedPackage;
          try
          {
             YADOMS_LOG(information) << "Downloading widget package";
@@ -40,7 +41,7 @@ namespace update
             /////////////////////////////////////////////
             try
             {
-               YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.toString();
+               YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.string();
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, std::string(), callbackData);
                const auto widgetPath = CWorkerTools::deployPackage(downloadedPackage, widgetsPath.string());
                YADOMS_LOG(information) << "Widget deployed with success";
@@ -56,17 +57,13 @@ namespace update
          catch (std::exception& ex)
          {
             //fail to download package
-            YADOMS_LOG(error) << "Fail to download pwidget package : " << ex.what();
+            YADOMS_LOG(error) << "Fail to download widget package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDownloadFailed, ex.what(), callbackData);
          }
 
          //delete downloaded zip file
-         if (!downloadedPackage.toString().empty())
-         {
-            Poco::File toDelete(downloadedPackage.toString());
-            if (toDelete.exists())
-               toDelete.remove();
-         }
+         if (!downloadedPackage.empty())
+            tools::CFileSystem::remove(downloadedPackage);
       }
 
 
@@ -77,7 +74,7 @@ namespace update
       {
          YADOMS_LOG(information) << "Updating widget " << widgetName << " from " << downloadUrl;
 
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("widgetName", widgetName);
          callbackData->set("downloadUrl", downloadUrl);
 
@@ -85,7 +82,7 @@ namespace update
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
-         Poco::Path downloadedPackage;
+         boost::filesystem::path downloadedPackage;
          try
          {
             YADOMS_LOG(information) << "Downloading widget package";
@@ -100,7 +97,7 @@ namespace update
             /////////////////////////////////////////////
             try
             {
-               YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.toString();
+               YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.string();
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, std::string(), callbackData);
                const auto widgetPath = CWorkerTools::deployPackage(downloadedPackage, widgetsPath.string());
 
@@ -117,17 +114,13 @@ namespace update
          catch (std::exception& ex)
          {
             //fail to download package
-            YADOMS_LOG(error) << "Fail to download pwidget package : " << ex.what();
+            YADOMS_LOG(error) << "Fail to download widget package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDownloadFailed, ex.what(), callbackData);
          }
 
          //delete downloaded zip file
-         if (!downloadedPackage.toString().empty())
-         {
-            Poco::File toDelete(downloadedPackage.toString());
-            if (toDelete.exists())
-               toDelete.remove();
-         }
+         if (!downloadedPackage.string().empty())
+            tools::CFileSystem::remove(downloadedPackage);
       }
 
       void CWidget::remove(CWorkerTools::WorkerProgressFunc progressCallback,
@@ -136,11 +129,10 @@ namespace update
       {
          YADOMS_LOG(information) << "Removing widget " << widgetName;
 
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("widgetName", widgetName);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetRemove, std::string(), callbackData);
-
 
          try
          {

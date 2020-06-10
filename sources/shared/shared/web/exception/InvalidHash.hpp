@@ -2,38 +2,34 @@
 
 #include <shared/exception/Exception.hpp>
 
-namespace shared { namespace web { namespace exception 
+namespace shared
 {
-
-   //--------------------------------------------------------------
-   /// \class Exception for invalid URI
-   //--------------------------------------------------------------
-   class CInvalidHash : public shared::exception::CException
+   namespace web
    {
-   public:
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      //--------------------------------------------------------------
-      explicit CInvalidHash(const Poco::Path & fileChecked)
-         :shared::exception::CException(std::string("Invalid MD5 hash for  : " + fileChecked.toString()))
+      namespace exception
       {
-      }   
+         //--------------------------------------------------------------
+         /// \brief Exception for invalid Hash
+         //--------------------------------------------------------------
+         class CInvalidHash : public shared::exception::CException
+         {
+         public:
+            explicit CInvalidHash(const boost::filesystem::path& fileChecked)
+               : CException(std::string("Invalid MD5 hash for  : " + fileChecked.string()))
+            {
+            }
 
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      //--------------------------------------------------------------
-      CInvalidHash(const Poco::Path & fileChecked, const std::string & expectedHash, const std::string & computedHash)
-         :shared::exception::CException(std::string("Invalid MD5 hash for  : " + fileChecked.toString() + " Expected : " + expectedHash + " Computed : " + computedHash))
-      {
-      } 
+            CInvalidHash(const boost::filesystem::path& fileChecked,
+                         const std::string& expectedHash,
+                         const std::string& computedHash)
+               : CException(std::string(
+                  "Invalid MD5 hash for  : " + fileChecked.string() + " Expected : " + expectedHash + " Computed : " +
+                  computedHash))
+            {
+            }
 
-
-      //--------------------------------------------------------------
-      /// \brief      Destructor
-      //--------------------------------------------------------------
-      virtual ~CInvalidHash() throw()
-      {
+            virtual ~CInvalidHash() noexcept = default;
+         };
       }
-   };
-
-} } } // namespace shared::web::exception
+   }
+} // namespace shared::web::exception

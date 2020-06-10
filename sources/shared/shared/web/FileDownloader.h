@@ -1,6 +1,4 @@
 #pragma once
-#include <Poco/URI.h>
-#include <Poco/Path.h>
 
 namespace shared
 {
@@ -11,14 +9,14 @@ namespace shared
       //---------------------------------
       class CFileDownloader
       {
+      public:
          CFileDownloader() = delete;
          virtual ~CFileDownloader() = default;
 
-      public:
          //---------------------------------
          ///\brief Define a function prototype for updating a download progress
          //---------------------------------
-         typedef boost::function2<void, const std::string &, float> ProgressFunc;
+         typedef boost::function2<void, const std::string&, float> ProgressFunc;
 
          //---------------------------------
          ///\brief Static method which reports download progress on console
@@ -37,13 +35,13 @@ namespace shared
          ///\throw   shared::exception::CException : if url is not valid
          ///\example: tools::web::CFileDownloader::downloadFile("http://yadoms.com/download/file1.zip", outfile, boost::bind(&tools::web::CFileDownloader::reportProgressToLog, boost::placeholders::_1, boost::placeholders::_2));
          //---------------------------------
-         static int downloadFile(const std::string& url,
-                                 std::ostream& output,
-                                 ProgressFunc reporter);
+         static long long downloadFile(const std::string& url,
+                                       std::ostream& output,
+                                       ProgressFunc reporter);
 
          //---------------------------------
          ///\brief Download a file and check MD5 hash
-         ///\param [in] toDownload        The URI to download
+         ///\param [in] url               The URL to download
          ///\param [in] location          The file download location (file will be created)
          ///\param [in] md5HashExpected   The expected file MD5 hash
          ///\param [in] reporter          A function pointer for reporting progress (can be used with CFileDownloader::reportProgressToLog)
@@ -52,23 +50,23 @@ namespace shared
          ///\throw   shared::exception::CException : if url is not valid
          ///\throw   shared::exception::CException : if md5 hash is not valid
          //---------------------------------
-         static Poco::Path downloadFileAndVerify(const Poco::URI& toDownload,
-                                                 const Poco::Path& location,
-                                                 const std::string& md5HashExpected,
-                                                 ProgressFunc reporter);
+         static boost::filesystem::path downloadFileAndVerify(const std::string& url,
+                                                              const boost::filesystem::path& location,
+                                                              const std::string& md5HashExpected,
+                                                              ProgressFunc reporter);
 
          //---------------------------------
          ///\brief Download a file
-         ///\param [in] toDownload        The URI to download
+         ///\param [in] url               The URL to download
          ///\param [in] location          The file download location (file will be created)
          ///\param [in] reporter          A function pointer for reporting progress (can be used with CFileDownloader::reportProgressToLog)
          ///\return The downloaded location
          ///\throw   boost::system::system_error : if download fails
          ///\throw   shared::exception::CException : if url is not valid
          //---------------------------------
-         static Poco::Path downloadFile(const Poco::URI& toDownload,
-                                        const Poco::Path& location,
-                                        ProgressFunc reporter);
+         static boost::filesystem::path downloadFile(const std::string& url,
+                                                     const boost::filesystem::path& location,
+                                                     ProgressFunc reporter);
       };
    } //namespace web
 } //namespace shared

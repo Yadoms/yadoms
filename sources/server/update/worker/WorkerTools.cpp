@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "WorkerTools.h"
 
-
 #include <Poco/File.h>
 #include <Poco/URI.h>
 
@@ -22,74 +21,78 @@ namespace update
 {
    namespace worker
    {
-      Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl,
-                                               WorkerProgressFunc callback,
-                                               const std::string& function,
-                                               float min,
-                                               float max)
+      boost::filesystem::path CWorkerTools::downloadPackage(const std::string& downloadUrl,
+                                                            WorkerProgressFunc callback,
+                                                            const std::string& function,
+                                                            float min,
+                                                            float max)
       {
          return downloadPackage(downloadUrl,
                                 boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min,
                                             max));
       }
 
-      Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl,
-                                                        const std::string& md5Hash,
-                                                        WorkerProgressFunc callback,
-                                                        const std::string& function,
-                                                        float min,
-                                                        float max)
+      boost::filesystem::path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl,
+                                                                     const std::string& md5Hash,
+                                                                     WorkerProgressFunc callback,
+                                                                     const std::string& function,
+                                                                     float min,
+                                                                     float max)
       {
-         return downloadPackageAndVerify(downloadUrl, md5Hash,
+         return downloadPackageAndVerify(downloadUrl,
+                                         md5Hash,
                                          boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function,
                                                      min, max));
       }
 
-      Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl)
+      boost::filesystem::path CWorkerTools::downloadPackage(const std::string& downloadUrl)
       {
-         return downloadPackage(downloadUrl, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
+         return downloadPackage(downloadUrl,
+                                boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
       }
 
-      Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl,
-                                               shared::web::CFileDownloader::ProgressFunc progressReporter)
+      boost::filesystem::path CWorkerTools::downloadPackage(const std::string& downloadUrl,
+                                                            shared::web::CFileDownloader::ProgressFunc progressReporter)
       {
-         Poco::URI toDownload(downloadUrl);
          auto packageName = shared::web::CUrlHelpers::getFileName(downloadUrl);
          if (packageName.empty())
             packageName = "temp.zip";
 
          auto targetPath(tools::CFileSystem::createTemporaryFolder());
          targetPath /= packageName;
-         const auto outPath = Poco::Path(targetPath.string());
 
-         shared::web::CFileDownloader::downloadFile(toDownload, outPath, progressReporter);
-         return outPath;
+         shared::web::CFileDownloader::downloadFile(downloadUrl,
+                                                    targetPath,
+                                                    progressReporter);
+         return targetPath;
       }
 
 
-      Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl,
-                                                        const std::string& md5Hash,
-                                                        shared::web::CFileDownloader::ProgressFunc progressReporter)
+      boost::filesystem::path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl,
+                                                                     const std::string& md5Hash,
+                                                                     shared::web::CFileDownloader::ProgressFunc
+                                                                     progressReporter)
       {
-         Poco::URI toDownload(downloadUrl);
          auto packageName = shared::web::CUrlHelpers::getFileName(downloadUrl);
          if (packageName.empty())
             packageName = "temp.zip";
 
          auto targetPath(tools::CFileSystem::createTemporaryFolder());
          targetPath /= packageName;
-         const auto outPath = Poco::Path(targetPath.string());
 
-         shared::web::CFileDownloader::downloadFileAndVerify(toDownload, outPath, md5Hash, progressReporter);
-         return outPath;
+         shared::web::CFileDownloader::downloadFileAndVerify(downloadUrl,
+                                                             targetPath,
+                                                             md5Hash,
+                                                             progressReporter);
+         return targetPath;
       }
 
 
-      Poco::Path CWorkerTools::deployPackage(Poco::Path downloadedPackage,
-                                             const std::string& outputDirectory)
+      boost::filesystem::path CWorkerTools::deployPackage(const boost::filesystem::path& downloadedPackage,
+                                                          const std::string& outputDirectory)
       {
          /*
-         When deploying a plugin we dont know the plugin name
+         When deploying a plugin we don't know the plugin name
 
          So deploy the plugin package to a random plugin directory (random is generated using uuid)
          When deployed, find the package.json and get the plugin name
@@ -97,21 +100,21 @@ namespace update
          */
 
          //determine a random folder name (the folder name is the plugin name; but it it not known here)
-         Poco::Path tempPluginFolder(outputDirectory);
+         boost::filesystem::path tempPluginFolder(outputDirectory);
          tempPluginFolder.append(shared::tools::CRandom::generateUUID());
 
          try
          {
             //extract to random pluginName location
-            YADOMS_LOG(debug) << "Unzip " << downloadedPackage.toString() << " to " << tempPluginFolder.toString() <<
+            YADOMS_LOG(debug) << "Unzip " << downloadedPackage.string() << " to " << tempPluginFolder.string() <<
                "...";
             shared::compression::CExtract unZipper;
             unZipper.to(downloadedPackage, tempPluginFolder);
 
             try
             {
-               //read package.json file and get the pluginname
-               Poco::Path packageJsonPath(tempPluginFolder.toString());
+               //read package.json file and get the plugin name
+               Poco::Path packageJsonPath(tempPluginFolder.string());
                packageJsonPath.append("package.json");
 
                YADOMS_LOG(debug) << "Read " << packageJsonPath.toString() << "...";
@@ -126,11 +129,11 @@ namespace update
 
                try
                {
-                  Poco::Path realPluginFolder(outputDirectory);
+                  boost::filesystem::path realPluginFolder(outputDirectory);
                   realPluginFolder.append(pluginName);
 
                   //if plugin directory already exists; copy files; else just rename
-                  if (tools::CFileSystem::exists(realPluginFolder))
+                  if (tools::CFileSystem::exists(realPluginFolder.string()))
                   {
                      //replace all files
                      tools::CFileSystem::copyDirectoryContentTo(tempPluginFolder, realPluginFolder);
@@ -181,12 +184,12 @@ namespace update
                                                 float min,
                                                 float max)
       {
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("file", file);
          callbackData->set("progress", progress);
          //progress is the progression of pure download (from 0 to 100)
          //so the download progress, will update the task progression between min and max
-         const float fullProgression = min + (((max - min) / 100.0f) * progress);
+         const auto fullProgression = min + (((max - min) / 100.0f) * progress);
          callback(true, fullProgression, function, std::string(), callbackData);
       }
    } // namespace worker

@@ -1,6 +1,5 @@
 #pragma once
 #include "IRunningInformation.h"
-#include <Poco/Path.h>
 #include "WorkerTools.h"
 
 namespace update
@@ -28,11 +27,11 @@ namespace update
          //---------------------------------------------
          ///\brief   Run the updater script
          ///\param [in] extractedPackageLocation    The location of the package extraction
-         ///\param [in] commandtoRun                The script command to run
+         ///\param [in] commandToRun                The script command to run
          ///\param [in] runningInfo                 The current yadoms running information
          //---------------------------------------------
-         static void step4RunUpdaterProcess(Poco::Path& extractedPackageLocation,
-                                            const std::string& commandtoRun,
+         static void step4RunUpdaterProcess(boost::filesystem::path& extractedPackageLocation,
+                                            const std::string& commandToRun,
                                             boost::shared_ptr<IRunningInformation>& runningInfo);
       };
    } // namespace worker

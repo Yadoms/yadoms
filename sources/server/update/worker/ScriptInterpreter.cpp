@@ -21,12 +21,12 @@ namespace update
          YADOMS_LOG(information) << "Installing new scriptInterpreter from " << downloadUrl;
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterInstall, std::string(), shared::CDataContainer::make());
 
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("downloadUrl", downloadUrl);
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
-         Poco::Path downloadedPackage;
+         boost::filesystem::path downloadedPackage;
          try
          {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
@@ -40,7 +40,7 @@ namespace update
             /////////////////////////////////////////////
             try
             {
-               YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.toString();
+               YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, std::string(), callbackData);
                const auto pluginPath = CWorkerTools::deployPackage(downloadedPackage, scriptInterpretersPath.string());
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
@@ -71,9 +71,9 @@ namespace update
          }
 
          //delete downloaded zip file
-         if (!downloadedPackage.toString().empty())
+         if (!downloadedPackage.string().empty())
          {
-            Poco::File toDelete(downloadedPackage.toString());
+            Poco::File toDelete(downloadedPackage.string());
             if (toDelete.exists())
                toDelete.remove();
          }
@@ -95,7 +95,7 @@ namespace update
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
-         Poco::Path downloadedPackage;
+         boost::filesystem::path downloadedPackage;
          try
          {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
@@ -119,7 +119,7 @@ namespace update
             /////////////////////////////////////////////
             try
             {
-               YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.toString();
+               YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, std::string(), callbackData);
                const auto scriptInterpreterPath = CWorkerTools::deployPackage(downloadedPackage, scriptInterpretersPath.string());
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
@@ -158,9 +158,9 @@ namespace update
          }
 
          //delete downloaded zip file
-         if (!downloadedPackage.toString().empty())
+         if (!downloadedPackage.string().empty())
          {
-            Poco::File toDelete(downloadedPackage.toString());
+            Poco::File toDelete(downloadedPackage.string());
             if (toDelete.exists())
                toDelete.remove();
          }
@@ -172,7 +172,7 @@ namespace update
       {
          YADOMS_LOG(information) << "Removing scriptInterpreter " << scriptInterpreterName;
 
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("scriptInterpreterName", scriptInterpreterName);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterRemove, std::string(), callbackData);
@@ -194,10 +194,10 @@ namespace update
             /////////////////////////////////////////////
             //2. remove scriptInterpreter folder
             /////////////////////////////////////////////
-            Poco::Path scriptInterpreterPath(scriptInterpretersPath.string());
+            auto scriptInterpreterPath(scriptInterpretersPath);
             scriptInterpreterPath.append(scriptInterpreterName);
 
-            Poco::File toDelete(scriptInterpreterPath);
+            Poco::File toDelete(scriptInterpreterPath.string());
             if (toDelete.exists())
                toDelete.remove(true);
 

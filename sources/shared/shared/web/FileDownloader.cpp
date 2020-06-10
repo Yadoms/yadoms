@@ -24,15 +24,15 @@ namespace shared
          YADOMS_LOG(information) << "Downloading " << info << " : " << boost::format("%11.0f") % progression << " %";
       }
 
-      int CFileDownloader::downloadFile(const std::string& url,
-                                        std::ostream& output,
-                                        ProgressFunc reporter)
+      long long CFileDownloader::downloadFile(const std::string& url,
+                                              std::ostream& output,
+                                              ProgressFunc reporter)
       {
          //TODO gérer la progression
          try
          {
             const std::unique_ptr<std::istream> pStr(Poco::URIStreamOpener::defaultOpener().open(Poco::URI(url)));
-            return Poco::StreamCopier::copyStream(*pStr, output);
+            return Poco::StreamCopier::copyStream(*pStr, output); //TODO warning MSVC à résoudre
          }
          catch (std::exception& e)
          {
@@ -46,48 +46,47 @@ namespace shared
          }
       }
 
-      Poco::Path CFileDownloader::downloadFile(const Poco::URI& toDownload,
-                                               const Poco::Path& location,
-                                               ProgressFunc reporter)
+      boost::filesystem::path CFileDownloader::downloadFile(const std::string& url,
+                                                            const boost::filesystem::path& location,
+                                                            ProgressFunc reporter)
       {
          //create stream
-         std::ofstream packageLocalFileStream(location.toString().c_str(), std::ios::binary);
+         std::ofstream packageLocalFileStream(location.string(), std::ios::binary);
 
          //download file
-         const auto fileSize = downloadFile(toDownload.toString(),
+         const auto fileSize = downloadFile(url,
                                             packageLocalFileStream,
                                             reporter);
          packageLocalFileStream.close();
+
          //check file is downloaded
-         const Poco::File packageFile(location);
-         if (!packageFile.exists() || fileSize == 0)
+         if (!exists(location) || fileSize == 0)
          {
             if (fileSize == 0)
-               throw exception::CDownloadFailed(toDownload.toString(), "File size is 0");
+               throw exception::CDownloadFailed(url, "File size is 0");
 
-            throw exception::CDownloadFailed(toDownload.toString(), "Local downloaded file do not exists");
+            throw exception::CDownloadFailed(url, "Local downloaded file do not exists");
          }
 
          return location;
       }
 
-      Poco::Path CFileDownloader::downloadFileAndVerify(const Poco::URI& toDownload,
-                                                        const Poco::Path& location,
-                                                        const std::string& md5HashExpected,
-                                                        ProgressFunc reporter)
+      boost::filesystem::path CFileDownloader::downloadFileAndVerify(const std::string& url,
+                                                                     const boost::filesystem::path& location,
+                                                                     const std::string& md5HashExpected,
+                                                                     ProgressFunc reporter)
       {
-         const auto result = downloadFile(toDownload,
+         const auto result = downloadFile(url,
                                           location,
                                           reporter);
 
          //we re-read the file and compute the md5 (the md5 can be generated online using ie http://onlinemd5.com/)
-         const auto md5HashCalculated = encryption::CMd5::digestFile(location.toString());
+         const auto md5HashCalculated = encryption::CMd5::digestFile(location.string());
          if (!boost::iequals(md5HashCalculated, md5HashExpected))
          {
             //fail to verify checksum
             //remove file
-            Poco::File packageFile(location);
-            packageFile.remove();
+            boost::filesystem::remove(location);
             throw exception::CInvalidHash(location, md5HashExpected, md5HashCalculated);
          }
 
