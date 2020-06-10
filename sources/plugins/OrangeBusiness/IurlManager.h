@@ -19,11 +19,11 @@ public:
    /// \param[in]  timeoutSeconds      optional, the timeout (seconds) of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<shared::CDataContainer> getRegisteredEquipments(const std::string& apikey,
-                                                                             int page,
-                                                                             bool activated,
-                                                                             int timeoutSeconds = shared::CHttpMethods::
-                                                                                HttpRequestDefaultTimeoutSeconds) = 0;
+   virtual boost::shared_ptr<shared::CDataContainer> getRegisteredEquipments(
+      const std::string& apikey,
+      int page,
+      bool activated,
+      int timeoutSeconds = shared::CHttpMethods::HttpRequestDefaultTimeoutSeconds) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    get information from a specific device
@@ -32,10 +32,10 @@ public:
    /// \param[in]  timeoutSeconds      optional, the timeout (seconds) of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<shared::CDataContainer> getDeviceInformation(const std::string& apikey,
-                                                                          const std::string& devEUI,
-                                                                          int timeoutSeconds = shared::CHttpMethods::
-                                                                             HttpRequestDefaultTimeoutSeconds) = 0;
+   virtual boost::shared_ptr<shared::CDataContainer> getDeviceInformation(
+      const std::string& apikey,
+      const std::string& devEUI,
+      int timeoutSeconds = shared::CHttpMethods::HttpRequestDefaultTimeoutSeconds) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    list command information
@@ -44,9 +44,9 @@ public:
    /// \param[in]  timeoutSeconds      optional, the timeout (seconds) of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<shared::CDataContainer> listDeviceCommands(const std::string& apikey,
-                                                                        const std::string& devEUI,
-                                                                        int page,
-                                                                        int timeoutSeconds = shared::CHttpMethods::
-                                                                           HttpRequestDefaultTimeoutSeconds) = 0;
+   virtual boost::shared_ptr<shared::CDataContainer> listDeviceCommands(
+      const std::string& apikey,
+      const std::string& devEUI,
+      int page,
+      int timeoutSeconds = shared::CHttpMethods::HttpRequestDefaultTimeoutSeconds) = 0;
 };
