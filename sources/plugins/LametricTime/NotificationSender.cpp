@@ -31,7 +31,7 @@ void CNotificationSender::displayText(const std::string& text,
 
 
    auto headerPostParameters = m_urlManagerHelper->buildCommonHeaderParameters(m_configuration);
-   headerPostParameters["Content-Length"] = body.length(); //TODO probably not useful (already set by shared::CHttpMethods), to be tested
+   headerPostParameters["Content-Length"] = std::to_string(body.length()); //TODO probably not useful (already set by shared::CHttpMethods), to be tested
 
    try
    {
