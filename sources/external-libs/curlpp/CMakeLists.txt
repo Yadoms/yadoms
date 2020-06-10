@@ -1,5 +1,4 @@
-# As far as the pull-request (https://github.com/jpbarrette/curlpp/pull/97) is not accepted into cURLpp,
-# use cURLpp from https://github.com/Yadoms/curlpp with branch OptionToDisableSharedBuild.
+# cURLpp is available from https://github.com/jpbarrette/curlpp
 
 
 set(CURL_INCLUDE_DIR ${CURL_SOURCE_DIR}/include)
