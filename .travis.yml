@@ -67,6 +67,7 @@ deploy:
     file_glob: true
     file: package/*
     cleanup: false
+    skip_cleanup: true
     draft: true
     overwrite: true
     name: "$TRAVIS_TAG"
@@ -78,7 +79,8 @@ deploy:
     token: "${GH_OAUTH}"
     file_glob: true
     file: package/*
-    cleanup: false  
+    cleanup: false 
+    skip_cleanup: true
     draft: true
     overwrite: true
     name: "$TRAVIS_SPECIFIC_BRANCH"
