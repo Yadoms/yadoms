@@ -52,6 +52,10 @@ namespace shared
                                      CProxy::getPassword(),
                                      CProxy::getBypassRegex());
 
+         // Follow redirections
+         request.setOpt(new curlpp::options::FollowLocation(true));
+         request.setOpt(new curlpp::options::MaxRedirs(3));
+
          // Progress
          request.setOpt(new curlpp::options::NoProgress(false));
          request.setOpt(new curlpp::options::ProgressFunction(
