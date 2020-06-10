@@ -35,8 +35,6 @@ namespace shared
          // URL
          request.setOpt(new curlpp::options::Url(url));
 
-         request.setOpt(new curlpp::options::Verbose(true)); //TODO virer
-
          // Headers
          CCurlppHelpers::setHeaders(request, std::map<std::string, std::string>
                                     {
