@@ -11,14 +11,7 @@ namespace shared
       //---------------------------------
       class CFileDownloader
       {
-         //---------------------------------
-         ///\brief Private constructor. this class should be used with static methods only
-         //---------------------------------
          CFileDownloader() = delete;
-
-         //---------------------------------
-         ///\brief Private destructor. this class should be used with static methods only
-         //---------------------------------
          virtual ~CFileDownloader() = default;
 
       public:
@@ -45,19 +38,6 @@ namespace shared
          ///\example: tools::web::CFileDownloader::downloadFile("http://yadoms.com/download/file1.zip", outfile, boost::bind(&tools::web::CFileDownloader::reportProgressToLog, boost::placeholders::_1, boost::placeholders::_2));
          //---------------------------------
          static int downloadFile(const std::string& url,
-                                 std::ostream& output,
-                                 ProgressFunc reporter);
-
-         //---------------------------------
-         ///\brief Download a file
-         ///\param [in] uri : a valid URI
-         ///\param [in] output : a stream which will receive download bytes
-         ///\param [in] reporter : a function pointer for reporting progress (can be used with CFileDownloader::reportProgressToLog)
-         ///\return the number of bytes read
-         ///\throw   boost::system::system_error : if download fails
-         ///\throw   shared::exception::CException : if url is not valid
-         //---------------------------------
-         static int downloadFile(const Poco::URI& uri,
                                  std::ostream& output,
                                  ProgressFunc reporter);
 

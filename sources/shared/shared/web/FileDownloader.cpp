@@ -24,14 +24,14 @@ namespace shared
          YADOMS_LOG(information) << "Downloading " << info << " : " << boost::format("%11.0f") % progression << " %";
       }
 
-      int CFileDownloader::downloadFile(const Poco::URI& uri,
+      int CFileDownloader::downloadFile(const std::string& url,
                                         std::ostream& output,
                                         ProgressFunc reporter)
       {
          //TODO gérer la progression
          try
          {
-            const std::unique_ptr<std::istream> pStr(Poco::URIStreamOpener::defaultOpener().open(uri));
+            const std::unique_ptr<std::istream> pStr(Poco::URIStreamOpener::defaultOpener().open(Poco::URI(url)));
             return Poco::StreamCopier::copyStream(*pStr, output);
          }
          catch (std::exception& e)
@@ -44,15 +44,6 @@ namespace shared
             YADOMS_LOG(error) << "Fail to download file, unknown error";
             throw;
          }
-      }
-
-      int CFileDownloader::downloadFile(const std::string& url,
-                                        std::ostream& output,
-                                        ProgressFunc reporter)
-      {
-         return downloadFile(Poco::URI(url),
-                             output,
-                             reporter);
       }
 
       Poco::Path CFileDownloader::downloadFile(const Poco::URI& toDownload,
