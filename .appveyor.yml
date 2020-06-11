@@ -130,7 +130,7 @@ before_deploy:
   - ps: Copy-Item ..\sources\server\changelog.md .\
   - ps: Get-ChildItem * -Include *.ilk -Recurse | Remove-Item
   - ps: Get-ChildItem * -Include yadoms.ini -Recurse | Remove-Item
-  - ps: 7z a -tzip ..\package.zip .\
+  - ps: 7z a -tzip ..\update-package-Windows.zip .\
   - ps: cd ..
   
   - ps: |
