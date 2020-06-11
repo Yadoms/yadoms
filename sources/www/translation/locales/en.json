@@ -627,6 +627,7 @@
                "confirmResetToDefault": "This operation will restore all default configuration. Continue ?",
                "configurationSaved": "Configuration saved",
                "defaultConfigurationRestored": "Default configuration restored",
+               "errorDuringLoadingConfiguration": "An error has occurred during loading configuration",
                "errorDuringSavingConfiguration": "An error has occurred during saving configuration"
             },
             "user-configuration": {
