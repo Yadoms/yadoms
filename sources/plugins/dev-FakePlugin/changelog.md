@@ -1,5 +1,6 @@
 ### 1.3.0
 * Fix #562  : update usage of CDataContainer for better memory optimizations
+* Add system data in configuration schema
 
 ### 1.2.0
 * New feature #575 : Add keyword without history

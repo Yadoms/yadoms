@@ -46,6 +46,32 @@
       "name": "Un paramètre conditionnel",
       "description": "Ce paramètre n'est affiché que si une condition, validée par le serveur, est remplie. Dans ce cas présent, il n'est affiché que si le serveur est exécuté sous Windows.",
       "defaultValue": "Si vous voyez ceci, c'est que Yadoms toune sous Windows."
+    },
+    "SystemData": {
+      "name": "Données système",
+      "description": "Permet à l'utilisateur de sélectionner une ressource du serveur (port série, périphérique USB...)",
+      "content": {
+        "SerialPort": {
+          "name": "Port série",
+          "description": "Ce paramètre fournit la liste des ports série du serveur"
+        },
+        "UsbDevices": {
+          "name": "Périphérique USB",
+          "description": "Ce paramètre fournit la liste des péripéhriques USB, filtrés par fabricant et produit"
+        },
+        "NetworkInterfaces": {
+          "name": "Interface réseau",
+          "description": "Ce paramètre fournit la liste des interfaces réseau du serveur"
+        },
+        "NetworkInterfacesWithoutLoopback": {
+          "name": "Interface réseau hors boucle locale",
+          "description": "Ce paramètre fournit la liste des interfaces réseau du serveur, hors boucle locale"
+        },
+        "SupportedTimezones": {
+          "name": "Fuseau horaire",
+          "description": "Ce paramètre fournit la liste des fuseaux horaires"
+        }
+      }
     }
   },
   "enumerations": {
@@ -82,11 +108,11 @@
       "updateConfiguration": "Mise à jour de la configuration...",
       "newCustomStateMessage": "Un nouvel état avec le message {{messageFromExtraQuery}}"
     },
-    "asyncEQwithProgression" : {
-      "step1" : "Etape n°1",
-      "step2" : "Etape n°2",
-      "step3" : "Etape n°3",
-      "step4" : "Etape n°4"
+    "asyncEQwithProgression": {
+      "step1": "Etape n°1",
+      "step2": "Etape n°2",
+      "step3": "Etape n°3",
+      "step4": "Etape n°4"
     }
   },
   "extraQueries": {
@@ -128,14 +154,8 @@
       "description": "Cette commande requiert un choix de la part de l'utilisateur, à partir d'une liste fournie par le plugin",
       "commandData": {
         "dynamicSection": {
-          "name": "Une section dynamique",
-          "description": "Exemple de section renseignée par la méthode 'test' du plugin en utilisant le binding.",
-          "content": {
-            "interval": {
-              "name": "Intervale du graphique",
-              "description": "Permet la modification de l'intervale de l'ensemble des graphiques" 
-            } 
-          } 
+          "name": "A dynamic section",
+          "description": "Exemple de section renseignée par la méthode 'test' du plugin en utilisant le binding."
         }
       }
     },
@@ -161,18 +181,18 @@
   },
   "deviceConfiguration": {
    "staticConfigurationSchema": {
-      "title" : "Type d'équipements",
-      "description" : "Choisir le type d'équipment",
-      "schemas" : {
-        "fakeConfigurableDevice" : {
-           "types" : { 
-               "fakeConfigurableDeviceType" : {
-                  "title" : "équipement configurable",
-                  "description" : "compatible avec Chacon, DIO,..."
-               },
-               "anotherFakeConfigurableDeviceType" : {
-                  "title" : "un autre équipement configurable",
-                  "description" : "compatible avec Blyss, ..."
+      "title": "Type d'équipements",
+      "description": "Choisir le type d'équipment",
+      "schemas": {
+        "fakeConfigurableDevice": {
+          "types": {
+            "fakeConfigurableDeviceType": {
+              "title": "équipement configurable",
+              "description": "compatible avec Chacon, DIO,..."
+            },
+            "anotherFakeConfigurableDeviceType": {
+              "title": "un autre équipement configurable",
+              "description": "compatible avec Blyss, ..."
                }
            },
            "content": {

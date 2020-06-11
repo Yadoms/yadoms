@@ -46,12 +46,38 @@
 			"name": "A conditional parameter",
 			"description": "This parameter is shown depending on a condition, evaluated by the server. In this case, it is shown only if server is running under Windows.",
 			"defaultValue": "If you see it, Yadoms is running under Windows."
+    },
+    "SystemData": {
+      "name": "System data",
+      "description": "Used to provide user server resource selection (serial port, usb device...)",
+      "content": {
+        "SerialPort": {
+          "name": "Select a serial port",
+          "description": "This parameter provides a list of all serial ports available on the server"
+        },
+        "UsbDevices": {
+          "name": "Select an USB device",
+          "description": "This parameter provides a list of USB devices available on the server, filtered by vendor and product Ids"
+        },
+        "NetworkInterfaces": {
+          "name": "Select a network interface",
+          "description": "This parameter provides a list of all server network interfaces"
+        },
+        "NetworkInterfacesWithoutLoopback": {
+          "name": "Select an external network interface",
+          "description": "This parameter provides a list of all server network interfaces, excluding loopback"
+        },
+        "SupportedTimezones": {
+          "name": "Select a time zone",
+          "description": "This parameter provides a list of server supported time zones"
+        }
+      }
 		}
 	},
 	"enumerations": {
 		"EFakeControllerValues": {
-			"name" : "State",
-			"values" : {
+      "name": "State",
+      "values": {
 				"Stop": "Stop",
 				"Run": "Run",
 				"Back": "Back",
@@ -82,66 +108,61 @@
       "updateConfiguration": "Configuration updating...",
       "newCustomStateMessage": "New state with message {{messageFromExtraQuery}}"
     },
-      "asyncEQwithProgression" : {
-         "step1" : "Step n°1",
-         "step2" : "Step n°2",
-         "step3" : "Step n°3",
-         "step4" : "Step n°4"
+    "asyncEQwithProgression": {
+      "step1": "Step n°1",
+      "step2": "Step n°2",
+      "step3": "Step n°3",
+      "step4": "Step n°4"
       }
 	},
-	"extraQueries" : {
-		"simpleCommand" : {
-			"name" : "Simple command"
+  "extraQueries": {
+    "simpleCommand": {
+      "name": "Simple command"
 		},
-		"textDataCommand" : {
-			"name" : "Command with text data",
+    "textDataCommand": {
+      "name": "Command with text data",
       "description": "This command requires data formatted as text",
-			"commandData" : {
+      "commandData": {
 				"testValue": {
 					"name": "SomeString",
 					"description": "Description of Somestring"
 				}			
 			}
 		},
-		"numericDataCommand" : {
-			"name" : "Command with numeric data",
+    "numericDataCommand": {
+      "name": "Command with numeric data",
       "description": "This command requires a number",
-			"commandData" : {
+      "commandData": {
 				"testValue": {
 					"name": "SomeInteger",
 					"description": "Description of SomeInteger"
 				}			
 			}
 		},	
-		"dataBindingCommand" : {
-			"name" : "Command with binded data",
+    "dataBindingCommand": {
+      "name": "Command with binded data",
       "description": "This command ask user to choose from a list provided from Yadoms. The list used here is the available network interfaces of system.",
-			"commandData" : {
+      "commandData": {
 				"networkInterface": {
 					"name": "Network interface",
 					"description": "Choose a network interface (from server binding)"
 				}			
 			}
 		},
-		"dataBindingPluginCommand" : {
-			"name" : "Command with binded data to plugin",
+    "dataBindingPluginCommand": {
+      "name": "Command with binded data to plugin",
       "description": "This command ask user to choose from a list provided from the plugin",
-			"commandData" : {
+      "commandData": {
         "dynamicSection": {
           "name": "A dynamic section",
-          "description": "Example of section filled by 'test' method from the plugin using binding.",
-          "content": {
-            "interval": {
-              "name": "Chart interval",
-              "description": "Used to change chart interval"
-            }
+          "description": "Example of section filled by 'test' method from the plugin using binding."
           }
         }
 		},
-		"changePluginStateMessage" : {
-			"name" : "Change plugin state",
+    "changePluginStateMessage": {
+      "name": "Change plugin state",
       "description": "This command changes the plugin state to \"custom\" state, with the provided message",
-			"commandData" : {
+      "commandData": {
 				"newStateMessage": {
 					"name": "Message",
 					"description": "The message associated to the state"
@@ -160,15 +181,15 @@
 	},
    "deviceConfiguration": {
       "staticConfigurationSchema": {
-        "fakeConfigurableDevice" : {
-           "types" : { 
-               "fakeConfigurableDeviceType" : {
-                  "title" : "configurable device",
-                  "description" : "compatible with Chacon, DIO,..."
-               },
-               "anotherFakeConfigurableDeviceType" : {
-                  "title" : "another configurable device",
-                  "description" : "compatible with Blyss, ..."
+      "fakeConfigurableDevice": {
+        "types": {
+          "fakeConfigurableDeviceType": {
+            "title": "configurable device",
+            "description": "compatible with Chacon, DIO,..."
+          },
+          "anotherFakeConfigurableDeviceType": {
+            "title": "another configurable device",
+            "description": "compatible with Blyss, ..."
                }
            },
            "content": {
