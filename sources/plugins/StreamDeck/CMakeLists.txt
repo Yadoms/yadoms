@@ -103,6 +103,12 @@ if(OpenCV_FOUND)
 			${STREAMDECK_PLUGIN_LINK}
 	  		${OpenCV_LIBS}
 		)
+      if(WIN32)
+         set(STREAMDECK_PLUGIN_LINK
+            ${STREAMDECK_PLUGIN_LINK}
+            SetupAPI.lib
+         )
+      endif()
 
 		#########################################
 		## Always leave these lines to configure plugin correctly
