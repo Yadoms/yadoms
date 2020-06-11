@@ -254,8 +254,10 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
 
             switch (confItem.__Binding__.type.toLowerCase()) {
             case "system":
-               //we ask synchronously the bound value
-               var deffered = RestEngine.getJson("/rest/system/binding/" + confItem.__Binding__.query);
+               //we ask synchronously the bound value 
+               var deffered = RestEngine.postJson("/rest/system/binding/" + confItem.__Binding__.query, {
+                  data: JSON.stringify(confItem.__Binding__.content)
+               });
                arrayOfDeffered.push(deffered);
                deffered.done(function(data) {
                      //we replace the binded value by the result
@@ -266,8 +268,10 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
                   });
                break;
             case "plugin":
-               //we ask synchronously the binded value
-               var defferedPlugin = RestEngine.getJson("/rest/plugin/" + self.id + "/binding/" + confItem.__Binding__.query);
+               //we ask synchronously the binded value 
+               var defferedPlugin = RestEngine.postJson("/rest/plugin/" + self.id + "/binding/" + confItem.__Binding__.query, {
+                  data: JSON.stringify(confItem.__Binding__.content)
+               });
                arrayOfDeffered.push(defferedPlugin);
                defferedPlugin.done(function(data) {
                      //we replace the binded value by the result
