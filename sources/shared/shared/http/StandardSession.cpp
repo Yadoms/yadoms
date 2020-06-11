@@ -14,7 +14,7 @@ namespace shared
 
    void CStandardSession::setTimeout(const boost::posix_time::time_duration& timeout)
    {
-      m_session->setTimeout(Poco::Timespan(timeout.seconds(), 0));
+      m_session->setTimeout(Poco::Timespan(static_cast<long>(timeout.seconds()), 0));
    }
 
    std::ostream& CStandardSession::sendRequest(Poco::Net::HTTPRequest& request)

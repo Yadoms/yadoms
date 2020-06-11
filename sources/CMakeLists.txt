@@ -129,6 +129,11 @@ endif()
 ## OpenSSL dependencies
 if(WIN32)
    set(LIBS ${LIBS} legacy_stdio_definitions.lib Crypt32.lib)
+endif() 
+ 
+## Yadoms dependencies
+if(WIN32)
+   set(LIBS ${LIBS} SetupApi.lib)
 endif()
 
 ## IOKIT (needed for Mac)
@@ -452,6 +457,10 @@ set(YADOMS_SRC
   
    server/i18n/ClientStrings.h
    server/i18n/ClientStrings.cpp
+  
+   server/hardware/usb/DevicesListerFactory.h
+   server/hardware/usb/IDevice.h
+   server/hardware/usb/IDevicesLister.h
    
    server/location/IAutoLocation.h
    server/location/IpApiAutoLocation.h
@@ -707,6 +716,10 @@ source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\dateTime  server/dateTime/*.*)
 source_group(server\\i18n  server/i18n/*.*)
+source_group(server\\hardware\\usb  server/hardware/usb/*.*)
+source_group(server\\hardware\\usb\\lsusb  server/hardware/usb/lsusb/*.*)
+source_group(server\\hardware\\usb\\winapi  server/hardware/usb/winapi/*.*)
+source_group(server\\hardware\\usb\\systemProfiler  server/hardware/usb/systemProfiler/*.*)
 source_group(server\\location  server/location/*.*)
 source_group(server\\logging  server/logging/*.*)
 source_group(server\\notification  server/notification/*.*)
@@ -745,28 +758,59 @@ IF(WIN32)
       # Add here server/tools/windows/tools/ sources
       server/tools/windows/tools/OperatingSystem.h
       server/tools/windows/tools/OperatingSystem.cpp
+      server/hardware/serial/windows/SerialPortsLister.h
+      server/hardware/serial/windows/SerialPortsLister.cpp
+      server/hardware/usb/winapi/DevicesListerFactory.cpp
+      server/hardware/usb/winapi/WinapiDevice.h
+      server/hardware/usb/winapi/WinapiDevice.cpp
+      server/hardware/usb/winapi/WinapiDevicesLister.h
+      server/hardware/usb/winapi/WinapiDevicesLister.cpp      
    )   
 ELSEIF(APPLE)
    set(YADOMS_SRC ${YADOMS_SRC}
       # Add here server/tools/mac/tools/ sources
       server/tools/mac/tools/OperatingSystem.h
       server/tools/mac/tools/OperatingSystem.cpp
+      server/hardware/serial/mac/SerialPortsLister.h
+      server/hardware/serial/mac/SerialPortsLister.cpp
+      server/hardware/usb/systemProfiler/DevicesListerFactory.cpp
+      server/hardware/usb/systemProfiler/SystemProfilerCall.h
+      server/hardware/usb/systemProfiler/SystemProfilerCall.cpp
+      server/hardware/usb/systemProfiler/SystemProfilerDevice.h
+      server/hardware/usb/systemProfiler/SystemProfilerDevice.cpp
+      server/hardware/usb/systemProfiler/SystemProfilerDevicesLister.h
+      server/hardware/usb/systemProfiler/SystemProfilerDevicesLister.cpp
    )   
 ELSE()
    set(YADOMS_SRC ${YADOMS_SRC}
       # Add here server/tools/linux/tools/ sources
       server/tools/linux/tools/OperatingSystem.h
       server/tools/linux/tools/OperatingSystem.cpp
+      server/hardware/serial/linux/SerialPortsLister.h
+      server/hardware/serial/linux/SerialPortsLister.cpp
+      server/hardware/usb/lsusb/DevicesListerFactory.cpp
+      server/hardware/usb/lsusb/LsusbCall.h
+      server/hardware/usb/lsusb/LsusbCall.cpp
+      server/hardware/usb/lsusb/LsusbDevice.h
+      server/hardware/usb/lsusb/LsusbDevice.cpp
+      server/hardware/usb/lsusb/LsusbDevicesLister.h
+      server/hardware/usb/lsusb/LsusbDevicesLister.cpp
    )   
 ENDIF()
 
 # Define include directories
 IF(WIN32)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/windows)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/windows)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/winapi)
 ELSEIF(APPLE)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/mac)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/mac)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/systemProfiler)
 ELSE()
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/linux)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/lsusb)
 ENDIF()
 
 source_group(server\\tools tools/*.*)
@@ -774,6 +818,9 @@ source_group(server\\tools\\platformSpecific\\windows server/tools/windows/tools
 source_group(server\\tools\\platformSpecific\\windows\\service server/tools/windows/tools/service/*.*)
 source_group(server\\tools\\platformSpecific\\linux server/tools/linux/tools/*.*)
 source_group(server\\tools\\platformSpecific\\mac server/tools/mac/tools/*.*)
+source_group(server\\hardware\\serial\\windows server/hardware/serial/windows/*.*)
+source_group(server\\hardware\\serial\\linux server/hardware/serial/linux/*.*)
+source_group(server\\hardware\\serial\\mac server/hardware/serial/mac/*.*)
 
 ################################################
 #### Database (common)
