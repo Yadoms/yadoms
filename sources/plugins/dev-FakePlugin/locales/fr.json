@@ -49,6 +49,32 @@
       "description":
         "Ce paramètre n'est affiché que si une condition, validée par le serveur, est remplie. Dans ce cas présent, il n'est affiché que si le serveur est exécuté sous Windows.",
       "defaultValue": "Si vous voyez ceci, c'est que Yadoms toune sous Windows."
+    },
+    "SystemData": {
+      "name": "Données système",
+      "description": "Permet à l'utilisateur de sélectionner une ressource du serveur (port série, périphérique USB...)",
+      "content": {
+        "SerialPort": {
+          "name": "Port série",
+          "description": "Ce paramètre fournit la liste des ports série du serveur"
+        },
+        "UsbDevices": {
+          "name": "Périphérique USB",
+          "description": "Ce paramètre fournit la liste des péripéhriques USB, filtrés par fabricant et produit"
+        },
+        "NetworkInterfaces": {
+          "name": "Interface réseau",
+          "description": "Ce paramètre fournit la liste des interfaces réseau du serveur"
+        },
+        "NetworkInterfacesWithoutLoopback": {
+          "name": "Interface réseau hors boucle locale",
+          "description": "Ce paramètre fournit la liste des interfaces réseau du serveur, hors boucle locale"
+        },
+        "SupportedTimezones": {
+          "name": "Fuseau horaire",
+          "description": "Ce paramètre fournit la liste des fuseaux horaires"
+        }
+      }
     }
   },
   "enumerations": {
