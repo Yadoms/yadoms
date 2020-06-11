@@ -18,7 +18,7 @@ image: Visual Studio 2019
 platform: Win32
 
 # build Configuration, i.e. Debug, Release, etc.
-configuration: Debug
+configuration: Release
 
 # Add pre-compiled dependencies in cache
 cache:  
@@ -150,7 +150,7 @@ before_deploy:
   # get the tag name to deploy to
   - ps : $tagYadomsVersionName = dir -Name builds/package/Yadoms*.zip | Select-String -Pattern "Yadoms-(.*)-Windows\.zip" | % { $($_.matches.groups[1].value) }
   - ps : echo $tagYadomsVersionName
-  - ps : $tagYadomsVersionNameSpecificBranch = '$tagYadomsVersionName-{{branch}}'
+  - ps : $tagYadomsVersionNameSpecificBranch = "$tagYadomsVersionName-" + $env:APPVEYOR_REPO_BRANCH
   - ps : echo $tagYadomsVersionNameSpecificBranch
 
 #deploy for master branch
@@ -159,7 +159,6 @@ deploy:
     tag: $tagYadomsVersionName
     auth_token:
         secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
-    artifact: /builds/package/.*\.*/            # upload all NuGet packages to release assets
     draft: true
     force_update: true                #overwrite already existing file
     on:
@@ -169,7 +168,6 @@ deploy:
     tag: $tagYadomsVersionNameSpecificBranch
     auth_token:
         secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
-    artifact: /builds/package/.*\.*/            # upload all NuGet packages to release assets
     draft: true
     force_update: true                #overwrite already existing file
     on:
