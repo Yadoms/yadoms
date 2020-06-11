@@ -1,0 +1,56 @@
+{
+   "type": "StreamDeck",
+   "version": "1.0.0",
+   "author": "Oussama DAHMAZ",
+   "credits": "[OpenCV](https://opencv.org/), [libusb/hidapi](https://github.com/libusb/hidapi), [python-elgato-streamdeck](https://github.com/abcminiuser/python-elgato-streamdeck), [node-elgato-stream-deck](https://github.com/Lange/node-elgato-stream-deck)",
+   "supportedPlatforms": "all",
+   "dependencies": {
+      "yadoms": {
+         "minimumVersion": "2.4.0-beta.1"
+      }
+   },
+   "configurationSchema": {
+      "UsbDevices": {
+         "type": "enum",
+         "values": {
+            "__Binding__": {
+               "type": "system",
+               "query": "usbDevices",
+               "content": {
+                  "oneOf": [
+                     {
+                        "vendorId": 4057,
+                        "productId": 96
+                     }
+                  ]
+               }
+            }
+         }
+      }
+   },
+   "extraQueries": {
+      "createKey": {
+         "iconClass": "fa fa-rocket",
+         "commandData": {
+            "dynamicSection": {
+               "type": "section",
+               "content": {
+                  "__Binding__": {
+                     "type": "plugin",
+                     "query": "keyCreation"
+                  }
+               }
+            },
+            "customText": {
+               "type": "string",
+               "required": "false"
+            },
+            "fileContent": {
+               "type": "file",
+               "filter": ".png",
+               "required": "true"
+            }
+         }
+      }
+   }
+}
