@@ -37,7 +37,7 @@
         <dir name="../sources/scriptInterpreters"/>
     </paths>
     <exclude>
-        <path name="../sources/plugins/ZWave/OpenZWave/"/>
+        <path name="ZWave/OpenZWave/"/>
         <path name="../sources/external-libs/"/>
     </exclude>
     <suppressions>
