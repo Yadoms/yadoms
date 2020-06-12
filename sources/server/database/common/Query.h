@@ -568,7 +568,7 @@ namespace database
          /// \param  queryPart   another query
          /// \return             A reference to itself to allow method chaining
          //   
-         CQuery& Append(CQuery& queryPart);
+         CQuery& Append(const CQuery& queryPart);
 
          //
          /// \brief              append union

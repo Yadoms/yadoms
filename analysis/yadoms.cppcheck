@@ -2,6 +2,9 @@
 <project version="1">
     <platform>Unspecified</platform>
     <analyze-all-vs-configs>true</analyze-all-vs-configs>
+    <check-headers>true</check-headers>
+    <check-unused-templates>false</check-unused-templates>
+    <max-ctu-depth>10</max-ctu-depth>
     <includedir>
         <dir name="../sources/shared/windows/"/>
         <dir name="../sources/shared/linux/"/>
@@ -16,7 +19,9 @@
         <dir name="../sources/server/tools/mac"/>
     </includedir>
     <defines>
-        <define name="-DSQLITE_INT64_TYPE 0 -DRAPIDJSON_HAS_STDSTRING 1"/>
+        <define name="RAPIDJSON_ENDIAN"/>
+        <define name="SQLITE_INT64_TYPE=0"/>
+        <define name="RAPIDJSON_HAS_STDSTRING=1"/>
     </defines>
     <undefines>
         <undefine>RAPIDJSON_DOXYGEN_RUNNING</undefine>
@@ -30,8 +35,15 @@
         <dir name="../sources/server"/>
         <dir name="../sources/shared"/>
         <dir name="../sources/plugins"/>
+        <dir name="../sources/scriptInterpreters"/>
     </paths>
     <exclude>
-        <path name="../sources/plugins/ZWave/OpenZWave/"/>
+        <path name="ZWave/OpenZWave/"/>
+        <path name="../sources/external-libs/"/>
+        <path name="shared/rapidjson/"/>
+        <path name="Piface2/libpifacedigital/"/>
     </exclude>
+    <suppressions>
+        <suppression>unknownMacro</suppression>
+    </suppressions>
 </project>

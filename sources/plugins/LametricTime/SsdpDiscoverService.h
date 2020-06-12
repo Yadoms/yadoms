@@ -17,5 +17,5 @@ public:
 	                     const std::string& searchTarget = "ssdp:all");
 
 private:
-	static std::vector<std::string> getDevicesDescription(std::vector<std::string>& descriptionUrl);
+	static std::vector<std::string> getDevicesDescription(const std::vector<std::string>& descriptionUrl);
 };

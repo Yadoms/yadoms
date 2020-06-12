@@ -61,15 +61,6 @@ namespace shared
       /////////////////////////////////////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      //Essaie de parser la chaine dans le type result et renvoie vrai si ok
-	   //il est possible de specifier une base en 3eme parametre facultatif
-	   template <class T>
-	   static bool tryParse(const std::string & s, T& result, std::ios_base& (*f)(std::ios_base&) = std::dec)
-	   {
-		   std::istringstream iss(s);
-		   return !(iss >> std::boolalpha >> f >> result).fail();
-	   }
-
 	   //Essaie de parser la chaine dans le type attendu et le renvoie
 	   //si ko une exception est levee
 	   //il est possible de specifier une base en 2eme parametre facultatif

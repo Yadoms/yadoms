@@ -14,7 +14,7 @@ namespace database
       {
       }
 
-      CPgsqlQuery& CPgsqlQuery::SelectExists(common::CQuery& subQuery)
+      CPgsqlQuery& CPgsqlQuery::SelectExists(const common::CQuery& subQuery)
       {
          ChangeQueryType(kSelect);
          std::ostringstream ss;
