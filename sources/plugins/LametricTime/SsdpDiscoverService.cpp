@@ -1,42 +1,47 @@
 #include "shared/Log.h"
 #include "shared/http/HttpMethods.h"
-#include "shared/exception/HttpException.hpp"
 #include "SsdpClient.h"
 #include "SsdpDiscoverService.h"
 
-std::string CSsdpDiscoverService::getDeviceDescription(std::string& descriptionUrl)
+CSsdpDiscoverService::CSsdpDiscoverService(std::string& searchTarget)
 {
-   if (descriptionUrl.empty())
-      return "";
-
-   try
-   {
-      return shared::http::CHttpMethods::sendGetRequest(descriptionUrl);
-   }
-   catch (std::exception& e)
-   {
-      const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\" : %2%") %
-         descriptionUrl %
-         e.what()).str();
-      YADOMS_LOG(error) << message;
-      throw shared::exception::CHttpException(message);
-   }
 }
 
-bool CSsdpDiscoverService::discover(std::string searchTarget,
-                                    const boost::function<bool(CSsdpDiscoveredDevice& discoveredDevice)>&
-                                    discoveredDeviceHandler)
+std::vector<std::string> CSsdpDiscoverService::getDevicesDescription(const std::vector<std::string>& descriptionUrls)
 {
-   boost::asio::io_service ios;
-   const boost::shared_ptr<CSsdpClient> ssdpClient = boost::make_shared<CSsdpClient>(ios, searchTarget);
+	std::vector<std::string> devicesDescription;
+	for (const auto& descriptionUrl : descriptionUrls)
+	{
+		try
+		{
+			devicesDescription.push_back(shared::http::CHttpMethods::sendGetRequest(descriptionUrl));
+		}
+		catch (std::exception& e)
+		{
+			const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\"") %
+				e.what()).str();
+			YADOMS_LOG(error) << message;
+		}
+	}
+	return devicesDescription;
+}
 
-   ios.reset();
-   ios.run();
+bool CSsdpDiscoverService::discover(const boost::function<bool(CSsdpDiscoveredDevice& discoveredDevice)>&
+                                    discoveredDeviceHandler, const std::chrono::duration<long long>& timeout,
+                                    const std::string& searchTarget
+)
+{
+	boost::asio::io_service ios;
+	const auto ssdpClient = boost::make_shared<CSsdpClient>(ios, searchTarget, timeout);
 
-   auto descriptionUrl = ssdpClient->getDescriptionUrl();
-   auto deviceDescription = getDeviceDescription(descriptionUrl);
-   CSsdpDiscoveredDevice discoveredDevice(deviceDescription);
+	ios.reset();
+	ios.run();
 
-   ios.stop();
-   return discoveredDeviceHandler(discoveredDevice);
+   const auto descriptionUrls = ssdpClient->getDescriptionUrls();
+	const auto deviceDescription = getDevicesDescription(descriptionUrls);
+
+	CSsdpDiscoveredDevice discoveredDevice(deviceDescription);
+
+	ios.stop();
+	return discoveredDeviceHandler(discoveredDevice);
 }

@@ -36,6 +36,6 @@ private:
 	std::string getCustomizeIcon() const;
 
 	const static std::string IconTypeName;
-	
+
 	std::string m_customizeIcon;
 };

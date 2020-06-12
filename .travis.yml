@@ -49,9 +49,8 @@ before_deploy:
   - export TRAVIS_TAG=`ls package/Yadoms*.tar.gz | head -1 | grep -oP '(?<=-).*(?=-)'`
 
   #manage DEPLOY_SPECIFIC_BRANCH parameter    
-  - if [ env(DEPLOY_SPECIFIC_BRANCH) IS present AND env(DEPLOY_SPECIFIC_BRANCH) IS NOT blank AND branch != master  ]; then
-      export TRAVIS_TAG=$TRAVIS_TAG-$TRAVIS_BRANCH
-    fi
+  - export TRAVIS_SPECIFIC_BRANCH=$TRAVIS_TAG-$TRAVIS_BRANCH
+    
     
 deploy:
   #Deploy for Github Release
@@ -68,21 +67,22 @@ deploy:
     file_glob: true
     file: package/*
     cleanup: false
+    skip_cleanup: true
     draft: true
     overwrite: true
     name: "$TRAVIS_TAG"
     on:
        branch: master
-       tags: true
 
   #Deploy forced
   - provider: releases
     token: "${GH_OAUTH}"
     file_glob: true
     file: package/*
-    cleanup: false  
+    cleanup: false 
+    skip_cleanup: true
     draft: true
     overwrite: true
-    name: "$TRAVIS_TAG"
+    name: "$TRAVIS_SPECIFIC_BRANCH"
     on:
       branch: $DEPLOY_SPECIFIC_BRANCH
