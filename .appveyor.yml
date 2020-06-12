@@ -75,7 +75,7 @@ before_build:
   - ps: echo $env:tagYadomsVersionName
   - ps: echo $env:tagYadomsVersionNameSpecificBranch
   - ps: |
-        If (($env:DEPLOY_ALL_BRANCHES -eq "true") -And ($env:APPVEYOR_REPO_BRANCH -neq "master")) {
+        If (($env:DEPLOY_ALL_BRANCHES -eq "true") -And ($env:APPVEYOR_REPO_BRANCH -ne "master")) {
              Update-AppveyorBuild -Version "$($env:tagYadomsVersionNameSpecificBranch)"
           } Else {
              Update-AppveyorBuild -Version "$($env:tagYadomsVersionName)"
