@@ -167,15 +167,6 @@ deploy:
         branch: master                 # release from master branch only
 
   - provider: GitHub
-    tag: $(env:tagYadomsVersionNameSpecificBranch)
-    auth_token:
-        secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
-    draft: true
-    force_update: true                #overwrite already existing file
-    on:
-        DEPLOY_ALL_BRANCHES: true
-  
-  - provider: GitHub
     tag: $(tagYadomsVersionNameSpecificBranch)
     auth_token:
         secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
@@ -183,15 +174,6 @@ deploy:
     force_update: true                #overwrite already existing file
     on:
         DEPLOY_ALL_BRANCHES: true
-  
-  - provider: GitHub
-    auth_token:
-        secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
-    draft: true
-    force_update: true                #overwrite already existing file
-    on:
-        DEPLOY_ALL_BRANCHES: true
-  
   
 notifications:
   - provider: Email
