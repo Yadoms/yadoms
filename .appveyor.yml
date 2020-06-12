@@ -67,7 +67,14 @@ install:
   - ps: echo "[END] install"
 
 # scripts to run before build
-before_build:  
+before_build:
+  - ps: $yadomsVersion = (Select-String -Path sources\server\changelog.md -Pattern '^### (.*)$')[0] | Foreach-Object {$_.Matches} | Foreach-Object {$_.Groups[1].Value}
+  - ps: Write-Host "Yadoms version is $yadomsVersion"
+  - ps: $env:tagYadomsVersionName = $yadomsVersion
+  - ps: $env:tagYadomsVersionNameSpecificBranch = "$yadomsVersion-" + $env:APPVEYOR_REPO_BRANCH
+  - ps: echo $env:tagYadomsVersionName
+  - ps: echo $env:tagYadomsVersionNameSpecificBranch
+  
   # Yadoms configuration file
   - ps: cmake --version
   - ps: echo "Create Yadoms configuration file CMakeListsUserConfig.txt..."
@@ -140,23 +147,11 @@ before_deploy:
      Push-AppveyorArtifact builds/package/$packageFile -FileName $packageFile -DeploymentName 'Yadoms portable'
      $packageFile = Get-ChildItem "." -Name -Filter *.zip
      Push-AppveyorArtifact $packageFile -FileName $packageFile -DeploymentName 'Yadoms Update package'
-# artifacts:
-  # - path: yadoms/builds/package/Yadoms-*.exe
-    # name: 'Yadoms installer'
-    
-  # - path: yadoms/builds/package/Yadoms-*.zip
-    # name: 'Yadoms portable'
-
-  # get the tag name to deploy to
-  - ps : $tagYadomsVersionName = dir -Name builds/package/Yadoms*.zip | Select-String -Pattern "Yadoms-(.*)-Windows\.zip" | % { $($_.matches.groups[1].value) }
-  - ps : echo $tagYadomsVersionName
-  - ps : $env:tagYadomsVersionNameSpecificBranch = "$tagYadomsVersionName-" + $env:APPVEYOR_REPO_BRANCH
-  - ps : echo $env:tagYadomsVersionNameSpecificBranch
 
 #deploy for master branch
 deploy:
   - provider: GitHub
-    tag: $(tagYadomsVersionName)
+    tag: $env:tagYadomsVersionName
     auth_token:
         secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
     draft: true
