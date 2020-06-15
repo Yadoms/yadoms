@@ -110,7 +110,7 @@ namespace http
          url,
          credentials,
          parameters,
-         [&](boost::shared_ptr<shared::CDataContainer>& data)
+         [&](const boost::shared_ptr<shared::CDataContainer>& data)
          {
             responseData = data;
          },
@@ -133,7 +133,7 @@ namespace http
          url,
          credentials,
          parameters,
-         [&](boost::shared_ptr<shared::CDataContainer>& data)
+         [&](const boost::shared_ptr<shared::CDataContainer>& data)
          {
             responseData = data;
          },

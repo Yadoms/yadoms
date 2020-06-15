@@ -29,7 +29,7 @@ namespace database
          /// \brief           Start a query with 'SELECT EXISTS(subquery)'
          /// \return          A reference to itself to allow method chaining
          //
-         CPgsqlQuery& SelectExists(common::CQuery& subQuery);
+         CPgsqlQuery& SelectExists(const common::CQuery& subQuery);
 
          //
          /// \brief        Start a create databse query

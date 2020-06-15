@@ -10,7 +10,7 @@ namespace http
 	httpContext::~httpContext()
 	{}
 
-	bool httpContext::basicCredential() {
+	bool httpContext::basicCredential() const {
 		return m_credentialNeeded;
 	}
 

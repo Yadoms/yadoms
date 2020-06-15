@@ -57,10 +57,9 @@ public:
 	std::string getAPIKey() const;
 	/**
 	 * \brief  Set Device IP address
-	 * \param[in] Device IP Address
-	* \return Returns Device IP address
+	 * \param[in] ipAddress Device IP Address
 	*/
-	void setIPAddress(std::string ipAddress);
+	void setIPAddress(const std::string& ipAddress);
 	/**
 	* \brief  get pairing mode
 	* \return Returns pairing mode

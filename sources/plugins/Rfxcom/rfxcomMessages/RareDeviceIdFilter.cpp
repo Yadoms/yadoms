@@ -31,17 +31,17 @@ bool CRareDeviceIdFilter::isValid(const std::string& deviceName)
                                   m_recentlySeenDevices.end());
    }
 
-   // Count occurences of this device
-   auto nbOccurences = 0;
+   // Count occurrences of this device
+   auto nbOccurrences = 0;
    auto isValid = false;
    std::for_each(m_recentlySeenDevices.begin(),
                  m_recentlySeenDevices.end(),
-                 [&](std::pair<boost::posix_time::ptime, std::string> value)
+                 [&nbOccurrences, &isValid, &deviceName, this](std::pair<boost::posix_time::ptime, std::string> value)
                  {
                     if (value.second == deviceName)
                     {
-                       ++nbOccurences;
-                       if (nbOccurences >= m_minTimesPerPeriod)
+                       ++nbOccurrences;
+                       if (nbOccurrences >= m_minTimesPerPeriod)
                           isValid = true;
                     }
                  });

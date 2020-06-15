@@ -8,7 +8,7 @@ CSsdpDiscoverService::CSsdpDiscoverService(std::string& searchTarget)
 {
 }
 
-std::vector<std::string> CSsdpDiscoverService::getDevicesDescription(std::vector<std::string>& descriptionUrls)
+std::vector<std::string> CSsdpDiscoverService::getDevicesDescription(const std::vector<std::string>& descriptionUrls)
 {
 	std::string outXml;
 	std::vector<std::string> devicesDescription;

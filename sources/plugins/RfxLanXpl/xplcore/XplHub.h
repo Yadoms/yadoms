@@ -42,7 +42,7 @@ namespace xplcore
       /// \param [in]   msg      The message
       /// \param [in]   sender   The sender
       //--------------------------------------------------------------
-      void manageReceivedHeartbeatMessage(CXplMessage& hbeatMessage,
+      void manageReceivedHeartbeatMessage(const CXplMessage& hbeatMessage,
                                           Poco::Net::SocketAddress& sender);
 
       //--------------------------------------------------------------

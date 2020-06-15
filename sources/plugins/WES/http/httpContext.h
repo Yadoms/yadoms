@@ -22,7 +22,7 @@ namespace http
 	   /// \brief	    basicCrendential
 	   /// \return     true if activated
 	   //--------------------------------------------------------------
-	   bool basicCredential();
+	   bool basicCredential() const;
 
 	   //--------------------------------------------------------------
 	   /// \brief	    SendGetRequest

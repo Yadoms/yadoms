@@ -16,7 +16,7 @@ public:
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   void initializeWith(const shared::CDataContainer &data);
+   virtual void initializeWith(const boost::shared_ptr<shared::CDataContainer> &data) = 0;
 
    //--------------------------------------------------------------
    /// \brief	      Device used for Gammu library (serial port)

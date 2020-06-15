@@ -22,14 +22,14 @@ public:
    virtual ~CGammuPhone();
 
    // IPhone implementation
-   virtual bool connect();
-   virtual bool isConnected() const;
-   virtual void powerOn(bool on);
-   virtual bool isOn() const;
-   virtual const std::string& getUniqueId() const;
-   virtual void unlock(const std::string& pin);
-   virtual void send(boost::shared_ptr<ISms> sms);
-   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > getIncomingSMS();
+   bool connect() override;
+   bool isConnected() const override;
+   void powerOn(bool on) override;
+   bool isOn() const override;
+   const std::string& getUniqueId() const override;
+   void unlock(const std::string& pin) override;
+   void send(boost::shared_ptr<ISms> sms) override;
+   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > getIncomingSMS() override;
    // [END] IPhone implementation
 
 protected:

@@ -7,11 +7,12 @@
 CSigfoxHTTPServer::CSigfoxHTTPServer(shared::event::CEventHandler& receiveDataEventHandler,
                                      int receiveDataEventId,
                                      const unsigned short port)
+   : m_embeddedWebServer(boost::make_shared<Poco::Net::HTTPServer>(
+      new CSigfoxRequestHandlerFactory(receiveDataEventHandler,
+                                       receiveDataEventId),
+      Poco::Net::ServerSocket(port),
+      new Poco::Net::HTTPServerParams))
 {
-   m_embeddedWebServer = boost::make_shared<Poco::Net::HTTPServer>(new CSigfoxRequestHandlerFactory(receiveDataEventHandler,
-                                                                                                    receiveDataEventId),
-                                                                   Poco::Net::ServerSocket(port),
-                                                                   new Poco::Net::HTTPServerParams);
 }
 
 CSigfoxHTTPServer::~CSigfoxHTTPServer()
