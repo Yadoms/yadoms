@@ -2,7 +2,9 @@
 
 set(BUILD_CURL_EXE OFF)
 set(BUILD_SHARED_LIBS OFF)
-set(CURL_STATIC_CRT ON)
+if(MSVC)
+   set(CURL_STATIC_CRT ON)
+endif()
 
 # Enable only needed protocols
 set(CURL_DISABLE_FTP ON)
