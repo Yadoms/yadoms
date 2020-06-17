@@ -81,8 +81,17 @@ namespace shared
             const auto separatorIterator = headerKeyValue.find(':');
             if (separatorIterator == std::string::npos)
                continue;
-            responseHeaders[headerKeyValue.substr(0, separatorIterator)] = headerKeyValue.substr(
-               separatorIterator + 1, std::string::npos);
+
+            // Http headers are not case-sensitive
+            // Make all lower to facilitate search and comparison
+
+            auto key = headerKeyValue.substr(0, separatorIterator);
+            boost::to_lower(key);
+
+            auto value = headerKeyValue.substr(separatorIterator + 1, std::string::npos);
+            boost::to_lower(value);
+
+            responseHeaders[key] = value;
          }
 
          return responseHeaders;
