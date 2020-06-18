@@ -512,7 +512,14 @@ if(COTIRE_USE)
 	
    if(COTIRE_USE_UNITY)
       target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
-      set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+      set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
+         ${BOOST_INCL_DIR}
+         ${CMAKE_CURRENT_SOURCE_DIR}
+         ${PLATFORM_SPECIFIC_INCL_DIR}
+         ${Poco_INCLUDE_DIRS}
+         ${OPENSSL_INCLUDE_DIR}
+         ${CURLPP_INCLUDE_DIRECTORIES}
+      )
    endif()	
 else()
    add_precompiled_header(yadoms-shared stdafx.h)
