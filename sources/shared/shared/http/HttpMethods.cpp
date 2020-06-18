@@ -191,6 +191,20 @@ namespace shared
          request.setOpt(
             new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
 
+         // HTTPS support : skip peer and host verification
+         static const std::string HttpsHeader("https://");
+         if (std::search(url.begin(), url.end(),
+                         HttpsHeader.begin(), HttpsHeader.end(),
+                         [](const char ch1, const char ch2)
+                         {
+                            return std::tolower(ch1) == std::tolower(ch2);
+                         })
+            != url.end())
+         {
+            request.setOpt(new curlpp::options::SslVerifyPeer(false));
+            request.setOpt(new curlpp::options::SslVerifyHost(false));
+         }
+
          // Headers
          CCurlppHelpers::setHeaders(request, headerParameters);
 
@@ -281,10 +295,18 @@ namespace shared
          const std::map<std::string, std::string>& receivedHeaders,
          const std::string& data)
       {
-         const auto& contentType = receivedHeaders.at("Content-Type");
-         if (contentType.find("application/json") == std::string::npos &&
-            contentType.find("text/json") == std::string::npos)
-            YADOMS_LOG(warning) << "HTTP answer : JSON expected but content type not defined as JSON : " << contentType;
+         try
+         {
+            const auto& contentType = receivedHeaders.at("content-type");
+            if (contentType.find("application/json") == std::string::npos &&
+               contentType.find("text/json") == std::string::npos)
+               throw std::runtime_error(
+                  std::string("Content type was not defined as JSON or text : ") + contentType);
+         }
+         catch (const std::exception& exception)
+         {
+            throw exception::CHttpException(std::string("Fail to process HTTP JSON answer : ") + exception.what());
+         }
 
          // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength
          return CDataContainer::make(data);
