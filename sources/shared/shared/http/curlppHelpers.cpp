@@ -5,7 +5,7 @@
 #include "HttpMethods.h"
 #include <curlpp/Options.hpp>
 #include <curlpp/Infos.hpp>
-#include "curlpp/cURLpp.hpp"
+#include <curlpp/cURLpp.hpp>
 #include <shared/exception/HttpException.hpp>
 #include "Proxy.h"
 
