@@ -1,5 +1,5 @@
 #pragma once
-#include "WorkerTools.h"
+#include "WorkerHelpers.h"
 
 namespace update
 {
@@ -11,14 +11,14 @@ namespace update
          //---------------------------------------------
          ///\brief                        Install a new scriptInterpreter
          //---------------------------------------------
-         static void install(CWorkerTools::WorkerProgressFunc progressCallback,
+         static void install(CWorkerHelpers::WorkerProgressFunc progressCallback,
                              const std::string& downloadUrl,
                              const boost::filesystem::path& scriptInterpretersPath);
 
          //---------------------------------------------
          ///\brief                              Update a scriptInterpreter
          //---------------------------------------------
-         static void update(CWorkerTools::WorkerProgressFunc progressCallback,
+         static void update(CWorkerHelpers::WorkerProgressFunc progressCallback,
                             const std::string& scriptInterpreterName,
                             const std::string& downloadUrl,
                             const boost::filesystem::path& scriptInterpretersPath);
@@ -26,7 +26,7 @@ namespace update
          //---------------------------------------------
          ///\brief                              Remove a scriptInterpreter
          //---------------------------------------------
-         static void remove(CWorkerTools::WorkerProgressFunc progressCallback,
+         static void remove(CWorkerHelpers::WorkerProgressFunc progressCallback,
                             const std::string& scriptInterpreterName,
                             const boost::filesystem::path& scriptInterpretersPath);
       };

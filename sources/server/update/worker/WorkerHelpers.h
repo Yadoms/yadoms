@@ -1,19 +1,31 @@
 #pragma once
 #include <shared/DataContainer.h>
 #include <shared/http/FileDownloader.h>
+#include <functional>
+#include <boost/optional/optional.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace update
 {
    namespace worker
    {
-      class CWorkerTools
+      class CWorkerHelpers
       {
       public:
+         CWorkerHelpers() = delete;
+         ~CWorkerHelpers() = default;
+
          //---------------------------------
          ///\brief Define a function prototype for updating the worker progress
+         //    -> return : void
+         //    -> param 1 : bool                      : tells if the task if still active (true: running/success, false : error)
+         //    -> param 2 : float                     : the task progression (as percent)
+         //    -> param 3 : std::string               : the task step message (should be i18n messages)
+         //    -> param 4 : std::string               : the exception message (should not be i18n messages; only when param1 is false)
+         //    -> param 5 : shared::CDataContainer    : Some free data provided by task implementation (specific for each task)
          //---------------------------------
-         typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, boost::shared_ptr<shared
-                                     ::CDataContainer>> WorkerProgressFunc;
+         typedef std::function<void(bool, boost::optional<float>, std::string, std::string, boost::shared_ptr<shared
+                                       ::CDataContainer>)> WorkerProgressFunc;
 
          //---------------------------------------------
          ///\brief   Download a package
@@ -61,7 +73,7 @@ namespace update
          ///\return The package local path
          //---------------------------------------------
          static boost::filesystem::path downloadPackage(const std::string& downloadUrl,
-                                                        shared::http::CFileDownloader::ProgressFunc progressReporter);
+                                                        shared::http::CFileDownloader::onProgressFunc progressReporter);
 
          //---------------------------------------------
          ///\brief   Download a package
@@ -72,7 +84,7 @@ namespace update
          //---------------------------------------------
          static boost::filesystem::path downloadPackageAndVerify(const std::string& downloadUrl,
                                                                  const std::string& md5Hash,
-                                                                 shared::http::CFileDownloader::ProgressFunc
+                                                                 shared::http::CFileDownloader::onProgressFunc
                                                                  progressReporter);
 
          //---------------------------------------------

@@ -14,7 +14,7 @@ namespace update
 {
    namespace worker
    {
-      void CYadoms::update(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CYadoms::update(const CWorkerHelpers::WorkerProgressFunc& progressCallback,
                            const std::string& downloadUrl,
                            const std::string& expectedMd5Hash)
       {
@@ -23,7 +23,7 @@ namespace update
 
          YADOMS_LOG(information) << "Updating Yadoms from " << downloadUrl;
 
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsUpdate, std::string(), callbackData);
@@ -36,7 +36,7 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading package " << downloadUrl;
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsDownload, std::string(), callbackData);
-            auto downloadedPackage = CWorkerTools::downloadPackageAndVerify(downloadUrl, expectedMd5Hash, progressCallback,
+            auto downloadedPackage = CWorkerHelpers::downloadPackageAndVerify(downloadUrl, expectedMd5Hash, progressCallback,
                                                                             i18n::CClientStrings::UpdateYadomsDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Package successfully downloaded into " << downloadedPackage.string();
 
@@ -108,7 +108,7 @@ namespace update
       }
 
 
-      void CYadoms::step4RunUpdaterProcess(boost::filesystem::path& extractedPackageLocation,
+      void CYadoms::step4RunUpdaterProcess(const boost::filesystem::path& extractedPackageLocation,
                                            const std::string& commandToRun,
                                            boost::shared_ptr<IRunningInformation>& runningInformation)
       {

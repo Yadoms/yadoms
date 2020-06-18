@@ -1,6 +1,6 @@
 #pragma once
 #include "IRunningInformation.h"
-#include "WorkerTools.h"
+#include "WorkerHelpers.h"
 
 namespace update
 {
@@ -18,7 +18,7 @@ namespace update
          ///\param [in] downloadUrl    The version download URL
          ///\param [in] expectedMd5Hash    The expected MD5 Hash to check package validity
          //---------------------------------------------
-         static void update(CWorkerTools::WorkerProgressFunc progressCallback,
+         static void update(const CWorkerHelpers::WorkerProgressFunc& progressCallback,
                             const std::string& downloadUrl,
                             const std::string& expectedMd5Hash);
 
@@ -30,7 +30,7 @@ namespace update
          ///\param [in] commandToRun                The script command to run
          ///\param [in] runningInfo                 The current yadoms running information
          //---------------------------------------------
-         static void step4RunUpdaterProcess(boost::filesystem::path& extractedPackageLocation,
+         static void step4RunUpdaterProcess(const boost::filesystem::path& extractedPackageLocation,
                                             const std::string& commandToRun,
                                             boost::shared_ptr<IRunningInformation>& runningInfo);
       };

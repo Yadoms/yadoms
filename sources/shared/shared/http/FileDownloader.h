@@ -15,16 +15,10 @@ namespace shared
 
          //---------------------------------
          ///\brief Define a function prototype for updating a download progress
+         ///\param [in] message     Message associated to current step
+         ///\param [in] progress    Current progress value (0 to 1)
          //---------------------------------
-         typedef boost::function2<void, const std::string&, float> ProgressFunc;
-
-         //---------------------------------
-         ///\brief Static method which reports download progress on console
-         ///\param [in] info : the filename which is downloading
-         ///\param [in] progression : the actual progression
-         //---------------------------------
-         static void reportProgressToLog(const std::string& info,
-                                         float progression);
+         typedef std::function<void(const std::string& message, float progress)> onProgressFunc;
 
          //---------------------------------
          ///\brief Download a file
@@ -35,7 +29,7 @@ namespace shared
          //---------------------------------
          static boost::filesystem::path downloadFile(const std::string& url,
                                                      const boost::filesystem::path& location,
-                                                     ProgressFunc reporter);
+                                                     onProgressFunc reporter);
 
          //---------------------------------
          ///\brief Download a file and check MD5 hash
@@ -51,7 +45,7 @@ namespace shared
          static boost::filesystem::path downloadFileAndVerify(const std::string& url,
                                                               const boost::filesystem::path& location,
                                                               const std::string& md5HashExpected,
-                                                              ProgressFunc reporter);
+                                                              onProgressFunc reporter);
       };
    } //namespace http
 } //namespace shared

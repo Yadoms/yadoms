@@ -1,5 +1,5 @@
 #pragma once
-#include "WorkerTools.h"
+#include "WorkerHelpers.h"
 #include "pluginSystem/Manager.h"
 
 namespace update
@@ -12,7 +12,7 @@ namespace update
          //---------------------------------------------
          ///\brief                        Install a new plugin
          //---------------------------------------------
-         static void install(CWorkerTools::WorkerProgressFunc progressCallback,
+         static void install(CWorkerHelpers::WorkerProgressFunc progressCallback,
                              const std::string& downloadUrl,
                              boost::shared_ptr<pluginSystem::CManager> pluginManager,
                              const boost::filesystem::path& pluginsPath);
@@ -20,7 +20,7 @@ namespace update
          //---------------------------------------------
          ///\brief                        Update a plugin
          //---------------------------------------------
-         static void update(CWorkerTools::WorkerProgressFunc progressCallback,
+         static void update(CWorkerHelpers::WorkerProgressFunc progressCallback,
                             const std::string& pluginName,
                             const std::string& downloadUrl,
                             boost::shared_ptr<pluginSystem::CManager> pluginManager,
@@ -29,7 +29,7 @@ namespace update
          //---------------------------------------------
          ///\brief                        Remove a plugin
          //---------------------------------------------
-         static void remove(CWorkerTools::WorkerProgressFunc progressCallback,
+         static void remove(CWorkerHelpers::WorkerProgressFunc progressCallback,
                             const std::string& pluginName,
                             boost::shared_ptr<pluginSystem::CManager> pluginManager,
                             const boost::filesystem::path& pluginsPath);

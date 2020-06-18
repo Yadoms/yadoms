@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Widget.h"
-#include "WorkerTools.h"
 #include "tools/FileSystem.h"
 #include <Poco/File.h>
 #include <Poco/DirectoryIterator.h>
@@ -12,13 +11,13 @@ namespace update
 {
    namespace worker
    {
-      void CWidget::install(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CWidget::install(CWorkerHelpers::WorkerProgressFunc progressCallback,
                             const std::string& downloadUrl,
                             const boost::filesystem::path& widgetsPath)
       {
          YADOMS_LOG(information) << "Installing new widget from " << downloadUrl;
 
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetInstall, std::string(), callbackData);
@@ -31,7 +30,7 @@ namespace update
             YADOMS_LOG(information) << "Downloading widget package";
 
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, std::string(), callbackData);
-            downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload,
+            downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload,
                                                                          0.0, 90.0);
             YADOMS_LOG(information) << "Downloading widget package with success";
 
@@ -43,7 +42,7 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.string();
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, std::string(), callbackData);
-               const auto widgetPath = CWorkerTools::deployPackage(downloadedPackage, widgetsPath.string());
+               const auto widgetPath = CWorkerHelpers::deployPackage(downloadedPackage, widgetsPath.string());
                YADOMS_LOG(information) << "Widget deployed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), shared::CDataContainer::make());
             }
@@ -67,7 +66,7 @@ namespace update
       }
 
 
-      void CWidget::update(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CWidget::update(CWorkerHelpers::WorkerProgressFunc progressCallback,
                            const std::string& widgetName,
                            const std::string& downloadUrl,
                            const boost::filesystem::path& widgetsPath)
@@ -87,7 +86,7 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading widget package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, std::string(), callbackData);
-            downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload,
+            downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload,
                                                                          0.0, 90.0);
             YADOMS_LOG(information) << "Downloading widget package with success";
 
@@ -99,7 +98,7 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.string();
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, std::string(), callbackData);
-               const auto widgetPath = CWorkerTools::deployPackage(downloadedPackage, widgetsPath.string());
+               const auto widgetPath = CWorkerHelpers::deployPackage(downloadedPackage, widgetsPath.string());
 
                YADOMS_LOG(information) << "Widget installed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), callbackData);
@@ -123,7 +122,7 @@ namespace update
             tools::CFileSystem::remove(downloadedPackage);
       }
 
-      void CWidget::remove(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CWidget::remove(CWorkerHelpers::WorkerProgressFunc progressCallback,
                            const std::string& widgetName,
                            const boost::filesystem::path& widgetsPath)
       {

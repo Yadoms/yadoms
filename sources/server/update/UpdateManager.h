@@ -41,7 +41,7 @@ namespace update
    protected:
       void doWork(const boost::posix_time::time_duration& scanPeriod);
       bool scan(boost::shared_ptr<const IPathProvider> pathProvider);
-      void scanForUpdates(worker::CWorkerTools::WorkerProgressFunc progress_callback);
+      void scanForUpdates(worker::CWorkerHelpers::WorkerProgressFunc progress_callback);
       boost::shared_ptr<shared::CDataContainer> buildUpdates(bool includePrereleases,
                                           const shared::versioning::CSemVer& yadomsLocalVersion,
                                           boost::shared_ptr<shared::CDataContainer> yadomsAvailableVersions,

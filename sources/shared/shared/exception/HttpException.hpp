@@ -20,7 +20,7 @@ namespace shared
          {
          }
 
-         virtual ~CHttpException() throw() = default;
+         virtual ~CHttpException() = default;
       };
    }
 };

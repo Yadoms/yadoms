@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "WorkerTools.h"
+#include "WorkerHelpers.h"
 
 #include <Poco/File.h>
 #include <Poco/URI.h>
@@ -15,45 +15,64 @@
 
 #include <shared/tools/Random.h>
 #include <shared/exception/Extract.hpp>
+#include <utility>
 
 
 namespace update
 {
    namespace worker
    {
-      boost::filesystem::path CWorkerTools::downloadPackage(const std::string& downloadUrl,
-                                                            WorkerProgressFunc callback,
-                                                            const std::string& function,
-                                                            float min,
-                                                            float max)
+      boost::filesystem::path CWorkerHelpers::downloadPackage(const std::string& downloadUrl,
+                                                              WorkerProgressFunc callback,
+                                                              const std::string& function,
+                                                              float min,
+                                                              float max)
       {
          return downloadPackage(downloadUrl,
-                                boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min,
-                                            max));
+                                [&](const std::string& message, float progress)
+                                {
+                                   reportDownloadProgress(message,
+                                                          progress,
+                                                          callback,
+                                                          function,
+                                                          min,
+                                                          max);
+                                });
       }
 
-      boost::filesystem::path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl,
-                                                                     const std::string& md5Hash,
-                                                                     WorkerProgressFunc callback,
-                                                                     const std::string& function,
-                                                                     float min,
-                                                                     float max)
+      boost::filesystem::path CWorkerHelpers::downloadPackageAndVerify(const std::string& downloadUrl,
+                                                                       const std::string& md5Hash,
+                                                                       WorkerProgressFunc callback,
+                                                                       const std::string& function,
+                                                                       float min,
+                                                                       float max)
       {
          return downloadPackageAndVerify(downloadUrl,
                                          md5Hash,
-                                         boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function,
-                                                     min, max));
+                                         [&](const std::string& message, float progress)
+                                         {
+                                            reportDownloadProgress(message,
+                                                                   progress,
+                                                                   callback,
+                                                                   function,
+                                                                   min,
+                                                                   max);
+                                         });
       }
 
-      boost::filesystem::path CWorkerTools::downloadPackage(const std::string& downloadUrl)
+      boost::filesystem::path CWorkerHelpers::downloadPackage(const std::string& downloadUrl)
       {
          return downloadPackage(downloadUrl,
-                                boost::bind(&shared::http::CFileDownloader::reportProgressToLog, _1, _2));
+                                [](const std::string& message, float progress)
+                                {
+                                   YADOMS_LOG(information) << "Downloading " << message << " : " << boost::
+                                      format("%11.0f") % progress << " %";
+                                });
       }
 
-      boost::filesystem::path CWorkerTools::downloadPackage(const std::string& downloadUrl,
-                                                            shared::http::CFileDownloader::ProgressFunc
-                                                            progressReporter)
+      boost::filesystem::path CWorkerHelpers::downloadPackage(const std::string& downloadUrl,
+                                                              shared::http::CFileDownloader::onProgressFunc
+                                                              progressReporter)
       {
          auto packageName = shared::http::CUrlHelpers::getFileName(downloadUrl);
          if (packageName.empty())
@@ -64,15 +83,15 @@ namespace update
 
          shared::http::CFileDownloader::downloadFile(downloadUrl,
                                                      targetPath,
-                                                     progressReporter);
+                                                     std::move(progressReporter));
          return targetPath;
       }
 
 
-      boost::filesystem::path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl,
-                                                                     const std::string& md5Hash,
-                                                                     shared::http::CFileDownloader::ProgressFunc
-                                                                     progressReporter)
+      boost::filesystem::path CWorkerHelpers::downloadPackageAndVerify(const std::string& downloadUrl,
+                                                                       const std::string& md5Hash,
+                                                                       shared::http::CFileDownloader::onProgressFunc
+                                                                       progressReporter)
       {
          auto packageName = shared::http::CUrlHelpers::getFileName(downloadUrl);
          if (packageName.empty())
@@ -84,13 +103,13 @@ namespace update
          shared::http::CFileDownloader::downloadFileAndVerify(downloadUrl,
                                                               targetPath,
                                                               md5Hash,
-                                                              progressReporter);
+                                                              std::move(progressReporter));
          return targetPath;
       }
 
 
-      boost::filesystem::path CWorkerTools::deployPackage(const boost::filesystem::path& downloadedPackage,
-                                                          const std::string& outputDirectory)
+      boost::filesystem::path CWorkerHelpers::deployPackage(const boost::filesystem::path& downloadedPackage,
+                                                            const std::string& outputDirectory)
       {
          /*
          When deploying a plugin we don't know the plugin name
@@ -178,12 +197,12 @@ namespace update
          }
       }
 
-      void CWorkerTools::reportDownloadProgress(const std::string& file,
-                                                float progress,
-                                                WorkerProgressFunc callback,
-                                                const std::string& function,
-                                                float min,
-                                                float max)
+      void CWorkerHelpers::reportDownloadProgress(const std::string& file,
+                                                  float progress,
+                                                  const WorkerProgressFunc callback,
+                                                  const std::string& function,
+                                                  float min,
+                                                  float max)
       {
          auto callbackData = shared::CDataContainer::make();
          callbackData->set("file", file);

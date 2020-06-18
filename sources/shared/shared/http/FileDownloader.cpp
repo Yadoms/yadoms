@@ -20,15 +20,9 @@ namespace shared
 {
    namespace http
    {
-      void CFileDownloader::reportProgressToLog(const std::string& info,
-                                                float progression)
-      {
-         YADOMS_LOG(information) << "Downloading " << info << " : " << boost::format("%11.0f") % progression << " %";
-      }
-
       boost::filesystem::path CFileDownloader::downloadFile(const std::string& url,
                                                             const boost::filesystem::path& location,
-                                                            ProgressFunc reporter)
+                                                            onProgressFunc reporter)
       {
          curlpp::Easy request;
 
@@ -106,7 +100,7 @@ namespace shared
       boost::filesystem::path CFileDownloader::downloadFileAndVerify(const std::string& url,
                                                                      const boost::filesystem::path& location,
                                                                      const std::string& md5HashExpected,
-                                                                     ProgressFunc reporter)
+                                                                     onProgressFunc reporter)
       {
          const auto result = downloadFile(url,
                                           location,

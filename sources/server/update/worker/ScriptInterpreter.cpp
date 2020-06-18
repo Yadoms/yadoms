@@ -4,7 +4,6 @@
 
 #include <shared/ServiceLocator.h>
 
-#include "WorkerTools.h"
 #include <Poco/File.h>
 
 #include "automation/IRuleManager.h"
@@ -14,7 +13,7 @@ namespace update
 {
    namespace worker
    {
-      void CScriptInterpreter::install(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CScriptInterpreter::install(CWorkerHelpers::WorkerProgressFunc progressCallback,
                                        const std::string& downloadUrl,
                                        const boost::filesystem::path& scriptInterpretersPath)
       {
@@ -31,7 +30,7 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
-            downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback,
+            downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback,
                                                                          i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
@@ -42,7 +41,7 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, std::string(), callbackData);
-               const auto pluginPath = CWorkerTools::deployPackage(downloadedPackage, scriptInterpretersPath.string());
+               const auto pluginPath = CWorkerHelpers::deployPackage(downloadedPackage, scriptInterpretersPath.string());
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
 
                // Refresh scriptInterpreter list
@@ -79,7 +78,7 @@ namespace update
          }
       }
 
-      void CScriptInterpreter::update(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CScriptInterpreter::update(CWorkerHelpers::WorkerProgressFunc progressCallback,
                                       const std::string& scriptInterpreterName,
                                       const std::string& downloadUrl,
                                       const boost::filesystem::path& scriptInterpretersPath)
@@ -100,7 +99,7 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
-            downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback,
+            downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback,
                                                                          i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
@@ -121,7 +120,7 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, std::string(), callbackData);
-               const auto scriptInterpreterPath = CWorkerTools::deployPackage(downloadedPackage, scriptInterpretersPath.string());
+               const auto scriptInterpreterPath = CWorkerHelpers::deployPackage(downloadedPackage, scriptInterpretersPath.string());
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
 
 
@@ -166,7 +165,7 @@ namespace update
          }
       }
 
-      void CScriptInterpreter::remove(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CScriptInterpreter::remove(CWorkerHelpers::WorkerProgressFunc progressCallback,
                                       const std::string& scriptInterpreterName,
                                       const boost::filesystem::path& scriptInterpretersPath)
       {

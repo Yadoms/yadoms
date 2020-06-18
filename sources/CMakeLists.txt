@@ -618,8 +618,8 @@ set(YADOMS_SRC
    server/update/worker/WidgetInformation.cpp
    server/update/worker/Yadoms.h
    server/update/worker/Yadoms.cpp
-   server/update/worker/WorkerTools.h
-   server/update/worker/WorkerTools.cpp
+   server/update/worker/WorkerHelpers.h
+   server/update/worker/WorkerHelpers.cpp
    
    server/web/IRestHandler.h
    server/web/IWebServer.h

@@ -3,7 +3,6 @@
 #include <shared/Log.h>
 #include <shared/Executable.h>
 #include "tools/FileSystem.h"
-#include "WorkerTools.h"
 #include "pluginSystem/Manager.h"
 #include "i18n/ClientStrings.h"
 #include "pluginSystem/Information.h"
@@ -12,14 +11,14 @@ namespace update
 {
    namespace worker
    {
-      void CPlugin::install(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CPlugin::install(CWorkerHelpers::WorkerProgressFunc progressCallback,
                             const std::string& downloadUrl,
                             boost::shared_ptr<pluginSystem::CManager> pluginManager,
                             const boost::filesystem::path& pluginsPath)
       {
          YADOMS_LOG(information) << "Installing new plugin from " << downloadUrl;
 
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginInstall, std::string(), shared::CDataContainer::make());
@@ -32,7 +31,7 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
-            downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload,
+            downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload,
                                                               0.0, 50.0);
             YADOMS_LOG(information) << "Downloading package with success";
 
@@ -43,7 +42,7 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, std::string(), callbackData);
-               const auto pluginPath = CWorkerTools::deployPackage(downloadedPackage, pluginsPath.string());
+               const auto pluginPath = CWorkerHelpers::deployPackage(downloadedPackage, pluginsPath.string());
                YADOMS_LOG(information) << "Plugin deployed with success";
 
                // Change executable file permission to authorize execution
@@ -79,7 +78,7 @@ namespace update
             tools::CFileSystem::remove(downloadedPackage);
       }
 
-      void CPlugin::update(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CPlugin::update(CWorkerHelpers::WorkerProgressFunc progressCallback,
                            const std::string& pluginName,
                            const std::string& downloadUrl,
                            boost::shared_ptr<pluginSystem::CManager> pluginManager,
@@ -101,7 +100,7 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
-            downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload,
+            downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload,
                                                               0.0, 50.0);
             YADOMS_LOG(information) << "Downloading package with success";
 
@@ -118,7 +117,7 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, std::string(), callbackData);
-               auto pluginPath = CWorkerTools::deployPackage(downloadedPackage, pluginsPath.string());
+               auto pluginPath = CWorkerHelpers::deployPackage(downloadedPackage, pluginsPath.string());
                YADOMS_LOG(information) << "Plugin deployed with success";
 
 
@@ -155,7 +154,7 @@ namespace update
             tools::CFileSystem::remove(downloadedPackage);
       }
 
-      void CPlugin::remove(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CPlugin::remove(CWorkerHelpers::WorkerProgressFunc progressCallback,
                            const std::string& pluginName,
                            boost::shared_ptr<pluginSystem::CManager> pluginManager,
                            const boost::filesystem::path& pluginsPath)
