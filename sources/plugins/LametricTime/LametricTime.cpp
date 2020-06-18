@@ -93,7 +93,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				if (m_configuration.getPairingMode() == EPairingMode::kAuto)
 				{
 					m_targetDevice = std::find_if(m_devicesInformation.begin(), m_devicesInformation.end(),
-					                              boost::bind(&DeviceInformation::m_deviceName, _1) == command->getDevice());
+					                              boost::bind(&DeviceInformation::m_deviceName, boost::placeholders::_1) == command->getDevice());
 					if (m_targetDevice != std::end(m_devicesInformation))
 					{
 						YADOMS_LOG(information) << "Target device found";

@@ -19,6 +19,8 @@
         <dir name="../sources/server/tools/mac"/>
     </includedir>
     <defines>
+        <define name="RAPIDJSON_HAS_STDSTRING=1"/>
+        <define name="RAPIDJSON_ENDIAN"/>
         <define name="SQLITE_INT64_TYPE=0"/>
         <define name="RAPIDJSON_HAS_STDSTRING=1"/>
     </defines>
@@ -39,6 +41,8 @@
     <exclude>
         <path name="ZWave/OpenZWave/"/>
         <path name="../sources/external-libs/"/>
+        <path name="shared/rapidjson/"/>
+        <path name="Piface2/libpifacedigital/"/>
     </exclude>
     <suppressions>
         <suppression>unknownMacro</suppression>

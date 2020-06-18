@@ -27,8 +27,8 @@ public:
    virtual ~CSms() {}
 
    // ISms implementation
-   virtual const std::string& getNumber() const;
-   virtual const std::string& getContent() const;
+   const std::string& getNumber() const override;
+   const std::string& getContent() const override;
    // [END] ISms implementation
 
 private:

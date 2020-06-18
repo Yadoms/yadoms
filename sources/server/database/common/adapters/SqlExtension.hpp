@@ -22,9 +22,9 @@ namespace adapters {
 
       //--------------------------------------------------------------
       ///\brief  Extract a column value in a typed way
-      ///\param [in]    pStmt    The current statement
-      ///\param [in]    i        The index (zero based) of the targeted column
-      ///\template      TValue   The type of the expectted value
+      ///\param [in]    resultHandler  The current statement
+      ///\param [in]    nCol           The index (zero based) of the targeted column
+      ///\template      TValue         The type of the expectted value
       ///\return The value from the column.
       //--------------------------------------------------------------
       template<class TValue>

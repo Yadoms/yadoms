@@ -18,7 +18,7 @@ image: Visual Studio 2019
 platform: Win32
 
 # build Configuration, i.e. Debug, Release, etc.
-configuration: Debug
+configuration: Release
 
 # Add pre-compiled dependencies in cache
 cache:  
@@ -67,7 +67,21 @@ install:
   - ps: echo "[END] install"
 
 # scripts to run before build
-before_build:  
+before_build:
+  - ps: $yadomsVersion = (Select-String -Path sources\server\changelog.md -Pattern '^### (.*)$')[0] | Foreach-Object {$_.Matches} | Foreach-Object {$_.Groups[1].Value}
+  - ps: Write-Host "Yadoms version is $yadomsVersion"
+  - ps: $env:tagYadomsVersionName = $yadomsVersion
+  - ps: $env:tagYadomsVersionNameSpecificBranch = "$yadomsVersion-" + $env:APPVEYOR_REPO_BRANCH
+  - ps: echo $env:tagYadomsVersionName
+  - ps: echo $env:tagYadomsVersionNameSpecificBranch
+  - ps: |
+        If (($env:DEPLOY_ALL_BRANCHES -eq "true") -And ($env:APPVEYOR_REPO_BRANCH -ne "master")) {
+             Update-AppveyorBuild -Version "$($env:tagYadomsVersionNameSpecificBranch)"
+          } Else {
+             Update-AppveyorBuild -Version "$($env:tagYadomsVersionName)"
+          }
+    
+  
   # Yadoms configuration file
   - ps: cmake --version
   - ps: echo "Create Yadoms configuration file CMakeListsUserConfig.txt..."
@@ -89,6 +103,7 @@ before_build:
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(COTIRE_USE ON)')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(COTIRE_USE_UNITY ON)')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PYTHON_USE_SOURCES OFF)')
+  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(USE_NSIS ON)')
   - ps: cat 'sources/CMakeListsUserConfig.txt'
 
   # Create solution
@@ -96,13 +111,69 @@ before_build:
   - cmd: cmake_windows.cmd
   
   
-build:
-  parallel: false
-  project: projects/yadoms.sln    # path to Visual Studio solution or project
+build: off
+  # Use custom build
+  
+build_script:
+  # Build and create installer
+  - ps: pushd projects
+  - ps: echo 'Build...'
+  - ps: msbuild shared/all_unity.vcxproj /p:Configuration=$env:configuration /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  
+# scripts to run before deployment
+before_deploy:
+  - ps: echo 'Finalize output...'
+  - ps: cp ../config/yadoms.ini ../builds/$env:configuration/
+  - ps: echo 'Create packages...'
+  - ps: msbuild PACKAGE.vcxproj /p:Configuration=$env:configuration /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - ps: popd
+  - ps: ls 'builds/package'
+  #generate update package
+  - ps: New-Item package -type directory
+  - ps: Move-Item builds\$env:configuration .\package\package
+  - ps: Copy-Item update\scripts\update.cmd .\package\
+  
+  #   get version and last commit date
+  - ps: $gitDate = git --git-dir=.git log -1 --format=%cI 
+  - ps: Write-Host "Generating package.zip for Yadoms $yadomsVersion release on $gitDate"
+  - ps: cd package
+  - ps: $content = Get-Content '..\distribution\package.json.in'
+  - ps: $content = $content -replace "__version__", $yadomsVersion
+  - ps: $content = $content -replace "__gitdate__", $gitDate
+  - ps: Out-File -InputObject $content -FilePath .\package.json -Encoding UTF8
+  - ps: Copy-Item ..\sources\server\changelog.md .\
+  - ps: Get-ChildItem * -Include *.ilk -Recurse | Remove-Item
+  - ps: Get-ChildItem * -Include yadoms.ini -Recurse | Remove-Item
+  - ps: 7z a -tzip ..\update-package-Windows.zip .\
+  - ps: cd ..
+  
+  - ps: |
+     $packageFile = Get-ChildItem "builds/package" -Name -Filter *.exe
+     Push-AppveyorArtifact builds/package/$packageFile -FileName $packageFile -DeploymentName 'Yadoms installer'
+     $packageFile = Get-ChildItem "builds/package" -Name -Filter *.zip
+     Push-AppveyorArtifact builds/package/$packageFile -FileName $packageFile -DeploymentName 'Yadoms portable'
+     $packageFile = Get-ChildItem "." -Name -Filter *.zip
+     Push-AppveyorArtifact $packageFile -FileName $packageFile -DeploymentName 'Yadoms Update package'
 
-  # MSBuild verbosity level
-  verbosity: normal
+#deploy for master branch
+deploy:
+  - provider: GitHub
+    tag: $env:tagYadomsVersionName
+    auth_token:
+        secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
+    draft: true
+    force_update: true                #overwrite already existing file
+    on:
+        branch: master                 # release from master branch only
 
+  - provider: GitHub
+    tag: $(tagYadomsVersionNameSpecificBranch)
+    auth_token:
+        secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
+    draft: true
+    force_update: true                #overwrite already existing file
+    on:
+        DEPLOY_ALL_BRANCHES: true
   
 notifications:
   - provider: Email
@@ -110,4 +181,3 @@ notifications:
     to:
       - '{{commitAuthorEmail}}'
     on_build_status_changed: true
-  

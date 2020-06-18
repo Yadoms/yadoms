@@ -211,18 +211,18 @@ namespace xplcore
    }
 
 
-   void CXplServiceTask::manageReceivedHeartBeatMessage(CXplMessage& hbeatMessage,
+   void CXplServiceTask::manageReceivedHeartBeatMessage(const CXplMessage& hbeatMessage,
                                                         Poco::Net::SocketAddress& sender)
    {
       if (CXplMessageSchemaIdentifier::isHeartbeatApp(hbeatMessage.getMessageSchemaIdentifier()))
       {
          //we've got an heartbeat if it's our hbeat and we are m_hubHasBeenFound = false we have found a hub
-         int port;
-         if (shared::CStringExtension::tryParse<int>(hbeatMessage.getBodyValue("port"), port))
+         try
          {
+            const auto port = std::stoi(hbeatMessage.getBodyValue("port"));
             if ((!m_hubHasBeenFound) && (m_localEndPoint.host().toString() == hbeatMessage.getBodyValue("remote-ip")) && (sender.port() == port))
             {
-               YADOMS_LOG(information) << "Hub found on network : " << m_localEndPoint.host().toString() ;
+               YADOMS_LOG(information) << "Hub found on network : " << m_localEndPoint.host().toString();
                m_hubHasBeenFound = true;
 
                if (m_pHubFoundEventHandler != nullptr)
@@ -233,7 +233,7 @@ namespace xplcore
                //From another ip, nothing to do
             }
          }
-         else
+         catch (const std::exception&)
          {
             //invalid heatbeat app message
          }
