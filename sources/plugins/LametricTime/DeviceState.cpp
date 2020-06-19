@@ -3,39 +3,53 @@
 
 
 CDeviceState::CDeviceState(CConfiguration& lametricConfiguration)
-   : m_lametricConfiguration(lametricConfiguration)
+	: m_lametricConfiguration(lametricConfiguration)
 {
 }
 
 boost::shared_ptr<shared::CDataContainer> CDeviceState::getState(const CUrlManagerHelper::ERequestType requestType)
 {
-   m_urlManagerHelper = boost::make_shared<CUrlManagerHelper>(m_lametricConfiguration);
+	const auto url = buildUrl(requestType);
 
-   const auto requestPath = m_urlManagerHelper->getRequestPath(requestType);
-
-   const auto url = m_urlManagerHelper->getRequestUrl(m_lametricConfiguration, requestPath);
-
-   return shared::http::CHttpMethods::sendJsonGetRequest(
-      url,
-      m_urlManagerHelper->buildCommonHeaderParameters(m_lametricConfiguration));
+	return shared::http::CHttpMethods::sendJsonGetRequest(
+		url,
+		m_urlManagerHelper->buildCommonHeaderParameters(m_lametricConfiguration));
 }
 
-boost::shared_ptr<shared::CDataContainer> CDeviceState::getDeviceState()
+boost::shared_ptr<shared::CDataContainer> CDeviceState::getDeviceInformations()
 {
-   return getState(CUrlManagerHelper::kRequestDevice);
+	return getState(CUrlManagerHelper::kRequestDevice);
 }
 
 boost::shared_ptr<shared::CDataContainer> CDeviceState::getWifiState()
 {
-   return getState(CUrlManagerHelper::kRequestWifi);
+	return getState(CUrlManagerHelper::kRequestWifi);
 }
 
 boost::shared_ptr<shared::CDataContainer> CDeviceState::getBluetoothState()
 {
-   return getState(CUrlManagerHelper::kRequestBluetooth);
+	return getState(CUrlManagerHelper::kRequestBluetooth);
 }
 
 boost::shared_ptr<shared::CDataContainer> CDeviceState::getAudioState()
 {
-   return getState(CUrlManagerHelper::kRequestAudio);
+	return getState(CUrlManagerHelper::kRequestAudio);
+}
+
+void CDeviceState::getDeviceState()
+{
+	const auto url = buildUrl(CUrlManagerHelper::kRequestApi);
+
+	shared::http::CHttpMethods::sendHeadRequest(
+		url,
+		m_urlManagerHelper->buildCommonHeaderParameters(m_lametricConfiguration));
+}
+
+std::string CDeviceState::buildUrl(const CUrlManagerHelper::ERequestType requestType)
+{
+	m_urlManagerHelper = boost::make_shared<CUrlManagerHelper>(m_lametricConfiguration);
+
+	const auto requestPath = m_urlManagerHelper->getRequestPath(requestType);
+
+	return m_urlManagerHelper->getRequestUrl(m_lametricConfiguration, requestPath);
 }

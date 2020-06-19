@@ -8,6 +8,7 @@ const std::string CUrlManagerHelper::BluetoothPath("/api/v2/device/bluetooth");
 const std::string CUrlManagerHelper::AudioPath("/api/v2/device/audio");
 const std::string CUrlManagerHelper::NotificationsPath("/api/v2/device/notifications");
 const std::string CUrlManagerHelper::Username("dev");
+const std::string CUrlManagerHelper::ApiPath("/api/v2");
 
 CUrlManagerHelper::CUrlManagerHelper(CConfiguration& lametricConfiguration)
    : m_lametricConfiguration(lametricConfiguration)
@@ -33,6 +34,9 @@ std::string CUrlManagerHelper::getRequestPath(const ERequestType requestType)
       break;
    case kRequestNotifications:
       requestPath = NotificationsPath;
+      break;
+   case kRequestApi:
+      requestPath = ApiPath;
       break;
    default:
       requestPath = "";

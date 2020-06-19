@@ -194,8 +194,8 @@ boost::shared_ptr<DeviceInformation> CLametricTime::fillDeviceInformationManuall
 {
 	auto deviceInformation = boost::make_shared<DeviceInformation>();
 	deviceInformation->m_deviceName = DeviceName;
-	deviceInformation->m_deviceModel = m_deviceManager->getDeviceState()->get<std::string>("model");
-	deviceInformation->m_deviceType = m_deviceManager->getDeviceState()->get<std::string>("name");
+	deviceInformation->m_deviceModel = m_deviceManager->getDeviceInformations()->get<std::string>("model");
+	deviceInformation->m_deviceType = m_deviceManager->getDeviceInformations()->get<std::string>("name");
 	return deviceInformation;
 }
 
@@ -277,7 +277,7 @@ boost::shared_ptr<DeviceInformation> CLametricTime::initManually(boost::shared_p
 	m_senderManager = CFactory::createNotificationSender(m_configuration);
 	try
 	{
-		m_deviceManager->getWifiState();
+		m_deviceManager->getDeviceState();
 
 		auto deviceInformation = fillDeviceInformationManually();
 
@@ -291,10 +291,10 @@ boost::shared_ptr<DeviceInformation> CLametricTime::initManually(boost::shared_p
 	}
 	catch (std::exception&)
 	{
-		api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
 		api->getEventHandler().createTimer(kConnectionRetryTimer,
 		                                   shared::event::CEventTimer::kOneShot,
 		                                   boost::posix_time::seconds(30));
+		api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
 		throw;
 	}
 }

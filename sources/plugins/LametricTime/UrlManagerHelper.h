@@ -27,6 +27,7 @@ public:
       kRequestBluetooth,
       kRequestAudio,
       kRequestNotifications,
+      kRequestApi,
       kRequestUnknown
    };
 
@@ -61,4 +62,5 @@ private:
    static const std::string AudioPath;
    static const std::string NotificationsPath;
    static const std::string Username;
+   static const std::string ApiPath;
 };
