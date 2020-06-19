@@ -8,9 +8,9 @@ namespace shared
    namespace http
    {
       //--------------------------------------------------------------
-      /// \brief	Base class for threads
+      /// \brief	Helpers fot HTTP(s) requests
       //--------------------------------------------------------------
-      class CHttpMethods
+      class CHttpMethods final
       {
       public:
          //--------------------------------------------------------------
@@ -19,7 +19,7 @@ namespace shared
          static const int HttpRequestDefaultTimeoutSeconds = 45;
 
          CHttpMethods() = delete;
-         virtual ~CHttpMethods() = default;
+         ~CHttpMethods() = default;
 
 
          //--------------------------------------------------------------
@@ -129,6 +129,44 @@ namespace shared
          static boost::shared_ptr<CDataContainer> sendJsonPostRequest(
             const std::string& url,
             const std::string& body,
+            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+
+
+         //--------------------------------------------------------------
+         //--------------------------------------------------------------
+         // HEAD
+         //--------------------------------------------------------------
+         //--------------------------------------------------------------
+
+         //--------------------------------------------------------------
+         /// \brief	    Send HEAD request to remote server
+         /// \param[in]  url                 the url to send the request
+         /// \param[in]  responseHandlerFct  lambda for response processing
+         /// \param[in]  headerParameters    parameters included into the frame
+         /// \param[in]  parameters          parameters at the end of the url
+         /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
+         /// \return     the answer of the request
+         //--------------------------------------------------------------
+         static void sendHeadRequest(
+            const std::string& url,
+            const boost::function<void(
+               const std::map<std::string, std::string>& receivedHeaders)>& responseHandlerFct,
+            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+
+         //--------------------------------------------------------------
+         /// \brief	    Send HEAD request to remote server
+         /// \param[in]  url                 the url to send the request
+         /// \param[in]  headerParameters    parameters included into the frame
+         /// \param[in]  parameters          parameters at the end of the url
+         /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
+         /// \return     the received headers
+         //--------------------------------------------------------------
+         static std::map<std::string, std::string> sendHeadRequest(
+            const std::string& url,
             const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
             const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
             int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);

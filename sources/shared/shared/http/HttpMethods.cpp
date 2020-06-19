@@ -291,6 +291,104 @@ namespace shared
          return out;
       }
 
+      void CHttpMethods::sendHeadRequest(const std::string& url,
+                                         const boost::function<void(
+                                            const std::map<std::string, std::string>& receivedHeaders)>&
+                                         responseHandlerFct,
+                                         const std::map<std::string, std::string>& headerParameters,
+                                         const std::map<std::string, std::string>& parameters,
+                                         int timeoutSeconds)
+      {
+         curlpp::Easy request;
+
+         request.setOpt(new curlpp::options::HttpGet(true));
+
+         request.setOpt(new curlpp::options::NoBody(true));
+
+         request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
+
+         // Proxy
+         if (CProxy::available())
+            CCurlppHelpers::setProxy(request,
+                                     url,
+                                     CProxy::getHost(),
+                                     CProxy::getPort(),
+                                     CProxy::getUsername(),
+                                     CProxy::getPassword(),
+                                     CProxy::getBypassRegex());
+
+         // Follow redirections
+         request.setOpt(new curlpp::options::FollowLocation(true));
+         request.setOpt(new curlpp::options::MaxRedirs(3));
+
+         // URL + parameters
+         request.setOpt(
+            new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
+
+         // HTTPS support : skip peer and host verification
+         static const std::string HttpsHeader("https://");
+         if (std::search(url.begin(), url.end(),
+                         HttpsHeader.begin(), HttpsHeader.end(),
+                         [](const char ch1, const char ch2)
+                         {
+                            return std::tolower(ch1) == std::tolower(ch2);
+                         })
+            != url.end())
+         {
+            request.setOpt(new curlpp::options::SslVerifyPeer(false));
+            request.setOpt(new curlpp::options::SslVerifyHost(false));
+         }
+
+         // Headers
+         CCurlppHelpers::setHeaders(request, headerParameters);
+
+         // Response headers
+         std::string headersBuffer;
+         request.setOpt(curlpp::options::HeaderFunction(
+            [&headersBuffer](char* ptr, size_t size, size_t nbItems)
+            {
+               const auto incomingSize = size * nbItems;
+               headersBuffer.append(ptr, incomingSize);
+               return incomingSize;
+            }));
+
+         try
+         {
+            request.perform();
+         }
+         catch (const curlpp::LibcurlRuntimeError& error)
+         {
+            const auto message = (boost::format("Fail to send HEAD HTTP request : %1%, code %2%") % error.what() % error
+               .whatCode()).str();
+            YADOMS_LOG(warning) << message;
+            throw exception::CHttpException(message);
+         }
+
+         CCurlppHelpers::checkResult(request);
+
+         responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer));
+      }
+
+      std::map<std::string, std::string> CHttpMethods::sendHeadRequest(const std::string& url,
+                                                                       const std::map<std::string, std::string>&
+                                                                       headerParameters,
+                                                                       const std::map<std::string, std::string>&
+                                                                       parameters,
+                                                                       int timeoutSeconds)
+      {
+         std::map<std::string, std::string> out;
+         sendHeadRequest(url,
+                         [&out](const std::map<std::string, std::string>& receivedHeaders)
+                         {
+                            out = receivedHeaders;
+                         },
+                         headerParameters,
+                         parameters,
+                         timeoutSeconds);
+
+         return out;
+      }
+
       boost::shared_ptr<CDataContainer> CHttpMethods::processJsonResponse(
          const std::map<std::string, std::string>& receivedHeaders,
          const std::string& data)
