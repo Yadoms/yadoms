@@ -32,5 +32,5 @@ private:
 
    boost::shared_ptr<shared::CDataContainer> getState(CUrlManagerHelper::ERequestType requestType);
 
-   std::string CDeviceState::buildUrl(const CUrlManagerHelper::ERequestType requestType);
+   std::string buildUrl(const CUrlManagerHelper::ERequestType requestType);
 };
