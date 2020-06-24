@@ -24,7 +24,7 @@ void CHttpController::sendCommand(const std::string& ip, const std::string& comm
       cmd << "," << commandData;
       std::string urlToCall = cmd.str();
       urlToCall = processText(urlToCall);
-      shared::CHttpMethods::sendGetRequest(urlToCall);
+      shared::http::CHttpMethods::sendGetRequest(urlToCall);
    }
    catch (std::exception& ex)
    {

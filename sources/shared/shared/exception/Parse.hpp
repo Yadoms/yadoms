@@ -2,29 +2,30 @@
 
 #include "Exception.hpp"
 
-namespace shared { namespace exception
+namespace shared
 {
-
-   //--------------------------------------------------------------
-   /// \class Exception for accessing NULL objects
-   //--------------------------------------------------------------
-   class CParse : public CException
+   namespace exception
    {
-   public:
       //--------------------------------------------------------------
-      /// \brief	                        Constructor
+      /// \brief Exception for accessing NULL objects
       //--------------------------------------------------------------
-      explicit CParse(const std::string& message)
-         :CException(message)
+      class CParse : public CException
       {
-      }
+      public:
+         //--------------------------------------------------------------
+         /// \brief	                        Constructor
+         //--------------------------------------------------------------
+         explicit CParse(const std::string& message)
+            : CException(message)
+         {
+         }
 
-      //--------------------------------------------------------------
-      /// \brief      Destructor
-      //--------------------------------------------------------------
-      virtual ~CParse() throw()
-      {
-      }
-   };
-
-} } // namespace shared::exception
+         //--------------------------------------------------------------
+         /// \brief      Destructor
+         //--------------------------------------------------------------
+         virtual ~CParse() throw()
+         {
+         }
+      };
+   }
+} // namespace shared::exception

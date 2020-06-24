@@ -4,7 +4,7 @@ CSsdpDiscoveredDevice::CSsdpDiscoveredDevice()
 {
 }
 
-CSsdpDiscoveredDevice::CSsdpDiscoveredDevice(std::vector<std::string>& devicesDescription)
+CSsdpDiscoveredDevice::CSsdpDiscoveredDevice(const std::vector<std::string>& devicesDescription)
 	: m_deviceDescription(devicesDescription)
 {
 }

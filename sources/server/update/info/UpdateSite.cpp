@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "UpdateSite.h"
-#include <shared/web/UriHelpers.h>
-#include <shared/web/FileDownloader.h>
 #include <Poco/Environment.h>
 #include "startupOptions/IStartupOptions.h"
 #include <shared/http/HttpMethods.h>
@@ -59,32 +57,33 @@ namespace update
       }
 
       boost::shared_ptr<shared::CDataContainer> CUpdateSite::callDistantScript(const std::string& script,
-                                                            bool includeOsAndArch,
-                                                            const std::string& resultFieldToReturn)
+                                                                               bool includeOsAndArch,
+                                                                               const std::string& resultFieldToReturn)
       {
          const auto startupOptions(shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>());
          const auto url(startupOptions->getUpdateSiteUri() + script);
 
          try
          {
-            shared::CDataContainer parameters;
+            std::map<std::string, std::string> parameters;
             if (includeOsAndArch)
             {
-               parameters.set(DistantScriptParamOs, Poco::Environment::osName());
-               parameters.set(DistantScriptParamArch, Poco::Environment::osArchitecture());
+               parameters[DistantScriptParamOs] = Poco::Environment::osName();
+               parameters[DistantScriptParamArch] = Poco::Environment::osArchitecture();
             }
             if (startupOptions->getDeveloperMode())
             {
-               parameters.set(DistantScriptParamDevMode, "1");
+               parameters[DistantScriptParamDevMode] = "1";
             }
 
-            shared::CDataContainer headerParameters;
-            headerParameters.set("User-Agent", "yadoms");
-            headerParameters.set("Accept", "application/json");
-            headerParameters.set("Connection", "close");
-            const auto lastVersionInformation(shared::CHttpMethods::sendGetRequest(url,
-                                                                                   headerParameters,
-                                                                                   parameters));
+            const std::map<std::string, std::string> headerParameters = {
+               {"User-Agent", "yadoms"},
+               {"Accept", "application/json"},
+               {"Connection", "close"}
+            };
+            const auto lastVersionInformation(shared::http::CHttpMethods::sendJsonGetRequest(url,
+                                                                                             headerParameters,
+                                                                                             parameters));
 
             if (!lastVersionInformation->containsValue(DistantScriptResult))
                throw std::runtime_error("Fail to get data from " + url);

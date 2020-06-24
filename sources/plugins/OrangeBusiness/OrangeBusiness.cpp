@@ -5,7 +5,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/Log.h>
-#include <shared/http/HttpException.hpp>
+#include <shared/exception/HttpException.hpp>
 #include "UnauthorizedException.hpp"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
@@ -105,7 +105,7 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
               try {
                  m_equipmentManager->refreshEquipments(api, m_frameManager, m_configuration.getAPIKey(), m_decoder);
               }
-              catch (shared::CHttpException &)
+              catch (shared::exception::CHttpException &)
               {
                  api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
                  YADOMS_LOG(error) << "Error during connection to the web site";
@@ -159,7 +159,7 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                extraQuery->sendSuccess(shared::CDataContainer::make());
             }
-            catch (shared::CHttpException &e)
+            catch (shared::exception::CHttpException &e)
             {
                api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
                YADOMS_LOG(error) << "Error during connection to the web site";

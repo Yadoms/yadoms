@@ -8,10 +8,10 @@ const std::string CUrlManagerHelper::BluetoothPath("/api/v2/device/bluetooth");
 const std::string CUrlManagerHelper::AudioPath("/api/v2/device/audio");
 const std::string CUrlManagerHelper::NotificationsPath("/api/v2/device/notifications");
 const std::string CUrlManagerHelper::Username("dev");
+const std::string CUrlManagerHelper::ApiPath("/api/v2");
 
 CUrlManagerHelper::CUrlManagerHelper(CConfiguration& lametricConfiguration)
-   : m_lametricConfiguration(lametricConfiguration),
-     m_commonHeaderParameters(buildCommonHeaderParameters(lametricConfiguration))
+   : m_lametricConfiguration(lametricConfiguration)
 {
 }
 
@@ -35,14 +35,17 @@ std::string CUrlManagerHelper::getRequestPath(const ERequestType requestType)
    case kRequestNotifications:
       requestPath = NotificationsPath;
       break;
+   case kRequestApi:
+      requestPath = ApiPath;
+      break;
    default:
-      requestPath = "";;
+      requestPath = "";
    }
    return requestPath;
 }
 
 std::string CUrlManagerHelper::getRequestUrl(const CConfiguration& lametricConfiguration,
-                                      const std::string& requestPath)
+                                             const std::string& requestPath)
 {
    const auto protocolType = lametricConfiguration.getPort() == kHttp ? "http://" : "https://";
 
@@ -51,24 +54,23 @@ std::string CUrlManagerHelper::getRequestUrl(const CConfiguration& lametricConfi
 }
 
 
-boost::shared_ptr<shared::CDataContainer> CUrlManagerHelper::buildCommonHeaderParameters(const CConfiguration& lametricConfiguration)
+std::map<std::string, std::string> CUrlManagerHelper::buildCommonHeaderParameters(
+   const CConfiguration& lametricConfiguration)
 {
    const auto apiKey = lametricConfiguration.getAPIKey();
 
    const std::string authorizationType = "Basic ";
-
    const auto authorizationHeader = Username + ":" + apiKey;
 
+   std::map<std::string, std::string> headerParameters;
+   headerParameters["Authorization"] =
+      authorizationType + shared::encryption::CBase64::encode(
+         reinterpret_cast<const unsigned char*>(authorizationHeader.c_str()),
+         authorizationHeader.length());
 
-   boost::shared_ptr<shared::CDataContainer> headerParameters = shared::CDataContainer::make();
-   headerParameters->set("Authorization",
-                        authorizationType + shared::encryption::CBase64::encode(
-                           reinterpret_cast<const unsigned char*>(authorizationHeader.c_str()),
-                           authorizationHeader.length()));
-
-   headerParameters->set("User-Agent", "yadoms");
-   headerParameters->set("Accept", "application/json");
-   headerParameters->set("Connection", "close");
+   headerParameters["User-Agent"] = "yadoms";
+   headerParameters["Accept"] = "application/json";
+   headerParameters["Connection"] = "close";
 
    return headerParameters;
 }

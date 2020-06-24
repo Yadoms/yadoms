@@ -8,70 +8,81 @@ namespace tools
    boost::filesystem::path CFileSystem::createTemporaryFolder()
    {
       const auto tempPath = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
-      boost::filesystem::create_directories(tempPath);
+      create_directories(tempPath);
       return tempPath;
    }
 
-
    bool CFileSystem::exists(const std::string& path)
    {
-      Poco::File check(path);
-      return check.exists();
+      return boost::filesystem::exists(path);
    }
 
-   bool CFileSystem::exists(const Poco::Path& path)
+   bool CFileSystem::exists(const boost::filesystem::path& path)
    {
-      return exists(path.toString());
+      return boost::filesystem::exists(path);
    }
 
-
-   void CFileSystem::copyDirectoryContentTo(const Poco::Path& sourceDirectory, const Poco::Path& destination)
+   void CFileSystem::copyDirectoryContentTo(const boost::filesystem::path& sourceDirectory,
+                                            const boost::filesystem::path& destination)
    {
-      return copyDirectoryContentTo(sourceDirectory.toString(), destination.toString());
-   }
+      if (!boost::filesystem::exists(sourceDirectory) || !is_directory(sourceDirectory))
+         throw std::runtime_error(
+            "Copy directory failed : The folder (" + sourceDirectory.string() +
+            ") to copy do not exists or is not a directory");
 
+      if (!boost::filesystem::exists(destination))
+         if (!create_directory(destination))
+            throw std::runtime_error(
+               "Copy directory failed : destination directory " + destination.string() + " must exist");
 
-   void CFileSystem::copyDirectoryContentTo(const Poco::Path& sourceDirectory, const std::string& destination)
-   {
-      return copyDirectoryContentTo(sourceDirectory.toString(), destination);
-   }
-
-
-   void CFileSystem::copyDirectoryContentTo(const std::string& sourceDirectory, const std::string& destination)
-   {
-      Poco::File initialDirectory(sourceDirectory);
-      if (initialDirectory.exists() && initialDirectory.isDirectory())
+      for (boost::filesystem::directory_iterator file(sourceDirectory);
+           file != boost::filesystem::directory_iterator();
+           ++file)
       {
-         std::vector<Poco::File> content;
-         initialDirectory.list(content);
-         for (const auto& i : content)
-            i.copyTo(destination);
-      }
-      else
-      {
-         throw Poco::FileException("The folder to copy do not exists or is not a directory");
+         try
+         {
+            auto current(file->path());
+            if (is_directory(current))
+            {
+               // Found directory: Recursion
+               copyDirectoryContentTo(current, destination / current.filename());
+            }
+            else
+            {
+               // Found file: Copy
+               copy_file(current, destination / current.filename());
+            }
+         }
+         catch (boost::filesystem::filesystem_error const& e)
+         {
+            throw std::runtime_error(std::string("Copy directory failed : ") + e.what());
+         }
       }
    }
 
-   bool CFileSystem::copyDirectoryRecursivelyTo(boost::filesystem::path const& source, boost::filesystem::path const& destination)
+   bool CFileSystem::copyDirectoryRecursivelyTo(const boost::filesystem::path& source,
+                                                const boost::filesystem::path& destination)
    {
       try
       {
          // Check whether the function call is valid
-         if (!boost::filesystem::exists(source) || !boost::filesystem::is_directory(source))
+         if (!boost::filesystem::exists(source) || !is_directory(source))
          {
-            YADOMS_LOG(error) << "[CFileSystem::copyDir] : Source directory " << source.string() << " does not exist or is not a directory.";
+            YADOMS_LOG(error) << "[CFileSystem::copyDir] : Source directory " << source.string() <<
+               " does not exist or is not a directory.";
             return false;
          }
          if (boost::filesystem::exists(destination))
          {
-            YADOMS_LOG(error) << "[CFileSystem::copyDir] : Destination directory " << destination.string() << " already exists.";
+            YADOMS_LOG(error) << "[CFileSystem::copyDir] : Destination directory " << destination.string() <<
+               " already exists.";
             return false;
          }
          // Create the destination directory
-         if (!boost::filesystem::create_directory(destination))
+         if (!create_directory(destination))
          {
-            YADOMS_LOG(error) << "[CFileSystem::copyDir] : Unable to create destination directory" << destination.string();
+            YADOMS_LOG(error) << "[CFileSystem::copyDir] : Unable to create destination directory" << destination.
+               string();
             return false;
          }
       }
@@ -86,7 +97,7 @@ namespace tools
          try
          {
             auto current(file->path());
-            if (boost::filesystem::is_directory(current))
+            if (is_directory(current))
             {
                // Found directory: Recursion
                if (!copyDirectoryRecursivelyTo(current, destination / current.filename()))
@@ -97,7 +108,7 @@ namespace tools
             else
             {
                // Found file: Copy
-               boost::filesystem::copy_file(current, destination / current.filename());
+               copy_file(current, destination / current.filename());
             }
          }
          catch (boost::filesystem::filesystem_error const& e)
@@ -108,9 +119,9 @@ namespace tools
       return true;
    }
 
-   void CFileSystem::remove(const Poco::Path& path, bool recursive)
+   void CFileSystem::remove(const boost::filesystem::path& path, bool recursive)
    {
-      return remove(path.toString(), recursive);
+      return remove(path.string(), recursive);
    }
 
    void CFileSystem::remove(const std::string& path, bool recursive)
@@ -122,14 +133,14 @@ namespace tools
       }
    }
 
-
-   void CFileSystem::rename(const Poco::Path& source, const Poco::Path& destination)
+   void CFileSystem::rename(const boost::filesystem::path& source,
+                            const boost::filesystem::path& destination)
    {
-      return rename(source.toString(), destination.toString());
+      return rename(source.string(), destination.string());
    }
 
-
-   void CFileSystem::rename(const std::string& source, const std::string& destination)
+   void CFileSystem::rename(const std::string& source,
+                            const std::string& destination)
    {
       Poco::File target(source);
       target.renameTo(destination);

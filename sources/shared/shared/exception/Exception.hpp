@@ -12,10 +12,9 @@ namespace shared
       //--------------------------------------------------------------
       class CException : public std::exception
       {
-      protected:
-         CException() = default;
-
       public:
+         CException() = delete;
+
          //--------------------------------------------------------------
          /// \brief	                        Constructor
          /// \param[in]  message             Exception message

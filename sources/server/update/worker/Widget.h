@@ -1,5 +1,5 @@
 #pragma once
-#include "WorkerTools.h"
+#include "WorkerHelpers.h"
 #include "IWidgetInformation.h"
 
 
@@ -13,14 +13,14 @@ namespace update
          //---------------------------------------------
          ///\brief                        Install a new widget
          //---------------------------------------------
-         static void install(CWorkerTools::WorkerProgressFunc progressCallback,
+         static void install(CWorkerHelpers::WorkerProgressFunc progressCallback,
                              const std::string& downloadUrl,
                              const boost::filesystem::path& widgetsPath);
 
          //---------------------------------------------
          ///\brief                        Update a widget
          //---------------------------------------------
-         static void update(CWorkerTools::WorkerProgressFunc progressCallback,
+         static void update(CWorkerHelpers::WorkerProgressFunc progressCallback,
                             const std::string& widgetName,
                             const std::string& downloadUrl,
                             const boost::filesystem::path& widgetsPath);
@@ -28,7 +28,7 @@ namespace update
          //---------------------------------------------
          ///\brief                        Remove a widget
          //---------------------------------------------
-         static void remove(CWorkerTools::WorkerProgressFunc progressCallback,
+         static void remove(CWorkerHelpers::WorkerProgressFunc progressCallback,
                             const std::string& widgetName,
                             const boost::filesystem::path& widgetsPath);
 

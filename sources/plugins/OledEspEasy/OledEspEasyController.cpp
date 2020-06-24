@@ -49,7 +49,7 @@ void COledEspEasyController::sendCommand(const ECommands& command, const std::ve
       {
          cmd << "," << arg;
       }
-      shared::CHttpMethods::sendGetRequest(cmd.str());
+      shared::http::CHttpMethods::sendGetRequest(cmd.str());
    }
    catch (std::exception& ex)
    {
