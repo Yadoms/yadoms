@@ -1,3 +1,11 @@
+### 2.5.0-beta.1
+
+#### Yadoms
+* Fix #617 : File download progress is yet again available
+* New feature #572 : Proxy support for http requests
+* New feature #603 : Manage redirections for http requests
+
+
 ### 2.4.0-beta.2
 
 #### Yadoms
@@ -7,7 +15,7 @@
 ### 2.4.0-beta.1
 
 #### Yadoms
-* New feature #538 : Neww meteo plugin (remove weather underground)
+* New feature #538 : New meteo plugin (remove weather underground)
 * New feature #543 : Add a Python 3.x script interpreter
 * New feature #575 : Add keyword without history
 * New feature #587 : add OledScreen (EspEasy) plugin

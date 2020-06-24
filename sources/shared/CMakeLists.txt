@@ -105,25 +105,30 @@ set(SHARED_LIB_SRC
    shared/event/ITimeEvent.h
 
    shared/exception/BadConversion.hpp
+   shared/exception/DownloadFailed.hpp
    shared/exception/EmptyResult.hpp
    shared/exception/Exception.hpp
    shared/exception/Extract.hpp
+   shared/exception/HttpException.hpp
+   shared/exception/InvalidHash.hpp
    shared/exception/InvalidParameter.hpp
+   shared/exception/JSONParse.hpp
    shared/exception/NotImplemented.hpp
    shared/exception/NotSupported.hpp
    shared/exception/NullReference.hpp
    shared/exception/OutOfRange.hpp
    shared/exception/Parse.hpp
-   shared/exception/JSONParse.hpp
    
-   shared/http/IHttpSession.h
-   shared/http/HttpException.hpp
+   shared/http/curlppHelpers.h
+   shared/http/curlppHelpers.cpp
+   shared/http/FileDownloader.h
+   shared/http/FileDownloader.cpp
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp
-   shared/http/SecureSession.h
-   shared/http/SecureSession.cpp
-   shared/http/StandardSession.h
-   shared/http/StandardSession.cpp
+   shared/http/Proxy.h
+   shared/http/Proxy.cpp
+   shared/http/UrlHelpers.h
+   shared/http/UrlHelpers.cpp
 
    shared/plugin/information/IInformation.h
    shared/plugin/information/IYadomsInformation.h
@@ -362,13 +367,6 @@ set(SHARED_LIB_SRC
    shared/versioning/SemVer.cpp
    shared/versioning/VersionInformation.h
    shared/versioning/VersionInformation.cpp
-   
-   shared/web/FileDownloader.h
-   shared/web/FileDownloader.cpp
-   shared/web/UriHelpers.h
-   shared/web/UriHelpers.cpp
-   shared/web/exception/InvalidHash.hpp
-   shared/web/exception/DownloadFailed.hpp
 )
 
 #Append platform specific files
@@ -472,9 +470,7 @@ source_group(serialization shared/shared/serialization/*.* )
 source_group(script shared/shared/script/*.* )	
 source_group(script\\yScriptApi shared/shared/script/yScriptApi/*.* )	
 source_group(tools shared/shared/tools/*.* )	
-source_group(versioning shared/shared/versioning/*.* )	
-source_group(web shared/shared/web/*.* )	
-source_group(web\\exception shared/shared/web/exception/*.* )	
+source_group(versioning shared/shared/versioning/*.* )
 
 source_group(platformSpecific\\windows shared/windows/shared/*.*)
 source_group(platformSpecific\\windows\\process shared/windows/shared/process/*.*)
@@ -492,8 +488,16 @@ source_group(platformSpecific\\mac\\process shared/mac/shared/process/*.*)
 ########################
 add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 
-target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
-set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}  ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS} curlpp_static libcurl)
+
+set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
+   ${BOOST_INCL_DIR}
+   ${CMAKE_CURRENT_SOURCE_DIR}
+   ${PLATFORM_SPECIFIC_INCL_DIR}
+   ${Poco_INCLUDE_DIRS}
+   ${OPENSSL_INCLUDE_DIR}
+   ${CURLPP_INCLUDE_DIRECTORIES}
+)
 
 if(COTIRE_USE)
    set_target_properties(yadoms-shared PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
@@ -508,7 +512,14 @@ if(COTIRE_USE)
 	
    if(COTIRE_USE_UNITY)
       target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
-      set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+      set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
+         ${BOOST_INCL_DIR}
+         ${CMAKE_CURRENT_SOURCE_DIR}
+         ${PLATFORM_SPECIFIC_INCL_DIR}
+         ${Poco_INCLUDE_DIRS}
+         ${OPENSSL_INCLUDE_DIR}
+         ${CURLPP_INCLUDE_DIRECTORIES}
+      )
    endif()	
 else()
    add_precompiled_header(yadoms-shared stdafx.h)

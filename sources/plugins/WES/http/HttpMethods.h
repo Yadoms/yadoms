@@ -29,7 +29,7 @@ namespace http
       static boost::shared_ptr<shared::CDataContainer> SendGetRequest(
 		  const std::string & url,
           const boost::shared_ptr<shared::CDataContainer>& parameters,
-		  http::httpContext& context,
+		    http::httpContext& context,
           const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
@@ -44,7 +44,7 @@ namespace http
 		  const std::string & url,
           const boost::shared_ptr<shared::CDataContainer>& credentials,
           const boost::shared_ptr<shared::CDataContainer>& parameters,
-		  http::httpContext& context,
+		    http::httpContext& context,
           const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
@@ -61,7 +61,7 @@ namespace http
           const boost::shared_ptr<shared::CDataContainer>& credentials,
           const boost::shared_ptr<shared::CDataContainer>& parameters,
           boost::function1<void, boost::shared_ptr<shared::CDataContainer>&> onReceive,
-		  http::httpContext& context,
+		    http::httpContext& context,
           const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------

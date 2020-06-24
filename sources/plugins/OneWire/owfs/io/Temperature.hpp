@@ -18,7 +18,7 @@ namespace owfs
          /// \param[in]	devicePath Device path
          /// \param[in]	valueSubPath OWFS value sub-path
          //--------------------------------------------------------------
-         CTemperature(const boost::filesystem::path& devicePath, const boost::filesystem::path& valueSubPath = boost::filesystem::path("temperature"))
+         explicit CTemperature(const boost::filesystem::path& devicePath, const boost::filesystem::path& valueSubPath = boost::filesystem::path("temperature"))
             : CSingleReadOnlyData(devicePath, valueSubPath) {}
 
          //--------------------------------------------------------------

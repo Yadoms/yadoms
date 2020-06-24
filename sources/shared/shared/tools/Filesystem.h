@@ -20,7 +20,7 @@ namespace shared
                                                      const boost::filesystem::path& to);
 
 		 //---------------------------------------------
-		 ///\brief Compute diretory size
+		 ///\brief Compute directory size
 		 ///\param [in] directory Directory to compute size
 		 ///\param [in] recurse True to compute directory tree size
 		 ///\return the size in bytes

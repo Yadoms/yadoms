@@ -153,7 +153,7 @@ namespace update
       return updateAvailable;
    }
 
-   void CUpdateManager::scanForUpdates(const worker::CWorkerTools::WorkerProgressFunc progress_callback)
+   void CUpdateManager::scanForUpdates(const worker::CWorkerHelpers::WorkerProgressFunc progress_callback)
    {
       YADOMS_LOG(information) << "Scan for updates...";
 

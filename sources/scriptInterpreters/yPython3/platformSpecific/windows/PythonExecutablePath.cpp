@@ -95,7 +95,7 @@ void CPythonExecutablePath::getPythonCorePath(Poco::Util::WinRegistryKey& winReg
 
 void CPythonExecutablePath::fillPythonPathByPyCore(const HKEY& hKey,
                                                    const std::string& subKey,
-                                                   std::string& installedPythonVersion,
+                                                   const std::string& installedPythonVersion,
                                                    std::vector<boost::filesystem::path>& paths)
 {
    Poco::Util::WinRegistryKey currentVersion(hKey, subKey + "\\" + installedPythonVersion, true);

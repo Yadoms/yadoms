@@ -282,13 +282,17 @@ namespace xplcore
 
             if (headerLineDecomposed[nameIndex] == XplHopHeader)
             {
-               int hop;
-               if (!shared::CStringExtension::tryParse<int>(headerLineDecomposed[valueIndex], hop))
+               try
+               {
+                  const auto hop = std::stoi(headerLineDecomposed[valueIndex]);
+                  msg.setHop(hop);
+                  //we indicate that hop has been successfully parsed
+                  hopHasBeenFound = true;
+               }
+               catch (const std::exception&)
+               {
                   throw CXplException("Hop value must be an int");
-
-               msg.setHop(hop);
-               //we indicate that hop has been successfully parsed
-               hopHasBeenFound = true;
+               }
             }
 
             if (headerLineDecomposed[nameIndex] == XplSourceHeader)

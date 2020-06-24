@@ -18,7 +18,7 @@ namespace owfs
          /// \param[in]	devicePath Device path
          /// \param[in]	valueSubPath OWFS value sub-path
          //--------------------------------------------------------------
-         CPressure(const boost::filesystem::path& devicePath,
+         explicit CPressure(const boost::filesystem::path& devicePath,
                    const boost::filesystem::path& valueSubPath = boost::filesystem::path("pressure"))
             : CSingleReadOnlyData(devicePath, valueSubPath)
          {

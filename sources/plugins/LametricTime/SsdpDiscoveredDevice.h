@@ -5,7 +5,7 @@ class CSsdpDiscoveredDevice
 {
 public:
 	CSsdpDiscoveredDevice();
-	explicit CSsdpDiscoveredDevice(std::vector<std::string>& devicesDescription);
+	explicit CSsdpDiscoveredDevice(const std::vector<std::string>& devicesDescription);
 	virtual ~CSsdpDiscoveredDevice() = default;
 	
 	std::string findTag(const std::string& tagName, const int& index) const;

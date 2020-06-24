@@ -1,251 +1,413 @@
 #include "stdafx.h"
 #include "HttpMethods.h"
-#include "HttpException.hpp"
-#include <Poco/Net/HTTPRequest.h>
-#include <Poco/Net/SSLException.h>
-#include <shared/exception/Exception.hpp>
+#include <shared/exception/HttpException.hpp>
 #include <shared/Log.h>
-#include "SecureSession.h"
-#include "StandardSession.h"
-#include <Poco/URI.h>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
+#include <curlpp/cURLpp.hpp>
+#include <curlpp/Options.hpp>
+#include <curlpp/Infos.hpp>
+#include <regex>
+#include "curlppHelpers.h"
+#include "Proxy.h"
 
 namespace shared
 {
-   boost::shared_ptr<CDataContainer> CHttpMethods::sendGetRequest(const std::string& url,
-                                               const CDataContainer& headerParameters,
-                                               const CDataContainer& parameters,
-                                               const ESessionType& sessionType,
-                                               const boost::posix_time::time_duration& timeout)
+   namespace http
    {
-      boost::shared_ptr<CDataContainer> out;
-      sendGetRequest(url,
-                     [&out](const Poco::Net::HTTPResponse& response,
-                            std::istream& receivedStream)
-                     {
-                        out = processJsonResponse(response,
-                                                  receivedStream);
-                     },
-                     headerParameters,
-                     parameters,
-                     sessionType,
-                     timeout);
-
-      return out;
-   }
-
-   void CHttpMethods::sendGetRequest(const std::string& url,
-                                     const boost::function<void(const Poco::Net::HTTPResponse& response,
-                                                                std::istream& receivedStream)>& responseHandlerFct,
-                                     const CDataContainer& headerParameters,
-                                     const CDataContainer& parameters,
-                                     const ESessionType& sessionType,
-                                     const boost::posix_time::time_duration& timeout)
-   {
-      try
+      class CCurlResources final
       {
-         const auto& mapParameters = parameters.getAsMap<std::string>();
-         Poco::URI uri(url);
-
-         if (!parameters.empty())
+      public:
+         CCurlResources()
          {
-            for (const auto& parametersIterator : mapParameters)
-               uri.addQueryParameter(parametersIterator.first,
-                                     parametersIterator.second);
+            cURLpp::initialize(CURL_GLOBAL_ALL);
          }
 
-         Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
-                                        uri.getPathAndQuery(),
-                                        Poco::Net::HTTPMessage::HTTP_1_1);
-
-         const auto& mapHeaderParameters = headerParameters.getAsMap<std::string>();
-         if (!headerParameters.empty())
+         ~CCurlResources()
          {
-            for (const auto& headerParametersIterator : mapHeaderParameters)
-               request.add(headerParametersIterator.first,
-                           headerParametersIterator.second);
+            cURLpp::terminate();
+         }
+      };
+
+      // ReSharper disable once CppDeclaratorNeverUsed
+      static CCurlResources CurlResources;
+
+
+      void CHttpMethods::sendGetRequest(const std::string& url,
+                                        const boost::function<void(
+                                           const std::map<std::string, std::string>& receivedHeaders,
+                                           const std::string& data)>& responseHandlerFct,
+                                        const std::map<std::string, std::string>& headerParameters,
+                                        const std::map<std::string, std::string>& parameters,
+                                        int timeoutSeconds)
+      {
+         curlpp::Easy request;
+
+         request.setOpt(new curlpp::options::HttpGet(true));
+
+         request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
+
+         // Proxy
+         if (CProxy::available())
+            CCurlppHelpers::setProxy(request,
+                                     url,
+                                     CProxy::getHost(),
+                                     CProxy::getPort(),
+                                     CProxy::getUsername(),
+                                     CProxy::getPassword(),
+                                     CProxy::getBypassRegex());
+
+         // Follow redirections
+         request.setOpt(new curlpp::options::FollowLocation(true));
+         request.setOpt(new curlpp::options::MaxRedirs(3));
+
+         // URL + parameters
+         request.setOpt(
+            new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
+
+         // HTTPS support : skip peer and host verification
+         static const std::string HttpsHeader("https://");
+         if (std::search(url.begin(), url.end(),
+                         HttpsHeader.begin(), HttpsHeader.end(),
+                         [](const char ch1, const char ch2)
+                         {
+                            return std::tolower(ch1) == std::tolower(ch2);
+                         })
+            != url.end())
+         {
+            request.setOpt(new curlpp::options::SslVerifyPeer(false));
+            request.setOpt(new curlpp::options::SslVerifyHost(false));
          }
 
-         auto session(createSession(sessionType,
-                                    url,
-                                    timeout));
+         // Headers
+         CCurlppHelpers::setHeaders(request, headerParameters);
 
-         session->sendRequest(request);
+         // Response headers
+         std::string headersBuffer;
+         request.setOpt(curlpp::options::HeaderFunction(
+            [&headersBuffer](char* ptr, size_t size, size_t nbItems)
+            {
+               const auto incomingSize = size * nbItems;
+               headersBuffer.append(ptr, incomingSize);
+               return incomingSize;
+            }));
 
-         Poco::Net::HTTPResponse response;
-         auto& receivedStream = session->receiveResponse(response);
+         // Response data
+         std::string dataBuffer;
+         request.setOpt(curlpp::options::WriteFunction(
+            [&dataBuffer](char* ptr, size_t size, size_t nbItems)
+            {
+               const auto incomingSize = size * nbItems;
+               dataBuffer.append(ptr, incomingSize);
+               return incomingSize;
+            }));
 
-         if (response.getStatus() != Poco::Net::HTTPResponse::HTTP_OK)
+         try
          {
-            const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
+            request.perform();
+         }
+         catch (const curlpp::LibcurlRuntimeError& error)
+         {
+            const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
+               whatCode()).str();
             YADOMS_LOG(warning) << message;
-            throw exception::CException(message);
+            throw exception::CHttpException(message);
          }
 
-         responseHandlerFct(response,
-                            receivedStream);
-      }
-      catch (const Poco::Net::SSLException& e)
-      {
-         std::cerr << e.what() << ": " << e.message() << std::endl;
-         throw CHttpException(e.message());
-      }
-      catch (Poco::Exception& e)
-      {
-         const auto message = (boost::format("Fail to send GET http request \"%1%\" : %2%") % url % e.
-            message()).str();
-         YADOMS_LOG(warning) << message;
-         YADOMS_LOG(warning) << "Request was : " << url;
-         throw CHttpException(message);
-      }
-      catch (std::exception& e)
-      {
-         const auto message = (boost::format("Fail to send GET http request or interpret answer \"%1%\" : %2%") % url %
-            e.what()).str();
-         YADOMS_LOG(warning) << message;
-         throw CHttpException(message);
-      }
-   }
+         CCurlppHelpers::checkResult(request);
 
-   boost::shared_ptr<CDataContainer> CHttpMethods::sendPostRequest(const std::string& url,
-                                                const std::string& body,
-                                                const CDataContainer& headerParameters,
-                                                const CDataContainer& parameters,
-                                                const ESessionType& sessionType,
-                                                const boost::posix_time::time_duration& timeout)
-   {
-      boost::shared_ptr<CDataContainer> out;
-      sendPostRequest(url,
-                      body,
-                      [&out](const Poco::Net::HTTPResponse& response,
-                             std::istream& receivedStream)
-                      {
-                         out = processJsonResponse(response,
-                                                   receivedStream);
-                      },
-                      headerParameters,
-                      parameters,
-                      sessionType,
-                      timeout);
+         responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer),
+                            dataBuffer);
+      }
 
-      return out;
-   }
-
-   void CHttpMethods::sendPostRequest(const std::string& url,
-                                      const std::string& body,
-                                      const boost::function<void(const Poco::Net::HTTPResponse& response,
-                                                                 std::istream& receivedStream)>& responseHandlerFct,
-                                      const CDataContainer& headerParameters,
-                                      const CDataContainer& parameters,
-                                      const ESessionType& sessionType,
-                                      const boost::posix_time::time_duration& timeout)
-   {
-      try
+      std::string CHttpMethods::sendGetRequest(const std::string& url,
+                                               const std::map<std::string, std::string>& headerParameters,
+                                               const std::map<std::string, std::string>& parameters,
+                                               int timeoutSeconds)
       {
-         const auto& mapParameters = parameters.getAsMap<std::string>();
-         Poco::URI uri(url);
+         std::string out;
+         sendGetRequest(url,
+                        [&out](const std::map<std::string, std::string>& receivedHeaders,
+                               const std::string& data)
+                        {
+                           out = data;
+                        },
+                        headerParameters,
+                        parameters,
+                        timeoutSeconds);
 
-         if (!parameters.empty())
+         return out;
+      }
+
+      boost::shared_ptr<CDataContainer> CHttpMethods::sendJsonGetRequest(
+         const std::string& url,
+         const std::map<std::string, std::string>& headerParameters,
+         const std::map<std::string, std::string>& parameters,
+         int timeoutSeconds)
+      {
+         boost::shared_ptr<CDataContainer> out;
+         sendGetRequest(url,
+                        [&out](const std::map<std::string, std::string>& receivedHeaders,
+                               const std::string& data)
+                        {
+                           out = processJsonResponse(receivedHeaders,
+                                                     data);
+                        },
+                        headerParameters,
+                        parameters,
+                        timeoutSeconds);
+
+         return out;
+      }
+
+      void CHttpMethods::sendPostRequest(const std::string& url,
+                                         const std::string& body,
+                                         const boost::function<void(
+                                            const std::map<std::string, std::string>& receivedHeaders,
+                                            const std::string& data)>& responseHandlerFct,
+                                         const std::map<std::string, std::string>& headerParameters,
+                                         const std::map<std::string, std::string>& parameters,
+                                         int timeoutSeconds)
+      {
+         curlpp::Easy request;
+
+         request.setOpt(new curlpp::options::PostFields(body));
+
+         request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
+
+         // Proxy
+         if (CProxy::available())
+            CCurlppHelpers::setProxy(request,
+                                     url,
+                                     CProxy::getHost(),
+                                     CProxy::getPort(),
+                                     CProxy::getUsername(),
+                                     CProxy::getPassword(),
+                                     CProxy::getBypassRegex());
+
+         // Follow redirections
+         request.setOpt(new curlpp::options::FollowLocation(true));
+         request.setOpt(new curlpp::options::MaxRedirs(3));
+
+         // URL + parameters
+         request.setOpt(
+            new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
+
+         // HTTPS support : skip peer and host verification
+         static const std::string HttpsHeader("https://");
+         if (std::search(url.begin(), url.end(),
+                         HttpsHeader.begin(), HttpsHeader.end(),
+                         [](const char ch1, const char ch2)
+                         {
+                            return std::tolower(ch1) == std::tolower(ch2);
+                         })
+            != url.end())
          {
-            for (const auto& parametersIterator : mapParameters)
-               uri.addQueryParameter(parametersIterator.first,
-                                     parametersIterator.second);
+            request.setOpt(new curlpp::options::SslVerifyPeer(false));
+            request.setOpt(new curlpp::options::SslVerifyHost(false));
          }
 
-         Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST,
-                                        uri.getPathAndQuery(),
-                                        Poco::Net::HTTPMessage::HTTP_1_1);
+         // Headers
+         CCurlppHelpers::setHeaders(request, headerParameters);
 
-         const auto& mapHeaderParameters = headerParameters.getAsMap<std::string>();
-         if (!headerParameters.empty())
+         // Response headers
+         std::string headersBuffer;
+         request.setOpt(curlpp::options::HeaderFunction(
+            [&headersBuffer](char* ptr, size_t size, size_t nbItems)
+            {
+               const auto incomingSize = size * nbItems;
+               headersBuffer.append(ptr, incomingSize);
+               return incomingSize;
+            }));
+
+         // Response data
+         std::string dataBuffer;
+         request.setOpt(curlpp::options::WriteFunction(
+            [&dataBuffer](char* ptr, size_t size, size_t nbItems)
+            {
+               const auto incomingSize = size * nbItems;
+               dataBuffer.append(ptr, incomingSize);
+               return incomingSize;
+            }));
+
+         try
          {
-            for (const auto& headerParametersIterator : mapHeaderParameters)
-               request.add(headerParametersIterator.first,
-                           headerParametersIterator.second);
+            request.perform();
          }
-
-         request.setContentLength(body.length());
-
-         auto session(createSession(sessionType,
-                                    url,
-                                    timeout));
-
-         auto& os = session->sendRequest(request);
-
-         os << body;
-
-         Poco::Net::HTTPResponse response;
-         auto& receivedStream = session->receiveResponse(response);
-
-         if (response.getStatus() != Poco::Net::HTTPResponse::HTTP_OK &&
-            response.getStatus() != Poco::Net::HTTPResponse::HTTP_CREATED)
+         catch (const curlpp::LibcurlRuntimeError& error)
          {
-            const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
+            const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
+               whatCode()).str();
             YADOMS_LOG(warning) << message;
-            throw exception::CException(message);
+            throw exception::CHttpException(message);
          }
 
-         responseHandlerFct(response,
-                            receivedStream);
+         CCurlppHelpers::checkResult(request);
+
+         responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer),
+                            dataBuffer);
       }
-      catch (const Poco::Net::SSLException& e)
+
+      std::string CHttpMethods::sendPostRequest(
+         const std::string& url,
+         const std::string& body,
+         const std::map<std::string, std::string>& headerParameters,
+         const std::map<std::string, std::string>& parameters,
+         int timeoutSeconds)
       {
-         std::cerr << e.what() << ": " << e.message() << std::endl;
-         throw CHttpException(e.message());
+         std::string out;
+         sendPostRequest(url,
+                         body,
+                         [&out](const std::map<std::string, std::string>& receivedHeaders,
+                                const std::string& data)
+                         {
+                            out = data;
+                         },
+                         headerParameters,
+                         parameters,
+                         timeoutSeconds);
+
+         return out;
       }
-      catch (Poco::Exception& e)
+
+      boost::shared_ptr<CDataContainer> CHttpMethods::sendJsonPostRequest(
+         const std::string& url,
+         const std::string& body,
+         const std::map<std::string, std::string>& headerParameters,
+         const std::map<std::string, std::string>& parameters,
+         int timeoutSeconds)
       {
-         const auto message = (boost::format("Fail to send Post http request \"%1%\" : %2%") % url % e.
-            message()).str();
-         YADOMS_LOG(warning) << message;
-         YADOMS_LOG(warning) << "Request was : " << url;
-         throw CHttpException(message);
+         boost::shared_ptr<CDataContainer> out;
+         sendPostRequest(url,
+                         body,
+                         [&out](const std::map<std::string, std::string>& receivedHeaders,
+                                const std::string& data)
+                         {
+                            out = processJsonResponse(receivedHeaders,
+                                                      data);
+                         },
+                         headerParameters,
+                         parameters,
+                         timeoutSeconds);
+
+         return out;
       }
-      catch (std::exception& e)
+
+      void CHttpMethods::sendHeadRequest(const std::string& url,
+                                         const boost::function<void(
+                                            const std::map<std::string, std::string>& receivedHeaders)>&
+                                         responseHandlerFct,
+                                         const std::map<std::string, std::string>& headerParameters,
+                                         const std::map<std::string, std::string>& parameters,
+                                         int timeoutSeconds)
       {
-         const auto message = (boost::format("Fail to send Post http request or interpret answer \"%1%\" : %2%") % url %
-            e.what()).str();
-         YADOMS_LOG(warning) << message;
-         throw CHttpException(message);
+         curlpp::Easy request;
+
+         request.setOpt(new curlpp::options::HttpGet(true));
+
+         request.setOpt(new curlpp::options::NoBody(true));
+
+         request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
+
+         // Proxy
+         if (CProxy::available())
+            CCurlppHelpers::setProxy(request,
+                                     url,
+                                     CProxy::getHost(),
+                                     CProxy::getPort(),
+                                     CProxy::getUsername(),
+                                     CProxy::getPassword(),
+                                     CProxy::getBypassRegex());
+
+         // Follow redirections
+         request.setOpt(new curlpp::options::FollowLocation(true));
+         request.setOpt(new curlpp::options::MaxRedirs(3));
+
+         // URL + parameters
+         request.setOpt(
+            new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
+
+         // HTTPS support : skip peer and host verification
+         static const std::string HttpsHeader("https://");
+         if (std::search(url.begin(), url.end(),
+                         HttpsHeader.begin(), HttpsHeader.end(),
+                         [](const char ch1, const char ch2)
+                         {
+                            return std::tolower(ch1) == std::tolower(ch2);
+                         })
+            != url.end())
+         {
+            request.setOpt(new curlpp::options::SslVerifyPeer(false));
+            request.setOpt(new curlpp::options::SslVerifyHost(false));
+         }
+
+         // Headers
+         CCurlppHelpers::setHeaders(request, headerParameters);
+
+         // Response headers
+         std::string headersBuffer;
+         request.setOpt(curlpp::options::HeaderFunction(
+            [&headersBuffer](char* ptr, size_t size, size_t nbItems)
+            {
+               const auto incomingSize = size * nbItems;
+               headersBuffer.append(ptr, incomingSize);
+               return incomingSize;
+            }));
+
+         try
+         {
+            request.perform();
+         }
+         catch (const curlpp::LibcurlRuntimeError& error)
+         {
+            const auto message = (boost::format("Fail to send HEAD HTTP request : %1%, code %2%") % error.what() % error
+               .whatCode()).str();
+            YADOMS_LOG(warning) << message;
+            throw exception::CHttpException(message);
+         }
+
+         CCurlppHelpers::checkResult(request);
+
+         responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer));
+      }
+
+      std::map<std::string, std::string> CHttpMethods::sendHeadRequest(const std::string& url,
+                                                                       const std::map<std::string, std::string>&
+                                                                       headerParameters,
+                                                                       const std::map<std::string, std::string>&
+                                                                       parameters,
+                                                                       int timeoutSeconds)
+      {
+         std::map<std::string, std::string> out;
+         sendHeadRequest(url,
+                         [&out](const std::map<std::string, std::string>& receivedHeaders)
+                         {
+                            out = receivedHeaders;
+                         },
+                         headerParameters,
+                         parameters,
+                         timeoutSeconds);
+
+         return out;
+      }
+
+      boost::shared_ptr<CDataContainer> CHttpMethods::processJsonResponse(
+         const std::map<std::string, std::string>& receivedHeaders,
+         const std::string& data)
+      {
+         try
+         {
+            const auto& contentType = receivedHeaders.at("content-type");
+            if (contentType.find("application/json") == std::string::npos &&
+               contentType.find("text/json") == std::string::npos)
+               throw std::runtime_error(
+                  std::string("Content type was not defined as JSON or text : ") + contentType);
+         }
+         catch (const std::exception& exception)
+         {
+            throw exception::CHttpException(std::string("Fail to process HTTP JSON answer : ") + exception.what());
+         }
+
+         // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength
+         return CDataContainer::make(data);
       }
    }
-
-   boost::shared_ptr<IHttpSession> CHttpMethods::createSession(const ESessionType& sessionType,
-                                                               const std::string& url,
-                                                               const boost::posix_time::time_duration& timeout)
-   {
-      boost::shared_ptr<IHttpSession> session;
-
-      switch (sessionType)
-      {
-      case kStandard:
-         session = boost::make_shared<CStandardSession>(url);
-         break;
-      case kSecured:
-         session = boost::make_shared<CSecureSession>(url);
-         break;
-      default:
-         YADOMS_LOG(error) << "HTTP session type " << sessionType << " not supported";
-         throw std::invalid_argument("HTTP session type not supported");
-      }
-
-      session->setTimeout(timeout);
-
-      return session;
-   }
-
-   boost::shared_ptr<CDataContainer> CHttpMethods::processJsonResponse(const Poco::Net::HTTPResponse& response,
-                                                    std::istream& receivedStream)
-   {
-      if (!boost::icontains(response.getContentType(), "application/json") &&
-         !boost::icontains(response.getContentType(), "text/json"))
-      {
-         YADOMS_LOG(warning) << "HTTP answer : JSON expected but content type not defined as JSON : " << response.getContentType();
-      }
-
-      // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength
-      static const std::istreambuf_iterator<char> Eos;
-      return shared::CDataContainer::make(std::string(std::istreambuf_iterator<char>(receivedStream), Eos));
-   }
-} // namespace shared
+} // namespace shared::http

@@ -34,14 +34,15 @@ boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPor
 
    YADOMS_LOG(information) << "Connecting Linky on serial port " << configuration->getSerialPort() << "..." ;
 
-   boost::shared_ptr<shared::communication::IAsyncPort> port = boost::make_shared<shared::communication::CFT2xxSerialPort>(configuration->getSerialPort(),
-                                                                                                                           boost::asio::serial_port_base::baud_rate(baudRate),
-                                                                                                                           boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
-                                                                                                                           boost::asio::serial_port_base::character_size(7),
-                                                                                                                           boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
-                                                                                                                           boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
+   boost::shared_ptr<shared::communication::IAsyncPort> port = boost::make_shared<CFT2xxSerialPort>(
+      configuration->getSerialPort(),
+      boost::asio::serial_port_base::baud_rate(baudRate),
+      boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
+      boost::asio::serial_port_base::character_size(7),
+      boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
+      boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
 
-   auto FTDIPortList = boost::static_pointer_cast<shared::communication::CFT2xxSerialPort>(port)->getPortComNumber();
+   auto FTDIPortList = boost::static_pointer_cast<CFT2xxSerialPort>(port)->getPortComNumber();
    bool isFTDISerialPort = false;
    boost::regex reg("\\d+");
    boost::smatch match;
@@ -62,7 +63,7 @@ boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPor
             YADOMS_LOG(information) << "The serial port is a FTDI port. The FTDI driver will be used instead of the generic serial driver.";
 
             // Set the port number
-            boost::static_pointer_cast<shared::communication::CFT2xxSerialPort>(port)->setPortNumber(counter);
+            boost::static_pointer_cast<CFT2xxSerialPort>(port)->setPortNumber(counter);
             isFTDISerialPort = true;
             break;
          }
@@ -115,7 +116,7 @@ boost::shared_ptr<IDecoder> CLinkyFactory::constructDecoder(const EProtocolType 
 
 void CLinkyFactory::FTDI_ActivateGPIO(boost::shared_ptr<shared::communication::IAsyncPort> serialPort, int channel)
 {
-   auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(serialPort);
+   auto port = boost::dynamic_pointer_cast<CFT2xxSerialPort>(serialPort);
 
    if (port)
       port->activateGPIO(channel);
@@ -123,7 +124,7 @@ void CLinkyFactory::FTDI_ActivateGPIO(boost::shared_ptr<shared::communication::I
 
 void CLinkyFactory::FTDI_DisableGPIO(boost::shared_ptr<shared::communication::IAsyncPort> serialPort)
 {
-   auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(serialPort);
+   auto port = boost::dynamic_pointer_cast<CFT2xxSerialPort>(serialPort);
 
    if (port)
       port->desactivateGPIO();
@@ -132,7 +133,7 @@ void CLinkyFactory::FTDI_DisableGPIO(boost::shared_ptr<shared::communication::IA
 void CLinkyFactory::FTDI_setNewProtocol(boost::shared_ptr<shared::communication::IAsyncPort> serialPort,
                                         const EProtocolType type)
 {
-   auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(serialPort);
+   auto port = boost::dynamic_pointer_cast<CFT2xxSerialPort>(serialPort);
 
    if (port) {
       if (type == Standard)

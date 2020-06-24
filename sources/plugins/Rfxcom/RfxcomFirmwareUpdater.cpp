@@ -232,7 +232,7 @@ boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::load
 void CRfxcomFirmwareUpdater::razRawDataFromTemplate(unsigned char (& rowData)[256])
 {
    for (size_t i = 0; i < sizeof rowData; ++i)
-      rowData[i] = (i + 1) % 4 ? 255 : 0;
+      rowData[i] = ((i + 1) % 4) ? 255 : 0;
 }
 
 void CRfxcomFirmwareUpdater::prepareDataForWriteIntoPic(const boost::shared_ptr<CHexData> fileData,
