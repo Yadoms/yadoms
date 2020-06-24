@@ -37,7 +37,7 @@ case "$choice" in
 	eval "`$YADOMS_CCMACOS_CONFTOOL`"
 	export OSXCROSS_HOST="$YADOMS_CCMACOS_TRIPLET"
 	# cmake for makefile (cross compilation)
-	cmake -D CMAKE_C_COMPILER=$YADOMS_CCMACOS_TRIPLET-gcc -D CMAKE_CXX_COMPILER=$YADOMS_CCMACOS_TRIPLET-g++ -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/ccmacos.cmake ../sources
+	cmake -D CMAKE_C_COMPILER=$YADOMS_CCMACOS_TRIPLET-clang -D CMAKE_CXX_COMPILER=$YADOMS_CCMACOS_TRIPLET-clang++ -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/ccmacos.cmake ../sources
 	;;	
 
     d)
@@ -45,7 +45,7 @@ case "$choice" in
 	eval "`$YADOMS_CCMACOS_CONFTOOL`"
 	export OSXCROSS_HOST="$YADOMS_CCMACOS_TRIPLET"
 	# cmake for makefile (cross compilation)
-	cmake -DCMAKE_BUILD_TYPE="Release" -D CMAKE_C_COMPILER=$YADOMS_CCMACOS_TRIPLET-gcc -D CMAKE_CXX_COMPILER=$YADOMS_CCMACOS_TRIPLET-g++ -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/ccmacos.cmake ../sources
+	cmake -DCMAKE_BUILD_TYPE="Release" -D CMAKE_C_COMPILER=$YADOMS_CCMACOS_TRIPLET-clang -D CMAKE_CXX_COMPILER=$YADOMS_CCMACOS_TRIPLET-clang++ -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/ccmacos.cmake ../sources
 	;;	
 
     x)
