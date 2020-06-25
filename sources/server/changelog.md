@@ -6,6 +6,12 @@
 * New feature #603 : Manage redirections for http requests
 
 
+### 2.4.0-beta.3
+
+#### Yadoms
+* Fix #684 : Fix JSON improper warnings in log
+
+
 ### 2.4.0-beta.2
 
 #### Yadoms
