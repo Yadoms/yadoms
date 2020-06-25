@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/communication/IAsyncPort.h>
-#include <shared/communication/IReceiveBufferHandler.h>
 #include "../ftdi/ftd2xx.h"
 
 
@@ -29,6 +28,8 @@ public:
                              const boost::asio::serial_port_base::flow_control& flowControl = boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none),
                              const boost::posix_time::time_duration& connectRetryDelay = boost::posix_time::seconds(30),
                              bool flushAtConnect = true);
+   CFT2xxSerialPort(CFT2xxSerialPort&) = delete;
+   CFT2xxSerialPort& operator=(const CFT2xxSerialPort&) = delete;
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -47,10 +48,34 @@ public:
    void flush() override;
    // [END] IAsyncPort Implementation
 
-   void activateGPIO(const int GPIONumber) const;
+   //-----------------------------------------------------
+   ///\brief                            activate a GPIO
+   /// \param [in] GPIONumber             the GPIO number
+   //-----------------------------------------------------
+   void activateGPIO(int GPIONumber) const;
+
+   //-----------------------------------------------------
+   ///\brief                            deactivate GPIOs
+   //-----------------------------------------------------
    void desactivateGPIO() const;
+
+   //-----------------------------------------------------
+   ///\brief                            get a vector with port FTDI serial port number existing for the driver
+   /// \return                          the vector with all port number
+   //-----------------------------------------------------
    std::vector<int> getPortComNumber();
+
+   //-----------------------------------------------------
+   ///\brief                            set the port number
+   /// \param [in] port                   the port number for the FTDI driver
+   //-----------------------------------------------------
    void setPortNumber(int port);
+
+   //-----------------------------------------------------
+   ///\brief                            set the baud rate speed
+   /// \param [in] baudrate              the new baudrate to applicate
+   //-----------------------------------------------------
+   void setBaudRate(const boost::asio::serial_port_base::baud_rate& baudrate);
 protected:
    //--------------------------------------------------------------
    /// \brief	Establish the connection
@@ -89,7 +114,8 @@ protected:
    /// \param[in] i18nErrorMessage        The i18n string representing the error : "serialport.failToOpen" -> "Impossible d'ouvrir le port série {{failPort}}"
    /// \param[in] m_i18nMessageParameters The i18n string parameters : ie: ["failPort", "COM1"]
    //--------------------------------------------------------------
-   void notifyEventHandler(const std::string& i18nErrorMessage, const std::map<std::string, std::string>& m_i18nMessageParameters) const;
+   void notifyEventHandler(const std::string& i18nErrorMessage,
+                           const std::map<std::string, std::string>& m_i18nMessageParameters) const;
 
 private:
    //--------------------------------------------------------------
@@ -146,7 +172,7 @@ private:
    //--------------------------------------------------------------
    bool m_flushAtConnect;
 
-   FT_HANDLE m_ftHandle = NULL;
+   FT_HANDLE m_ftHandle = nullptr;
    HINSTANCE m_hGetProcIdDll;
    HANDLE m_hEvent;
 

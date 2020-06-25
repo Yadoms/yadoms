@@ -217,7 +217,7 @@ namespace database
          return *this;
       }
 
-      CQuery& CQuery::Append(CQuery& queryPart)
+      CQuery& CQuery::Append(const CQuery& queryPart)
       {
          m_currentQuery += queryPart.str();
          return *this;

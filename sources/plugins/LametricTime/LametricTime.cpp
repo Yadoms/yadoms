@@ -14,6 +14,7 @@ IMPLEMENT_PLUGIN(CLametricTime)
 const std::string CLametricTime::DeviceName("LaMetric Time");
 const std::string CLametricTime::TextKeywordName("Message");
 const std::string CLametricTime::IconTypeName("iconType");
+
 // Event IDs
 enum
 {
@@ -35,7 +36,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 	m_configuration.initializeWith(api->getConfiguration());
 
-	auto deviceInformation = initLametricTime(api);
+	init(api);
 
 	// the main loop
 	while (true)
@@ -55,10 +56,15 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				try
 				{
 					api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-					onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
+					onUpdateConfiguration(
+						api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
 					api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
 					                                   boost::posix_time::seconds(30));
-					deviceInformation = initLametricTime(api);
+
+					m_configuration.getPairingMode() == EPairingMode::kAuto
+						? m_devicesInformation.clear()
+						: m_deviceInformation.reset();
+					init(api);
 				}
 				catch (...)
 				{
@@ -69,21 +75,50 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 		case yApi::IYPluginApi::kEventDeviceCommand:
 			{
-				if (!deviceInformation)
-					break;
+				if (m_configuration.getPairingMode() == EPairingMode::kAuto)
+				{
+					if (m_devicesInformation.empty())
+						break;
+				}
+				else
+				{
+					if (!m_deviceInformation)
+						break;
+				}
 
 				const auto command =
 					api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
 				YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
+				if (m_configuration.getPairingMode() == EPairingMode::kAuto)
+				{
+					m_targetDevice = std::find_if(m_devicesInformation.begin(), m_devicesInformation.end(),
+					                              boost::bind(&DeviceInformation::m_deviceName, boost::placeholders::_1) == command->getDevice());
+					if (m_targetDevice != std::end(m_devicesInformation))
+					{
+						YADOMS_LOG(information) << "Target device found";
+						m_configuration.setIPAddress(m_targetDevice->m_deviceIp);
+						m_deviceManager = CFactory::createDeviceState(m_configuration);
+						m_senderManager = CFactory::createNotificationSender(m_configuration);
+					}
+					else
+					{
+						YADOMS_LOG(error) << "Target Device not found";
+					}
+				}
+
 				auto commandBody = command->getBody();
-				
-				if(command->getKeyword() == IconTypeName)
+
+				if (command->getKeyword() == IconTypeName)
 				{
 					m_senderManager->setCustomizeIcon(commandBody);
 				}
-			
-				if (boost::iequals(command->getDevice(), deviceInformation->m_deviceName) && command->getKeyword() != IconTypeName)
+
+				if (boost::iequals(command->getDevice(),
+				                   m_configuration.getPairingMode() == EPairingMode::kAuto
+					                   ? m_targetDevice->m_deviceName
+					                   : m_deviceInformation->m_deviceName) && command->getKeyword() !=
+					IconTypeName)
 				{
 					m_senderManager->displayText(commandBody);
 				}
@@ -93,8 +128,11 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 		case kConnectionRetryTimer:
 			{
-				deviceInformation.reset();
-				deviceInformation = initLametricTime(api);
+				m_configuration.getPairingMode() == EPairingMode::kAuto
+					? m_devicesInformation.clear()
+					: m_deviceInformation.reset();
+
+				init(api);
 
 				break;
 			}
@@ -124,12 +162,28 @@ void CLametricTime::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
 		                   deviceInformation->m_deviceModel);
 }
 
+void CLametricTime::declareAllDevicesAndKeywords(boost::shared_ptr<yApi::IYPluginApi>& api,
+                                                 CSsdpDiscoveredDevice& foundDevices,
+                                                 std::vector<DeviceInformation>& devicesInformation) const
+{
+	for (size_t i = 0; i < foundDevices.getDevicesDescription().size(); i++)
+	{
+		YADOMS_LOG(information) << "Creating the device :" << devicesInformation[i].m_deviceName;
+		if (!api->deviceExists(devicesInformation[i].m_deviceName))
+			api->declareDevice(devicesInformation[i].m_deviceName, devicesInformation[i].m_deviceType,
+			                   devicesInformation[i].m_deviceModel);
+		if (!api->keywordExists(devicesInformation[i].m_deviceName, m_text))
+			api->declareKeyword(devicesInformation[i].m_deviceName, m_text);
+		if (!api->keywordExists(devicesInformation[i].m_deviceName, m_iconType))
+			api->declareKeyword(devicesInformation[i].m_deviceName, m_iconType);
+	}
+}
+
 void CLametricTime::declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api,
                                    boost::shared_ptr<DeviceInformation>& deviceInformation) const
 {
 	YADOMS_LOG(information) << "Declaring the keyword :" << m_text;
 
-	// TODO : Declare icon & priority keywords
 	if (!api->keywordExists(deviceInformation->m_deviceName, m_text))
 		api->declareKeyword(deviceInformation->m_deviceName, m_text);
 	if (!api->keywordExists(deviceInformation->m_deviceName, m_iconType))
@@ -146,75 +200,81 @@ boost::shared_ptr<DeviceInformation> CLametricTime::fillDeviceInformationManuall
 }
 
 
-boost::shared_ptr<DeviceInformation> CLametricTime::fillDeviceInformationAutomatically(
-	CSsdpDiscoveredDevice& foundDevice)
+std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatically(
+	CSsdpDiscoveredDevice& foundDevices)
 {
-	auto deviceInformation = boost::make_shared<DeviceInformation>();
-	deviceInformation->m_deviceName = foundDevice.findTag("modelName");
-	deviceInformation->m_deviceModel = foundDevice.findTag("friendlyName");
-	deviceInformation->m_deviceType = foundDevice.findTag("modelNumber");
-	return deviceInformation;
-}
-
-boost::shared_ptr<DeviceInformation> CLametricTime::initLametricTime(boost::shared_ptr<yApi::IYPluginApi>& api)
-{
-	YADOMS_LOG(information) << "Init the connection ...";
-
-	if (m_configuration.getPairingMode() != EPairingMode::kAuto)
+	std::vector<DeviceInformation> devicesInformation;
+	DeviceInformation deviceInformation;
+	for (size_t i = 0; i < foundDevices.getDevicesDescription().size(); i++)
 	{
-		m_deviceManager = CFactory::createDeviceState(m_configuration);
-		m_senderManager = CFactory::createNotificationSender(m_configuration);
-		auto deviceInformation = manualInit(api);
-
-		return deviceInformation;
+		deviceInformation.m_deviceName = foundDevices.findTag("modelName", i) + " " + foundDevices.getIp(i);
+		deviceInformation.m_deviceModel = foundDevices.findTag("friendlyName", i);
+		deviceInformation.m_deviceType = foundDevices.findTag("modelName", i);
+		deviceInformation.m_deviceIp = foundDevices.getIp(i);
+		devicesInformation.push_back(deviceInformation);
 	}
 
-	auto deviceInformation = automaticInit(api);
-	m_deviceManager = CFactory::createDeviceState(m_configuration);
-	m_senderManager = CFactory::createNotificationSender(m_configuration);
-	return deviceInformation;
+	return devicesInformation;
 }
 
-boost::shared_ptr<DeviceInformation> CLametricTime::automaticInit(boost::shared_ptr<yApi::IYPluginApi>& api)
+
+void CLametricTime::init(boost::shared_ptr<yApi::IYPluginApi>& api)
+{
+	if (m_configuration.getPairingMode() == EPairingMode::kAuto)
+	{
+		m_devicesInformation = initAutomatically(api);
+	}
+	else
+	{
+		m_deviceInformation = initManually(api);
+	}
+}
+
+std::vector<DeviceInformation> CLametricTime::initAutomatically(boost::shared_ptr<yApi::IYPluginApi>& api) const
 {
 	try
 	{
-		CSsdpDiscoveredDevice foundDevice;
-		if (!CSsdpDiscoverService::discover("urn:schemas-upnp-org:device:LaMetric:1",
-		                                    [&foundDevice](const CSsdpDiscoveredDevice& device)
-		                                    {
-			                                    if (device.findTag("modelName") != DeviceName)
-				                                    return false;
-			                                    foundDevice = device;
-			                                    return true;
-		                                    }))
+		CSsdpDiscoveredDevice foundDevices;
+		if (!CSsdpDiscoverService::discover(
+				[&foundDevices](const CSsdpDiscoveredDevice& device)
+				{
+					if (!device.getDevicesDescription().empty())
+					{
+						foundDevices = device;
+						return true;
+					}
+					return false;
+				},
+				std::chrono::seconds(10),
+				"urn:schemas-upnp-org:device:LaMetric:1")
+		)
 		{
 			api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
 			throw std::runtime_error("No response from the device: wrong ip or no device listening on this network");
 		}
-		m_configuration.setIPAddress(foundDevice.getIp());
 
-		auto deviceInformation = fillDeviceInformationAutomatically(foundDevice);
+		auto devicesInformation = fillAllDevicesInformationAutomatically(foundDevices);
 
-		declareDevice(api, deviceInformation);
-
-		declareKeyword(api, deviceInformation);
+		declareAllDevicesAndKeywords(api, foundDevices, devicesInformation);
 
 		api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-		return deviceInformation;
+		return devicesInformation;
 	}
 	catch (const std::exception& exception)
 	{
-		//Erreur
 		YADOMS_LOG(error) << exception.what();
 		api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
 		throw;
 	}
 }
 
-boost::shared_ptr<DeviceInformation> CLametricTime::manualInit(boost::shared_ptr<yApi::IYPluginApi>& api) const
+boost::shared_ptr<DeviceInformation> CLametricTime::initManually(boost::shared_ptr<yApi::IYPluginApi>& api)
 {
+	YADOMS_LOG(information) << "Init the connection ...";
+
+	m_deviceManager = CFactory::createDeviceState(m_configuration);
+	m_senderManager = CFactory::createNotificationSender(m_configuration);
 	try
 	{
 		m_deviceManager->getWifiState();

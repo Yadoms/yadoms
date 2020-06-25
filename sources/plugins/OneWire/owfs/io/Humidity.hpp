@@ -18,7 +18,7 @@ namespace owfs
          /// \param[in]	devicePath Device path
          /// \param[in]	valueSubPath OWFS value sub-path
          //--------------------------------------------------------------
-         CHumidity(const boost::filesystem::path& devicePath,
+         explicit CHumidity(const boost::filesystem::path& devicePath,
                    const boost::filesystem::path& valueSubPath = boost::filesystem::path("humidity"))
             : CSingleReadOnlyData(devicePath, valueSubPath)
          {

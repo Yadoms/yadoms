@@ -7,7 +7,7 @@
 class CPythonExecutable : public IPythonExecutable
 {
 public:
-   CPythonExecutable(const std::string& pythonForcedPath);
+   explicit CPythonExecutable(const std::string& pythonForcedPath);
    virtual ~CPythonExecutable() = default;
 
 protected:

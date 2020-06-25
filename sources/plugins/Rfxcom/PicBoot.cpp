@@ -62,12 +62,12 @@ enum
 CPicBoot::CPicBoot(const std::string& comPort,
                    boost::posix_time::time_duration readTimeOut,
                    const unsigned int maxRetrys)
-   : m_logger("debug"),
+   : m_port(boost::make_shared<shared::communication::CAsyncSerialPort>(
+        comPort,
+        boost::asio::serial_port_base::baud_rate(38400))),
+     m_logger("debug"),
      m_maxRetrys(maxRetrys)
 {
-   m_port = boost::make_shared<shared::communication::CAsyncSerialPort>(comPort,
-                                                                        boost::asio::serial_port_base::baud_rate(
-                                                                           38400));
    m_port->subscribeForConnectionEvents(m_eventHandler, kEvtPicBootPortConnection);
 
    auto receiveBufferHandler = boost::make_shared<CPicBootReceiveBufferHandler>(m_eventHandler,

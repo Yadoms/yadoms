@@ -36,7 +36,7 @@ inline void bitset_insert(boost::dynamic_bitset<>& bitset,
                           unsigned int value)
 {
    for (size_t index = 0; index < size; ++index)
-      bitset[position + index] = (value & (0x00000001 << (size - index - 1)) ? true : false);
+      bitset[position + index] = (value & (0x00000001 << (size - index - 1))) ? true : false;
 }
 
 inline void bitset_insert(boost::dynamic_bitset<>& bitset,
@@ -52,7 +52,7 @@ inline boost::dynamic_bitset<> bitset_from_bytes(const std::vector<unsigned char
    size_t index = 0;
    for (const auto byte : buf)
       for (auto bit = 7; bit >= 0; --bit)
-         bitset[index++] = byte & 0x01 << bit ? true : false;
+         bitset[index++] = (byte & 0x01 << bit) ? true : false;
    return bitset;
 }
 
@@ -61,7 +61,7 @@ inline boost::dynamic_bitset<> bitset_from_byte(unsigned char byte)
    boost::dynamic_bitset<> bitset(sizeof(byte) * 8);
    size_t index = 0;
    for (auto bit = 7; bit >= 0; --bit)
-      bitset[index++] = byte & 0x01 << bit ? true : false;
+      bitset[index++] = (byte & 0x01 << bit) ? true : false;
    return bitset;
 }
 

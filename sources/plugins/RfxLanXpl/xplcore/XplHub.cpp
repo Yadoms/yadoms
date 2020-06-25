@@ -101,7 +101,7 @@ namespace xplcore
    }
 
 
-   void CXplHub::manageReceivedHeartbeatMessage(CXplMessage& hbeatMessage,
+   void CXplHub::manageReceivedHeartbeatMessage(const CXplMessage& hbeatMessage,
                                                 Poco::Net::SocketAddress& sender)
    {
       //When the hub receives a hbeat.app or config.app message, the hub should extract the "remote-ip" value 
@@ -112,52 +112,46 @@ namespace xplcore
 
       YADOMS_LOG(information) << "Heartbeat message received" ;
       //we check if we already known this periph
-      unsigned short port;
-      if (!shared::CStringExtension::tryParse<unsigned short>(hbeatMessage.getBodyValue("port"), port))
+      try
       {
-         //it is not a hbeat request to be identified but to identify other service, we rebroadcast it
-      }
-      else
-      {
-         int interval;
-         if (!shared::CStringExtension::tryParse<int>(hbeatMessage.getBodyValue("interval"), interval))
+         const unsigned short port = std::stoul(hbeatMessage.getBodyValue("port"));
+         const auto interval = std::stoi(hbeatMessage.getBodyValue("interval"));
+
+         size_t i = 0;
+
+         while ((i < m_discoveredPeripherals.size()) && (port != m_discoveredPeripherals[i]->getPortNumber()))
          {
-            //it is not a hbeat request to be identified but to identify other service, we rebroadcast it
+            i++;
+         }
+
+         if (i < m_discoveredPeripherals.size())
+         {
+            //we already known the peripheral, so we update its interval and its last time seen
+            YADOMS_LOG(information) << "Update peripheral information";
+            m_discoveredPeripherals[i]->setInterval(interval);
+            m_discoveredPeripherals[i]->updateLastTimeSeenFromNow();
          }
          else
          {
-            size_t i = 0;
-
-            while ((i < m_discoveredPeripherals.size()) && (port != m_discoveredPeripherals[i]->getPortNumber()))
+            try
             {
-               i++;
+               //it's a new peripheral, so we add it to the list
+               YADOMS_LOG(information) << "New peripheral";
+               m_discoveredPeripherals.push_back(boost::make_shared<CXplHubConnectedPeripheral>(sender,
+                  port,
+                  interval,
+                  hbeatMessage.getSource().toString()));
             }
-
-            if (i < m_discoveredPeripherals.size())
+            catch (std::exception & ex)
             {
-               //we already known the peripheral, so we update its interval and its last time seen
-               YADOMS_LOG(information) << "Update peripheral information" ;
-               m_discoveredPeripherals[i]->setInterval(interval);
-               m_discoveredPeripherals[i]->updateLastTimeSeenFromNow();
-            }
-            else
-            {
-               try
-               {
-                  //it's a new peripheral, so we add it to the list
-                  YADOMS_LOG(information) << "New peripheral" ;
-                  m_discoveredPeripherals.push_back(boost::make_shared<CXplHubConnectedPeripheral>(sender,
-                                                                                                   port,
-                                                                                                   interval,
-                                                                                                   hbeatMessage.getSource().toString()));
-               }
-               catch (std::exception& ex)
-               {
-                  //it's a new peripheral, so we add it to the list
-                  YADOMS_LOG(error) << "Fail to add peripheral : " << ex.what() ;
-               }
+               //it's a new peripheral, so we add it to the list
+               YADOMS_LOG(error) << "Fail to add peripheral : " << ex.what();
             }
          }
+      }
+      catch (const std::exception&)
+      {
+         //it is not a hbeat request to be identified but to identify other service, we rebroadcast it
       }
    }
 
