@@ -64,7 +64,7 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief           Read the available plugin list
-      /// \return          The available plugin map (with informations)
+      /// \return          The available plugin map (with information)
       //--------------------------------------------------------------
       IFactory::AvailablePluginMap getPluginList() const;
 
@@ -132,7 +132,7 @@ namespace pluginSystem
       /// \brief           Start a registered instance of plugin
       /// \param [in] id   Instance Id
       /// \throw           CInvalidParameter if id is unknown
-      /// \note            Just start instance, doesn't modify data in base
+      /// \note            Just start instance, does not modify data in base
       //--------------------------------------------------------------
       void startInstance(int id);
 
@@ -193,7 +193,7 @@ namespace pluginSystem
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
       void postCommand(int id,
-                       boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
+                       const boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand>& command) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post an extra command to a device on a specific plugin
@@ -246,7 +246,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief                 Stop all instances matching the plugin name
       /// \param [in] pluginName The plugin name
-      /// \return                The IDs of instances whos stop was requested
+      /// \return                The IDs of instances who stop was requested
       //--------------------------------------------------------------
       std::vector<int> stopAllInstancesOfPlugin(const std::string& pluginName);
 
