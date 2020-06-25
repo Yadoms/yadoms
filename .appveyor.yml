@@ -158,7 +158,7 @@ before_deploy:
 #deploy for master branch
 deploy:
   - provider: GitHub
-    tag: $env:tagYadomsVersionName
+    tag: $(tagYadomsVersionName)
     auth_token:
         secure: W10mJgzdj5g4fpebdUPhPXZScKaFUq0Jl5ly2FcLu2quQMR1r5mgPxAxv6uBSQoo # your encrypted token from GitHub
     draft: true
