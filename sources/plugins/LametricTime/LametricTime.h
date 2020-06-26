@@ -82,6 +82,9 @@ private:
    */
    void declareAllDevicesAndKeywords(CSsdpDiscoveredDevice& foundDevices,
                                      std::vector<DeviceInformation>& devicesInformation) const;
+
+   void retryInitManually();
+   void createDevice();
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
@@ -94,6 +97,7 @@ private:
    boost::shared_ptr<DeviceInformation> m_deviceInformation;
    std::vector<DeviceInformation> m_devicesInformation;
    boost::shared_ptr<yApi::IYPluginApi> m_api;
+
 
    std::vector<DeviceInformation>::iterator m_targetDevice;
    static const std::string DeviceName;

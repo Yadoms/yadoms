@@ -135,7 +135,8 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                ? m_devicesInformation.clear()
                : m_deviceInformation.reset();
 
-            init();
+            //init();
+            retryInitManually();
 
             break;
          }
@@ -276,15 +277,7 @@ void CLametricTime::initManually()
 
    try
    {
-      m_deviceManager->getDeviceState();
-
-      fillDeviceInformationManually();
-
-      declareDevice();
-
-      declareKeyword();
-
-      m_api->setPluginState(yApi::historization::EPluginState::kRunning);
+      createDevice();
    }
    catch (std::exception& e)
    {
@@ -311,4 +304,37 @@ void CLametricTime::onUpdateConfiguration(
 
    m_configuration.initializeWith(newConfiguration);
    m_configuration.trace();
+}
+
+void CLametricTime::retryInitManually()
+{
+   YADOMS_LOG(information) << "Init the connection ...";
+
+   m_deviceManager = CFactory::createDeviceState(m_configuration);
+   m_senderManager = CFactory::createNotificationSender(m_configuration);
+
+   try
+   {
+      createDevice();
+   }
+   catch (std::exception& e)
+   {
+      YADOMS_LOG(error) << e.what();
+
+      m_api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
+      throw;
+   }
+}
+
+void CLametricTime::createDevice()
+{
+   m_deviceManager->getDeviceState();
+
+   fillDeviceInformationManually();
+
+   declareDevice();
+
+   declareKeyword();
+
+   m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
