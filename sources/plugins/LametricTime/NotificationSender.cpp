@@ -53,7 +53,7 @@ std::string CNotificationSender::buildMessageBody(const std::string& priorityMes
 {
    std::string secondFrameIcon = !getCustomizeIcon().empty() ? m_customizeIcon : CCustomizeIconHelper::YadomsIcon;
    shared::CDataContainer body;
-   body.set("prority", priorityMessage);
+	body.set("priority", priorityMessage);
    body.set("icon_type", iconToDisplay);
 
    shared::CDataContainer frame1;
