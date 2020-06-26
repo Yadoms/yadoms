@@ -26,7 +26,7 @@ std::vector<std::string> CSsdpDiscoverService::getDevicesDescription(const std::
 	return devicesDescription;
 }
 
-bool CSsdpDiscoverService::discover(const boost::function<bool(CSsdpDiscoveredDevice& discoveredDevice)>&
+bool CSsdpDiscoverService::discover(const std::function<bool(CSsdpDiscoveredDevice& discoveredDevice)>&
                                     discoveredDeviceHandler, const std::chrono::duration<long long>& timeout,
                                     const std::string& searchTarget
 )

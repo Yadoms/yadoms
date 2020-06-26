@@ -12,7 +12,7 @@ public:
 
 	virtual ~CSsdpDiscoverService() = default;
 
-	static bool discover(const boost::function<bool(CSsdpDiscoveredDevice& discoveredDevice)>& discoveredDeviceHandler,
+	static bool discover(const std::function<bool(CSsdpDiscoveredDevice& discoveredDevice)>& discoveredDeviceHandler,
 	                     const std::chrono::duration<long long>& timeout = SsdpClientTimeout,
 	                     const std::string& searchTarget = "ssdp:all");
 
