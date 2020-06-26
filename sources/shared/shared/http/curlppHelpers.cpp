@@ -61,7 +61,8 @@ namespace shared
 
       void CCurlppHelpers::checkResult(const curlpp::Easy& request)
       {
-         if (curlpp::infos::ResponseCode::get(request) != 200 && curlpp::infos::ResponseCode::get(request) != 201)
+         if (curlpp::infos::ResponseCode::get(request) != kHttpOk && curlpp::infos::
+            ResponseCode::get(request) != kHttpCreated)
          {
             const auto message = (boost::format("Invalid HTTP result : %1%") % curlpp::infos::ResponseCode::get(request)
             ).str();

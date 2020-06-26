@@ -31,6 +31,12 @@ namespace shared
          static void checkResult(const curlpp::Easy& request);
 
          static std::map<std::string, std::string> formatResponseHeaders(const std::string& headersBuffer);
+
+         enum EHttpCodeStatus
+         {
+            kHttpOk = 200,
+            kHttpCreated= 201,
+         };
       };
    }
 } // namespace shared::http
