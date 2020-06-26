@@ -157,7 +157,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CLametricTime::declareDevice()
+void CLametricTime::declareDevice() const
 {
    YADOMS_LOG(information) << "Creating the device :" << m_deviceInformation->m_deviceName;
    if (!m_api->deviceExists(m_deviceInformation->m_deviceName))

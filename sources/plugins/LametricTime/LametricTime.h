@@ -38,7 +38,7 @@ private:
    /**
     * \brief Declare device
     */
-   void declareDevice();
+   void declareDevice() const;
    /**
     * \brief  Declare Keyword
     */
