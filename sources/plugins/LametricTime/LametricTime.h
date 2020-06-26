@@ -82,8 +82,13 @@ private:
    */
    void declareAllDevicesAndKeywords(CSsdpDiscoveredDevice& foundDevices,
                                      std::vector<DeviceInformation>& devicesInformation) const;
-
+   /**
+   * \brief Retry to init Manually the device in case of a none Unauthorized http code status
+   */
    void retryInitManually();
+   /**
+   * \brief sending echo to device & fill and declare device(s) and keyword(s)
+   */
    void createDevice();
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
