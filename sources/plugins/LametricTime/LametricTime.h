@@ -40,14 +40,14 @@ private:
 	 * \param[in] api                   Pointer to the API
 	 * \param[in] deviceInformation     Structure with device information
 	 */
-	static void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api,
+	void declareDevice(
 	                          boost::shared_ptr<DeviceInformation>& deviceInformation);
 	/**
 	 * \brief  Declare Keyword
 	 * \param api pointer to the API
 	 * \param[in] deviceInformation     Structure with device information
 	 */
-	void declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api,
+	void declareKeyword(
 	                    boost::shared_ptr<DeviceInformation>& deviceInformation) const;
 	/**
 	 * \brief Fill device information manually
@@ -64,25 +64,25 @@ private:
 	 * \brief Init Lametric device
 	 * \param[in] api                   Pointer to the API
 	 */
-	void init(boost::shared_ptr<yApi::IYPluginApi>& api);
+	void init();
 	/**
 	* \brief Init Lametric device using UPNP protocol
 	* \param[in] api												Pointer to the API
 	* \return    std::vector<DeviceInformation>        vector of structure containing device information
 	*/
-	std::vector<DeviceInformation> initAutomatically(boost::shared_ptr<yApi::IYPluginApi>& api) const;
+	std::vector<DeviceInformation> initAutomatically() const;
 	/**
 	 * \brief Init Lametric device 
 	* \param[in] api                   Pointer to the API
 	 * \return                         Structure with device information
 	*/
-	boost::shared_ptr<DeviceInformation> initManually(boost::shared_ptr<yApi::IYPluginApi>& api);
+	boost::shared_ptr<DeviceInformation> initManually();
 	/**
 	 * \brief Update the configuration of the plugin after a change
 	* \param api                  pointer to the API
 	* \param newConfigurationData The new configuration of the module
 	*/
-	void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi>& api,
+	void onUpdateConfiguration(
 	                           const boost::shared_ptr<shared::CDataContainer>& newConfigurationData);
 
 	/**
@@ -91,7 +91,7 @@ private:
 	* \param foundDevices         Class containing device information
 	* \param devicesInformation   vector of structure containing device information
 	*/
-	void declareAllDevicesAndKeywords(boost::shared_ptr<yApi::IYPluginApi>& api,
+	void declareAllDevicesAndKeywords(
 	                                  CSsdpDiscoveredDevice& foundDevices,
 	                                  std::vector<DeviceInformation>& devicesInformation) const;
 	//--------------------------------------------------------------
@@ -105,7 +105,7 @@ private:
 	boost::shared_ptr<specificHistorizers::CCustomizeIconType> m_iconType;
 	boost::shared_ptr<DeviceInformation> m_deviceInformation;
 	std::vector<DeviceInformation> m_devicesInformation;
-
+	boost::shared_ptr<yApi::IYPluginApi> m_api;
 
 	std::vector<DeviceInformation>::iterator m_targetDevice;
 	static const std::string DeviceName;
