@@ -26,7 +26,8 @@ enum
 CLametricTime::CLametricTime()
    : m_text(boost::make_shared<yApi::historization::CText>(TextKeywordName,
                                                            yApi::EKeywordAccessMode::kGetSet)),
-     m_iconType(boost::make_shared<specificHistorizers::CCustomizeIconType>(IconTypeName))
+     m_iconType(boost::make_shared<specificHistorizers::CCustomizeIconType>(IconTypeName)),
+     m_deviceInformation(boost::make_shared<DeviceInformation>())
 {
 }
 
@@ -62,7 +63,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                m_api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
                                                     boost::posix_time::seconds(30));
 
-               m_configuration.getPairingMode() == EPairingMode::kAuto
+               m_configuration.getPairingMode() == kAuto
                   ? m_devicesInformation.clear()
                   : m_deviceInformation.reset();
                init();
@@ -76,7 +77,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
-            if (m_configuration.getPairingMode() == EPairingMode::kAuto)
+            if (m_configuration.getPairingMode() == kAuto)
             {
                if (m_devicesInformation.empty())
                   break;
@@ -91,7 +92,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
-            if (m_configuration.getPairingMode() == EPairingMode::kAuto)
+            if (m_configuration.getPairingMode() == kAuto)
             {
                m_targetDevice = std::find_if(m_devicesInformation.begin(), m_devicesInformation.end(),
                                              boost::bind(&DeviceInformation::m_deviceName, boost::placeholders::_1) ==
@@ -117,7 +118,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
 
             if (boost::iequals(command->getDevice(),
-                               m_configuration.getPairingMode() == EPairingMode::kAuto
+                               m_configuration.getPairingMode() == kAuto
                                   ? m_targetDevice->m_deviceName
                                   : m_deviceInformation->m_deviceName) && command->getKeyword() !=
                IconTypeName)
@@ -130,7 +131,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case kConnectionRetryTimer:
          {
-            m_configuration.getPairingMode() == EPairingMode::kAuto
+            m_configuration.getPairingMode() == kAuto
                ? m_devicesInformation.clear()
                : m_deviceInformation.reset();
 
@@ -155,12 +156,12 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CLametricTime::declareDevice(boost::shared_ptr<DeviceInformation>& deviceInformation)
+void CLametricTime::declareDevice()
 {
-   YADOMS_LOG(information) << "Creating the device :" << deviceInformation->m_deviceName;
-   if (!m_api->deviceExists(deviceInformation->m_deviceName))
-      m_api->declareDevice(deviceInformation->m_deviceName, deviceInformation->m_deviceType,
-                           deviceInformation->m_deviceModel);
+   YADOMS_LOG(information) << "Creating the device :" << m_deviceInformation->m_deviceName;
+   if (!m_api->deviceExists(m_deviceInformation->m_deviceName))
+      m_api->declareDevice(m_deviceInformation->m_deviceName, m_deviceInformation->m_deviceType,
+                           m_deviceInformation->m_deviceModel);
 }
 
 void CLametricTime::declareAllDevicesAndKeywords(CSsdpDiscoveredDevice& foundDevices,
@@ -179,23 +180,21 @@ void CLametricTime::declareAllDevicesAndKeywords(CSsdpDiscoveredDevice& foundDev
    }
 }
 
-void CLametricTime::declareKeyword(boost::shared_ptr<DeviceInformation>& deviceInformation) const
+void CLametricTime::declareKeyword() const
 {
    YADOMS_LOG(information) << "Declaring the keyword :" << m_text;
 
-   if (!m_api->keywordExists(deviceInformation->m_deviceName, m_text))
-      m_api->declareKeyword(deviceInformation->m_deviceName, m_text);
-   if (!m_api->keywordExists(deviceInformation->m_deviceName, m_iconType))
-      m_api->declareKeyword(deviceInformation->m_deviceName, m_iconType);
+   if (!m_api->keywordExists(m_deviceInformation->m_deviceName, m_text))
+      m_api->declareKeyword(m_deviceInformation->m_deviceName, m_text);
+   if (!m_api->keywordExists(m_deviceInformation->m_deviceName, m_iconType))
+      m_api->declareKeyword(m_deviceInformation->m_deviceName, m_iconType);
 }
 
-boost::shared_ptr<DeviceInformation> CLametricTime::fillDeviceInformationManually() const
+void CLametricTime::fillDeviceInformationManually() const
 {
-   auto deviceInformation = boost::make_shared<DeviceInformation>();
-   deviceInformation->m_deviceName = DeviceName;
-   deviceInformation->m_deviceModel = m_deviceManager->getDeviceInformations()->get<std::string>("model");
-   deviceInformation->m_deviceType = m_deviceManager->getDeviceInformations()->get<std::string>("name");
-   return deviceInformation;
+   m_deviceInformation->m_deviceName = DeviceName;
+   m_deviceInformation->m_deviceModel = m_deviceManager->getDeviceInformations()->get<std::string>("model");
+   m_deviceInformation->m_deviceType = m_deviceManager->getDeviceInformations()->get<std::string>("name");
 }
 
 
@@ -225,7 +224,7 @@ void CLametricTime::init()
    }
    else
    {
-      m_deviceInformation = initManually();
+      initManually();
    }
 }
 
@@ -268,22 +267,22 @@ std::vector<DeviceInformation> CLametricTime::initAutomatically() const
    }
 }
 
-boost::shared_ptr<DeviceInformation> CLametricTime::initManually()
+void CLametricTime::initManually()
 {
    YADOMS_LOG(information) << "Init the connection ...";
 
    m_deviceManager = CFactory::createDeviceState(m_configuration);
    m_senderManager = CFactory::createNotificationSender(m_configuration);
-   auto deviceInformation = boost::make_shared<DeviceInformation>();
+
    try
    {
       m_deviceManager->getDeviceState();
 
-      deviceInformation = fillDeviceInformationManually();
+      fillDeviceInformationManually();
 
-      declareDevice(deviceInformation);
+      declareDevice();
 
-      declareKeyword(deviceInformation);
+      declareKeyword();
 
       m_api->setPluginState(yApi::historization::EPluginState::kRunning);
    }
@@ -295,15 +294,13 @@ boost::shared_ptr<DeviceInformation> CLametricTime::initManually()
       if (CHttpResponseHelper::EHttpCodeStatus::kHttpUnauthorized == CHttpResponseHelper::getHttpStatusCode(
          errorMessage))
       {
-         m_api->getEventHandler().createTimer(kConnectionRetryTimer,
-                                              shared::event::CEventTimer::kOneShot,
-                                              boost::posix_time::seconds(30));
-         //api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
-         //throw;
+         m_api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
+         throw;
       }
+      m_api->getEventHandler().createTimer(kConnectionRetryTimer,
+                                           shared::event::CEventTimer::kOneShot,
+                                           boost::posix_time::seconds(10));
    }
-
-   return deviceInformation;
 }
 
 void CLametricTime::onUpdateConfiguration(
