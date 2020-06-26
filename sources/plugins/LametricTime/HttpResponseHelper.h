@@ -8,4 +8,12 @@ public:
 	                                              const std::string& httpResponse);
 	static bool isValidHttpResponse(const std::string& httpResponse);
 	static bool isValidHttpStatusCode(const std::string& httpResponse);
+	static int getHttpStatusCode(std::string& input);
+
+	enum EHttpCodeStatus
+	{
+		kHttpOk = 200,
+		kHttpCreated = 201,
+		kHttpUnauthorized = 401,
+	};
 };
