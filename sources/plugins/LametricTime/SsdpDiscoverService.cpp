@@ -4,14 +4,16 @@
 #include "SsdpDiscoverService.h"
 
 
-std::vector<std::string> CSsdpDiscoverService::getDevicesDescription(const std::vector<std::string>& descriptionUrls)
+std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>> CSsdpDiscoverService::getDevicesDescription(
+   const std::vector<std::string>& descriptionUrls)
 {
-   std::vector<std::string> devicesDescription;
+   std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>> devicesDescription;
    for (const auto& descriptionUrl : descriptionUrls)
    {
       try
       {
-         devicesDescription.push_back(shared::http::CHttpMethods::sendGetRequest(descriptionUrl));
+         devicesDescription.push_back(
+            boost::make_shared<CSsdpDiscoveredDevice>(shared::http::CHttpMethods::sendGetRequest(descriptionUrl)));
       }
       catch (std::exception& e)
       {
@@ -23,8 +25,9 @@ std::vector<std::string> CSsdpDiscoverService::getDevicesDescription(const std::
    return devicesDescription;
 }
 
-CSsdpDiscoveredDevice CSsdpDiscoverService::discover(const std::string& searchTarget,
-                                                     const std::chrono::duration<long long>& timeout)
+std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>> CSsdpDiscoverService::discover(
+   const std::string& searchTarget,
+   const std::chrono::duration<long long>& timeout)
 {
    boost::asio::io_service ios;
    const auto ssdpClient = boost::make_shared<CSsdpClient>(ios, searchTarget, timeout);
@@ -32,9 +35,9 @@ CSsdpDiscoveredDevice CSsdpDiscoverService::discover(const std::string& searchTa
    ios.reset();
    ios.run();
 
-   CSsdpDiscoveredDevice discoveredDevice(getDevicesDescription(ssdpClient->getDescriptionUrls()));
+   const auto discoveredDevices(getDevicesDescription(ssdpClient->getDescriptionUrls()));
 
    ios.stop();
 
-   return discoveredDevice;
+   return discoveredDevices;
 }

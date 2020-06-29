@@ -19,11 +19,14 @@ public:
    /// \param[in]  searchTarget        SSDP URL Pattern to search for
    /// \return     the answer of the request
    //--------------------------------------------------------------
-   enum { DefaultTimeoutSeconds = 45 };
-   static CSsdpDiscoveredDevice discover(const std::string& searchTarget = "ssdp:all",
-                                         const std::chrono::duration<long long>& timeout = std::chrono::seconds(
-                                            DefaultTimeoutSeconds));
+   enum { kDefaultTimeoutSeconds = 45 };
+
+   static std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>> discover(const std::string& searchTarget = "ssdp:all",
+                                                                         const std::chrono::duration<long long>& timeout
+                                                                            = std::chrono::seconds(
+                                                                               kDefaultTimeoutSeconds));
 
 private:
-   static std::vector<std::string> getDevicesDescription(const std::vector<std::string>& descriptionUrl);
+   static std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>> getDevicesDescription(
+      const std::vector<std::string>& descriptionUrl);
 };

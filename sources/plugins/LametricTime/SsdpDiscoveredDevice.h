@@ -4,12 +4,11 @@
 class CSsdpDiscoveredDevice
 {
 public:
-	explicit CSsdpDiscoveredDevice(const std::vector<std::string>& devicesDescription);
+	explicit CSsdpDiscoveredDevice(const std::string& deviceDescription);
 	virtual ~CSsdpDiscoveredDevice() = default;
 	
-	std::string findTag(const std::string& tagName, const int& index) const;
-	std::string getIp(const int& index) const;
-	std::vector<std::string> getDevicesDescription() const;
+	std::string findTag(const std::string& tagName) const;
+	std::string getIp() const;
 private:
-	std::vector<std::string> m_deviceDescription;
+	const std::string m_deviceDescription;
 };

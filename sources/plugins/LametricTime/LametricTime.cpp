@@ -167,19 +167,18 @@ void CLametricTime::declareDevice() const
                            m_deviceInformation->m_deviceModel);
 }
 
-void CLametricTime::declareAllDevicesAndKeywords(const CSsdpDiscoveredDevice& foundDevices,
-                                                 std::vector<DeviceInformation>& devicesInformation) const
+void CLametricTime::declareAllDevicesAndKeywords(std::vector<DeviceInformation>& devicesInformation) const
 {
-   for (size_t i = 0; i < foundDevices.getDevicesDescription().size(); i++)
+   for (const auto& deviceInformation : devicesInformation)
    {
-      YADOMS_LOG(information) << "Creating the device :" << devicesInformation[i].m_deviceName;
-      if (!m_api->deviceExists(devicesInformation[i].m_deviceName))
-         m_api->declareDevice(devicesInformation[i].m_deviceName, devicesInformation[i].m_deviceType,
-                              devicesInformation[i].m_deviceModel);
-      if (!m_api->keywordExists(devicesInformation[i].m_deviceName, m_text))
-         m_api->declareKeyword(devicesInformation[i].m_deviceName, m_text);
-      if (!m_api->keywordExists(devicesInformation[i].m_deviceName, m_iconType))
-         m_api->declareKeyword(devicesInformation[i].m_deviceName, m_iconType);
+      YADOMS_LOG(information) << "Creating the device :" << deviceInformation.m_deviceName;
+      if (!m_api->deviceExists(deviceInformation.m_deviceName))
+         m_api->declareDevice(deviceInformation.m_deviceName, deviceInformation.m_deviceType,
+                              deviceInformation.m_deviceModel);
+      if (!m_api->keywordExists(deviceInformation.m_deviceName, m_text))
+         m_api->declareKeyword(deviceInformation.m_deviceName, m_text);
+      if (!m_api->keywordExists(deviceInformation.m_deviceName, m_iconType))
+         m_api->declareKeyword(deviceInformation.m_deviceName, m_iconType);
    }
 }
 
@@ -202,16 +201,16 @@ void CLametricTime::fillDeviceInformationManually() const
 
 
 std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatically(
-   const CSsdpDiscoveredDevice& foundDevices)
+   const std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>>& foundDevices)
 {
    std::vector<DeviceInformation> devicesInformation;
    DeviceInformation deviceInformation;
-   for (size_t i = 0; i < foundDevices.getDevicesDescription().size(); i++)
+   for (const auto& foundDevice : foundDevices)
    {
-      deviceInformation.m_deviceName = foundDevices.findTag("modelName", i) + " " + foundDevices.getIp(i);
-      deviceInformation.m_deviceModel = foundDevices.findTag("friendlyName", i);
-      deviceInformation.m_deviceType = foundDevices.findTag("modelName", i);
-      deviceInformation.m_deviceIp = foundDevices.getIp(i);
+      deviceInformation.m_deviceName = foundDevice->findTag("modelName") + " " + foundDevice->getIp();
+      deviceInformation.m_deviceModel = foundDevice->findTag("friendlyName");
+      deviceInformation.m_deviceType = foundDevice->findTag("modelName");
+      deviceInformation.m_deviceIp = foundDevice->getIp();
       devicesInformation.push_back(deviceInformation);
    }
 
@@ -238,7 +237,7 @@ std::vector<DeviceInformation> CLametricTime::initAutomatically() const
       //CSsdpDiscoveredDevice foundDevices;
       const auto foundDevices = CSsdpDiscoverService::discover("urn:schemas-upnp-org:device:LaMetric:1",
                                                                std::chrono::seconds(10));
-      if (foundDevices.getDevicesDescription().empty())
+      if (foundDevices.empty())
       {
          m_api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
          throw std::runtime_error("No response from the device: wrong ip or no device listening on this network");
@@ -246,7 +245,7 @@ std::vector<DeviceInformation> CLametricTime::initAutomatically() const
 
       auto devicesInformation = fillAllDevicesInformationAutomatically(foundDevices);
 
-      declareAllDevicesAndKeywords(foundDevices, devicesInformation);
+      declareAllDevicesAndKeywords(devicesInformation);
 
       m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 
@@ -318,7 +317,7 @@ void CLametricTime::retryInitManually()
    }
 }
 
-void CLametricTime::createDevice()
+void CLametricTime::createDevice() const
 {
    m_deviceManager->getDeviceState();
 

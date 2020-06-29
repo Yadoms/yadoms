@@ -53,10 +53,10 @@ private:
     * \param[in]  foundDevices                       Class containing device information
     * \return     std::vector<DeviceInformation>     vector of structure containing device information
     */
-   static std::vector<DeviceInformation> fillAllDevicesInformationAutomatically(const CSsdpDiscoveredDevice& foundDevices);
+   static std::vector<DeviceInformation> fillAllDevicesInformationAutomatically(
+      const std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>>& foundDevices);
    /**
     * \brief Init Lametric device
-    * \param[in] api                   Pointer to the API
     */
    void init();
    /**
@@ -77,11 +77,9 @@ private:
 
    /**
    * \brief Declare all devices and keywords
-   * \param foundDevices         Class containing device information
    * \param devicesInformation   vector of structure containing device information
    */
-   void declareAllDevicesAndKeywords(const CSsdpDiscoveredDevice& foundDevices,
-                                     std::vector<DeviceInformation>& devicesInformation) const;
+   void declareAllDevicesAndKeywords(std::vector<DeviceInformation>& devicesInformation) const;
    /**
    * \brief Retry to init Manually the device in case of a none Unauthorized http code status
    */
@@ -89,7 +87,7 @@ private:
    /**
    * \brief sending echo to device & fill and declare device(s) and keyword(s)
    */
-   void createDevice();
+   void createDevice() const;
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
