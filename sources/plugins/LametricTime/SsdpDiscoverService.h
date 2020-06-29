@@ -21,10 +21,9 @@ public:
    //--------------------------------------------------------------
    enum { kDefaultTimeoutSeconds = 45 };
 
-   static std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>> discover(const std::string& searchTarget = "ssdp:all",
-                                                                         const std::chrono::duration<long long>& timeout
-                                                                            = std::chrono::seconds(
-                                                                               kDefaultTimeoutSeconds));
+   static std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>> discover(
+      const std::string& searchTarget = "ssdp:all",
+      const std::chrono::duration<long long>& timeout = std::chrono::seconds(kDefaultTimeoutSeconds));
 
 private:
    static std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>> getDevicesDescription(

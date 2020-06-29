@@ -29,7 +29,7 @@ std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>> CSsdpDiscoverService::disc
    const std::string& searchTarget,
    const std::chrono::duration<long long>& timeout)
 {
-   boost::asio::io_service ios;
+   boost::asio::io_service ios; //TODO transférer dans CSsdpClient ?
    const auto ssdpClient = boost::make_shared<CSsdpClient>(ios, searchTarget, timeout);
 
    ios.reset();

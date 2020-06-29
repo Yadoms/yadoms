@@ -137,7 +137,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                ? m_devicesInformation.clear()
                : m_deviceInformation.reset();
 
-            //init();
+            //init(); //TODO remove ?
             retryInitManually();
 
             break;
@@ -207,10 +207,10 @@ std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatic
    DeviceInformation deviceInformation;
    for (const auto& foundDevice : foundDevices)
    {
-      deviceInformation.m_deviceName = foundDevice->findTag("modelName") + " " + foundDevice->getIp();
-      deviceInformation.m_deviceModel = foundDevice->findTag("friendlyName");
-      deviceInformation.m_deviceType = foundDevice->findTag("modelName");
-      deviceInformation.m_deviceIp = foundDevice->getIp();
+      deviceInformation.m_deviceName = foundDevice->findDeviceTag("modelName") + " " + foundDevice->ip();
+      deviceInformation.m_deviceModel = foundDevice->findDeviceTag("friendlyName");
+      deviceInformation.m_deviceType = foundDevice->findDeviceTag("modelName");
+      deviceInformation.m_deviceIp = foundDevice->ip();
       devicesInformation.push_back(deviceInformation);
    }
 
