@@ -4,7 +4,7 @@
 #include "Configuration.h"
 #include "IDeviceState.h"
 #include "INotificationSender.h"
-#include "SsdpDiscoverService.h"
+#include <shared/http/ssdp/DiscoverService.h>
 #include "CustomizeIconType.h"
 
 // Shortcut to yPluginApi namespace
@@ -54,7 +54,7 @@ private:
     * \return     std::vector<DeviceInformation>     vector of structure containing device information
     */
    static std::vector<DeviceInformation> fillAllDevicesInformationAutomatically(
-      const std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>>& foundDevices);
+      const std::vector<boost::shared_ptr<shared::http::ssdp::CDiscoveredDevice>>& foundDevices);
    /**
     * \brief Init Lametric device
     */

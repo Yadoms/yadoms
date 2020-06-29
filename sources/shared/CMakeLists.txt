@@ -128,7 +128,16 @@ set(SHARED_LIB_SRC
    shared/http/Proxy.h
    shared/http/Proxy.cpp
    shared/http/UrlHelpers.h
-   shared/http/UrlHelpers.cpp
+   shared/http/UrlHelpers.cpp   
+   
+	shared/http/ssdp/Client.cpp
+	shared/http/ssdp/Client.h
+	shared/http/ssdp/DiscoveredDevice.cpp
+	shared/http/ssdp/DiscoveredDevice.h
+	shared/http/ssdp/DiscoverService.cpp
+	shared/http/ssdp/DiscoverService.h
+	shared/http/ssdp/HttpResponseHelper.cpp
+	shared/http/ssdp/HttpResponseHelper.h
 
    shared/plugin/information/IInformation.h
    shared/plugin/information/IYadomsInformation.h
@@ -453,6 +462,7 @@ source_group(enumeration shared/shared/enumeration/*.* )
 source_group(event shared/event/*.*)
 source_group(exception shared/exception/*.*)
 source_group(http shared/http/*.*)
+source_group(http\\ssdp shared/http/ssdp/*.*)
 source_group(logInternal shared/logInternal/*.*)
 source_group(notification shared/shared/notification/*.* )	
 source_group(plugin shared/shared/plugin/*.* )	

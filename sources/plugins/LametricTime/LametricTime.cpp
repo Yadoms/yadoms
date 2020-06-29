@@ -7,7 +7,7 @@
 #include "DeviceState.h"
 #include "NotificationSender.h"
 #include "CFactory.h"
-#include "HttpResponseHelper.h"
+#include <shared/http/ssdp/HttpResponseHelper.h>
 
 IMPLEMENT_PLUGIN(CLametricTime)
 
@@ -201,7 +201,7 @@ void CLametricTime::fillDeviceInformationManually() const
 
 
 std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatically(
-   const std::vector<boost::shared_ptr<CSsdpDiscoveredDevice>>& foundDevices)
+   const std::vector<boost::shared_ptr<shared::http::ssdp::CDiscoveredDevice>>& foundDevices)
 {
    std::vector<DeviceInformation> devicesInformation;
    DeviceInformation deviceInformation;
@@ -234,8 +234,8 @@ std::vector<DeviceInformation> CLametricTime::initAutomatically() const
 {
    try
    {
-      //CSsdpDiscoveredDevice foundDevices;
-      const auto foundDevices = CSsdpDiscoverService::discover("urn:schemas-upnp-org:device:LaMetric:1",
+      //CDiscoveredDevice foundDevices;
+      const auto foundDevices = shared::http::ssdp::CDiscoverService::discover("urn:schemas-upnp-org:device:LaMetric:1",
                                                                std::chrono::seconds(10));
       if (foundDevices.empty())
       {
@@ -275,7 +275,7 @@ void CLametricTime::initManually()
       std::string errorMessage = e.what();
       YADOMS_LOG(error) << errorMessage;
 
-      if (CHttpResponseHelper::EHttpCodeStatus::kHttpUnauthorized == CHttpResponseHelper::getHttpStatusCode(
+      if (shared::http::ssdp::CHttpResponseHelper::EHttpCodeStatus::kHttpUnauthorized == shared::http::ssdp::CHttpResponseHelper::getHttpStatusCode(
          errorMessage))
       {
          m_api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
