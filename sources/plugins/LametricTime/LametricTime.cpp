@@ -95,7 +95,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (m_configuration.getPairingMode() == kAuto)
             {
                m_targetDevice = std::find_if(m_devicesInformation.begin(), m_devicesInformation.end(),
-                                             boost::bind(&DeviceInformation::m_deviceName, boost::placeholders::_1) ==
+                                             boost::bind(&DeviceInformation::m_deviceName, _1) ==
                                              command->getDevice());
                if (m_targetDevice != std::end(m_devicesInformation))
                {
@@ -165,7 +165,7 @@ void CLametricTime::declareDevice() const
                            m_deviceInformation->m_deviceModel);
 }
 
-void CLametricTime::declareAllDevicesAndKeywords(CSsdpDiscoveredDevice& foundDevices,
+void CLametricTime::declareAllDevicesAndKeywords(const CSsdpDiscoveredDevice& foundDevices,
                                                  std::vector<DeviceInformation>& devicesInformation) const
 {
    for (size_t i = 0; i < foundDevices.getDevicesDescription().size(); i++)
@@ -200,7 +200,7 @@ void CLametricTime::fillDeviceInformationManually() const
 
 
 std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatically(
-   CSsdpDiscoveredDevice& foundDevices)
+   const CSsdpDiscoveredDevice& foundDevices)
 {
    std::vector<DeviceInformation> devicesInformation;
    DeviceInformation deviceInformation;
@@ -219,7 +219,7 @@ std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatic
 
 void CLametricTime::init()
 {
-   if (m_configuration.getPairingMode() == EPairingMode::kAuto)
+   if (m_configuration.getPairingMode() == kAuto)
    {
       m_devicesInformation = initAutomatically();
    }
@@ -233,20 +233,10 @@ std::vector<DeviceInformation> CLametricTime::initAutomatically() const
 {
    try
    {
-      CSsdpDiscoveredDevice foundDevices;
-      if (!CSsdpDiscoverService::discover(
-            [&foundDevices](const CSsdpDiscoveredDevice& device)
-            {
-               if (!device.getDevicesDescription().empty())
-               {
-                  foundDevices = device;
-                  return true;
-               }
-               return false;
-            },
-            std::chrono::seconds(10),
-            "urn:schemas-upnp-org:device:LaMetric:1")
-      )
+      //CSsdpDiscoveredDevice foundDevices;
+      const auto foundDevices = CSsdpDiscoverService::discover("urn:schemas-upnp-org:device:LaMetric:1",
+         std::chrono::seconds(10));
+      if (foundDevices.getDevicesDescription().empty())
       {
          m_api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
          throw std::runtime_error("No response from the device: wrong ip or no device listening on this network");

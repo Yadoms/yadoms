@@ -53,7 +53,7 @@ private:
     * \param[in]  foundDevices                       Class containing device information
     * \return     std::vector<DeviceInformation>     vector of structure containing device information
     */
-   static std::vector<DeviceInformation> fillAllDevicesInformationAutomatically(CSsdpDiscoveredDevice& foundDevices);
+   static std::vector<DeviceInformation> fillAllDevicesInformationAutomatically(const CSsdpDiscoveredDevice& foundDevices);
    /**
     * \brief Init Lametric device
     * \param[in] api                   Pointer to the API
@@ -80,7 +80,7 @@ private:
    * \param foundDevices         Class containing device information
    * \param devicesInformation   vector of structure containing device information
    */
-   void declareAllDevicesAndKeywords(CSsdpDiscoveredDevice& foundDevices,
+   void declareAllDevicesAndKeywords(const CSsdpDiscoveredDevice& foundDevices,
                                      std::vector<DeviceInformation>& devicesInformation) const;
    /**
    * \brief Retry to init Manually the device in case of a none Unauthorized http code status
