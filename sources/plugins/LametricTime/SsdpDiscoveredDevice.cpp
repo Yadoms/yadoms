@@ -1,8 +1,5 @@
 ﻿#include "SsdpDiscoveredDevice.h"
 
-CSsdpDiscoveredDevice::CSsdpDiscoveredDevice()
-{
-}
 
 CSsdpDiscoveredDevice::CSsdpDiscoveredDevice(const std::vector<std::string>& devicesDescription)
 	: m_deviceDescription(devicesDescription)

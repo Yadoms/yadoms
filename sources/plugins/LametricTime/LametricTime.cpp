@@ -95,8 +95,10 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (m_configuration.getPairingMode() == kAuto)
             {
                m_targetDevice = std::find_if(m_devicesInformation.begin(), m_devicesInformation.end(),
-                                             boost::bind(&DeviceInformation::m_deviceName, _1) ==
-                                             command->getDevice());
+                                             [&command](const auto& deviceInformation)
+                                             {
+                                                return deviceInformation.m_deviceName == command->getDevice();
+                                             });
                if (m_targetDevice != std::end(m_devicesInformation))
                {
                   YADOMS_LOG(information) << "Target device found";
@@ -235,7 +237,7 @@ std::vector<DeviceInformation> CLametricTime::initAutomatically() const
    {
       //CSsdpDiscoveredDevice foundDevices;
       const auto foundDevices = CSsdpDiscoverService::discover("urn:schemas-upnp-org:device:LaMetric:1",
-         std::chrono::seconds(10));
+                                                               std::chrono::seconds(10));
       if (foundDevices.getDevicesDescription().empty())
       {
          m_api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");

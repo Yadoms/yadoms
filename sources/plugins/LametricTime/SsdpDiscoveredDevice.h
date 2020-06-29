@@ -4,7 +4,6 @@
 class CSsdpDiscoveredDevice
 {
 public:
-	CSsdpDiscoveredDevice();
 	explicit CSsdpDiscoveredDevice(const std::vector<std::string>& devicesDescription);
 	virtual ~CSsdpDiscoveredDevice() = default;
 	
