@@ -116,7 +116,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             if (command->getKeyword() == IconTypeName)
             {
-               m_senderManager->setCustomizeIcon(commandBody);
+               m_senderManager->setCustomizeIcon(commandBody); //TOFIX : bug ? m_senderManager can be null here
             }
 
             if (boost::iequals(command->getDevice(),
@@ -125,7 +125,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                   : m_deviceInformation->m_deviceName) && command->getKeyword() !=
                IconTypeName)
             {
-               m_senderManager->displayText(commandBody);
+               m_senderManager->displayText(commandBody); //TOFIX : bug ? m_senderManager can be null here
             }
 
             break;
