@@ -1,3 +1,4 @@
+set(OpenCV_DIR ${OPENCV_ROOT})
 find_package(OpenCV)
 
 if(OpenCV_FOUND)
