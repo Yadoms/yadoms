@@ -1,7 +1,4 @@
-set(OpenCV_DIR ${OPENCV_ROOT})
-message(STATUS "OpenCV_DIR = " ${OpenCV_DIR})
-message(STATUS "OPENCV_ROOT = " ${OPENCV_ROOT})
-find_package(OpenCV)
+find_package(OpenCV PATHS ${OPENCV_ROOT} NO_DEFAULT_PATH)
 
 if(OpenCV_FOUND)
 		# include common plugin definitions
