@@ -21,7 +21,7 @@ namespace shared
             return m_ip;
          }
 
-         const boost::shared_ptr<const CDataContainer>& CDiscoveredDevice::deviceDescription() const
+         boost::shared_ptr<const CDataContainer> CDiscoveredDevice::deviceDescription() const
          {
             return m_deviceDescription;
          }
@@ -43,7 +43,7 @@ namespace shared
             return match[1].str();
          }
 
-         boost::shared_ptr<CDataContainer> CDiscoveredDevice::deviceDescriptionFromXml(
+         boost::shared_ptr<const CDataContainer> CDiscoveredDevice::deviceDescriptionFromXml(
             const std::string& deviceDescription)
          {
             boost::property_tree::ptree tree;

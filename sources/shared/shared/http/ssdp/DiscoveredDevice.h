@@ -25,14 +25,14 @@ namespace shared
             /// \brief	    Find a specific tag value from SSDP discovered device (in 'device' block)
             /// \return     Tag value or std::out_of_range exception if not found
             //--------------------------------------------------------------	
-            const boost::shared_ptr<const CDataContainer>& deviceDescription() const;
+            boost::shared_ptr<const CDataContainer> deviceDescription() const;
 
          private:
             static std::string ipFromXml(const std::string& deviceDescription);
-            static boost::shared_ptr<CDataContainer> deviceDescriptionFromXml(const std::string& deviceDescription);
+            static boost::shared_ptr<const CDataContainer> deviceDescriptionFromXml(const std::string& deviceDescription);
 
             const std::string m_ip;
-            const boost::shared_ptr<CDataContainer> m_deviceDescription;
+            boost::shared_ptr<const CDataContainer> m_deviceDescription;
          };
       }
    }
