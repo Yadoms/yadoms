@@ -207,9 +207,9 @@ std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatic
    DeviceInformation deviceInformation;
    for (const auto& foundDevice : foundDevices)
    {
-      deviceInformation.m_deviceName = foundDevice->findDeviceTag("modelName") + " " + foundDevice->ip();
-      deviceInformation.m_deviceModel = foundDevice->findDeviceTag("friendlyName");
-      deviceInformation.m_deviceType = foundDevice->findDeviceTag("modelName");
+      deviceInformation.m_deviceName = foundDevice->deviceDescription()->get<std::string>("modelName") + " " + foundDevice->ip();
+      deviceInformation.m_deviceModel = foundDevice->deviceDescription()->get<std::string>("friendlyName");
+      deviceInformation.m_deviceType = foundDevice->deviceDescription()->get<std::string>("modelName");
       deviceInformation.m_deviceIp = foundDevice->ip();
       devicesInformation.push_back(deviceInformation);
    }

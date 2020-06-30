@@ -1,4 +1,5 @@
-﻿#include "HttpResponseHelper.h"
+﻿#include "stdafx.h"
+#include "HttpResponseHelper.h"
 #include <regex>
 #include "shared/Log.h"
 

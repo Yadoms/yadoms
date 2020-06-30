@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "shared/Log.h"
 #include "shared/http/HttpMethods.h"
 #include "Client.h"

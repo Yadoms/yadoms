@@ -1,4 +1,5 @@
-﻿#include "DiscoveredDevice.h"
+﻿#include "stdafx.h"
+#include "DiscoveredDevice.h"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -10,13 +11,29 @@ namespace shared
       namespace ssdp
       {
          CDiscoveredDevice::CDiscoveredDevice(const std::string& deviceDescription)
-            : m_description(fromXml(deviceDescription))
+            : m_ip(ipFromXml(deviceDescription)),
+              m_deviceDescription(deviceDescriptionFromXml(deviceDescription))
          {
          }
 
          std::string CDiscoveredDevice::ip() const
          {
-            const auto& fullUrl = m_description->get<std::string>("root.URLBase");
+            return m_ip;
+         }
+
+         const boost::shared_ptr<const CDataContainer>& CDiscoveredDevice::deviceDescription() const
+         {
+            return m_deviceDescription;
+         }
+
+         std::string CDiscoveredDevice::ipFromXml(const std::string& deviceDescription)
+         {
+            boost::property_tree::ptree tree;
+            std::stringstream inStream;
+            inStream << deviceDescription;
+            read_xml(inStream, tree);
+
+            const auto& fullUrl = tree.get<std::string>("root.URLBase");
 
             const boost::regex reg(R"((\d{1,3}(\.\d{1,3}){3}))");
             boost::smatch match;
@@ -26,25 +43,22 @@ namespace shared
             return match[1].str();
          }
 
-         std::string CDiscoveredDevice::findDeviceTag(const std::string& tagName) const
-         {
-            const auto deviceBloc = m_description->getChild("device");
-            return deviceBloc->get<std::string>(tagName);
-         }
-
-         boost::shared_ptr<CDataContainer> CDiscoveredDevice::fromXml(const std::string& deviceDescription)
+         boost::shared_ptr<CDataContainer> CDiscoveredDevice::deviceDescriptionFromXml(
+            const std::string& deviceDescription)
          {
             boost::property_tree::ptree tree;
-            read_xml(deviceDescription, tree);
+            std::stringstream inStream;
+            inStream << deviceDescription;
+            read_xml(inStream, tree);
 
             // Be careful, JSON writer from Boost is quite limited (bad management of lists :
             // provides something like {"clé":""} instead of {"key":[]}
             //	But is good enough here, as we don't have lists
 
-            std::stringstream ss;
-            write_json(ss, tree);
+            std::stringstream outStream;
+            write_json(outStream, tree.get_child("root.device"));
 
-            return CDataContainer::make(ss.str());
+            return CDataContainer::make(outStream.str());
          }
       }
    }

@@ -1,4 +1,5 @@
-﻿#include "Client.h"
+﻿#include "stdafx.h"
+#include "Client.h"
 #include <boost/bind/bind.hpp>
 #include <chrono>
 #include <Poco/Net/IPAddress.h>
