@@ -12,12 +12,12 @@ namespace shared
    {
       namespace ssdp
       {
-         const boost::asio::ip::address CClient::MulticastAddress = boost::asio::ip::address_v4::from_string(
-            "239.255.255.250");
+         const boost::asio::ip::address CClient::MulticastAddress =
+            boost::asio::ip::address_v4::from_string("239.255.255.250");
          const int CClient::MulticastPort = 1900;
 
          CClient::CClient(boost::asio::io_service& ioService, const std::string& searchTarget,
-                                  const std::chrono::seconds& timeout)
+                          const std::chrono::seconds& timeout)
             : m_endpoint(MulticastAddress, MulticastPort),
               m_socket(ioService, m_endpoint.protocol()),
               m_timer(ioService),
@@ -31,9 +31,8 @@ namespace shared
          {
             try
             {
-               m_socket.set_option(
-                  boost::asio::ip::multicast::outbound_interface(
-                     boost::asio::ip::address_v4::from_string(Poco::Net::IPAddress().toString())));
+               m_socket.set_option(boost::asio::ip::multicast::outbound_interface(
+                  boost::asio::ip::address_v4::from_string(Poco::Net::IPAddress().toString())));
             }
             catch (std::exception&)
             {

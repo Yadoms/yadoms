@@ -138,6 +138,7 @@ set(SHARED_LIB_SRC
 	shared/http/ssdp/DiscoverService.h
 	shared/http/ssdp/HttpResponseHelper.cpp
 	shared/http/ssdp/HttpResponseHelper.h
+	shared/http/ssdp/IDiscoveredDevice.h
 
    shared/plugin/information/IInformation.h
    shared/plugin/information/IYadomsInformation.h

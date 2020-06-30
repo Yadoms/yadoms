@@ -201,7 +201,7 @@ void CLametricTime::fillDeviceInformationManually() const
 
 
 std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatically(
-   const std::vector<boost::shared_ptr<shared::http::ssdp::CDiscoveredDevice>>& foundDevices)
+   const std::vector<boost::shared_ptr<shared::http::ssdp::IDiscoveredDevice>>& foundDevices)
 {
    std::vector<DeviceInformation> devicesInformation;
    DeviceInformation deviceInformation;
@@ -234,7 +234,6 @@ std::vector<DeviceInformation> CLametricTime::initAutomatically() const
 {
    try
    {
-      //CDiscoveredDevice foundDevices;
       const auto foundDevices = shared::http::ssdp::CDiscoverService::discover("urn:schemas-upnp-org:device:LaMetric:1",
                                                                std::chrono::seconds(10));
       if (foundDevices.empty())

@@ -54,7 +54,7 @@ private:
     * \return     std::vector<DeviceInformation>     vector of structure containing device information
     */
    static std::vector<DeviceInformation> fillAllDevicesInformationAutomatically(
-      const std::vector<boost::shared_ptr<shared::http::ssdp::CDiscoveredDevice>>& foundDevices);
+      const std::vector<boost::shared_ptr<shared::http::ssdp::IDiscoveredDevice>>& foundDevices);
    /**
     * \brief Init Lametric device
     */

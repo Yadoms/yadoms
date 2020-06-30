@@ -11,18 +11,17 @@ namespace shared
          class CClient
          {
          public:
-
+            CClient(boost::asio::io_service& ioService,
+                    const std::string& searchTarget,
+                    const std::chrono::seconds& timeout);
             virtual ~CClient() = default;
-
-            CClient(boost::asio::io_service& ioService, const std::string& searchTarget,
-                        const std::chrono::seconds& timeout);
 
             std::string getDescriptionUrl() const { return m_descriptionUrl; }
 
             std::vector<std::string> getDescriptionUrls() const { return m_descriptionUrls; }
          private:
-            const static boost::asio::ip::address MulticastAddress;
-            const static int MulticastPort;
+            static const boost::asio::ip::address MulticastAddress;
+            static const int MulticastPort;
 
             void handleSendDiscoveryRequest(const boost::system::error_code& error);
             void handleDiscoveryTimeout(const boost::system::error_code& errorCode);

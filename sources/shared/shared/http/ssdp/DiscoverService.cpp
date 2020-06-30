@@ -3,6 +3,7 @@
 #include "shared/http/HttpMethods.h"
 #include "Client.h"
 #include "DiscoverService.h"
+#include "DiscoveredDevice.h"
 
 namespace shared
 {
@@ -10,10 +11,10 @@ namespace shared
    {
       namespace ssdp
       {
-         std::vector<boost::shared_ptr<CDiscoveredDevice>> CDiscoverService::getDevicesDescription(
+         std::vector<boost::shared_ptr<IDiscoveredDevice>> CDiscoverService::getDevicesDescription(
             const std::vector<std::string>& descriptionUrls)
          {
-            std::vector<boost::shared_ptr<CDiscoveredDevice>> devicesDescription;
+            std::vector<boost::shared_ptr<IDiscoveredDevice>> devicesDescription;
             for (const auto& descriptionUrl : descriptionUrls)
             {
                try
@@ -31,7 +32,7 @@ namespace shared
             return devicesDescription;
          }
 
-         std::vector<boost::shared_ptr<CDiscoveredDevice>> CDiscoverService::discover(
+         std::vector<boost::shared_ptr<IDiscoveredDevice>> CDiscoverService::discover(
             const std::string& searchTarget,
             const std::chrono::duration<long long>& timeout)
          {

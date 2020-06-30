@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "DiscoveredDevice.h"
+#include "IDiscoveredDevice.h"
 
 namespace shared
 {
@@ -26,12 +26,12 @@ namespace shared
             //--------------------------------------------------------------
             enum { kDefaultTimeoutSeconds = 45 };
 
-            static std::vector<boost::shared_ptr<CDiscoveredDevice>> discover(
+            static std::vector<boost::shared_ptr<IDiscoveredDevice>> discover(
                const std::string& searchTarget = "ssdp:all",
                const std::chrono::duration<long long>& timeout = std::chrono::seconds(kDefaultTimeoutSeconds));
 
          private:
-            static std::vector<boost::shared_ptr<CDiscoveredDevice>> getDevicesDescription(
+            static std::vector<boost::shared_ptr<IDiscoveredDevice>> getDevicesDescription(
                const std::vector<std::string>& descriptionUrl);
          };
       }
