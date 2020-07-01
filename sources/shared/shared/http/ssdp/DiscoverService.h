@@ -32,7 +32,7 @@ namespace shared
 
          private:
             static std::vector<boost::shared_ptr<IDiscoveredDevice>> getDevicesDescription(
-               const std::vector<std::string>& descriptionUrl);
+               const std::set<std::string>& descriptionUrl);
          };
       }
    }

@@ -16,9 +16,8 @@ namespace shared
                     const std::chrono::seconds& timeout);
             virtual ~CClient() = default;
 
-            std::string getDescriptionUrl() const { return m_descriptionUrl; }
+            std::set<std::string> getDescriptionUrls() const { return m_descriptionUrls; }
 
-            std::vector<std::string> getDescriptionUrls() const { return m_descriptionUrls; }
          private:
             static const boost::asio::ip::address MulticastAddress;
             static const int MulticastPort;
@@ -29,14 +28,11 @@ namespace shared
             void startAsynchronousSend();
             static std::string getMulticastSearchRequest(const std::string& searchTarget);
 
-            static void removeDuplicates(std::vector<std::string>& v);
-            static void removeEmptyStrings(std::vector<std::string>& strings);
             void closeSocketAndTimer();
 
             boost::asio::ip::udp::endpoint m_endpoint;
             boost::asio::ip::udp::socket m_socket;
             boost::asio::steady_timer m_timer;
-            std::string m_descriptionUrl;
             std::string m_ipAddress;
             std::string m_deviceName;
             std::string m_serialNumber;
@@ -44,11 +40,11 @@ namespace shared
             std::string m_xmlTagValue;
             std::chrono::seconds m_timeout;
 
-            enum { kMaxlength = 1024 };
+            enum { kMaxlength = 2048 };
 
             char m_data[kMaxlength]{};
 
-            std::vector<std::string> m_descriptionUrls;
+            std::set<std::string> m_descriptionUrls;
          };
       }
    }

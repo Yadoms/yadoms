@@ -38,8 +38,11 @@ namespace shared
             {
                throw std::runtime_error("Could not bind to the specified ip");
             }
-            m_socket.async_send_to(boost::asio::buffer(m_multicastSearchRequest), m_endpoint,
-                                   boost::bind(&CClient::handleSendDiscoveryRequest, this,
+
+            m_socket.async_send_to(boost::asio::buffer(m_multicastSearchRequest),
+                                   m_endpoint,
+                                   boost::bind(&CClient::handleSendDiscoveryRequest,
+                                               this,
                                                boost::asio::placeholders::error));
          }
 
@@ -61,21 +64,16 @@ namespace shared
          void CClient::handleDiscoveryTimeout(const boost::system::error_code& errorCode)
          {
             // boost::asio::error::operation_aborted : Normal behaviour-Invoked when we cancelled the timer
-            if (!errorCode || errorCode == boost::asio::error::operation_aborted)
-            {
-               closeSocketAndTimer();
-               return;
-            }
+            if (errorCode && errorCode != boost::asio::error::operation_aborted)
+               throw std::runtime_error("Error trying to receive data with ssdp discovery request");
 
-            throw std::runtime_error("Error trying to receive data with ssdp discovery request");
+            closeSocketAndTimer();
          }
 
          void CClient::handleReadHeader(const boost::system::error_code& errorCode, size_t bytesReceived)
          {
             if (errorCode && errorCode != boost::asio::error::operation_aborted)
             {
-               removeDuplicates(m_descriptionUrls);
-               removeEmptyStrings(m_descriptionUrls);
                closeSocketAndTimer();
                return;
             }
@@ -83,20 +81,16 @@ namespace shared
             const auto httpResponse = std::string(m_data);
 
             if (!CHttpResponseHelper::isValidHttpResponse(httpResponse))
-            {
                throw std::runtime_error("Invalid response from the device");
-            }
 
             if (!CHttpResponseHelper::isValidHttpStatusCode(httpResponse))
-            {
                throw std::runtime_error("Response returned with a failed status code");
-            }
 
-            const std::string headerLocationName = "location";
+            static const std::string HeaderLocationName = "location";
 
-            m_descriptionUrl = CHttpResponseHelper::getHttpResponseHeaderField(headerLocationName, httpResponse);
-
-            m_descriptionUrls.push_back(m_descriptionUrl);
+            const auto location = CHttpResponseHelper::getHttpResponseHeaderField(HeaderLocationName, httpResponse);
+            if (!location.empty())
+               m_descriptionUrls.insert(location);
 
             m_socket.async_receive(boost::asio::buffer(m_data),
                                    boost::bind(&CClient::handleReadHeader, this,
@@ -114,23 +108,6 @@ namespace shared
             os << "ST: " + searchTarget + "\r\n";
             os << "\r\n";
             return os.str();
-         }
-
-         void CClient::removeDuplicates(std::vector<std::string>& v)
-         {
-            auto end = v.end();
-            for (auto it = v.begin(); it != end; ++it)
-            {
-               end = std::remove(it + 1, end, *it);
-            }
-
-            v.erase(end, v.end());
-         }
-
-         void CClient::removeEmptyStrings(std::vector<std::string>& strings)
-         {
-            const auto it = remove_if(strings.begin(), strings.end(), std::mem_fun_ref(&std::string::empty));
-            strings.erase(it, strings.end());
          }
 
          void CClient::closeSocketAndTimer()

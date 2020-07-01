@@ -12,7 +12,7 @@ namespace shared
       namespace ssdp
       {
          std::vector<boost::shared_ptr<IDiscoveredDevice>> CDiscoverService::getDevicesDescription(
-            const std::vector<std::string>& descriptionUrls)
+            const std::set<std::string>& descriptionUrls)
          {
             std::vector<boost::shared_ptr<IDiscoveredDevice>> devicesDescription;
             for (const auto& descriptionUrl : descriptionUrls)
