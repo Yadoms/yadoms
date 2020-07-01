@@ -36,7 +36,7 @@ namespace shared
             const std::string& searchTarget,
             const std::chrono::duration<long long>& timeout)
          {
-            boost::asio::io_service ios; //TODO transférer dans CClient ?
+            boost::asio::io_service ios;
             const auto ssdpClient = boost::make_shared<CClient>(ios, searchTarget, timeout);
 
             ios.reset();

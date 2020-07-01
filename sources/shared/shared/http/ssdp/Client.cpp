@@ -2,9 +2,10 @@
 #include "Client.h"
 #include <boost/bind/bind.hpp>
 #include <chrono>
+#include <regex>
 #include <Poco/Net/IPAddress.h>
 #include <shared/http/HttpMethods.h>
-#include "HttpResponseHelper.h"
+#include <shared/Log.h>
 
 namespace shared
 {
@@ -80,17 +81,13 @@ namespace shared
 
             const auto httpResponse = std::string(m_data);
 
-            if (!CHttpResponseHelper::isValidHttpResponse(httpResponse))
-               throw std::runtime_error("Invalid response from the device");
-
-            if (!CHttpResponseHelper::isValidHttpStatusCode(httpResponse))
+            if (getHttpCode(httpResponse) != ECodes::kOKValue)
                throw std::runtime_error("Response returned with a failed status code");
 
             static const std::string HeaderLocationName = "location";
-
-            const auto location = CHttpResponseHelper::getHttpResponseHeaderField(HeaderLocationName, httpResponse);
-            if (!location.empty())
-               m_descriptionUrls.insert(location);
+            const auto locationHeader = getHttpResponseHeaderField(HeaderLocationName, httpResponse);
+            if (!locationHeader.empty())
+               m_descriptionUrls.insert(locationHeader);
 
             m_socket.async_receive(boost::asio::buffer(m_data),
                                    boost::bind(&CClient::handleReadHeader, this,
@@ -114,6 +111,29 @@ namespace shared
          {
             m_socket.close();
             m_timer.cancel();
+         }
+
+         std::string CClient::getHttpResponseHeaderField(const std::string& headerFieldName,
+                                                         const std::string& httpResponse)
+         {
+            const boost::regex pattern("^" + headerFieldName + ": ([^\\n$\\\\\\r]+)", boost::regex::icase);
+            boost::smatch match;
+
+            if (!regex_search(httpResponse, match, pattern))
+               return std::string();
+
+            return match[1].str();
+         }
+
+         ECodes CClient::getHttpCode(const std::string& httpResponse)
+         {
+            const boost::regex pattern("^HTTP.*(\\d{3})", boost::regex::icase);
+            boost::smatch match;
+
+            if (!regex_search(httpResponse, match, pattern))
+               throw std::runtime_error("Invalid response from the device, http code not found");
+
+            return ECodes(stoi(match[1].str()));
          }
       }
    }

@@ -4,10 +4,11 @@
 
 #include <Poco/Net/HTTPSClientSession.h>
 #include <shared/Log.h>
+#include <shared/http/Codes.h>
+#include <shared/exception/HttpException.hpp>
 #include "DeviceState.h"
 #include "NotificationSender.h"
 #include "CFactory.h"
-#include <shared/http/ssdp/HttpResponseHelper.h>
 
 IMPLEMENT_PLUGIN(CLametricTime)
 
@@ -60,8 +61,8 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                m_api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                onUpdateConfiguration(
                   m_api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
-               m_api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
-                                                    boost::posix_time::seconds(30));
+
+               retryConnection(30);
 
                m_configuration.getPairingMode() == kAuto
                   ? m_devicesInformation.clear()
@@ -146,8 +147,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             m_api->setPluginState(yApi::historization::EPluginState::kCustom, "failedToConnect");
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while...";
-            m_api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
-                                                 boost::posix_time::seconds(30));
+            retryConnection(30);
             break;
          }
       default:
@@ -207,7 +207,8 @@ std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatic
    DeviceInformation deviceInformation;
    for (const auto& foundDevice : foundDevices)
    {
-      deviceInformation.m_deviceName = foundDevice->deviceDescription()->get<std::string>("modelName") + " " + foundDevice->ip();
+      deviceInformation.m_deviceName = foundDevice->deviceDescription()->get<std::string>("modelName") + " " +
+         foundDevice->ip();
       deviceInformation.m_deviceModel = foundDevice->deviceDescription()->get<std::string>("friendlyName");
       deviceInformation.m_deviceType = foundDevice->deviceDescription()->get<std::string>("modelName");
       deviceInformation.m_deviceIp = foundDevice->ip();
@@ -235,7 +236,7 @@ std::vector<DeviceInformation> CLametricTime::initAutomatically() const
    try
    {
       const auto foundDevices = shared::http::ssdp::CDiscoverService::discover("urn:schemas-upnp-org:device:LaMetric:1",
-                                                               std::chrono::seconds(10));
+                                                                               std::chrono::seconds(10));
       if (foundDevices.empty())
       {
          m_api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
@@ -269,20 +270,22 @@ void CLametricTime::initManually()
    {
       createDevice();
    }
-   catch (std::exception& e)
+   catch (shared::exception::CHttpException& e)
    {
-      std::string errorMessage = e.what();
-      YADOMS_LOG(error) << errorMessage;
-
-      if (shared::http::ssdp::CHttpResponseHelper::EHttpCodeStatus::kHttpUnauthorized == shared::http::ssdp::CHttpResponseHelper::getHttpStatusCode(
-         errorMessage))
+      if (e.code() == shared::http::ECodes::kUnauthorized)
       {
+         YADOMS_LOG(error) << e.what();
          m_api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
          throw;
       }
-      m_api->getEventHandler().createTimer(kConnectionRetryTimer,
-                                           shared::event::CEventTimer::kOneShot,
-                                           boost::posix_time::seconds(10));
+
+      YADOMS_LOG(error) << e.what();
+      retryConnection(10);
+   }
+   catch (std::exception& e)
+   {
+      YADOMS_LOG(error) << e.what();
+      retryConnection(10);
    }
 }
 
@@ -327,4 +330,11 @@ void CLametricTime::createDevice() const
    declareKeyword();
 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
+}
+
+void CLametricTime::retryConnection(int withinDelaySeconds) const
+{
+   m_api->getEventHandler().createTimer(kConnectionRetryTimer,
+                                        shared::event::CEventTimer::kOneShot,
+                                        boost::posix_time::seconds(withinDelaySeconds));
 }

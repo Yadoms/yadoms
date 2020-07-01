@@ -42,8 +42,7 @@ void CNotificationSender::displayText(const std::string& text,
    {
       const auto message = (boost::format("Fail to send Post http request or interpret answer \"%1%\" : %2%") % url %
          e.what()).str();
-      YADOMS_LOG(error) << message;
-      throw shared::exception::CHttpException(message);
+      YADOMS_LOG(error) << "Fail to send Post http request or interpret answer " << url << " : " << e.what();
    }
 }
 

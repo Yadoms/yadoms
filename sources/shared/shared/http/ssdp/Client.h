@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <boost/asio.hpp>
 #include <boost/asio/steady_timer.hpp>
+#include <shared/http/Codes.h>
 
 namespace shared
 {
@@ -27,6 +28,9 @@ namespace shared
             void handleReadHeader(const boost::system::error_code& errorCode, size_t bytesReceived);
             void startAsynchronousSend();
             static std::string getMulticastSearchRequest(const std::string& searchTarget);
+            static std::string getHttpResponseHeaderField(const std::string& headerFieldName,
+                                                          const std::string& httpResponse);
+            static ECodes getHttpCode(const std::string& httpResponse);
 
             void closeSocketAndTimer();
 

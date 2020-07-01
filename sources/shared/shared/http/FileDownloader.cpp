@@ -10,6 +10,8 @@
 #include <shared/http/HttpMethods.h>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
+#include <curlpp/Infos.hpp>
+#include <utility>
 #include "Proxy.h"
 #include "curlppHelpers.h"
 #include "shared/exception/HttpException.hpp"
@@ -79,7 +81,9 @@ namespace shared
             const auto message = (boost::format("Fail to download %1% : %2%, code %3%")
                % url % error.what() % error.whatCode()).str();
             YADOMS_LOG(warning) << message;
-            throw exception::CHttpException(message);
+            if (ECodes::isDefined(curlpp::infos::ResponseCode::get(request)))
+               throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
+            throw std::runtime_error(message);
          }
 
          CCurlppHelpers::checkResult(request);
@@ -104,7 +108,7 @@ namespace shared
       {
          const auto result = downloadFile(url,
                                           location,
-                                          reporter);
+                                          std::move(reporter));
 
          //we re-read the file and compute the md5 (the md5 can be generated online using ie http://onlinemd5.com/)
          const auto md5HashCalculated = encryption::CMd5::digestFile(result.string());

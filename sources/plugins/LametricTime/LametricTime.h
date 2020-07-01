@@ -80,14 +80,22 @@ private:
    * \param devicesInformation   vector of structure containing device information
    */
    void declareAllDevicesAndKeywords(std::vector<DeviceInformation>& devicesInformation) const;
+
    /**
    * \brief Retry to init Manually the device in case of a none Unauthorized http code status
    */
    void retryInitManually();
+
    /**
    * \brief sending echo to device & fill and declare device(s) and keyword(s)
    */
    void createDevice() const;
+
+   /**
+   * \brief Retry connection to device in N seconds
+   */
+   void retryConnection(int withinDelaySeconds) const;
+
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
