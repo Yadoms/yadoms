@@ -127,7 +127,7 @@ namespace shared
 
          ECodes CClient::getHttpCode(const std::string& httpResponse)
          {
-            const boost::regex pattern("^HTTP.*(\\d{3})", boost::regex::icase);
+            const boost::regex pattern(R"(\s*(\b[0-9]{3}\b)\s)");
             boost::smatch match;
 
             if (!regex_search(httpResponse, match, pattern))
