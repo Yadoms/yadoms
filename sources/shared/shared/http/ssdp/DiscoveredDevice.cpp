@@ -10,8 +10,10 @@ namespace shared
    {
       namespace ssdp
       {
-         CDiscoveredDevice::CDiscoveredDevice(const std::string& deviceDescription)
-            : m_ip(ipFromXml(deviceDescription)),
+         CDiscoveredDevice::CDiscoveredDevice(const std::string& location,
+            const std::string& deviceDescription)
+            : m_location(location),
+              m_ip(ipFromXml(m_location)),
               m_deviceDescription(deviceDescriptionFromXml(deviceDescription))
          {
          }
@@ -28,16 +30,9 @@ namespace shared
 
          std::string CDiscoveredDevice::ipFromXml(const std::string& deviceDescription)
          {
-            boost::property_tree::ptree tree;
-            std::stringstream inStream;
-            inStream << deviceDescription;
-            read_xml(inStream, tree);
-
-            const auto& fullUrl = tree.get<std::string>("root.URLBase");
-
             const boost::regex reg(R"((\d{1,3}(\.\d{1,3}){3}))");
             boost::smatch match;
-            if (!regex_search(fullUrl, match, reg) || match.length() < 2)
+            if (!regex_search(deviceDescription, match, reg) || match.length() < 2)
                throw std::runtime_error("Invalid IP found");
 
             return match[1].str();

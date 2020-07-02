@@ -10,7 +10,8 @@ namespace shared
          class CDiscoveredDevice : public IDiscoveredDevice
          {
          public:
-            explicit CDiscoveredDevice(const std::string& deviceDescription);
+            CDiscoveredDevice(const std::string& location,
+                              const std::string& deviceDescription);
             virtual ~CDiscoveredDevice() = default;
 
             //--------------------------------------------------------------
@@ -28,8 +29,10 @@ namespace shared
 
          private:
             static std::string ipFromXml(const std::string& deviceDescription);
-            static boost::shared_ptr<const CDataContainer> deviceDescriptionFromXml(const std::string& deviceDescription);
+            static boost::shared_ptr<const CDataContainer> deviceDescriptionFromXml(
+               const std::string& deviceDescription);
 
+            const std::string& m_location;
             const std::string m_ip;
             boost::shared_ptr<const CDataContainer> m_deviceDescription;
          };

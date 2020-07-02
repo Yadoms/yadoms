@@ -84,8 +84,7 @@ namespace shared
             if (getHttpCode(httpResponse) != ECodes::kOKValue)
                throw std::runtime_error("Response returned with a failed status code");
 
-            static const std::string HeaderLocationName = "location";
-            const auto locationHeader = getHttpResponseHeaderField(HeaderLocationName, httpResponse);
+            const auto locationHeader = getHttpResponseHeaderField("location", httpResponse);
             if (!locationHeader.empty())
                m_descriptionUrls.insert(locationHeader);
 
