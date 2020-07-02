@@ -96,6 +96,7 @@ private:
    */
    void retryConnection(int withinDelaySeconds) const;
 
+   static std::string getIpAddress(const std::string& urlBase);
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------

@@ -207,7 +207,7 @@ std::vector<DeviceInformation> CLametricTime::fillAllDevicesInformationAutomatic
    DeviceInformation deviceInformation;
    for (const auto& foundDevice : foundDevices)
    {
-      deviceInformation.m_deviceIp = foundDevice->xmlContent()->get<std::string>("root.URLBase");
+      deviceInformation.m_deviceIp = getIpAddress(foundDevice->xmlContent()->get<std::string>("root.URLBase"));
       deviceInformation.m_deviceName = foundDevice->xmlContent()->get<std::string>("root.device.modelName") + " " +
          deviceInformation.m_deviceIp;
       deviceInformation.m_deviceModel = foundDevice->xmlContent()->get<std::string>("root.device.friendlyName");
@@ -337,4 +337,14 @@ void CLametricTime::retryConnection(int withinDelaySeconds) const
    m_api->getEventHandler().createTimer(kConnectionRetryTimer,
                                         shared::event::CEventTimer::kOneShot,
                                         boost::posix_time::seconds(withinDelaySeconds));
+}
+
+std::string CLametricTime::getIpAddress(const std::string& urlBase)
+{
+   const boost::regex reg(R"((\d{1,3}(\.\d{1,3}){3}))");
+   boost::smatch match;
+   if (!regex_search(urlBase, match, reg) || match.length() < 2)
+      throw std::runtime_error("Invalid IP found");
+
+   return match[1].str();
 }
