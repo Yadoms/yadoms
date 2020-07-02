@@ -139,4 +139,64 @@ BOOST_AUTO_TEST_SUITE(TestDiscoveredDevice)
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UPC"), "UPC here");
    }
 
+   BOOST_AUTO_TEST_CASE(Synology218plus)
+   {
+      static const auto ssdpAnswer = std::string(
+         "<root xmlns="urn:schemas-upnp-org:device-1-0"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType><friendlyName>odahds218plus</friendlyName><manufacturer>Synology Inc.</manufacturer><manufacturerURL>http://www.synology.com/</manufacturerURL><modelName>DS218+</modelName><modelDescription>Synology DLNA/UPnP Media Server</modelDescription><modelURL>http://www.synology.com</modelURL><serialNumber>1940PCN762604</serialNumber><UDN>uuid:001132ac-3d49-0011-493d-493dac321100</UDN><presentationURL>http://192.168.1.168:5000/</presentationURL><iconList><icon><mimetype>image/jpeg</mimetype><width>120</width><height>120</height><depth>24</depth><url>/tmp_icon/dmsicon120.jpg</url></icon><icon><mimetype>image/jpeg</mimetype><width>48</width><height>48</height><depth>24</depth><url>/tmp_icon/dmsicon48.jpg</url></icon><icon><mimetype>image/png</mimetype><width>120</width><height>120</height><depth>24</depth><url>/tmp_icon/dmsicon120.png</url></icon><icon><mimetype>image/png</mimetype><width>48</width><height>48</height><depth>24</depth><url>/tmp_icon/dmsicon48.png</url></icon></iconList><serviceList><service><serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType><serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId><SCPDURL>/connmgrSCPD.xml</SCPDURL><controlURL>/ConnectionManager/control</controlURL><eventSubURL>/ConnectionManager/event</eventSubURL></service><service><serviceType>urn:schemas-upnp-org:service:ContentDirectory:1</serviceType><serviceId>urn:upnp-org:serviceId:ContentDirectory</serviceId><SCPDURL>/cdsxSCPD.xml</SCPDURL><controlURL>/ContentDirectory/control</controlURL><eventSubURL>/ContentDirectory/event</eventSubURL></service><service><serviceType>urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1</serviceType><serviceId>urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar</serviceId><SCPDURL>/msrrSCPD.xml</SCPDURL><eventSubURL>/MediaReceiverRegistrar/event</eventSubURL><controlURL>/MediaReceiverRegistrar/control</controlURL></service></serviceList></device></root>");
+
+      const shared::http::ssdp::CDiscoveredDevice dd(ssdpAnswer);
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serviceList.service.URLBase"), "http://192.168.1.168:5000");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.deviceType"),
+         "urn:schemas-upnp-org:device:Basic:1");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.friendlyName"), "odahds218plus (DS218+)");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturer"), "Synology");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturerURL"), "http://www.synology.com");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelDescription"), "Synology NAS");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelName"), "DS218+");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelNumber"), "DS218+ 6.2-25426");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelURL"), "http://www.synology.com");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelType"), "NAS");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), "001132ac3d49");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:73796E6F-6473-6D00-0000-001132ac3d49");
+   }
+
+   BOOST_AUTO_TEST_CASE(Synology218plusDesc)
+   {
+	  static const auto ssdpAnswer = std::string(
+		"<?xml version="1.0" encoding="utf-8"?><root xmlns="urn:schemas-upnp-org:device-1-0"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType><dlna:X_DLNADOC xmlns:dlna="urn:schemas-dlna-org:device-1-0">DMS-1.50</dlna:X_DLNADOC><friendlyName>odahds218plus</friendlyName><manufacturer>Synology Inc</manufacturer><manufacturerURL>http://www.synology.com/</manufacturerURL><modelDescription>Synology DLNA/UPnP Media Server</modelDescription><modelName>DS218+</modelName><modelURL>http://www.synology.com/</modelURL><serialNumber>1940PCN762604</serialNumber><UDN>uuid:001132ac-3d49-0011-493d-493dac321100</UDN><presentationURL>http://192.168.1.168:5000/</presentationURL><iconList><icon><mimetype>image/jpeg</mimetype><width>120</width><height>120</height><depth>24</depth><url>/tmp_icon/dmsicon120.jpg</url></icon><icon><mimetype>image/jpeg</mimetype><width>48</width><height>48</height><depth>24</depth><url>/tmp_icon/dmsicon48.jpg</url></icon><icon><mimetype>image/png</mimetype><width>120</width><height>120</height><depth>24</depth><url>/tmp_icon/dmsicon120.png</url></icon><icon><mimetype>image/png</mimetype><width>48</width><height>48</height><depth>24</depth><url>/tmp_icon/dmsicon48.png</url></icon></iconList><serviceList><service><serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType><serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId><SCPDURL>/connmgrSCPD.xml</SCPDURL><controlURL>/ConnectionManager/control</controlURL><eventSubURL>/ConnectionManager/event</eventSubURL></service><service><serviceType>urn:schemas-upnp-org:service:ContentDirectory:1</serviceType><serviceId>urn:upnp-org:serviceId:ContentDirectory</serviceId><SCPDURL>/cdsSCPD.xml</SCPDURL><controlURL>/ContentDirectory/control</controlURL><eventSubURL>/ContentDirectory/event</eventSubURL></service><service><serviceType>urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1</serviceType><serviceId>urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar</serviceId><SCPDURL>/msrrSCPD.xml</SCPDURL><eventSubURL>/MediaReceiverRegistrar/event</eventSubURL><controlURL>/MediaReceiverRegistrar/control</controlURL></service></serviceList></device></root>");
+      const shared::http::ssdp::CDiscoveredDevice dd(ssdpAnswer);
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.deviceType"),
+         "urn:schemas-upnp-org:device:MediaServer:1");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.friendlyName"), "odahds218plus");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturer"), "Synology Inc.");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturerURL"), "http://www.synology.com/");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelName"), "DS218+");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelDescription"),
+         "Synology DLNA/UPnP Media Server");
+
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelURL"), "http://www.synology.com");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), "1940PCN762604");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:001132ac-3d49-0011-493d-493dac321100");
+   }
+
+   BOOST_AUTO_TEST_CASE(SagemcomFast5656OFR)
+   {
+      static const auto ssdpAnswer = std::string(
+         "<root xmlns="urn:schemas-upnp-org:device-1-0"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-wifialliance-org:device:WFADevice:1</deviceType><friendlyName>WFADevice</friendlyName><manufacturer>Sagemcom</manufacturer><manufacturerURL>http://www.broadcom.com</manufacturerURL><modelDescription>Livebox Fibre</modelDescription><modelName>SagemcomFast5656_OFR</modelName><modelNumber>SG_LBF_1.1.4</modelNumber><serialNumber>0000001</serialNumber><UDN>uuid:33343439-3542-f345-f632-383033343439</UDN><serviceList><service><serviceType>urn:schemas-wifialliance-org:service:WFAWLANConfig:1</serviceType><serviceId>urn:wifialliance-org:serviceId:WFAWLANConfig1</serviceId><SCPDURL>/x_wfawlanconfig.xml</SCPDURL><controlURL>/control?WFAWLANConfig</controlURL><eventSubURL>/event?WFAWLANConfig</eventSubURL></service></serviceList></device></root>");
+
+      const shared::http::ssdp::CDiscoveredDevice dd(ssdpAnswer);
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.deviceType"),
+         "urn:schemas-wifialliance-org:device:WFADevice:1");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.friendlyName"), "WFADevice");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturer"), "Sagemcom ");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturerURL"), "http://www.broadcom.com");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelDescription"), "Livebox Fibre");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelName"), "SagemcomFast5656_OFR");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelNumber"), "SG_LBF_1.1.4");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), "0000001");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:33343439-3542-f345-f632-383033343439");
+   }
+
 BOOST_AUTO_TEST_SUITE_END()
+
+
