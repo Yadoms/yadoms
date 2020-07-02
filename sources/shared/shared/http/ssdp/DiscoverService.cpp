@@ -19,9 +19,8 @@ namespace shared
             {
                try
                {
-                  devicesDescription.push_back(
-                     boost::make_shared<CDiscoveredDevice>(descriptionUrl,
-                                                           CHttpMethods::sendGetRequest(descriptionUrl)));
+                  devicesDescription.emplace_back(
+                     boost::make_shared<CDiscoveredDevice>(CHttpMethods::sendGetRequest(descriptionUrl)));
                }
                catch (std::exception& e)
                {

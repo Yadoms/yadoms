@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <string>
-#include "shared/DataContainer.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace shared
 {
@@ -14,17 +14,10 @@ namespace shared
             virtual ~IDiscoveredDevice() = default;
 
             //--------------------------------------------------------------
-            /// \brief	    Get the device IP
-            /// \return     The device IP
+            /// \brief	    Get the XML content
+            /// \return     XML content, returned byt the discovered device
             //--------------------------------------------------------------	
-            virtual std::string ip() const = 0;
-
-
-            //--------------------------------------------------------------
-            /// \brief	    Find a specific tag value from SSDP discovered device (in 'device' block)
-            /// \return     Tag value or std::out_of_range exception if not found
-            //--------------------------------------------------------------	
-            virtual boost::shared_ptr<const CDataContainer> deviceDescription() const = 0;
+            virtual boost::shared_ptr<const boost::property_tree::ptree> xmlContent() const = 0;
          };
       }
    }

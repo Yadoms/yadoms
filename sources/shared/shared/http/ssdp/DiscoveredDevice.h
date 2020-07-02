@@ -10,31 +10,18 @@ namespace shared
          class CDiscoveredDevice : public IDiscoveredDevice
          {
          public:
-            CDiscoveredDevice(const std::string& location,
-                              const std::string& deviceDescription);
+            explicit CDiscoveredDevice(const std::string& xmlContent);
             virtual ~CDiscoveredDevice() = default;
 
-            //--------------------------------------------------------------
-            /// \brief	    Get the device IP
-            /// \return     The device IP
-            //--------------------------------------------------------------	
-            std::string ip() const override;
-
-
-            //--------------------------------------------------------------
-            /// \brief	    Find a specific tag value from SSDP discovered device (in 'device' block)
-            /// \return     Tag value or std::out_of_range exception if not found
-            //--------------------------------------------------------------	
-            boost::shared_ptr<const CDataContainer> deviceDescription() const override;
+            // IDiscoveredDevice implementation
+            boost::shared_ptr<const boost::property_tree::ptree> xmlContent() const override;
+            // [END] IDiscoveredDevice implementation
 
          private:
-            static std::string ipFromXml(const std::string& deviceDescription);
-            static boost::shared_ptr<const CDataContainer> deviceDescriptionFromXml(
-               const std::string& deviceDescription);
+            static boost::shared_ptr<const boost::property_tree::ptree> contentFromXml(
+               const std::string& xmlContent);
 
-            const std::string& m_location;
-            const std::string m_ip;
-            boost::shared_ptr<const CDataContainer> m_deviceDescription;
+            boost::shared_ptr<const boost::property_tree::ptree> m_xmlContent;
          };
       }
    }
