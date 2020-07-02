@@ -93,7 +93,7 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
-            if (m_configuration.getPairingMode() == kAuto)
+            if (m_configuration.getPairingMode() == kAuto && command->getKeyword() != TextKeywordName)
             {
                m_targetDevice = std::find_if(m_devicesInformation.begin(), m_devicesInformation.end(),
                                              [&command](const auto& deviceInformation)
@@ -114,19 +114,16 @@ void CLametricTime::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
 
             auto commandBody = command->getBody();
-
             if (command->getKeyword() == IconTypeName)
             {
-               m_senderManager->setCustomizeIcon(commandBody); //TOFIX : bug ? m_senderManager can be null here
+               m_senderManager->setCustomizeIcon(commandBody);
             }
-
-            if (boost::iequals(command->getDevice(),
-                               m_configuration.getPairingMode() == kAuto
-                                  ? m_targetDevice->m_deviceName
-                                  : m_deviceInformation->m_deviceName) && command->getKeyword() !=
+            if (boost::iequals(command->getDevice(), m_configuration.getPairingMode() == kAuto
+                                                        ? m_targetDevice->m_deviceName
+                                                        : m_deviceInformation->m_deviceName) && command->getKeyword() !=
                IconTypeName)
             {
-               m_senderManager->displayText(commandBody); //TOFIX : bug ? m_senderManager can be null here
+               m_senderManager->displayText(commandBody);
             }
 
             break;
@@ -231,7 +228,7 @@ void CLametricTime::init()
    }
 }
 
-std::vector<DeviceInformation> CLametricTime::initAutomatically() const
+std::vector<DeviceInformation> CLametricTime::initAutomatically()
 {
    try
    {
