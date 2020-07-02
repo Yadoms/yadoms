@@ -228,7 +228,7 @@ void CLametricTime::init()
    }
 }
 
-std::vector<DeviceInformation> CLametricTime::initAutomatically()
+std::vector<DeviceInformation> CLametricTime::initAutomatically() const
 {
    try
    {

@@ -63,7 +63,7 @@ private:
    * \brief Init Lametric device using UPNP protocol
    * \return    std::vector<DeviceInformation>        vector of structure containing device information
    */
-   std::vector<DeviceInformation> initAutomatically();
+   std::vector<DeviceInformation> initAutomatically() const;
    /**
     * \brief Init Lametric device 
     * \return                         Structure with device information
