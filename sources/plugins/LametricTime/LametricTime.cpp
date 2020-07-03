@@ -233,7 +233,7 @@ std::vector<DeviceInformation> CLametricTime::initAutomatically() const
    try
    {
       const auto foundDevices = shared::http::ssdp::CDiscoverService::discover("urn:schemas-upnp-org:device:LaMetric:1",
-                                                                               std::chrono::seconds(10));
+                                                                               std::chrono::seconds(15));
       if (foundDevices.empty())
       {
          m_api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
