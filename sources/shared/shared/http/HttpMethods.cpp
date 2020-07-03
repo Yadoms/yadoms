@@ -104,12 +104,14 @@ namespace shared
          {
             request.perform();
          }
-         catch (const curlpp::LibcurlRuntimeError& error)
+         catch (const curlpp::LibcurlRuntimeError & error)
          {
             const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
                whatCode()).str();
             YADOMS_LOG(warning) << message;
-            throw exception::CHttpException(message);
+            if (ECodes::isDefined(curlpp::infos::ResponseCode::get(request)))
+               throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
+            throw std::runtime_error(message);
          }
 
          CCurlppHelpers::checkResult(request);
@@ -237,7 +239,9 @@ namespace shared
             const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
                whatCode()).str();
             YADOMS_LOG(warning) << message;
-            throw exception::CHttpException(message);
+            if (ECodes::isDefined(curlpp::infos::ResponseCode::get(request)))
+               throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
+            throw std::runtime_error(message);
          }
 
          CCurlppHelpers::checkResult(request);
@@ -356,12 +360,14 @@ namespace shared
          {
             request.perform();
          }
-         catch (const curlpp::LibcurlRuntimeError& error)
+         catch (const curlpp::LibcurlRuntimeError & error)
          {
-            const auto message = (boost::format("Fail to send HEAD HTTP request : %1%, code %2%") % error.what() % error
-               .whatCode()).str();
+            const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
+               whatCode()).str();
             YADOMS_LOG(warning) << message;
-            throw exception::CHttpException(message);
+            if (ECodes::isDefined(curlpp::infos::ResponseCode::get(request)))
+               throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
+            throw std::runtime_error(message);
          }
 
          CCurlppHelpers::checkResult(request);
@@ -403,7 +409,7 @@ namespace shared
          }
          catch (const std::exception& exception)
          {
-            throw exception::CHttpException(std::string("Fail to process HTTP JSON answer : ") + exception.what());
+            throw std::runtime_error(std::string("Fail to process HTTP JSON answer : ") + exception.what());
          }
 
          // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength

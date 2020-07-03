@@ -4,6 +4,7 @@
 * Fix #617 : File download progress is yet again available
 * New feature #572 : Proxy support for http requests
 * New feature #603 : Manage redirections for http requests
+* New feature #680 : Add HTTP devices autodetection in shared
 
 
 ### 2.4.0-beta.3

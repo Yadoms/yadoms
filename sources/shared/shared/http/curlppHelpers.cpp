@@ -61,12 +61,13 @@ namespace shared
 
       void CCurlppHelpers::checkResult(const curlpp::Easy& request)
       {
-         if (curlpp::infos::ResponseCode::get(request) != 200 && curlpp::infos::ResponseCode::get(request) != 201)
+         if (curlpp::infos::ResponseCode::get(request) != ECodes::kOKValue &&
+            curlpp::infos::ResponseCode::get(request) != ECodes::kCreatedValue)
          {
-            const auto message = (boost::format("Invalid HTTP result : %1%") % curlpp::infos::ResponseCode::get(request)
-            ).str();
+            const auto message = (boost::format("Invalid HTTP result : %1%") %
+               curlpp::infos::ResponseCode::get(request)).str();
             YADOMS_LOG(warning) << message;
-            throw exception::CHttpException(message);
+            throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
          }
       }
 

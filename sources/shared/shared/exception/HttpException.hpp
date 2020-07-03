@@ -1,5 +1,6 @@
 #pragma once
 #include "Exception.hpp"
+#include "shared/http/Codes.h"
 
 namespace shared
 {
@@ -14,13 +15,24 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	                        Constructor
          /// \param[in]  message             Exception message
+         /// \param[in]  httpCode            HTTP code
          //--------------------------------------------------------------
-         explicit CHttpException(const std::string& message)
-            : CException(message)
+         CHttpException(const std::string& message,
+                        const http::ECodes& httpCode)
+            : CException(message),
+              m_httpCode(httpCode)
          {
          }
 
+         const http::ECodes& code() const
+         {
+            return m_httpCode;
+         }
+
          virtual ~CHttpException() = default;
+
+      private:
+         const http::ECodes m_httpCode;
       };
    }
 };
