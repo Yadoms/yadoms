@@ -53,7 +53,8 @@ BOOST_AUTO_TEST_SUITE(TestDiscoveredDevice)
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), "SA171202398900W00BS9");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<int>("root.device.serverId"), 27539);
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<int>("root.device.deviceId"), 27539);
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:ca964fe6-117e-4880-a303-3b0c13c125fc");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"),
+                        "uuid:ca964fe6-117e-4880-a303-3b0c13c125fc");
    }
 
    BOOST_AUTO_TEST_CASE(SynologyDS216IIPlusSsdp)
@@ -62,7 +63,8 @@ BOOST_AUTO_TEST_SUITE(TestDiscoveredDevice)
          "<?xml version=\"1.0\"?>\n<root xmlns=\"urn:schemas-upnp-org:device-1-0\">\n\t<specVersion>\n\t\t<major>1</major>\n\t\t<minor>0</minor>\n\t</specVersion>\n\t<device>\n\t\t<deviceType>urn:schemas-upnp-org:device:Basic:1</deviceType>\n\t\t<friendlyName>NAS (DS216+II)</friendlyName>\n\t\t<manufacturer>Synology</manufacturer>\n\t\t<manufacturerURL>http://www.synology.com</manufacturerURL>\n\t\t<modelDescription>Synology NAS</modelDescription>\n\t\t<modelName>DS216+II</modelName>\n\t\t<modelNumber>DS216+II 6.2-25426</modelNumber>\n\t\t<modelURL>http://www.synology.com</modelURL>\n\t\t<modelType>NAS</modelType>\n\t\t<serialNumber>0011325e4496</serialNumber>\n\t\t<UDN>uuid:73796E6F-6473-6D00-0000-0011325e4496</UDN>\n\t\t<serviceList>\n\t\t\t<service>\n\t\t\t\t<URLBase>http://192.168.0.2:5000</URLBase>\n\t\t\t\t<serviceType>urn:schemas-dummy-com:service:Dummy:1</serviceType>\n\t\t\t\t<serviceId>urn:dummy-com:serviceId:dummy1</serviceId>\n\t\t\t\t<controlURL>/dummy</controlURL>\n\t\t\t\t<eventSubURL>/dummy</eventSubURL>\n\t\t\t\t<SCPDURL>/ssdp/dummy.xml</SCPDURL>\n\t\t\t</service>\n\t\t</serviceList>\n\t\t<presentationURL>http://192.168.0.2:5000/</presentationURL>\n\t</device>\n</root>\n\n");
 
       const shared::http::ssdp::CDiscoveredDevice dd(ssdpAnswer);
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serviceList.service.URLBase"), "http://192.168.0.2:5000");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serviceList.service.URLBase"),
+                        "http://192.168.0.2:5000");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.deviceType"),
                         "urn:schemas-upnp-org:device:Basic:1");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.friendlyName"), "NAS (DS216+II)");
@@ -74,7 +76,8 @@ BOOST_AUTO_TEST_SUITE(TestDiscoveredDevice)
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelURL"), "http://www.synology.com");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelType"), "NAS");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), "0011325e4496");
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:73796E6F-6473-6D00-0000-0011325e4496");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"),
+                        "uuid:73796E6F-6473-6D00-0000-0011325e4496");
    }
 
    BOOST_AUTO_TEST_CASE(SynologyDS216IIPlusDesc)
@@ -94,7 +97,8 @@ BOOST_AUTO_TEST_SUITE(TestDiscoveredDevice)
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelName"), "DS216+II");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelURL"), "http://www.synology.com");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), "1650O6N558101");
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:0011325e-4496-0011-9644-96445e321100");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"),
+                        "uuid:0011325e-4496-0011-9644-96445e321100");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.presentationURL"), "http://192.168.0.2:5000/");
    }
 
@@ -103,19 +107,20 @@ BOOST_AUTO_TEST_SUITE(TestDiscoveredDevice)
       static const auto ssdpAnswer = std::string(
          "<?xml version=\"1.0\"?>\n<root xmlns=\"urn:schemas-upnp-org:device-1-0\"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-upnp-org:device:InternetGatewayDevice:1</deviceType><friendlyName>NETGEAR DG834GV4 Router</friendlyName><manufacturer>NETGEAR </manufacturer><manufacturerURL>http://www.netgear.com/</manufacturerURL><modelDescription>NETGEAR DG834GV4 Router</modelDescription><modelName>NETGEAR DG834GV4 Router</modelName><modelNumber>5.01.16</modelNumber><modelURL>http://www.netgear.com/</modelURL><serialNumber> </serialNumber><UDN>uuid:824ff22b-8c7d-41c5-a131-44f534e12555</UDN><serviceList><service><serviceType>urn:schemas-upnp-org:service:Layer3Forwarding:1</serviceType><serviceId>urn:upnp-org:serviceId:Layer3Forwarding1</serviceId><controlURL>/ctl/L3F</controlURL><eventSubURL>/evt/L3F</eventSubURL><SCPDURL>/L3F.xml</SCPDURL></service></serviceList><deviceList><device><deviceType>urn:schemas-upnp-org:device:WANDevice:1</deviceType><friendlyName>WANDevice</friendlyName><manufacturer>NETGEAR</manufacturer><manufacturerURL>http://www.netgear.com/</manufacturerURL><modelDescription>WAN Device</modelDescription><modelName>WAN Device</modelName><modelNumber>20070827</modelNumber><modelURL>http://www.netgear.com/</modelURL><serialNumber> </serialNumber><UDN>uuid:824ff22b-8c7d-41c5-a131-44f534e12556</UDN><UPC>DG834GV4</UPC><serviceList><service><serviceType>urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1</serviceType><serviceId>urn:upnp-org:serviceId:WANCommonIFC1</serviceId><controlURL>/ctl/CmnIfCfg</controlURL><eventSubURL>/evt/CmnIfCfg</eventSubURL><SCPDURL>/WANCfg.xml</SCPDURL></service></serviceList><deviceList><device><deviceType>urn:schemas-upnp-org:device:WANConnectionDevice:1</deviceType><friendlyName>WANConnectionDevice</friendlyName><manufacturer>NETGEAR</manufacturer><manufacturerURL>http://www.netgear.com/</manufacturerURL><modelDescription>Residential Gateway</modelDescription><modelName>DG834GV4</modelName><modelNumber>20070827</modelNumber><modelURL>http://www.netgear.com/</modelURL><serialNumber> </serialNumber><UDN>uuid:824ff22b-8c7d-41c5-a131-44f534e12557</UDN><UPC>DG834GV4</UPC><serviceList><service><serviceType>urn:schemas-upnp-org:service:WANIPConnection:1</serviceType><serviceId>urn:upnp-org:serviceId:WANIPConn1</serviceId><controlURL>/ctl/IPConn</controlURL><eventSubURL>/evt/IPConn</eventSubURL><SCPDURL>/WANIPCn.xml</SCPDURL></service></serviceList></device></deviceList></device></deviceList><presentationURL>http://192.168.0.1/</presentationURL></device></root>");
 
-      const shared::http::ssdp::CDiscoveredDevice dd( ssdpAnswer);
+      const shared::http::ssdp::CDiscoveredDevice dd(ssdpAnswer);
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.presentationURL"), "http://192.168.0.1/");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.deviceType"),
                         "urn:schemas-upnp-org:device:InternetGatewayDevice:1");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.friendlyName"), "NETGEAR DG834GV4 Router");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturer"), "NETGEAR ");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturerURL"), "http://www.netgear.com/");
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelDescription"),                        "NETGEAR DG834GV4 Router");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelDescription"), "NETGEAR DG834GV4 Router");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelName"), "NETGEAR DG834GV4 Router");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelNumber"), "5.01.16");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelURL"), "http://www.netgear.com/");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), " ");
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:824ff22b-8c7d-41c5-a131-44f534e12555");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"),
+                        "uuid:824ff22b-8c7d-41c5-a131-44f534e12555");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.presentationURL"), "http://192.168.0.1/");
    }
 
@@ -131,23 +136,24 @@ BOOST_AUTO_TEST_SUITE(TestDiscoveredDevice)
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.friendlyName"), "WPS Access Point");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturer"), "TP-LINK");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturerURL"), "http://www.tp-link.com");
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelDescription"),                        "Wireless N Router");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelDescription"), "Wireless N Router");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelName"), "TL-WA801N");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelNumber"), "2.0");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), "1.0");
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:00000000-0000-1000-0000-e894f6a317f3");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"),
+                        "uuid:00000000-0000-1000-0000-e894f6a317f3");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UPC"), "UPC here");
    }
 
    BOOST_AUTO_TEST_CASE(Synology218plus)
    {
       static const auto ssdpAnswer = std::string(
-         "<root xmlns="urn:schemas-upnp-org:device-1-0"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType><friendlyName>odahds218plus</friendlyName><manufacturer>Synology Inc.</manufacturer><manufacturerURL>http://www.synology.com/</manufacturerURL><modelName>DS218+</modelName><modelDescription>Synology DLNA/UPnP Media Server</modelDescription><modelURL>http://www.synology.com</modelURL><serialNumber>1940PCN762604</serialNumber><UDN>uuid:001132ac-3d49-0011-493d-493dac321100</UDN><presentationURL>http://192.168.1.168:5000/</presentationURL><iconList><icon><mimetype>image/jpeg</mimetype><width>120</width><height>120</height><depth>24</depth><url>/tmp_icon/dmsicon120.jpg</url></icon><icon><mimetype>image/jpeg</mimetype><width>48</width><height>48</height><depth>24</depth><url>/tmp_icon/dmsicon48.jpg</url></icon><icon><mimetype>image/png</mimetype><width>120</width><height>120</height><depth>24</depth><url>/tmp_icon/dmsicon120.png</url></icon><icon><mimetype>image/png</mimetype><width>48</width><height>48</height><depth>24</depth><url>/tmp_icon/dmsicon48.png</url></icon></iconList><serviceList><service><serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType><serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId><SCPDURL>/connmgrSCPD.xml</SCPDURL><controlURL>/ConnectionManager/control</controlURL><eventSubURL>/ConnectionManager/event</eventSubURL></service><service><serviceType>urn:schemas-upnp-org:service:ContentDirectory:1</serviceType><serviceId>urn:upnp-org:serviceId:ContentDirectory</serviceId><SCPDURL>/cdsxSCPD.xml</SCPDURL><controlURL>/ContentDirectory/control</controlURL><eventSubURL>/ContentDirectory/event</eventSubURL></service><service><serviceType>urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1</serviceType><serviceId>urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar</serviceId><SCPDURL>/msrrSCPD.xml</SCPDURL><eventSubURL>/MediaReceiverRegistrar/event</eventSubURL><controlURL>/MediaReceiverRegistrar/control</controlURL></service></serviceList></device></root>");
-
+      "<root xmlns=\"urn:schemas-upnp-org:device-1-0\"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-upnp-org:device:Basic:1</deviceType><friendlyName>odahds218plus (DS218+)</friendlyName><manufacturer>Synology</manufacturer><manufacturerURL>http://www.synology.com</manufacturerURL><modelDescription>Synology NAS</modelDescription><modelName>DS218+</modelName><modelNumber>DS218+ 6.2-25426</modelNumber><modelURL>http://www.synology.com</modelURL><modelType>NAS</modelType><serialNumber>001132ac3d49</serialNumber><UDN>uuid:73796E6F-6473-6D00-0000-001132ac3d49</UDN><serviceList><service><URLBase>http://192.168.1.168:5000</URLBase><serviceType>urn:schemas-dummy-com:service:Dummy:1</serviceType><serviceId>urn:dummy-com:serviceId:dummy1</serviceId><controlURL>/dummy</controlURL><eventSubURL>/dummy</eventSubURL><SCPDURL>/ssdp/dummy.xml</SCPDURL></service></serviceList><presentationURL>http://192.168.1.168:5000/</presentationURL></device></root>");
       const shared::http::ssdp::CDiscoveredDevice dd(ssdpAnswer);
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serviceList.service.URLBase"), "http://192.168.1.168:5000");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serviceList.service.URLBase"),
+                        "http://192.168.1.168:5000");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.deviceType"),
-         "urn:schemas-upnp-org:device:Basic:1");
+                        "urn:schemas-upnp-org:device:Basic:1");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.friendlyName"), "odahds218plus (DS218+)");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturer"), "Synology");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturerURL"), "http://www.synology.com");
@@ -157,36 +163,38 @@ BOOST_AUTO_TEST_SUITE(TestDiscoveredDevice)
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelURL"), "http://www.synology.com");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelType"), "NAS");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), "001132ac3d49");
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:73796E6F-6473-6D00-0000-001132ac3d49");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"),
+                        "uuid:73796E6F-6473-6D00-0000-001132ac3d49");
    }
 
    BOOST_AUTO_TEST_CASE(Synology218plusDesc)
    {
-	  static const auto ssdpAnswer = std::string(
-		"<?xml version="1.0" encoding="utf-8"?><root xmlns="urn:schemas-upnp-org:device-1-0"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType><dlna:X_DLNADOC xmlns:dlna="urn:schemas-dlna-org:device-1-0">DMS-1.50</dlna:X_DLNADOC><friendlyName>odahds218plus</friendlyName><manufacturer>Synology Inc</manufacturer><manufacturerURL>http://www.synology.com/</manufacturerURL><modelDescription>Synology DLNA/UPnP Media Server</modelDescription><modelName>DS218+</modelName><modelURL>http://www.synology.com/</modelURL><serialNumber>1940PCN762604</serialNumber><UDN>uuid:001132ac-3d49-0011-493d-493dac321100</UDN><presentationURL>http://192.168.1.168:5000/</presentationURL><iconList><icon><mimetype>image/jpeg</mimetype><width>120</width><height>120</height><depth>24</depth><url>/tmp_icon/dmsicon120.jpg</url></icon><icon><mimetype>image/jpeg</mimetype><width>48</width><height>48</height><depth>24</depth><url>/tmp_icon/dmsicon48.jpg</url></icon><icon><mimetype>image/png</mimetype><width>120</width><height>120</height><depth>24</depth><url>/tmp_icon/dmsicon120.png</url></icon><icon><mimetype>image/png</mimetype><width>48</width><height>48</height><depth>24</depth><url>/tmp_icon/dmsicon48.png</url></icon></iconList><serviceList><service><serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType><serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId><SCPDURL>/connmgrSCPD.xml</SCPDURL><controlURL>/ConnectionManager/control</controlURL><eventSubURL>/ConnectionManager/event</eventSubURL></service><service><serviceType>urn:schemas-upnp-org:service:ContentDirectory:1</serviceType><serviceId>urn:upnp-org:serviceId:ContentDirectory</serviceId><SCPDURL>/cdsSCPD.xml</SCPDURL><controlURL>/ContentDirectory/control</controlURL><eventSubURL>/ContentDirectory/event</eventSubURL></service><service><serviceType>urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1</serviceType><serviceId>urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar</serviceId><SCPDURL>/msrrSCPD.xml</SCPDURL><eventSubURL>/MediaReceiverRegistrar/event</eventSubURL><controlURL>/MediaReceiverRegistrar/control</controlURL></service></serviceList></device></root>");
+      static const auto ssdpAnswer = std::string(
+         "<root xmlns=\"urn:schemas-upnp-org:device-1-0\"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType><friendlyName>odahds218plus</friendlyName><manufacturer>Synology Inc.</manufacturer><manufacturerURL>http://www.synology.com/</manufacturerURL><modelName>DS218+</modelName><modelDescription>Synology DLNA/UPnP Media Server</modelDescription><modelURL>http://www.synology.com</modelURL><serialNumber>1940PCN762604</serialNumber><UDN>uuid:001132ac-3d49-0011-493d-493dac321100</UDN><presentationURL>http://192.168.1.168:5000/</presentationURL><iconList><icon><mimetype>image/jpeg</mimetype><width>120</width><height>120</height><depth>24</depth><url>/tmp_icon/dmsicon120.jpg</url></icon><icon><mimetype>image/jpeg</mimetype><width>48</width><height>48</height><depth>24</depth><url>/tmp_icon/dmsicon48.jpg</url></icon><icon><mimetype>image/png</mimetype><width>120</width><height>120</height><depth>24</depth><url>/tmp_icon/dmsicon120.png</url></icon><icon><mimetype>image/png</mimetype><width>48</width><height>48</height><depth>24</depth><url>/tmp_icon/dmsicon48.png</url></icon></iconList><serviceList><service><serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType><serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId><SCPDURL>/connmgrSCPD.xml</SCPDURL><controlURL>/ConnectionManager/control</controlURL><eventSubURL>/ConnectionManager/event</eventSubURL></service><service><serviceType>urn:schemas-upnp-org:service:ContentDirectory:1</serviceType><serviceId>urn:upnp-org:serviceId:ContentDirectory</serviceId><SCPDURL>/cdsxSCPD.xml</SCPDURL><controlURL>/ContentDirectory/control</controlURL><eventSubURL>/ContentDirectory/event</eventSubURL></service><service><serviceType>urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1</serviceType><serviceId>urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar</serviceId><SCPDURL>/msrrSCPD.xml</SCPDURL><eventSubURL>/MediaReceiverRegistrar/event</eventSubURL><controlURL>/MediaReceiverRegistrar/control</controlURL></service></serviceList></device></root>");
       const shared::http::ssdp::CDiscoveredDevice dd(ssdpAnswer);
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.deviceType"),
-         "urn:schemas-upnp-org:device:MediaServer:1");
+                        "urn:schemas-upnp-org:device:MediaServer:1");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.friendlyName"), "odahds218plus");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturer"), "Synology Inc.");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturerURL"), "http://www.synology.com/");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelName"), "DS218+");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelDescription"),
-         "Synology DLNA/UPnP Media Server");
+                        "Synology DLNA/UPnP Media Server");
 
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelURL"), "http://www.synology.com");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), "1940PCN762604");
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:001132ac-3d49-0011-493d-493dac321100");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"),
+                        "uuid:001132ac-3d49-0011-493d-493dac321100");
    }
 
    BOOST_AUTO_TEST_CASE(SagemcomFast5656OFR)
    {
       static const auto ssdpAnswer = std::string(
-         "<root xmlns="urn:schemas-upnp-org:device-1-0"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-wifialliance-org:device:WFADevice:1</deviceType><friendlyName>WFADevice</friendlyName><manufacturer>Sagemcom</manufacturer><manufacturerURL>http://www.broadcom.com</manufacturerURL><modelDescription>Livebox Fibre</modelDescription><modelName>SagemcomFast5656_OFR</modelName><modelNumber>SG_LBF_1.1.4</modelNumber><serialNumber>0000001</serialNumber><UDN>uuid:33343439-3542-f345-f632-383033343439</UDN><serviceList><service><serviceType>urn:schemas-wifialliance-org:service:WFAWLANConfig:1</serviceType><serviceId>urn:wifialliance-org:serviceId:WFAWLANConfig1</serviceId><SCPDURL>/x_wfawlanconfig.xml</SCPDURL><controlURL>/control?WFAWLANConfig</controlURL><eventSubURL>/event?WFAWLANConfig</eventSubURL></service></serviceList></device></root>");
+         "<root xmlns=\"urn:schemas-upnp-org:device-1-0\"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-wifialliance-org:device:WFADevice:1</deviceType><friendlyName>WFADevice</friendlyName>\n\t<manufacturer>Sagemcom </manufacturer>\n\t<manufacturerURL>http://www.broadcom.com</manufacturerURL><modelDescription>Livebox Fibre</modelDescription><modelName>SagemcomFast5656_OFR</modelName><modelNumber>SG_LBF_1.1.4</modelNumber><serialNumber>0000001</serialNumber><UDN>uuid:33343439-3542-f345-f632-383033343439</UDN><serviceList><service><serviceType>urn:schemas-wifialliance-org:service:WFAWLANConfig:1</serviceType><serviceId>urn:wifialliance-org:serviceId:WFAWLANConfig1</serviceId><SCPDURL>/x_wfawlanconfig.xml</SCPDURL><controlURL>/control?WFAWLANConfig</controlURL><eventSubURL>/event?WFAWLANConfig</eventSubURL></service></serviceList></device></root>");
 
       const shared::http::ssdp::CDiscoveredDevice dd(ssdpAnswer);
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.deviceType"),
-         "urn:schemas-wifialliance-org:device:WFADevice:1");
+                        "urn:schemas-wifialliance-org:device:WFADevice:1");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.friendlyName"), "WFADevice");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturer"), "Sagemcom ");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.manufacturerURL"), "http://www.broadcom.com");
@@ -194,9 +202,8 @@ BOOST_AUTO_TEST_SUITE(TestDiscoveredDevice)
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelName"), "SagemcomFast5656_OFR");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.modelNumber"), "SG_LBF_1.1.4");
       BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.serialNumber"), "0000001");
-      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"), "uuid:33343439-3542-f345-f632-383033343439");
+      BOOST_CHECK_EQUAL(dd.xmlContent()->get<std::string>("root.device.UDN"),
+                        "uuid:33343439-3542-f345-f632-383033343439");
    }
 
 BOOST_AUTO_TEST_SUITE_END()
-
-
