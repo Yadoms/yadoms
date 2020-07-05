@@ -384,8 +384,8 @@
           }
         },
         "delayOffTimer": {
-          "name": "Délai de remise de la sortie à OFF après une mise à ON par radio",
-          "description": "Lors d'une activation de la sortie (uniquement par radio), ce délai est appliqué puis la sortie est désactivée",
+          "name": "Retardement de remise de la sortie à OFF après ordre radio",
+          "description": "Lorsqu'une commande de désactivation (OFF) d'une sortie est reçue par radio, applique ce délai avant de désactiver la sortie",
           "content": {
             "value": {
               "name": "Délai à appliquer",

@@ -1,3 +1,6 @@
+### 1.7.1
+* Fix description of delay radio OFF timer for D2-01-12
+
 ### 1.7.0
 * New feature #614 : add F6-05-00, F6-05-01, F6-05-02 profiles support
 

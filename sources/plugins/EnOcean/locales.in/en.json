@@ -384,8 +384,8 @@
           }
         },
         "delayOffTimer": {
-          "name": "Delay timer before setting output channel to OFF value received by radio cmd",
-          "description": "When output is set to ON (only from radio command), this timer is applied before to set output back OFF",
+          "name": "Delay timer before setting output channel to OFF value when received by radio command",
+          "description": "When OFF command is received by radio, apply this timer before to set output OFF",
           "content": {
             "value": {
               "name": "Timer value",
