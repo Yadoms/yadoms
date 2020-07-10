@@ -1,0 +1,31 @@
+﻿{
+   "name": "Philips hue",
+   "description": "Support des équipements Philips hue (voir [site web de Philips Hue](https://www.philips-hue.com/)",
+   "configurationSchema": {
+      "StringParameter": {
+         "name": "Un exemple de chaîne",
+         "description": "Voici un exemple de paramètre chaîne"
+      },
+      "BoolParameter": {
+         "name": "Un exemple de booléen",
+         "description": "Voici un exemple de paramètre booléen"
+      },
+      "IntParameter": {
+         "name": "Un exemple d'entier",
+         "description": "Voici un exemple de paramètre entier"
+      },
+      "DecimalParameter": {
+         "name": "Un exemple de nombre décimal",
+         "description": "Maintenant un decimal"
+      },
+      "EnumParameter": {
+         "name": "Un exemple d'énuméré personnalisé",
+         "description": "Exemple d'énuméré avec 3 valeurs",
+         "values": {
+            "EnumValue1": "Ma première valeur",
+            "EnumValue2": "Ma seconde valeur",
+            "EnumValue3": "Ma troisième valeur"
+         }
+      }
+   }
+}
