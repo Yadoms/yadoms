@@ -10,7 +10,9 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 	PhilipsHue.h
 	PhilipsHue.cpp 
 	Configuration.h
-	Configuration.cpp 
+	Configuration.cpp
+	HueBridgeDiscovery.h
+	HueBridgeDiscovery.cpp
 )
 
 #########################################

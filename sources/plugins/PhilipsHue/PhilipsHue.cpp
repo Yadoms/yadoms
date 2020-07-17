@@ -2,20 +2,16 @@
 #include "PhilipsHue.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
-
-/* ----------------------------------
-
-Insert here all include files
-
-   ---------------------------------- */
+#include "shared/http/ssdp/DiscoverService.h"
 
 
-// Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
-// Note that you have to provide some extra files, like package.json, and icon.png
 IMPLEMENT_PLUGIN(CPhilipsHue)
 
 
+const std::string CPhilipsHue::PhilipsHueBridgeName("Philips hue");
+
 CPhilipsHue::CPhilipsHue()
+   : m_HueInformations(boost::make_shared<std::vector<CHueBridgeDiscovery::HueInformations>>())
 {
 }
 
@@ -23,21 +19,14 @@ CPhilipsHue::~CPhilipsHue()
 {
 }
 
-// Event IDs
 enum
 {
-   // Example of adding a custom event
-   kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
-
-   /* ----------------------------------
-
-   Insert here all your events
-
-   ---------------------------------- */
+   kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
 };
 
 void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
+   m_api = api;
    // Informs Yadoms about the plugin actual state
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
@@ -46,15 +35,10 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
 
-   /* -----------------------------
-   
-      Create & declare here all your devices and keywords.
-      Create timers.
-
-      ----------------------------- */
 
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
+   fillHueInformations();
    // the main loop
    while (true)
    {
@@ -63,7 +47,6 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            // Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
             YADOMS_LOG(information) << "Stop requested";
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
@@ -73,13 +56,10 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Configuration was updated
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            const auto newConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
+            const auto newConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>
+            >();
             YADOMS_LOG(information) << "Update configuration...";
 
-            // Take into account the new configuration
-            // - Restart the plugin if necessary,
-            // - Update some resources,
-            // - etc...
             m_configuration.initializeWith(newConfiguration);
 
             // Trace the configuration
@@ -92,27 +72,14 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
-            // A command was received from Yadoms
             const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
-
-            /*
-
-            Process the command here (to drive a keyword for example)
-
-            */
 
             break;
          }
 
       case kCustomEvent:
          {
-            /*
-
-            Process your custom event
-
-            */
-
             break;
          }
 
@@ -125,3 +92,19 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
+void CPhilipsHue::fillHueInformations() const
+{
+   try
+   {
+      auto foundBridges = CHueBridgeDiscovery::FindBridges();
+      for (const auto& foundBridge : foundBridges)
+      {
+         m_HueInformations->push_back(foundBridge);
+      }
+   }
+   catch (const std::exception& exception)
+   {
+      YADOMS_LOG(error) << "cannot found hue bridge :" << exception.what();
+      throw;
+   }
+}
