@@ -1,7 +1,7 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
 #include "Configuration.h"
-
+#include "HueBridgeDiscovery.h"
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -28,9 +28,14 @@ public:
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
+   void fillHueInformations() const;
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    Configuration m_configuration;
+   boost::shared_ptr<yApi::IYPluginApi> m_api;
+
+   static const std::string PhilipsHueBridgeName;
+   boost::shared_ptr<std::vector<CHueBridgeDiscovery::HueInformations>> m_HueInformations;
 };
