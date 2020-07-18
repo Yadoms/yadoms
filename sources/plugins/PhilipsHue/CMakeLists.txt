@@ -13,6 +13,11 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 	Configuration.cpp
 	HueBridgeDiscovery.h
 	HueBridgeDiscovery.cpp
+	HueService.h
+	HueService.cpp
+	Factory.h
+	Factory.cpp
+	IHueService.h
 )
 
 #########################################
