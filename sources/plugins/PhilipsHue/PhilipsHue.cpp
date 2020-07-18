@@ -3,7 +3,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
 #include "shared/http/ssdp/DiscoverService.h"
-
+#include "Factory.h"
 
 IMPLEMENT_PLUGIN(CPhilipsHue)
 
@@ -22,6 +22,8 @@ CPhilipsHue::~CPhilipsHue()
 enum
 {
    kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
+   kEvtKeyStateReceived,
+   kEvtKeyStateTimeout
 };
 
 void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -38,7 +40,9 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-   fillHueInformations();
+   //fillHueInformations();
+   m_hueService = CFactory::createHueService(m_api->getEventHandler(), kEvtKeyStateReceived, kEvtKeyStateTimeout);
+   m_hueService->startReadingBridgeButtonState();
    // the main loop
    while (true)
    {
@@ -69,7 +73,6 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
-
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
             const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
@@ -77,12 +80,22 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
-
       case kCustomEvent:
          {
             break;
          }
-
+      case kEvtKeyStateReceived:
+         {
+            YADOMS_LOG(information) << "key bridge is pressed";
+            m_hueService->closeReadingBridgeButtonState();
+            break;
+         }
+      case kEvtKeyStateTimeout:
+         {
+            YADOMS_LOG(information) << "key bridge : Timeout";
+            m_hueService->closeReadingBridgeButtonState();
+            break;
+         }
       default:
          {
             YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();

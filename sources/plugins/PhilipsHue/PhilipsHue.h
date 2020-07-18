@@ -2,6 +2,7 @@
 #include <plugin_cpp_api/IPlugin.h>
 #include "Configuration.h"
 #include "HueBridgeDiscovery.h"
+#include "HueService.h"
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -38,4 +39,5 @@ private:
 
    static const std::string PhilipsHueBridgeName;
    boost::shared_ptr<std::vector<CHueBridgeDiscovery::HueInformations>> m_HueInformations;
+   boost::shared_ptr<IHueService> m_hueService;
 };
