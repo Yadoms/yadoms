@@ -4,11 +4,15 @@
 #include <boost/asio.hpp>
 
 
-CHueService::CHueService(shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived,
+CHueService::CHueService(shared::event::CEventHandler& mainEventHandler,
+                         CHueBridgeDiscovery::HueInformations& hubInformations,
+                         int evtKeyStateReceived,
                          int evtKeyStateTimeout)
    : m_mainEventHandler(mainEventHandler),
+     m_hubInformations(hubInformations),
      m_mainEvtKeyStateReceived(evtKeyStateReceived),
-     m_mainEvtKeyStateTimeout(evtKeyStateTimeout)
+     m_mainEvtKeyStateTimeout(evtKeyStateTimeout),
+     m_urlManager(boost::make_shared<CUrlManager>(hubInformations))
 {
 };
 
@@ -37,7 +41,9 @@ void CHueService::requestUsername() const
    {
       try
       {
-         const auto url = "http://192.168.1.14/api/";
+         const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kApi);
+         const auto url = m_urlManager->getPatternUrl(urlPatternPath);
+
          const auto body = buildAuthorizedUsernameBody();
          const auto headerPostParameters = buildCommonHeaderParameters();
 
@@ -49,6 +55,7 @@ void CHueService::requestUsername() const
 
          if (!authorizedUsername.empty())
          {
+            m_urlManager->setUsername(authorizedUsername);
             YADOMS_LOG(information) << "key bridge is pressed";
             m_mainEventHandler.postEvent(m_mainEvtKeyStateReceived);
          }

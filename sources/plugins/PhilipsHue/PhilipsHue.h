@@ -29,7 +29,9 @@ public:
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
-   void fillHueInformations() const;
+   void init();
+   void fillHueInformations();
+   void startReadingBridgeButtonState();
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
@@ -38,6 +40,6 @@ private:
    boost::shared_ptr<yApi::IYPluginApi> m_api;
 
    static const std::string PhilipsHueBridgeName;
-   boost::shared_ptr<std::vector<CHueBridgeDiscovery::HueInformations>> m_HueInformations;
+   std::vector<CHueBridgeDiscovery::HueInformations> m_HueInformations;
    boost::shared_ptr<IHueService> m_hueService;
 };
