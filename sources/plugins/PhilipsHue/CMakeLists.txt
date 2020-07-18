@@ -18,6 +18,8 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 	Factory.h
 	Factory.cpp
 	IHueService.h
+	UrlManager.h
+	UrlManager.cpp
 )
 
 #########################################

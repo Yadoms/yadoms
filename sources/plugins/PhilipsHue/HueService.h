@@ -1,11 +1,13 @@
 #pragma once
 #include "shared/event/EventHandler.hpp"
 #include "IHueService.h"
+#include "HueBridgeDiscovery.h"
+#include "UrlManager.h"
 
 class CHueService : public IHueService
 {
 public:
-   CHueService(shared::event::CEventHandler& mainEventHandler, int evtKeyStateReceived, int evtKeyStateTimeout);
+   CHueService(shared::event::CEventHandler& mainEventHandler, CHueBridgeDiscovery::HueInformations &hubInformations, int evtKeyStateReceived, int evtKeyStateTimeout);
    virtual ~CHueService();
 
    void startReadingBridgeButtonState() override;
@@ -18,6 +20,10 @@ private:
 
    void requestUsername() const;
    shared::event::CEventHandler& m_mainEventHandler;
+   CHueBridgeDiscovery::HueInformations m_hubInformations;
    int m_mainEvtKeyStateReceived;
    int m_mainEvtKeyStateTimeout;
+
+   boost::shared_ptr<CUrlManager> m_urlManager;
+
 };
