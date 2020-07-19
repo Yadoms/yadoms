@@ -57,6 +57,7 @@ void CHueService::requestUsername() const
          {
             m_urlManager->setUsername(authorizedUsername);
             YADOMS_LOG(information) << "key bridge is pressed";
+            YADOMS_LOG(information) << "Authorized username is : " << authorizedUsername;
             m_mainEventHandler.postEvent(m_mainEvtKeyStateReceived);
          }
       }
