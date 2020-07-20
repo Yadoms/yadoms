@@ -36,8 +36,8 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Load configuration values (provided by database)
    m_configuration.initializeWith(m_api->getConfiguration());
 
-   m_api->setPluginState(yApi::historization::EPluginState::kRunning);
-
+   //m_api->setPluginState(yApi::historization::EPluginState::kRunning);
+   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
    init();
    // the main loop
    while (true)
@@ -90,6 +90,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtKeyStateTimeout:
          {
             YADOMS_LOG(information) << "key bridge : Timeout";
+            m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButtonTimeout");
             m_hueService->closeReadingBridgeButtonState();
             break;
          }
@@ -105,6 +106,8 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CPhilipsHue::init()
 {
    fillHueInformations();
+   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
+
    startReadingBridgeButtonState();
 }
 
