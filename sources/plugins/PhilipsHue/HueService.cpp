@@ -36,8 +36,8 @@ void CHueService::closeReadingBridgeButtonState()
 void CHueService::requestUsername() const
 {
    const auto start = std::chrono::steady_clock::now();
-
-   while (std::chrono::steady_clock::now() - start < std::chrono::seconds(30))
+   std::string authorizedUsername;
+   while (std::chrono::steady_clock::now() - start < std::chrono::seconds(kDefaultTimeoutSeconds))
    {
       try
       {
@@ -51,7 +51,7 @@ void CHueService::requestUsername() const
                                                                           body,
                                                                           headerPostParameters);
 
-         auto authorizedUsername = out->get("0.success.username");
+         authorizedUsername = out->get("0.success.username");
 
          if (!authorizedUsername.empty())
          {
@@ -59,6 +59,7 @@ void CHueService::requestUsername() const
             YADOMS_LOG(information) << "key bridge is pressed";
             YADOMS_LOG(information) << "Authorized username is : " << authorizedUsername;
             m_mainEventHandler.postEvent(m_mainEvtKeyStateReceived);
+            break;
          }
       }
       catch (std::exception& e)
@@ -66,8 +67,11 @@ void CHueService::requestUsername() const
          YADOMS_LOG(error) << "Fail to send Post http request or interpret answer : " << e.what();
       }
    }
-   YADOMS_LOG(information) << "key bridge is not pressed";
-   m_mainEventHandler.postEvent(m_mainEvtKeyStateTimeout);
+   if (authorizedUsername.empty())
+   {
+      YADOMS_LOG(information) << "key bridge is not pressed";
+      m_mainEventHandler.postEvent(m_mainEvtKeyStateTimeout);
+   }
 }
 
 

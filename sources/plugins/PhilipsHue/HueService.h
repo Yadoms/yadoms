@@ -7,7 +7,10 @@
 class CHueService : public IHueService
 {
 public:
-   CHueService(shared::event::CEventHandler& mainEventHandler, CHueBridgeDiscovery::HueInformations &hubInformations, int evtKeyStateReceived, int evtKeyStateTimeout);
+   CHueService(shared::event::CEventHandler& mainEventHandler,
+               CHueBridgeDiscovery::HueInformations& hubInformations,
+               int evtKeyStateReceived,
+               int evtKeyStateTimeout);
    virtual ~CHueService();
 
    void startReadingBridgeButtonState() override;
@@ -24,6 +27,7 @@ private:
    int m_mainEvtKeyStateReceived;
    int m_mainEvtKeyStateTimeout;
 
-   boost::shared_ptr<CUrlManager> m_urlManager;
+   enum { kDefaultTimeoutSeconds = 30 };
 
+   boost::shared_ptr<CUrlManager> m_urlManager;
 };
