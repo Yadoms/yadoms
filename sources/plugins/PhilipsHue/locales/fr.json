@@ -2,7 +2,28 @@
    "name": "Philips hue",
    "description": "Support des équipements Philips hue (voir [site web de Philips Hue](https://www.philips-hue.com/)",
    "configurationSchema": {
-      
+      "PairingMode": {
+         "name": "Mode d'appairage",
+         "type": "comboSection",
+         "content": {
+            "Automatic": {
+               "name": "Appairage automatique",
+               "description": "Appairage automatique en utilisant le protocole UPNP",
+               "content": {}
+               },
+               "Manual": {
+                  "name": "Appairage manuel",
+                  "description": "Appairage manuel",
+                  "content": {
+                     "IPAddress": {
+                        "name": "Adresse IP",
+                        "description": "L'adresse IP du bridge",
+                        "regexErrorMessage": "Ce n'est pas une adresse IP valide"
+                     }
+                  }
+               }
+            }
+      }
    },
    "customLabels": {
       "pluginState": {

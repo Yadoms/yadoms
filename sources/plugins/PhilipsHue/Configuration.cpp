@@ -6,40 +6,20 @@ Configuration::~Configuration()
 {
 }
 
-void Configuration::initializeWith(const boost::shared_ptr<shared::CDataContainer> & data)
+void Configuration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_configuration.initializeWith(data);
-}
-
-/*
-    You will find here an example how to retrieve enum variables from the configuration
-*/
-
-EEnumType Configuration::getEnumParameter() const
-{
-   // Enum type, declare keys labels
-   static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::assign::map_list_of
-      ("EnumValue1", kEnumValue1)
-      ("EnumValue2", kEnumValue2)
-      ("EnumValue3", kEnumValue3);
-
-   return m_configuration.getEnumValue<EEnumType>("EnumParameter", EEnumTypeNames);
 }
 
 void Configuration::trace() const
 {
    try
    {
-      // Get simple parameters
-      YADOMS_LOG(information) << "EmptyPlugin configuration, parameter 'StringParameter' is "
-         << (m_configuration.get<std::string>("StringParameter").empty() ? "empty" : m_configuration.get<std::string>("StringParameter"))
-        ;
-      YADOMS_LOG(information) << "EmptyPlugin configuration, parameter 'BoolParameter' is " << m_configuration.get<bool>("BoolParameter");
-      YADOMS_LOG(information) << "EmptyPlugin configuration, parameter 'DecimalParameter' is " << m_configuration.get<double>("DecimalParameter");
-      YADOMS_LOG(information) << "EmptyPlugin configuration, parameter 'IntParameter' is " << m_configuration.get<int>("IntParameter");
-
-      // Enum
-      YADOMS_LOG(information) << "EmptyPlugin configuration, parameter 'EnumParameter' is " << getEnumParameter();
+      YADOMS_LOG(information) << "Pairing mode : " << m_configuration.get<std::string>("PairingMode.activeSectionText");
+      YADOMS_LOG(information) << "Bridge IP is :  "
+         << (m_configuration.get<std::string>("PairingMode.content.Manual.content.IPAddress").empty()
+                ? "Automatic Mode"
+                : m_configuration.get<std::string>("PairingMode.content.Manual.content.IPAddress"));
    }
    catch (const shared::exception::CInvalidParameter& e)
    {
@@ -49,4 +29,21 @@ void Configuration::trace() const
    {
       YADOMS_LOG(error) << "Parameter value out of range : " << e.what();
    }
+}
+
+std::string Configuration::getIPAddress() const
+{
+   if (getPairingMode() != kAuto)
+      return m_configuration.get<std::string>("PairingMode.content.Manual.content.IPAddress");
+   return m_ipAddress;
+}
+
+void Configuration::setIPAddress(const std::string& ipAddress)
+{
+   m_ipAddress = ipAddress;
+}
+
+EPairingMode Configuration::getPairingMode() const
+{
+   return m_configuration.get<std::string>("PairingMode.activeSectionText") == "Auto" ? kAuto : kManual;
 }
