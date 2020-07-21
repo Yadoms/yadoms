@@ -10,6 +10,28 @@
       }
    },
    "configurationSchema": {
+      "PairingMode": {
+         "type": "comboSection",
+         "content": {
+            "Automatic": {
+               "name": "Auto",
+               "type": "section",
+               "content": {
 
+               }
+            },
+            "Manual": {
+               "name": "Manual",
+               "type": "section",
+               "content": {
+                  "IPAddress": {
+                     "type": "string",
+                     "regex": "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$",
+                     "required": "true"
+                  }
+               }
+            }
+         }
+      }
    }
 }

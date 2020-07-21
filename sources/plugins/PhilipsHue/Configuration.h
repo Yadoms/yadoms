@@ -7,14 +7,10 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 
-//--------------------------------------------------------------
-/// \brief	An example of an enum type of parameter
-//--------------------------------------------------------------
-enum EEnumType
+enum EPairingMode
 {
-   kEnumValue1 = 7,
-   kEnumValue2 = 12,
-   kEnumValue3
+   kAuto = 0,
+   kManual
 };
 
 //--------------------------------------------------------------
@@ -32,28 +28,32 @@ public:
    /// \brief		   Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   void initializeWith(const boost::shared_ptr<shared::CDataContainer> & data);
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data);
 
    //--------------------------------------------------------------
    /// \brief	    Just for test, not needed for real plugin
    //--------------------------------------------------------------
    void trace() const;
 
-   //--------------------------------------------------------------
-   //--------------------------------------------------------------
-   // You can add your own accessors for better code readability
-   //--------------------------------------------------------------
-   //--------------------------------------------------------------
-
-   //--------------------------------------------------------------
-   /// \brief	    Enum parameter
-   //--------------------------------------------------------------
-   EEnumType getEnumParameter() const;
-
+   /**
+   * \brief  Get Device IP address
+   * \return Returns Device IP address
+   */
+   std::string getIPAddress() const;
+   /**
+   * \brief  Set Device IP address
+   * \param[in] ipAddress Device IP Address
+   */
+   void setIPAddress(const std::string& ipAddress);
+   /**
+   * \brief  get pairing mode
+   * \return Returns pairing mode
+   */
+   EPairingMode getPairingMode() const;
 private:
    //--------------------------------------------------------------
    /// \brief	    Configuration getter
    //--------------------------------------------------------------
    yApi::YPluginConfiguration m_configuration;
+   std::string m_ipAddress;
 };
-
