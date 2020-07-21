@@ -107,7 +107,7 @@ void CPhilipsHue::init()
 {
    fillHueInformations();
    m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
-
+  
    startReadingBridgeButtonState();
 }
 
@@ -134,10 +134,12 @@ void CPhilipsHue::startReadingBridgeButtonState()
    {
       for (auto& foundBridge : m_HueInformations)
       {
+         m_urlManager = boost::make_shared<CUrlManager>(foundBridge, m_configuration);
          m_hueService = CFactory::createHueService(m_api->getEventHandler(),
                                                    foundBridge,
                                                    kEvtKeyStateReceived,
-                                                   kEvtKeyStateTimeout);
+                                                   kEvtKeyStateTimeout,
+                                                   m_urlManager);
 
          m_hueService->startReadingBridgeButtonState();
       }

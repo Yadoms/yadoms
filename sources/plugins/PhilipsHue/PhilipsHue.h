@@ -36,10 +36,11 @@ private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   Configuration m_configuration;
+   CConfiguration m_configuration;
    boost::shared_ptr<yApi::IYPluginApi> m_api;
 
    static const std::string PhilipsHueBridgeName;
    std::vector<CHueBridgeDiscovery::HueInformations> m_HueInformations;
    boost::shared_ptr<IHueService> m_hueService;
+   boost::shared_ptr<CUrlManager> m_urlManager;
 };

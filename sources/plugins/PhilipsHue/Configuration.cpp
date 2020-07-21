@@ -2,16 +2,16 @@
 #include "Configuration.h"
 #include <shared/Log.h>
 
-Configuration::~Configuration()
+CConfiguration::~CConfiguration()
 {
 }
 
-void Configuration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
+void CConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
    m_configuration.initializeWith(data);
 }
 
-void Configuration::trace() const
+void CConfiguration::trace() const
 {
    try
    {
@@ -31,19 +31,19 @@ void Configuration::trace() const
    }
 }
 
-std::string Configuration::getIPAddress() const
+std::string CConfiguration::getIPAddress() const
 {
    if (getPairingMode() != kAuto)
       return m_configuration.get<std::string>("PairingMode.content.Manual.content.IPAddress");
    return m_ipAddress;
 }
 
-void Configuration::setIPAddress(const std::string& ipAddress)
+void CConfiguration::setIPAddress(const std::string& ipAddress)
 {
    m_ipAddress = ipAddress;
 }
 
-EPairingMode Configuration::getPairingMode() const
+EPairingMode CConfiguration::getPairingMode() const
 {
    return m_configuration.get<std::string>("PairingMode.activeSectionText") == "Auto" ? kAuto : kManual;
 }

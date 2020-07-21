@@ -7,12 +7,13 @@
 CHueService::CHueService(shared::event::CEventHandler& mainEventHandler,
                          CHueBridgeDiscovery::HueInformations& hubInformations,
                          int evtKeyStateReceived,
-                         int evtKeyStateTimeout)
+                         int evtKeyStateTimeout,
+                         boost::shared_ptr<CUrlManager>& urlManager)
    : m_mainEventHandler(mainEventHandler),
      m_hubInformations(hubInformations),
      m_mainEvtKeyStateReceived(evtKeyStateReceived),
      m_mainEvtKeyStateTimeout(evtKeyStateTimeout),
-     m_urlManager(boost::make_shared<CUrlManager>(hubInformations))
+     m_urlManager(urlManager)
 {
 };
 
