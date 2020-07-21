@@ -3,8 +3,9 @@
 const std::string CUrlManager::ApiPath("/api");
 const std::string CUrlManager::GetAllLightsPath("/lights");
 
-CUrlManager::CUrlManager(CHueBridgeDiscovery::HueInformations& hueInformations)
-   : m_hueInformations(hueInformations)
+CUrlManager::CUrlManager(CHueBridgeDiscovery::HueInformations& hueInformations, CConfiguration& configuration)
+   : m_hueInformations(hueInformations),
+     m_configuration(configuration)
 {
 }
 
@@ -30,6 +31,9 @@ std::string CUrlManager::getUrlPatternPath(EUrlPattern urlPattern) const
 std::string CUrlManager::getPatternUrl(const std::string& urlPatternPath) const
 {
    const auto protocolType = "http://";
+   const auto ipAddress = m_configuration.getPairingMode() == EPairingMode::kAuto
+                            ? m_hueInformations.ip
+                            : m_configuration.getIPAddress();
 
-   return protocolType + m_hueInformations.ip + urlPatternPath;
+   return protocolType + ipAddress + urlPatternPath;
 }

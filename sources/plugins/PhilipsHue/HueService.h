@@ -10,7 +10,9 @@ public:
    CHueService(shared::event::CEventHandler& mainEventHandler,
                CHueBridgeDiscovery::HueInformations& hubInformations,
                int evtKeyStateReceived,
-               int evtKeyStateTimeout);
+               int evtKeyStateTimeout,
+               boost::shared_ptr<CUrlManager>& urlManager);
+
    virtual ~CHueService();
 
    void startReadingBridgeButtonState() override;

@@ -1,10 +1,11 @@
 #pragma once
 #include "HueBridgeDiscovery.h"
+#include "Configuration.h"
 
 class CUrlManager
 {
 public:
-   CUrlManager(CHueBridgeDiscovery::HueInformations& hueInformations);
+   CUrlManager(CHueBridgeDiscovery::HueInformations& hueInformations, CConfiguration& configuration);
 
    virtual ~CUrlManager() = default;
 
@@ -38,4 +39,5 @@ private:
 
    std::string m_username;
    CHueBridgeDiscovery::HueInformations m_hueInformations;
+   CConfiguration& m_configuration;
 };

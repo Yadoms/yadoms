@@ -16,13 +16,13 @@ enum EPairingMode
 //--------------------------------------------------------------
 /// \brief	Configuration of the empty plugin
 //--------------------------------------------------------------
-class Configuration
+class CConfiguration
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~Configuration();
+   virtual ~CConfiguration();
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data

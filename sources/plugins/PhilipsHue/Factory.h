@@ -2,6 +2,7 @@
 #include "IHueService.h"
 #include "shared/event/EventHandler.hpp"
 #include "HueBridgeDiscovery.h"
+#include "UrlManager.h"
 
 class CFactory
 {
@@ -12,5 +13,6 @@ public:
    static boost::shared_ptr<IHueService> createHueService(shared::event::CEventHandler& mainEventHandler,
                                                           CHueBridgeDiscovery::HueInformations& hubInformations,
                                                           int evtKeyStateReceived,
-                                                          int evtKeyStateTimeout);
+                                                          int evtKeyStateTimeout,
+                                                          boost::shared_ptr<CUrlManager>& urlManager);
 };
