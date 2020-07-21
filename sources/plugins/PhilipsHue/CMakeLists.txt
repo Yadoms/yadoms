@@ -20,6 +20,8 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 	IHueService.h
 	UrlManager.h
 	UrlManager.cpp
+	LightManager.h
+	LightManager.cpp
 )
 
 #########################################
