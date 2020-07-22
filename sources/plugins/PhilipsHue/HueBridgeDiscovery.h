@@ -11,7 +11,7 @@ public:
    virtual ~CHueBridgeDiscovery() = default;
 
    std::vector<HueInformations> FindBridges() override;
-   HueInformations CHueBridgeDiscovery::getHueInformations() override;
+   HueInformations getHueInformations() override;
 
 private:
    static std::string getIpAddress(const std::string& urlBase);
