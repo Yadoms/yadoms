@@ -8,7 +8,6 @@ class CHueService : public IHueService
 {
 public:
    CHueService(shared::event::CEventHandler& mainEventHandler,
-               CHueBridgeDiscovery::HueInformations& hubInformations,
                int evtKeyStateReceived,
                int evtKeyStateTimeout,
                boost::shared_ptr<CUrlManager>& urlManager);
@@ -25,7 +24,6 @@ private:
 
    void requestUsername() const;
    shared::event::CEventHandler& m_mainEventHandler;
-   CHueBridgeDiscovery::HueInformations m_hubInformations;
    int m_mainEvtKeyStateReceived;
    int m_mainEvtKeyStateTimeout;
 

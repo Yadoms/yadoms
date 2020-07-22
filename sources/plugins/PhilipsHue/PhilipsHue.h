@@ -41,6 +41,6 @@ private:
 
    static const std::string PhilipsHueBridgeName;
    std::vector<CHueBridgeDiscovery::HueInformations> m_HueInformations;
-   boost::shared_ptr<IHueService> m_hueService;
-   boost::shared_ptr<CUrlManager> m_urlManager;
+   std::vector<boost::shared_ptr<IHueService>> m_hueService;
+   std::vector<boost::shared_ptr<CUrlManager>> m_urlManager;
 };
