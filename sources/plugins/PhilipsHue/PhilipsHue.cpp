@@ -84,14 +84,20 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtKeyStateReceived:
          {
             YADOMS_LOG(information) << "key bridge is pressed";
-            m_hueService->closeReadingBridgeButtonState();
+            for (auto i = 0; i < m_HueInformations.size(); i++)
+            {
+               m_hueService[i]->closeReadingBridgeButtonState();
+            }
             break;
          }
       case kEvtKeyStateTimeout:
          {
             YADOMS_LOG(information) << "key bridge : Timeout";
             m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButtonTimeout");
-            m_hueService->closeReadingBridgeButtonState();
+            for (auto i = 0; i < m_HueInformations.size(); i++)
+            {
+               m_hueService[i]->closeReadingBridgeButtonState();
+            }
             break;
          }
       default:
@@ -105,10 +111,15 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CPhilipsHue::init()
 {
-   fillHueInformations();
-   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
-  
-   startReadingBridgeButtonState();
+   if (m_configuration.getPairingMode() == EPairingMode::kAuto)
+   {
+      fillHueInformations();
+      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
+      startReadingBridgeButtonState();
+   }
+   else
+   {
+   }
 }
 
 void CPhilipsHue::fillHueInformations()
@@ -132,16 +143,15 @@ void CPhilipsHue::startReadingBridgeButtonState()
 {
    try
    {
-      for (auto& foundBridge : m_HueInformations)
+      for (auto i = 0; i < m_HueInformations.size(); i++)
       {
-         m_urlManager = boost::make_shared<CUrlManager>(foundBridge, m_configuration);
-         m_hueService = CFactory::createHueService(m_api->getEventHandler(),
-                                                   foundBridge,
-                                                   kEvtKeyStateReceived,
-                                                   kEvtKeyStateTimeout,
-                                                   m_urlManager);
+         m_urlManager.push_back(boost::make_shared<CUrlManager>(m_HueInformations[i], m_configuration));
 
-         m_hueService->startReadingBridgeButtonState();
+         m_hueService.push_back(CFactory::createHueService(m_api->getEventHandler(),
+                                                           kEvtKeyStateReceived,
+                                                           kEvtKeyStateTimeout,
+                                                           m_urlManager[i]));
+         m_hueService[i]->startReadingBridgeButtonState();
       }
    }
    catch (boost::thread_interrupted&)
