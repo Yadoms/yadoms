@@ -1,7 +1,6 @@
 #pragma once
 #include "shared/event/EventHandler.hpp"
 #include "IHueService.h"
-#include "HueBridgeDiscovery.h"
 #include "UrlManager.h"
 
 class CHueService : public IHueService
@@ -16,7 +15,6 @@ public:
 
    void startReadingBridgeButtonState() override;
    void closeReadingBridgeButtonState() override;
-
 private:
    boost::shared_ptr<boost::thread> m_readBridgeButtonStateThread;
    static std::string buildAuthorizedUsernameBody();
@@ -30,4 +28,5 @@ private:
    enum { kDefaultTimeoutSeconds = 30 };
 
    boost::shared_ptr<CUrlManager> m_urlManager;
+
 };

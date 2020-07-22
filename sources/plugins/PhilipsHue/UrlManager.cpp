@@ -2,6 +2,7 @@
 
 const std::string CUrlManager::ApiPath("/api");
 const std::string CUrlManager::GetAllLightsPath("/lights");
+const std::string CUrlManager::DescriptionPath("/description.xml");
 
 CUrlManager::CUrlManager(CHueBridgeDiscovery::HueInformations& hueInformations, CConfiguration& configuration)
    : m_hueInformations(hueInformations),

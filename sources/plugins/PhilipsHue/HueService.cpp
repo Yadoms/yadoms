@@ -2,6 +2,7 @@
 #include "shared/http/HttpMethods.h"
 #include "shared/Log.h"
 #include <boost/asio.hpp>
+#include "shared/http/ssdp/IDiscoveredDevice.h"
 
 
 CHueService::CHueService(shared::event::CEventHandler& mainEventHandler,

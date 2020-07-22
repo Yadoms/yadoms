@@ -30,7 +30,7 @@ public:
    // [END] IPlugin implementation
 
    void init();
-   void fillHueInformations();
+   void fillHuesInformations();
    void startReadingBridgeButtonState();
 private:
    //--------------------------------------------------------------
@@ -40,7 +40,11 @@ private:
    boost::shared_ptr<yApi::IYPluginApi> m_api;
 
    static const std::string PhilipsHueBridgeName;
-   std::vector<CHueBridgeDiscovery::HueInformations> m_HueInformations;
-   std::vector<boost::shared_ptr<IHueService>> m_hueService;
-   std::vector<boost::shared_ptr<CUrlManager>> m_urlManager;
+   std::vector<CHueBridgeDiscovery::HueInformations> m_HuesInformations;
+   CHueBridgeDiscovery::HueInformations m_HueInformations;
+   std::vector<boost::shared_ptr<IHueService>> m_huesService;
+   boost::shared_ptr<IHueService> m_hueService;
+   std::vector<boost::shared_ptr<CUrlManager>> m_urlsManager;
+   boost::shared_ptr<CUrlManager> m_urlManager;
+   void closeReadingBridgeButtonState();
 };
