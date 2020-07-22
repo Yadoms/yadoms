@@ -3,6 +3,7 @@
 #include "Configuration.h"
 #include "HueBridgeDiscovery.h"
 #include "HueService.h"
+#include "HueInformations.h"
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -40,11 +41,12 @@ private:
    boost::shared_ptr<yApi::IYPluginApi> m_api;
 
    static const std::string PhilipsHueBridgeName;
-   std::vector<CHueBridgeDiscovery::HueInformations> m_HuesInformations;
-   CHueBridgeDiscovery::HueInformations m_HueInformations;
+   std::vector<HueInformations> m_HuesInformations;
+   HueInformations m_HueInformations;
    std::vector<boost::shared_ptr<IHueService>> m_huesService;
    boost::shared_ptr<IHueService> m_hueService;
    std::vector<boost::shared_ptr<CUrlManager>> m_urlsManager;
    boost::shared_ptr<CUrlManager> m_urlManager;
+   boost::shared_ptr<IHueBridgeDiscovery> m_hueBridgeDiscovery;
    void closeReadingBridgeButtonState();
 };

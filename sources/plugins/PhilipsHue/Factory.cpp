@@ -1,5 +1,6 @@
 #include "Factory.h"
 #include "HueService.h"
+#include "HueBridgeDiscovery.h"
 
 boost::shared_ptr<IHueService> CFactory::createHueService(shared::event::CEventHandler& mainEventHandler,
                                                           int evtKeyStateReceived,
@@ -10,4 +11,13 @@ boost::shared_ptr<IHueService> CFactory::createHueService(shared::event::CEventH
                                           evtKeyStateReceived,
                                           evtKeyStateTimeout,
                                           urlManager);
+}
+
+boost::shared_ptr<IHueBridgeDiscovery> CFactory::createHueBridgeDiscovery(boost::shared_ptr<CUrlManager>& urlManager)
+{
+   return boost::make_shared<CHueBridgeDiscovery>(urlManager);
+}
+boost::shared_ptr<IHueBridgeDiscovery> CFactory::createHueBridgeDiscovery()
+{
+   return boost::make_shared<CHueBridgeDiscovery>();
 }
