@@ -113,38 +113,42 @@ void CPhilipsHue::init()
    }
    else
    {
-      //TODO : 
-     // m_hueService = CFactory::createHueService(m_api->getEventHandler(),
-     //                                           kEvtKeyStateReceived,
-     //                                           kEvtKeyStateTimeout,
-     //                                           m_urlManager);
-     // m_HueInformations = m_hueService->getHueInformations();
-     // m_urlManager = boost::make_shared<CUrlManager>(m_HueInformations, m_configuration);
-     // try
-     // {
-     //    m_hueService->startReadingBridgeButtonState();
-     // }
-     // catch (boost::thread_interrupted&)
-     // {
-     //    YADOMS_LOG(error) << "start reading bridge button state thread is interrupted";
-     // }
-     // catch (const std::exception& exception)
-     // {
-     //    YADOMS_LOG(error) << "start reading bridge button state :" << exception.what();
-     //    throw;
-     // }
-     // catch (...)
-     // {
-     //    YADOMS_LOG(error) << "start reading bridge button state : unknown error";
-     // }
+      m_urlManager = boost::make_shared<CUrlManager>(m_configuration);
+      m_hueBridgeDiscovery = CFactory::createHueBridgeDiscovery(m_urlManager);
+
+      m_hueService = CFactory::createHueService(m_api->getEventHandler(),
+                                                kEvtKeyStateReceived,
+                                                kEvtKeyStateTimeout,
+                                                m_urlManager);
+
+      m_HueInformations = m_hueBridgeDiscovery->getHueInformations();
+
+      try
+      {
+         m_hueService->startReadingBridgeButtonState();
+      }
+      catch (boost::thread_interrupted&)
+      {
+         YADOMS_LOG(error) << "start reading bridge button state thread is interrupted";
+      }
+      catch (const std::exception& exception)
+      {
+         YADOMS_LOG(error) << "start reading bridge button state :" << exception.what();
+         throw;
+      }
+      catch (...)
+      {
+         YADOMS_LOG(error) << "start reading bridge button state : unknown error";
+      }
    }
 }
 
 void CPhilipsHue::fillHuesInformations()
 {
+   m_hueBridgeDiscovery = CFactory::createHueBridgeDiscovery();
    try
    {
-      auto foundBridges = CHueBridgeDiscovery::FindBridges();
+      auto foundBridges = m_hueBridgeDiscovery->FindBridges();
       for (auto& foundBridge : foundBridges)
       {
          m_HuesInformations.push_back(foundBridge);

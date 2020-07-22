@@ -23,6 +23,7 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 	UrlManager.cpp
 	LightManager.h
 	LightManager.cpp
+	HueInformations.h
 )
 
 #########################################
