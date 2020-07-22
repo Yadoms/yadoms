@@ -1,6 +1,8 @@
 #include "HueBridgeDiscovery.h"
 #include "shared/http/ssdp/DiscoverService.h"
-
+#include "shared/http/HttpMethods.h"
+#include "shared/http/ssdp/DiscoveredDevice.h"
+#include "shared/Log.h"
 
 std::vector<CHueBridgeDiscovery::HueInformations> CHueBridgeDiscovery::FindBridges()
 {

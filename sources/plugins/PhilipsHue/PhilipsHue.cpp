@@ -84,20 +84,14 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtKeyStateReceived:
          {
             YADOMS_LOG(information) << "key bridge is pressed";
-            for (auto i = 0; i < m_HueInformations.size(); i++)
-            {
-               m_hueService[i]->closeReadingBridgeButtonState();
-            }
+            closeReadingBridgeButtonState();
             break;
          }
       case kEvtKeyStateTimeout:
          {
             YADOMS_LOG(information) << "key bridge : Timeout";
             m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButtonTimeout");
-            for (auto i = 0; i < m_HueInformations.size(); i++)
-            {
-               m_hueService[i]->closeReadingBridgeButtonState();
-            }
+            closeReadingBridgeButtonState();
             break;
          }
       default:
@@ -113,23 +107,47 @@ void CPhilipsHue::init()
 {
    if (m_configuration.getPairingMode() == EPairingMode::kAuto)
    {
-      fillHueInformations();
+      fillHuesInformations();
       m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
       startReadingBridgeButtonState();
    }
    else
    {
+      //TODO : 
+     // m_hueService = CFactory::createHueService(m_api->getEventHandler(),
+     //                                           kEvtKeyStateReceived,
+     //                                           kEvtKeyStateTimeout,
+     //                                           m_urlManager);
+     // m_HueInformations = m_hueService->getHueInformations();
+     // m_urlManager = boost::make_shared<CUrlManager>(m_HueInformations, m_configuration);
+     // try
+     // {
+     //    m_hueService->startReadingBridgeButtonState();
+     // }
+     // catch (boost::thread_interrupted&)
+     // {
+     //    YADOMS_LOG(error) << "start reading bridge button state thread is interrupted";
+     // }
+     // catch (const std::exception& exception)
+     // {
+     //    YADOMS_LOG(error) << "start reading bridge button state :" << exception.what();
+     //    throw;
+     // }
+     // catch (...)
+     // {
+     //    YADOMS_LOG(error) << "start reading bridge button state : unknown error";
+     // }
    }
 }
 
-void CPhilipsHue::fillHueInformations()
+void CPhilipsHue::fillHuesInformations()
 {
    try
    {
       auto foundBridges = CHueBridgeDiscovery::FindBridges();
       for (auto& foundBridge : foundBridges)
       {
-         m_HueInformations.push_back(foundBridge);
+         m_HuesInformations.push_back(foundBridge);
       }
    }
    catch (const std::exception& exception)
@@ -143,15 +161,15 @@ void CPhilipsHue::startReadingBridgeButtonState()
 {
    try
    {
-      for (auto i = 0; i < m_HueInformations.size(); i++)
+      for (auto i = 0; i < m_HuesInformations.size(); i++)
       {
-         m_urlManager.push_back(boost::make_shared<CUrlManager>(m_HueInformations[i], m_configuration));
+         m_urlsManager.push_back(boost::make_shared<CUrlManager>(m_HuesInformations[i], m_configuration));
 
-         m_hueService.push_back(CFactory::createHueService(m_api->getEventHandler(),
-                                                           kEvtKeyStateReceived,
-                                                           kEvtKeyStateTimeout,
-                                                           m_urlManager[i]));
-         m_hueService[i]->startReadingBridgeButtonState();
+         m_huesService.push_back(CFactory::createHueService(m_api->getEventHandler(),
+                                                            kEvtKeyStateReceived,
+                                                            kEvtKeyStateTimeout,
+                                                            m_urlsManager[i]));
+         m_huesService[i]->startReadingBridgeButtonState();
       }
    }
    catch (boost::thread_interrupted&)
@@ -166,5 +184,20 @@ void CPhilipsHue::startReadingBridgeButtonState()
    catch (...)
    {
       YADOMS_LOG(error) << "start reading bridge button state : unknown error";
+   }
+}
+
+void CPhilipsHue::closeReadingBridgeButtonState()
+{
+   if (m_configuration.getPairingMode() == EPairingMode::kAuto)
+   {
+      for (auto i = 0; i < m_HuesInformations.size(); i++)
+      {
+         m_huesService[i]->closeReadingBridgeButtonState();
+      }
+   }
+   else
+   {
+      m_hueService->closeReadingBridgeButtonState();
    }
 }

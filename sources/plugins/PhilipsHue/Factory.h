@@ -1,7 +1,6 @@
 #pragma once
 #include "IHueService.h"
 #include "shared/event/EventHandler.hpp"
-#include "HueBridgeDiscovery.h"
 #include "UrlManager.h"
 
 class CFactory
