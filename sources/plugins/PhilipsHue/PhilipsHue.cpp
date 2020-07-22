@@ -63,6 +63,8 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             m_configuration.initializeWith(newConfiguration);
 
+            init();
+
             // Trace the configuration
             m_configuration.trace();
 
