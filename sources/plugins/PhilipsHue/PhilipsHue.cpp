@@ -87,6 +87,9 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             YADOMS_LOG(information) << "key bridge is pressed";
             closeReadingBridgeButtonState();
+
+            m_lightManager = CFactory::createLightManager(m_urlManager);
+            const auto detectedLight = m_lightManager->getAllLights();
             break;
          }
       case kEvtKeyStateTimeout:
