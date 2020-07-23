@@ -88,3 +88,85 @@ std::vector<HueLightInformations> CLightManager::getAllLights()
    }
    return hueLightsInformations;
 }
+
+HueLightInformations CLightManager::getLightAttributesAndState(const int id)
+{
+   HueLightInformations hueLightAttributesAndState;
+   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kGetLightAttributesAndState, id);
+   const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
+
+   try
+   {
+      const auto response = shared::http::CHttpMethods::sendJsonGetRequest(lightUrl);
+
+      hueLightAttributesAndState.state.on = response->get<bool>("state.on");
+      hueLightAttributesAndState.state.bri = response->get<int>("state.bri");
+      hueLightAttributesAndState.state.hue = response->get<int>("state.hue");
+      hueLightAttributesAndState.state.sat = response->get<int>("state.sat");
+      hueLightAttributesAndState.state.effect = response->get<std::string>("state.effect");
+      hueLightAttributesAndState.state.xy.x = response->get<float>("state.xy.0");
+      hueLightAttributesAndState.state.xy.y = response->get<float>("state.xy.1");
+      hueLightAttributesAndState.state.ct = response->get<int>("state.ct");
+      hueLightAttributesAndState.state.alert = response->get<std::string>("state.alert");
+      hueLightAttributesAndState.state.colormode = response->get<std::string>(
+         "state.colormode");
+      hueLightAttributesAndState.state.mode = response->get<std::string>("state.mode");
+      hueLightAttributesAndState.state.reachable = response->get<bool>("state.reachable");
+
+      hueLightAttributesAndState.swupdate.state = response->get<std::string>(
+         "swupdate.state");
+      hueLightAttributesAndState.swupdate.lastinstall = response->get<std::string>(
+         "swupdate.lastinstall");
+
+      hueLightAttributesAndState.type = response->get<std::string>("type");
+      hueLightAttributesAndState.name = response->get<std::string>("name");
+      hueLightAttributesAndState.modelid = response->get<std::string>("modelid");
+      hueLightAttributesAndState.manufacturername = response->get<std::string>(
+         "manufacturername");
+      hueLightAttributesAndState.productname = response->get<std::string>("productname");
+
+      hueLightAttributesAndState.capabilities.certified = response->get<bool>(
+         "capabilities.certified");
+      hueLightAttributesAndState.capabilities.control.mindimlevel = response->get<int>(
+         "capabilities.control.mindimlevel");
+      hueLightAttributesAndState.capabilities.control.maxlumen = response->get<int>(
+         "capabilities.control.maxlumen");
+      hueLightAttributesAndState.capabilities.control.colorgamuttype = response->get<std::string>(
+         "capabilities.control.colorgamuttype");
+      //TODO : fill COLORGAMUT
+      hueLightAttributesAndState.capabilities.control.ct.min = response->get<int>(
+         "capabilities.control.ct.min");
+      hueLightAttributesAndState.capabilities.control.ct.max = response->get<int>(
+         "capabilities.control.ct.max");
+
+      hueLightAttributesAndState.capabilities.streaming.renderer = response->get<bool>(
+         "capabilities.streaming.renderer");
+      hueLightAttributesAndState.capabilities.streaming.proxy = response->get<bool>(
+         "capabilities.streaming.proxy");
+
+      hueLightAttributesAndState.config.archetype = response->get<std::string>(
+         "config.archetype");
+      hueLightAttributesAndState.config.function = response->get<std::string>(
+         "config.function");
+      hueLightAttributesAndState.config.direction = response->get<std::string>(
+         "config.direction");
+      hueLightAttributesAndState.config.startup.mode = response->get<std::string>(
+         "config.startup.mode");
+      hueLightAttributesAndState.config.startup.configured = response->get<bool>(
+         "config.startup.configured");
+
+      hueLightAttributesAndState.uniqueid = response->get<std::string>("uniqueid");
+      hueLightAttributesAndState.swversion = response->get<std::string>("swversion");
+      hueLightAttributesAndState.swconfigid = response->get<std::string>("swconfigid");
+      hueLightAttributesAndState.productid = response->get<std::string>("productid");
+   }
+   catch (std::exception& e)
+   {
+      const auto message = (boost::format("Fail to send Post http request or interpret answer \"%1%\" : %2%") % lightUrl
+         %
+         e.what()).str();
+      YADOMS_LOG(error) << "Fail to send Post http request or interpret answer " << lightUrl << " : " << e.what();
+      throw;
+   }
+   return hueLightAttributesAndState;
+}
