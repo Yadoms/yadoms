@@ -13,5 +13,15 @@ public:
    HueLightInformations getLightAttributesAndState(int id) override;
 private:
    boost::shared_ptr<CUrlManager>& m_urlManager;
-};
 
+   static void setHueLightInformationsState(HueLightInformations& hueLightAttributesAndState,
+                                            boost::shared_ptr<shared::CDataContainer>& response);
+   static void setHueLightInformationsSwUpdate(HueLightInformations& hueLightAttributesAndState,
+                                               boost::shared_ptr<shared::CDataContainer>& response);
+
+   static void setHueLightInformationsCapabilities(HueLightInformations& hueLightAttributesAndState,
+                                                   boost::shared_ptr<shared::CDataContainer>& response);
+
+   static void setHueLightInformationsConfig(HueLightInformations& hueLightAttributesAndState,
+                                             boost::shared_ptr<shared::CDataContainer>& response);
+};
