@@ -4,6 +4,7 @@
 #include "HueBridgeDiscovery.h"
 #include "HueService.h"
 #include "Hue.h"
+#include "ILightManager.h"
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -48,5 +49,7 @@ private:
    std::vector<boost::shared_ptr<CUrlManager>> m_urlsManager;
    boost::shared_ptr<CUrlManager> m_urlManager;
    boost::shared_ptr<IHueBridgeDiscovery> m_hueBridgeDiscovery;
+   boost::shared_ptr<ILightManager> m_lightManager;
+
    void closeReadingBridgeButtonState();
 };
