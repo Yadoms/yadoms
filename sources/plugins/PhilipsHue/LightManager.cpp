@@ -24,8 +24,8 @@ std::vector<HueLightInformations> CLightManager::getAllLights()
          hueLightInformations.state.hue = response->get<int>(std::to_string(lightCounter) + ".state.hue");
          hueLightInformations.state.sat = response->get<int>(std::to_string(lightCounter) + ".state.sat");
          hueLightInformations.state.effect = response->get<std::string>(std::to_string(lightCounter) + ".state.effect");
-         hueLightInformations.state.xy.x = response->get<int>(std::to_string(lightCounter) + ".state.xy.0");
-         hueLightInformations.state.xy.y = response->get<int>(std::to_string(lightCounter) + ".state.xy.1");
+         hueLightInformations.state.xy.x = response->get<float>(std::to_string(lightCounter) + ".state.xy.0");
+         hueLightInformations.state.xy.y = response->get<float>(std::to_string(lightCounter) + ".state.xy.1");
          hueLightInformations.state.ct = response->get<int>(std::to_string(lightCounter) + ".state.ct");
          hueLightInformations.state.alert = response->get<std::string>(std::to_string(lightCounter) + ".state.alert");
          hueLightInformations.state.colormode = response->get<std::string>(
@@ -84,6 +84,7 @@ std::vector<HueLightInformations> CLightManager::getAllLights()
          %
          e.what()).str();
       YADOMS_LOG(error) << "Fail to send Post http request or interpret answer " << lightUrl << " : " << e.what();
+      throw;
    }
    return hueLightsInformations;
 }
