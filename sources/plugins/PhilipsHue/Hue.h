@@ -18,11 +18,13 @@ struct HueLightInformations
       int hue;
       int sat;
       std::string effect;
+
       struct XY
       {
          float x;
          float y;
       };
+
       XY xy;
 
       int ct;
@@ -31,6 +33,7 @@ struct HueLightInformations
       std::string mode;
       bool reachable;
    };
+
    STATE state;
 
    struct SWUPDATE
@@ -38,6 +41,7 @@ struct HueLightInformations
       std::string state;
       std::string lastinstall;
    };
+
    SWUPDATE swupdate;
 
    std::string type;
@@ -49,15 +53,17 @@ struct HueLightInformations
    struct CAPABILITIES
    {
       bool certified;
+
       struct CONTROL
       {
          int mindimlevel;
          int maxlumen;
          std::string colorgamuttype;
+
          struct COLORGAMUT
          {
-            
          };
+
          COLORGAMUT colorgamut;
 
          struct CT
@@ -65,17 +71,21 @@ struct HueLightInformations
             int min;
             int max;
          };
+
          CT ct;
       };
+
       CONTROL control;
+
       struct STREAMING
       {
          bool renderer;
          bool proxy;
       };
-      STREAMING streaming;
 
+      STREAMING streaming;
    };
+
    CAPABILITIES capabilities;
 
    struct CONFIG
@@ -83,9 +93,20 @@ struct HueLightInformations
       std::string archetype;
       std::string function;
       std::string direction;
+
+      struct STARTUP
+      {
+         std::string mode;
+         bool configured;
+      };
+
+      STARTUP startup;
    };
+
    CONFIG config;
 
    std::string uniqueid;
    std::string swversion;
+   std::string swconfigid;
+   std::string productid;
 };

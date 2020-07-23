@@ -22,7 +22,7 @@ public:
       kUnknown
    };
 
-   std::string getUrlPatternPath(EUrlPattern urlPattern) const;
+   std::string getUrlPatternPath(EUrlPattern urlPattern, int id = 0) const;
    std::string getPatternUrl(const std::string& urlPatternPath) const;
 
    std::string getUsername()

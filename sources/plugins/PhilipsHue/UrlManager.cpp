@@ -16,7 +16,7 @@ CUrlManager::CUrlManager(CConfiguration& configuration)
 }
 
 
-std::string CUrlManager::getUrlPatternPath(EUrlPattern urlPattern) const
+std::string CUrlManager::getUrlPatternPath(EUrlPattern urlPattern, const int id) const
 {
    std::string urlPatternPath;
    switch (urlPattern)
@@ -29,6 +29,9 @@ std::string CUrlManager::getUrlPatternPath(EUrlPattern urlPattern) const
       break;
    case kDescription:
       urlPatternPath = DescriptionPath;
+      break;
+   case kGetLightAttributesAndState:
+      urlPatternPath = ApiPath + "/" + m_username + GetAllLightsPath + std::to_string(id);
       break;
    default:
       urlPatternPath = "";
