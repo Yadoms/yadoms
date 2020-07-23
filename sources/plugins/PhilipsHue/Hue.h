@@ -20,8 +20,8 @@ struct HueLightInformations
       std::string effect;
       struct XY
       {
-         int x;
-         int y;
+         float x;
+         float y;
       };
       XY xy;
 
