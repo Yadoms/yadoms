@@ -1,6 +1,6 @@
 #pragma once
 #include "Configuration.h"
-#include "HueInformations.h"
+#include "Hue.h"
 
 class CUrlManager
 {

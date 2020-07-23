@@ -115,18 +115,19 @@ void CPhilipsHue::init()
    }
    else
    {
-      m_urlManager = boost::make_shared<CUrlManager>(m_configuration);
-      m_hueBridgeDiscovery = CFactory::createHueBridgeDiscovery(m_urlManager);
-
-      m_hueService = CFactory::createHueService(m_api->getEventHandler(),
-                                                kEvtKeyStateReceived,
-                                                kEvtKeyStateTimeout,
-                                                m_urlManager);
-
-      m_HueInformations = m_hueBridgeDiscovery->getHueInformations();
-
       try
       {
+         m_urlManager = boost::make_shared<CUrlManager>(m_configuration);
+         m_hueBridgeDiscovery = CFactory::createHueBridgeDiscovery(m_urlManager);
+
+         m_hueService = CFactory::createHueService(m_api->getEventHandler(),
+                                                   kEvtKeyStateReceived,
+                                                   kEvtKeyStateTimeout,
+                                                   m_urlManager);
+
+         m_HueInformations = m_hueBridgeDiscovery->getHueInformations();
+
+
          m_hueService->startReadingBridgeButtonState();
       }
       catch (boost::thread_interrupted&)

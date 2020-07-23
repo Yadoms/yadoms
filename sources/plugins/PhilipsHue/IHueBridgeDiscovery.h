@@ -1,5 +1,5 @@
 #pragma once
-#include "HueInformations.h"
+#include "Hue.h"
 
 class IHueBridgeDiscovery
 {
