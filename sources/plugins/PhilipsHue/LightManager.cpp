@@ -35,8 +35,11 @@ std::vector<HueLightInformations> CLightManager::getAllLights()
 
          hueLightInformations.swupdate.state = response->get<std::string>(
             std::to_string(lightCounter) + ".swupdate.state");
-         hueLightInformations.swupdate.lastinstall = response->get<std::string>(
-            std::to_string(lightCounter) + ".swupdate.lastinstall");
+         hueLightInformations.swupdate.lastinstall = response->isNull(
+                                                        std::to_string(lightCounter) + ".swupdate.lastinstall")
+                                                        ? "null"
+                                                        : response->get<std::string>(
+                                                           std::to_string(lightCounter) + ".swupdate.lastinstall");
 
          hueLightInformations.type = response->get<std::string>(std::to_string(lightCounter) + ".type");
          hueLightInformations.name = response->get<std::string>(std::to_string(lightCounter) + ".name");
