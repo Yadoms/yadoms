@@ -80,10 +80,10 @@ std::vector<HueLightInformations> CLightManager::getAllLights()
    }
    catch (std::exception& e)
    {
-      const auto message = (boost::format("Fail to send Post http request or interpret answer \"%1%\" : %2%") % lightUrl
+      const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\" : %2%") % lightUrl
          %
          e.what()).str();
-      YADOMS_LOG(error) << "Fail to send Post http request or interpret answer " << lightUrl << " : " << e.what();
+      YADOMS_LOG(error) << "Fail to send Get http request or interpret answer " << lightUrl << " : " << e.what();
       throw;
    }
    return hueLightsInformations;
@@ -112,7 +112,6 @@ HueLightInformations CLightManager::getLightAttributesAndState(const int id)
       setHueLightInformationsCapabilities(hueLightAttributesAndState, response);
       setHueLightInformationsConfig(hueLightAttributesAndState, response);
 
-
       hueLightAttributesAndState.uniqueid = response->get<std::string>("uniqueid");
       hueLightAttributesAndState.swversion = response->get<std::string>("swversion");
       hueLightAttributesAndState.swconfigid = response->get<std::string>("swconfigid");
@@ -120,10 +119,10 @@ HueLightInformations CLightManager::getLightAttributesAndState(const int id)
    }
    catch (std::exception& e)
    {
-      const auto message = (boost::format("Fail to send Post http request or interpret answer \"%1%\" : %2%") % lightUrl
+      const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\" : %2%") % lightUrl
          %
          e.what()).str();
-      YADOMS_LOG(error) << "Fail to send Post http request or interpret answer " << lightUrl << " : " << e.what();
+      YADOMS_LOG(error) << "Fail to send Get http request or interpret answer " << lightUrl << " : " << e.what();
       throw;
    }
    return hueLightAttributesAndState;
