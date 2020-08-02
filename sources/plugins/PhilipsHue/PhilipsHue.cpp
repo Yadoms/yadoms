@@ -89,7 +89,8 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             closeReadingBridgeButtonState();
 
             m_lightManager = CFactory::createLightManager(m_urlManager);
-            const auto detectedLight = m_lightManager->getAllLights();
+            m_detectedLights = m_lightManager->getAllLights();
+            declareDevice();
             break;
          }
       case kEvtKeyStateTimeout:
@@ -209,5 +210,16 @@ void CPhilipsHue::closeReadingBridgeButtonState()
    else
    {
       m_hueService->closeReadingBridgeButtonState();
+   }
+}
+
+void CPhilipsHue::declareDevice()
+{
+   for (auto& detectedLight : m_detectedLights)
+   {
+      YADOMS_LOG(information) << "Creating the device :" << detectedLight.name;
+      if (!m_api->deviceExists(detectedLight.name))
+         m_api->declareDevice(detectedLight.name, detectedLight.type,
+                              detectedLight.modelid);
    }
 }
