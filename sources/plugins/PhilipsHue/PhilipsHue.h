@@ -55,4 +55,7 @@ private:
 
    void closeReadingBridgeButtonState();
    void declareDevice();
+
+   boost::shared_ptr<yApi::historization::CSwitch> m_switch;
+   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> m_historizers;
 };

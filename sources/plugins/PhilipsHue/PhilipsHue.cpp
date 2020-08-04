@@ -11,6 +11,8 @@ IMPLEMENT_PLUGIN(CPhilipsHue)
 const std::string CPhilipsHue::PhilipsHueBridgeName("Philips hue");
 
 CPhilipsHue::CPhilipsHue()
+   : m_switch(boost::make_shared<yApi::historization::CSwitch>("State")),
+     m_historizers({m_switch})
 {
 }
 
@@ -219,7 +221,9 @@ void CPhilipsHue::declareDevice()
    {
       YADOMS_LOG(information) << "Creating the device :" << detectedLight.name;
       if (!m_api->deviceExists(detectedLight.name))
-         m_api->declareDevice(detectedLight.name, detectedLight.type,
-                              detectedLight.modelid);
+         m_api->declareDevice(detectedLight.name,
+                              detectedLight.type,
+                              detectedLight.modelid,
+                              m_historizers);
    }
 }
