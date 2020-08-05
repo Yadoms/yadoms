@@ -104,7 +104,7 @@ namespace shared
          {
             request.perform();
          }
-         catch (const curlpp::LibcurlRuntimeError & error)
+         catch (const curlpp::LibcurlRuntimeError& error)
          {
             const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
                whatCode()).str();
@@ -360,7 +360,7 @@ namespace shared
          {
             request.perform();
          }
-         catch (const curlpp::LibcurlRuntimeError & error)
+         catch (const curlpp::LibcurlRuntimeError& error)
          {
             const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
                whatCode()).str();
@@ -414,6 +414,135 @@ namespace shared
 
          // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength
          return CDataContainer::make(data);
+      }
+
+      void CHttpMethods::sendPutRequest(const std::string& url,
+                                        const boost::function<void(
+                                           const std::map<std::string, std::string>& receivedHeaders,
+                                           const std::string& data)>& responseHandlerFct,
+                                        const std::map<std::string, std::string>& headerParameters,
+                                        const std::map<std::string, std::string>& parameters,
+                                        int timeoutSeconds)
+      {
+         curlpp::Easy request;
+
+         request.setOpt(new curlpp::options::Put(true));
+
+         request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
+
+         // Proxy
+         if (CProxy::available())
+            CCurlppHelpers::setProxy(request,
+                                     url,
+                                     CProxy::getHost(),
+                                     CProxy::getPort(),
+                                     CProxy::getUsername(),
+                                     CProxy::getPassword(),
+                                     CProxy::getBypassRegex());
+
+         // Follow redirections
+         request.setOpt(new curlpp::options::FollowLocation(true));
+         request.setOpt(new curlpp::options::MaxRedirs(3));
+
+         // URL + parameters
+         request.setOpt(
+            new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
+
+         // HTTPS support : skip peer and host verification
+         static const std::string HttpsHeader("https://");
+         if (std::search(url.begin(), url.end(),
+                         HttpsHeader.begin(), HttpsHeader.end(),
+                         [](const char ch1, const char ch2)
+                         {
+                            return std::tolower(ch1) == std::tolower(ch2);
+                         })
+            != url.end())
+         {
+            request.setOpt(new curlpp::options::SslVerifyPeer(false));
+            request.setOpt(new curlpp::options::SslVerifyHost(false));
+         }
+
+         // Headers
+         CCurlppHelpers::setHeaders(request, headerParameters);
+
+         // Response headers
+         std::string headersBuffer;
+         request.setOpt(curlpp::options::HeaderFunction(
+            [&headersBuffer](char* ptr, size_t size, size_t nbItems)
+            {
+               const auto incomingSize = size * nbItems;
+               headersBuffer.append(ptr, incomingSize);
+               return incomingSize;
+            }));
+
+         // Response data
+         std::string dataBuffer;
+         request.setOpt(curlpp::options::WriteFunction(
+            [&dataBuffer](char* ptr, size_t size, size_t nbItems)
+            {
+               const auto incomingSize = size * nbItems;
+               dataBuffer.append(ptr, incomingSize);
+               return incomingSize;
+            }));
+
+         try
+         {
+            request.perform();
+         }
+         catch (const curlpp::LibcurlRuntimeError& error)
+         {
+            const auto message = (boost::format("Fail to send PUT HTTP request : %1%, code %2%") % error.what() % error.
+               whatCode()).str();
+            YADOMS_LOG(warning) << message;
+            if (ECodes::isDefined(curlpp::infos::ResponseCode::get(request)))
+               throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
+            throw std::runtime_error(message);
+         }
+
+         CCurlppHelpers::checkResult(request);
+
+         responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer),
+                            dataBuffer);
+      }
+
+      std::string CHttpMethods::sendPutRequest(const std::string& url,
+                                               const std::map<std::string, std::string>& headerParameters,
+                                               const std::map<std::string, std::string>& parameters,
+                                               int timeoutSeconds)
+      {
+         std::string out;
+         sendPutRequest(url,
+                        [&out](const std::map<std::string, std::string>& receivedHeaders,
+                               const std::string& data)
+                        {
+                           out = data;
+                        },
+                        headerParameters,
+                        parameters,
+                        timeoutSeconds);
+
+         return out;
+      }
+
+      boost::shared_ptr<CDataContainer> CHttpMethods::sendJsonPutRequest(
+         const std::string& url,
+         const std::map<std::string, std::string>& headerParameters,
+         const std::map<std::string, std::string>& parameters,
+         int timeoutSeconds)
+      {
+         boost::shared_ptr<CDataContainer> out;
+         sendPutRequest(url,
+                        [&out](const std::map<std::string, std::string>& receivedHeaders,
+                               const std::string& data)
+                        {
+                           out = processJsonResponse(receivedHeaders,
+                                                     data);
+                        },
+                        headerParameters,
+                        parameters,
+                        timeoutSeconds);
+
+         return out;
       }
    }
 } // namespace shared::http
