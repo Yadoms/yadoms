@@ -171,6 +171,57 @@ namespace shared
             const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
             int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
+         //--------------------------------------------------------------
+         //--------------------------------------------------------------
+         // PUT
+         //--------------------------------------------------------------
+         //--------------------------------------------------------------
+
+         //--------------------------------------------------------------
+         /// \brief	    Send PUT request to remote server with response processing injection
+         /// \param[in]  url                 the url to send the request
+         /// \param[in]  responseHandlerFct  lambda for response processing
+         /// \param[in]  headerParameters    parameters included into the frame
+         /// \param[in]  parameters          parameters at the end of the url
+         /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
+         /// \return     the answer of the request
+         //--------------------------------------------------------------
+         static void sendPutRequest(
+            const std::string& url,
+            const boost::function<void(
+               const std::map<std::string, std::string>& receivedHeaders,
+               const std::string& data)>& responseHandlerFct,
+            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+
+         //--------------------------------------------------------------
+         /// \brief	    Send PUT request to remote server
+         /// \param[in]  url                 the url to send the request
+         /// \param[in]  headerParameters    parameters included into the frame
+         /// \param[in]  parameters          parameters at the end of the url
+         /// \param[in]  timeoutSeconds      timeout for the request (seconds)
+         /// \return     the answer of the request
+         //--------------------------------------------------------------
+         static std::string sendPutRequest(
+            const std::string& url,
+            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+
+         //--------------------------------------------------------------
+         /// \brief	    Send PUT request to remote server (for JSON answer)
+         /// \param[in]  url                 the url to send the request
+         /// \param[in]  headerParameters    parameters included into the frame
+         /// \param[in]  parameters          parameters at the end of the url
+         /// \param[in]  timeoutSeconds      timeout for the request (seconds)
+         /// \return     the answer of the request
+         //--------------------------------------------------------------
+         static boost::shared_ptr<CDataContainer> sendJsonPutRequest(
+            const std::string& url,
+            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
       protected:
          static boost::shared_ptr<CDataContainer> processJsonResponse(
