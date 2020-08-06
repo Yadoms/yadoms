@@ -395,38 +395,18 @@ namespace shared
          return out;
       }
 
-      boost::shared_ptr<CDataContainer> CHttpMethods::processJsonResponse(
-         const std::map<std::string, std::string>& receivedHeaders,
-         const std::string& data)
-      {
-         try
-         {
-            const auto& contentType = receivedHeaders.at("content-type");
-            if (contentType.find("application/json") == std::string::npos &&
-               contentType.find("text/json") == std::string::npos)
-               throw std::runtime_error(
-                  std::string("Content type was not defined as JSON or text : ") + contentType);
-         }
-         catch (const std::exception& exception)
-         {
-            throw std::runtime_error(std::string("Fail to process HTTP JSON answer : ") + exception.what());
-         }
-
-         // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength
-         return CDataContainer::make(data);
-      }
-
-      void CHttpMethods::sendPutRequest(const std::string& url,
+      void CHttpMethods::sendPutRequest(const std::string& url, const std::string& body,
                                         const boost::function<void(
                                            const std::map<std::string, std::string>& receivedHeaders,
-                                           const std::string& data)>& responseHandlerFct,
+                                           const std::string& data)>
+                                        & responseHandlerFct,
                                         const std::map<std::string, std::string>& headerParameters,
-                                        const std::map<std::string, std::string>& parameters,
-                                        int timeoutSeconds)
+                                        const std::map<std::string, std::string>& parameters, int timeoutSeconds)
       {
          curlpp::Easy request;
 
-         request.setOpt(new curlpp::options::Put(true));
+         request.setOpt(new curlpp::options::CustomRequest("PUT"));
+         request.setOpt(new curlpp::options::PostFields(body));
 
          request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
 
@@ -491,7 +471,7 @@ namespace shared
          }
          catch (const curlpp::LibcurlRuntimeError& error)
          {
-            const auto message = (boost::format("Fail to send PUT HTTP request : %1%, code %2%") % error.what() % error.
+            const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
                whatCode()).str();
             YADOMS_LOG(warning) << message;
             if (ECodes::isDefined(curlpp::infos::ResponseCode::get(request)))
@@ -505,13 +485,13 @@ namespace shared
                             dataBuffer);
       }
 
-      std::string CHttpMethods::sendPutRequest(const std::string& url,
+      std::string CHttpMethods::sendPutRequest(const std::string& url, const std::string& body,
                                                const std::map<std::string, std::string>& headerParameters,
-                                               const std::map<std::string, std::string>& parameters,
-                                               int timeoutSeconds)
+                                               const std::map<std::string, std::string>& parameters, int timeoutSeconds)
       {
          std::string out;
          sendPutRequest(url,
+                        body,
                         [&out](const std::map<std::string, std::string>& receivedHeaders,
                                const std::string& data)
                         {
@@ -524,14 +504,16 @@ namespace shared
          return out;
       }
 
-      boost::shared_ptr<CDataContainer> CHttpMethods::sendJsonPutRequest(
-         const std::string& url,
-         const std::map<std::string, std::string>& headerParameters,
-         const std::map<std::string, std::string>& parameters,
-         int timeoutSeconds)
+      boost::shared_ptr<CDataContainer> CHttpMethods::sendJsonPutRequest(const std::string& url,
+                                                                         const std::string& body,
+                                                                         const std::map<std::string, std::string>&
+                                                                         headerParameters,
+                                                                         const std::map<std::string, std::string>&
+                                                                         parameters, int timeoutSeconds)
       {
          boost::shared_ptr<CDataContainer> out;
          sendPutRequest(url,
+                        body,
                         [&out](const std::map<std::string, std::string>& receivedHeaders,
                                const std::string& data)
                         {
@@ -543,6 +525,27 @@ namespace shared
                         timeoutSeconds);
 
          return out;
+      }
+
+      boost::shared_ptr<CDataContainer> CHttpMethods::processJsonResponse(
+         const std::map<std::string, std::string>& receivedHeaders,
+         const std::string& data)
+      {
+         try
+         {
+            const auto& contentType = receivedHeaders.at("content-type");
+            if (contentType.find("application/json") == std::string::npos &&
+               contentType.find("text/json") == std::string::npos)
+               throw std::runtime_error(
+                  std::string("Content type was not defined as JSON or text : ") + contentType);
+         }
+         catch (const std::exception& exception)
+         {
+            throw std::runtime_error(std::string("Fail to process HTTP JSON answer : ") + exception.what());
+         }
+
+         // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength
+         return CDataContainer::make(data);
       }
    }
 } // namespace shared::http
