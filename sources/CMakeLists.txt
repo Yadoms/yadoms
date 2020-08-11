@@ -716,10 +716,6 @@ source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\dateTime  server/dateTime/*.*)
 source_group(server\\i18n  server/i18n/*.*)
-source_group(server\\hardware\\usb  server/hardware/usb/*.*)
-source_group(server\\hardware\\usb\\lsusb  server/hardware/usb/lsusb/*.*)
-source_group(server\\hardware\\usb\\winapi  server/hardware/usb/winapi/*.*)
-source_group(server\\hardware\\usb\\systemProfiler  server/hardware/usb/systemProfiler/*.*)
 source_group(server\\location  server/location/*.*)
 source_group(server\\logging  server/logging/*.*)
 source_group(server\\notification  server/notification/*.*)
@@ -760,11 +756,11 @@ IF(WIN32)
       server/tools/windows/tools/OperatingSystem.cpp
       server/hardware/serial/windows/SerialPortsLister.h
       server/hardware/serial/windows/SerialPortsLister.cpp
-      server/hardware/usb/winapi/DevicesListerFactory.cpp
-      server/hardware/usb/winapi/WinapiDevice.h
-      server/hardware/usb/winapi/WinapiDevice.cpp
-      server/hardware/usb/winapi/WinapiDevicesLister.h
-      server/hardware/usb/winapi/WinapiDevicesLister.cpp      
+      server/hardware/usb/windows/DevicesListerFactory.cpp
+      server/hardware/usb/windows/WinapiDevice.h
+      server/hardware/usb/windows/WinapiDevice.cpp
+      server/hardware/usb/windows/WinapiDevicesLister.h
+      server/hardware/usb/windows/WinapiDevicesLister.cpp      
    )   
 ELSEIF(APPLE)
    set(YADOMS_SRC ${YADOMS_SRC}
@@ -773,13 +769,13 @@ ELSEIF(APPLE)
       server/tools/mac/tools/OperatingSystem.cpp
       server/hardware/serial/mac/SerialPortsLister.h
       server/hardware/serial/mac/SerialPortsLister.cpp
-      server/hardware/usb/systemProfiler/DevicesListerFactory.cpp
-      server/hardware/usb/systemProfiler/SystemProfilerCall.h
-      server/hardware/usb/systemProfiler/SystemProfilerCall.cpp
-      server/hardware/usb/systemProfiler/SystemProfilerDevice.h
-      server/hardware/usb/systemProfiler/SystemProfilerDevice.cpp
-      server/hardware/usb/systemProfiler/SystemProfilerDevicesLister.h
-      server/hardware/usb/systemProfiler/SystemProfilerDevicesLister.cpp
+      server/hardware/usb/mac/DevicesListerFactory.cpp
+      server/hardware/usb/mac/SystemProfilerCall.h
+      server/hardware/usb/mac/SystemProfilerCall.cpp
+      server/hardware/usb/mac/SystemProfilerDevice.h
+      server/hardware/usb/mac/SystemProfilerDevice.cpp
+      server/hardware/usb/mac/SystemProfilerDevicesLister.h
+      server/hardware/usb/mac/SystemProfilerDevicesLister.cpp
    )   
 ELSE()
    set(YADOMS_SRC ${YADOMS_SRC}
@@ -788,13 +784,13 @@ ELSE()
       server/tools/linux/tools/OperatingSystem.cpp
       server/hardware/serial/linux/SerialPortsLister.h
       server/hardware/serial/linux/SerialPortsLister.cpp
-      server/hardware/usb/lsusb/DevicesListerFactory.cpp
-      server/hardware/usb/lsusb/LsusbCall.h
-      server/hardware/usb/lsusb/LsusbCall.cpp
-      server/hardware/usb/lsusb/LsusbDevice.h
-      server/hardware/usb/lsusb/LsusbDevice.cpp
-      server/hardware/usb/lsusb/LsusbDevicesLister.h
-      server/hardware/usb/lsusb/LsusbDevicesLister.cpp
+      server/hardware/usb/linux/DevicesListerFactory.cpp
+      server/hardware/usb/linux/LsusbCall.h
+      server/hardware/usb/linux/LsusbCall.cpp
+      server/hardware/usb/linux/LsusbDevice.h
+      server/hardware/usb/linux/LsusbDevice.cpp
+      server/hardware/usb/linux/LsusbDevicesLister.h
+      server/hardware/usb/linux/LsusbDevicesLister.cpp
    )   
 ENDIF()
 
@@ -802,15 +798,15 @@ ENDIF()
 IF(WIN32)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/windows)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/windows)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/winapi)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/windows)
 ELSEIF(APPLE)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/mac)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/mac)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/systemProfiler)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/mac)
 ELSE()
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/serial/linux)
-   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/lsusb)
+   set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/hardware/usb/linux)
 ENDIF()
 
 source_group(server\\tools tools/*.*)
@@ -821,6 +817,10 @@ source_group(server\\tools\\platformSpecific\\mac server/tools/mac/tools/*.*)
 source_group(server\\hardware\\serial\\windows server/hardware/serial/windows/*.*)
 source_group(server\\hardware\\serial\\linux server/hardware/serial/linux/*.*)
 source_group(server\\hardware\\serial\\mac server/hardware/serial/mac/*.*)
+source_group(server\\hardware\\usb  server/hardware/usb/*.*)
+source_group(server\\hardware\\usb\\linux  server/hardware/usb/linux/*.*)
+source_group(server\\hardware\\usb\\windows  server/hardware/usb/windows/*.*)
+source_group(server\\hardware\\usb\\mac  server/hardware/usb/mac/*.*)
 
 ################################################
 #### Database (common)
