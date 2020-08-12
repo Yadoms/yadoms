@@ -187,7 +187,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                else if (extraQuery->getData()->query() == "changePluginStateMessage")
                {
                   auto message = extraQuery->getData()->data()->get<std::string>("newStateMessage");
-                  api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", {{"messageFromExtraQuery", message}});
+                  api->setPluginState(yApi::historization::EPluginState::kCustom, "newCustomStateMessage", {{"messageFromExtraQuery", message}});
                }
                else if (extraQuery->getData()->query() == "asyncEQwithProgression")
                {

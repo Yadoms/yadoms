@@ -642,22 +642,38 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief		Output operator (write the serialized container)
       /// \param [in] os  The stream to write
-      /// \param [in] dt  The input data container
+      /// \param [in] dc  The input data container
       /// \return   The stream
       //--------------------------------------------------------------
-      friend std::ostream& operator<<(std::ostream& os, const CDataContainer& dt);
+      friend std::ostream& operator<<(std::ostream& os, const CDataContainer& dc);
+
+      //--------------------------------------------------------------
+      /// \brief		Output operator (write the serialized container)
+      /// \param [in] os  The stream to write
+      /// \param [in] dc  The input data container as shared_ptr
+      /// \return   The stream
+      //--------------------------------------------------------------
+      friend std::ostream& operator<<(std::ostream& os, const boost::shared_ptr<CDataContainer>& dc);
 
       //--------------------------------------------------------------
       /// \brief		Input operator (read a serialized container)
       /// \param [in] is  The stream to read
-      /// \param [in] dt  The output data container
+      /// \param [in] dc  The output data container
       /// \return   The stream
       //--------------------------------------------------------------
-      friend std::istream& operator>>(std::istream& is, CDataContainer& dt);
+      friend std::istream& operator>>(std::istream& is, CDataContainer& dc);
+
+      //--------------------------------------------------------------
+      /// \brief		Input operator (read a serialized container)
+      /// \param [in] is  The stream to read
+      /// \param [in] dc  The output data container as shared_ptr
+      /// \return   The stream
+      //--------------------------------------------------------------
+      friend std::istream& operator>>(std::istream& is, boost::shared_ptr<CDataContainer>& dc);
 
       //--------------------------------------------------------------
       /// \brief		Check if the container is empty
-      /// \return    true if contanier is empty
+      /// \return    true if container is empty
       //--------------------------------------------------------------
       bool empty() const;
 
