@@ -1,3 +1,9 @@
+### 2.4.0-beta.4
+
+#### Yadoms
+* Fix historisation of Datacontainer based keywords
+
+
 ### 2.4.0-beta.3
 
 #### Yadoms
