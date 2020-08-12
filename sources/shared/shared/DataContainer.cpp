@@ -164,6 +164,12 @@ namespace shared
 		return os;
 	}
 
+	std::ostream& operator << (std::ostream& os, const boost::shared_ptr<CDataContainer>& dc)
+	{
+		os << dc->serialize();
+		return os;
+	}
+
 	std::istream& operator >> (std::istream& is, CDataContainer & dc)
 	{
 		boost::lock_guard<boost::mutex> lock(dc.m_treeMutex);
@@ -173,6 +179,18 @@ namespace shared
 		rapidjson::IStreamWrapper isw(is);
 
 		dc.m_tree.ParseStream(isw);
+		return is;
+	}
+
+	std::istream& operator>>(std::istream& is, boost::shared_ptr<CDataContainer>& dc)
+	{
+		boost::lock_guard<boost::mutex> lock(dc->m_treeMutex);
+
+		dc->m_tree.RemoveAllMembers();
+
+		rapidjson::IStreamWrapper isw(is);
+
+		dc->m_tree.ParseStream(isw);
 		return is;
 	}
 
