@@ -16,7 +16,7 @@ public:
    virtual ~CPairingHelper();
 
    void setMode(EPairingMode mode);
-   bool startPairing(boost::shared_ptr<yApi::IExtraQuery> manualPairingExtraQuery);
+   bool startStopPairing(boost::shared_ptr<yApi::IExtraQuery> manualPairingExtraQuery);
    bool onProgressPairing();
    static unsigned int getPairingPeriodTimeSeconds();
 

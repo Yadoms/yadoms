@@ -37,10 +37,6 @@ CEnOcean::CEnOcean()
 {
 }
 
-CEnOcean::~CEnOcean()
-{
-}
-
 void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    m_api = api;
@@ -990,8 +986,11 @@ void CEnOcean::requestDongleVersion()
 void CEnOcean::startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
                                   boost::shared_ptr<yApi::IExtraQuery> extraQuery)
 {
-   if (m_pairingHelper->startPairing(extraQuery))
+   if (m_pairingHelper->startStopPairing(extraQuery))
       m_progressPairingTimer = api->getEventHandler().createTimer(kProgressPairingTimer,
-                                                                  shared::event::CEventTimer::kOneShot,
-                                                                  boost::posix_time::seconds(m_pairingHelper->getPairingPeriodTimeSeconds()));
+         shared::event::CEventTimer::kOneShot,
+         boost::posix_time::seconds(m_pairingHelper->getPairingPeriodTimeSeconds()));
+   else
+      if (m_progressPairingTimer)
+         m_progressPairingTimer.reset();
 }
