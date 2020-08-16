@@ -76,6 +76,11 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             const auto command = m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
+            if(command->getKeyword() == LightState)
+            {
+               
+            }
+
             break;
          }
       case kCustomEvent:
@@ -216,11 +221,11 @@ void CPhilipsHue::declareDevice()
 {
    for (auto& detectedLight : m_detectedLights)
    {
-      YADOMS_LOG(information) << "Creating the device :" << detectedLight.name;
-      if (!m_api->deviceExists(detectedLight.name))
-         m_api->declareDevice(detectedLight.name,
-                              detectedLight.type,
-                              detectedLight.modelid,
+      YADOMS_LOG(information) << "Creating the device :" << detectedLight.second.name;
+      if (!m_api->deviceExists(detectedLight.second.name))
+         m_api->declareDevice(detectedLight.second.name,
+                              detectedLight.second.type,
+                              detectedLight.second.modelid,
                               m_historizers);
    }
 }

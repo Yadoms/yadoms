@@ -51,7 +51,7 @@ private:
    boost::shared_ptr<IHueBridgeDiscovery> m_hueBridgeDiscovery;
    boost::shared_ptr<ILightManager> m_lightManager;
 
-   std::vector<HueLightInformations> m_detectedLights;
+   std::map<int, HueLightInformations> m_detectedLights;
 
    void closeReadingBridgeButtonState();
    void declareDevice();

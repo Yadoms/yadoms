@@ -6,11 +6,10 @@ CLightManager::CLightManager(boost::shared_ptr<CUrlManager>& urlManager)
    : m_urlManager(urlManager)
 {
 }
-
-std::vector<HueLightInformations> CLightManager::getAllLights()
+std::map<int, HueLightInformations> CLightManager::getAllLights()
 {
    HueLightInformations hueLightInformations;
-   std::vector<HueLightInformations> hueLightsInformations;
+   std::map<int, HueLightInformations> hueLightsInformations;
    const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kGetAllLights);
    const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
    try
@@ -77,7 +76,7 @@ std::vector<HueLightInformations> CLightManager::getAllLights()
          hueLightInformations.uniqueid = response->get<std::string>(std::to_string(lightCounter) + ".uniqueid");
          hueLightInformations.swversion = response->get<std::string>(std::to_string(lightCounter) + ".swversion");
 
-         hueLightsInformations.push_back(hueLightInformations);
+         hueLightsInformations.insert({ lightCounter, hueLightInformations });
          lightCounter++;
       }
    }

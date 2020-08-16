@@ -8,7 +8,7 @@ public:
    CLightManager(boost::shared_ptr<CUrlManager>& urlManager);
    virtual ~CLightManager() = default;
 
-   std::vector<HueLightInformations> getAllLights() override;
+   std::map<int, HueLightInformations> getAllLights() override;
 
    HueLightInformations getLightAttributesAndState(int id) override;
 
