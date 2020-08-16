@@ -16,10 +16,6 @@ CPhilipsHue::CPhilipsHue()
 {
 }
 
-CPhilipsHue::~CPhilipsHue()
-{
-}
-
 enum
 {
    kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
