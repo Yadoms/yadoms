@@ -53,7 +53,6 @@
     },
     "pairing": {
       "invalidCommandAutoMode": "Invalid command, pairing is configured as automatic",
-      "alreadyRunning": "Pairing already running",
       "pairing": "Pairing...",
       "devicePaired": "New device paired !",
       "noDevicePaired": "No device found"

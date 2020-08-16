@@ -37,10 +37,6 @@ CEnOcean::CEnOcean()
 {
 }
 
-CEnOcean::~CEnOcean()
-{
-}
-
 void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    m_api = api;
@@ -135,12 +131,12 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          case kEvtPortConnection:
             {
-               const auto notif = m_api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+               const auto notification = m_api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
 
-               if (notif && notif->isConnected())
+               if (notification && notification->isConnected())
                   processConnectionEvent();
                else
-                  processUnConnectionEvent(notif);
+                  processUnConnectionEvent(notification);
 
                break;
             }
@@ -407,7 +403,7 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
 {
    try
    {
-      auto selectedProfile = CProfileHelper(configuration->get<std::string>("profile.activeSection"));
+      const auto selectedProfile = CProfileHelper(configuration->get<std::string>("profile.activeSection"));
       auto manufacturer = configuration->get<std::string>("manufacturer");
 
       YADOMS_LOG(information) << "Device \"" << deviceId << "\" is configured as " << selectedProfile.profile();
@@ -522,10 +518,10 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
    }
 
    // Create associated RORG object
-   auto erp1UserData = bitset_from_bytes(erp1Message.userData());
+   const auto erp1UserData = bitset_from_bytes(erp1Message.userData());
    const auto erp1Status = bitset_from_byte(erp1Message.status());
-   auto rorg = CRorgs::createRorg(erp1Message.rorg());
-   auto deviceId = erp1Message.senderId();
+   const auto rorg = CRorgs::createRorg(erp1Message.rorg());
+   const auto deviceId = erp1Message.senderId();
 
    if (rorg->isTeachIn(erp1UserData))
    {
@@ -588,17 +584,17 @@ void CEnOcean::processEepTeachInMessage(boost::dynamic_bitset<> erp1UserData, bo
       throw std::domain_error("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team.");
 
    // Special-case of 4BS teachin mode Variant 2 (profile is provided in the telegram)
-   C4BSTeachinVariant2 teachInData(erp1UserData);
+   const C4BSTeachinVariant2 teachInData(erp1UserData);
 
    try
    {
-      auto profile = CProfileHelper(rorg->id(),
-                                    teachInData.funcId(),
-                                    teachInData.typeId());
+      const auto profile = CProfileHelper(rorg->id(),
+                                          teachInData.funcId(),
+                                          teachInData.typeId());
       const auto manufacturerName = CManufacturers::name(teachInData.manufacturerId());
 
-      CDeviceConfigurationHelper deviceConfiguration(profile,
-                                                     manufacturerName);
+      const CDeviceConfigurationHelper deviceConfiguration(profile,
+                                                           manufacturerName);
 
       if (m_api->deviceExists(deviceId))
       {
@@ -643,8 +639,8 @@ void CEnOcean::processNoEepTeachInMessage(boost::shared_ptr<IRorg> rorg,
                                           C1BS_0x00::k0x01);
 
       static const std::string ManufacturerName("Unknown manufacturer");
-      CDeviceConfigurationHelper deviceConfiguration(profile,
-                                                     ManufacturerName);
+      const CDeviceConfigurationHelper deviceConfiguration(profile,
+                                                           ManufacturerName);
 
       if (m_api->deviceExists(deviceId))
       {
@@ -917,7 +913,7 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
                                          manufacturer,
                                          profile);
 
-   auto keywordsToDeclare = device->allHistorizers();
+   const auto keywordsToDeclare = device->allHistorizers();
    if (keywordsToDeclare.empty())
    {
       std::stringstream s;
@@ -990,8 +986,11 @@ void CEnOcean::requestDongleVersion()
 void CEnOcean::startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
                                   boost::shared_ptr<yApi::IExtraQuery> extraQuery)
 {
-   if (m_pairingHelper->startPairing(extraQuery))
+   if (m_pairingHelper->startStopPairing(extraQuery))
       m_progressPairingTimer = api->getEventHandler().createTimer(kProgressPairingTimer,
-                                                                  shared::event::CEventTimer::kOneShot,
-                                                                  boost::posix_time::seconds(m_pairingHelper->getPairingPeriodTimeSeconds()));
+         shared::event::CEventTimer::kOneShot,
+         boost::posix_time::seconds(m_pairingHelper->getPairingPeriodTimeSeconds()));
+   else
+      if (m_progressPairingTimer)
+         m_progressPairingTimer.reset();
 }

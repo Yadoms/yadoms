@@ -22,15 +22,8 @@ namespace yApi = shared::plugin::yPluginApi;
 class CEnOcean : public plugin_cpp_api::IPlugin
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
    CEnOcean();
-
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~CEnOcean();
+   virtual ~CEnOcean() = default;
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
