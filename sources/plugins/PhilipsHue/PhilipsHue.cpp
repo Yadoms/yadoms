@@ -9,9 +9,10 @@ IMPLEMENT_PLUGIN(CPhilipsHue)
 
 
 const std::string CPhilipsHue::PhilipsHueBridgeName("Philips hue");
+const std::string CPhilipsHue::LightState("STATE");
 
 CPhilipsHue::CPhilipsHue()
-   : m_switch(boost::make_shared<yApi::historization::CSwitch>("State")),
+   : m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
      m_historizers({m_switch})
 {
 }
