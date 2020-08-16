@@ -11,6 +11,7 @@ IMPLEMENT_PLUGIN(CPhilipsHue)
 const std::string CPhilipsHue::PhilipsHueBridgeName("Philips hue");
 const std::string CPhilipsHue::LightState("STATE");
 
+
 CPhilipsHue::CPhilipsHue()
    : m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
      m_historizers({m_switch})
@@ -76,10 +77,29 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             const auto command = m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
-            if(command->getKeyword() == LightState)
+
+            if (command->getKeyword() == LightState)
             {
-               
+               // TODO: move it to a function ?
+               auto lightName = command->getDevice();
+               auto it = std::find_if(std::begin(m_detectedLights), std::end(m_detectedLights),
+                                      [&lightName](auto&& pair)
+                                      {
+                                         return pair.second.name == lightName;
+                                      });
+
+               if (it == std::end(m_detectedLights))
+               {
+                  YADOMS_LOG(information) << "Light not found";
+               }
+               else
+               {
+                  YADOMS_LOG(information) << "Light found ";
+                  auto id = it->first;
+                  break;
+               }
             }
+
 
             break;
          }
