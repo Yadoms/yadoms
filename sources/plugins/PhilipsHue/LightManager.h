@@ -12,6 +12,8 @@ public:
 
    HueLightInformations getLightAttributesAndState(int id) override;
 
+   int getLightId(std::string& lightName, std::map<int, HueLightInformations>& detectedLights) override;
+
 private:
    boost::shared_ptr<CUrlManager>& m_urlManager;
 

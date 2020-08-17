@@ -6,6 +6,7 @@ CLightManager::CLightManager(boost::shared_ptr<CUrlManager>& urlManager)
    : m_urlManager(urlManager)
 {
 }
+
 std::map<int, HueLightInformations> CLightManager::getAllLights()
 {
    HueLightInformations hueLightInformations;
@@ -76,7 +77,7 @@ std::map<int, HueLightInformations> CLightManager::getAllLights()
          hueLightInformations.uniqueid = response->get<std::string>(std::to_string(lightCounter) + ".uniqueid");
          hueLightInformations.swversion = response->get<std::string>(std::to_string(lightCounter) + ".swversion");
 
-         hueLightsInformations.insert({ lightCounter, hueLightInformations });
+         hueLightsInformations.insert({lightCounter, hueLightInformations});
          lightCounter++;
       }
    }
@@ -193,4 +194,22 @@ void CLightManager::setHueLightInformationsConfig(HueLightInformations& hueLight
       "config.startup.mode");
    hueLightAttributesAndState.config.startup.configured = response->get<bool>(
       "config.startup.configured");
+}
+
+int CLightManager::getLightId(std::string& lightName, std::map<int, HueLightInformations>& detectedLights)
+{
+   const auto it = std::find_if(std::begin(detectedLights), std::end(detectedLights),
+                                [&lightName](auto&& pair)
+                                {
+                                   return pair.second.name == lightName;
+                                });
+
+   if (it == std::end(detectedLights))
+   {
+      YADOMS_LOG(warning) << "Light not found";
+      throw std::runtime_error("Light ID is not found");
+   }
+
+   YADOMS_LOG(information) << "Light ID = " << it->first << " is found ";
+   return it->first;
 }
