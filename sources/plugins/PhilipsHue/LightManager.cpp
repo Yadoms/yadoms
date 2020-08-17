@@ -196,6 +196,22 @@ void CLightManager::setHueLightInformationsConfig(HueLightInformations& hueLight
       "config.startup.configured");
 }
 
+void CLightManager::setLightState(const std::string& lightUrl, shared::CDataContainer& body)
+{
+   try
+   {
+      const auto response = shared::http::CHttpMethods::sendJsonPutRequest(lightUrl, body.serialize());
+   }
+   catch (std::exception& e)
+   {
+      const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\" : %2%") % lightUrl
+         %
+         e.what()).str();
+      YADOMS_LOG(error) << "Fail to send Get http request or interpret answer " << lightUrl << " : " << e.what();
+      throw;
+   }
+}
+
 void CLightManager::setLightId(std::string& lightName, std::map<int, HueLightInformations>& detectedLights)
 {
    const auto it = std::find_if(std::begin(detectedLights), std::end(detectedLights),
@@ -218,20 +234,9 @@ void CLightManager::lightOn()
    const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
    const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
 
-   try
-   {
-      shared::CDataContainer body;
-      body.set("on", true);
-      const auto response = shared::http::CHttpMethods::sendJsonPutRequest(lightUrl, body.serialize());
-   }
-   catch (std::exception& e)
-   {
-      const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\" : %2%") % lightUrl
-         %
-         e.what()).str();
-      YADOMS_LOG(error) << "Fail to send Get http request or interpret answer " << lightUrl << " : " << e.what();
-      throw;
-   }
+   shared::CDataContainer body;
+   body.set("on", true);
+   setLightState(lightUrl, body);
 }
 
 
@@ -240,18 +245,7 @@ void CLightManager::lightOff()
    const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
    const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
 
-   try
-   {
-      shared::CDataContainer body;
-      body.set("on", false);
-      const auto response = shared::http::CHttpMethods::sendJsonPutRequest(lightUrl, body.serialize());
-   }
-   catch (std::exception& e)
-   {
-      const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\" : %2%") % lightUrl
-         %
-         e.what()).str();
-      YADOMS_LOG(error) << "Fail to send Get http request or interpret answer " << lightUrl << " : " << e.what();
-      throw;
-   }
+   shared::CDataContainer body;
+   body.set("on", false);
+   setLightState(lightUrl, body);
 }

@@ -32,4 +32,6 @@ private:
 
    static void setHueLightInformationsConfig(HueLightInformations& hueLightAttributesAndState,
                                              boost::shared_ptr<shared::CDataContainer>& response);
+
+   static void setLightState(const std::string& lightUrl, shared::CDataContainer& body);
 };
