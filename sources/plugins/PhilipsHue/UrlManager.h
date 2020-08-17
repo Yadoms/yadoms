@@ -19,6 +19,7 @@ public:
       kGetLightAttributesAndState,
       kSetLightAttributes,
       kDescription,
+      kLightState,
       kUnknown
    };
 
@@ -39,6 +40,8 @@ private:
    static const std::string ApiPath;
    static const std::string GetAllLightsPath;
    static const std::string DescriptionPath;
+   static const std::string LightStatePath;
+
    std::string m_username;
    HueInformations m_hueInformations;
    CConfiguration m_configuration;

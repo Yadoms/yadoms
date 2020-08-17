@@ -196,7 +196,7 @@ void CLightManager::setHueLightInformationsConfig(HueLightInformations& hueLight
       "config.startup.configured");
 }
 
-int CLightManager::getLightId(std::string& lightName, std::map<int, HueLightInformations>& detectedLights)
+void CLightManager::setLightId(std::string& lightName, std::map<int, HueLightInformations>& detectedLights)
 {
    const auto it = std::find_if(std::begin(detectedLights), std::end(detectedLights),
                                 [&lightName](auto&& pair)
@@ -209,7 +209,49 @@ int CLightManager::getLightId(std::string& lightName, std::map<int, HueLightInfo
       YADOMS_LOG(warning) << "Light not found";
       throw std::runtime_error("Light ID is not found");
    }
+   YADOMS_LOG(information) << "Light ID = " << m_lightId << " is found ";
+   m_lightId = it->first;
+}
 
-   YADOMS_LOG(information) << "Light ID = " << it->first << " is found ";
-   return it->first;
+void CLightManager::lightOn()
+{
+   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
+   const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
+
+   try
+   {
+      shared::CDataContainer body;
+      body.set("on", true);
+      const auto response = shared::http::CHttpMethods::sendJsonPutRequest(lightUrl, body.serialize());
+   }
+   catch (std::exception& e)
+   {
+      const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\" : %2%") % lightUrl
+         %
+         e.what()).str();
+      YADOMS_LOG(error) << "Fail to send Get http request or interpret answer " << lightUrl << " : " << e.what();
+      throw;
+   }
+}
+
+
+void CLightManager::lightOff()
+{
+   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
+   const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
+
+   try
+   {
+      shared::CDataContainer body;
+      body.set("on", false);
+      const auto response = shared::http::CHttpMethods::sendJsonPutRequest(lightUrl, body.serialize());
+   }
+   catch (std::exception& e)
+   {
+      const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\" : %2%") % lightUrl
+         %
+         e.what()).str();
+      YADOMS_LOG(error) << "Fail to send Get http request or interpret answer " << lightUrl << " : " << e.what();
+      throw;
+   }
 }

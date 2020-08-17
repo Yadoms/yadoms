@@ -80,7 +80,16 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (command->getKeyword() == LightState)
             {
                auto lightName = command->getDevice();
-               auto lightId = m_lightManager->getLightId(lightName, m_detectedLights);
+               m_lightManager->setLightId(lightName, m_detectedLights);
+               if(command->getBody() == "1")
+               {
+                  m_lightManager->lightOn();
+               }
+               else
+               {
+                  m_lightManager->lightOff();
+               }
+
             }
             break;
          }

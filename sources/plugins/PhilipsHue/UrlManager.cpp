@@ -3,6 +3,7 @@
 const std::string CUrlManager::ApiPath("/api");
 const std::string CUrlManager::GetAllLightsPath("/lights");
 const std::string CUrlManager::DescriptionPath("/description.xml");
+const std::string CUrlManager::LightStatePath("/state");
 
 CUrlManager::CUrlManager(HueInformations& hueInformations, CConfiguration& configuration)
    : m_hueInformations(hueInformations),
@@ -31,7 +32,10 @@ std::string CUrlManager::getUrlPatternPath(EUrlPattern urlPattern, const int id)
       urlPatternPath = DescriptionPath;
       break;
    case kGetLightAttributesAndState:
-      urlPatternPath = ApiPath + "/" + m_username + GetAllLightsPath + std::to_string(id);
+      urlPatternPath = ApiPath + "/" + m_username + GetAllLightsPath + "/" + std::to_string(id);
+      break;
+   case kLightState:
+      urlPatternPath = ApiPath + "/" + m_username + GetAllLightsPath + "/" + std::to_string(id) + LightStatePath;
       break;
    default:
       urlPatternPath = "";
