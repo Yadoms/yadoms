@@ -79,6 +79,8 @@ set(ENOCEAN_SOURCES
    specificHistorizers/PilotWireHistorizer.cpp
    specificHistorizers/VolatileOrganicCompound.h
    specificHistorizers/VolatileOrganicCompound.cpp
+   specificHistorizers/VolumicRadioActivity.h
+   specificHistorizers/VolumicRadioActivity.cpp
    )
    
 #########################################
@@ -111,9 +113,21 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/IRorg.h
    profiles/IFunc.h
    profiles/IType.h
-
+   
+   profiles/hardCoded/Profile_A5_09_02.cpp
+   profiles/hardCoded/Profile_A5_09_02.h
+   profiles/hardCoded/Profile_A5_09_04.cpp
+   profiles/hardCoded/Profile_A5_09_04.h
    profiles/hardCoded/Profile_A5_09_05.cpp
    profiles/hardCoded/Profile_A5_09_05.h
+   profiles/hardCoded/Profile_A5_09_06.cpp
+   profiles/hardCoded/Profile_A5_09_06.h
+   profiles/hardCoded/Profile_A5_09_07.cpp
+   profiles/hardCoded/Profile_A5_09_07.h
+   profiles/hardCoded/Profile_A5_09_08.cpp
+   profiles/hardCoded/Profile_A5_09_08.h
+   profiles/hardCoded/Profile_A5_09_09.cpp
+   profiles/hardCoded/Profile_A5_09_09.h
    profiles/hardCoded/Profile_A5_09_0C.cpp
    profiles/hardCoded/Profile_A5_09_0C.h
 
