@@ -24,10 +24,6 @@ namespace specificHistorizers
                                             shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }
-
-   CPilotWireHistorizer::~CPilotWireHistorizer()
-   {
-   }
 } // namespace specificHistorizers
 
 

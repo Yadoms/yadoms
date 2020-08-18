@@ -18,7 +18,7 @@ namespace specificHistorizers
    {
    public:
       explicit CPilotWireHistorizer(const std::string& keywordName);
-      virtual ~CPilotWireHistorizer();
+      virtual ~CPilotWireHistorizer() = default;
    };
 } // namespace specificHistorizers
 

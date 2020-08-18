@@ -69,10 +69,16 @@ set(ENOCEAN_SOURCES
    
    specificHistorizers/BlindLockingMode.h
    specificHistorizers/BlindLockingMode.cpp
+   specificHistorizers/ConcentrationPpm.h
+   specificHistorizers/ConcentrationPpm.cpp
+   specificHistorizers/ConcentrationGramPerMeterCube.h
+   specificHistorizers/ConcentrationGramPerMeterCube.cpp
    specificHistorizers/DimmerModeHistorizer.h
    specificHistorizers/DimmerModeHistorizer.cpp
    specificHistorizers/PilotWireHistorizer.h
    specificHistorizers/PilotWireHistorizer.cpp
+   specificHistorizers/VolatileOrganicCompound.h
+   specificHistorizers/VolatileOrganicCompound.cpp
    )
    
 #########################################
@@ -86,7 +92,7 @@ source_group(sources\\specificHistorizers specificHistorizers/*.*)
 #########################################
 ## Code generator configuration
 #########################################
-set(EEP_VERSION "2.6.5")
+set(EEP_VERSION "268")
 
 file(GLOB PYTHON_GENERATOR_FILES profiles/*.py)
 file(GLOB IN_TRANSLATION_FILES locales.in/*.json)
@@ -105,6 +111,11 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/IRorg.h
    profiles/IFunc.h
    profiles/IType.h
+
+   profiles/hardCoded/Profile_A5_09_05.cpp
+   profiles/hardCoded/Profile_A5_09_05.h
+   profiles/hardCoded/Profile_A5_09_0C.cpp
+   profiles/hardCoded/Profile_A5_09_0C.h
 
    profiles/hardCoded/Profile_A5_12_Common.cpp
    profiles/hardCoded/Profile_A5_12_Common.h

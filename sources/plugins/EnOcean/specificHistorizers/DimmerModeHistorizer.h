@@ -17,7 +17,7 @@ namespace specificHistorizers
    {
    public:
       explicit CDimmerModeHistorizer(const std::string& keywordName);
-      virtual ~CDimmerModeHistorizer();
+      virtual ~CDimmerModeHistorizer() = default;
    };
 } // namespace specificHistorizers
 

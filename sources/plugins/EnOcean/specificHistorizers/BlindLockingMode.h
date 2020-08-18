@@ -16,6 +16,6 @@ namespace specificHistorizers
    {
    public:
       explicit CBlindLockingMode(const std::string& keywordName);
-      virtual ~CBlindLockingMode();
+      virtual ~CBlindLockingMode() = default;
    };
 } // namespace specificHistorizers
