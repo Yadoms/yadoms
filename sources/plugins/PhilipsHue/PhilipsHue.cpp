@@ -4,17 +4,20 @@
 #include <shared/Log.h>
 #include "shared/http/ssdp/DiscoverService.h"
 #include "Factory.h"
+#include "ColorConverter.h"
 
 IMPLEMENT_PLUGIN(CPhilipsHue)
 
 
 const std::string CPhilipsHue::PhilipsHueBridgeName("Philips hue");
 const std::string CPhilipsHue::LightState("STATE");
+const std::string CPhilipsHue::RgbColor("RgbColor");
 
 
 CPhilipsHue::CPhilipsHue()
    : m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
-     m_historizers({m_switch})
+     m_rgb(boost::make_shared<yApi::historization::CColorRGB>(RgbColor, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)),
+     m_historizers({m_switch, m_rgb})
 {
 }
 
@@ -81,7 +84,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                auto lightName = command->getDevice();
                m_lightManager->setLightId(lightName, m_detectedLights);
-               if(command->getBody() == "1")
+               if (command->getBody() == "1")
                {
                   m_lightManager->lightOn();
                }
@@ -89,7 +92,10 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   m_lightManager->lightOff();
                }
-
+            }
+            else if(command->getKeyword() == RgbColor)
+            {
+               auto rgb = CColorConverter::hexToRgb(command->getBody());
             }
             break;
          }

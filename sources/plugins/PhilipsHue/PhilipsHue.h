@@ -57,7 +57,9 @@ private:
    void declareDevice();
 
    boost::shared_ptr<yApi::historization::CSwitch> m_switch;
+   boost::shared_ptr<yApi::historization::CColorRGB> m_rgb;
    std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> m_historizers;
    static const std::string LightState;
+   static const std::string RgbColor;
 
 };
