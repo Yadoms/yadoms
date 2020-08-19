@@ -1,3 +1,16 @@
+### 1.8.0
+* Update profiles definition to v2.6.8, add these profiles :
+  * D2-01-15
+  * D2-01-16
+  * D2-06-50
+  * D2-0A-01
+  * D2-0A-02
+  * D2-10-30ff : new family with 36 profiles/MIDs
+  * D2-11-20
+  * D2-14-ff :  new family with 28 TYPES
+* Better support of gas sensors (profiles A5-09-xx) 
+* Better support of temperature/humidity sensors (profiles A5-04-xx) 
+
 ### 1.7.1
 * Fix description of delay radio OFF timer for D2-01-12
 

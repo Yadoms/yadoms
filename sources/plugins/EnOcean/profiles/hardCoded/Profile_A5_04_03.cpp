@@ -1,40 +1,40 @@
 #include "stdafx.h"
-#include "Profile_A5_09_09.h"
+#include "Profile_A5_04_03.h"
 #include <profiles/eep.h>
 #include <profiles/bitsetHelpers.hpp>
 
 
-CProfile_A5_09_09::CProfile_A5_09_09(const std::string& deviceId,
+CProfile_A5_04_03::CProfile_A5_04_03(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_concentrationPpm(boost::make_shared<specificHistorizers::CConcentrationPpm>("Concentration(ppm)")),
-     m_powerFailure(boost::make_shared<yApi::historization::CSwitch>("powerFailure", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_concentrationPpm, m_powerFailure})
+   : m_humidity(boost::make_shared<yApi::historization::CHumidity>("humidity")),
+     m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
+     m_historizers({ m_humidity, m_temperature})
 {
 }
 
-const std::string& CProfile_A5_09_09::profile() const
+const std::string& CProfile_A5_04_03::profile() const
 {
-   static const std::string Profile("A5-09-09");
+   static const std::string Profile("A5-04-03");
    return Profile;
 }
 
-const std::string& CProfile_A5_09_09::title() const
+const std::string& CProfile_A5_04_03::title() const
 {
-   static const std::string Title("Gas sensor - Pure CO2 sensor with power failure detection");
+   static const std::string Title("Temperature (-20 to 60°C) and humidity sensor (0 to 100%)");
    return Title;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_09_09::allHistorizers() const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_04_03::allHistorizers() const
 {
    return m_historizers;
 }
 
-void CProfile_A5_09_09::readInitialState(const std::string& senderId,
+void CProfile_A5_04_03::readInitialState(const std::string& senderId,
                                          boost::shared_ptr<IMessageHandler> messageHandler) const
 {
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_09_09::states(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_04_03::states(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
@@ -45,20 +45,20 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (rorg != CRorgs::ERorgIds::k4BS_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   m_concentrationPpm->set(static_cast<double>(bitset_extract(data, 16, 8) * 2000.0 / 255.0));
-   m_powerFailure->set(bitset_extract(data, 29, 1));
+   m_humidity->set(static_cast<double>(bitset_extract(data, 0, 8) * 100.0 / 255.0));
+   m_temperature->set(static_cast<double>(bitset_extract(data, 14, 10)) * 80.0 / 1023.0 - 20.0);
 
    return m_historizers;
 }
 
-void CProfile_A5_09_09::sendCommand(const std::string& keyword,
+void CProfile_A5_04_03::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
 }
 
-void CProfile_A5_09_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+void CProfile_A5_04_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
                                           boost::shared_ptr<IMessageHandler> messageHandler) const
 {
