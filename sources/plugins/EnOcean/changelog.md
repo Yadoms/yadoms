@@ -10,6 +10,7 @@
   * D2-14-ff :  new family with 28 TYPES
 * Better support of gas sensors (profiles A5-09-xx) 
 * Better support of temperature/humidity sensors (profiles A5-04-xx) 
+* Add F6-02-03 profile support
 
 ### 1.7.1
 * Fix description of delay radio OFF timer for D2-01-12
