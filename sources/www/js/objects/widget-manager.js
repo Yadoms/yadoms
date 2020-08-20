@@ -180,7 +180,15 @@ WidgetManager.getViewModelFromServer_ = function (widgetType) {
  */
 WidgetManager.createWidget = function (newWidget) {
     var d = new $.Deferred();
-    var data = JSON.stringify({ idPage: newWidget.idPage, type: newWidget.type, title: newWidget.title, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, position: newWidget.position, configuration: newWidget.configuration });
+    var data = JSON.stringify({
+        idPage: newWidget.idPage,
+        type: newWidget.type,
+        title: newWidget.title,
+        sizeX: newWidget.initialValues.sizeX,
+        sizeY: newWidget.initialValues.sizeY,
+        position: newWidget.position,
+        configuration: newWidget.configuration
+    });
 
     RestEngine.postJson("/rest/widget", { data: data })
         .done(function (widgetData) {
