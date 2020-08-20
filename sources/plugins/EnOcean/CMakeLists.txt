@@ -79,6 +79,8 @@ set(ENOCEAN_SOURCES
    specificHistorizers/DimmerModeHistorizer.cpp
    specificHistorizers/MassRadioActivity.h
    specificHistorizers/MassRadioActivity.cpp
+   specificHistorizers/MechanicalHandleMovement.h
+   specificHistorizers/MechanicalHandleMovement.cpp
    specificHistorizers/PilotWireHistorizer.h
    specificHistorizers/PilotWireHistorizer.cpp
    specificHistorizers/SieverPerSecondRadioActivity.h
@@ -219,6 +221,21 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_F6_02_02.h
    profiles/hardCoded/Profile_F6_02_03.cpp
    profiles/hardCoded/Profile_F6_02_03.h
+
+   profiles/hardCoded/Profile_F6_03_01.cpp
+   profiles/hardCoded/Profile_F6_03_01.h
+   profiles/hardCoded/Profile_F6_03_02.cpp
+   profiles/hardCoded/Profile_F6_03_02.h
+
+   profiles/hardCoded/Profile_F6_04_01.cpp
+   profiles/hardCoded/Profile_F6_04_01.h
+   profiles/hardCoded/Profile_F6_04_02.cpp
+   profiles/hardCoded/Profile_F6_04_02.h
+
+   profiles/hardCoded/Profile_F6_10_00.cpp
+   profiles/hardCoded/Profile_F6_10_00.h
+   profiles/hardCoded/Profile_F6_10_01.cpp
+   profiles/hardCoded/Profile_F6_10_01.h
 
    profiles/hardCoded/Profile_F6_05_00.cpp
    profiles/hardCoded/Profile_F6_05_00.h

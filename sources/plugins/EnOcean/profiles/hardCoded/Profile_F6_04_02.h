@@ -1,13 +1,14 @@
 #pragma once
 #include "../IType.h"
+#include "../../IMessageHandler.h"
 
 
-class CProfile_A5_12_00 : public IType
+class CProfile_F6_04_02 : public IType
 {
 public:
-   CProfile_A5_12_00(const std::string& deviceId,
+   CProfile_F6_04_02(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_A5_12_00() = default;
+   virtual ~CProfile_F6_04_02() = default;
 
    // IType implementation
    const std::string& profile() const override;
@@ -30,9 +31,8 @@ public:
    // [END] IType implementation
 
 private:
-   static const int NB_CHANNELS = 16;
+   boost::shared_ptr<yApi::IYPluginApi> m_api;
    const std::string m_deviceId;
-   boost::shared_ptr<yApi::historization::CCounter> m_cumulative[NB_CHANNELS];
-   boost::shared_ptr<yApi::historization::CFrequency> m_currentValue[NB_CHANNELS];
+   boost::shared_ptr<yApi::historization::CSwitch> m_cardAction;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };

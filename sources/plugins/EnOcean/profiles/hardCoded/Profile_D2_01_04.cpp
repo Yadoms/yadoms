@@ -12,10 +12,6 @@ CProfile_D2_01_04::CProfile_D2_01_04(const std::string& deviceId,
 {
 }
 
-CProfile_D2_01_04::~CProfile_D2_01_04()
-{
-}
-
 const std::string& CProfile_D2_01_04::profile() const
 {
    static const std::string profile("D2-01-04");
