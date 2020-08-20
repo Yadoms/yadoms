@@ -96,6 +96,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             else if(command->getKeyword() == RgbColor)
             {
                auto rgb = CColorConverter::hexToRgb(command->getBody());
+               auto hsv = CColorConverter::rgbToHsv(rgb);
             }
             break;
          }

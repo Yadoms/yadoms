@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#define MIN_F(a, b, c)  (fminf(a, fminf(b, c)))
+#define MAX_F(a, b, c)  (fmaxf(a, fmaxf(b, c)))
 
 class CColorConverter
 {
@@ -11,8 +13,16 @@ public:
       unsigned long b;
    };
 
+   struct hsv
+   {
+      unsigned long hue;
+      unsigned long saturation;
+      unsigned long value;
+   };
+
    CColorConverter() = default;
    virtual ~CColorConverter() = default;
 
    static rgb hexToRgb(const std::string& hex);
+   static hsv rgbToHsv(rgb& rgb);
 };
