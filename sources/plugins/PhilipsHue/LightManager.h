@@ -18,6 +18,8 @@ public:
 
    void lightOff() override;
 
+   void setLightColorUsingXy(const std::string& hexRgb) override;
+
 private:
    boost::shared_ptr<CUrlManager>& m_urlManager;
    int m_lightId;

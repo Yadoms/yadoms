@@ -22,8 +22,8 @@ public:
 
    struct xy
    {
-      double x;
-      double y;
+      float x;
+      float y;
    };
 
    CColorConverter() = default;

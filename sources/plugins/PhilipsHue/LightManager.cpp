@@ -1,6 +1,7 @@
 #include "LightManager.h"
 #include "shared/Log.h"
 #include "shared/http/HttpMethods.h"
+#include "ColorConverter.h"
 
 CLightManager::CLightManager(boost::shared_ptr<CUrlManager>& urlManager)
    : m_urlManager(urlManager)
@@ -247,5 +248,21 @@ void CLightManager::lightOff()
 
    shared::CDataContainer body;
    body.set("on", false);
+   setLightState(lightUrl, body);
+}
+
+void CLightManager::setLightColorUsingXy(const std::string& hexRgb)
+{
+   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
+   const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
+
+   auto rgb = CColorConverter::hexToRgb(hexRgb);
+   const auto xy = CColorConverter::rgbToXy(rgb);
+
+   shared::CDataContainer body;
+   body.set("on", true);
+   body.set("xy.0", xy.x);
+   body.set("xy.1", xy.y);
+
    setLightState(lightUrl, body);
 }

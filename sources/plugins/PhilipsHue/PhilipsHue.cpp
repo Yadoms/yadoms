@@ -80,10 +80,10 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             const auto command = m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
+            auto lightName = command->getDevice();
+            m_lightManager->setLightId(lightName, m_detectedLights);
             if (command->getKeyword() == LightState)
             {
-               auto lightName = command->getDevice();
-               m_lightManager->setLightId(lightName, m_detectedLights);
                if (command->getBody() == "1")
                {
                   m_lightManager->lightOn();
@@ -95,8 +95,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             else if(command->getKeyword() == RgbColor)
             {
-               auto rgb = CColorConverter::hexToRgb(command->getBody());
-               auto hsv = CColorConverter::rgbToHsv(rgb);
+               m_lightManager->setLightColorUsingXy(command->getBody());
             }
             break;
          }

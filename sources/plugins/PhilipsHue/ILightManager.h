@@ -14,4 +14,6 @@ public:
    virtual void lightOn() = 0;
 
    virtual void lightOff() = 0;
+
+   virtual void setLightColorUsingXy(const std::string& hexRgb) = 0;
 };
