@@ -48,7 +48,7 @@ if xmlRootNode.tag != "eep":
    raise Exception("getAllNodes : Invalid root \"" + xmlRootNode.tag + "\", \"eep\" expected")
 xmlProfileNode = xmlRootNode.find("profile")
 
-util.info("Hard-coded profiles are : " + str(hardCodedProfiles.getProfilesHardCoded()))
+util.info("Hard-coded profiles are : \n   - " + str("\n   - ".join(hardCodedProfiles.getProfilesHardCoded())))
 
 
 
