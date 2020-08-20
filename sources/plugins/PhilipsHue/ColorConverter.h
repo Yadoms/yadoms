@@ -20,9 +20,16 @@ public:
       unsigned long value;
    };
 
+   struct xy
+   {
+      double x;
+      double y;
+   };
+
    CColorConverter() = default;
    virtual ~CColorConverter() = default;
 
    static rgb hexToRgb(const std::string& hex);
    static hsv rgbToHsv(rgb& rgb);
+   static xy rgbToXy(rgb& rgb);
 };
