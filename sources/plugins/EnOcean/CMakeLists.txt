@@ -77,12 +77,18 @@ set(ENOCEAN_SOURCES
    specificHistorizers/CountPerSecondRadioActivity.cpp
    specificHistorizers/DimmerModeHistorizer.h
    specificHistorizers/DimmerModeHistorizer.cpp
+   specificHistorizers/Fan4Speeds.h
+   specificHistorizers/Fan4Speeds.cpp
+   specificHistorizers/Fan6Speeds.h
+   specificHistorizers/Fan6Speeds.cpp
    specificHistorizers/MassRadioActivity.h
    specificHistorizers/MassRadioActivity.cpp
    specificHistorizers/MechanicalHandleMovement.h
    specificHistorizers/MechanicalHandleMovement.cpp
    specificHistorizers/PilotWireHistorizer.h
    specificHistorizers/PilotWireHistorizer.cpp
+   specificHistorizers/SetPoint.h
+   specificHistorizers/SetPoint.cpp
    specificHistorizers/SieverPerSecondRadioActivity.h
    specificHistorizers/SieverPerSecondRadioActivity.cpp
    specificHistorizers/VolatileOrganicCompound.h
@@ -151,6 +157,11 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_A5_09_0B.h
    profiles/hardCoded/Profile_A5_09_0C.cpp
    profiles/hardCoded/Profile_A5_09_0C.h
+
+   profiles/hardCoded/Profile_A5_10_01.cpp
+   profiles/hardCoded/Profile_A5_10_01.h
+   profiles/hardCoded/Profile_A5_10_02.cpp
+   profiles/hardCoded/Profile_A5_10_02.h
 
    profiles/hardCoded/Profile_A5_12_Common.cpp
    profiles/hardCoded/Profile_A5_12_Common.h
