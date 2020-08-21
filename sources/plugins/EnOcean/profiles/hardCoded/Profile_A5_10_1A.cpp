@@ -1,44 +1,44 @@
 #include "stdafx.h"
-#include "Profile_A5_10_18.h"
+#include "Profile_A5_10_1A.h"
 #include "../bitsetHelpers.hpp"
 
-CProfile_A5_10_18::CProfile_A5_10_18(const std::string& deviceId,
+CProfile_A5_10_1A::CProfile_A5_10_1A(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_api(api),
      m_deviceId(deviceId),
-     m_illumination(boost::make_shared<yApi::historization::CIllumination>("Illumination")),
+     m_voltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
      m_setPoint(boost::make_shared<yApi::historization::CTemperature>("SetPoint")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
      m_occupancy(boost::make_shared<yApi::historization::CSwitch>("Occupancy")),
-     m_historizers({m_illumination, m_setPoint, m_temperature, m_occupancy})
+     m_historizers({ m_voltage, m_setPoint, m_temperature, m_occupancy})
 {
 }
 
-const std::string& CProfile_A5_10_18::profile() const
+const std::string& CProfile_A5_10_1A::profile() const
 {
-   static const std::string Profile("A5-10-18");
+   static const std::string Profile("A5-10-1A");
    return Profile;
 }
 
-const std::string& CProfile_A5_10_18::title() const
+const std::string& CProfile_A5_10_1A::title() const
 {
    static const std::string Title(
-      "Room Operating Panel - Illumination, Temperature Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
+      "Room Operating Panel - Supply voltage monitor, Temperature Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
    return Title;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_10_18::allHistorizers() const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_10_1A::allHistorizers() const
 {
    return m_historizers;
 }
 
-void CProfile_A5_10_18::readInitialState(const std::string& senderId,
+void CProfile_A5_10_1A::readInitialState(const std::string& senderId,
                                          boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // Read-only device
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_10_18::states(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_10_1A::states(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
@@ -47,8 +47,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 {
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   m_illumination->set(static_cast<double>(bitset_extract(data, 0, 8)) * 1000.0 / 250.0);
-   historizers.push_back(m_illumination);
+   const auto rawVoltage = static_cast<double>(bitset_extract(data, 0, 8));
+   if (rawVoltage <= 250)
+   {
+      m_voltage->set(rawVoltage * 5.0 / 250.0);
+      historizers.push_back(m_voltage);
+   }
 
    m_setPoint->set(static_cast<double>(250 - bitset_extract(data, 8, 8)) * 40.0 / 250.0);
    historizers.push_back(m_setPoint);
@@ -95,7 +99,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return historizers;
 }
 
-void CProfile_A5_10_18::sendCommand(const std::string& keyword,
+void CProfile_A5_10_1A::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
@@ -103,7 +107,7 @@ void CProfile_A5_10_18::sendCommand(const std::string& keyword,
    throw std::logic_error("device supports no command sending");
 }
 
-void CProfile_A5_10_18::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+void CProfile_A5_10_1A::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
                                           boost::shared_ptr<IMessageHandler> messageHandler) const
 {
