@@ -162,6 +162,46 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_A5_10_01.h
    profiles/hardCoded/Profile_A5_10_02.cpp
    profiles/hardCoded/Profile_A5_10_02.h
+   profiles/hardCoded/Profile_A5_10_03.cpp
+   profiles/hardCoded/Profile_A5_10_03.h
+   profiles/hardCoded/Profile_A5_10_04.cpp
+   profiles/hardCoded/Profile_A5_10_04.h
+   profiles/hardCoded/Profile_A5_10_05.cpp
+   profiles/hardCoded/Profile_A5_10_05.h
+   profiles/hardCoded/Profile_A5_10_06.cpp
+   profiles/hardCoded/Profile_A5_10_06.h
+   profiles/hardCoded/Profile_A5_10_07.cpp
+   profiles/hardCoded/Profile_A5_10_07.h
+   profiles/hardCoded/Profile_A5_10_08.cpp
+   profiles/hardCoded/Profile_A5_10_08.h
+   profiles/hardCoded/Profile_A5_10_09.cpp
+   profiles/hardCoded/Profile_A5_10_09.h
+   profiles/hardCoded/Profile_A5_10_0A.cpp
+   profiles/hardCoded/Profile_A5_10_0A.h
+   profiles/hardCoded/Profile_A5_10_0B.cpp
+   profiles/hardCoded/Profile_A5_10_0B.h
+   profiles/hardCoded/Profile_A5_10_0C.cpp
+   profiles/hardCoded/Profile_A5_10_0C.h
+   profiles/hardCoded/Profile_A5_10_0D.cpp
+   profiles/hardCoded/Profile_A5_10_0D.h
+   profiles/hardCoded/Profile_A5_10_10.cpp
+   profiles/hardCoded/Profile_A5_10_10.h
+   profiles/hardCoded/Profile_A5_10_11.cpp
+   profiles/hardCoded/Profile_A5_10_11.h
+   profiles/hardCoded/Profile_A5_10_12.cpp
+   profiles/hardCoded/Profile_A5_10_12.h
+   profiles/hardCoded/Profile_A5_10_13.cpp
+   profiles/hardCoded/Profile_A5_10_13.h
+   profiles/hardCoded/Profile_A5_10_14.cpp
+   profiles/hardCoded/Profile_A5_10_14.h
+   profiles/hardCoded/Profile_A5_10_15.cpp
+   profiles/hardCoded/Profile_A5_10_15.h
+   profiles/hardCoded/Profile_A5_10_16.cpp
+   profiles/hardCoded/Profile_A5_10_16.h
+   profiles/hardCoded/Profile_A5_10_17.cpp
+   profiles/hardCoded/Profile_A5_10_17.h
+   profiles/hardCoded/Profile_A5_10_18.cpp
+   profiles/hardCoded/Profile_A5_10_18.h
 
    profiles/hardCoded/Profile_A5_12_Common.cpp
    profiles/hardCoded/Profile_A5_12_Common.h

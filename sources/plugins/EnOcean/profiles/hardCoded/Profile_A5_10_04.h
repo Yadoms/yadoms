@@ -5,12 +5,12 @@
 #include "specificHistorizers/SetPoint.h"
 
 
-class CProfile_A5_10_01 : public IType
+class CProfile_A5_10_04 : public IType
 {
 public:
-   CProfile_A5_10_01(const std::string& deviceId,
+   CProfile_A5_10_04(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_A5_10_01() = default;
+   virtual ~CProfile_A5_10_04() = default;
 
    // IType implementation
    const std::string& profile() const override;
@@ -38,6 +38,5 @@ private:
    boost::shared_ptr<specificHistorizers::CFan4Speeds> m_fan;
    boost::shared_ptr<specificHistorizers::CSetPoint> m_setPoint;
    boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
-   boost::shared_ptr<yApi::historization::CSwitch> m_occupancy;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };

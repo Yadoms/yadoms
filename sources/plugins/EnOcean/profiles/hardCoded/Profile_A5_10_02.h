@@ -1,7 +1,6 @@
 #pragma once
 #include "../IType.h"
 #include "../../IMessageHandler.h"
-#include "specificHistorizers/MechanicalHandleMovement.h"
 #include "specificHistorizers/Fan4Speeds.h"
 #include "specificHistorizers/SetPoint.h"
 

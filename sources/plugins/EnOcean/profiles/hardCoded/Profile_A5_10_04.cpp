@@ -1,44 +1,43 @@
 #include "stdafx.h"
-#include "Profile_A5_10_01.h"
+#include "Profile_A5_10_04.h"
 #include "../bitsetHelpers.hpp"
 
-CProfile_A5_10_01::CProfile_A5_10_01(const std::string& deviceId,
+CProfile_A5_10_04::CProfile_A5_10_04(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_api(api),
      m_deviceId(deviceId),
      m_fan(boost::make_shared<specificHistorizers::CFan4Speeds>("Fan")),
      m_setPoint(boost::make_shared<specificHistorizers::CSetPoint>("SetPoint")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
-     m_occupancy(boost::make_shared<yApi::historization::CSwitch>("Occupancy")),
-     m_historizers({m_fan, m_setPoint, m_temperature, m_occupancy})
+     m_historizers({m_fan, m_setPoint, m_temperature})
 {
 }
 
-const std::string& CProfile_A5_10_01::profile() const
+const std::string& CProfile_A5_10_04::profile() const
 {
-   static const std::string Profile("A5-10-01");
+   static const std::string Profile("A5-10-04");
    return Profile;
 }
 
-const std::string& CProfile_A5_10_01::title() const
+const std::string& CProfile_A5_10_04::title() const
 {
    static const std::string Title(
-      "Room Operating Panel - Temperature Sensor, Set Point, Fan Speed and Occupancy Control");
+      "Room Operating Panel - Temperature Sensor, Set Point and Fan Speed Control");
    return Title;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_10_01::allHistorizers() const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_10_04::allHistorizers() const
 {
    return m_historizers;
 }
 
-void CProfile_A5_10_01::readInitialState(const std::string& senderId,
+void CProfile_A5_10_04::readInitialState(const std::string& senderId,
                                          boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // Read-only device
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_10_01::states(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_10_04::states(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
@@ -61,12 +60,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    m_temperature->set(static_cast<double>(255 - bitset_extract(data, 16, 8)) * 40.0 / 255.0);
 
-   m_occupancy->set(bitset_extract(status, 31, 1) ? true : false);
-
    return m_historizers;
 }
 
-void CProfile_A5_10_01::sendCommand(const std::string& keyword,
+void CProfile_A5_10_04::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
@@ -74,7 +71,7 @@ void CProfile_A5_10_01::sendCommand(const std::string& keyword,
    throw std::logic_error("device supports no command sending");
 }
 
-void CProfile_A5_10_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+void CProfile_A5_10_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
                                           boost::shared_ptr<IMessageHandler> messageHandler) const
 {
