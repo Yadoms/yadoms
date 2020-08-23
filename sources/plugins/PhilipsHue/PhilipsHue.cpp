@@ -120,9 +120,30 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             closeReadingBridgeButtonState();
             break;
          }
+      case yApi::IYPluginApi::kEventExtraQuery:
+      {
+         auto extraQuery = m_api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
+
+         if (!extraQuery)
+         {
+            extraQuery->sendError("error content");
+         }
+         else
+         {
+            YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
+            if (extraQuery->getData()->query() == "searchForNewLights")
+            {
+               YADOMS_LOG(information) << "search For New Lights command received";
+
+
+               extraQuery->sendSuccess(shared::CDataContainer::make());
+            }
+         }
+         break;
+      }
       default:
          {
-            YADOMS_LOG(error) << "Unknown or unsupported message id " << m_api->getEventHandler().getEventId();
+             YADOMS_LOG(error) << "Unknown or unsupported message id " << m_api->getEventHandler().getEventId();
             break;
          }
       }

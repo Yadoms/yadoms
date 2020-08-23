@@ -10,25 +10,30 @@
                "name": "Appairage automatique",
                "description": "Appairage automatique en utilisant le protocole UPNP",
                "content": {}
-               },
-               "Manual": {
-                  "name": "Appairage manuel",
-                  "description": "Appairage manuel",
-                  "content": {
-                     "IPAddress": {
-                        "name": "Adresse IP",
-                        "description": "L'adresse IP du bridge",
-                        "regexErrorMessage": "Ce n'est pas une adresse IP valide"
-                     }
+            },
+            "Manual": {
+               "name": "Appairage manuel",
+               "description": "Appairage manuel",
+               "content": {
+                  "IPAddress": {
+                     "name": "Adresse IP",
+                     "description": "L'adresse IP du bridge",
+                     "regexErrorMessage": "Ce n'est pas une adresse IP valide"
                   }
                }
             }
+         }
       }
    },
    "customLabels": {
       "pluginState": {
          "askToPressBridgeButton": "Merci d'appuyer sur le bouton du philips hue bridge! Vous avez 30 secondes",
          "askToPressBridgeButtonTimeout": "le button du bridge n'est pas enfoncé : timeout!"
+      }
+   },
+   "extraQueries": {
+      "searchForNewLights": {
+         "name": "Rechercher de nouvelles lumières"
       }
    }
 }

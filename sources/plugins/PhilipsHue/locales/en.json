@@ -30,6 +30,10 @@
 			"askToPressBridgeButton": "Please press philips hue bridge button! you've got 30 seconds",
 			"askToPressBridgeButtonTimeout": "Bridge button is not pressed : timeout!"
 		}
-
+	},
+	"extraQueries": {
+		"searchForNewLights": {
+			"name": "Search for new lights"
+		}
 	}
 }
