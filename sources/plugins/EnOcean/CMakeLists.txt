@@ -91,6 +91,8 @@ set(ENOCEAN_SOURCES
    specificHistorizers/SetPoint.cpp
    specificHistorizers/SieverPerSecondRadioActivity.h
    specificHistorizers/SieverPerSecondRadioActivity.cpp
+   specificHistorizers/SpecialHeatingStates.h
+   specificHistorizers/SpecialHeatingStates.cpp
    specificHistorizers/VolatileOrganicCompound.h
    specificHistorizers/VolatileOrganicCompound.cpp
    specificHistorizers/VolumicRadioActivity.h
@@ -212,6 +214,18 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_A5_10_1C.h
    profiles/hardCoded/Profile_A5_10_1D.cpp
    profiles/hardCoded/Profile_A5_10_1D.h
+   profiles/hardCoded/Profile_A5_10_1E.cpp
+   profiles/hardCoded/Profile_A5_10_1E.h
+   profiles/hardCoded/Profile_A5_10_1F.cpp
+   profiles/hardCoded/Profile_A5_10_1F.h
+   profiles/hardCoded/Profile_A5_10_20.cpp
+   profiles/hardCoded/Profile_A5_10_20.h
+   profiles/hardCoded/Profile_A5_10_21.cpp
+   profiles/hardCoded/Profile_A5_10_21.h
+   profiles/hardCoded/Profile_A5_10_22.cpp
+   profiles/hardCoded/Profile_A5_10_22.h
+   profiles/hardCoded/Profile_A5_10_23.cpp
+   profiles/hardCoded/Profile_A5_10_23.h
 
    profiles/hardCoded/Profile_A5_12_Common.cpp
    profiles/hardCoded/Profile_A5_12_Common.h
