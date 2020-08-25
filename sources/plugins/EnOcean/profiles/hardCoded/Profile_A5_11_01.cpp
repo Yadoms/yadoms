@@ -58,7 +58,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    m_illuminationSetPoint->set(static_cast<double>(bitset_extract(data, 8, 8)));
 
-   m_dimOutLevel->set(static_cast<int>(bitset_extract(data, 16, 8)));
+   m_dimOutLevel->set(static_cast<int>(bitset_extract(data, 16, 8) * 100 / 255));
 
    m_repeater->set(bitset_extract(status, 24, 1) ? true : false);
 

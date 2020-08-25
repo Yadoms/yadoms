@@ -56,7 +56,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    if (bitset_extract(data, 16, 1))
    {
-      m_blindPosition->set(static_cast<int>(bitset_extract(data, 0, 8)));
+      m_blindPosition->set(static_cast<int>(bitset_extract(data, 0, 8) * 100 / 255));
       historizers.push_back(m_blindPosition);
    }
 
