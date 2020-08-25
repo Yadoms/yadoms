@@ -16,7 +16,8 @@ const std::string CPhilipsHue::RgbColor("RgbColor");
 
 CPhilipsHue::CPhilipsHue()
    : m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
-     m_rgb(boost::make_shared<yApi::historization::CColorRGB>(RgbColor, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)),
+     m_rgb(boost::make_shared<yApi::historization::CColorRGB>(
+        RgbColor, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)),
      m_historizers({m_switch, m_rgb})
 {
 }
@@ -93,7 +94,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   m_lightManager->lightOff();
                }
             }
-            else if(command->getKeyword() == RgbColor)
+            else if (command->getKeyword() == RgbColor)
             {
                m_lightManager->setLightColorUsingXy(command->getBody());
             }
@@ -121,29 +122,39 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
       case yApi::IYPluginApi::kEventExtraQuery:
-      {
-         auto extraQuery = m_api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
+         {
+            auto extraQuery = m_api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
 
-         if (!extraQuery)
-         {
-            extraQuery->sendError("error content");
-         }
-         else
-         {
-            YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
-            if (extraQuery->getData()->query() == "searchForNewLights")
+            if (!extraQuery)
             {
-               YADOMS_LOG(information) << "search For New Lights command received";
-
-
-               extraQuery->sendSuccess(shared::CDataContainer::make());
+               extraQuery->sendError("error content");
             }
+            else
+            {
+               YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
+               if (extraQuery->getData()->query() == "searchForNewLights")
+               {
+                  YADOMS_LOG(information) << "search For New Lights command received";
+                  try
+                  {
+                     m_lightManager->searchForNewLights();
+                     m_detectedLights = m_lightManager->getNewLights();
+                  }
+                  catch (std::exception& exception)
+                  {
+                     YADOMS_LOG(error) << "start reading bridge button state :" << exception.what();
+                     extraQuery->sendError(exception.what());
+                     throw;
+                  }
+                  declareDevice();
+                  extraQuery->sendSuccess(shared::CDataContainer::make());
+               }
+            }
+            break;
          }
-         break;
-      }
       default:
          {
-             YADOMS_LOG(error) << "Unknown or unsupported message id " << m_api->getEventHandler().getEventId();
+            YADOMS_LOG(error) << "Unknown or unsupported message id " << m_api->getEventHandler().getEventId();
             break;
          }
       }

@@ -4,7 +4,8 @@
 #include "ColorConverter.h"
 
 CLightManager::CLightManager(boost::shared_ptr<CUrlManager>& urlManager)
-   : m_urlManager(urlManager)
+   : m_urlManager(urlManager),
+     m_lightId(0)
 {
 }
 
@@ -213,6 +214,16 @@ void CLightManager::setLightState(const std::string& lightUrl, shared::CDataCont
    }
 }
 
+void CLightManager::setNewLights(const boost::system::error_code& errorCode)
+{
+   // boost::asio::error::operation_aborted : Normal behaviour-Invoked when we cancelled the timer
+   if (errorCode && errorCode != boost::asio::error::operation_aborted)
+      throw std::runtime_error("Error trying to get new lights");
+   m_newLights = getAllLights();
+
+   closeReadingNewLights();
+}
+
 void CLightManager::setLightId(std::string& lightName, std::map<int, HueLightInformations>& detectedLights)
 {
    const auto it = std::find_if(std::begin(detectedLights), std::end(detectedLights),
@@ -265,4 +276,45 @@ void CLightManager::setLightColorUsingXy(const std::string& hexRgb)
    body.set("xy.1", xy.y);
 
    setLightState(lightUrl, body);
+}
+
+void CLightManager::searchForNewLights()
+{
+   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kGetAllLights);
+   const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
+   const std::string body;
+   std::map<int, HueLightInformations> newHueLights;
+   try
+   {
+      const auto response = shared::http::CHttpMethods::sendJsonPostRequest(lightUrl, body);
+
+      startReadingNewLights();
+   }
+   catch (std::exception& e)
+   {
+      const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\" : %2%") % lightUrl
+         %
+         e.what()).str();
+      YADOMS_LOG(error) << "Fail to send Get http request or interpret answer " << lightUrl << " : " << e.what();
+      throw std::runtime_error(message);
+   }
+}
+
+std::map<int, HueLightInformations> CLightManager::getNewLights()
+{
+   return m_newLights;
+}
+
+void CLightManager::startReadingNewLights()
+{
+   boost::asio::steady_timer timer(m_ios, boost::asio::chrono::seconds(40));
+   timer.async_wait(boost::bind(&CLightManager::setNewLights, this,
+                                boost::asio::placeholders::error));
+
+   m_ios.run();
+}
+
+void CLightManager::closeReadingNewLights()
+{
+   m_ios.stop();
 }

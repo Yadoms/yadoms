@@ -16,4 +16,8 @@ public:
    virtual void lightOff() = 0;
 
    virtual void setLightColorUsingXy(const std::string& hexRgb) = 0;
+
+   virtual void searchForNewLights() = 0;
+
+   virtual std::map<int, HueLightInformations> getNewLights() = 0;
 };
