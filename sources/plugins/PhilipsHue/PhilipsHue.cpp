@@ -98,10 +98,21 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             YADOMS_LOG(information) << "key bridge is pressed";
             closeReadingBridgeButtonState();
-
-            m_lightManager = CFactory::createLightManager(m_urlManager);
-            m_detectedLights = m_lightManager->getAllLights();
-            declareDevice();
+            if (m_configuration.getPairingMode() == kAuto)
+            {
+               for (auto i = 0; i < m_HuesInformations.size(); i++)
+               {
+                  m_lightManagers.push_back(CFactory::createLightManager(m_urlsManager[i]));
+                  m_detectedLights = m_lightManagers[i]->getAllLights();
+                  declareDevice();
+               }
+            }
+            else
+            {
+               m_lightManager = CFactory::createLightManager(m_urlManager);
+               m_detectedLights = m_lightManager->getAllLights();
+               declareDevice();
+            }
 
             m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 
@@ -161,10 +172,11 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CPhilipsHue::init()
 {
-   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
-   if (m_configuration.getPairingMode() == EPairingMode::kAuto)
+
+   if (m_configuration.getPairingMode() == kAuto)
    {
       fillHuesInformations();
+      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
       startReadingBridgeButtonState();
    }
    else
@@ -181,7 +193,7 @@ void CPhilipsHue::init()
 
          m_HueInformations = m_hueBridgeDiscovery->getHueInformations();
 
-
+         m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
          m_hueService->startReadingBridgeButtonState();
       }
       catch (boost::thread_interrupted&)
@@ -202,14 +214,17 @@ void CPhilipsHue::init()
 
 void CPhilipsHue::fillHuesInformations()
 {
+   m_urlManager = boost::make_shared<CUrlManager>(m_configuration);
    m_hueBridgeDiscovery = CFactory::createHueBridgeDiscovery();
    try
    {
+      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "BridgesSearchInProgress");
       auto foundBridges = m_hueBridgeDiscovery->FindBridges();
       for (auto& foundBridge : foundBridges)
       {
          m_HuesInformations.push_back(foundBridge);
       }
+      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "BridgesFound");
    }
    catch (const std::exception& exception)
    {

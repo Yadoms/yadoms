@@ -55,7 +55,7 @@ HueInformations CHueBridgeDiscovery::getHueInformations()
       boost::shared_ptr<shared::http::ssdp::IDiscoveredDevice> devicesDescription = 
          boost::make_shared<shared::http::ssdp::CDiscoveredDevice>(shared::http::CHttpMethods::sendGetRequest(descriptionUrl)); 
 
-                                                                                                bridgeInformations.ip = getIpAddress(devicesDescription->xmlContent()->get<std::string>("root.URLBase"));
+      bridgeInformations.ip = getIpAddress(devicesDescription->xmlContent()->get<std::string>("root.URLBase"));
       bridgeInformations.friendlyName = devicesDescription->xmlContent()->get<std::string>("root.device.friendlyName");
       bridgeInformations.modelName = devicesDescription->xmlContent()->get<std::string>("root.device.modelName");
       bridgeInformations.modelNumber = devicesDescription->xmlContent()->get<std::string>("root.device.modelNumber");

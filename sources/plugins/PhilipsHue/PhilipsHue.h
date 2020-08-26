@@ -50,6 +50,7 @@ private:
    boost::shared_ptr<CUrlManager> m_urlManager;
    boost::shared_ptr<IHueBridgeDiscovery> m_hueBridgeDiscovery;
    boost::shared_ptr<ILightManager> m_lightManager;
+   std::vector<boost::shared_ptr<ILightManager>> m_lightManagers;
 
    std::map<int, HueLightInformations> m_detectedLights;
 
