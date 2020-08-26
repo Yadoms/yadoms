@@ -1,6 +1,6 @@
 ﻿{
    "name": "Philips hue",
-   "description": "Support des équipements Philips hue (voir [site web de Philips Hue](https://www.philips-hue.com/)",
+   "description": "Support des équipements Philips hue (voir [site web de Philips Hue](https://www.philips-hue.com/))",
    "configurationSchema": {
       "PairingMode": {
          "name": "Mode d'appairage",

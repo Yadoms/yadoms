@@ -1,6 +1,6 @@
 {
 	"name": "Philips hue",
-	"description": "Philips Hue devices support (see the [official website](https://www.philips-hue.com/)",
+	"description": "Philips Hue devices support (see the [official website](https://www.philips-hue.com/))",
 	"configurationSchema": {
 		"PairingMode": {
 			"name": "Pairing mode",
