@@ -82,7 +82,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
          " : Fan speed = " << bitset_extract(status, 24, 3);
-      break;
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
    m_occupancy->set(bitset_extract(status, 31, 1) ? true : false);

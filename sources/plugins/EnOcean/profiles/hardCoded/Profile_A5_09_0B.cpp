@@ -111,8 +111,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    case kA5_09_0B_Multiplier_100000: radiationLevel *= 100000.0;
       break;
    default:
-      YADOMS_LOG(error) << "A5-09-09B profile : received unknown multiplier" << scaleMultiplier;
-      break;
+      YADOMS_LOG(error) << "A5-09-0B profile : received unknown multiplier" << scaleMultiplier;
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
    switch (unit)

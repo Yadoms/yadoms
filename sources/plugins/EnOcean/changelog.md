@@ -14,6 +14,7 @@
 * Add A5-10-xx profiles support
 * Add A5-11-xx profiles support
 * Better support of A5-07-xx profiles
+* Better support of A5-13-01, A5-13-02, A5-13-06 profiles
 
 ### 1.7.1
 * Fix description of delay radio OFF timer for D2-01-12

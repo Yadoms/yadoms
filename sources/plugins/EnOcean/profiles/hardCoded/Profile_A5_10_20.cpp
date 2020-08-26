@@ -68,7 +68,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
          " : Special heating state = " << bitset_extract(status, 25, 2);
-      break;
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
    m_batteryLevel->set(bitset_extract(status, 27, 1) ? 0 : 100);

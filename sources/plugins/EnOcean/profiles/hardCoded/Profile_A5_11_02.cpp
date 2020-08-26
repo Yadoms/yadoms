@@ -98,6 +98,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
          " : Fan stage = " << bitset_extract(status, 8, 8);
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
    m_setPoint->set(bitset_extract(status, 16, 8) * 51.2 / 255);
@@ -125,6 +126,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
          " : Controller mode = " << bitset_extract(status, 25, 2);
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
    m_controllerStateOverriden->set(bitset_extract(status, 27, 1) ? true : false);

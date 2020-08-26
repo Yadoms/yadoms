@@ -45,16 +45,20 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const std::string& senderId,
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
+
    m_supplyVoltage->set(
       static_cast<double>(std::max(bitset_extract(data, 0, 8), static_cast<unsigned>(250))) * 5.0 / 250.0);
+   historizers.push_back(m_supplyVoltage);
 
    m_illumination->set(
       static_cast<double>(std::max(bitset_extract(data, 8, 10), static_cast<unsigned>(1000))));
+   historizers.push_back(m_illumination);
 
    if (bitset_extract(data, 28, 1))
       historizers.push_back(m_pir);
 
-   return m_historizers;
+   return historizers;
 }
 
 void CProfile_A5_07_03::sendCommand(const std::string& keyword,
