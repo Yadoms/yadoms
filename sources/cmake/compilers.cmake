@@ -70,7 +70,6 @@ endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
 	add_definitions("-Wall")
-	add_definitions("-fpermissive")
 
    #Manage c++11 (remove warnings and allow using precompiled header with cotire and g++)
    ## include(CheckCXXCompilerFlag)
