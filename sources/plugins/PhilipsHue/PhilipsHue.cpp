@@ -32,18 +32,11 @@ enum
 void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    m_api = api;
-   // Informs Yadoms about the plugin actual state
-   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
-
    YADOMS_LOG(information) << "CPhilipsHue is starting...";
-
-   // Load configuration values (provided by database)
    m_configuration.initializeWith(m_api->getConfiguration());
 
-   //m_api->setPluginState(yApi::historization::EPluginState::kRunning);
-   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
    init();
-   // the main loop
+
    while (true)
    {
       // Wait for an event
@@ -69,10 +62,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             init();
 
-            // Trace the configuration
             m_configuration.trace();
-
-            m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 
             break;
          }
@@ -112,13 +102,17 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             m_lightManager = CFactory::createLightManager(m_urlManager);
             m_detectedLights = m_lightManager->getAllLights();
             declareDevice();
+
+            m_api->setPluginState(yApi::historization::EPluginState::kRunning);
+
             break;
          }
       case kEvtKeyStateTimeout:
          {
             YADOMS_LOG(information) << "key bridge : Timeout";
-            m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButtonTimeout");
             closeReadingBridgeButtonState();
+            m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButtonTimeout");
+
             break;
          }
       case yApi::IYPluginApi::kEventExtraQuery:
@@ -149,6 +143,10 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   declareDevice();
                   extraQuery->sendSuccess(shared::CDataContainer::make());
                }
+               else if(extraQuery->getData()->query() == "searchForBridge")
+               {
+                  init();
+               }
             }
             break;
          }
@@ -163,10 +161,10 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CPhilipsHue::init()
 {
+   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
    if (m_configuration.getPairingMode() == EPairingMode::kAuto)
    {
       fillHuesInformations();
-      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
       startReadingBridgeButtonState();
    }
    else
@@ -263,6 +261,7 @@ void CPhilipsHue::closeReadingBridgeButtonState()
    {
       m_hueService->closeReadingBridgeButtonState();
    }
+
 }
 
 void CPhilipsHue::declareDevice()

@@ -28,12 +28,15 @@
    "customLabels": {
       "pluginState": {
          "askToPressBridgeButton": "Merci d'appuyer sur le bouton du philips hue bridge! Vous avez 30 secondes",
-         "askToPressBridgeButtonTimeout": "le button du bridge n'est pas enfoncé : timeout!"
+         "askToPressBridgeButtonTimeout": "le button du bridge n'est pas enfoncé : timeout!, Vous pouvez relancer la recherche en utilisant les actions du plugins"
       }
    },
    "extraQueries": {
       "searchForNewLights": {
          "name": "Rechercher de nouvelles lumières"
+      },
+      "searchForBridge": {
+         "name": "Rechercher Philips Hue bridge"
       }
    }
 }

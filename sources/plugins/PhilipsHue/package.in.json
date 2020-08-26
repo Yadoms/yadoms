@@ -37,6 +37,9 @@
    "extraQueries": {
       "searchForNewLights": {
          "iconClass": "fa fa-search-plus"
+      },
+      "searchForBridge": {
+         "iconClass": "fa fa-spinner fa-spin"
       }
    }
 }

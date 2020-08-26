@@ -28,12 +28,15 @@
 	"customLabels": {
 		"pluginState": {
 			"askToPressBridgeButton": "Please press philips hue bridge button! you've got 30 seconds",
-			"askToPressBridgeButtonTimeout": "Bridge button is not pressed : timeout!"
+			"askToPressBridgeButtonTimeout": "\"Bridge button is not pressed : timeout!, You can restart the search using the plugins actions"
 		}
 	},
 	"extraQueries": {
 		"searchForNewLights": {
 			"name": "Search for new lights"
+		},
+		"searchForBridge": {
+			"name": "Search for Philips Hue bridge"
 		}
 	}
 }
