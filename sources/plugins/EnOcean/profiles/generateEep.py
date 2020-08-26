@@ -263,7 +263,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
          historizersCppName = []
          if len(xmlTypeNode.findall("case")) != 1:            
-            util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This profile will be ignored.")
+            util.warning(profileName + ", func/type : Unsupported number of \"case\" tags (expected 1) for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This profile will be ignored.")
          else:
             for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlTypeNode.find("case")):
                dataText = xmlDataFieldNode.find("data").text
@@ -292,6 +292,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      if not supportedUnit(xmlDataFieldNode, u"lx"):
                         continue
                      cppHistorizerClassName = "yApi::historization::CIllumination"
+                  elif dataText == "Dawn sensor":
+                     if not supportedUnit(xmlDataFieldNode, u"lx"):
+                        continue
+                     cppHistorizerClassName = "yApi::historization::CIllumination"
                   elif dataText == "Illuminance":
                      if not supportedUnit(xmlDataFieldNode, u"lx"):
                         continue
@@ -307,7 +311,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                         continue
                      cppHistorizerClassName = "yApi::historization::CBatteryLevel"
                   else:
-                     util.warning("func/type : Unsupported linear data type \"" + str(dataText.encode("utf-8")) + "\" for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This data will be ignored.")
+                     util.warning(profileName + ", func/type : Unsupported linear data type \"" + str(dataText.encode("utf-8")) + "\" for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This data will be ignored.")
                      continue
                elif isBoolValue(xmlDataFieldNode):
                   cppHistorizerClassName = "yApi::historization::CSwitch"
@@ -317,7 +321,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                   typeClass.addDependency(cppHistorizerClass)
                   cppHistorizerClassName = cppHistorizerClass.cppClassName()
                else:
-                  util.warning("func/type : Unsupported data type \"" + str(xmlDataFieldNode.find("data").text.encode("utf-8")) + "\" for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This data will be ignored.")
+                  util.warning(profileName + ", func/type : Unsupported data type \"" + str(xmlDataFieldNode.find("data").text.encode("utf-8")) + "\" for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This data will be ignored.")
                   continue
                typeClass.addMember(cppClass.CppMember(historizerCppName, "boost::shared_ptr<" + cppHistorizerClassName + ">", \
                   cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(boost::make_shared<" + cppHistorizerClassName + ">(\"" + keywordName + "\"" + printCtorExtraParameters(ctorExtraParameters) + "))"))
@@ -338,7 +342,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          typeClass.addMethod(cppClass.CppMethod("sendCommand", "void", "const std::string& keyword, const std::string& commandBody, const std::string& senderId, boost::shared_ptr<IMessageHandler> messageHandler", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   throw std::logic_error(\"device supports no command sending\");"))
 
          if not historizersCppName:
-            util.warning("No historizer can be created for " + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) + " profile. Profile will be not supported.")
+            util.warning(profileName + ", No historizer can be created for this profile. Profile will be not supported.")
             continue
 
 
@@ -346,7 +350,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             offset = xmlDataFieldNode.find("bitoffs").text
             size = xmlDataFieldNode.find("bitsize").text
             code = "   {\n"
-            code += "      auto rawValue = bitset_extract(data, " + offset + ", " + size + ");\n"
+            code += "      const auto rawValue = bitset_extract(data, " + offset + ", " + size + ");\n"
             rangeMin = int(xmlDataFieldNode.find("range/min").text)
             rangeMax = int(xmlDataFieldNode.find("range/max").text)
             scaleMin = float(xmlDataFieldNode.find("scale/min").text)
@@ -355,7 +359,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                scaleMin = scaleMin * float(applyCoef)
                scaleMax = scaleMax * float(applyCoef)
             multiplier = (scaleMax - scaleMin) / (rangeMax - rangeMin);
-            code += "      auto value = " + str(multiplier) + " * (static_cast<signed>(rawValue) - " + str(rangeMin) + ") + " + str(scaleMin) + ";\n"
+            code += "      const auto value = " + str(multiplier) + " * (static_cast<signed>(rawValue) - " + str(rangeMin) + ") + " + str(scaleMin) + ";\n"
             keywordName = xmlDataFieldNode.find("shortcut").text + " - " + xmlDataFieldNode.find("data").text
             historizerCppName = "m_" + cppHelper.toCppName(keywordName)
             if finalCast is not None:
@@ -384,6 +388,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      dataText == "Barometer" or \
                      dataText == "Supply voltage" or \
                      dataText == "Illumination" or \
+                     dataText == "Dawn sensor" or \
                      dataText == "Illuminance":
                      code += statesCodeForLinearValue(xmlDataFieldNode)
                   elif str(dataText.encode("utf-8")) == "Sun – West" \
