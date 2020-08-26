@@ -130,7 +130,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   m_lightManagers.push_back(CFactory::createLightManager(m_urlsManager[i]));
                   m_detectedLightsByBridge.push_back(m_lightManagers[i]->getAllLights());
-                  declareDeviceByBdrige();
+                  declareDeviceByBrdige();
                }
             }
             else
@@ -315,7 +315,7 @@ void CPhilipsHue::declareDevice()
    }
 }
 
-void CPhilipsHue::declareDeviceByBdrige()
+void CPhilipsHue::declareDeviceByBrdige()
 {
    for (auto i = 0; i < m_detectedLightsByBridge.size(); i++)
    {

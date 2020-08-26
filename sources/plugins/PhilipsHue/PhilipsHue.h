@@ -57,7 +57,7 @@ private:
 
    void closeReadingBridgeButtonState();
    void declareDevice();
-   void declareDeviceByBdrige();
+   void declareDeviceByBrdige();
 
    boost::shared_ptr<yApi::historization::CSwitch> m_switch;
    boost::shared_ptr<yApi::historization::CColorRGB> m_rgb;
