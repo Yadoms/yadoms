@@ -91,10 +91,6 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
                                                         double dimTimer2,
                                                         double dimTimer3)
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          targetId,
-                                          0);
    boost::dynamic_bitset<> data(4 * 8);
 
    bitset_insert(data, 4, 4, kActuatorSetLocal);
@@ -121,10 +117,6 @@ void CProfile_D2_01_Common::sendActuatorStatusQuery(boost::shared_ptr<IMessageHa
                                                     const std::string& targetId,
                                                     EOutputChannel outputChannel)
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          targetId,
-                                          0);
    boost::dynamic_bitset<> data(2 * 8);
 
    bitset_insert(data, 4, 4, kActuatorStatusQuery);
@@ -290,10 +282,6 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
                                                               double minEnergyMeasureRefreshTime,
                                                               double maxEnergyMeasureRefreshTime)
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          targetId,
-                                          0);
    boost::dynamic_bitset<> data(6 * 8);
 
    bitset_insert(data, 4, 4, kActuatorSetMeasurement);
@@ -502,10 +490,6 @@ void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boos
                                                                             double delayRadioOffTimerSeconds,
                                                                             bool switchingStateToggle)
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          targetId,
-                                          0);
    boost::dynamic_bitset<> data(7 * 8);
 
    bitset_insert(data, 4, 4, kActuatorSetExternalInterfaceSettings);
