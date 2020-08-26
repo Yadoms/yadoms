@@ -236,6 +236,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             shortcutText = xmlDataFieldNode.find("shortcut").text
             if dataText == "Button coding" and shortcutText == "BC":
                return True
+            if dataText == "LRN Bit" and shortcutText == "LRNB":
+               return True
+            if dataText == "Learn Button" and shortcutText == "LRN":
+               return True
             return False
 
 
@@ -307,6 +311,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      if not supportedUnit(xmlDataFieldNode, u"lx"):
                         continue
                      cppHistorizerClassName = "yApi::historization::CIllumination"
+                  elif dataText == "Wind speed":
+                     if not supportedUnit(xmlDataFieldNode, u"m/s"):
+                        continue
+                     cppHistorizerClassName = "yApi::historization::CSpeed"
                   elif str(dataText.encode("utf-8")) == "Sun – West" \
                      or str(dataText.encode("utf-8")) == "Sun – South" \
                      or str(dataText.encode("utf-8")) == "Sun – East":            
@@ -398,7 +406,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      dataText == "Supply voltage" or \
                      dataText == "Illumination" or \
                      dataText == "Dawn sensor" or \
-                     dataText == "Illuminance":
+                     dataText == "Illuminance" or \
+                     dataText == "Wind speed":
                      code += statesCodeForLinearValue(xmlDataFieldNode)
                   elif str(dataText.encode("utf-8")) == "Sun – West" \
                      or str(dataText.encode("utf-8")) == "Sun – South" \
