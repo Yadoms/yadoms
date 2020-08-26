@@ -231,6 +231,13 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                return False
             return True
 
+         def isIgnoredValue(xmlDataFieldNode):
+            dataText = xmlDataFieldNode.find("data").text
+            shortcutText = xmlDataFieldNode.find("shortcut").text
+            if dataText == "Button coding" and shortcutText == "BC":
+               return True
+            return False
+
 
          def supportedUnit(xmlDataFieldNode, expectedUnit):
             if expectedUnit is not None and xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text == expectedUnit:
@@ -320,6 +327,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                   cppHistorizerClass = createSpecificEnumHistorizer(xmlDataFieldNode, xmlTypeNode)
                   typeClass.addDependency(cppHistorizerClass)
                   cppHistorizerClassName = cppHistorizerClass.cppClassName()
+               elif isIgnoredValue(xmlDataFieldNode):
+                  continue
                else:
                   util.warning(profileName + ", func/type : Unsupported data type \"" + str(xmlDataFieldNode.find("data").text.encode("utf-8")) + "\" for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This data will be ignored.")
                   continue
@@ -402,6 +411,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      continue
                elif isBoolValue(xmlDataFieldNode):
                   code += statesCodeForBoolValue(xmlDataFieldNode)
+               elif isIgnoredValue(xmlDataFieldNode):
+                  continue
                else:
                   util.warning("func/type : Unsupported data type \"" + str(xmlDataFieldNode.find("data").text.encode("utf-8")) + "\" for \"" + str(xmlTypeNode.find("title").text.encode("utf-8")) + "\" node. This data will be ignored.")
                   continue
