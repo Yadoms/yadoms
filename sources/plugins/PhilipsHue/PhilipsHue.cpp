@@ -72,22 +72,48 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
             auto lightName = command->getDevice();
-            m_lightManager->setLightId(lightName, m_detectedLights);
-            if (command->getKeyword() == LightState)
+            if (m_configuration.getPairingMode() == kAuto)
             {
-               if (command->getBody() == "1")
+               const auto deviceDetails = m_api->getDeviceDetails(lightName);
+               const auto bridgeId = std::stoi(deviceDetails->get<std::string>("bridgeId"));
+
+               m_lightManagers[bridgeId]->setLightId(lightName, m_detectedLightsByBridge[bridgeId]);
+               if (command->getKeyword() == LightState)
                {
-                  m_lightManager->lightOn();
+                  if (command->getBody() == "1")
+                  {
+                     m_lightManagers[bridgeId]->lightOn();
+                  }
+                  else
+                  {
+                     m_lightManagers[bridgeId]->lightOff();
+                  }
                }
-               else
+               else if (command->getKeyword() == RgbColor)
                {
-                  m_lightManager->lightOff();
+                  m_lightManagers[bridgeId]->setLightColorUsingXy(command->getBody());
                }
             }
-            else if (command->getKeyword() == RgbColor)
+            else
             {
-               m_lightManager->setLightColorUsingXy(command->getBody());
+               m_lightManager->setLightId(lightName, m_detectedLights);
+               if (command->getKeyword() == LightState)
+               {
+                  if (command->getBody() == "1")
+                  {
+                     m_lightManager->lightOn();
+                  }
+                  else
+                  {
+                     m_lightManager->lightOff();
+                  }
+               }
+               else if (command->getKeyword() == RgbColor)
+               {
+                  m_lightManager->setLightColorUsingXy(command->getBody());
+               }
             }
+
             break;
          }
       case kCustomEvent:
@@ -103,8 +129,8 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                for (auto i = 0; i < m_HuesInformations.size(); i++)
                {
                   m_lightManagers.push_back(CFactory::createLightManager(m_urlsManager[i]));
-                  m_detectedLights = m_lightManagers[i]->getAllLights();
-                  declareDevice();
+                  m_detectedLightsByBridge.push_back(m_lightManagers[i]->getAllLights());
+                  declareDeviceByBdrige();
                }
             }
             else
@@ -154,7 +180,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   declareDevice();
                   extraQuery->sendSuccess(shared::CDataContainer::make());
                }
-               else if(extraQuery->getData()->query() == "searchForBridge")
+               else if (extraQuery->getData()->query() == "searchForBridge")
                {
                   init();
                }
@@ -172,7 +198,6 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CPhilipsHue::init()
 {
-
    if (m_configuration.getPairingMode() == kAuto)
    {
       fillHuesInformations();
@@ -214,7 +239,6 @@ void CPhilipsHue::init()
 
 void CPhilipsHue::fillHuesInformations()
 {
-   m_urlManager = boost::make_shared<CUrlManager>(m_configuration);
    m_hueBridgeDiscovery = CFactory::createHueBridgeDiscovery();
    try
    {
@@ -276,7 +300,6 @@ void CPhilipsHue::closeReadingBridgeButtonState()
    {
       m_hueService->closeReadingBridgeButtonState();
    }
-
 }
 
 void CPhilipsHue::declareDevice()
@@ -289,5 +312,25 @@ void CPhilipsHue::declareDevice()
                               detectedLight.second.type,
                               detectedLight.second.modelid,
                               m_historizers);
+   }
+}
+
+void CPhilipsHue::declareDeviceByBdrige()
+{
+   for (auto i = 0; i < m_detectedLightsByBridge.size(); i++)
+   {
+      for (auto j = 1; j <= m_detectedLightsByBridge[i].size(); j++)
+      {
+         std::map<std::string, std::string> bridgeId;
+         bridgeId.insert(std::pair<std::string, std::string>("bridgeId", std::to_string(i)));
+
+         YADOMS_LOG(information) << "Creating the device :" << m_detectedLightsByBridge[i].at(j).name;
+         if (!m_api->deviceExists(m_detectedLightsByBridge[i].at(j).name))
+            m_api->declareDevice(m_detectedLightsByBridge[i].at(j).name,
+                                 m_detectedLightsByBridge[i].at(j).type,
+                                 m_detectedLightsByBridge[i].at(j).modelid,
+                                 m_historizers,
+                                 shared::CDataContainer::make(bridgeId));
+      }
    }
 }

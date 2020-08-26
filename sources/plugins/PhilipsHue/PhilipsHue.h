@@ -53,9 +53,11 @@ private:
    std::vector<boost::shared_ptr<ILightManager>> m_lightManagers;
 
    std::map<int, HueLightInformations> m_detectedLights;
+   std::vector<std::map<int, HueLightInformations>> m_detectedLightsByBridge;
 
    void closeReadingBridgeButtonState();
    void declareDevice();
+   void declareDeviceByBdrige();
 
    boost::shared_ptr<yApi::historization::CSwitch> m_switch;
    boost::shared_ptr<yApi::historization::CColorRGB> m_rgb;
