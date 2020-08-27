@@ -36,7 +36,7 @@
             },
             "customText": {
                "name": "Custom text",
-               "description": "Custom text to display below the icon (Optionnel)"
+               "description": "Custom text to display below the icon (Optional)"
             },
             "fileContent": {
                "name": "Icon",
