@@ -280,6 +280,8 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_A5_13_07.h
    profiles/hardCoded/Profile_A5_13_08.cpp
    profiles/hardCoded/Profile_A5_13_08.h
+   profiles/hardCoded/Profile_A5_13_10.cpp
+   profiles/hardCoded/Profile_A5_13_10.h
    
    profiles/hardCoded/Profile_D2_01_Common.cpp
    profiles/hardCoded/Profile_D2_01_Common.h

@@ -62,7 +62,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       m_dawn->set(static_cast<double>(bitset_extract(data, 0, 8)) * 1000.0 / 255.0);
       m_temperature->set(static_cast<double>(bitset_extract(data, 8, 8)) * 120.0 / 255.0 - 40.0);
       m_windSpeed->set(static_cast<double>(bitset_extract(data, 16, 8)) * 70.0 / 255.0);
-      m_dayLight->set(bitset_extract(data, 29, 1) ? true : false);
+      m_dayLight->set(bitset_extract(data, 29, 1) ? false : true);
       m_rain->set(bitset_extract(data, 30, 1) ? true : false);
 
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>({
