@@ -104,7 +104,7 @@ void CProfile_A5_13_04::sendConfiguration(const shared::CDataContainer& deviceCo
    // Device supports no configuration
 }
 
-unsigned short CProfile_A5_13_04::convertTo24HFormat(int amPmHour,
+unsigned short CProfile_A5_13_04::convertTo24HFormat(unsigned short amPmHour,
                                                      bool isPm)
 {
    if (isPm)

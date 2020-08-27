@@ -5,12 +5,12 @@
 #include "specificHistorizers/DayOfWeek.h"
 
 
-class CProfile_A5_13_04 : public IType
+class CProfile_A5_13_08 : public IType
 {
 public:
-   CProfile_A5_13_04(const std::string& deviceId,
+   CProfile_A5_13_08(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_A5_13_04() = default;
+   virtual ~CProfile_A5_13_08() = default;
 
    // IType implementation
    const std::string& profile() const override;
@@ -35,13 +35,9 @@ public:
    // [END] IType implementation
 
 private:
-   static unsigned short convertTo24HFormat(unsigned short amPmHour,
-                                            bool isPm);
-
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    const std::string m_deviceId;
-   boost::shared_ptr<specificHistorizers::CDayOfWeek> m_dayOfWeek;
-   boost::shared_ptr<yApi::historization::CDuration> m_time;
-   boost::shared_ptr<yApi::historization::CSwitch> m_gpsSource;
+   boost::shared_ptr<yApi::historization::CRain> m_rain;
+   boost::shared_ptr<yApi::historization::CBatteryLevel> m_battery;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };

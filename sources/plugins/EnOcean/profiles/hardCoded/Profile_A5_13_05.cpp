@@ -70,19 +70,3 @@ void CProfile_A5_13_05::sendConfiguration(const shared::CDataContainer& deviceCo
 {
    // Device supports no configuration
 }
-
-unsigned short CProfile_A5_13_05::convertTo24HFormat(unsigned short amPmHour,
-                                                     bool isPm)
-{
-   if (isPm)
-   {
-      // PM
-      if (amPmHour == 12)
-         return amPmHour;
-      return amPmHour + 12;
-   }
-   // AM
-   if (amPmHour == 12)
-      return 0;
-   return amPmHour;
-}

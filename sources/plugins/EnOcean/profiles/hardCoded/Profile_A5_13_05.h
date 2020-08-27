@@ -35,9 +35,6 @@ public:
    // [END] IType implementation
 
 private:
-   static unsigned short convertTo24HFormat(unsigned short amPmHour,
-                                            bool isPm);
-
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CDirection> m_elevation;
