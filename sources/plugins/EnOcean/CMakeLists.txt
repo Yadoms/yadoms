@@ -75,6 +75,8 @@ set(ENOCEAN_SOURCES
    specificHistorizers/ConcentrationGramPerMeterCube.cpp
    specificHistorizers/CountPerSecondRadioActivity.h
    specificHistorizers/CountPerSecondRadioActivity.cpp
+   specificHistorizers/DayOfWeek.h
+   specificHistorizers/DayOfWeek.cpp
    specificHistorizers/DimmerModeHistorizer.h
    specificHistorizers/DimmerModeHistorizer.cpp
    specificHistorizers/Fan4Speeds.h
@@ -268,8 +270,14 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_A5_13_02.h
    profiles/hardCoded/Profile_A5_13_03.cpp
    profiles/hardCoded/Profile_A5_13_03.h
+   profiles/hardCoded/Profile_A5_13_04.cpp
+   profiles/hardCoded/Profile_A5_13_04.h
+   profiles/hardCoded/Profile_A5_13_05.cpp
+   profiles/hardCoded/Profile_A5_13_05.h
    profiles/hardCoded/Profile_A5_13_06.cpp
    profiles/hardCoded/Profile_A5_13_06.h
+   profiles/hardCoded/Profile_A5_13_07.cpp
+   profiles/hardCoded/Profile_A5_13_07.h
    
    profiles/hardCoded/Profile_D2_01_Common.cpp
    profiles/hardCoded/Profile_D2_01_Common.h
