@@ -35,12 +35,12 @@
                }
             },
             "customText": {
-               "name": "Texte personnalisé",
-               "description": "Texte personnalisé à afficher en dessous de l'icône"
+               "name": "Custom text",
+               "description": "Custom text to display below the icon (Optionnel)"
             },
             "fileContent": {
-               "name": "Icône",
-               "description": "Chemin de l'icône à envoyer au plugin"
+               "name": "Icon",
+               "description": "Path of the icon"
             }
          }
       }
