@@ -36,7 +36,7 @@
             },
             "customText": {
                "name": "Texte personnalisé",
-               "description": "Texte personnalisé à afficher en dessous de l'icône"
+               "description": "Texte personnalisé à afficher en dessous de l'icône(optionnel)"
             },
             "fileContent": {
                "name": "Icône",
