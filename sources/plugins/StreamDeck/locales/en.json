@@ -38,11 +38,37 @@
                "name": "Custom text",
                "description": "Custom text to display below the icon (Optional)"
             },
-            "fileContent": {
-               "name": "Icon",
-               "description": "Path of the icon"
+            "iconSelectionMode": {
+               "name": "selection mode",
+               "type": "comboSection",
+               "content": {
+                  "CustomSelection": {
+                     "name": "Custom Selection",
+                     "description": "Upload your own images",
+                     "content": {
+                        "fileContent": {
+                           "name": "Icon",
+                           "description": "Path of the icon"
+                        }
+                     }
+                  },
+                  "defaultSelection": {
+                     "name": "Default Selection",
+                     "description": "Select our default icons",
+                     "dynamicSection": {
+                        "name": "List of available icons",
+                        "description": "Please choose your icon",
+                        "content": {
+                           "interval": {
+                              "name": "icons list",
+                              "description": "icons list"
+                           }
+                        }
+                     }
+                     }
+                  }
             }
-         }
+            }
       }
    }
 }

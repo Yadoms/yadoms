@@ -2,6 +2,8 @@
 #include <plugin_cpp_api/IPlugin.h>
 #include "Configuration.h"
 #include "DeviceManagerHelper.h"
+#include "DefaultIconSelector.h"
+
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
