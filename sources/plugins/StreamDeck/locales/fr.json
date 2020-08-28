@@ -5,7 +5,7 @@
       "UsbDevices": {
          "name": "Périphérique USB",
          "description": "Sélectionner un périphérique compatible"
-      } 
+      }
    },
    "customLabels": {
       "pluginState": {
@@ -53,24 +53,18 @@
                      }
                   },
                   "defaultSelection": {
-                     "name": "Le mode de sélection par defaut",
-                     "description": "Sélection des images par defaut",
-                     "dynamicSection": {
-                        "name": "La liste des icône disponibles",
-                        "description": "Veuillez choisir une icône",
-                        "content": {
-                           "interval": {
-                              "name": "La liste des icône",
-                              "description": "La liste des icône"
-                           }
+                     "name": "La liste des icône disponibles",
+                     "description": "Veuillez choisir une icône",
+                     "content": {
+                        "interval": {
+                           "name": "La liste des icône",
+                           "description": "La liste des icône"
                         }
                      }
                   }
                }
             }
          }
-
       }
    }
 }
-
