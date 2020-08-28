@@ -67,6 +67,8 @@ set(ENOCEAN_SOURCES
    message/UTE_ReceivedMessage.h
    message/UTE_ReceivedMessage.cpp
    
+   specificHistorizers/Analog.h
+   specificHistorizers/Analog.cpp
    specificHistorizers/BlindLockingMode.h
    specificHistorizers/BlindLockingMode.cpp
    specificHistorizers/ConcentrationPpm.h
@@ -282,6 +284,16 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_A5_13_08.h
    profiles/hardCoded/Profile_A5_13_10.cpp
    profiles/hardCoded/Profile_A5_13_10.h
+
+   profiles/hardCoded/Profile_A5_14_09.cpp
+   profiles/hardCoded/Profile_A5_14_09.h
+   profiles/hardCoded/Profile_A5_14_0A.cpp
+   profiles/hardCoded/Profile_A5_14_0A.h
+
+   profiles/hardCoded/Profile_A5_30_01.cpp
+   profiles/hardCoded/Profile_A5_30_01.h
+   profiles/hardCoded/Profile_A5_30_04.cpp
+   profiles/hardCoded/Profile_A5_30_04.h
    
    profiles/hardCoded/Profile_D2_01_Common.cpp
    profiles/hardCoded/Profile_D2_01_Common.h
