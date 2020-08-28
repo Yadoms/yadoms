@@ -13,9 +13,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    Destructor
          //--------------------------------------------------------------
-         virtual ~ITimeEvent()
-         {
-         }
+         virtual ~ITimeEvent() = default;
 
          //--------------------------------------------------------------
          /// \brief	    Get the next stop point
@@ -34,7 +32,7 @@ namespace shared
          /// \brief	    Check if time event can be removed from the event handler time events list
          ///             (for example if no more make sense because no more event is to come).
          /// \return     true if the time event can be removed from the event handler list
-         /// \note       Normaly only called by event handler
+         /// \note       Normally only called by event handler
          //--------------------------------------------------------------
          virtual bool canBeRemoved() const = 0;
 
