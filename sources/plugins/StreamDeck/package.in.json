@@ -45,12 +45,38 @@
                "type": "string",
                "required": "false"
             },
-            "fileContent": {
-               "type": "file",
-               "filter": ".png",
-               "required": "true"
+            "iconSelectionMode": {
+               "type": "comboSection",
+               "content": {
+                  "CustomSelection": {
+                     "name": "Custom",
+                     "type": "section",
+                     "content": {
+                        "fileContent": {
+                           "type": "file",
+                           "filter": ".png",
+                           "required": "true"
+                        }
+                     }
+                  },
+                  "defaultSelection": {
+                     "name": "Default",
+                     "type": "section",
+                     "content": {
+                        "dynamicSection": {
+                           "type": "section",
+                           "content": {
+                              "__Binding__": {
+                                 "type": "plugin",
+                                 "query": "iconSelectionMode"
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
             }
-         }
+            }
       }
    }
 }
