@@ -38,6 +38,45 @@ const std::string LightColorPath(IconsImgPath +"/LightColor.png");
 const std::string PartyPopperPath(IconsImgPath +"/PartyPopper.png");
 const std::string SystemBackPath(IconsImgPath +"/SystemBack.png");
 
+DECLARE_ENUM_IMPLEMENTATION(EDefaultIconType,
+                           ((BrightnessDecrease))
+                           ((BrightnessHigh))
+                           ((BrightnessLow))
+                           ((BrightnessMax))
+                           ((BrightnessMin))
+                           ((Duration))
+                           ((Folder))
+                           ((MediaMute))
+                           ((MediaNextTrack))
+                           ((MediaPlayPause))
+                           ((MediaPrevTrack))
+                           ((MediaStop))
+                           ((MediaUnMute))
+                           ((MediaVolumeDown))
+                           ((MediaVolumeUp))
+                           ((OpenWebsite))
+                           ((SystemLaunch))
+                           ((ToggleMicro))
+                           ((ToggleMicroInactive))
+                           ((MixerPostMessage))
+                           ((MixerToggleSlowchat))
+                           ((MixerToggleSlowchatInactive))
+                           ((ToggleHotkey))
+                           ((ToggleHotkeyOff))
+                           ((On))
+                           ((Off))
+                           ((Plus))
+                           ((Minus))
+                           ((ColorBrightness))
+                           ((ColorTemperature))
+                           ((Contrast))
+                           ((BroadcastOn))
+                           ((BroadcastOff))
+                           ((LightColor))
+                           ((PartyPopper))
+                           ((SystemBack))
+
+);
 EIconSelectionMode CDefaultIconSelector::getIconSelectionMode(
    boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery>& extraQuery)
 {
@@ -45,4 +84,15 @@ EIconSelectionMode CDefaultIconSelector::getIconSelectionMode(
              "iconSelectionMode.activeSectionText") == "Custom"
              ? kCustom
              : kDefault;
+}
+
+std::vector<std::string> CDefaultIconSelector::getAllDefaultIconNames()
+{
+   std::vector<std::string> defaultIcons;
+   for (auto i = 0; i < EDefaultIconType::kSystemBack; i++)
+   {
+      auto eCurrentDefaultIcon = static_cast<EDefaultIconType>(i);
+      defaultIcons.push_back(eCurrentDefaultIcon.toString());
+   }
+   return defaultIcons;
 }
