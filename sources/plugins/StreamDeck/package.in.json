@@ -54,7 +54,7 @@
                      "content": {
                         "fileContent": {
                            "type": "file",
-                           "filter": ".png",
+                           "filter": [ ".png","jpeg"],
                            "required": "true"
                         }
                      }
@@ -63,20 +63,15 @@
                      "name": "Default",
                      "type": "section",
                      "content": {
-                        "dynamicSection": {
-                           "type": "section",
-                           "content": {
-                              "__Binding__": {
-                                 "type": "plugin",
-                                 "query": "iconSelectionMode"
-                              }
-                           }
+                        "__Binding__": {
+                           "type": "plugin",
+                           "query": "iconSelectionMode"
                         }
                      }
                   }
                }
             }
-            }
+         }
       }
    }
 }
