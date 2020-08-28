@@ -53,23 +53,18 @@
                      }
                   },
                   "defaultSelection": {
-                     "name": "Default Selection",
-                     "description": "Select our default icons",
-                     "dynamicSection": {
-                        "name": "List of available icons",
-                        "description": "Please choose your icon",
-                        "content": {
-                           "interval": {
-                              "name": "icons list",
-                              "description": "icons list"
-                           }
+                     "name": "List of available icons",
+                     "description": "Please choose your icon",
+                     "content": {
+                        "interval": {
+                           "name": "icons list",
+                           "description": "icons list"
                         }
                      }
-                     }
                   }
+               }
             }
-            }
+         }
       }
    }
 }
-

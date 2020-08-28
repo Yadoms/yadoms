@@ -161,7 +161,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Extra-command was received from Yadoms
             auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
-
+              
             if (extraQuery)
             {
                YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
@@ -208,7 +208,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   else
                   {
                      auto iconName = extraQuery->getData()->data()->get<std::string>(
-                        "iconSelectionMode.content.defaultSelection.content.dynamicSection");
+                        "iconSelectionMode.content.defaultSelection.content.interval");
                      extraQuery->sendSuccess(shared::CDataContainer::make());
                   }
                }
