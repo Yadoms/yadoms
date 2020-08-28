@@ -21,6 +21,18 @@
                      {
                         "vendorId": 4057,
                         "productId": 96
+                     },
+                     {
+                        "vendorId": 4057,
+                        "productId": 109
+                     },
+                     {
+                        "vendorId": 4057,
+                        "productId": 99
+                     },
+                     {
+                        "vendorId": 4057,
+                        "productId": 108
                      }
                   ]
                }
@@ -65,7 +77,8 @@
                      "content": {
                         "__Binding__": {
                            "type": "plugin",
-                           "query": "iconSelectionMode"
+                           "query": "iconSelectionMode",
+                           "required": "true"
                         }
                      }
                   }
