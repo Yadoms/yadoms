@@ -29,6 +29,10 @@ if(OpenCV_FOUND)
 			ImageHelper.cpp
 			ImageHelper.h
 			hidapi/header/hidapi.h
+			DefaultIconSelector.h
+			DefaultIconSelector.cpp
+			FileManager.h
+			FileManager.cpp
 		)
 		if(WIN32)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
@@ -117,6 +121,8 @@ if(OpenCV_FOUND)
 		PLUGIN_SOURCES(StreamDeck ${STREAMDECK_PLUGIN_SOURCES})
 		PLUGIN_INCLDIR(StreamDeck ${STREAMDECK_PLUGIN_INCLDIR})
 		PLUGIN_LINK(StreamDeck ${STREAMDECK_PLUGIN_LINK})
+
+		PLUGIN_POST_BUILD_COPY_DIRECTORY(StreamDeck icons_img)
 else()
    message(WARNING "StreamDeck plugin is not available. OpenCV is Missing")
 endif()
