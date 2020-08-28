@@ -3,7 +3,6 @@
 #include <hidapi.h>
 #include <shared/Log.h>
 
-const uint16_t CDeviceManager::StreamDeckVendorId = 0x0FD9;
 const bool CDeviceManager::isNonBlocking = true;
 
 CDeviceManager::CDeviceManager(CConfiguration& configuration, shared::event::CEventHandler& mainEventHandler,
@@ -35,10 +34,10 @@ void CDeviceManager::open()
 
 void CDeviceManager::close()
 {
-	hid_close(m_handle);
-	hid_exit();
 	m_readKeyThread->interrupt();
 	m_readKeyThread->join();
+	hid_close(m_handle);
+	hid_exit();
 }
 
 void CDeviceManager::runKeyStateThread()

@@ -32,8 +32,6 @@ private:
 
 	CConfiguration m_configuration;
 	
-	static const uint16_t StreamDeckVendorId;
-
 	boost::shared_ptr<boost::thread>  m_readKeyThread;
 	shared::event::CEventHandler& m_mainEventHandler;
 	int m_mainEvtKeyStateReceived;
