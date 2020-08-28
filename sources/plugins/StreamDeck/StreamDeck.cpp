@@ -126,15 +126,9 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->keyCols,
                                                            m_usbDeviceInformation->keyRows);
 
-               shared::CDataContainer ev;
-               for (const auto& key : keys)
-               {
-                  ev.set(key, key);
-               }
-
                shared::CDataContainer en;
                en.set("type", "enum");
-               en.set("values", ev);
+               en.set("values", keys);
                en.set("defaultValue", "KEY #0");
 
                auto result = shared::CDataContainer::make();
@@ -144,14 +138,11 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             else if (request->getData().getQuery() == "iconSelectionMode")
             {
-               shared::CDataContainer values;
-               values.set("1", 1);
-               values.set("2", 2);
-               values.set("3", 3);
+               auto defaultIconsNames = CDefaultIconSelector::getAllDefaultIconNames();
                shared::CDataContainer en;
                en.set("type", "enum");
-               en.set("values", values);
-               en.set("defaultValue", "1");
+               en.set("values", defaultIconsNames);
+               en.set("defaultValue", defaultIconsNames[0]);
 
                auto result = shared::CDataContainer::make();
                result->set("interval", en);
@@ -177,15 +168,13 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                if (extraQuery->getData()->query() == "createKey")
                {
-                  auto interval = extraQuery->getData()->data()->get<std::string>(
+                  auto keyIndex = extraQuery->getData()->data()->get<int>(
                      "dynamicSection.content.interval");
-
-                  auto keyIndex = CDeviceManagerHelper::getKeyIndex(interval);
 
                   auto customText = extraQuery->getData()->data()->get<std::string>(
                      "customText");
 
-                  YADOMS_LOG(information) << "Command with plugin bind data received : value=" << interval;
+                  YADOMS_LOG(information) << "Command with plugin bind data received : value=" << keyIndex;
                   if (CDefaultIconSelector::getIconSelectionMode(extraQuery) == kCustom)
                   {
                      auto fileFromClient = extraQuery->getData()->data()->get<yApi::configuration::CFile>(
@@ -215,6 +204,12 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                            extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step4");
                         boost::this_thread::sleep(boost::posix_time::milliseconds(35));
                      }
+                  }
+                  else
+                  {
+                     auto iconName = extraQuery->getData()->data()->get<std::string>(
+                        "iconSelectionMode.content.defaultSelection.content.dynamicSection");
+                     extraQuery->sendSuccess(shared::CDataContainer::make());
                   }
                }
 
