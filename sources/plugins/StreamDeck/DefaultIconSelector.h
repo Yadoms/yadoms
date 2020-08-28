@@ -1,11 +1,51 @@
 ﻿#pragma once
 #include "shared/plugin/yPluginApi/IExtraQuery.h"
+#include <shared/enumeration/EnumHelpers.hpp>
 
 enum EIconSelectionMode
 {
    kCustom = 0,
    kDefault
 };
+
+DECLARE_ENUM_HEADER(EDefaultIconType,
+                           ((BrightnessDecrease))
+                           ((BrightnessHigh))
+                           ((BrightnessLow))
+                           ((BrightnessMax))
+                           ((BrightnessMin))
+                           ((Duration))
+                           ((Folder))
+                           ((MediaMute))
+                           ((MediaNextTrack))
+                           ((MediaPlayPause))
+                           ((MediaPrevTrack))
+                           ((MediaStop))
+                           ((MediaUnMute))
+                           ((MediaVolumeDown))
+                           ((MediaVolumeUp))
+                           ((OpenWebsite))
+                           ((SystemLaunch))
+                           ((ToggleMicro))
+                           ((ToggleMicroInactive))
+                           ((MixerPostMessage))
+                           ((MixerToggleSlowchat))
+                           ((MixerToggleSlowchatInactive))
+                           ((ToggleHotkey))
+                           ((ToggleHotkeyOff))
+                           ((On))
+                           ((Off))
+                           ((Plus))
+                           ((Minus))
+                           ((ColorBrightness))
+                           ((ColorTemperature))
+                           ((Contrast))
+                           ((BroadcastOn))
+                           ((BroadcastOff))
+                           ((LightColor))
+                           ((PartyPopper))
+                           ((SystemBack))
+);
 
 class CDefaultIconSelector final
 {
@@ -15,6 +55,8 @@ public:
 
    static EIconSelectionMode getIconSelectionMode(
       boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery>& extraQuery);
+
+   static std::vector<std::string> getAllDefaultIconNames();
 private:
    static const std::string IconsImgPath;
    static const std::string BrightnessDecreasePath;
