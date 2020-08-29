@@ -161,7 +161,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Extra-command was received from Yadoms
             auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
-              
+
             if (extraQuery)
             {
                YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
@@ -222,7 +222,92 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             break;
          }
+      case yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest:
+         {
+         auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest>>();
 
+         auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->keyCols,
+            m_usbDeviceInformation->keyRows);
+
+         auto defaultIconsNames = CDefaultIconSelector::getAllDefaultIconNames();
+
+
+
+         auto body = shared::CDataContainer::make();
+
+         shared::CDataContainer mainSection;
+         mainSection.set("type", "section");
+         mainSection.set("name", "Key creation");
+         mainSection.set("description", "you can choose our custmo icons");
+
+         shared::CDataContainer subSection;
+         subSection.set("type", "section");
+         subSection.set("name", "Key#0 ");
+         subSection.set("enableWithCheckBox", "true");
+         subSection.set("enableWithCheckBoxDefaultValue", "false");
+
+         shared::CDataContainer iconsOptions;
+         iconsOptions.set("type", "enum");
+         iconsOptions.set("name", "icons");
+         iconsOptions.set("values", defaultIconsNames);
+         iconsOptions.set("defaultValue", defaultIconsNames[0]);
+
+         shared::CDataContainer customText;
+         customText.set("type", "string");
+         customText.set("name", "Custom text");
+         customText.set("required", "false");
+
+         shared::CDataContainer defaultIconsNamesContent;
+         defaultIconsNamesContent.set("defaultIconsNames", iconsOptions);
+
+         shared::CDataContainer customTextContent;
+         customTextContent.set("customText", customText);
+
+
+         subSection.createArray("content");
+         subSection.appendArray("content", iconsOptions);
+         subSection.appendArray("content", customText);
+
+         //subSection.set("content", defaultIconsNamesContent);
+         //subSection.set("content", customTextContent);
+
+         shared::CDataContainer subSectionContent;
+         subSectionContent.set("subSection", subSection);
+
+         mainSection.set("content", subSectionContent);
+
+         body->set("mainSection", mainSection);
+
+         auto ser = body->serialize();
+
+         deviceConfigurationSchemaRequest->sendSuccess(body);
+
+
+         //shared::CDataContainer keysOptions;
+         //keysOptions.set("type", "enum");
+         //keysOptions.set("name", "keys");
+         //keysOptions.set("values", keys);
+         //keysOptions.set("defaultValue", "KEY #0");
+         //auto defaultIconsNames = CDefaultIconSelector::getAllDefaultIconNames();
+         //shared::CDataContainer iconsOptions;
+         //iconsOptions.set("type", "enum");
+         //iconsOptions.set("name", "icons");
+         //iconsOptions.set("values", defaultIconsNames);
+         //iconsOptions.set("defaultValue", defaultIconsNames[0]);
+         //
+         //auto allValue = shared::CDataContainer::make();
+         ////allValue->set("mainSection", mainSection);
+         //allValue->set("keysValue", keysOptions);
+         //allValue->set("iconsValue", iconsOptions);
+         //
+         //deviceConfigurationSchemaRequest->sendSuccess(allValue);
+         //
+         ////deviceConfigurationSchemaRequest->sendSuccess(results);
+         
+       
+
+            break;
+         }
       default:
          {
             YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
