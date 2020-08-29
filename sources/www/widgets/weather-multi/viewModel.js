@@ -366,7 +366,8 @@ widgetViewModelCtor =
             var d = $.Deferred();
             DeviceManager.getKeywordsByDeviceId(deviceId)
                .done(function (keywords) {
-                  self.devices.push(new ConditionsDevice(keywords));
+                  index = self.devicesIdPerPeriod.indexOf(deviceId);
+                  self.devices[index] = new ConditionsDevice(keywords);
                   Array.prototype.push.apply(listenKeywordIds, keywords.map(kw => kw.id));
                   d.resolve();
                })
