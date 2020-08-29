@@ -231,14 +231,12 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          auto defaultIconsNames = CDefaultIconSelector::getAllDefaultIconNames();
 
-
-
          auto body = shared::CDataContainer::make();
 
          shared::CDataContainer mainSection;
          mainSection.set("type", "section");
          mainSection.set("name", "Key creation");
-         mainSection.set("description", "you can choose our custmo icons");
+         mainSection.set("description", "You can customize your key icon and text. If the key box is not checked, the key will be empty");
 
          shared::CDataContainer subSection;
          subSection.set("type", "section");
@@ -249,27 +247,19 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          shared::CDataContainer iconsOptions;
          iconsOptions.set("type", "enum");
          iconsOptions.set("name", "icons");
+         iconsOptions.set("description", "List of available icons");
          iconsOptions.set("values", defaultIconsNames);
          iconsOptions.set("defaultValue", defaultIconsNames[0]);
 
-         shared::CDataContainer customText;
-         customText.set("type", "string");
-         customText.set("name", "Custom text");
-         customText.set("required", "false");
-
-         shared::CDataContainer defaultIconsNamesContent;
-         defaultIconsNamesContent.set("defaultIconsNames", iconsOptions);
-
-         shared::CDataContainer customTextContent;
-         customTextContent.set("customText", customText);
-
+         shared::CDataContainer customTextOptions;
+         customTextOptions.set("type", "string");
+         customTextOptions.set("name", "Custom text");
+         customTextOptions.set("description", "Custom text to display below the icon (Optional)");
+         customTextOptions.set("required", "false");
 
          subSection.createArray("content");
          subSection.appendArray("content", iconsOptions);
-         subSection.appendArray("content", customText);
-
-         //subSection.set("content", defaultIconsNamesContent);
-         //subSection.set("content", customTextContent);
+         subSection.appendArray("content", customTextOptions);
 
          shared::CDataContainer subSectionContent;
          subSectionContent.set("subSection", subSection);
@@ -278,33 +268,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          body->set("mainSection", mainSection);
 
-         auto ser = body->serialize();
-
          deviceConfigurationSchemaRequest->sendSuccess(body);
-
-
-         //shared::CDataContainer keysOptions;
-         //keysOptions.set("type", "enum");
-         //keysOptions.set("name", "keys");
-         //keysOptions.set("values", keys);
-         //keysOptions.set("defaultValue", "KEY #0");
-         //auto defaultIconsNames = CDefaultIconSelector::getAllDefaultIconNames();
-         //shared::CDataContainer iconsOptions;
-         //iconsOptions.set("type", "enum");
-         //iconsOptions.set("name", "icons");
-         //iconsOptions.set("values", defaultIconsNames);
-         //iconsOptions.set("defaultValue", defaultIconsNames[0]);
-         //
-         //auto allValue = shared::CDataContainer::make();
-         ////allValue->set("mainSection", mainSection);
-         //allValue->set("keysValue", keysOptions);
-         //allValue->set("iconsValue", iconsOptions);
-         //
-         //deviceConfigurationSchemaRequest->sendSuccess(allValue);
-         //
-         ////deviceConfigurationSchemaRequest->sendSuccess(results);
-         
-       
 
             break;
          }
