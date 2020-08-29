@@ -224,51 +224,57 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest:
          {
-         auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest>>();
+            shared::CDataContainer mainSection;
+            mainSection.set("type", "section");
+            mainSection.set("name", "Key creation");
+            mainSection.set("description",
+                            "You can customize your key icon and text. If the key box is not checked, the key will be empty.");
 
-         auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->keyCols,
-            m_usbDeviceInformation->keyRows);
+            mainSection.createArray("content");
 
-         auto defaultIconsNames = CDefaultIconSelector::getAllDefaultIconNames();
 
-         auto body = shared::CDataContainer::make();
+            auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->keyCols,
+                                                        m_usbDeviceInformation->keyRows);
 
-         shared::CDataContainer mainSection;
-         mainSection.set("type", "section");
-         mainSection.set("name", "Key creation");
-         mainSection.set("description", "You can customize your key icon and text. If the key box is not checked, the key will be empty");
+            auto defaultIconsNames = CDefaultIconSelector::getAllDefaultIconNames();
 
-         shared::CDataContainer subSection;
-         subSection.set("type", "section");
-         subSection.set("name", "Key#0 ");
-         subSection.set("enableWithCheckBox", "true");
-         subSection.set("enableWithCheckBoxDefaultValue", "false");
+            for (auto& key : keys)
+            {
+               shared::CDataContainer subSection;
+               subSection.set("type", "section");
+               subSection.set("name", key);
+               subSection.set("enableWithCheckBox", "true");
+               subSection.set("enableWithCheckBoxDefaultValue", "false");
 
-         shared::CDataContainer iconsOptions;
-         iconsOptions.set("type", "enum");
-         iconsOptions.set("name", "icons");
-         iconsOptions.set("description", "List of available icons");
-         iconsOptions.set("values", defaultIconsNames);
-         iconsOptions.set("defaultValue", defaultIconsNames[0]);
+               shared::CDataContainer iconsOptions;
+               iconsOptions.set("type", "enum");
+               iconsOptions.set("name", "icons");
+               iconsOptions.set("description", "List of available icons");
+               iconsOptions.set("values", defaultIconsNames);
+               iconsOptions.set("defaultValue", defaultIconsNames[0]);
 
-         shared::CDataContainer customTextOptions;
-         customTextOptions.set("type", "string");
-         customTextOptions.set("name", "Custom text");
-         customTextOptions.set("description", "Custom text to display below the icon (Optional)");
-         customTextOptions.set("required", "false");
+               shared::CDataContainer customTextOptions;
+               customTextOptions.set("type", "string");
+               customTextOptions.set("name", "Custom text");
+               customTextOptions.set("description", "Custom text to display below the icon (Optional)");
+               customTextOptions.set("required", "false");
 
-         subSection.createArray("content");
-         subSection.appendArray("content", iconsOptions);
-         subSection.appendArray("content", customTextOptions);
+               subSection.createArray("content");
+               subSection.appendArray("content", iconsOptions);
+               subSection.appendArray("content", customTextOptions);
 
-         shared::CDataContainer subSectionContent;
-         subSectionContent.set("subSection", subSection);
+               shared::CDataContainer subSectionContent;
+               subSectionContent.set("subSection", subSection);
 
-         mainSection.set("content", subSectionContent);
+               mainSection.appendArray("content", subSection);
+            }
+            auto body = shared::CDataContainer::make();
+            body->set("mainSection", mainSection);
 
-         body->set("mainSection", mainSection);
-
-         deviceConfigurationSchemaRequest->sendSuccess(body);
+            auto deviceConfigurationSchemaRequest = api
+                                                    ->getEventHandler().getEventData<boost::shared_ptr<yApi::
+                                                       IDeviceConfigurationSchemaRequest>>();
+            deviceConfigurationSchemaRequest->sendSuccess(body);
 
             break;
          }
