@@ -274,9 +274,36 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto deviceConfigurationSchemaRequest = api
                                                     ->getEventHandler().getEventData<boost::shared_ptr<yApi::
                                                        IDeviceConfigurationSchemaRequest>>();
+
+            auto json = body->serialize();
             deviceConfigurationSchemaRequest->sendSuccess(body);
 
             break;
+         }
+      case yApi::IYPluginApi::kSetDeviceConfiguration:
+         {
+         // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+         auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+         auto config = deviceConfiguration->configuration();
+         YADOMS_LOG(information) << "Configuration = " << config->serialize();
+
+         auto pluginPath = api->getInformation()->getPath().string();
+         auto keyCounter = 0;
+         while (config->exists("mainSection.content." + std::to_string(keyCounter)))
+         {
+            auto isKeyChecked = config->get<bool>("mainSection.content." + std::to_string(keyCounter) + ".checkbox");
+            if(isKeyChecked)
+            {
+               auto iconNameIndex = config->get<int>("mainSection.content." + std::to_string(keyCounter) + ".content.0");
+
+               auto iconpath = CDefaultIconSelector::getIconPath(pluginPath, iconNameIndex);
+               auto customText = config->get<std::string>("mainSection.content." + std::to_string(keyCounter) + ".content.1");
+               keyCounter++;
+            }
+
+         }
+         YADOMS_LOG(information) << "Extra command received : " << config;
+         break;
          }
       default:
          {
