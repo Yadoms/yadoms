@@ -305,6 +305,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                auto img = fileManager.getData();
                fileManager.close();
 
+               m_deviceManager->setKeyImage(img, keyCounter, customText);
                keyCounter++;
             }
 
