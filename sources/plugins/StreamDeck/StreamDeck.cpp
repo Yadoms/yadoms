@@ -5,6 +5,7 @@
 #include <shared/Log.h>
 #include "DeviceManager.h"
 #include <shared/plugin/yPluginApi/configuration/File.h>
+#include "FileManager.h"
 
 IMPLEMENT_PLUGIN(CStreamDeck)
 
@@ -298,6 +299,12 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                auto iconpath = CDefaultIconSelector::getIconPath(pluginPath, iconNameIndex);
                auto customText = config->get<std::string>("mainSection.content." + std::to_string(keyCounter) + ".content.1");
+
+               CFileManager fileManager(iconpath);
+               fileManager.read();
+               auto img = fileManager.getData();
+               fileManager.close();
+
                keyCounter++;
             }
 
