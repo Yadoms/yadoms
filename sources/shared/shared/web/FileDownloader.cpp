@@ -32,7 +32,7 @@ namespace shared
          try
          {
             const std::unique_ptr<std::istream> pStr(Poco::URIStreamOpener::defaultOpener().open(uri));
-            return Poco::StreamCopier::copyStream(*pStr, output);
+            return static_cast<int>(Poco::StreamCopier::copyStream(*pStr, output));
          }
          catch (std::exception& e)
          {
