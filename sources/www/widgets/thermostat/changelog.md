@@ -1,3 +1,6 @@
+### 1.1.2
+* Fix #691 : forbid read-only keywords
+
 ### 1.1.1
 * Better keyword selection filtering
 
