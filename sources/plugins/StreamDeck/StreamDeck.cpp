@@ -29,7 +29,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    YADOMS_LOG(information) << "StreamDeck is starting...";
 
-   auto data_path = api->getInformation()->getPath();
    m_configuration.initializeWith(api->getConfiguration());
 
    try
@@ -127,26 +126,9 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->keyCols,
                                                            m_usbDeviceInformation->keyRows);
 
-               shared::CDataContainer en;
-               en.set("type", "enum");
-               en.set("values", keys);
-               en.set("defaultValue", "KEY #0");
-
                auto result = shared::CDataContainer::make();
-               result->set("interval", en);
-
-               request->sendSuccess(result);
-            }
-            else if (request->getData().getQuery() == "iconSelectionMode")
-            {
-               auto defaultIconsNames = CDefaultIconSelector::getAllDefaultIconNames();
-               shared::CDataContainer en;
-               en.set("type", "enum");
-               en.set("values", defaultIconsNames);
-               en.set("defaultValue", defaultIconsNames[0]);
-
-               auto result = shared::CDataContainer::make();
-               result->set("interval", en);
+               result->set("values", keys);
+               result->set("type", "enum");
 
                request->sendSuccess(result);
             }
@@ -170,53 +152,44 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                if (extraQuery->getData()->query() == "createKey")
                {
                   auto keyIndex = extraQuery->getData()->data()->get<int>(
-                     "dynamicSection.content.interval");
+                     "dynamicKeyIndex");
 
                   auto customText = extraQuery->getData()->data()->get<std::string>(
                      "customText");
 
                   YADOMS_LOG(information) << "Command with plugin bind data received : value=" << keyIndex;
-                  if (CDefaultIconSelector::getIconSelectionMode(extraQuery) == kCustom)
+
+                  auto fileFromClient = extraQuery->getData()->data()->get<yApi::configuration::CFile>(
+                     "fileContent");
+
+                  YADOMS_LOG(information) << "File received from extra command";
+                  YADOMS_LOG(information) << "    File name = " << fileFromClient.getFileName();
+                  YADOMS_LOG(information) << "    File size = " << fileFromClient.getSize();
+                  YADOMS_LOG(information) << "    File type = " << fileFromClient.getMimeType();
+                  YADOMS_LOG(information) << "    File date = " << fileFromClient
+                                                                   .getLastModificationDate().getBoostDateTime();
+                  YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
+
+                  auto img = fileFromClient.getContent();
+
+                  m_deviceManager->setKeyImage(img, keyIndex, customText);
+
+                  for (auto i = 0; i < 100; ++i)
                   {
-                     auto fileFromClient = extraQuery->getData()->data()->get<yApi::configuration::CFile>(
-                        "iconSelectionMode.content.CustomSelection.content.fileContent");
-
-                     YADOMS_LOG(information) << "File received from extra command";
-                     YADOMS_LOG(information) << "    File name = " << fileFromClient.getFileName();
-                     YADOMS_LOG(information) << "    File size = " << fileFromClient.getSize();
-                     YADOMS_LOG(information) << "    File type = " << fileFromClient.getMimeType();
-                     YADOMS_LOG(information) << "    File date = " << fileFromClient
-                                                                      .getLastModificationDate().getBoostDateTime();
-                     YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
-
-                     auto img = fileFromClient.getContent();
-
-                     m_deviceManager->setKeyImage(img, keyIndex, customText);
-
-                     for (auto i = 0; i < 100; ++i)
-                     {
-                        if (i < 25)
-                           extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step1");
-                        else if (i < 50)
-                           extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step2");
-                        else if (i < 75)
-                           extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step3");
-                        else
-                           extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step4");
-                        boost::this_thread::sleep(boost::posix_time::milliseconds(35));
-                     }
-                  }
-                  else
-                  {
-                     auto iconName = extraQuery->getData()->data()->get<std::string>(
-                        "iconSelectionMode.content.defaultSelection.content.interval");
-                     extraQuery->sendSuccess(shared::CDataContainer::make());
+                     if (i < 25)
+                        extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step1");
+                     else if (i < 50)
+                        extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step2");
+                     else if (i < 75)
+                        extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step3");
+                     else
+                        extraQuery->reportProgress(i * 1.0f, "customLabels.createKey.step4");
+                     boost::this_thread::sleep(boost::posix_time::milliseconds(35));
                   }
                }
 
                extraQuery->sendSuccess(shared::CDataContainer::make());
             }
-
             else
             {
                extraQuery->sendError("error content");
@@ -276,42 +249,45 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                                     ->getEventHandler().getEventData<boost::shared_ptr<yApi::
                                                        IDeviceConfigurationSchemaRequest>>();
 
-            auto json = body->serialize();
+            YADOMS_LOG(information) << "Body : " << body->serialize();
+
             deviceConfigurationSchemaRequest->sendSuccess(body);
 
             break;
          }
       case yApi::IYPluginApi::kSetDeviceConfiguration:
          {
-         // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
-         auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
-         auto config = deviceConfiguration->configuration();
-         YADOMS_LOG(information) << "Configuration = " << config->serialize();
+            // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::
+               ISetDeviceConfiguration>>();
+            auto config = deviceConfiguration->configuration();
+            YADOMS_LOG(information) << "Configuration = " << config->serialize();
 
-         auto pluginPath = api->getInformation()->getPath().string();
-         auto keyCounter = 0;
-         while (config->exists("mainSection.content." + std::to_string(keyCounter)))
-         {
-            auto isKeyChecked = config->get<bool>("mainSection.content." + std::to_string(keyCounter) + ".checkbox");
-            if(isKeyChecked)
+            auto pluginPath = api->getInformation()->getPath().string();
+            auto keyCounter = 0;
+            while (config->exists("mainSection.content." + std::to_string(keyCounter)))
             {
-               auto iconNameIndex = config->get<int>("mainSection.content." + std::to_string(keyCounter) + ".content.0");
+               auto isKeyChecked = config->get<bool>("mainSection.content." + std::to_string(keyCounter) + ".checkbox");
+               if (isKeyChecked)
+               {
+                  auto iconNameIndex = config->get<int>(
+                     "mainSection.content." + std::to_string(keyCounter) + ".content.0");
 
-               auto iconpath = CDefaultIconSelector::getIconPath(pluginPath, iconNameIndex);
-               auto customText = config->get<std::string>("mainSection.content." + std::to_string(keyCounter) + ".content.1");
+                  auto iconpath = CDefaultIconSelector::getIconPath(pluginPath, iconNameIndex);
+                  auto customText = config->get<std::string>(
+                     "mainSection.content." + std::to_string(keyCounter) + ".content.1");
 
-               CFileManager fileManager(iconpath);
-               fileManager.read();
-               auto img = fileManager.getData();
-               fileManager.close();
+                  CFileManager fileManager(iconpath);
+                  fileManager.read();
+                  auto img = fileManager.getData();
+                  fileManager.close();
 
-               m_deviceManager->setKeyImage(img, keyCounter, customText);
-               keyCounter++;
+                  m_deviceManager->setKeyImage(img, keyCounter, customText);
+                  keyCounter++;
+               }
             }
-
-         }
-         YADOMS_LOG(information) << "Extra command received : " << config;
-         break;
+            YADOMS_LOG(information) << "Extra command received : " << config;
+            break;
          }
       default:
          {
