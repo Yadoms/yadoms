@@ -42,7 +42,8 @@
          "content": {
             "temperatureSet": {
                "type": "keyword",
-               "expectedCapacity": ["temperature"]
+               "expectedCapacity": ["temperature"],
+               "expectedKeywordAccess": "getSet"
             },
             "stepValue": {
                "type": "decimal",
