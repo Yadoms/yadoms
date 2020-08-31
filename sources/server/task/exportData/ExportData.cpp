@@ -117,7 +117,7 @@ namespace task
                                                           // Progress from 0 to 70 for this step
                                                           ++nbLinesDone;
                                                           const auto progress = nbLinesDone * TotalPercentToExportAcquisition / nbTotalLines;
-                                                          static auto lastProgressSent = -1;
+                                                          static auto lastProgressSent = -1.0;
                                                           if (progress != lastProgressSent)
                                                           {
                                                              lastProgressSent = progress;
