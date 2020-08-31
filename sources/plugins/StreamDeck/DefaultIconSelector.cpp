@@ -1,186 +1,212 @@
 ﻿#include "DefaultIconSelector.h"
-const std::string IconsImgPath("/icons_img");
+
+const std::string CDefaultIconSelector::IconsImgPath("/icons_img");
+const std::string CDefaultIconSelector::BrightnessDecreasePath(IconsImgPath + "/BrightnessDecrease.png");
+const std::string CDefaultIconSelector::BrightnessHighPath(IconsImgPath + "/BrightnessHigh.png");
+const std::string CDefaultIconSelector::BrightnessLowPath(IconsImgPath + "/BrightnessLow.png");
+const std::string CDefaultIconSelector::BrightnessMaxPath(IconsImgPath + "/BrightnessMax.png");
+const std::string CDefaultIconSelector::BrightnessMinPath(IconsImgPath + "/BrightnessMin.png");
+const std::string CDefaultIconSelector::DurationPath(IconsImgPath + "/Duration.png");
+const std::string CDefaultIconSelector::FolderPath(IconsImgPath + "/Folder.png");
+const std::string CDefaultIconSelector::MediaMutePath(IconsImgPath + "/MediaMute.png");
+const std::string CDefaultIconSelector::MediaNextTrackPath(IconsImgPath + "/MediaNextTrack.png");
+const std::string CDefaultIconSelector::MediaPlayPausePath(IconsImgPath + "/MediaPlayPause.png");
+const std::string CDefaultIconSelector::MediaPrevTrackPath(IconsImgPath + "/MediaPrevTrack.png");
+const std::string CDefaultIconSelector::MediaStopPath(IconsImgPath + "/MediaStop.png");
+const std::string CDefaultIconSelector::MediaUnMutePath(IconsImgPath + "/MediaUnMute.png");
+const std::string CDefaultIconSelector::MediaVolumeDownPath(IconsImgPath + "/MediaVolumeDown.png");
+const std::string CDefaultIconSelector::MediaVolumeUpPath(IconsImgPath + "/MediaVolumeUp.png");
+const std::string CDefaultIconSelector::OpenWebsitePath(IconsImgPath + "/OpenWebsite.png");
+const std::string CDefaultIconSelector::SystemLaunchPath(IconsImgPath + "/SystemLaunch.png");
+const std::string CDefaultIconSelector::ToggleMicroPath(IconsImgPath + "/ToggleMicro.png");
+const std::string CDefaultIconSelector::ToggleMicroInactivePath(IconsImgPath + "/ToggleMicroInactive.png");
+const std::string CDefaultIconSelector::MixerPostMessagePath(IconsImgPath + "/MixerPostMessage.png");
+const std::string CDefaultIconSelector::MixerToggleSlowchatPath(IconsImgPath + "/MixerToggleSlowchat.png");
+const std::string CDefaultIconSelector::MixerToggleSlowchatInactivePath(IconsImgPath + "/MixerToggleSlowchatInactive.png");
+const std::string CDefaultIconSelector::ToggleHotkeyPath(IconsImgPath + "/ToggleHotkey.png");
+const std::string CDefaultIconSelector::ToggleHotkeyOffPath(IconsImgPath + "/ToggleHotkeyOff.png");
+const std::string CDefaultIconSelector::OnPath(IconsImgPath + "/On.png");
+const std::string CDefaultIconSelector::OffPath(IconsImgPath + "/Off.png");
+const std::string CDefaultIconSelector::PlusPath(IconsImgPath + "/Plus.png");
+const std::string CDefaultIconSelector::MinusPath(IconsImgPath + "/Minus.png");
+const std::string CDefaultIconSelector::ColorBrightnessPath(IconsImgPath + "/ColorBrightness.png");
+const std::string CDefaultIconSelector::ColorTemperaturePath(IconsImgPath + "/ColorTemperature.png");
+const std::string CDefaultIconSelector::ContrastPath(IconsImgPath + "/Contrast.png");
+const std::string CDefaultIconSelector::BroadcastOnPath(IconsImgPath + "/BroadcastOn.png");
+const std::string CDefaultIconSelector::BroadcastOffPath(IconsImgPath + "/BroadcastOff.png");
+const std::string CDefaultIconSelector::LightOffPath(IconsImgPath + "/LightOff.png");
+const std::string CDefaultIconSelector::LightColorPath(IconsImgPath + "/LightColor.png");
+const std::string CDefaultIconSelector::PartyPopperPath(IconsImgPath + "/PartyPopper.png");
+const std::string CDefaultIconSelector::SystemBackPath(IconsImgPath + "/SystemBack.png");
 
 DECLARE_ENUM_IMPLEMENTATION(EDefaultIconType,
-                            ((BrightnessDecrease)(IconsImgPath + "/BrightnessDecrease.png"))
-                            ((BrightnessHigh)(IconsImgPath + "/BrightnessHigh.png"))
-                            ((BrightnessLow)(IconsImgPath + "/BrightnessLow.png"))
-                            ((BrightnessMax)(IconsImgPath + "/BrightnessMax.png"))
-                            ((BrightnessMin)(IconsImgPath + "/BrightnessMin.png"))
-                            ((Duration)(IconsImgPath + "/Duration.png"))
-                            ((Folder)(IconsImgPath + "/Folder.png"))
-                            ((MediaMute)(IconsImgPath + "/MediaMute.png"))
-                            ((MediaNextTrack)(IconsImgPath + "/MediaNextTrack.png"))
-                            ((MediaPlayPause)(IconsImgPath + "/MediaPlayPause.png"))
-                            ((MediaPrevTrack)(IconsImgPath + "/MediaPrevTrack.png"))
-                            ((MediaStop)(IconsImgPath + "/MediaStop.png"))
-                            ((MediaUnMute)(IconsImgPath + "/MediaUnMute.png"))
-                            ((MediaVolumeDown)(IconsImgPath + "/MediaVolumeDown.png"))
-                            ((MediaVolumeUp)(IconsImgPath + "/MediaVolumeUp.png"))
-                            ((OpenWebsite)(IconsImgPath + "/OpenWebsite.png"))
-                            ((SystemLaunch)(IconsImgPath + "/SystemLaunch.png"))
-                            ((ToggleMicro)(IconsImgPath + "/ToggleMicro.png"))
-                            ((ToggleMicroInactive)(IconsImgPath + "/ToggleMicroInactive.png"))
-                            ((MixerPostMessage)(IconsImgPath + "/MixerPostMessage.png"))
-                            ((MixerToggleSlowchat)(IconsImgPath + "/MixerToggleSlowchat.png"))
-                            ((MixerToggleSlowchatInactive)(IconsImgPath + "/MixerToggleSlowchatInactive.png"))
-                            ((ToggleHotkey)(IconsImgPath + "/ToggleHotkey.png"))
-                            ((ToggleHotkeyOff)(IconsImgPath + "/ToggleHotkeyOff.png"))
-                            ((On)(IconsImgPath + "/On.png"))
-                            ((Off)(IconsImgPath + "/Off.png"))
-                            ((Plus)(IconsImgPath + "/Plus.png"))
-                            ((Minus)(IconsImgPath + "/Minus.png"))
-                            ((ColorBrightness)(IconsImgPath + "/ColorBrightness.png"))
-                            ((ColorTemperature)(IconsImgPath + "/ColorTemperature.png"))
-                            ((Contrast)(IconsImgPath + "/Contrast.png"))
-                            ((BroadcastOn)(IconsImgPath + "/BroadcastOn.png"))
-                            ((BroadcastOff)(IconsImgPath + "/BroadcastOff.png"))
-                            ((LightOff)(IconsImgPath + "/LightOff.png"))
-                            ((LightColor)(IconsImgPath + "/LightColor.png"))
-                            ((PartyPopper)(IconsImgPath + "/PartyPopper.png"))
-                            ((SystemBack)(IconsImgPath + "/SystemBack.png"))
+                           ((BrightnessDecrease))
+                           ((BrightnessHigh))
+                           ((BrightnessLow))
+                           ((BrightnessMax))
+                           ((BrightnessMin))
+                           ((Duration))
+                           ((Folder))
+                           ((MediaMute))
+                           ((MediaNextTrack))
+                           ((MediaPlayPause))
+                           ((MediaPrevTrack))
+                           ((MediaStop))
+                           ((MediaUnMute))
+                           ((MediaVolumeDown))
+                           ((MediaVolumeUp))
+                           ((OpenWebsite))
+                           ((SystemLaunch))
+                           ((ToggleMicro))
+                           ((ToggleMicroInactive))
+                           ((MixerPostMessage))
+                           ((MixerToggleSlowchat))
+                           ((MixerToggleSlowchatInactive))
+                           ((ToggleHotkey))
+                           ((ToggleHotkeyOff))
+                           ((On))
+                           ((Off))
+                           ((Plus))
+                           ((Minus))
+                           ((ColorBrightness))
+                           ((ColorTemperature))
+                           ((Contrast))
+                           ((BroadcastOn))
+                           ((BroadcastOff))
+                           ((LightOff))
+                           ((LightColor))
+                           ((PartyPopper))
+                           ((SystemBack))
 
 );
 
-EIconSelectionMode CDefaultIconSelector::getIconSelectionMode(
-   boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery>& extraQuery)
-{
-   return extraQuery->getData()->data()->get<std::string>(
-             "iconSelectionMode.activeSectionText") == "Custom"
-             ? kCustom
-             : kDefault;
-}
-
 std::vector<std::string> CDefaultIconSelector::getAllDefaultIconNames()
 {
-   std::vector<std::string> defaultIcons;
-   for (auto i = 0; i < EDefaultIconType::kSystemBack; i++)
-   {
-      auto eCurrentDefaultIcon = static_cast<EDefaultIconType>(i);
-      defaultIcons.push_back(eCurrentDefaultIcon.toString());
-   }
-   return defaultIcons;
+   const EDefaultIconType defaultIconType;
+   return defaultIconType.getAllStrings();
 }
 
 std::string CDefaultIconSelector::getIconPath(std::string& pluginPath, int& iconNameIndex)
 {
-   std::string iconPath;
+   std::string iconNamePath;
+   std::string iconFullPath;
    switch (iconNameIndex)
    {
    case EDefaultIconType::kBrightnessDecreaseValue:
-      iconPath = pluginPath + EDefaultIconType::kBrightnessDecrease.toString();
+      iconNamePath = BrightnessDecreasePath;
       break;
    case EDefaultIconType::kBrightnessHighValue:
-      iconPath = pluginPath + EDefaultIconType::kBrightnessHigh.toString();
+      iconNamePath =BrightnessHighPath;
       break;
    case EDefaultIconType::kBrightnessLowValue:
-      iconPath = pluginPath + EDefaultIconType::kBrightnessLow.toString();
+      iconNamePath = BrightnessLowPath;
       break;
    case EDefaultIconType::kBrightnessMaxValue:
-      iconPath = pluginPath + EDefaultIconType::kBrightnessMax.toString();
+      iconNamePath = BrightnessMaxPath;
       break;
    case EDefaultIconType::kBrightnessMinValue:
-      iconPath = pluginPath + EDefaultIconType::kBrightnessMin.toString();
+      iconNamePath = BrightnessMinPath;
       break;
    case EDefaultIconType::kDurationValue:
-      iconPath = pluginPath + EDefaultIconType::kDuration.toString();
+      iconNamePath = DurationPath;
       break;
    case EDefaultIconType::kFolderValue:
-      iconPath = pluginPath + EDefaultIconType::kFolder.toString();
+      iconNamePath = FolderPath;
       break;
    case EDefaultIconType::kMediaMuteValue:
-      iconPath = pluginPath + EDefaultIconType::kMediaMute.toString();
+      iconNamePath = MediaMutePath;
       break;
    case EDefaultIconType::kMediaNextTrackValue:
-      iconPath = pluginPath + EDefaultIconType::kMediaNextTrack.toString();
+      iconNamePath = MediaNextTrackPath;
       break;
    case EDefaultIconType::kMediaPlayPauseValue:
-      iconPath = pluginPath + EDefaultIconType::kMediaPlayPause.toString();
+      iconNamePath = MediaPlayPausePath;
       break;
    case EDefaultIconType::kMediaPrevTrackValue:
-      iconPath = pluginPath + EDefaultIconType::kMediaPrevTrack.toString();
+      iconNamePath = MediaPrevTrackPath;
       break;
    case EDefaultIconType::kMediaStopValue:
-      iconPath = pluginPath + EDefaultIconType::kMediaStop.toString();
+      iconNamePath = MediaStopPath;
       break;
    case EDefaultIconType::kMediaUnMuteValue:
-      iconPath = pluginPath + EDefaultIconType::kMediaUnMute.toString();
+      iconNamePath = MediaUnMutePath;
       break;
    case EDefaultIconType::kMediaVolumeDownValue:
-      iconPath = pluginPath + EDefaultIconType::kMediaVolumeDown.toString();
+      iconNamePath = MediaVolumeDownPath;
       break;
    case EDefaultIconType::kMediaVolumeUpValue:
-      iconPath = pluginPath + EDefaultIconType::kMediaVolumeUp.toString();
+      iconNamePath = MediaVolumeUpPath;
       break;
    case EDefaultIconType::kOpenWebsiteValue:
-      iconPath = pluginPath + EDefaultIconType::kOpenWebsite.toString();
+      iconNamePath = OpenWebsitePath;
       break;
    case EDefaultIconType::kSystemLaunchValue:
-      iconPath = pluginPath + EDefaultIconType::kSystemLaunch.toString();
+      iconNamePath = SystemLaunchPath;
       break;
    case EDefaultIconType::kToggleMicroValue:
-      iconPath = pluginPath + EDefaultIconType::kToggleMicro.toString();
+      iconNamePath = ToggleMicroPath;
       break;
    case EDefaultIconType::kToggleMicroInactiveValue:
-      iconPath = pluginPath + EDefaultIconType::kToggleMicroInactive.toString();
+      iconNamePath = ToggleMicroInactivePath;
       break;
    case EDefaultIconType::kMixerPostMessageValue:
-      iconPath = pluginPath + EDefaultIconType::kMixerPostMessage.toString();
+      iconNamePath = MixerPostMessagePath;
       break;
    case EDefaultIconType::kMixerToggleSlowchatValue:
-      iconPath = pluginPath + EDefaultIconType::kMixerToggleSlowchat.toString();
+      iconNamePath = MixerToggleSlowchatPath;
       break;
    case EDefaultIconType::kMixerToggleSlowchatInactiveValue:
-      iconPath = pluginPath + EDefaultIconType::kMixerToggleSlowchatInactive.toString();
+      iconNamePath = MixerToggleSlowchatInactivePath;
       break;
    case EDefaultIconType::kToggleHotkeyValue:
-      iconPath = pluginPath + EDefaultIconType::kToggleHotkey.toString();
+      iconNamePath = ToggleHotkeyPath;
       break;
    case EDefaultIconType::kToggleHotkeyOffValue:
-      iconPath = pluginPath + EDefaultIconType::kToggleHotkeyOff.toString();
+      iconNamePath = ToggleHotkeyOffPath;
       break;
    case EDefaultIconType::kOnValue:
-      iconPath = pluginPath + EDefaultIconType::kOn.toString();
+      iconNamePath = OnPath;
       break;
    case EDefaultIconType::kOffValue:
-      iconPath = pluginPath + EDefaultIconType::kOff.toString();
+      iconNamePath = OffPath;
       break;
    case EDefaultIconType::kPlusValue:
-      iconPath = pluginPath + EDefaultIconType::kPlus.toString();
+      iconNamePath = PlusPath;
       break;
    case EDefaultIconType::kMinusValue:
-      iconPath = pluginPath + EDefaultIconType::kMinus.toString();
+      iconNamePath = MinusPath;
       break;
    case EDefaultIconType::kColorBrightnessValue:
-      iconPath = pluginPath + EDefaultIconType::kColorBrightness.toString();
+      iconNamePath = ColorBrightnessPath;
       break;
    case EDefaultIconType::kColorTemperatureValue:
-      iconPath = pluginPath + EDefaultIconType::kColorTemperature.toString();
+      iconNamePath = ColorTemperaturePath;
       break;
    case EDefaultIconType::kContrastValue:
-      iconPath = pluginPath + EDefaultIconType::kContrast.toString();
+      iconNamePath = ContrastPath;
       break;
    case EDefaultIconType::kBroadcastOnValue:
-      iconPath = pluginPath + EDefaultIconType::kBroadcastOn.toString();
+      iconNamePath = BroadcastOnPath;
       break;
    case EDefaultIconType::kBroadcastOffValue:
-      iconPath = pluginPath + EDefaultIconType::kBroadcastOff.toString();
+      iconNamePath = BroadcastOffPath;
       break;
    case EDefaultIconType::kLightOffValue:
-      iconPath = pluginPath + EDefaultIconType::kLightOff.toString();
+      iconNamePath = LightOffPath;
       break;
    case EDefaultIconType::kLightColorValue:
-      iconPath = pluginPath + EDefaultIconType::kLightColor.toString();
+      iconNamePath = LightColorPath;
       break;
    case EDefaultIconType::kPartyPopperValue:
-      iconPath = pluginPath + EDefaultIconType::kPartyPopper.toString();
+      iconNamePath = PartyPopperPath;
       break;
    case EDefaultIconType::kSystemBackValue:
-      iconPath = pluginPath + EDefaultIconType::kSystemBack.toString();
+      iconNamePath = SystemBackPath;
       break;
 
    default:
-      throw std::runtime_error("getIconPath : icon path does not exist");
+      throw std::runtime_error("geticonNamePath : icon path does not exist");
    }
-   return iconPath;
+   iconFullPath = pluginPath + iconNamePath;
+   return iconFullPath;
 }
