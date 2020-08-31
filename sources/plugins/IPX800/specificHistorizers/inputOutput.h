@@ -18,8 +18,6 @@ namespace specificHistorizers
       ///\param[in] keywordName     The name of the keyword display in Yadoms
       ///\param[in] hardwareName    Name used by the IPX800
       ///\param[in] accessMode      Read or Read/Write access
-      ///\param[in] measureType     type of the data historized
-      ///\param[in] additionalInfo  Additionnal information
       //-----------------------------------------------------
       CInputOuput(const std::string& keywordName,
                   const std::string& hardwareName,
