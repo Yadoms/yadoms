@@ -40,11 +40,8 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       m_deviceManager->open();
 
-      if (!api->deviceExists(m_usbDeviceInformation->deviceName))
-      {
-         m_deviceManager->reset();
-         m_deviceManager->setBrightness(30);
-      }
+      m_deviceManager->reset();
+      m_deviceManager->setBrightness(30);
 
       m_deviceManager->runKeyStateThread();
    }
@@ -273,18 +270,19 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   auto iconNameIndex = config->get<int>(
                      "mainSection.content." + std::to_string(keyCounter) + ".content.0");
 
-                  auto iconpath = CDefaultIconSelector::getIconPath(pluginPath, iconNameIndex);
+                  auto iconPath = CDefaultIconSelector::getIconPath(pluginPath, iconNameIndex);
                   auto customText = config->get<std::string>(
                      "mainSection.content." + std::to_string(keyCounter) + ".content.1");
 
-                  CFileManager fileManager(iconpath);
+                  CFileManager fileManager(iconPath);
                   fileManager.read();
                   auto img = fileManager.getData();
                   fileManager.close();
 
                   m_deviceManager->setKeyImage(img, keyCounter, customText);
-                  keyCounter++;
+
                }
+               keyCounter++;
             }
             YADOMS_LOG(information) << "Extra command received : " << config;
             break;
