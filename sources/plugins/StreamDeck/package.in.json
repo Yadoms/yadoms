@@ -44,45 +44,25 @@
       "createKey": {
          "iconClass": "fa fa-rocket",
          "commandData": {
-            "dynamicSection": {
-               "type": "section",
-               "content": {
-                  "__Binding__": {
-                     "type": "plugin",
-                     "query": "keyCreation"
-                  }
+            "dynamicKeyIndex": {
+               "type": "enum",
+               "defaultValue": "KEY #0",
+               "__Binding__": {
+                  "type": "plugin",
+                  "query": "keyCreation"
                }
             },
             "customText": {
                "type": "string",
                "required": "false"
             },
-            "iconSelectionMode": {
-               "type": "comboSection",
-               "content": {
-                  "CustomSelection": {
-                     "name": "Custom",
-                     "type": "section",
-                     "content": {
-                        "fileContent": {
-                           "type": "file",
-                           "filter": [ ".png", "jpeg" ],
-                           "required": "true"
-                        }
-                     }
-                  },
-                  "defaultSelection": {
-                     "name": "Default",
-                     "type": "section",
-                     "content": {
-                        "__Binding__": {
-                           "type": "plugin",
-                           "query": "iconSelectionMode",
-                           "required": "true"
-                        }
-                     }
-                  }
-               }
+            "fileContent": {
+               "type": "file",
+               "filter": [
+                  ".png",
+                  ".jpeg"
+               ],
+               "required": "true"
             }
          }
       }

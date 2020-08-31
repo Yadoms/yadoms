@@ -21,48 +21,20 @@
    },
    "extraQueries": {
       "createKey": {
-         "name": "Création de clé",
-         "description": "La liste des coordonnées des clés de l'équipement",
+         "name": "Création d'une clé personnalisée",
+         "description": "Personnaliser les clés stream Deck avec vos propres images",
          "commandData": {
-            "dynamicSection": {
-               "name": "La liste des Coordonnées disponibles",
-               "description": "La liste des coordonnées présentées sous forme d'index (i,j) ",
-               "content": {
-                  "interval": {
-                     "name": "Les coordonnées des clés",
-                     "description": "La liste des coordonnées"
-                  }
-               }
+            "dynamicKeyIndex": {
+               "name": "Touche",
+               "description": "Le numéro de la touche. Les touches sont énumérées en partant du coin haut à droite"
             },
             "customText": {
                "name": "Texte personnalisé",
-               "description": "Texte personnalisé à afficher en dessous de l'icône(optionnel)"
+               "description": "Texte personnalisé à afficher en dessous de l'icône (OPTIONNEL)"
             },
-            "iconSelectionMode": {
-               "name": "Le mode de sélection",
-               "type": "comboSection",
-               "content": {
-                  "CustomSelection": {
-                     "name": "Sélection personnalisée",
-                     "description": "Télécharger vos propres images",
-                     "content": {
-                        "fileContent": {
-                           "name": "Icône",
-                           "description": "Le chemin vers votre icône"
-                        }
-                     }
-                  },
-                  "defaultSelection": {
-                     "name": "La liste des icône disponibles",
-                     "description": "Veuillez choisir une icône",
-                     "content": {
-                        "interval": {
-                           "name": "La liste des icône",
-                           "description": "La liste des icône"
-                        }
-                     }
-                  }
-               }
+            "fileContent": {
+               "name": "Icône",
+               "description": "Le chemin vers votre icône"
             }
          }
       }

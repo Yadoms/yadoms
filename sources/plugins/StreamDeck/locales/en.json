@@ -21,48 +21,20 @@
    },
    "extraQueries": {
       "createKey": {
-         "name": "Create a key",
-         "description": "List of the keys coordinates",
+         "name": "Create a custom key",
+         "description": "Customize stream Deck keys with your own images",
          "commandData": {
-            "dynamicSection": {
-               "name": "List of available coordinates",
-               "description": "The list of coordinates presented in the form of an index (i, j)",
-               "content": {
-                  "interval": {
-                     "name": "Coordinates keys",
-                     "description": "List of coordinates"
-                  }
-               }
+            "dynamicKeyIndex": {
+               "name": "Key",
+               "description": "The key number, The Keys are enumerated from the top right corner !"
             },
             "customText": {
                "name": "Custom text",
                "description": "Custom text to display below the icon (Optional)"
             },
-            "iconSelectionMode": {
-               "name": "selection mode",
-               "type": "comboSection",
-               "content": {
-                  "CustomSelection": {
-                     "name": "Custom Selection",
-                     "description": "Upload your own images",
-                     "content": {
-                        "fileContent": {
-                           "name": "Icon",
-                           "description": "Path of the icon"
-                        }
-                     }
-                  },
-                  "defaultSelection": {
-                     "name": "List of available icons",
-                     "description": "Please choose your icon",
-                     "content": {
-                        "interval": {
-                           "name": "icons list",
-                           "description": "icons list"
-                        }
-                     }
-                  }
-               }
+            "fileContent": {
+               "name": "Icon",
+               "description": "Path of the icon"
             }
          }
       }
