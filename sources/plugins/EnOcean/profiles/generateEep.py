@@ -33,7 +33,13 @@ localesInPath = sys.argv[6]
 
 profilePath = os.path.dirname(xmlInputFilePath)
 
-
+ignoredProfiles = [
+   'A5-37-01',    # Maybe later
+   'A5-38-08',    # Maybe later
+   'A5-38-09',    # Maybe later
+   'A5-3F-00',    # For testing purpose only
+   'A5-3F-7F'     # Obsolete profile
+   ]
 
 
 #-------------------------------------------------------------------------------
@@ -49,6 +55,7 @@ if xmlRootNode.tag != "eep":
 xmlProfileNode = xmlRootNode.find("profile")
 
 util.info("Hard-coded profiles are : \n   - " + str("\n   - ".join(hardCodedProfiles.getProfilesHardCoded())))
+util.info("Ignored profiles are : \n   - " + str("\n   - ".join(ignoredProfiles)))
 
 
 
@@ -196,6 +203,9 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       # Type cppTypes
       for xmlTypeNode in xmlFuncNode.findall("type"):
          profileName = profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode)
+         if profileName in ignoredProfiles:
+            continue
+
          typeClassName = cppHelper.toCppName("CProfile_" + profileName)
          if hardCodedProfiles.isProfileHardCoded(profileName):
             # Profile is hard-coded, nothing to do
