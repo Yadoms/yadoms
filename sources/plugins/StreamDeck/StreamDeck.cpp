@@ -197,12 +197,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             shared::CDataContainer mainSection;
             mainSection.set("type", "section");
-            mainSection.set("name", "Key creation");
-            mainSection.set("description",
-                            "You can customize your key icon and text. If the key box is not checked, the key will be empty.");
-
             mainSection.createArray("content");
-
 
             auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->keyCols,
                                                         m_usbDeviceInformation->keyRows);
@@ -233,13 +228,13 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                subSection.createArray("content");
                subSection.appendArray("content", iconsOptions);
                subSection.appendArray("content", customTextOptions);
-
                shared::CDataContainer subSectionContent;
                subSectionContent.set("subSection", subSection);
 
                mainSection.appendArray("content", subSection);
             }
             auto body = shared::CDataContainer::make();
+
             body->set("mainSection", mainSection);
 
             auto deviceConfigurationSchemaRequest = api
