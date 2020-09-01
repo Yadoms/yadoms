@@ -9,7 +9,7 @@ CProfile_A5_07_01::CProfile_A5_07_01(const std::string& deviceId,
    : m_api(api),
      m_deviceId(deviceId),
      m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
-     m_pir(boost::make_shared<yApi::historization::CSwitch>("Pir status")),
+     m_pir(boost::make_shared<yApi::historization::CSwitch>("Pir status", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_supplyVoltage, m_pir})
 {
 }

@@ -9,7 +9,7 @@ CProfile_A5_30_05::CProfile_A5_30_05(const std::string& deviceId,
    : m_api(api),
      m_deviceId(deviceId),
      m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
-     m_button(boost::make_shared<yApi::historization::CEvent>("Button")),
+     m_button(boost::make_shared<yApi::historization::CEvent>("Button", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_supplyVoltage, m_button})
 {
 }

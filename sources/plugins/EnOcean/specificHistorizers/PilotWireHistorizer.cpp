@@ -5,25 +5,23 @@
 namespace specificHistorizers
 {
    DECLARE_ENUM_IMPLEMENTATION(EPilotWire,
-      ((Off))
-      ((Comfort))
-      ((Comfort2))
-      ((Comfort3))
-      ((Eco))
-      ((AntiFreeze))
+                               ((Off))
+                               ((Comfort))
+                               ((Comfort2))
+                               ((Comfort3))
+                               ((Eco))
+                               ((AntiFreeze))
    );
-   
+
    DECLARE_CAPACITY(PilotWireCapacity,
-      "PilotWire",
-      shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-      shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+                    "PilotWire",
+                    yApi::CStandardUnits::NoUnit(),
+                    yApi::EKeywordDataType::kEnum);
 
    CPilotWireHistorizer::CPilotWireHistorizer(const std::string& keywordName)
       : CSingleHistorizableData<EPilotWire>(keywordName,
                                             PilotWireCapacity(),
-                                            shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+                                            yApi::EKeywordAccessMode::kGetSet)
    {
    }
 } // namespace specificHistorizers
-
-

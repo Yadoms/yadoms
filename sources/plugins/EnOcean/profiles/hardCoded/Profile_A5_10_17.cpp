@@ -7,7 +7,7 @@ CProfile_A5_10_17::CProfile_A5_10_17(const std::string& deviceId,
    : m_api(api),
      m_deviceId(deviceId),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
-     m_occupancy(boost::make_shared<yApi::historization::CSwitch>("Occupancy")),
+     m_occupancy(boost::make_shared<yApi::historization::CSwitch>("Occupancy", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_temperature, m_occupancy})
 {
 }

@@ -9,8 +9,8 @@ CProfile_A5_14_09::CProfile_A5_14_09(const std::string& deviceId,
    : m_api(api),
      m_deviceId(deviceId),
      m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
-     m_contact(boost::make_shared<yApi::historization::CSwitch>("Contact open")),
-     m_tilt(boost::make_shared<yApi::historization::CEvent>("Tilt")),
+     m_contact(boost::make_shared<yApi::historization::CSwitch>("Contact open", yApi::EKeywordAccessMode::kGet)),
+     m_tilt(boost::make_shared<yApi::historization::CEvent>("Tilt", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_supplyVoltage, m_contact, m_tilt})
 {
 }

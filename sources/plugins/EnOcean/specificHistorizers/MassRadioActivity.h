@@ -1,10 +1,11 @@
 #pragma once
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
-   class CMassRadioActivity : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<double>
+   class CMassRadioActivity : public yApi::historization::CSingleHistorizableData<double>
    {
    public:
       explicit CMassRadioActivity(const std::string& keywordName);

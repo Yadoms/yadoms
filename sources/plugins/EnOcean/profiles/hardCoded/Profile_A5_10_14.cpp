@@ -8,7 +8,7 @@ CProfile_A5_10_14::CProfile_A5_10_14(const std::string& deviceId,
      m_deviceId(deviceId),
      m_humidity(boost::make_shared<yApi::historization::CHumidity>("Humidity")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
-     m_dayNight(boost::make_shared<yApi::historization::CSwitch>("DayNight")),
+     m_dayNight(boost::make_shared<yApi::historization::CSwitch>("DayNight", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_humidity, m_temperature, m_dayNight })
 {
 }

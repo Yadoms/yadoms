@@ -12,13 +12,13 @@ namespace specificHistorizers
 
    DECLARE_CAPACITY(MechanicalHandleMovementCapacity,
                     "MechanicalHandleMovement",
-                    shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-                    shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+                    yApi::CStandardUnits::NoUnit(),
+                    yApi::EKeywordDataType::kEnum);
 
    CMechanicalHandleMovement::CMechanicalHandleMovement(const std::string& keywordName)
       : CSingleHistorizableData<EMechanicalHandleMovement>(keywordName,
                                                            MechanicalHandleMovementCapacity(),
-                                                           shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+                                                           yApi::EKeywordAccessMode::kGet)
    {
    }
 } // namespace specificHistorizers

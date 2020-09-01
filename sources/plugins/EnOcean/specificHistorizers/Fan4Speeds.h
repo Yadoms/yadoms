@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
@@ -13,7 +14,7 @@ namespace specificHistorizers
                        ((Speed3)(4))
    ) ;
 
-   class CFan4Speeds : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EFan4Speeds>
+   class CFan4Speeds : public yApi::historization::CSingleHistorizableData<EFan4Speeds>
    {
    public:
       explicit CFan4Speeds(const std::string& keywordName);

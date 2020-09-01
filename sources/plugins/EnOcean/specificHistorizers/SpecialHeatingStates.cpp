@@ -12,13 +12,13 @@ namespace specificHistorizers
 
    DECLARE_CAPACITY(SpecialHeatingStatesCapacity,
                     "SpecialHeatingStates",
-                    shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-                    shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+                    yApi::CStandardUnits::NoUnit(),
+                    yApi::EKeywordDataType::kEnum);
 
    CSpecialHeatingStates::CSpecialHeatingStates(const std::string& keywordName)
       : CSingleHistorizableData<ESpecialHeatingStates>(keywordName,
                                                        SpecialHeatingStatesCapacity(),
-                                                       shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+                                                       yApi::EKeywordAccessMode::kGet)
    {
    }
 } // namespace specificHistorizers

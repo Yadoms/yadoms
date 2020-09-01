@@ -8,12 +8,12 @@ namespace specificHistorizers
    DECLARE_CAPACITY(ConcentrationPpmCapacity,
                     "ConcentrationPpm",
                     PartPerMillionUnit,
-                    shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
+                    yApi::EKeywordDataType::kNumeric);
 
    CConcentrationPpm::CConcentrationPpm(const std::string& keywordName)
       : CSingleHistorizableData<double>(keywordName,
                                         ConcentrationPpmCapacity(),
-                                        shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+                                        yApi::EKeywordAccessMode::kGet)
    {
    }
 } // namespace specificHistorizers

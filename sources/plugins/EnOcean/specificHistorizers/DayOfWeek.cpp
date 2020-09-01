@@ -16,13 +16,13 @@ namespace specificHistorizers
 
    DECLARE_CAPACITY(EDayOfWeekCapacity,
                     "DayOfWeek",
-                    shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-                    shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+                    yApi::CStandardUnits::NoUnit(),
+                    yApi::EKeywordDataType::kEnum);
 
    CDayOfWeek::CDayOfWeek(const std::string& keywordName)
       : CSingleHistorizableData<EDayOfWeek>(keywordName,
                                             EDayOfWeekCapacity(),
-                                            shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+                                            yApi::EKeywordAccessMode::kGet)
    {
    }
 } // namespace specificHistorizers

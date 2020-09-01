@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
@@ -11,8 +12,7 @@ namespace specificHistorizers
                        ((AutomaticControl)(2))
    ) ;
 
-   class CSpecialHeatingStates : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<
-         ESpecialHeatingStates>
+   class CSpecialHeatingStates : public yApi::historization::CSingleHistorizableData<ESpecialHeatingStates>
    {
    public:
       explicit CSpecialHeatingStates(const std::string& keywordName);

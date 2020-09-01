@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
@@ -11,7 +12,7 @@ namespace specificHistorizers
                        ((ToHorizontal)(2))
    ) ;
 
-   class CMechanicalHandleMovement : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<
+   class CMechanicalHandleMovement : public yApi::historization::CSingleHistorizableData<
          EMechanicalHandleMovement>
    {
    public:

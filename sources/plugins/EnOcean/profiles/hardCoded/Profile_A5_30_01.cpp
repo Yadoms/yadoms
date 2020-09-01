@@ -8,7 +8,7 @@ CProfile_A5_30_01::CProfile_A5_30_01(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_api(api),
      m_deviceId(deviceId),
-     m_contact(boost::make_shared<yApi::historization::CSwitch>("Contact open")),
+     m_contact(boost::make_shared<yApi::historization::CSwitch>("Contact open", yApi::EKeywordAccessMode::kGet)),
    m_battery(boost::make_shared<yApi::historization::CBatteryLevel>("Battery")),
      m_historizers({ m_contact, m_battery })
 {

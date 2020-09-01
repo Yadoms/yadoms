@@ -8,12 +8,12 @@ namespace specificHistorizers
    DECLARE_CAPACITY(ConcentrationGramPerMeterCubeCapacity,
                     "ConcentrationGramPerMeterCubeCapacity",
                     GramPerMeterCubeUnit,
-                    shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
+                    yApi::EKeywordDataType::kNumeric);
 
    CConcentrationGramPerMeterCube::CConcentrationGramPerMeterCube(const std::string& keywordName)
       : CSingleHistorizableData<double>(keywordName,
                                         ConcentrationGramPerMeterCubeCapacity(),
-                                        shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+                                        yApi::EKeywordAccessMode::kGet)
    {
    }
 } // namespace specificHistorizers

@@ -14,13 +14,13 @@ namespace specificHistorizers
 
    DECLARE_CAPACITY(Fan4SpeedsCapacity,
                     "Fan4Speeds",
-                    shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-                    shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+                    yApi::CStandardUnits::NoUnit(),
+                    yApi::EKeywordDataType::kEnum);
 
    CFan4Speeds::CFan4Speeds(const std::string& keywordName)
       : CSingleHistorizableData<EFan4Speeds>(keywordName,
                                              Fan4SpeedsCapacity(),
-                                             shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+                                             yApi::EKeywordAccessMode::kGetSet)
    {
    }
 } // namespace specificHistorizers

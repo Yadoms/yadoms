@@ -10,7 +10,7 @@ CProfile_A5_13_04::CProfile_A5_13_04(const std::string& deviceId,
      m_deviceId(deviceId),
      m_dayOfWeek(boost::make_shared<specificHistorizers::CDayOfWeek>("DayOfWeek")),
      m_time(boost::make_shared<yApi::historization::CDuration>("TimeOfDay")),
-     m_gpsSource(boost::make_shared<yApi::historization::CSwitch>("GPS source")),
+     m_gpsSource(boost::make_shared<yApi::historization::CSwitch>("GPS source", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_dayOfWeek, m_time, m_gpsSource})
 {
 }

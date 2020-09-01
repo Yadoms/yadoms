@@ -8,9 +8,9 @@ CProfile_A5_30_04::CProfile_A5_30_04(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_api(api),
      m_deviceId(deviceId),
-     m_di0(boost::make_shared<yApi::historization::CSwitch>("Digital input 0")),
-     m_di1(boost::make_shared<yApi::historization::CSwitch>("Digital input 1")),
-     m_di2(boost::make_shared<yApi::historization::CSwitch>("Digital input 2")),
+     m_di0(boost::make_shared<yApi::historization::CSwitch>("Digital input 0", yApi::EKeywordAccessMode::kGet)),
+     m_di1(boost::make_shared<yApi::historization::CSwitch>("Digital input 1", yApi::EKeywordAccessMode::kGet)),
+     m_di2(boost::make_shared<yApi::historization::CSwitch>("Digital input 2", yApi::EKeywordAccessMode::kGet)),
      m_analog(boost::make_shared<specificHistorizers::CAnalog>("Analog input", 0, 255, yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_di0, m_di1, m_di2, m_analog})
 {

@@ -9,8 +9,8 @@ CProfile_A5_13_07::CProfile_A5_13_07(const std::string& deviceId,
    : m_api(api),
      m_deviceId(deviceId),
      m_direction(boost::make_shared<yApi::historization::CDirection>("Direction")),
-     m_averageSpeed(boost::make_shared<yApi::historization::CSpeed>("Average speed")),
-     m_maximumSpeed(boost::make_shared<yApi::historization::CSpeed>("Maximum speed")),
+     m_averageSpeed(boost::make_shared<yApi::historization::CSpeed>("Average speed", yApi::EKeywordAccessMode::kGet)),
+     m_maximumSpeed(boost::make_shared<yApi::historization::CSpeed>("Maximum speed", yApi::EKeywordAccessMode::kGet)),
      m_battery(boost::make_shared<yApi::historization::CBatteryLevel>("Battery")),
      m_historizers({m_direction, m_averageSpeed, m_maximumSpeed, m_battery})
 {

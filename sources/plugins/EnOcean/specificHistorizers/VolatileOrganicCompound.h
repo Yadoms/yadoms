@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
@@ -44,7 +45,7 @@ namespace specificHistorizers
                        ((kOzone)(255))
    ) ;
 
-   class CVolatileOrganicCompound : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<
+   class CVolatileOrganicCompound : public yApi::historization::CSingleHistorizableData<
          EVolatileOrganicCompound>
    {
    public:

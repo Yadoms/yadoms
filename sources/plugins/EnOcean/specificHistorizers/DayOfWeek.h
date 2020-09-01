@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
@@ -15,7 +16,7 @@ namespace specificHistorizers
                        ((Sunday)(7))
    ) ;
 
-   class CDayOfWeek : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EDayOfWeek>
+   class CDayOfWeek : public yApi::historization::CSingleHistorizableData<EDayOfWeek>
    {
    public:
       explicit CDayOfWeek(const std::string& keywordName);

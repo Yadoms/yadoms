@@ -6,9 +6,9 @@ CProfile_A5_10_06::CProfile_A5_10_06(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_api(api),
      m_deviceId(deviceId),
-     m_setPoint(boost::make_shared<specificHistorizers::CSetPoint>("SetPoint")),
+     m_setPoint(boost::make_shared<specificHistorizers::CSetPoint>("SetPoint", yApi::EKeywordAccessMode::kGet)),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
-     m_dayNight(boost::make_shared<yApi::historization::CSwitch>("DayNight")),
+     m_dayNight(boost::make_shared<yApi::historization::CSwitch>("DayNight", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_setPoint, m_temperature, m_dayNight})
 {
 }

@@ -8,12 +8,12 @@ namespace specificHistorizers
    DECLARE_CAPACITY(VolumicRadioActivityCapacity,
                     "VolumicRadioActivityCapacity",
                     VolumicRadioActivityUnit,
-                    shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
+                    yApi::EKeywordDataType::kNumeric);
 
    CVolumicRadioActivity::CVolumicRadioActivity(const std::string& keywordName)
       : CSingleHistorizableData<double>(keywordName,
                                         VolumicRadioActivityCapacity(),
-                                        shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+                                        yApi::EKeywordAccessMode::kGet)
    {
    }
 } // namespace specificHistorizers

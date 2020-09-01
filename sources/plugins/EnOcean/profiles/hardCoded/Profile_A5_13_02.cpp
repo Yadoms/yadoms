@@ -11,7 +11,7 @@ CProfile_A5_13_02::CProfile_A5_13_02(const std::string& deviceId,
      m_sunWest(boost::make_shared<yApi::historization::CIllumination>("SunWest")),
      m_sunNorthSouth(boost::make_shared<yApi::historization::CIllumination>("SunNorthSouth")),
      m_sunEast(boost::make_shared<yApi::historization::CIllumination>("SunEast")),
-     m_southHemisphere(boost::make_shared<yApi::historization::CSwitch>("SouthHemisphere")),
+     m_southHemisphere(boost::make_shared<yApi::historization::CSwitch>("SouthHemisphere", yApi::EKeywordAccessMode::kGet)),
      m_historizers({ m_sunWest, m_sunNorthSouth, m_sunEast, m_southHemisphere })
 {
 }

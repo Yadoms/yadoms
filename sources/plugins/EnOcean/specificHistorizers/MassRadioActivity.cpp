@@ -8,12 +8,12 @@ namespace specificHistorizers
    DECLARE_CAPACITY(MassRadioActivityCapacity,
                     "MassRadioActivityCapacity",
                     MassRadioActivityUnit,
-                    shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
+                    yApi::EKeywordDataType::kNumeric);
 
    CMassRadioActivity::CMassRadioActivity(const std::string& keywordName)
       : CSingleHistorizableData<double>(keywordName,
                                         MassRadioActivityCapacity(),
-                                        shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+                                        yApi::EKeywordAccessMode::kGet)
    {
    }
 } // namespace specificHistorizers

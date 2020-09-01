@@ -11,7 +11,7 @@ CProfile_A5_10_1B::CProfile_A5_10_1B(const std::string& deviceId,
      m_illumination(boost::make_shared<yApi::historization::CIllumination>("Illumination")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
      m_fan(boost::make_shared<specificHistorizers::CFan6Speeds>("Fan")),
-     m_occupancy(boost::make_shared<yApi::historization::CSwitch>("Occupancy")),
+     m_occupancy(boost::make_shared<yApi::historization::CSwitch>("Occupancy", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_voltage, m_illumination, m_temperature, m_fan, m_occupancy})
 {
 }

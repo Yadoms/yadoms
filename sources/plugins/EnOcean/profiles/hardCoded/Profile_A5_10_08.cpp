@@ -8,7 +8,7 @@ CProfile_A5_10_08::CProfile_A5_10_08(const std::string& deviceId,
      m_deviceId(deviceId),
      m_fan(boost::make_shared<specificHistorizers::CFan4Speeds>("Fan")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
-     m_occupancy(boost::make_shared<yApi::historization::CSwitch>("Occupancy")),
+     m_occupancy(boost::make_shared<yApi::historization::CSwitch>("Occupancy", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_fan, m_temperature, m_occupancy})
 {
 }

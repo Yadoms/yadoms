@@ -9,9 +9,9 @@ CProfile_A5_14_0A::CProfile_A5_14_0A(const std::string& deviceId,
    : m_api(api),
      m_deviceId(deviceId),
      m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
-     m_contact(boost::make_shared<yApi::historization::CSwitch>("Contact open")),
-     m_tilt(boost::make_shared<yApi::historization::CEvent>("Tilt")),
-     m_vibration(boost::make_shared<yApi::historization::CSwitch>("Vibration detected")),
+     m_contact(boost::make_shared<yApi::historization::CSwitch>("Contact open", yApi::EKeywordAccessMode::kGet)),
+     m_tilt(boost::make_shared<yApi::historization::CEvent>("Tilt", yApi::EKeywordAccessMode::kGet)),
+     m_vibration(boost::make_shared<yApi::historization::CSwitch>("Vibration detected", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_supplyVoltage, m_contact, m_tilt, m_vibration})
 {
 }

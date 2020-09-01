@@ -6,11 +6,11 @@ CProfile_A5_10_20::CProfile_A5_10_20(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_api(api),
      m_deviceId(deviceId),
-     m_setPoint(boost::make_shared<specificHistorizers::CSetPoint>("SetPoint")),
+     m_setPoint(boost::make_shared<specificHistorizers::CSetPoint>("SetPoint", yApi::EKeywordAccessMode::kGet)),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
      m_heatingStates(boost::make_shared<specificHistorizers::CSpecialHeatingStates>("HeatingState")),
      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("Battery")),
-     m_userInteraction(boost::make_shared<yApi::historization::CSwitch>("UserInteraction")),
+     m_userInteraction(boost::make_shared<yApi::historization::CSwitch>("UserInteraction", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_setPoint, m_temperature, m_heatingStates, m_batteryLevel, m_userInteraction})
 {
 }

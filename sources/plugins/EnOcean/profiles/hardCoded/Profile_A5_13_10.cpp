@@ -10,7 +10,7 @@ CProfile_A5_13_10::CProfile_A5_13_10(const std::string& deviceId,
      m_deviceId(deviceId),
      m_elevation(boost::make_shared<yApi::historization::CDirection>("Elevation")),
      m_azimuth(boost::make_shared<yApi::historization::CDirection>("Azimuth")),
-     m_dayLight(boost::make_shared<yApi::historization::CSwitch>("Daylight")),
+     m_dayLight(boost::make_shared<yApi::historization::CSwitch>("Daylight", yApi::EKeywordAccessMode::kGet)),
      m_illumination(boost::make_shared<yApi::historization::CIlluminationWm2>("Illumination")),
      m_historizers({m_elevation, m_azimuth, m_dayLight, m_illumination})
 {

@@ -10,7 +10,7 @@ CProfile_A5_07_03::CProfile_A5_07_03(const std::string& deviceId,
      m_deviceId(deviceId),
      m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
      m_illumination(boost::make_shared<yApi::historization::CIllumination>("Illumination")),
-     m_pir(boost::make_shared<yApi::historization::CEvent>("Motion detected")),
+     m_pir(boost::make_shared<yApi::historization::CEvent>("Motion detected", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_supplyVoltage, m_pir})
 {
 }

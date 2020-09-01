@@ -9,7 +9,7 @@ CProfile_A5_13_03::CProfile_A5_13_03(const std::string& deviceId,
    : m_api(api),
      m_deviceId(deviceId),
    m_date(boost::make_shared<yApi::historization::CDateTime>("Date")),
-   m_gpsSource(boost::make_shared<yApi::historization::CSwitch>("GPS source")),
+   m_gpsSource(boost::make_shared<yApi::historization::CSwitch>("GPS source", yApi::EKeywordAccessMode::kGet)),
      m_historizers({ m_date, m_gpsSource })
 {
 }

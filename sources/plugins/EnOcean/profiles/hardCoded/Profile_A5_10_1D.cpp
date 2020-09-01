@@ -10,7 +10,7 @@ CProfile_A5_10_1D::CProfile_A5_10_1D(const std::string& deviceId,
      m_humiditySetPoint(boost::make_shared<yApi::historization::CHumidity>("HumiditySetPoint")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
      m_fan(boost::make_shared<specificHistorizers::CFan6Speeds>("Fan")),
-     m_occupancy(boost::make_shared<yApi::historization::CSwitch>("Occupancy")),
+     m_occupancy(boost::make_shared<yApi::historization::CSwitch>("Occupancy", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_humidity, m_humiditySetPoint, m_temperature, m_fan, m_occupancy})
 {
 }

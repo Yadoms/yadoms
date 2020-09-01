@@ -8,12 +8,12 @@ namespace specificHistorizers
    DECLARE_CAPACITY(SieverPerSecondRadioActivityCapacity,
                     "SieverPerSecondRadioActivityCapacity",
                     SieverPerSecondRadioActivityUnit,
-                    shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
+                    yApi::EKeywordDataType::kNumeric);
 
    CSieverPerSecondRadioActivity::CSieverPerSecondRadioActivity(const std::string& keywordName)
       : CSingleHistorizableData<double>(keywordName,
                                         SieverPerSecondRadioActivityCapacity(),
-                                        shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+                                        yApi::EKeywordAccessMode::kGet)
    {
    }
 } // namespace specificHistorizers

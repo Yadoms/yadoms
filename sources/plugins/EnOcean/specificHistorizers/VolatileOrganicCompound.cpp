@@ -45,13 +45,13 @@ namespace specificHistorizers
 
    DECLARE_CAPACITY(VolatileOrganicCompoundCapacity,
                     "VolatileOrganicCompound",
-                    shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-                    shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+                    yApi::CStandardUnits::NoUnit(),
+                    yApi::EKeywordDataType::kEnum);
 
    CVolatileOrganicCompound::CVolatileOrganicCompound(const std::string& keywordName)
       : CSingleHistorizableData<EVolatileOrganicCompound>(keywordName,
                                                           VolatileOrganicCompoundCapacity(),
-                                                          shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+                                                          yApi::EKeywordAccessMode::kGet)
    {
    }
 } // namespace specificHistorizers

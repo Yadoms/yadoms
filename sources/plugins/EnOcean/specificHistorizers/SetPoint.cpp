@@ -6,13 +6,14 @@ namespace specificHistorizers
 {
    DECLARE_CAPACITY(SetPointCapacity,
                     "SetPoint",
-                    shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-                    shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
+                    yApi::CStandardUnits::NoUnit(),
+                    yApi::EKeywordDataType::kNumeric);
 
-   CSetPoint::CSetPoint(const std::string& keywordName)
+   CSetPoint::CSetPoint(const std::string& keywordName,
+                        const yApi::EKeywordAccessMode& accessMode)
       : CSingleHistorizableData<unsigned int>(keywordName,
                                               SetPointCapacity(),
-                                              shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+                                              accessMode)
    {
    }
 } // namespace specificHistorizers
