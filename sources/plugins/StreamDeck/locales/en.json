@@ -38,5 +38,11 @@
             }
          }
       }
+   },
+   "deviceConfiguration": {
+      "mainSection": {
+         "name": "Build keys",
+         "description": "Personalize your stream deck keys with predefined icons and customizable texts. If the key box is not checked, the key will be empty."
+      }
    }
 }
