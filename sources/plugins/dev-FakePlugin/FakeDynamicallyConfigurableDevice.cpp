@@ -13,10 +13,6 @@ CFakeDynamicallyConfigurableDevice::CFakeDynamicallyConfigurableDevice(const std
    m_counter->set(0);
 }
 
-CFakeDynamicallyConfigurableDevice::~CFakeDynamicallyConfigurableDevice()
-{
-}
-
 void CFakeDynamicallyConfigurableDevice::read()
 {
    ++m_internalCounter;
@@ -53,8 +49,8 @@ const std::string& CFakeDynamicallyConfigurableDevice::getModel()
 boost::shared_ptr<shared::CDataContainer> CFakeDynamicallyConfigurableDevice::getDynamicConfigurationSchema()
 {
    //this code must be runtime dynamic.
-   //in case of static configration, define the configuration schema in package.json
-   boost::shared_ptr<shared::CDataContainer> results = shared::CDataContainer::make();
+   //in case of static configuration, define the configuration schema in package.json
+   auto results = shared::CDataContainer::make();
 
    shared::CDataContainer options;
    options.set("type", "decimal");
