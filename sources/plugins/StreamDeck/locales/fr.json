@@ -38,5 +38,11 @@
             }
          }
       }
+   },
+   "deviceConfiguration": {
+      "mainSection": {
+         "name": "Création des touches",
+         "description": "Personnaliser vos touches stream deck avec des icones predefinies et des textes personnalisable. Si la case à touche n'est pas cochée, la touche sera vide"
+      }
    }
 }
