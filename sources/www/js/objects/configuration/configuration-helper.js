@@ -72,9 +72,9 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
    // Convert markdown for the designation field.
    var result = "";
    if (!isNullOrUndefined(parameterHandler))
-      result = ConfigurationHelper.makdownIt($.t(parameterHandler.i18nContext + parameterHandler.paramName + ".description", { defaultValue: parameterHandler.description }));
+      result = ConfigurationHelper.makdownIt($.t(parameterHandler.i18nContext + parameterHandler.i18nKey + ".description", { defaultValue: parameterHandler.description }));
 
-   s += "<span class=\"configuration-label-content configuration-label-name\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.paramName + ".name\">" + parameterHandler.name + "</span>" +
+   s += "<span class=\"configuration-label-content configuration-label-name\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.i18nKey + ".name\">" + parameterHandler.name + "</span>" +
       "<span class=\"configuration-label-content configuration-label-description\"\">" + result + "</span>" +
       "</label>" +
       "</div>";
