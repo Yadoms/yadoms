@@ -184,7 +184,11 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                      boost::this_thread::sleep(boost::posix_time::milliseconds(35));
                   }
                }
-
+               else if (extraQuery->getData()->query() == "resetKeys")
+               {
+                  m_deviceManager->reset();
+                  m_deviceManager->setBrightness(30);
+               }
                extraQuery->sendSuccess(shared::CDataContainer::make());
             }
             else

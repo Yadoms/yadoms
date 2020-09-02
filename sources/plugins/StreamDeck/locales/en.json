@@ -37,6 +37,9 @@
                "description": "Path of the icon"
             }
          }
+      },
+      "resetKeys": {
+         "name": "Reset all keys"
       }
    },
    "deviceConfiguration": {
