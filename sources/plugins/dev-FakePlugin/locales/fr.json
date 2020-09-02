@@ -201,19 +201,31 @@
                   "description": "Exemple d'une liste dans une sous-section",
                   "content": {
                     "first": {
-                      "name": "Première section",
-                      "description":
-                        "Première section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                      "types": {
+                        "first": {
+                          "title": "Première section",
+                          "description":
+                            "Première section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }
+                      }
                     },
                     "second": {
-                      "name": "Seconde section",
-                      "description":
-                        "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                      "types": {
+                        "second": {
+                          "title": "Seconde section",
+                          "description":
+                            "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }
+                      }
                     },
                     "third": {
-                      "name": "Troisième section",
-                      "description":
-                        "Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                      "types": {
+                        "third": {
+                          "title": "Troisième section",
+                          "description":
+                            "Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }
+                      }
                     }
                   }
                 }
@@ -227,7 +239,12 @@
       "schemas": {
         "fakeDynamicallyConfigurableDeviceType": {
           "DynamicDivider": {
-            "name": "Diviseur"
+            "name": "Diviseur",
+            "description": "Description du diviseur"
+          },
+          "ArrayItem": {
+            "name": "Elément d'un tableau",
+            "description": "Tous les éléments du tableau partagent les mêmes traductions"
           }
         }
       }

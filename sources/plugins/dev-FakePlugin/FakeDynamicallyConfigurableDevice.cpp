@@ -54,12 +54,20 @@ boost::shared_ptr<shared::CDataContainer> CFakeDynamicallyConfigurableDevice::ge
 
    shared::CDataContainer options;
    options.set("type", "decimal");
-   options.set("name", "Dynamic divider");
    options.set("minimumValue", "0.01");
    options.set("maximumValue", "20.0");
    options.set("precision", "2");
 
    results->set("DynamicDivider", options);
+
+   // Array of values
+   for (auto i = 0; i < 3; ++i)
+   {
+      shared::CDataContainer itemOptions;
+      itemOptions.set("type", "numeric");
+      itemOptions.set("i18nKey", "ArrayItem"); // Force i18nPath to use same translations for all array items
+      results->set("ArrayItem#" + std::to_string(i), itemOptions);
+   }
 
    return results;
 }

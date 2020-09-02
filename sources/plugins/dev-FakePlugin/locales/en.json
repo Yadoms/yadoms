@@ -198,16 +198,28 @@
                     "description": "Example of combo parameter in the sub-section",
                     "content": {
                       "first": {
-                        "name": "First section",
-                        "description": "The first list section : you can add here some other configuration parameters"
+                        "types": {
+                          "first": {
+                            "title": "First section",
+                            "description": "The first list section : you can add here some other configuration parameters"
+                          }
+                        }
                       },
                       "second": {
-                        "name": "Second section",
-                        "description": "The second list section : you can add here some other configuration parameters"
+                        "types": {
+                          "first": {
+                            "title": "Second section",
+                            "description": "The second list section : you can add here some other configuration parameters"
+                          }
+                        }
                       },
                       "third": {
-                        "name": "Third section",
-                        "description": "The third list section : you can add here some other configuration parameters"
+                        "types": {
+                          "first": {
+                            "title": "Third section",
+                            "description": "The third list section : you can add here some other configuration parameters"
+                          }
+                        }
                       }
                     }
                   }
@@ -221,7 +233,12 @@
         "schemas": {
           "fakeDynamicallyConfigurableDeviceType": {
             "DynamicDivider": {
-              "name": "Divider"
+              "name": "Divider",
+              "description": "Description of divider"
+            },
+            "ArrayItem": {
+              "name": "Array item",
+              "description": "All array items share same translations"
             }
           }
         }
