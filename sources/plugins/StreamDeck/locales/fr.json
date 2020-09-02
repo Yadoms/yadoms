@@ -37,6 +37,9 @@
                "description": "Le chemin vers votre icône"
             }
          }
+      },
+      "resetKeys": {
+         "name": "Réinitialiser toutes les touches"
       }
    },
    "deviceConfiguration": {

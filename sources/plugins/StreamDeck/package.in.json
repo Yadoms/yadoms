@@ -42,7 +42,7 @@
    },
    "extraQueries": {
       "createKey": {
-         "iconClass": "fa fa-rocket",
+         "iconClass": "fa fa-plus-circle",
          "commandData": {
             "dynamicKeyIndex": {
                "type": "enum",
@@ -65,6 +65,9 @@
                "required": "true"
             }
          }
+      },
+      "resetKeys": {
+         "iconClass": "fa fa-minus-circle"
       }
    },
    "deviceConfiguration": {
