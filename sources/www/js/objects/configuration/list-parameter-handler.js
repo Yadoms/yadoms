@@ -123,7 +123,7 @@ ListParameterHandler.prototype.createItemLine = function (item) {
   if (this.allowDuplication)
     itemLine += "<button class=\"btn btn-primary btn-sm btn-duplicate\" type=\"button\" ><span ><i class=\"fa fa-files-o \"></i></span></button>";
 
-  itemLine += "<button class=\"btn btn-danger btn-sm btn-remove\" type=\"button\"><span><i class=\"fa fa-trash-o\"></i></span></button>" +
+  itemLine += "<button class=\"btn btn-danger btn-sm btn-remove\" type=\"button\"><span><i class=\"fa fa-trash\"></i></span></button>" +
     "</div>" +
     "</div>" +
     "</div>";

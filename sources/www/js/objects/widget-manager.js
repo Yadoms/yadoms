@@ -694,7 +694,7 @@ WidgetManager.createGridWidget = function (widget) {
         type = WidgetManager.DeactivatedWidgetPackageName;
     }
 
-    domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-lg fa-trash-o\"></i></div>\n" +
+    domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-lg fa-trash\"></i></div>\n" +
         "</div>\n" +
         "</div>\n" +
         "<div class=\"panel panel-primary panel-widget widget-" + type + "\" >" +

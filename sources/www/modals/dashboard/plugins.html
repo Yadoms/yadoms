@@ -109,12 +109,12 @@
 
             if (pi.containsExtraQuery() && failToLoadPluginPackage !== true) {
                   actionsBtns +=
-                        "<button type=\"button\" class=\"btn btn-success btn-extraQuery\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"fa fa-navicon\"></span></button>";
+                        "<button type=\"button\" class=\"btn btn-success btn-extraQuery\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"fa fa-bars\"></span></button>";
             }
 
             if (failToLoadPluginPackage !== true && developerMode)
                   actionsBtns +=
-                  "<button type=\"button\" class=\"btn btn-log btn-info\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.log\"><span class=\"fa fa-file-text-o\"></span></button>\n";
+                  "<button type=\"button\" class=\"btn btn-log btn-info\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.log\"><span class=\"fa fa-file-alt\"></span></button>\n";
 
             actionsBtns +=
                   "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"fa fa-trash\"></span></button>\n</div>";
@@ -278,7 +278,7 @@
                         })
                         .always(function () {
                               //restore extra command button icon
-                              $extraQueriesButton.find("span").removeClass().addClass("fa fa-navicon");
+                              $extraQueriesButton.find("span").removeClass().addClass("fa fa-bars");
                         });
             }
       }

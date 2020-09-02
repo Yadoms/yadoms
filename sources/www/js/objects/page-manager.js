@@ -154,8 +154,8 @@ PageManager.addToDom = function (page) {
         "<div class=\"customizationToolbar pageCustomizationToolbar customization-item hidden\">" +
         "<div class=\"customizationButton pageCustomizationButton move-left-page\" title=\"Move to left\" data-i18n=\"[title]mainPage.customization.moveToLeft\"><i class=\"fa fa-lg fa-arrow-left\"></i></div>" +
         "<div class=\"customizationButton pageCustomizationButton move-right-page\" title=\"Move to right\" data-i18n=\"[title]mainPage.customization.moveToRight\"><i class=\"fa fa-lg fa-arrow-right\"></i></div>" +
-        "<div class=\"customizationButton pageCustomizationButton rename-page\" title=\"Rename\" data-i18n=\"[title]mainPage.customization.rename\"><i class=\"fa fa-lg fa-pencil\"></i></div>" +
-        "<div class=\"customizationButton pageCustomizationButton delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"fa fa-lg fa-trash-o\"></i></div>" +
+        "<div class=\"customizationButton pageCustomizationButton rename-page\" title=\"Rename\" data-i18n=\"[title]mainPage.customization.rename\"><i class=\"fa fa-lg fa-edit\"></i></div>" +
+        "<div class=\"customizationButton pageCustomizationButton delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"fa fa-lg fa-trash\"></i></div>" +
         "</div>" +
         "</a>" +
         "<div class=\"hidden tabPagePillsDropper\" data-i18n=\"mainPage.customization.dropHereToMovePage\" data-i18n-options=\'" + JSON.stringify(dataI18NOptions) + "\'></div>" +

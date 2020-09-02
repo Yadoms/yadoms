@@ -1,7 +1,7 @@
 <div id="dashboard-automation-center">
-   <h1 class="page-header"><span class="fa fa-code-fork"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></h1>
+   <h1 class="page-header"><span class="fa fa-robot"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.automation-center.description"></span><br>
-   <button id="btn-add-new-automation-rule" type="button" class="btn btn-success dashboard-btn-new" disabled><span class="fa fa-code-fork"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.new"></span></button>
+   <button id="btn-add-new-automation-rule" type="button" class="btn btn-success dashboard-btn-new" disabled><span class="fa fa-robot"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.new"></span></button>
    <table id="automation-rule-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.automation-center.table.name"></td>
@@ -98,10 +98,10 @@
                            "<td class=\"automation-rule-actions\">\n" +
                               "<div class=\"btn-group\">\n" +
                               "<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.startStop\"></button>\n" +
-                              "<button type=\"button\" class=\"btn btn-edit btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"fa fa-pencil\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-edit btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"fa fa-edit\"></span></button>\n" +
                               "<button type=\"button\" class=\"btn btn-duplicate btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.duplicate\"><span class=\"fa fa-copy\"></span></button>\n" +
-                              "<button type=\"button\" class=\"btn btn-log btn-info\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.log\"><span class=\"fa fa-file-text-o\"></span></button>\n" +
-                              "<button type=\"button\" class=\"btn btn-delete btn-danger\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"fa fa-trash-o\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-log btn-info\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.log\"><span class=\"fa fa-file-alt\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-delete btn-danger\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
                               "</div>\n" +
                            "</td>\n" +
                            "<td class=\"automation-rule-state\">" +
@@ -203,7 +203,7 @@
                //after time, only show spinner if button is still disabled
                //if the button is enabled (=the modal is shown), then do not show spinner
                if($btnEdit.prop('disabled') === true) {
-                  $btnEdit.find("span").removeClass("fa-pencil").addClass("fa-spinner fa-pulse");
+                  $btnEdit.find("span").removeClass("fa-edit").addClass("fa-spinner fa-pulse");
                }
             }, 200);
          }
@@ -249,7 +249,7 @@
          //restore btn edit icon
          if($btnEdit) {
             $("table#automation-rule-list").find(".btn-edit").prop('disabled', false);
-            $btnEdit.find("span").addClass("fa-pencil").removeClass("fa-spinner fa-pulse");
+            $btnEdit.find("span").addClass("fa-edit").removeClass("fa-spinner fa-pulse");
          }
       });
    }
