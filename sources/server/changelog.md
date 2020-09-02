@@ -19,7 +19,7 @@
 ### 2.4.0-beta.1
 
 #### Yadoms
-* New feature #538 : Neww meteo plugin (remove weather underground)
+* New feature #538 : New meteo plugin (remove weather underground)
 * New feature #543 : Add a Python 3.x script interpreter
 * New feature #575 : Add keyword without history
 * New feature #587 : add OledScreen (EspEasy) plugin
@@ -30,7 +30,7 @@
 * New feature #670 and #669 : Add Lolin ePaper plugin (httpscreen plugin)
 * New feature #645 #642 #624 : Add Lametric Time device plugin
 * New platform supported : Synology DS218+
-* Fix #469 : Wes plugin : fix readnig units
+* Fix #469 : Wes plugin : fix reading units
 * Fix #518 : ZWave fix  bad tag filtering
 * Fix #536 : fix widget chart
 * Fix #562 : update usage of CDataContainer for better memory optimizations
@@ -43,18 +43,18 @@
 * Fix #586 : upgrade appveyor cmake
 * Fix #592 : Zwave : fix some keyword declaration
 * Fix #593 : GUI : Fix plugin icon display in devices configuration page
-* Fix #594 : GUI : Refresh widgets when closing configuration pannel
+* Fix #594 : GUI : Refresh widgets when closing configuration panel
 * Fix #595 : GUI : Fix data export
 * Fix #597 : One wire plugin : fix upgrade issue
 * Fix #601 : build with python 3.7
-* Fix #615 : GUI : Precise coordonates format and units
+* Fix #615 : GUI : Precise coordinates format and units
 * Fix #647 : fix synology build for Lametric plugin
 * Fix #648 : fix language error 
 * Fix #650 : GUI : fix duplicated device when adding a new one
 * Fix #653 : remove boost::locale dependency
 * Fix #654 : fix python interpreter with 3.8.1
 * Fix #668 : GUI : Fix display on event keyword and keywords without acquisition
-* Wiki updtaed (#644, #591)
+* Wiki updated (#644, #591)
 * Known issue #617 : No more progression displayed when downloading file
 
 #### Plugins and widgets
