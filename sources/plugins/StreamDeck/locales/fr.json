@@ -43,9 +43,29 @@
       }
    },
    "deviceConfiguration": {
-      "mainSection": {
-         "name": "Création des touches",
-         "description": "Personnaliser vos touches stream deck avec des icones predefinies et des textes personnalisable. Si la case à touche n'est pas cochée, la touche sera vide"
+      "dynamicConfigurationSchema": {
+         "schemas": {
+            "keyCreationDynamic": {
+               "mainSection": {
+                  "name": "Création des touches",
+                  "description": "Personnaliser vos touches stream deck avec des icones predefinies et des textes personnalisable. Si la case à touche n'est pas cochée, la touche sera vide",
+                  "content": {
+                     "keyElement": {
+                        "content": {
+                           "iconsArray": {
+                              "name": "Icône",
+                              "description": "La liste des icones disponible (voir [le Wiki](https://github.com/Yadoms/yadoms/wiki/StreamDeck#available-icons))"
+                           },
+                           "customTextArray": {
+                              "name": "Texte personnalisé",
+                              "description": "Texte personnalisé à afficher en dessous de l'icône (OPTIONNEL)"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
       }
    }
 }

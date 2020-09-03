@@ -201,51 +201,54 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             shared::CDataContainer mainSection;
             mainSection.set("type", "section");
-            mainSection.createArray("content");
+            mainSection.set("i18nKey", "mainSection");
 
             auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->keyCols,
                                                         m_usbDeviceInformation->keyRows);
 
             auto defaultIconsNames = CDefaultIconSelector::getAllDefaultIconNames();
 
-            for (auto& key : keys)
+            auto body = shared::CDataContainer::make();
+            auto keySection = shared::CDataContainer::make();
+            auto keyOptionSection = shared::CDataContainer::make();
+
+            for (auto i = 0; i < keys.size(); ++i)
             {
-               shared::CDataContainer subSection;
-               subSection.set("type", "section");
-               subSection.set("name", key);
-               subSection.set("enableWithCheckBox", "true");
-               subSection.set("enableWithCheckBoxDefaultValue", "false");
+               shared::CDataContainer keyOptions;
+               keyOptions.set("type", "section");
+               keyOptions.set("name", keys[i]);
+               keyOptions.set("enableWithCheckBox", "true");
+               keyOptions.set("enableWithCheckBoxDefaultValue", "false");
 
                shared::CDataContainer iconsOptions;
                iconsOptions.set("type", "enum");
-               iconsOptions.set("name", "icons");
-               iconsOptions.set("description", "List of available icons");
+               iconsOptions.set("i18nKey", "iconsArray");
                iconsOptions.set("values", defaultIconsNames);
                iconsOptions.set("defaultValue", defaultIconsNames[0]);
 
                shared::CDataContainer customTextOptions;
                customTextOptions.set("type", "string");
-               customTextOptions.set("name", "Custom text");
-               customTextOptions.set("description", "Custom text to display below the icon (Optional)");
+               customTextOptions.set("i18nKey", "customTextArray");
                customTextOptions.set("required", "false");
 
-               subSection.createArray("content");
-               subSection.appendArray("content", iconsOptions);
-               subSection.appendArray("content", customTextOptions);
-               shared::CDataContainer subSectionContent;
-               subSectionContent.set("subSection", subSection);
+               keyOptionSection->set("icon", iconsOptions);
+               keyOptionSection->set("customText", customTextOptions);
 
-               mainSection.appendArray("content", subSection);
+               keyOptions.set("content", keyOptionSection);
+
+               keyOptions.set("i18nKey", "keyElement");
+               keySection->set("keyElement#" + std::to_string(i), keyOptions);
+
+               mainSection.set("content", keySection);
             }
-            auto body = shared::CDataContainer::make();
 
             body->set("mainSection", mainSection);
+            auto test = body->serialize();
+            YADOMS_LOG(information) << "Body : " << body->serialize();
 
             auto deviceConfigurationSchemaRequest = api
                                                     ->getEventHandler().getEventData<boost::shared_ptr<yApi::
                                                        IDeviceConfigurationSchemaRequest>>();
-
-            YADOMS_LOG(information) << "Body : " << body->serialize();
 
             deviceConfigurationSchemaRequest->sendSuccess(body);
 
@@ -261,17 +264,18 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             auto pluginPath = api->getInformation()->getPath().string();
             auto keyCounter = 0;
-            while (config->exists("mainSection.content." + std::to_string(keyCounter)))
+            while (config->exists("mainSection.content.keyElement#" + std::to_string(keyCounter)))
             {
-               auto isKeyChecked = config->get<bool>("mainSection.content." + std::to_string(keyCounter) + ".checkbox");
+               auto isKeyChecked = config->get<bool>(
+                  "mainSection.content.keyElement#" + std::to_string(keyCounter) + ".checkbox");
                if (isKeyChecked)
                {
                   auto iconNameIndex = config->get<int>(
-                     "mainSection.content." + std::to_string(keyCounter) + ".content.0");
+                     "mainSection.content.keyElement#" + std::to_string(keyCounter) + ".content.icon");
 
                   auto iconPath = CDefaultIconSelector::getIconPath(pluginPath, iconNameIndex);
                   auto customText = config->get<std::string>(
-                     "mainSection.content." + std::to_string(keyCounter) + ".content.1");
+                     "mainSection.content.keyElement#" + std::to_string(keyCounter) + ".content.customText");
 
                   CFileManager fileManager(iconPath);
                   fileManager.read();
@@ -279,7 +283,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   fileManager.close();
 
                   m_deviceManager->setKeyImage(img, keyCounter, customText);
-
                }
                keyCounter++;
             }
@@ -306,7 +309,7 @@ void CStreamDeck::declareDeviceAndKeywords(boost::shared_ptr<yApi::IYPluginApi>&
       const auto keywordsAsVector = CDeviceManagerHelper::mapToHistorizableVector(m_keywords);
 
       const auto deviceModel = CDeviceManagerHelper::getDeviceModelAsAString(m_usbDeviceInformation->productID);
-      api->declareDevice(m_usbDeviceInformation->deviceName, m_usbDeviceInformation->serialNumber,
+      api->declareDevice(m_usbDeviceInformation->deviceName, "keyCreationDynamic",
                          deviceModel, keywordsAsVector);
    }
 }
