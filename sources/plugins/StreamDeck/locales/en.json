@@ -43,9 +43,29 @@
       }
    },
    "deviceConfiguration": {
-      "mainSection": {
-         "name": "Build keys",
-         "description": "Personalize your stream deck keys with predefined icons and customizable texts. If the key box is not checked, the key will be empty."
+      "dynamicConfigurationSchema": {
+         "schemas": {
+            "keyCreationDynamic": {
+               "mainSection": {
+                  "name": "Build keys",
+                  "description": "Personalize your stream deck keys with predefined icons and customizable texts. If the key box is not checked, the key will be empty.",
+                  "content": {
+                     "keyElement": {
+                        "content": {
+                           "iconsArray": {
+                              "name": "Icons",
+                              "description": "List of available icons (see [the Wiki](https://github.com/Yadoms/yadoms/wiki/StreamDeck#available-icons))"
+                           },
+                           "customTextArray": {
+                              "name": "Custom text",
+                              "description": "Custom text to display below the icon (OPTIONAL)"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
       }
    }
 }
