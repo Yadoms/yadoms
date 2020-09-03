@@ -67,7 +67,7 @@
          }
       },
       "resetKeys": {
-         "iconClass": "fa fa-minus-circle"
+         "iconClass": "fas fa-trash"
       }
    },
    "deviceConfiguration": {
