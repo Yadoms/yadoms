@@ -7,6 +7,7 @@
 * New feature #680 : Add HTTP devices autodetection in shared
 * Fix dynamically configurable devices translations
 * Update font-awesome library
+* Update LibCurl (7.72.0)
 
 
 ### 2.4.0-beta.4
