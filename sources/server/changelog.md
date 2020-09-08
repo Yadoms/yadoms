@@ -1,3 +1,9 @@
+### 2.4.0-beta.5
+
+#### Yadoms
+* Fix Yadoms crash when no data available with getKeywordData web-service
+
+
 ### 2.4.0-beta.4
 
 #### Yadoms
