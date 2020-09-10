@@ -298,9 +298,9 @@ namespace web
 
                   for (auto& i : allData)
                   {
-                     shared::CDataContainer currentVal(32,2);
-                     currentVal.set("date", boost::posix_time::to_iso_string(i.get<0>()));
-                     currentVal.set("key", i.get<1>());
+                     auto currentVal = shared::CDataContainer::make();
+                     currentVal->set("date", boost::posix_time::to_iso_string(i.get<0>()));
+                     currentVal->set("key", i.get<1>());
                      result->appendArray("data", currentVal);
                   }
                   return CResult::GenerateSuccess(result);

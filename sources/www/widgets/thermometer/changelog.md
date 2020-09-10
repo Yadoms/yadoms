@@ -1,3 +1,6 @@
+### 1.1.2
+* Fix #697 : Fix configuration display in English
+
 ### 1.1.1
 * Better keyword selection filtering
 
