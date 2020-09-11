@@ -206,7 +206,7 @@ namespace shared
 
             try
             {
-               CEvent<DataType> evt = dynamic_cast<CEvent<DataType> &>(*m_lastEvent);
+               CEvent<DataType> evt = dynamic_cast<CEvent<DataType>&>(*m_lastEvent);
                return evt.getData();
             }
             catch (std::bad_cast& bc)
@@ -222,7 +222,7 @@ namespace shared
          /// \param [in] rhs The event handler to transfer the event
          /// \note       Must be called after waitForEvents
          //--------------------------------------------------------------
-         void transferLastEvent(CEventHandler &rhs)
+         void transferLastEvent(CEventHandler& rhs)
          {
             if (m_lastEvent)
                rhs.postEvent(m_lastEvent);
@@ -240,7 +240,8 @@ namespace shared
          //--------------------------------------------------------------
          boost::shared_ptr<CEventTimer> createTimer(int timerEventId,
                                                     CEventTimer::EPeriodicity periodicity = CEventTimer::kOneShot,
-                                                    const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
+                                                    const boost::posix_time::time_duration& period = boost::date_time::
+                                                       not_a_date_time)
          {
             BOOST_ASSERT(timerEventId >= kUserFirstId);
 
@@ -360,13 +361,12 @@ namespace shared
             if (m_timeEvents.empty())
                return false;
 
-            for (const auto& timeEvent : m_timeEvents)
-            {
-               if (timeEvent->getNextStopPoint() != boost::date_time::not_a_date_time)
-                  return true;
-            }
-
-            return false;
+            return std::any_of(m_timeEvents.begin(),
+                               m_timeEvents.end(),
+                               [](const auto& timeEvent)
+                               {
+                                  return timeEvent->getNextStopPoint() != boost::date_time::not_a_date_time;
+                               });
          }
 
          //--------------------------------------------------------------
