@@ -8,7 +8,8 @@ namespace specificHistorizers
    class CConcentrationPpm : public yApi::historization::CSingleHistorizableData<double>
    {
    public:
-      explicit CConcentrationPpm(const std::string& keywordName);
+      explicit CConcentrationPpm(const std::string& keywordName,
+                                 yApi::EKeywordAccessMode accessMode = yApi::EKeywordAccessMode::kGet);
       virtual ~CConcentrationPpm() = default;
    };
 } // namespace specificHistorizers

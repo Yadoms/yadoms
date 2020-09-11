@@ -17,10 +17,11 @@ namespace specificHistorizers
                     yApi::CStandardUnits::NoUnit(),
                     yApi::EKeywordDataType::kEnum);
 
-   CFan4Speeds::CFan4Speeds(const std::string& keywordName)
+   CFan4Speeds::CFan4Speeds(const std::string& keywordName,
+                            yApi::EKeywordAccessMode accessMode)
       : CSingleHistorizableData<EFan4Speeds>(keywordName,
                                              Fan4SpeedsCapacity(),
-                                             yApi::EKeywordAccessMode::kGetSet)
+                                             accessMode)
    {
    }
 } // namespace specificHistorizers

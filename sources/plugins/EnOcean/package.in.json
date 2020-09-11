@@ -52,6 +52,64 @@
     }
   },
   "specificProfilesConfigurations": {
+    "D2-00-01": {
+      "type": "section",
+      "content": {
+        "setPointEnable": {
+          "name": "Enable set point",
+          "type": "section",
+          "enableWithCheckBox": "true",
+          "enableWithCheckBoxDefaultValue": "false",
+          "content": {
+            "setPointRangeLimit": {
+              "name": "Set point range limit",
+              "type": "decimal",
+              "minimumValue": "0.1",
+              "maximumValue": "12.7",
+              "precision": "1",
+              "defaultValue": "12.7"
+            },
+            "setPointSteps": {
+              "name": "Number of set point steps",
+              "type": "int",
+              "minimumValue": "1",
+              "maximumValue": "127",
+              "defaultValue": "127"
+            }
+          }
+        },
+        "temperatureMeasurementEnable": {
+          "name": "Enable temperature measurement",
+          "type": "section",
+          "enableWithCheckBox": "true",
+          "enableWithCheckBoxDefaultValue": "true",
+          "content": {
+            "measureInterval": {
+              "name": "Measure interval (s)",
+              "type": "int",
+              "minimumValue": "10",
+              "maximumValue": "600",
+              "defaultValue": "600"
+            },
+            "significantDelta": {
+              "name": "Significant delta (°)",
+              "type": "decimal",
+              "minimumValue": "0.0",
+              "maximumValue": "3.0",
+              "defaultValue": "0.2",
+              "precision": "1"
+            },
+            "keepAliveTiming": {
+              "name": "Number of measurements between 2 keep alive messages",
+              "type": "int",
+              "minimumValue": "10",
+              "maximumValue": "70",
+              "defaultValue": "30"
+            }
+          }
+        }
+      }
+    },
     "D2-01-04": {
       "type": "section",
       "content": {

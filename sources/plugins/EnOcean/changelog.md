@@ -1,4 +1,4 @@
-### 1.8.0
+### 2.0.0
 * Update profiles definition to v2.6.8, add these profiles :
   * D2-01-15
   * D2-01-16
@@ -19,6 +19,7 @@
 * Add or improve support of A5-14-09 and A5-14-0A profiles
 * Add or improve support of A5-30-01, A5-30-04 and A5-30-05 profiles
 * Add or improve support of A5-20-01 profile
+* Add or improve support of D2-00-01 profile
 
 ### 1.7.1
 * Fix description of delay radio OFF timer for D2-01-12

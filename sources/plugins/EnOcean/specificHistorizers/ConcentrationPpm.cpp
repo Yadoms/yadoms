@@ -10,10 +10,11 @@ namespace specificHistorizers
                     PartPerMillionUnit,
                     yApi::EKeywordDataType::kNumeric);
 
-   CConcentrationPpm::CConcentrationPpm(const std::string& keywordName)
+   CConcentrationPpm::CConcentrationPpm(const std::string& keywordName,
+                                        yApi::EKeywordAccessMode accessMode)
       : CSingleHistorizableData<double>(keywordName,
                                         ConcentrationPpmCapacity(),
-                                        yApi::EKeywordAccessMode::kGet)
+                                        accessMode)
    {
    }
 } // namespace specificHistorizers

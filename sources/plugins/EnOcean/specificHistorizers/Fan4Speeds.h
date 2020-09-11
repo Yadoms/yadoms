@@ -17,7 +17,8 @@ namespace specificHistorizers
    class CFan4Speeds : public yApi::historization::CSingleHistorizableData<EFan4Speeds>
    {
    public:
-      explicit CFan4Speeds(const std::string& keywordName);
+      explicit CFan4Speeds(const std::string& keywordName,
+                           yApi::EKeywordAccessMode accessMode = yApi::EKeywordAccessMode::kGetSet);
       virtual ~CFan4Speeds() = default;
    };
 } // namespace specificHistorizers

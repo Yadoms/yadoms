@@ -8,7 +8,8 @@
     },
     "PairingMode": {
       "name": "Mode d'appairage",
-      "description": "Le mode d'apparairage peut être automatique (chaque nouvel équipement détecté est enregistré automatiquement), ou manuel via une commande sur le plugin (bouton vert)",
+      "description":
+        "Le mode d'apparairage peut être automatique (chaque nouvel équipement détecté est enregistré automatiquement), ou manuel via une commande sur le plugin (bouton vert)",
       "values": {
         "auto": "Mode automatique, chaque équipement détecté est enregistré",
         "manual": "Mode manuel, le plugin doit être mis en mode appairage via le bouton vert"
@@ -30,7 +31,8 @@
             },
             "profile": {
               "name": "Profil",
-              "description": "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
+              "description":
+                "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
             }
           }
         }
@@ -59,6 +61,41 @@
     }
   },
   "specificProfilesConfigurations": {
+    "D2-00-01": {
+      "content": {
+        "setPointEnable": {
+          "name": "Consigne",
+          "content": {
+            "setPointRangeLimit": {
+              "name": "Limite de réglage (°)",
+              "description": "Limite d'amplitude de réglage de la consigne en plus ou en moins"
+            },
+            "setPointSteps": {
+              "name": "Crans de réglage",
+              "description": "Nombre de crans dans la plage de réglage"
+            }
+          }
+        },
+        "temperatureMeasurementEnable": {
+          "name": "Mesure de température",
+          "content": {
+            "measureInterval": {
+              "name": "Intervalle de mesure (secondes)",
+              "description": "Intervalle entre deux mesures de température"
+            },
+            "significantDelta": {
+              "name": "Delta significatif (°)",
+              "description": "Différence de température minimale provoquant l'émission de la température"
+            },
+            "keepAliveTiming": {
+              "name": "Nombre de mesures maximum entre émissions",
+              "description":
+                "Nombre maximum de mesures non significative (delta non atteint) forçant l'émission de la température"
+            }
+          }
+        }
+      }
+    },
     "D2-01-04": {
       "localControl": {
         "name": "Contrôle local",
@@ -76,13 +113,16 @@
       },
       "content": {
         "dimTimer1": {
-          "name": "Temporisation 1 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
+          "name":
+            "Temporisation 1 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
         },
         "dimTimer2": {
-          "name": "Temporisation 2 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
+          "name":
+            "Temporisation 2 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
         },
         "dimTimer3": {
-          "name": "Temporisation 3 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
+          "name":
+            "Temporisation 3 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
         }
       }
     },
@@ -119,13 +159,16 @@
       },
       "content": {
         "dimTimer1": {
-          "name": "Temporisation 1 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
+          "name":
+            "Temporisation 1 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
         },
         "dimTimer2": {
-          "name": "Temporisation 2 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
+          "name":
+            "Temporisation 2 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
         },
         "dimTimer3": {
-          "name": "Temporisation 3 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
+          "name":
+            "Temporisation 3 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
         }
       }
     },
@@ -162,10 +205,12 @@
           }
         },
         "minEnergyMeasureRefreshTime": {
-          "name": "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
+          "name":
+            "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
         },
         "maxEnergyMeasureRefreshTime": {
-          "name": "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
+          "name":
+            "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
         }
       }
     },
@@ -188,13 +233,16 @@
       },
       "content": {
         "dimTimer1": {
-          "name": "Temporisation 1 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
+          "name":
+            "Temporisation 1 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
         },
         "dimTimer2": {
-          "name": "Temporisation 2 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
+          "name":
+            "Temporisation 2 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
         },
         "dimTimer3": {
-          "name": "Temporisation 3 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
+          "name":
+            "Temporisation 3 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
         }
       }
     },
@@ -238,10 +286,12 @@
           }
         },
         "minEnergyMeasureRefreshTime": {
-          "name": "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
+          "name":
+            "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
         },
         "maxEnergyMeasureRefreshTime": {
-          "name": "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
+          "name":
+            "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
         }
       }
     },
@@ -318,10 +368,12 @@
           }
         },
         "minEnergyMeasureRefreshTime": {
-          "name": "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
+          "name":
+            "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
         },
         "maxEnergyMeasureRefreshTime": {
-          "name": "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
+          "name":
+            "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
         }
       }
     },
@@ -374,7 +426,8 @@
         },
         "autoOffTimer": {
           "name": "Délai de remise de la sortie à OFF après une mise à ON",
-          "description": "Lors d'une activation de la sortie (via l'interrupteur local ou par radio), ce délai est appliqué puis la sortie est désactivée",
+          "description":
+            "Lors d'une activation de la sortie (via l'interrupteur local ou par radio), ce délai est appliqué puis la sortie est désactivée",
           "content": {
             "value": {
               "name": "Délai à appliquer",
@@ -384,7 +437,8 @@
         },
         "delayOffTimer": {
           "name": "Retardement de remise de la sortie à OFF après ordre radio",
-          "description": "Lorsqu'une commande de désactivation (OFF) d'une sortie est reçue par radio, applique ce délai avant de désactiver la sortie",
+          "description":
+            "Lorsqu'une commande de désactivation (OFF) d'une sortie est reçue par radio, applique ce délai avant de désactiver la sortie",
           "content": {
             "value": {
               "name": "Délai à appliquer",
