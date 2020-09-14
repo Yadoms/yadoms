@@ -229,14 +229,14 @@ function ConditionsDevice(keywords) {
    }
 
    this.hasRainOrSnow = function () {
-      return !isNullOrUndefined(this.isSnow());
+      return !(this.isSnow() ? isNullOrUndefined(this.values.get(this.snowKw.id)) : isNullOrUndefined(this.values.get(this.rainKw.id)));
    }
    this.getRainMm = function () {
-      return isNullOrUndefinedOrEmpty(this.values.get(this.rainKw.id)) ? "" : (round(this.values.get(this.rainKw.id), 1) +  " mm");
+      return isNullOrUndefinedOrEmpty(this.values.get(this.rainKw.id)) ? "0 mm" : (round(this.values.get(this.rainKw.id), 1) +  " mm");
    }
    this.getSnowCm = function () {
       // Note : 1 mm of precipitation gives approximatively 1 cm of snow
-      return isNullOrUndefinedOrEmpty(this.values.get(this.snowKw.id)) ? "" : (round(this.values.get(this.snowKw.id), 0) + " cm");
+      return isNullOrUndefinedOrEmpty(this.values.get(this.snowKw.id)) ? "0 cm" : (round(this.values.get(this.snowKw.id), 0) + " cm");
    }
    this.isSnow = function () {
       if (isNullOrUndefinedOrEmpty(this.values.get(this.rainKw.id)) && isNullOrUndefinedOrEmpty(this.values.get(this.snowKw.id))) {
@@ -366,7 +366,8 @@ widgetViewModelCtor =
             var d = $.Deferred();
             DeviceManager.getKeywordsByDeviceId(deviceId)
                .done(function (keywords) {
-                  self.devices.push(new ConditionsDevice(keywords));
+                  index = self.devicesIdPerPeriod.indexOf(deviceId);
+                  self.devices[index] = new ConditionsDevice(keywords);
                   Array.prototype.push.apply(listenKeywordIds, keywords.map(kw => kw.id));
                   d.resolve();
                })

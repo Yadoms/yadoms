@@ -16,7 +16,7 @@
           "content": {
             "password": {
               "name": "Password",
-              "description": "This can be the GoogleApps password"
+              "description": "This can be the GoogleApps password (see https://security.google.com/settings/security/apppasswords)"
             }
           }
         },

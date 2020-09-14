@@ -184,15 +184,12 @@
                   "type": "comboSection",
                   "content": {
                     "first": {
-                      "name": "First section",
                       "type": "section"
                     },
                     "second": {
-                      "name": "Second section",
                       "type": "section"
                     },
                     "third": {
-                      "name": "Third section",
                       "type": "section"
                     }
                   }

@@ -549,7 +549,7 @@ void CEnOcean::declareDeviceWithoutProfile(const std::string& deviceId) const
 
    m_api->declareDevice(deviceId,
                         std::string(),
-                        std::string(),
+                        "!! DEVICE NOT READY !! Please select the correct profile in configuration",
                         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>());
 }
 

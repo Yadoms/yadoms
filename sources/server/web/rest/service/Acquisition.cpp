@@ -289,14 +289,18 @@ namespace web
                   auto allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId,
                                                                                            timeFrom,
                                                                                            timeTo);
-                  boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make(32, allData.size());
+
+                  if (allData.empty())
+                     return CResult::GenerateSuccess(shared::CDataContainer::EmptyContainer);
+
+                  auto result = shared::CDataContainer::make(32, allData.size());
                   result->createArray("data");
 
                   for (auto& i : allData)
                   {
-                     shared::CDataContainer currentVal(32,2);
-                     currentVal.set("date", boost::posix_time::to_iso_string(i.get<0>()));
-                     currentVal.set("key", i.get<1>());
+                     auto currentVal = shared::CDataContainer::make();
+                     currentVal->set("date", boost::posix_time::to_iso_string(i.get<0>()));
+                     currentVal->set("key", i.get<1>());
                      result->appendArray("data", currentVal);
                   }
                   return CResult::GenerateSuccess(result);

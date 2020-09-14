@@ -30,11 +30,11 @@ DeviceManager.get = function (deviceId) {
 
     var d = new $.Deferred();
     RestEngine.getJson("rest/device/" + deviceId)
-    .done(function(data) {
-        d.resolve(DeviceManager.factory(data));
-    })
-    .fail(d.reject);
-    
+        .done(function (data) {
+            d.resolve(DeviceManager.factory(data));
+        })
+        .fail(d.reject);
+
     return d.promise();
 };
 
@@ -46,14 +46,14 @@ DeviceManager.getAll = function () {
     var d = new $.Deferred();
 
     RestEngine.getJson("rest/device")
-    .done(function (data) {
-        var devices = [];
-        $.each(data.device, function (index, value) {
-            devices.push(DeviceManager.factory(value));
-        });
-        d.resolve(devices);
-    })
-    .fail(d.reject);
+        .done(function (data) {
+            var devices = [];
+            $.each(data.device, function (index, value) {
+                devices.push(DeviceManager.factory(value));
+            });
+            d.resolve(devices);
+        })
+        .fail(d.reject);
 
     return d.promise();
 };
@@ -66,12 +66,12 @@ DeviceManager.getCompatibleForMerge = function (deviceId) {
     var d = new $.Deferred();
 
     RestEngine.getJson("rest/device/" + deviceId + "/compatibleForMergeDevice")
-    .done(function (data) {
-        d.resolve(data);
-    })
-    .fail(function(err) {
-        console.error(err);
-     });
+        .done(function (data) {
+            d.resolve(data);
+        })
+        .fail(function (err) {
+            console.error(err);
+        });
 
     return d.promise();
 }
@@ -86,18 +86,18 @@ DeviceManager.getAttachedPlugin = function (device, force) {
 
     var d = new $.Deferred();
 
-    if(!device.attachedPlugin || force === true) {
+    if (!device.attachedPlugin || force === true) {
         PluginInstanceManager.get(device.pluginId)
-        .done(function (pluginInstance) {
-            PluginInstanceManager.downloadPackage(pluginInstance)
-            .done(function() {
-                device.attachedPlugin = pluginInstance;
-                d.resolve();
-            })
-            .fail(d.reject);
-        }).fail(d.reject);
+            .done(function (pluginInstance) {
+                PluginInstanceManager.downloadPackage(pluginInstance)
+                    .done(function () {
+                        device.attachedPlugin = pluginInstance;
+                        d.resolve();
+                    })
+                    .fail(d.reject);
+            }).fail(d.reject);
     } else {
-       d.resolve();
+        d.resolve();
     }
 
     return d.promise();
@@ -114,17 +114,17 @@ DeviceManager.getAttachedPlugins = function (devices) {
 
     var d = new $.Deferred();
     PluginInstanceManager.getAll()
-       .done(function (pluginInstances) {
-          $.each(devices, function (index, device) {
-             $.each(pluginInstances, function (index2, instance) {
-                 if (device.pluginId === instance.id){
-                    devices[index].attachedPlugin = PluginInstanceManager.factory(instance);
-                 }
-             });
-          });
-          d.resolve();
-       })
-       .fail(d.reject);
+        .done(function (pluginInstances) {
+            $.each(devices, function (index, device) {
+                $.each(pluginInstances, function (index2, instance) {
+                    if (device.pluginId === instance.id) {
+                        devices[index].attachedPlugin = PluginInstanceManager.factory(instance);
+                    }
+                });
+            });
+            d.resolve();
+        })
+        .fail(d.reject);
     return d.promise();
 };
 
@@ -138,14 +138,14 @@ DeviceManager.getKeywordsByDeviceId = function (deviceId) {
 
     var d = new $.Deferred();
     RestEngine.getJson("/rest/device/" + deviceId + "/keyword")
-    .done(function (data) {
-        var list = [];
-        $.each(data.keyword, function (index, value) {
-            list.push(KeywordManager.factory(value));
-        });
-        d.resolve(list);
-    })
-    .fail(d.reject);
+        .done(function (data) {
+            var list = [];
+            $.each(data.keyword, function (index, value) {
+                list.push(KeywordManager.factory(value));
+            });
+            d.resolve(list);
+        })
+        .fail(d.reject);
 
     return d.promise();
 };
@@ -162,14 +162,14 @@ DeviceManager.getKeywordsBydeviceIdAndCapacity = function (deviceId, KeywordAcce
 
     var d = new $.Deferred();
     RestEngine.getJson("/rest/device/" + deviceId + "/" + KeywordAccessMode + "/" + capacityName)
-    .done(function (data) {
-        var list = [];
-        $.each(data.keyword, function (index, value) {
-            list.push(KeywordManager.factory(value));
-        });
-        d.resolve(list);
-    })
-    .fail(d.reject);
+        .done(function (data) {
+            var list = [];
+            $.each(data.keyword, function (index, value) {
+                list.push(KeywordManager.factory(value));
+            });
+            d.resolve(list);
+        })
+        .fail(d.reject);
 
     return d.promise();
 };
@@ -187,11 +187,11 @@ DeviceManager.getKeywords = function (device, forceReload) {
 
     if (isNullOrUndefined(device.keywords) || forceReload === true) {
         DeviceManager.getKeywordsByDeviceId(device.id)
-        .done(function (list) {
-            device.keywords = list;
-            d.resolve(list);
-        })
-        .fail(d.reject);
+            .done(function (list) {
+                device.keywords = list;
+                d.resolve(list);
+            })
+            .fail(d.reject);
     }
     else {
         //keyword has already been gotten
@@ -222,18 +222,18 @@ DeviceManager.deleteDevice = function (device, deleteDevice) {
  * @param {Object} device The device to restore
  * @ return {Promise}
  */
-DeviceManager.restoreDevice = function(device) {
+DeviceManager.restoreDevice = function (device) {
     assert(!isNullOrUndefined(device), "device must be defined");
 
     var d = new $.Deferred();
 
     RestEngine.putJson("/rest/device/" + device.id + "/restore")
-    .done(function (data) {
-        //it's okay
-        //we update our information from the server
-        device = DeviceManager.factory(data);
-        d.resolve(device);
-    }).fail(d.reject);
+        .done(function (data) {
+            //it's okay
+            //we update our information from the server
+            device = DeviceManager.factory(data);
+            d.resolve(device);
+        }).fail(d.reject);
 
     return d.promise();
 };
@@ -243,66 +243,70 @@ DeviceManager.restoreDevice = function(device) {
  * @param {Object} device The device to get the configuration schema
  * @ return {Promise}
  */
-DeviceManager.getConfigurationSchema = function(device) {
+DeviceManager.getConfigurationSchema = function (device) {
 
     var d = new $.Deferred();
 
-    DeviceManager.getAttachedPlugin(device)   
-    .done(function () {
-        //get the plugin package.json
-        PluginInstanceManager.downloadPackage(device.attachedPlugin)
+    DeviceManager.getAttachedPlugin(device)
         .done(function () {
-            //try to get schema from the device model
-            device.attachedPlugin.getPackageDeviceConfigurationSchema()
-            .done(function(deviceConfig) {
-                var schema = {};
-                if(deviceConfig) {
-                    //Manage static configuration
-                    if(deviceConfig.staticConfigurationSchema && deviceConfig.staticConfigurationSchema.schemas) {
+            //get the plugin package.json
+            PluginInstanceManager.downloadPackage(device.attachedPlugin)
+                .done(function () {
+                    //try to get schema from the device model
+                    device.attachedPlugin.getPackageDeviceConfigurationSchema()
+                        .done(function (deviceConfig) {
+                            var schema = {};
+                            if (deviceConfig) {
+                                //Manage static configuration
+                                if (deviceConfig.staticConfigurationSchema && deviceConfig.staticConfigurationSchema.schemas) {
 
-                        //find all static configurations matching the device model
-                        var staticConfigMatchingDevice= {};
-                        for(var k in deviceConfig.staticConfigurationSchema.schemas) {
-                            if(_.some(deviceConfig.staticConfigurationSchema.schemas[k].types, function(typeContent, model) { 
-                              return model == "*" || model == device.type;
-                            }))  {
-                               //add it to resulting schema
-                               var config = deviceConfig.staticConfigurationSchema.schemas[k];
-                               if(config && config.content) {
-                                  for(var l in config.content) {
-                                     config.content[l].i18nBasePath = "plugins." + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".content.";
-                                  }                            
-                                  schema = _.merge(schema, config.content);
-                               }
+                                    //find all static configurations matching the device model
+                                    var staticConfigMatchingDevice = {};
+                                    for (var k in deviceConfig.staticConfigurationSchema.schemas) {
+                                        if (_.some(deviceConfig.staticConfigurationSchema.schemas[k].types, function (typeContent, model) {
+                                            return model == "*" || model == device.type;
+                                        })) {
+                                            //add it to resulting schema
+                                            var config = deviceConfig.staticConfigurationSchema.schemas[k];
+                                            if (config && config.content) {
+                                                for (var l in config.content) {
+                                                    config.content[l].i18nBasePath = "plugins." + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".content.";
+                                                }
+                                                schema = _.merge(schema, config.content);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                //Manage dynamic configuration
+                                if (deviceConfig.dynamicConfigurationSchema && parseBool(deviceConfig.dynamicConfigurationSchema) === true) {
+
+                                    //ask the device configuration from the plugin instance 
+                                    RestEngine.getJson("/rest/device/" + device.id + "/configurationSchema")
+                                        .done(function (dynamicSchema) {
+                                            if (dynamicSchema) {
+                                                for (var l in dynamicSchema) {
+                                                    dynamicSchema[l].i18nBasePath = "plugins." + device.attachedPlugin.type + ":deviceConfiguration.dynamicConfigurationSchema.schemas." + device.type + ".";
+                                                }
+                                                schema = _.merge(schema, dynamicSchema);
+                                            }
+                                            device.attachedPlugin.applyBinding(schema, true, true)
+                                                .done(d.resolve)
+                                                .fail(d.reject);
+                                        }).fail(d.reject);
+                                } else {
+                                    device.attachedPlugin.applyBinding(schema, true, true)
+                                        .done(d.resolve)
+                                        .fail(d.reject);
+                                }
+                            } else {
+                                //device configuration not exists in package.json
+                                d.resolve(schema);
                             }
-                        }
-                    }
+                        }).fail(d.reject);
 
-                    //Manage dynamic configuration
-                    if(deviceConfig.dynamicConfigurationSchema && parseBool(deviceConfig.dynamicConfigurationSchema) === true) {
-
-                        //ask the device configuration from the plugin instance 
-                        RestEngine.getJson("/rest/device/" + device.id + "/configurationSchema")
-                        .done(function (dynamicSchema) {
-                            if(dynamicSchema)
-                                schema = _.merge(schema, dynamicSchema);
-                            device.attachedPlugin.applyBinding(schema, true, true)
-                            .done(d.resolve)
-                            .fail(d.reject);
-                        }).fail(d.reject);                        
-                    } else {
-                        device.attachedPlugin.applyBinding(schema, true, true)
-                        .done(d.resolve)
-                        .fail(d.reject);
-                    }
-                } else {
-                    //device configuration not exists in package.json
-                    d.resolve(schema);
-                }
-            }).fail(d.reject);
-
+                }).fail(d.reject);
         }).fail(d.reject);
-    }).fail(d.reject);
 
     return d.promise();
 }
@@ -318,12 +322,12 @@ DeviceManager.updateToServer = function (device) {
     var d = new $.Deferred();
 
     RestEngine.putJson("/rest/device/" + device.id + "/configuration", { data: JSON.stringify(device) })
-    .done(function (data) {
-        //it's okay
-        //we update our information from the server
-        device = DeviceManager.factory(data);
-        d.resolve(device);
-    }).fail(d.reject);
+        .done(function (data) {
+            //it's okay
+            //we update our information from the server
+            device = DeviceManager.factory(data);
+            d.resolve(device);
+        }).fail(d.reject);
 
     return d.promise();
 };
@@ -336,22 +340,22 @@ DeviceManager.updateToServer = function (device) {
  * @ return {Promise}
  */
 DeviceManager.mergeDevices = function (sourceDeviceId, targetDeviceId, keywordCorrespondences) {
-   assert(!isNullOrUndefined(sourceDeviceId), "sourceDeviceId must be defined");
-   assert(!isNullOrUndefined(targetDeviceId), "targetDeviceId must be defined");
-   assert(!isNullOrUndefined(keywordCorrespondences), "keywordCorrespondences must be defined");
+    assert(!isNullOrUndefined(sourceDeviceId), "sourceDeviceId must be defined");
+    assert(!isNullOrUndefined(targetDeviceId), "targetDeviceId must be defined");
+    assert(!isNullOrUndefined(keywordCorrespondences), "keywordCorrespondences must be defined");
 
-   var d = new $.Deferred();
+    var d = new $.Deferred();
 
-   mergeInfo = {
-      "sourceDeviceId" : sourceDeviceId,
-      "targetDeviceId" : targetDeviceId,
-      "keywordCorrespondences" : keywordCorrespondences
-   }
+    mergeInfo = {
+        "sourceDeviceId": sourceDeviceId,
+        "targetDeviceId": targetDeviceId,
+        "keywordCorrespondences": keywordCorrespondences
+    }
 
-   RestEngine.putJson("/rest/device/merge", { data: JSON.stringify(mergeInfo) })
-   .done(function () {
-       d.resolve();
-   }).fail(d.reject);
+    RestEngine.putJson("/rest/device/merge", { data: JSON.stringify(mergeInfo) })
+        .done(function () {
+            d.resolve();
+        }).fail(d.reject);
 
-   return d.promise();
+    return d.promise();
 };

@@ -13,10 +13,6 @@ CFakeDynamicallyConfigurableDevice::CFakeDynamicallyConfigurableDevice(const std
    m_counter->set(0);
 }
 
-CFakeDynamicallyConfigurableDevice::~CFakeDynamicallyConfigurableDevice()
-{
-}
-
 void CFakeDynamicallyConfigurableDevice::read()
 {
    ++m_internalCounter;
@@ -53,17 +49,25 @@ const std::string& CFakeDynamicallyConfigurableDevice::getModel()
 boost::shared_ptr<shared::CDataContainer> CFakeDynamicallyConfigurableDevice::getDynamicConfigurationSchema()
 {
    //this code must be runtime dynamic.
-   //in case of static configration, define the configuration schema in package.json
-   boost::shared_ptr<shared::CDataContainer> results = shared::CDataContainer::make();
+   //in case of static configuration, define the configuration schema in package.json
+   auto results = shared::CDataContainer::make();
 
    shared::CDataContainer options;
    options.set("type", "decimal");
-   options.set("name", "Dynamic divider");
    options.set("minimumValue", "0.01");
    options.set("maximumValue", "20.0");
    options.set("precision", "2");
 
    results->set("DynamicDivider", options);
+
+   // Array of values
+   for (auto i = 0; i < 3; ++i)
+   {
+      shared::CDataContainer itemOptions;
+      itemOptions.set("type", "numeric");
+      itemOptions.set("i18nKey", "ArrayItem"); // Force i18nPath to use same translations for all array items
+      results->set("ArrayItem#" + std::to_string(i), itemOptions);
+   }
 
    return results;
 }

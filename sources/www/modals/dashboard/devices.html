@@ -1,12 +1,12 @@
 <div id="dashboard-devices">
-   <h1 class="page-header"><span class="fa fa-tasks"></span>&nbsp;<span
+   <h1 class="page-header"><span class="fa fa-cubes"></span>&nbsp;<span
          data-i18n="modals.dashboard.sub-windows.devices.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
    <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span
-         class="fa fa-tasks"></span>&nbsp;&nbsp;<span
+         class="fa fa-cubes"></span>&nbsp;&nbsp;<span
          data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
    <button id="btn-merge-devices" type="button" class="btn btn-primary dashboard-btn-new"><span
-         class="fa fa-compress"></span>&nbsp;&nbsp;<span
+         class="fa fa-compress-alt"></span>&nbsp;&nbsp;<span
          data-i18n="modals.dashboard.sub-windows.devices.merge"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
       <thead>
@@ -38,7 +38,7 @@
 
    var actionsBtnsWithExtraQueries = "<div class=\"btn-group\">\n" +
       "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
-      "<button type=\"button\" class=\"btn btn-success btn-extraQuery\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"fa fa-navicon\"></span></button>\n" +
+      "<button type=\"button\" class=\"btn btn-success btn-extraQuery\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"fa fa-bars\"></span></button>\n" +
       "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
       "</div>";
 
@@ -713,12 +713,12 @@
       $deviceDetailsTable.i18n();
 
       var actionsBtns = "<div class=\"btn-group\">\n" +
-         "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
+         "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-edit\"></span></button>\n" +
          "</div>";
 
       var actionsBtnsWithEdit = "<div class=\"btn-group\">\n" +
-         "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
-         "<button type=\"button\" class=\"btn btn-success btn-setvalue\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.setvalue\"><span class=\"fa fa-sign-in\"></span></button>\n" +
+         "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-edit\"></span></button>\n" +
+         "<button type=\"button\" class=\"btn btn-success btn-setvalue\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.setvalue\"><span class=\"fa fa-play\"></span></button>\n" +
          "</div>";
 
       var deviceList = device.keywords;

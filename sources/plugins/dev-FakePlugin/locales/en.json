@@ -1,132 +1,135 @@
 {
-	"name": "Fake Plugin",
-	"description": "This is just a fake plugin, designed to serve as example to write real plugins. This plugin do nothing useful, just demonstrate how to :\n   - use a configuration\n   - process a Yadoms command\n   - historize sensor data to Yadoms\n   - etc...\n",
-	"configurationSchema": {
-		"StringParameter": {
-			"name": "A string example",
-			"description": "Just a string parameter. Description fields support [links](http://www.yadoms.com)"
-		},
-		"BoolParameter": {
-			"name": "A bool example",
-			"description": "Just a boolean example"
-		},
-		"IntParameter": {
-			"name": "An integer example",
-			"description": "This is my int parameter example"
-		},
-		"DecimalParameter": {
-			"name": "A decimal example",
-			"description": "Now a decimal"
-		},
-		"EnumParameter": {
-			"name": "A custom enum example",
-			"description": "Example of an enum with 3 values",
-			"values": {
-				"EnumValue1": "My first value",
-				"EnumValue2": "My second value",
-				"EnumValue3": "My third value"
-			}
-		},
-		"MySection": {
-			"name": "A section",
-			"description": "Example of using a section in configuration tree.",
-			"content": {
-				"SubIntParameter": {
-					"name": "An integer-in-section example",
-					"description": "An int in sub-section example"
-				},
-				"SubStringParameter": {
-					"name": "A string-in-section example",
-					"description": "Just a string parameter in the sub-section",
-					"defaultValue": "Sub-sections make configuration very powerful !"
-				}
-			}
-		},
-		"ConditionalParameter": {
-			"name": "A conditional parameter",
-			"description": "This parameter is shown depending on a condition, evaluated by the server. In this case, it is shown only if server is running under Windows.",
-			"defaultValue": "If you see it, Yadoms is running under Windows."
-		}
-	},
-	"enumerations": {
-		"EFakeControllerValues": {
-			"name" : "State",
-			"values" : {
-				"Stop": "Stop",
-				"Run": "Run",
-				"Back": "Back",
-				"Left": "Turn Left",
-				"Right": "Turn Right"
-			}
-		}
-	},
-	"recipientFields": {
-		"address": {
-			"name": "Address",
-			"description": "The recipient postal address",
-			"regexErrorMessage": ""
-		},
-		"zipcode": {
-			"name": "ZipCode",
-			"description": "Recipient zipcode",
-			"regexErrorMessage": "It must match a valid zipcode"
-		},
-		"mms": {
-			"name": "Receive MMS",
-			"description": "Indicate if recipient could receive MMS"
-		}
-	},
-	"customLabels": {
+  "name": "Fake Plugin",
+  "description":
+    "This is just a fake plugin, designed to serve as example to write real plugins. This plugin do nothing useful, just demonstrate how to :\n   - use a configuration\n   - process a Yadoms command\n   - historize sensor data to Yadoms\n   - etc...\n",
+  "configurationSchema": {
+    "StringParameter": {
+      "name": "A string example",
+      "description": "Just a string parameter. Description fields support [links](http://www.yadoms.com)"
+    },
+    "BoolParameter": {
+      "name": "A bool example",
+      "description": "Just a boolean example"
+    },
+    "IntParameter": {
+      "name": "An integer example",
+      "description": "This is my int parameter example"
+    },
+    "DecimalParameter": {
+      "name": "A decimal example",
+      "description": "Now a decimal"
+    },
+    "EnumParameter": {
+      "name": "A custom enum example",
+      "description": "Example of an enum with 3 values",
+      "values": {
+        "EnumValue1": "My first value",
+        "EnumValue2": "My second value",
+        "EnumValue3": "My third value"
+      }
+    },
+    "MySection": {
+      "name": "A section",
+      "description": "Example of using a section in configuration tree.",
+      "content": {
+        "SubIntParameter": {
+          "name": "An integer-in-section example",
+          "description": "An int in sub-section example"
+        },
+        "SubStringParameter": {
+          "name": "A string-in-section example",
+          "description": "Just a string parameter in the sub-section",
+          "defaultValue": "Sub-sections make configuration very powerful !"
+        }
+      }
+    },
+    "ConditionalParameter": {
+      "name": "A conditional parameter",
+      "description":
+        "This parameter is shown depending on a condition, evaluated by the server. In this case, it is shown only if server is running under Windows.",
+      "defaultValue": "If you see it, Yadoms is running under Windows."
+    }
+  },
+  "enumerations": {
+    "EFakeControllerValues": {
+      "name": "State",
+      "values": {
+        "Stop": "Stop",
+        "Run": "Run",
+        "Back": "Back",
+        "Left": "Turn Left",
+        "Right": "Turn Right"
+      }
+    }
+  },
+  "recipientFields": {
+    "address": {
+      "name": "Address",
+      "description": "The recipient postal address",
+      "regexErrorMessage": ""
+    },
+    "zipcode": {
+      "name": "ZipCode",
+      "description": "Recipient zipcode",
+      "regexErrorMessage": "It must match a valid zipcode"
+    },
+    "mms": {
+      "name": "Receive MMS",
+      "description": "Indicate if recipient could receive MMS"
+    }
+  },
+  "customLabels": {
     "pluginState": {
       "connecting": "Connecting...",
       "updateConfiguration": "Configuration updating...",
       "newCustomStateMessage": "New state with message {{messageFromExtraQuery}}"
     },
-      "asyncEQwithProgression" : {
-         "step1" : "Step n°1",
-         "step2" : "Step n°2",
-         "step3" : "Step n°3",
-         "step4" : "Step n°4"
-      }
-	},
-	"extraQueries" : {
-		"simpleCommand" : {
-			"name" : "Simple command"
-		},
-		"textDataCommand" : {
-			"name" : "Command with text data",
+    "asyncEQwithProgression": {
+      "step1": "Step n°1",
+      "step2": "Step n°2",
+      "step3": "Step n°3",
+      "step4": "Step n°4"
+    }
+  },
+  "extraQueries": {
+    "simpleCommand": {
+      "name": "Simple command"
+    },
+    "textDataCommand": {
+      "name": "Command with text data",
       "description": "This command requires data formatted as text",
-			"commandData" : {
-				"testValue": {
-					"name": "SomeString",
-					"description": "Description of Somestring"
-				}			
-			}
-		},
-		"numericDataCommand" : {
-			"name" : "Command with numeric data",
+      "commandData": {
+        "testValue": {
+          "name": "SomeString",
+          "description": "Description of Somestring"
+        }
+      }
+    },
+    "numericDataCommand": {
+      "name": "Command with numeric data",
       "description": "This command requires a number",
-			"commandData" : {
-				"testValue": {
-					"name": "SomeInteger",
-					"description": "Description of SomeInteger"
-				}			
-			}
-		},	
-		"dataBindingCommand" : {
-			"name" : "Command with binded data",
-      "description": "This command ask user to choose from a list provided from Yadoms. The list used here is the available network interfaces of system.",
-			"commandData" : {
-				"networkInterface": {
-					"name": "Network interface",
-					"description": "Choose a network interface (from server binding)"
-				}			
-			}
-		},
-		"dataBindingPluginCommand" : {
-			"name" : "Command with binded data to plugin",
+      "commandData": {
+        "testValue": {
+          "name": "SomeInteger",
+          "description": "Description of SomeInteger"
+        }
+      }
+    },
+    "dataBindingCommand": {
+      "name": "Command with binded data",
+      "description":
+        "This command ask user to choose from a list provided from Yadoms. The list used here is the available network interfaces of system.",
+      "commandData": {
+        "networkInterface": {
+          "name": "Network interface",
+          "description": "Choose a network interface (from server binding)"
+        }
+      }
+    },
+    "dataBindingPluginCommand": {
+      "name": "Command with binded data to plugin",
       "description": "This command ask user to choose from a list provided from the plugin",
-			"commandData" : {
+      "commandData": {
         "dynamicSection": {
           "name": "A dynamic section",
           "description": "Example of section filled by 'test' method from the plugin using binding.",
@@ -137,80 +140,109 @@
             }
           }
         }
-		},
-		"changePluginStateMessage" : {
-			"name" : "Change plugin state",
-      "description": "This command changes the plugin state to \"custom\" state, with the provided message",
-			"commandData" : {
-				"newStateMessage": {
-					"name": "Message",
-					"description": "The message associated to the state"
-				}
-			}
-		},
-      "asyncEQwithProgression": {
-         "name": "Asynchronous process",
-         "commandData": {
-            "fileContent": {
-               "name": "File",
-               "description": "The file to send to plugin"
-            }
-         }
-      }
-	},
-   "deviceConfiguration": {
-      "staticConfigurationSchema": {
-        "fakeConfigurableDevice" : {
-           "types" : { 
-               "fakeConfigurableDeviceType" : {
-                  "title" : "configurable device",
-                  "description" : "compatible with Chacon, DIO,..."
-               },
-               "anotherFakeConfigurableDeviceType" : {
-                  "title" : "another configurable device",
-                  "description" : "compatible with Blyss, ..."
-               }
-           },
-           "content": {
-              "CounterDivider2": {
-               "name": "Divider n°2",
-               "description": "Divider used to low the counter frequency (all devices)"
-              },
-               "MySection": {
-                  "name": "A section",
-                  "description": "Example of using a section in configuration tree.",
-                  "content": {
-                     "SubIntParameter": {
-                        "name": "An integer-in-section example",
-                        "description": "An int in sub-section example"
-                     },
-                     "SubStringParameter": {
-                        "name": "A string-in-section example",
-                        "description": "Just a string parameter in the sub-section",
-                        "defaultValue": "Sub-sections make configuration very powerful !"
-                     },
-                     "SubComboParameter": {
-                        "name": "Sublist in section",
-                        "description": "Example of combo parameter in the sub-section",
-                        "content": {
-                           "first": {
-                              "name": "First section",
-                              "description": "The first list section : you can add here some other configuration parameters"
-                           }, 
-                           "second": {
-                              "name": "Second section",
-                              "description": "The second list section : you can add here some other configuration parameters"
-                           },
-                           "third": {
-                              "name": "Third section",
-                              "description": "The third list section : you can add here some other configuration parameters"
-                           }
-                        }
-                     }
-                  }
-               }
-           }
+      },
+      "changePluginStateMessage": {
+        "name": "Change plugin state",
+        "description": "This command changes the plugin state to \"custom\" state, with the provided message",
+        "commandData": {
+          "newStateMessage": {
+            "name": "Message",
+            "description": "The message associated to the state"
+          }
         }
-     }
+      },
+      "asyncEQwithProgression": {
+        "name": "Asynchronous process",
+        "commandData": {
+          "fileContent": {
+            "name": "File",
+            "description": "The file to send to plugin"
+          }
+        }
+      }
+    },
+    "deviceConfiguration": {
+      "staticConfigurationSchema": {
+        "schemas": {
+          "fakeConfigurableDevice": {
+            "types": {
+              "fakeConfigurableDeviceType": {
+                "title": "configurable device",
+                "description": "compatible with Chacon, DIO,..."
+              },
+              "anotherFakeConfigurableDeviceType": {
+                "title": "another configurable device",
+                "description": "compatible with Blyss, ..."
+              }
+            },
+            "content": {
+              "CounterDivider2": {
+                "name": "Divider n°2",
+                "description": "Divider used to low the counter frequency (all devices)"
+              },
+              "MySection": {
+                "name": "A section",
+                "description": "Example of using a section in configuration tree.",
+                "content": {
+                  "SubIntParameter": {
+                    "name": "An integer-in-section example",
+                    "description": "An int in sub-section example"
+                  },
+                  "SubStringParameter": {
+                    "name": "A string-in-section example",
+                    "description": "Just a string parameter in the sub-section",
+                    "defaultValue": "Sub-sections make configuration very powerful !"
+                  },
+                  "SubComboParameter": {
+                    "name": "Sublist in section",
+                    "description": "Example of combo parameter in the sub-section",
+                    "content": {
+                      "first": {
+                        "types": {
+                          "first": {
+                            "title": "First section",
+                            "description": "The first list section : you can add here some other configuration parameters"
+                          }
+                        }
+                      },
+                      "second": {
+                        "types": {
+                          "first": {
+                            "title": "Second section",
+                            "description": "The second list section : you can add here some other configuration parameters"
+                          }
+                        }
+                      },
+                      "third": {
+                        "types": {
+                          "first": {
+                            "title": "Third section",
+                            "description": "The third list section : you can add here some other configuration parameters"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "dynamicConfigurationSchema": {
+        "schemas": {
+          "fakeDynamicallyConfigurableDeviceType": {
+            "DynamicDivider": {
+              "name": "Divider",
+              "description": "Description of divider"
+            },
+            "ArrayItem": {
+              "name": "Array item",
+              "description": "All array items share same translations"
+            }
+          }
+        }
+      }
+    }
   }
 }
