@@ -40,7 +40,7 @@ namespace automation
          ///\brief               Get the rule configuration, if any (only able for model-based rules
          ///\return              The configuration (can be empty)
          //-----------------------------------------------------
-         virtual const shared::CDataContainer& configuration() const = 0;
+         virtual const boost::shared_ptr<shared::CDataContainer>& configuration() const = 0;
       };
    }
 } // namespace automation::script

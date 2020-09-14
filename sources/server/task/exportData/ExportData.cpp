@@ -34,7 +34,7 @@ namespace task
                                                      const std::string& message) const
       {
          if (m_reportRealProgress)
-            m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::EmptyContainer);
+            m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::make());
       }
 
       void CExportData::doWork(TaskProgressFunc functor)
@@ -117,7 +117,7 @@ namespace task
                                                           // Progress from 0 to 70 for this step
                                                           ++nbLinesDone;
                                                           const auto progress = nbLinesDone * TotalPercentToExportAcquisition / nbTotalLines;
-                                                          static auto lastProgressSent = -1;
+                                                          static auto lastProgressSent = -1.0;
                                                           if (progress != lastProgressSent)
                                                           {
                                                              lastProgressSent = progress;

@@ -45,7 +45,7 @@ public:
    ///\param[in] keywordsToHistorize             the new plugin configuration
    //-----------------------------------------------------
    void onUpdateConfiguration(
-      const shared::CDataContainer& newConfigurationData) const;
+      const boost::shared_ptr<shared::CDataContainer>& newConfigurationData) const;
 
    //--------------------------------------------------------------
    /// \brief	Destructor

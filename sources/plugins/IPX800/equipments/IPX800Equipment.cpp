@@ -12,10 +12,10 @@ namespace equipments
       m_deviceType("IPX800")
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
-      shared::CDataContainer details;
-      details.set("provider", "IPX800");
-      details.set("shortProvider", "ipx");
-      details.set("type", m_deviceType);
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
+      details->set("provider", "IPX800");
+      details->set("shortProvider", "ipx");
+      details->set("type", m_deviceType);
 
       // Relay Configuration
       for (int counter = 0; counter<IPX800_RELAY_QTY; ++counter)
@@ -90,7 +90,7 @@ namespace equipments
 
    void CIPX800Equipment::updateFromDevice(const std::string& type,
                                            boost::shared_ptr<yApi::IYPluginApi> api,
-                                           shared::CDataContainer& values,
+                                           boost::shared_ptr<shared::CDataContainer>& values,
                                            bool forceHistorization)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
@@ -105,7 +105,7 @@ namespace equipments
 
    template<class T1, class T2>
    void CIPX800Equipment::updateIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                             shared::CDataContainer& values,
+                                             boost::shared_ptr<shared::CDataContainer>& values,
                                              std::vector<boost::shared_ptr<T1> >& keywordsList,
                                              std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& ToHistorize,
                                              bool forceHistorization)
@@ -115,10 +115,10 @@ namespace equipments
 
       try
       {
-         productRevision = values.getWithDefault<std::string>("product","");
+         productRevision = values->getWithDefault<std::string>("product","");
          for (diIterator = keywordsList.begin(); diIterator != keywordsList.end(); ++diIterator)
          {
-            T2 newValue = values.get<T2>((*diIterator)->getHardwareName());
+            T2 newValue = values->get<T2>((*diIterator)->getHardwareName());
 
             //historize only for new value
             if ((*diIterator)->get() != newValue || forceHistorization)
@@ -178,8 +178,8 @@ namespace equipments
       m_pendingCounterHistorizer.reset();
    }
 
-   shared::CDataContainer CIPX800Equipment::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                                                 shared::CDataContainer& parameters, 
+   boost::shared_ptr<shared::CDataContainer> CIPX800Equipment::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                 boost::shared_ptr<shared::CDataContainer>& parameters,
                                                                  boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
       std::string keywordName = command->getKeyword();
@@ -205,7 +205,7 @@ namespace equipments
                                        std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& keywordsList,
                                        boost::shared_ptr<const yApi::IDeviceCommand> command,
                                        const std::string& pinNumber,
-                                       shared::CDataContainer& parameters)
+                                       boost::shared_ptr<shared::CDataContainer>& parameters)
    {
       std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
 
@@ -225,9 +225,9 @@ namespace equipments
             }
 
             if (newValue)
-               parameters.set("SetR", pinNumber); 
+               parameters->set("SetR", pinNumber); 
             else
-               parameters.set("ClearR", pinNumber);
+               parameters->set("ClearR", pinNumber);
 
             m_pendingIOHistorizer = (*diIterator);
          }
@@ -238,7 +238,7 @@ namespace equipments
                                        std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& keywordsList,
                                        boost::shared_ptr<const yApi::IDeviceCommand> command,
                                        const std::string& value,
-                                       shared::CDataContainer& parameters)
+                                       boost::shared_ptr<shared::CDataContainer>& parameters)
    {
       std::vector<boost::shared_ptr<specificHistorizers::CCounter> >::const_iterator diIterator;
 
@@ -252,7 +252,7 @@ namespace equipments
                // Not HardwareName ! 
                // It's an exception for the IPX800, to set to 0, we have to enter SetC02=0 (for example !), the format is different from the json reading "C2=0"
 
-               parameters.set("Set" + (*diIterator)->getKeyword(), value);
+               parameters->set("Set" + (*diIterator)->getKeyword(), value);
                m_pendingCounterHistorizer = (*diIterator);
             }
             else
@@ -263,7 +263,7 @@ namespace equipments
       }
    }
 
-   void CIPX800Equipment::setNewConfiguration(const shared::CDataContainer& newConfiguration)
+   void CIPX800Equipment::setNewConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)
    {
       // No need to change anything for this one
    }

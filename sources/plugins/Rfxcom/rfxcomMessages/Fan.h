@@ -18,12 +18,12 @@ namespace rfxcomMessages
       CFan(boost::shared_ptr<yApi::IYPluginApi> api,
            const std::string& keyword,
            const std::string& command,
-           const shared::CDataContainer& deviceDetails);
+           const boost::shared_ptr<shared::CDataContainer>& deviceDetails);
 
       CFan(boost::shared_ptr<yApi::IYPluginApi> api,
            unsigned int subType,
            const std::string& name,
-           const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+           const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration);
 
       CFan(boost::shared_ptr<yApi::IYPluginApi> api,
            const RBUF& rbuf,
@@ -49,7 +49,7 @@ namespace rfxcomMessages
       unsigned char m_subType;
       unsigned int m_id;
       std::string m_deviceName;
-      shared::CDataContainer m_deviceDetails;
+      boost::shared_ptr<shared::CDataContainer> m_deviceDetails;
       boost::shared_ptr<IFanSubtype> m_subTypeManager;
 
       //--------------------------------------------------------------

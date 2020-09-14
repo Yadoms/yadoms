@@ -57,7 +57,7 @@ namespace communication
       //----------------------------------------------
       virtual void sendBindingQueryRequest(int pluginId,
                                            const shared::plugin::yPluginApi::IBindingQueryData& data,
-                                           communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
+                                           communication::callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a binding query request to a plugin with a mandatory callback
@@ -65,7 +65,7 @@ namespace communication
       ///\param [in] callback       The callback
       //----------------------------------------------
       virtual void sendDeviceConfigurationSchemaRequest(int deviceId,
-                                                        communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
+                                                        communication::callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a new configuration to device on a plugin
@@ -73,7 +73,7 @@ namespace communication
       ///\param [in] configuration  The new device configuration
       //----------------------------------------------
       virtual void sendSetDeviceConfiguration(int deviceId,
-                                              const shared::CDataContainer& configuration) = 0;
+                                              const boost::shared_ptr<shared::CDataContainer>& configuration) = 0;
    };
 } //namespace communication
 

@@ -34,9 +34,9 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       
    m_configuration.initializeWith(api->getConfiguration());
 
-   shared::CDataContainer details;
-   details.set("provider", "SystemInformation");
-   details.set("shortProvider", "si");
+   boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
+   details->set("provider", "SystemInformation");
+   details->set("shortProvider", "si");
 
    CSystemFactory Factory(api, m_deviceName, m_configuration, details);
 
@@ -77,7 +77,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
             Factory.OnConfigurationUpdate(api, m_configuration, details);
             api->setPluginState(yApi::historization::EPluginState::kRunning);
             break;
@@ -91,11 +91,11 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CSystemInformation::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
+void CSystemInformation::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;
-   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);

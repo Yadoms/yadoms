@@ -23,7 +23,7 @@
 
     <title>Yadoms</title>
     <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="libs/fontawesome-free-5.14.0-web/css/all.min.css" rel="stylesheet">
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -148,7 +148,7 @@
         function createWidget(newWidget, currentPage) {
             WidgetManager.createWidget(newWidget)
              .done(function (w) {
-                 //we indicate taht the widget has never been placed on
+                 //we indicate that the widget has never been placed on
                  w.position = 1000;
                  WidgetManager.loadWidget(w, currentPage, true)
                      .done(function () {

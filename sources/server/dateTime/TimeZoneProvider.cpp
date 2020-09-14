@@ -25,7 +25,7 @@ namespace dateTime
       try
       {
          const auto location = m_configurationManager->getLocation();
-         timezoneId = shared::CDataContainer(location).get<std::string>("timezone");
+         timezoneId = location->get<std::string>("timezone");
 
          if (timezoneId == m_lastTimezoneId)
             return m_lastTimezone;

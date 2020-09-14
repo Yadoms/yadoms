@@ -8,19 +8,11 @@
 class CIncrementSequenceNumber : public ISequenceNumber
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
    CIncrementSequenceNumber() : m_seqNumber(0)
    {
    }
 
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~CIncrementSequenceNumber()
-   {
-   }
+   virtual ~CIncrementSequenceNumber() = default;
 
    // ISequenceNumber implementation
    void reset(unsigned char value = 0) override

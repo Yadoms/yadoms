@@ -1,10 +1,12 @@
 ﻿{
   "name": "Faux Plugin",
-  "description": "Ce plugin est une faux-plugin, fourni uniquement à des fins d'exemple pour développement de vrais plugins. Il montre notemment comment : \n   - utiliser une configuration\n   - traiter une commande en provenance de Yadoms\n   - enregistrer un état de capteur (historiser) dans Yadoms\n   - etc...\n",
+  "description":
+    "Ce plugin est un faux-plugin, fourni uniquement à des fins d'exemple pour développement de vrais plugins. Il montre notemment comment : \n   - utiliser une configuration\n   - traiter une commande en provenance de Yadoms\n   - enregistrer un état de capteur (historiser) dans Yadoms\n   - etc...\n",
   "configurationSchema": {
     "StringParameter": {
       "name": "Un exemple de chaîne",
-      "description": "Voici un exemple de paramètre chaîne. Les champs de description supportent [les liens](http://www.yadoms.com)"
+      "description":
+        "Voici un exemple de paramètre chaîne. Les champs de description supportent [les liens](http://www.yadoms.com)"
     },
     "BoolParameter": {
       "name": "Un exemple de booléen",
@@ -44,7 +46,8 @@
     },
     "ConditionalParameter": {
       "name": "Un paramètre conditionnel",
-      "description": "Ce paramètre n'est affiché que si une condition, validée par le serveur, est remplie. Dans ce cas présent, il n'est affiché que si le serveur est exécuté sous Windows.",
+      "description":
+        "Ce paramètre n'est affiché que si une condition, validée par le serveur, est remplie. Dans ce cas présent, il n'est affiché que si le serveur est exécuté sous Windows.",
       "defaultValue": "Si vous voyez ceci, c'est que Yadoms toune sous Windows."
     },
     "SystemData": {
@@ -166,7 +169,8 @@
     },
     "dataBindingCommand": {
       "name": "Commande avec des données liées",
-      "description": "Cette commande requiert un choix de la part de l'utilisateur, à partir d'une liste fournie par le serveur. Ici, la liste demandée au serveur est la liste des interfaces réseau disponibles sur le système.",
+      "description":
+        "Cette commande requiert un choix de la part de l'utilisateur, à partir d'une liste fournie par le serveur. Ici, la liste demandée au serveur est la liste des interfaces réseau disponibles sur le système.",
       "commandData": {
         "networkInterface": {
           "name": "Interface réseau",
@@ -176,7 +180,8 @@
     },
     "dataBindingPluginCommand": {
       "name": "Commande avec des données liées au plugin",
-      "description": "Cette commande requiert un choix de la part de l'utilisateur, à partir d'une liste fournie par le plugin",
+      "description":
+        "Cette commande requiert un choix de la part de l'utilisateur, à partir d'une liste fournie par le plugin",
       "commandData": {
         "dynamicSection": {
           "name": "Une section dynamique",
@@ -184,9 +189,9 @@
           "content": {
             "interval": {
               "name": "Intervale du graphique",
-              "description": "Permet la modification de l'intervale de l'ensemble des graphiques" 
-            } 
-          } 
+              "description": "Permet la modification de l'intervale de l'ensemble des graphiques"
+            }
+          }
         }
       }
     },
@@ -249,21 +254,50 @@
                   "description": "Exemple d'une liste dans une sous-section",
                   "content": {
                     "first": {
-                      "name": "Première section",
-                      "description": "Première section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                      "types": {
+                        "first": {
+                          "title": "Première section",
+                          "description":
+                            "Première section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }
+                      }
                     },
                     "second": {
-                      "name": "Seconde section",
-                      "description": "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                      "types": {
+                        "second": {
+                          "title": "Seconde section",
+                          "description":
+                            "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }
+                      }
                     },
                     "third": {
-                      "name": "Troisième section",
-                      "description": "Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                      "types": {
+                        "third": {
+                          "title": "Troisième section",
+                          "description":
+                            "Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }
+                      }
                     }
                   }
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "dynamicConfigurationSchema": {
+      "schemas": {
+        "fakeDynamicallyConfigurableDeviceType": {
+          "DynamicDivider": {
+            "name": "Diviseur",
+            "description": "Description du diviseur"
+          },
+          "ArrayItem": {
+            "name": "Elément d'un tableau",
+            "description": "Tous les éléments du tableau partagent les mêmes traductions"
           }
         }
       }

@@ -5,7 +5,7 @@
 namespace plugin_cpp_api
 {
    CBindingQuery::CBindingQuery(const plugin_IPC::toPlugin::BindingQuery& msg,
-                                boost::function1<void, const shared::CDataContainer&> sucessCallback,
+                                boost::function1<void, const boost::shared_ptr<shared::CDataContainer>&> sucessCallback,
                                 boost::function1<void, const std::string&> errorCallback)
       : m_query(msg.query()),
         m_sucessCallback(sucessCallback),
@@ -22,7 +22,7 @@ namespace plugin_cpp_api
       return m_query;
    }
 
-   void CBindingQuery::sendSuccess(const shared::CDataContainer& result)
+   void CBindingQuery::sendSuccess(const boost::shared_ptr<shared::CDataContainer>& result)
    {
       m_sucessCallback(result);
    }

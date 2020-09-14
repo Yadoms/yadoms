@@ -1,6 +1,6 @@
 #pragma once
 #include "Http.h"
-#include <shared/web/FileDownloader.h>
+#include <shared/http/FileDownloader.h>
 
 class COpenZWaveHttpClient : public OpenZWave::Internal::i_HttpClient
 {

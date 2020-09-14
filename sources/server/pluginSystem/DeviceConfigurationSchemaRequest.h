@@ -18,7 +18,7 @@ namespace pluginSystem
       ///\param [in]  data       The data container
       //-----------------------------------------------------
       CDeviceConfigurationSchemaRequest(const std::string& device,
-                                        communication::callback::ISynchronousCallback<shared::CDataContainer>& callback);
+                                        communication::callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback);
 
       //-----------------------------------------------------
       ///\brief Destructor
@@ -27,7 +27,7 @@ namespace pluginSystem
 
       // IDeviceConfigurationSchemaRequest implementation
       std::string device() const override;
-      void sendSuccess(const shared::CDataContainer& deviceConfigurationSchema) override;
+      void sendSuccess(const boost::shared_ptr<shared::CDataContainer>& deviceConfigurationSchema) override;
       void sendError(const std::string& errorMessage) override;
       // [END] - IDeviceConfigurationSchemaRequest implementation
 
@@ -35,7 +35,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief Internal data
       //-----------------------------------------------------
-      boost::shared_ptr<communication::callback::ICallbackRequest<const std::string&, shared::CDataContainer> > m_requestPtr;
+      boost::shared_ptr<communication::callback::ICallbackRequest<const std::string&, boost::shared_ptr<shared::CDataContainer>> > m_requestPtr;
    };
 } // namespace pluginSystem
 

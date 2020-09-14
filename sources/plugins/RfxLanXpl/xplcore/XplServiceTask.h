@@ -146,7 +146,7 @@ namespace xplcore
       /// \param [in]   msg      The message
       /// \param [in]   sender   The sender
       //--------------------------------------------------------------
-      void manageReceivedHeartBeatMessage(CXplMessage& hbeatMessage,
+      void manageReceivedHeartBeatMessage(const CXplMessage& hbeatMessage,
                                           Poco::Net::SocketAddress& sender);
 
       //--------------------------------------------------------------

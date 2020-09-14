@@ -8,7 +8,8 @@
     },
     "PairingMode": {
       "name": "Pairing mode",
-      "description": "Pairing mode can be automatic (each newly detected device is automaticaly registered), or manual with a command on the plugin (green button)",
+      "description":
+        "Pairing mode can be automatic (each newly detected device is automaticaly registered), or manual with a command on the plugin (green button)",
       "values": {
         "auto": "Automatic mode, each newly detected device will registered",
         "manual": "Manual mode, plugin must be set to pairing mode with the green button"
@@ -53,13 +54,46 @@
     },
     "pairing": {
       "invalidCommandAutoMode": "Invalid command, pairing is configured as automatic",
-      "alreadyRunning": "Pairing already running",
       "pairing": "Pairing...",
       "devicePaired": "New device paired !",
       "noDevicePaired": "No device found"
     }
   },
   "specificProfilesConfigurations": {
+    "D2-00-01": {
+      "content": {
+        "setPointEnable": {
+          "name": "Set point",
+          "content": {
+            "setPointRangeLimit": {
+              "name": "Range limit (°)",
+              "description": "Range limit (positive or negative)"
+            },
+            "setPointSteps": {
+              "name": "Steps",
+              "description": "Steps number in the range"
+            }
+          }
+        },
+        "temperatureMeasurementEnable": {
+          "name": "Temperature measure",
+          "content": {
+            "measureInterval": {
+              "name": "Measure delay (second)",
+              "description": "Delay between two measures"
+            },
+            "significantDelta": {
+              "name": "Significant delta (°)",
+              "description": "Minimal delta to send temperature"
+            },
+            "keepAliveTiming": {
+              "name": "Keep alive timing",
+              "description": "Maximum number of measurements to force send"
+            }
+          }
+        }
+      }
+    },
     "D2-01-04": {
       "content": {
         "localControl": {
@@ -384,8 +418,8 @@
           }
         },
         "delayOffTimer": {
-          "name": "Delay timer before setting output channel to OFF value received by radio cmd",
-          "description": "When output is set to ON (only from radio command), this timer is applied before to set output back OFF",
+          "name": "Delay timer before setting output channel to OFF value when received by radio command",
+          "description": "When OFF command is received by radio, apply this timer before to set output OFF",
           "content": {
             "value": {
               "name": "Timer value",
@@ -397,6 +431,45 @@
     },
     "D2-01-12": {
       "sameAs": "D2-01-0F"
+    },
+    "D2-02-00": {
+      "content": {
+        "deltaTemperatureToReport": {
+          "name": "Temperature delta to report",
+          "description": "Significant temperature delta to be reported (°)"
+        },
+        "deltaIlluminationToReport": {
+          "name": "Illumination delta to report",
+          "description": "Significant illumination delta to be reported (lx)"
+        },
+        "maxMessagesInterval": {
+          "name": "Maximum interval between 2 messages (s)",
+          "description": "Sensor will send at least a message each X seconds"
+        },
+        "minMessagesInterval": {
+          "name": "Minimum interval between 2 messages (s)",
+          "description": "Sensor will not send message if one was send in past X seconds"
+        }
+      }
+    },
+    "D2-02-01": {
+      "sameAs": "D2-02-00"
+    },
+    "D2-02-02": {
+      "content": {
+        "deltaTemperatureToReport": {
+          "name": "Temperature delta to report",
+          "description": "Significant temperature delta to be reported (°)"
+        },
+        "maxMessagesInterval": {
+          "name": "Maximum interval between 2 messages (s)",
+          "description": "Sensor will send at least a message each X seconds"
+        },
+        "minMessagesInterval": {
+          "name": "Minimum interval between 2 messages (s)",
+          "description": "Sensor will not send message if one was send in past X seconds"
+        }
+      }
     },
     "D2-05-00": {
       "content": {

@@ -1,0 +1,119 @@
+name: Docker Image CI
+
+on: push
+
+jobs:
+
+  linux:
+    name : Generate for Linux
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Yadoms build script
+      uses: Yadoms/build-yadoms-action@v3.beta5
+      id: yadoms_build_step
+      with:
+          buildImage: docker.pkg.github.com/yadoms/docker/build_for_linux:latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          entrypoint: '/entrypoint_docker.sh'
+    - name: Create Release
+      id: create_release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.ref }}
+        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        draft: true
+        prerelease: true
+        allowUpdates: true
+        omitNameDuringUpdate: true
+        replacesArtifacts: true
+        artifacts: "./builds/package/*"
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+  MacOSX:
+    name : Generate for MacOSX
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Yadoms build script
+      uses: Yadoms/build-yadoms-action@v3.beta5
+      id: yadoms_build_step
+      with:
+          buildImage: docker.pkg.github.com/yadoms/docker/build_for_macos:latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          entrypoint: '/entrypoint_docker.sh'
+    - name: Create Release
+      id: create_release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.ref }}
+        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        draft: true
+        prerelease: true
+        allowUpdates: true
+        omitNameDuringUpdate: true
+        replacesArtifacts: true
+        artifacts: "./builds/package/*"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+  Synology218p:
+    name : Generate for Synology 218+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Yadoms build script
+      uses: Yadoms/build-yadoms-action@v3.beta5
+      id: yadoms_build_step
+      with:
+          buildImage: docker.pkg.github.com/yadoms/docker/build_for_synology218p:latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          entrypoint: '/entrypoint_docker.sh'
+    - name: Create Release
+      id: create_release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.ref }}
+        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        draft: true
+        prerelease: true
+        allowUpdates: true
+        omitNameDuringUpdate: true
+        replacesArtifacts: true
+        artifacts: "./builds/package/*"
+        token: ${{ secrets.GITHUB_TOKEN }}     
+
+  RapsberryPI:
+    name : Generate for RaspberryPI (all versions)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Yadoms build script
+      uses: Yadoms/build-yadoms-action@v3.beta5
+      id: yadoms_build_step
+      with:
+          buildImage: docker.pkg.github.com/yadoms/docker/build_for_raspberrypi:latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          privileged: '--privileged'
+          entrypoint: '/entrypoint_docker.sh'
+    - name: Create Release
+      id: create_release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.ref }}
+        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        draft: true
+        prerelease: true
+        allowUpdates: true
+        omitNameDuringUpdate: true
+        replacesArtifacts: true
+        artifacts: "./builds/package/*"
+        token: ${{ secrets.GITHUB_TOKEN }}     
+        

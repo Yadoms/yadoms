@@ -15,12 +15,12 @@ namespace rfxcomMessages
    public:
       CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api,
                 const std::string& command,
-                const shared::CDataContainer& deviceDetails);
+                const boost::shared_ptr<shared::CDataContainer>& deviceDetails);
 
       CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api,
                 unsigned int subType,
                 const std::string& name,
-                const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+                const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration);
 
       CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api,
                 const RBUF& rbuf,
@@ -76,7 +76,10 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       std::string m_deviceModel;
 
-      shared::CDataContainer m_deviceDetails;
+      //--------------------------------------------------------------
+      /// \brief	The device details
+      //--------------------------------------------------------------
+      boost::shared_ptr<shared::CDataContainer> m_deviceDetails;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state

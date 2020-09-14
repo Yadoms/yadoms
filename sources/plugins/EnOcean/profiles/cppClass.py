@@ -388,7 +388,7 @@ class CppClass(CppType):
             f.write("   " + self.__cppClassName + "();\n")
          for constructor in self.__constructors:
             constructor.generateHeader(f, self.__cppClassName)
-         f.write("   virtual ~" + self.__cppClassName + "();\n")
+         f.write("   virtual ~" + self.__cppClassName + "() = default;\n")
 
          self.__generateHeaderVisibilityBlock(f, PUBLIC)
          self.__generateHeaderVisibilityBlock(f, PROTECTED)
@@ -432,9 +432,6 @@ class CppClass(CppType):
 
          for constructor in self.__constructors:
             constructor.generateSource(f, self.__generateMembersInitializersCode(), self.__cppClassName)
-
-         f.write(self.__cppClassName + "::~" + self.__cppClassName + "()\n")
-         f.write("{}\n")
 
          # Methods
          for method in self.__methods:

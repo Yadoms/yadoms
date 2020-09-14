@@ -27,6 +27,7 @@ ENDIF()
 # List subdirectories here
 add_subdirectory(communication)
 add_subdirectory(event)
+add_subdirectory(http)
 add_subdirectory(tools)
 
 

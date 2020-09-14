@@ -22,9 +22,9 @@ namespace adapters {
 
       //--------------------------------------------------------------
       ///\brief  Extract a column value in a typed way
-      ///\param [in]    pStmt    The current statement
-      ///\param [in]    i        The index (zero based) of the targeted column
-      ///\template      TValue   The type of the expectted value
+      ///\param [in]    resultHandler  The current statement
+      ///\param [in]    nCol           The index (zero based) of the targeted column
+      ///\template      TValue         The type of the expectted value
       ///\return The value from the column.
       //--------------------------------------------------------------
       template<class TValue>
@@ -126,7 +126,7 @@ namespace adapters {
    ///\brief  Override method for type = shared::CDataContainer (use specific sqlite3 function)
    //--------------------------------------------------------------
    template<>
-   inline shared::CDataContainer CSqlExtension::extractData(boost::shared_ptr<IResultHandler> resultHandler, int nCol)
+   inline boost::shared_ptr<shared::CDataContainer> CSqlExtension::extractData(boost::shared_ptr<IResultHandler> resultHandler, int nCol)
    {
       return resultHandler->extractValueAsDataContainer(nCol);
    }

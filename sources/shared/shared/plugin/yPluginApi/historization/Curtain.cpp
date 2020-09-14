@@ -12,16 +12,17 @@ namespace shared
          namespace historization
          {
             DECLARE_ENUM_IMPLEMENTATION(ECurtainCommand,
-               ((Stop))
-               ((Open))
-               ((Close))
+                                        ((Stop))
+                                        ((Open))
+                                        ((Close))
             );
 
             CCurtain::CCurtain(const std::string& keywordName,
+                               const EKeywordAccessMode& keywordAccessMode,
                                const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<ECurtainCommand>(keywordName,
                                                           CStandardCapacities::Curtain(),
-                                                          EKeywordAccessMode::kGetSet,
+                                                          keywordAccessMode,
                                                           ECurtainCommand::kStop,
                                                           EMeasureType::kAbsolute,
                                                           typeInfo::CEmptyTypeInfo::Empty,

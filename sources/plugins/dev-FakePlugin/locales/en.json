@@ -1,6 +1,7 @@
 {
   "name": "Fake Plugin",
-  "description": "This is just a fake plugin, designed to serve as example to write real plugins. This plugin do nothing useful, just demonstrate how to :\n   - use a configuration\n   - process a Yadoms command\n   - historize sensor data to Yadoms\n   - etc...\n",
+  "description":
+    "This is just a fake plugin, designed to serve as example to write real plugins. This plugin do nothing useful, just demonstrate how to :\n   - use a configuration\n   - process a Yadoms command\n   - historize sensor data to Yadoms\n   - etc...\n",
   "configurationSchema": {
     "StringParameter": {
       "name": "A string example",
@@ -44,7 +45,8 @@
     },
     "ConditionalParameter": {
       "name": "A conditional parameter",
-      "description": "This parameter is shown depending on a condition, evaluated by the server. In this case, it is shown only if server is running under Windows.",
+      "description":
+        "This parameter is shown depending on a condition, evaluated by the server. In this case, it is shown only if server is running under Windows.",
       "defaultValue": "If you see it, Yadoms is running under Windows."
     },
     "SystemData": {
@@ -166,7 +168,8 @@
     },
     "dataBindingCommand": {
       "name": "Command with binded data",
-      "description": "This command ask user to choose from a list provided from Yadoms. The list used here is the available network interfaces of system.",
+      "description":
+        "This command ask user to choose from a list provided from Yadoms. The list used here is the available network interfaces of system.",
       "commandData": {
         "networkInterface": {
           "name": "Network interface",
@@ -212,53 +215,82 @@
   },
   "deviceConfiguration": {
     "staticConfigurationSchema": {
-      "fakeConfigurableDevice": {
-        "types": {
-          "fakeConfigurableDeviceType": {
-            "title": "configurable device",
-            "description": "compatible with Chacon, DIO,..."
-          },
-          "anotherFakeConfigurableDeviceType": {
-            "title": "another configurable device",
-            "description": "compatible with Blyss, ..."
-          }
-        },
-        "content": {
-          "CounterDivider2": {
-            "name": "Divider n°2",
-            "description": "Divider used to low the counter frequency (all devices)"
-          },
-          "MySection": {
-            "name": "A section",
-            "description": "Example of using a section in configuration tree.",
+      "schemas": {
+          "fakeConfigurableDevice": {
+            "types": {
+              "fakeConfigurableDeviceType": {
+                "title": "configurable device",
+                "description": "compatible with Chacon, DIO,..."
+              },
+              "anotherFakeConfigurableDeviceType": {
+                "title": "another configurable device",
+                "description": "compatible with Blyss, ..."
+              }
+            },
             "content": {
-              "SubIntParameter": {
-                "name": "An integer-in-section example",
-                "description": "An int in sub-section example"
+              "CounterDivider2": {
+                "name": "Divider n°2",
+                "description": "Divider used to low the counter frequency (all devices)"
               },
-              "SubStringParameter": {
-                "name": "A string-in-section example",
-                "description": "Just a string parameter in the sub-section",
-                "defaultValue": "Sub-sections make configuration very powerful !"
-              },
-              "SubComboParameter": {
-                "name": "Sublist in section",
-                "description": "Example of combo parameter in the sub-section",
+              "MySection": {
+                "name": "A section",
+                "description": "Example of using a section in configuration tree.",
                 "content": {
-                  "first": {
-                    "name": "First section",
-                    "description": "The first list section : you can add here some other configuration parameters"
+                  "SubIntParameter": {
+                    "name": "An integer-in-section example",
+                    "description": "An int in sub-section example"
                   },
-                  "second": {
-                    "name": "Second section",
-                    "description": "The second list section : you can add here some other configuration parameters"
+                  "SubStringParameter": {
+                    "name": "A string-in-section example",
+                    "description": "Just a string parameter in the sub-section",
+                    "defaultValue": "Sub-sections make configuration very powerful !"
                   },
-                  "third": {
-                    "name": "Third section",
-                    "description": "The third list section : you can add here some other configuration parameters"
+                  "SubComboParameter": {
+                    "name": "Sublist in section",
+                    "description": "Example of combo parameter in the sub-section",
+                    "content": {
+                      "first": {
+                        "types": {
+                          "first": {
+                            "title": "First section",
+                            "description": "The first list section : you can add here some other configuration parameters"
+                          }
+                        }
+                      },
+                      "second": {
+                        "types": {
+                          "first": {
+                            "title": "Second section",
+                            "description": "The second list section : you can add here some other configuration parameters"
+                          }
+                        }
+                      },
+                      "third": {
+                        "types": {
+                          "first": {
+                            "title": "Third section",
+                            "description": "The third list section : you can add here some other configuration parameters"
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
+            }
+          }
+        }
+      },
+      "dynamicConfigurationSchema": {
+        "schemas": {
+          "fakeDynamicallyConfigurableDeviceType": {
+            "DynamicDivider": {
+              "name": "Divider",
+              "description": "Description of divider"
+            },
+            "ArrayItem": {
+              "name": "Array item",
+              "description": "All array items share same translations"
             }
           }
         }

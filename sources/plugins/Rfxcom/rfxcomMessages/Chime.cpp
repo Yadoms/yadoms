@@ -11,15 +11,17 @@ namespace rfxcomMessages
 {
    CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> api,
                   const std::string& command,
-                  const shared::CDataContainer& deviceDetails)
-      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+                  const boost::shared_ptr<shared::CDataContainer>& deviceDetails)
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
+        
    {
       m_signalPower->set(0);
 
-      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
+      createSubType(static_cast<unsigned char>(deviceDetails->get<unsigned int>("subType")));
       m_subTypeManager->set(command, deviceDetails);
-      m_id = deviceDetails.get<unsigned int>("id");
+      m_id = deviceDetails->get<unsigned int>("id");
 
       // Build device description
       buildDeviceName();
@@ -29,15 +31,16 @@ namespace rfxcomMessages
    CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> api,
                   unsigned int subType,
                   const std::string& name,
-                  const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+                  const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
+        m_deviceDetails(shared::CDataContainer::make()),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
    {
       m_signalPower->set(0);
 
       createSubType(static_cast<unsigned char>(subType));
-      m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
+      m_id = manuallyDeviceCreationConfiguration->get<unsigned int>("id");
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
@@ -49,8 +52,9 @@ namespace rfxcomMessages
    CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> api,
                   const RBUF& rbuf,
                   size_t rbufSize)
-      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({m_signalPower})
+      : m_deviceDetails(shared::CDataContainer::make()),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_signalPower})        
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -75,11 +79,11 @@ namespace rfxcomMessages
 
    void CChime::buildDeviceDetails()
    {
-      if (m_deviceDetails.empty())
+      if (m_deviceDetails->empty())
       {
-         m_deviceDetails.set("type", pTypeChime);
-         m_deviceDetails.set("subType", m_subType);
-         m_deviceDetails.set("id", m_id);
+         m_deviceDetails->set("type", pTypeChime);
+         m_deviceDetails->set("subType", m_subType);
+         m_deviceDetails->set("id", m_id);
       }
    }
 
@@ -137,7 +141,7 @@ namespace rfxcomMessages
    {
       api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_subTypeManager->getModel(), m_keywords, m_deviceDetails);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_subTypeManager->getModel() << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
+      m_deviceDetails->printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CChime::getDeviceName() const

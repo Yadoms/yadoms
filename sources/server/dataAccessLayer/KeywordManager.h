@@ -25,7 +25,7 @@ namespace dataAccessLayer
       boost::shared_ptr<database::entities::CAcquisition> getKeywordLastAcquisition(const int keywordId, bool throwIfNotExists = true) override;
       std::string getKeywordLastData(const int keywordId, bool throwIfNotExists = true) override;
       std::vector<boost::tuple<int, std::string>> getKeywordListLastData(const std::vector<int> keywordIds) override;
-      void addKeyword(int deviceId, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      void addKeyword(int deviceId, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make()) override;
       void addKeywords(int deviceId, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) override;
       void updateKeywordFriendlyName(int deviceId, const std::string& keyword, const std::string& newFriendlyName) override;
       void updateKeywordFriendlyName(int keywordId, const std::string& newFriendlyName) override;
@@ -39,8 +39,7 @@ namespace dataAccessLayer
       static boost::shared_ptr<database::entities::CKeyword> makeKeywordEntity(int deviceId,
                                                                                const shared::plugin::yPluginApi::historization::IHistorizable&
                                                                                keyword,
-                                                                               const shared::CDataContainer& details = shared::CDataContainer::
-                                                                                  EmptyContainer);
+                                                                               boost::shared_ptr<shared::CDataContainer> = shared::CDataContainer::make());
 
 
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

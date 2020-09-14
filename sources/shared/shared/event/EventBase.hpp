@@ -22,9 +22,19 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    Destructor
          //--------------------------------------------------------------
-         virtual ~CEventBase()
-         {
-         }
+         virtual ~CEventBase() = default;
+
+         //--------------------------------------------------------------
+         /// \brief	    Copy
+         //--------------------------------------------------------------
+         CEventBase(const CEventBase&) = default;
+         CEventBase& operator=(const CEventBase&) = default;
+
+         //--------------------------------------------------------------
+         /// \brief	    Move
+         //--------------------------------------------------------------
+         CEventBase(const CEventBase&&) = delete;
+         CEventBase& operator=(const CEventBase&&) = delete;
 
          //--------------------------------------------------------------
          /// \brief	    Id getter

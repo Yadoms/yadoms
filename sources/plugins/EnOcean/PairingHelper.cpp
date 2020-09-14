@@ -33,11 +33,11 @@ CPairingHelper::EPairingMode CPairingHelper::getMode() const
    return m_mode;
 }
 
-bool CPairingHelper::startPairing(boost::shared_ptr<yApi::IExtraQuery> manualPairingExtraQuery)
+bool CPairingHelper::startStopPairing(boost::shared_ptr<yApi::IExtraQuery> manualPairingExtraQuery)
 {
    if (m_mode == kAuto)
    {
-      YADOMS_LOG(warning) << "Try to start pairing with auto mode : not compatible, ignored";
+      YADOMS_LOG(warning) << "Try to start/stop pairing with auto mode : not compatible, ignored";
       manualPairingExtraQuery->sendError("customLabels.pairing.invalidCommandAutoMode");
       m_manualPairingExtraQuery.reset();
       return false;
@@ -45,9 +45,8 @@ bool CPairingHelper::startPairing(boost::shared_ptr<yApi::IExtraQuery> manualPai
 
    if (m_pairingEnable)
    {
-      YADOMS_LOG(warning) << "Pairing already started, ignored";
-      manualPairingExtraQuery->sendError("customLabels.pairing.alreadyRunning");
-      m_manualPairingExtraQuery.reset();
+      YADOMS_LOG(warning) << "Pairing already started, stop it";
+      stopPairing();
       return false;
    }
 
@@ -97,7 +96,7 @@ void CPairingHelper::stopPairing(const std::string& devicePaired)
    {
       m_manualPairingExtraQuery->reportProgress(99.0f, devicePaired.empty() ? "customLabels.pairing.noDevicePaired" : "customLabels.pairing.devicePaired");
 
-      m_manualPairingExtraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
+      m_manualPairingExtraQuery->sendSuccess(shared::CDataContainer::make());
    }
    m_manualPairingExtraQuery.reset();
 

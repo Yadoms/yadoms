@@ -10,6 +10,11 @@ class CZWaveConfiguration
 {
 public:
    //--------------------------------------------------------------
+   /// \brief	    Constructor
+   //--------------------------------------------------------------
+   CZWaveConfiguration();
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CZWaveConfiguration();
@@ -27,7 +32,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Initialize configuration
    //--------------------------------------------------------------
-   void initializeWith(shared::CDataContainer container);
+   void initializeWith(boost::shared_ptr<shared::CDataContainer> container);
 
    //--------------------------------------------------------------
    /// \brief	    Get the library path
@@ -70,6 +75,6 @@ private :
    //--------------------------------------------------------------
    /// \brief	    The container
    //--------------------------------------------------------------
-   shared::CDataContainer m_container;
+   boost::shared_ptr<shared::CDataContainer> m_container;
 };
 

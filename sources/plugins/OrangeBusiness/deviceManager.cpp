@@ -2,7 +2,7 @@
 #include "deviceManager.h"
 #include "DefaultEquipment.h"
 #include <shared/DataContainer.h>
-#include <shared/http/HttpException.hpp>
+#include <shared/exception/HttpException.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
 
 CEquipmentManager::CEquipmentManager(const std::map<std::string, boost::shared_ptr<equipments::IEquipment>>& deviceList) :
@@ -18,7 +18,7 @@ CEquipmentManager::CEquipmentManager(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       try // plugin state have no type
       {
-         auto devEui = api->getDeviceDetails(device).get<std::string>("devEUI");
+         auto devEui = api->getDeviceDetails(device)->get<std::string>("devEUI");
 
          if (devEui != "") // Create the device 
             m_deviceList.insert(
@@ -59,8 +59,8 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
    {
       // reading of the battery level
       auto response = frameManager->getDeviceInformation(apikey, equipment->getEUI());
-      response.printToLog(YADOMS_LOG(trace));
-      auto receivedTimeString = response.get<std::string>("updateTs");
+      response->printToLog(YADOMS_LOG(trace));
+      auto receivedTimeString = response->get<std::string>("updateTs");
       boost::remove_erase_if(receivedTimeString, boost::is_any_of("Z-:."));
       const auto receivedTime = boost::posix_time::from_iso_string(receivedTimeString);
 
@@ -72,7 +72,7 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
       {
          if (elapseTimeSinceLastBatteryMessage >= maxTimeForBatteryHistorization)
          {
-            equipment->updateBatteryLevel(api, response.get<int>("lastBatteryLevel"));
+            equipment->updateBatteryLevel(api, response->get<int>("lastBatteryLevel"));
          }
       }
       catch (std::exception&)
@@ -80,7 +80,7 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
          YADOMS_LOG(information) << "no battery information for equipment " << equipment->getName();
       }
    }
-   catch (shared::CHttpException&)
+   catch (shared::exception::CHttpException&)
    {
       throw;
    }
@@ -93,13 +93,13 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
    {
       // Reading all commands for an equipment. lastest messages should be write first
       auto response = frameManager->listDeviceCommands(apikey, equipment->getEUI(), 0);
-      response.printToLog(YADOMS_LOG(trace));
+      response->printToLog(YADOMS_LOG(trace));
 
       // get last data from this last frame
       auto lastData = decoder->getLastData(response);
-      response.printToLog(YADOMS_LOG(trace));
+      response->printToLog(YADOMS_LOG(trace));
 
-      const auto idNewMessage = lastData.getWithDefault<std::string>("id", "");
+      const auto idNewMessage = lastData->getWithDefault<std::string>("id", "");
       const auto idlastMessage = equipment->getlastMessageId(api);
 
       // Register the new data, only if it's a new id
@@ -107,14 +107,14 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
       if (idNewMessage != idlastMessage)
       {
          equipment->updateData(api,
-                               lastData.get<std::string>("payload"),
-                               lastData.get<double>("rssi"),
-                               lastData.get<int>("signalLevel"),
-                               lastData.get<double>("snr"));
+                               lastData->get<std::string>("payload"),
+                               lastData->get<double>("rssi"),
+                               lastData->get<int>("signalLevel"),
+                               lastData->get<double>("snr"));
          equipment->updatelastMessageId(api, idNewMessage);
       }
    }
-   catch (shared::CHttpException&)
+   catch (shared::exception::CHttpException&)
    {
       throw;
    }

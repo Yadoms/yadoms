@@ -15,23 +15,26 @@ typedef FT_STATUS (__stdcall *f_ftclose)(FT_HANDLE handle);
 typedef FT_STATUS (__stdcall *f_ftsetBitMode)(FT_HANDLE handle, UCHAR ucMask, UCHAR ucEnabled);
 typedef FT_STATUS (__stdcall *f_ftgetBitMode)(FT_HANDLE handle, PUCHAR pucMode);
 typedef FT_STATUS (__stdcall *f_ftsetbaudRate)(FT_HANDLE handle, ULONG baudRate);
-typedef FT_STATUS (__stdcall *f_ftsetDataCharacteristics)(FT_HANDLE m_ftHandle, UCHAR uWordLength, UCHAR uStopBits, UCHAR uParity);
-typedef FT_STATUS (__stdcall *f_ftsetEventNotification)(FT_HANDLE m_ftHandle, DWORD dwEventMask, PVOID pvArg);
-typedef FT_STATUS (__stdcall *f_ftGetStatus)(FT_HANDLE m_ftHandle, LPDWORD lpdwAmountInRxQueue, LPDWORD lpdwAmountInTxQueue, LPDWORD lpdwEventStatus);
-typedef FT_STATUS (__stdcall *f_ftGetModemStatus)(FT_HANDLE m_ftHandle, LPDWORD lpdwModemStatus);
-typedef FT_STATUS (__stdcall *f_ftRead)(FT_HANDLE m_ftHandle, LPVOID lpBuffer, DWORD dwBytesToRead, LPDWORD lpdwBytesReturned);
+typedef FT_STATUS (__stdcall *f_ftsetDataCharacteristics)(FT_HANDLE ftHandle, UCHAR uWordLength, UCHAR uStopBits,
+                                                          UCHAR uParity);
+typedef FT_STATUS (__stdcall *f_ftsetEventNotification)(FT_HANDLE ftHandle, DWORD dwEventMask, PVOID pvArg);
+typedef FT_STATUS (__stdcall *f_ftGetStatus)(FT_HANDLE ftHandle, LPDWORD lpdwAmountInRxQueue,
+                                             LPDWORD lpdwAmountInTxQueue, LPDWORD lpdwEventStatus);
+typedef FT_STATUS (__stdcall *f_ftGetModemStatus)(FT_HANDLE ftHandle, LPDWORD lpdwModemStatus);
+typedef FT_STATUS (__stdcall *f_ftRead)(FT_HANDLE ftHandle, LPVOID lpBuffer, DWORD dwBytesToRead,
+                                        LPDWORD lpdwBytesReturned);
 typedef FT_STATUS (__stdcall *f_ftCreateDeviceInfoList)(LPDWORD lpdwNumDevs);
 typedef FT_STATUS (__stdcall *f_ftGetDeviceInfoList)(FT_DEVICE_LIST_INFO_NODE* pDest, LPDWORD lpdwNumDevs);
-typedef FT_STATUS (__stdcall *f_ftGetComPortNumber)(FT_HANDLE m_ftHandle, LPLONG lplComPortNumber);
-typedef FT_STATUS (__stdcall *f_ftGetDriverVersion)(FT_HANDLE m_ftHandle, LPDWORD lpdwDriverVersion);
+typedef FT_STATUS (__stdcall *f_ftGetComPortNumber)(FT_HANDLE ftHandle, LPLONG lplComPortNumber);
+typedef FT_STATUS (__stdcall *f_ftGetDriverVersion)(FT_HANDLE ftHandle, LPDWORD lpdwDriverVersion);
 typedef FT_STATUS (__stdcall *f_ftGetLibraryVersion)(LPDWORD lpdwDLLVersion);
-typedef FT_STATUS (__stdcall *f_ftSetFlowControl)(FT_HANDLE m_ftHandle, USHORT usFlowControl, UCHAR uXon, UCHAR uXoff);
+typedef FT_STATUS (__stdcall *f_ftSetFlowControl)(FT_HANDLE ftHandle, USHORT usFlowControl, UCHAR uXon, UCHAR uXoff);
 
 typedef FT_STATUS (__stdcall *f_ftGetDeviceInfoDetail)(DWORD dwIndex, LPDWORD lpdwFlags,
                                                        LPDWORD lpdwType,
                                                        LPDWORD lpdwID, LPDWORD lpdwLocId,
                                                        PCHAR pcSerialNumber, PCHAR pcDescription,
-                                                       FT_HANDLE* m_ftHandle);
+                                                       FT_HANDLE* ftHandle);
 
 
 CFT2xxSerialPort::CFT2xxSerialPort(const std::string& name,
@@ -64,14 +67,13 @@ CFT2xxSerialPort::CFT2xxSerialPort(const std::string& name,
       YADOMS_LOG(error) << message;
       throw shared::exception::CException(message);
    }
-
    m_hEvent = CreateEventA(
-      NULL,
+      nullptr,
       false, // auto-reset event
       false, // non-signalled state
       "");
 
-   if (m_hEvent == NULL)
+   if (m_hEvent == nullptr)
    {
       const std::string message = "Create event failed";
       YADOMS_LOG(error) << message;
@@ -110,8 +112,8 @@ std::vector<int> CFT2xxSerialPort::getPortComNumber()
       ftStatus = ftOpen(counter, &m_ftHandle);
       if (ftStatus != FT_OK)
       {
-         const std::string message = "Fail to open the serial port with FTDI driver";
-         YADOMS_LOG(error) << message;
+         const std::string message = "Fail to open the serial port with FTDI driver : ";
+         YADOMS_LOG(error) << message << ftStatus;
          throw shared::exception::CException(message);
       }
 
@@ -127,10 +129,10 @@ std::vector<int> CFT2xxSerialPort::getPortComNumber()
       YADOMS_LOG(information) << "Port Com number : " << static_cast<int>(lplComPortNumber);
       m_serialPortComNumber.push_back(lplComPortNumber);
 
-      if (m_ftHandle != NULL)
+      if (m_ftHandle != nullptr)
       {
          ftClose(m_ftHandle);
-         m_ftHandle = NULL;
+         m_ftHandle = nullptr;
          m_isConnected = false;
       }
    }
@@ -143,7 +145,6 @@ CFT2xxSerialPort::~CFT2xxSerialPort()
    // We desactivate running GPIOs if activated
    desactivateGPIO();
    CFT2xxSerialPort::stop();
-   YADOMS_LOG(debug) << "CFT2xxSerialPort::~CFT2xxSerialPort()";
 }
 
 void CFT2xxSerialPort::setReceiveBufferMaxSize(std::size_t size)
@@ -264,9 +265,10 @@ bool CFT2xxSerialPort::connect()
       if (numDevs > 0)
       {
          FT_HANDLE ftHandleTemp;
-         // get information for device 0
          char serialNumber[16];
          char description[64];
+
+         // get information for device 0
          ftStatus = ftGetDeviceInfoDetail(m_port, &flags, &type, &id, &locId, serialNumber,
                                           description, &ftHandleTemp);
          if (ftStatus == FT_OK)
@@ -278,12 +280,12 @@ bool CFT2xxSerialPort::connect()
             YADOMS_LOG(debug) << " LocId=" << locId;
             YADOMS_LOG(debug) << " SerialNumber=" << serialNumber;
             YADOMS_LOG(debug) << " Description=" << description;
-            YADOMS_LOG(debug) << " m_ftHandle=" << ftHandleTemp;
+            YADOMS_LOG(debug) << " ftHandle=" << ftHandleTemp;
          }
       }
       else
       {
-         shared::exception::CException("No FTDI serial port detected");
+         throw shared::exception::CException("No FTDI serial port detected");
       }
 
       ftStatus = ftOpen(m_port, &m_ftHandle);
@@ -305,17 +307,19 @@ bool CFT2xxSerialPort::connect()
 
       if (ftStatus != FT_OK)
       {
-         const std::string message = "Could not get the driver version";
+         std::string message = "Could not get the driver version";
          throw shared::exception::CException(message);
       }
-
-      //convert int to hex string
-      std::stringstream stream;
-      stream << std::hex << ((dwDriverVersion & 0xFF0000) >> 16) << "."
-         << std::hex << ((dwDriverVersion & 0x00FF00) >> 8) << "."
-         << std::hex << (dwDriverVersion & 0x0000FF);
-      auto hexNumber(stream.str());
-      YADOMS_LOG(information) << "FTDI driver version : " << hexNumber;
+      else
+      {
+         //convert int to hex string
+         std::stringstream stream;
+         stream << std::hex << ((dwDriverVersion & 0xFF0000) >> 16) << "."
+            << std::hex << ((dwDriverVersion & 0x00FF00) >> 8) << "."
+            << std::hex << (dwDriverVersion & 0x0000FF);
+         auto hexNumber(stream.str());
+         YADOMS_LOG(information) << "FTDI driver version : " << hexNumber;
+      }
 
       ftGetLibraryVersion(&dwLibraryVersion);
       if (ftStatus != FT_OK)
@@ -323,13 +327,12 @@ bool CFT2xxSerialPort::connect()
          const std::string message = "Could not get the library version";
          throw shared::exception::CException(message);
       }
-
       //convert int to hex string
-      stream.clear();
+      std::stringstream stream;
       stream << std::hex << ((dwLibraryVersion & 0xFF0000) >> 16) << "."
          << std::hex << ((dwLibraryVersion & 0x00FF00) >> 8) << "."
          << std::hex << (dwLibraryVersion & 0x0000FF);
-      hexNumber = stream.str();
+      auto hexNumber(stream.str());
       YADOMS_LOG(information) << "FTDI library version : " << hexNumber;
 
       ftStatus = ftSetBaudRate(m_ftHandle, m_baudrate.value());
@@ -406,11 +409,11 @@ void CFT2xxSerialPort::disconnect()
    {
       const auto ftClose = reinterpret_cast<f_ftclose>(GetProcAddress(m_hGetProcIdDll, "FT_Close"));
 
-      if (m_ftHandle != NULL)
+      if (m_ftHandle != nullptr)
       {
          m_isConnected = false;
          ftClose(m_ftHandle);
-         m_ftHandle = NULL;
+         m_ftHandle = nullptr;
          YADOMS_LOG(debug) << "Close the FTDI serial port";
       }
    }
@@ -559,11 +562,30 @@ void CFT2xxSerialPort::notifyEventHandler(const std::string& i18nErrorMessage) c
    }
 }
 
-void CFT2xxSerialPort::notifyEventHandler(const std::string& i18nErrorMessage, const std::map<std::string, std::string>& i18nMessageParameters) const
+void CFT2xxSerialPort::notifyEventHandler(const std::string& i18nErrorMessage,
+                                          const std::map<std::string, std::string>& i18nMessageParameters) const
 {
    if (m_connectStateEventHandler)
    {
-      const auto param = boost::make_shared<shared::communication::CAsyncPortConnectionNotification>(i18nErrorMessage, i18nMessageParameters);
+      const auto param = boost::make_shared<shared::communication::CAsyncPortConnectionNotification>(
+         i18nErrorMessage, i18nMessageParameters);
       m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+   }
+}
+
+void CFT2xxSerialPort::setBaudRate(
+   const boost::asio::serial_port_base::baud_rate& baudrate = boost::asio::serial_port_base::baud_rate(9600))
+{
+   const auto ftSetBaudRate = reinterpret_cast<f_ftsetbaudRate>(GetProcAddress(m_hGetProcIdDll, "FT_SetBaudRate"));
+   m_baudrate = baudrate;
+
+   YADOMS_LOG(information) << m_baudrate.value();
+
+   const auto ftStatus = ftSetBaudRate(m_ftHandle, m_baudrate.value());
+   if (ftStatus != FT_OK)
+   {
+      const std::string message = "Fail to set the baudrate";
+      YADOMS_LOG(error) << message;
+      throw shared::exception::CException(message);
    }
 }

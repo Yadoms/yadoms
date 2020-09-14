@@ -15,7 +15,7 @@ namespace equipments
 
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
-                                const shared::CDataContainer& deviceConfiguration,
+                                const boost::shared_ptr<shared::CDataContainer>& deviceConfiguration,
                                 const boost::shared_ptr<IWESConfiguration> pluginConfiguration)
       : m_deviceName(device),
         m_deviceType("WES"),
@@ -28,19 +28,19 @@ namespace equipments
       subdevices::EUnit PulseType[4];
       std::string PulseName[4];
       std::string counterId[3];
-      shared::CDataContainer details;
+      boost::shared_ptr<shared::CDataContainer> details = shared::CDataContainer::make();
 
       try
       {
          keywordsToDeclare.push_back(m_deviceStatus);
          m_configuration.initializeWith(deviceConfiguration);
-         deviceConfiguration.printToLog(YADOMS_LOG(information));
+         deviceConfiguration->printToLog(YADOMS_LOG(information));
 
-         shared::CDataContainer credentials;
+         boost::shared_ptr<shared::CDataContainer> credentials = shared::CDataContainer::make();
 
 		 if (m_configuration.credentialActivated()) {
-			 credentials.set("user", m_configuration.getUser());
-			 credentials.set("password", m_configuration.getPassword());
+			 credentials->set("user", m_configuration.getUser());
+			 credentials->set("password", m_configuration.getPassword());
 		 }
 
          // request to obtain the WES revision
@@ -52,10 +52,10 @@ namespace equipments
 			 m_httpContext,
              urlManager::httpRequestCreationTimeout);
 
-         results.printToLog(YADOMS_LOG(trace));
+         results->printToLog(YADOMS_LOG(trace));
 
          // get the revision, for E/S numbers
-         m_version = results.get<int>("version");
+         m_version = results->get<int>("version");
 
          if (m_version == 1)
             m_WESIOMapping = WESv1;
@@ -65,7 +65,7 @@ namespace equipments
             throw shared::exception::CException("WES Revision not properly set : " + boost::lexical_cast<std::string>(m_version));
 
          // get the firmware revision to desactivate the plugin if the revision is too low
-		 checkRevision(results.get<std::string>("version_serveur"));
+		 checkRevision(results->get<std::string>("version_serveur"));
 
          if (pluginConfiguration->isRetrieveNamesFromdevice())
          {
@@ -78,43 +78,43 @@ namespace equipments
 				m_httpContext,
                 urlManager::httpRequestCreationTimeout);
 
-            results.printToLog(YADOMS_LOG(information));
+            results->printToLog(YADOMS_LOG(information));
 
 			for (auto index = 0; index < m_WESIOMapping.ticQty; ++index) {
-				contract[index] = results.get<equipments::ContractAvailable>("CPT" + boost::lexical_cast<std::string>(index + 1) + "_abo_name");
-				counterId[index] = results.get<std::string>("CPT" + boost::lexical_cast<std::string>(index + 1) + "_adco");
-				TICName[index] = results.get<std::string>("CPT" + boost::lexical_cast<std::string>(index + 1) + "_name");
+				contract[index] = results->get<equipments::ContractAvailable>("CPT" + boost::lexical_cast<std::string>(index + 1) + "_abo_name");
+				counterId[index] = results->get<std::string>("CPT" + boost::lexical_cast<std::string>(index + 1) + "_adco");
+				TICName[index] = results->get<std::string>("CPT" + boost::lexical_cast<std::string>(index + 1) + "_name");
 			}
 
-            relayName[0] = results.get<std::string>("RL1");
-            relayName[1] = results.get<std::string>("RL2");
+            relayName[0] = results->get<std::string>("RL1");
+            relayName[1] = results->get<std::string>("RL2");
 
-            inputName[0] = results.get<std::string>("I1");
-            inputName[1] = results.get<std::string>("I2");
+            inputName[0] = results->get<std::string>("I1");
+            inputName[1] = results->get<std::string>("I2");
 
-            ClampName[0] = results.get<std::string>("nPCE1");
-            ClampName[1] = results.get<std::string>("nPCE2");
+            ClampName[0] = results->get<std::string>("nPCE1");
+            ClampName[1] = results->get<std::string>("nPCE2");
 
             if (m_version == 2) {
-               ClampName[2] = results.get<std::string>("nPCE3");
-               ClampName[3] = results.get<std::string>("nPCE4");
+               ClampName[2] = results->get<std::string>("nPCE3");
+               ClampName[3] = results->get<std::string>("nPCE4");
             }
 
-            AnalogName[0] = results.get<std::string>("ANA1");
-            AnalogName[1] = results.get<std::string>("ANA2");
-            AnalogName[2] = results.get<std::string>("ANA3");
-            AnalogName[3] = results.get<std::string>("ANA4");
+            AnalogName[0] = results->get<std::string>("ANA1");
+            AnalogName[1] = results->get<std::string>("ANA2");
+            AnalogName[2] = results->get<std::string>("ANA3");
+            AnalogName[3] = results->get<std::string>("ANA4");
 
-            PulseName[0] = results.get<std::string>("npls1");
-            PulseName[1] = results.get<std::string>("npls2");
-            PulseType[0] = results.get<subdevices::EUnit>("PLSU1");
-            PulseType[1] = results.get<subdevices::EUnit>("PLSU2");
+            PulseName[0] = results->get<std::string>("npls1");
+            PulseName[1] = results->get<std::string>("npls2");
+            PulseType[0] = results->get<subdevices::EUnit>("PLSU1");
+            PulseType[1] = results->get<subdevices::EUnit>("PLSU2");
 
             if (m_version == 2) {
-               PulseName[2] = results.get<std::string>("npls3");
-               PulseName[3] = results.get<std::string>("npls4");
-               PulseType[2] = results.get<subdevices::EUnit>("PLSU3");
-               PulseType[3] = results.get<subdevices::EUnit>("PLSU4");
+               PulseName[2] = results->get<std::string>("npls3");
+               PulseName[3] = results->get<std::string>("npls4");
+               PulseType[2] = results->get<subdevices::EUnit>("PLSU3");
+               PulseType[3] = results->get<subdevices::EUnit>("PLSU4");
             }
          }
          else // Defaults names
@@ -184,7 +184,7 @@ namespace equipments
 																counterId[index],
 																contract[index]);
 
-			details.set("TIC" + boost::lexical_cast<std::string>(index), m_deviceName + " - " + TICName[index]);
+			details->set("TIC" + boost::lexical_cast<std::string>(index), m_deviceName + " - " + TICName[index]);
 			m_TICList.push_back(temp);
          }
 
@@ -220,8 +220,8 @@ namespace equipments
 		 }
 
          // Save names into details
-         details.set("provider", "WES");
-         details.set("type", m_deviceType);
+         details->set("provider", "WES");
+         details->set("type", m_deviceType);
 
          //Déclaration of all IOs
          if (api->deviceExists(m_deviceName)){
@@ -253,8 +253,8 @@ namespace equipments
 
 				  // TIC Counters SetDevice Timeout if exist ! At creation time out, TIC devices doesn't exists
 				  for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter) {
-					  if (details.exists("TIC" + boost::lexical_cast<std::string>(counter))) {
-						  TICName[counter] = details.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
+					  if (details->exists("TIC" + boost::lexical_cast<std::string>(counter))) {
+						  TICName[counter] = details->get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
 						  boost::make_shared<equipments::CTIC>(api, TICName[counter]);
 					  }
 				  }
@@ -290,11 +290,11 @@ namespace equipments
 
          const auto CGXfileName = "WESVALUES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
 
-         shared::CDataContainer credentials;
+         boost::shared_ptr<shared::CDataContainer> credentials = shared::CDataContainer::make();
 
 		 if (m_configuration.credentialActivated()) {
-			 credentials.set("user", m_configuration.getUser());
-			 credentials.set("password", m_configuration.getPassword());
+			 credentials->set("user", m_configuration.getUser());
+			 credentials->set("password", m_configuration.getPassword());
 		 }
 
          auto results = urlManager::readFileState(
@@ -304,20 +304,20 @@ namespace equipments
 			 m_httpContext,
              urlManager::httpRequestWESTimeout);
 
-         results.printToLog(YADOMS_LOG(trace));
+         results->printToLog(YADOMS_LOG(trace));
 
          // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
          try{
-            updateSwitchValue(keywordsToHistorize, m_relaysList[0], results.get<bool>("RL1"), forceHistorization);
-            updateSwitchValue(keywordsToHistorize, m_relaysList[1], results.get<bool>("RL2"), forceHistorization);
+            updateSwitchValue(keywordsToHistorize, m_relaysList[0], results->get<bool>("RL1"), forceHistorization);
+            updateSwitchValue(keywordsToHistorize, m_relaysList[1], results->get<bool>("RL2"), forceHistorization);
          }
          catch (std::exception& e){
             YADOMS_LOG(warning) << "Exception reading relays" << e.what();
          }
 
          try{
-            updateSwitchValue(keywordsToHistorize, m_inputList[0], results.get<bool>("I1"), forceHistorization);
-            updateSwitchValue(keywordsToHistorize, m_inputList[1], results.get<bool>("I2"), forceHistorization);
+            updateSwitchValue(keywordsToHistorize, m_inputList[0], results->get<bool>("I1"), forceHistorization);
+            updateSwitchValue(keywordsToHistorize, m_inputList[1], results->get<bool>("I2"), forceHistorization);
          }
          catch (std::exception& e){
             YADOMS_LOG(warning) << "Exception reading inputs" << e.what();
@@ -328,7 +328,7 @@ namespace equipments
             try{
                m_ClampList[counter]->updateFromDevice(api,
                                                       keywordsToHistorize,
-                                                      results.get<Poco::Int64>("WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+                                                      results->get<Poco::Int64>("WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
             }
             catch (std::exception& e){
                YADOMS_LOG(warning) << "Error reading clamp " << "WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val" << e.what();
@@ -340,8 +340,8 @@ namespace equipments
             try{
                m_PulseList[counter]->updateFromDevice(api,
                                                       keywordsToHistorize,
-                                                      results.get<subdevices::EUnit>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
-                                                      results.get<double>("actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+                                                      results->get<subdevices::EUnit>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
+                                                      results->get<double>("actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
             }
             catch (std::exception& e){
                YADOMS_LOG(warning) << "Error reading pulse " << "actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val :" << e.what();
@@ -352,7 +352,7 @@ namespace equipments
          if (m_configuration.isAnalogInputsActivated() && (m_version == 2)){
 			for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter) {
 				try {
-					auto value = results.get<double>("ad"+boost::lexical_cast<std::string>(counter + 1));
+					auto value = results->get<double>("ad"+boost::lexical_cast<std::string>(counter + 1));
 					m_AnalogList[counter]->updateFromDevice(api, keywordsToHistorize, value);
 				}
 				catch (std::exception& e) {
@@ -369,17 +369,17 @@ namespace equipments
 			 std::vector<Poco::Int64> counters;
 
 			for (auto index = 0; index < CTIC::TICCountersNb; ++index) {
-				counters.push_back(results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_" + boost::lexical_cast<std::string>(index + 1)));
+				counters.push_back(results->get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_" + boost::lexical_cast<std::string>(index + 1)));
 			}
 
 			m_TICList[counter]->updateFromDevice(api,
 				m_deviceStatus->get(),
-				results.get<equipments::ContractAvailable>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
-				results.get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_adco"),
-				results.get<int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_PTarif"),
-				results.get<unsigned int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_P"),
+				results->get<equipments::ContractAvailable>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
+				results->get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_adco"),
+				results->get<int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_PTarif"),
+				results->get<unsigned int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_P"),
 				counters,
-				results.get<int>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1)));
+				results->get<int>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1)));
          }
       }
       catch (std::exception& e){
@@ -413,7 +413,7 @@ namespace equipments
    }
 
    void CWESEquipment::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           const shared::CDataContainer& newConfiguration,
+                                           const boost::shared_ptr<shared::CDataContainer>& newConfiguration,
                                            const int refreshEvent)
    {
       m_configuration.initializeWith(newConfiguration);
@@ -463,14 +463,14 @@ namespace equipments
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize;
 
       try{
-         shared::CDataContainer credentials;
-         shared::CDataContainer parameters;
+         boost::shared_ptr<shared::CDataContainer> credentials = shared::CDataContainer::make();
+         boost::shared_ptr<shared::CDataContainer> parameters = shared::CDataContainer::make();
          std::string stringState;
          auto counter = 0;
 
 		 if (m_configuration.credentialActivated()) {
-			 credentials.set("user", m_configuration.getUser());
-			 credentials.set("password", m_configuration.getPassword());
+			 credentials->set("user", m_configuration.getUser());
+			 credentials->set("password", m_configuration.getPassword());
 		 }
 
          const auto newValue = boost::lexical_cast<bool>(command->getBody());
@@ -483,7 +483,7 @@ namespace equipments
          for (iteratorRelay = m_relaysList.begin(); (iteratorRelay != m_relaysList.end() && (command->getKeyword() != (*iteratorRelay)->getKeyword())); ++iteratorRelay)
             ++counter;
 
-         parameters.set("rl" + boost::lexical_cast<std::string>(counter + 1), stringState);
+         parameters->set("rl" + boost::lexical_cast<std::string>(counter + 1), stringState);
 
          if (iteratorRelay == m_relaysList.end())
             throw shared::exception::CException("Failed to identify the relay");
@@ -495,23 +495,23 @@ namespace equipments
 			 m_httpContext);
 
          // For security, we check if the results contain the value, with the corresponding new state
-         if (results.containsChild("Relai1")){
-            if (results.get<std::string>("Relai1") == "ON" && !m_relaysList[0]->get()){
+         if (results->containsChild("Relai1")){
+            if (results->get<std::string>("Relai1") == "ON" && !m_relaysList[0]->get()){
                m_relaysList[0]->set(true);
                keywordsToHistorize.push_back(m_relaysList[0]);
             }
-            else if (results.get<std::string>("Relai1") == "OFF" && m_relaysList[0]->get()){
+            else if (results->get<std::string>("Relai1") == "OFF" && m_relaysList[0]->get()){
                m_relaysList[0]->set(false);
                keywordsToHistorize.push_back(m_relaysList[0]);
             }
          }
 
-         if (results.containsChild("Relai2")){
-            if (results.get<std::string>("Relai2") == "ON" && !m_relaysList[1]->get()){
+         if (results->containsChild("Relai2")){
+            if (results->get<std::string>("Relai2") == "ON" && !m_relaysList[1]->get()){
                m_relaysList[1]->set(true);
                keywordsToHistorize.push_back(m_relaysList[1]);
             }
-            else if (results.get<std::string>("Relai2") == "OFF" && m_relaysList[1]->get()){
+            else if (results->get<std::string>("Relai2") == "OFF" && m_relaysList[1]->get()){
                m_relaysList[1]->set(false);
                keywordsToHistorize.push_back(m_relaysList[1]);
             }

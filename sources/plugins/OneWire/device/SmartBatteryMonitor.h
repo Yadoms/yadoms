@@ -35,7 +35,7 @@ protected:
       return m_keywords;
    }
    void setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                         const shared::CDataContainer &configuration) override;
+                         const boost::shared_ptr<shared::CDataContainer> &configuration) override;
    void removeNoMoreUsedKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const std::string &device,
                                  const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> &newKeywords);

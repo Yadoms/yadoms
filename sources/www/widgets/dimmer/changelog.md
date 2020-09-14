@@ -1,3 +1,7 @@
+### 1.1.2
+* Fix plus/minus operations
+* Fix #692 : forbid read-only keywords
+
 ### 1.1.1
 * Better keyword selection filtering
 

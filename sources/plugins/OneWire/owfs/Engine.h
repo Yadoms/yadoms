@@ -29,7 +29,7 @@ namespace owfs
 
    protected:
       // IEngine implementation
-      virtual bool newConfigurationRequireRestart(const shared::CDataContainer& newConfigurationData) const;
+      virtual bool newConfigurationRequireRestart(const boost::shared_ptr<shared::CDataContainer>& newConfigurationData) const;
       virtual std::map<std::string, boost::shared_ptr<device::IDevice> > scanNetwork();
       // [END] IEngine implementation
 

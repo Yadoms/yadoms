@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
@@ -14,11 +15,11 @@ namespace specificHistorizers
       ((AntiFreeze)(5))
    ) ;
 
-   class CPilotWireHistorizer : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EPilotWire>
+   class CPilotWireHistorizer : public yApi::historization::CSingleHistorizableData<EPilotWire>
    {
    public:
       explicit CPilotWireHistorizer(const std::string& keywordName);
-      virtual ~CPilotWireHistorizer();
+      virtual ~CPilotWireHistorizer() = default;
    };
 } // namespace specificHistorizers
 

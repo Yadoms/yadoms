@@ -7,7 +7,7 @@
 class CPythonExecutable : public IPythonExecutable
 {
 public:
-   CPythonExecutable();
+   explicit CPythonExecutable(const std::string& pythonForcedPath);
    virtual ~CPythonExecutable() = default;
 
 protected:
@@ -21,11 +21,13 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	Find the Python executable directory
+   /// \param[in] pythonForcedPath The Python forced path (empty if path should be auto-detected)
    /// \param[out] pythonDirectory Found Python directory (empty if Python is in the system path)
    /// \param[out] inSystemPath True if found in system path
    /// \return false if not found
    //--------------------------------------------------------------
-   static bool findPythonDirectory(boost::filesystem::path& pythonDirectory,
+   static bool findPythonDirectory(const std::string& pythonForcedPath,
+                                   boost::filesystem::path& pythonDirectory,
                                    bool& inSystemPath);
 
    //--------------------------------------------------------------
@@ -70,9 +72,8 @@ private:
    const std::string m_version;
 
    //--------------------------------------------------------------
-	/// \brief	Check if the version of python is equal or grater than 3.7
-	/// \param[in] pythonVersion is the Readed Python version
-	//--------------------------------------------------------------
+   /// \brief	Check if the version of python is equal or grater than 3.7
+   /// \param[in] pythonVersion is the Readed Python version
+   //--------------------------------------------------------------
    static bool isValidPythonVersion(const std::string& pythonVersion);
 };
-

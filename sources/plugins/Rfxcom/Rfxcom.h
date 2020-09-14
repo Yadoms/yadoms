@@ -66,7 +66,7 @@ protected:
    /// \param [in] newConfigurationData The new configuration data
    //--------------------------------------------------------------
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const shared::CDataContainer& newConfigurationData);
+                              const boost::shared_ptr<shared::CDataContainer>& newConfigurationData);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes connected

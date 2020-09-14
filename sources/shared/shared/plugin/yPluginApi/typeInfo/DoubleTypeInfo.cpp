@@ -35,17 +35,17 @@ namespace shared
                return *this;
             }
 
-            CDataContainer CDoubleTypeInfo::serialize() const
+            boost::shared_ptr<CDataContainer> CDoubleTypeInfo::serialize() const
             {
-               CDataContainer serializedData;
+               boost::shared_ptr<CDataContainer> serializedData = shared::CDataContainer::make();
                if (m_min.isDefined())
-                  serializedData.set("min", m_min());
+                  serializedData->set("min", m_min());
                if (m_max.isDefined())
-                  serializedData.set("max", m_max());
+                  serializedData->set("max", m_max());
                if (m_step.isDefined())
-                  serializedData.set("step", m_step());
+                  serializedData->set("step", m_step());
                if (m_precision.isDefined())
-                  serializedData.set("precision", m_precision());
+                  serializedData->set("precision", m_precision());
                return serializedData;
             }
          }

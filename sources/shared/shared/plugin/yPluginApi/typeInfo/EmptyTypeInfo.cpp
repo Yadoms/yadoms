@@ -11,9 +11,9 @@ namespace shared
          {
             const CEmptyTypeInfo CEmptyTypeInfo::Empty;
 
-            CDataContainer CEmptyTypeInfo::serialize() const
+            boost::shared_ptr<CDataContainer> CEmptyTypeInfo::serialize() const
             {
-               return CDataContainer();
+               return shared::CDataContainer::make();
             }
          }
       }

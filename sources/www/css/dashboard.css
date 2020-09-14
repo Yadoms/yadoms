@@ -415,7 +415,8 @@
 /* CSS Method for adding Font Awesome Chevron Icons */
 .accordion-title:after {
     /* symbol for "opening" panels */
-    font-family: 'FontAwesome';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
     content: "\f077";
     float: right;
     color: inherit;

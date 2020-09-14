@@ -208,60 +208,60 @@ function ConditionsDevice(keywords) {
    }
 
    this.getTemperature = function () {
-      return isNullOrUndefined(this.values.get(this.temperatureKw.id)) ? "" : (round(this.values.get(this.temperatureKw.id), 1) + this.temperatureUnity);
+      return isNullOrUndefinedOrEmpty(this.values.get(this.temperatureKw.id)) ? "" : (round(this.values.get(this.temperatureKw.id), 1) + this.temperatureUnity);
    }
 
    this.hasTemperatureMinMax = function () {
-      return !isNullOrUndefined(this.values.get(this.temperatureMinKw.id)) && !isNullOrUndefined(this.values.get(this.temperatureMaxKw.id));
+      return !isNullOrUndefinedOrEmpty(this.values.get(this.temperatureMinKw.id)) && !isNullOrUndefined(this.values.get(this.temperatureMaxKw.id));
    }
    this.getTemperatureMin = function () {
-      return isNullOrUndefined(this.values.get(this.temperatureMinKw.id)) ? "" : (round(this.values.get(this.temperatureMinKw.id), 1) + this.temperatureUnity);
+      return isNullOrUndefinedOrEmpty(this.values.get(this.temperatureMinKw.id)) ? "" : (round(this.values.get(this.temperatureMinKw.id), 1) + this.temperatureUnity);
    }
    this.getTemperatureMax = function () {
-      return isNullOrUndefined(this.values.get(this.temperatureMaxKw.id)) ? "" : (round(this.values.get(this.temperatureMaxKw.id), 1) + this.temperatureUnity);
+      return isNullOrUndefinedOrEmpty(this.values.get(this.temperatureMaxKw.id)) ? "" : (round(this.values.get(this.temperatureMaxKw.id), 1) + this.temperatureUnity);
    }
 
    this.hasTemperatureAvg = function () {
-      return !isNullOrUndefined(this.values.get(this.temperatureKw.id));
+      return !isNullOrUndefinedOrEmpty(this.values.get(this.temperatureKw.id));
    }
    this.getTemperatureAvg = function () {
-      return isNullOrUndefined(this.values.get(this.temperatureKw.id)) ? "" : (round(this.values.get(this.temperatureKw.id), 1) + this.temperatureUnity);
+      return isNullOrUndefinedOrEmpty(this.values.get(this.temperatureKw.id)) ? "" : (round(this.values.get(this.temperatureKw.id), 1) + this.temperatureUnity);
    }
 
    this.hasRainOrSnow = function () {
-      return !isNullOrUndefined(this.isSnow());
+      return !(this.isSnow() ? isNullOrUndefined(this.values.get(this.snowKw.id)) : isNullOrUndefined(this.values.get(this.rainKw.id)));
    }
    this.getRainMm = function () {
-      return isNullOrUndefined(this.values.get(this.rainKw.id)) ? "" : round(this.values.get(this.rainKw.id), 1);
+      return isNullOrUndefinedOrEmpty(this.values.get(this.rainKw.id)) ? "0 mm" : (round(this.values.get(this.rainKw.id), 1) +  " mm");
    }
    this.getSnowCm = function () {
       // Note : 1 mm of precipitation gives approximatively 1 cm of snow
-      return isNullOrUndefined(this.values.get(this.snowKw.id)) ? "" : round(this.values.get(this.snowKw.id), 0);
+      return isNullOrUndefinedOrEmpty(this.values.get(this.snowKw.id)) ? "0 cm" : (round(this.values.get(this.snowKw.id), 0) + " cm");
    }
    this.isSnow = function () {
-      if (isNullOrUndefined(this.values.get(this.rainKw.id)) && isNullOrUndefined(this.values.get(this.snowKw.id))) {
+      if (isNullOrUndefinedOrEmpty(this.values.get(this.rainKw.id)) && isNullOrUndefinedOrEmpty(this.values.get(this.snowKw.id))) {
          return undefined;
       }
-      if (isNullOrUndefined(this.values.get(this.rainKw.id))) {
+      if (isNullOrUndefinedOrEmpty(this.values.get(this.rainKw.id))) {
          return true;
       }
-      if (isNullOrUndefined(this.values.get(this.snowKw.id))) {
+      if (isNullOrUndefinedOrEmpty(this.values.get(this.snowKw.id))) {
          return false;
       }
       return this.values.get(this.snowKw.id) > this.values.get(this.rainKw.id);
    }
 
    this.hasWind = function () {
-      return !isNullOrUndefined(this.values.get(this.windspeedKw.id));
+      return !isNullOrUndefinedOrEmpty(this.values.get(this.windspeedKw.id));
    }
    this.getWindSpeed = function () {
-      return isNullOrUndefined(this.values.get(this.windspeedKw.id)) ? "" : (round(Convertmstokmh(parseFloat(this.values.get(this.windspeedKw.id), 10)), 0));
+      return isNullOrUndefinedOrEmpty(this.values.get(this.windspeedKw.id)) ? "" : ((round(Convertmstokmh(parseFloat(this.values.get(this.windspeedKw.id), 10)), 0)) + " km/h");
    }
    this.hasWindDirection = function () {
-      return !isNullOrUndefined(this.values.get(this.windDirectionKw.id));
+      return !isNullOrUndefinedOrEmpty(this.values.get(this.windDirectionKw.id));
    }
    this.getWindDirection = function () {
-      return isNullOrUndefined(this.values.get(this.windDirectionKw.id)) ? "" : this.values.get(this.windDirectionKw.id);
+      return isNullOrUndefinedOrEmpty(this.values.get(this.windDirectionKw.id)) ? "" : this.values.get(this.windDirectionKw.id);
    }
 }
 
@@ -336,11 +336,11 @@ widgetViewModelCtor =
                TempAvg: device.getTemperatureAvg(),
 
                DisplayRainOrSnow: device.hasRainOrSnow() ? "display: block" : "display: none",
-               Rain: device.isSnow() ? (device.getSnowCm() + " cm") : (device.getRainMm() + " mm"),
+               Rain: device.isSnow() ? device.getSnowCm() : device.getRainMm(),
                RainOrSnowImage: "widgets/weather-multi/images/" + (device.isSnow() ? "snow.png" : "rain.png"),
 
                DisplayWind: device.hasWind() ? "display: block" : "display: none",
-               Wind: device.getWindSpeed() + " km/h",
+               Wind: device.getWindSpeed(),
                DisplayWindDirection: device.hasWindDirection() ? "display: inline" : "display: none",
                RotateWind: "transform:rotate(" + device.getWindDirection() + "deg);"
             });
@@ -366,7 +366,8 @@ widgetViewModelCtor =
             var d = $.Deferred();
             DeviceManager.getKeywordsByDeviceId(deviceId)
                .done(function (keywords) {
-                  self.devices.push(new ConditionsDevice(keywords));
+                  index = self.devicesIdPerPeriod.indexOf(deviceId);
+                  self.devices[index] = new ConditionsDevice(keywords);
                   Array.prototype.push.apply(listenKeywordIds, keywords.map(kw => kw.id));
                   d.resolve();
                })
@@ -391,7 +392,6 @@ widgetViewModelCtor =
             .fail(function (error) {
                console.error("Fail to configure widget : " + error);
                self.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
-                          debugger;
             });
       }
 

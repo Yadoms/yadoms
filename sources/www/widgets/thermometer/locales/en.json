@@ -8,7 +8,7 @@
 		},
 		"customYAxisMinMax": {
 			"name": "Manually set min and max of the thermometer",
-			"description": "Enabling this section allows you to set the min and max of the thermometer. If it is not activated min and max will be set to -40°C and 50°C",
+			"description": "Enabling this section allows you to set the min and max of the thermometer. If it is not activated min and max will be set to -40Â°C and 50Â°C",
 			"content": {
 				"maximumValue": {
 					"name": "Maximum temperature value",

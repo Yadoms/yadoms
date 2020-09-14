@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "Profile_D2_05_Common.h"
-#include "../../message/ResponseReceivedMessage.h"
 #include "../bitsetHelpers.hpp"
-#include "../../message/RadioErp1SendMessage.h"
+#include "message/RadioErp1SendMessage.h"
 #include <shared/Log.h>
+#include "message/MessageHelpers.h"
 
 
 DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_05_Common::EAlarmAction, EAlarmAction,
-   ((noAction))
-   ((immediateStop))
-   ((goUp))
-   ((goDown))
-   ((noChange))
+                                   ((noAction))
+                                   ((immediateStop))
+                                   ((goUp))
+                                   ((goDown))
+                                   ((noChange))
 );
 
 
@@ -84,10 +84,11 @@ void CProfile_D2_05_Common::sendQueryPositionAndAngle(boost::shared_ptr<IMessage
 }
 
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_05_Common::extractReplyPositionAndAngleResponse(unsigned char rorg,
-                                                                                                                                     const boost::dynamic_bitset<>& data,
-                                                                                                                                     boost::shared_ptr<yApi::historization::CCurtain> curtain,
-                                                                                                                                     boost::shared_ptr<specificHistorizers::CBlindLockingMode> lockingMode)
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_05_Common::
+extractReplyPositionAndAngleResponse(unsigned char rorg,
+                                     const boost::dynamic_bitset<>& data,
+                                     boost::shared_ptr<yApi::historization::CCurtain> curtain,
+                                     boost::shared_ptr<specificHistorizers::CBlindLockingMode> lockingMode)
 {
    // Some devices supports several RORG telegrams, ignore non-VLD telegrams
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
@@ -108,12 +109,16 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    if (position != 127)
    {
-      curtain->set(position > 50 ? yApi::historization::ECurtainCommand::kOpen : yApi::historization::ECurtainCommand::kClose);
+      curtain->set(position > 50
+                      ? yApi::historization::ECurtainCommand::kOpen
+                      : yApi::historization::ECurtainCommand::kClose);
       historizers.push_back(curtain);
    }
    else if (angle != 127)
    {
-      curtain->set(angle > 50 ? yApi::historization::ECurtainCommand::kOpen : yApi::historization::ECurtainCommand::kClose);
+      curtain->set(angle > 50
+                      ? yApi::historization::ECurtainCommand::kOpen
+                      : yApi::historization::ECurtainCommand::kClose);
       historizers.push_back(curtain);
    }
 
@@ -179,27 +184,10 @@ void CProfile_D2_05_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
                                         const boost::dynamic_bitset<>& userData,
                                         const std::string& commandName)
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          targetId,
-                                          0);
-
-   command.userData(bitset_to_bytes(userData));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             return esp3Packet->header().packetType() == message::RESPONSE;
-                          },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             answer = esp3Packet;
-                          }))
-      throw std::runtime_error((boost::format("Fail to send message to %1% : no answer to \"%2%\"") % targetId % commandName).str());
-
-   const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send message to " << targetId << " : \"" << commandName << "\" returns " << response->returnCode();
+   message::CMessageHelpers::sendMessage(CRorgs::kVLD_Telegram,
+                                         messageHandler,
+                                         senderId,
+                                         targetId,
+                                         userData,
+                                         commandName);
 }

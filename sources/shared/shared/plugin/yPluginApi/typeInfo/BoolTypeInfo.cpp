@@ -11,10 +11,9 @@ namespace shared
          {
             const CBoolTypeInfo CBoolTypeInfo::Empty;
 
-            CDataContainer CBoolTypeInfo::serialize() const
+            boost::shared_ptr<CDataContainer> CBoolTypeInfo::serialize() const
             {
-               CDataContainer serializedData;
-               return serializedData;
+               return shared::CDataContainer::make();
             }
          }
       }

@@ -1,3 +1,37 @@
+### 2.0.0
+* Update profiles definition to v2.6.8, add these profiles :
+  * D2-01-15
+  * D2-01-16
+  * D2-06-50
+  * D2-0A-01
+  * D2-0A-02
+  * D2-10-30ff : new family with 36 profiles/MIDs
+  * D2-11-20
+  * D2-14-ff :  new family with 28 TYPES
+* Better support of gas sensors (profiles A5-09-xx) 
+* Better support of temperature/humidity sensors (profiles A5-04-xx) 
+* Add F6-02-03, F6-03-01, F6-03-02, F6-04-01, F6-04-02, F6-10-00, F6-10-01 profiles support
+* Add A5-10-xx profiles support
+* Add A5-11-xx profiles support
+* Better support of A5-07-xx profiles
+* Better support of A5-13-01, A5-13-02, A5-13-06 profiles
+* Add or improve support of all A5-13-xx profiles
+* Add or improve support of A5-14-09 and A5-14-0A profiles
+* Add or improve support of A5-30-01, A5-30-04 and A5-30-05 profiles
+* Add or improve support of A5-20-01 profile
+* Add or improve support of D2-00-01 profile
+* Add or improve support of D2-02-xx profiles
+* Add or improve support of D2-03-0A profile
+
+### 1.7.1
+* Fix description of delay radio OFF timer for D2-01-12
+
+### 1.7.0
+* New feature #614 : add F6-05-00, F6-05-01, F6-05-02 profiles support
+
+### 1.6.0
+* Fix #562  : update usage of CDataContainer for better memory optimizations
+
 ### 1.5.0
 * Issue #557 : D2-05-00 profile : fix the blinds direction (was inverted)
 

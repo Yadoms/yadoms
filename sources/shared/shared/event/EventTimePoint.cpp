@@ -18,10 +18,6 @@ namespace shared
          set(dateTime);
       }
 
-      CEventTimePoint::~CEventTimePoint()
-      {
-      }
-
       void CEventTimePoint::set(const boost::posix_time::ptime& dateTime)
       {
          if (dateTime.is_special() || dateTime <= currentTime::Provider().now())

@@ -24,7 +24,15 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    Destructor
          //--------------------------------------------------------------
-         virtual ~CEventTimePoint();
+         virtual ~CEventTimePoint() = default;
+
+         // Avoid copy
+         CEventTimePoint(const CEventTimePoint&) = delete;
+         const CEventTimePoint& operator=(const CEventTimePoint&) = delete;
+
+         // Avoid move
+         CEventTimePoint(const CEventTimePoint&&) = delete;
+         const CEventTimePoint& operator=(const CEventTimePoint&&) = delete;
 
          //--------------------------------------------------------------
          /// \brief	    Set the time point

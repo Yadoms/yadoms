@@ -23,7 +23,7 @@ namespace shared
          /// \brief	    Constructor
          /// \param[in] eventId        Id of the event
          /// \param[in] periodicity       Periodic or one-shot timer
-         /// \param[in] period         Timer period. If provided, timer starts immediatley, else user must call start method
+         /// \param[in] period         Timer period. If provided, timer starts immediately, else user must call start method
          //--------------------------------------------------------------
          explicit CEventTimer(int eventId,
                               EPeriodicity periodicity = kOneShot,
@@ -32,7 +32,15 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    Destructor
          //--------------------------------------------------------------
-         virtual ~CEventTimer();
+         virtual ~CEventTimer() = default;
+
+         // Avoid copy
+         CEventTimer(const CEventTimer&) = delete;
+         const CEventTimer& operator=(const CEventTimer&) = delete;
+
+         // Avoid move
+         CEventTimer(const CEventTimer&&) = delete;
+         const CEventTimer& operator=(const CEventTimer&&) = delete;
 
          //--------------------------------------------------------------
          /// \brief	    Start the timer

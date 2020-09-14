@@ -96,23 +96,25 @@ namespace web
       }
 
 
-      boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::dispatch(const std::string& requestType,
-                                                                                            const std::vector<std::string>& url,
-                                                                                            const std::string& requestContent)
+      boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::dispatch(
+         const std::string& requestType,
+         const std::vector<std::string>& url,
+         const std::string& requestContent)
       {
          //check that requestType has some functions
          if (m_handledFunctions.find(requestType) != m_handledFunctions.end())
          {
-            for (const auto& iPatterns : m_handledFunctions[requestType])
-            {
-               if (match(url, iPatterns))
-               {
-                  return callRealMethod(iPatterns.getMethodHandler(),
-                                        iPatterns.getMethodIndirector(),
-                                        url,
-                                        requestContent);
-               }
-            }
+            const auto& pattern = std::find_if(m_handledFunctions[requestType].begin(),
+                                               m_handledFunctions[requestType].end(),
+                                               [&url](const auto& iPatterns)
+                                               {
+                                                  return (match(url, iPatterns));
+                                               });
+            if (pattern != m_handledFunctions[requestType].end())
+               return callRealMethod(pattern->getMethodHandler(),
+                                     pattern->getMethodIndirector(),
+                                     url,
+                                     requestContent);
 
             throw std::invalid_argument("REST request url not handled");
          }
@@ -135,10 +137,11 @@ namespace web
                            });
       }
 
-      boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::callRealMethod(CRestMethodHandler realMethod,
-                                                                                                  CRestMethodIndirector encapsulatedMethod,
-                                                                                                  const std::vector<std::string>& url,
-                                                                                                  const std::string& requestContent)
+      boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::callRealMethod(
+         CRestMethodHandler realMethod,
+         CRestMethodIndirector encapsulatedMethod,
+         const std::vector<std::string>& url,
+         const std::string& requestContent)
       {
          if (encapsulatedMethod != NULL)
             return encapsulatedMethod(realMethod, url, requestContent);

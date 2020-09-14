@@ -41,7 +41,7 @@ public:
    /// \brief	    Update the keyword value 
    /// \param [in]   value    The new keyword value
    //--------------------------------------------------------------
-   virtual shared::CDataContainer serialize() = 0;
+   virtual boost::shared_ptr<shared::CDataContainer> serialize() = 0;
 
    //--------------------------------------------------------------
    /// \brief	   Get the type information

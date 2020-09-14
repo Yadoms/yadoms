@@ -30,7 +30,7 @@ void CSmartBatteryMonitor::creatDefaultKeywordList()
 }
 
 void CSmartBatteryMonitor::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                            const shared::CDataContainer &configuration)
+                                            const boost::shared_ptr<shared::CDataContainer> &configuration)
 {
    m_keywords.clear();
    creatDefaultKeywordList();

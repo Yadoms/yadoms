@@ -16,7 +16,7 @@
           "content": {
             "password": {
               "name": "Mot de passe",
-              "description": "Le mot de passe peut être celui des GoogleApps"
+              "description": "Le mot de passe peut être celui des GoogleApps (voir https://security.google.com/settings/security/apppasswords)"
             }
           }
         },

@@ -2,7 +2,7 @@
 #include "Configuration.h"
 #include <shared/Log.h>
 
-void CConfiguration::initializeWith(const shared::CDataContainer& data)
+void CConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
 	m_configuration.initializeWith(data);
 }
@@ -35,7 +35,7 @@ std::string CConfiguration::getIPAddress() const
 	return m_ipAddress;
 }
 
-void CConfiguration::setIPAddress(std::string ipAddress)
+void CConfiguration::setIPAddress(const std::string& ipAddress)
 {
 	m_ipAddress = ipAddress;
 }

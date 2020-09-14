@@ -7,7 +7,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	Fake configurable device
-/// \note   User can configurate the counter divider (increment each N read operations)
+/// \note   User can configure the counter divider (increment each N read operations)
 //--------------------------------------------------------------
 class CFakeDynamicallyConfigurableDevice
 {
@@ -18,12 +18,12 @@ public:
    /// \param[in] configuration The device configuration
    //--------------------------------------------------------------
    explicit CFakeDynamicallyConfigurableDevice(const std::string& deviceName,
-                                               const shared::CDataContainer& configuration);
+                                               const boost::shared_ptr<shared::CDataContainer>& configuration);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CFakeDynamicallyConfigurableDevice();
+   virtual ~CFakeDynamicallyConfigurableDevice() = default;
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
@@ -58,7 +58,7 @@ public:
    /// \brief	    Change the device configuration
    /// \param[in] newConfiguration  The new configuration
    //--------------------------------------------------------------
-   void setConfiguration(const shared::CDataContainer& newConfiguration);
+   void setConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    Get the historizers
@@ -68,12 +68,12 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Get the device dynamic configuration schema
-   /// \return             The device dynmaic configuration schema
+   /// \return             The device dynamic configuration schema
    //--------------------------------------------------------------
-   static shared::CDataContainer getDynamicConfigurationSchema();
+   static boost::shared_ptr<shared::CDataContainer> getDynamicConfigurationSchema();
 
 protected:
-   static double readDividerConfiguration(const shared::CDataContainer& configuration);
+   static double readDividerConfiguration(const boost::shared_ptr<shared::CDataContainer>& configuration);
 
 
 private:

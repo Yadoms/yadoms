@@ -72,7 +72,7 @@ namespace communication
 
    void CPluginGateway::sendBindingQueryRequest(int pluginId,
                                                 const shared::plugin::yPluginApi::IBindingQueryData& data,
-                                                callback::ISynchronousCallback<shared::CDataContainer>& callback)
+                                                callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback)
    {
       // Create the request
       boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request(boost::make_shared<pluginSystem::CBindingQueryRequest>(data,
@@ -83,14 +83,14 @@ namespace communication
    }
 
    void CPluginGateway::sendDeviceConfigurationSchemaRequest(int deviceId,
-                                                             callback::ISynchronousCallback<shared::CDataContainer>& callback)
+                                                             callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback)
    {
       m_pluginManager->postDeviceConfigurationSchemaRequest(deviceId,
                                                             callback);
    }
 
    void CPluginGateway::sendSetDeviceConfiguration(int deviceId,
-                                                   const shared::CDataContainer& configuration)
+                                                   const boost::shared_ptr<shared::CDataContainer>& configuration)
    {
       m_pluginManager->postSetDeviceConfiguration(deviceId,
                                                   configuration);

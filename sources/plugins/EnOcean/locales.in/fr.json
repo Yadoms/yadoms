@@ -8,7 +8,8 @@
     },
     "PairingMode": {
       "name": "Mode d'appairage",
-      "description": "Le mode d'apparairage peut être automatique (chaque nouvel équipement détecté est enregistré automatiquement), ou manuel via une commande sur le plugin (bouton vert)",
+      "description":
+        "Le mode d'apparairage peut être automatique (chaque nouvel équipement détecté est enregistré automatiquement), ou manuel via une commande sur le plugin (bouton vert)",
       "values": {
         "auto": "Mode automatique, chaque équipement détecté est enregistré",
         "manual": "Mode manuel, le plugin doit être mis en mode appairage via le bouton vert"
@@ -30,7 +31,8 @@
             },
             "profile": {
               "name": "Profil",
-              "description": "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
+              "description":
+                "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
             }
           }
         }
@@ -39,7 +41,7 @@
   },
   "extraQueries": {
     "pairing": {
-      "name": "Appairage"
+      "name": "Démarrer / arrêter l'appairage"
     }
   },
   "customLabels": {
@@ -53,13 +55,46 @@
     },
     "pairing": {
       "invalidCommandAutoMode": "Commande invalide, l'apparaige est configuré en automatique",
-      "alreadyRunning": "L'appairage est déjà en cours",
       "pairing": "Appairage en cours...",
       "devicePaired": "Nouvel équipement appairé !",
       "noDevicePaired": "Aucun équipement trouvé"
     }
   },
   "specificProfilesConfigurations": {
+    "D2-00-01": {
+      "content": {
+        "setPointEnable": {
+          "name": "Consigne",
+          "content": {
+            "setPointRangeLimit": {
+              "name": "Limite de réglage (°)",
+              "description": "Limite d'amplitude de réglage de la consigne en plus ou en moins"
+            },
+            "setPointSteps": {
+              "name": "Crans de réglage",
+              "description": "Nombre de crans dans la plage de réglage"
+            }
+          }
+        },
+        "temperatureMeasurementEnable": {
+          "name": "Mesure de température",
+          "content": {
+            "measureInterval": {
+              "name": "Intervalle de mesure (secondes)",
+              "description": "Intervalle entre deux mesures de température"
+            },
+            "significantDelta": {
+              "name": "Delta significatif (°)",
+              "description": "Différence de température minimale provoquant l'émission de la température"
+            },
+            "keepAliveTiming": {
+              "name": "Nombre de mesures maximum entre émissions",
+              "description": "Nombre maximum de mesures non significative (delta non atteint) forçant l'émission de la température"
+            }
+          }
+        }
+      }
+    },
     "D2-01-04": {
       "localControl": {
         "name": "Contrôle local",
@@ -384,8 +419,8 @@
           }
         },
         "delayOffTimer": {
-          "name": "Délai de remise de la sortie à OFF après une mise à ON par radio",
-          "description": "Lors d'une activation de la sortie (uniquement par radio), ce délai est appliqué puis la sortie est désactivée",
+          "name": "Retardement de remise de la sortie à OFF après ordre radio",
+          "description": "Lorsqu'une commande de désactivation (OFF) d'une sortie est reçue par radio, applique ce délai avant de désactiver la sortie",
           "content": {
             "value": {
               "name": "Délai à appliquer",
@@ -397,6 +432,45 @@
     },
     "D2-01-12": {
       "sameAs": "D2-01-0F"
+    },
+    "D2-02-00": {
+      "content": {
+        "deltaTemperatureToReport": {
+          "name": "Différence de température à reporter",
+          "description": "Différence significative de température à reporter (°)"
+        },
+        "deltaIlluminationToReport": {
+          "name": "Différence d'éclairage à reporter",
+          "description": "Différence significative d'éclairage à reporter (lx)"
+        },
+        "maxMessagesInterval": {
+          "name": "Délai maximum entre 2 messages (s)",
+          "description": "Le capteur enverra un message au moins toutes les X secondes"
+        },
+        "minMessagesInterval": {
+          "name": "Délai minimum entre 2 messages (s)",
+          "description": "Le capteur n'enverra pas de nouveau message si un message a été envoyé dans les X dernières secondes"
+        }
+      }
+    },
+    "D2-02-01": {
+      "sameAs": "D2-02-00"
+    },
+    "D2-02-02": {
+      "content": {
+        "deltaTemperatureToReport": {
+          "name": "Différence de température à reporter",
+          "description": "Différence significative de température à reporter (°)"
+        },
+        "maxMessagesInterval": {
+          "name": "Délai maximum entre 2 messages (s)",
+          "description": "Le capteur enverra un message au moins toutes les X secondes"
+        },
+        "minMessagesInterval": {
+          "name": "Délai minimum entre 2 messages (s)",
+          "description": "Le capteur n'enverra pas de nouveau message si un message a été envoyé dans les X dernières secondes"
+        }
+      }
     },
     "D2-05-00": {
       "content": {

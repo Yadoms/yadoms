@@ -18,7 +18,7 @@ namespace owfs
          /// \param[in]	devicePath Device path
          /// \param[in]	valueSubPath OWFS value sub-path
          //--------------------------------------------------------------
-         CVoltage(const boost::filesystem::path& devicePath,
+         explicit CVoltage(const boost::filesystem::path& devicePath,
                   const boost::filesystem::path& valueSubPath = boost::filesystem::path("voltage"))
             : CSingleReadOnlyData(devicePath, valueSubPath)
          {

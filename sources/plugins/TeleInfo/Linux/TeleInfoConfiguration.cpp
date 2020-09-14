@@ -3,6 +3,7 @@
 #include <shared/Log.h>
 
 CTeleInfoConfiguration::CTeleInfoConfiguration()
+   :m_data(shared::CDataContainer::make())
 {
 }
 
@@ -10,20 +11,20 @@ CTeleInfoConfiguration::~CTeleInfoConfiguration()
 {
 }
 
-void CTeleInfoConfiguration::initializeWith(const shared::CDataContainer& data)
+void CTeleInfoConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {
-   m_data.initializeWith(data);
+   m_data->initializeWith(data);
 }
 
 std::string CTeleInfoConfiguration::getSerialPort() const
 {
-   return m_data.get<std::string>("SerialPort");
+   return m_data->get<std::string>("SerialPort");
 }
 
 EEquipmentType CTeleInfoConfiguration::getEquipmentType() const
 {
    try {
-      std::string temp = m_data.get<std::string>("EquipmentType.activeSectionText");
+      std::string temp = m_data->get<std::string>("EquipmentType.activeSectionText");
       if (temp == "1xTIC")
          return OneInput;
       else

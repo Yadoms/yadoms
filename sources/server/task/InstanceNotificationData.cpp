@@ -49,7 +49,7 @@ namespace task {
       return m_name;
    }
 
-   shared::CDataContainer CInstanceNotificationData::getTaskData() const
+   boost::shared_ptr<shared::CDataContainer> CInstanceNotificationData::getTaskData() const
    {
       return m_taskData;
    }

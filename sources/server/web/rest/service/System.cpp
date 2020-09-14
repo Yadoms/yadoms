@@ -273,7 +273,7 @@ namespace web
                                                           const std::vector<shared::plugin::yPluginApi::EMeasureType>&
                                                           acceptedMeasureTypes)
          {
-            auto capacityContainer = boost::make_shared<shared::CDataContainer>();
+            auto capacityContainer = shared::CDataContainer::make();
             capacityContainer->set("name", capacity.getName());
             capacityContainer->set("unit", capacity.getUnit());
             capacityContainer->set("dataType", capacity.getType());

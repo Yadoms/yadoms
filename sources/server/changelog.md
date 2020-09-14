@@ -1,17 +1,78 @@
+### 2.5.0-beta.1
+
+#### Yadoms
+* Fix #617 : File download progress is yet again available
+* New feature #572 : Proxy support for http requests
+* New feature #603 : Manage redirections for http requests
+* New feature #680 : Add HTTP devices autodetection in shared
+* Fix dynamically configurable devices translations
+* Update font-awesome library
+* Update LibCurl (7.72.0)
+
+
+### 2.4.0-beta.5
+
+#### Yadoms
+* Fix Yadoms crash when no data available with getKeywordData web-service
+
+
+### 2.4.0-beta.4
+
+#### Yadoms
+* Fix historisation of Datacontainer based keywords
+
+
+### 2.4.0-beta.3
+
+#### Yadoms
+* Fix #684 : Fix JSON improper warnings in log
+
+
+### 2.4.0-beta.2
+
+#### Yadoms
+* Add possibility to force Python 2.7 and Python 3.x paths in yadoms.ini
+
+
 ### 2.4.0-beta.1
 
 #### Yadoms
+* New feature #538 : New meteo plugin (remove weather underground)
 * New feature #543 : Add a Python 3.x script interpreter
 * New feature #575 : Add keyword without history
+* New feature #587 : add OledScreen (EspEasy) plugin
+* New feature #599 : One wire : refresh time
 * New feature (plugin API) : Web requests done by plugins now uses proxy settings from Yadoms (just need to rebuild plugin to make your plugin support this function)
-* New feature #604 : Proxy supported for file downloading (used in install & update page)
+* New feature #604, #607, #608 : Proxy supported for file downloading (used in install & update page)
+* New feature #609 : Forecast weather widget updated
+* New feature #670 and #669 : Add Lolin ePaper plugin (httpscreen plugin)
+* New feature #645 #642 #624 : Add Lametric Time device plugin
 * New platform supported : Synology DS218+
+* Fix #469 : Wes plugin : fix reading units
+* Fix #518 : ZWave fix  bad tag filtering
+* Fix #536 : fix widget chart
+* Fix #562 : update usage of CDataContainer for better memory optimizations
 * Fix #564 : GUI : Devices page / deletion and equipment with details
+* Fix #577 : fix SMSdialer plugin
+* Fix #574 : Zwave : upgrade OpenZwave to 1.6
+* Fix #580 : upgrade toolchain
+* Fix #583 : website : add smartscreen warning
 * Fix #584 : GUI : Fix loading of translated labels for not already loaded modules
+* Fix #586 : upgrade appveyor cmake
+* Fix #592 : Zwave : fix some keyword declaration
 * Fix #593 : GUI : Fix plugin icon display in devices configuration page
-* Fix #594 : GUI : Refresh widgets when closing configuration pannel
+* Fix #594 : GUI : Refresh widgets when closing configuration panel
 * Fix #595 : GUI : Fix data export
-* Fix #615 : GUI : Precise coordonates format and units
+* Fix #597 : One wire plugin : fix upgrade issue
+* Fix #601 : build with python 3.7
+* Fix #615 : GUI : Precise coordinates format and units
+* Fix #647 : fix synology build for Lametric plugin
+* Fix #648 : fix language error 
+* Fix #650 : GUI : fix duplicated device when adding a new one
+* Fix #653 : remove boost::locale dependency
+* Fix #654 : fix python interpreter with 3.8.1
+* Fix #668 : GUI : Fix display on event keyword and keywords without acquisition
+* Wiki updated (#644, #591)
 * Known issue #617 : No more progression displayed when downloading file
 
 #### Plugins and widgets
@@ -21,6 +82,7 @@
 * weather-multi widget was added (displays up to 3 weather conditions, live or forecast, with general conditions, temperature min/max, wind, rain, snow)
 * LametricTime plugin was added to drive [Lametric Time displays](https://lametric.com/en-US/time/overview)
 * OledEspEasy plugin was added to drive OLed deported screen, based on ESP8266 with ESPEasy Firmware (wemos d1, lolin, arduino...)
+* HttpScreen plugin was added to drive  deported screens, based on ESP8266 with ESPEasy (Oled and ePaper screen)
 * And a lot of fixes and new functionnalities on existing plugins and widgets (refer to corresponding changelog.md files)
 
 

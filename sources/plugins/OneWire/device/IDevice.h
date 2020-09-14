@@ -33,7 +33,7 @@ public:
    /// \param[in] configuration  New device configuration
    //--------------------------------------------------------------
    virtual void setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                 const shared::CDataContainer &configuration) = 0;
+                                 const boost::shared_ptr<shared::CDataContainer> &configuration) = 0;
 
    //--------------------------------------------------------------
    /// \brief	Read the device state and update keywords

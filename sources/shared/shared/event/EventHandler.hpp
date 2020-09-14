@@ -27,17 +27,16 @@ namespace shared
       class CEventHandler
       {
       public:
-         CEventHandler()
-         {
-         }
-
-         virtual ~CEventHandler()
-         {
-         }
+         CEventHandler() = default;
+         virtual ~CEventHandler() = default;
 
          // Avoid copy
          CEventHandler(const CEventHandler&) = delete;
          const CEventHandler& operator=(const CEventHandler&) = delete;
+
+         // Avoid move
+         CEventHandler(const CEventHandler&&) = delete;
+         const CEventHandler& operator=(const CEventHandler&&) = delete;
 
          //--------------------------------------------------------------
          /// \brief	    Send empty event (without data)
@@ -207,7 +206,7 @@ namespace shared
 
             try
             {
-               CEvent<DataType> evt = dynamic_cast<CEvent<DataType> &>(*m_lastEvent);
+               CEvent<DataType> evt = dynamic_cast<CEvent<DataType>&>(*m_lastEvent);
                return evt.getData();
             }
             catch (std::bad_cast& bc)
@@ -219,11 +218,11 @@ namespace shared
          }
 
          //--------------------------------------------------------------
-         /// \brief	    Transfer last event to another EventHadler
-         /// \param [in] rhs The event handler to trasnfer the event
+         /// \brief	    Transfer last event to another EventHandler
+         /// \param [in] rhs The event handler to transfer the event
          /// \note       Must be called after waitForEvents
          //--------------------------------------------------------------
-         void transferLastEvent(CEventHandler &rhs)
+         void transferLastEvent(CEventHandler& rhs)
          {
             if (m_lastEvent)
                rhs.postEvent(m_lastEvent);
@@ -241,7 +240,8 @@ namespace shared
          //--------------------------------------------------------------
          boost::shared_ptr<CEventTimer> createTimer(int timerEventId,
                                                     CEventTimer::EPeriodicity periodicity = CEventTimer::kOneShot,
-                                                    const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
+                                                    const boost::posix_time::time_duration& period = boost::date_time::
+                                                       not_a_date_time)
          {
             BOOST_ASSERT(timerEventId >= kUserFirstId);
 
@@ -326,7 +326,7 @@ namespace shared
 
          //--------------------------------------------------------------
          /// \brief	   Get the next time event stop point
-         ///            This function computes the next event to arrive, between registred time events
+         ///            This function computes the next event to arrive, between registered time events
          /// \return    The next time event (null pointer if none)
          //--------------------------------------------------------------
          boost::shared_ptr<ITimeEvent> getNextTimeEventStopPoint() const
@@ -337,17 +337,15 @@ namespace shared
             // Find the closer time event
             boost::posix_time::ptime lower = boost::posix_time::max_date_time;
             boost::shared_ptr<ITimeEvent> nextTimeEvent;
-            for (auto it = m_timeEvents.begin();
-                 it != m_timeEvents.end();
-                 ++it)
+            for (const auto& timeEvent : m_timeEvents)
             {
-               const auto nextStopPoint = (*it)->getNextStopPoint();
+               const auto nextStopPoint = timeEvent->getNextStopPoint();
                if (nextStopPoint != boost::date_time::not_a_date_time)
                {
                   if (nextStopPoint < lower)
                   {
                      lower = nextStopPoint;
-                     nextTimeEvent = *it;
+                     nextTimeEvent = timeEvent;
                   }
                }
             }
@@ -363,15 +361,12 @@ namespace shared
             if (m_timeEvents.empty())
                return false;
 
-            for (auto it = m_timeEvents.begin();
-                 it != m_timeEvents.end();
-                 ++it)
-            {
-               if ((*it)->getNextStopPoint() != boost::date_time::not_a_date_time)
-                  return true;
-            }
-
-            return false;
+            return std::any_of(m_timeEvents.begin(),
+                               m_timeEvents.end(),
+                               [](const auto& timeEvent)
+                               {
+                                  return timeEvent->getNextStopPoint() != boost::date_time::not_a_date_time;
+                               });
          }
 
          //--------------------------------------------------------------
@@ -382,13 +377,11 @@ namespace shared
             if (m_timeEvents.empty())
                return;
 
-            for (auto it = m_timeEvents.begin();
-                 it != m_timeEvents.end();
-                 ++it)
+            for (const auto& timeEvent : m_timeEvents)
             {
-               const auto nextStopPoint = (*it)->getNextStopPoint();
+               const auto nextStopPoint = timeEvent->getNextStopPoint();
                if (nextStopPoint != boost::date_time::not_a_date_time && nextStopPoint < currentTime::Provider().now())
-                  signalTimeEvent(*it); // Elapsed time point, signal it
+                  signalTimeEvent(timeEvent); // Elapsed time point, signal it
             }
          }
 
@@ -396,7 +389,7 @@ namespace shared
          /// \brief	            Signal that time event elapsed
          /// \param[in] timeEvent    Time event to signal
          //--------------------------------------------------------------
-         void signalTimeEvent(boost::shared_ptr<ITimeEvent> timeEvent)
+         void signalTimeEvent(const boost::shared_ptr<ITimeEvent>& timeEvent)
          {
             BOOST_ASSERT(!!timeEvent);
 
@@ -406,7 +399,7 @@ namespace shared
          }
 
          //--------------------------------------------------------------
-         /// \brief	            Purge obsolets time events
+         /// \brief	            Purge obsolete time events
          //--------------------------------------------------------------
          void timeEventListCleanup()
          {

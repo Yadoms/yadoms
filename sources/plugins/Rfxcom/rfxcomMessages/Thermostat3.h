@@ -18,12 +18,12 @@ namespace rfxcomMessages
       CThermostat3(boost::shared_ptr<yApi::IYPluginApi> api,
                    const std::string& keyword,
                    const std::string& command,
-                   const shared::CDataContainer& deviceDetails);
+                   const boost::shared_ptr<shared::CDataContainer>& deviceDetails);
 
       CThermostat3(boost::shared_ptr<yApi::IYPluginApi> api,
                    unsigned int subType,
                    const std::string& name,
-                   const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+                   const boost::shared_ptr<shared::CDataContainer>& manuallyDeviceCreationConfiguration);
 
       CThermostat3(boost::shared_ptr<yApi::IYPluginApi> api,
                    const RBUF& rbuf,
@@ -70,7 +70,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       std::string m_deviceName;
 
-      shared::CDataContainer m_deviceDetails;
+      boost::shared_ptr<shared::CDataContainer> m_deviceDetails;
 
       //--------------------------------------------------------------
       /// \brief	The sub-type management

@@ -27,7 +27,8 @@
   "configurationSchema": {
     "device": {
       "type": "keyword",
-      "expectedKeywordType": "numeric"
+      "expectedKeywordType": "numeric",
+      "expectedKeywordAccess": "getSet"
     },
     "StepValue": {
       "type": "decimal",

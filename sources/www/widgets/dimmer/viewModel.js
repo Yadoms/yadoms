@@ -44,7 +44,7 @@ widgetViewModelCtor = function dimmerViewModel() {
 		  self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
         self.widgetApi.registerAdditionalInformation(["unit"]); // return unit with the getLast Value
         self.widgetApi.configureBatteryIcon(parseInt(self.widget.configuration.device.deviceId));
-        self.step(parseInt(self.widget.configuration.StepValue));
+        self.step(parseFloat(self.widget.configuration.StepValue));
     };
 
     /**

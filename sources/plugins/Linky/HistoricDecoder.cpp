@@ -25,7 +25,8 @@ const std::string CHistoricDecoder::m_tag_DEMAIN = "DEMAIN"; // Color of the nex
 const std::string CHistoricDecoder::m_tag_PEJP = "PEJP"; // EJP Warning
 
 CHistoricDecoder::CHistoricDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
+   : m_DeviceDetails(shared::CDataContainer::make()),
+   m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
    m_lowCostCounter(boost::make_shared<yApi::historization::CEnergy>("LowCostCounter")),
    m_normalCostCounter(boost::make_shared<yApi::historization::CEnergy>("NormalCostCounter")),
    m_EJPPeakPeriod(boost::make_shared<yApi::historization::CEnergy>("EJPPeakPeriod")),
@@ -48,7 +49,7 @@ CHistoricDecoder::CHistoricDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    m_todayColorChanged(true),
    m_firstRun(true),
    m_newWarningEJPValue(false),
-   m_ADCOalreadyReceived(false)
+   m_ADCOalreadyReceived(false)   
 {
    m_instantCurrentPhase[0] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase1");
    m_instantCurrentPhase[1] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase2");

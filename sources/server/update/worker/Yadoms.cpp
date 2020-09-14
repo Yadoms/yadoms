@@ -14,7 +14,7 @@ namespace update
 {
    namespace worker
    {
-      void CYadoms::update(CWorkerTools::WorkerProgressFunc progressCallback,
+      void CYadoms::update(const CWorkerHelpers::WorkerProgressFunc& progressCallback,
                            const std::string& downloadUrl,
                            const std::string& expectedMd5Hash)
       {
@@ -23,8 +23,8 @@ namespace update
 
          YADOMS_LOG(information) << "Updating Yadoms from " << downloadUrl;
 
-         shared::CDataContainer callbackData;
-         callbackData.set("downloadUrl", downloadUrl);
+         auto callbackData = shared::CDataContainer::make();
+         callbackData->set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsUpdate, std::string(), callbackData);
 
@@ -36,9 +36,9 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading package " << downloadUrl;
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsDownload, std::string(), callbackData);
-            auto downloadedPackage = CWorkerTools::downloadPackageAndVerify(downloadUrl, expectedMd5Hash, progressCallback,
+            auto downloadedPackage = CWorkerHelpers::downloadPackageAndVerify(downloadUrl, expectedMd5Hash, progressCallback,
                                                                             i18n::CClientStrings::UpdateYadomsDownload, 0.0, 50.0);
-            YADOMS_LOG(information) << "Package successfully downloaded into " << downloadedPackage.toString();
+            YADOMS_LOG(information) << "Package successfully downloaded into " << downloadedPackage.string();
 
             //////////////////////////////////////////////////////////
             // STEP3 : extract package
@@ -58,7 +58,7 @@ namespace update
                {
                   YADOMS_LOG(information) << "Find update command";
                   shared::CDataContainer packageJson;
-                  packageJson.deserializeFromFile(Poco::Path(extractedPackageLocation, "package.json").toString());
+                  packageJson.deserializeFromFile((extractedPackageLocation / "package.json").string());
                   const auto& commandToRun = packageJson.get<std::string>("yadoms.information.commandToRun");
 
                   YADOMS_LOG(information) << "Running updater";
@@ -108,13 +108,12 @@ namespace update
       }
 
 
-      void CYadoms::step4RunUpdaterProcess(Poco::Path& extractedPackageLocation,
-                                           const std::string& commandtoRun,
+      void CYadoms::step4RunUpdaterProcess(const boost::filesystem::path& extractedPackageLocation,
+                                           const std::string& commandToRun,
                                            boost::shared_ptr<IRunningInformation>& runningInformation)
       {
          //append the command line request to the extracted path
-         auto executablePath(extractedPackageLocation);
-         executablePath.setFileName(commandtoRun);
+         const auto executablePath(extractedPackageLocation / commandToRun);
 
          //create the argument list
          Poco::Process::Args args;
@@ -122,8 +121,8 @@ namespace update
          args.push_back(Poco::Path(runningInformation->getExecutablePath()).parent().toString());
 
          //run updater script
-         YADOMS_LOG(debug) << "Launch script \"" << executablePath.toString() << "\" with args " << boost::algorithm::join(args, ", ");
-         const auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
+         YADOMS_LOG(debug) << "Launch script \"" << executablePath.string() << "\" with args " << boost::algorithm::join(args, ", ");
+         const auto handle = tools::COperatingSystem::launchNativeScript(executablePath.string(), args);
 
          //the update command is running, wait for 5 seconds and ensure it is always running
          boost::this_thread::sleep(boost::posix_time::seconds(5));

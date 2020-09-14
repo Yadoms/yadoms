@@ -2,39 +2,44 @@
 #include "urlManagerMock.h"
 
 urlManagerMock::urlManagerMock()
-{}
-
-shared::CDataContainer urlManagerMock::getRegisteredEquipments(const std::string &apikey,
-                                                               const int page,
-                                                               const bool activated,
-                                                               const boost::posix_time::time_duration& timeout)
+   : RegisteredEquipments(shared::CDataContainer::make()),
+     DeviceInformation(shared::CDataContainer::make()),
+     DeviceMessages(shared::CDataContainer::make())
 {
-   shared::CDataContainer response;
-
-   return response;
 }
 
-void urlManagerMock::addRegisteredEquipmentsMessageReturned(shared::CDataContainer newMessage)
+boost::shared_ptr<shared::CDataContainer> urlManagerMock::getRegisteredEquipments(
+   const std::string& apikey,
+   const int page,
+   const bool activated,
+   int timeoutSeconds)
+{
+   return boost::make_shared<shared::CDataContainer>();
+}
+
+void urlManagerMock::addRegisteredEquipmentsMessageReturned(boost::shared_ptr<shared::CDataContainer> newMessage)
 {
    RegisteredEquipments = newMessage;
 }
 
-void urlManagerMock::addMessagesForEquipment(shared::CDataContainer newMessage)
+void urlManagerMock::addMessagesForEquipment(boost::shared_ptr<shared::CDataContainer> newMessage)
 {
    DeviceMessages = newMessage;
 }
 
-shared::CDataContainer urlManagerMock::getDeviceInformation(const std::string &apikey,
-                                                            const std::string &devEUI,
-                                                            const boost::posix_time::time_duration& timeout)
+boost::shared_ptr<shared::CDataContainer> urlManagerMock::getDeviceInformation(
+   const std::string& apikey,
+   const std::string& devEUI,
+   int timeoutSeconds)
 {
    return RegisteredEquipments;
 }
 
-shared::CDataContainer urlManagerMock::listDeviceCommands(const std::string &apikey,
-                                                          const std::string &devEUI,
-                                                          const int page,
-                                                          const boost::posix_time::time_duration& timeout)
+boost::shared_ptr<shared::CDataContainer> urlManagerMock::listDeviceCommands(
+   const std::string& apikey,
+   const std::string& devEUI,
+   const int page,
+   int timeoutSeconds)
 {
    return DeviceMessages;
 }

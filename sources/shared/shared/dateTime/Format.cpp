@@ -3,27 +3,32 @@
 #include "shared/currentTime/Provider.h"
 #include <Poco/DateTimeFormatter.h>
 #include "DateTimeContainer.h"
-#include <boost/locale/info.hpp>
-#include <boost/locale/generator.hpp>
 
 namespace shared { namespace dateTime {
 
-	std::string CFormat::format(Poco::DateTime& time, const std::string& boostFormat)
+	std::string CFormat::format(const Poco::DateTime& time, const std::string& boostFormat)
 	{
 		boost::posix_time::ptime ptime = CDateTimeContainer(time).getBoostDateTime();
 		return format(ptime, boostFormat);
 	}
 
-	std::string CFormat::format(boost::posix_time::ptime& time, const std::string& boostFormat)
+	
+	std::string CFormat::format(const boost::posix_time::ptime& time, const std::string& boostFormat)
 	{
-		boost::posix_time::time_facet* facet = new boost::posix_time::time_facet(boostFormat.c_str());
 		std::stringstream s;
-		boost::locale::generator gen;
-		std::locale l = gen(""); //get system locale
-		std::locale lf(l, facet); //create system local with facet
-		s.imbue(lf); //apply to current stream
-		s << time;
+		std::time_t t = to_time_t(time);
+
+		std::locale::global(std::locale(""));
+        char mbstr[1024];
+		memset(mbstr, 0, sizeof(mbstr));
+		strftime(mbstr, sizeof(mbstr), boostFormat.c_str(), std::localtime(&t));
+		s << mbstr;
 		return s.str();
+
+		/* c++11 equivalent  (but some gcc <5 do not handle std::put_time)
+		s.imbue(std::locale(""));
+		s << std::put_time(localtime(&t), boostFormat.c_str());
+		*/
 	}
 
 	std::string CFormat::formatNow(const std::string& boostFormat)

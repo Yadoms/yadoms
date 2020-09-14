@@ -120,9 +120,9 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          // Configuration was updated
          api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-         auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
+         auto newConfigurationData = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
          YADOMS_LOG(information) << "Update configuration...";
-         BOOST_ASSERT(!newConfigurationData.empty());
+         BOOST_ASSERT(!newConfigurationData->empty());
          // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
          // Close connection
@@ -152,11 +152,11 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
          if (request->getData().getQuery() == "channels")
          {
             std::vector<std::string> allDevices = api->getAllDevices();
-            shared::CDataContainer ev;
+            boost::shared_ptr<shared::CDataContainer> ev = shared::CDataContainer::make();
             for (std::string& str : api->getAllDevices())
             {
                if (str.find(DeviceName) != std::string::npos)
-                  ev.set(str.substr(str.length() - 1, 1), str);
+                  ev->set(str.substr(str.length() - 1, 1), str);
             }
 
             request->sendSuccess(ev);
@@ -178,7 +178,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             if (extraQuery->getData()->query() == "progChannel")
             {
-               const auto chanToProg = atoi(extraQuery->getData()->data().get<std::string>("Channel").c_str());
+               const auto chanToProg = atoi(extraQuery->getData()->data()->get<std::string>("Channel").c_str());
 
 
                if (chanToProg < 1 || static_cast<unsigned int>(chanToProg) > api->getAllDevices().size())
@@ -190,7 +190,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   YADOMS_LOG(information) << "Channel : " << chanToProg;
                   sendQuickProgCmd(chanToProg);
-                  extraQuery->sendSuccess(shared::CDataContainer());
+                  extraQuery->sendSuccess(shared::CDataContainer::make());
                }
             }
             else

@@ -19,6 +19,8 @@
 #include <Poco/Environment.h>
 #include <Poco/Format.h>
 #include <google/protobuf/stubs/common.h>
+#include "shared/http/HttpMethods.h"
+#include "shared/http/Proxy.h"
 
 //define the main entry point
 POCO_SERVER_MAIN(CYadomsServer)
@@ -60,30 +62,27 @@ void CYadomsServer::initialize(Application& self)
 
 void CYadomsServer::setupProxy() const
 {
-   Poco::Net::HTTPClientSession::ProxyConfig cfg;
+   if (m_startupOptions->getProxyHost().isNull())
+      return;
 
-   if (!m_startupOptions->getProxyHost().isNull())
-   {
-      cfg.host = m_startupOptions->getProxyHost().value();
-   }
-   if (!m_startupOptions->getProxyPort().isNull())
-   {
-      cfg.port = m_startupOptions->getProxyPort().value();
-   }
-   if (!m_startupOptions->getProxyUsername().isNull())
-   {
-      cfg.username = m_startupOptions->getProxyUsername().value();
-   }
-   if (!m_startupOptions->getProxyPassword().isNull())
-   {
-      cfg.password = m_startupOptions->getProxyPassword().value();
-   }
-   if (!m_startupOptions->getProxyBypass().isNull())
-   {
-      cfg.nonProxyHosts = m_startupOptions->getProxyBypass().value();
-   }
-
-   Poco::Net::HTTPClientSession::setGlobalProxyConfig(cfg);
+   const auto host = m_startupOptions->getProxyHost().value();
+   const auto port = m_startupOptions->getProxyPort().isNull()
+                        ? shared::http::CProxy::kUseProxyDefaultPort
+                        : m_startupOptions->getProxyPort().value();
+   const auto username = m_startupOptions->getProxyUsername().isNull()
+                            ? std::string()
+                            : m_startupOptions->getProxyUsername().value();
+   const auto password = m_startupOptions->getProxyPassword().isNull()
+                            ? std::string()
+                            : m_startupOptions->getProxyPassword().value();
+   const auto bypassRegex = m_startupOptions->getProxyBypass().isNull()
+                               ? std::string()
+                               : m_startupOptions->getProxyBypass().value();
+   shared::http::CProxy::setGlobalProxyConfig(host,
+                                              port,
+                                              username,
+                                              password,
+                                              bypassRegex);
 }
 
 void CYadomsServer::uninitialize()

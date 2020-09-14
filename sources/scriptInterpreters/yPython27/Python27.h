@@ -11,14 +11,15 @@
 class CPython27 : public interpreter_cpp_api::IInterpreter
 {
 public:
-   CPython27();
-   virtual ~CPython27();
+   CPython27() = default;
+   virtual ~CPython27() = default;
 
    // IInterpreter implementation
    void doWork(boost::shared_ptr<yApi::IYInterpreterApi> api) override;
    // [END] IInterpreter implementation
 
 protected:
+   std::string getPythonForcedPath() const;
    const boost::filesystem::path& getInterpreterPath() const;
    const std::string& getScriptTemplate() const;
    bool isAvailable() const;

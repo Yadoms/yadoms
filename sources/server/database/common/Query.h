@@ -7,7 +7,7 @@
 #include <shared/Field.hpp>
 #include "database/DatabaseException.hpp"
 #include "DatabaseColumn.h"
-
+#include <shared/DataContainer.h>
 namespace database
 {
    namespace common
@@ -568,7 +568,7 @@ namespace database
          /// \param  queryPart   another query
          /// \return             A reference to itself to allow method chaining
          //   
-         CQuery& Append(CQuery& queryPart);
+         CQuery& Append(const CQuery& queryPart);
 
          //
          /// \brief              append union

@@ -24,6 +24,21 @@ namespace shared
                                               historyDepth)
             {
             }
+
+            CDirectionDouble::CDirectionDouble(const std::string& keywordName,
+                                               const EKeywordAccessMode& accessMode,
+                                               const EMeasureType& measureType,
+                                               const typeInfo::CDoubleTypeInfo& additionalInfo,
+                                               const EHistoryDepth& historyDepth)
+               : CSingleHistorizableData<double>(keywordName,
+                                                 CStandardCapacities::Direction(),
+                                                 accessMode,
+                                                 0,
+                                                 measureType,
+                                                 additionalInfo,
+                                                 historyDepth)
+            {
+            }
          }
       }
    }

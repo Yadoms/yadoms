@@ -14,9 +14,9 @@ namespace shared
             ///\brief               The curtain command values
             //-----------------------------------------------------   
             DECLARE_ENUM_HEADER(ECurtainCommand,
-               ((Stop))
-               ((Open))
-               ((Close))
+                                ((Stop))
+                                ((Open))
+                                ((Close))
             );
 
 
@@ -29,9 +29,11 @@ namespace shared
                //-----------------------------------------------------
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
+               ///\param[in] accessMode      Access mode
                ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CCurtain(const std::string& keywordName,
+                                 const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet,
                                  const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
                virtual ~CCurtain() = default;

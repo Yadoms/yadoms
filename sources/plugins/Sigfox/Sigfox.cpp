@@ -73,7 +73,7 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          try {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             if (m_webServer) m_webServer->stop();
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
 
             if (m_webServer)
             {
@@ -104,13 +104,13 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                processIncomingMessage(api, extraQuery->getData()->data());
             }
          }
-         extraQuery->sendSuccess(shared::CDataContainer());
+         extraQuery->sendSuccess(shared::CDataContainer::make());
          break;
       }
       case kDataReceived:
       {
          try {
-            auto data = api->getEventHandler().getEventData<shared::CDataContainer>();
+            auto data = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
             processIncomingMessage(api, data);
          }
          catch (std::exception &e)
@@ -133,13 +133,13 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newMessage) const
+void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newMessage) const
 {
-   newMessage.printToLog(YADOMS_LOG(trace));
+   newMessage->printToLog(YADOMS_LOG(trace));
 
    try {
-      std::string deviceName = newMessage.get<std::string>("device");
-      std::string type = newMessage.get<std::string>("type");
+      std::string deviceName = newMessage->get<std::string>("device");
+      std::string type = newMessage->get<std::string>("type");
 
       declareDevice(api, deviceName);
 
@@ -169,8 +169,8 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       // This part is common the two messages
       if ((type.compare("data") == 0) || (type.compare("service") == 0))
       {
-         m_rssi->set(newMessage.get<double>("rssi"));
-         m_snr->set(newMessage.get<double>("snr"));
+         m_rssi->set(newMessage->get<double>("rssi"));
+         m_snr->set(newMessage->get<double>("snr"));
 
          // For the signalStrength, we do a rule to normalize rssi to %.
          m_signalPower->set(boost::lexical_cast<int>((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin())));
@@ -178,7 +178,7 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
 
       if (type.compare("data") == 0)
       {
-         m_messageKeyword->set(newMessage.get<std::string>("data"));;
+         m_messageKeyword->set(newMessage->get<std::string>("data"));;
 
          api->historizeData(deviceName, m_keywordsData);
          YADOMS_LOG(information) << "historize a data message for " << deviceName;
@@ -186,7 +186,7 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       {
          // the rule to normalize the battery level
          // Receive a voltage
-         auto m_voltage = newMessage.get<double>("battery");
+         auto m_voltage = newMessage->get<double>("battery");
          m_batteryLevel->set(boost::lexical_cast<int>((m_voltage - m_configuration.getTensionMin()) * 100 / (m_configuration.getTensionMax() - m_configuration.getTensionMin())) );
 
          api->historizeData(deviceName, m_keywordsService);
@@ -199,11 +199,11 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
    }
 }
 
-void CSigfox::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
+void CSigfox::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const boost::shared_ptr<shared::CDataContainer>& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";
-   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);

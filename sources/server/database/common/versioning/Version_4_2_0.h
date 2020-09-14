@@ -31,7 +31,7 @@ namespace database
             // [END] ISQLiteVersionUpgrade implementation
 
          protected:
-            static void updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> requester,
+            static void updateDatabaseVersion(boost::shared_ptr<IDatabaseRequester> requester,
                                               const shared::versioning::CSemVer& newVersion,
                                               const boost::posix_time::ptime& insertDate = shared::currentTime::Provider().now());
 
@@ -48,8 +48,8 @@ namespace database
             static boost::optional<bool> loadRefreshPage(const boost::shared_ptr<IDatabaseRequester>& requester);
             static boost::optional<std::string> loadBasicAuthentication(const boost::shared_ptr<IDatabaseRequester>& requester);
 
-            static boost::optional<shared::CDataContainer> convertLocation(const boost::optional<std::string>& oldLocation);
-            static boost::optional<shared::CDataContainer> convertBasicAuthentication(const boost::optional<std::string>& oldBasicAuthentication);
+            static boost::optional<boost::shared_ptr<shared::CDataContainer>> convertLocation(const boost::optional<std::string>& oldLocation);
+            static boost::optional<boost::shared_ptr<shared::CDataContainer>> convertBasicAuthentication(const boost::optional<std::string>& oldBasicAuthentication);
 
             static void insertConfigurationValue(const boost::shared_ptr<IDatabaseRequester> requester,
                                                  const std::string& section,
