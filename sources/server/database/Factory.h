@@ -16,7 +16,7 @@ namespace database
    public:
       CFactory(boost::shared_ptr<const IPathProvider> pathProvider,
                boost::shared_ptr<const startupOptions::IStartupOptions> startupOptions);
-      virtual ~CFactory();
+      virtual ~CFactory() = default;
 
       boost::shared_ptr<IDataProvider> createDataProvider() const;
 
