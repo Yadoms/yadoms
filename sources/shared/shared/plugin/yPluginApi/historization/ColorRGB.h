@@ -26,6 +26,8 @@ namespace shared
                          const EKeywordAccessMode& accessMode,
                          const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
+               void setRGB(int red, int green, int blue);
+
                virtual ~CColorRGB() = default;
             };
          }

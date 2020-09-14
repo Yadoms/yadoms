@@ -14,10 +14,6 @@ CProfile_A5_12_04::CProfile_A5_12_04(const std::string& deviceId,
 {
 }
 
-CProfile_A5_12_04::~CProfile_A5_12_04()
-{
-}
-
 const std::string& CProfile_A5_12_04::profile() const
 {
    static const std::string profile("A5-12-04");

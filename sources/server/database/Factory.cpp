@@ -18,10 +18,6 @@ namespace database
    {
    }
 
-   CFactory::~CFactory()
-   {
-   }
-
    boost::shared_ptr<IDataProvider> CFactory::createDataProvider() const
    {
       return boost::make_shared<common::CDataProvider>(createEngine());
@@ -38,7 +34,7 @@ namespace database
 #ifndef PGSQL_NOT_FOUND
       case startupOptions::EDatabaseEngine::kPostgresqlValue:
          {
-            // PostgreSql library is dynamically loaded to avoid depandancy on it as it us rarely used (and depandancy to MSVCRT under Windows)
+            // PostgreSql library is dynamically loaded to avoid dependency on it as it us rarely used (and dependency to MSVCRT under Windows)
             const auto pqsqlLibrary = boost::make_shared<pgsql::CPgsqlLibrary>();
             return boost::make_shared<pgsql::CPgsqlRequester>(pqsqlLibrary);
          }

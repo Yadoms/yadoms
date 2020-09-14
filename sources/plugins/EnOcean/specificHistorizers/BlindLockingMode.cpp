@@ -5,25 +5,21 @@
 namespace specificHistorizers
 {
    DECLARE_ENUM_IMPLEMENTATION(EBlindLockingMode,
-      ((DoNotChangeOrNoLock))
-      ((Blockage))
-      ((Alarm))
-      ((Deblockage))
+                               ((DoNotChangeOrNoLock))
+                               ((Blockage))
+                               ((Alarm))
+                               ((Deblockage))
    );
 
    DECLARE_CAPACITY(BlindLockingModeCapacity,
-      "BlindLockingMode",
-      shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-      shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+                    "BlindLockingMode",
+                    shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
+                    shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CBlindLockingMode::CBlindLockingMode(const std::string& keywordName)
       : CSingleHistorizableData<EBlindLockingMode>(keywordName,
                                                    BlindLockingModeCapacity(),
-                                                   shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
-   {
-   }
-
-   CBlindLockingMode::~CBlindLockingMode()
+                                                   yApi::EKeywordAccessMode::kGetSet)
    {
    }
 } // namespace specificHistorizers

@@ -7,7 +7,7 @@ class CProfile_A5_12_05 : public IType
 public:
    CProfile_A5_12_05(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_A5_12_05();
+   virtual ~CProfile_A5_12_05() = default;
 
    // IType implementation
    const std::string& profile() const override;

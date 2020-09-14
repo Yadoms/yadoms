@@ -82,7 +82,7 @@ void CSupervisor::run()
 
       // Create the Plugin manager
       auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider,
-         m_yadomsVersion,
+                                                                    m_yadomsVersion,
                                                                     pDataProvider,
                                                                     dal,
                                                                     location,

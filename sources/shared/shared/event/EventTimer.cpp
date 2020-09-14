@@ -20,13 +20,9 @@ namespace shared
             start(m_period);
       }
 
-      CEventTimer::~CEventTimer()
-      {
-      }
-
       void CEventTimer::start(const boost::posix_time::time_duration& period)
       {
-         // Starting an already running perdiodic timer makes no sense
+         // Starting an already running periodic timer makes no sense
          if (m_periodicity == kPeriodic && m_isRunning)
             return;
 

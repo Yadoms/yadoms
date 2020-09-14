@@ -69,7 +69,7 @@ uint8_t mcp23s17_read_reg(uint8_t reg, uint8_t hw_addr, int fd)
 {
     uint8_t control_byte = get_spi_control_byte(READ_CMD, hw_addr);
     uint8_t tx_buf[3] = {control_byte, reg, 0};
-    uint8_t rx_buf[sizeof tx_buf];
+    uint8_t rx_buf[sizeof tx_buf] = { 0 };
 
     struct spi_ioc_transfer spi;
     memset (&spi, 0, sizeof(spi));
@@ -96,7 +96,7 @@ void mcp23s17_write_reg(uint8_t data, uint8_t reg, uint8_t hw_addr, int fd)
 {
     uint8_t control_byte = get_spi_control_byte(WRITE_CMD, hw_addr);
     uint8_t tx_buf[3] = {control_byte, reg, data};
-    uint8_t rx_buf[sizeof tx_buf];
+    uint8_t rx_buf[sizeof tx_buf] = { 0 };
 
     struct spi_ioc_transfer spi;
     memset (&spi, 0, sizeof(spi));

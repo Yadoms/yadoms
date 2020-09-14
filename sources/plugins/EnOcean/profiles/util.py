@@ -39,16 +39,16 @@ def info(s):
    print(__FILE__() + "(" + str(__LINE__()) + "):" + " information: " + s)
 
 def warning(s):
+   global __nb_warnings__
+   __nb_warnings__ += 1
    if not EnableMessages:
       return
    print(__FILE__() + "(" + str(__LINE__()) + "):" + " warning: " + s)
-   global __nb_warnings__
-   __nb_warnings__ += 1
 
 def error(s):
-   print(__FILE__() + "(" + str(__LINE__()) + "):" + " error: " + s)
    global __nb_errors__
    __nb_errors__ += 1
+   print(__FILE__() + "(" + str(__LINE__()) + "):" + " error: " + s)
 
 def finish():
    resultText = "Conversion failed" if __nb_errors__ != 0 else "Successfully converted"
