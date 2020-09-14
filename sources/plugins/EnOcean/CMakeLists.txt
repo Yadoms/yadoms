@@ -50,6 +50,8 @@ set(ENOCEAN_SOURCES
    message/Esp3SendPacket.cpp
    message/Header.h
    message/Header.cpp
+   message/MessageHelpers.h
+   message/MessageHelpers.cpp
    message/RadioErp1ReceivedMessage.h
    message/RadioErp1ReceivedMessage.cpp
    message/RadioErp1SendMessage.h
@@ -345,6 +347,13 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_D2_01_11.h
    profiles/hardCoded/Profile_D2_01_12.cpp
    profiles/hardCoded/Profile_D2_01_12.h
+
+   profiles/hardCoded/Profile_D2_02_00.cpp
+   profiles/hardCoded/Profile_D2_02_00.h
+   profiles/hardCoded/Profile_D2_02_01.cpp
+   profiles/hardCoded/Profile_D2_02_01.h
+   profiles/hardCoded/Profile_D2_02_02.cpp
+   profiles/hardCoded/Profile_D2_02_02.h
 
    profiles/hardCoded/Profile_D2_05_Common.cpp
    profiles/hardCoded/Profile_D2_05_Common.h

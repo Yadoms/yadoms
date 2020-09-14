@@ -20,6 +20,7 @@
 * Add or improve support of A5-30-01, A5-30-04 and A5-30-05 profiles
 * Add or improve support of A5-20-01 profile
 * Add or improve support of D2-00-01 profile
+* Add or improve support of D2-02-xx profiles
 
 ### 1.7.1
 * Fix description of delay radio OFF timer for D2-01-12

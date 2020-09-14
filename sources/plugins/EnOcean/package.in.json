@@ -659,6 +659,72 @@
     "D2-01-12": {
       "sameAs": "D2-01-0F"
     },
+    "D2-02-00": {
+      "type": "section",
+      "content": {
+        "deltaTemperatureToReport": {
+          "name": "Delta temperature to report",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "10.0",
+          "precision": "1",
+          "defaultValue": "0.5"
+        },
+        "deltaIlluminationToReport": {
+          "name": "Delta illumination to report",
+          "type": "int",
+          "minimumValue": "0.0",
+          "maximumValue": "100.0",
+          "defaultValue": "20"
+        },
+        "maxMessagesInterval": {
+          "name": "Max interval between 2 messages (s)",
+          "type": "int",
+          "minimumValue": "10",
+          "maximumValue": "2550",
+          "precision": "10",
+          "defaultValue": "10"
+        },
+        "minMessagesInterval": {
+          "name": "Min interval between 2 messages (s)",
+          "type": "int",
+          "minimumValue": "0",
+          "maximumValue": "255",
+          "defaultValue": "10"
+        }
+      }
+    },
+    "D2-02-01": {
+      "sameAs": "D2-02-00"
+    },
+    "D2-02-02": {
+      "type": "section",
+      "content": {
+        "deltaTemperatureToReport": {
+          "name": "Delta temperature to report",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "10.0",
+          "precision": "1",
+          "defaultValue": "0.5"
+        },
+        "maxMessagesInterval": {
+          "name": "Max interval between 2 messages (s)",
+          "type": "int",
+          "minimumValue": "10",
+          "maximumValue": "2550",
+          "precision": "10",
+          "defaultValue": "10"
+        },
+        "minMessagesInterval": {
+          "name": "Min interval between 2 messages (s)",
+          "type": "int",
+          "minimumValue": "0",
+          "maximumValue": "255",
+          "defaultValue": "10"
+        }
+      }
+    },
     "D2-05-00": {
       "type": "section",
       "content": {

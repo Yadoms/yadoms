@@ -34,11 +34,6 @@ public:
    // [END] IType implementation
 
 private:
-   static void sendMessage(boost::shared_ptr<IMessageHandler> messageHandler,
-                           const std::string& senderId,
-                           const std::string& targetId,
-                           const boost::dynamic_bitset<>& userData);
-
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CDimmable> m_currentValue;

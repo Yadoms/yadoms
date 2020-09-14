@@ -4,18 +4,19 @@
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
 #include <shared/Log.h>
+#include "message/MessageHelpers.h"
 
 DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EDefaultState, EDefaultState,
-   ((off))
-   ((on))
-   ((previousState))
-   ((notUsed))
+                                   ((off))
+                                   ((on))
+                                   ((previousState))
+                                   ((notUsed))
 );
 
 DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EConnectedSwitchsType, EConnectedSwitchsType,
-   ((externalSwitch))
-   ((externalPushButton))
-   ((autodetection))
+                                   ((externalSwitch))
+                                   ((externalPushButton))
+                                   ((autodetection))
 );
 
 
@@ -130,13 +131,19 @@ void CProfile_D2_01_Common::sendActuatorStatusQuery(boost::shared_ptr<IMessageHa
 }
 
 
-const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noChannel1 = boost::shared_ptr<yApi::historization::CSwitch>();
-const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noChannel2 = boost::shared_ptr<yApi::historization::CSwitch>();
-const boost::shared_ptr<yApi::historization::CDimmable> CProfile_D2_01_Common::noDimmable = boost::shared_ptr<yApi::historization::CDimmable>();
-const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noPowerFailure = boost::shared_ptr<yApi::historization::CSwitch>();
-const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noOverCurrent = boost::shared_ptr<yApi::historization::CSwitch>();
+const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noChannel1 = boost::shared_ptr<yApi::
+   historization::CSwitch>();
+const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noChannel2 = boost::shared_ptr<yApi::
+   historization::CSwitch>();
+const boost::shared_ptr<yApi::historization::CDimmable> CProfile_D2_01_Common::noDimmable = boost::shared_ptr<yApi::
+   historization::CDimmable>();
+const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noPowerFailure = boost::shared_ptr<yApi::
+   historization::CSwitch>();
+const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noOverCurrent = boost::shared_ptr<yApi::
+   historization::CSwitch>();
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::
+extractActuatorStatusResponse(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
    boost::shared_ptr<yApi::historization::CSwitch> channel1,
@@ -199,7 +206,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return historizers;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse2Channels(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::
+extractActuatorStatusResponse2Channels(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
    boost::shared_ptr<yApi::historization::CSwitch> channel1,
@@ -288,7 +296,8 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
    bitset_insert(data, 8, true); // Report on query + auto reporting
    bitset_insert(data, 9, resetMeasurement); // Reset measurement
    bitset_insert(data, 10, powerMeasurement);
-   bitset_insert(data, 11, 5, outputChannel); // Specific channel, or 0x1E for all output channels, or 0x1F for input channel
+   bitset_insert(data, 11, 5, outputChannel);
+   // Specific channel, or 0x1E for all output channels, or 0x1F for input channel
    bitset_insert(data, 16, 4, 0); // No measurement delta
    bitset_insert(data, 21, 3, powerMeasurement ? kPowerW : kEnergyWh); // Hard-coded for now
    bitset_insert(data, 24, 8, 0); // No measurement delta
@@ -320,12 +329,17 @@ void CProfile_D2_01_Common::sendActuatorMeasurementQuery(boost::shared_ptr<IMess
                "Actuator Measurement Query");
 }
 
-const boost::shared_ptr<yApi::historization::CEnergy> CProfile_D2_01_Common::noInputEnergy = boost::shared_ptr<yApi::historization::CEnergy>();
-const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::noInputPower = boost::shared_ptr<yApi::historization::CPower>();
-const boost::shared_ptr<yApi::historization::CEnergy> CProfile_D2_01_Common::noLoadEnergy = boost::shared_ptr<yApi::historization::CEnergy>();
-const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::noLoadPower = boost::shared_ptr<yApi::historization::CPower>();
+const boost::shared_ptr<yApi::historization::CEnergy> CProfile_D2_01_Common::noInputEnergy = boost::shared_ptr<yApi::
+   historization::CEnergy>();
+const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::noInputPower = boost::shared_ptr<yApi::
+   historization::CPower>();
+const boost::shared_ptr<yApi::historization::CEnergy> CProfile_D2_01_Common::noLoadEnergy = boost::shared_ptr<yApi::
+   historization::CEnergy>();
+const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::noLoadPower = boost::shared_ptr<yApi::
+   historization::CPower>();
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorMeasurementResponse(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::
+extractActuatorMeasurementResponse(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
    boost::shared_ptr<yApi::historization::CEnergy> loadEnergy,
@@ -435,7 +449,8 @@ void CProfile_D2_01_Common::sendActuatorPilotWireModeQuery(boost::shared_ptr<IMe
                "Actuator Pilot Wire Mode Query");
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorPilotWireModeResponse(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::
+extractActuatorPilotWireModeResponse(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
    boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> pilotWire)
@@ -475,20 +490,22 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.push_back(pilotWire);
       break;
    default:
-      YADOMS_LOG(warning) << "ActuatorPilotWireModeResponse : received unsupported pilotWireMode value " << pilotWireMode;
+      YADOMS_LOG(warning) << "ActuatorPilotWireModeResponse : received unsupported pilotWireMode value " <<
+         pilotWireMode;
       break;
    }
    return historizers;
 }
 
-void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
-                                                                            const std::string& senderId,
-                                                                            const std::string& targetId,
-                                                                            EOutputChannel outputChannel,
-                                                                            const EConnectedSwitchsType& connectedSwitchsType,
-                                                                            double autoOffTimerSeconds,
-                                                                            double delayRadioOffTimerSeconds,
-                                                                            bool switchingStateToggle)
+void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(
+   boost::shared_ptr<IMessageHandler> messageHandler,
+   const std::string& senderId,
+   const std::string& targetId,
+   EOutputChannel outputChannel,
+   const EConnectedSwitchsType& connectedSwitchsType,
+   double autoOffTimerSeconds,
+   double delayRadioOffTimerSeconds,
+   bool switchingStateToggle)
 {
    boost::dynamic_bitset<> data(7 * 8);
 
@@ -512,29 +529,12 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
                                         const boost::dynamic_bitset<>& userData,
                                         const std::string& commandName)
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          targetId,
-                                          0);
-
-   command.userData(bitset_to_bytes(userData));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-      throw std::runtime_error((boost::format("Fail to send message to %1% : no answer to \"%2%\"") % targetId % commandName).str());
-
-   const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "Fail to send message to " << targetId << " : \"" << commandName << "\" returns " << response->returnCode();
+   message::CMessageHelpers::sendMessage(CRorgs::kVLD_Telegram,
+                                         messageHandler,
+                                         senderId,
+                                         targetId,
+                                         userData,
+                                         commandName);
 }
 
 

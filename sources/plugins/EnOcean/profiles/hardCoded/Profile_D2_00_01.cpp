@@ -2,8 +2,7 @@
 #include "Profile_D2_00_01.h"
 #include "../bitsetHelpers.hpp"
 #include "profiles/eep.h"
-#include "message/RadioErp1SendMessage.h"
-#include "message/ResponseReceivedMessage.h"
+#include "message/MessageHelpers.h"
 
 
 CProfile_D2_00_01::CProfile_D2_00_01(const std::string& deviceId,
@@ -294,10 +293,12 @@ void CProfile_D2_00_01::sendCommand(const std::string& keyword,
    bitset_insert(userData, 38, 1, m_displayCooling->get() ? 1 : 0);
    bitset_insert(userData, 39, 1, m_displayHeating->get() ? 1 : 0);
 
-   sendMessage(messageHandler,
-               senderId,
-               m_deviceId,
-               userData);
+   message::CMessageHelpers::sendMessage(CRorgs::k4BS_Telegram,
+                                         messageHandler,
+                                         senderId,
+                                         m_deviceId,
+                                         userData,
+                                         "send command");
 }
 
 void CProfile_D2_00_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -339,42 +340,12 @@ void CProfile_D2_00_01::sendConfiguration(const shared::CDataContainer& deviceCo
    bitset_insert(data, 40, 4, static_cast<int>(significantTemperatureDifference / 0.2));
    bitset_insert(data, 45, 3, keepAliveTiming / 10);
 
-   sendMessage(messageHandler,
-               senderId,
-               m_deviceId,
-               data);
-}
-
-
-void CProfile_D2_00_01::sendMessage(boost::shared_ptr<IMessageHandler> messageHandler,
-                                    const std::string& senderId,
-                                    const std::string& targetId,
-                                    const boost::dynamic_bitset<>& userData)
-{
-   message::CRadioErp1SendMessage command(CRorgs::k4BS_Telegram,
-                                          senderId,
-                                          targetId,
-                                          0);
-
-   command.userData(bitset_to_bytes(userData));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-      throw std::runtime_error(
-         (boost::format("Fail to send message to %1% : no answer") % targetId).str());
-
-   const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "Fail to send message to " << targetId << " : returns " << response->returnCode();
+   message::CMessageHelpers::sendMessage(CRorgs::k4BS_Telegram,
+                                         messageHandler,
+                                         senderId,
+                                         m_deviceId,
+                                         data,
+                                         "send configuration");
 }
 
 double CProfile_D2_00_01::toFarenheit(double celcius)

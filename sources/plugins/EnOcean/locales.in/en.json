@@ -409,8 +409,7 @@
         },
         "autoOffTimer": {
           "name": "Timer to automatically set OFF output when it is set ON",
-          "description":
-            "When output is set to ON (from local switch or radio command), this timer is applied before to set output back OFF",
+          "description": "When output is set to ON (from local switch or radio command), this timer is applied before to set output back OFF",
           "content": {
             "value": {
               "name": "Timer value",
@@ -432,6 +431,45 @@
     },
     "D2-01-12": {
       "sameAs": "D2-01-0F"
+    },
+    "D2-02-00": {
+      "content": {
+        "deltaTemperatureToReport": {
+          "name": "Temperature delta to report",
+          "description": "Significant temperature delta to be reported (°)"
+        },
+        "deltaIlluminationToReport": {
+          "name": "Illumination delta to report",
+          "description": "Significant illumination delta to be reported (lx)"
+        },
+        "maxMessagesInterval": {
+          "name": "Maximum interval between 2 messages (s)",
+          "description": "Sensor will send at least a message each X seconds"
+        },
+        "minMessagesInterval": {
+          "name": "Minimum interval between 2 messages (s)",
+          "description": "Sensor will not send message if one was send in past X seconds"
+        }
+      }
+    },
+    "D2-02-01": {
+      "sameAs": "D2-02-00"
+    },
+    "D2-02-02": {
+      "content": {
+        "deltaTemperatureToReport": {
+          "name": "Temperature delta to report",
+          "description": "Significant temperature delta to be reported (°)"
+        },
+        "maxMessagesInterval": {
+          "name": "Maximum interval between 2 messages (s)",
+          "description": "Sensor will send at least a message each X seconds"
+        },
+        "minMessagesInterval": {
+          "name": "Minimum interval between 2 messages (s)",
+          "description": "Sensor will not send message if one was send in past X seconds"
+        }
+      }
     },
     "D2-05-00": {
       "content": {
