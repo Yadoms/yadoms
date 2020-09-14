@@ -67,7 +67,8 @@
           "content": {
             "UsbDevices": {
               "name": "Select an USB device",
-              "description": "This parameter provides a list of USB devices available on the server, filtered by vendor and product Ids"
+              "description":
+                "This parameter provides a list of USB devices available on the server, filtered by vendor and product Ids"
             }
           }
         },
@@ -216,61 +217,61 @@
   "deviceConfiguration": {
     "staticConfigurationSchema": {
       "schemas": {
-          "fakeConfigurableDevice": {
-            "types": {
-              "fakeConfigurableDeviceType": {
-                "title": "configurable device",
-                "description": "compatible with Chacon, DIO,..."
-              },
-              "anotherFakeConfigurableDeviceType": {
-                "title": "another configurable device",
-                "description": "compatible with Blyss, ..."
-              }
+        "fakeConfigurableDevice": {
+          "types": {
+            "fakeConfigurableDeviceType": {
+              "title": "configurable device",
+              "description": "compatible with Chacon, DIO,..."
             },
-            "content": {
-              "CounterDivider2": {
-                "name": "Divider n°2",
-                "description": "Divider used to low the counter frequency (all devices)"
-              },
-              "MySection": {
-                "name": "A section",
-                "description": "Example of using a section in configuration tree.",
-                "content": {
-                  "SubIntParameter": {
-                    "name": "An integer-in-section example",
-                    "description": "An int in sub-section example"
-                  },
-                  "SubStringParameter": {
-                    "name": "A string-in-section example",
-                    "description": "Just a string parameter in the sub-section",
-                    "defaultValue": "Sub-sections make configuration very powerful !"
-                  },
-                  "SubComboParameter": {
-                    "name": "Sublist in section",
-                    "description": "Example of combo parameter in the sub-section",
-                    "content": {
-                      "first": {
-                        "types": {
-                          "first": {
-                            "title": "First section",
-                            "description": "The first list section : you can add here some other configuration parameters"
-                          }
+            "anotherFakeConfigurableDeviceType": {
+              "title": "another configurable device",
+              "description": "compatible with Blyss, ..."
+            }
+          },
+          "content": {
+            "CounterDivider2": {
+              "name": "Divider n°2",
+              "description": "Divider used to low the counter frequency (all devices)"
+            },
+            "MySection": {
+              "name": "A section",
+              "description": "Example of using a section in configuration tree.",
+              "content": {
+                "SubIntParameter": {
+                  "name": "An integer-in-section example",
+                  "description": "An int in sub-section example"
+                },
+                "SubStringParameter": {
+                  "name": "A string-in-section example",
+                  "description": "Just a string parameter in the sub-section",
+                  "defaultValue": "Sub-sections make configuration very powerful !"
+                },
+                "SubComboParameter": {
+                  "name": "Sublist in section",
+                  "description": "Example of combo parameter in the sub-section",
+                  "content": {
+                    "first": {
+                      "types": {
+                        "first": {
+                          "title": "First section",
+                          "description": "The first list section : you can add here some other configuration parameters"
                         }
-                      },
-                      "second": {
-                        "types": {
-                          "first": {
-                            "title": "Second section",
-                            "description": "The second list section : you can add here some other configuration parameters"
-                          }
+                      }
+                    },
+                    "second": {
+                      "types": {
+                        "first": {
+                          "title": "Second section",
+                          "description":
+                            "The second list section : you can add here some other configuration parameters"
                         }
-                      },
-                      "third": {
-                        "types": {
-                          "first": {
-                            "title": "Third section",
-                            "description": "The third list section : you can add here some other configuration parameters"
-                          }
+                      }
+                    },
+                    "third": {
+                      "types": {
+                        "first": {
+                          "title": "Third section",
+                          "description": "The third list section : you can add here some other configuration parameters"
                         }
                       }
                     }
@@ -280,18 +281,18 @@
             }
           }
         }
-      },
-      "dynamicConfigurationSchema": {
-        "schemas": {
-          "fakeDynamicallyConfigurableDeviceType": {
-            "DynamicDivider": {
-              "name": "Divider",
-              "description": "Description of divider"
-            },
-            "ArrayItem": {
-              "name": "Array item",
-              "description": "All array items share same translations"
-            }
+      }
+    },
+    "dynamicConfigurationSchema": {
+      "schemas": {
+        "fakeDynamicallyConfigurableDeviceType": {
+          "DynamicDivider": {
+            "name": "Divider",
+            "description": "Description of divider"
+          },
+          "ArrayItem": {
+            "name": "Array item",
+            "description": "All array items share same translations"
           }
         }
       }
