@@ -59,6 +59,19 @@
                            "customTextArray": {
                               "name": "Custom text",
                               "description": "Custom text to display below the icon (OPTIONAL)"
+                           },
+                           "whenKeyIsPressedElement": {
+                              "name": "Enable changing icon image when the key is pressed",
+                              "content": {
+                                 "iconsWhenKeyIsPressedArray": {
+                                    "name": "Icons",
+                                    "description": "List of available icons (see [the Wiki](https://github.com/Yadoms/yadoms/wiki/StreamDeck#available-icons))"
+                                 },
+                                 "customTextWhenKeyIsPressedArray": {
+                                    "name": "Custom text",
+                                    "description": "Custom text to display below the icon (OPTIONAL)"
+                                 }
+                              }
                            }
                         }
                      }

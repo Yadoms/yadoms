@@ -59,6 +59,19 @@
                            "customTextArray": {
                               "name": "Texte personnalisé",
                               "description": "Texte personnalisé à afficher en dessous de l'icône (OPTIONNEL)"
+                           },
+                           "whenKeyIsPressedElement": {
+                              "name": "Activer le changement de l'icône lorsque la touche est enfoncée",
+                              "content": {
+                                 "iconsWhenKeyIsPressedArray": {
+                                    "name": "Icône",
+                                    "description": "La liste des icones disponible (voir [le Wiki](https://github.com/Yadoms/yadoms/wiki/StreamDeck#available-icons))"
+                                 },
+                                 "customTextWhenKeyIsPressedArray": {
+                                    "name": "Texte personnalisé",
+                                    "description": "Texte personnalisé à afficher en dessous de l'icône (OPTIONNEL)"
+                                 }
+                              }
                            }
                         }
                      }
