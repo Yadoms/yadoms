@@ -96,11 +96,11 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(const std::string& listUsbDeviceRequest) const
          {
             try
             {
-               const auto request = shared::CDataContainer(requestContent);
+               const auto request = shared::CDataContainer::make(listUsbDeviceRequest);
 
                auto existingDevices = m_usbDevicesLister->listUsbDevices();
                YADOMS_LOG(debug) << "USB existing devices :";
@@ -115,7 +115,7 @@ namespace web
                }
 
                // If request content is empty, return all existing USB devices
-               if (request.empty())
+               if (request->empty())
                {
                   shared::CDataContainer result;
                   for (const auto& device : existingDevices)
@@ -126,19 +126,19 @@ namespace web
 
                // Filter USB devices by request content
 
-               const auto requestedDevices = request.get<std::vector<shared::CDataContainer>>("oneOf");
+               const auto requestedDevices = request->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("oneOf");
                shared::CDataContainer result;
                YADOMS_LOG(debug) << "USB requested devices :";
                for (const auto& requestedDevice : requestedDevices)
                {
                   YADOMS_LOG(debug) << "  - "
-                     << "vid=" << requestedDevice.get<int>("vendorId")
-                     << ", pid=" << requestedDevice.get<int>("productId");
+                     << "vid=" << requestedDevice->get<int>("vendorId")
+                     << ", pid=" << requestedDevice->get<int>("productId");
 
                   for (const auto& existingDevice : existingDevices)
                   {
-                     if (existingDevice->vendorId() == requestedDevice.get<int>("vendorId")
-                        && existingDevice->productId() == requestedDevice.get<int>("productId"))
+                     if (existingDevice->vendorId() == requestedDevice->get<int>("vendorId")
+                        && existingDevice->productId() == requestedDevice->get<int>("productId"))
                      {
                         //in case of key contains a dot, just ensure the full key is taken into account
                         result.set(existingDevice->nativeConnectionString(), existingDevice->yadomsFriendlyName(), 0x00);
@@ -158,7 +158,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(const bool includeLoopback) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(bool includeLoopback) const
          {
             try
             {

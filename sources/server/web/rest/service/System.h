@@ -39,8 +39,8 @@ namespace web
 
          private:
             boost::shared_ptr<shared::serialization::IDataSerializable> getSerialPorts() const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getUsbDevices(const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getNetworkInterfaces(const bool includeLoopback) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getUsbDevices(const std::string& listUsbDeviceRequest) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getNetworkInterfaces(bool includeLoopback) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> platformIs(const std::string& refPlatform) const;
             static void addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
                                                            const std::vector<shared::plugin::yPluginApi::EMeasureType>&
