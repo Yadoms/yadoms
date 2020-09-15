@@ -212,6 +212,9 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto keySection = shared::CDataContainer::make();
             auto keyOptionSection = shared::CDataContainer::make();
 
+            auto SecondKeySection = shared::CDataContainer::make();
+            auto whenKeyIsPressedOptionSection = shared::CDataContainer::make();
+
             for (auto i = 0; i < keys.size(); ++i)
             {
                shared::CDataContainer keyOptions;
@@ -231,11 +234,34 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                customTextOptions.set("i18nKey", "customTextArray");
                customTextOptions.set("required", "false");
 
+               shared::CDataContainer whenKeyIsPressedOption;
+               whenKeyIsPressedOption.set("type", "section");
+               whenKeyIsPressedOption.set("enableWithCheckBox", "true");
+               whenKeyIsPressedOption.set("enableWithCheckBoxDefaultValue", "false");
+
+               shared::CDataContainer iconsWhenKeyIsPressedOptions;
+               iconsWhenKeyIsPressedOptions.set("type", "enum");
+               iconsWhenKeyIsPressedOptions.set("i18nKey", "iconsWhenKeyIsPressedArray");
+               iconsWhenKeyIsPressedOptions.set("values", defaultIconsNames);
+               iconsWhenKeyIsPressedOptions.set("defaultValue", defaultIconsNames[0]);
+
+               shared::CDataContainer customTextWhenKeyIsPressedOptions;
+               customTextWhenKeyIsPressedOptions.set("type", "string");
+               customTextWhenKeyIsPressedOptions.set("i18nKey", "customTextWhenKeyIsPressedArray");
+               customTextWhenKeyIsPressedOptions.set("required", "false");
+
                keyOptionSection->set("icon", iconsOptions);
                keyOptionSection->set("customText", customTextOptions);
 
-               keyOptions.set("content", keyOptionSection);
+               whenKeyIsPressedOptionSection->set("iconWhenKeyIsPressed", iconsWhenKeyIsPressedOptions);
+               whenKeyIsPressedOptionSection->set("customTextWhenKeyIsPressed", customTextWhenKeyIsPressedOptions);
 
+               whenKeyIsPressedOption.set("content", whenKeyIsPressedOptionSection);
+               whenKeyIsPressedOption.set("i18nKey", "whenKeyIsPressedElement");
+
+               keyOptionSection->set("content", whenKeyIsPressedOption);
+
+               keyOptions.set("content", keyOptionSection);
                keyOptions.set("i18nKey", "keyElement");
                keySection->set("keyElement#" + std::to_string(i), keyOptions);
 
@@ -243,7 +269,6 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
 
             body->set("mainSection", mainSection);
-            auto test = body->serialize();
             YADOMS_LOG(information) << "Body : " << body->serialize();
 
             auto deviceConfigurationSchemaRequest = api
