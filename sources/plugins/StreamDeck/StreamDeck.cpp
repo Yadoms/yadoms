@@ -320,10 +320,10 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                      auto secondKeyCustomText = config->get<std::string>(
                         "mainSection.content.keyElement#" + std::to_string(keyCounter) + ".content.content.content.customTextWhenKeyIsPressed");
 
-                     CFileManager fileManager(secondKeyIconPath);
-                     fileManager.read();
-                     auto secondKeyImg = fileManager.getData();
-                     fileManager.close();
+                     CFileManager secondKeyFileManager(secondKeyIconPath);
+                     secondKeyFileManager.read();
+                     auto secondKeyImg = secondKeyFileManager.getData();
+                     secondKeyFileManager.close();
                   }
 
                }
