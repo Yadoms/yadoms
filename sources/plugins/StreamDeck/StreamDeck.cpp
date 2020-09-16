@@ -313,16 +313,16 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                      "mainSection.content.keyElement#" + std::to_string(keyCounter) + ".content.content.checkbox");
                   if (isSecondKeyChecked)
                   {
-                     auto iconNameIndex = config->get<int>(
+                     auto secondKeyIconNameIndex = config->get<int>(
                         "mainSection.content.keyElement#" + std::to_string(keyCounter) + ".content.content.content.iconWhenKeyIsPressed");
 
-                     auto iconPath = CDefaultIconSelector::getIconPath(pluginPath, iconNameIndex);
-                     auto customText = config->get<std::string>(
+                     auto secondKeyIconPath = CDefaultIconSelector::getIconPath(pluginPath, secondKeyIconNameIndex);
+                     auto secondKeyCustomText = config->get<std::string>(
                         "mainSection.content.keyElement#" + std::to_string(keyCounter) + ".content.content.content.customTextWhenKeyIsPressed");
 
-                     CFileManager fileManager(iconPath);
+                     CFileManager fileManager(secondKeyIconPath);
                      fileManager.read();
-                     auto img = fileManager.getData();
+                     auto secondKeyImg = fileManager.getData();
                      fileManager.close();
                   }
 
