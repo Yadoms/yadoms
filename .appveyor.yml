@@ -29,7 +29,6 @@ cache:
   - extra_libs\swig-3.0.12 -> '.appveyor.yml'
   #- extra_libs\pgsql-9.6.1 -> '.appveyor.yml'
   - extra_libs\gammu-1.37.4 -> '.appveyor.yml'
-  - extra_libs\libusb-1.0.23 -> '.appveyor.yml'
 
 # scripts that run after cloning repository
 install:
@@ -63,7 +62,6 @@ install:
   - ps: if (!(Test-Path 'protobuf-3.10.1')) { Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.10.1-build.7z -OutFile protobuf.7z; 7z x protobuf.7z -bso0 }
   - ps: if (!(Test-Path 'pgsql')) { Invoke-WebRequest http://yadoms.com/appveyor_build/postgresql-9.6.2-3-windows-binaries.zip -OutFile pgsql.zip; 7z x pgsql.zip -bso0 }
   - ps: if (!(Test-Path 'gammu-1.37.4')) { Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.37.4-build.7z -OutFile gammu.7z; 7z x gammu.7z -bso0 }
-  - ps: if (!(Test-Path 'libusb-1.0.23')) { Invoke-WebRequest http://yadoms.com/appveyor_build/libusb-1.0.23-build.7z -OutFile libusb.7z; 7z x libusb.7z -bso0 }
   - ps: rm *.7z
   - ps: popd    
   - ps: echo "[END] install"
@@ -98,7 +96,6 @@ before_build:
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PostgreSQL_INCLUDE_DIR "' + $cd_for_cmake + '/extra_libs/pgsql/include")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PostgreSQL_LIBRARY_DIR "' + $cd_for_cmake + '/extra_libs/pgsql/lib")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(GAMMU_ROOT "' + $cd_for_cmake + '/extra_libs/gammu-1.37.4")')
-  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(LIBUSB_ROOT "' + $cd_for_cmake + '/extra_libs/libusb-1.0.23")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PYTHON27_ROOT "C:/Python27")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PYTHON27_USE_SOURCES OFF)')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PYTHON3_ROOT "C:/Python38")')
