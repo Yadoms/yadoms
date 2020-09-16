@@ -1,6 +1,5 @@
 #pragma once
 #include "IDevice.h"
-#include <shared/DataContainer.h>
 
 namespace hardware
 {

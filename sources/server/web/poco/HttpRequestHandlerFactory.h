@@ -13,15 +13,8 @@ namespace web
       class CHttpRequestHandlerFactory : public Poco::Net::HTTPRequestHandlerFactory, public IWebServerConfigurator
       {
       public:
-         //==============================================
-         ///\brief Constructor
-         //==============================================
          CHttpRequestHandlerFactory();
-
-         //==============================================
-         ///\brief Destructor
-         //==============================================
-         virtual ~CHttpRequestHandlerFactory();
+         virtual ~CHttpRequestHandlerFactory() = default;
 
          // IWebServerConfigurator implementation
          void websiteHandlerConfigure(const std::string& doc_root) override;
@@ -34,7 +27,7 @@ namespace web
          // [END] IWebServerConfigurator implementation
 
          // Poco::Net::HTTPRequestHandlerFactory implementation
-         Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request);
+         Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request) override;
          // [END] Poco::Net::HTTPRequestHandlerFactory implementation
 
       private:

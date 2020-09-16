@@ -20,10 +20,6 @@ namespace web
       {
       }
 
-      CHttpRequestHandlerFactory::~CHttpRequestHandlerFactory()
-      {
-      }
-
       void CHttpRequestHandlerFactory::websiteHandlerConfigure(const std::string& doc_root)
       {
          m_configDocRoot = doc_root;
