@@ -84,6 +84,12 @@ namespace database {
       virtual std::string getTableRecipientField() = 0;
 
       //--------------------------------------------------------------
+      /// \brief           Get the creation script for table SerialPort
+      /// \return          The creation script
+      //--------------------------------------------------------------
+      virtual std::string getTableSerialPort() = 0;
+
+      //--------------------------------------------------------------
       /// \brief                       Get the indexes creation scripts for table Acquisition
       /// \param [out] indexScripts    The indexes creation scripts
       //--------------------------------------------------------------

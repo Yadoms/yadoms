@@ -12,7 +12,7 @@
 //         (AutoStart)("autoStart")
 //         )
 //
-//    Ouptut :
+//    Output :
 //         class CPluginTable
 //         {
 //         public:
@@ -87,7 +87,7 @@
    BOOST_PP_SEQ_FOR_EACH(DECLARE_COLUMN_NAME, _, _seq)
 
 //
-/// \brief  Macro used to treat the comlumn name part
+/// \brief  Macro used to treat the column name part
 //
 #define DECLARE_STATIC_VALUE_NAME_PART(elem) elem;
 
@@ -101,7 +101,7 @@
 //
 /// \brief  Declare all static values
 //
-#define DELCARE_STATIC_VALUES(_classname, _seq) \
+#define DECLARE_STATIC_VALUES(_classname, _seq) \
    BOOST_PP_SEQ_FOR_EACH_I(DECLARE_STATIC_VALUE, _classname, _seq)
 
 //
@@ -129,13 +129,13 @@ private:\
 };
 
 //
-/// \brief  Initialize all static memebers of the table
+/// \brief  Initialize all static members of the table
 /// \param  name  the table name
 /// \param  _seq  the sequence of columns
 //
 #define DECLARE_TABLE_COLUMN_NAMES(_classname, _tablename, _seq) \
    DECLARE_STATIC_TABLENAME_VALUE(_classname, _tablename)\
-   DELCARE_STATIC_VALUES(_classname, _seq)
+   DECLARE_STATIC_VALUES(_classname, _seq)
 
 
 

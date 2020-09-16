@@ -18,8 +18,8 @@ namespace dataAccessLayer
          m_configuration->set("firstStart", true);
 
          // Accepted values for location status :
-         //   - "defaut" : when location comes from the default configuration (this one)
-         //   - "autoDetected" : when location was automaticaly detected (ie from IP)
+         //   - "default" : when location comes from the default configuration (this one)
+         //   - "autoDetected" : when location was automatically detected (ie from IP)
          //   - "userDefined" : when location was defined by user
          m_configuration->set("location.status", "default");
          m_configuration->set("location.latitude", 48.853);
@@ -32,9 +32,7 @@ namespace dataAccessLayer
          m_configuration->set("basicAuthentication.password", std::string());
       }
 
-      virtual ~CDefaultServerConfiguration()
-      {
-      }
+      virtual ~CDefaultServerConfiguration() = default;
 
    private:
       const boost::shared_ptr<shared::CDataContainer> m_configuration;
@@ -43,10 +41,6 @@ namespace dataAccessLayer
    CConfigurationManager::CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester)
       : m_configurationRequester(configurationRequester),
         m_defaultServerConfiguration(CDefaultServerConfiguration().get())
-   {
-   }
-
-   CConfigurationManager::~CConfigurationManager()
    {
    }
 

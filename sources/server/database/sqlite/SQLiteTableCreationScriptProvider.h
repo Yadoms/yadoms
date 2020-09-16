@@ -3,38 +3,33 @@
 #include "database/ITableCreationScriptProvider.h"
 
 
-namespace database { namespace sqlite {
-
-   class CSQLiteTableCreationScriptProvider : public ITableCreationScriptProvider
+namespace database
+{
+   namespace sqlite
    {
-   public:
-      //--------------------------------------------------------------
-      /// \brief       Constructor
-      //--------------------------------------------------------------
-      CSQLiteTableCreationScriptProvider();
+      class CSQLiteTableCreationScriptProvider : public ITableCreationScriptProvider
+      {
+      public:
+         CSQLiteTableCreationScriptProvider() = default;
+         virtual ~CSQLiteTableCreationScriptProvider() = default;
 
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~CSQLiteTableCreationScriptProvider();
-
-      // ITableCreationScriptProvider implementation
-      virtual std::string getTableConfiguration();
-      virtual std::string getTableDevice();
-      virtual std::string getTablePlugin();
-      virtual std::string getTableKeyword();
-      virtual std::string getTablePage();
-      virtual std::string getTableWidget();
-      virtual std::string getTablePluginEventLogger();
-      virtual std::string getTableEventLogger();
-      virtual std::string getTableAcquisition();
-      virtual std::string getTableAcquisitionSummary();
-      virtual std::string getTableRule();
-      virtual std::string getTableRecipient();
-      virtual std::string getTableRecipientField();
-      virtual void getTableAcquisitionIndexes(std::vector<std::string> & indexScripts);
-      // [END] ITableCreationScriptProvider implementation
-   };
- 
-} //namespace sqlite
+         // ITableCreationScriptProvider implementation
+         std::string getTableConfiguration() override;
+         std::string getTableDevice() override;
+         std::string getTablePlugin() override;
+         std::string getTableKeyword() override;
+         std::string getTablePage() override;
+         std::string getTableWidget() override;
+         std::string getTablePluginEventLogger() override;
+         std::string getTableEventLogger() override;
+         std::string getTableAcquisition() override;
+         std::string getTableAcquisitionSummary() override;
+         std::string getTableRule() override;
+         std::string getTableRecipient() override;
+         std::string getTableRecipientField() override;
+         std::string getTableSerialPort() override;
+         void getTableAcquisitionIndexes(std::vector<std::string>& indexScripts) override;
+         // [END] ITableCreationScriptProvider implementation
+      };
+   } //namespace sqlite
 } //namespace database 

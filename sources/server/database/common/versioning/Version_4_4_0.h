@@ -10,7 +10,7 @@ namespace database
       namespace versioning
       {
          //
-         /// \brief Database version 4.3.0 update manager
+         /// \brief Database update manager
          //
          class CVersion_4_4_0 : public CVersion_4_3_0
          {
