@@ -5,14 +5,6 @@ namespace database
 {
    namespace pgsql
    {
-      CPgsqlTableCreationScriptProvider::CPgsqlTableCreationScriptProvider()
-      {
-      }
-
-      CPgsqlTableCreationScriptProvider::~CPgsqlTableCreationScriptProvider()
-      {
-      }
-
       std::string CPgsqlTableCreationScriptProvider::getTableConfiguration()
       {
          return " CREATE TABLE Configuration                            \
@@ -171,6 +163,18 @@ namespace database
                   fieldName TEXT NOT NULL,                           \
                   value TEXT,                                        \
                   PRIMARY KEY (idRecipient, pluginType, fieldName))";
+      }
+
+      std::string CPgsqlTableCreationScriptProvider::getTableSerialPort()
+      {
+         return
+            "CREATE TABLE SerialPort                                 \
+               (                                                     \
+                  id SERIAL NOT NULL PRIMARY KEY,                    \
+                  adapterKind TEXT NOT NULL DEFAULT 'Physical',      \
+                  adapterDescription TEXT,                           \
+                  LastKnownConnectionPath TEXT NOT NULL              \
+               )";
       }
 
       void CPgsqlTableCreationScriptProvider::getTableAcquisitionIndexes(std::vector<std::string>& indexScripts)

@@ -10,15 +10,8 @@ namespace database
       class CPgsqlTableCreationScriptProvider : public ITableCreationScriptProvider
       {
       public:
-         //--------------------------------------------------------------
-         /// \brief       Constructor
-         //--------------------------------------------------------------
-         CPgsqlTableCreationScriptProvider();
-
-         //--------------------------------------------------------------
-         /// \brief       Destructor
-         //--------------------------------------------------------------
-         virtual ~CPgsqlTableCreationScriptProvider();
+         CPgsqlTableCreationScriptProvider() = default;
+         virtual ~CPgsqlTableCreationScriptProvider() = default;
 
          // ITableCreationScriptProvider implementation
          std::string getTableConfiguration() override;
@@ -34,6 +27,7 @@ namespace database
          std::string getTableRule() override;
          std::string getTableRecipient() override;
          std::string getTableRecipientField() override;
+         std::string getTableSerialPort() override;
          void getTableAcquisitionIndexes(std::vector<std::string>& indexScripts) override;
          // [END] ITableCreationScriptProvider implementation
       };
