@@ -23,11 +23,11 @@ namespace web
 
          CSystem::CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
                           boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
-                          boost::shared_ptr<hardware::serial::ISerialPortsLister> serialPortsLister)
+                          boost::shared_ptr<hardware::serial::ISerialPortsManager> serialPortsManager)
             : m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>()),
               m_timezoneDatabase(timezoneDatabase),
               m_usbDevicesLister(usbDevicesLister),
-              m_serialPortsLister(serialPortsLister)
+              m_serialPortsManager(serialPortsManager)
          {
          }
 
@@ -80,7 +80,7 @@ namespace web
          {
             try
             {
-               const auto serialPorts = m_serialPortsLister->listSerialPorts();
+               const auto serialPorts = m_serialPortsManager->listSerialPorts();
 
                for (const auto& port : serialPorts)
                {

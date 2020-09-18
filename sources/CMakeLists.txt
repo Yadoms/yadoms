@@ -459,7 +459,12 @@ set(YADOMS_SRC
    server/i18n/ClientStrings.cpp
 
    server/hardware/serial/ISerialPortsLister.h
+   server/hardware/serial/ISerialPortsManager.h
    server/hardware/serial/SerialPortsListerFactory.h
+   server/hardware/serial/SerialPortsManager.cpp
+   server/hardware/serial/SerialPortsManager.h
+   server/hardware/serial/SerialPortsManagerFactory.cpp
+   server/hardware/serial/SerialPortsManagerFactory.h
   
    server/hardware/usb/DevicesListerFactory.h
    server/hardware/usb/IDevice.h

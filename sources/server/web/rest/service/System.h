@@ -2,7 +2,7 @@
 #include "IRestService.h"
 #include "web/rest/RestDispatcher.h"
 #include "hardware/usb/IDevicesLister.h"
-#include "hardware/serial/ISerialPortsLister.h"
+#include "hardware/serial/ISerialPortsManager.h"
 #include "IRunningInformation.h"
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
 #include "dateTime/TimeZoneDatabase.h"
@@ -19,7 +19,7 @@ namespace web
          public:
             explicit CSystem(boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
                              boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
-                             boost::shared_ptr<hardware::serial::ISerialPortsLister> serialPortsLister);
+                             boost::shared_ptr<hardware::serial::ISerialPortsManager> serialPortsManager);
             virtual ~CSystem() = default;
 
             // IRestService implementation
@@ -62,7 +62,7 @@ namespace web
             static shared::CDataContainer m_virtualDevicesSupportedCapacities;
             boost::shared_ptr<dateTime::CTimeZoneDatabase> m_timezoneDatabase;
             boost::shared_ptr<hardware::usb::IDevicesLister> m_usbDevicesLister;
-            boost::shared_ptr<hardware::serial::ISerialPortsLister> m_serialPortsLister;
+            boost::shared_ptr<hardware::serial::ISerialPortsManager> m_serialPortsManager;
          };
       } //namespace service
    } //namespace rest
