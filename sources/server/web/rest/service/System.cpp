@@ -82,13 +82,12 @@ namespace web
             {
                const auto serialPorts = m_serialPortsLister->listSerialPorts();
 
-               YADOMS_LOG(debug) << "Existing COM ports :";
                for (const auto& port : serialPorts)
                {
-                  YADOMS_LOG(debug) << "  - "
-                     << " connectionPath=" << std::string(port->LastKnownConnectionPath)
-                     << ", description=" << std::string(port->AdapterDescription)
-                     << ", type=" << port->AdapterKind;
+                  YADOMS_LOG(debug) << "Found serial port : "
+                     << " connectionPath=\"" << std::string(port->LastKnownConnectionPath)
+                     << "\", description=\"" << std::string(port->AdapterDescription)
+                     << "\", type=" << std::string(port->AdapterKind());
                }
 
                shared::CDataContainer result;
@@ -118,10 +117,9 @@ namespace web
                const auto request = shared::CDataContainer::make(listUsbDeviceRequest);
 
                auto existingDevices = m_usbDevicesLister->listUsbDevices();
-               YADOMS_LOG(debug) << "USB existing devices :";
                for (const auto& device : existingDevices)
                {
-                  YADOMS_LOG(debug) << "  - "
+                  YADOMS_LOG(debug) << "Found USB device : "
                      << "vid=" << device->vendorId()
                      << ", pid=" << device->productId()
                      << ", name=" << device->yadomsFriendlyName()
