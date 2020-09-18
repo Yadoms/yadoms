@@ -6,10 +6,8 @@ namespace hardware
 {
    namespace serial
    {
-      boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSerialPorts()
+      std::vector<boost::shared_ptr<database::entities::CSerialPort>> CSerialPortsLister::listSerialPorts()
       {
-         auto serialPorts = boost::make_shared<SerialPortsMap>();
-
          HKEY serialCommKey;
          if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
                           "HARDWARE\\DEVICEMAP\\SERIALCOMM",
@@ -18,7 +16,7 @@ namespace hardware
                           &serialCommKey) != ERROR_SUCCESS)
          {
             // Unable to access registry ==> HARDWARE\\DEVICEMAP\\SERIALCOMM key does not exist ==> no serial port on this machine
-            return serialPorts;
+            return std::vector<boost::shared_ptr<database::entities::CSerialPort>>();
          }
 
          DWORD valueIndex = 0;
@@ -29,6 +27,7 @@ namespace hardware
          static const DWORD MountPointMaxLength = 1000; // Should be enough
          BYTE mountPoint[MountPointMaxLength];
          auto mountPointLength = MountPointMaxLength;
+         std::vector<boost::shared_ptr<database::entities::CSerialPort>> serialPorts;
          while (RegEnumValue(serialCommKey,
                              valueIndex,
                              serialPortName,
@@ -41,15 +40,20 @@ namespace hardware
             if (dataType == REG_SZ)
             {
                // Assure compatibility with serial port numbers > 9
-               auto portName((boost::format("\\\\.\\%1%") % reinterpret_cast<char*>(mountPoint)).str());
+               const auto portName((boost::format("\\\\.\\%1%") % reinterpret_cast<char*>(mountPoint)).str());
 
                //ex
-               //portname : COM1
+               //portName : COM1
                //serialPortName : \Device\Serial0
                //=> friendlyName : COM1 (\Device\Serial0)
                const auto friendlyName(
                   (boost::format("%1% (%2%)") % reinterpret_cast<char*>(mountPoint) % serialPortName).str());
-               (*serialPorts)[portName] = friendlyName;
+
+               auto port = boost::make_shared<database::entities::CSerialPort>();
+               port->AdapterKind = database::entities::ESerialPortAdapterKind::kPhysical; //TODO à corriger
+               port->AdapterDescription = friendlyName;
+               port->LastKnownConnectionPath = portName;
+               serialPorts.emplace_back(port);
             }
 
             // Increment index of key, and reset string length for next iteration

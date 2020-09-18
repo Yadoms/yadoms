@@ -83,17 +83,18 @@ namespace web
                const auto serialPorts = m_serialPortsLister->listSerialPorts();
 
                YADOMS_LOG(debug) << "Existing COM ports :";
-               for (const auto& port : *serialPorts)
+               for (const auto& port : serialPorts)
                {
                   YADOMS_LOG(debug) << "  - "
-                     << " key=" << port.first
-                     << ", value=" << port.second;
+                     << " connectionPath=" << std::string(port->LastKnownConnectionPath)
+                     << ", description=" << std::string(port->AdapterDescription)
+                     << ", type=" << port->AdapterKind;
                }
 
                shared::CDataContainer result;
-               for (const auto& serialPort : *serialPorts)
+               for (const auto& serialPort : serialPorts)
                {
-                  result.set(serialPort.first, serialPort.second, 0x00);
+                  result.set(serialPort->LastKnownConnectionPath, serialPort->AdapterDescription, 0x00);
                   //in case of key contains a dot, just ensure the full key is taken into account
                }
 

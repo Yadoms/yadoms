@@ -12,7 +12,7 @@ namespace hardware
          virtual ~CSerialPortsLister() = default;
 
          // ISerialPortsLister Implementation
-         boost::shared_ptr<const SerialPortsMap> listSerialPorts() override;
+         std::vector<boost::shared_ptr<database::entities::CSerialPort>> listSerialPorts() override;
          // [END] ISerialPortsLister Implementation
       };
    } // namespace serial

@@ -7,11 +7,11 @@ namespace hardware
 {
    namespace serial
    {
-      boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSerialPorts()
+      std::vector<boost::shared_ptr<database::entities::CSerialPort>> CSerialPortsLister::listSerialPorts()
       {
          boost::filesystem::path ttyDir("/sys/class/tty");
 
-         auto serialPorts(boost::make_shared<SerialPortsMap>());
+         std::vector<boost::shared_ptr<database::entities::CSerialPort>> serialPorts;
 
          if (boost::filesystem::exists(ttyDir) && boost::filesystem::is_directory(ttyDir))
          {
@@ -22,7 +22,12 @@ namespace hardware
                {
                   std::string friendlyName((*dirIter).path().leaf().string());            // friendlyName is something like "tty0"
                   std::string portName((boost::format("/dev/%1%") % friendlyName).str()); // portName is "/dev/tty0"
-                  (*serialPorts)[portName]=friendlyName;
+
+                  auto port = boost::make_shared<database::entities::CSerialPort>();
+                  port->AdapterKind = database::entities::ESerialPortAdapterKind::kPhysical; //TODO à corriger
+                  port->AdapterDescription = friendlyName;
+                  port->LastKnownConnectionPath = portName;
+						serialPorts.emplace_back(port);
                }
             }
          }
