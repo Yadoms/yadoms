@@ -51,16 +51,8 @@ namespace hardware
 
          std::vector<boost::shared_ptr<IDevice>> CLsusbDevicesLister::listUsbDevicesForClass(EDeviceClass deviceClass)
          {
-            std::vector<GUID> guids;
-            switch (deviceClass)
-            {
-            case kSerialPorts:
-               // TODO
-               break;
-            default:
-               throw std::runtime_error("Unknown device class " + std::to_string(deviceClass));
-            }
-            return listUsbDevices(guids);
+            //TODO
+            return std::vector<boost::shared_ptr<IDevice>>();
          }
       }
    } // namespace usb

@@ -82,6 +82,14 @@ namespace web
             {
                const auto serialPorts = m_serialPortsLister->listSerialPorts();
 
+               YADOMS_LOG(debug) << "Existing COM ports :";
+               for (const auto& port : *serialPorts)
+               {
+                  YADOMS_LOG(debug) << "  - "
+                     << " key=" << port.first
+                     << ", value=" << port.second;
+               }
+
                shared::CDataContainer result;
                for (const auto& serialPort : *serialPorts)
                {

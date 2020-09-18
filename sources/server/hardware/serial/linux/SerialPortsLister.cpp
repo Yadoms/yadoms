@@ -7,7 +7,7 @@ namespace hardware
 {
    namespace serial
    {
-      boost::shared_ptr<CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSerialPorts()
+      boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSerialPorts()
       {
          boost::filesystem::path ttyDir("/sys/class/tty");
 

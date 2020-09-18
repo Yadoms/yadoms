@@ -24,7 +24,7 @@ namespace hardware
 {
 	namespace serial
 	{
-      boost::shared_ptr<CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSerialPorts()
+      boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSerialPorts()
       {         
 	      io_iterator_t matchingServices;
 	      mach_port_t         masterPort;
