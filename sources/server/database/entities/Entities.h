@@ -192,8 +192,9 @@ namespace database
 
 
       DECLARE_ENUM_HEADER(ESerialPortAdapterKind,
+                          ((Unknown))
                           ((Physical))
-                          ((Usb))
+                          ((UsbAdapter))
       )
 
       DECLARE_ENTITY_CLASS_HEADER(SerialPort,

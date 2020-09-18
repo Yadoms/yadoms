@@ -64,7 +64,7 @@ namespace hardware
 						&& CFStringGetCString((const __CFString*)deviceFriendlyAsCFString, deviceFriendly, 1024, kCFStringEncodingASCII))
 					{
 						auto port = boost::make_shared<database::entities::CSerialPort>();
-					   port->AdapterKind = database::entities::ESerialPortAdapterKind::kPhysical; //TODO à corriger
+					   port->AdapterKind = database::entities::ESerialPortAdapterKind::kUnknown;
 					   port->AdapterDescription = std::string(deviceFriendly);
 					   port->LastKnownConnectionPath = std::string(deviceFilePath);
 						serialPorts.emplace_back(port);

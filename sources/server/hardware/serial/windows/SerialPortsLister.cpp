@@ -50,7 +50,7 @@ namespace hardware
                   (boost::format("%1% (%2%)") % reinterpret_cast<char*>(mountPoint) % serialPortName).str());
 
                auto port = boost::make_shared<database::entities::CSerialPort>();
-               port->AdapterKind = database::entities::ESerialPortAdapterKind::kPhysical; //TODO à corriger
+               port->AdapterKind = database::entities::ESerialPortAdapterKind::kUnknown;
                port->AdapterDescription = friendlyName;
                port->LastKnownConnectionPath = portName;
                serialPorts.emplace_back(port);

@@ -213,7 +213,7 @@ namespace hardware
             {
                if (std::find(filterByClasses.begin(),
                              filterByClasses.end(),
-                             deviceInfoData.ClassGuid) != filterByClasses.end())
+                             deviceInfoData.ClassGuid) == filterByClasses.end())
                   continue;
             }
 

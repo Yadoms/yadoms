@@ -24,7 +24,7 @@ namespace hardware
                   std::string portName((boost::format("/dev/%1%") % friendlyName).str()); // portName is "/dev/tty0"
 
                   auto port = boost::make_shared<database::entities::CSerialPort>();
-                  port->AdapterKind = database::entities::ESerialPortAdapterKind::kPhysical; //TODO à corriger
+                  port->AdapterKind = database::entities::ESerialPortAdapterKind::kUnknown;
                   port->AdapterDescription = friendlyName;
                   port->LastKnownConnectionPath = portName;
 						serialPorts.emplace_back(port);

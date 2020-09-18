@@ -213,8 +213,9 @@ namespace database
       )
 
       DECLARE_ENUM_IMPLEMENTATION(ESerialPortAdapterKind,
+                                  ((Unknown))
                                   ((Physical))
-                                  ((Usb))
+                                  ((UsbAdapter))
       )
 
       DECLARE_ENTITY_CLASS_IMPLEMENTATION(

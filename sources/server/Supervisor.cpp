@@ -132,6 +132,9 @@ void CSupervisor::run()
       const auto scriptInterpretersPath = m_pathProvider->scriptInterpretersPath().string();
       const auto allowExternalAccess = startupOptions->getWebServerAllowExternalAccess();
 
+      auto usbDeviceLister = hardware::usb::CDevicesListerFactory::createDeviceLister();
+      auto serialPortsManager = hardware::serial::CSerialPortsManagerFactory::createSerialPortsManager(usbDeviceLister);
+
       auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp, webServerUseSSL, webServerPort,
                                                                securedWebServerPort, webServerPath,
                                                                "/rest/", "/ws", allowExternalAccess));
@@ -163,10 +166,9 @@ void CSupervisor::run()
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CEventLogger>(dal->getEventLogger()));
       webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CSystem>(
-            timezoneDatabase,
-            hardware::usb::CDevicesListerFactory::createDeviceLister(),
-            hardware::serial::CSerialPortsManagerFactory::createSerialPortsManager()));
+         boost::make_shared<web::rest::service::CSystem>(timezoneDatabase,
+                                                         usbDeviceLister,
+                                                         serialPortsManager));
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CAcquisition>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(
