@@ -7,47 +7,61 @@
 
 namespace hardware
 {
-namespace usb
-{
-std::vector<boost::shared_ptr<IDevice>> CLsusbDevicesLister::listUsbDevices()
-{
-   try
+   namespace usb
    {
-      CLsusbCall libusbCall;
-      const auto lines = libusbCall.execute();
-
-      std::vector<boost::shared_ptr<IDevice>> devicesList;
-      for (const auto &line : lines)
+      std::vector<boost::shared_ptr<IDevice>> CLsusbDevicesLister::listUsbDevices()
       {
          try
          {
-            std::smatch matches;
-            if (!std::regex_search(line,
-                                   matches,
-                                   std::regex(std::string("^Bus.*: ID ([[:xdigit:]]{4}):([[:xdigit:]]{4}) (.*)$"))) ||
-                matches.size() != 4)
-               continue;
+            CLsusbCall libusbCall;
+            const auto lines = libusbCall.execute();
 
-            const auto vid = std::stoi(std::string(matches[1].first, matches[1].second), nullptr, 16);
-            const auto pid = std::stoi(std::string(matches[2].first, matches[2].second), nullptr, 16);
-            const auto name = matches[3];
+            std::vector<boost::shared_ptr<IDevice>> devicesList;
+            for (const auto &line : lines)
+            {
+               try
+               {
+                  std::smatch matches;
+                  if (!std::regex_search(line,
+                                         matches,
+                                         std::regex(std::string("^Bus.*: ID ([[:xdigit:]]{4}):([[:xdigit:]]{4}) (.*)$"))) ||
+                      matches.size() != 4)
+                     continue;
 
-            devicesList.emplace_back(boost::make_shared<CLsusbDevice>(vid,
-                                                                      pid,
-                                                                      name));
+                  const auto vid = std::stoi(std::string(matches[1].first, matches[1].second), nullptr, 16);
+                  const auto pid = std::stoi(std::string(matches[2].first, matches[2].second), nullptr, 16);
+                  const auto name = matches[3];
+
+                  devicesList.emplace_back(boost::make_shared<CLsusbDevice>(vid,
+                                                                            pid,
+                                                                            name));
+               }
+               catch (const std::exception &e)
+               {
+                  YADOMS_LOG(warning) << "Unable to access device " << e.what();
+               }
+            }
+            return devicesList;
          }
          catch (const std::exception &e)
          {
-            YADOMS_LOG(warning) << "Unable to access device " << e.what();
+            YADOMS_LOG(warning) << "Unable to list USB devices";
+            return std::vector<boost::shared_ptr<IDevice>>();
+         }
+
+         std::vector<boost::shared_ptr<IDevice>> CLsusbDevicesLister::listUsbDevicesForClass(EDeviceClass deviceClass)
+         {
+            std::vector<GUID> guids;
+            switch (deviceClass)
+            {
+            case kSerialPorts:
+               // TODO
+               break;
+            default:
+               throw std::runtime_error("Unknown device class " + std::to_string(deviceClass));
+            }
+            return listUsbDevices(guids);
          }
       }
-      return devicesList;
-   }
-   catch (const std::exception &e)
-   {
-      YADOMS_LOG(warning) << "Unable to list USB devices";
-      return std::vector<boost::shared_ptr<IDevice>>();
-   }
-}
-} // namespace usb
+   } // namespace usb
 } // namespace hardware

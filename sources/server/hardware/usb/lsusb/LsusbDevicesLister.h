@@ -12,6 +12,7 @@ namespace hardware
 
          // IDevicesLister implementation
          std::vector<boost::shared_ptr<IDevice>> listUsbDevices() override;
+         std::vector<boost::shared_ptr<IDevice>> listUsbDevicesForClass(EDeviceClass deviceClass) override;
          // [END] IDevicesLister implementation
       };
    } // namespace usb
