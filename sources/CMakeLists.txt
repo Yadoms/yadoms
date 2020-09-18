@@ -457,6 +457,9 @@ set(YADOMS_SRC
   
    server/i18n/ClientStrings.h
    server/i18n/ClientStrings.cpp
+
+   server/hardware/serial/ISerialPortsLister.h
+   server/hardware/serial/SerialPortsListerFactory.h
   
    server/hardware/usb/DevicesListerFactory.h
    server/hardware/usb/IDevice.h
@@ -716,6 +719,7 @@ source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\dateTime  server/dateTime/*.*)
 source_group(server\\i18n  server/i18n/*.*)
+source_group(server\\hardware\\serial  server/hardware/serial/*.*)
 source_group(server\\hardware\\usb  server/hardware/usb/*.*)
 source_group(server\\hardware\\usb\\lsusb  server/hardware/usb/lsusb/*.*)
 source_group(server\\hardware\\usb\\winapi  server/hardware/usb/winapi/*.*)
@@ -759,6 +763,7 @@ IF(WIN32)
       server/tools/windows/tools/OperatingSystem.cpp
       server/hardware/serial/windows/SerialPortsLister.h
       server/hardware/serial/windows/SerialPortsLister.cpp
+      server/hardware/serial/windows/SerialPortsListerFactory.cpp
       server/hardware/usb/winapi/DevicesListerFactory.cpp
       server/hardware/usb/winapi/WinapiDevice.h
       server/hardware/usb/winapi/WinapiDevice.cpp
@@ -772,6 +777,7 @@ ELSEIF(APPLE)
       server/tools/mac/tools/OperatingSystem.cpp
       server/hardware/serial/mac/SerialPortsLister.h
       server/hardware/serial/mac/SerialPortsLister.cpp
+      server/hardware/serial/mac/SerialPortsListerFactory.cpp
       server/hardware/usb/lsusb/DevicesListerFactory.cpp
       server/hardware/usb/lsusb/LsusbCall.h
       server/hardware/usb/lsusb/LsusbCall.cpp
@@ -787,6 +793,7 @@ ELSE()
       server/tools/linux/tools/OperatingSystem.cpp
       server/hardware/serial/linux/SerialPortsLister.h
       server/hardware/serial/linux/SerialPortsLister.cpp
+      server/hardware/serial/linux/SerialPortsListerFactory.cpp
       server/hardware/usb/lsusb/DevicesListerFactory.cpp
       server/hardware/usb/lsusb/LsusbCall.h
       server/hardware/usb/lsusb/LsusbCall.cpp

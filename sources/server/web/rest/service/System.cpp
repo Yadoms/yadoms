@@ -22,19 +22,23 @@ namespace web
          shared::CDataContainer CSystem::m_virtualDevicesSupportedCapacities;
 
          CSystem::CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
-                          boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister)
+                          boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
+                          boost::shared_ptr<hardware::serial::ISerialPortsLister> serialPortsLister)
             : m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>()),
               m_timezoneDatabase(timezoneDatabase),
-              m_usbDevicesLister(usbDevicesLister)
+              m_usbDevicesLister(usbDevicesLister),
+              m_serialPortsLister(serialPortsLister)
          {
          }
 
          void CSystem::configureDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBinding);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"),
+                                        CSystem::getSystemInformation);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"), CSystem::getVirtualDevicesSupportedCapacities);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"),
+                                        CSystem::getVirtualDevicesSupportedCapacities);
          }
 
          const std::string& CSystem::getRestKeyword()
@@ -42,8 +46,9 @@ namespace web
             return m_restKeyword;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getBinding(const std::vector<std::string>& parameters,
-                                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getBinding(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             if (parameters.size() > 2)
             {
@@ -75,7 +80,7 @@ namespace web
          {
             try
             {
-               const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
+               const auto serialPorts = m_serialPortsLister->listSerialPorts();
 
                shared::CDataContainer result;
                for (const auto& serialPort : *serialPorts)
@@ -96,7 +101,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(const std::string& listUsbDeviceRequest) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(
+            const std::string& listUsbDeviceRequest) const
          {
             try
             {
@@ -126,7 +132,8 @@ namespace web
 
                // Filter USB devices by request content
 
-               const auto requestedDevices = request->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("oneOf");
+               const auto requestedDevices = request->get<std::vector<boost::shared_ptr<shared::CDataContainer>>
+               >("oneOf");
                shared::CDataContainer result;
                YADOMS_LOG(debug) << "USB requested devices :";
                for (const auto& requestedDevice : requestedDevices)
@@ -141,7 +148,8 @@ namespace web
                         && existingDevice->productId() == requestedDevice->get<int>("productId"))
                      {
                         //in case of key contains a dot, just ensure the full key is taken into account
-                        result.set(existingDevice->nativeConnectionString(), existingDevice->yadomsFriendlyName(), 0x00);
+                        result.set(existingDevice->nativeConnectionString(), existingDevice->yadomsFriendlyName(),
+                                   0x00);
                      }
                   }
                }
@@ -158,7 +166,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(bool includeLoopback) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(
+            bool includeLoopback) const
          {
             try
             {
@@ -170,8 +179,8 @@ namespace web
                      continue;
 
                   result.set(nit.name(),
-                              (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
-                              0x00); //in case of key contains a dot, just ensure the full key is taken into account
+                             (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
+                             0x00); //in case of key contains a dot, just ensure the full key is taken into account
                }
                return CResult::GenerateSuccess(result);
             }
@@ -185,8 +194,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSystemInformation(const std::vector<std::string>& parameters,
-                                                                                                   const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSystemInformation(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -212,8 +222,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getCurrentTime(const std::vector<std::string>& parameters,
-                                                                                             const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getCurrentTime(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -251,7 +262,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::platformIs(const std::string& refPlatform) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::platformIs(
+            const std::string& refPlatform) const
          {
             try
             {
@@ -281,8 +293,12 @@ namespace web
             if (!acceptedMeasureTypes.empty())
             {
                std::vector<std::string> strAcceptedMeasureTypes;
-               std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(), std::back_inserter(strAcceptedMeasureTypes),
-                              [](const auto& acceptedMeasureType) -> std::string { return acceptedMeasureType.toString(); });
+               std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(),
+                              std::back_inserter(strAcceptedMeasureTypes),
+                              [](const auto& acceptedMeasureType) -> std::string
+                              {
+                                 return acceptedMeasureType.toString();
+                              });
 
                capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
             }

@@ -1,21 +1,19 @@
 #pragma once
+#include "hardware/serial/ISerialPortsLister.h"
 
 namespace hardware
 {
    namespace serial
    {
-      class CSerialPortsLister
+      class CSerialPortsLister : public ISerialPortsLister
       {
       public:
          CSerialPortsLister() = default;
          virtual ~CSerialPortsLister() = default;
 
-          //--------------------------------------------------------------
-          /// \brief			List machine serial ports (all)
-          /// \return       The serial ports names (keys are real name, values are common name or comment ("used by..."))
-          //--------------------------------------------------------------
-          typedef std::map<std::string, std::string> SerialPortsMap;
-          static boost::shared_ptr<SerialPortsMap> listSerialPorts();
+         // ISerialPortsLister Implementation
+         boost::shared_ptr<const SerialPortsMap> listSerialPorts() override;
+         // [END] ISerialPortsLister Implementation
       };
    } // namespace serial
 } // namespace hardware

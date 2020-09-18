@@ -7,6 +7,7 @@
 #include <initguid.h>
 #include <usbiodef.h>
 #include <codecvt>
+#include <winioctl.h>
 
 
 namespace hardware
@@ -158,6 +159,26 @@ namespace hardware
 
       std::vector<boost::shared_ptr<IDevice>> CWinapiDevicesLister::listUsbDevices()
       {
+         return listUsbDevices(std::vector<GUID>());
+      }
+
+      std::vector<boost::shared_ptr<IDevice>> CWinapiDevicesLister::listUsbDevicesForClass(EDeviceClass deviceClass)
+      {
+         std::vector<GUID> guids;
+         switch (deviceClass)
+         {
+         case kSerialPorts:
+            guids.push_back(GUID_DEVINTERFACE_SERENUM_BUS_ENUMERATOR);
+            guids.push_back(GUID_DEVINTERFACE_COMPORT);
+            break;
+         default:
+            throw std::runtime_error("Unknown device class " + std::to_string(deviceClass));
+         }
+         return listUsbDevices(guids);
+      }
+
+      std::vector<boost::shared_ptr<IDevice>> CWinapiDevicesLister::listUsbDevices(std::vector<GUID> filterByClasses) const
+      {
          const auto deviceInfo = SetupDiGetClassDevs(const_cast<LPGUID>(&GUID_DEVINTERFACE_USB_DEVICE),
                                                      nullptr,
                                                      nullptr,
@@ -186,6 +207,15 @@ namespace hardware
             }
 
             index++;
+
+            // Apply filter if defined
+            if (!filterByClasses.empty())
+            {
+               if (std::find(filterByClasses.begin(),
+                             filterByClasses.end(),
+                             deviceInfoData.ClassGuid) != filterByClasses.end())
+                  continue;
+            }
 
             try
             {
@@ -232,7 +262,7 @@ namespace hardware
                boost::regex pattern(
                   R"(\\\\\?\\usb#vid_([0-9a-fA-F]{4})&pid_([0-9a-fA-F]{4})#([[:graph:]]+)#{[0-9a-fA-F-]+})");
                boost::smatch result;
-               if (!boost::regex_search(devicePath, result, pattern))
+               if (!regex_search(devicePath, result, pattern))
                {
                   YADOMS_LOG(trace) << "invalid USB path " << devicePath;
                   continue;
