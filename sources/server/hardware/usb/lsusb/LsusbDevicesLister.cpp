@@ -48,12 +48,12 @@ namespace hardware
             YADOMS_LOG(warning) << "Unable to list USB devices";
             return std::vector<boost::shared_ptr<IDevice>>();
          }
+      }
 
-         std::vector<boost::shared_ptr<IDevice>> CLsusbDevicesLister::listUsbDevicesForClass(EDeviceClass deviceClass)
-         {
-            //TODO
-            return std::vector<boost::shared_ptr<IDevice>>();
-         }
+      std::vector<boost::shared_ptr<IDevice>> CLsusbDevicesLister::listUsbDevicesForClass(EDeviceClass deviceClass)
+      {
+         //TODO
+         return std::vector<boost::shared_ptr<IDevice>>();
       }
    } // namespace usb
 } // namespace hardware
