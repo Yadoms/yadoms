@@ -117,3 +117,30 @@ jobs:
         artifacts: "./builds/package/*"
         token: ${{ secrets.GITHUB_TOKEN }}     
         
+  Windows:
+    name : Generate for Windows
+    runs-on: windows
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Yadoms build script
+      uses: Yadoms/build-yadoms-windows-action@v1.beta1
+      id: yadoms_build_step
+      with:
+          buildImage: yadoms/build_for_windows:latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKERHUB_OAUTH }}
+    - name: Create Release
+      id: create_release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.ref }}
+        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        draft: true
+        prerelease: true
+        allowUpdates: true
+        omitNameDuringUpdate: true
+        replacesArtifacts: true
+        artifacts: "./builds/package/*"
+        token: ${{ secrets.GITHUB_TOKEN }}     
+                
