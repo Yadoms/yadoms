@@ -36,6 +36,7 @@ namespace shared
 
          //--------------------------------------------------------------
          /// \brief	    Set the time point
+         /// \throw std::invalid_argument if provided dateTime value is not valid or not in the future
          /// \param[in] dateTime       date/time when to raise the event, must be in the future
          //--------------------------------------------------------------
          void set(const boost::posix_time::ptime& dateTime);

@@ -116,7 +116,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   forceRefresh = api->getEventHandler().getEventData<bool>();
                }
-               catch (shared::exception::CBadConversion&)
+               catch (std::bad_cast&)
                {
                }
 

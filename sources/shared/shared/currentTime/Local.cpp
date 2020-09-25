@@ -5,10 +5,6 @@ namespace shared
 {
    namespace currentTime
    {
-      Local::~Local()
-      {
-      }
-
       boost::posix_time::ptime Local::now() const
       {
          return boost::posix_time::microsec_clock::local_time();

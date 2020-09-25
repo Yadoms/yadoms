@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Provider.h"
-#include "../exception/NullReference.hpp"
 #include "Local.h"
 
 namespace shared
@@ -9,10 +8,6 @@ namespace shared
    {
       CProvider::CProvider(boost::shared_ptr<ICurrentTime> timeInstance)
          :m_currentTimeInstance(timeInstance)
-      {
-      }
-
-      CProvider::~CProvider()
       {
       }
       
@@ -24,7 +19,7 @@ namespace shared
       boost::posix_time::ptime CProvider::now()
       {
          if (!m_currentTimeInstance)
-            throw exception::CNullReference("Current time");
+            throw std::runtime_error("Current time provider not set");
 
          return m_currentTimeInstance->now();
       }

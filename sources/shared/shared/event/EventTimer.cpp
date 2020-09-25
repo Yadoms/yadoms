@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "../exception/InvalidParameter.hpp"
 #include "../currentTime/Provider.h"
 #include "EventTimer.h"
 
@@ -46,7 +45,7 @@ namespace shared
       {
          // Use provided period if available, initialize period else
          if (period == boost::date_time::not_a_date_time && m_period == boost::date_time::not_a_date_time)
-            throw exception::CInvalidParameter("no period value was provided to start timer");
+            throw std::invalid_argument("no period value was provided to start timer");
          const auto& periodToUse = (period != boost::date_time::not_a_date_time) ? period : m_period;
 
          // If periodic (and not the first time), next start point begins from last start point

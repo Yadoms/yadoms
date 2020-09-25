@@ -3,6 +3,7 @@
 #include <shared/Log.h>
 #include <shared/communication/Buffer.hpp>
 #include <shared/communication/AsyncPortConnectionNotification.h>
+#include <shared/exception/Exception.hpp>
 
 
 const unsigned char CFT2xxSerialPort::MaskPort1 = 0x11;

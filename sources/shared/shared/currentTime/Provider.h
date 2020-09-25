@@ -20,7 +20,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	   Destructor
          //--------------------------------------------------------------
-         virtual ~CProvider();
+         virtual ~CProvider() = default;
 
          //--------------------------------------------------------------
          /// \brief	   Set time provider instance

@@ -2,9 +2,7 @@
 #include "XplHelper.h"
 #include "XplException.h"
 #include <shared/NetworkHelper.h>
-#include <shared/exception/BadConversion.hpp>
 #include <shared/exception/NotImplemented.hpp>
-#include <iostream>
 #include <boost/regex.hpp>
 
 namespace xplcore
@@ -82,7 +80,7 @@ namespace xplcore
          xplElementName.resize(16);
 
       if (!matchRules(kInstanceId, xplElementName))
-         throw shared::exception::CBadConversion(instanceName, "XPL element");
+         throw std::runtime_error("getEventData : Bad conversion of " + instanceName + " to XPL element");
 
       return xplElementName;
    }
