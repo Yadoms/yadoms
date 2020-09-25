@@ -111,7 +111,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             try{
                forceRefresh = api->getEventHandler().getEventData<bool>();
             }
-            catch (shared::exception::CBadConversion&)
+            catch (std::exception&)
             {}
 
             if (m_ioManager->getWaitingEquipment() != 0)

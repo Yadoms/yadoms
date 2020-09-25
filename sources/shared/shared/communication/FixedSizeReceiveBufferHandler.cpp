@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "FixedSizeReceiveBufferHandler.h"
+#include "shared/exception/Exception.hpp"
 
 
 namespace shared
@@ -15,10 +16,6 @@ namespace shared
       {
          if (m_messageSize < 1)
             throw exception::CException("Invalid message size");
-      }
-
-      CFixedSizeReceiveBufferHandler::~CFixedSizeReceiveBufferHandler()
-      {
       }
 
       void CFixedSizeReceiveBufferHandler::push(const CByteBuffer& buffer)

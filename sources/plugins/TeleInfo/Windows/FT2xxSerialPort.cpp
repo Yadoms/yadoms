@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "FT2xxSerialPort.h"
 #include <shared/Log.h>
+#include <shared/exception/Exception.hpp>
 #include <shared/communication/Buffer.hpp>
 #include <shared/communication/AsyncPortConnectionNotification.h>
 

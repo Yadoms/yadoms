@@ -10,9 +10,7 @@ namespace shared
       class ICurrentTime
       {
       public:
-         virtual ~ICurrentTime()
-         {
-         }
+         virtual ~ICurrentTime() = default;
 
          //--------------------------------------------------------------
          /// \brief	   Get the current time

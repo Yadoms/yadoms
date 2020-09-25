@@ -30,7 +30,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	                           Destructor
          //--------------------------------------------------------------
-         virtual ~CFixedSizeReceiveBufferHandler();
+         virtual ~CFixedSizeReceiveBufferHandler() = default;
 
          // IReceiveBufferHandler implementation
          void push(const CByteBuffer& buffer) override;

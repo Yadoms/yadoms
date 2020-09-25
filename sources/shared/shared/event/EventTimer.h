@@ -45,6 +45,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    Start the timer
          /// \param[in] period         Timer period. If not provided, use the period provided at construction
+         /// \throw std::invalid_argument if no period was found (not provided at construction, nor provided here)
          //--------------------------------------------------------------
          void start(const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time);
 

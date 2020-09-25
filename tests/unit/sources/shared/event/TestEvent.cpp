@@ -267,7 +267,7 @@ BOOST_AUTO_TEST_CASE(EventWithBadData)
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), idEvent);
 
    BOOST_CHECK(!evtHandler.isEventType<CEventData>());
-   BOOST_REQUIRE_THROW(evtHandler.getEventData<CEventData>(), shared::exception::CBadConversion);
+   BOOST_REQUIRE_THROW(evtHandler.getEventData<CEventData>(), std::bad_cast);
 
    BOOST_CHECK(evtHandler.isEventType<std::string>());
    BOOST_REQUIRE_NO_THROW(evtHandler.getEventData<std::string>());
@@ -279,7 +279,7 @@ BOOST_AUTO_TEST_CASE(EventWithBadData)
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), idEvent);
 
    BOOST_CHECK(!evtHandler.isEventType<CEventData>());
-   BOOST_REQUIRE_THROW(evtHandler.getEventData<CEventData>(), shared::exception::CBadConversion);
+   BOOST_REQUIRE_THROW(evtHandler.getEventData<CEventData>(), std::bad_cast);
 }
 
 //--------------------------------------------------------------
@@ -322,12 +322,12 @@ BOOST_AUTO_TEST_CASE(EventIdGetter)
 {
    shared::event::CEventHandler evtHandler;
 
-   BOOST_REQUIRE_THROW(evtHandler.getEventId(), shared::exception::CNullReference);
+   BOOST_REQUIRE_THROW(evtHandler.getEventId(), std::runtime_error);
 
    evtHandler.postEvent(idEvent);
    evtHandler.postEvent(idEvent + 1, CEventData(42, "Yadoms test"));
 
-   BOOST_REQUIRE_THROW(evtHandler.getEventId(), shared::exception::CNullReference);
+   BOOST_REQUIRE_THROW(evtHandler.getEventId(), std::runtime_error);
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), idEvent);
    BOOST_CHECK_EQUAL(evtHandler.getEventId(), idEvent);
@@ -337,7 +337,7 @@ BOOST_AUTO_TEST_CASE(EventIdGetter)
    BOOST_CHECK_EQUAL(evtHandler.getEventId(), idEvent + 1); // Can be called several times
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
-   BOOST_REQUIRE_THROW(evtHandler.getEventId(), shared::exception::CNullReference);
+   BOOST_REQUIRE_THROW(evtHandler.getEventId(), std::runtime_error);
 }
 
 //--------------------------------------------------------------

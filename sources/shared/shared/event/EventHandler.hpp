@@ -3,9 +3,6 @@
 #include "EventTimer.h"
 #include "EventTimePoint.h"
 #include <shared/currentTime/Provider.h>
-#include <shared/exception/BadConversion.hpp>
-#include <shared/exception/NullReference.hpp>
-#include <shared/exception/OutOfRange.hpp>
 
 namespace shared
 {
@@ -155,13 +152,13 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    Get the last event ID
          /// \return     event ID of the last event
-         /// \throw      exception::CNullReference if no event is available
+         /// \throw      std::runtime_error if no event is available
          /// \note       Must be called after waitForEvents
          //--------------------------------------------------------------
          int getEventId() const
          {
             if (!m_lastEvent)
-               throw exception::CNullReference("getEventId, no event available");
+               throw std::runtime_error("getEventId, no event available");
 
             return m_lastEvent->getId();
          }
@@ -170,14 +167,14 @@ namespace shared
          /// \brief	    Check if the last event is the type
          /// \template DataType  Type of the data to check
          /// \return     true if event data is type of DataType
-         /// \throw      exception::CNullReference if no event data is available
+         /// \throw      std::runtime_error if no event data is available
          /// \note       Must be called after waitForEvents
          //--------------------------------------------------------------
          template <typename DataType>
          bool isEventType() const
          {
             if (!m_lastEvent)
-               throw exception::CNullReference("isEventType, no event available");
+               throw std::runtime_error("isEventType, no event available");
 
             try
             {
@@ -194,27 +191,18 @@ namespace shared
          /// \brief	    Get data from last event
          /// \template DataType  Type of the data in the event
          /// \return     Copy of event data
-         /// \throw      exception::CBadConversion if event data is not of correct type
-         /// \throw      exception::CNullReference if no event data is available
+         /// \throw      std::runtime_error if event data is not of correct type or no event data is available
+         /// \throw      std::bad_cast if event data is not of correct type
          /// \note       Must be called after waitForEvents
          //--------------------------------------------------------------
          template <typename DataType>
          DataType getEventData() const
          {
             if (!m_lastEvent)
-               throw exception::CNullReference("getEventData, no event available");
+               throw std::runtime_error("getEventData, no event available");
 
-            try
-            {
-               CEvent<DataType> evt = dynamic_cast<CEvent<DataType>&>(*m_lastEvent);
-               return evt.getData();
-            }
-            catch (std::bad_cast& bc)
-            {
-               std::string s = "getEventData : ";
-               s += bc.what();
-               throw exception::CBadConversion(s, boost::lexical_cast<std::string>(m_lastEvent->getId()));
-            }
+            CEvent<DataType> evt = dynamic_cast<CEvent<DataType>&>(*m_lastEvent);
+            return evt.getData();
          }
 
          //--------------------------------------------------------------
@@ -230,10 +218,11 @@ namespace shared
 
          //--------------------------------------------------------------
          /// \brief	    Create timer associated with this event handler
-         /// \param[in] timerEventId   Id of the timer event
+         /// \param[in] timerEventId   Id of the timer event (must be >= kUserFirstId)
          /// \param[in] periodicity    Periodic or one-shot timer
          /// \param[in] period         Timer period. If provided, timer starts immediately, else user must call start method
          /// \return     the created timer (see note)
+         /// \throw      std::invalid_argument if timerEventId uses reserved values
          /// \note       Usually, caller don't need to get the timer object as it is owned (and will be destroyed) by the event handler.
          //              Keep a reference on the timer object can be useful if you want to re-use it or differ start. In this case,
          //              the event handler won't remove it from it's time events list.
@@ -243,7 +232,8 @@ namespace shared
                                                     const boost::posix_time::time_duration& period = boost::date_time::
                                                        not_a_date_time)
          {
-            BOOST_ASSERT(timerEventId >= kUserFirstId);
+            if (timerEventId < kUserFirstId)
+               throw std::invalid_argument("CEventHandler::createTimer : invalid ID " + std::to_string(timerEventId));
 
             auto timer(boost::make_shared<CEventTimer>(timerEventId,
                                                        periodicity,
@@ -255,10 +245,10 @@ namespace shared
 
          //--------------------------------------------------------------
          /// \brief	    Create time point event associated with this event handler
-         /// \param[in] timePointEventId  Id of the time point event
+         /// \param[in] timePointEventId  Id of the time point event (must be >= kUserFirstId)
          /// \param[in] dateTime          date/time when to raise the event, must be in the future
          /// \return     the created time point (see note)
-         /// \throw      exception::out_of_range if dateTime not in the future
+         /// \throw      std::invalid_argument if timePointEventId uses reserved values or dateTime not in the future
          /// \note       - Usually, caller don't need to get the time point object as it is owned (and will be destroyed) by the event handler.
          //              Keep a reference on the time point object can be useful if you want to re-use it or differ initialization. In this case,
          //              the event handler won't remove it from it's time events list.
@@ -268,9 +258,10 @@ namespace shared
          boost::shared_ptr<CEventTimePoint> createTimePoint(int timePointEventId,
                                                             const boost::posix_time::ptime& dateTime)
          {
-            BOOST_ASSERT(timePointEventId >= kUserFirstId);
+            if (timePointEventId < kUserFirstId)
+               throw std::invalid_argument("CEventHandler::createTimePoint : invalid ID " + std::to_string(timePointEventId));
             if (dateTime <= currentTime::Provider().now())
-               throw exception::COutOfRange("CEventHandler::createTimePoint : timePoint not in the future, ignored");
+               throw std::invalid_argument("CEventHandler::createTimePoint : timePoint not in the future");
 
             auto timePoint(boost::make_shared<CEventTimePoint>(timePointEventId,
                                                                dateTime));
@@ -298,7 +289,8 @@ namespace shared
          //--------------------------------------------------------------
          void pushEvent(boost::shared_ptr<CEventBase>& event)
          {
-            BOOST_ASSERT(event->getId() >= kUserFirstId);
+            if (event->getId() < kUserFirstId)
+               throw std::invalid_argument("CEventHandler::pushEvent : invalid ID " + std::to_string(event->getId()));
 
             boost::recursive_mutex::scoped_lock lock(m_eventsQueueMutex);
             m_eventsQueue.push(event);
@@ -391,7 +383,8 @@ namespace shared
          //--------------------------------------------------------------
          void signalTimeEvent(const boost::shared_ptr<ITimeEvent>& timeEvent)
          {
-            BOOST_ASSERT(!!timeEvent);
+            if (!timeEvent)
+               throw std::invalid_argument("CEventHandler::signalTimeEvent : timeEvent is null");
 
             auto evt(boost::make_shared<CEventBase>(timeEvent->getId()));
             pushEvent(evt);

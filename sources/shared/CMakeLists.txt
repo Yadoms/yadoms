@@ -104,7 +104,6 @@ set(SHARED_LIB_SRC
    shared/event/EventTimePoint.h
    shared/event/ITimeEvent.h
 
-   shared/exception/BadConversion.hpp
    shared/exception/DownloadFailed.hpp
    shared/exception/EmptyResult.hpp
    shared/exception/Exception.hpp
