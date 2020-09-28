@@ -9,7 +9,12 @@ cmd.exe /c 'cmake_windows.cmd'
 
 Write-Host "Build Yadoms"
 cd projects
-cmake --build . --config Release --target shared/all_unity
+#because all_unity vcxproj is not always at same place, need to find it in project folder
+#To do : cmake --build . --config Release --target all_unity
+#The powershell ((dir -Filter all_unity.vcxproj -Recurse | %{$_.DirectoryName} | Resolve-Path -Relative).substring(2)+"\all_unity" -replace '\\','/')
+#give the relative path of all_unity.vcxproj; removing extensions, removing first '.\' and replacing \ by /
+cmake --build . --config Release --target ((dir -Filter all_unity.vcxproj -Recurse | %{$_.DirectoryName} | Resolve-Path -Relative).substring(2)+"\all_unity" -replace '\\','/')
+
 
 Write-Host "Build Yadoms package"
 cp ..\config\yadoms.ini ..\builds\Release

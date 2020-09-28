@@ -16,6 +16,7 @@ cmake_minimum_required (VERSION 3.14.0)
 
 # Global CMake policies
 cmake_policy(SET CMP0074 NEW)
+cmake_policy(SET CMP0077 NEW)
 cmake_policy(SET CMP0078 NEW)
 cmake_policy(SET CMP0086 NEW)
 

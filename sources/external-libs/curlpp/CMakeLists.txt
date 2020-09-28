@@ -7,6 +7,16 @@ set(CURLPP_BUILD_SHARED_LIBS OFF)
 
 add_subdirectory(curlpp-0.8.1)
 
+if(COTIRE_USE)
+   if(COTIRE_USE_UNITY)
+      set_target_properties(curlpp_static PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+   else()
+      set_target_properties(curlpp_static PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+   endif()
+   
+   cotire(curlpp_static)
+endif()
+
 get_target_property(CURLPP_INCLUDE_DIRECTORIES curlpp_static INCLUDE_DIRECTORIES)
 set(CURLPP_INCLUDE_DIRECTORIES ${CURLPP_INCLUDE_DIRECTORIES} PARENT_SCOPE)
 
