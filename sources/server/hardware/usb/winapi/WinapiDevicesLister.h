@@ -13,12 +13,9 @@ namespace hardware
 
          // IDevicesLister implementation
          std::vector<boost::shared_ptr<IDevice>> listUsbDevices() override;
-         std::vector<boost::shared_ptr<IDevice>> listUsbDevicesForClass(EDeviceClass deviceClass) override;
          // [END] IDevicesLister implementation
 
       private:
-         std::vector<boost::shared_ptr<IDevice>> listUsbDevices(std::vector<GUID> filterByClasses) const;
-
          static std::wstring toUtf8WideChar(const char* src);
          static std::string toUtf8(const char* buffer);
          static std::string getDeviceProperty(const HDEVINFO deviceInfoSet,

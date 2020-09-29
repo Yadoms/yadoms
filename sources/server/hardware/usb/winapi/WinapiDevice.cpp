@@ -5,16 +5,16 @@ namespace hardware
 {
    namespace usb
    {
-      CWinapiDevice::CWinapiDevice(const std::string& deviceName,
-                                   const std::string& devicePath,
+      CWinapiDevice::CWinapiDevice(const std::string& devicePath,
                                    int vid,
                                    int pid,
-                                   const std::string& serial)
-         : m_deviceName(deviceName),
-           m_devicePath(devicePath),
+                                   const std::string& serialNumber,
+                                   boost::shared_ptr<const std::map<unsigned int, std::string>> windowsPropertyMap)
+         : m_devicePath(devicePath),
            m_vid(vid),
            m_pid(pid),
-           m_serial(serial)
+           m_serialNumber(serialNumber),
+           m_windowsPropertyMap(windowsPropertyMap)
       {
       }
 
@@ -25,7 +25,7 @@ namespace hardware
 
       std::string CWinapiDevice::yadomsFriendlyName() const
       {
-         return m_deviceName;
+         return m_windowsPropertyMap->at(SPDRP_FRIENDLYNAME);
       }
 
       int CWinapiDevice::vendorId() const
@@ -40,7 +40,22 @@ namespace hardware
 
       std::string CWinapiDevice::serialNumber() const
       {
-         return m_serial;
+         return m_serialNumber;
+      }
+
+      std::string CWinapiDevice::getWindowsProperty(unsigned int spdrpPropertyId,
+                                                    bool throwIfNotFound) const
+      {
+         try
+         {
+            return m_windowsPropertyMap->at(spdrpPropertyId);
+         }
+         catch (const std::out_of_range&)
+         {
+            if (throwIfNotFound)
+               throw;
+            return std::string();
+         }
       }
    } // namespace usb
 } // namespace hardware

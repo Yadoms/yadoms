@@ -7,7 +7,6 @@
 #include <initguid.h>
 #include <usbiodef.h>
 #include <codecvt>
-#include <winioctl.h>
 
 
 namespace hardware
@@ -159,27 +158,9 @@ namespace hardware
 
       std::vector<boost::shared_ptr<IDevice>> CWinapiDevicesLister::listUsbDevices()
       {
-         return listUsbDevices(std::vector<GUID>());
-      }
+         const auto guid = &GUID_DEVINTERFACE_USB_DEVICE;
 
-      std::vector<boost::shared_ptr<IDevice>> CWinapiDevicesLister::listUsbDevicesForClass(EDeviceClass deviceClass)
-      {
-         std::vector<GUID> guids;
-         switch (deviceClass)
-         {
-         case kSerialPorts:
-            guids.push_back(GUID_DEVINTERFACE_SERENUM_BUS_ENUMERATOR);
-            guids.push_back(GUID_DEVINTERFACE_COMPORT);
-            break;
-         default:
-            throw std::runtime_error("Unknown device class " + std::to_string(deviceClass));
-         }
-         return listUsbDevices(guids);
-      }
-
-      std::vector<boost::shared_ptr<IDevice>> CWinapiDevicesLister::listUsbDevices(std::vector<GUID> filterByClasses) const
-      {
-         const auto deviceInfo = SetupDiGetClassDevs(const_cast<LPGUID>(&GUID_DEVINTERFACE_USB_DEVICE),
+         const auto deviceInfo = SetupDiGetClassDevs(guid,
                                                      nullptr,
                                                      nullptr,
                                                      (DIGCF_PRESENT | DIGCF_DEVICEINTERFACE));
@@ -208,26 +189,28 @@ namespace hardware
 
             index++;
 
-            // Apply filter if defined
-            if (!filterByClasses.empty())
-            {
-               if (std::find(filterByClasses.begin(),
-                             filterByClasses.end(),
-                             deviceInfoData.ClassGuid) == filterByClasses.end())
-                  continue;
-            }
-
             try
             {
-               const auto deviceName = getDeviceProperty(deviceInfo,
-                                                         &deviceInfoData,
-                                                         SPDRP_DEVICEDESC);
+               auto windowsPropertyMap = boost::make_shared<std::map<unsigned int, std::string>>();
+               for (unsigned int spdrp = 0; spdrp < SPDRP_MAXIMUM_PROPERTY; ++spdrp)
+               {
+                  try
+                  {
+                     (*windowsPropertyMap)[spdrp] = getDeviceProperty(deviceInfo,
+                                                                      &deviceInfoData,
+                                                                      spdrp);
+                  }
+                  catch (...)
+                  {
+                     // Ignore unset values
+                  }
+               }
 
                SP_DEVICE_INTERFACE_DATA deviceInterfaceData = {0};
                deviceInterfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
                if (SetupDiEnumDeviceInterfaces(deviceInfo,
                                                nullptr,
-                                               const_cast<LPGUID>(&GUID_DEVINTERFACE_USB_DEVICE),
+                                               guid,
                                                index - 1,
                                                &deviceInterfaceData) == FALSE)
                {
@@ -272,11 +255,11 @@ namespace hardware
                const auto pid = std::stoi(std::string(result[2].first, result[2].second), nullptr, 16);
                const std::string serial(result[3].first, result[3].second);
 
-               deviceList.emplace_back(boost::make_shared<CWinapiDevice>(deviceName,
-                                                                         devicePath,
+               deviceList.emplace_back(boost::make_shared<CWinapiDevice>(devicePath,
                                                                          vid,
                                                                          pid,
-                                                                         serial));
+                                                                         serial,
+                                                                         windowsPropertyMap));
             }
             catch (std::exception& exception)
             {

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../DevicesListerFactory.h"
+#include "../Factory.h"
 #include "LsusbDevicesLister.h"
 
 
@@ -7,7 +7,7 @@ namespace hardware
 {
    namespace usb
    {
-      boost::shared_ptr<IDevicesLister> CDevicesListerFactory::createDeviceLister()
+      boost::shared_ptr<IDevicesLister> CFactory::createDeviceLister()
       {
          return boost::make_shared<CLsusbDevicesLister>();
       }

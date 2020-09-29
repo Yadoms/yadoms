@@ -6,11 +6,11 @@ namespace hardware
 {
    namespace serial
    {
-      class CSerialPortsManagerFactory
+      class CFactory
       {
       public:
-         CSerialPortsManagerFactory() = delete;
-         virtual ~CSerialPortsManagerFactory() = delete;
+         CFactory() = delete;
+         virtual ~CFactory() = delete;
 
          static boost::shared_ptr<ISerialPortsManager> createSerialPortsManager(boost::shared_ptr<usb::IDevicesLister> usbDeviceListers);
       };

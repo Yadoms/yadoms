@@ -1,7 +1,6 @@
 #pragma once
 #include "ISerialPortsManager.h"
 #include "ISerialPortsLister.h"
-#include "hardware/usb/IDevicesLister.h"
 
 namespace hardware
 {
@@ -10,8 +9,7 @@ namespace hardware
       class CSerialPortsManager : public ISerialPortsManager
       {
       public:
-         explicit CSerialPortsManager(boost::shared_ptr<ISerialPortsLister> serialPortLister,
-                                      boost::shared_ptr<usb::IDevicesLister> usbDeviceListers);
+         explicit CSerialPortsManager(boost::shared_ptr<ISerialPortsLister> serialPortLister);
          virtual ~CSerialPortsManager() = default;
 
          // ISerialPortsManager Implementation
@@ -19,10 +17,7 @@ namespace hardware
          // [END] ISerialPortsManager Implementation
 
       private:
-         void updateAdapterKinds(std::vector<boost::shared_ptr<database::entities::CSerialPort>>& detectedSerialPorts) const;
-
          boost::shared_ptr<ISerialPortsLister> m_serialPortLister;
-         boost::shared_ptr<usb::IDevicesLister> m_usbDeviceListers;
       };
    } // namespace serial
 } // namespace hardware

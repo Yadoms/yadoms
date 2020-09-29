@@ -34,8 +34,8 @@
 #include "dateTime/TimeZoneProvider.h"
 #include "dateTime/TimeZoneDatabase.h"
 #include "automation/interpreter/Manager.h"
-#include "hardware/usb/DevicesListerFactory.h"
-#include "hardware/serial/SerialPortsManagerFactory.h"
+#include "hardware/usb/Factory.h"
+#include "hardware/serial/Factory.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
                          const shared::versioning::CSemVer& yadomsVersion)
@@ -132,8 +132,8 @@ void CSupervisor::run()
       const auto scriptInterpretersPath = m_pathProvider->scriptInterpretersPath().string();
       const auto allowExternalAccess = startupOptions->getWebServerAllowExternalAccess();
 
-      auto usbDeviceLister = hardware::usb::CDevicesListerFactory::createDeviceLister();
-      auto serialPortsManager = hardware::serial::CSerialPortsManagerFactory::createSerialPortsManager(usbDeviceLister);
+      auto usbDeviceLister = hardware::usb::CFactory::createDeviceLister();
+      auto serialPortsManager = hardware::serial::CFactory::createSerialPortsManager(usbDeviceLister);
 
       auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp, webServerUseSSL, webServerPort,
                                                                securedWebServerPort, webServerPath,

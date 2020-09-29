@@ -458,17 +458,18 @@ set(YADOMS_SRC
    server/i18n/ClientStrings.h
    server/i18n/ClientStrings.cpp
 
+   server/hardware/serial/Factory.cpp
+   server/hardware/serial/Factory.h
    server/hardware/serial/ISerialPortsLister.h
    server/hardware/serial/ISerialPortsManager.h
-   server/hardware/serial/SerialPortsListerFactory.h
+   server/hardware/serial/PlatformSpecificFactory.h
    server/hardware/serial/SerialPortsManager.cpp
    server/hardware/serial/SerialPortsManager.h
-   server/hardware/serial/SerialPortsManagerFactory.cpp
-   server/hardware/serial/SerialPortsManagerFactory.h
   
-   server/hardware/usb/DevicesListerFactory.h
+   server/hardware/usb/Factory.h
    server/hardware/usb/IDevice.h
    server/hardware/usb/IDevicesLister.h
+   server/hardware/usb/ISerialPortAdapterDevice.h
    
    server/location/IAutoLocation.h
    server/location/IpApiAutoLocation.h
@@ -768,12 +769,14 @@ IF(WIN32)
       server/tools/windows/tools/OperatingSystem.cpp
       server/hardware/serial/windows/SerialPortsLister.h
       server/hardware/serial/windows/SerialPortsLister.cpp
-      server/hardware/serial/windows/SerialPortsListerFactory.cpp
-      server/hardware/usb/winapi/DevicesListerFactory.cpp
+      server/hardware/serial/windows/PlatformSpecificFactory.cpp
+      server/hardware/usb/winapi/Factory.cpp
       server/hardware/usb/winapi/WinapiDevice.h
       server/hardware/usb/winapi/WinapiDevice.cpp
       server/hardware/usb/winapi/WinapiDevicesLister.h
       server/hardware/usb/winapi/WinapiDevicesLister.cpp
+      server/hardware/usb/winapi/WinApiSerialPortAdapterDevice.h
+      server/hardware/usb/winapi/WinApiSerialPortAdapterDevice.cpp
    )   
 ELSEIF(APPLE)
    set(YADOMS_SRC ${YADOMS_SRC}
@@ -782,14 +785,16 @@ ELSEIF(APPLE)
       server/tools/mac/tools/OperatingSystem.cpp
       server/hardware/serial/mac/SerialPortsLister.h
       server/hardware/serial/mac/SerialPortsLister.cpp
-      server/hardware/serial/mac/SerialPortsListerFactory.cpp
-      server/hardware/usb/lsusb/DevicesListerFactory.cpp
+      server/hardware/serial/mac/PlatformSpecificFactory.cpp
+      server/hardware/usb/lsusb/Factory.cpp
       server/hardware/usb/lsusb/LsusbCall.h
       server/hardware/usb/lsusb/LsusbCall.cpp
       server/hardware/usb/lsusb/LsusbDevice.h
       server/hardware/usb/lsusb/LsusbDevice.cpp
       server/hardware/usb/lsusb/LsusbDevicesLister.h
       server/hardware/usb/lsusb/LsusbDevicesLister.cpp
+      server/hardware/usb/lsusb/LsusbSerialPortAdapterDevice.h
+      server/hardware/usb/lsusb/LsusbSerialPortAdapterDevice.cpp
    )   
 ELSE()
    set(YADOMS_SRC ${YADOMS_SRC}
@@ -798,8 +803,8 @@ ELSE()
       server/tools/linux/tools/OperatingSystem.cpp
       server/hardware/serial/linux/SerialPortsLister.h
       server/hardware/serial/linux/SerialPortsLister.cpp
-      server/hardware/serial/linux/SerialPortsListerFactory.cpp
-      server/hardware/usb/lsusb/DevicesListerFactory.cpp
+      server/hardware/serial/linux/PlatformSpecificFactory.cpp
+      server/hardware/usb/lsusb/Factory.cpp
       server/hardware/usb/lsusb/LsusbCall.h
       server/hardware/usb/lsusb/LsusbCall.cpp
       server/hardware/usb/lsusb/LsusbDevice.h
