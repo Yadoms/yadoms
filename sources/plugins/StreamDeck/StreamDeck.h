@@ -53,4 +53,5 @@ private:
 
 	void handleKeyData(int& keyIndex);
 	void setKeyData(std::string& img, std::string& customText, int& keyCounter, bool isSecondKey= false);
+   static std::string getImgFromFile(std::string& iconPath);
 };

@@ -303,10 +303,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   auto customText = config->get<std::string>(
                      "mainSection.content.keyElement#" + std::to_string(keyCounter) + ".content.customText");
 
-                  CFileManager fileManager(iconPath);
-                  fileManager.read();
-                  auto img = fileManager.getData();
-                  fileManager.close();
+                  auto img = getImgFromFile(iconPath);
 
                   setKeyData(img, customText, keyCounter);
 
@@ -325,10 +322,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                         "mainSection.content.keyElement#" + std::to_string(keyCounter) +
                         ".content.content.content.customTextWhenKeyIsPressed");
 
-                     CFileManager secondKeyFileManager(secondKeyIconPath);
-                     secondKeyFileManager.read();
-                     auto secondKeyImg = secondKeyFileManager.getData();
-                     secondKeyFileManager.close();
+                     auto secondKeyImg = getImgFromFile(secondKeyIconPath);
 
                      setKeyData(secondKeyImg, secondKeyCustomText, keyCounter, true);
                   }
@@ -425,4 +419,14 @@ void CStreamDeck::setKeyData(std::string& img, std::string& customText, int& key
    {
       secondKeyData.insert(std::pair<int, KeyData>(keyCounter, keyData));
    }
+}
+
+std::string CStreamDeck::getImgFromFile(std::string& iconPath)
+{
+   CFileManager secondKeyFileManager(iconPath);
+   secondKeyFileManager.read();
+   auto img = secondKeyFileManager.getData();
+   secondKeyFileManager.close();
+
+   return img;
 }
