@@ -28,6 +28,13 @@ struct UsbDeviceInformation
 	CStreamDeckFactory::EStreamDeckModel deviceModel;
 };
 
+struct KeyData
+{
+	std::string img;
+	std::string customText;
+	bool isAlreadyPressed;
+};
+
 class CDeviceManagerHelper
 {
 public:

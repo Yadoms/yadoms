@@ -112,6 +112,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             auto keyIndex = api->getEventHandler().getEventData<int>();
             api->historizeData(m_usbDeviceInformation->deviceName, m_keywords[keyIndex]);
+            handleKeyData(keyIndex);
             break;
          }
       case yApi::IYPluginApi::kBindingQuery:
@@ -307,6 +308,8 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   auto img = fileManager.getData();
                   fileManager.close();
 
+                  setKeyData(img, customText, keyCounter);
+
                   m_deviceManager->setKeyImage(img, keyCounter, customText);
 
                   auto isSecondKeyChecked = config->get<bool>(
@@ -314,18 +317,21 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   if (isSecondKeyChecked)
                   {
                      auto secondKeyIconNameIndex = config->get<int>(
-                        "mainSection.content.keyElement#" + std::to_string(keyCounter) + ".content.content.content.iconWhenKeyIsPressed");
+                        "mainSection.content.keyElement#" + std::to_string(keyCounter) +
+                        ".content.content.content.iconWhenKeyIsPressed");
 
                      auto secondKeyIconPath = CDefaultIconSelector::getIconPath(pluginPath, secondKeyIconNameIndex);
                      auto secondKeyCustomText = config->get<std::string>(
-                        "mainSection.content.keyElement#" + std::to_string(keyCounter) + ".content.content.content.customTextWhenKeyIsPressed");
+                        "mainSection.content.keyElement#" + std::to_string(keyCounter) +
+                        ".content.content.content.customTextWhenKeyIsPressed");
 
                      CFileManager secondKeyFileManager(secondKeyIconPath);
                      secondKeyFileManager.read();
                      auto secondKeyImg = secondKeyFileManager.getData();
                      secondKeyFileManager.close();
-                  }
 
+                     setKeyData(secondKeyImg, secondKeyCustomText, keyCounter, true);
+                  }
                }
                keyCounter++;
             }
@@ -372,5 +378,51 @@ void CStreamDeck::initDevice(boost::shared_ptr<yApi::IYPluginApi>& api)
    {
       api->setPluginState(yApi::historization::EPluginState::kError, "initializationError");
       throw;
+   }
+}
+
+void CStreamDeck::handleKeyData(int& keyIndex)
+{
+   const auto firstKeyDataIterator = firstKeyData.find(keyIndex);
+   const auto secondKeyDataIterator = secondKeyData.find(keyIndex);
+
+   if (firstKeyDataIterator != firstKeyData.end())
+   {
+      //found value
+      if (!firstKeyDataIterator->second.isAlreadyPressed)
+      {
+         if (secondKeyDataIterator != secondKeyData.end())
+         {
+            // found second key data
+            if (!secondKeyDataIterator->second.isAlreadyPressed)
+            {
+               firstKeyDataIterator->second.isAlreadyPressed = true;
+               m_deviceManager->setKeyImage(secondKeyData.find(keyIndex)->second.img, keyIndex,
+                                            secondKeyData.find(keyIndex)->second.customText);
+            }
+         }
+      }
+      else
+      {
+         firstKeyDataIterator->second.isAlreadyPressed = false;
+         m_deviceManager->setKeyImage(firstKeyData.find(keyIndex)->second.img, keyIndex,
+                                      firstKeyData.find(keyIndex)->second.customText);
+      }
+   }
+}
+
+void CStreamDeck::setKeyData(std::string& img, std::string& customText, int& keyCounter, bool isSecondKey)
+{
+   KeyData keyData;
+   keyData.img = img;
+   keyData.customText = customText;
+   keyData.isAlreadyPressed = false;
+   if (!isSecondKey)
+   {
+      firstKeyData.insert(std::pair<int, KeyData>(keyCounter, keyData));
+   }
+   else
+   {
+      secondKeyData.insert(std::pair<int, KeyData>(keyCounter, keyData));
    }
 }
