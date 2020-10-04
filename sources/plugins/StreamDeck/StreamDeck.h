@@ -48,4 +48,9 @@ private:
 
 	std::map<int, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> m_keywords;
 
+	std::map<int, KeyData> firstKeyData;
+	std::map<int, KeyData> secondKeyData;
+
+	void handleKeyData(int& keyIndex);
+	void setKeyData(std::string& img, std::string& customText, int& keyCounter, bool isSecondKey= false);
 };
