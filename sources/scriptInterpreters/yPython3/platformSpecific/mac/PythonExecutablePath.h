@@ -9,9 +9,9 @@ class CPythonExecutablePath
 public:
    //--------------------------------------------------------------
    /// \brief	Get the common python3 paths
-   /// \param[out] paths The common python3 installed path list
+   /// \return paths The common python3 installed path list
    //--------------------------------------------------------------
-   static void getCommonPythonPaths(std::vector<boost::filesystem::path> & paths);
+   static boost::shared_ptr<std::vector<boost::filesystem::path>> getCommonPythonPaths();
 
    //--------------------------------------------------------------
    /// \brief	Get the common python3 executable name

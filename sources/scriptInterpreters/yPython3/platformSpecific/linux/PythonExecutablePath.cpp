@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "PythonExecutablePath.h"
 
-void CPythonExecutablePath::getCommonPythonPaths(std::vector<boost::filesystem::path> & paths)
+boost::shared_ptr<std::vector<boost::filesystem::path>> CPythonExecutablePath::getCommonPythonPaths()
 {
+   return boost::make_shared<std::vector<boost::filesystem::path>>();
 }
 
 const std::string& CPythonExecutablePath::getExecutableName()

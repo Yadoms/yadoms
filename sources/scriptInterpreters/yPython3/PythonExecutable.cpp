@@ -52,12 +52,11 @@ bool CPythonExecutable::findPythonDirectory(const std::string& pythonForcedPath,
    }
 
    // Now try to auto-detect path
-   //retrieve common path for the system
-   std::vector<boost::filesystem::path> commonPaths;
-   CPythonExecutablePath::getCommonPythonPaths(commonPaths);
+   // Retrieve common paths for the system
+   const auto commonPaths = CPythonExecutablePath::getCommonPythonPaths();
 
-   if (std::any_of(commonPaths.begin(),
-                   commonPaths.end(),
+   if (std::any_of(commonPaths->begin(),
+                   commonPaths->end(),
                    [&pythonDirectory, &inSystemPath](const auto& path)
                    {
                       return isPythonIn(path, pythonDirectory, inSystemPath);

@@ -273,7 +273,7 @@ namespace automation
             return;
          }
 
-         YADOMS_LOG(debug) << "interpreter::CIpcAdapter::postAvailableRequest ==> success";
+         YADOMS_LOG(debug) << "interpreter::CIpcAdapter::postAvailableRequest ==> success (" << (available ? "available)" : "NOT AVAILABLE)");
          request->sendSuccess(available);
       }
 
