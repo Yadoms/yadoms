@@ -1,3 +1,6 @@
+### 1.1.2
+* Fix #701 : Add MacOs support
+
 ### 1.1.1
 * New feature #575 : Adapt custom historizer
 
