@@ -2,6 +2,7 @@
 
 #### Yadoms
 * Fix Yadoms crash when no data available with getKeywordData web-service
+* Fix #700 : Improve message when an interpreter is not available
 
 
 ### 2.4.0-beta.4
