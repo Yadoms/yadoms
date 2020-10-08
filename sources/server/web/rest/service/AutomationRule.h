@@ -15,7 +15,7 @@ namespace web
          public:
             CAutomationRule(boost::shared_ptr<database::IDataProvider> dataProvider,
                             boost::shared_ptr<automation::IRuleManager> rulesManager);
-            virtual ~CAutomationRule();
+            virtual ~CAutomationRule() = default;
 
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;

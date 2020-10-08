@@ -21,11 +21,6 @@ namespace web
          {
          }
 
-
-         CAutomationRule::~CAutomationRule()
-         {
-         }
-
          const std::string& CAutomationRule::getRestKeyword()
          {
             return m_restKeyword;
@@ -94,7 +89,7 @@ namespace web
          boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getAllRules(const std::vector<std::string>& parameters,
                                                                                                   const std::string& requestContent) const
          {
-            auto rules = m_rulesManager->getRules();
+            const auto rules = m_rulesManager->getRules();
 
             shared::CDataContainer t;
             t.set("rules", rules);
@@ -236,12 +231,12 @@ namespace web
                if (parameters.size() != 4)
                   throw CRuleException("invalid parameter in URL");
 
-               auto ruleId = boost::lexical_cast<int>(parameters[2]);
+               const auto ruleId = boost::lexical_cast<int>(parameters[2]);
 
                //start the rule
                m_rulesManager->startRule(ruleId);
 
-               boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
+               const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
                return CResult::GenerateSuccess(ruleFound);
             }
             catch (CRuleException& e)
@@ -266,12 +261,12 @@ namespace web
                if (parameters.size() != 4)
                   throw CRuleException("invalid parameter in URL");
 
-               auto ruleId = boost::lexical_cast<int>(parameters[2]);
+               const auto ruleId = boost::lexical_cast<int>(parameters[2]);
 
                //stop the rule
                m_rulesManager->stopRuleAndWaitForStopped(ruleId);
 
-               auto ruleFound = m_rulesManager->getRule(ruleId);
+               const auto ruleFound = m_rulesManager->getRule(ruleId);
                return CResult::GenerateSuccess(ruleFound);
             }
             catch (CRuleException& e)
@@ -295,12 +290,12 @@ namespace web
             try
             {
                auto ruleData(boost::make_shared<database::entities::CRule>());
-               shared::CDataContainer content(requestContent);
+               const shared::CDataContainer content(requestContent);
                ruleData->fillFromContent(content);
 
-               auto idCreated = m_rulesManager->createRule(ruleData, content.get<std::string>("code"));
+               const auto idCreated = m_rulesManager->createRule(ruleData, content.get<std::string>("code"));
 
-               boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(idCreated);
+               const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(idCreated);
                return CResult::GenerateSuccess(ruleFound);
             }
             catch (CRuleException& e)
@@ -325,7 +320,7 @@ namespace web
                if (parameters.size() != 3)
                   throw CRuleException("invalid parameter in URL");
 
-               auto ruleId = boost::lexical_cast<int>(parameters[2]);
+               const auto ruleId = boost::lexical_cast<int>(parameters[2]);
                auto ruleData(boost::make_shared<database::entities::CRule>());
                ruleData->fillFromSerializedString(requestContent);
 
@@ -336,7 +331,7 @@ namespace web
                ruleData->Id = ruleId;
                m_rulesManager->updateRule(ruleData);
 
-               boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
+               const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
                return CResult::GenerateSuccess(ruleFound);
             }
             catch (CRuleException& e)
@@ -402,16 +397,16 @@ namespace web
                if (parameters.size() != 4)
                   throw CRuleException("invalid parameter in URL");
 
-               shared::CDataContainer content(requestContent);
+               const shared::CDataContainer content(requestContent);
                if(!content.containsValue("name"))
                   throw CRuleException("No name provided for the rule copy");
 
-               auto name = content.get<std::string>("name");
+               const auto name = content.get<std::string>("name");
                if (name.empty())
                   throw CRuleException("empty name provided for the rule copy");
-               auto ruleId = boost::lexical_cast<int>(parameters[2]);
+               const auto ruleId = boost::lexical_cast<int>(parameters[2]);
 
-               auto newRuleId = m_rulesManager->duplicateRule(ruleId, name);
+               const auto newRuleId = m_rulesManager->duplicateRule(ruleId, name);
 
                const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(newRuleId);
                return CResult::GenerateSuccess(ruleFound);
@@ -440,7 +435,7 @@ namespace web
                if (parameters.size() != 3)
                   throw CRuleException("invalid parameter in URL");
 
-               auto instanceId = boost::lexical_cast<int>(parameters[2]);
+               const auto instanceId = boost::lexical_cast<int>(parameters[2]);
                m_rulesManager->deleteRule(instanceId);
                return CResult::GenerateSuccess();
             }

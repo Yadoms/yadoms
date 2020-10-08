@@ -207,10 +207,12 @@ namespace automation
 
          // Now find corresponding interpreter
          auto interpreter = m_loadedInterpreters.find(interpreterType);
-         if (interpreter != m_loadedInterpreters.end() && interpreter->second->isAvalaible())
-            return interpreter->second;
+         if (interpreter == m_loadedInterpreters.end())
+            throw std::runtime_error("Interpreter " + interpreterType + " was not found");
+         if (!interpreter->second->isAvalaible())
+            throw std::runtime_error("Interpreter " + interpreterType + " is not available (see interpreter description)");
 
-         throw std::runtime_error("Interpreter " + interpreterType + " not found");
+         return interpreter->second;
       }
 
       boost::shared_ptr<IInstance> CManager::getLoadedInterpreterInstance(const std::string& interpreterType)
@@ -222,10 +224,10 @@ namespace automation
 
          // Now find corresponding interpreter
          const auto interpreter = m_loadedInterpreters.find(interpreterType);
-         if (interpreter != m_loadedInterpreters.end())
-            return interpreter->second;
+         if (interpreter == m_loadedInterpreters.end())
+            throw std::runtime_error("Interpreter " + interpreterType + " was not found");
 
-         throw std::runtime_error("Interpreter " + interpreterType + " not found");
+         return interpreter->second;
       }
 
       std::string CManager::getScriptContent(const std::string& interpreterType,
