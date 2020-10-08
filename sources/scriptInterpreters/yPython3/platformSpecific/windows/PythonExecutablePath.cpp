@@ -10,8 +10,9 @@ const std::string CPythonExecutablePath::Python37StandardPath("C:\\python37");
 const std::string CPythonExecutablePath::InstallDir("InstallDir");
 const std::string CPythonExecutablePath::InstallPath("InstallPath");
 
-void CPythonExecutablePath::getCommonPythonPaths(std::vector<boost::filesystem::path>& paths)
+boost::shared_ptr<std::vector<boost::filesystem::path>> CPythonExecutablePath::getCommonPythonPaths()
 {
+   auto paths = boost::make_shared<std::vector<boost::filesystem::path>>();
    try
    {
       getPyLauncherPath(HKEY_LOCAL_MACHINE, paths);
@@ -21,15 +22,17 @@ void CPythonExecutablePath::getCommonPythonPaths(std::vector<boost::filesystem::
       getPythonCorePath(HKEY_CURRENT_USER, paths);
 
       //try another standard path
-      paths.emplace_back(Python37StandardPath);
+      paths->emplace_back(Python37StandardPath);
 
       // Remove duplicates
-      std::sort(paths.begin(), paths.end());
-      paths.erase(std::unique(paths.begin(), paths.end()), paths.end());
+      std::sort(paths->begin(), paths->end());
+      paths->erase(std::unique(paths->begin(), paths->end()), paths->end());
    }
    catch (std::exception&)
    {
    }
+
+   return paths;
 }
 
 const std::string& CPythonExecutablePath::getExecutableName()
@@ -39,7 +42,7 @@ const std::string& CPythonExecutablePath::getExecutableName()
 }
 
 void CPythonExecutablePath::getPyLauncherPath(const HKEY& hKey,
-                                              std::vector<boost::filesystem::path>& paths)
+                                              boost::shared_ptr<std::vector<boost::filesystem::path>> paths)
 {
    Poco::Util::WinRegistryKey winRegistryKey32Bit(hKey, PyLauncher32BitPath, true);
    fillPythonPath(winRegistryKey32Bit, paths);
@@ -49,19 +52,19 @@ void CPythonExecutablePath::getPyLauncherPath(const HKEY& hKey,
 }
 
 void CPythonExecutablePath::fillPythonPath(Poco::Util::WinRegistryKey& winRegistryKey,
-                                           std::vector<boost::filesystem::path>& paths,
+                                           boost::shared_ptr<std::vector<boost::filesystem::path>> paths,
                                            const bool defaultInstallDir)
 {
    if (winRegistryKey.exists())
    {
       const auto pythonPath = winRegistryKey.getString(defaultInstallDir ? InstallDir : "");
       if (!pythonPath.empty())
-         paths.emplace_back(pythonPath);
+         paths->emplace_back(pythonPath);
    }
 }
 
 void CPythonExecutablePath::getPythonCorePath(const HKEY& hKey,
-                                              std::vector<boost::filesystem::path>& paths)
+                                              boost::shared_ptr<std::vector<boost::filesystem::path>> paths)
 {
    Poco::Util::WinRegistryKey pythonCore32Bit(hKey, PythonCore32BitPath, true);
 
@@ -79,7 +82,7 @@ void CPythonExecutablePath::getPythonCorePath(const HKEY& hKey,
 
 void CPythonExecutablePath::getPythonCorePath(Poco::Util::WinRegistryKey& winRegistryKey,
                                               const HKEY& hKey,
-                                              std::vector<boost::filesystem::path>& paths)
+                                              boost::shared_ptr<std::vector<boost::filesystem::path>> paths)
 {
    Poco::Util::WinRegistryKey::Keys installedPythonVersions;
    winRegistryKey.subKeys(installedPythonVersions);
@@ -96,7 +99,7 @@ void CPythonExecutablePath::getPythonCorePath(Poco::Util::WinRegistryKey& winReg
 void CPythonExecutablePath::fillPythonPathByPyCore(const HKEY& hKey,
                                                    const std::string& subKey,
                                                    const std::string& installedPythonVersion,
-                                                   std::vector<boost::filesystem::path>& paths)
+                                                   boost::shared_ptr<std::vector<boost::filesystem::path>> paths)
 {
    Poco::Util::WinRegistryKey currentVersion(hKey, subKey + "\\" + installedPythonVersion, true);
    if (currentVersion.exists())

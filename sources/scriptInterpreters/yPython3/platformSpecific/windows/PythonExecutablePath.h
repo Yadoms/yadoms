@@ -10,9 +10,9 @@ class CPythonExecutablePath
 public:
    //--------------------------------------------------------------
    /// \brief	Get the common python3 paths
-   /// \param[out] paths The common python3 installed path list
+   /// \return paths The common python3 installed path list
    //--------------------------------------------------------------
-   static void getCommonPythonPaths(std::vector<boost::filesystem::path>& paths);
+   static boost::shared_ptr<std::vector<boost::filesystem::path>> getCommonPythonPaths();
 
    //--------------------------------------------------------------
    /// \brief	Get the common python3 executable name
@@ -23,23 +23,23 @@ public:
 private:
 
    static void getPyLauncherPath(const HKEY& hKey,
-                                 std::vector<boost::filesystem::path>& paths);
+                                 boost::shared_ptr<std::vector<boost::filesystem::path>> paths);
 
    static void fillPythonPath(Poco::Util::WinRegistryKey& winRegistryKey,
-                              std::vector<boost::filesystem::path>& paths,
+                              boost::shared_ptr<std::vector<boost::filesystem::path>> paths,
                               bool defaultInstallDir = true);
 
    static void getPythonCorePath(const HKEY& hKey,
-                                 std::vector<boost::filesystem::path>& paths);
+                                 boost::shared_ptr<std::vector<boost::filesystem::path>> paths);
 
 
    static void getPythonCorePath(Poco::Util::WinRegistryKey& winRegistryKey,
                                  const HKEY& hKey,
-                                 std::vector<boost::filesystem::path>& paths);
+                                 boost::shared_ptr<std::vector<boost::filesystem::path>> paths);
 
    static void fillPythonPathByPyCore(const HKEY& hKey, const std::string& subKey,
                                       const std::string& installedPythonVersion,
-                                      std::vector<boost::filesystem::path>& paths);
+                                      boost::shared_ptr<std::vector<boost::filesystem::path>> paths);
 
 
    const static std::string PyLauncher32BitPath;
