@@ -128,8 +128,8 @@ jobs:
       id: yadoms_build_step
       with:
           buildImage: yadoms/build_for_windows:latest
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKERHUB_USER }}
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_OAUTH }}
           entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
     - name: Create Release
       id: create_release
