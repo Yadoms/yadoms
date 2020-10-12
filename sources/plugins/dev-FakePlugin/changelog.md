@@ -1,5 +1,8 @@
+### 1.3.1
+* Fix #703 : Fix some English translations
+
 ### 1.3.0
-* Fix #562  : update usage of CDataContainer for better memory optimizations
+* Fix #562 : update usage of CDataContainer for better memory optimizations
 
 ### 1.2.0
 * New feature #575 : Add keyword without history

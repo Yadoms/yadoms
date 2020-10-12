@@ -142,7 +142,7 @@
       }
     },
     "asyncEQwithProgression": {
-      "iconClass": "fa  fa-upload",
+      "iconClass": "fa fa-upload",
       "commandData": {
         "fileContent": {
           "type": "file",

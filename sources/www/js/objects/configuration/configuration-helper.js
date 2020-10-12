@@ -127,7 +127,7 @@ ConfigurationHelper.createParameterHandler = function (i18nCtxt, i18nKey, paramN
          return new StringParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
 
       case "file":
-         return new FileParameterHandler(i18nContext, paramName, content, currentValue);
+         return new FileParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
 
       case "bool":
          return new BoolParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);

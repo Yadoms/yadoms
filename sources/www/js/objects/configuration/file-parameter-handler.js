@@ -10,7 +10,7 @@
  * @param currentValue
  * @constructor
  */
-function FileParameterHandler(i18nContext, paramName, content, currentValue) {
+function FileParameterHandler(i18nContext, i18nKey, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -28,6 +28,7 @@ function FileParameterHandler(i18nContext, paramName, content, currentValue) {
    this.paramName = paramName;
    this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
+   this.i18nKey = i18nKey || paramName;
    this.content = content;
 }
 
@@ -42,9 +43,11 @@ FileParameterHandler.prototype.getDOMObject = function () {
                         "name=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\" ";
    if (this.required)
-    input +=            "required aria-required ";
-   var dataI18n = "data-i18n=\"";
-   dataI18n += "[data-content]" + this.i18nContext + this.paramName + ".description";
+    input +=            "required aria-required ";    
+
+    var dataI18n = "data-i18n=\"";
+    dataI18n += "[data-content]" + this.i18nContext + this.i18nKey + ".description";
+
    dataI18n += "\"";
    
    if(this.content.filter) {

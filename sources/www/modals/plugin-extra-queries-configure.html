@@ -34,12 +34,12 @@
 
     if (extraQueryConfig) {
 
-      var $queryFiekds = $("div#plugin-extra-queries-configure-modal .modal-body .query-fields");
-      $queryFiekds.empty();
-
+      var $queryFields = $("div#plugin-extra-queries-configure-modal .modal-body .query-fields");
+      $queryFields.empty();
+      
       //we append classic configuration
       var configMgr = new ConfigurationControlManager(extraQueryConfig, "", "plugins." + pluginInstance.type +
-        ":extraQueries." + command + ".commandData.", $queryFiekds);
+        ":extraQueries." + command + ".commandData.", $queryFields);
 
       $("div#plugin-extra-queries-configure-modal .modal-title").empty();
       $("div#plugin-extra-queries-configure-modal .modal-title").attr("data-i18n", "plugins." + pluginInstance.type +
@@ -52,14 +52,14 @@
       //i18n
       $("div#plugin-extra-queries-configure-modal").i18n();
 
-      //finalize treatments (ie sort items after trnaslation)
+      //finalize treatments (ie sort items after translation)
       configMgr.afterI18n();
 
       var success = false;
 
       //validation form
       //erase previous jqBootstrapValidation
-      $queryFiekds.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+      $queryFields.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
         preventSubmit: true,
         submitError: function ($form, event, errors) {
           console.warn("Unable to validate form: " + errors);

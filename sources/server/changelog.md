@@ -2,6 +2,7 @@
 
 #### Yadoms
 * Fix #617 : File download progress is yet again available
+* Fix #703 : Fix display and translations of file type fields of configuration
 * New feature #572 : Proxy support for http requests
 * New feature #603 : Manage redirections for http requests
 * New feature #680 : Add HTTP devices autodetection in shared
