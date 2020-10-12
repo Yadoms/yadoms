@@ -48,6 +48,8 @@ ENDMACRO()
 MACRO(SCRIPT_API_WRAPPER_LINK _targetName)
    SWIG_LINK_LIBRARIES(${_targetName} yadoms-shared ${ARGN})
    
+	target_link_libraries(${_targetName} -static-libgcc -static-libstdc++)
+
 	if(COTIRE_USE)
    
 		if(COTIRE_USE_UNITY)

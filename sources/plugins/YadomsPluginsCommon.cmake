@@ -135,6 +135,8 @@ MACRO(PLUGIN_LINK _targetName)
       ${ARGN}
       )
 	
+	target_link_libraries(${_targetName} -static-libgcc -static-libstdc++)
+	
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
    #configure plugin as installable component if not in devlopment state (target name begin by 'dev-')

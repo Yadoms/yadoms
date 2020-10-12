@@ -81,6 +81,8 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
       )
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
+   target_link_libraries(${_targetName} -static-libgcc -static-libstdc++)
+   
    #configure interpreter as installable component
    SCRIPT_INTERPRETER_IS_IN_DEV_STATE(${_targetName})
    if (NOT ${DEV_SCRIPT_INTERPRETER})
