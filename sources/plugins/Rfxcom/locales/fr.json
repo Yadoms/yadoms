@@ -1,6 +1,6 @@
 ﻿{
   "name": "RFXCom",
-  "description": "Support du module radio RFXCom (voir http://rfxcom.com/)",
+  "description": "Support du module radio RFXCom ([Site officiel](http://rfxcom.com))",
   "configurationSchema": {
     "SerialPort": {
       "name": "Port série",
