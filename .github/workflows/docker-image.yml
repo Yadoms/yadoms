@@ -159,13 +159,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           privileged: '--privileged'
-          entrypoint: 'sh /work/build-scripts/rpi/entrypoint_docker.sh'
+          entrypoint: 'sh /work/build-scripts/raspberrypi/entrypoint_docker.sh'
     - name: Create Release
       id: create_release
       uses: ncipollo/release-action@v1
       with:
-        tag: ${{ github.ref }}
-        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        tag: _test_${{ github.ref }}
+        name: _test_${{ steps.yadoms_build_step.outputs.yadomsVersion }}
         draft: true
         prerelease: true
         allowUpdates: true
