@@ -159,7 +159,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           privileged: '--privileged'
-          entrypoint: '/work/build-scripts/rpi/entrypoint_docker.sh'
+          entrypoint: 'sh /work/build-scripts/rpi/entrypoint_docker.sh'
     - name: Create Release
       id: create_release
       uses: ncipollo/release-action@v1
