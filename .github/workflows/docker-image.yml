@@ -146,7 +146,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}     
         
   RapsberryPI_10:
-    name : Generate for RaspberryPI (all versions)
+    name : Generate for RPI GCC v10
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -155,7 +155,7 @@ jobs:
       uses: Yadoms/build-yadoms-action@v3.beta5
       id: yadoms_build_step
       with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_raspberrypi-gcc10:latest
+          buildImage: docker.pkg.github.com/yadoms/docker/build_for_raspberrypi-gcc10:feature-rpigcc10
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           privileged: '--privileged'
