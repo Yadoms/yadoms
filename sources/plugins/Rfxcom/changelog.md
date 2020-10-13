@@ -1,3 +1,6 @@
+### 1.3.1
+* Update plugin description for better link support
+
 ### 1.3.0
 * Fix #562  : update usage of CDataContainer for better memory optimizations
 

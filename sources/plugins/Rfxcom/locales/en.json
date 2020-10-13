@@ -1,6 +1,6 @@
 {
   "name": "RFXCom",
-  "description": "RFXCom radio interface support (see http://rfxcom.com/)",
+  "description": "RFXCom radio interface support ([Official site](http://rfxcom.com))",
   "configurationSchema": {
     "SerialPort": {
       "name": "Serial port",
@@ -171,7 +171,7 @@
               "name": "Device type",
               "values": {
                 "onOff": "on-off type (switch, light, dry contact...)",
-                "dimmable" : "dimmable type (light dimmer...)"
+                "dimmable": "dimmable type (light dimmer...)"
               }
             }
           }
