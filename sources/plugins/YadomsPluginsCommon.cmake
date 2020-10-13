@@ -135,7 +135,16 @@ MACRO(PLUGIN_LINK _targetName)
       ${ARGN}
       )
 	
-	target_link_libraries(${_targetName} -static-libgcc -static-libstdc++)
+	if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		target_link_libraries(${_targetName} -static-libstdc++ )
+	  # using Clang
+	elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+		target_link_libraries(${_targetName} -static-libgcc -static-libstdc++ )
+	  # using GCC
+	elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		target_link_libraries(${_targetName})
+	  # using Visual Studio C++
+	endif()
 	
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    

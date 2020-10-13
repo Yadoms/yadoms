@@ -1106,7 +1106,16 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
 set(CMAKE_EXE_LINKER_FLAGS " -static")
-target_link_libraries(yadoms -static-libgcc -static-libstdc++)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	target_link_libraries(yadoms -static-libstdc++ )
+  # using Clang
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	target_link_libraries(yadoms -static-libgcc -static-libstdc++ )
+  # using GCC
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	target_link_libraries(yadoms)
+  # using Visual Studio C++
+endif()
 
 ##################################################################################################
 ## RPATH

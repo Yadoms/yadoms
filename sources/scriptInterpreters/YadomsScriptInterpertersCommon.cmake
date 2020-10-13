@@ -81,7 +81,17 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
       )
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
-   target_link_libraries(${_targetName} -static-libgcc -static-libstdc++)
+	if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		target_link_libraries(${_targetName} -static-libstdc++ )
+	  # using Clang
+	elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+		target_link_libraries(${_targetName} -static-libgcc -static-libstdc++ )
+	  # using GCC
+	elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		target_link_libraries(${_targetName})
+	  # using Visual Studio C++
+	endif()
+
    
    #configure interpreter as installable component
    SCRIPT_INTERPRETER_IS_IN_DEV_STATE(${_targetName})
