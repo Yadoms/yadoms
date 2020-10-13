@@ -5,7 +5,7 @@ cd /work
 
 echo "Copy build config file"
 cp $YADOMS_DEPS_PATH/CMakeListsUserConfig.txt sources/
-cp /raspberrypi.cmake sources/cmake
+#cp /raspberrypi.cmake sources/cmake
 
 echo "Create makefile"
 sh cmake_raspberry.sh r
