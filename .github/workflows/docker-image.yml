@@ -88,6 +88,34 @@ jobs:
         artifacts: "./builds/package/*"
         token: ${{ secrets.GITHUB_TOKEN }}     
 
+# Synology212j:
+#   name : Generate for Synology 212j
+#   runs-on: ubuntu-latest
+#   steps:
+#   - name: Checkout code
+#     uses: actions/checkout@v2
+#   - name: Yadoms build script
+#     uses: Yadoms/build-yadoms-action@v3.beta5
+#     id: yadoms_build_step
+#     with:
+#         buildImage: docker.pkg.github.com/yadoms/docker/build_for_synology212j:latest
+#         username: ${{ github.actor }}
+#         password: ${{ secrets.GITHUB_TOKEN }}
+#         entrypoint: '/work/build-scripts/syno212j/entrypoint_docker.sh'
+#   - name: Create Release
+#     id: create_release
+#     uses: ncipollo/release-action@v1
+#     with:
+#       tag: ${{ github.ref }}
+#       name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+#       draft: true
+#       prerelease: true
+#       allowUpdates: true
+#       omitNameDuringUpdate: true
+#       replacesArtifacts: true
+#       artifacts: "./builds/package/*"
+#       token: ${{ secrets.GITHUB_TOKEN }}     
+        
   RapsberryPI:
     name : Generate for RaspberryPI (all versions)
     runs-on: ubuntu-latest
@@ -116,6 +144,36 @@ jobs:
         replacesArtifacts: true
         artifacts: "./builds/package/*"
         token: ${{ secrets.GITHUB_TOKEN }}     
+        
+  RapsberryPI_10:
+    name : Generate for RaspberryPI (all versions)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Yadoms build script
+      uses: Yadoms/build-yadoms-action@v3.beta5
+      id: yadoms_build_step
+      with:
+          buildImage: docker.pkg.github.com/yadoms/docker/build_for_raspberrypi-gcc10:latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          privileged: '--privileged'
+          entrypoint: '/work/build-scripts/rpi/entrypoint_docker.sh'
+    - name: Create Release
+      id: create_release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.ref }}
+        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        draft: true
+        prerelease: true
+        allowUpdates: true
+        omitNameDuringUpdate: true
+        replacesArtifacts: true
+        artifacts: "./builds/package/*"
+        token: ${{ secrets.GITHUB_TOKEN }}     
+                
         
   Windows:
     name : Generate for Windows
