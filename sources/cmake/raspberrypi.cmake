@@ -13,8 +13,6 @@ set(CC_RPI_ROOT /opt/cross-pi-gcc-10.2.0-2)
 set(CC_RPI_GCC ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-gcc)
 set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-g++)
 set(CC_RPI_LIBS ${CC_RPI_ROOT}/arm-linux-gnueabihf/libc)
-set(CMAKE_SYSROOT ${CC_RPI_LIBS})
-
 
 # specify the cross compiler
 SET(CMAKE_C_COMPILER   ${CC_RPI_GCC})
