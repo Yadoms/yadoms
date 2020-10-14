@@ -19,10 +19,10 @@
    Yadoms.btnKind = Object.freeze({ yesNo: 0, okCancel: 1, confirmCancel: 2 });
    Object.freeze(Yadoms.btnKind);
 
-   Yadoms.showConfirmModal = function (kindOfBtn, title, text, confirmCallBack, cancelCallback) {
+   Yadoms.showConfirmModal = function (kindOfBtn, title, textOrHtml, confirmCallBack, cancelCallback) {
       assert(kindOfBtn !== undefined, "kindOfBtn must be defined and a value of enum btnKind");
       assert(title !== undefined, "title must be defined. Set to null to use default confirmation title");
-      assert(text !== undefined, "text must be defined.");
+      assert(textOrHtml !== undefined, "text must be defined.");
       assert($.isFunction(confirmCallBack), "confirmCallBack must be defined.");
       
       $modal = $("div#confirmation-modal");
@@ -33,7 +33,7 @@
       }
 
       //we set text
-      $modal.find("div.modal-body").text(text);
+      $modal.find("div.modal-body").html(textOrHtml);
 
       //we set btn text
       switch (kindOfBtn) {

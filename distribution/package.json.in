@@ -1,9 +1,10 @@
 {
-	"yadoms": {
-		"information": {
-			"version": "__version__",
-			"releaseDate": "__gitdate__",
-			"commandToRun": "update.cmd"
-		}
-	}
+   "yadoms": {
+      "information": {
+         "version": "__version__",
+         "releaseDate": "__gitdate__",
+         "warningMessage": "Before update, backup your data is highly recommended (see maintenance page).\nAfter update, check Install&Update page because some Yadoms components may need update.",
+         "commandToRun": "update.cmd"
+      }
+   }
 }

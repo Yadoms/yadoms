@@ -351,3 +351,26 @@ body {
    text-align: left;
    border: 0;
 }
+
+.warning-message {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.confirmation-modal-body-warning-icon {
+    font-size: 2em;
+    position: relative;
+    align-self: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.confirmation-modal-body-warning-message {
+    margin: 10px;
+    font-size: 1.2em;
+}
+
+#confirmation-modal-body-message {
+    padding: 10px;
+}
