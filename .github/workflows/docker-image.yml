@@ -115,38 +115,9 @@ jobs:
 #       replacesArtifacts: true
 #       artifacts: "./builds/package/*"
 #       token: ${{ secrets.GITHUB_TOKEN }}     
-        
-  RapsberryPI:
-    name : Generate for RaspberryPI (all versions)
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v3.beta5
-      id: yadoms_build_step
-      with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_raspberrypi:latest
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          privileged: '--privileged'
-          entrypoint: '/entrypoint_docker.sh'
-    - name: Create Release
-      id: create_release
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ github.ref }}
-        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
-        draft: true
-        prerelease: true
-        allowUpdates: true
-        omitNameDuringUpdate: true
-        replacesArtifacts: true
-        artifacts: "./builds/package/*"
-        token: ${{ secrets.GITHUB_TOKEN }}     
-        
+          
   RapsberryPI_10:
-    name : Generate for RPI GCC v10
+    name : Generate for RaspberryPI
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -164,8 +135,8 @@ jobs:
       id: create_release
       uses: ncipollo/release-action@v1
       with:
-        tag: _test_${{ github.ref }}
-        name: _test_${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        tag: ${{ github.ref }}
+        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
         draft: true
         prerelease: true
         allowUpdates: true

@@ -1107,7 +1107,7 @@ target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC
 
 set(CMAKE_EXE_LINKER_FLAGS " -static")
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	target_link_libraries(yadoms -static-libstdc++ )
+	target_link_libraries(yadoms)
   # using Clang
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	target_link_libraries(yadoms -static-libgcc -static-libstdc++ )

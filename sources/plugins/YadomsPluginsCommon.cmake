@@ -136,7 +136,7 @@ MACRO(PLUGIN_LINK _targetName)
       )
 	
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-		target_link_libraries(${_targetName} -static-libstdc++ )
+		target_link_libraries(${_targetName})
 	  # using Clang
 	elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 		target_link_libraries(${_targetName} -static-libgcc -static-libstdc++ )
