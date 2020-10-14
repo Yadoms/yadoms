@@ -14,9 +14,9 @@ jobs:
       uses: Yadoms/build-yadoms-action@v3.beta5
       id: yadoms_build_step
       with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_linux:latest
+          buildImage: ghcr.io/yadoms/build_for_linux:latest
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
     - name: Create Release
       id: create_release
@@ -42,9 +42,9 @@ jobs:
       uses: Yadoms/build-yadoms-action@v3.beta5
       id: yadoms_build_step
       with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_macos:latest
+          buildImage: ghcr.io/yadoms/build_for_macos:latest
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
     - name: Create Release
       id: create_release
@@ -70,9 +70,9 @@ jobs:
       uses: Yadoms/build-yadoms-action@v3.beta5
       id: yadoms_build_step
       with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_synology218p:latest
+          buildImage: ghcr.io/yadoms/build_for_synology218p:latest
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
     - name: Create Release
       id: create_release
@@ -98,7 +98,7 @@ jobs:
 #     uses: Yadoms/build-yadoms-action@v3.beta5
 #     id: yadoms_build_step
 #     with:
-#         buildImage: docker.pkg.github.com/yadoms/docker/build_for_synology212j:latest
+#         buildImage: ghcr.io/yadoms/build_for_synology212j:latest
 #         username: ${{ github.actor }}
 #         password: ${{ secrets.GITHUB_TOKEN }}
 #         entrypoint: '/work/build-scripts/syno212j/entrypoint_docker.sh'
@@ -126,9 +126,9 @@ jobs:
       uses: Yadoms/build-yadoms-action@v3.beta5
       id: yadoms_build_step
       with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_raspberrypi-gcc10:feature-rpigcc10
+          buildImage: ghcr.io/yadoms/build_for_raspberrypi-gcc10:feature-rpigcc10
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
           privileged: '--privileged'
           entrypoint: 'sh /work/build-scripts/raspberrypi/entrypoint_docker.sh'
     - name: Create Release
@@ -156,9 +156,9 @@ jobs:
       uses: Yadoms/build-yadoms-windows-action@v1.beta1
       id: yadoms_build_step
       with:
-          buildImage: yadoms/build_for_windows:latest
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_OAUTH }}
+          buildImage: ghcr.io/yadoms/build_for_windows:latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
     - name: Create Release
       id: create_release
