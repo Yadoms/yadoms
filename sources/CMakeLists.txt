@@ -1249,7 +1249,13 @@ install(FILES ${CMAKE_SOURCE_DIR}/../config/yadoms.ini
 #so just copying boost and poco next to yadoms executable and it will work
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE) 
 if(UNIX AND NOT APPLE)
-   set(CMAKE_EXE_LINKER_FLAGS "-Wl,-rpath='$ORIGIN' ")
+	##specific linker lib for osxcross (cross build for Darwin)
+	if (NOT CMAKE_SYSTEM_NAME MATCHES Darwin)
+		message("@@@@@@@@@@@@ SET RPATH @@@@@@@@@@@@")
+		set(CMAKE_EXE_LINKER_FLAGS "-Wl,-rpath='$ORIGIN' ")
+	else()
+		message("@@@@@@@@@@@@ IGNORE RPATH @@@@@@@@@@@@")
+	endif()	
 endif()
    
 
