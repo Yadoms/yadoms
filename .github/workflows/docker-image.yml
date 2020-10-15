@@ -15,7 +15,7 @@ jobs:
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_linux:latest
-          reistry: ghcr.io
+          registry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
