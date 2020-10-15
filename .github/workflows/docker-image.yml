@@ -11,10 +11,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v3.beta5
+      uses: Yadoms/build-yadoms-action@v4.beta1
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_linux:latest
+          reistry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
@@ -39,10 +40,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v3.beta5
+      uses: Yadoms/build-yadoms-action@v4.beta1
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_macos:latest
+          registry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
@@ -67,10 +69,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v3.beta5
+      uses: Yadoms/build-yadoms-action@v4.beta1
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_synology218p:latest
+          registry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
@@ -95,10 +98,11 @@ jobs:
 #   - name: Checkout code
 #     uses: actions/checkout@v2
 #   - name: Yadoms build script
-#     uses: Yadoms/build-yadoms-action@v3.beta5
+#     uses: Yadoms/build-yadoms-action@v4.beta1
 #     id: yadoms_build_step
 #     with:
 #         buildImage: ghcr.io/yadoms/build_for_synology212j:latest
+#         registry: ghcr.io
 #         username: ${{ github.actor }}
 #         password: ${{ secrets.GITHUB_TOKEN }}
 #         entrypoint: '/work/build-scripts/syno212j/entrypoint_docker.sh'
@@ -123,10 +127,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v3.beta5
+      uses: Yadoms/build-yadoms-action@v4.beta1
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_raspberrypi_gcc10:latest
+          registry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           privileged: '--privileged'
