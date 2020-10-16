@@ -18,7 +18,7 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          entrypoint: '/entrypoint_docker.sh'
+          entrypoint: 'sh /entrypoint_docker.sh'
     - name: Create Release
       id: create_release
       uses: ncipollo/release-action@v1
@@ -47,7 +47,7 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          entrypoint: '/entrypoint_docker.sh'
+          entrypoint: 'sh /entrypoint_docker.sh'
     - name: Create Release
       id: create_release
       uses: ncipollo/release-action@v1
@@ -76,7 +76,7 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          entrypoint: '/entrypoint_docker.sh'
+          entrypoint: 'sh /entrypoint_docker.sh'
     - name: Create Release
       id: create_release
       uses: ncipollo/release-action@v1
@@ -120,7 +120,7 @@ jobs:
 #       artifacts: "./builds/package/*"
 #       token: ${{ secrets.GITHUB_TOKEN }}     
           
-  RapsberryPI_10:
+  RapsberryPI:
     name : Generate for RaspberryPI
     runs-on: ubuntu-latest
     steps:
@@ -130,12 +130,12 @@ jobs:
       uses: Yadoms/build-yadoms-action@v4.beta1
       id: yadoms_build_step
       with:
-          buildImage: ghcr.io/yadoms/build_for_raspberrypi_gcc10:latest
+          buildImage: ghcr.io/yadoms/build_for_raspberrypi:latest
           registry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           privileged: '--privileged'
-          entrypoint: 'sh /work/build-scripts/raspberrypi/entrypoint_docker.sh'
+          entrypoint: 'sh /entrypoint_docker.sh'
     - name: Create Release
       id: create_release
       uses: ncipollo/release-action@v1
@@ -165,7 +165,7 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
+          entrypoint: 'powershell.exe -Command C:\entrypoint_docker.ps1'
     - name: Create Release
       id: create_release
       uses: ncipollo/release-action@v1
