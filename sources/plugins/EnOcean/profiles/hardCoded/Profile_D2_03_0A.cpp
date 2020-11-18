@@ -23,7 +23,7 @@ const std::string& CProfile_D2_03_0A::profile() const
 
 const std::string& CProfile_D2_03_0A::title() const
 {
-   static const std::string title("Light, Switching + Blind Control - Push Button – Single Button");
+   static const std::string title("Light, Switching + Blind Control - Push Button - Single Button");
    return title;
 }
 

@@ -14,7 +14,7 @@ namespace shared
       public:
          explicit SmallHeaderMessageAssembler(size_t maxPartSize);
 
-         virtual ~SmallHeaderMessageAssembler();
+         virtual ~SmallHeaderMessageAssembler() = default;
 
          // IMessageAssembler Implementation
          void appendPart(boost::shared_ptr<const unsigned char[]> message,
@@ -26,7 +26,7 @@ namespace shared
 
       private:
          void allocFullMessage(size_t partCount);
-         
+
          const size_t m_maxPartSize;
          boost::shared_ptr<unsigned char[]> m_fullMessage;
          size_t m_fullMessageSize;
@@ -35,5 +35,3 @@ namespace shared
       };
    }
 } // namespace shared::communication
-
-
