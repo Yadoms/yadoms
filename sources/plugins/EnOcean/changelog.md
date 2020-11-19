@@ -1,5 +1,5 @@
 ### 2.0.0
-* Update profiles definition to v2.6.8, add these profiles :
+* Update profiles definition to [v2.6.8](http://tools.enocean-alliance.org/EEPViewer/), add these profiles :
   * D2-01-15
   * D2-01-16
   * D2-06-50
