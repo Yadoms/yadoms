@@ -82,6 +82,7 @@ if (CMAKE_SYSTEM_NAME MATCHES Darwin)
 	endif()
 endif()
 
+message("@@@@@@@@@@@@@@@@@@@@@@@ Linking with : ${YPYTHON3_WRAPPER_LINK}")
 
 #########################################
 ## Always leave these lines to configure script wrapper correctly

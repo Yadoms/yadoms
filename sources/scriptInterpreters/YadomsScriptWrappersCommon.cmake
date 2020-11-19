@@ -59,6 +59,11 @@ MACRO(SCRIPT_API_WRAPPER_LINK _targetName)
 	  # using Visual Studio C++
 	endif()
 
+	if(CMAKE_CROSSCOMPILING)
+		#Fix RPATH for cross compilation
+		set_target_properties(${_targetName} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+	endif(CMAKE_CROSSCOMPILING)
+					   
 	if(COTIRE_USE)
    
 		if(COTIRE_USE_UNITY)
@@ -70,7 +75,14 @@ MACRO(SCRIPT_API_WRAPPER_LINK _targetName)
       # for this target, precompiled header has no real sense
       set_target_properties(${_targetName} PROPERTIES COTIRE_ENABLE_PRECOMPILED_HEADER FALSE)
       
-		cotire(${_targetName})
+      cotire(${_targetName})
+		  
+	   if(COTIRE_USE_UNITY)
+		   if(CMAKE_CROSSCOMPILING)
+			  #Fix RPATH for cross compilation of yadoms_unity
+			  set_target_properties(${_targetName}_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+		   endif(CMAKE_CROSSCOMPILING)
+	   endif() 	  
 	endif()	   
 ENDMACRO()
 
