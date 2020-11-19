@@ -13,6 +13,12 @@
 * Update LibCurl (7.72.0)
 
 
+### 2.4.0-beta.6
+
+#### Yadoms
+* Fix #708 : Fix crash when display graph with a lot of data 
+
+
 ### 2.4.0-beta.5
 
 #### Yadoms
