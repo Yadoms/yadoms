@@ -293,14 +293,19 @@ namespace web
                   if (allData.empty())
                      return CResult::GenerateSuccess(shared::CDataContainer::EmptyContainer);
 
-                  auto result = shared::CDataContainer::make(32, allData.size());
-                  result->createArray("data");
-
+                  boost::shared_ptr<shared::CDataContainer> result;
                   for (auto& i : allData)
                   {
                      auto currentVal = shared::CDataContainer::make();
                      currentVal->set("date", boost::posix_time::to_iso_string(i.get<0>()));
                      currentVal->set("key", i.get<1>());
+
+                     if (!result)
+                     {
+                        result = shared::CDataContainer::make(sizeof(currentVal), allData.size());
+                        result->createArray("data");
+                     }
+
                      result->appendArray("data", currentVal);
                   }
                   return CResult::GenerateSuccess(result);
