@@ -200,9 +200,19 @@ void CPhilipsHue::init()
 {
    if (m_configuration.getPairingMode() == kAuto)
    {
-      fillHuesInformations();
-      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
-      startReadingBridgeButtonState();
+      try
+      {
+         fillHuesInformations();
+         m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
+         startReadingBridgeButtonState();
+      }
+      catch (const std::exception& exception)
+      {
+         m_api->setPluginState(yApi::historization::EPluginState::kCustom, "BridgesNotFound");
+         const auto message = "cannot found hue bridge :";
+         YADOMS_LOG(error) << message << exception.what();
+         throw std::runtime_error(message);
+      }
    }
    else
    {
@@ -252,8 +262,10 @@ void CPhilipsHue::fillHuesInformations()
    }
    catch (const std::exception& exception)
    {
-      YADOMS_LOG(error) << "cannot found hue bridge :" << exception.what();
-      throw;
+      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "BridgesNotFound");
+      const auto message = "cannot found hue bridge :";
+      YADOMS_LOG(error) << message << exception.what();
+      throw std::runtime_error(message);
    }
 }
 

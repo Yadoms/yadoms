@@ -30,7 +30,8 @@
          "askToPressBridgeButton": "Merci d'appuyer sur le bouton du philips hue bridge! Vous avez 30 secondes",
          "askToPressBridgeButtonTimeout": "le button du bridge n'est pas enfoncé : timeout!, Vous pouvez relancer la recherche en utilisant les actions du plugins",
          "BridgesSearchInProgress": "Recherche des bridges en cours...",
-         "BridgesFound": "Les bridges sont trouvés!"
+         "BridgesFound": "Les bridges sont trouvés!",
+         "BridgesNotFound": "Les bridges ne sont pas trouvés"
       }
    },
    "extraQueries": {
