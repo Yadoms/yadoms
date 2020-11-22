@@ -80,6 +80,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                                             kEvtKeyStateReceived);
 
             m_usbDeviceInformation.reset();
+            clearKeysMap();
 
             initDevice(api);
 
@@ -152,6 +153,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   auto keyIndex = extraQuery->getData()->data()->get<int>(
                      "dynamicKeyIndex");
 
+
                   auto customText = extraQuery->getData()->data()->get<std::string>(
                      "customText");
 
@@ -169,6 +171,8 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
 
                   auto img = fileFromClient.getContent();
+
+                  eraseKeysFromMap(keyIndex);
 
                   m_deviceManager->setKeyImage(img, keyIndex, customText);
 
@@ -287,6 +291,8 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                ISetDeviceConfiguration>>();
             auto config = deviceConfiguration->configuration();
             YADOMS_LOG(information) << "Configuration = " << config->serialize();
+
+            clearKeysMap();
 
             auto pluginPath = api->getInformation()->getPath().string();
             auto keyCounter = 0;
@@ -429,4 +435,25 @@ std::string CStreamDeck::getImgFromFile(std::string& iconPath)
    secondKeyFileManager.close();
 
    return img;
+}
+
+void CStreamDeck::eraseKeysFromMap(int& keyIndex)
+{
+   const auto firstKeyDataIterator = firstKeyData.find(keyIndex);
+   const auto secondKeyDataIterator = secondKeyData.find(keyIndex);
+   // erase a key from the map if the key already exist
+   if (firstKeyDataIterator != firstKeyData.end())
+   {
+      firstKeyData.erase(firstKeyDataIterator);
+      if (secondKeyDataIterator != secondKeyData.end())
+      {
+         secondKeyData.erase(secondKeyDataIterator);
+      }
+   }
+}
+
+void CStreamDeck::clearKeysMap()
+{
+   firstKeyData.clear();
+   secondKeyData.clear();
 }
