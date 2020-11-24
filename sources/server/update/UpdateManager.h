@@ -56,7 +56,7 @@ namespace update
                                              boost::shared_ptr<shared::CDataContainer> availableVersions,
                                              bool includePrereleases) const;
       boost::shared_ptr<shared::CDataContainer> buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
-                                             boost::shared_ptr<shared::CDataContainer> available_versions,
+                                             boost::shared_ptr<shared::CDataContainer> availableVersions,
                                              bool includePrereleases) const;
       boost::shared_ptr<shared::CDataContainer> buildWidgetList(const worker::CWidget::AvailableWidgetMap& localVersions,
                                              boost::shared_ptr<shared::CDataContainer> available_versions,
@@ -69,7 +69,7 @@ namespace update
                                                  boost::shared_ptr<shared::CDataContainer> available_versions,
                                                  bool includePrereleases) const;
       boost::shared_ptr<shared::CDataContainer> addUpdateablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
-                                                  boost::shared_ptr<shared::CDataContainer> available_versions,
+                                                  boost::shared_ptr<shared::CDataContainer> availableVersions,
                                                   bool includePrereleases) const;
       static boost::shared_ptr<shared::CDataContainer> addNewPlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                                   boost::shared_ptr<shared::CDataContainer> available_versions,
@@ -78,22 +78,22 @@ namespace update
                                                   boost::shared_ptr<shared::CDataContainer> available_versions,
                                                   bool includePrereleases) const;
       static boost::shared_ptr<shared::CDataContainer> addNewWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
-                                                  boost::shared_ptr<shared::CDataContainer> available_versions,
+                                                  boost::shared_ptr<shared::CDataContainer> availableVersions,
                                                   bool includePrereleases);
       boost::shared_ptr<shared::CDataContainer> addUpdateableScriptInterpreters(
          const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
-         boost::shared_ptr<shared::CDataContainer> available_versions,
+         boost::shared_ptr<shared::CDataContainer> availableVersions,
          bool includePrereleases) const;
       static boost::shared_ptr<shared::CDataContainer> addNewScriptInterpreters(
          const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
-         boost::shared_ptr<shared::CDataContainer> available_versions,
+         boost::shared_ptr<shared::CDataContainer> availableVersions,
          bool includePrereleases);
       static boost::shared_ptr<shared::CDataContainer> buildUpdateableVersionsNode(const std::string& installed,
                                                                 std::map<std::string, boost::shared_ptr<shared::CDataContainer>> older,
                                                                 std::map<std::string, boost::shared_ptr<shared::CDataContainer>> newer);
       static boost::shared_ptr<shared::CDataContainer> buildNewVersionsNode(const std::map<std::string, boost::shared_ptr<shared::CDataContainer>>& newItemAvailableVersions);
       void notifyNewUpdateAvailable() const;
-      static bool checkDependencies(boost::shared_ptr<shared::CDataContainer> item_version_node);
+      static bool checkDependencies(boost::shared_ptr<shared::CDataContainer> itemVersionNode);
       std::string findMd5HashAssociatedTo(const std::string& downloadUrl,
                                           const std::string& allUpdatesNode) const;
 
