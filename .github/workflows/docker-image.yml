@@ -10,13 +10,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v3.beta5
+      uses: Yadoms/build-yadoms-action@v4.beta1
       id: yadoms_build_step
       with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_linux:latest
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          entrypoint: '/entrypoint_docker.sh'
+          buildImage: ghcr.io/yadoms/build_for_linux:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
+          entrypoint: 'sh /entrypoint_docker.sh'
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
@@ -42,13 +43,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v3.beta5
+      uses: Yadoms/build-yadoms-action@v4.beta1
       id: yadoms_build_step
       with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_macos:latest
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          entrypoint: '/entrypoint_docker.sh'
+          buildImage: ghcr.io/yadoms/build_for_macos:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
+          entrypoint: 'sh /entrypoint_docker.sh'
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
@@ -74,13 +76,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v3.beta5
+      uses: Yadoms/build-yadoms-action@v4.beta1
       id: yadoms_build_step
       with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_synology218p:latest
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          entrypoint: '/entrypoint_docker.sh'
+          buildImage: ghcr.io/yadoms/build_for_synology218p:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
+          entrypoint: 'sh /entrypoint_docker.sh'
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
@@ -106,14 +109,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v3.beta5
+      uses: Yadoms/build-yadoms-action@v4.beta1
       id: yadoms_build_step
       with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_raspberrypi:latest
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          buildImage: ghcr.io/yadoms/build_for_raspberrypi:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
           privileged: '--privileged'
-          entrypoint: '/entrypoint_docker.sh'
+          entrypoint: 'sh /entrypoint_docker.sh'
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
@@ -139,16 +143,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-windows-action@v1.beta1
+      uses: Yadoms/build-yadoms-windows-action@v2.beta2
       id: yadoms_build_step
       with:
-          buildImage: yadoms/build_for_windows:latest
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_OAUTH }}
-          entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
+          buildImage: ghcr.io/yadoms/build_for_windows:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
+          entrypoint: 'powershell.exe -Command C:\entrypoint_docker.ps1'
     - name: Get tag/branch name
       id: vars
-      run: Write-Host "::set-output name=tag::$( $env:GITHUB_REF -replace '^ref/.*/(.*)$','$1')"
+      run: Write-Host "::set-output name=tag::$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')"
+      shell: powershell
+    - name: List content
+      run:  |
+        Get-ChildItem -Path "./builds/package/"
+        Write-Host ($env:GITHUB_REF)
+        Write-Host "Tag = $( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')"
       shell: powershell
     - name: Create Release (on Tag only)
       id: create_release
