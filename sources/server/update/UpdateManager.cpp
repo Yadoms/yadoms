@@ -393,10 +393,10 @@ namespace update
 
             item->set("iconUrl", (localVersion.second->getPath() / "icon.png").generic_string());
 
+            // Use maps to sort versions list
             std::map<std::string, boost::shared_ptr<shared::CDataContainer>> older;
-            // Pass by a map to sort versions list
             std::map<std::string, boost::shared_ptr<shared::CDataContainer>> newer;
-            // Pass by a map to sort versions list
+
             if (availableVersions->exists(moduleType))
             {
                if (availableVersions->exists(moduleType + ".changelogUrl"))
@@ -564,46 +564,53 @@ namespace update
 
             item->set("iconUrl", (widgetPath / "preview.png").generic_string());
 
+            // Use maps to sort versions list
             std::map<std::string, boost::shared_ptr<shared::CDataContainer>> older;
-            // Pass by a map to sort versions list
             std::map<std::string, boost::shared_ptr<shared::CDataContainer>> newer;
-            // Pass by a map to sort versions list
+
             if (availableVersions->exists(moduleType))
             {
                if (availableVersions->exists(moduleType + ".changelogUrl"))
                   item->set("changelogUrl", availableVersions->get<std::string>(moduleType + ".changelogUrl"));
 
-               try
+               if (availableVersions->getWithDefault<bool>(moduleType + ".obsolete", false))
                {
-                  const auto availableVersionsForItem = availableVersions->get<std::vector<boost::shared_ptr<shared::
-                     CDataContainer>>>(moduleType + ".versions");
-                  for (auto& version : availableVersionsForItem)
-                  {
-                     shared::versioning::CSemVer v(version->get<std::string>("version"));
-
-                     // Don't add prereleases versions if not asked
-                     if (!v.getPrerelease().empty() && !includePrereleases)
-                        continue;
-
-                     if (v == localVersion.second->getVersion())
-                        continue;
-
-                     if (!checkDependencies(version))
-                        continue;
-
-                     auto versionData = shared::CDataContainer::make();
-                     versionData->set("downloadUrl", version->get<std::string>("downloadUrl"));
-
-                     if (v < localVersion.second->getVersion())
-                        older[version->get<std::string>("version")] = versionData;
-                     else
-                        newer[version->get<std::string>("version")] = versionData;
-                  }
+                  item->set("obsolete", true);
                }
-               catch (std::exception& exception)
+               else
                {
-                  YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
-                  YADOMS_LOG(debug) << "exception : " << exception.what();
+                  try
+                  {
+                     const auto availableVersionsForItem = availableVersions->get<std::vector<boost::shared_ptr<shared::
+                        CDataContainer>>>(moduleType + ".versions");
+                     for (auto& version : availableVersionsForItem)
+                     {
+                        shared::versioning::CSemVer v(version->get<std::string>("version"));
+
+                        // Don't add prereleases versions if not asked
+                        if (!v.getPrerelease().empty() && !includePrereleases)
+                           continue;
+
+                        if (v == localVersion.second->getVersion())
+                           continue;
+
+                        if (!checkDependencies(version))
+                           continue;
+
+                        auto versionData = shared::CDataContainer::make();
+                        versionData->set("downloadUrl", version->get<std::string>("downloadUrl"));
+
+                        if (v < localVersion.second->getVersion())
+                           older[version->get<std::string>("version")] = versionData;
+                        else
+                           newer[version->get<std::string>("version")] = versionData;
+                     }
+                  }
+                  catch (std::exception& exception)
+                  {
+                     YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
+                     YADOMS_LOG(debug) << "exception : " << exception.what();
+                  }
                }
             }
 
@@ -633,7 +640,10 @@ namespace update
       for (const auto& moduleType : availableVersions->getKeys())
       {
          if (localVersions.find(moduleType) != localVersions.end())
-            continue; // Module already installed
+            continue; // Module already installed         
+
+         if (availableVersions->getWithDefault<bool>(moduleType + ".obsolete", false))
+            continue; // Don't propose obsolete modules
 
          // Pass by a map to sort versions list
          std::map<std::string, boost::shared_ptr<shared::CDataContainer>> newModuleAvailableVersions;
@@ -729,37 +739,44 @@ namespace update
                if (availableVersions->exists(moduleType + ".changelogUrl"))
                   item->set("changelogUrl", availableVersions->get<std::string>(moduleType + ".changelogUrl"));
 
-               try
+               if (availableVersions->getWithDefault<bool>(moduleType + ".obsolete", false))
                {
-                  const auto availableVersionsForItem =
-                     availableVersions->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>(moduleType + ".versions");
-                  for (auto& version : availableVersionsForItem)
-                  {
-                     shared::versioning::CSemVer v(version->get<std::string>("version"));
-
-                     // Don't add prereleases versions if not asked
-                     if (!v.getPrerelease().empty() && !includePrereleases)
-                        continue;
-
-                     if (v == localVersion.second->getVersion())
-                        continue;
-
-                     if (!checkDependencies(version))
-                        continue;
-
-                     auto versionData = shared::CDataContainer::make();
-                     versionData->set("downloadUrl", version->get<std::string>("downloadUrl"));
-
-                     if (v < localVersion.second->getVersion())
-                        older[version->get<std::string>("version")] = versionData;
-                     else
-                        newer[version->get<std::string>("version")] = versionData;
-                  }
+                  item->set("obsolete", true);
                }
-               catch (std::exception& exception)
+               else
                {
-                  YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
-                  YADOMS_LOG(debug) << "exception : " << exception.what();
+                  try
+                  {
+                     const auto availableVersionsForItem =
+                        availableVersions->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>(moduleType + ".versions");
+                     for (auto& version : availableVersionsForItem)
+                     {
+                        shared::versioning::CSemVer v(version->get<std::string>("version"));
+
+                        // Don't add prereleases versions if not asked
+                        if (!v.getPrerelease().empty() && !includePrereleases)
+                           continue;
+
+                        if (v == localVersion.second->getVersion())
+                           continue;
+
+                        if (!checkDependencies(version))
+                           continue;
+
+                        auto versionData = shared::CDataContainer::make();
+                        versionData->set("downloadUrl", version->get<std::string>("downloadUrl"));
+
+                        if (v < localVersion.second->getVersion())
+                           older[version->get<std::string>("version")] = versionData;
+                        else
+                           newer[version->get<std::string>("version")] = versionData;
+                     }
+                  }
+                  catch (std::exception& exception)
+                  {
+                     YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
+                     YADOMS_LOG(debug) << "exception : " << exception.what();
+                  }
                }
             }
 
@@ -792,6 +809,9 @@ namespace update
          if (localVersions.find(moduleType) != localVersions.end())
             continue; // Module already installed
 
+         if (availableVersions->getWithDefault<bool>(moduleType + ".obsolete", false))
+            continue; // Don't propose obsolete modules
+         //
          // Pass by a map to sort versions list
          std::map<std::string, boost::shared_ptr<shared::CDataContainer>> newModuleAvailableVersions;
          try
