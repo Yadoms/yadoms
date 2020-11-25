@@ -1,3 +1,8 @@
+### 2.4.0-beta.7
+
+#### Github
+* Fix GithubActions to generate releases
+
 ### 2.4.0-beta.6
 
 #### Yadoms
