@@ -760,10 +760,19 @@
 
         $line.find("em.local-version").text(isNullOrUndefined(item.versions.installed) ? "" : item.versions.installed);
 
-        var newestVersionLabel = (isNullOrUndefined(item.versions.newest) || $.isEmptyObject(item.versions.newest)) ?
-            "" : Object.keys(item.versions.newest)[0];
-        $line.find("em.latest-version").text(newestVersionLabel);
-        $line.find("span.latest-installable-version").text(newestVersionLabel);
+        if (!isNullOrUndefined(item.obsolete) && item.obsolete) {
+            // Deprecated item
+            $line.find("em.latest-version").addClass("fas fa-cross");
+            $line.find("em.latest-version").text("  " + $.t("modals.dashboard.sub-windows.install-update.generic.obsolete"));
+        } else {
+            // Valid item
+            var newestVersionLabel = (isNullOrUndefined(item.versions.newest) || $.isEmptyObject(item.versions
+                .newest)) ?
+                "" : Object.keys(item.versions.newest)[0];
+            $line.find("em.latest-version").removeClass("fas fa-cross");
+            $line.find("em.latest-version").text(newestVersionLabel);
+            $line.find("span.latest-installable-version").text(newestVersionLabel);
+        }
 
         // Create a combo
         var $cbVersion = $line.find("ul.versions");

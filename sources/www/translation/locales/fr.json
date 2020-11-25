@@ -789,7 +789,8 @@
                   "confirmInstallTitle": "Confirmation d'installation",
                   "confirmInstall": "Installer {{objectName}} en version {{version}} ?",
                   "confirmRemoveTitle": "Confirmer la désinstallation",
-                  "confirmRemove": "Désinstaller {{objectName}} ?"
+                  "confirmRemove": "Désinstaller {{objectName}} ?",
+                  "obsolete": "Obsolète"
                },
                "plugins": {
                   "title": "Plugins"
