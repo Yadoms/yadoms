@@ -286,38 +286,59 @@ namespace web
                   if (parameters.size() > 4)
                      timeTo = boost::posix_time::from_iso_string(parameters[4]);
 
+                  YADOMS_LOG(debug) << "getKeywordData : for " << keywordId
+                     << ", timeFrom " << (timeFrom.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeFrom))
+                     << ", timeTo " << (timeTo.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeTo));
+
                   auto allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId,
                                                                                            timeFrom,
                                                                                            timeTo);
+
+                  YADOMS_LOG(debug) << "getKeywordData : m_dataProvider->getAcquisitionRequester()->getKeywordData returns " << allData.size() << " records";
 
                   if (allData.empty())
                      return CResult::GenerateSuccess(shared::CDataContainer::EmptyContainer);
 
                   boost::shared_ptr<shared::CDataContainer> result;
+                  YADOMS_LOG(debug) << "1";
+                  auto index = 0;
                   for (auto& i : allData)
                   {
+                     YADOMS_LOG(debug) << index++ << ".1";
                      auto currentVal = shared::CDataContainer::make();
-                     currentVal->set("date", boost::posix_time::to_iso_string(i.get<0>()));
+                     YADOMS_LOG(debug) << index++ << ".2";
+                     currentVal->set("date", to_iso_string(i.get<0>()));
+                     YADOMS_LOG(debug) << index++ << ".3";
                      currentVal->set("key", i.get<1>());
 
+                     YADOMS_LOG(debug) << index++ << ".4";
                      if (!result)
                      {
-                        result = shared::CDataContainer::make(sizeof(currentVal), allData.size());
+                        YADOMS_LOG(debug) << index++ << ".4.1";
+                        result = shared::CDataContainer::make(sizeof currentVal * 2, allData.size());
+                        YADOMS_LOG(debug) << index++ << ".4.2";
                         result->createArray("data");
                      }
 
+                     YADOMS_LOG(debug) << index++ << ".5";
                      result->appendArray("data", currentVal);
                   }
-                  return CResult::GenerateSuccess(result);
+                  YADOMS_LOG(debug) << "2";
+                  auto r = CResult::GenerateSuccess(result);
+                  YADOMS_LOG(debug) << "3";
+                  return r;
                }
+               YADOMS_LOG(error) << "getKeywordData : invalid parameter. Can not retrieve parameters in url";
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
+               YADOMS_LOG(error) << "getKeywordData : " << ex.what();
                return CResult::GenerateError(ex);
             }
             catch (...)
             {
+               YADOMS_LOG(error) << "getKeywordData : unknown exception in reading device data";
                return CResult::GenerateError("unknown exception in reading device data");
             }
          }
@@ -378,11 +399,17 @@ namespace web
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
+                  YADOMS_LOG(debug) << "getKeywordDataByHour : for " << keywordId
+                     << ", timeFrom " << (timeFrom.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeFrom))
+                     << ", timeTo " << (timeTo.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeTo));
+
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByHour(keywordId,
                                                                                                            timeFrom,
                                                                                                            timeTo);
 
-                  boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
+                  YADOMS_LOG(debug) << "getKeywordDataByHour : m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByHour returns " << allData.size() << " records";
+
+                  auto result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
@@ -418,11 +445,17 @@ namespace web
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
+                  YADOMS_LOG(debug) << "getKeywordDataByDay : for " << keywordId
+                     << ", timeFrom " << (timeFrom.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeFrom))
+                     << ", timeTo " << (timeTo.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeTo));
+
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByDay(keywordId,
                                                                                                           timeFrom,
                                                                                                           timeTo);
 
-                  boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
+                  YADOMS_LOG(debug) << "getKeywordDataByDay : m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByDay returns " << allData.size() << " records";
+
+                  auto result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
@@ -458,10 +491,17 @@ namespace web
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
+                  YADOMS_LOG(debug) << "getKeywordDataByMonth : for " << keywordId
+                     << ", timeFrom " << (timeFrom.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeFrom))
+                     << ", timeTo " << (timeTo.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeTo));
+
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByMonth(keywordId,
                                                                                                             timeFrom,
                                                                                                             timeTo);
-                  boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
+
+                  YADOMS_LOG(debug) << "getKeywordDataByMonth : m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByMonth returns " << allData.size() << " records";
+
+                  auto result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
@@ -497,10 +537,17 @@ namespace web
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
+                  YADOMS_LOG(debug) << "getKeywordDataByYear : for " << keywordId
+                     << ", timeFrom " << (timeFrom.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeFrom))
+                     << ", timeTo " << (timeTo.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeTo));
+
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByYear(keywordId,
                                                                                                            timeFrom,
                                                                                                            timeTo);
-                  boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
+
+                  YADOMS_LOG(debug) << "getKeywordDataByYear : m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByYear returns " << allData.size() << " records";
+
+                  auto result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
