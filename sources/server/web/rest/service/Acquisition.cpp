@@ -267,6 +267,15 @@ namespace web
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CAcquisition::getKeywordData(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
+         {
+            YADOMS_LOG(debug) << "getKeywordData ==> START";
+            const auto r = getKeywordDataInternal(parameters, requestContent);
+            YADOMS_LOG(debug) << "getKeywordData ==> END";
+            return r;
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAcquisition::getKeywordDataInternal(const std::vector<std::string>& parameters,
                                                                                                   const std::string& requestContent) const
          {
             try
@@ -301,26 +310,18 @@ namespace web
 
                   boost::shared_ptr<shared::CDataContainer> result;
                   YADOMS_LOG(debug) << "1";
-                  auto index = 0;
                   for (auto& i : allData)
                   {
-                     YADOMS_LOG(debug) << index++ << ".1";
                      auto currentVal = shared::CDataContainer::make();
-                     YADOMS_LOG(debug) << index++ << ".2";
                      currentVal->set("date", to_iso_string(i.get<0>()));
-                     YADOMS_LOG(debug) << index++ << ".3";
                      currentVal->set("key", i.get<1>());
 
-                     YADOMS_LOG(debug) << index++ << ".4";
                      if (!result)
                      {
-                        YADOMS_LOG(debug) << index++ << ".4.1";
                         result = shared::CDataContainer::make(sizeof currentVal * 2, allData.size());
-                        YADOMS_LOG(debug) << index++ << ".4.2";
                         result->createArray("data");
                      }
 
-                     YADOMS_LOG(debug) << index++ << ".5";
                      result->appendArray("data", currentVal);
                   }
                   YADOMS_LOG(debug) << "2";
