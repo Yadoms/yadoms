@@ -1,3 +1,8 @@
+### 2.4.0-beta.8
+
+#### Script api wrappers
+* Fix Windows build
+
 ### 2.4.0-beta.7
 
 #### Github
