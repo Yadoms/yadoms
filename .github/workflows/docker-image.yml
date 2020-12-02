@@ -150,12 +150,6 @@ jobs:
       id: vars
       run: Write-Host "::set-output name=tag::$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')"
       shell: powershell
-    - name: List content
-      run:  |
-        Get-ChildItem -Path "./builds/package/"
-        Write-Host ($env:GITHUB_REF)
-        Write-Host "Tag = $( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')"
-      shell: powershell
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
