@@ -1,9 +1,8 @@
-name: Docker Image CI
+name: Binaries generation
 
 on: push
 
 jobs:
-
   linux:
     name : Generate for Linux
     runs-on: ubuntu-latest
@@ -18,12 +17,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
-    - name: Create Release
+    - name: Get tag/branch name
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
+      if: contains(github.ref, 'refs/tags/')
       with:
         tag: ${{ github.ref }}
-        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        name: ${{ steps.vars.outputs.tag }}
         draft: true
         prerelease: true
         allowUpdates: true
@@ -46,12 +49,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
-    - name: Create Release
+    - name: Get tag/branch name
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
+      if: contains(github.ref, 'refs/tags/')
       with:
         tag: ${{ github.ref }}
-        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        name: ${{ steps.vars.outputs.tag }}
         draft: true
         prerelease: true
         allowUpdates: true
@@ -74,12 +81,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
-    - name: Create Release
+    - name: Get tag/branch name
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
+      if: contains(github.ref, 'refs/tags/')
       with:
         tag: ${{ github.ref }}
-        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        name: ${{ steps.vars.outputs.tag }}
         draft: true
         prerelease: true
         allowUpdates: true
@@ -103,12 +114,16 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           privileged: '--privileged'
           entrypoint: '/entrypoint_docker.sh'
-    - name: Create Release
+    - name: Get tag/branch name
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
+      if: contains(github.ref, 'refs/tags/')
       with:
         tag: ${{ github.ref }}
-        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        name: ${{ steps.vars.outputs.tag }}
         draft: true
         prerelease: true
         allowUpdates: true
@@ -131,12 +146,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_OAUTH }}
           entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
-    - name: Create Release
+    - name: Get tag/branch name
+      id: vars
+      run: Write-Host "::set-output name=tag::$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')"
+      shell: powershell
+    - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
+      if: contains(github.ref, 'refs/tags/')
       with:
         tag: ${{ github.ref }}
-        name: ${{ steps.yadoms_build_step.outputs.yadomsVersion }}
+        name: ${{ steps.vars.outputs.tag }}
         draft: true
         prerelease: true
         allowUpdates: true
