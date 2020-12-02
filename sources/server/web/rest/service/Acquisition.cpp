@@ -319,15 +319,19 @@ namespace web
                      if (!result)
                      {
                         result = shared::CDataContainer::make(sizeof currentVal * 2, allData.size());
-                        result->createArray("data");
+						result->set("result", true);
+						result->set("message", std::string());
+                        result->createArray("data.data");
                      }
 
-                     result->appendArray("data", currentVal);
+                     result->appendArray("data.data", currentVal);
                   }
-                  YADOMS_LOG(debug) << "2";
+                  
+				  /*YADOMS_LOG(debug) << "2";
                   auto r = CResult::GenerateSuccess(result);
                   YADOMS_LOG(debug) << "3";
-                  return r;
+                  return r;*/
+				  return result;
                }
                YADOMS_LOG(error) << "getKeywordData : invalid parameter. Can not retrieve parameters in url";
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
