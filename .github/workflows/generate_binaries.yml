@@ -25,8 +25,8 @@ jobs:
       with:
         name: Linx-Binaries
         path: |
-          builds
-          !builds/package/*     
+          ./builds
+          !./builds/package/*     
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -64,8 +64,8 @@ jobs:
       with:
         name: MacOSX-Binaries
         path: |
-          builds
-          !builds/package/*     
+          ./builds
+          !./builds/package/*     
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -103,8 +103,8 @@ jobs:
       with:
         name: Synology218p-Binaries
         path: |
-          builds
-          !builds/package/*  
+          ./builds
+          ./!builds/package/*  
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -143,8 +143,8 @@ jobs:
       with:
         name: RapsberryPI-Binaries
         path: |
-          builds
-          !builds/package/*  
+          ./builds
+          ./!builds/package/*  
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -183,8 +183,8 @@ jobs:
       with:
         name: Windows-Binaries
         path: |
-          builds
-          !builds/package/*  
+          ./builds
+          !./builds/package/*  
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
