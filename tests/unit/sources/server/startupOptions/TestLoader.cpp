@@ -103,8 +103,8 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       CStartupOptionMockup(int argc, char* argv[], bool unixStyle)
          : m_options(m_config)
       {
-         m_config.add(new Poco::Util::SystemConfiguration, Poco::Util::Application::PRIO_SYSTEM, false, false);
-         m_config.add(new Poco::Util::MapConfiguration, Poco::Util::Application::PRIO_APPLICATION, true, false);
+         m_config.add(new Poco::Util::SystemConfiguration, Poco::Util::Application::PRIO_SYSTEM, false);
+         m_config.add(new Poco::Util::MapConfiguration, Poco::Util::Application::PRIO_APPLICATION, true);
 
          Poco::Util::OptionSet os;
          m_options.defineOptions(os);
