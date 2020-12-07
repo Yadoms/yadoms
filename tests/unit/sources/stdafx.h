@@ -49,5 +49,3 @@
 
 #include <boost/tuple/tuple.hpp>
 
-//for EnOcean plugin
-#include <boost/dynamic_bitset.hpp>

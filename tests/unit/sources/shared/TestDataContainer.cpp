@@ -1610,7 +1610,8 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 {
-   shared::CDataContainer whole(30, 10000);
+   int itemCount = 100000;
+   auto whole = boost::make_shared< shared::CDataContainer>(30, itemCount);
 
    unsigned int i = 0;
    boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
@@ -1619,16 +1620,21 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
       DEBUG_HEAP_INIT();
       DEBUG_HEAP_PRINT("Init");
 
-      for (i = 0; i < 10000; ++i)
+      for (i = 0; i < itemCount; ++i)
       {
          shared::CDataContainer result(30,2);
          std::string dt = boost::posix_time::to_iso_string(t1);
          result.set("date", dt);
          result.set("key", std::to_string(fRand(0, 1000)));
-         whole.set(dt, result);
+         whole->set(dt, result);
          t1 += boost::posix_time::seconds(1);
-         DEBUG_HEAP_PRINT("Next");
       }
+
+      DEBUG_HEAP_PRINT("Avant");
+
+      auto k = web::rest::CResult::GenerateSuccess(whole);
+
+      DEBUG_HEAP_PRINT("Après");
    }
    catch (...)
    {
