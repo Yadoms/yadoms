@@ -17,9 +17,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
-    - name: Get tag/branch name
-      id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: list
+      run: |
+        ls -al
+        pwd
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
