@@ -12,9 +12,9 @@ cat sources/CMakeListsUserConfig.txt
 echo "Create makefile"
 sh cmake_linux_tests.sh m
 
-echo "Build Yadoms"
+echo "Building Yadoms unit tests"
 cd projects
-make all_unity
+make all
 cd -
 
 cd builds
