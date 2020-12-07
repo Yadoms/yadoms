@@ -20,6 +20,13 @@ jobs:
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Linx-Binaries
+        path: |
+          builds
+          !builds/package/*     
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -52,6 +59,13 @@ jobs:
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: MacOSX-Binaries
+        path: |
+          builds
+          !builds/package/*     
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -84,6 +98,13 @@ jobs:
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Synology218p-Binaries
+        path: |
+          builds
+          !builds/package/*  
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -117,6 +138,13 @@ jobs:
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: RapsberryPI-Binaries
+        path: |
+          builds
+          !builds/package/*  
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -150,6 +178,13 @@ jobs:
       id: vars
       run: Write-Host "::set-output name=tag::$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')"
       shell: powershell
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows-Binaries
+        path: |
+          builds
+          !builds/package/*  
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
