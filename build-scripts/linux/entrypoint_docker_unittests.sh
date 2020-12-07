@@ -10,7 +10,7 @@ echo "Display config content"
 cat sources/CMakeListsUserConfig.txt
 
 echo "Create makefile"
-sh cmake_linux.sh m
+sh cmake_linux_tests.sh m
 
 echo "Build Yadoms"
 cd projects
