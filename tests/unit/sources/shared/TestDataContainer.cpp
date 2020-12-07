@@ -1451,7 +1451,7 @@ template <typename T>
 void CHECK_MAPS(const std::map<std::string, T>& input, const std::map<std::string, T>& output)
 {
    BOOST_CHECK_EQUAL(input.size(), output.size());
-   std::map<std::string, T>::const_iterator io = output.begin();
+   auto io = output.begin();
    for (const auto& ii : input)
    {
       BOOST_CHECK_EQUAL(ii.first, io->first);
@@ -1466,7 +1466,7 @@ template <typename T>
 void CHECK_MAPS_SHARED_PTR(const std::map<std::string, boost::shared_ptr<T>>& input, const std::map<std::string, boost::shared_ptr<T>>& output)
 {
    BOOST_CHECK_EQUAL(input.size(), output.size());
-   std::map<std::string, boost::shared_ptr<T>>::const_iterator io = output.begin();
+   auto io = output.begin();
    for (const auto& ii : input)
    {
       BOOST_CHECK_EQUAL(ii.first, io->first);
@@ -1552,19 +1552,24 @@ char* get_human_readable_size(double size/*in bytes*/) {
    return __global_buffer_human_readable_test;
 }
 
-#define DEBUG_HEAP_INIT() \
-   _CrtMemState a;\
-   _CrtMemState b;\
-   _CrtMemCheckpoint(&a);\
-   _CrtMemCheckpoint(&b)
+#ifdef WIN32
+   #define DEBUG_HEAP_INIT() \
+      _CrtMemState a;\
+      _CrtMemState b;\
+      _CrtMemCheckpoint(&a);\
+      _CrtMemCheckpoint(&b)
 
-#define DEBUG_HEAP_PRINT(title) \
-      if(i%1000 == 0 || i<10)  {\
-               _CrtMemCheckpoint(&a);\
-               std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << std::endl; \
-               memcpy(&b, &a, sizeof(a)); \
-      }
-
+   #define DEBUG_HEAP_PRINT(title) \
+         if(i%1000 == 0 || i<10)  {\
+                  _CrtMemCheckpoint(&a);\
+                  std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << std::endl; \
+                  memcpy(&b, &a, sizeof(a)); \
+         }
+#else
+   //todo
+   #define DEBUG_HEAP_INIT()
+   #define DEBUG_HEAP_PRINT(title)
+#endif
 
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
