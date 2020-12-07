@@ -1571,11 +1571,11 @@ char* get_human_readable_size(double size/*in bytes*/) {
    #define DEBUG_HEAP_INIT() \
       struct mallinfo a; \
       struct mallinfo b; \
-      a = mallinfo();
+      a = mallinfo(); \
       b = mallinfo()
 
    #define DEBUG_HEAP_PRINT(title) \
-         if (i % 1000 == 0 || i < 10) {
+         if (i % 1000 == 0 || i < 10) { \
             \
                a = mallinfo(); \
                std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.uordblks) << "(" << a.uordblks << "). Diff = " << (a.uordblks - b.uordblks) << std::endl; \
