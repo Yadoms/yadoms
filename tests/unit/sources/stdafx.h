@@ -48,3 +48,6 @@
 #include <boost/thread/recursive_mutex.hpp>
 
 #include <boost/tuple/tuple.hpp>
+
+//for EnOcean plugin
+#include <boost/dynamic_bitset.hpp>
