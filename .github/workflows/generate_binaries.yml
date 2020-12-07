@@ -17,10 +17,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
-    - name: list
-      run: |
-        ls -al
-        pwd
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -62,9 +58,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: MacOSX-Binaries
-        path: |
-          ./builds
-          !./builds/package/*     
+        path: ./builds    
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -101,9 +95,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Synology218p-Binaries
-        path: |
-          ./builds
-          ./!builds/package/*  
+        path: ./builds  
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -141,9 +133,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: RapsberryPI-Binaries
-        path: |
-          ./builds
-          ./!builds/package/*  
+        path: ./builds   
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -181,9 +171,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Windows-Binaries
-        path: |
-          ./builds
-          !./builds/package/*  
+        path: ./builds    
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1

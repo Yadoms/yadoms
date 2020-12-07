@@ -1,4 +1,4 @@
-name: Binaries generation
+name: Unit tests
 
 on: push
 
@@ -16,5 +16,5 @@ jobs:
           buildImage: docker.pkg.github.com/yadoms/docker/build_for_linux:latest
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          entrypoint: '/work/build-scripts/linux/entrypoint_docker_unittests.sh'
+          entrypoint: 'sh /work/build-scripts/linux/entrypoint_docker_unittests.sh'
  
