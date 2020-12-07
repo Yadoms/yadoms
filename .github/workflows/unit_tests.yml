@@ -1,0 +1,20 @@
+name: Binaries generation
+
+on: push
+
+jobs:
+  linux:
+    name : Generate for Linux
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Yadoms build script
+      uses: Yadoms/build-yadoms-action@v3.beta5
+      id: yadoms_build_step
+      with:
+          buildImage: docker.pkg.github.com/yadoms/docker/build_for_linux:latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          entrypoint: '/work/build-scripts/linux/entrypoint_docker_unittests.sh'
+ 
