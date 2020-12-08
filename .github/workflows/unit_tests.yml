@@ -9,7 +9,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Yadoms build script
+    - name: Generate unittests binary
       uses: Yadoms/build-yadoms-action@v4.beta1
       id: yadoms_build_step
       with:
@@ -18,4 +18,7 @@ jobs:
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /work/build-scripts/linux/entrypoint_docker_unittests.sh'
+    - name: Run unit tests
+      run: builds/yadomsTests
+
  

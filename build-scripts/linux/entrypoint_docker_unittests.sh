@@ -17,5 +17,3 @@ cd projects
 make all
 cd -
 
-cd builds
-./yadomsTests
