@@ -19,6 +19,9 @@ jobs:
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /work/build-scripts/linux/entrypoint_docker_unittests.sh'
     - name: Run unit tests
-      run: cd builds && ls -al && ./yadomsTests
+      run: |
+        echo "Running unittests for yadoms ${{ steps.yadoms_build_step.outputs.yadomsVersion }}"
+        cd tests/unit/builds
+        ./yadomsTests
 
  
