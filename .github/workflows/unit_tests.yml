@@ -4,7 +4,7 @@ on: push
 
 jobs:
   linux:
-    name : Generate for Linux
+    name : Unit tests for Linux
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -19,6 +19,6 @@ jobs:
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /work/build-scripts/linux/entrypoint_docker_unittests.sh'
     - name: Run unit tests
-      run: pwd && ls -al && builds/yadomsTests
+      run: cd builds && ls -al && ./yadomsTests
 
  
