@@ -100,13 +100,24 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    class CStartupOptionMockup
    {
    public:
-      CStartupOptionMockup(int argc, char* argv[], bool unixStyle)
-         : m_options(m_config)
+      class CMyConf : public Poco::Util::MapConfiguration
       {
-         m_config.add(new Poco::Util::SystemConfiguration, Poco::Util::Application::PRIO_SYSTEM, false);
-         m_config.add(new Poco::Util::MapConfiguration, Poco::Util::Application::PRIO_APPLICATION, true);
+      public:
+         CMyConf()
+         {
+         }
 
-         Poco::Util::OptionSet os;
+         virtual ~CMyConf()
+         {
+         }
+      };
+
+      Poco::Util::OptionSet os;
+
+      CStartupOptionMockup(int argc, char* argv[], bool unixStyle)
+         :m_config(new CMyConf), m_options(*(m_config.get()))
+      {
+         
          m_options.defineOptions(os);
          Poco::Util::OptionProcessor processor(os);
          processor.setUnixStyle(unixStyle);
@@ -123,6 +134,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
             }
          }
          processor.checkRequired();
+         
       }
 
       startupOptions::CStartupOptions& options()
@@ -130,7 +142,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
          return m_options;
       }
 
-      Poco::Util::AbstractConfiguration& config()
+      Poco::AutoPtr<Poco::Util::AbstractConfiguration>& config()
       {
          return m_config;
       }
@@ -145,7 +157,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
          }
          if (!option.binding().empty())
          {
-            m_config.setString(std::string(option.binding()), std::string(value));
+            m_config->setString(std::string(option.binding()), std::string(value));
          }
          if (option.callback())
          {
@@ -154,21 +166,8 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       }
 
 
+      Poco::AutoPtr<Poco::Util::AbstractConfiguration> m_config;
       startupOptions::CStartupOptions m_options;
-
-      class CMyConf : public Poco::Util::LayeredConfiguration
-      {
-      public:
-         CMyConf()
-         {
-         }
-
-         virtual ~CMyConf()
-         {
-         }
-      };
-
-      CMyConf m_config;
    };
 
 

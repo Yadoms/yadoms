@@ -13,20 +13,16 @@ const boost::shared_ptr<shared::CDataContainer> conf = shared::CDataContainer::m
 
 BOOST_AUTO_TEST_CASE(ReadFakePluginDefaultConfiguration)
 {
+	std::string configPath = "../../../sources/plugins/dev-FakePlugin/package.in.json";
 	// Need to copy the package.json file from fakePlugin, needed by initializeWith method to get default configuration
-	if (boost::filesystem::exists(  "../../../sources/plugins/dev-FakePlugin/package.in.json")) {
-		boost::filesystem::copy_file("../../../sources/plugins/dev-FakePlugin/package.in.json", "package.json", boost::filesystem::copy_option::overwrite_if_exists);
+	if (!boost::filesystem::exists(configPath)) {
+		configPath = "../../../../sources/plugins/dev-FakePlugin/package.in.json";
+		if (!boost::filesystem::exists(configPath)) {
+			BOOST_ERROR("dev-FakePlugin/package.in.json not found");
+		}
 	}
-	else if (boost::filesystem::exists("../../../../sources/plugins/dev-FakePlugin/package.in.json")) {
-		boost::filesystem::copy_file(   "../../../../sources/plugins/dev-FakePlugin/package.in.json", "package.json", boost::filesystem::copy_option::overwrite_if_exists);
-	}
-	else
-	{
-		BOOST_ERROR("dev-FakePlugin/package.in.json not found");
-	}
-
 	CFakePluginConfiguration cfg;
-	cfg.initializeWith(conf, boost::filesystem::path("package.json"));
+	cfg.initializeWith(conf, boost::filesystem::path(configPath));
 
 	BOOST_CHECK_EQUAL(cfg.getEnumParameter(), static_cast<EEnumType>(kEnumValue1));
 }
