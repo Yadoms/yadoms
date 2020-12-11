@@ -17,3 +17,4 @@ cd projects
 make all
 cd -
 
+chmod 777 -R /work/tests/unit/builds
