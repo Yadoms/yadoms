@@ -1082,6 +1082,7 @@ namespace shared
          //--------------------------------------------------------------
          static T getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
+	    std::cout << "helper<T>::getInternal : " << parameterName << std::endl;
             return tree->getInternal<T>(parameterName, pathChar);
          }
 
@@ -1687,6 +1688,8 @@ namespace shared
    template<class T>
    T CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
    {
+      std::cout << "hCDataContainer::getInternal : " << parameterName << std::endl;
+            
       rapidjson::Value* found = findValue(parameterName, pathChar);
       if (found)
          return convert<T>(found);
@@ -2220,7 +2223,9 @@ namespace shared
    template<>
    inline int CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
-      if(ptrValue)
+      std::cout << "hCDataContainer::convert int32" << std::endl;
+
+	   if(ptrValue)
          return convertToInt(*ptrValue);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
@@ -2228,6 +2233,8 @@ namespace shared
    template<>
    inline int64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
+      std::cout << "hCDataContainer::convert int64" << std::endl;
+	   
       if(ptrValue)
          return convertToInt64(*ptrValue);
       throw exception::CInvalidParameter("Fail to convert NULL value");
@@ -2252,6 +2259,8 @@ namespace shared
    template<>
    inline unsigned int CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
+      std::cout << "hCDataContainer::convert uint32" << std::endl;
+	   
       if(ptrValue)
          return convertToUInt(*ptrValue);
       throw exception::CInvalidParameter("Fail to convert NULL value");
@@ -2260,6 +2269,7 @@ namespace shared
    template<>
    inline uint64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
+      std::cout << "hCDataContainer::convert uint64" << std::endl;
       if(ptrValue)
          return convertToUInt64(*ptrValue);
       throw exception::CInvalidParameter("Fail to convert NULL value");
