@@ -1683,13 +1683,21 @@ namespace shared
       set<std::string>(parameterName, s, pathChar);
    }
 
-
+#include <type_traits>
 
    template<class T>
    T CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
    {
       std::cout << "hCDataContainer::getInternal : " << parameterName << std::endl;
-            
+      if (std::is_same<T, int64_t>::value)
+	      std::cout << "hCDataContainer::getInternal<int64_t> : " << parameterName << std::endl;
+      if (std::is_same<T, int>::value)
+	      std::cout << "hCDataContainer::getInternal<int> : " << parameterName << std::endl;
+      if (std::is_same<T, uint64_t>::value)
+	      std::cout << "hCDataContainer::getInternal<uint64_t> : " << parameterName << std::endl;
+      if (std::is_same<T, unsigned int>::value)
+	      std::cout << "hCDataContainer::getInternal<unsigned int> : " << parameterName << std::endl;
+	   
       rapidjson::Value* found = findValue(parameterName, pathChar);
       if (found)
          return convert<T>(found);
@@ -2199,6 +2207,15 @@ namespace shared
    template<class T>
    T CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
+      if (std::is_same<T, int64_t>::value)
+	      std::cout << "hCDataContainer::convert generic int64" << std::endl;
+      if (std::is_same<T, int>::value)
+	      std::cout << "hCDataContainer::convert generic int" << std::endl;
+      if (std::is_same<T, uint64_t>::value)
+	      std::cout << "hCDataContainer::convert generic uint64" << std::endl;
+      if (std::is_same<T, unsigned int>::value)
+	      std::cout << "hCDataContainer::convert generic uint" << std::endl;
+	   	   
       if(ptrValue)
          return ptrValue->Get<T>();
       throw exception::CInvalidParameter("Fail to convert NULL value");
