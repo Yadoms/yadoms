@@ -690,11 +690,19 @@ namespace shared
 
 	int64_t CDataContainer::convertToInt64(const rapidjson::Value & v)
 	{
+		std::cout << "Converting to Int64..." << std::endl;
+		
 		if (v.IsInt64())
+		{
+			std::cout << "Found Int64, get value..." << std::endl;
 			return v.GetInt64();
+		}
+		std::cout << "Converting to Int64... value not an int64" << std::endl;
+
 
 		if (v.IsUint64())
 		{
+			std::cout << "Found UInt64, try to convert to Int64..." << std::endl;
 			const uint64_t b = v.GetUint64();
 			if (b > INT64_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to int64") % b).str());
@@ -703,12 +711,14 @@ namespace shared
 
 		if (v.IsUint())
 		{
+			std::cout << "Found unsigned int, try to convert to Int64..." << std::endl;
 			const unsigned int b = v.GetUint();
 			return static_cast<int64_t>(b);
 		}
 
 		if (v.IsInt())
 		{
+			std::cout << "Found int, try to convert to Int64..." << std::endl;
 			const int b = v.GetInt();
 			return static_cast<int64_t>(b);
 		}
