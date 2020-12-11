@@ -1081,6 +1081,13 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
 
    //check some out of range
 
+   std::cout << "Size of int = " << sizeof(int) << std::endl;
+   std::cout << "Size of uint = " << sizeof(unsigned int) << std::endl;
+   std::cout << "Size of int64 = " << sizeof(int64_t) << std::endl;
+   std::cout << "Size of uint64 = " << sizeof(uint64_t) << std::endl;
+   
+   std::cout << "Limits: testing char" << std::endl;
+
    BOOST_CHECK_EQUAL(c.get<char>("char_min"), INT8_MIN);
    BOOST_CHECK_EQUAL(c.get<char>("char_max"), INT8_MAX);
    BOOST_CHECK_THROW(c.get<char>("uchar_max"), shared::exception::COutOfRange);
@@ -1094,6 +1101,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<char>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<char>("uint64_max"), shared::exception::COutOfRange);
 
+   std::cout << "Limits: testing unsigned char" << std::endl;
+   
    BOOST_CHECK_THROW(c.get<unsigned char>("char_min"), shared::exception::COutOfRange);
    BOOST_CHECK_EQUAL(c.get<unsigned char>("char_max"), INT8_MAX);
    BOOST_CHECK_EQUAL(c.get<unsigned char>("uchar_max"), UINT8_MAX);
@@ -1107,6 +1116,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<unsigned char>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<unsigned char>("uint64_max"), shared::exception::COutOfRange);
 
+   std::cout << "Limits: testing short" << std::endl;
+   
    BOOST_CHECK_EQUAL(c.get<short>("char_min"), INT8_MIN);
    BOOST_CHECK_EQUAL(c.get<short>("char_max"), INT8_MAX);
    BOOST_CHECK_EQUAL(c.get<short>("uchar_max"), UINT8_MAX);
@@ -1119,6 +1130,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<short>("int64_min"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<short>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<short>("uint64_max"), shared::exception::COutOfRange);
+
+   std::cout << "Limits: testing unsigned short" << std::endl;
 
    BOOST_CHECK_THROW(c.get<unsigned short>("char_min"), shared::exception::COutOfRange);
    BOOST_CHECK_EQUAL(c.get<unsigned short>("char_max"), INT8_MAX);
@@ -1133,6 +1146,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<unsigned short>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<unsigned short>("uint64_max"), shared::exception::COutOfRange);
 
+   std::cout << "Limits: testing int" << std::endl;
+   
    BOOST_CHECK_EQUAL(c.get<int>("char_min"), INT8_MIN);
    BOOST_CHECK_EQUAL(c.get<int>("char_max"), INT8_MAX);
    BOOST_CHECK_EQUAL(c.get<int>("uchar_max"), UINT8_MAX);
@@ -1145,6 +1160,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<int>("int64_min"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<int>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<int>("uint64_max"), shared::exception::COutOfRange);
+
+   std::cout << "Limits: testing unsigned int" << std::endl;
 
    BOOST_CHECK_THROW(c.get<unsigned int>("char_min"), shared::exception::COutOfRange);
    BOOST_CHECK_EQUAL(c.get<unsigned int>("char_max"), static_cast<unsigned int>(INT8_MAX));
@@ -1159,6 +1176,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<unsigned int>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<unsigned int>("uint64_max"), shared::exception::COutOfRange);
 
+   std::cout << "Limits: testing int64_t" << std::endl;
+
    BOOST_CHECK_EQUAL(c.get<int64_t>("char_min"), INT8_MIN);
    BOOST_CHECK_EQUAL(c.get<int64_t>("char_max"), INT8_MAX);
    BOOST_CHECK_EQUAL(c.get<int64_t>("uchar_max"), UINT8_MAX);
@@ -1171,6 +1190,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_EQUAL(c.get<int64_t>("int64_min"), INT64_MIN);
    BOOST_CHECK_EQUAL(c.get<int64_t>("int64_max"), INT64_MAX);
    BOOST_CHECK_THROW(c.get<int64_t>("uint64_max"), shared::exception::COutOfRange);
+
+   std::cout << "Limits: testing uint64_t" << std::endl;
 
    BOOST_CHECK_THROW(c.get<uint64_t>("char_min"), shared::exception::COutOfRange);
    BOOST_CHECK_EQUAL(c.get<uint64_t>("char_max"), INT8_MAX);
@@ -1651,7 +1672,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 
       auto k = web::rest::CResult::GenerateSuccess(whole);
 
-      DEBUG_HEAP_PRINT("Après");
+      DEBUG_HEAP_PRINT("AprÃ¨s");
    }
    catch (...)
    {
