@@ -21,7 +21,6 @@ jobs:
     - name: Run unit tests
       run: |
         echo "Running unittests for yadoms ${{ steps.yadoms_build_step.outputs.yadomsVersion }}"
-        chmod 777 -R tests/unit/builds
         ls -al tests/unit/builds
         cd tests/unit/builds
         ./yadomsTests
