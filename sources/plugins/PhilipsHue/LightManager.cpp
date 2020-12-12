@@ -272,8 +272,8 @@ void CLightManager::setLightColorUsingXy(const std::string& hexRgb)
 
    shared::CDataContainer body;
    body.set("on", true);
-   body.set("xy.0", xy.x);
-   body.set("xy.1", xy.y);
+   body.set("xy.0", xy.getX());
+   body.set("xy.1", xy.getY());
 
    setLightState(lightUrl, body);
 }

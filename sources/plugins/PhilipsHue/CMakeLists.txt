@@ -27,6 +27,14 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 	Hue.h
 	ColorConverter.h
 	ColorConverter.cpp
+	HueInformations.h
+	HueInformations.cpp
+	Rgb.h
+	Rgb.cpp
+	Hsv.h
+	Hsv.cpp
+	Xy.h
+	Xy.cpp
 )
 
 #########################################
