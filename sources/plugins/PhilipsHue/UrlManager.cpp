@@ -5,7 +5,7 @@ const std::string CUrlManager::GetAllLightsPath("/lights");
 const std::string CUrlManager::DescriptionPath("/description.xml");
 const std::string CUrlManager::LightStatePath("/state");
 
-CUrlManager::CUrlManager(HueInformations& hueInformations, CConfiguration& configuration)
+CUrlManager::CUrlManager(CHueInformations& hueInformations, CConfiguration& configuration)
    : m_hueInformations(hueInformations),
      m_configuration(configuration)
 {
@@ -48,8 +48,18 @@ std::string CUrlManager::getPatternUrl(const std::string& urlPatternPath) const
 {
    const auto protocolType = "http://";
    const auto ipAddress = m_configuration.getPairingMode() == EPairingMode::kAuto
-                             ? m_hueInformations.ip
+                             ? m_hueInformations.getIp()
                              : m_configuration.getIPAddress();
 
    return protocolType + ipAddress + urlPatternPath;
+}
+
+std::string CUrlManager::getUsername() const
+{
+   return m_username;
+}
+
+void CUrlManager::setUsername(std::string& username)
+{
+   m_username = username;
 }

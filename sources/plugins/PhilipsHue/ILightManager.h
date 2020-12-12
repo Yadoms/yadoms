@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Hue.h"
 class ILightManager
 {
 public:

@@ -2,6 +2,7 @@
 #include "IHueBridgeDiscovery.h"
 #include "UrlManager.h"
 #include "Hue.h"
+#include "Entities/HueInformations.h"
 
 class CHueBridgeDiscovery : public IHueBridgeDiscovery
 {
@@ -10,8 +11,8 @@ public:
    CHueBridgeDiscovery();
    virtual ~CHueBridgeDiscovery() = default;
 
-   std::vector<HueInformations> FindBridges() override;
-   HueInformations getHueInformations() override;
+   std::vector<CHueInformations> FindBridges() override;
+   CHueInformations getHueInformations() override;
 
 private:
    static std::string getIpAddress(const std::string& urlBase);

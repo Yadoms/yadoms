@@ -13,7 +13,7 @@ CHueBridgeDiscovery::CHueBridgeDiscovery()
 {
 }
 
-std::vector<HueInformations> CHueBridgeDiscovery::FindBridges()
+std::vector<CHueInformations> CHueBridgeDiscovery::FindBridges()
 {
    auto foundBridges = shared::http::ssdp::
       CDiscoverService::discover("service:hue", std::chrono::seconds(30));
@@ -22,14 +22,14 @@ std::vector<HueInformations> CHueBridgeDiscovery::FindBridges()
    {
       throw std::runtime_error("No response from the device: wrong ip or no device listening on this network");
    }
-   std::vector<HueInformations> hueInformations;
-   HueInformations bridgeInformations;
+   std::vector<CHueInformations> hueInformations;
+   CHueInformations bridgeInformations;
    for (const auto& foundBridge : foundBridges)
    {
-      bridgeInformations.ip = getIpAddress(foundBridge->xmlContent()->get<std::string>("root.URLBase"));
-      bridgeInformations.friendlyName = foundBridge->xmlContent()->get<std::string>("root.device.friendlyName");
-      bridgeInformations.modelName = foundBridge->xmlContent()->get<std::string>("root.device.modelName");
-      bridgeInformations.modelNumber = foundBridge->xmlContent()->get<std::string>("root.device.modelNumber");
+      bridgeInformations.setIp(getIpAddress(foundBridge->xmlContent()->get<std::string>("root.URLBase")));
+      bridgeInformations.setFriendlyName(foundBridge->xmlContent()->get<std::string>("root.device.friendlyName"));
+      bridgeInformations.setModelName(foundBridge->xmlContent()->get<std::string>("root.device.modelName"));
+      bridgeInformations.setModelNumber(foundBridge->xmlContent()->get<std::string>("root.device.modelNumber"));
       hueInformations.push_back(bridgeInformations);
    }
    return hueInformations;
@@ -44,21 +44,24 @@ std::string CHueBridgeDiscovery::getIpAddress(const std::string& urlBase)
 
    return match[1].str();
 }
-HueInformations CHueBridgeDiscovery::getHueInformations()
+
+CHueInformations CHueBridgeDiscovery::getHueInformations()
 {
-   HueInformations bridgeInformations;
+   CHueInformations bridgeInformations;
    try
    {
       const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kDescription);
       const auto descriptionUrl = m_urlManager->getPatternUrl(urlPatternPath);
 
-      boost::shared_ptr<shared::http::ssdp::IDiscoveredDevice> devicesDescription = 
-         boost::make_shared<shared::http::ssdp::CDiscoveredDevice>(shared::http::CHttpMethods::sendGetRequest(descriptionUrl)); 
+      boost::shared_ptr<shared::http::ssdp::IDiscoveredDevice> devicesDescription =
+         boost::make_shared<shared::http::ssdp::CDiscoveredDevice>(
+            shared::http::CHttpMethods::sendGetRequest(descriptionUrl));
 
-      bridgeInformations.ip = getIpAddress(devicesDescription->xmlContent()->get<std::string>("root.URLBase"));
-      bridgeInformations.friendlyName = devicesDescription->xmlContent()->get<std::string>("root.device.friendlyName");
-      bridgeInformations.modelName = devicesDescription->xmlContent()->get<std::string>("root.device.modelName");
-      bridgeInformations.modelNumber = devicesDescription->xmlContent()->get<std::string>("root.device.modelNumber");
+      bridgeInformations.setIp(getIpAddress(devicesDescription->xmlContent()->get<std::string>("root.URLBase")));
+      bridgeInformations.
+         setFriendlyName(devicesDescription->xmlContent()->get<std::string>("root.device.friendlyName"));
+      bridgeInformations.setModelName(devicesDescription->xmlContent()->get<std::string>("root.device.modelName"));
+      bridgeInformations.setModelNumber(devicesDescription->xmlContent()->get<std::string>("root.device.modelNumber"));
    }
    catch (std::exception& e)
    {
