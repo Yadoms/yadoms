@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include "Rgb.h"
-#include "Hsv.h"
-#include "Xy.h"
+#include "Entities/Rgb.h"
+#include "Entities/Hsv.h"
+#include "Entities/Xy.h"
 #define MIN_F(a, b, c)  (fminf(a, fminf(b, c)))
 #define MAX_F(a, b, c)  (fmaxf(a, fmaxf(b, c)))
 

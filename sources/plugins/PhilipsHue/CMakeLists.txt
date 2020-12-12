@@ -27,20 +27,21 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 	Hue.h
 	ColorConverter.h
 	ColorConverter.cpp
-	HueInformations.h
-	HueInformations.cpp
-	Rgb.h
-	Rgb.cpp
-	Hsv.h
-	Hsv.cpp
-	Xy.h
-	Xy.cpp
+	Entities/HueInformations.h
+	Entities/HueInformations.cpp
+	Entities/Rgb.h
+	Entities/Rgb.cpp
+	Entities/Hsv.h
+	Entities/Hsv.cpp
+	Entities/Xy.h
+	Entities/Xy.cpp
 )
 
 #########################################
 ## Place here all additional groups (solution folder)
 #########################################
 source_group(sources ./*.*)
+source_group(sources\\Entities Entities/*.*)
 
 #########################################
 ## Place here all additional include directories
