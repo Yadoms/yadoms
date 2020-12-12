@@ -35,6 +35,26 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 	Entities/Hsv.cpp
 	Entities/Xy.h
 	Entities/Xy.cpp
+	Entities/HueLightInformations.h
+	Entities/HueLightInformations.cpp
+	Entities/HueState.h
+	Entities/HueState.cpp
+	Entities/HueSwUpdate.h
+	Entities/HueSwUpdate.cpp
+	Entities/HueCapabilities.h
+	Entities/HueCapabilities.cpp
+	Entities/HueControl.h
+	Entities/HueControl.cpp
+	Entities/HueColorGamut.h
+	Entities/HueColorGamut.cpp
+	Entities/HueCt.h
+	Entities/HueCt.cpp
+	Entities/HueStreaming.h
+	Entities/HueStreaming.cpp
+	Entities/HueConfig.h
+	Entities/HueConfig.cpp
+	Entities/HueStartUp.h
+	Entities/HueStartUp.cpp
 )
 
 #########################################
