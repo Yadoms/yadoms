@@ -31,6 +31,14 @@ private:
    static CHueCapabilities getHueLightInformationsCapabilities(boost::shared_ptr<shared::CDataContainer>& response);
    static CHueConfig getHueLightInformationsConfig(boost::shared_ptr<shared::CDataContainer>& response);
 
+   static CHueState getHueLightInformationsStateById(int& lightId, boost::shared_ptr<shared::CDataContainer>& response);
+   static CHueSwUpdate getHueLightInformationsSwUpdateById(int& lightId,
+                                                           boost::shared_ptr<shared::CDataContainer>& response);
+   static CHueCapabilities getHueLightInformationsCapabilitiesById(int& lightId,
+                                                                   boost::shared_ptr<shared::CDataContainer>& response);
+   static CHueConfig getHueLightInformationsConfigById(int& lightId,
+                                                       boost::shared_ptr<shared::CDataContainer>& response);
+
    static void setLightState(const std::string& lightUrl, shared::CDataContainer& body);
 
    void setNewLights(const boost::system::error_code& errorCode);
