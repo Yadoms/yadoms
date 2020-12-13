@@ -44,7 +44,7 @@ private:
 
 	boost::shared_ptr<yApi::historization::CEvent> m_keyStateEvent;
 
-	boost::shared_ptr<UsbDeviceInformation> m_usbDeviceInformation;
+	boost::shared_ptr<CUsbDeviceInformation> m_usbDeviceInformation;
 
 	std::map<int, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> m_keywords;
 

@@ -33,6 +33,9 @@ if(OpenCV_FOUND)
 			DefaultIconSelector.cpp
 			FileManager.h
 			FileManager.cpp
+			Entities/UsbDeviceInformation.cpp
+			Entities/UsbDeviceInformation.h
+			StreamDeckEnum.h
 		)
 		if(WIN32)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
@@ -77,6 +80,7 @@ if(OpenCV_FOUND)
 		## Place here all additional groups (solution folder)
 		#########################################
 		source_group(sources ./*.*)
+		source_group(sources\\Entities Entities/*.*)
 
 		#########################################
 		## Place here all additional include directories

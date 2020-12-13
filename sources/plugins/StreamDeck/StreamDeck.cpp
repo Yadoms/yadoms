@@ -112,7 +112,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtKeyStateReceived:
          {
             auto keyIndex = api->getEventHandler().getEventData<int>();
-            api->historizeData(m_usbDeviceInformation->deviceName, m_keywords[keyIndex]);
+            api->historizeData(m_usbDeviceInformation->getDeviceName(), m_keywords[keyIndex]);
             handleKeyData(keyIndex);
             break;
          }
@@ -122,8 +122,8 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
             if (request->getData().getQuery() == "keyCreation")
             {
-               auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->keyCols,
-                                                           m_usbDeviceInformation->keyRows);
+               auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->getKeyCols(),
+                                                           m_usbDeviceInformation->getKeyRows());
 
                auto result = shared::CDataContainer::make();
                result->set("values", keys);
@@ -208,8 +208,8 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             mainSection.set("type", "section");
             mainSection.set("i18nKey", "mainSection");
 
-            auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->keyCols,
-                                                        m_usbDeviceInformation->keyRows);
+            auto keys = CDeviceManagerHelper::buildKeys(m_usbDeviceInformation->getKeyCols(),
+                                                        m_usbDeviceInformation->getKeyRows());
 
             auto defaultIconsNames = CDefaultIconSelector::getAllDefaultIconNames();
 
@@ -350,15 +350,15 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CStreamDeck::declareDeviceAndKeywords(boost::shared_ptr<yApi::IYPluginApi>& api)
 
 {
-   for (auto i = 0; i < m_usbDeviceInformation->keyCount; ++i)
+   for (auto i = 0; i < m_usbDeviceInformation->getKeyCount(); ++i)
       m_keywords[i] = boost::make_shared<yApi::historization::CEvent>(
          "Key #" + std::to_string(i), shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
-   if (!api->deviceExists(m_usbDeviceInformation->deviceName))
+   if (!api->deviceExists(m_usbDeviceInformation->getDeviceName()))
    {
       const auto keywordsAsVector = CDeviceManagerHelper::mapToHistorizableVector(m_keywords);
 
-      const auto deviceModel = CDeviceManagerHelper::getDeviceModelAsAString(m_usbDeviceInformation->productID);
-      api->declareDevice(m_usbDeviceInformation->deviceName, "keyCreationDynamic",
+      const auto deviceModel = CDeviceManagerHelper::getDeviceModelAsAString(m_usbDeviceInformation->getProductId());
+      api->declareDevice(m_usbDeviceInformation->getDeviceName(), "keyCreationDynamic",
                          deviceModel, keywordsAsVector);
    }
 }

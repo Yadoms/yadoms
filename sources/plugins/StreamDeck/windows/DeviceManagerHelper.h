@@ -1,32 +1,7 @@
 #pragma once
 #include "../Configuration.h"
 #include "shared/plugin/yPluginApi/historization/IHistorizable.h"
-
-class CStreamDeckFactory
-{
-public:
-	enum EStreamDeckModel
-	{
-		kMini,
-		kOriginal,
-		kOriginalV2,
-		kXl,
-		kUnknown
-	};
-};
-
-struct UsbDeviceInformation
-{
-	uint16_t vendorID{};
-	uint16_t productID{};
-	std::string serialNumber;
-	std::string deviceName = "Stream Deck";
-	std::string deviceType;
-	int keyCols;
-	int keyRows;
-	int keyCount;
-	CStreamDeckFactory::EStreamDeckModel deviceModel;
-};
+#include "../Entities/UsbDeviceInformation.h"
 
 struct KeyData
 {
@@ -46,7 +21,7 @@ public:
 
 	static uint16_t stringToUnsignedShort(std::string& value);
 
-	static CStreamDeckFactory::EStreamDeckModel getDeviceModel(uint16_t& productId);
+	static CStreamDeckEnum::EStreamDeckType getDeviceModel(uint16_t productId);
 
 	static std::string findUsbDeviceId(std::string& value, const std::string& identifierToFind);
 
@@ -54,13 +29,13 @@ public:
 
 	static std::vector<std::string> buildKeys(int cols, int rows);
 
-	static int getDeviceKeyCols(uint16_t& productId);
+	static int getDeviceKeyCols(uint16_t productId);
 
-	static int getDeviceKeyRows(uint16_t& productId);
+	static int getDeviceKeyRows(uint16_t productId);
 
-	static int getDeviceKeyCount(uint16_t& productId);
+	static int getDeviceKeyCount(uint16_t productId);
 
-	static boost::shared_ptr<UsbDeviceInformation> getDeviceInformation(CConfiguration& configuration);
+	static boost::shared_ptr<CUsbDeviceInformation> getDeviceInformation(CConfiguration& configuration);
 
 	static unsigned char integerToHex(int& value);
 
@@ -106,7 +81,7 @@ public:
 
 	};
 
-	static std::string getDeviceModelAsAString(uint16_t& productId);
+	static std::string getDeviceModelAsAString(uint16_t productId);
 private:
 
 	static const uint16_t StreamDeckVendorId;

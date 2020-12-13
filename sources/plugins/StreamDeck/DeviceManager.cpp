@@ -23,8 +23,8 @@ CDeviceManager::~CDeviceManager()
 
 void CDeviceManager::open()
 {
-	m_handle = hid_open(CDeviceManagerHelper::getDeviceInformation(m_configuration)->vendorID,
-	                    CDeviceManagerHelper::getDeviceInformation(m_configuration)->productID, nullptr);
+	m_handle = hid_open(CDeviceManagerHelper::getDeviceInformation(m_configuration)->getVendorId(),
+	                    CDeviceManagerHelper::getDeviceInformation(m_configuration)->getProductId(), nullptr);
 
 	if(m_handle == nullptr)
 	{
