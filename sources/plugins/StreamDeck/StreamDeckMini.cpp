@@ -63,7 +63,7 @@ void CStreamDeckMini::setBrightness(int percent)
 }
 
 
-void CStreamDeckMini::setKeyImage(std::string& content, int& keyIndex, std::string& customText)
+void CStreamDeckMini::setKeyImage(std::string content, int& keyIndex, std::string customText)
 {
 	auto data = CImageHelper::stringToVector(content);
 	auto img = CImageHelper::renderKeyImage(data, KeyPixelSize, customText, cv::RotateFlags::ROTATE_90_CLOCKWISE);

@@ -3,13 +3,6 @@
 #include "shared/plugin/yPluginApi/historization/IHistorizable.h"
 #include "../Entities/UsbDeviceInformation.h"
 
-struct KeyData
-{
-	std::string img;
-	std::string customText;
-	bool isAlreadyPressed;
-};
-
 class CDeviceManagerHelper
 {
 public:

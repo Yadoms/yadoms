@@ -35,6 +35,8 @@ if(OpenCV_FOUND)
 			FileManager.cpp
 			Entities/UsbDeviceInformation.cpp
 			Entities/UsbDeviceInformation.h
+			Entities/KeyData.h
+			Entities/KeyData.cpp
 			StreamDeckEnum.h
 		)
 		if(WIN32)

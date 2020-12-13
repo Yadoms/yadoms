@@ -3,6 +3,7 @@
 #include "Configuration.h"
 #include "DeviceManagerHelper.h"
 #include "DefaultIconSelector.h"
+#include "Entities/KeyData.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -48,8 +49,8 @@ private:
 
 	std::map<int, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> m_keywords;
 
-	std::map<int, KeyData> firstKeyData;
-	std::map<int, KeyData> secondKeyData;
+	std::map<int, CKeyData> firstKeyData;
+	std::map<int, CKeyData> secondKeyData;
 
 	void handleKeyData(int& keyIndex);
 	void setKeyData(std::string& img, std::string& customText, int& keyCounter, bool isSecondKey= false);

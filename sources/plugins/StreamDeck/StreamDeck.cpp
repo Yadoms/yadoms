@@ -389,41 +389,42 @@ void CStreamDeck::handleKeyData(int& keyIndex)
    if (firstKeyDataIterator != firstKeyData.end())
    {
       //found value
-      if (!firstKeyDataIterator->second.isAlreadyPressed)
+      if (!firstKeyDataIterator->second.isIsAlreadyPressed())
       {
          if (secondKeyDataIterator != secondKeyData.end())
          {
             // found second key data
-            if (!secondKeyDataIterator->second.isAlreadyPressed)
+            if (!secondKeyDataIterator->second.isIsAlreadyPressed())
             {
-               firstKeyDataIterator->second.isAlreadyPressed = true;
-               m_deviceManager->setKeyImage(secondKeyData.find(keyIndex)->second.img, keyIndex,
-                                            secondKeyData.find(keyIndex)->second.customText);
+               firstKeyDataIterator->second.setIsAlreadyPressed(true);
+               m_deviceManager->setKeyImage(secondKeyData.find(keyIndex)->second.getImg(), keyIndex,
+                                            secondKeyData.find(keyIndex)->second.getCustomText());
             }
          }
       }
       else
       {
-         firstKeyDataIterator->second.isAlreadyPressed = false;
-         m_deviceManager->setKeyImage(firstKeyData.find(keyIndex)->second.img, keyIndex,
-                                      firstKeyData.find(keyIndex)->second.customText);
+         firstKeyDataIterator->second.setIsAlreadyPressed(false);
+         m_deviceManager->setKeyImage(firstKeyData.find(keyIndex)->second.getImg(), keyIndex,
+                                      firstKeyData.find(keyIndex)->second.getCustomText());
       }
    }
 }
 
 void CStreamDeck::setKeyData(std::string& img, std::string& customText, int& keyCounter, bool isSecondKey)
 {
-   KeyData keyData;
-   keyData.img = img;
-   keyData.customText = customText;
-   keyData.isAlreadyPressed = false;
+   CKeyData keyData;
+   keyData.setImg(img);
+   keyData.setCustomText(customText);
+   keyData.setIsAlreadyPressed(false);
+
    if (!isSecondKey)
    {
-      firstKeyData.insert(std::pair<int, KeyData>(keyCounter, keyData));
+      firstKeyData.insert(std::pair<int, CKeyData>(keyCounter, keyData));
    }
    else
    {
-      secondKeyData.insert(std::pair<int, KeyData>(keyCounter, keyData));
+      secondKeyData.insert(std::pair<int, CKeyData>(keyCounter, keyData));
    }
 }
 

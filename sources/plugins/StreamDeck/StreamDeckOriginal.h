@@ -15,7 +15,7 @@ public:
 
 	void setBrightness(int percent) override;
 
-	void setKeyImage(std::string& content, int& keyIndex, std::string& customText) override;
+	void setKeyImage(std::string content, int& keyIndex, std::string customText) override;
 
 	std::pair<bool, int> readKeyStates() override;
 
