@@ -9,9 +9,9 @@ public:
    virtual ~CHueStreaming() = default;
 
    bool isRenderer() const;
-   void setRenderer(bool& renderer);
+   void setRenderer(bool renderer);
    bool isProxy() const;
-   void setProxy(bool& proxy);
+   void setProxy(bool proxy);
 
 private:
 

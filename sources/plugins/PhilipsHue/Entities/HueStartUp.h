@@ -11,7 +11,7 @@ public:
    const std::string& getMode() const;
    void setMode(const std::string& mode);
    bool isConfigured() const;
-   void setConfigured(bool& configured);
+   void setConfigured(bool configured);
 private:
    std::string m_mode;
    bool m_configured;

@@ -4,23 +4,21 @@
 class CHueState
 {
 public:
-   CHueState() = delete;
+   CHueState() = default;
+   CHueState(bool on, int bri, int hue, int sat, const std::string& effect, const CXy& xy, int ct,
+             const std::string& alert, const std::string& colorMode, const std::string& mode, bool reachable);
 
-   CHueState(bool& on, int& bri, int& hue, int& sat, const std::string& effect, const CXy& xy, int& ct,
-             const std::string& alert, const std::string& colorMode, const std::string& mode, bool& reachable);
-   virtual ~CHueState() = default;
-
-   const bool& isOn() const;
-   const int& getBri() const;
-   const int& getHue() const;
-   const int& getSat() const;
-   const std::string& getEffect() const;
-   const CXy& getXy() const;
-   const int& getCt() const;
-   const std::string& getAlert() const;
-   const std::string& getColorMode() const;
-   const std::string& getMode() const;
-   const bool& isReachable() const;
+   bool isOn() const;
+   int getBri() const;
+   int getHue() const;
+   int getSat() const;
+   std::string getEffect() const;
+   CXy getXy() const;
+   int getCt() const;
+   std::string getAlert() const;
+   std::string getColorMode() const;
+   std::string getMode() const;
+   bool isReachable() const;
 
    void setOn(bool on);
    void setBri(int bri);

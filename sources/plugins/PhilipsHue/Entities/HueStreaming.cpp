@@ -11,7 +11,7 @@ bool CHueStreaming::isRenderer() const
    return m_renderer;
 }
 
-void CHueStreaming::setRenderer(bool& renderer)
+void CHueStreaming::setRenderer(bool renderer)
 {
    m_renderer = renderer;
 }
@@ -21,7 +21,7 @@ bool CHueStreaming::isProxy() const
    return m_proxy;
 }
 
-void CHueStreaming::setProxy(bool& proxy)
+void CHueStreaming::setProxy(bool proxy)
 {
    m_proxy = proxy;
 }

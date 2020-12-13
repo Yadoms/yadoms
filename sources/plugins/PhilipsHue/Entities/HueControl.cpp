@@ -16,7 +16,7 @@ const int& CHueControl::getMinDimLevel() const
    return m_minDimLevel;
 }
 
-void CHueControl::setMinDimLevel(int& minDimLevel)
+void CHueControl::setMinDimLevel(int minDimLevel)
 {
    m_minDimLevel = minDimLevel;
 }
@@ -26,7 +26,7 @@ const int& CHueControl::getMaxLumen() const
    return m_maxLumen;
 }
 
-void CHueControl::setMaxLumen(int& maxLumen)
+void CHueControl::setMaxLumen(int maxLumen)
 {
    m_maxLumen = maxLumen;
 }
@@ -36,7 +36,7 @@ const std::string& CHueControl::getColorGamutType() const
    return m_colorGamutType;
 }
 
-void CHueControl::setColorGamutType(std::string& colorGamutType)
+void CHueControl::setColorGamutType(std::string colorGamutType)
 {
    m_colorGamutType = colorGamutType;
 }

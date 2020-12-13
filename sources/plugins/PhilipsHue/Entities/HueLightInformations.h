@@ -8,13 +8,7 @@ class CHueLightInformations
 {
 public:
 
-   CHueLightInformations() = delete;
-
-   CHueLightInformations(const CHueState& state, const CHueSwUpdate& swUpdate, const std::string& type,
-                         const std::string& name, const std::string& modelId, const std::string& manufacturerName,
-                         const std::string& productName, const CHueCapabilities& capabilities, const CHueConfig& config,
-                         const std::string& uniqueId, const std::string& swVersion, const std::string& swConfigId,
-                         const std::string& productId);
+   CHueLightInformations() = default;
 
    virtual ~CHueLightInformations() = default;
 

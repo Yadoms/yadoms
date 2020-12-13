@@ -1,7 +1,7 @@
 ﻿#include "HueState.h"
 
-CHueState::CHueState(bool& on, int& bri, int& hue, int& sat, const std::string& effect, const CXy& xy, int& ct,
-                     const std::string& alert, const std::string& colorMode, const std::string& mode, bool& reachable)
+CHueState::CHueState(bool on, int bri, int hue, int sat, const std::string& effect, const CXy& xy, int ct,
+                     const std::string& alert, const std::string& colorMode, const std::string& mode, bool reachable)
    : m_on(on),
      m_bri(bri),
      m_hue(hue),
@@ -16,57 +16,57 @@ CHueState::CHueState(bool& on, int& bri, int& hue, int& sat, const std::string& 
 {
 }
 
-const bool& CHueState::isOn() const
+bool CHueState::isOn() const
 {
    return m_on;
 }
 
-const int& CHueState::getBri() const
+int CHueState::getBri() const
 {
    return m_bri;
 }
 
-const int& CHueState::getHue() const
+int CHueState::getHue() const
 {
    return m_hue;
 }
 
-const int& CHueState::getSat() const
+int CHueState::getSat() const
 {
    return m_sat;
 }
 
-const std::string& CHueState::getEffect() const
+std::string CHueState::getEffect() const
 {
    return m_effect;
 }
 
-const CXy& CHueState::getXy() const
+CXy CHueState::getXy() const
 {
    return m_xy;
 }
 
-const int& CHueState::getCt() const
+int CHueState::getCt() const
 {
    return m_ct;
 }
 
-const std::string& CHueState::getAlert() const
+std::string CHueState::getAlert() const
 {
    return m_alert;
 }
 
-const std::string& CHueState::getColorMode() const
+std::string CHueState::getColorMode() const
 {
    return m_colorMode;
 }
 
-const std::string& CHueState::getMode() const
+std::string CHueState::getMode() const
 {
    return m_mode;
 }
 
-const bool& CHueState::isReachable() const
+bool CHueState::isReachable() const
 {
    return m_reachable;
 }

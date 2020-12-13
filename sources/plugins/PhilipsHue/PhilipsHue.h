@@ -52,8 +52,8 @@ private:
    boost::shared_ptr<ILightManager> m_lightManager;
    std::vector<boost::shared_ptr<ILightManager>> m_lightManagers;
 
-   std::map<int, HueLightInformations> m_detectedLights;
-   std::vector<std::map<int, HueLightInformations>> m_detectedLightsByBridge;
+   std::map<int, CHueLightInformations> m_detectedLights;
+   std::vector<std::map<int, CHueLightInformations>> m_detectedLightsByBridge;
 
    void closeReadingBridgeButtonState();
    void declareDevice();

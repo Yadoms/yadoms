@@ -9,9 +9,9 @@ public:
    virtual ~CHueCt() = default;
 
    const int& getMin() const;
-   void setMin(int& min);
+   void setMin(int min);
    const int& getMax() const;
-   void setMax(int& max);
+   void setMax(int max);
 private:
    int m_min;
    int m_max;

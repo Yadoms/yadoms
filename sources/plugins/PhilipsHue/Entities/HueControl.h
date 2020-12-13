@@ -13,11 +13,11 @@ public:
    virtual ~CHueControl() = default;
 
    const int& getMinDimLevel() const;
-   void setMinDimLevel(int& minDimLevel);
+   void setMinDimLevel(int minDimLevel);
    const int& getMaxLumen() const;
-   void setMaxLumen(int& maxLumen);
+   void setMaxLumen(int maxLumen);
    const std::string& getColorGamutType() const;
-   void setColorGamutType(std::string& colorGamutType);
+   void setColorGamutType(std::string colorGamutType);
    const CHueColorGamut& getColorGamut() const;
    void setColorGamut(CHueColorGamut& colorGamut);
    const CHueCt& getCt() const;

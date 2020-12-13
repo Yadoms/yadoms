@@ -1,30 +1,5 @@
 ﻿#include "HueLightInformations.h"
 
-CHueLightInformations::CHueLightInformations(const CHueState& state, const CHueSwUpdate& swUpdate,
-                                             const std::string& type,
-                                             const std::string& name, const std::string& modelId,
-                                             const std::string& manufacturerName,
-                                             const std::string& productName, const CHueCapabilities& capabilities,
-                                             const CHueConfig& config,
-                                             const std::string& uniqueId, const std::string& swVersion,
-                                             const std::string& swConfigId,
-                                             const std::string& productId)
-   : m_state(state),
-     m_swUpdate(swUpdate),
-     m_type(type),
-     m_name(name),
-     m_modelId(modelId),
-     m_manufacturerName(manufacturerName),
-     m_productName(productName),
-     m_capabilities(capabilities),
-     m_config(config),
-     m_uniqueId(uniqueId),
-     m_swVersion(swVersion),
-     m_swConfigId(swConfigId),
-     m_productId(productId)
-{
-}
-
 const CHueState& CHueLightInformations::getState() const
 {
    return m_state;

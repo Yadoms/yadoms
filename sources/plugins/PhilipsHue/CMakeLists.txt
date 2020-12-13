@@ -24,7 +24,6 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 	LightManager.h
 	LightManager.cpp
 	ILightManager.h
-	Hue.h
 	ColorConverter.h
 	ColorConverter.cpp
 	Entities/HueInformations.h

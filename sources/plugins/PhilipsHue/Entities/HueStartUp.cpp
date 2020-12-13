@@ -21,7 +21,7 @@ bool CHueStartUp::isConfigured() const
    return m_configured;
 }
 
-void CHueStartUp::setConfigured(bool& configured)
+void CHueStartUp::setConfigured(bool configured)
 {
    m_configured = configured;
 }

@@ -8,11 +8,11 @@ public:
    explicit CLightManager(boost::shared_ptr<CUrlManager>& urlManager);
    virtual ~CLightManager() = default;
 
-   std::map<int, HueLightInformations> getAllLights() override;
+   std::map<int, CHueLightInformations> getAllLights() override;
 
-   HueLightInformations getLightAttributesAndState(int id) override;
+   CHueLightInformations getLightAttributesAndState(int id) override;
 
-   void setLightId(std::string& lightName, std::map<int, HueLightInformations>& detectedLights) override;
+   void setLightId(std::string& lightName, std::map<int, CHueLightInformations>& detectedLights) override;
 
    void lightOn() override;
 
@@ -22,19 +22,13 @@ public:
 
    void searchForNewLights() override;
 
-   std::map<int, HueLightInformations> getNewLights() override;
+   std::map<int, CHueLightInformations> getNewLights() override;
 private:
 
-   static void setHueLightInformationsState(HueLightInformations& hueLightAttributesAndState,
-                                            boost::shared_ptr<shared::CDataContainer>& response);
-   static void setHueLightInformationsSwUpdate(HueLightInformations& hueLightAttributesAndState,
-                                               boost::shared_ptr<shared::CDataContainer>& response);
-
-   static void setHueLightInformationsCapabilities(HueLightInformations& hueLightAttributesAndState,
-                                                   boost::shared_ptr<shared::CDataContainer>& response);
-
-   static void setHueLightInformationsConfig(HueLightInformations& hueLightAttributesAndState,
-                                             boost::shared_ptr<shared::CDataContainer>& response);
+   static CHueState getHueLightInformationsState(boost::shared_ptr<shared::CDataContainer>& response);
+   static CHueSwUpdate getHueLightInformationsSwUpdate(boost::shared_ptr<shared::CDataContainer>& response);
+   static CHueCapabilities getHueLightInformationsCapabilities(boost::shared_ptr<shared::CDataContainer>& response);
+   static CHueConfig getHueLightInformationsConfig(boost::shared_ptr<shared::CDataContainer>& response);
 
    static void setLightState(const std::string& lightUrl, shared::CDataContainer& body);
 
@@ -44,7 +38,7 @@ private:
 
    boost::shared_ptr<CUrlManager>& m_urlManager;
    int m_lightId;
-   std::map<int, HueLightInformations> m_newLights;
+   std::map<int, CHueLightInformations> m_newLights;
    boost::asio::io_service m_ios;
 
    enum { kSearchNewLightsTimeout = 40 };

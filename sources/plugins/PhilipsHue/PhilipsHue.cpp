@@ -318,11 +318,11 @@ void CPhilipsHue::declareDevice()
 {
    for (auto& detectedLight : m_detectedLights)
    {
-      YADOMS_LOG(information) << "Creating the device :" << detectedLight.second.name;
-      if (!m_api->deviceExists(detectedLight.second.name))
-         m_api->declareDevice(detectedLight.second.name,
-                              detectedLight.second.type,
-                              detectedLight.second.modelid,
+      YADOMS_LOG(information) << "Creating the device :" << detectedLight.second.getName();
+      if (!m_api->deviceExists(detectedLight.second.getName()))
+         m_api->declareDevice(detectedLight.second.getName(),
+                              detectedLight.second.getType(),
+                              detectedLight.second.getModelId(),
                               m_historizers);
    }
 }
@@ -336,11 +336,11 @@ void CPhilipsHue::declareDeviceByBrdige()
          std::map<std::string, std::string> bridgeId;
          bridgeId.insert(std::pair<std::string, std::string>("bridgeId", std::to_string(i)));
 
-         YADOMS_LOG(information) << "Creating the device :" << m_detectedLightsByBridge[i].at(j).name;
-         if (!m_api->deviceExists(m_detectedLightsByBridge[i].at(j).name))
-            m_api->declareDevice(m_detectedLightsByBridge[i].at(j).name,
-                                 m_detectedLightsByBridge[i].at(j).type,
-                                 m_detectedLightsByBridge[i].at(j).modelid,
+         YADOMS_LOG(information) << "Creating the device :" << m_detectedLightsByBridge[i].at(j).getName();
+         if (!m_api->deviceExists(m_detectedLightsByBridge[i].at(j).getName()))
+            m_api->declareDevice(m_detectedLightsByBridge[i].at(j).getName(),
+                                 m_detectedLightsByBridge[i].at(j).getType(),
+                                 m_detectedLightsByBridge[i].at(j).getModelId(),
                                  m_historizers,
                                  shared::CDataContainer::make(bridgeId));
       }
