@@ -74,7 +74,7 @@ public:
 
 	};
 
-	static std::string getDeviceModelAsAString(uint16_t productId);
+	static std::string getDeviceModelAsAString(uint16_t& productId);
 private:
 
 	static const uint16_t StreamDeckVendorId;

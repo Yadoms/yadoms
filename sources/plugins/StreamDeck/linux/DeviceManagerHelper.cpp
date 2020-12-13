@@ -29,18 +29,18 @@ uint16_t CDeviceManagerHelper::stringToUnsignedShort(std::string& value)
 	return static_cast<uint16_t>(std::stoi(value, nullptr, 16));
 }
 
-CStreamDeckFactory::EStreamDeckModel CDeviceManagerHelper::getDeviceModel(uint16_t& productId)
+CStreamDeckEnum::EStreamDeckType CDeviceManagerHelper::getDeviceModel(uint16_t& productId)
 {
 	switch (productId)
 	{
 	case(StreamDeckOriginalPoductId):
-		return CStreamDeckFactory::EStreamDeckModel::kOriginal;
+		return CStreamDeckEnum::EStreamDeckType::kOriginal;
 	case(StreamDeckOriginalV2PoductId):
-		return CStreamDeckFactory::EStreamDeckModel::kOriginalV2;
+		return CStreamDeckEnum::EStreamDeckType::kOriginalV2;
 	case(StreamDeckMiniPoductId):
-		return CStreamDeckFactory::EStreamDeckModel::kMini;
+		return CStreamDeckEnum::EStreamDeckType::kMini;
 	case(StreamDeckXLPoductId):
-		return CStreamDeckFactory::EStreamDeckModel::kXl;
+		return CStreamDeckEnum::EStreamDeckType::kXl;
 	default:
 		throw std::runtime_error("Unknown device model");
 	}
@@ -114,13 +114,13 @@ boost::shared_ptr<UsbDeviceInformation> CDeviceManagerHelper::getDeviceInformati
 	auto usbDevice = configuration.getUsbDevice();
 	auto usbDeviceInformation = splitStringToVectorOfString(usbDevice, ";");
 
-	deviceInformation->vendorID = decimalToHex(usbDeviceInformation[0]);
-	deviceInformation->productID = decimalToHex(usbDeviceInformation[1]);
-	deviceInformation->serialNumber = usbDeviceInformation[2];
-	deviceInformation->deviceModel = getDeviceModel(deviceInformation->productID);
-	deviceInformation->keyCols = getDeviceKeyCols(deviceInformation->productID);
-	deviceInformation->keyRows = getDeviceKeyRows(deviceInformation->productID);
-	deviceInformation->keyCount = getDeviceKeyCount(deviceInformation->productID);
+	deviceInformation->setVendorId(decimalToHex(usbDeviceInformation[0]));
+	deviceInformation->setProductId(decimalToHex(usbDeviceInformation[1]));
+	deviceInformation->setSerialNumber(usbDeviceInformation[2]);
+	deviceInformation->setDeviceModel(getDeviceModel(deviceInformation->getProductId()));
+	deviceInformation->setKeyCols(getDeviceKeyCols(deviceInformation->getProductId()));
+	deviceInformation->setKeyRows(getDeviceKeyRows(deviceInformation->getProductId()));
+	deviceInformation->setKeyCount(getDeviceKeyCount(deviceInformation->getProductId()));
 	
 	return deviceInformation;
 

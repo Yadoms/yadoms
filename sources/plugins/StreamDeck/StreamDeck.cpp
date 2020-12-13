@@ -356,8 +356,8 @@ void CStreamDeck::declareDeviceAndKeywords(boost::shared_ptr<yApi::IYPluginApi>&
    if (!api->deviceExists(m_usbDeviceInformation->getDeviceName()))
    {
       const auto keywordsAsVector = CDeviceManagerHelper::mapToHistorizableVector(m_keywords);
-
-      const auto deviceModel = CDeviceManagerHelper::getDeviceModelAsAString(m_usbDeviceInformation->getProductId());
+      auto productId = m_usbDeviceInformation->getProductId();
+      const auto deviceModel = CDeviceManagerHelper::getDeviceModelAsAString(productId);
       api->declareDevice(m_usbDeviceInformation->getDeviceName(), "keyCreationDynamic",
                          deviceModel, keywordsAsVector);
    }

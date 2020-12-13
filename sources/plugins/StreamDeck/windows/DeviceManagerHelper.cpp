@@ -182,7 +182,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CDevice
 }
 
 
-std::string CDeviceManagerHelper::getDeviceModelAsAString(uint16_t productId)
+std::string CDeviceManagerHelper::getDeviceModelAsAString(uint16_t& productId)
 {
    switch (productId)
    {

@@ -1,32 +1,7 @@
 #pragma once
 #include "../Configuration.h"
 #include "shared/plugin/yPluginApi/historization/IHistorizable.h"
-
-class CStreamDeckFactory
-{
-public:
-	enum EStreamDeckModel
-	{
-		kMini,
-		kOriginal,
-		kOriginalV2,
-		kXl,
-		kUnknown
-	};
-};
-
-struct UsbDeviceInformation
-{
-	uint16_t vendorID{};
-	uint16_t productID{};
-	std::string serialNumber;
-	std::string deviceName = "Stream Deck";
-	std::string deviceType;
-	int keyCols;
-	int keyRows;
-	int keyCount;
-	CStreamDeckFactory::EStreamDeckModel deviceModel;
-};
+#include "../Entities/UsbDeviceInformation.h"
 
 class CDeviceManagerHelper
 {
@@ -42,7 +17,7 @@ public:
 
 	static uint16_t stringToUnsignedShort(std::string& value);
 
-	static CStreamDeckFactory::EStreamDeckModel getDeviceModel(uint16_t& productId);
+	static CStreamDeckEnum::EStreamDeckType getDeviceModel(uint16_t& productId);
 
 	static std::vector<std::string> buildKeys(int cols, int rows);
 
