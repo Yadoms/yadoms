@@ -12,7 +12,8 @@ boost::shared_ptr<CDeviceManager> CFactory::createDeviceManager(CConfiguration& 
                                                                 shared::event::CEventHandler& mainEventHandler,
                                                                 int evtKeyStateReceived)
 {
-   const auto deviceModel = CDeviceManagerHelper::getDeviceModel(deviceInformation->getProductId());
+   auto productId = deviceInformation->getProductId();
+   const auto deviceModel = CDeviceManagerHelper::getDeviceModel(productId);
 
    switch (deviceModel)
    {

@@ -14,7 +14,7 @@ public:
 
 	static uint16_t stringToUnsignedShort(std::string& value);
 
-	static CStreamDeckEnum::EStreamDeckType getDeviceModel(uint16_t productId);
+	static CStreamDeckEnum::EStreamDeckType getDeviceModel(uint16_t& productId);
 
 	static std::string findUsbDeviceId(std::string& value, const std::string& identifierToFind);
 
@@ -22,11 +22,11 @@ public:
 
 	static std::vector<std::string> buildKeys(int cols, int rows);
 
-	static int getDeviceKeyCols(uint16_t productId);
+	static int getDeviceKeyCols(uint16_t& productId);
 
-	static int getDeviceKeyRows(uint16_t productId);
+	static int getDeviceKeyRows(uint16_t& productId);
 
-	static int getDeviceKeyCount(uint16_t productId);
+	static int getDeviceKeyCount(uint16_t& productId);
 
 	static boost::shared_ptr<CUsbDeviceInformation> getDeviceInformation(CConfiguration& configuration);
 

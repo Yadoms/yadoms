@@ -117,11 +117,13 @@ boost::shared_ptr<CUsbDeviceInformation> CDeviceManagerHelper::getDeviceInformat
 	deviceInformation->setVendorId(decimalToHex(usbDeviceInformation[0]));
 	deviceInformation->setProductId(decimalToHex(usbDeviceInformation[1]));
 	deviceInformation->setSerialNumber(usbDeviceInformation[2]);
-	deviceInformation->setDeviceModel(getDeviceModel(deviceInformation->getProductId()));
-	deviceInformation->setKeyCols(getDeviceKeyCols(deviceInformation->getProductId()));
-	deviceInformation->setKeyRows(getDeviceKeyRows(deviceInformation->getProductId()));
-	deviceInformation->setKeyCount(getDeviceKeyCount(deviceInformation->getProductId()));
 	
+	auto productId = deviceInformation->getProductId();
+	deviceInformation->setDeviceModel(getDeviceModel(productId));
+	deviceInformation->setKeyCols(getDeviceKeyCols(productId));
+	deviceInformation->setKeyRows(getDeviceKeyRows(productId));
+	deviceInformation->setKeyCount(getDeviceKeyCount(productId));
+
 	return deviceInformation;
 
 }
