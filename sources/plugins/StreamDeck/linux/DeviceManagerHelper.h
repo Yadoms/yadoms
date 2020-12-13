@@ -27,7 +27,7 @@ public:
 
 	static int getDeviceKeyCount(uint16_t& productId);
 
-	static boost::shared_ptr<UsbDeviceInformation> getDeviceInformation(CConfiguration& configuration);
+	static boost::shared_ptr<CUsbDeviceInformation> getDeviceInformation(CConfiguration& configuration);
 
 	static unsigned char integerToHex(int& value);
 
