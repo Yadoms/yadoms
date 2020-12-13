@@ -25,172 +25,371 @@ std::map<int, CHueLightInformations> CLightManager::getAllLights()
          CHueLightInformations hueLightInformations;
          CHueState state;
          // Fill State
-         state.setOn(response->isNull(std::to_string(lightCounter) + ".state.on")
-                        ? false
-                        : response->get<bool>(std::to_string(lightCounter) + ".state.on"));
-
-         state.setBri(response->isNull(std::to_string(lightCounter) + ".state.bri")
-                         ? 0
-                         : response->get<int>(std::to_string(lightCounter) + ".state.bri"));
-
-         state.setHue(response->isNull(std::to_string(lightCounter) + ".state.hue")
-                         ? 0
-                         : response->get<int>(std::to_string(lightCounter) + ".state.hue"));
-
-         state.setSat(response->isNull(std::to_string(lightCounter) + ".state.sat")
-                         ? 0
-                         : response->get<int>(std::to_string(lightCounter) + ".state.sat"));
-
-         state.setEffect(response->isNull(std::to_string(lightCounter) + ".state.effect")
-                            ? ""
-                            : response->get<std::string>(std::to_string(lightCounter) + ".state.effect"));
-
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateOn.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateOn.toString()))
+         {
+            state.setOn(
+               response->get<bool>(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateOn.toString()));
+         }
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateBri.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateBri.toString()))
+         {
+            state.setBri(
+               response->get<int>(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateBri.toString()));
+         }
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateHue.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateHue.toString()))
+         {
+            state.setHue(
+               response->get<int>(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateHue.toString()));
+         }
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateSat.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateSat.toString()))
+         {
+            state.setSat(
+               response->get<int>(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateSat.toString()));
+         }
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateEffect.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateEffect.toString()))
+         {
+            state.setEffect(
+               response->get<std::string>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kStateEffect.toString()));
+         }
+         // Fill Xy
          CXy xy;
-         // Fill XY
-         xy.setX(response->isNull(std::to_string(lightCounter) + ".state.xy.0")
-                    ? 0.0
-                    : response->get<float>(std::to_string(lightCounter) + ".state.xy.0"));
-
-         xy.setY(response->isNull(std::to_string(lightCounter) + ".state.xy.1")
-                    ? 0.0
-                    : response->get<float>(std::to_string(lightCounter) + ".state.xy.1"));
-
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateXyX.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateXyX.toString()))
+         {
+            xy.setX(response->get<float>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kStateXyX.toString()));
+         }
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateXyY.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateXyY.toString()))
+         {
+            xy.setY(response->get<float>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kStateXyY.toString()));
+         }
          state.setXy(xy);
 
-         state.setCt(response->isNull(std::to_string(lightCounter) + ".state.ct")
-                        ? 0
-                        : response->get<int>(std::to_string(lightCounter) + ".state.ct"));
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateCt.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateCt.toString()))
+         {
+            state.setCt(
+               response->get<int>(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateCt.toString()));
+         }
 
-         state.setAlert(response->isNull(std::to_string(lightCounter) + ".state.alert")
-                           ? ""
-                           : response->get<std::string>(std::to_string(lightCounter) + ".state.alert"));
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateAlert.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateAlert.toString()))
+         {
+            state.setAlert(
+               response->get<std::string>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kStateAlert.toString()));
+         }
 
-         state.setColorMode(response->isNull(std::to_string(lightCounter) + ".state.colormode")
-                               ? ""
-                               : response->get<std::string>(std::to_string(lightCounter) + ".state.colormode"));
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateColorMode.toString()) &&
+            !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateColorMode.toString()))
+         {
+            state.setColorMode(response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kStateColorMode.toString()));
+         }
 
-         state.setReachable(response->isNull(std::to_string(lightCounter) + ".state.reachable")
-                               ? false
-                               : response->get<bool>(std::to_string(lightCounter) + ".state.reachable"));
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateMode.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateMode.toString()))
+         {
+            state.setMode(
+               response->get<std::string>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kStateMode.toString()));
+         }
+
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateReachable.toString()) &&
+            !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kStateReachable.toString()))
+         {
+            state.setReachable(
+               response->get<bool>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kStateReachable.toString()));
+         }
 
          hueLightInformations.setState(state);
 
-         CHueSwUpdate swUpdate;
          // Fill SwUpdate
-         swUpdate.setState(response->isNull(std::to_string(lightCounter) + ".swupdate.state")
-                              ? ""
-                              : response->get<std::string>(std::to_string(lightCounter) + ".swupdate.state"));
-
-         swUpdate.setLastInstall(response->isNull(std::to_string(lightCounter) + ".swupdate.lastinstall")
-                                    ? ""
-                                    : response->get<std::string>(
-                                       std::to_string(lightCounter) + ".swupdate.lastinstall"));
+         CHueSwUpdate swUpdate;
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kSwUpdateState.toString()) &&
+            !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kSwUpdateState.toString()))
+         {
+            swUpdate.setState(response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kSwUpdateState.toString()));
+         }
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kSwUpdateLastInstall.toString()) && !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kSwUpdateLastInstall.toString()))
+         {
+            swUpdate.setLastInstall(response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kSwUpdateLastInstall.toString()));
+         }
 
          hueLightInformations.setSwUpdate(swUpdate);
 
-         hueLightInformations.setType(response->isNull(std::to_string(lightCounter) + ".type")
-                                         ? ""
-                                         : response->get<std::string>(
-                                            std::to_string(lightCounter) + ".type"));
+         // Fill main hueLightInformations
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kType.toString()) && !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kType.toString()))
+         {
+            hueLightInformations.setType(
+               response->get<std::string>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kType.toString()));
+         }
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kName.toString()) && !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kName.toString()))
+         {
+            hueLightInformations.setName(
+               response->get<std::string>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kName.toString()));
+         }
 
-         hueLightInformations.setName(response->isNull(std::to_string(lightCounter) + ".name")
-                                         ? ""
-                                         : response->get<std::string>(
-                                            std::to_string(lightCounter) + ".name"));
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kModelId.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kModelId.toString()))
+         {
+            hueLightInformations.setModelId(
+               response->get<std::string>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kModelId.toString()));
+         }
 
-         hueLightInformations.setModelId(response->isNull(std::to_string(lightCounter) + ".modelid")
-                                            ? ""
-                                            : response->get<std::string>(
-                                               std::to_string(lightCounter) + ".modelid"));
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kManufacturerName.toString())
+            && !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kManufacturerName.toString()))
+         {
+            hueLightInformations.setManufacturerName(response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kManufacturerName.toString()));
+         }
 
-         hueLightInformations.setManufacturerName(response->isNull(std::to_string(lightCounter) + ".manufacturername")
-                                                     ? ""
-                                                     : response->get<std::string>(
-                                                        std::to_string(lightCounter) + ".manufacturername"));
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kProductName.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kProductName.toString()))
+         {
+            hueLightInformations.setProductName(
+               response->get<std::string>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kProductName.toString()));
+         }
 
-         hueLightInformations.setProductName(response->isNull(std::to_string(lightCounter) + ".productname")
-                                                ? ""
-                                                : response->get<std::string>(
-                                                   std::to_string(lightCounter) + ".productname"));
-         // Fill Capabilities
+         // Fill capabilities
          CHueCapabilities capabilities;
-         capabilities.setCertified(response->isNull(std::to_string(lightCounter) + ".capabilities.certified")
-                                      ? false
-                                      : response->get<bool>(std::to_string(lightCounter) + ".capabilities.certified"));
-         // Fill control
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesCertified.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesCertified.toString()))
+         {
+            capabilities.setCertified(response->get<bool>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesCertified.toString()));
+         }
          CHueControl control;
-         control.setMinDimLevel(response->isNull(std::to_string(lightCounter) + ".capabilities.control.mindimlevel")
-                                   ? 0
-                                   : response->get<int>(
-                                      std::to_string(lightCounter) + ".capabilities.control.mindimlevel"));
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlMinDimLevel.toString())
+            && !response
+            ->
+            isNull(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlMinDimLevel.toString()))
+         {
+            control.setMinDimLevel(response->get<int>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlMinDimLevel.toString()));
+         }
 
-         control.setMaxLumen(response->isNull(std::to_string(lightCounter) + ".capabilities.control.maxlumen")
-                                ? 0
-                                : response->get<int>(std::to_string(lightCounter) + ".capabilities.control.maxlumen"));
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlMaxLumen.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlMaxLumen.toString()))
+         {
+            control.setMaxLumen(response->get<int>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlMaxLumen.toString()));
+         }
 
-         control.setColorGamutType(
-            response->isNull(std::to_string(lightCounter) + ".capabilities.control.colorgamuttype")
-               ? ""
-               : response->get<std::string>(
-                  std::to_string(lightCounter) + ".capabilities.control.colorgamuttype"));
-
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlColorGamutType.
+               toString()) && !response
+            ->
+            isNull(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlColorGamutType.
+               toString()))
+         {
+            control.setColorGamutType(response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlColorGamutType.
+               toString()));
+         }
          //TODO : fill COLORGAMUT
-
-         // Fill ct
+         // Fill Ct
          CHueCt ct;
-         ct.setMin(response->isNull(std::to_string(lightCounter) + ".capabilities.control.ct.min")
-                      ? 0
-                      : response->get<int>(std::to_string(lightCounter) + ".capabilities.control.ct.min"));
-
-         ct.setMax(response->isNull(std::to_string(lightCounter) + ".capabilities.control.ct.max")
-                      ? 0
-                      : response->get<int>(std::to_string(lightCounter) + ".capabilities.control.ct.max"));
-
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlCtMin.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlCtMin.toString()))
+         {
+            ct.setMin(response->get<int>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlCtMin.toString()));
+         }
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlCtMax.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlCtMax.toString()))
+         {
+            ct.setMax(response->get<int>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlCtMax.toString()));
+         }
          control.setCt(ct);
-
          capabilities.setControl(control);
 
-         // FILL streaming
+         // Fill streaming
          CHueStreaming streaming;
-         streaming.setRenderer(response->isNull(std::to_string(lightCounter) + ".capabilities.streaming.renderer")
-                                  ? false
-                                  : response->get<bool>(
-                                     std::to_string(lightCounter) + ".capabilities.streaming.renderer"));
-
-         streaming.setProxy(response->isNull(std::to_string(lightCounter) + ".capabilities.streaming.proxy")
-                               ? false
-                               : response->get<bool>(std::to_string(lightCounter) + ".capabilities.streaming.proxy"));
-
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesStreamingRenderer.toString()) &&
+            !response
+            ->
+            isNull(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesStreamingRenderer.toString()))
+         {
+            streaming.setRenderer(response->get<bool>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesStreamingRenderer.toString()));
+         }
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesStreamingProxy.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesStreamingProxy.toString()))
+         {
+            streaming.setProxy(response->get<bool>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesStreamingProxy.toString()));
+         }
          capabilities.setStreaming(streaming);
 
          hueLightInformations.setCapabilities(capabilities);
 
          // Fill config
          CHueConfig config;
-         config.setArchetype(response->isNull(std::to_string(lightCounter) + ".config.archetype")
-                                ? ""
-                                : response->get<std::string>(
-                                   std::to_string(lightCounter) + ".config.archetype"));
-         config.setFunction(response->isNull(std::to_string(lightCounter) + ".config.function")
-                               ? ""
-                               : response->get<std::string>(
-                                  std::to_string(lightCounter) + ".config.function"));
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigArchetype.toString())
+            && !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigArchetype.toString()))
+         {
+            config.setArchetype(response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigArchetype.toString()));
+         }
 
-         config.setDirection(response->isNull(std::to_string(lightCounter) + ".config.direction")
-                                ? ""
-                                : response->get<std::string>(
-                                   std::to_string(lightCounter) + ".config.direction"));
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigFunction.toString()) &&
+            !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigFunction.toString()))
+         {
+            config.setFunction(response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigFunction.toString()));
+         }
+
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigDirection.toString())
+            && !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigDirection.toString()))
+         {
+            config.setDirection(response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigDirection.toString()));
+         }
+         CHueStartUp startUp;
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigStartUpMode.toString()) && !response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigStartUpMode.toString()))
+         {
+            startUp.setMode(response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigStartUpMode.toString()));
+         }
+
+         if (response->exists(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigStartUpConfigured.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigStartUpConfigured.toString()))
+         {
+            startUp.setConfigured(response->get<bool>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kConfigStartUpConfigured.toString()));
+         }
+         config.setStartUp(startUp);
 
          hueLightInformations.setConfig(config);
 
-         hueLightInformations.setUniqueId(response->isNull(std::to_string(lightCounter) + ".uniqueid")
-                                             ? ""
-                                             : response->get<std::string>(
-                                                std::to_string(lightCounter) + ".uniqueid"));
-         hueLightInformations.setSwVersion(response->isNull(std::to_string(lightCounter) + ".swversion")
-                                              ? ""
-                                              : response->get<std::string>(
-                                                 std::to_string(lightCounter) + ".swversion"));
+         // Fill main hueLightInformations
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kUniqueId.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kUniqueId.toString()))
+         {
+            hueLightInformations.
+               setUniqueId(
+                  response->get<std::string>(
+                     std::to_string(lightCounter) + "." + EHueLightResponseType::kUniqueId.toString()));
+         }
+
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kSwVersion.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kSwVersion.toString()))
+         {
+            hueLightInformations.setSwVersion(
+               response->get<std::string>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kSwVersion.toString()));
+         }
+
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kSwConfigId.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kSwConfigId.toString()))
+         {
+            hueLightInformations.setSwConfigId(
+               response->get<std::string>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kSwConfigId.toString()));
+         }
+
+         if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kProductId.toString()) && !
+            response
+            ->
+            isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kProductId.toString()))
+         {
+            hueLightInformations.setProductId(
+               response->get<std::string>(
+                  std::to_string(lightCounter) + "." + EHueLightResponseType::kProductId.toString()));
+         }
 
          hueLightsInformations.insert({lightCounter, hueLightInformations});
          lightCounter++;
@@ -220,51 +419,75 @@ CHueLightInformations CLightManager::getLightAttributesAndState(const int id)
       hueLightAttributesAndState.setState(getHueLightInformationsState(response));
       hueLightAttributesAndState.setSwUpdate(getHueLightInformationsSwUpdate(response));
 
-      if (!response->isNull("type"))
+      if (response->exists(EHueLightResponseType::kType.toString()) && !response
+         ->
+         isNull(EHueLightResponseType::kType.toString()))
       {
-         hueLightAttributesAndState.setType(response->get<std::string>("type"));
+         hueLightAttributesAndState.setType(response->get<std::string>(EHueLightResponseType::kType.toString()));
       }
-      if (!response->isNull("name"))
+      if (response->exists(EHueLightResponseType::kName.toString()) && !response
+         ->
+         isNull(EHueLightResponseType::kName.toString()))
       {
-         hueLightAttributesAndState.setName(response->get<std::string>("name"));
-      }
-
-      if (!response->isNull("modelid"))
-      {
-         hueLightAttributesAndState.setModelId(response->get<std::string>("modelid"));
-      }
-
-      if (!response->isNull("manufacturername"))
-      {
-         hueLightAttributesAndState.setManufacturerName(response->get<std::string>("manufacturername"));
+         hueLightAttributesAndState.setName(response->get<std::string>(EHueLightResponseType::kName.toString()));
       }
 
-      if (!response->isNull("productname"))
+      if (response->exists(EHueLightResponseType::kModelId.toString()) && !response
+         ->
+         isNull(EHueLightResponseType::kModelId.toString()))
       {
-         hueLightAttributesAndState.setProductName(response->get<std::string>("productname"));
+         hueLightAttributesAndState.setModelId(response->get<std::string>(EHueLightResponseType::kModelId.toString()));
+      }
+
+      if (response->exists(EHueLightResponseType::kManufacturerName.toString()) && !response
+         ->
+         isNull(EHueLightResponseType::kManufacturerName.toString()))
+      {
+         hueLightAttributesAndState.setManufacturerName(
+            response->get<std::string>(EHueLightResponseType::kManufacturerName.toString()));
+      }
+
+      if (response->exists(EHueLightResponseType::kProductName.toString()) && !response
+         ->
+         isNull(EHueLightResponseType::kProductName.toString()))
+      {
+         hueLightAttributesAndState.setProductName(
+            response->get<std::string>(EHueLightResponseType::kProductName.toString()));
       }
 
       hueLightAttributesAndState.setCapabilities(getHueLightInformationsCapabilities(response));
       hueLightAttributesAndState.setConfig(getHueLightInformationsConfig(response));
 
-      if (!response->isNull("uniqueid"))
+      if (response->exists(EHueLightResponseType::kUniqueId.toString()) && !response
+         ->
+         isNull(EHueLightResponseType::kUniqueId.toString()))
       {
-         hueLightAttributesAndState.setUniqueId(response->get<std::string>("uniqueid"));
+         hueLightAttributesAndState.
+            setUniqueId(response->get<std::string>(EHueLightResponseType::kUniqueId.toString()));
       }
 
-      if (!response->isNull("swversion"))
+      if (response->exists(EHueLightResponseType::kSwVersion.toString()) && !response
+         ->
+         isNull(EHueLightResponseType::kSwVersion.toString()))
       {
-         hueLightAttributesAndState.setSwVersion(response->get<std::string>("swversion"));
+         hueLightAttributesAndState.setSwVersion(
+            response->get<std::string>(EHueLightResponseType::kSwVersion.toString()));
       }
 
-      if (!response->isNull("swconfigid"))
+      if (response->exists(EHueLightResponseType::kSwConfigId.toString()) && !response
+         ->
+         isNull(EHueLightResponseType::kSwConfigId.toString()))
       {
-         hueLightAttributesAndState.setSwConfigId(response->get<std::string>("swconfigid"));
+         hueLightAttributesAndState.setSwConfigId(
+            response->get<std::string>(EHueLightResponseType::kSwConfigId.toString()));
       }
 
-      if (!response->isNull("productid"))
+      if (response->exists(EHueLightResponseType::kProductId.toString()) && !response
+         ->
+         isNull(EHueLightResponseType::kProductId.toString()))
       {
-         hueLightAttributesAndState.setProductId(response->get<std::string>("productid"));
+         hueLightAttributesAndState.setProductId(
+            response->get<std::string>(EHueLightResponseType::kProductId.toString()));
       }
    }
    catch (std::exception& e)
@@ -281,60 +504,84 @@ CHueLightInformations CLightManager::getLightAttributesAndState(const int id)
 CHueState CLightManager::getHueLightInformationsState(boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueState state;
-   if (!response->isNull("state.on"))
+   if (response->exists(EHueLightResponseType::kStateOn.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateOn.toString()))
    {
-      state.setOn(response->get<bool>("state.on"));
+      state.setOn(response->get<bool>(EHueLightResponseType::kStateOn.toString()));
    }
-   if (!response->isNull("state.bri"))
+   if (response->exists(EHueLightResponseType::kStateBri.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateBri.toString()))
    {
-      state.setBri(response->get<int>("state.bri"));
+      state.setBri(response->get<int>(EHueLightResponseType::kStateBri.toString()));
    }
-   if (!response->isNull("state.hue"))
+   if (response->exists(EHueLightResponseType::kStateHue.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateHue.toString()))
    {
-      state.setHue(response->get<int>("state.hue"));
+      state.setHue(response->get<int>(EHueLightResponseType::kStateHue.toString()));
    }
-   if (!response->isNull("state.sat"))
+   if (response->exists(EHueLightResponseType::kStateSat.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateSat.toString()))
    {
-      state.setSat(response->get<int>("state.sat"));
+      state.setSat(response->get<int>(EHueLightResponseType::kStateSat.toString()));
    }
-   if (!response->isNull("state.effect"))
+   if (response->exists(EHueLightResponseType::kStateEffect.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateEffect.toString()))
    {
-      state.setEffect(response->get<std::string>("state.effect"));
+      state.setEffect(response->get<std::string>(EHueLightResponseType::kStateEffect.toString()));
    }
    CXy xy;
-   if (!response->isNull("state.xy.0"))
+   if (response->exists(EHueLightResponseType::kStateXyX.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateXyX.toString()))
    {
-      xy.setX(response->get<float>("state.xy.0"));
+      xy.setX(response->get<float>(EHueLightResponseType::kStateXyX.toString()));
    }
-   if (!response->isNull("state.xy.1"))
+   if (response->exists(EHueLightResponseType::kStateXyY.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateXyY.toString()))
    {
-      xy.setY(response->get<float>("state.xy.1"));
+      xy.setY(response->get<float>(EHueLightResponseType::kStateXyY.toString()));
    }
    state.setXy(xy);
 
-   if (!response->isNull("state.ct"))
+   if (response->exists(EHueLightResponseType::kStateCt.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateCt.toString()))
    {
-      state.setCt(response->get<int>("state.ct"));
+      state.setCt(response->get<int>(EHueLightResponseType::kStateCt.toString()));
    }
 
-   if (!response->isNull("state.alert"))
+   if (response->exists(EHueLightResponseType::kStateAlert.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateAlert.toString()))
    {
-      state.setAlert(response->get<std::string>("state.alert"));
+      state.setAlert(response->get<std::string>(EHueLightResponseType::kStateAlert.toString()));
    }
 
-   if (!response->isNull("state.colormode"))
+   if (response->exists(EHueLightResponseType::kStateColorMode.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateColorMode.toString()))
    {
-      state.setColorMode(response->get<std::string>("state.colormode"));
+      state.setColorMode(response->get<std::string>(EHueLightResponseType::kStateColorMode.toString()));
    }
 
-   if (!response->isNull("state.mode"))
+   if (response->exists(EHueLightResponseType::kStateMode.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateMode.toString()))
    {
-      state.setMode(response->get<std::string>("state.mode"));
+      state.setMode(response->get<std::string>(EHueLightResponseType::kStateMode.toString()));
    }
 
-   if (!response->isNull("state.reachable"))
+   if (response->exists(EHueLightResponseType::kStateReachable.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kStateReachable.toString()))
    {
-      state.setReachable(response->get<bool>("state.reachable"));
+      state.setReachable(response->get<bool>(EHueLightResponseType::kStateReachable.toString()));
    }
    return state;
 }
@@ -342,13 +589,17 @@ CHueState CLightManager::getHueLightInformationsState(boost::shared_ptr<shared::
 CHueSwUpdate CLightManager::getHueLightInformationsSwUpdate(boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueSwUpdate swUpdate;
-   if (!response->isNull("swupdate.state"))
+   if (response->exists(EHueLightResponseType::kSwUpdateState.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kSwUpdateState.toString()))
    {
-      swUpdate.setState(response->get<std::string>("swupdate.state"));
+      swUpdate.setState(response->get<std::string>(EHueLightResponseType::kSwUpdateState.toString()));
    }
-   if (!response->isNull("swupdate.lastinstall"))
+   if (response->exists(EHueLightResponseType::kSwUpdateLastInstall.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kSwUpdateLastInstall.toString()))
    {
-      swUpdate.setLastInstall(response->get<std::string>("swupdate.lastinstall"));
+      swUpdate.setLastInstall(response->get<std::string>(EHueLightResponseType::kSwUpdateLastInstall.toString()));
    }
    return swUpdate;
 }
@@ -356,46 +607,63 @@ CHueSwUpdate CLightManager::getHueLightInformationsSwUpdate(boost::shared_ptr<sh
 CHueCapabilities CLightManager::getHueLightInformationsCapabilities(boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueCapabilities capabilities;
-   if (!response->isNull("capabilities.certified"))
+   if (response->exists(EHueLightResponseType::kCapabilitiesCertified.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kCapabilitiesCertified.toString()))
    {
-      capabilities.setCertified(response->get<bool>("capabilities.certified"));
+      capabilities.setCertified(response->get<bool>(EHueLightResponseType::kCapabilitiesCertified.toString()));
    }
    CHueControl control;
-   if (!response->isNull("capabilities.control.mindimlevel"))
+   if (response->exists(EHueLightResponseType::kCapabilitiesControlMinDimLevel.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kCapabilitiesControlMinDimLevel.toString()))
    {
-      control.setMinDimLevel(response->get<int>("capabilities.control.mindimlevel"));
+      control.setMinDimLevel(response->get<int>(EHueLightResponseType::kCapabilitiesControlMinDimLevel.toString()));
    }
 
-   if (!response->isNull("capabilities.control.maxlumen"))
+   if (response->exists(EHueLightResponseType::kCapabilitiesControlMaxLumen.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kCapabilitiesControlMaxLumen.toString()))
    {
-      control.setMaxLumen(response->get<int>("capabilities.control.maxlumen"));
+      control.setMaxLumen(response->get<int>(EHueLightResponseType::kCapabilitiesControlMaxLumen.toString()));
    }
 
-   if (!response->isNull("capabilities.control.colorgamuttype"))
+   if (response->exists(EHueLightResponseType::kCapabilitiesControlColorGamutType.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kCapabilitiesControlColorGamutType.toString()))
    {
-      control.setColorGamutType(response->get<std::string>("capabilities.control.colorgamuttype"));
+      control.setColorGamutType(
+         response->get<std::string>(EHueLightResponseType::kCapabilitiesControlColorGamutType.toString()));
    }
    //TODO : fill COLORGAMUT
    CHueCt ct;
-   if (!response->isNull("capabilities.control.ct.min"))
+   if (response->exists(EHueLightResponseType::kCapabilitiesControlCtMin.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kCapabilitiesControlCtMin.toString()))
    {
-      ct.setMin(response->get<int>("capabilities.control.ct.min"));
+      ct.setMin(response->get<int>(EHueLightResponseType::kCapabilitiesControlCtMin.toString()));
    }
-   if (!response->isNull("capabilities.control.ct.max"))
+   if (response->exists(EHueLightResponseType::kCapabilitiesControlCtMax.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kCapabilitiesControlCtMax.toString()))
    {
-      ct.setMax(response->get<int>("capabilities.control.ct.max"));
+      ct.setMax(response->get<int>(EHueLightResponseType::kCapabilitiesControlCtMax.toString()));
    }
    control.setCt(ct);
    capabilities.setControl(control);
 
    CHueStreaming streaming;
-   if (!response->isNull("capabilities.streaming.renderer"))
+   if (response->exists(EHueLightResponseType::kCapabilitiesStreamingRenderer.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kCapabilitiesStreamingRenderer.toString()))
    {
-      streaming.setRenderer(response->get<bool>("capabilities.streaming.renderer"));
+      streaming.setRenderer(response->get<bool>(EHueLightResponseType::kCapabilitiesStreamingRenderer.toString()));
    }
-   if (!response->isNull("capabilities.streaming.proxy"))
+   if (response->exists(EHueLightResponseType::kCapabilitiesStreamingProxy.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kCapabilitiesStreamingProxy.toString()))
    {
-      streaming.setProxy(response->get<bool>("capabilities.streaming.proxy"));
+      streaming.setProxy(response->get<bool>(EHueLightResponseType::kCapabilitiesStreamingProxy.toString()));
    }
    capabilities.setStreaming(streaming);
    return capabilities;
@@ -404,29 +672,39 @@ CHueCapabilities CLightManager::getHueLightInformationsCapabilities(boost::share
 CHueConfig CLightManager::getHueLightInformationsConfig(boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueConfig config;
-   if (!response->isNull("config.archetype"))
+   if (response->exists(EHueLightResponseType::kConfigArchetype.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kConfigArchetype.toString()))
    {
-      config.setArchetype(response->get<std::string>("config.archetype"));
+      config.setArchetype(response->get<std::string>(EHueLightResponseType::kConfigArchetype.toString()));
    }
 
-   if (!response->isNull("config.function"))
+   if (response->exists(EHueLightResponseType::kConfigFunction.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kConfigFunction.toString()))
    {
-      config.setFunction(response->get<std::string>("config.function"));
+      config.setFunction(response->get<std::string>(EHueLightResponseType::kConfigFunction.toString()));
    }
 
-   if (!response->isNull("config.direction"))
+   if (response->exists(EHueLightResponseType::kConfigDirection.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kConfigDirection.toString()))
    {
-      config.setDirection(response->get<std::string>("config.direction"));
+      config.setDirection(response->get<std::string>(EHueLightResponseType::kConfigDirection.toString()));
    }
    CHueStartUp startUp;
-   if (!response->isNull("config.startup.mode"))
+   if (response->exists(EHueLightResponseType::kConfigStartUpMode.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kConfigStartUpMode.toString()))
    {
-      startUp.setMode(response->get<std::string>("config.startup.mode"));
+      startUp.setMode(response->get<std::string>(EHueLightResponseType::kConfigStartUpMode.toString()));
    }
 
-   if (!response->isNull("config.startup.configured"))
+   if (response->exists(EHueLightResponseType::kConfigStartUpConfigured.toString()) && !response
+      ->
+      isNull(EHueLightResponseType::kConfigStartUpConfigured.toString()))
    {
-      startUp.setConfigured(response->get<bool>("config.startup.configured"));
+      startUp.setConfigured(response->get<bool>(EHueLightResponseType::kConfigStartUpConfigured.toString()));
    }
    config.setStartUp(startUp);
    return config;

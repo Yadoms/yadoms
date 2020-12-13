@@ -1,6 +1,7 @@
 #pragma once
 #include "UrlManager.h"
 #include "ILightManager.h"
+#include "HueLightsResponseType.h"
 
 class CLightManager : public ILightManager
 {

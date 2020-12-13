@@ -54,6 +54,8 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 	Entities/HueConfig.cpp
 	Entities/HueStartUp.h
 	Entities/HueStartUp.cpp
+	HueLightsResponseType.h
+	HueLightsResponseType.cpp
 )
 
 #########################################
