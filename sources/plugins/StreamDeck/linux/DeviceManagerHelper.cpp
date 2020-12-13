@@ -110,7 +110,7 @@ std::vector<std::string> CDeviceManagerHelper::buildKeys(const int cols, const i
 
 boost::shared_ptr<CUsbDeviceInformation> CDeviceManagerHelper::getDeviceInformation(CConfiguration& configuration)
 {
-	auto deviceInformation = boost::make_shared<UsbDeviceInformation>();
+	auto deviceInformation = boost::make_shared<CUsbDeviceInformation>();
 	auto usbDevice = configuration.getUsbDevice();
 	auto usbDeviceInformation = splitStringToVectorOfString(usbDevice, ";");
 
