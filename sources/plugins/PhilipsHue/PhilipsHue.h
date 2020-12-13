@@ -3,7 +3,6 @@
 #include "Configuration.h"
 #include "HueBridgeDiscovery.h"
 #include "HueService.h"
-#include "Hue.h"
 #include "ILightManager.h"
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
