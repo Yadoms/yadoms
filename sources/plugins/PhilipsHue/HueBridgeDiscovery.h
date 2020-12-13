@@ -1,7 +1,6 @@
 #pragma once
 #include "IHueBridgeDiscovery.h"
 #include "UrlManager.h"
-#include "Hue.h"
 #include "Entities/HueInformations.h"
 
 class CHueBridgeDiscovery : public IHueBridgeDiscovery
