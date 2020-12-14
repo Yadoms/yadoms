@@ -1,0 +1,45 @@
+{
+	"name": "Philips hue",
+	"description": "Philips Hue devices support (see the [official website](https://www.philips-hue.com/))",
+	"configurationSchema": {
+		"PairingMode": {
+			"name": "Pairing mode",
+			"type": "comboSection",
+			"content": {
+				"Automatic": {
+					"name": "Automatic Pairing",
+					"description": "Automatic pairing using UPNP protocol",
+					"content": {}
+				},
+				"Manual": {
+					"name": "Manual Paring",
+					"description": "Manual Paring",
+					"content": {
+						"IPAddress": {
+							"name": "IP Address",
+							"description": "the IP address of philips hue bridge",
+							"regexErrorMessage": "this is not a valid IP address"
+						}
+					}
+				}
+			}
+		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"askToPressBridgeButton": "Please press philips hue bridge button! you've got 30 seconds",
+			"askToPressBridgeButtonTimeout": "\"Bridge button is not pressed : timeout!, You can restart the search using the plugins actions",
+			"BridgesSearchInProgress": "Bridges search in progress...",
+			"BridgesFound": "Bridges are found!",
+			"BridgesNotFound": "Bridges Not found"
+		}
+	},
+	"extraQueries": {
+		"searchForNewLights": {
+			"name": "Search for new lights"
+		},
+		"searchForBridge": {
+			"name": "Search for Philips Hue bridge"
+		}
+	}
+}
