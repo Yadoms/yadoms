@@ -1,6 +1,7 @@
 ### 2.5.0-beta.1
 
 #### Yadoms
+* New PhilipsHue plugin (Thanks to Oussama Dahmaz)
 * Fix #617 : File download progress is yet again available
 * Fix #702 : Support links in update&install page
 * Fix #703 : Fix display and translations of file type fields of configuration
