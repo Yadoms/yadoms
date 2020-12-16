@@ -296,42 +296,79 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[4]);
 
                   YADOMS_LOG(debug) << "getKeywordData : for " << keywordId
-                     << ", timeFrom " << (timeFrom.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeFrom))
-                     << ", timeTo " << (timeTo.is_not_a_date_time() ? "" : boost::posix_time::to_simple_string(timeTo));
+                     << ", timeFrom " << (timeFrom.is_not_a_date_time() ? "" : to_simple_string(timeFrom))
+                     << ", timeTo " << (timeTo.is_not_a_date_time() ? "" : to_simple_string(timeTo));
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId,
                                                                                            timeFrom,
                                                                                            timeTo);
 
-                  YADOMS_LOG(debug) << "getKeywordData : m_dataProvider->getAcquisitionRequester()->getKeywordData returns " << allData.size() << " records";
+                  YADOMS_LOG(debug) <<
+                     "getKeywordData : m_dataProvider->getAcquisitionRequester()->getKeywordData returns " << allData.
+                     size() << " records";
 
                   if (allData.empty())
                      return CResult::GenerateSuccess(shared::CDataContainer::EmptyContainer);
 
-                  boost::shared_ptr<shared::CDataContainer> result;
-                  YADOMS_LOG(debug) << "1";
-                  for (auto& i : allData)
+                  // Because of memory constraints (see issue #708), limit data quantity to send back to web client
+                  static const auto MaxPoints = 500;
+
+                  if (allData.size() <= MaxPoints)
                   {
+                     // Send all data
+                     boost::shared_ptr<shared::CDataContainer> result;
+                     for (auto& i : allData)
+                     {
+                        auto currentVal = shared::CDataContainer::make();
+                        currentVal->set("date", to_iso_string(i.get<0>()));
+                        currentVal->set("key", i.get<1>());
+
+                        if (!result)
+                        {
+                           result = shared::CDataContainer::make(sizeof currentVal * 2, allData.size());
+                           result->set("result", true);
+                           result->set("message", std::string());
+                           result->createArray("data.data");
+                        }
+
+                        result->appendArray("data.data", currentVal);
+                     }
+                     return result;
+                  }
+
+                  // Limit data to send
+                  boost::shared_ptr<shared::CDataContainer> result;
+                  const auto stepSize = allData.size() / static_cast<float>(MaxPoints);
+                  auto currentIndex = 0;
+                  auto stepCount = 0;
+                  for (auto it = allData.begin(); it != allData.end(); ++it)
+                  {
+                     // Check if point is required
+                     const auto nextPointToSend = static_cast<int>(stepCount * stepSize);
+                     const auto pointIsRequired = nextPointToSend - currentIndex == 0;
+
+                     ++currentIndex;
+
+                     if (!pointIsRequired)
+                        continue;
+
+                     ++stepCount;
+
                      auto currentVal = shared::CDataContainer::make();
-                     currentVal->set("date", to_iso_string(i.get<0>()));
-                     currentVal->set("key", i.get<1>());
+                     currentVal->set("date", to_iso_string(it->get<0>()));
+                     currentVal->set("key", it->get<1>());
 
                      if (!result)
                      {
                         result = shared::CDataContainer::make(sizeof currentVal * 2, allData.size());
-						result->set("result", true);
-						result->set("message", std::string());
+                        result->set("result", true);
+                        result->set("message", std::string());
                         result->createArray("data.data");
                      }
 
                      result->appendArray("data.data", currentVal);
                   }
-                  
-				  /*YADOMS_LOG(debug) << "2";
-                  auto r = CResult::GenerateSuccess(result);
-                  YADOMS_LOG(debug) << "3";
-                  return r;*/
-				  return result;
+                  return result;
                }
                YADOMS_LOG(error) << "getKeywordData : invalid parameter. Can not retrieve parameters in url";
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
