@@ -1073,7 +1073,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Helper structure for get/set with single value type (int, double, std::string,...)
       //--------------------------------------------------------------
-      template <typename T, class Enable = void>
+      template <class T, class Enable = void>
       struct helper
       {
 
@@ -1596,9 +1596,18 @@ namespace shared
    ///				-> for template methods
    ///				-> for template specialization
    //--------------------------------------------------------------
-   template<typename T>
+   template<class T>
    T CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
+      if (std::is_same<T, int64_t>::value)
+         std::cout << "get<int64_t> : " << parameterName << std::endl;
+      if (std::is_same<T, int>::value)
+         std::cout << "get<int> : " << parameterName << std::endl;
+      if (std::is_same<T, uint64_t>::value)
+         std::cout << "get<uint64_t> : " << parameterName << std::endl;
+      if (std::is_same<T, unsigned int>::value)
+         std::cout << "get<unsigned int> : " << parameterName << std::endl;
+
       return helper<T>::getInternal(this, parameterName, pathChar);
    }
 
