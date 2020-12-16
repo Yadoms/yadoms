@@ -1083,6 +1083,17 @@ namespace shared
          static T getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
 	    std::cout << "helper<T>::getInternal : " << parameterName << std::endl;
+
+       if (std::is_same<T, int64_t>::value)
+          std::cout << "helper<T>::getInternal<int64_t> : " << parameterName << std::endl;
+       if (std::is_same<T, int>::value)
+          std::cout << "helper<T>::getInternal<int> : " << parameterName << std::endl;
+       if (std::is_same<T, uint64_t>::value)
+          std::cout << "helper<T>::getInternal<uint64_t> : " << parameterName << std::endl;
+       if (std::is_same<T, unsigned int>::value)
+          std::cout << "helper<T>::getInternal<unsigned int> : " << parameterName << std::endl;
+
+
             return tree->getInternal<T>(parameterName, pathChar);
          }
 
