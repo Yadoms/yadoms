@@ -7,6 +7,7 @@ namespace database
    class IAcquisitionRequester
    {
    public:
+      virtual ~IAcquisitionRequester() = default;
 
       //--------------------------------------------------------------
       /// \brief           Save a new data into base
@@ -46,7 +47,8 @@ namespace database
       /// \return          The inserted acquisition summary
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CAcquisitionSummary> saveSummaryData(int keywordId,
-                                                                               database::entities::EAcquisitionSummaryType curType,
+                                                                               entities::EAcquisitionSummaryType
+                                                                               curType,
                                                                                boost::posix_time::ptime& dataTime) = 0;
 
       //--------------------------------------------------------------
@@ -66,7 +68,7 @@ namespace database
       /// \param [in]      date        The datetime of the summary data
       //--------------------------------------------------------------
       virtual bool summaryDataExists(int keywordId,
-                                     database::entities::EAcquisitionSummaryType curType,
+                                     entities::EAcquisitionSummaryType curType,
                                      boost::posix_time::ptime& date) = 0;
 
       //--------------------------------------------------------------
@@ -90,14 +92,15 @@ namespace database
       ///\return     the acquisition
       //-----------------------------------------
       virtual boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(int keywordId,
-                                                                                       boost::posix_time::ptime time) = 0;
+                                                                                       boost::posix_time::ptime time) =
+      0;
 
       //-----------------------------------------
       ///\brief      Export acquisitions for a keyword
       ///\param [in] keywordId  The keyword id
       ///\param [in] exportOneLineFunction : callback called for each acquisitions, used to write the exported file
       //-----------------------------------------
-      virtual void exportAcquisitions(const int keywordId,
+      virtual void exportAcquisitions(int keywordId,
                                       std::function<void(const boost::posix_time::ptime& date,
                                                          const std::string& value,
                                                          int nbTotalLines)> exportOneLineFunction) = 0;
@@ -111,12 +114,11 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(int keywordId,
-                                                                                              boost::posix_time::ptime timeFrom = boost::posix_time::
-                                                                                                 not_a_date_time,
-                                                                                              boost::posix_time::ptime timeTo = boost::posix_time::
-                                                                                                 not_a_date_time,
-                                                                                              int limit = -1) = 0;
+      virtual std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(
+         int keywordId,
+         boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
+         boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
+         int limit = -1) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
@@ -126,9 +128,10 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> getKeywordDataByHour(int keywordId,
-                                                                                                           boost::posix_time::ptime timeFrom,
-                                                                                                           boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> getKeywordDataByHour(
+         int keywordId,
+         boost::posix_time::ptime timeFrom,
+         boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by day (avg, min, max per day)
@@ -138,9 +141,10 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> getKeywordDataByDay(int keywordId,
-                                                                                                          boost::posix_time::ptime timeFrom,
-                                                                                                          boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> getKeywordDataByDay(
+         int keywordId,
+         boost::posix_time::ptime timeFrom,
+         boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data by month (avg, min, max per day)
@@ -150,9 +154,10 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> getKeywordDataByMonth(int keywordId,
-                                                                                                            boost::posix_time::ptime timeFrom,
-                                                                                                            boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> getKeywordDataByMonth(
+         int keywordId,
+         boost::posix_time::ptime timeFrom,
+         boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data by year (avg, min, max per day)
@@ -162,9 +167,10 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> getKeywordDataByYear(int keywordId,
-                                                                                                           boost::posix_time::ptime timeFrom,
-                                                                                                           boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> getKeywordDataByYear(
+         int keywordId,
+         boost::posix_time::ptime timeFrom,
+         boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
@@ -222,12 +228,5 @@ namespace database
       //--------------------------------------------------------------
       virtual int purgeAcquisitions(boost::posix_time::ptime purgeDate,
                                     int limit = -1) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~IAcquisitionRequester()
-      {
-      }
    };
 } //namespace database 
