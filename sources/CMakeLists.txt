@@ -798,8 +798,10 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/database/common/adapters/DatabaseAdapters.cpp
    server/database/common/adapters/GenericAdapter.h
    server/database/common/adapters/GenericAdapter.cpp
-   server/database/common/adapters/HugeDataVectorAdapter.h
-   server/database/common/adapters/HugeDataVectorAdapter.cpp
+   server/database/common/adapters/HugeDataVectorForKeywordDataAdapter.h
+   server/database/common/adapters/HugeDataVectorForKeywordDataAdapter.cpp
+   server/database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapter.h
+   server/database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapter.cpp
    server/database/common/adapters/IResultAdapter.h
    server/database/common/adapters/MultipleValueAdapter.hpp
    server/database/common/adapters/SingleValueAdapter.hpp

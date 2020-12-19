@@ -173,11 +173,26 @@ namespace database
          boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                 Get the data
+      /// \param [in] keywordId  keywordId Id
+      /// \param [in] timeFrom   The start date (optional)
+      /// \param [in] timeTo     The end date (optional)
+      /// \param [in] limit      Max count of records to return (optional, -1 if no limit)
+      /// \return                Json string as a map of {date, value} tuples
+      /// \throw                 CInvalidParameter if deviceId is unknown
+      //--------------------------------------------------------------
+      virtual std::string getHugeVectorKeywordData(
+         int keywordId,
+         boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
+         boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
+         int limit = -1) = 0;
+
+      //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
       /// \param [in] keywordId  keywordId Id
       /// \param [in] timeFrom   The start date (optional)
       /// \param [in] timeTo     The end date (optional)
-      /// \return                Map of data : (date, value)
+      /// \return                Json string as a map of {date, value} tuples
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::string getHugeVectorKeywordDataByHour(int keywordId,
@@ -189,7 +204,7 @@ namespace database
       /// \param [in] keywordId  keywordId Id
       /// \param [in] timeFrom   The start date (optional)
       /// \param [in] timeTo     The end date (optional)
-      /// \return                Map of data : (date, value)
+      /// \return                Json string as a map of {date, value} tuples
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::string getHugeVectorKeywordDataByDay(int keywordId,
@@ -201,7 +216,7 @@ namespace database
       /// \param [in] keywordId  keywordId Id
       /// \param [in] timeFrom   The start date (optional)
       /// \param [in] timeTo     The end date (optional)
-      /// \return                Map of data : (date, value)
+      /// \return                Json string as a map of {date, value} tuples
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::string getHugeVectorKeywordDataByMonth(int keywordId,
@@ -213,7 +228,7 @@ namespace database
       /// \param [in] keywordId  keywordId Id
       /// \param [in] timeFrom   The start date (optional)
       /// \param [in] timeTo     The end date (optional)
-      /// \return                Map of data : (date, value)
+      /// \return                Json string as a map of {date, value} tuples
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::string getHugeVectorKeywordDataByYear(int keywordId,

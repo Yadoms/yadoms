@@ -35,8 +35,6 @@ namespace web
 
             boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordData(const std::vector<std::string>& parameters,
                                                                                        const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordDataInternal(const std::vector<std::string>& parameters,
-                                                                                       const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordInfo(const std::vector<std::string>& parameters,
                                                                                        const std::string& requestContent) const;
 

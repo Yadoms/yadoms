@@ -11,7 +11,7 @@ namespace shared
       class Local : public ICurrentTime
       {
       public:
-         virtual ~Local();
+         virtual ~Local() = default;
 
          // ICurrentTime Implementation
          boost::posix_time::ptime now() const override;
