@@ -1636,6 +1636,26 @@ namespace shared
    }
    
 
+   template<>
+   inline void CDataContainer::set(const std::string& parameterName, const unsigned long& value, const char pathChar)
+   {
+      if(sizeof(unsigned long) == 8)
+         helper<uint64_t>::setInternal(this, parameterName, value, pathChar);
+      else
+         helper<unsigned int>::setInternal(this, parameterName, value, pathChar);
+   }
+
+
+   template<>
+   inline void CDataContainer::set(const std::string& parameterName, const long& value, const char pathChar)
+   {
+      if (sizeof(long) == 8)
+         helper<int64_t>::setInternal(this, parameterName, value, pathChar);
+      else
+         helper<int>::setInternal(this, parameterName, value, pathChar);
+   }
+
+
 
    template<typename T>
    void CDataContainer::set(const std::string& parameterName, const T & value, const char pathChar)
