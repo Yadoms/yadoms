@@ -2095,6 +2095,32 @@ namespace shared
    template<class T>
    T CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
+      if (sizeof(T) == 8)
+      {
+         if(std::is_signed<T>::value)
+            return convertToInt64(*ptrValue);
+         return convertToUInt64(*ptrValue);
+      }
+      if (sizeof(T) == 4)
+      {
+         if (std::is_signed<T>::value)
+            return convertToInt(*ptrValue);
+         return convertToUInt(*ptrValue);
+      }
+      if (sizeof(T) == 2)
+      {
+         if (std::is_signed<T>::value)
+            return convertToShort(*ptrValue);
+         return convertToUShort(*ptrValue);
+      }
+      if (sizeof(T) == 1)
+      {
+         if (std::is_signed<T>::value)
+            return convertToByte(*ptrValue);
+         return convertToUByte(*ptrValue);
+      }
+
+      //pitfall (may succeed)
       if(ptrValue)
          return ptrValue->Get<T>();
       throw exception::CInvalidParameter("Fail to convert NULL value");
