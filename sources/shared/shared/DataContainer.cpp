@@ -640,7 +640,7 @@ namespace shared
 
 		if (v.IsInt64())
 		{
-			const int64_t b = v.GetInt64();
+			const std::int64_t b = v.GetInt64();
 			if (b< INT32_MIN || b>INT32_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to int32") % b).str());
 			return static_cast<int>(b);
@@ -648,7 +648,7 @@ namespace shared
 
 		if (v.IsUint64())
 		{
-			const uint64_t b = v.GetUint64();
+			const std::uint64_t b = v.GetUint64();
 			if (b>INT32_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to int32") % b).str());
 			return static_cast<int>(b);
@@ -688,7 +688,7 @@ namespace shared
 		throw exception::CInvalidParameter("Value is not a valid type");
 	}
 
-	int64_t CDataContainer::convertToInt64(const rapidjson::Value & v)
+	std::int64_t CDataContainer::convertToInt64(const rapidjson::Value & v)
 	{
 		std::cout << "Converting to Int64..." << std::endl;
 		
@@ -703,24 +703,24 @@ namespace shared
 		if (v.IsUint64())
 		{
 			std::cout << "Found UInt64, try to convert to Int64..." << std::endl;
-			const uint64_t b = v.GetUint64();
+			const std::uint64_t b = v.GetUint64();
 			if (b > INT64_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to int64") % b).str());
-			return static_cast<int64_t>(b);
+			return static_cast<std::int64_t>(b);
 		}
 
 		if (v.IsUint())
 		{
 			std::cout << "Found unsigned int, try to convert to Int64..." << std::endl;
 			const unsigned int b = v.GetUint();
-			return static_cast<int64_t>(b);
+			return static_cast<std::int64_t>(b);
 		}
 
 		if (v.IsInt())
 		{
 			std::cout << "Found int, try to convert to Int64..." << std::endl;
 			const int b = v.GetInt();
-			return static_cast<int64_t>(b);
+			return static_cast<std::int64_t>(b);
 		}
 
 		if (v.IsDouble())
@@ -730,7 +730,7 @@ namespace shared
 				throw exception::COutOfRange((boost::format("%1% is not assignable to int64") % b).str());
 			if (b > nextafter(INT64_MAX, 0))
 				throw exception::COutOfRange((boost::format("%1% is not assignable to int64 : overflow") % b).str());
-			return static_cast<int64_t>(b);
+			return static_cast<std::int64_t>(b);
 		}
 
 		if (v.IsFloat())
@@ -738,12 +738,12 @@ namespace shared
 			const float b = v.GetFloat();
 			if (b< INT64_MIN || b>INT64_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to int64") % b).str());
-			return static_cast<int64_t>(b);
+			return static_cast<std::int64_t>(b);
 		}
 
 		if (v.IsString()) {
 			const std::string s = v.GetString();
-			return boost::lexical_cast<int64_t>(s);
+			return boost::lexical_cast<std::int64_t>(s);
 		}
 		if (v.IsBool())
 			return v.GetBool() ? 1 : 0;
@@ -793,7 +793,7 @@ namespace shared
 
 		if (v.IsInt64())
 		{
-			const int64_t b = v.GetInt64();
+			const std::int64_t b = v.GetInt64();
 			if (b< INT8_MIN || b>INT8_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to char/int8") % b).str());
 			return static_cast<char>(b);
@@ -801,7 +801,7 @@ namespace shared
 
 		if (v.IsUint64())
 		{
-			const uint64_t b = v.GetUint64();
+			const std::uint64_t b = v.GetUint64();
 			if (b>INT8_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to char/int8") % b).str());
 			return static_cast<char>(b);
@@ -842,14 +842,14 @@ namespace shared
 		}
 		if (v.IsInt64())
 		{
-			const int64_t b = v.GetInt64();
+			const std::int64_t b = v.GetInt64();
 			if (b< INT16_MIN || b>INT16_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to signed Short/Int16") % b).str());
 			return static_cast<short>(b);
 		}
 		if (v.IsUint64())
 		{
-			const uint64_t b = v.GetUint64();
+			const std::uint64_t b = v.GetUint64();
 			if (b>INT16_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to signed Short/Int16") % b).str());
 			return static_cast<short>(b);
@@ -892,7 +892,7 @@ namespace shared
 
 		if (v.IsUint64())
 		{
-			const uint64_t b = v.GetUint64();
+			const std::uint64_t b = v.GetUint64();
 			if (b>UINT32_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int/UInt32") % b).str());
 			return static_cast<unsigned int>(b);
@@ -900,7 +900,7 @@ namespace shared
 
 		if (v.IsInt64())
 		{
-			const int64_t b = v.GetInt64();
+			const std::int64_t b = v.GetInt64();
 			if (b< 0 || b>UINT32_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int/UInt32") % b).str());
 			return static_cast<unsigned int>(b);
@@ -946,23 +946,23 @@ namespace shared
 
 		throw exception::CInvalidParameter("Value is not a valid type");
 	}
-	uint64_t CDataContainer::convertToUInt64(const rapidjson::Value& v)
+	std::uint64_t CDataContainer::convertToUInt64(const rapidjson::Value& v)
 	{
 		if (v.IsUint64())
 			return v.GetUint64();		
 
 		if (v.IsInt64())
 		{
-			const int64_t b = v.GetInt64();
+			const std::int64_t b = v.GetInt64();
 			if (b< 0 || b>INT64_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
-			return static_cast<uint64_t>(b);
+			return static_cast<std::uint64_t>(b);
 		}
 
 		if (v.IsUint())
 		{
 			const unsigned int b = v.GetUint();
-			return static_cast<uint64_t>(b);
+			return static_cast<std::uint64_t>(b);
 		}
 
 		if (v.IsInt())
@@ -970,7 +970,7 @@ namespace shared
 			const int b = v.GetInt();
 			if (b< 0)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
-			return static_cast<uint64_t>(b);
+			return static_cast<std::uint64_t>(b);
 		}
 
 		if (v.IsDouble())
@@ -980,7 +980,7 @@ namespace shared
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
 			if (b > nextafter(UINT64_MAX, 0))
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64 : overflow") % b).str());
-			return static_cast<uint64_t>(b);
+			return static_cast<std::uint64_t>(b);
 		}
 
 		if (v.IsFloat())
@@ -988,13 +988,13 @@ namespace shared
 			const float b = v.GetFloat();
 			if (b< 0 || b>UINT64_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
-			return static_cast<uint64_t>(b);
+			return static_cast<std::uint64_t>(b);
 		}
 
 		if (v.IsString()) 
 		{
 			const std::string s = v.GetString();
-			return boost::lexical_cast<uint64_t>(s);
+			return boost::lexical_cast<std::uint64_t>(s);
 		}
 			
 		if (v.IsBool())
@@ -1019,7 +1019,7 @@ namespace shared
 		}
 		if (v.IsInt64())
 		{
-			const int64_t b = v.GetInt64();
+			const std::int64_t b = v.GetInt64();
 			if (b< 0 || b>UINT8_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned char/uint8") % b).str());
 			return static_cast<unsigned char>(b);
@@ -1082,7 +1082,7 @@ namespace shared
 
 		if (v.IsUint64())
 		{
-			const uint64_t b = v.GetUint64();
+			const std::uint64_t b = v.GetUint64();
 			if (b>UINT16_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned short/uint16") % b).str());
 			return static_cast<unsigned short>(b);
@@ -1097,7 +1097,7 @@ namespace shared
 		}
 		if (v.IsInt64())
 		{
-			const int64_t b = v.GetInt64();
+			const std::int64_t b = v.GetInt64();
 			if (b< 0 || b>UINT16_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned short/uint16") % b).str());
 			return static_cast<unsigned short>(b);
@@ -1166,7 +1166,7 @@ namespace shared
 
 		if (v.IsInt64())
 		{
-			const int64_t b = v.GetInt64();
+			const std::int64_t b = v.GetInt64();
 			if (b< -FLT_MAX || b>FLT_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
 			return static_cast<float>(b);
@@ -1174,7 +1174,7 @@ namespace shared
 
 		if (v.IsUint64())
 		{
-			const uint64_t b = v.GetUint64();
+			const std::uint64_t b = v.GetUint64();
 			if (b< -FLT_MAX || b>FLT_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
 			return static_cast<float>(b);
@@ -1228,7 +1228,7 @@ namespace shared
 
 		if (v.IsInt64())
 		{
-			const int64_t b = v.GetInt64();
+			const std::int64_t b = v.GetInt64();
 			if (b< -DBL_MAX || b>DBL_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
 			return static_cast<double>(b);
@@ -1236,7 +1236,7 @@ namespace shared
 
 		if (v.IsUint64())
 		{
-			const uint64_t b = v.GetUint64();
+			const std::uint64_t b = v.GetUint64();
 			if (b< -DBL_MAX || b>DBL_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
 			return static_cast<double>(b);

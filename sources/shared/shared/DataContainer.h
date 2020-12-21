@@ -8,6 +8,8 @@
 #include "enumeration/IExtendedEnum.h"
 #include "Field.hpp"
 
+ #include <cstdint>
+ 
 #define RAPIDJSON_HAS_STDSTRING 1
 #include "rapidjson/document.h"
 #include "rapidjson/pointer.h"
@@ -807,7 +809,7 @@ namespace shared
 	  /// \return The data as int64 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static int64_t convertToInt64(const rapidjson::Value& v);
+	  static std::int64_t convertToInt64(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a char
@@ -839,7 +841,7 @@ namespace shared
 	  /// \return The data as unsigned int64 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static uint64_t convertToUInt64(const rapidjson::Value& v);
+	  static std::uint64_t convertToUInt64(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a unsigned char
@@ -1084,12 +1086,12 @@ namespace shared
          {
 	    std::cout << "helper<T>::getInternal : " << parameterName << std::endl;
 
-       if (std::is_same<T, int64_t>::value)
-          std::cout << "helper<T>::getInternal<int64_t> : " << parameterName << std::endl;
+       if (std::is_same<T, std::int64_t>::value)
+          std::cout << "helper<T>::getInternal<std::int64_t> : " << parameterName << std::endl;
        if (std::is_same<T, int>::value)
           std::cout << "helper<T>::getInternal<int> : " << parameterName << std::endl;
-       if (std::is_same<T, uint64_t>::value)
-          std::cout << "helper<T>::getInternal<uint64_t> : " << parameterName << std::endl;
+       if (std::is_same<T, std::uint64_t>::value)
+          std::cout << "helper<T>::getInternal<std::uint64_t> : " << parameterName << std::endl;
        if (std::is_same<T, unsigned int>::value)
           std::cout << "helper<T>::getInternal<unsigned int> : " << parameterName << std::endl;
 
@@ -1599,12 +1601,12 @@ namespace shared
    template<class T>
    T CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
-      if (std::is_same<T, int64_t>::value)
-         std::cout << "get<int64_t> : " << parameterName << std::endl;
+      if (std::is_same<T, std::int64_t>::value)
+         std::cout << "get<std::int64_t> : " << parameterName << std::endl;
       if (std::is_same<T, int>::value)
          std::cout << "get<int> : " << parameterName << std::endl;
-      if (std::is_same<T, uint64_t>::value)
-         std::cout << "get<uint64_t> : " << parameterName << std::endl;
+      if (std::is_same<T, std::uint64_t>::value)
+         std::cout << "get<std::uint64_t> : " << parameterName << std::endl;
       if (std::is_same<T, unsigned int>::value)
          std::cout << "get<unsigned int> : " << parameterName << std::endl;
 
@@ -1709,12 +1711,12 @@ namespace shared
    T CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
    {
       std::cout << "hCDataContainer::getInternal : " << parameterName << std::endl;
-      if (std::is_same<T, int64_t>::value)
-	      std::cout << "hCDataContainer::getInternal<int64_t> : " << parameterName << std::endl;
+      if (std::is_same<T, std::int64_t>::value)
+	      std::cout << "hCDataContainer::getInternal<std::int64_t> : " << parameterName << std::endl;
       if (std::is_same<T, int>::value)
 	      std::cout << "hCDataContainer::getInternal<int> : " << parameterName << std::endl;
-      if (std::is_same<T, uint64_t>::value)
-	      std::cout << "hCDataContainer::getInternal<uint64_t> : " << parameterName << std::endl;
+      if (std::is_same<T, std::uint64_t>::value)
+	      std::cout << "hCDataContainer::getInternal<std::uint64_t> : " << parameterName << std::endl;
       if (std::is_same<T, unsigned int>::value)
 	      std::cout << "hCDataContainer::getInternal<unsigned int> : " << parameterName << std::endl;
 	   
@@ -2227,12 +2229,12 @@ namespace shared
    template<class T>
    T CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
-      if (std::is_same<T, int64_t>::value)
-	      std::cout << "hCDataContainer::convert generic int64" << std::endl;
+      if (std::is_same<T, std::int64_t>::value)
+	      std::cout << "hCDataContainer::convert generic std::int64" << std::endl;
       if (std::is_same<T, int>::value)
 	      std::cout << "hCDataContainer::convert generic int" << std::endl;
-      if (std::is_same<T, uint64_t>::value)
-	      std::cout << "hCDataContainer::convert generic uint64" << std::endl;
+      if (std::is_same<T, std::uint64_t>::value)
+	      std::cout << "hCDataContainer::convert generic std::uint64" << std::endl;
       if (std::is_same<T, unsigned int>::value)
 	      std::cout << "hCDataContainer::convert generic uint" << std::endl;
 	   	   
@@ -2268,9 +2270,9 @@ namespace shared
    }
    
    template<>
-   inline int64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline std::int64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
-      std::cout << "hCDataContainer::convert int64" << std::endl;
+      std::cout << "hCDataContainer::convert std::int64" << std::endl;
 	   
       if(ptrValue)
          return convertToInt64(*ptrValue);
@@ -2304,9 +2306,9 @@ namespace shared
    }
    
    template<>
-   inline uint64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline std::uint64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
-      std::cout << "hCDataContainer::convert uint64" << std::endl;
+      std::cout << "hCDataContainer::convert std::uint64" << std::endl;
       if(ptrValue)
          return convertToUInt64(*ptrValue);
       throw exception::CInvalidParameter("Fail to convert NULL value");
