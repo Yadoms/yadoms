@@ -1625,18 +1625,6 @@ namespace shared
       return (get<std::string>(parameterName, pathChar).c_str());
    }
 
-   template<>
-   inline unsigned long CDataContainer::get(const std::string& parameterName, const char pathChar) const
-   {
-      return get<unsigned int>(parameterName, pathChar);
-   }
-
-   template<>
-   inline long CDataContainer::get(const std::string& parameterName, const char pathChar) const
-   {
-      return get<int>(parameterName, pathChar);
-   }
-
    template<class T>
    T CDataContainer::getWithDefault(const std::string& parameterName, const T & defaultValue, const char pathChar) const
    {
