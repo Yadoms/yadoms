@@ -7,8 +7,6 @@
 #include "IDataContainable.h"
 #include "enumeration/IExtendedEnum.h"
 #include "Field.hpp"
-
- #include <cstdint>
  
 #define RAPIDJSON_HAS_STDSTRING 1
 #include "rapidjson/document.h"
@@ -809,7 +807,7 @@ namespace shared
 	  /// \return The data as int64 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static std::int64_t convertToInt64(const rapidjson::Value& v);
+	  static int64_t convertToInt64(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a char
@@ -841,7 +839,7 @@ namespace shared
 	  /// \return The data as unsigned int64 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static std::uint64_t convertToUInt64(const rapidjson::Value& v);
+	  static uint64_t convertToUInt64(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a unsigned char
@@ -1084,18 +1082,6 @@ namespace shared
          //--------------------------------------------------------------
          static T getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-	    std::cout << "helper<T>::getInternal : " << parameterName << std::endl;
-
-       if (std::is_same<T, std::int64_t>::value)
-          std::cout << "helper<T>::getInternal<std::int64_t> : " << parameterName << std::endl;
-       if (std::is_same<T, int>::value)
-          std::cout << "helper<T>::getInternal<int> : " << parameterName << std::endl;
-       if (std::is_same<T, std::uint64_t>::value)
-          std::cout << "helper<T>::getInternal<std::uint64_t> : " << parameterName << std::endl;
-       if (std::is_same<T, unsigned int>::value)
-          std::cout << "helper<T>::getInternal<unsigned int> : " << parameterName << std::endl;
-
-
             return tree->getInternal<T>(parameterName, pathChar);
          }
 
@@ -1601,15 +1587,6 @@ namespace shared
    template<class T>
    T CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
-      if (std::is_same<T, std::int64_t>::value)
-         std::cout << "get<std::int64_t> : " << parameterName << std::endl;
-      if (std::is_same<T, int>::value)
-         std::cout << "get<int> : " << parameterName << std::endl;
-      if (std::is_same<T, std::uint64_t>::value)
-         std::cout << "get<std::uint64_t> : " << parameterName << std::endl;
-      if (std::is_same<T, unsigned int>::value)
-         std::cout << "get<unsigned int> : " << parameterName << std::endl;
-
       return helper<T>::getInternal(this, parameterName, pathChar);
    }
 
@@ -1617,12 +1594,6 @@ namespace shared
    inline std::map<std::string, std::string> CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
       return getAsMap<std::string>(parameterName, pathChar);
-   }
-
-   template<>
-   inline const char* CDataContainer::get(const std::string& parameterName, const char pathChar) const
-   {
-      return (get<std::string>(parameterName, pathChar).c_str());
    }
 
    template<class T>
@@ -1645,12 +1616,6 @@ namespace shared
    {
       const std::string strParamName(parameterName);
       appendArray<T>(strParamName, value, pathChar);
-   }
-
-   template<>
-   inline void CDataContainer::appendArray(const std::string& parameterName, const unsigned long& value, const char pathChar)
-   {
-      helper<unsigned int>::appendArrayInternal(this, parameterName, value, pathChar);
    }
 
    template<>
@@ -1678,13 +1643,6 @@ namespace shared
       helper<T>::setInternal(this, parameterName, value, pathChar);
    }
 
-
-   template<>
-   inline void CDataContainer::set(const std::string& parameterName, const unsigned long & value, const char pathChar)
-   {
-      helper<unsigned int>::setInternal(this, parameterName, value, pathChar);
-   }
-
    template<>
    inline void CDataContainer::set(const std::string& parameterName, const char & value, const char pathChar)
    {
@@ -1693,21 +1651,9 @@ namespace shared
       set<std::string>(parameterName, s, pathChar);
    }
 
-#include <type_traits>
-
    template<class T>
    T CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
    {
-      std::cout << "hCDataContainer::getInternal : " << parameterName << std::endl;
-      if (std::is_same<T, std::int64_t>::value)
-	      std::cout << "hCDataContainer::getInternal<std::int64_t> : " << parameterName << std::endl;
-      if (std::is_same<T, int>::value)
-	      std::cout << "hCDataContainer::getInternal<int> : " << parameterName << std::endl;
-      if (std::is_same<T, std::uint64_t>::value)
-	      std::cout << "hCDataContainer::getInternal<std::uint64_t> : " << parameterName << std::endl;
-      if (std::is_same<T, unsigned int>::value)
-	      std::cout << "hCDataContainer::getInternal<unsigned int> : " << parameterName << std::endl;
-	   
       rapidjson::Value* found = findValue(parameterName, pathChar);
       if (found)
          return convert<T>(found);
@@ -1785,31 +1731,6 @@ namespace shared
       return result;
 
    }
-   /*
-   template<>
-   inline std::vector< shared::CDataContainer > CDataContainer::getValuesInternal(const std::string& parameterName, const char pathChar) const
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-#pragma messge ("Avoid use of std::vector<shared::CDataContainer>")
-      std::vector< shared::CDataContainer > result;
-      rapidjson::Value* found = findValue(parameterName, pathChar);
-      if (found)
-      {
-         if (found->IsArray())
-         {
-			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
-				 [](auto &v) -> shared::CDataContainer { return shared::CDataContainer(v); });
-         }
-         else
-            throw exception::COutOfRange(parameterName + " is not an array");
-      }
-      else
-      {
-         throw exception::CInvalidParameter(parameterName + " : is not found");
-      }
-      return result;
-   }
-   */
 
    template<>
    inline std::vector< boost::shared_ptr<CDataContainer> > CDataContainer::getValuesInternal(const std::string& parameterName, const char pathChar) const
@@ -2103,26 +2024,6 @@ namespace shared
       }
    }
 
-   /*
-   template<>
-   inline void CDataContainer::setValuesSPInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<CDataContainer> > & values, const char pathChar)
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
-      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      for (std::vector<boost::shared_ptr<CDataContainer>>::const_iterator i = values.begin(); i != values.end(); ++i)
-      {
-         rapidjson::Value a;
-         a.CopyFrom((*i).get()->m_tree, allocator);
-         v.PushBack(a, allocator);
-      }
-   }*/
-
-
-
-
-
    template<class T>
    void CDataContainer::appendArrayInternal(const std::string& parameterName, const T& value, const char pathChar)
    {
@@ -2161,10 +2062,6 @@ namespace shared
       if (ptr != NULL && ptr->IsArray())
       {
          rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-//         CDataContainer t;
-  //       value.extractContent(t);
-    //     value.m_tree.CopyFrom();
-
          rapidjson::Value a;
          a.CopyFrom(value.m_tree, allocator);
          ptr->PushBack(a, allocator);
@@ -2195,37 +2092,9 @@ namespace shared
    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
    template<class T>
    T CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
-      if (std::is_same<T, std::int64_t>::value)
-	      std::cout << "hCDataContainer::convert generic std::int64" << std::endl;
-      if (std::is_same<T, int>::value)
-	      std::cout << "hCDataContainer::convert generic int" << std::endl;
-      if (std::is_same<T, std::uint64_t>::value)
-	      std::cout << "hCDataContainer::convert generic std::uint64" << std::endl;
-      if (std::is_same<T, unsigned int>::value)
-	      std::cout << "hCDataContainer::convert generic uint" << std::endl;
-	   	   
       if(ptrValue)
          return ptrValue->Get<T>();
       throw exception::CInvalidParameter("Fail to convert NULL value");
@@ -2250,18 +2119,14 @@ namespace shared
    template<>
    inline int CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
-      std::cout << "hCDataContainer::convert int32" << std::endl;
-
 	   if(ptrValue)
          return convertToInt(*ptrValue);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
    
    template<>
-   inline std::int64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline int64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
-      std::cout << "hCDataContainer::convert std::int64" << std::endl;
-	   
       if(ptrValue)
          return convertToInt64(*ptrValue);
       throw exception::CInvalidParameter("Fail to convert NULL value");
@@ -2286,17 +2151,14 @@ namespace shared
    template<>
    inline unsigned int CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
-      std::cout << "hCDataContainer::convert uint32" << std::endl;
-	   
       if(ptrValue)
          return convertToUInt(*ptrValue);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
    
    template<>
-   inline std::uint64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline uint64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
-      std::cout << "hCDataContainer::convert std::uint64" << std::endl;
       if(ptrValue)
          return convertToUInt64(*ptrValue);
       throw exception::CInvalidParameter("Fail to convert NULL value");
