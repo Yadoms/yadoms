@@ -23,6 +23,13 @@ case "$choice" in
 	# cmake for makefile
 	cmake -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++ ../sources
 	;;
+    d)
+	#run osxcross-conf to get all env var and set OSXCROSS_HOST (needed by osxcross)
+	eval "`$YADOMS_CCMACOS_CONFTOOL`"
+	export OSXCROSS_HOST="$YADOMS_CCMACOS_TRIPLET"
+	# cmake for makefile (cross compilation)
+	cmake -DCMAKE_BUILD_TYPE="Release" -D CMAKE_C_COMPILER=$YADOMS_CCMACOS_TRIPLET-clang -D CMAKE_CXX_COMPILER=$YADOMS_CCMACOS_TRIPLET-clang++ -DCMAKE_TOOLCHAIN_FILE=../sources/ccmacos.cmake ../sources
+	;;		
     x)
 	# cmake for xcode
 	cmake -GXcode ../sources
