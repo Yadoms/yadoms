@@ -18,14 +18,15 @@ jobs:
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /work/build-scripts/linux/entrypoint_docker_unittests.sh'
-    - name: Archive production artifacts
+    - name: Archive unittests artifacts
       uses: actions/upload-artifact@v2
       with:
         name: Linux-UnitTests
-        path: ./builds            
+        path: ./tests/unit/builds       
     - name: Run unit tests
       run: |
         echo "Running unittests for yadoms ${{ steps.yadoms_build_step.outputs.yadomsVersion }}"
+        cd tests/unit/builds
         ./yadomsTests
 
  
@@ -81,7 +82,7 @@ jobs:
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker_unittests.ps1'
-    - name: Archive production artifacts
+    - name: Archive unittests artifacts
       uses: actions/upload-artifact@v2
       with:
         name: Windows-UnitTests
@@ -89,5 +90,5 @@ jobs:
     - name: Run Unit tests for Windows
       shell: powershell
       run: |
-        popd tests/unit/builds/RELEASE
+        cd tests/unit/builds/RELEASE
         .\yadomsTests.exe

@@ -11,7 +11,7 @@ echo "Display config content"
 cat sources/CMakeListsUserConfig.txt
 
 echo "Create makefile"
-sh cmake_macosx.sh d
+sh cmake_macosx_tests.sh d
 
 echo "Building Yadoms unit tests"
 cd projects
