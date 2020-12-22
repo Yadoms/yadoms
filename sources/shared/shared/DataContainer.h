@@ -1596,6 +1596,32 @@ namespace shared
       return getAsMap<std::string>(parameterName, pathChar);
    }
 
+   template<>
+   inline unsigned long CDataContainer::get(const std::string& parameterName, const char pathChar) const
+   {
+      //manage "unsigned long" special cases
+      //depending on the platform, it maybe 8 or 4 bytes
+      //just ensure it's rooted using the real good type.
+      //by default this is not the case
+      //that's why template specialization is needed
+      if (sizeof(unsigned long) == 8)
+         return helper<uint64_t>::getInternal(this, parameterName, pathChar);
+      return helper<unsigned int>::getInternal(this, parameterName, pathChar);
+   }
+
+   template<>
+   inline long CDataContainer::get(const std::string& parameterName, const char pathChar) const
+   {
+      //manage "long" special cases
+      //depending on the platform, it maybe 8 or 4 bytes
+      //just ensure it's rooted using the real good type.
+      //by default this is not the case
+      //that's why template specialization is needed
+      if (sizeof(long) == 8)
+         return helper<int64_t>::getInternal(this, parameterName, pathChar);
+      return helper<int>::getInternal(this, parameterName, pathChar);
+   }
+
    template<class T>
    T CDataContainer::getWithDefault(const std::string& parameterName, const T & defaultValue, const char pathChar) const
    {
