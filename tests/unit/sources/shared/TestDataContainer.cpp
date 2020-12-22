@@ -1587,21 +1587,32 @@ char* get_human_readable_size(double size/*in bytes*/) {
                   memcpy(&b, &a, sizeof(a)); \
          }
 #else
-   #include <malloc.h>
+   #include <stdlib.h>
+   #ifdef HAVE_MALLOC_H
+      #include <malloc.h>
+   #endif
 
-   #define DEBUG_HEAP_INIT() \
-      struct mallinfo a; \
-      struct mallinfo b; \
-      a = mallinfo(); \
-      b = mallinfo()
+      #define DEBUG_HEAP_INIT() \
+         struct mallinfo a; \
+         struct mallinfo b; \
+         a = mallinfo(); \
+         b = mallinfo()
 
-   #define DEBUG_HEAP_PRINT(title) \
-         if (i % 1000 == 0 || i < 10) { \
-            \
-               a = mallinfo(); \
-               std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.uordblks) << "(" << a.uordblks << "). Diff = " << (a.uordblks - b.uordblks) << std::endl; \
-               memcpy(&b, &a, sizeof(a)); \
-         }
+      #define DEBUG_HEAP_PRINT(title) \
+            if (i % 1000 == 0 || i < 10) { \
+               \
+                  a = mallinfo(); \
+                  std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.uordblks) << "(" << a.uordblks << "). Diff = " << (a.uordblks - b.uordblks) << std::endl; \
+                  memcpy(&b, &a, sizeof(a)); \
+            }
+   //#else
+   //   #define DEBUG_HEAP_INIT() 
+   //
+   //   #define DEBUG_HEAP_PRINT(title) \
+   //               if (i % 1000 == 0 || i < 10) { \
+   //                     std::cout << "[" << title << "] Step=" << i << std::endl; \
+   //               }
+   #endif
 #endif
 
 
