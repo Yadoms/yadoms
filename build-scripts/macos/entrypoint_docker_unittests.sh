@@ -15,7 +15,7 @@ sh cmake_macosx_tests.sh d
 
 echo "Building Yadoms unit tests"
 cd projects
-OSXCROSS_MP_INC=1 make all_unity
+OSXCROSS_MP_INC=1 make all
 cd -
 
 chmod 777 -R /work/tests/unit/builds
