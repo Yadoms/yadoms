@@ -64,9 +64,7 @@ jobs:
       shell: bash
       run: |
         echo "Running unittests for yadoms"
-        ls -al
         chmod +x yadomsTests
-        ls -al
         ./yadomsTests
 
   Windows:

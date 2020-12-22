@@ -1605,8 +1605,8 @@ namespace shared
       //by default this is not the case
       //that's why template specialization is needed
       if (sizeof(unsigned long) == 8)
-         return helper<uint64_t>::getInternal(this, parameterName, pathChar);
-      return helper<unsigned int>::getInternal(this, parameterName, pathChar);
+         return (unsigned long)helper<uint64_t>::getInternal(this, parameterName, pathChar);
+      return (unsigned int)helper<unsigned int>::getInternal(this, parameterName, pathChar);
    }
 
    template<>
@@ -1618,8 +1618,8 @@ namespace shared
       //by default this is not the case
       //that's why template specialization is needed
       if (sizeof(long) == 8)
-         return helper<int64_t>::getInternal(this, parameterName, pathChar);
-      return helper<int>::getInternal(this, parameterName, pathChar);
+         return (unsigned long)helper<int64_t>::getInternal(this, parameterName, pathChar);
+      return (unsigned int)helper<int>::getInternal(this, parameterName, pathChar);
    }
 
    template<class T>

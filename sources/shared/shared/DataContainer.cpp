@@ -339,7 +339,7 @@ namespace shared
 
 	void CDataContainer::printSizeToLog(std::ostream& os) const
 	{
-		//os << "Size=" << getPointer()->GetAllocator().Size() << " ChunkSize=" << getPointer()->GetAllocator().Capacity() << " StackCapcity=" << getPointer()->GetStackCapacity() << std::endl;
+		os << "Size=" << getPointer()->GetAllocator().Size() << " ChunkSize=" << getPointer()->GetAllocator().Capacity() << " StackCapcity=" << getPointer()->GetStackCapacity() << std::endl;
 	}
 
 	std::string CDataContainer::generatePath(const std::string & parameterName, const char pathChar)

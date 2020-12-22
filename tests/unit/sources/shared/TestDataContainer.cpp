@@ -1578,7 +1578,8 @@ char* get_human_readable_size(double size/*in bytes*/) {
       _CrtMemState a;\
       _CrtMemState b;\
       _CrtMemCheckpoint(&a);\
-      _CrtMemCheckpoint(&b)
+      _CrtMemCheckpoint(&b)\
+
 
    #define DEBUG_HEAP_PRINT(title) \
          if(i%1000 == 0 || i<10)  {\
@@ -1586,6 +1587,7 @@ char* get_human_readable_size(double size/*in bytes*/) {
                   std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << std::endl; \
                   memcpy(&b, &a, sizeof(a)); \
          }
+
 #else
    #ifdef HAVE_MALLOC_H
       #include <malloc.h>
@@ -1682,6 +1684,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
       auto k = web::rest::CResult::GenerateSuccess(whole);
 
       DEBUG_HEAP_PRINT("Après");
+
    }
    catch (...)
    {
