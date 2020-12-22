@@ -90,6 +90,6 @@ jobs:
     - name: Run Unit tests for Windows
       shell: powershell
       run: |
-        cd tests/unit/builds
         dir tests/unit/builds
+        cd tests/unit/builds/RELEASE
         .\yadomsTests.exe
