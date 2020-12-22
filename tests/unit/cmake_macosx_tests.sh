@@ -10,6 +10,7 @@ if [ -z "$1" ]
 then
 	echo "Which choice would you like?"
 	echo " -> Generate a makefile (m)"
+	echo " -> Generate a makefile with osxcross (d)"
 	echo " -> Generate a xcode project (x)"
 	read choice
 else
