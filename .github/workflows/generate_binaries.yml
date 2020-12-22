@@ -156,12 +156,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-windows-action@v1.beta1
+      uses: Yadoms/build-yadoms-windows-action@v2.beta2
       id: yadoms_build_step
       with:
-          buildImage: yadoms/build_for_windows:latest
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_OAUTH }}
+          buildImage: ghcr.io/yadoms/build_for_windows:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
     - name: Get tag/branch name
       id: vars
