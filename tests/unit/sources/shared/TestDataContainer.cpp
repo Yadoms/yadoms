@@ -1582,7 +1582,7 @@ char* get_human_readable_size(double size/*in bytes*/) {
 
 
    #define DEBUG_HEAP_PRINT(title) \
-         if(i%1000 == 0 || i<10)  {\
+         if(i%100000 == 0 || i<10)  {\
                   _CrtMemCheckpoint(&a);\
                   std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << std::endl; \
                   memcpy(&b, &a, sizeof(a)); \
@@ -1599,7 +1599,7 @@ char* get_human_readable_size(double size/*in bytes*/) {
          b = mallinfo()
 
       #define DEBUG_HEAP_PRINT(title) \
-            if (i % 1000 == 0 || i < 10) { \
+            if (i % 100000 == 0 || i < 10) { \
                \
                   a = mallinfo(); \
                   std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.uordblks) << "(" << a.uordblks << "). Diff = " << (a.uordblks - b.uordblks) << std::endl; \
@@ -1609,7 +1609,7 @@ char* get_human_readable_size(double size/*in bytes*/) {
       #define DEBUG_HEAP_INIT() 
    
       #define DEBUG_HEAP_PRINT(title) \
-                  if (i % 1000 == 0 || i < 10) { \
+                  if (i % 100000 == 0 || i < 10) { \
                         std::cout << "[" << title << "] Step=" << i << std::endl; \
                   }
    #endif
@@ -1723,6 +1723,8 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
    }
 }
 
+#ifdef CDATACONTAINER_TEST_BENCHMARK
+
 #define MEASURE_DURATION_INIT() \
       boost::posix_time::ptime start, end;\
       boost::posix_time::time_duration dur
@@ -1813,10 +1815,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
 
    std::cout << "End benchmark of CDataContainer" << std::endl;
 }
-
-
-
-
+#endif
 
 BOOST_AUTO_TEST_CASE(DataContainer_Array)
 {
