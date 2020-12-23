@@ -90,6 +90,10 @@ jobs:
     - name: Run Unit tests for Windows
       shell: powershell
       run: |
-        dir tests/unit/builds
         cd tests/unit/builds/RELEASE
-        .\yadomsTests.exe
+        .\yadomsTests.exe -s -r detailed -e results.txt
+    - name: Archive unittests report artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows-UnitTests-Report
+        path: ./tests/unit/builds/RELEASE/results.txt
