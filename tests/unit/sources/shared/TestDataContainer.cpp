@@ -1618,109 +1618,121 @@ char* get_human_readable_size(double size/*in bytes*/) {
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
 {
-   std::vector<boost::shared_ptr<shared::CDataContainer>> objectList;
-
-
-   unsigned int i = 0;
-   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
-   try
+   std::cout << "[START] DataContainer_HugeAmountOfData_Vector" << std::endl;
    {
-      DEBUG_HEAP_INIT();
-      DEBUG_HEAP_PRINT("Init");
+      std::vector<boost::shared_ptr<shared::CDataContainer>> objectList;
 
-      for(i=0; i<1000000; ++i)
+
+      unsigned int i = 0;
+      boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+      try
       {
-         boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make(30, 2);
+         DEBUG_HEAP_INIT();
+         DEBUG_HEAP_PRINT("Init");
 
-         //std::cout << "Before sizeof(dc)=" << sizeof(result) << " ";
-         //result.printSizeToLog(std::cout);
+         for(i=0; i<1000000; ++i)
+         {
+            boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make(30, 2);
 
-         auto dt = boost::posix_time::to_iso_string(t1);
-        // std::cout << "Inserting 4+" << dt.size() << "chars. => ";
-         result->set("date", dt);
-         //result.printSizeToLog(std::cout);
+            //std::cout << "Before sizeof(dc)=" << sizeof(result) << " ";
+            //result.printSizeToLog(std::cout);
 
-         auto val = std::to_string(fRand(0, 1000));
-         //std::cout << "Inserting 3+" << val.size() << "chars. => ";
-         result->set("key", val);
-         //result.printSizeToLog(std::cout);
+            auto dt = boost::posix_time::to_iso_string(t1);
+           // std::cout << "Inserting 4+" << dt.size() << "chars. => ";
+            result->set("date", dt);
+            //result.printSizeToLog(std::cout);
 
-         objectList.push_back(result);
-         t1 += boost::posix_time::seconds(1);
-         DEBUG_HEAP_PRINT("Next");
+            auto val = std::to_string(fRand(0, 1000));
+            //std::cout << "Inserting 3+" << val.size() << "chars. => ";
+            result->set("key", val);
+            //result.printSizeToLog(std::cout);
+
+            objectList.push_back(result);
+            t1 += boost::posix_time::seconds(1);
+            DEBUG_HEAP_PRINT("Next");
+         }
+
       }
-
+      catch(...)
+      {
+         BOOST_FAIL("Unknown exception");
+      }
    }
-   catch(...)
-   {
-      BOOST_FAIL("Unknown exception");
-   }
+   std::cout << "[END] DataContainer_HugeAmountOfData_Vector" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 {
-   unsigned int itemCount = 100000;
-   auto whole = boost::make_shared< shared::CDataContainer>(30, itemCount);
-
-   unsigned int i = 0;
-   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
-   try
+   std::cout << "[START] DataContainer_HugeAmountOfData_Rapidjson" << std::endl;
    {
-      DEBUG_HEAP_INIT();
-      DEBUG_HEAP_PRINT("Init");
+      unsigned int itemCount = 100000;
+      auto whole = boost::make_shared< shared::CDataContainer>(30, itemCount);
 
-      for (i = 0; i < itemCount; ++i)
+      unsigned int i = 0;
+      boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+      try
       {
-         shared::CDataContainer result(30,2);
-         std::string dt = boost::posix_time::to_iso_string(t1);
-         result.set("date", dt);
-         result.set("key", std::to_string(fRand(0, 1000)));
-         whole->set(dt, result);
-         t1 += boost::posix_time::seconds(1);
+         DEBUG_HEAP_INIT();
+         DEBUG_HEAP_PRINT("Init");
+
+         for (i = 0; i < itemCount; ++i)
+         {
+            shared::CDataContainer result(30,2);
+            std::string dt = boost::posix_time::to_iso_string(t1);
+            result.set("date", dt);
+            result.set("key", std::to_string(fRand(0, 1000)));
+            whole->set(dt, result);
+            t1 += boost::posix_time::seconds(1);
+         }
+
+         DEBUG_HEAP_PRINT("Avant");
+
+         auto k = web::rest::CResult::GenerateSuccess(whole);
+
+         DEBUG_HEAP_PRINT("Après");
+
       }
-
-      DEBUG_HEAP_PRINT("Avant");
-
-      auto k = web::rest::CResult::GenerateSuccess(whole);
-
-      DEBUG_HEAP_PRINT("Après");
-
+      catch (...)
+      {
+         BOOST_FAIL("Unknown exception");
+      }
    }
-   catch (...)
-   {
-      BOOST_FAIL("Unknown exception");
-   }
+   std::cout << "[END] DataContainer_HugeAmountOfData_Rapidjson" << std::endl;
 }
 
 
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 {
-   shared::CDataContainer whole(100, 1000000);
-
-   whole.createArray("data");
-
-   unsigned int i = 0;
-   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
-   try
+   std::cout << "[START] DataContainer_HugeAmountOfData_Array" << std::endl;
    {
-      DEBUG_HEAP_INIT();
-      DEBUG_HEAP_PRINT("Init");
+      shared::CDataContainer whole(100, 1000000);
 
-      for (i = 0; i < 1000000; ++i)
+      whole.createArray("data");
+
+      unsigned int i = 0;
+      boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+      try
       {
-         shared::CDataContainer result(50, 2);
-         result.set("date", boost::posix_time::to_iso_string(t1));
-         result.set("key", std::to_string(fRand(0, 1000)));
-         whole.appendArray("data", result);
-         t1 += boost::posix_time::seconds(1);
-         DEBUG_HEAP_PRINT("Next");
+         DEBUG_HEAP_INIT();
+         DEBUG_HEAP_PRINT("Init");
+
+         for (i = 0; i < 1000000; ++i)
+         {
+            shared::CDataContainer result(50, 2);
+            result.set("date", boost::posix_time::to_iso_string(t1));
+            result.set("key", std::to_string(fRand(0, 1000)));
+            whole.appendArray("data", result);
+            t1 += boost::posix_time::seconds(1);
+            DEBUG_HEAP_PRINT("Next");
+         }
+      }
+      catch (...)
+      {
+         BOOST_FAIL("Unknown exception");
       }
    }
-   catch (...)
-   {
-      BOOST_FAIL("Unknown exception");
-   }
+   std::cout << "[END] DataContainer_HugeAmountOfData_Array" << std::endl;
 }
 
 #ifdef CDATACONTAINER_TEST_BENCHMARK
