@@ -15,43 +15,7 @@
 * Update LibCurl (7.72.0)
 
 
-### 2.4.0-beta.7
-
-#### Github
-* Fix GithubActions to generate releases
-
-### 2.4.0-beta.6
-
-#### Yadoms
-* Fix #708 : Fix crash when display graph with a lot of data 
-
-
-### 2.4.0-beta.5
-
-#### Yadoms
-* Fix Yadoms crash when no data available with getKeywordData web-service
-* Fix #700 : Improve message when an interpreter is not available
-
-
-### 2.4.0-beta.4
-
-#### Yadoms
-* Fix historisation of Datacontainer based keywords
-
-
-### 2.4.0-beta.3
-
-#### Yadoms
-* Fix #684 : Fix JSON improper warnings in log
-
-
-### 2.4.0-beta.2
-
-#### Yadoms
-* Add possibility to force Python 2.7 and Python 3.x paths in yadoms.ini
-
-
-### 2.4.0-beta.1
+### 2.4.0
 
 #### Yadoms
 * New feature #538 : New meteo plugin (remove weather underground)
@@ -64,6 +28,7 @@
 * New feature #609 : Forecast weather widget updated
 * New feature #670 and #669 : Add Lolin ePaper plugin (httpscreen plugin)
 * New feature #645 #642 #624 : Add Lametric Time device plugin
+* New feature : add possibility to force Python 2.7 and Python 3.x paths in yadoms.ini
 * New platform supported : Synology DS218+
 * Fix #469 : Wes plugin : fix reading units
 * Fix #518 : ZWave fix  bad tag filtering
@@ -89,6 +54,13 @@
 * Fix #653 : remove boost::locale dependency
 * Fix #654 : fix python interpreter with 3.8.1
 * Fix #668 : GUI : Fix display on event keyword and keywords without acquisition
+* Fix #684 : Fix JSON improper warnings in log
+* Fix #700 : Improve message when an interpreter is not available
+* Fix #708 : Fix crash when display graph with a lot of data 
+* Fix historisation of Datacontainer based keywords
+* Fix Yadoms crash when no data available with getKeywordData web-service
+* Fix Script API wrappers build on Windows
+* Fix GithubActions to generate releases
 * Wiki updated (#644, #591)
 * Known issue #617 : No more progression displayed when downloading file
 
