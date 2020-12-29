@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Binaries generation
 
 on: push
 
@@ -148,7 +148,8 @@ jobs:
           entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
     - name: Get tag/branch name
       id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      run: Write-Host "::set-output name=tag::$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')"
+      shell: powershell
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
