@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IResultAdapter.h"
-#include "SqlExtension.hpp"
 #include "database/common/IResultHandler.h"
 
 namespace database
@@ -13,18 +12,11 @@ namespace database
          //--------------------------------------------------------------
          ///\Brief		Class which adapt in single string, using a json like output [[data],[data],....]
          //--------------------------------------------------------------
-         class CHugeDataVectorAdapter : public IResultAdapterEx<std::string>
+         class CHugeDataVectorForKeywordSummaryDataAdapter : public IResultAdapterEx<std::string>
          {
          public:
-            //--------------------------------------------------------------
-            /// \Brief		Constructor
-            //--------------------------------------------------------------
-            CHugeDataVectorAdapter();
-
-            //--------------------------------------------------------------
-            /// \Brief		Destructor
-            //--------------------------------------------------------------
-            virtual ~CHugeDataVectorAdapter();
+            CHugeDataVectorForKeywordSummaryDataAdapter() = default;
+            virtual ~CHugeDataVectorForKeywordSummaryDataAdapter() = default;
 
             // ISQLiteResultAdapter implementation
             bool adapt(boost::shared_ptr<IResultHandler> resultHandler) override;
@@ -33,7 +25,7 @@ namespace database
 
             //--------------------------------------------------------------
             /// \Brief		Get the result (raw format)
-            /// \return		The result (raw format) using a json like ouptut [[data],[data],....]
+            /// \return		The result (raw format) using a json like output [[data],[data],....]
             //--------------------------------------------------------------
             std::string getRawResults() const;
 
