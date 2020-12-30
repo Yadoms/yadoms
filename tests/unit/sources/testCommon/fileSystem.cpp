@@ -34,7 +34,10 @@ namespace testCommon
       }
 
       std::ofstream textStream;
-      textStream.open(file.string(), std::ios::out | (withBom ? std::ios::app : 0));
+	  if(withBom)
+		 textStream.open(file.string(), std::ios::out | std::ios::app);
+	  else
+         textStream.open(file.string(), std::ios::out);
       textStream << content;
       textStream.close();
    }
