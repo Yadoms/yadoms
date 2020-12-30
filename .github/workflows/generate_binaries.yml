@@ -17,9 +17,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           entrypoint: '/entrypoint_docker.sh'
-    - name: Get tag/branch name
-      id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Linux-Binaries
+        path: ./builds  
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -52,6 +54,11 @@ jobs:
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: MacOSX-Binaries
+        path: ./builds    
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -84,6 +91,11 @@ jobs:
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Synology218p-Binaries
+        path: ./builds  
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -117,6 +129,11 @@ jobs:
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: RapsberryPI-Binaries
+        path: ./builds   
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1
@@ -139,17 +156,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-windows-action@v1.beta1
+      uses: Yadoms/build-yadoms-windows-action@v2.beta2
       id: yadoms_build_step
       with:
-          buildImage: yadoms/build_for_windows:latest
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_OAUTH }}
+          buildImage: ghcr.io/yadoms/build_for_windows:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
     - name: Get tag/branch name
       id: vars
       run: Write-Host "::set-output name=tag::$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')"
       shell: powershell
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows-Binaries
+        path: ./builds    
     - name: Create Release (on Tag only)
       id: create_release
       uses: ncipollo/release-action@v1

@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include <boost/test/unit_test.hpp>
 
+//for EnOcean plugin
+#include <boost/dynamic_bitset.hpp>
+
 // Includes needed to compile tested classes
 #include "../../../../sources/plugins/EnOcean/profiles/bitsetHelpers.hpp"
 
