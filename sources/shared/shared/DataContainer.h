@@ -7,7 +7,7 @@
 #include "IDataContainable.h"
 #include "enumeration/IExtendedEnum.h"
 #include "Field.hpp"
-
+ 
 #define RAPIDJSON_HAS_STDSTRING 1
 #include "rapidjson/document.h"
 #include "rapidjson/pointer.h"
@@ -1073,7 +1073,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Helper structure for get/set with single value type (int, double, std::string,...)
       //--------------------------------------------------------------
-      template <typename T, class Enable = void>
+      template <class T, class Enable = void>
       struct helper
       {
 
@@ -1584,7 +1584,7 @@ namespace shared
    ///				-> for template methods
    ///				-> for template specialization
    //--------------------------------------------------------------
-   template<typename T>
+   template<class T>
    T CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
       return helper<T>::getInternal(this, parameterName, pathChar);
@@ -1597,21 +1597,29 @@ namespace shared
    }
 
    template<>
-   inline const char* CDataContainer::get(const std::string& parameterName, const char pathChar) const
-   {
-      return (get<std::string>(parameterName, pathChar).c_str());
-   }
-
-   template<>
    inline unsigned long CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
-      return get<unsigned int>(parameterName, pathChar);
+      //manage "unsigned long" special cases
+      //depending on the platform, it maybe 8 or 4 bytes
+      //just ensure it's rooted using the real good type.
+      //by default this is not the case
+      //that's why template specialization is needed
+      if (sizeof(unsigned long) == 8)
+         return (unsigned long)helper<uint64_t>::getInternal(this, parameterName, pathChar);
+      return (unsigned int)helper<unsigned int>::getInternal(this, parameterName, pathChar);
    }
 
    template<>
    inline long CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
-      return get<int>(parameterName, pathChar);
+      //manage "long" special cases
+      //depending on the platform, it maybe 8 or 4 bytes
+      //just ensure it's rooted using the real good type.
+      //by default this is not the case
+      //that's why template specialization is needed
+      if (sizeof(long) == 8)
+         return (unsigned long)helper<int64_t>::getInternal(this, parameterName, pathChar);
+      return (unsigned int)helper<int>::getInternal(this, parameterName, pathChar);
    }
 
    template<class T>
@@ -1637,12 +1645,6 @@ namespace shared
    }
 
    template<>
-   inline void CDataContainer::appendArray(const std::string& parameterName, const unsigned long& value, const char pathChar)
-   {
-      helper<unsigned int>::appendArrayInternal(this, parameterName, value, pathChar);
-   }
-
-   template<>
    inline void CDataContainer::appendArray(const std::string& parameterName, const char& value, const char pathChar)
    {
       std::string s;
@@ -1660,18 +1662,31 @@ namespace shared
    }
    
 
+   template<>
+   inline void CDataContainer::set(const std::string& parameterName, const unsigned long& value, const char pathChar)
+   {
+      if(sizeof(unsigned long) == 8)
+         helper<uint64_t>::setInternal(this, parameterName, value, pathChar);
+      else
+         helper<unsigned int>::setInternal(this, parameterName, value, pathChar);
+   }
+
+
+   template<>
+   inline void CDataContainer::set(const std::string& parameterName, const long& value, const char pathChar)
+   {
+      if (sizeof(long) == 8)
+         helper<int64_t>::setInternal(this, parameterName, value, pathChar);
+      else
+         helper<int>::setInternal(this, parameterName, value, pathChar);
+   }
+
+
 
    template<typename T>
    void CDataContainer::set(const std::string& parameterName, const T & value, const char pathChar)
    {
       helper<T>::setInternal(this, parameterName, value, pathChar);
-   }
-
-
-   template<>
-   inline void CDataContainer::set(const std::string& parameterName, const unsigned long & value, const char pathChar)
-   {
-      helper<unsigned int>::setInternal(this, parameterName, value, pathChar);
    }
 
    template<>
@@ -1681,8 +1696,6 @@ namespace shared
       s+=value;
       set<std::string>(parameterName, s, pathChar);
    }
-
-
 
    template<class T>
    T CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
@@ -1764,31 +1777,6 @@ namespace shared
       return result;
 
    }
-   /*
-   template<>
-   inline std::vector< shared::CDataContainer > CDataContainer::getValuesInternal(const std::string& parameterName, const char pathChar) const
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-#pragma messge ("Avoid use of std::vector<shared::CDataContainer>")
-      std::vector< shared::CDataContainer > result;
-      rapidjson::Value* found = findValue(parameterName, pathChar);
-      if (found)
-      {
-         if (found->IsArray())
-         {
-			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
-				 [](auto &v) -> shared::CDataContainer { return shared::CDataContainer(v); });
-         }
-         else
-            throw exception::COutOfRange(parameterName + " is not an array");
-      }
-      else
-      {
-         throw exception::CInvalidParameter(parameterName + " : is not found");
-      }
-      return result;
-   }
-   */
 
    template<>
    inline std::vector< boost::shared_ptr<CDataContainer> > CDataContainer::getValuesInternal(const std::string& parameterName, const char pathChar) const
@@ -2082,26 +2070,6 @@ namespace shared
       }
    }
 
-   /*
-   template<>
-   inline void CDataContainer::setValuesSPInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<CDataContainer> > & values, const char pathChar)
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
-      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      for (std::vector<boost::shared_ptr<CDataContainer>>::const_iterator i = values.begin(); i != values.end(); ++i)
-      {
-         rapidjson::Value a;
-         a.CopyFrom((*i).get()->m_tree, allocator);
-         v.PushBack(a, allocator);
-      }
-   }*/
-
-
-
-
-
    template<class T>
    void CDataContainer::appendArrayInternal(const std::string& parameterName, const T& value, const char pathChar)
    {
@@ -2140,10 +2108,6 @@ namespace shared
       if (ptr != NULL && ptr->IsArray())
       {
          rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-//         CDataContainer t;
-  //       value.extractContent(t);
-    //     value.m_tree.CopyFrom();
-
          rapidjson::Value a;
          a.CopyFrom(value.m_tree, allocator);
          ptr->PushBack(a, allocator);
@@ -2174,28 +2138,35 @@ namespace shared
    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
    template<class T>
    T CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
+      if (sizeof(T) == 8)
+      {
+         if(std::is_signed<T>::value)
+            return convertToInt64(*ptrValue);
+         return convertToUInt64(*ptrValue);
+      }
+      if (sizeof(T) == 4)
+      {
+         if (std::is_signed<T>::value)
+            return convertToInt(*ptrValue);
+         return convertToUInt(*ptrValue);
+      }
+      if (sizeof(T) == 2)
+      {
+         if (std::is_signed<T>::value)
+            return convertToShort(*ptrValue);
+         return convertToUShort(*ptrValue);
+      }
+      if (sizeof(T) == 1)
+      {
+         if (std::is_signed<T>::value)
+            return convertToByte(*ptrValue);
+         return convertToUByte(*ptrValue);
+      }
+
+      //pitfall (may succeed)
       if(ptrValue)
          return ptrValue->Get<T>();
       throw exception::CInvalidParameter("Fail to convert NULL value");
@@ -2220,7 +2191,7 @@ namespace shared
    template<>
    inline int CDataContainer::convert(rapidjson::Value* ptrValue) const
    {
-      if(ptrValue)
+	   if(ptrValue)
          return convertToInt(*ptrValue);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }

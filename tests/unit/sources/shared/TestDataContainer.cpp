@@ -1081,6 +1081,13 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
 
    //check some out of range
 
+   std::cout << "Size of int = " << sizeof(int) << std::endl;
+   std::cout << "Size of uint = " << sizeof(unsigned int) << std::endl;
+   std::cout << "Size of int64 = " << sizeof(int64_t) << std::endl;
+   std::cout << "Size of uint64 = " << sizeof(uint64_t) << std::endl;
+   
+   std::cout << "Limits: testing char" << std::endl;
+
    BOOST_CHECK_EQUAL(c.get<char>("char_min"), INT8_MIN);
    BOOST_CHECK_EQUAL(c.get<char>("char_max"), INT8_MAX);
    BOOST_CHECK_THROW(c.get<char>("uchar_max"), shared::exception::COutOfRange);
@@ -1094,6 +1101,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<char>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<char>("uint64_max"), shared::exception::COutOfRange);
 
+   std::cout << "Limits: testing unsigned char" << std::endl;
+   
    BOOST_CHECK_THROW(c.get<unsigned char>("char_min"), shared::exception::COutOfRange);
    BOOST_CHECK_EQUAL(c.get<unsigned char>("char_max"), INT8_MAX);
    BOOST_CHECK_EQUAL(c.get<unsigned char>("uchar_max"), UINT8_MAX);
@@ -1107,6 +1116,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<unsigned char>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<unsigned char>("uint64_max"), shared::exception::COutOfRange);
 
+   std::cout << "Limits: testing short" << std::endl;
+   
    BOOST_CHECK_EQUAL(c.get<short>("char_min"), INT8_MIN);
    BOOST_CHECK_EQUAL(c.get<short>("char_max"), INT8_MAX);
    BOOST_CHECK_EQUAL(c.get<short>("uchar_max"), UINT8_MAX);
@@ -1119,6 +1130,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<short>("int64_min"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<short>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<short>("uint64_max"), shared::exception::COutOfRange);
+
+   std::cout << "Limits: testing unsigned short" << std::endl;
 
    BOOST_CHECK_THROW(c.get<unsigned short>("char_min"), shared::exception::COutOfRange);
    BOOST_CHECK_EQUAL(c.get<unsigned short>("char_max"), INT8_MAX);
@@ -1133,6 +1146,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<unsigned short>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<unsigned short>("uint64_max"), shared::exception::COutOfRange);
 
+   std::cout << "Limits: testing int" << std::endl;
+   
    BOOST_CHECK_EQUAL(c.get<int>("char_min"), INT8_MIN);
    BOOST_CHECK_EQUAL(c.get<int>("char_max"), INT8_MAX);
    BOOST_CHECK_EQUAL(c.get<int>("uchar_max"), UINT8_MAX);
@@ -1145,6 +1160,8 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<int>("int64_min"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<int>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<int>("uint64_max"), shared::exception::COutOfRange);
+
+   std::cout << "Limits: testing unsigned int" << std::endl;
 
    BOOST_CHECK_THROW(c.get<unsigned int>("char_min"), shared::exception::COutOfRange);
    BOOST_CHECK_EQUAL(c.get<unsigned int>("char_max"), static_cast<unsigned int>(INT8_MAX));
@@ -1159,31 +1176,35 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
    BOOST_CHECK_THROW(c.get<unsigned int>("int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<unsigned int>("uint64_max"), shared::exception::COutOfRange);
 
-   BOOST_CHECK_EQUAL(c.get<int64_t>("char_min"), INT8_MIN);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("char_max"), INT8_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("uchar_max"), UINT8_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("short_min"), INT16_MIN);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("short_max"), INT16_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("ushort_max"), UINT16_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("int_min"), INT32_MIN);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("int_max"), INT32_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("uint_max"), UINT32_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("int64_min"), INT64_MIN);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("int64_max"), INT64_MAX);
-   BOOST_CHECK_THROW(c.get<int64_t>("uint64_max"), shared::exception::COutOfRange);
+   std::cout << "Limits: testing int64_t" << std::endl;
 
-   BOOST_CHECK_THROW(c.get<uint64_t>("char_min"), shared::exception::COutOfRange);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("char_max"), INT8_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("uchar_max"), UINT8_MAX);
-   BOOST_CHECK_THROW(c.get<uint64_t>("short_min"), shared::exception::COutOfRange);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("short_max"), INT16_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("ushort_max"), UINT16_MAX);
-   BOOST_CHECK_THROW(c.get<uint64_t>("int_min"), shared::exception::COutOfRange);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("int_max"), INT32_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("uint_max"), UINT32_MAX);
-   BOOST_CHECK_THROW(c.get<uint64_t>("int64_min"), shared::exception::COutOfRange);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("int64_max"), static_cast<uint64_t>(INT64_MAX));
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("uint64_max"), UINT64_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("char_min"), INT8_MIN);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("char_max"), INT8_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("uchar_max"), UINT8_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("short_min"), INT16_MIN);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("short_max"), INT16_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("ushort_max"), UINT16_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("int_min"), INT32_MIN);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("int_max"), INT32_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("uint_max"), UINT32_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("int64_min"), INT64_MIN);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("int64_max"), INT64_MAX);
+   BOOST_CHECK_THROW(c.get<std::int64_t>("uint64_max"), shared::exception::COutOfRange);
+
+   std::cout << "Limits: testing uint64_t" << std::endl;
+
+   BOOST_CHECK_THROW(c.get<std::uint64_t>("char_min"), shared::exception::COutOfRange);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("char_max"), INT8_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("uchar_max"), UINT8_MAX);
+   BOOST_CHECK_THROW(c.get<std::uint64_t>("short_min"), shared::exception::COutOfRange);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("short_max"), INT16_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("ushort_max"), UINT16_MAX);
+   BOOST_CHECK_THROW(c.get<std::uint64_t>("int_min"), shared::exception::COutOfRange);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("int_max"), INT32_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("uint_max"), UINT32_MAX);
+   BOOST_CHECK_THROW(c.get<std::uint64_t>("int64_min"), shared::exception::COutOfRange);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("int64_max"), static_cast<uint64_t>(INT64_MAX));
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("uint64_max"), UINT64_MAX);
 }
 
 BOOST_AUTO_TEST_CASE(CheckDataLimitsFloatingPrecision)
@@ -1311,39 +1332,39 @@ BOOST_AUTO_TEST_CASE(CheckDataLimitsFloatingPrecision)
    BOOST_CHECK_THROW(c.get<unsigned int>("gt_int64_max"), shared::exception::COutOfRange);
    BOOST_CHECK_THROW(c.get<unsigned int>("eq_int64_max"), shared::exception::COutOfRange);
 
-   BOOST_CHECK_EQUAL(c.get<int64_t>("double"), 42);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("float"), 42);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("double2"), 42);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("float2"), 42);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_uchar_max"), UINT8_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_char_max"), INT8_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("eq_char_max"), INT8_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_ushort_max"), UINT16_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_short_max"), INT16_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("eq_short_max"), INT16_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_uint_max"), UINT32_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_int_max"), INT32_MAX);
-   BOOST_CHECK_EQUAL(c.get<int64_t>("eq_int_max"), INT32_MAX);
-   BOOST_CHECK_THROW(c.get<int64_t>("gt_uint64_max"), shared::exception::COutOfRange);
-   BOOST_CHECK_THROW(c.get<int64_t>("gt_int64_max"), shared::exception::COutOfRange);
-   BOOST_CHECK_THROW(c.get<int64_t>("eq_int64_max"), shared::exception::COutOfRange); //int64 max with .0 is overflowed
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("double"), 42);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("float"), 42);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("double2"), 42);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("float2"), 42);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("gt_uchar_max"), UINT8_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("gt_char_max"), INT8_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("eq_char_max"), INT8_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("gt_ushort_max"), UINT16_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("gt_short_max"), INT16_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("eq_short_max"), INT16_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("gt_uint_max"), UINT32_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("gt_int_max"), INT32_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::int64_t>("eq_int_max"), INT32_MAX);
+   BOOST_CHECK_THROW(c.get<std::int64_t>("gt_uint64_max"), shared::exception::COutOfRange);
+   BOOST_CHECK_THROW(c.get<std::int64_t>("gt_int64_max"), shared::exception::COutOfRange);
+   BOOST_CHECK_THROW(c.get<std::int64_t>("eq_int64_max"), shared::exception::COutOfRange); //int64 max with .0 is overflowed
 
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("double"), 42);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("float"), 42);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("double2"), 42);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("float2"), 42);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_uchar_max"), UINT8_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_char_max"), INT8_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_char_max"), INT8_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_ushort_max"), UINT16_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_short_max"), INT16_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_short_max"), INT16_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_uint_max"), UINT32_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_int_max"), INT32_MAX);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_int_max"), INT32_MAX);
-   BOOST_CHECK_THROW(c.get<uint64_t>("gt_uint64_max"), shared::exception::COutOfRange);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_int64_max"), 9223372036854775807.1);
-   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_int64_max"), 9223372036854775807.1); //int64 max with .0 is overflowed
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("double"), 42);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("float"), 42);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("double2"), 42);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("float2"), 42);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("gt_uchar_max"), UINT8_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("gt_char_max"), INT8_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("eq_char_max"), INT8_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("gt_ushort_max"), UINT16_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("gt_short_max"), INT16_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("eq_short_max"), INT16_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("gt_uint_max"), UINT32_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("gt_int_max"), INT32_MAX);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("eq_int_max"), INT32_MAX);
+   BOOST_CHECK_THROW(c.get<std::uint64_t>("gt_uint64_max"), shared::exception::COutOfRange);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("gt_int64_max"), 9223372036854775807.1);
+   BOOST_CHECK_EQUAL(c.get<std::uint64_t>("eq_int64_max"), 9223372036854775807.1); //int64 max with .0 is overflowed
 
    BOOST_CHECK_EQUAL(c.get<double>("double"), 42);
    BOOST_CHECK_EQUAL(c.get<double>("float"), 42);
@@ -1557,138 +1578,164 @@ char* get_human_readable_size(double size/*in bytes*/) {
       _CrtMemState a;\
       _CrtMemState b;\
       _CrtMemCheckpoint(&a);\
-      _CrtMemCheckpoint(&b)
+      _CrtMemCheckpoint(&b)\
+
 
    #define DEBUG_HEAP_PRINT(title) \
-         if(i%1000 == 0 || i<10)  {\
+         if(i%100000 == 0 || i<10)  {\
                   _CrtMemCheckpoint(&a);\
                   std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << std::endl; \
                   memcpy(&b, &a, sizeof(a)); \
          }
+
 #else
-   #include <malloc.h>
+   #ifdef HAVE_MALLOC_H
+      #include <malloc.h>
+   
+      #define DEBUG_HEAP_INIT() \
+         struct mallinfo a; \
+         struct mallinfo b; \
+         a = mallinfo(); \
+         b = mallinfo()
 
-   #define DEBUG_HEAP_INIT() \
-      struct mallinfo a; \
-      struct mallinfo b; \
-      a = mallinfo(); \
-      b = mallinfo()
-
-   #define DEBUG_HEAP_PRINT(title) \
-         if (i % 1000 == 0 || i < 10) { \
-            \
-               a = mallinfo(); \
-               std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.uordblks) << "(" << a.uordblks << "). Diff = " << (a.uordblks - b.uordblks) << std::endl; \
-               memcpy(&b, &a, sizeof(a)); \
-         }
+      #define DEBUG_HEAP_PRINT(title) \
+            if (i % 100000 == 0 || i < 10) { \
+               \
+                  a = mallinfo(); \
+                  std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.uordblks) << "(" << a.uordblks << "). Diff = " << (a.uordblks - b.uordblks) << std::endl; \
+                  memcpy(&b, &a, sizeof(a)); \
+            }
+   #else
+      #define DEBUG_HEAP_INIT() 
+   
+      #define DEBUG_HEAP_PRINT(title) \
+                  if (i % 100000 == 0 || i < 10) { \
+                        std::cout << "[" << title << "] Step=" << i << std::endl; \
+                  }
+   #endif
 #endif
 
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
 {
-   std::vector<boost::shared_ptr<shared::CDataContainer>> objectList;
-
-
-   unsigned int i = 0;
-   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
-   try
+   std::cout << "[START] DataContainer_HugeAmountOfData_Vector" << std::endl;
    {
-      DEBUG_HEAP_INIT();
-      DEBUG_HEAP_PRINT("Init");
+      std::vector<boost::shared_ptr<shared::CDataContainer>> objectList;
 
-      for(i=0; i<1000000; ++i)
+
+      unsigned int i = 0;
+      boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+      try
       {
-         boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make(30, 2);
+         DEBUG_HEAP_INIT();
+         DEBUG_HEAP_PRINT("Init");
 
-         //std::cout << "Before sizeof(dc)=" << sizeof(result) << " ";
-         //result.printSizeToLog(std::cout);
+         for(i=0; i<1000000; ++i)
+         {
+            boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make(30, 2);
 
-         auto dt = boost::posix_time::to_iso_string(t1);
-        // std::cout << "Inserting 4+" << dt.size() << "chars. => ";
-         result->set("date", dt);
-         //result.printSizeToLog(std::cout);
+            //std::cout << "Before sizeof(dc)=" << sizeof(result) << " ";
+            //result.printSizeToLog(std::cout);
 
-         auto val = std::to_string(fRand(0, 1000));
-         //std::cout << "Inserting 3+" << val.size() << "chars. => ";
-         result->set("key", val);
-         //result.printSizeToLog(std::cout);
+            auto dt = boost::posix_time::to_iso_string(t1);
+           // std::cout << "Inserting 4+" << dt.size() << "chars. => ";
+            result->set("date", dt);
+            //result.printSizeToLog(std::cout);
 
-         objectList.push_back(result);
-         t1 += boost::posix_time::seconds(1);
-         DEBUG_HEAP_PRINT("Next");
+            auto val = std::to_string(fRand(0, 1000));
+            //std::cout << "Inserting 3+" << val.size() << "chars. => ";
+            result->set("key", val);
+            //result.printSizeToLog(std::cout);
+
+            objectList.push_back(result);
+            t1 += boost::posix_time::seconds(1);
+            DEBUG_HEAP_PRINT("Next");
+         }
+
       }
-
+      catch(...)
+      {
+         BOOST_FAIL("Unknown exception");
+      }
    }
-   catch(...)
-   {
-      BOOST_FAIL("Unknown exception");
-   }
+   std::cout << "[END] DataContainer_HugeAmountOfData_Vector" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 {
-   int itemCount = 100000;
-   auto whole = boost::make_shared< shared::CDataContainer>(30, itemCount);
-
-   unsigned int i = 0;
-   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
-   try
+   std::cout << "[START] DataContainer_HugeAmountOfData_Rapidjson" << std::endl;
    {
-      DEBUG_HEAP_INIT();
-      DEBUG_HEAP_PRINT("Init");
+      unsigned int itemCount = 100000;
+      auto whole = boost::make_shared< shared::CDataContainer>(30, itemCount);
 
-      for (i = 0; i < itemCount; ++i)
+      unsigned int i = 0;
+      boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+      try
       {
-         shared::CDataContainer result(30,2);
-         std::string dt = boost::posix_time::to_iso_string(t1);
-         result.set("date", dt);
-         result.set("key", std::to_string(fRand(0, 1000)));
-         whole->set(dt, result);
-         t1 += boost::posix_time::seconds(1);
+         DEBUG_HEAP_INIT();
+         DEBUG_HEAP_PRINT("Init");
+
+         for (i = 0; i < itemCount; ++i)
+         {
+            shared::CDataContainer result(30,2);
+            std::string dt = boost::posix_time::to_iso_string(t1);
+            result.set("date", dt);
+            result.set("key", std::to_string(fRand(0, 1000)));
+            whole->set(dt, result);
+            t1 += boost::posix_time::seconds(1);
+         }
+
+         DEBUG_HEAP_PRINT("Avant");
+
+         auto k = web::rest::CResult::GenerateSuccess(whole);
+
+         DEBUG_HEAP_PRINT("AprÃ¨s");
+
       }
-
-      DEBUG_HEAP_PRINT("Avant");
-
-      auto k = web::rest::CResult::GenerateSuccess(whole);
-
-      DEBUG_HEAP_PRINT("Après");
+      catch (...)
+      {
+         BOOST_FAIL("Unknown exception");
+      }
    }
-   catch (...)
-   {
-      BOOST_FAIL("Unknown exception");
-   }
+   std::cout << "[END] DataContainer_HugeAmountOfData_Rapidjson" << std::endl;
 }
 
 
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 {
-   shared::CDataContainer whole(100, 1000000);
-
-   whole.createArray("data");
-
-   unsigned int i = 0;
-   boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
-   try
+   std::cout << "[START] DataContainer_HugeAmountOfData_Array" << std::endl;
    {
-      DEBUG_HEAP_INIT();
-      DEBUG_HEAP_PRINT("Init");
+      shared::CDataContainer whole(100, 1000000);
 
-      for (i = 0; i < 1000000; ++i)
+      whole.createArray("data");
+
+      unsigned int i = 0;
+      boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
+      try
       {
-         shared::CDataContainer result(50, 2);
-         result.set("date", boost::posix_time::to_iso_string(t1));
-         result.set("key", std::to_string(fRand(0, 1000)));
-         whole.appendArray("data", result);
-         t1 += boost::posix_time::seconds(1);
-         DEBUG_HEAP_PRINT("Next");
+         DEBUG_HEAP_INIT();
+         DEBUG_HEAP_PRINT("Init");
+
+         for (i = 0; i < 1000000; ++i)
+         {
+            shared::CDataContainer result(50, 2);
+            result.set("date", boost::posix_time::to_iso_string(t1));
+            result.set("key", std::to_string(fRand(0, 1000)));
+            whole.appendArray("data", result);
+            t1 += boost::posix_time::seconds(1);
+            DEBUG_HEAP_PRINT("Next");
+         }
+      }
+      catch (...)
+      {
+         BOOST_FAIL("Unknown exception");
       }
    }
-   catch (...)
-   {
-      BOOST_FAIL("Unknown exception");
-   }
+   std::cout << "[END] DataContainer_HugeAmountOfData_Array" << std::endl;
 }
+
+#ifdef CDATACONTAINER_TEST_BENCHMARK
 
 #define MEASURE_DURATION_INIT() \
       boost::posix_time::ptime start, end;\
@@ -1780,10 +1827,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
 
    std::cout << "End benchmark of CDataContainer" << std::endl;
 }
-
-
-
-
+#endif
 
 BOOST_AUTO_TEST_CASE(DataContainer_Array)
 {
