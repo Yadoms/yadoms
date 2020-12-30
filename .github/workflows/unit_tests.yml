@@ -1,0 +1,99 @@
+name: Unit tests
+
+on: push
+
+jobs:
+  linux:
+    name : Unit tests for Linux
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Generate unittests binary
+      uses: Yadoms/build-yadoms-action@v4.beta1
+      id: yadoms_build_step
+      with:
+          buildImage: ghcr.io/yadoms/build_for_linux:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
+          entrypoint: 'sh /work/build-scripts/linux/entrypoint_docker_unittests.sh'
+    - name: Archive unittests artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Linux-UnitTests
+        path: ./tests/unit/builds       
+    - name: Run unit tests
+      run: |
+        echo "Running unittests for yadoms ${{ steps.yadoms_build_step.outputs.yadomsVersion }}"
+        cd tests/unit/builds
+        ./yadomsTests
+
+ 
+  macos_build:
+    name : Build Unit tests for MacOS
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Generate unittests binary
+      uses: Yadoms/build-yadoms-action@v4.beta1
+      id: yadoms_build_step
+      with:
+          buildImage: ghcr.io/yadoms/build_for_macos:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
+          entrypoint: 'sh /work/build-scripts/macos/entrypoint_docker_unittests.sh'
+    - name: Archive unittests artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Macos-UnitTests
+        path: ./tests/unit/builds
+        
+  macos_run:
+    name : Run Unit tests for MacOS
+    runs-on: macos-latest
+    needs: macos_build
+    steps:
+    - name: Download unittests artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: Macos-UnitTests
+    - name: Run unit tests
+      shell: bash
+      run: |
+        echo "Running unittests for yadoms"
+        chmod +x yadomsTests
+        ./yadomsTests
+
+  Windows:
+    name : Run Unit tests for Windows
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Yadoms build script
+      uses: Yadoms/build-yadoms-windows-action@v2.beta2
+      id: yadoms_build_step
+      with:
+          buildImage: ghcr.io/yadoms/build_for_windows:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
+          entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker_unittests.ps1'
+    - name: Archive unittests artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows-UnitTests
+        path: ./tests/unit/builds 
+    - name: Run Unit tests for Windows
+      shell: cmd
+      run: |
+        cd tests/unit/builds/RELEASE
+        yadomsTests.exe -r detailed -e results.txt
+    - name: Archive unittests report artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows-UnitTests-Report
+        path: ./tests/unit/builds/RELEASE/results.txt
