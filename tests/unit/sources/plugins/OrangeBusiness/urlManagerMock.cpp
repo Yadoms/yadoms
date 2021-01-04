@@ -2,17 +2,16 @@
 #include "urlManagerMock.h"
 
 urlManagerMock::urlManagerMock()
-   : RegisteredEquipments(shared::CDataContainer::make()),
-     DeviceInformation(shared::CDataContainer::make()),
-     DeviceMessages(shared::CDataContainer::make())
+:  RegisteredEquipments(shared::CDataContainer::make()), 
+   DeviceInformation(shared::CDataContainer::make()),
+   DeviceMessages(shared::CDataContainer::make())
 {
 }
 
-boost::shared_ptr<shared::CDataContainer> urlManagerMock::getRegisteredEquipments(
-   const std::string& apikey,
-   const int page,
-   const bool activated,
-   int timeoutSeconds)
+boost::shared_ptr<shared::CDataContainer> urlManagerMock::getRegisteredEquipments(const std::string &apikey,
+                                                               const int page,
+                                                               const bool activated,
+                                                               const boost::posix_time::time_duration& timeout)
 {
    return boost::make_shared<shared::CDataContainer>();
 }
@@ -27,19 +26,17 @@ void urlManagerMock::addMessagesForEquipment(boost::shared_ptr<shared::CDataCont
    DeviceMessages = newMessage;
 }
 
-boost::shared_ptr<shared::CDataContainer> urlManagerMock::getDeviceInformation(
-   const std::string& apikey,
-   const std::string& devEUI,
-   int timeoutSeconds)
+boost::shared_ptr<shared::CDataContainer> urlManagerMock::getDeviceInformation(const std::string &apikey,
+                                                            const std::string &devEUI,
+                                                            const boost::posix_time::time_duration& timeout)
 {
    return RegisteredEquipments;
 }
 
-boost::shared_ptr<shared::CDataContainer> urlManagerMock::listDeviceCommands(
-   const std::string& apikey,
-   const std::string& devEUI,
-   const int page,
-   int timeoutSeconds)
+boost::shared_ptr<shared::CDataContainer> urlManagerMock::listDeviceCommands(const std::string &apikey,
+                                                          const std::string &devEUI,
+                                                          const int page,
+                                                          const boost::posix_time::time_duration& timeout)
 {
    return DeviceMessages;
 }

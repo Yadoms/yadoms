@@ -2,6 +2,7 @@
 #include <boost/test/unit_test.hpp>
 
 // Includes needed to compile tested classes
+#include "../../../../sources/shared/shared/exception/InvalidParameter.hpp"
 #include "../../../../sources/shared/shared/event/EventTimePoint.h"
 #include "../../../../sources/shared/shared/event/EventHandler.hpp"
 
@@ -74,7 +75,7 @@ BOOST_AUTO_TEST_SUITE(TestTimePoint)
       useTimeMock();
       const auto timePoint(shared::currentTime::Provider().now() - boost::posix_time::seconds(3));
       const auto evtId = 123456;
-      BOOST_REQUIRE_THROW(shared::event::CEventTimePoint timer(evtId, timePoint), std::invalid_argument);
+      BOOST_REQUIRE_THROW(shared::event::CEventTimePoint timer(evtId, timePoint), shared::exception::CInvalidParameter);
    }
 
    //--------------------------------------------------------------

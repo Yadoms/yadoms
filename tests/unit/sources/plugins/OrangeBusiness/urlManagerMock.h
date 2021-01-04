@@ -20,40 +20,37 @@ public:
    /// \brief	    get all equipments from the website
    /// \param[in]  apikey              the apiKey to access the web site
    /// \param[in]  page                the page of 20 equipments we want to read
-   /// \param[in]  activated           true, if we want to retrieve only activated equipments
-   /// \param[in]  timeoutSeconds      optional, the timeout (seconds) of the request
+   /// \param[in]  activated           true, if we want to retreive only activated equipments
+   /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::CDataContainer> getRegisteredEquipments(
-      const std::string& apikey,
-      int page,
-      bool activated,
-      int timeoutSeconds = shared::http::CHttpMethods::HttpRequestDefaultTimeoutSeconds) override;
+   boost::shared_ptr<shared::CDataContainer> getRegisteredEquipments(const std::string &apikey,
+                                                  const int page,
+                                                  const bool activated,
+                                                  const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
 
    //--------------------------------------------------------------
    /// \brief	    get information from a specific device
    /// \param[in]  apikey              the apiKey to access the web site
    /// \param[in]  devEUI              the device unique ID
-   /// \param[in]  timeoutSeconds      optional, the timeout (seconds) of the request
+   /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::CDataContainer> getDeviceInformation(
-      const std::string& apikey,
-      const std::string& devEUI,
-      int timeoutSeconds = shared::http::CHttpMethods::HttpRequestDefaultTimeoutSeconds) override;
+   boost::shared_ptr<shared::CDataContainer> getDeviceInformation(const std::string &apikey,
+                                               const std::string &devEUI,
+                                               const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
 
    //--------------------------------------------------------------
    /// \brief	    list command information
    /// \param[in]  apikey              the apiKey to access the web site
    /// \param[in]  devEUI              the device unique ID
-   /// \param[in]  timeoutSeconds      optional, the timeout (seconds) of the request
+   /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::CDataContainer> listDeviceCommands(
-      const std::string& apikey,
-      const std::string& devEUI,
-      int page,
-      int timeoutSeconds = shared::http::CHttpMethods::HttpRequestDefaultTimeoutSeconds) override;
+   boost::shared_ptr<shared::CDataContainer> listDeviceCommands(const std::string &apikey,
+                                             const std::string &devEUI,
+                                             const int page,
+                                             const boost::posix_time::time_duration& timeout = shared::HttpRequestDefaultTimeout);
 
 private:
 
