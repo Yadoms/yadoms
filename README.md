@@ -1,4 +1,5 @@
-![Docker Image CI](https://github.com/Yadoms/yadoms/workflows/Docker%20Image%20CI/badge.svg?branch=master)
+![Binaries generation](https://github.com/Yadoms/yadoms/workflows/Binaries%20generation/badge.svg)
+![Unit tests](https://github.com/Yadoms/yadoms/workflows/Unit%20tests/badge.svg)
 
 # yadoms
 Yadoms is an open source project. 
