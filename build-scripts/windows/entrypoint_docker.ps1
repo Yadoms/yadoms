@@ -46,6 +46,6 @@ Out-File -InputObject $content -FilePath .\package.json -Encoding UTF8
 Copy-Item ..\sources\server\changelog.md .\
 Get-ChildItem * -Include *.ilk -Recurse | Remove-Item
 Get-ChildItem * -Include yadoms.ini -Recurse | Remove-Item
-Compress-Archive -Path .\* -DestinationPath ..\build\package\update-package-Windows.zip
+Compress-Archive -Path .\* -DestinationPath ..\builds\package\update-package-Windows.zip
 cd ..
   
