@@ -87,10 +87,11 @@ set(BOOST_LIBS
    chrono 
    regex
    unit_test_framework 
+   json
 )
 
 # search boost libs
-find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
+find_package(Boost 1.75.0 COMPONENTS ${BOOST_LIBS} REQUIRED)
 set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 ## thread library (pthread)

@@ -107,10 +107,11 @@ set(BOOST_LIBS
    date_time 
    chrono 
    regex
+   json
 )
 
 # search boost libs
-find_package(Boost 1.60.0 REQUIRED COMPONENTS ${BOOST_LIBS})
+find_package(Boost 1.75.0 REQUIRED COMPONENTS ${BOOST_LIBS})
 set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 
