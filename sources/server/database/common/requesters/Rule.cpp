@@ -199,6 +199,17 @@ namespace database
                   throw CDatabaseException("Failed to update editor");
             }
 
+            //update model
+            if (ruleData->Model.isDefined())
+            {
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getModelColumnName(), ruleData->Model()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+                  throw CDatabaseException("Failed to update model");
+            }
+
             //update content
             if (ruleData->Content.isDefined())
             {
