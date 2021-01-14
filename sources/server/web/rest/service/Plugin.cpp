@@ -224,7 +224,7 @@ namespace web
                // Get input parameters
                shared::CDataContainer content(requestContent);
                std::vector<std::string> fields;
-               if (content.containsChild("fields"))
+               if (content.containsChildArray("fields"))
                   fields = content.get<std::vector<std::string>>("fields");
 
                // Get all available plugins
@@ -250,7 +250,11 @@ namespace web
                   {
                      auto pluginData = shared::CDataContainer::make();
                      for (auto& field : fields)
-                        pluginData->set(field, plugin.second->getPackage()->get<std::string>(field));
+                     {
+                        const auto package = plugin.second->getPackage();
+                        if (package->containsValue(field))
+                           pluginData->set(field, package->get<std::string>(field));
+                     }
 
                      result.appendArray("plugins", *pluginData);
                   }
