@@ -28,8 +28,8 @@ namespace web { namespace rest { namespace service {
 
    boost::shared_ptr<shared::serialization::IDataSerializable> CPluginEventLogger::getLogsForPluginName(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
-      std::string pluginName = "";
-      std::string pluginVersion = "";
+      std::string pluginName;
+      std::string pluginVersion;
       if(parameters.size()>1)
          pluginName = parameters[1];
       if(parameters.size()>2)
