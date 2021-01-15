@@ -2,6 +2,7 @@
 #include "PluginEventLogger.h"
 #include <shared/currentTime/Provider.h>
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/adapters/DatabaseAdapters.h"
 #include "database/common/DatabaseTables.h"
@@ -15,7 +16,7 @@ namespace database
       namespace requesters
       {
          CPluginEventLogger::CPluginEventLogger(boost::shared_ptr<IDatabaseRequester> databaseRequester)
-            : m_databaseRequester(databaseRequester)
+            : m_databaseRequester(std::move(databaseRequester))
          {
          }
 
@@ -55,10 +56,10 @@ namespace database
 
             adapters::CSingleValueAdapter<int> adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
-            if (adapter.getResults().size() >= 1)
-               return adapter.getResults()[0];
+            if (adapter.getResults().empty())
+               throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
 
-            throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
+            return adapter.getResults()[0];
          }
 
          int CPluginEventLogger::addEvent(const entities::CPluginEventLogger& pluginLogEntry)

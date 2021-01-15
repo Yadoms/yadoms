@@ -24,7 +24,6 @@ namespace web
 
          void CPluginEventLogger::configureDispatcher(CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPluginEventLogger::getLogsForPluginName);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*"), CPluginEventLogger::getLogsForPluginName);
          }
 
@@ -32,13 +31,15 @@ namespace web
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
-            std::string pluginName;
             boost::posix_time::ptime fromDate;
 
-            if (parameters.size() > 1)
-               pluginName = parameters[1];
-            if (parameters.size() > 3)
-               fromDate = boost::posix_time::from_iso_string(parameters[3]);
+            if (parameters.empty())
+               return CResult::GenerateError("Need plugin name");
+
+            const auto pluginName = parameters[1];
+
+            if (parameters.size() > 2)
+               fromDate = boost::posix_time::from_iso_string(parameters[2]);
 
             const auto dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, fromDate);
 

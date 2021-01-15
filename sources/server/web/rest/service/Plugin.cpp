@@ -252,7 +252,11 @@ namespace web
                      for (auto& field : fields)
                      {
                         const auto package = plugin.second->getPackage();
-                        if (package->containsValue(field))
+                        if (!package->exists(field))
+                           continue;
+                        if (package->containsChild(field))
+                           pluginData->set(field, package->getChild(field));
+                        else if (package->containsValue(field))
                            pluginData->set(field, package->get<std::string>(field));
                      }
 
