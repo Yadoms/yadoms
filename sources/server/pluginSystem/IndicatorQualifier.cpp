@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "IndicatorQualifier.h"
 
+#include <utility>
+
 namespace pluginSystem
 {
    // 7 ==> Tolerance of 1 crash per week
@@ -9,12 +11,8 @@ namespace pluginSystem
 
    CIndicatorQualifier::CIndicatorQualifier(boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLogger,
                                             boost::shared_ptr<dataAccessLayer::IEventLogger> mainLogger)
-      : m_basicQualifier(pluginLogger, mainLogger),
+      : m_basicQualifier(pluginLogger, std::move(mainLogger)),
         m_pluginLogger(pluginLogger)
-   {
-   }
-
-   CIndicatorQualifier::~CIndicatorQualifier()
    {
    }
 
@@ -45,23 +43,23 @@ namespace pluginSystem
 
    bool CIndicatorQualifier::isSafe(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
    {
-      int quality = getQualityLevel(pluginInformation);
+      const auto quality = getQualityLevel(pluginInformation);
       return quality == kNoEnoughData || quality >= m_SafetyThreshold;
    }
 
    int CIndicatorQualifier::getQualityLevel(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
    {
-      CIdentityForQualifier identity(pluginInformation);
+      const CIdentityForQualifier identity(pluginInformation);
 
       boost::lock_guard<boost::mutex> lock(m_qualityIndicatorsCacheMutex);
 
       // Return value in cache if found
-      QualityIndicatorsCache::const_iterator cacheIterator = m_qualityIndicatorsCache.find(identity);
+      const QualityIndicatorsCache::const_iterator cacheIterator = m_qualityIndicatorsCache.find(identity);
       if (cacheIterator != m_qualityIndicatorsCache.end())
          return cacheIterator->second;
 
       // If not found in cache, compute it
-      int qualityLevel = computeQuality(identity);
+      const auto qualityLevel = computeQuality(identity);
       // And store it in cache
       m_qualityIndicatorsCache[identity] = qualityLevel;
 
@@ -72,7 +70,7 @@ namespace pluginSystem
    {
       boost::lock_guard<boost::mutex> lock(m_qualityIndicatorsCacheMutex);
 
-      QualityIndicatorsCache::iterator cacheIterator = m_qualityIndicatorsCache.find(identity);
+      const auto cacheIterator = m_qualityIndicatorsCache.find(identity);
       if (cacheIterator == m_qualityIndicatorsCache.end())
          return; // Not found in cache, nothing to do
 
@@ -82,32 +80,33 @@ namespace pluginSystem
    int CIndicatorQualifier::computeQuality(const CIdentityForQualifier& identity) const
    {
       // First, compute total running time and crashes number, on a 90-days period
-      auto crashsNb = 0;
+      auto crashNb = 0;
       boost::posix_time::time_duration runningDuration;
       boost::posix_time::ptime lastLoadTime(boost::posix_time::not_a_date_time);
 
-      auto fromDate = boost::gregorian::day_clock::universal_day() - boost::gregorian::days(90);
-      auto pluginEvents = m_pluginLogger->getPluginEvents(identity.getType(), identity.getVersion().toString(), boost::posix_time::ptime(fromDate));
-      for (auto it = pluginEvents.begin(); it != pluginEvents.end(); ++it)
+      const auto fromDate = boost::gregorian::day_clock::universal_day() - boost::gregorian::days(90);
+      auto pluginEvents = m_pluginLogger->getPluginEvents(identity.getType(), 
+         boost::posix_time::ptime(fromDate));
+      for (auto& pluginEvent : pluginEvents)
       {
-         switch ((*it)->EventType())
+         switch (pluginEvent->EventType())
          {
          case database::entities::EEventType::kLoadValue:
             {
-               lastLoadTime = (*it)->EventDate();
+               lastLoadTime = pluginEvent->EventDate();
                break;
             }
          case database::entities::EEventType::kUnloadValue:
             {
                if (lastLoadTime != boost::posix_time::not_a_date_time)
-                  runningDuration += (*it)->EventDate() - lastLoadTime;
+                  runningDuration += pluginEvent->EventDate() - lastLoadTime;
 
                lastLoadTime = boost::posix_time::not_a_date_time;
                break;
             }
          case database::entities::EEventType::kCrashValue:
             {
-               crashsNb++;
+               crashNb++;
                break;
             }
          default:
@@ -119,7 +118,7 @@ namespace pluginSystem
       }
 
       // If too many crashes while the first 96 hours, return worst quality
-      if (crashsNb >= 20 && runningDuration < boost::posix_time::hours(96))
+      if (crashNb >= 20 && runningDuration < boost::posix_time::hours(96))
          return 0;
 
       // If running time is less than 1 hour, data are not significant
@@ -127,7 +126,7 @@ namespace pluginSystem
          return kNoEnoughData;
 
       // If no crash during the first 96 hours, data are considered as not significant
-      if (crashsNb == 0 && runningDuration < boost::posix_time::hours(96))
+      if (crashNb == 0 && runningDuration < boost::posix_time::hours(96))
          return kNoEnoughData;
 
       // Now, compute the indicator
@@ -136,10 +135,10 @@ namespace pluginSystem
       // If only one crash occurred, 99 can be obtained when running for 90 days.
       // The indicator represents the mean duration between two crashes.
 
-      if (crashsNb == 0)
+      if (crashNb == 0)
          return 100; // Nice plugin !
 
-      auto quality = runningDuration.hours() * 100 / crashsNb / (90 * 24);
+      const auto quality = runningDuration.hours() * 100 / crashNb / (90 * 24);
 
       if (quality > 99)
          return 99; // Never returns 100 if there is at least one crash
