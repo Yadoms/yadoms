@@ -586,8 +586,6 @@ set(YADOMS_SRC
    server/task/Scheduler.cpp
    server/task/TaskEvent.h
    server/task/TaskEvent.cpp
-   server/task/TaskFactory.h
-   server/task/TaskFactory.cpp
    server/task/TaskStatus.h
    server/task/TaskStatus.cpp
    server/task/backup/Backup.h
