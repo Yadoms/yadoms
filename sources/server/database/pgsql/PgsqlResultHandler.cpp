@@ -33,7 +33,7 @@ namespace database
          return std::string(m_pgsqlLibrary->PQfname(m_res, columnIndex));
       }
 
-      bool CPgsqlResultHandler::next_step()
+      bool CPgsqlResultHandler::nextStep()
       {
          m_currentResultIndex++;
          return m_currentResultIndex < m_currentResultRowCount;
@@ -89,7 +89,7 @@ namespace database
          return conv.result;
       }
 
-      unsigned char* CPgsqlResultHandler::extractValueAsBlob(const int columnIndex)
+      const unsigned char* CPgsqlResultHandler::extractValueAsBlob(const int columnIndex)
       {
          return reinterpret_cast<unsigned char*>(m_pgsqlLibrary->PQgetvalue(m_res, m_currentResultIndex, columnIndex));
       }

@@ -57,7 +57,7 @@ namespace database
                auto nCols = resultHandler->getColumnCount();
                if (nCols)
                {
-                  while (resultHandler->next_step())
+                  while (resultHandler->nextStep())
                   {
                      //check only one column is returned by query
                      //for(int i=0; i<column ; i++)

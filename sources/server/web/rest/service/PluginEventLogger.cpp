@@ -1,67 +1,52 @@
 #include "stdafx.h"
 #include "PluginEventLogger.h"
+
+#include <utility>
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/Result.h"
 
-namespace web { namespace rest { namespace service {
-
-   CPluginEventLogger::CPluginEventLogger(boost::shared_ptr<database::IDataProvider> dataProvider)
-      :m_dataProvider(dataProvider), m_restKeyword("pluginEventLogger")
+namespace web
+{
+   namespace rest
    {
-   }
+      namespace service
+      {
+         CPluginEventLogger::CPluginEventLogger(boost::shared_ptr<database::IDataProvider> dataProvider)
+            : m_dataProvider(std::move(dataProvider)),
+              m_restKeyword("pluginEventLogger")
+         {
+         }
 
+         const std::string& CPluginEventLogger::getRestKeyword() const
+         {
+            return m_restKeyword;
+         }
 
-   CPluginEventLogger::~CPluginEventLogger()
-   {
-   }
+         void CPluginEventLogger::configureDispatcher(CRestDispatcher& dispatcher)
+         {
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*"), CPluginEventLogger::getLogsForPluginName);
+         }
 
-   const std::string & CPluginEventLogger::getRestKeyword()
-   {
-      return m_restKeyword;
-   }
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPluginEventLogger::getLogsForPluginName(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
+         {
+            boost::posix_time::ptime fromDate;
 
-   void CPluginEventLogger::configureDispatcher(CRestDispatcher & dispatcher)
-   {
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("*")("*"), CPluginEventLogger::getLogsForPluginName);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("*")("*")("*"), CPluginEventLogger::getLogsForPluginNameFromDate);
-   }
+            if (parameters.empty())
+               return CResult::GenerateError("Need plugin name");
 
-   boost::shared_ptr<shared::serialization::IDataSerializable> CPluginEventLogger::getLogsForPluginName(const std::vector<std::string> & parameters, const std::string & requestContent)
-   {
-      std::string pluginName = "";
-      std::string pluginVersion = "";
-      if(parameters.size()>1)
-         pluginName = parameters[1];
-      if(parameters.size()>2)
-         pluginVersion = parameters[2];
+            const auto pluginName = parameters[1];
 
-      std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion);
-      shared::CDataContainer collection;
-      collection.set(getRestKeyword(), dvList);
-      return CResult::GenerateSuccess(collection);
-   }
+            if (parameters.size() > 2)
+               fromDate = boost::posix_time::from_iso_string(parameters[2]);
 
-   boost::shared_ptr<shared::serialization::IDataSerializable> CPluginEventLogger::getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const std::string & requestContent)
-   {
-      std::string pluginName = "";
-      std::string pluginVersion = "";
-      boost::posix_time::ptime fromDate;
+            const auto dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, fromDate);
 
-      if(parameters.size()>1)
-         pluginName = parameters[1];
-      if(parameters.size()>2)
-         pluginVersion = parameters[2];
-      if(parameters.size()>3)
-         fromDate = boost::posix_time::from_iso_string(parameters[3]);
-      
-      std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, fromDate);
-      shared::CDataContainer collection;
-      collection.set(getRestKeyword(), dvList);
-      return CResult::GenerateSuccess(collection);
-   }
-
-
-
-} //namespace service
-} //namespace rest
+            shared::CDataContainer collection;
+            collection.set(getRestKeyword(), dvList);
+            return CResult::GenerateSuccess(collection);
+         }
+      } //namespace service
+   } //namespace rest
 } //namespace web 

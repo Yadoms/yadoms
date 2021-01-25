@@ -440,7 +440,7 @@ namespace database
          const auto res = executeQuery(pConnection, querytoExecute.c_str(), PGRES_TUPLES_OK, true);
 
          CPgsqlResultHandler handler(m_pgsqlLibrary, res);
-         handler.next_step();
+         handler.nextStep();
          return handler.extractValueAsInt(0);
       }
 

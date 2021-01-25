@@ -326,7 +326,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -338,7 +338,7 @@ namespace shared
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] defaultValue     The default value in case the parameter do not exists
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The parameter value, or the default value if parameter not found
       //--------------------------------------------------------------
       template<class T>
@@ -347,7 +347,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get child value
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The child as boost::shared_ptr<CDataContainer>
       //--------------------------------------------------------------
       boost::shared_ptr<CDataContainer> getChild(const std::string& parameterName, char pathChar = '.') const;
@@ -356,7 +356,7 @@ namespace shared
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       template<class T>
       void set(const std::string& parameterName, const T & value, char pathChar = '.');
@@ -365,7 +365,7 @@ namespace shared
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       template<class T>
       void set(const char* parameterName, const T & value, char pathChar = '.');
@@ -375,7 +375,7 @@ namespace shared
       /// \brief	    Append value to an already existing array
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       template<class T>
       void appendArray(const std::string& parameterName, const T& value, char pathChar = '.');
@@ -384,7 +384,7 @@ namespace shared
       /// \brief	    Append value to an already existing array
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       template<class T>
       void appendArray(const char* parameterName, const T& value, char pathChar = '.');
@@ -404,7 +404,7 @@ namespace shared
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       void set(const std::string & parameterName, const char* value, char pathChar = '.');
 
@@ -412,7 +412,7 @@ namespace shared
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       void set(const char* parameterName, const char* value, char pathChar = '.');
 
@@ -420,7 +420,7 @@ namespace shared
       /// \brief	    Append a value to an array
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       void appendArray(const char* parameterName, const char* value, char pathChar = '.');
 
@@ -428,14 +428,14 @@ namespace shared
       /// \brief	    Append a value to an array
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       void appendArray(const std::string& parameterName, const char* value, char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -445,7 +445,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get parameter value as map<string, string>
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -457,7 +457,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get parameter sub-keys as vector<string>
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -469,7 +469,7 @@ namespace shared
       /// \brief	    Find a sub-parameter with criteria
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] where_fct         Criteria : lambda must returns true if item is found
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The found parameter
       /// \throw      shared::exception::CEmptyResutl if no parameter matching criteria was found
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -555,7 +555,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Check if a node contains at least a child which is an array
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     true if the parameter contains child (CDataContainer), false if it is a termination node with data
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -565,7 +565,7 @@ namespace shared
 	  //--------------------------------------------------------------
       /// \brief	    Check if a node contains at least a child object (with a value : {...})
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     true if the parameter contains child (CDataContainer), false if it is a termination node with data
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -575,7 +575,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Check if a node is terminal value
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     true if the path contains only single value, false if it is contains a subtree
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -585,14 +585,14 @@ namespace shared
 	   //--------------------------------------------------------------
 	   /// \brief	  Set a value as null
 	   /// \param [in] parameterName    Name of the parameter
-	   /// \param [in] pathChar         The path spearator to use (default is '.')
+	   /// \param [in] pathChar         The path separator to use (default is '.')
 	   //--------------------------------------------------------------
       void setNull(const std::string& parameterName = std::string(), char pathChar = '.') const;
 
 	   //--------------------------------------------------------------
 	   /// \brief	  Check if a value is null
 	   /// \param [in] parameterName    Name of the parameter
-	   /// \param [in] pathChar         The path spearator to use (default is '.')
+	   /// \param [in] pathChar         The path separator to use (default is '.')
 	   /// \return  true is the value is null
 	   //--------------------------------------------------------------
 	   bool isNull(const std::string& parameterName = std::string(), char pathChar = '.') const;
@@ -600,14 +600,14 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	  Create an empty array
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       bool createArray(const std::string& parameterName, char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief	  Check if targetted value is an array
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       bool isArray(const std::string& parameterName, char pathChar = '.');
 
@@ -684,7 +684,7 @@ namespace shared
       void printToLog(std::ostream& os) const;
 
       //--------------------------------------------------------------
-      /// \brief		Print sizeto log
+      /// \brief		Print size to log
       /// \param [in] os      The out stream where to print out
       //--------------------------------------------------------------
       void printSizeToLog(std::ostream& os) const;
@@ -692,7 +692,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Merge this container from another one
       /// \param [in] from source container
-      /// \desc       Add non-exisiting (or replace existing) values of "from" container into this container
+      /// \desc       Add non-existing (or replace existing) values of "from" container into this container
       ///             Values of this container not present in "from" container will be kept
       //--------------------------------------------------------------
       void mergeFrom(const CDataContainer& from);
@@ -700,7 +700,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Merge this container from another one
       /// \param [in] from source container
-      /// \desc       Add non-exisiting (or replace existing) values of "from" container into this container
+      /// \desc       Add non-existing (or replace existing) values of "from" container into this container
       ///             Values of this container not present in "from" container will be kept
       //--------------------------------------------------------------
       void mergeFrom(boost::shared_ptr<CDataContainer> & from);
@@ -789,7 +789,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a bool
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as bool (check for "true"/"false", "0"/"1", or ay numeric != 0)
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
 	  static bool convertToBool(const rapidjson::Value& v);
 
@@ -797,7 +797,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a Int
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as int 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
 	  static int convertToInt(const rapidjson::Value& v);
 
@@ -805,7 +805,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a Int64
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as int64 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
 	  static int64_t convertToInt64(const rapidjson::Value& v);
 
@@ -813,7 +813,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a char
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as char 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
 	  static char convertToByte(const rapidjson::Value& v);
 
@@ -821,7 +821,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a short
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as short 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
 	  static short convertToShort(const rapidjson::Value& v);
 
@@ -829,7 +829,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a unsigned int
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned int 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
 	  static unsigned int convertToUInt(const rapidjson::Value& v);
 
@@ -837,7 +837,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a unsigned int64
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned int64 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
 	  static uint64_t convertToUInt64(const rapidjson::Value& v);
 
@@ -845,7 +845,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a unsigned char
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned char 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
       static unsigned char convertToUByte(const rapidjson::Value& v);
 
@@ -853,7 +853,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a unsigned short
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned short 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
 	  static unsigned short convertToUShort(const rapidjson::Value& v);
 
@@ -861,7 +861,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a float
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as float 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
       static float convertToFloat(const rapidjson::Value& v);
 
@@ -869,7 +869,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a double
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as double 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
 	  static double convertToDouble(const rapidjson::Value& v);
 
@@ -988,7 +988,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Set parameter values
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] values           Valuse of the parameter
+      /// \param [in] values           Values of the parameter
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       //--------------------------------------------------------------
       template<class T>
@@ -1021,7 +1021,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Set parameter values (Enum)
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] values           Valuse of the parameter (Enum)
+      /// \param [in] values           Values of the parameter (Enum)
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       //--------------------------------------------------------------
       template<class T>
@@ -1055,7 +1055,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a typed value (T)
 	  /// \param [in] ptrValue    A pointer on the value to convert
 	  /// \return The data as T 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
       template <class T>
       T convert(rapidjson::Value* ptrValue) const;

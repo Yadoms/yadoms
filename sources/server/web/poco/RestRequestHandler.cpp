@@ -4,16 +4,18 @@
 #include "web/rest/Result.h"
 #include <Poco/URI.h>
 
+#include <utility>
+
 namespace web
 {
    namespace poco
    {
-      CRestRequestHandler::CRestRequestHandler(const std::string& restBaseKeyword,
-                                               const std::vector< boost::shared_ptr<rest::service::IRestService> >& services)
-         : m_restBaseKeyword(restBaseKeyword)
+      CRestRequestHandler::CRestRequestHandler(std::string restBaseKeyword,
+                                               const std::vector<boost::shared_ptr<rest::service::IRestService>>& services)
+         : m_restBaseKeyword(std::move(restBaseKeyword))
       {
-         for (auto i = services.begin(); i != services.end(); ++i)
-            CRestRequestHandler::registerRestService(*i);
+         for (auto& service : services)
+            CRestRequestHandler::registerRestService(service);
          CRestRequestHandler::initialize();
       }
 
@@ -27,7 +29,7 @@ namespace web
          std::vector<std::string> strings;
          std::vector<std::string> results;
          //split on slash or anti slash
-         boost::split(strings, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
+         split(strings, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
          //remove empty strings
          //do not use std::empty in std::remove_if because MacOs Clang do not support it
          auto i = strings.begin();
@@ -79,12 +81,12 @@ namespace web
          catch (std::exception& ex)
          {
             YADOMS_LOG(error) << "An exception occured in treating REST url : " << requestPath << std::endl << "Exception : " << ex.what();
-            return web::rest::CResult::GenerateError(ex)->serialize();
+            return rest::CResult::GenerateError(ex)->serialize();
          }
          catch (...)
          {
             YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << requestPath;
-            return web::rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + requestPath)->serialize();
+            return rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + requestPath)->serialize();
          }
       }
 
@@ -94,7 +96,7 @@ namespace web
          YADOMS_LOG(trace) << "Rest request : [" << request.getMethod() << "] : " << request.getURI();
 
          const auto answer = manageRestRequests(request);
-         response.setContentType("application/json");
+         response.setContentType("application/json; charset=utf-8");
          auto& stream = response.send();
          stream << answer;
       }
@@ -107,13 +109,11 @@ namespace web
 
       void CRestRequestHandler::initialize()
       {
-         for (auto i = m_restService.begin(); i != m_restService.end(); ++i)
+         for (auto& i : m_restService)
          {
-            if (i->get() != nullptr)
-               (*i)->configureDispatcher(m_restDispatcher);
+            if (i.get() != nullptr)
+               i->configureDispatcher(m_restDispatcher);
          }
       }
    } //namespace poco
 } //namespace web
-
-

@@ -10,40 +10,27 @@ namespace database
       {
          //--------------------------------------------------------------
          ///\Brief		Class which adapt in single column resultset
-         ///\template   TValue : the type of value
-         ///\example    CSingleValueAdapter<int> will provide std::vector<int>
+         ///\Template   TValue : the type of value
+         ///\Example    CSingleValueAdapter<int> will provide std::vector<int>
          //--------------------------------------------------------------
          template <class TValue>
-         class CSingleValueAdapter: public IResultAdapterEx<TValue>
+         class CSingleValueAdapter final : public IResultAdapterEx<TValue>
          {
          public:
-            //--------------------------------------------------------------
-            /// \Brief		Constructor
-            //--------------------------------------------------------------
-            CSingleValueAdapter()
-            {
-            }
-
-            //--------------------------------------------------------------
-            /// \Brief		Destructor
-            //--------------------------------------------------------------
-            virtual ~CSingleValueAdapter()
-            {
-            }
+            CSingleValueAdapter() = default;
+            ~CSingleValueAdapter() override = default;
 
             // ISQLiteResultAdapter implementation
             bool adapt(boost::shared_ptr<IResultHandler> resultHandler) override
             {
-               auto nCols = resultHandler->getColumnCount();
-               if (nCols == 1)
-               {
-                  while (resultHandler->next_step())
-                  {
-                     m_results.push_back(CSqlExtension::extractData<TValue>(resultHandler, 0));
-                  }
-                  return true;
-               }
-               return false;
+               const auto nCols = resultHandler->getColumnCount();
+               if (nCols != 1)
+                  return false;
+
+               while (resultHandler->nextStep())
+                  m_results.push_back(CSqlExtension::extractData<TValue>(resultHandler, 0));
+
+               return true;
             }
 
             std::vector<TValue> getResults() override
@@ -62,11 +49,11 @@ namespace database
 
          //--------------------------------------------------------------
          ///\Brief		Class which adapt in single column resultset
-         ///\template   TValue : the type of value
-         ///\example    CSingleValueAdapter<int> will provide std::vector<int>
+         ///\Template   TValue : the type of value
+         ///\Example    CSingleValueAdapter<int> will provide std::vector<int>
          //--------------------------------------------------------------
          template <class TValue>
-         class CSingleValueAdapterWithContainer: public IResultAdapterEx<TValue>
+         class CSingleValueAdapterWithContainer final : public IResultAdapterEx<TValue>
          {
          public:
             //--------------------------------------------------------------
@@ -77,26 +64,19 @@ namespace database
             {
             }
 
-            //--------------------------------------------------------------
-            /// \Brief		Destructor
-            //--------------------------------------------------------------
-            virtual ~CSingleValueAdapterWithContainer()
-            {
-            }
+            ~CSingleValueAdapterWithContainer() override = default;
 
             // ISQLiteResultAdapter implementation
             bool adapt(boost::shared_ptr<IResultHandler> resultHandler) override
             {
-               auto nCols = resultHandler->getColumnCount();
-               if (nCols == 1)
-               {
-                  while (resultHandler->next_step())
-                  {
-                     m_results.push_back(CSqlExtension::extractData<TValue>(resultHandler, 0));
-                  }
-                  return true;
-               }
-               return false;
+               const auto nCols = resultHandler->getColumnCount();
+               if (nCols != 1)
+                  return false;
+
+               while (resultHandler->nextStep())
+                  m_results.push_back(CSqlExtension::extractData<TValue>(resultHandler, 0));
+
+               return true;
             }
 
             std::vector<TValue> getResults() override
@@ -115,5 +95,3 @@ namespace database
       } //namespace adapters
    } //namespace common
 } //namespace database 
-
-

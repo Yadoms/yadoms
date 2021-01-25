@@ -16,7 +16,7 @@ namespace database
             m_internalValue = R"({"result":true,"message":"","data":{"data":[)";
 
             long size = 0;
-            while (resultHandler->next_step())
+            while (resultHandler->nextStep())
             { 
                m_internalValue += R"({"date":")" + resultHandler->extractValueAsString(0);
                m_internalValue += R"(","key":)" + resultHandler->extractValueAsString(1) + "},";

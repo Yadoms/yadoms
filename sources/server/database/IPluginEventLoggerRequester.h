@@ -30,21 +30,11 @@ namespace database
       //--------------------------------------------------------------
       /// \brief           Get the events history for a plugin
       /// \param [in]      pluginName   the plugin name
-      /// \param [in]      pluginVersion   the plugin version
-      /// \return          list of events
-      /// \throw           shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CPluginEventLogger>> getPluginEvents(const std::string& pluginName, const std::string& pluginVersion) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief           Get the events history for a plugin
-      /// \param [in]      pluginName   the plugin name
-      /// \param [in]      pluginVersion   the plugin version
       /// \param [in]      fromDate   the date from which to take data
       /// \return          list of events
       /// \throw           shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CPluginEventLogger>> getPluginEvents(const std::string& pluginName, const std::string& pluginVersion, const boost::posix_time::ptime& fromDate) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CPluginEventLogger>> getPluginEvents(const std::string& pluginName, const boost::posix_time::ptime& fromDate) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor
