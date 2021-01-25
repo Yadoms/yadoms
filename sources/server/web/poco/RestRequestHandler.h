@@ -18,7 +18,7 @@ namespace web
          ///\param [in]    restBaseKeyword        the keyword for identifies REST request in url
          ///\param [in]    services               the list of rest services
          //--------------------------------------   
-         CRestRequestHandler(const std::string& restBaseKeyword,
+         CRestRequestHandler(std::string restBaseKeyword,
                              const std::vector<boost::shared_ptr<rest::service::IRestService>>& services);
 
          //--------------------------------------   
