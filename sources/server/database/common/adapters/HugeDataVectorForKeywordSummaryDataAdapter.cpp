@@ -23,7 +23,7 @@ namespace database
             m_internalValue = R"({"result":true,"message":"","data":{"data":[)";
 
             long size = 0;
-            while (resultHandler->next_step())
+            while (resultHandler->nextStep())
             {
                m_internalValue += R"({"avg":)" + resultHandler->extractValueAsString(3);
                m_internalValue += R"(,"min":)" + resultHandler->extractValueAsString(4);
