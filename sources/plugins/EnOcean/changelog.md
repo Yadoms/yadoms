@@ -1,3 +1,6 @@
+### 2.0.1
+* Fix power measurment lost when doing reset load energy for D2-01-0x profiles
+
 ### 2.0.0
 * Update profiles definition to [v2.6.8](http://tools.enocean-alliance.org/EEPViewer/), add these profiles :
   * D2-01-15

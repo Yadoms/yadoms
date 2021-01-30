@@ -35,7 +35,7 @@ void CProfile_D2_01_03::readInitialState(const std::string& senderId,
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
-                                                  CProfile_D2_01_Common::kAllOutputChannels);
+                                                  CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels);
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_03::states(unsigned char rorg,
@@ -65,7 +65,7 @@ void CProfile_D2_01_03::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
                                                               senderId,
                                                               m_deviceId,
-                                                              CProfile_D2_01_Common::kAllOutputChannels,
+                                                              CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels,
                                                               specificHistorizers::EDimmerMode::kSwitchToValue,
                                                               m_dimmer->get());
 }
