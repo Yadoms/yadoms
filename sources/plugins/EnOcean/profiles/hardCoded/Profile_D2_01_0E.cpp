@@ -64,7 +64,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   switch (bitset_extract(data, 4, 4))
+   switch (static_cast<CProfile_D2_01_Common::E_D2_01_Command>(bitset_extract(data, 4, 4)))
    {
    case CProfile_D2_01_Common::E_D2_01_Command::kActuatorStatusResponse:
       {
