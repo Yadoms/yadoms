@@ -8,6 +8,8 @@
 #include "../../../../sources/server/web/rest/Result.h"
 #include "../testCommon/fileSystem.h"
 
+#include <boost/json.hpp>
+
 BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
 
@@ -26,6 +28,47 @@ static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::ass
 ("EnumValue1", kEnumValue1)
 ("EnumValue2", kEnumValue2)
 ("EnumValue3", kEnumValue3);
+
+namespace test_boost
+{
+   BOOST_AUTO_TEST_CASE(DataContainerBoostJson)
+   {
+      boost::json::object obj;
+      obj["pi"] = 3.141;                                            // insert a double
+      obj["happy"] = true;                                          // insert a bool
+      obj["name"] = "Boost";                                        // insert a string
+      obj["nothing"] = nullptr;                                     // insert a null
+      obj["answer"].emplace_object()["everything"] = 42;            // insert an object with 1 element
+      obj["list"] = { 1, 0, 2 };                                    // insert an array with 3 elements
+      obj["object"] = { {"currency", "USD"}, {"value", 42.99} };    // insert an object with 2 elements
+
+      BOOST_CHECK_EQUAL(obj["pi"], 3.141);
+
+
+      const std::string data("{"
+         "\"DecimalParameter\": 18.4"
+         "}");
+
+      auto& jv = boost::json::parse(data);
+      boost::json::value *decimal = jv.get_object().if_contains("DecimalParameter");
+      if (decimal)
+      {
+         BOOST_CHECK_EQUAL(decimal->as_double(), 18.4);
+         BOOST_CHECK_EQUAL(decimal->get_double(), 18.4);
+         BOOST_CHECK_EQUAL(decimal->to_number<double>(), 18.4);
+         BOOST_CHECK_EQUAL(decimal->to_number<float>(), 18.4f);
+      }
+      /*auto& val = jv["DecimalParameter"];
+
+
+      BOOST_CHECK_EQUAL(val.get_double(), 18.4);
+      BOOST_CHECK_EQUAL(val.to_number<double>(), 18.4);
+      BOOST_CHECK_EQUAL(val.to_number<float>(), 18.4f);
+      */
+
+
+   }
+}
 
 
 BOOST_AUTO_TEST_CASE(DataContainerEmptyContainer)
@@ -607,7 +650,8 @@ BOOST_AUTO_TEST_CASE(Serialization)
    shared::CDataContainer cfg(defaultConf);
 
    BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter"), true);
-   BOOST_CHECK_EQUAL(cfg.get<double>("DecimalParameter"), 18.4);
+   BOOST_CHECK_EQUAL(cfg.get<float>("DecimalParameter"), 18.4f);
+   BOOST_CHECK_EQUAL(cfg.get<double>("DecimalParameter"), (double)18.4);
    BOOST_CHECK_EQUAL(cfg.get<int>("IntParameter"), 42);
    BOOST_CHECK_EQUAL(cfg.get<EEnumType>("EnumParameter"), kEnumValue2);
    BOOST_CHECK_EQUAL(cfg.getEnumValue<EEnumType>("EnumAsStringParameter", EEnumTypeNames), kEnumValue1);
@@ -664,7 +708,7 @@ BOOST_AUTO_TEST_CASE(CheckExistance)
    shared::CDataContainer cfg(defaultConf);
 
    //check path existance
-   BOOST_CHECK_EQUAL(cfg.exists(""), true);
+   BOOST_CHECK_EQUAL(cfg.exists(""), false);
    BOOST_CHECK_EQUAL(cfg.exists("BoolParameter"), true);
    BOOST_CHECK_EQUAL(cfg.exists("MySection"), true);
    BOOST_CHECK_EQUAL(cfg.exists("MySection.SubIntParameter"), true);
@@ -674,7 +718,7 @@ BOOST_AUTO_TEST_CASE(CheckExistance)
    BOOST_CHECK_EQUAL(cfg.exists("String Parameter"), false);
 
    //check child existance
-   BOOST_CHECK_EQUAL(cfg.containsChild(""), true);
+   BOOST_CHECK_EQUAL(cfg.containsChild(""), false);
    BOOST_CHECK_EQUAL(cfg.containsChild("MySection"), true);
    BOOST_CHECK_EQUAL(cfg.containsChild("ArrayParameter"), false);
    BOOST_CHECK_EQUAL(cfg.containsChild("BoolParameter"), false);
@@ -876,8 +920,11 @@ BOOST_AUTO_TEST_CASE(Path)
 
 BOOST_AUTO_TEST_CASE(SimpleConstruction)
 {
-   shared::CDataContainer dc("1");
-   BOOST_CHECK_EQUAL(dc.serialize(), "1");
+   BOOST_CHECK_THROW(shared::CDataContainer("1"), std::exception);
+   
+   shared::CDataContainer dc("{}");
+   auto k = dc.serialize();
+   BOOST_CHECK_EQUAL(k, "{}");
 }
 
 
@@ -1632,7 +1679,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
 
          for(i=0; i<1000000; ++i)
          {
-            boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make(30, 2);
+            boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make();
 
             //std::cout << "Before sizeof(dc)=" << sizeof(result) << " ";
             //result.printSizeToLog(std::cout);
@@ -1666,7 +1713,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
    std::cout << "[START] DataContainer_HugeAmountOfData_Rapidjson" << std::endl;
    {
       unsigned int itemCount = 100000;
-      auto whole = boost::make_shared< shared::CDataContainer>(30, itemCount);
+      auto whole = shared::CDataContainer::make();
 
       unsigned int i = 0;
       boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28), boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
@@ -1677,7 +1724,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 
          for (i = 0; i < itemCount; ++i)
          {
-            shared::CDataContainer result(30,2);
+            shared::CDataContainer result;
             std::string dt = boost::posix_time::to_iso_string(t1);
             result.set("date", dt);
             result.set("key", std::to_string(fRand(0, 1000)));
@@ -1706,7 +1753,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 {
    std::cout << "[START] DataContainer_HugeAmountOfData_Array" << std::endl;
    {
-      shared::CDataContainer whole(100, 1000000);
+      shared::CDataContainer whole;
 
       whole.createArray("data");
 
@@ -1719,7 +1766,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 
          for (i = 0; i < 1000000; ++i)
          {
-            shared::CDataContainer result(50, 2);
+            shared::CDataContainer result;
             result.set("date", boost::posix_time::to_iso_string(t1));
             result.set("key", std::to_string(fRand(0, 1000)));
             whole.appendArray("data", result);

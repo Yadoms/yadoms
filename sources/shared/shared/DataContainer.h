@@ -1,5 +1,4 @@
 #pragma once
-#define RAPIDJSON_VALUE_DEFAULT_OBJECT_CAPACITY 1
 #include <shared/exception/OutOfRange.hpp>
 #include <shared/exception/InvalidParameter.hpp>
 #include "serialization/IDataSerializable.h"
@@ -8,15 +7,12 @@
 #include "enumeration/IExtendedEnum.h"
 #include "Field.hpp"
  
-#define RAPIDJSON_HAS_STDSTRING 1
-#include "rapidjson/document.h"
-#include "rapidjson/pointer.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/writer.h"
+
 
 namespace shared
 {
    //--------------------------------------------------------------
+   // ReSharper disable CommentTypo
    ///			***********************
    ///			** USAGE
    ///			***********************
@@ -162,6 +158,7 @@ namespace shared
    ///               std::vector< CTestClass >  vc2 = contvecsh.get< std::vector< CTestClass > >("mycollectionofshared");
    ///
    ///
+   // ReSharper restore CommentTypo
    //--------------------------------------------------------------
 
    //--------------------------------------------------------------
@@ -183,47 +180,30 @@ namespace shared
       static boost::shared_ptr<CDataContainer> make();
 
       //--------------------------------------------------------------
-      /// \brief		Constructor (optimized for huge data)
-      /// \param [in] estimatedDataSize    Estimated size of one item of data
-      /// \param [in] estimatedItemCount   Estimated item count
-      ///
-      ///   This ctor preallocate buffer to limit heap usage (really optimized for huge data set)
-      ///
-      ///   By default, each item is allocated with 65000 bytes on heap (rapidjson impl) which may not be possible for thousands of items...
-      ///   (heap is generally of 4Gb on computer, so around 61000 items it will fault)
-      //--------------------------------------------------------------
-      static boost::shared_ptr<CDataContainer> make(unsigned int estimatedDataSize, unsigned int estimatedItemCount);
-
-      //--------------------------------------------------------------
       /// \brief		Constructor
-      /// \param [in] d    Initial data for this container (json data)
+      /// \param [in] initialData    Initial data for this container (json data)
       //--------------------------------------------------------------
       static boost::shared_ptr<CDataContainer> make(const std::string& initialData);
 
       //--------------------------------------------------------------
       /// \brief		Constructor
-      /// \param [in] d    Initial data for this container (key,value)
+      /// \param [in] initialData    Initial data for this container (key,value)
       //--------------------------------------------------------------
       static boost::shared_ptr<CDataContainer> make(const std::map<std::string, std::string>& initialData);
 
       //--------------------------------------------------------------
       /// \brief		Constructor
-      /// \param [in] d    Initial data for this container (rapidjson::Value&)
+      /// \param [in] d    Initial data for this container (boost::json::value&)
       //--------------------------------------------------------------
-      static boost::shared_ptr<CDataContainer> make(rapidjson::Value& d);
+      static boost::shared_ptr<CDataContainer> make(const boost::json::object & d);
       
       //--------------------------------------------------------------
       /// \brief		Constructor
-      /// \param [in] d    Initial data for this container (rapidjson::Value*)
+      /// \param [in] d    Initial data for this container (boost::json::value*)
       //--------------------------------------------------------------
-      static boost::shared_ptr<CDataContainer> make(rapidjson::Value* d);
+      static boost::shared_ptr<CDataContainer> make(const boost::json::object* d);
 
-      //--------------------------------------------------------------
-      /// \brief		Constructor
-      /// \param [in] d    Initial data for this container (rapidjson::Document&)
-      //--------------------------------------------------------------
-      static boost::shared_ptr<CDataContainer> make(rapidjson::Document& d);
-
+      
       //--------------------------------------------------------------
       //
       //
@@ -241,16 +221,6 @@ namespace shared
       // ************************************************************************************
       //--------------------------------------------------------------
       CDataContainer();
-      
-      //--------------------------------------------------------------
-      /// \brief		Constructor. Empty data
-      ///            With preallocated buffer (!! important if use of
-      ///            huge number of items)
-      // ************************************************************************************
-      // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
-      // ************************************************************************************
-      //--------------------------------------------------------------
-      CDataContainer(unsigned int estimatedDataSize, unsigned int estimatedItemCount);
 
       //--------------------------------------------------------------
       /// \brief		Constructor. 
@@ -281,32 +251,22 @@ namespace shared
    public:
 	  //--------------------------------------------------------------
 	  /// \brief		Constructor
-	  /// \param [in] d    Initial data for this container (rapidjson::Value&)
+	  /// \param [in] d    Initial data for this container (boost::json::value&)
      // ************************************************************************************
      // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
      // ************************************************************************************
 	  //--------------------------------------------------------------
-      explicit CDataContainer(rapidjson::Value & d);
+      explicit CDataContainer(const boost::json::object& d);
 
 	  //--------------------------------------------------------------
 	  /// \brief		Constructor
-	  /// \param [in] d    Initial data for this container (rapidjson::Value*)
+	  /// \param [in] d    Initial data for this container (boost::json::value*)
      // ************************************************************************************
      // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
      // ************************************************************************************
      //--------------------------------------------------------------
-	  explicit CDataContainer(rapidjson::Value * d);
+	  explicit CDataContainer(const boost::json::object * d);
       
-	  //--------------------------------------------------------------
-	  /// \brief		Constructor
-	  /// \param [in] d    Initial data for this container (rapidjson::Document&)
-     // ************************************************************************************
-     // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
-     // ************************************************************************************
-     //--------------------------------------------------------------
-	  explicit CDataContainer(rapidjson::Document & d);
-
-   public:
       //--------------------------------------------------------------
       /// \brief			Destructor
       /// \return    	void
@@ -326,7 +286,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -338,7 +298,7 @@ namespace shared
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] defaultValue     The default value in case the parameter do not exists
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The parameter value, or the default value if parameter not found
       //--------------------------------------------------------------
       template<class T>
@@ -347,7 +307,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get child value
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The child as boost::shared_ptr<CDataContainer>
       //--------------------------------------------------------------
       boost::shared_ptr<CDataContainer> getChild(const std::string& parameterName, char pathChar = '.') const;
@@ -356,7 +316,7 @@ namespace shared
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       template<class T>
       void set(const std::string& parameterName, const T & value, char pathChar = '.');
@@ -365,7 +325,7 @@ namespace shared
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       template<class T>
       void set(const char* parameterName, const T & value, char pathChar = '.');
@@ -375,7 +335,7 @@ namespace shared
       /// \brief	    Append value to an already existing array
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       template<class T>
       void appendArray(const std::string& parameterName, const T& value, char pathChar = '.');
@@ -384,7 +344,7 @@ namespace shared
       /// \brief	    Append value to an already existing array
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       template<class T>
       void appendArray(const char* parameterName, const T& value, char pathChar = '.');
@@ -404,7 +364,7 @@ namespace shared
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       void set(const std::string & parameterName, const char* value, char pathChar = '.');
 
@@ -412,7 +372,7 @@ namespace shared
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       void set(const char* parameterName, const char* value, char pathChar = '.');
 
@@ -420,7 +380,7 @@ namespace shared
       /// \brief	    Append a value to an array
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       void appendArray(const char* parameterName, const char* value, char pathChar = '.');
 
@@ -428,14 +388,14 @@ namespace shared
       /// \brief	    Append a value to an array
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       void appendArray(const std::string& parameterName, const char* value, char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -445,7 +405,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get parameter value as map<string, string>
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -457,7 +417,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get parameter sub-keys as vector<string>
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -469,7 +429,7 @@ namespace shared
       /// \brief	    Find a sub-parameter with criteria
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] where_fct         Criteria : lambda must returns true if item is found
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The found parameter
       /// \throw      shared::exception::CEmptyResutl if no parameter matching criteria was found
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -555,7 +515,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Check if a node contains at least a child which is an array
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     true if the parameter contains child (CDataContainer), false if it is a termination node with data
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -565,7 +525,7 @@ namespace shared
 	  //--------------------------------------------------------------
       /// \brief	    Check if a node contains at least a child object (with a value : {...})
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     true if the parameter contains child (CDataContainer), false if it is a termination node with data
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -575,7 +535,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Check if a node is terminal value
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     true if the path contains only single value, false if it is contains a subtree
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -585,14 +545,14 @@ namespace shared
 	   //--------------------------------------------------------------
 	   /// \brief	  Set a value as null
 	   /// \param [in] parameterName    Name of the parameter
-	   /// \param [in] pathChar         The path spearator to use (default is '.')
+	   /// \param [in] pathChar         The path separator to use (default is '.')
 	   //--------------------------------------------------------------
-      void setNull(const std::string& parameterName = std::string(), char pathChar = '.') const;
+      void setNull(const std::string& parameterName = std::string(), char pathChar = '.');
 
 	   //--------------------------------------------------------------
 	   /// \brief	  Check if a value is null
 	   /// \param [in] parameterName    Name of the parameter
-	   /// \param [in] pathChar         The path spearator to use (default is '.')
+	   /// \param [in] pathChar         The path separator to use (default is '.')
 	   /// \return  true is the value is null
 	   //--------------------------------------------------------------
 	   bool isNull(const std::string& parameterName = std::string(), char pathChar = '.') const;
@@ -600,14 +560,14 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	  Create an empty array
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       bool createArray(const std::string& parameterName, char pathChar = '.');
 
       //--------------------------------------------------------------
-      /// \brief	  Check if targetted value is an array
+      /// \brief	  Check if targeted value is an array
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
       bool isArray(const std::string& parameterName, char pathChar = '.');
 
@@ -684,24 +644,24 @@ namespace shared
       void printToLog(std::ostream& os) const;
 
       //--------------------------------------------------------------
-      /// \brief		Print sizeto log
+      /// \brief		Print size to log
       /// \param [in] os      The out stream where to print out
       //--------------------------------------------------------------
       void printSizeToLog(std::ostream& os) const;
 
       //--------------------------------------------------------------
       /// \brief	    Merge this container from another one
-      /// \param [in] from source container
-      /// \desc       Add non-exisiting (or replace existing) values of "from" container into this container
+      ///             Add non-existing (or replace existing) values of "from" container into this container
       ///             Values of this container not present in "from" container will be kept
+      /// \param [in] from source container
       //--------------------------------------------------------------
       void mergeFrom(const CDataContainer& from);
 
       //--------------------------------------------------------------
       /// \brief	    Merge this container from another one
-      /// \param [in] from source container
-      /// \desc       Add non-exisiting (or replace existing) values of "from" container into this container
+      ///             Add non-existing (or replace existing) values of "from" container into this container
       ///             Values of this container not present in "from" container will be kept
+      /// \param [in] from source container
       //--------------------------------------------------------------
       void mergeFrom(boost::shared_ptr<CDataContainer> & from);
 
@@ -750,128 +710,118 @@ namespace shared
       const static boost::shared_ptr<CDataContainer> EmptyContainerSharedPtr;
 
    protected:
-      //--------------------------------------------------------------
-      /// \brief		Constructor
-      /// \param [in] initialTree    Initial tree for this container
-      //--------------------------------------------------------------
-      explicit CDataContainer(const rapidjson::Document & initialTree);
-
+      
 	  //--------------------------------------------------------------
 	  /// \brief		Find a value from the name
-	  /// \param [in] parameterName    The parameter name
-	  /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
+	  /// \param [in] parameterName     The parameter name
+     /// \param [in] pathChar          The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
+     /// \param [in] createIfNotExists The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
 	  //--------------------------------------------------------------
-	  rapidjson::Value* findValue(const std::string& parameterName, char pathChar) const;
+	  boost::json::value* findValue(const std::string& parameterName, char pathChar) const;
+     boost::json::value* findValueOrCreate(const std::string& parameterName, char pathChar);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Merge two objects
-	  /// \param [in] dstObject    Destination value
-	  /// \param [in] srcObject    Source value
-	  /// \param [in] allocator    The allocator
+	  /// \param [in] dstObject    Destination object
+	  /// \param [in] srcObject    Source object
 	  //--------------------------------------------------------------
-	  static void mergeObjects(rapidjson::Value &dstObject, const rapidjson::Value &srcObject, rapidjson::Document::AllocatorType &allocator);
+	  static void mergeObjects(boost::json::object &dstObject, const boost::json::object&srcObject);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Get pointer on the top root object
-	  /// \return   A pointer on the rapidjson::Document
-	  //--------------------------------------------------------------
-	  rapidjson::Document * getPointer() const;
-
-	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a std::string
+	  /// \brief	Convert a boost::json::value into a std::string
 	  /// \param [in] v    A pointer on the value to convert
 	  /// \return The data as std::string
 	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-	  static std::string convertToString(const rapidjson::Value& v);
+	  static std::string convertToString(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a bool
+	  /// \brief	Convert a boost::json::value into a bool
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as bool (check for "true"/"false", "0"/"1", or ay numeric != 0)
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-	  static bool convertToBool(const rapidjson::Value& v);
+	  static bool convertToBool(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a Int
+	  /// \brief	Convert a boost::json::value into a Int
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as int 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-	  static int convertToInt(const rapidjson::Value& v);
+	  static int convertToInt(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a Int64
+	  /// \brief	Convert a boost::json::value into a Int64
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as int64 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-	  static int64_t convertToInt64(const rapidjson::Value& v);
+	  static int64_t convertToInt64(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a char
+	  /// \brief	Convert a boost::json::value into a char
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as char 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-	  static char convertToByte(const rapidjson::Value& v);
+	  static char convertToByte(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a short
+	  /// \brief	Convert a boost::json::value into a short
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as short 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-	  static short convertToShort(const rapidjson::Value& v);
+	  static short convertToShort(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a unsigned int
+	  /// \brief	Convert a boost::json::value into a unsigned int
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned int 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-	  static unsigned int convertToUInt(const rapidjson::Value& v);
+	  static unsigned int convertToUInt(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a unsigned int64
+	  /// \brief	Convert a boost::json::value into a unsigned int64
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned int64 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-	  static uint64_t convertToUInt64(const rapidjson::Value& v);
+	  static uint64_t convertToUInt64(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a unsigned char
+	  /// \brief	Convert a boost::json::value into a unsigned char
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned char 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-      static unsigned char convertToUByte(const rapidjson::Value& v);
+      static unsigned char convertToUByte(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a unsigned short
+	  /// \brief	Convert a boost::json::value into a unsigned short
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned short 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-	  static unsigned short convertToUShort(const rapidjson::Value& v);
+	  static unsigned short convertToUShort(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a float
+	  /// \brief	Convert a boost::json::value into a float
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as float 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-      static float convertToFloat(const rapidjson::Value& v);
+      static float convertToFloat(const boost::json::value& v);
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a double
+	  /// \brief	Convert a boost::json::value into a double
 	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as double 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
-	  static double convertToDouble(const rapidjson::Value& v);
+	  static double convertToDouble(const boost::json::value& v);
 
       //--------------------------------------------------------------
       //
@@ -988,7 +938,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Set parameter values
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] values           Valuse of the parameter
+      /// \param [in] values           Values of the parameter
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       //--------------------------------------------------------------
       template<class T>
@@ -999,7 +949,6 @@ namespace shared
       /// \param [in] parameterName    Name of the parameter
       /// \param [out] values          The resulting vector
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
-      /// \return     The parameter values (IDataContainable)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
@@ -1021,7 +970,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Set parameter values (Enum)
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] values           Valuse of the parameter (Enum)
+      /// \param [in] values           Values of the parameter (Enum)
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       //--------------------------------------------------------------
       template<class T>
@@ -1032,7 +981,6 @@ namespace shared
       /// \param [in] parameterName    Name of the parameter
       /// \param [out] values          The resulting vector
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
-      /// \return     The parameter values (std::vector< boost::shared_ptr<T> >)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
@@ -1044,7 +992,6 @@ namespace shared
       /// \param [in] parameterName    Name of the parameter
       /// \param [out] values          The resulting vector
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
-      /// \return     The parameter values (std::vector< boost::shared_ptr<IDataContainable> >)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
@@ -1052,13 +999,13 @@ namespace shared
 
 
 	  //--------------------------------------------------------------
-	  /// \brief	Convert a rapidjson::Value into a typed value (T)
+	  /// \brief	Convert a boost::json::value into a typed value (T)
 	  /// \param [in] ptrValue    A pointer on the value to convert
 	  /// \return The data as T 
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
       template <class T>
-      T convert(rapidjson::Value* ptrValue) const;
+      T convert(const boost::json::value* ptrValue) const;
 
       //--------------------------------------------------------------
       //
@@ -1316,6 +1263,7 @@ namespace shared
       /// \brief	    Helper structure for get/set with vector of value type (vector<int>, vector<double>, vector<class>,...)
       //--------------------------------------------------------------
       template <typename T, class Enable = void >
+      // ReSharper disable once IdentifierTypo
       struct vectorhelper
       {
          //--------------------------------------------------------------
@@ -1339,6 +1287,7 @@ namespace shared
       /// \brief	    Helper structure for get/set with vector of IDataContainable objects
       //--------------------------------------------------------------
       template <typename T>
+      // ReSharper disable once IdentifierTypo
       struct vectorhelper < T, typename boost::enable_if< boost::is_base_of< IDataContainable, T > >::type >
       {
          //--------------------------------------------------------------
@@ -1362,6 +1311,7 @@ namespace shared
       /// \brief	    Helper structure for get/set with vector of Enum
       //--------------------------------------------------------------
       template <typename T>
+      // ReSharper disable once IdentifierTypo
       struct vectorhelper < T, typename boost::enable_if< boost::is_enum< T > >::type >
       {
          //--------------------------------------------------------------
@@ -1414,6 +1364,7 @@ namespace shared
       /// \brief	    Helper structure for get/set with vector of shared_ptr of simple type ( std::vector< boost::shared_ptr<int> >,... )
       //--------------------------------------------------------------
       template <typename T, class Enable = void >
+      // ReSharper disable once IdentifierTypo
       struct vhelper
       {
          //--------------------------------------------------------------
@@ -1437,6 +1388,7 @@ namespace shared
       /// \brief	    Helper structure for get/set with vector of shared_ptr of IDataContainable ( std::vector< boost::shared_ptr<IDataContainable> >)
       //--------------------------------------------------------------
       template <typename T>
+      // ReSharper disable once IdentifierTypo
       struct vhelper < T, typename boost::enable_if< boost::is_base_of< IDataContainable, T > >::type >
       {
          //--------------------------------------------------------------
@@ -1491,23 +1443,13 @@ namespace shared
       /// \param [in]	   pathChar          The character which is interpreted as path separator
       /// \return the path
       //--------------------------------------------------------------
-      static std::string generatePath(const std::string & parameterName, char pathChar);
+      static std::vector<std::string> generatePath(const std::string & parameterName, char pathChar);
 
    private:
       //--------------------------------------------------------------
-      /// \brief	   The rapidjson tree allocator initial buffer
-      //--------------------------------------------------------------
-      void* m_tree_allocator_initial_buffer;
-
-      //--------------------------------------------------------------
-      /// \brief	   The rapidjson tree allocator
-      //--------------------------------------------------------------
-      rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> * m_tree_allocator;
-
-      //--------------------------------------------------------------
       /// \brief	   The configuration content
       //--------------------------------------------------------------
-      rapidjson::Document m_tree;
+      boost::json::object m_tree;
 
       
 
@@ -1538,7 +1480,7 @@ namespace shared
       //--------------------------------------------------------------
       static void setInternal(CDataContainer* tree, const std::string& parameterName, const boost::shared_ptr<CDataContainer>& value, const char pathChar)
       {
-         auto& a = *value.get();
+         auto& a = *value;
          tree->set(parameterName, a, pathChar);
       }
 
@@ -1547,7 +1489,7 @@ namespace shared
       //--------------------------------------------------------------
       static void appendArrayInternal(CDataContainer* tree, const std::string& parameterName, const boost::shared_ptr<CDataContainer>& value, const char pathChar)
       {
-         auto& a = *value.get();
+         auto& a = *value;
          tree->appendArray(parameterName, a, pathChar);
       }
    };
@@ -1605,8 +1547,8 @@ namespace shared
       //by default this is not the case
       //that's why template specialization is needed
       if (sizeof(unsigned long) == 8)
-         return (unsigned long)helper<uint64_t>::getInternal(this, parameterName, pathChar);
-      return (unsigned int)helper<unsigned int>::getInternal(this, parameterName, pathChar);
+         return static_cast<unsigned long>(helper<uint64_t>::getInternal(this, parameterName, pathChar));
+      return static_cast<unsigned>(helper<unsigned int>::getInternal(this, parameterName, pathChar));
    }
 
    template<>
@@ -1618,8 +1560,9 @@ namespace shared
       //by default this is not the case
       //that's why template specialization is needed
       if (sizeof(long) == 8)
-         return (unsigned long)helper<int64_t>::getInternal(this, parameterName, pathChar);
-      return (unsigned int)helper<int>::getInternal(this, parameterName, pathChar);
+         // ReSharper disable once CppUnreachableCode
+         return static_cast<long>(helper<int64_t>::getInternal(this, parameterName, pathChar));
+      return static_cast<long>(helper<int>::getInternal(this, parameterName, pathChar));
    }
 
    template<class T>
@@ -1666,6 +1609,7 @@ namespace shared
    inline void CDataContainer::set(const std::string& parameterName, const unsigned long& value, const char pathChar)
    {
       if(sizeof(unsigned long) == 8)
+         // ReSharper disable once CppUnreachableCode
          helper<uint64_t>::setInternal(this, parameterName, value, pathChar);
       else
          helper<unsigned int>::setInternal(this, parameterName, value, pathChar);
@@ -1676,6 +1620,7 @@ namespace shared
    inline void CDataContainer::set(const std::string& parameterName, const long& value, const char pathChar)
    {
       if (sizeof(long) == 8)
+         // ReSharper disable once CppUnreachableCode
          helper<int64_t>::setInternal(this, parameterName, value, pathChar);
       else
          helper<int>::setInternal(this, parameterName, value, pathChar);
@@ -1700,9 +1645,12 @@ namespace shared
    template<class T>
    T CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
    {
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const boost::json::value* found = findValue(parameterName, pathChar);
       if (found)
-         return convert<T>(found);
+      {
+         T a = convert<T>(found);
+         return a;
+      }
       throw exception::CInvalidParameter(parameterName + " : is not found");
    }
    
@@ -1711,9 +1659,13 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const boost::json::value* found = findValue(parameterName, pathChar);
       if (found)
-         return CDataContainer(found);
+      {
+         if (found->is_object())
+            return CDataContainer(found->as_object());
+         throw exception::CInvalidParameter(parameterName + " : is not found");
+      }
       throw exception::CInvalidParameter(parameterName + " : is not found");
    }
 
@@ -1725,11 +1677,11 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const boost::json::value* found = findValue(parameterName, pathChar);
       if (found)
       {
-         if (found->IsString())
-            return boost::posix_time::from_iso_string(found->GetString());
+         if (found->is_string())
+            return boost::posix_time::from_iso_string(found->get_string().data());
          else
             throw exception::COutOfRange(parameterName + " can not be converted to string");
       }
@@ -1759,12 +1711,13 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<T> result;
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const boost::json::value* found = findValue(parameterName, pathChar);
       if (found)
       {
-         if (found->IsArray())
+         if (found->is_array())
          {
-			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
+            auto ar = found->as_array();
+			   std::transform(ar.begin(), ar.end(), std::back_inserter(result),
 				 [this](auto &v) -> T { return this->convert<T>(&v); });
          }
          else
@@ -1783,13 +1736,14 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
       std::vector< boost::shared_ptr<CDataContainer> > result;
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const boost::json::value* found = findValue(parameterName, pathChar);
       if (found)
       {
-         if (found->IsArray())
+         if (found->is_array())
          {
-            std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
-               [](auto& v) -> boost::shared_ptr<CDataContainer> { return boost::make_shared<CDataContainer>(v); });
+            auto ar = found->as_array();
+            std::transform(ar.begin(), ar.end(), std::back_inserter(result),
+               [](auto& v) -> boost::shared_ptr<CDataContainer> { return boost::make_shared<CDataContainer>(v.as_object()); });
          }
          else
             throw exception::COutOfRange(parameterName + " is not an array");
@@ -1807,13 +1761,14 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<T> result;
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const boost::json::value* found = findValue(parameterName, pathChar);
       if (found)
       {
-         if (found->IsArray())
+         if (found->is_array())
          {
-			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
-				 [](auto &v) -> T { return static_cast<T>(v.GetInt()); });
+            auto ar = found->as_array();
+            std::transform(ar.begin(), ar.end(), std::back_inserter(result),
+				 [](auto &v) -> T { return static_cast<T>(v.to_number<int>()); });
          }
          else
             throw exception::COutOfRange(parameterName + " is not an array");
@@ -1831,12 +1786,13 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector< boost::shared_ptr<T> > result;
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const boost::json::value* found = findValue(parameterName, pathChar);
       if (found)
       {
-         if (found->IsArray())
+         if (found->is_array())
          {
-            for (auto& v : found->GetArray())
+            auto ar = found->as_array();
+            for (auto& v : ar)
             {
                boost::shared_ptr<T> sp = boost::make_shared<T>(convert<T>(&v));
                result.push_back(sp);
@@ -1858,14 +1814,15 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<boost::shared_ptr<CDataContainer> > result;
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const boost::json::value* found = findValue(parameterName, pathChar);
       if (found)
       {
-         if (found->IsArray())
+         if (found->is_array())
          {
-            for (auto& v : found->GetArray())
+            auto ar = found->as_array();
+            for (auto& v : ar)
             {
-               boost::shared_ptr<CDataContainer> sp = CDataContainer::make(&v);
+               boost::shared_ptr<CDataContainer> sp = make(v.as_object());
                result.push_back(sp);
             }
          }
@@ -1885,15 +1842,16 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector< boost::shared_ptr<T> > result;
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const boost::json::value* found = findValue(parameterName, pathChar);
       if (found)
       {
-         if (found->IsArray())
+         if (found->is_array())
          {
-            for (auto& v : found->GetArray())
+            auto ar = found->as_array();
+            for (auto& v : ar)
             {
                boost::shared_ptr<T> sp(new T);
-               sp->fillFromContent(CDataContainer(v));
+               sp->fillFromContent(CDataContainer(v.as_object()));
                result.push_back(sp);
             }
          }
@@ -1917,15 +1875,16 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<T> result;
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const boost::json::value* found = findValue(parameterName, pathChar);
       if (found)
       {
-         if (found->IsArray())
+         if (found->is_array())
          {
-            for (auto& v : found->GetArray())
+            auto ar = found->as_array();
+            for (auto& v : ar)
             {
                T a;
-               CDataContainer dc(v);
+               CDataContainer dc(v.as_object());
                a.fillFromContent(dc);
                result.push_back(a);
             }
@@ -1952,20 +1911,15 @@ namespace shared
    template<class T>
    void CDataContainer::setInternal(const std::string& parameterName, const T & value, const char pathChar)
    {
-      if (!m_tree.IsObject())
-         m_tree.SetObject();
-
-      rapidjson::Pointer(generatePath(parameterName, pathChar)).Set(m_tree, value);
+      boost::json::value* ptr = findValueOrCreate(parameterName, pathChar);
+      *ptr = value;
    }
 
    template<>
    inline void CDataContainer::setInternal(const std::string& parameterName, const std::string & value, const char pathChar)
    {
-      if (!m_tree.IsObject())
-         m_tree.SetObject();
-
-      rapidjson::Value v(value, m_tree.GetAllocator());
-      rapidjson::Pointer(generatePath(parameterName, pathChar)).Set(m_tree, v);
+      boost::json::value* ptr = findValueOrCreate(parameterName, pathChar);
+      *ptr = value;
    }
 
 
@@ -1983,7 +1937,8 @@ namespace shared
    inline void CDataContainer::setInternal(const std::string& parameterName, const CDataContainer & value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
-      rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Set(m_tree, value.m_tree);
+      boost::json::value* ptr = findValueOrCreate(parameterName, pathChar);
+      *ptr = value.m_tree;
    }
 
 
@@ -1991,7 +1946,8 @@ namespace shared
    inline void CDataContainer::setInternal(const std::string& parameterName, const boost::posix_time::ptime & value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
-      rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Set(m_tree, boost::posix_time::to_iso_string(value).c_str());
+      boost::json::value* ptr = findValueOrCreate(parameterName, pathChar);
+      *ptr = boost::posix_time::to_iso_string(value).c_str();;
    }
 
 
@@ -2003,39 +1959,30 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
-      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
+      boost::json::array arr;
       for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
       {
-         v.PushBack(*i, allocator);
+         arr.emplace_back(*i);
       }
-   }
 
-   template<>
-   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<std::string> & values, const char pathChar)
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
-      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      for (auto i = values.begin(); i != values.end(); ++i)
-      {
-         rapidjson::Value val(i->c_str(), i->size(), allocator);
-         v.PushBack(val, allocator);
-      }
+      boost::json::value* ptr = findValueOrCreate(parameterName, pathChar);
+      *ptr = arr;
    }
+   
 
    template<class T>
    void CDataContainer::setValuesInternalEnum(const std::string& parameterName, const std::vector<T> & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
-      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
+      boost::json::array arr;
       for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
       {
-         v.PushBack(static_cast<int>(*i), allocator);
+         arr.emplace_back(static_cast<int>(*i));
       }
+
+      boost::json::value* ptr = findValueOrCreate(parameterName, pathChar);
+      *ptr = arr;
    }
 
    template<class T>
@@ -2043,17 +1990,18 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
-      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
+      boost::json::array arr;
       for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
       {
          CDataContainer t;
          i->extractContent(t);
-
-         rapidjson::Value a;
-         a.CopyFrom(t.m_tree, allocator);
-         v.PushBack(a, allocator);
+         arr.emplace_back(t.m_tree);
       }
+
+      boost::json::value* ptr = findValueOrCreate(parameterName, pathChar);
+      *ptr = arr;
+
+
    }
 
 
@@ -2064,7 +2012,7 @@ namespace shared
       if (!isArray(parameterName, pathChar))
          createArray(parameterName, pathChar);
 
-      for (typename std::vector<boost::shared_ptr<T>>::const_iterator i = values.begin(); i != values.end(); ++i)
+      for (auto i = values.begin(); i != values.end(); ++i)
       {
          appendArray(parameterName, *i, pathChar);
       }
@@ -2073,45 +2021,24 @@ namespace shared
    template<class T>
    void CDataContainer::appendArrayInternal(const std::string& parameterName, const T& value, const char pathChar)
    {
-      if (!m_tree.IsObject())
-         m_tree.SetObject();
-
-      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
-      if(ptr != NULL && ptr->IsArray())
+      boost::json::value* ptr = findValue(parameterName, pathChar);
+      if(ptr && ptr->is_array())
       {
-         ptr->PushBack(value, m_tree.GetAllocator());
+         ptr->as_array().emplace_back(value);
       }
    }
-
-   template<>
-   inline void CDataContainer::appendArrayInternal(const std::string& parameterName, const std::string& value, const char pathChar)
-   {
-      if (!m_tree.IsObject())
-         m_tree.SetObject();
-
-      rapidjson::Value v(value, m_tree.GetAllocator());
-      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
-      if (ptr != NULL && ptr->IsArray())
-      {
-         ptr->PushBack(v, m_tree.GetAllocator());
-      }
-
-   }
-
+   
 
    template<>
    inline void CDataContainer::appendArrayInternal(const std::string& parameterName, const CDataContainer& value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Get(m_tree);
-      if (ptr != NULL && ptr->IsArray())
+      boost::json::value* ptr = findValue(parameterName, pathChar);
+      if (ptr && ptr->is_array())
       {
-         rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-         rapidjson::Value a;
-         a.CopyFrom(value.m_tree, allocator);
-         ptr->PushBack(a, allocator);
+         ptr->as_array().emplace_back(value.m_tree);
       }
+
    }
 
 
@@ -2119,14 +2046,12 @@ namespace shared
    inline void CDataContainer::appendArrayInternal(const std::string& parameterName, const boost::posix_time::ptime& value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
-      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Get(m_tree);
-      if (ptr != NULL && ptr->IsArray())
+      boost::json::value* ptr = findValue(parameterName, pathChar);
+      if (ptr && ptr->is_array())
       {
-         const std::string s = boost::posix_time::to_iso_string(value);
-         rapidjson::Value v(s, m_tree.GetAllocator());
-         ptr->PushBack(v, m_tree.GetAllocator());
+         ptr->as_array().emplace_back(boost::posix_time::to_iso_string(value));
       }
-
+ 
    }
 
    template<class T>
@@ -2139,7 +2064,7 @@ namespace shared
 
 
    template<class T>
-   T CDataContainer::convert(rapidjson::Value* ptrValue) const
+   T CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if (sizeof(T) == 8)
       {
@@ -2173,7 +2098,7 @@ namespace shared
    }
 
    template<>
-   inline bool CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline bool CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToBool(*ptrValue);
@@ -2181,7 +2106,7 @@ namespace shared
    }
 
    template<>
-   inline std::string CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline std::string CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToString(*ptrValue);
@@ -2189,7 +2114,7 @@ namespace shared
    }
    
    template<>
-   inline int CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline int CDataContainer::convert(const boost::json::value* ptrValue) const
    {
 	   if(ptrValue)
          return convertToInt(*ptrValue);
@@ -2197,7 +2122,7 @@ namespace shared
    }
    
    template<>
-   inline int64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline int64_t CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToInt64(*ptrValue);
@@ -2205,7 +2130,7 @@ namespace shared
    } 
    
    template<>
-   inline char CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline char CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToByte(*ptrValue);
@@ -2213,7 +2138,7 @@ namespace shared
    }
 
    template<>
-   inline short CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline short CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToShort(*ptrValue);
@@ -2221,7 +2146,7 @@ namespace shared
    }   
 
    template<>
-   inline unsigned int CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline unsigned int CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToUInt(*ptrValue);
@@ -2229,7 +2154,7 @@ namespace shared
    }
    
    template<>
-   inline uint64_t CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline uint64_t CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToUInt64(*ptrValue);
@@ -2237,7 +2162,7 @@ namespace shared
    } 
    
    template<>
-   inline unsigned char CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline unsigned char CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToUByte(*ptrValue);
@@ -2245,7 +2170,7 @@ namespace shared
    }
 
    template<>
-   inline unsigned short CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline unsigned short CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToUShort(*ptrValue);
@@ -2253,7 +2178,7 @@ namespace shared
    }
 
    template<>
-   inline float CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline float CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToFloat(*ptrValue);
@@ -2261,7 +2186,7 @@ namespace shared
    }
 
    template<>
-   inline double CDataContainer::convert(rapidjson::Value* ptrValue) const
+   inline double CDataContainer::convert(const boost::json::value* ptrValue) const
    {
       if(ptrValue)
          return convertToDouble(*ptrValue);
@@ -2269,21 +2194,40 @@ namespace shared
    }
 
 
-   inline void CDataContainer::setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values, const char pathChar)
+   template<>
+   inline CDataContainer CDataContainer::convert(const boost::json::value* ptrValue) const
+   {
+      if (ptrValue)
+         return CDataContainer(ptrValue->as_object());
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+
+
+   template<>
+   inline boost::shared_ptr<CDataContainer> CDataContainer::convert(const boost::json::value* ptrValue) const
+   {
+      if (ptrValue)
+         return CDataContainer::make(ptrValue->as_object());
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   inline void CDataContainer::setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> >& values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
-      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      std::vector< boost::shared_ptr<IDataContainable> >::const_iterator i;
-      for (i = values.begin(); i != values.end(); ++i)
+      boost::json::array arr;
+      for (auto i = values.begin(); i != values.end(); ++i)
       {
          CDataContainer t;
          (*i)->extractContent(t);
-         rapidjson::Value a;
-         a.CopyFrom(t.m_tree, allocator);
-         v.PushBack(a, allocator);
+         arr.emplace_back(t.m_tree);
       }
+
+      boost::json::value* ptr = findValueOrCreate(parameterName, pathChar);
+      if (ptr)
+         *ptr = arr;
+
    }
 
 
@@ -2292,14 +2236,18 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
-      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      for (const auto& value : values)
+      boost::json::array arr;
+      for (auto i = values.begin(); i != values.end(); ++i)
       {
-         rapidjson::Value a;
-         a.CopyFrom(value->m_tree, allocator);
-         v.PushBack(a, allocator);
+         CDataContainer t;
+         (*i)->extractContent(t);
+         arr.emplace_back((*i)->m_tree);
       }
+
+      boost::json::value* ptr = findValueOrCreate(parameterName, pathChar);
+      if (ptr)
+         *ptr = arr;
+
    }
 
 
@@ -2324,9 +2272,10 @@ namespace shared
       if (found)
       {
          const auto path = !parameterName.empty() ? (parameterName + pathChar) : "";
-         for (rapidjson::Value::ConstMemberIterator i = found->MemberBegin(); i != found->MemberEnd(); ++i)
+
+         for (auto i = found->as_object().begin(); i != found->as_object().end(); ++i)
          {
-            result[i->name.GetString()] = get<Type>(path + i->name.GetString(), pathChar);
+            result[i->key().to_string()] = convert<Type>(&(i->value()));
          }
       }
 

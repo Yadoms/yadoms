@@ -21,6 +21,13 @@ namespace shared
          }
 
          //--------------------------------------------------------------
+         /// \brief	                        Constructor
+         //--------------------------------------------------------------
+         CJSONParse(const std::string& message)
+            : CException((boost::format("Error parsing JSON data %1%") % message).str())
+         {
+         }
+         //--------------------------------------------------------------
          /// \brief      Destructor
          //--------------------------------------------------------------
          virtual ~CJSONParse() throw()

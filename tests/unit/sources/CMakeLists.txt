@@ -88,6 +88,7 @@ set(BOOST_LIBS
    regex
    unit_test_framework 
    json
+   container
 )
 
 # search boost libs
