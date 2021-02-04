@@ -36,6 +36,10 @@ namespace location
       {
          YADOMS_LOG(warning) << "Unable to get location via ip-api service : " << e.what();
       }
+      catch (std::exception& e)
+      {
+         YADOMS_LOG(warning) << "Unable to get location via ip-api service : " << e.what();
+      }
    }
 } // namespace location
 
