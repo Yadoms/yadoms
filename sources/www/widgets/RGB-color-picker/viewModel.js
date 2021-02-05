@@ -55,7 +55,7 @@ widgetViewModelCtor =
 
       this.createPicker = function (preselectedColor) {
          var self = this;
-         self.colorpickerCanvas = $('.picker-canvas');
+         self.colorpickerCanvas = self.widgetApi.find('.picker-canvas');
          self.colorpicker = self.colorpickerCanvas.colorpicker({
             customClass: 'colorpicker-size-' + self.widget.id,
             hexNumberSignPrefix: false,
