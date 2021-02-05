@@ -23,7 +23,6 @@ widgetViewModelCtor =
          arrayOfDeffered.push(self.widgetApi.loadGzLibrary("libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js.gz"));
 
          $.when.apply($, arrayOfDeffered).done(function () {
-               //we configure the toolbar
                self.widgetApi.toolbar({
                   activated: true,
                   displayTitle: true,
@@ -60,7 +59,7 @@ widgetViewModelCtor =
 
       this.createPicker = function (preselectedColor) {
          var self = this;
-         self.colorpickerCanvas = $('.picker-canvas');
+         self.colorpickerCanvas = self.widgetApi.find('.picker-canvas');
          self.colorpicker = self.colorpickerCanvas.colorpicker({
             customClass: 'colorpicker-size-' + self.widget.id,
             hexNumberSignPrefix: false,
@@ -89,12 +88,12 @@ widgetViewModelCtor =
          // capture the event changeColor
          self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
          self.colorpickerCanvas.attr("style", "pointer-events:none;");
-         $('#whiteSlide').attr("style", "pointer-events:none;");
+         self.widgetApi.find('#whiteSlide').attr("style", "pointer-events:none;");
          KeywordManager.get(parseInt(this.widget.configuration.device.keywordId))
             .done(function (keyword) {
                if (keyword.accessMode === "GetSet") {
                   self.colorpickerCanvas.removeAttr("style");
-                  $('#whiteSlide').removeAttr("style");
+                  self.widgetApi.find('#whiteSlide').removeAttr("style");
                }
             });
       };
@@ -102,10 +101,22 @@ widgetViewModelCtor =
       this.changeSlideClick = function () {
          var self = this;
          return function (e) {
-            var RGBValue = self.slider.value;
-            KeywordManager.sendCommand(parseInt(self.widget.configuration.device.keywordId), RGBValue.toString());
+            var colors = self.colorpicker.colorpicker('getValue').match('rgb.(\\d+),(\\d+),(\\d+).');
+            var RGBWColor = parseInt(colors[1]).toString(16) + parseInt(colors[2]).toString(16) + parseInt(colors[3]).toString(16) + parseInt(self.slider.value).toString(16);
+            KeywordManager.sendCommand(parseInt(self.widget.configuration.device.keywordId), RGBWColor);
          };
       };
+
+      function decimalToHex(d, padding) {
+         var hex = Number(d).toString(16);
+         padding = typeof (padding) === "undefined" || padding === null ? padding = 2 : padding;
+     
+         while (hex.length < padding) {
+             hex = "0" + hex;
+         }
+     
+         return hex;
+     }
 
       // function called when the color changed
       this.changeColorButtonClick = function () {
@@ -113,29 +124,9 @@ widgetViewModelCtor =
          return function (e) {
             self.colorpicker.colorpicker('disable');
             self.colorpicker.unbind('changeColor');
-            var temp = e.color.toHex().toString();
-            var red = temp.substring(0, 2);
-            var green = temp.substring(2, 4);
-            var blue = temp.substring(4, 6);
-            self.slider.value = 0;
-            var RGBValue = parseInt(red, 16) * 256 * 256 * 256 + parseInt(green, 16) * 256 * 256 + parseInt(blue, 16) * 256;
-            KeywordManager.sendCommand(parseInt(self.widget.configuration.device.keywordId), RGBValue.toString())
+            KeywordManager.sendCommand(parseInt(self.widget.configuration.device.keywordId), e.color + decimalToHex(self.slider.value, 2));
             self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
          };
-      };
-
-      function stopPropagation(id, event) {
-         $(id).on(event, function (e) {
-            e.stopPropagation();
-            return false;
-         });
-      };
-
-      function enablePropagation(id, event) {
-         $(id).off(event, function (e) {
-            e.stopPropagation();
-            return false;
-         });
       };
 
       this.configurationChanged = function () {
@@ -145,7 +136,6 @@ widgetViewModelCtor =
          if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
             return;
 
-         //we register keyword new acquisition
          self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
 
          //we register keyword for get last value at web client startup
@@ -196,12 +186,9 @@ widgetViewModelCtor =
          // Update sliders values
          self.colorpicker.data('colorpicker').options.sliders.saturation.maxLeft = self.WidgetWidth;
          self.colorpicker.data('colorpicker').options.sliders.saturation.maxTop = self.WidgetHeight;
-
          self.colorpicker.data('colorpicker').options.sliders.hue.maxTop = self.WidgetHeight;
          self.colorpicker.data('colorpicker').options.sliders.alpha.maxTop = self.WidgetHeight;
-
          self.changeCss(self.WidgetWidth, self.WidgetHeight);
-
          self.colorpicker.colorpicker('update');
       };
 
@@ -214,8 +201,11 @@ widgetViewModelCtor =
          var self = this;
 
          if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
+            console.log("onNewAcquisition : " + data.value);
             self.colorpicker.unbind('changeColor');
-            self.colorpicker.colorpicker('setValue', data.value);
+            var color = data.value.substring(0, 6);
+            self.colorpicker.colorpicker('setValue', color);
+            self.widgetApi.find('#whiteSlide').val(parseInt(data.value.substring(6, 8), 16));
             self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
          }
       };

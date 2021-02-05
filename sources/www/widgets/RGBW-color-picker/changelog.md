@@ -1,3 +1,7 @@
+### 1.1.2
+* Fix color picker change value for all declared widget (also for the white bar)
+* Fix wrong rgbw hexadecimal format
+
 ### 1.1.1
 * Better keyword selection filtering
 
