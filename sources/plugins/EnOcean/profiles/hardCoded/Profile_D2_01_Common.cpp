@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Profile_D2_01_Common.h"
-#include "../../message/ResponseReceivedMessage.h"
 #include "../bitsetHelpers.hpp"
-#include "../../message/RadioErp1SendMessage.h"
 #include <shared/Log.h>
 #include "message/MessageHelpers.h"
 
@@ -27,8 +25,8 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(boost::shared_
                                                                   bool state)
 {
    boost::dynamic_bitset<> userData(3 * 8);
-   bitset_insert(userData, 4, 4, kActuatorSetOutput);
-   bitset_insert(userData, 11, 5, outputChannel);
+   bitset_insert(userData, 4, 4, static_cast<unsigned int>(E_D2_01_Command::kActuatorSetOutput));
+   bitset_insert(userData, 11, 5, static_cast<unsigned int>(outputChannel));
    bitset_insert(userData, 17, 7, state ? 100 : 0);
 
    sendMessage(messageHandler,
@@ -46,19 +44,19 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(boost::shared_pt
                                                                 unsigned int dimValue)
 {
    boost::dynamic_bitset<> userData(3 * 8);
-   bitset_insert(userData, 4, 4, kActuatorSetOutput);
+   bitset_insert(userData, 4, 4, static_cast<unsigned int>(E_D2_01_Command::kActuatorSetOutput));
    E_D2_01_DimMode dimMode;
    switch (mode)
    {
-   case specificHistorizers::EDimmerMode::kSwitchToValueValue: dimMode = kSwitchToValue;
+   case specificHistorizers::EDimmerMode::kSwitchToValueValue: dimMode = E_D2_01_DimMode::kSwitchToValue;
       break;
-   case specificHistorizers::EDimmerMode::kDimToValueWithTimer1Value: dimMode = kDimToValueWithTimer1;
+   case specificHistorizers::EDimmerMode::kDimToValueWithTimer1Value: dimMode = E_D2_01_DimMode::kDimToValueWithTimer1;
       break;
-   case specificHistorizers::EDimmerMode::kDimToValueWithTimer2Value: dimMode = kDimToValueWithTimer2;
+   case specificHistorizers::EDimmerMode::kDimToValueWithTimer2Value: dimMode = E_D2_01_DimMode::kDimToValueWithTimer2;
       break;
-   case specificHistorizers::EDimmerMode::kDimToValueWithTimer3Value: dimMode = kDimToValueWithTimer3;
+   case specificHistorizers::EDimmerMode::kDimToValueWithTimer3Value: dimMode = E_D2_01_DimMode::kDimToValueWithTimer3;
       break;
-   case specificHistorizers::EDimmerMode::kStopDimmingValue: dimMode = kStopDimming;
+   case specificHistorizers::EDimmerMode::kStopDimmingValue: dimMode = E_D2_01_DimMode::kStopDimming;
       break;
    default:
       {
@@ -68,8 +66,8 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(boost::shared_pt
          throw std::logic_error(oss.str());
       }
    }
-   bitset_insert(userData, 8, 3, dimMode);
-   bitset_insert(userData, 11, 5, outputChannel);
+   bitset_insert(userData, 8, 3, static_cast<unsigned int>(dimMode));
+   bitset_insert(userData, 11, 5, static_cast<unsigned int>(outputChannel));
    bitset_insert(userData, 17, 7, dimValue);
 
    sendMessage(messageHandler,
@@ -94,11 +92,11 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
 {
    boost::dynamic_bitset<> data(4 * 8);
 
-   bitset_insert(data, 4, 4, kActuatorSetLocal);
+   bitset_insert(data, 4, 4, static_cast<unsigned int>(E_D2_01_Command::kActuatorSetLocal));
    bitset_insert(data, 0, taughtInAllDevices);
    bitset_insert(data, 8, true); // Over-current shut-down : automatic restart
    bitset_insert(data, 10, localControl);
-   bitset_insert(data, 11, 5, outputChannel);
+   bitset_insert(data, 11, 5, static_cast<unsigned int>(outputChannel));
    bitset_insert(data, 16, 4, static_cast<unsigned int>(lround(dimTimer2 / 0.5)));
    bitset_insert(data, 20, 4, static_cast<unsigned int>(lround(dimTimer3 / 0.5)));
    bitset_insert(data, 24, !userInterfaceDayMode);
@@ -120,8 +118,8 @@ void CProfile_D2_01_Common::sendActuatorStatusQuery(boost::shared_ptr<IMessageHa
 {
    boost::dynamic_bitset<> data(2 * 8);
 
-   bitset_insert(data, 4, 4, kActuatorStatusQuery);
-   bitset_insert(data, 11, 5, outputChannel);
+   bitset_insert(data, 4, 4, static_cast<unsigned int>(E_D2_01_Command::kActuatorStatusQuery));
+   bitset_insert(data, 11, 5, static_cast<unsigned int>(outputChannel));
 
    sendMessage(messageHandler,
                senderId,
@@ -142,21 +140,19 @@ const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noP
 const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noOverCurrent = boost::shared_ptr<yApi::
    historization::CSwitch>();
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::
-extractActuatorStatusResponse(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
-   boost::shared_ptr<yApi::historization::CSwitch> channel1,
+   const boost::shared_ptr<yApi::historization::CSwitch>& channel1,
    boost::shared_ptr<yApi::historization::CDimmable> dimmer,
-   boost::shared_ptr<yApi::historization::CSwitch>
-   powerFailure,
+   boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
    boost::shared_ptr<yApi::historization::CSwitch> overCurrent)
 {
    // Some devices supports several RORG telegrams, ignore non-VLD telegrams
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   if (bitset_extract(data, 4, 4) != kActuatorStatusResponse)
+   if (bitset_extract(data, 4, 4) != static_cast<unsigned int>(E_D2_01_Command::kActuatorStatusResponse))
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
    // Return only the concerned historizers
@@ -169,7 +165,7 @@ extractActuatorStatusResponse(
 
    // Sometimes ioChannel is not well set by device (ex NODON ASP-2-1-00 set ioChannel to 1 instead of 0),
    // so ignore ioChannel value (juste verify that is not input channel)
-   if (ioChannel == kInputChannel)
+   if (ioChannel == static_cast<unsigned int>(EOutputChannel::kInputChannel))
       YADOMS_LOG(warning) << "ActuatorStatusResponse : received unsupported ioChannel value " << ioChannel;
    else
    {
@@ -220,7 +216,7 @@ extractActuatorStatusResponse2Channels(
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   if (bitset_extract(data, 4, 4) != kActuatorStatusResponse)
+   if (bitset_extract(data, 4, 4) != static_cast<unsigned int>(E_D2_01_Command::kActuatorStatusResponse))
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
    // Return only the concerned historizers
@@ -292,14 +288,15 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
 {
    boost::dynamic_bitset<> data(6 * 8);
 
-   bitset_insert(data, 4, 4, kActuatorSetMeasurement);
+   bitset_insert(data, 4, 4, static_cast<unsigned int>(E_D2_01_Command::kActuatorSetMeasurement));
    bitset_insert(data, 8, true); // Report on query + auto reporting
    bitset_insert(data, 9, resetMeasurement); // Reset measurement
    bitset_insert(data, 10, powerMeasurement);
-   bitset_insert(data, 11, 5, outputChannel);
+   bitset_insert(data, 11, 5, static_cast<unsigned int>(outputChannel));
    // Specific channel, or 0x1E for all output channels, or 0x1F for input channel
    bitset_insert(data, 16, 4, 0); // No measurement delta
-   bitset_insert(data, 21, 3, powerMeasurement ? kPowerW : kEnergyWh); // Hard-coded for now
+   bitset_insert(data, 21, 3, static_cast<unsigned int>(powerMeasurement ? E_D2_01_MeasurementUnit::kPowerW : E_D2_01_MeasurementUnit::kEnergyWh));
+   // Hard-coded for now
    bitset_insert(data, 24, 8, 0); // No measurement delta
    bitset_insert(data, 32, 8, static_cast<unsigned char>(maxEnergyMeasureRefreshTime / 10.0));
    bitset_insert(data, 40, 8, static_cast<unsigned char>(minEnergyMeasureRefreshTime));
@@ -318,9 +315,9 @@ void CProfile_D2_01_Common::sendActuatorMeasurementQuery(boost::shared_ptr<IMess
                                                          EPowerQueryType queryType)
 {
    boost::dynamic_bitset<> userData(2 * 8);
-   bitset_insert(userData, 4, 4, kActuatorMeasurementQuery);
-   bitset_insert(userData, 10, 1, queryType);
-   bitset_insert(userData, 11, 5, outputChannel);
+   bitset_insert(userData, 4, 4, static_cast<unsigned int>(E_D2_01_Command::kActuatorMeasurementQuery));
+   bitset_insert(userData, 10, 1, static_cast<unsigned int>(queryType));
+   bitset_insert(userData, 11, 5, static_cast<unsigned int>(outputChannel));
 
    sendMessage(messageHandler,
                senderId,
@@ -338,8 +335,7 @@ const boost::shared_ptr<yApi::historization::CEnergy> CProfile_D2_01_Common::noL
 const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::noLoadPower = boost::shared_ptr<yApi::
    historization::CPower>();
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::
-extractActuatorMeasurementResponse(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorMeasurementResponse(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
    boost::shared_ptr<yApi::historization::CEnergy> loadEnergy,
@@ -362,9 +358,9 @@ extractActuatorMeasurementResponse(
       {
          switch (unit)
          {
-         case kEnergyWs:
-         case kEnergyWh:
-         case kEnergyKWh:
+         case E_D2_01_MeasurementUnit::kEnergyWs:
+         case E_D2_01_MeasurementUnit::kEnergyWh:
+         case E_D2_01_MeasurementUnit::kEnergyKWh:
             if (!!loadEnergy)
             {
                loadEnergy->set(extractEnergyWh(unit,
@@ -372,8 +368,8 @@ extractActuatorMeasurementResponse(
                historizers.push_back(loadEnergy);
             }
             break;
-         case kPowerW:
-         case kPowerKW:
+         case E_D2_01_MeasurementUnit::kPowerW:
+         case E_D2_01_MeasurementUnit::kPowerKW:
             if (!!loadPower)
             {
                loadPower->set(extractPowerValueW(unit,
@@ -401,21 +397,21 @@ void CProfile_D2_01_Common::sendActuatorSetPilotWireModeCommand(boost::shared_pt
 {
    boost::dynamic_bitset<> userData(3 * 8);
 
-   bitset_insert(userData, 4, 4, kActuatorSetPilotWireMode);
+   bitset_insert(userData, 4, 4, static_cast<unsigned int>(E_D2_01_Command::kActuatorSetPilotWireMode));
    EPilotWireMode pilotWireMode;
    switch (mode)
    {
-   case specificHistorizers::EPilotWire::kOffValue: pilotWireMode = kOff;
+   case specificHistorizers::EPilotWire::kOffValue: pilotWireMode = EPilotWireMode::kOff;
       break;
-   case specificHistorizers::EPilotWire::kComfortValue: pilotWireMode = kComfort;
+   case specificHistorizers::EPilotWire::kComfortValue: pilotWireMode = EPilotWireMode::kComfort;
       break;
-   case specificHistorizers::EPilotWire::kComfort2Value: pilotWireMode = kComfort_1;
+   case specificHistorizers::EPilotWire::kComfort2Value: pilotWireMode = EPilotWireMode::kComfort_1;
       break;
-   case specificHistorizers::EPilotWire::kComfort3Value: pilotWireMode = kComfort_2;
+   case specificHistorizers::EPilotWire::kComfort3Value: pilotWireMode = EPilotWireMode::kComfort_2;
       break;
-   case specificHistorizers::EPilotWire::kEcoValue: pilotWireMode = kEco;
+   case specificHistorizers::EPilotWire::kEcoValue: pilotWireMode = EPilotWireMode::kEco;
       break;
-   case specificHistorizers::EPilotWire::kAntiFreezeValue: pilotWireMode = kAntiFreeze;
+   case specificHistorizers::EPilotWire::kAntiFreezeValue: pilotWireMode = EPilotWireMode::kAntiFreeze;
       break;
    default:
       {
@@ -425,7 +421,7 @@ void CProfile_D2_01_Common::sendActuatorSetPilotWireModeCommand(boost::shared_pt
          throw std::logic_error(oss.str());
       }
    }
-   bitset_insert(userData, 13, 3, pilotWireMode);
+   bitset_insert(userData, 13, 3, static_cast<unsigned int>(pilotWireMode));
 
    sendMessage(messageHandler,
                senderId,
@@ -440,7 +436,7 @@ void CProfile_D2_01_Common::sendActuatorPilotWireModeQuery(boost::shared_ptr<IMe
 {
    boost::dynamic_bitset<> userData(1 * 8);
 
-   bitset_insert(userData, 4, 4, kActuatorPilotWireModeQuery);
+   bitset_insert(userData, 4, 4, static_cast<unsigned int>(E_D2_01_Command::kActuatorPilotWireModeQuery));
 
    sendMessage(messageHandler,
                senderId,
@@ -449,11 +445,10 @@ void CProfile_D2_01_Common::sendActuatorPilotWireModeQuery(boost::shared_ptr<IMe
                "Actuator Pilot Wire Mode Query");
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::
-extractActuatorPilotWireModeResponse(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorPilotWireModeResponse(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
-   boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> pilotWire)
+   const boost::shared_ptr<specificHistorizers::CPilotWireHistorizer>& pilotWire)
 {
    // Some devices supports several RORG telegrams, ignore non-VLD telegrams
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
@@ -465,33 +460,32 @@ extractActuatorPilotWireModeResponse(
    const auto pilotWireMode = static_cast<EPilotWireMode>(bitset_extract(data, 13, 3));
    switch (pilotWireMode)
    {
-   case kOff:
+   case EPilotWireMode::kOff:
       pilotWire->set(specificHistorizers::EPilotWire::kOff);
-      historizers.push_back(pilotWire);
+      historizers.emplace_back(pilotWire);
       break;
-   case kComfort:
+   case EPilotWireMode::kComfort:
       pilotWire->set(specificHistorizers::EPilotWire::kComfort);
-      historizers.push_back(pilotWire);
+      historizers.emplace_back(pilotWire);
       break;
-   case kEco:
+   case EPilotWireMode::kEco:
       pilotWire->set(specificHistorizers::EPilotWire::kEco);
-      historizers.push_back(pilotWire);
+      historizers.emplace_back(pilotWire);
       break;
-   case kAntiFreeze:
+   case EPilotWireMode::kAntiFreeze:
       pilotWire->set(specificHistorizers::EPilotWire::kAntiFreeze);
-      historizers.push_back(pilotWire);
+      historizers.emplace_back(pilotWire);
       break;
-   case kComfort_1:
+   case EPilotWireMode::kComfort_1:
       pilotWire->set(specificHistorizers::EPilotWire::kComfort);
-      historizers.push_back(pilotWire);
+      historizers.emplace_back(pilotWire);
       break;
-   case kComfort_2:
+   case EPilotWireMode::kComfort_2:
       pilotWire->set(specificHistorizers::EPilotWire::kComfort);
-      historizers.push_back(pilotWire);
+      historizers.emplace_back(pilotWire);
       break;
    default:
-      YADOMS_LOG(warning) << "ActuatorPilotWireModeResponse : received unsupported pilotWireMode value " <<
-         pilotWireMode;
+      YADOMS_LOG(warning) << "ActuatorPilotWireModeResponse : received unsupported pilotWireMode value " << static_cast<unsigned int>(pilotWireMode);
       break;
    }
    return historizers;
@@ -509,14 +503,14 @@ void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(
 {
    boost::dynamic_bitset<> data(7 * 8);
 
-   bitset_insert(data, 4, 4, kActuatorSetExternalInterfaceSettings);
-   bitset_insert(data, 11, 5, outputChannel);
+   bitset_insert(data, 4, 4, static_cast<unsigned int>(E_D2_01_Command::kActuatorSetExternalInterfaceSettings));
+   bitset_insert(data, 11, 5, static_cast<unsigned int>(outputChannel));
    bitset_insert(data, 16, 16, static_cast<unsigned int>(autoOffTimerSeconds * 10));
    bitset_insert(data, 32, 16, static_cast<unsigned int>(delayRadioOffTimerSeconds * 10));
    bitset_insert(data, 48, 2, connectedSwitchsType);
    bitset_insert(data, 50, !switchingStateToggle);
 
-   sendMessage(messageHandler,
+   sendMessage(std::move(messageHandler),
                senderId,
                targetId,
                data,
@@ -530,7 +524,7 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
                                         const std::string& commandName)
 {
    message::CMessageHelpers::sendMessage(CRorgs::kVLD_Telegram,
-                                         messageHandler,
+                                         std::move(messageHandler),
                                          senderId,
                                          targetId,
                                          userData,
@@ -543,14 +537,14 @@ Poco::Int64 CProfile_D2_01_Common::extractEnergyWh(E_D2_01_MeasurementUnit unit,
 {
    switch (unit)
    {
-   case kEnergyWs:
+   case E_D2_01_MeasurementUnit::kEnergyWs:
       return static_cast<Poco::Int64>(rawValue) * 3600;
-   case kEnergyWh:
+   case E_D2_01_MeasurementUnit::kEnergyWh:
       return static_cast<Poco::Int64>(rawValue);
-   case kEnergyKWh:
+   case E_D2_01_MeasurementUnit::kEnergyKWh:
       return static_cast<Poco::Int64>(rawValue) * 1000;
    default:
-      YADOMS_LOG(warning) << "extractEnergyWh : received unsupported unit value " << unit;
+      YADOMS_LOG(warning) << "extractEnergyWh : received unsupported unit value " << static_cast<unsigned int>(unit);
       return 0;
    }
 }
@@ -561,12 +555,12 @@ double CProfile_D2_01_Common::extractPowerValueW(E_D2_01_MeasurementUnit unit,
 {
    switch (unit)
    {
-   case kPowerW:
+   case E_D2_01_MeasurementUnit::kPowerW:
       return static_cast<double>(rawValue);
-   case kPowerKW:
+   case E_D2_01_MeasurementUnit::kPowerKW:
       return static_cast<double>(rawValue) * 1000;
    default:
-      YADOMS_LOG(warning) << "extractPowerValueW : received unsupported unit value " << unit;
+      YADOMS_LOG(warning) << "extractPowerValueW : received unsupported unit value " << static_cast<unsigned int>(unit);
       return 0;
    }
 }

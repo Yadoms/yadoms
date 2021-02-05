@@ -23,7 +23,7 @@ public:
       ((autodetection)(3))
    ) ;
 
-   enum E_D2_01_Command
+   enum class E_D2_01_Command
    {
       kActuatorSetOutput = 0x01,
       kActuatorSetLocal = 0x02,
@@ -40,7 +40,7 @@ public:
       kActuatorExternalInterfaceSettingsResponse = 0x0D
    };
 
-   enum E_D2_01_MeasurementUnit
+   enum class E_D2_01_MeasurementUnit
    {
       kEnergyWs = 0x00,
       kEnergyWh = 0x01,
@@ -49,7 +49,7 @@ public:
       kPowerKW = 0x04
    };
 
-   enum E_D2_01_DimMode
+   enum class E_D2_01_DimMode
    {
       kSwitchToValue = 0x00,
       kDimToValueWithTimer1 = 0x01,
@@ -58,7 +58,7 @@ public:
       kStopDimming = 0x04,
    };
 
-   enum EPilotWireMode
+   enum class EPilotWireMode
    {
       kOff = 0x00,
       kComfort = 0x01,
@@ -68,7 +68,7 @@ public:
       kComfort_2 = 0x05
    };
 
-   enum EOutputChannel
+   enum class EOutputChannel
    {
       kOutputChannel1 = 0,
       kOutputChannel2 = 1,
@@ -76,7 +76,7 @@ public:
       kInputChannel = 0x1F,
    };
 
-   enum EPowerQueryType
+   enum class EPowerQueryType
    {
       kQueryEnergy = 0,
       kQueryPower = 1
@@ -124,7 +124,7 @@ public:
    static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorStatusResponse(
       unsigned char rorg,
       const boost::dynamic_bitset<>& data,
-      boost::shared_ptr<yApi::historization::CSwitch> channel1,
+      const boost::shared_ptr<yApi::historization::CSwitch>& channel1,
       boost::shared_ptr<yApi::historization::CDimmable> dimmer,
       boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
       boost::shared_ptr<yApi::historization::CSwitch> overCurrent);
@@ -180,7 +180,7 @@ public:
    static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorPilotWireModeResponse(
       unsigned char rorg,
       const boost::dynamic_bitset<>& data,
-      boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> pilotWire);
+      const boost::shared_ptr<specificHistorizers::CPilotWireHistorizer>& pilotWire);
 
    // CMD 0xB - Actuator Set External Interface Settings
    static void sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
