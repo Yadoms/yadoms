@@ -3,6 +3,7 @@
 #### Yadoms
 * Fix #720 : Add execute rights on installed rule interpreter
 * Markdown description field of update page (handle links)
+* Fix removing interpreter
 
 
 ### 2.4.0

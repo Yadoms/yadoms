@@ -1017,7 +1017,7 @@ namespace update
    std::string CUpdateManager::removeScriptInterpreterAsync(const std::string& scriptInterpreterName) const
    {
       const auto task(boost::make_shared<task::CGenericTask>("scriptInterpreter.remove",
-                                                             boost::bind(&worker::CScriptInterpreter::install,
+                                                             boost::bind(&worker::CScriptInterpreter::remove,
                                                                          boost::placeholders::_1,
                                                                          std::string(scriptInterpreterName),
                                                                          boost::filesystem::path(m_pathProvider->scriptInterpretersPath()))));
