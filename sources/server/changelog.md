@@ -13,7 +13,8 @@
 * New feature #603 : Manage redirections for http requests
 * New feature #680 : Add HTTP devices autodetection in shared
 * New feature #705 : Add obsolete management for modules
-* Fix dynamically configurable devices translations
+* Fix dynamically configurable devices translations$*
+* Fix removing interpreter
 * Update font-awesome library
 * Update LibCurl (7.72.0)
 
