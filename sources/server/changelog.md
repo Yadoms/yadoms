@@ -22,6 +22,7 @@
 
 #### Yadoms
 * Fix #720 : Add execute rights on installed rule interpreter
+* Fix removing interpreter
 
 
 ### 2.4.0
