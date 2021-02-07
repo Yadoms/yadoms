@@ -23,6 +23,7 @@
 #### Yadoms
 * Fix #720 : Add execute rights on installed rule interpreter
 * Fix removing interpreter
+* Add blue tag on new items in update page
 
 
 ### 2.4.0

@@ -733,7 +733,7 @@
      */
     function updateHeaderUpdateAvailableLabel(objectType) {
         var $line = $("div#install-update-" + objectType + "-heading-panel .update-available-label");
-        var $updateAvailableLabels = $("table#" + objectType + "-install-update-list span.update-available-label").not(
+        var $updateAvailableLabels = $("table#" + objectType + "-install-update-list span.update-available-label.label-success").not(
             ".hidden");
         if ($updateAvailableLabels.length > 0) {
             //there is at least one item that have an update available
@@ -846,8 +846,19 @@
             }
 
             // Show new version indicator (if module already installed)
-            if (newestVersionLabel && !isNullOrUndefinedOrEmpty(item.versions.installed)) {
-                $line.find("span.update-available-label").removeClass("hidden");
+            if (newestVersionLabel) {
+                if (isNullOrUndefinedOrEmpty(item.versions.installed)) {
+                    // New item available
+                    $line.find("span.update-available-label").removeClass("label-success");
+                    $line.find("span.update-available-label").addClass("label-info");
+                    $line.find("span.update-available-label").removeClass("hidden");
+                }
+                else {
+                    // Item update available
+                    $line.find("span.update-available-label").removeClass("label-info");
+                    $line.find("span.update-available-label").addClass("label-success");
+                    $line.find("span.update-available-label").removeClass("hidden");
+                }
             } else {
                 $line.find("span.update-available-label").addClass("hidden");
             }
