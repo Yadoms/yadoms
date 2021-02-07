@@ -112,29 +112,29 @@ namespace update
                                                             const std::string& outputDirectory)
       {
          /*
-         When deploying a plugin we don't know the plugin name
+         When deploying an item package we don't know the item name
 
-         So deploy the plugin package to a random plugin directory (random is generated using uuid)
-         When deployed, find the package.json and get the plugin name
-         Rename the plugin directory to the good plugin name
+         So deploy the package to a random plugin directory (random is generated using uuid)
+         When deployed, find the package.json and get the item name
+         Rename the item directory to the good item name
          */
 
-         //determine a random folder name (the folder name is the plugin name; but it it not known here)
-         boost::filesystem::path tempPluginFolder(outputDirectory);
-         tempPluginFolder.append(shared::tools::CRandom::generateUUID());
+         //determine a random folder name (the folder name is the item name; but it it not known here)
+         boost::filesystem::path tempItemFolder(outputDirectory);
+         tempItemFolder.append(shared::tools::CRandom::generateUUID());
 
          try
          {
-            //extract to random pluginName location
-            YADOMS_LOG(debug) << "Unzip " << downloadedPackage.string() << " to " << tempPluginFolder.string() <<
+            //extract to random itemName location
+            YADOMS_LOG(debug) << "Unzip " << downloadedPackage.string() << " to " << tempItemFolder.string() <<
                "...";
             shared::compression::CExtract unZipper;
-            unZipper.to(downloadedPackage, tempPluginFolder);
+            unZipper.to(downloadedPackage, tempItemFolder);
 
             try
             {
-               //read package.json file and get the plugin name
-               Poco::Path packageJsonPath(tempPluginFolder.string());
+               //read package.json file and get the item name
+               Poco::Path packageJsonPath(tempItemFolder.string());
                packageJsonPath.append("package.json");
 
                YADOMS_LOG(debug) << "Read " << packageJsonPath.toString() << "...";
@@ -144,29 +144,22 @@ namespace update
                packageJson.deserializeFromFile(packageJsonPathString);
 
                //retrieve the plugin name
-               const auto pluginName = packageJson.get<std::string>("type");
+               const auto itemName = packageJson.get<std::string>("type");
 
 
                try
                {
-                  boost::filesystem::path realPluginFolder(outputDirectory);
-                  realPluginFolder.append(pluginName);
+                  boost::filesystem::path realItemFolder(outputDirectory);
+                  realItemFolder.append(itemName);
 
-                  //if plugin directory already exists; copy files; else just rename
-                  if (tools::CFileSystem::exists(realPluginFolder.string()))
-                  {
-                     //replace all files
-                     tools::CFileSystem::copyDirectoryContentTo(tempPluginFolder, realPluginFolder);
+                  //if item directory already exists, remove it
+                  if (tools::CFileSystem::exists(realItemFolder.string()))
+                     tools::CFileSystem::remove(realItemFolder.string(), true);
 
-                     //delete folder tempPluginFolder
-                     tools::CFileSystem::remove(tempPluginFolder, true);
-                  }
-                  else
-                  {
-                     //rename random plugin folder to good plugin name
-                     tools::CFileSystem::rename(tempPluginFolder, realPluginFolder);
-                  }
-                  return realPluginFolder;
+                  //rename random item folder to good item name
+                  tools::CFileSystem::rename(tempItemFolder, realItemFolder);
+
+                  return realItemFolder;
                }
                catch (Poco::FileException& fileException)
                {
@@ -175,24 +168,24 @@ namespace update
                }
                catch (std::exception& ex)
                {
-                  //delete folder tempPluginFolder
+                  //delete folder tempItemFolder
                   YADOMS_LOG(error) << "Operation fail (std::exception):" << ex.what();
-                  tools::CFileSystem::remove(tempPluginFolder, true);
+                  tools::CFileSystem::remove(tempItemFolder, true);
                   throw;
                }
             }
             catch (std::exception& ex)
             {
-               //delete folder tempPluginFolder
+               //delete folder tempItemFolder
                YADOMS_LOG(error) << "Operation fail (read json):" << ex.what();
-               tools::CFileSystem::remove(tempPluginFolder, true);
+               tools::CFileSystem::remove(tempItemFolder, true);
                throw;
             }
          }
          catch (shared::exception::CExtract& ex)
          {
             YADOMS_LOG(error) << "Cannot extract package :" << ex.what();
-            tools::CFileSystem::remove(tempPluginFolder, true);
+            tools::CFileSystem::remove(tempItemFolder, true);
             throw;
          }
       }

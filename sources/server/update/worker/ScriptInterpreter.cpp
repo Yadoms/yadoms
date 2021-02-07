@@ -34,7 +34,7 @@ namespace update
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
             downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback,
-                                                                         i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
+                                                                i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
             /////////////////////////////////////////////
@@ -49,9 +49,9 @@ namespace update
 
                // Change executable file permission to authorize execution
                const automation::interpreter::CInformation scriptInterpreterInformation(scriptInterpreterPath);
-               boost::filesystem::permissions(scriptInterpreterInformation.getPath() / shared::CExecutable::ToFileName(scriptInterpreterInformation.getType()),
-                                              boost::filesystem::perms::add_perms
-                                              | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
+               permissions(scriptInterpreterInformation.getPath() / shared::CExecutable::ToFileName(scriptInterpreterInformation.getType()),
+                           boost::filesystem::perms::add_perms
+                           | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
 
                // Refresh scriptInterpreter list
                YADOMS_LOG(information) << "Refresh scriptInterpreter list";
@@ -62,7 +62,7 @@ namespace update
 
                YADOMS_LOG(information) << "ScriptInterpreter installed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, std::string(),
-                  shared::CDataContainer::make());
+                                shared::CDataContainer::make());
             }
             catch (std::exception& ex)
             {
@@ -109,7 +109,7 @@ namespace update
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
             downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback,
-                                                                         i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
+                                                                i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
             /////////////////////////////////////////////
@@ -191,13 +191,10 @@ namespace update
             //1. stop any instance
             /////////////////////////////////////////////
 
-            //TOFIX must stop the interpreter itself and wait for stopped
             //stop all rules using this scriptInterpreter
             auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
             if (automationRuleManager)
-            {
                automationRuleManager->deleteAllRulesMatchingInterpreter(scriptInterpreterName);
-            }
 
             /////////////////////////////////////////////
             //2. remove scriptInterpreter folder

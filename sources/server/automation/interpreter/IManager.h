@@ -18,9 +18,10 @@ namespace automation
 
          //-----------------------------------------------------
          ///\brief               Get all loaded interpreters (available or not)
+         ///\param loadIfNecessary Load interpreters when true
          ///\return              The list of loaded interpreters
          //-----------------------------------------------------
-         virtual std::vector<std::string> getLoadedInterpreters() = 0;
+         virtual std::vector<std::string> getLoadedInterpreters(bool loadIfNecessary = true) = 0;
 
          //-----------------------------------------------------
          ///\brief               Get loaded interpreters with associated information
@@ -43,7 +44,7 @@ namespace automation
          virtual boost::shared_ptr<IInstance> getAvailableInterpreterInstance(const std::string& interpreterType) = 0;
 
          //-----------------------------------------------------
-         ///\brief               Get the loaded interpreter c
+         ///\brief               Get the loaded interpreter instance
          ///\param[in] interpreterType The interpreter type
          ///\return              The corresponding interpreter instance
          ///\throw std::runtime_error No corresponding interpreter was found

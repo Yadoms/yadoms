@@ -18,13 +18,13 @@ namespace automation
                               boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                               boost::shared_ptr<shared::ILocation> location,
                               boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
-      : m_interpreterManager(interpreterManager),
-        m_pluginGateway(pluginGateway),
+      : m_interpreterManager(std::move(interpreterManager)),
+        m_pluginGateway(std::move(pluginGateway)),
         m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
         m_dbDeviceRequester(dataProvider->getDeviceRequester()),
-        m_keywordAccessLayer(keywordAccessLayer),
+        m_keywordAccessLayer(std::move(keywordAccessLayer)),
         m_dbRecipientRequester(dataProvider->getRecipientRequester()),
-        m_eventLogger(eventLogger),
+        m_eventLogger(std::move(eventLogger)),
         m_generalInfo(boost::make_shared<script::CGeneralInfo>(location, timezoneProvider)),
         m_ruleRequester(dataProvider->getRuleRequester()),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
@@ -60,7 +60,7 @@ namespace automation
       boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
 
       if (!startRules(m_ruleRequester->getRules()))
-      YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
+         YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
    }
 
    bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::entities::CRule>>& rules)
@@ -379,7 +379,7 @@ namespace automation
       }
    }
 
-   int CRuleManager::duplicateRule(int idToDuplicate, const std::string & newName)
+   int CRuleManager::duplicateRule(int idToDuplicate, const std::string& newName)
    {
       try
       {
@@ -409,7 +409,7 @@ namespace automation
    {
       // Start all rules associated with this interpreter (and start-able)
       if (!startRules(m_ruleRequester->getRules(interpreterName)))
-      YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
+         YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
    }
 
    void CRuleManager::stopAllRulesMatchingInterpreter(const std::string& interpreterName)
@@ -424,6 +424,9 @@ namespace automation
 
       // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
       m_interpreterManager->unloadInterpreter(interpreterName);
+
+      if (!waitForInterpreterUnloaded(interpreterName))
+         YADOMS_LOG(warning) << "Fail to unload interpreter " << interpreterName;
    }
 
    void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string& interpreterName)
@@ -434,6 +437,28 @@ namespace automation
 
       // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
       m_interpreterManager->unloadInterpreter(interpreterName);
+
+      if (!waitForInterpreterUnloaded(interpreterName))
+         YADOMS_LOG(warning) << "Fail to unload interpreter " << interpreterName;
+   }
+
+   bool CRuleManager::waitForInterpreterUnloaded(const std::string& interpreterName) const
+   {
+      auto nbTries = 10;
+      while (true)
+      {
+         const auto interpreters = m_interpreterManager->getLoadedInterpreters(false);
+         if (std::find(interpreters.begin(), interpreters.end(), interpreterName) == interpreters.end())
+            return true;
+
+         if (--nbTries == 0)
+         {
+            YADOMS_LOG(error) << "Fail to do action, definitively";
+            return false;
+         }
+         YADOMS_LOG(warning) << "Fail to do action, retry...";
+         boost::this_thread::sleep_for(boost::chrono::seconds(1));
+      }
    }
 
    void CRuleManager::recordRuleStarted(int ruleId) const
@@ -450,7 +475,7 @@ namespace automation
                                         const std::string& error) const
    {
       if (!error.empty())
-      YADOMS_LOG(error) << error;
+         YADOMS_LOG(error) << error;
 
       auto ruleData(boost::make_shared<database::entities::CRule>());
       ruleData->Id = ruleId;
@@ -466,5 +491,3 @@ namespace automation
                                  error);
    }
 } // namespace automation	
-
-

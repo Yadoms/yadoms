@@ -104,6 +104,8 @@ namespace automation
       void recordRuleStopped(int ruleId,
                              const std::string& error = std::string()) const;
 
+      bool waitForInterpreterUnloaded(const std::string& interpreterName) const;
+
    private:
       boost::shared_ptr<interpreter::IManager> m_interpreterManager;
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;

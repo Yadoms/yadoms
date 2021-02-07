@@ -50,7 +50,7 @@ namespace tools
             else
             {
                // Found file: Copy
-               copy_file(current, destination / current.filename());
+               copy_file(current, destination / current.filename(), boost::filesystem::copy_option::overwrite_if_exists);
             }
          }
          catch (boost::filesystem::filesystem_error const& e)
@@ -108,7 +108,7 @@ namespace tools
             else
             {
                // Found file: Copy
-               copy_file(current, destination / current.filename());
+               copy_file(current, destination / current.filename(), boost::filesystem::copy_option::overwrite_if_exists);
             }
          }
          catch (boost::filesystem::filesystem_error const& e)

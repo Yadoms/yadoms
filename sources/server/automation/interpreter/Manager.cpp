@@ -139,14 +139,15 @@ namespace automation
          return interpreters;
       }
 
-      std::vector<std::string> CManager::getLoadedInterpreters()
+      std::vector<std::string> CManager::getLoadedInterpreters(bool loadIfNecessary)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
          std::vector<std::string> interpreters;
 
          // Update loaded interpreters list if necessary
-         loadInterpreters();
+         if (loadIfNecessary)
+            loadInterpreters();
 
          // Now find corresponding interpreter
          std::transform(m_loadedInterpreters.begin(), m_loadedInterpreters.end(), std::back_inserter(interpreters),

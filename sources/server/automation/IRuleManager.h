@@ -9,11 +9,7 @@ namespace automation
    class IRuleManager
    {
    public:
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~IRuleManager()
-      = default;
+      virtual ~IRuleManager() = default;
 
       //-----------------------------------------------------
       ///\brief               Start the Rule manager (start all rules)
