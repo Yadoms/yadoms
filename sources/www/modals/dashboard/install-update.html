@@ -611,7 +611,7 @@
 
         s += "<td><img class=\"img-thumbnail dashboard-table-icon\"></td>";
 
-        s += "<td><span id=\"description\">" + $.t(i18nBasePath + ":description") + "</span></td>";
+        s += "<td><span id=\"description\">" + ConfigurationHelper.makdownIt($.t(i18nBasePath + ":description")) + "</span></td>";
 
         s += "<td><em class=\"local-version\"></em></td>";
 
