@@ -4,6 +4,7 @@
 * Fix #720 : Add execute rights on installed rule interpreter
 * Markdown description field of update page (handle links)
 * Fix removing interpreter
+* Add blue tag on new items in update page
 
 
 ### 2.4.0
