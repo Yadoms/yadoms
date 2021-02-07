@@ -18,6 +18,12 @@
 * Update LibCurl (7.72.0)
 
 
+### 2.4.1
+
+#### Yadoms
+* Fix #720 : Add execute rights on installed rule interpreter
+
+
 ### 2.4.0
 
 #### Yadoms
