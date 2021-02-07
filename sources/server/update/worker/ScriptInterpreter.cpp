@@ -7,8 +7,11 @@
 #include "WorkerTools.h"
 #include <Poco/File.h>
 
+
+#include "automation/interpreter/Information.h"
 #include "automation/IRuleManager.h"
 #include "i18n/ClientStrings.h"
+#include "shared/Executable.h"
 
 namespace update
 {
@@ -42,8 +45,14 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.toString();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, std::string(), callbackData);
-               const auto pluginPath = CWorkerTools::deployPackage(downloadedPackage, scriptInterpretersPath.string());
+               const auto scriptInterpreterPath = CWorkerTools::deployPackage(downloadedPackage, scriptInterpretersPath.string());
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
+
+               // Change executable file permission to authorize execution
+               const automation::interpreter::CInformation scriptInterpreterInformation(scriptInterpreterPath.toString());
+               boost::filesystem::permissions(scriptInterpreterInformation.getPath() / shared::CExecutable::ToFileName(scriptInterpreterInformation.getType()),
+                                              boost::filesystem::perms::add_perms
+                                              | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
 
                // Refresh scriptInterpreter list
                YADOMS_LOG(information) << "Refresh scriptInterpreter list";
