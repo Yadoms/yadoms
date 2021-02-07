@@ -44,11 +44,11 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, std::string(), callbackData);
-               const auto scriptInterpreterPath = CWorkerTools::deployPackage(downloadedPackage, scriptInterpretersPath.string());
+               const auto scriptInterpreterPath = CWorkerHelpers::deployPackage(downloadedPackage, scriptInterpretersPath.string());
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
 
                // Change executable file permission to authorize execution
-               const automation::interpreter::CInformation scriptInterpreterInformation(scriptInterpreterPath.toString());
+               const automation::interpreter::CInformation scriptInterpreterInformation(scriptInterpreterPath);
                boost::filesystem::permissions(scriptInterpreterInformation.getPath() / shared::CExecutable::ToFileName(scriptInterpreterInformation.getType()),
                                               boost::filesystem::perms::add_perms
                                               | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
