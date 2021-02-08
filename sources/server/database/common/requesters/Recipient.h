@@ -16,7 +16,7 @@ namespace database
          {
          public:
             explicit CRecipient(boost::shared_ptr<IDatabaseRequester> databaseRequester);
-            virtual ~CRecipient();
+            virtual ~CRecipient() = default;
 
             // IRecipientRequester implementation
             boost::shared_ptr<entities::CRecipient> addRecipient(const entities::CRecipient& recipient) override;

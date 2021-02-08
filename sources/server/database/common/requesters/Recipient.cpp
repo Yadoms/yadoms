@@ -17,10 +17,6 @@ namespace database
          {
          }
 
-         CRecipient::~CRecipient()
-         {
-         }
-
          // IRecipientRequester implementation
          boost::shared_ptr<entities::CRecipient> CRecipient::addRecipient(const entities::CRecipient& recipient)
          {
