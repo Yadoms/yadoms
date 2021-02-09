@@ -1,4 +1,4 @@
-### 2.4.1-beta.1
+### 2.4.1
 
 #### Yadoms
 * Fix old (python 2.7 based) Blockly rule edition
