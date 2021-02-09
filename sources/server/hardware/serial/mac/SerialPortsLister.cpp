@@ -65,8 +65,8 @@ namespace hardware
 					{
 						auto port = boost::make_shared<database::entities::CSerialPort>();
 					   port->AdapterKind = database::entities::ESerialPortAdapterKind::kUnknown;
-					   port->AdapterDescription = std::string(deviceFriendly);
-					   port->LastKnownConnectionPath = std::string(deviceFilePath);
+					   port->AdapterParameters = std::string(deviceFriendly);
+					   port->LastKnownSerialPortPath = std::string(deviceFilePath);
 						serialPorts.emplace_back(port);
 				   }
 

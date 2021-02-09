@@ -25,8 +25,8 @@ namespace hardware
 
                   auto port = boost::make_shared<database::entities::CSerialPort>();
                   port->AdapterKind = database::entities::ESerialPortAdapterKind::kUnknown;
-                  port->AdapterDescription = friendlyName;
-                  port->LastKnownConnectionPath = portName;
+                  port->AdapterParameters = friendlyName;
+                  port->LastKnownSerialPortPath = portName;
 						serialPorts.emplace_back(port);
                }
             }

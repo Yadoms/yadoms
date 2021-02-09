@@ -223,8 +223,8 @@ namespace database
          ((Id)(int)(0)("id"))
          ((AdapterKind)(database::entities::ESerialPortAdapterKind)(database::entities::ESerialPortAdapterKind::
             kPhysical)("adapterKind"))
-         ((AdapterDescription)(std::string)("")("adapterDescription"))
-         ((LastKnownConnectionPath)(std::string)("")("lastKnownConnectionPath"))
+         ((AdapterParameters)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::EmptyContainerSharedPtr)("adapterParameters"))
+         ((LastKnownSerialPortPath)(std::string)("")("lastKnownSerialPortPath"))
       )
    } //namespace entities
 } //namespace database

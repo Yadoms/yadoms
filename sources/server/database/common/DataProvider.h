@@ -42,67 +42,19 @@ namespace database
          void unload() override;
          void stopMaintenanceTasks() override;
          boost::shared_ptr<ITransactionalProvider> getTransactionalEngine() override;
-
-         boost::shared_ptr<IPluginRequester> getPluginRequester() override
-         {
-            return m_pluginRequester;
-         }
-
-         boost::shared_ptr<IConfigurationRequester> getConfigurationRequester() override
-         {
-            return m_configurationRequester;
-         }
-
-         boost::shared_ptr<IDeviceRequester> getDeviceRequester() override
-         {
-            return m_deviceRequester;
-         }
-
-         boost::shared_ptr<IKeywordRequester> getKeywordRequester() override
-         {
-            return m_keywordRequester;
-         }
-
-         boost::shared_ptr<IPageRequester> getPageRequester() override
-         {
-            return m_pageRequester;
-         }
-
-         boost::shared_ptr<IWidgetRequester> getWidgetRequester() override
-         {
-            return m_widgetRequester;
-         }
-
-         boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() override
-         {
-            return m_pluginEventLoggerRequester;
-         }
-
-         boost::shared_ptr<IEventLoggerRequester> getEventLoggerRequester() override
-         {
-            return m_eventLoggerRequester;
-         }
-
-         boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester() override
-         {
-            return m_acquisitionRequester;
-         }
-
-         boost::shared_ptr<IRuleRequester> getRuleRequester() override
-         {
-            return m_ruleRequester;
-         }
-
-         boost::shared_ptr<IRecipientRequester> getRecipientRequester() override
-         {
-            return m_recipientRequester;
-         }
-
-         boost::shared_ptr<IDatabaseRequester> getDatabaseRequester() override
-         {
-            return m_databaseRequester;
-         }
-
+         boost::shared_ptr<IPluginRequester> getPluginRequester() override;
+         boost::shared_ptr<IConfigurationRequester> getConfigurationRequester() override;
+         boost::shared_ptr<IDeviceRequester> getDeviceRequester() override;
+         boost::shared_ptr<IKeywordRequester> getKeywordRequester() override;
+         boost::shared_ptr<IPageRequester> getPageRequester() override;
+         boost::shared_ptr<IWidgetRequester> getWidgetRequester() override;
+         boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() override;
+         boost::shared_ptr<IEventLoggerRequester> getEventLoggerRequester() override;
+         boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester() override;
+         boost::shared_ptr<IRuleRequester> getRuleRequester() override;
+         boost::shared_ptr<IRecipientRequester> getRecipientRequester() override;
+         boost::shared_ptr<IDatabaseRequester> getDatabaseRequester() override;
+         boost::shared_ptr<ISerialPortRequester> getSerialPortRequester() override;
          // [END] IDatabaseProvider implementation
 
          shared::versioning::CSemVer getVersion() const;
@@ -187,6 +139,11 @@ namespace database
          /// \Brief		database requester
          //--------------------------------------------------------------
          boost::shared_ptr<IDatabaseRequester> m_databaseRequester;
+
+         //--------------------------------------------------------------
+         /// \Brief		serial ports requester
+         //--------------------------------------------------------------
+         boost::shared_ptr<ISerialPortRequester> m_serialPortRequester;
 
          //--------------------------------------------------------------
          /// \Brief		The maintenance timer

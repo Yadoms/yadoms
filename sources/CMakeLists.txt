@@ -447,6 +447,7 @@ set(YADOMS_SRC
    server/database/IPluginEventLoggerRequester.h
    server/database/IPluginRequester.h
    server/database/IRecipientRequester.h
+   server/database/ISerialPortRequester.h
    server/database/ITableCreationScriptProvider.h
    server/database/ITransactionalProvider.h
    server/database/IWidgetRequester.h
@@ -460,9 +461,12 @@ set(YADOMS_SRC
 
    server/hardware/serial/Factory.cpp
    server/hardware/serial/Factory.h
+   server/hardware/serial/ISerialPort.h
    server/hardware/serial/ISerialPortsLister.h
    server/hardware/serial/ISerialPortsManager.h
    server/hardware/serial/PlatformSpecificFactory.h
+   server/hardware/serial/SerialPort.cpp
+   server/hardware/serial/SerialPort.h
    server/hardware/serial/SerialPortsManager.cpp
    server/hardware/serial/SerialPortsManager.h
   
@@ -881,6 +885,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/database/common/requesters/Page.cpp      
    server/database/common/requesters/Recipient.h
    server/database/common/requesters/Recipient.cpp      
+   server/database/common/requesters/SerialPort.h
+   server/database/common/requesters/SerialPort.cpp   
    server/database/common/requesters/Widget.h
    server/database/common/requesters/Widget.cpp      
    server/database/common/requesters/PluginEventLogger.h

@@ -4,24 +4,28 @@
 #include <SetupAPI.h>
 #include "WinapiDevice.h"
 #include <regex>
+#include <utility>
 
 namespace hardware
 {
    namespace serial
    {
       CSerialPortsLister::CSerialPortsLister(boost::shared_ptr<usb::IDevicesLister> usbDeviceListers)
-         : m_usbDeviceListers(usbDeviceListers)
+         : m_usbDeviceListers(std::move(usbDeviceListers))
       {
       }
 
-      std::vector<boost::shared_ptr<database::entities::CSerialPort>> CSerialPortsLister::listSerialPorts()
+      std::vector<boost::shared_ptr<ISerialPort>> CSerialPortsLister::listSerialPorts()
       {
          auto serialPorts = listAllSerialPorts();
          updatePortsKind(serialPorts);
-         return serialPorts;
+         std::vector<boost::shared_ptr<ISerialPort>> iSerialPorts;
+         std::copy(serialPorts.begin(), serialPorts.end(), std::back_inserter(iSerialPorts));
+         return iSerialPorts;
+         //TODO : LastKnownSerialPortPath contient le chemin USB en cas d'adaptateur USB. Le port série est perdu.
       }
 
-      std::vector<boost::shared_ptr<database::entities::CSerialPort>> CSerialPortsLister::listAllSerialPorts() const
+      std::vector<boost::shared_ptr<CSerialPort>> CSerialPortsLister::listAllSerialPorts() const
       {
          HKEY serialCommKey;
          if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
@@ -31,7 +35,7 @@ namespace hardware
                           &serialCommKey) != ERROR_SUCCESS)
          {
             // Unable to access registry ==> HARDWARE\\DEVICEMAP\\SERIALCOMM key does not exist ==> no serial port on this machine
-            return std::vector<boost::shared_ptr<database::entities::CSerialPort>>();
+            return std::vector<boost::shared_ptr<CSerialPort>>();
          }
 
          DWORD valueIndex = 0;
@@ -42,7 +46,7 @@ namespace hardware
          static const DWORD MountPointMaxLength = 1000; // Should be enough
          BYTE mountPoint[MountPointMaxLength];
          auto mountPointLength = MountPointMaxLength;
-         std::vector<boost::shared_ptr<database::entities::CSerialPort>> serialPorts;
+         std::vector<boost::shared_ptr<CSerialPort>> serialPorts;
          while (RegEnumValue(serialCommKey,
                              valueIndex,
                              serialPortName,
@@ -64,10 +68,9 @@ namespace hardware
                const auto friendlyName(
                   (boost::format("%1% (%2%)") % reinterpret_cast<char*>(mountPoint) % serialPortName).str());
 
-               auto port = boost::make_shared<database::entities::CSerialPort>();
-               port->AdapterKind = database::entities::ESerialPortAdapterKind::kUnknown;
-               port->AdapterDescription = friendlyName;
-               port->LastKnownConnectionPath = portName;
+               auto port = boost::make_shared<CSerialPort>(portName,
+                                                           friendlyName,
+                                                           database::entities::ESerialPortAdapterKind::kUnknown);
                serialPorts.emplace_back(port);
             }
 
@@ -81,14 +84,13 @@ namespace hardware
          return serialPorts;
       }
 
-      void CSerialPortsLister::updatePortsKind(
-         std::vector<boost::shared_ptr<database::entities::CSerialPort>>& detectedSerialPorts) const
+      void CSerialPortsLister::updatePortsKind(std::vector<boost::shared_ptr<CSerialPort>>& detectedSerialPorts) const
       {
          const auto usbDevices = m_usbDeviceListers->listUsbDevices();
 
          for (auto& detectedSerialPort : detectedSerialPorts)
          {
-            const auto serialPortName = getSerialPortName(detectedSerialPort->LastKnownConnectionPath());
+            const auto serialPortName = getSerialPortName(detectedSerialPort->lastKnownSerialPortPath());
             const auto correspondingUsbToSerialAdapter = std::find_if(
                usbDevices.begin(),
                usbDevices.end(),
@@ -101,14 +103,15 @@ namespace hardware
             if (correspondingUsbToSerialAdapter != usbDevices.end())
             {
                // USB to serial adapter
-               detectedSerialPort->AdapterKind = database::entities::ESerialPortAdapterKind::kUsbAdapter;
-               detectedSerialPort->LastKnownConnectionPath = (*correspondingUsbToSerialAdapter)->
-                  nativeConnectionString();
+               detectedSerialPort->setAdapterKind(database::entities::ESerialPortAdapterKind::kUsbAdapter);
+               // Override description as USB device provides a better one
+               detectedSerialPort->setDescription((*correspondingUsbToSerialAdapter)->friendlyName());
+               detectedSerialPort->setAdapterParameters((*correspondingUsbToSerialAdapter)->allParameters());
             }
             else
             {
                // Physical port
-               detectedSerialPort->AdapterKind = database::entities::ESerialPortAdapterKind::kPhysical;
+               detectedSerialPort->setAdapterKind(database::entities::ESerialPortAdapterKind::kPhysical);
             }
          }
       }

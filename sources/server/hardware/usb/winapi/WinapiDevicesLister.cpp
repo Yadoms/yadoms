@@ -191,14 +191,15 @@ namespace hardware
 
             try
             {
-               auto windowsPropertyMap = boost::make_shared<std::map<unsigned int, std::string>>();
+               auto windowsPropertyMap = shared::CDataContainer::make();
                for (unsigned int spdrp = 0; spdrp < SPDRP_MAXIMUM_PROPERTY; ++spdrp)
                {
                   try
                   {
-                     (*windowsPropertyMap)[spdrp] = getDeviceProperty(deviceInfo,
-                                                                      &deviceInfoData,
-                                                                      spdrp);
+                     windowsPropertyMap->set(std::to_string(spdrp),
+                                             getDeviceProperty(deviceInfo,
+                                                               &deviceInfoData,
+                                                               spdrp));
                   }
                   catch (...)
                   {

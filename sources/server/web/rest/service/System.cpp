@@ -80,22 +80,19 @@ namespace web
          {
             try
             {
-               const auto serialPorts = m_serialPortsManager->listSerialPorts();
+               const auto serialPorts = m_serialPortsManager->getSerialPorts();
 
                for (const auto& port : serialPorts)
                {
                   YADOMS_LOG(debug) << "Found serial port : "
-                     << " connectionPath=\"" << std::string(port->LastKnownConnectionPath)
-                     << "\", description=\"" << std::string(port->AdapterDescription)
-                     << "\", type=" << std::string(port->AdapterKind());
+                     << " serialPortPath=\"" << port->lastKnownSerialPortPath()
+                     << "\", description=\"" << port->description()
+                     << "\", type=" << port->adapterKind().toString();
                }
 
                shared::CDataContainer result;
                for (const auto& serialPort : serialPorts)
-               {
-                  result.set(serialPort->LastKnownConnectionPath, serialPort->AdapterDescription, 0x00);
-                  //in case of key contains a dot, just ensure the full key is taken into account
-               }
+                  result.set(std::to_string(serialPort->id()), serialPort->description());
 
                return CResult::GenerateSuccess(result);
             }
@@ -122,7 +119,7 @@ namespace web
                   YADOMS_LOG(debug) << "Found USB device : "
                      << "vid=" << device->vendorId()
                      << ", pid=" << device->productId()
-                     << ", name=" << device->yadomsFriendlyName()
+                     << ", name=" << device->friendlyName()
                      << ", connectionId=" << device->nativeConnectionString()
                      << ", serial=" << device->serialNumber();
                }
@@ -132,7 +129,7 @@ namespace web
                {
                   shared::CDataContainer result;
                   for (const auto& device : existingDevices)
-                     result.set(device->nativeConnectionString(), device->yadomsFriendlyName(), 0x00);
+                     result.set(device->nativeConnectionString(), device->friendlyName(), 0x00);
                   //in case of key contains a dot, just ensure the full key is taken into account
                   return CResult::GenerateSuccess(result);
                }
@@ -155,7 +152,7 @@ namespace web
                         && existingDevice->productId() == requestedDevice->get<int>("productId"))
                      {
                         //in case of key contains a dot, just ensure the full key is taken into account
-                        result.set(existingDevice->nativeConnectionString(), existingDevice->yadomsFriendlyName(),
+                        result.set(existingDevice->nativeConnectionString(), existingDevice->friendlyName(),
                                    0x00);
                      }
                   }

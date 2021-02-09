@@ -192,8 +192,8 @@ namespace database
                (                                                     \
                   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
                   adapterKind TEXT NOT NULL default 'Physical',      \
-                  adapterDescription TEXT,                           \
-                  LastKnownConnectionPath TEXT NOT NULL              \
+                  adapterParameters TEXT,                            \
+                  lastKnownSerialPortPath TEXT NOT NULL              \
                )";
       }
 

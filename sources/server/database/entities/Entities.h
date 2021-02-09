@@ -200,8 +200,8 @@ namespace database
       DECLARE_ENTITY_CLASS_HEADER(SerialPort,
                                   ((Id)(int))
                                   ((AdapterKind)(database::entities::ESerialPortAdapterKind))
-                                  ((AdapterDescription)(std::string))
-                                  ((LastKnownConnectionPath)(std::string))
+                                  ((AdapterParameters)(boost::shared_ptr<shared::CDataContainer>))
+                                  ((LastKnownSerialPortPath)(std::string))
       )
    } //namespace entities
 } //namespace database

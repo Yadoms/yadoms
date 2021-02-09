@@ -133,7 +133,8 @@ void CSupervisor::run()
       const auto allowExternalAccess = startupOptions->getWebServerAllowExternalAccess();
 
       auto usbDeviceLister = hardware::usb::CFactory::createDeviceLister();
-      auto serialPortsManager = hardware::serial::CFactory::createSerialPortsManager(usbDeviceLister);
+      auto serialPortsManager = hardware::serial::CFactory::createSerialPortsManager(usbDeviceLister,
+                                                                                     pDataProvider->getSerialPortRequester());
 
       auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp, webServerUseSSL, webServerPort,
                                                                securedWebServerPort, webServerPath,

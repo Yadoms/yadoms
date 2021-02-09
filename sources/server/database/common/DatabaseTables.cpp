@@ -139,8 +139,8 @@ namespace database
       DECLARE_TABLE_COLUMN_NAMES(SerialPort, "SerialPort",
                                  ((Id)("id"))
                                  ((AdapterKind)("adapterKind"))
-                                 ((AdapterDescription)("adapterDescription"))
-                                 ((LastKnownConnectionPath)("lastKnownConnectionPath"))
+                                 ((AdapterParameters)("adapterParameters"))
+                                 ((LastKnownSerialPortPath)("lastKnownSerialPortPath"))
       )
    } //namespace common
 } //namespace database 

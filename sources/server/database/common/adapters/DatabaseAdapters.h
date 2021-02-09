@@ -37,6 +37,8 @@ namespace database
          DECLARE_ADAPTER_HEADER(Recipient)
 
          DECLARE_ADAPTER_HEADER(RecipientField)
+
+         DECLARE_ADAPTER_HEADER(SerialPort)
       } //namespace adapters
    } //namespace common
 } //namespace database 

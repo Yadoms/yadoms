@@ -172,8 +172,8 @@ namespace database
                (                                                     \
                   id SERIAL NOT NULL PRIMARY KEY,                    \
                   adapterKind TEXT NOT NULL DEFAULT 'Physical',      \
-                  adapterDescription TEXT,                           \
-                  LastKnownConnectionPath TEXT NOT NULL              \
+                  adapterParameters TEXT,                            \
+                  lastKnownSerialPortPath TEXT NOT NULL              \
                )";
       }
 

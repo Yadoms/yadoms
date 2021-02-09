@@ -1,20 +1,23 @@
 #include "stdafx.h"
 #include "WinapiDevice.h"
+#include <SetupAPI.h>
+
+#include <utility>
 
 namespace hardware
 {
    namespace usb
    {
-      CWinapiDevice::CWinapiDevice(const std::string& devicePath,
+      CWinapiDevice::CWinapiDevice(std::string devicePath,
                                    int vid,
                                    int pid,
-                                   const std::string& serialNumber,
-                                   boost::shared_ptr<const std::map<unsigned int, std::string>> windowsPropertyMap)
-         : m_devicePath(devicePath),
+                                   std::string serialNumber,
+                                   boost::shared_ptr<const shared::CDataContainer> windowsProperties)
+         : m_devicePath(std::move(devicePath)),
            m_vid(vid),
            m_pid(pid),
-           m_serialNumber(serialNumber),
-           m_windowsPropertyMap(windowsPropertyMap)
+           m_serialNumber(std::move(serialNumber)),
+           m_windowsProperties(std::move(windowsProperties))
       {
       }
 
@@ -23,9 +26,9 @@ namespace hardware
          return m_devicePath;
       }
 
-      std::string CWinapiDevice::yadomsFriendlyName() const
+      std::string CWinapiDevice::friendlyName() const
       {
-         return m_windowsPropertyMap->at(SPDRP_FRIENDLYNAME);
+         return m_windowsProperties->getWithDefault<std::string>(std::to_string(SPDRP_FRIENDLYNAME), std::string());
       }
 
       int CWinapiDevice::vendorId() const
@@ -43,14 +46,19 @@ namespace hardware
          return m_serialNumber;
       }
 
+      boost::shared_ptr<const shared::CDataContainer> CWinapiDevice::allParameters() const
+      {
+         return m_windowsProperties;
+      }
+
       std::string CWinapiDevice::getWindowsProperty(unsigned int spdrpPropertyId,
                                                     bool throwIfNotFound) const
       {
          try
          {
-            return m_windowsPropertyMap->at(spdrpPropertyId);
+            return m_windowsProperties->get<std::string>(std::to_string(spdrpPropertyId));
          }
-         catch (const std::out_of_range&)
+         catch (const shared::exception::CInvalidParameter&)
          {
             if (throwIfNotFound)
                throw;

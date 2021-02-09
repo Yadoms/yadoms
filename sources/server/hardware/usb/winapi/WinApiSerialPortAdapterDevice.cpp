@@ -8,7 +8,7 @@ namespace hardware
       CWinApiSerialPortAdapterDevice::CWinApiSerialPortAdapterDevice(boost::shared_ptr<const IDevice> usbDevice)
       {
          if (!isSerialPortAdapter(usbDevice))
-            throw std::runtime_error("CWinApiSerialPortAdapterDevice : provided usb device \"" + usbDevice->yadomsFriendlyName() + "\" is not a serial port adapter");
+            throw std::runtime_error("CWinApiSerialPortAdapterDevice : provided usb device \"" + usbDevice->friendlyName() + "\" is not a serial port adapter");
       }
 
       std::string CWinApiSerialPortAdapterDevice::connectionPath() const

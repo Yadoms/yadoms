@@ -135,8 +135,8 @@ namespace database
       DECLARE_TABLE(SerialPort,
                     (Id)
                     (AdapterKind)
-                    (AdapterDescription)
-                    (LastKnownConnectionPath)
+                    (AdapterParameters)
+                    (LastKnownSerialPortPath)
       )
    } //namespace common
 } //namespace database 

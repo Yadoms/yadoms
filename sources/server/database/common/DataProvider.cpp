@@ -9,6 +9,7 @@
 #include <Poco/DateTime.h>
 #include <shared/Log.h>
 #include "database/DatabaseException.hpp"
+#include "requesters/SerialPort.h"
 
 namespace database
 {
@@ -156,7 +157,7 @@ namespace database
          Poco::DateTime now;
          Poco::DateTime firstOccurence(now.year(), now.month(), now.day(), now.hour(), 1);
          Poco::Timespan oneHourOffset(0, 1, 0, 0, 0);
-         firstOccurence += oneHourOffset;//+1hour
+         firstOccurence += oneHourOffset; //+1hour
          Poco::Timespan timeToWaitBeforeFirstOccurrence = firstOccurence - now;
 
          YADOMS_LOG(information) << "Summary task will happens @" << firstOccurence.hour() << ":" << firstOccurence.minute();
@@ -185,7 +186,7 @@ namespace database
          Poco::DateTime now;
          Poco::DateTime firstPurgeOccurence(now.year(), now.month(), now.day(), now.hour(), 15);
          Poco::Timespan oneDayOffset(24, 0, 0, 0, 0);
-         firstPurgeOccurence += oneDayOffset;//+1day
+         firstPurgeOccurence += oneDayOffset; //+1day
          Poco::Timespan timeToWaitBeforeFirstPurgeOccurrence = firstPurgeOccurence - now;
 
          const auto msWait = static_cast<long>(timeToWaitBeforeFirstPurgeOccurrence.totalMilliseconds());
@@ -230,6 +231,7 @@ namespace database
          m_acquisitionRequester = boost::make_shared<requesters::CAcquisition>(m_databaseRequester, m_keywordRequester);
          m_ruleRequester = boost::make_shared<requesters::CRule>(m_databaseRequester);
          m_recipientRequester = boost::make_shared<requesters::CRecipient>(m_databaseRequester);
+         m_serialPortRequester = boost::make_shared<requesters::CSerialPort>(m_databaseRequester);
       }
 
 
@@ -238,6 +240,71 @@ namespace database
          if (m_databaseRequester->transactionSupport() && !m_databaseRequester->transactionIsAlreadyCreated())
             return m_databaseRequester;
          return boost::shared_ptr<ITransactionalProvider>();
+      }
+
+      boost::shared_ptr<IPluginRequester> CDataProvider::getPluginRequester()
+      {
+         return m_pluginRequester;
+      }
+
+      boost::shared_ptr<IConfigurationRequester> CDataProvider::getConfigurationRequester()
+      {
+         return m_configurationRequester;
+      }
+
+      boost::shared_ptr<IDeviceRequester> CDataProvider::getDeviceRequester()
+      {
+         return m_deviceRequester;
+      }
+
+      boost::shared_ptr<IKeywordRequester> CDataProvider::getKeywordRequester()
+      {
+         return m_keywordRequester;
+      }
+
+      boost::shared_ptr<IPageRequester> CDataProvider::getPageRequester()
+      {
+         return m_pageRequester;
+      }
+
+      boost::shared_ptr<IWidgetRequester> CDataProvider::getWidgetRequester()
+      {
+         return m_widgetRequester;
+      }
+
+      boost::shared_ptr<IPluginEventLoggerRequester> CDataProvider::getPluginEventLoggerRequester()
+      {
+         return m_pluginEventLoggerRequester;
+      }
+
+      boost::shared_ptr<IEventLoggerRequester> CDataProvider::getEventLoggerRequester()
+      {
+         return m_eventLoggerRequester;
+      }
+
+      boost::shared_ptr<IAcquisitionRequester> CDataProvider::getAcquisitionRequester()
+      {
+         return m_acquisitionRequester;
+      }
+
+      boost::shared_ptr<IRuleRequester> CDataProvider::getRuleRequester()
+      {
+         return m_ruleRequester;
+      }
+
+      boost::shared_ptr<IRecipientRequester> CDataProvider::getRecipientRequester()
+      {
+         return m_recipientRequester;
+      }
+
+      boost::shared_ptr<IDatabaseRequester> CDataProvider::getDatabaseRequester()
+      {
+         return m_databaseRequester;
+      }
+
+      boost::shared_ptr<ISerialPortRequester> CDataProvider::getSerialPortRequester()
+      {
+         return m_serialPortRequester;
       }
    } //namespace common
 } //namespace database

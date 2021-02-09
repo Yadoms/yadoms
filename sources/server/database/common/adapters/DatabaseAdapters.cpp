@@ -13,7 +13,8 @@ namespace database
    {
       namespace adapters
       {
-         DECLARE_ADAPTER_IMPLEMENTATION(Plugin,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            Plugin,
             ((Id)(int)(0))
             ((DisplayName)(std::string)(""))
             ((Type)(std::string)(""))
@@ -22,20 +23,23 @@ namespace database
             ((Category)(database::entities::EPluginCategory)(database::entities::EPluginCategory::kUser)(std::string))
          );
 
-         DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            Configuration,
             ((Section)(std::string)(""))
             ((Value)(std::string)(""))
             ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
          );
 
-         DECLARE_ADAPTER_IMPLEMENTATION(Page,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            Page,
             ((Id)(int)(0))
             ((Name)(std::string)(""))
             ((PageOrder)(int)(0))
          );
 
 
-         DECLARE_ADAPTER_IMPLEMENTATION(Widget,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            Widget,
             ((Id)(int)(0))
             ((IdPage)(int)(0))
             ((Type)(std::string)(""))
@@ -46,7 +50,8 @@ namespace database
             ((Configuration)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
          );
 
-         DECLARE_ADAPTER_IMPLEMENTATION(PluginEventLogger,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            PluginEventLogger,
             ((Id)(int)(0))
             ((EventDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
             ((PluginName)(std::string)(""))
@@ -55,7 +60,8 @@ namespace database
             ((Message)(std::string)(""))
          );
 
-         DECLARE_ADAPTER_IMPLEMENTATION(EventLogger,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            EventLogger,
             ((Id)(int)(0))
             ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
             ((Code)(database::entities::ESystemEventCode)(database::entities::ESystemEventCode::kDefaultCode)(std::string))
@@ -64,7 +70,8 @@ namespace database
          );
 
 
-         DECLARE_ADAPTER_IMPLEMENTATION(Device,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            Device,
             ((Id)(int)(0))
             ((PluginId)(int)(0))
             ((Name)(std::string)(""))
@@ -76,7 +83,8 @@ namespace database
             ((Blacklist)(bool)(false))
          );
 
-         DECLARE_ADAPTER_IMPLEMENTATION(Keyword,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            Keyword,
             ((Id)(int)(0))
             ((DeviceId)(int)(0))
             ((CapacityName)(std::string)(""))
@@ -86,24 +94,24 @@ namespace database
             ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)(std::string))
             ((Units)(std::string)(""))
             ((TypeInfo)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
-            ((Measure)(shared::plugin::yPluginApi::EMeasureType)(shared::plugin::yPluginApi::EMeasureType::kAbsolute)(
-               std::string))
+            ((Measure)(shared::plugin::yPluginApi::EMeasureType)(shared::plugin::yPluginApi::EMeasureType::kAbsolute)(std::string))
             ((Details)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
             ((Blacklist)(bool)(false))
             ((LastAcquisitionValue)(std::string)(""))
             ((LastAcquisitionDate)(boost::posix_time::ptime)(boost::posix_time::not_a_date_time))
-            ((HistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth::kDefault)(
-               std::string))
+            ((HistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth::kDefault)(std::string))
          );
 
 
-         DECLARE_ADAPTER_IMPLEMENTATION(Acquisition,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            Acquisition,
             ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
             ((KeywordId)(int)(0))
             ((Value)(std::string)(""))
          );
 
-         DECLARE_ADAPTER_IMPLEMENTATION(AcquisitionSummary,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            AcquisitionSummary,
             ((Type)(database::entities::EAcquisitionSummaryType)(database::entities::EAcquisitionSummaryType::kHour)(std::string))
             ((Date)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
             ((KeywordId)(int)(0))
@@ -114,7 +122,8 @@ namespace database
          )
 
 
-         DECLARE_ADAPTER_IMPLEMENTATION(Rule,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            Rule,
             ((Id)(int)(0))
             ((Name)(std::string)(""))
             ((Description)(std::string)(""))
@@ -131,17 +140,28 @@ namespace database
          );
 
 
-         DECLARE_ADAPTER_IMPLEMENTATION(Recipient,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            Recipient,
             ((Id)(int)(0))
             ((FirstName)(std::string)(""))
             ((LastName)(std::string)(""))
          );
 
-         DECLARE_ADAPTER_IMPLEMENTATION(RecipientField,
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            RecipientField,
             ((IdRecipient)(int)(0))
             ((PluginType)(std::string)(""))
             ((FieldName)(std::string)(""))
             ((Value)(std::string)(""))
+         );
+
+
+         DECLARE_ADAPTER_IMPLEMENTATION(
+            SerialPort,
+            ((Id)(int)(0))
+            ((AdapterKind)(database::entities::ESerialPortAdapterKind)(database::entities::ESerialPortAdapterKind::kUnknown)(std::string))
+            ((AdapterParameters)(boost::shared_ptr<shared::CDataContainer>)(shared::CDataContainer::make()))
+            ((LastKnownSerialPortPath)(std::string)(""))
          );
       } //namespace adapters
    } //namespace common
