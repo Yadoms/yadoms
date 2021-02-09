@@ -22,6 +22,7 @@
 ### 2.4.1
 
 #### Yadoms
+* Fix old (python 2.7 based) Blockly rule edition
 * Fix #720 : Add execute rights on installed rule interpreter
 * Fix removing interpreter
 * Add blue tag on new items in update page
