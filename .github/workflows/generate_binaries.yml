@@ -118,14 +118,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v3.beta5
+      uses: Yadoms/build-yadoms-action@v4.0.0
       id: yadoms_build_step
       with:
-          buildImage: docker.pkg.github.com/yadoms/docker/build_for_raspberrypi:latest
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          buildImage: ghcr.io/yadoms/build_for_raspberrypi:latest
+          registry: ghcr.io
+          username: ${{ secrets.CONTAINER_GH_LOGIN }}
+          password: ${{ secrets.CONTAINER_GH_TOKEN }}
           privileged: '--privileged'
-          entrypoint: '/entrypoint_docker.sh'
+          entrypoint: 'sh /entrypoint_docker.sh'
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
