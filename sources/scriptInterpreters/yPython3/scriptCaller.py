@@ -1,7 +1,12 @@
 import os
 import sys
-sys.stdout.reconfigure(encoding='utf-8')
-sys.stderr.reconfigure(encoding='utf-8')
+if sys.version_info < (3, 6):
+   import codecs
+   sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+   sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
+else:
+   sys.stdout.reconfigure(encoding='utf-8')
+   sys.stderr.reconfigure(encoding='utf-8')
 
 # Import yScript API
 # We need to relocate current working directory to make yScriptApiWrapper3 module find it's

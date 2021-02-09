@@ -1,6 +1,7 @@
 ### 2.4.1-beta.1
 
 #### Yadoms
+* Fix old (python 2.7 based) Blockly rule edition
 * Fix #720 : Add execute rights on installed rule interpreter
 * Markdown description field of update page (handle links)
 * Fix removing interpreter
