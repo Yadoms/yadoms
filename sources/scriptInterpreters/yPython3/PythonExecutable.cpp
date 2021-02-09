@@ -126,7 +126,7 @@ bool CPythonExecutable::isValidPythonVersion(const std::string& pythonVersion)
 
    try
    {
-      static const shared::versioning::CSemVer MinimalExpectedVersion("3.6.0");
+      static const shared::versioning::CSemVer MinimalExpectedVersion("3.0.0");
       const shared::versioning::CSemVer readVersion(matches[1]);
 
       return readVersion >= MinimalExpectedVersion;
