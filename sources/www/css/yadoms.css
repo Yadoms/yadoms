@@ -374,3 +374,8 @@ body {
 #confirmation-modal-body-message {
     padding: 10px;
 }
+
+.automation-rule-type {
+    max-width: 50px;
+    max-height: 50px;
+}

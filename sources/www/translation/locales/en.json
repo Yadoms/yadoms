@@ -709,6 +709,7 @@
                "table": {
                   "name": "Name",
                   "description": "Description",
+                  "type": "Type",
                   "autoStart": "Launch at startup",
                   "actions": "Actions",
                   "state": "State"
