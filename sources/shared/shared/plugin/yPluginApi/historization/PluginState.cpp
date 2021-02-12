@@ -21,7 +21,7 @@ namespace shared
                ((WaitDebugger))
             );
 
-            DECLARE_CAPACITY(PluginStateCapacity, "pluginState_capacity", CStandardUnits::NoUnit(), EKeywordDataType::kEnum);
+            DECLARE_CAPACITY(PluginStateCapacity, "pluginState", CStandardUnits::NoUnit(), EKeywordDataType::kEnum); //TODO doublon avec CStandardCapacities::PluginState
 
             CPluginState::CPluginState(const std::string& keywordName,
                                        const EKeywordAccessMode& accessMode)

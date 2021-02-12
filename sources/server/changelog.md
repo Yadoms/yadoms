@@ -16,6 +16,7 @@
 * New feature #721 : Display rule interpreter icon in automation page
 * Fix dynamically configurable devices translations
 * Fix removing interpreter
+* Rename plugin/device states capacity (remove `_capacity` suffix)
 * Update font-awesome library
 * Update LibCurl (7.72.0)
 

@@ -12,7 +12,7 @@ namespace shared
       {
          namespace historization
          {
-            DECLARE_CAPACITY(DeviceStateMessageCapacity, "deviceStateMessage_capacity", CStandardUnits::NoUnit(), EKeywordDataType::kJson);
+            DECLARE_CAPACITY(DeviceStateMessageCapacity, "deviceStateMessage", CStandardUnits::NoUnit(), EKeywordDataType::kJson);
 
             CDeviceStateMessage::CDeviceStateMessage(const std::string& keywordName,
                                                      const EKeywordAccessMode& accessMode,
@@ -35,7 +35,7 @@ namespace shared
             void CDeviceStateMessage::setMessage(const std::string& messageId,
                                                  const std::string& messageData)
             {
-               boost::shared_ptr<CDataContainer> dc = shared::CDataContainer::make();
+               auto dc = shared::CDataContainer::make();
                dc->set("messageId", messageId);
                dc->set("messageData", messageData);
                set(dc);
@@ -59,7 +59,7 @@ namespace shared
                for (auto i = messageDataParameters.begin(); i != messageDataParameters.end(); ++i)
                   dc.set(i->first, i->second);
 
-               auto dcSerialized = dc.serialize(); //use variable to allow use of reference parameter
+               const auto dcSerialized = dc.serialize(); //use variable to allow use of reference parameter
                setMessage(messageId, dcSerialized);
             }
 

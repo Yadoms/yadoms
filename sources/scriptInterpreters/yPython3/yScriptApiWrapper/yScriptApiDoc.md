@@ -46,6 +46,56 @@ Found recipient ID
 #### Throw
 Error if no recipient found
 
+### getKeywordsByCapacity
+#### Description
+List keywords matching a capacity
+#### Parameters
+##### capacity (in)
+The capacity to search for. A capacity is a string identifying a generic function for the keyword (battery level, date-time, event, temperature...).
+Most often, capacities are standard (see list of [standard capacities here](#StandardKeywordCapacities)), but plugins can defined their own (if you want to use them, see plugin documentation)
+#### Return
+A list of keyword IDs matching the capacity
+
+### getKeywordName
+#### Description
+Get keyword name
+#### Parameters
+##### keywordId (in)
+The keyword ID
+#### Return
+The keyword name
+#### Throw
+Error if keyword not found
+
+### getKeywordDeviceName
+#### Description
+Get device name containing a keyword
+#### Parameters
+##### keywordId (in)
+The keyword ID
+#### Return
+The device name containing provided keyword
+#### Throw
+Error if keyword not found
+
+### getInfo
+#### Description
+Get general information
+#### Parameters
+##### key (in)
+Information key, from this list (don't forget to prefix by 'yApi.') :
+* kSunrise : get current day sunrise time (format is 'HH:MM')
+* kSunset : get current day sunset time (format is 'HH:MM')
+* kLatitude : get latitude configured by user (or approximative latitude if not configured)
+* kLongitude : get longitude configured by user (or approximative longitude if not configured)
+* kAltitude : get altitude configured by user (or approximative altitude if not configured)
+* kYadomsServerOS : returns a string containing the OS name where Yadoms server is running
+* kYadomsServerVersion : returns a string containing the Yadoms server version
+#### Return
+Information as string (empty string if not found)
+#### Throw
+Error if key doesn't exist
+
 ### readKeyword
 #### Description
 Read the last known state of the keyword
@@ -206,24 +256,6 @@ The message to send
 #### Throw
 Error if keyword or recipient not found
 
-### getInfo
-#### Description
-Get general information
-#### Parameters
-##### key (in)
-Information key, from this list (don't forget to prefix by 'yApi.') :
-* kSunrise : get current day sunrise time (format is 'HH:MM')
-* kSunset : get current day sunset time (format is 'HH:MM')
-* kLatitude : get latitude configured by user (or approximative latitude if not configured)
-* kLongitude : get longitude configured by user (or approximative longitude if not configured)
-* kAltitude : get altitude configured by user (or approximative altitude if not configured)
-* kYadomsServerOS : returns a string containing the OS name where Yadoms server is running
-* kYadomsServerVersion : returns a string containing the Yadoms server version
-#### Return
-Information as string (empty string if not found)
-#### Throw
-Error if key doesn't exist
-
 
 ### scriptUtilities.next_weekday
 #### Description
@@ -317,3 +349,55 @@ Convert an object (time or date) to datetime
 The object to convert
 #### Return
 A datetime object if parameter is date or time, else the object is returned as is
+
+## <a name="StandardKeywordCapacities"></a>Standard keyword capacities
+Standard capacities strings :
+* `pluginState`
+* `pluginStateMessage`
+* `deviceState`
+* `deviceStateMessage`
+* `alarm`
+* `apparentpower`
+* `armingAlarm`
+* `batteryLevel`
+* `cameraMove`
+* `colorrgb`
+* `colorrgbw`
+* `count`
+* `current`
+* `curtain`
+* `datetime`
+* `debit`
+* `dimmable`
+* `direction`
+* `distance`
+* `duration`
+* `electricLoad`
+* `energy`
+* `event`
+* `frequency`
+* `humidity`
+* `illumination`
+* `illuminationWm2`
+* `load`
+* `message`
+* `power`
+* `powerFactor`
+* `pressure`
+* `rain`
+* `rainrate`
+* `rssi`
+* `signalLevel`
+* `signalPower`
+* `speed`
+* `switch`
+* `tamper`
+* `temperature`
+* `text`
+* `upDownStop`
+* `userCode`
+* `uv`
+* `voltage`
+* `volume`
+* `weathercondition`
+* `weight`
