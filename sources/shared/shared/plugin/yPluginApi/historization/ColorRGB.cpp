@@ -24,7 +24,7 @@ namespace shared
 
             void CColorRGB::setRGB(int red, int green, int blue)
             {
-               set(((red & 0xFF) << 16) || ((green & 0xFF) << 8) || (blue & 0xFF));
+               set((red & 0xFF) << 16 | (green & 0xFF) << 8 | blue & 0xFF);
             }
          }
       }
