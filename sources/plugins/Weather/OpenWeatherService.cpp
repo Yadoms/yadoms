@@ -246,10 +246,9 @@ void COpenWeatherService::historize3HoursForecast(unsigned int hourIndex,
       weatherDevice.setWindSpeed(forecast->get<double>("wind.speed"));
    if (forecast->containsValue("wind.deg"))
       weatherDevice.setWindDirection(forecast->get<int>("wind.deg"));
-   if (forecast->containsValue("rain.3h"))
-      weatherDevice.setRainForNextPeriod(forecast->get<double>("rain.3h"));
-   if (forecast->containsValue("snow.3h"))
-      weatherDevice.setSnowForNextPeriod(forecast->get<double>("snow.3h"));
+
+   weatherDevice.setRainForNextPeriod(forecast->containsValue("rain.3h") ? forecast->get<double>("rain.3h") : 0.0);
+   weatherDevice.setSnowForNextPeriod(forecast->containsValue("snow.3h") ? forecast->get<double>("snow.3h") : 0.0);
 
    weatherDevice.historize(m_api);
 }
@@ -279,9 +278,7 @@ void COpenWeatherService::historizeDaysForecast(
       auto averageWindDeg = static_cast<int>(0);
       auto averageWindDegDataCount = 0;
       auto totalDayRain = static_cast<double>(0.0f);
-      auto totalDayRainDataCount = 0;
       auto totalDaySnow = static_cast<double>(0.0f);
-      auto totalDaySnowDataCount = 0;
 
       for (const auto& forecastData : forecastDataForOneDay.second)
       {
@@ -355,13 +352,11 @@ void COpenWeatherService::historizeDaysForecast(
          if (forecastData->containsValue("rain.3h"))
          {
             totalDayRain += forecastData->get<double>("rain.3h");
-            ++totalDayRainDataCount;
          }
 
          if (forecastData->containsValue("snow.3h"))
          {
             totalDaySnow += forecastData->get<double>("snow.3h");
-            ++totalDaySnowDataCount;
          }
       }
 
@@ -391,10 +386,9 @@ void COpenWeatherService::historizeDaysForecast(
          weatherDevice.setWindSpeed(averageWindSpeed);
       if (averageWindDegDataCount)
          weatherDevice.setWindDirection(averageWindDeg);
-      if (totalDayRainDataCount)
-         weatherDevice.setRainForNextPeriod(totalDayRain);
-      if (totalDaySnowDataCount)
-         weatherDevice.setSnowForNextPeriod(totalDaySnow);
+
+      weatherDevice.setRainForNextPeriod(totalDayRain);
+      weatherDevice.setSnowForNextPeriod(totalDaySnow);
 
       try
       {
