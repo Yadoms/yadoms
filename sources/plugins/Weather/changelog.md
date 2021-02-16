@@ -1,3 +1,6 @@
+### 1.3.0
+  * Fix UV historization
+
 ### 1.2.0
   * Fix Rain/snow historization
 
