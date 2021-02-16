@@ -11,7 +11,6 @@
 #include "DeviceRemoved.h"
 #include "YadomsInformation.h"
 #include <shared/communication/SmallHeaderMessageCutter.h>
-#include <Poco/Net/HTTPClientSession.h>
 #include "shared/http/Proxy.h"
 
 namespace plugin_cpp_api
@@ -253,8 +252,8 @@ namespace plugin_cpp_api
          const auto& providedProxySettings = msg.proxysettings();
 
          if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
-                                                                            msg.proxysettings().GetDescriptor()->FindFieldByName(
-                                                                               "host")))
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName(
+                                                                "host")))
          {
             const auto& host = providedProxySettings.host();
             int port = shared::http::CProxy::kUseProxyDefaultPort;
@@ -263,20 +262,20 @@ namespace plugin_cpp_api
             std::string bypassRegex;
 
             if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
-                                                                               msg.proxysettings().GetDescriptor()->FindFieldByName(
-                                                                                  "port")))
+                                                                msg.proxysettings().GetDescriptor()->FindFieldByName(
+                                                                   "port")))
                port = static_cast<unsigned short>(providedProxySettings.port());
             if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
-                                                                               msg.proxysettings().GetDescriptor()->FindFieldByName(
-                                                                                  "username")))
+                                                                msg.proxysettings().GetDescriptor()->FindFieldByName(
+                                                                   "username")))
                username = providedProxySettings.username();
             if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
-                                                                               msg.proxysettings().GetDescriptor()->FindFieldByName(
-                                                                                  "password")))
+                                                                msg.proxysettings().GetDescriptor()->FindFieldByName(
+                                                                   "password")))
                password = providedProxySettings.password();
             if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
-                                                                               msg.proxysettings().GetDescriptor()->FindFieldByName(
-                                                                                  "bypassRegex")))
+                                                                msg.proxysettings().GetDescriptor()->FindFieldByName(
+                                                                   "bypassRegex")))
                bypassRegex = providedProxySettings.bypassregex();
 
             shared::http::CProxy::setGlobalProxyConfig(host,
@@ -522,8 +521,7 @@ namespace plugin_cpp_api
                                           const std::string& type,
                                           const std::string& model,
                                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::
-                                             historization::IHistorizable>>&
-                                          keywords,
+                                             historization::IHistorizable>>& keywords,
                                           boost::shared_ptr<shared::CDataContainer> details)
    {
       plugin_IPC::toYadoms::msg req;
