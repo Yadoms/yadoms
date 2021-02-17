@@ -63,8 +63,8 @@ void COpenWeatherService::declareDevices() const
 
 void COpenWeatherService::requestWeather(boost::shared_ptr<const shared::ILocation> forLocation) const
 {
-   requestLiveWeather(forLocation);
-   requestForecastWeather(forLocation);
+   requestLiveWeather(*forLocation);
+   requestForecastWeather(*forLocation);
 }
 
 boost::shared_ptr<shared::CDataContainer> COpenWeatherService::syncRequest(const std::string& url)
@@ -89,22 +89,22 @@ boost::shared_ptr<shared::CDataContainer> COpenWeatherService::syncRequest(const
    }
 }
 
-void COpenWeatherService::requestLiveWeather(boost::shared_ptr<const shared::ILocation> forLocation) const
+void COpenWeatherService::requestLiveWeather(const shared::ILocation& forLocation) const
 {
    // General weather
    const auto weatherUrl(std::string("http://api.openweathermap.org/data/2.5/weather")
       + "?APPID=" + m_apiKey
       + "&units=metric"
-      + "&lat=" + std::to_string(forLocation->latitude())
-      + "&lon=" + std::to_string(forLocation->longitude()));
+      + "&lat=" + std::to_string(forLocation.latitude())
+      + "&lon=" + std::to_string(forLocation.longitude()));
    const auto weatherData = syncRequest(weatherUrl);
 
    // UV index
    const auto uvIndexUrl(std::string("http://api.openweathermap.org/data/2.5/uvi")
       + "?APPID=" + m_apiKey
       + "&units=metric"
-      + "&lat=" + std::to_string(forLocation->latitude())
-      + "&lon=" + std::to_string(forLocation->longitude()));
+      + "&lat=" + std::to_string(forLocation.latitude())
+      + "&lon=" + std::to_string(forLocation.longitude()));
    boost::shared_ptr<shared::CDataContainer> uvIndexData;
    try
    {
@@ -177,22 +177,22 @@ void COpenWeatherService::processLiveWeatherAnswer(const boost::shared_ptr<share
    }
 }
 
-void COpenWeatherService::requestForecastWeather(boost::shared_ptr<const shared::ILocation> forLocation) const
+void COpenWeatherService::requestForecastWeather(const shared::ILocation& forLocation) const
 {
    // General weather
    const auto weatherUrl(std::string("http://api.openweathermap.org/data/2.5/forecast")
       + "?APPID=" + m_apiKey
       + "&units=metric"
-      + "&lat=" + std::to_string(forLocation->latitude())
-      + "&lon=" + std::to_string(forLocation->longitude()));
+      + "&lat=" + std::to_string(forLocation.latitude())
+      + "&lon=" + std::to_string(forLocation.longitude()));
    const auto weatherData = syncRequest(weatherUrl);
 
    // UV index
    const auto uvIndexUrl(std::string("http://api.openweathermap.org/data/2.5/uvi/forecast")
       + "?APPID=" + m_apiKey
       + "&units=metric"
-      + "&lat=" + std::to_string(forLocation->latitude())
-      + "&lon=" + std::to_string(forLocation->longitude()));
+      + "&lat=" + std::to_string(forLocation.latitude())
+      + "&lon=" + std::to_string(forLocation.longitude()));
    boost::shared_ptr<shared::CDataContainer> uvIndexData;
    try
    {
@@ -468,7 +468,7 @@ yApi::historization::EWeatherCondition COpenWeatherService::toYadomsCondition(in
 {
    // See https://openweathermap.org/weather-conditions
 
-   enum EOwGroupCodes
+   enum class EOwGroupCodes
    {
       kThunderstorm = 2,
       kDrizzle = 3,
@@ -479,19 +479,19 @@ yApi::historization::EWeatherCondition COpenWeatherService::toYadomsCondition(in
    };
 
    const auto group = owConditionCode / 100;
-   switch (group)
+   switch (static_cast<EOwGroupCodes>(group))
    {
-   case kThunderstorm:
+   case EOwGroupCodes::kThunderstorm:
       return toYadomsConditionsFromOwThunderstorm(owConditionCode);
-   case kDrizzle:
+   case EOwGroupCodes::kDrizzle:
       return toYadomsConditionsFromOwDrizzle(owConditionCode);
-   case kRain:
+   case EOwGroupCodes::kRain:
       return toYadomsConditionsFromOwRain(owConditionCode);
-   case kSnow:
+   case EOwGroupCodes::kSnow:
       return toYadomsConditionsFromOwSnow(owConditionCode);
-   case kAtmosphere:
+   case EOwGroupCodes::kAtmosphere:
       return toYadomsConditionsFromOwAtmosphere(owConditionCode);
-   case kClearClouds:
+   case EOwGroupCodes::kClearClouds:
       return toYadomsConditionsFromOwClearClouds(owConditionCode);
    default:
       throw std::out_of_range("OpenWeather condition code (weather[0].id");
@@ -514,28 +514,22 @@ yApi::historization::EWeatherCondition COpenWeatherService::toYadomsConditionsFr
       kThunderstormWithHeavyDrizzle = 232,
    };
 
-   switch (owConditionCode)
+   switch (static_cast<EOwThunderstormCodes>(owConditionCode))
    {
    case EOwThunderstormCodes::kThunderstormWithLightRain:
-      return yApi::historization::EWeatherCondition::kThunderstorm;
    case EOwThunderstormCodes::kThunderstormWithRain:
-      return yApi::historization::EWeatherCondition::kThunderstorm;
-   case EOwThunderstormCodes::kThunderstormWithHeavyRain:
-      return yApi::historization::EWeatherCondition::kStormShowers;
    case EOwThunderstormCodes::kLightThunderstorm:
-      return yApi::historization::EWeatherCondition::kThunderstorm;
    case EOwThunderstormCodes::kThunderstorm:
-      return yApi::historization::EWeatherCondition::kThunderstorm;
    case EOwThunderstormCodes::kHeavyThunderstorm:
-      return yApi::historization::EWeatherCondition::kThunderstorm;
    case EOwThunderstormCodes::kRaggedThunderstorm:
-      return yApi::historization::EWeatherCondition::kThunderstorm;
    case EOwThunderstormCodes::kThunderstormWithLightDrizzle:
-      return yApi::historization::EWeatherCondition::kThunderstorm;
    case EOwThunderstormCodes::kThunderstormWithDrizzle:
       return yApi::historization::EWeatherCondition::kThunderstorm;
+      
+   case EOwThunderstormCodes::kThunderstormWithHeavyRain:
    case EOwThunderstormCodes::kThunderstormWithHeavyDrizzle:
       return yApi::historization::EWeatherCondition::kStormShowers;
+
    default:
       YADOMS_LOG(warning) << "Unknown Thunderstorm sub-code " << owConditionCode;
       return yApi::historization::EWeatherCondition::kThunderstorm;
@@ -557,26 +551,19 @@ yApi::historization::EWeatherCondition COpenWeatherService::toYadomsConditionsFr
       kShowerDrizzle = 321
    };
 
-   switch (owConditionCode)
+   switch (static_cast<EOwDrizzleCodes>(owConditionCode))
    {
    case EOwDrizzleCodes::kLightIntensityDrizzle:
-      return yApi::historization::EWeatherCondition::kDrizzle;
    case EOwDrizzleCodes::kDrizzle:
-      return yApi::historization::EWeatherCondition::kDrizzle;
    case EOwDrizzleCodes::kHeavyIntensityDrizzle:
-      return yApi::historization::EWeatherCondition::kDrizzle;
    case EOwDrizzleCodes::kLightIntensityDrizzleRain:
-      return yApi::historization::EWeatherCondition::kDrizzle;
    case EOwDrizzleCodes::kDrizzleRain:
-      return yApi::historization::EWeatherCondition::kDrizzle;
    case EOwDrizzleCodes::kHeavyIntensityDrizzleRain:
-      return yApi::historization::EWeatherCondition::kDrizzle;
    case EOwDrizzleCodes::kShowerRainAndDrizzle:
-      return yApi::historization::EWeatherCondition::kDrizzle;
    case EOwDrizzleCodes::kHeavyShowerRainAndDrizzle:
-      return yApi::historization::EWeatherCondition::kDrizzle;
    case EOwDrizzleCodes::kShowerDrizzle:
       return yApi::historization::EWeatherCondition::kDrizzle;
+
    default:
       YADOMS_LOG(warning) << "Unknown Drizzle sub-code " << owConditionCode;
       return yApi::historization::EWeatherCondition::kDrizzle;
@@ -599,28 +586,22 @@ yApi::historization::EWeatherCondition COpenWeatherService::toYadomsConditionsFr
       kRaggedShowerRain = 531
    };
 
-   switch (owConditionCode)
+   switch (static_cast<EOwRainCodes>(owConditionCode))
    {
    case EOwRainCodes::kLightRain:
-      return yApi::historization::EWeatherCondition::kRain;
    case EOwRainCodes::kModerateRain:
-      return yApi::historization::EWeatherCondition::kRain;
    case EOwRainCodes::kHeavyIntensityRain:
-      return yApi::historization::EWeatherCondition::kRain;
    case EOwRainCodes::kVeryHeavyRain:
-      return yApi::historization::EWeatherCondition::kRain;
    case EOwRainCodes::kExtremeRain:
-      return yApi::historization::EWeatherCondition::kRain;
    case EOwRainCodes::kFreezingRain:
       return yApi::historization::EWeatherCondition::kRain;
+
    case EOwRainCodes::kLightIntensityShowerRain:
-      return yApi::historization::EWeatherCondition::kShowers;
    case EOwRainCodes::kShowerRain:
-      return yApi::historization::EWeatherCondition::kShowers;
    case EOwRainCodes::kHeavyIntensityShowerRain:
-      return yApi::historization::EWeatherCondition::kShowers;
    case EOwRainCodes::kRaggedShowerRain:
       return yApi::historization::EWeatherCondition::kShowers;
+
    default:
       YADOMS_LOG(warning) << "Unknown Rain sub-code " << owConditionCode;
       return yApi::historization::EWeatherCondition::kRain;
@@ -644,28 +625,24 @@ yApi::historization::EWeatherCondition COpenWeatherService::toYadomsConditionsFr
       kHeavyShowerSnow = 622
    };
 
-   switch (owConditionCode)
+   switch (static_cast<EOwSnowCodes>(owConditionCode))
    {
-   case EOwSnowCodes::kLightSnow:
-      return yApi::historization::EWeatherCondition::kSnow;
-   case EOwSnowCodes::kSnow:
-      return yApi::historization::EWeatherCondition::kSnow;
-   case EOwSnowCodes::kHeavySnow:
-      return yApi::historization::EWeatherCondition::kSnow;
    case EOwSnowCodes::kSleet:
       return yApi::historization::EWeatherCondition::kSleet;
+
    case EOwSnowCodes::kLightShowersleet:
-      return yApi::historization::EWeatherCondition::kSleetStorm;
    case EOwSnowCodes::kShowerSleet:
       return yApi::historization::EWeatherCondition::kSleetStorm;
+
    case EOwSnowCodes::kLightRainAndSnow:
-      return yApi::historization::EWeatherCondition::kRainMix;
    case EOwSnowCodes::kRainAndSnow:
       return yApi::historization::EWeatherCondition::kRainMix;
+
+   case EOwSnowCodes::kLightSnow:
+   case EOwSnowCodes::kSnow:
+   case EOwSnowCodes::kHeavySnow:
    case EOwSnowCodes::kLightShowersnow:
-      return yApi::historization::EWeatherCondition::kSnow;
    case EOwSnowCodes::kShowerSnow:
-      return yApi::historization::EWeatherCondition::kSnow;
    case EOwSnowCodes::kHeavyShowerSnow:
       return yApi::historization::EWeatherCondition::kSnow;
    default:
@@ -690,28 +667,24 @@ yApi::historization::EWeatherCondition COpenWeatherService::toYadomsConditionsFr
       kTornado = 781,
    };
 
-   switch (owConditionCode)
+   switch (static_cast<EOwAtmosphereCodes>(owConditionCode))
    {
    case EOwAtmosphereCodes::kMist:
-      return yApi::historization::EWeatherCondition::kFog;
    case EOwAtmosphereCodes::kSmoke:
-      return yApi::historization::EWeatherCondition::kFog;
-   case EOwAtmosphereCodes::kHaze:
-      return yApi::historization::EWeatherCondition::kHaze;
-   case EOwAtmosphereCodes::kSandDustWhirls:
-      return yApi::historization::EWeatherCondition::kWindy;
    case EOwAtmosphereCodes::kFog:
-      return yApi::historization::EWeatherCondition::kFog;
-   case EOwAtmosphereCodes::kSand:
-      return yApi::historization::EWeatherCondition::kWindy;
-   case EOwAtmosphereCodes::kDust:
-      return yApi::historization::EWeatherCondition::kWindy;
    case EOwAtmosphereCodes::kVolcanicAsh:
       return yApi::historization::EWeatherCondition::kFog;
+
+   case EOwAtmosphereCodes::kHaze:
+      return yApi::historization::EWeatherCondition::kHaze;
+
    case EOwAtmosphereCodes::kSqualls:
-      return yApi::historization::EWeatherCondition::kWindy;
    case EOwAtmosphereCodes::kTornado:
+   case EOwAtmosphereCodes::kSandDustWhirls:
+   case EOwAtmosphereCodes::kSand:
+   case EOwAtmosphereCodes::kDust:
       return yApi::historization::EWeatherCondition::kWindy;
+
    default:
       YADOMS_LOG(warning) << "Unknown Atmosphere sub-code " << owConditionCode;
       return yApi::historization::EWeatherCondition::kFog;
@@ -729,16 +702,13 @@ yApi::historization::EWeatherCondition COpenWeatherService::toYadomsConditionsFr
       kOvercastClouds = 804,
    };
 
-   switch (owConditionCode)
+   switch (static_cast<EOwAClearCloudsCodes>(owConditionCode))
    {
    case EOwAClearCloudsCodes::kClearSky:
       return yApi::historization::EWeatherCondition::kSunny;
    case EOwAClearCloudsCodes::kFewClouds:
-      return yApi::historization::EWeatherCondition::kCloudy;
    case EOwAClearCloudsCodes::kScatteredClouds:
-      return yApi::historization::EWeatherCondition::kCloudy;
    case EOwAClearCloudsCodes::kBrokenClouds:
-      return yApi::historization::EWeatherCondition::kCloudy;
    case EOwAClearCloudsCodes::kOvercastClouds:
       return yApi::historization::EWeatherCondition::kCloudy;
    default:
