@@ -23,6 +23,7 @@ namespace owfs
 
       void CCommon::write(const boost::filesystem::path& valuePath, const std::string& value)
       {
+         YADOMS_LOG(debug) << "Write " << valuePath << " to " << value;
          std::ofstream file(valuePath.string());
          if (!file.good())
             throw COneWireException("1-wire write : Error opening " + valuePath.string());

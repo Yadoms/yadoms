@@ -72,8 +72,11 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                YADOMS_LOG(trace) << "  Read " << newDevice->ident()->deviceName() << " state...";
                newDevice->read();
                if (newDevice->hasRelevantValue())
+               {
+                  YADOMS_LOG(debug) << "Temperature is relevant";
                   api->historizeData(newDevice->ident()->deviceName(),
                                      newDevice->keywords());
+               }
             }
 
             break;
