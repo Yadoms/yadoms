@@ -14,7 +14,8 @@ CDualChannelAddressableSwitch::CDualChannelAddressableSwitch(EOneWireFamily fami
       m_io(io),
       m_ioA(boost::make_shared<yApi::historization::CSwitch>("io_A")),
       m_ioB(boost::make_shared<yApi::historization::CSwitch>("io_B")),
-      m_keywords({m_ioA, m_ioB})
+      m_keywords({m_ioA, m_ioB}),
+      m_lastHistorizationDate(shared::currentTime::Provider().now() - HistorizationPeriod - boost::posix_time::minutes(1))
 {
    BOOST_ASSERT_MSG(m_identification->family() == kDualChannelAddressableSwitch, "Invalid family number");
 }

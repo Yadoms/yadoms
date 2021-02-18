@@ -17,7 +17,8 @@ CSingleTemperature::CSingleTemperature(EOneWireFamily family,
       m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
       m_allKeywords({m_temperature}),
       m_noKeywords(),
-      m_keywords(&m_allKeywords)
+      m_keywords(&m_allKeywords),
+      m_lastHistorizationDate(shared::currentTime::Provider().now() - HistorizationPeriod - boost::posix_time::minutes(1))
 {
    BOOST_ASSERT_MSG(m_identification->family() == expectedFamily, "Invalid family number");
 }

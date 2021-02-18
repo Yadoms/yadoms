@@ -18,7 +18,8 @@ CTemperatureIo::CTemperatureIo(EOneWireFamily family,
       m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
       m_keywordsWithTemperature({m_ioA, m_ioB, m_temperature}),
       m_keywordsWithoutTemperature({m_ioA, m_ioB}),
-      m_keywords(&m_keywordsWithTemperature)
+      m_keywords(&m_keywordsWithTemperature),
+      m_lastHistorizationDate(shared::currentTime::Provider().now() - HistorizationPeriod - boost::posix_time::minutes(1))
 {
    BOOST_ASSERT_MSG(m_identification->family() == kTemperatureIo, "Invalid family number");
 }

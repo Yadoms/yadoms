@@ -13,7 +13,8 @@ CMicrolanCoupler::CMicrolanCoupler(EOneWireFamily family,
     : m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2409")),
       m_io(io),
       m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_keywords({m_state})
+      m_keywords({m_state}),
+      m_lastHistorizationDate(shared::currentTime::Provider().now() - HistorizationPeriod - boost::posix_time::minutes(1))
 {
    BOOST_ASSERT_MSG(m_identification->family() == kMicrolanCoupler, "Invalid family number");
 }

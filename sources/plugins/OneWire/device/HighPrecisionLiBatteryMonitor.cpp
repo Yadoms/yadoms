@@ -16,7 +16,8 @@ CHighPrecisionLiBatteryMonitor::CHighPrecisionLiBatteryMonitor(EOneWireFamily fa
       m_kwTemperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
       m_kwVis(boost::make_shared<yApi::historization::CVoltage>("vis")),
       m_kwVolt(boost::make_shared<yApi::historization::CVoltage>("volt")),
-      m_keywords({m_kwIo, m_kwTemperature, m_kwVis, m_kwVolt})
+      m_keywords({m_kwIo, m_kwTemperature, m_kwVis, m_kwVolt}),
+      m_lastHistorizationDate(shared::currentTime::Provider().now() - HistorizationPeriod - boost::posix_time::minutes(1))
 {
    BOOST_ASSERT_MSG(m_identification->family() == kHighPrecisionLiBatteryMonitor, "Invalid family number");
 }

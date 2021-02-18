@@ -11,7 +11,8 @@ C8ChannelAddressableSwitch::C8ChannelAddressableSwitch(EOneWireFamily family,
                                                        const std::string &id,
                                                        boost::shared_ptr<ioInterfaces::IMultiSwitch> io)
     : m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2408")),
-      m_io(io)
+      m_io(io),
+      m_lastHistorizationDate(shared::currentTime::Provider().now() - HistorizationPeriod - boost::posix_time::minutes(1))
 {
    BOOST_ASSERT_MSG(m_identification->family() == k8ChannelAddressableSwitch, "Invalid family number");
 
