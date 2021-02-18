@@ -32,10 +32,8 @@ void CSingleTemperature::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> a
 void CSingleTemperature::read() const
 {
    double temperature = m_io->read();
-   YADOMS_LOG(debug) << "Temperature = " << temperature;
    if (isTemperatureValid(temperature))
    {
-      YADOMS_LOG(debug) << "Temperature is valid";
       m_temperature->set(temperature);
       m_keywords = const_cast<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> *>(&m_allKeywords);
    }
