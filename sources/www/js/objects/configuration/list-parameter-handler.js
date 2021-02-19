@@ -72,7 +72,7 @@ ListParameterHandler.prototype.getDOMObject = function () {
   input += "<span data-i18n=\"" + this.i18nContext + this.i18nKey + ".name\" >" +
     this.name +
     "</span>";
-  input += "<button class=\"pull-right btn btn-primary\" id=\"" + this.addBtnUuid + "\" type=\"button\"><span><i class=\"fa fa-file-o\"></i></span></button>";
+  input += "<button class=\"pull-right btn btn-primary\" id=\"" + this.addBtnUuid + "\" type=\"button\"><span><i class=\"fa fa-plus\"></i></span></button>";
 
   input += "</div>" +
     "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.i18nKey + ".description\" >" +
