@@ -231,7 +231,7 @@ jobs:
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
     - name: Yadoms build raspberryPI image FR script
-      uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1-beta.5
+      uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
       with:
         output_folder: $GITHUB_WORKSPACE/builds/pi_image
         language: fr
@@ -270,7 +270,7 @@ jobs:
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
     - name: Yadoms build raspberryPI image EN script
-      uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1-beta.5
+      uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
       with:
         output_folder: $GITHUB_WORKSPACE/builds/pi_image
         language: en
