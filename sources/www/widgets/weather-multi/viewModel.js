@@ -10,63 +10,95 @@ function round(value, precision) {
    return Math.round(value * multiplier) / multiplier;
 }
 
+const TemperatureToDisplay = {
+   MIN_MAX: "MinMax",
+   AVERAGE: "Average",
+   NONE: "None"
+}
+
 function ConditionsDevice(keywords) {
    assert(!isNullOrUndefined(keywords), "keywords array must be defined");
    assert(!isNullOrUndefined(keywords.length) && keywords.length > 0, "keywords array is empty");
 
    this.deviceId = keywords[0].deviceId;
-   
-   this.conditionKw = keywords.find(function (kw) { return kw.capacityName == "weathercondition"; });
+
+   this.conditionKw = keywords.find(function (kw) {
+      return kw.capacityName == "weathercondition";
+   });
    assert(!isNullOrUndefined(this.conditionKw), "weathercondition must be provided");
 
-   this.forecastDatetimeKw = keywords.find(function (kw) { return kw.capacityName == "datetime"; });
+   this.forecastDatetimeKw = keywords.find(function (kw) {
+      return kw.capacityName == "datetime";
+   });
 
    var temperatureKws = keywords.filter(kw => kw.capacityName == "temperature");
    if (temperatureKws.length == 1) {
       this.temperatureKw = temperatureKws[0];
+   } else if (temperatureKws.length > 1) {
+      this.temperatureKw = temperatureKws.find(function (kw) {
+         return kw.name.toLowerCase() == "temperature";
+      });
+      this.temperatureMinKw = temperatureKws.find(function (kw) {
+         return kw.name.toLowerCase().includes("min");
+      });
+      this.temperatureMaxKw = temperatureKws.find(function (kw) {
+         return kw.name.toLowerCase().includes("max");
+      });
    }
-   else if (temperatureKws.length > 1) {
-      this.temperatureKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase() == "temperature"; });
-      this.temperatureMinKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase().includes("min"); });
-      this.temperatureMaxKw = temperatureKws.find(function (kw) { return kw.name.toLowerCase().includes("max"); });
-   }
-   this.temperatureUnity = $.t(keywords.find(function (kw) { return kw.capacityName == "temperature"; }).units);
+   this.temperatureUnity = $.t(keywords.find(function (kw) {
+      return kw.capacityName == "temperature";
+   }).units);
 
-   this.humidityKw = keywords.find(function (kw) { return kw.capacityName == "humidity"; });
+   this.humidityKw = keywords.find(function (kw) {
+      return kw.capacityName == "humidity";
+   });
 
-   this.pressureKw = keywords.find(function (kw) { return kw.capacityName == "pressure"; });
+   this.pressureKw = keywords.find(function (kw) {
+      return kw.capacityName == "pressure";
+   });
 
    var rainKws = keywords.filter(kw => kw.capacityName == "rain");
    if (rainKws.length == 1) {
       this.rainKw = rainKws[0];
+   } else if (rainKws.length > 1) {
+      this.rainKw = rainKws.find(function (kw) {
+         return kw.name.toLowerCase().includes("rain");
+      });
+      this.snowKw = rainKws.find(function (kw) {
+         return kw.name.toLowerCase().includes("snow");
+      });
    }
-   else if (rainKws.length > 1) {
-      this.rainKw = rainKws.find(function (kw) { return kw.name.toLowerCase().includes("rain"); });
-      this.snowKw = rainKws.find(function (kw) { return kw.name.toLowerCase().includes("snow"); });
-   }
 
-   this.uvKw = keywords.find(function (kw) { return kw.capacityName == "uv"; });
+   this.uvKw = keywords.find(function (kw) {
+      return kw.capacityName == "uv";
+   });
 
-   this.visibilityKw = keywords.find(function (kw) { return kw.capacityName == "distance"; });
+   this.visibilityKw = keywords.find(function (kw) {
+      return kw.capacityName == "distance";
+   });
 
-   this.windDirectionKw = keywords.find(function (kw) { return kw.capacityName == "direction"; });
+   this.windDirectionKw = keywords.find(function (kw) {
+      return kw.capacityName == "direction";
+   });
 
-   this.windspeedKw = keywords.find(function (kw) { return kw.capacityName == "speed"; });
+   this.windspeedKw = keywords.find(function (kw) {
+      return kw.capacityName == "speed";
+   });
 
    this.hasKeywordId = function (keywordId) {
-      if (keywordId == this.conditionKw.id
-         || (!isNullOrUndefined(this.forecastDatetimeKw) && keywordId == this.forecastDatetimeKw.id)
-         || (!isNullOrUndefined(this.temperatureKw) && keywordId == this.temperatureKw.id)
-         || (!isNullOrUndefined(this.temperatureMinKw) && keywordId == this.temperatureMinKw.id)
-         || (!isNullOrUndefined(this.temperatureMaxKw) && keywordId == this.temperatureMaxKw.id)
-         || (!isNullOrUndefined(this.humidityKw) && keywordId == this.humidityKw.id)
-         || (!isNullOrUndefined(this.pressureKw) && keywordId == this.pressureKw.id)
-         || (!isNullOrUndefined(this.rainKw) && keywordId == this.rainKw.id)
-         || (!isNullOrUndefined(this.snowKw) && keywordId == this.snowKw.id)
-         || (!isNullOrUndefined(this.uvKw) && keywordId == this.uvKw.id)
-         || (!isNullOrUndefined(this.visibilityKw) && keywordId == this.visibilityKw.id)
-         || (!isNullOrUndefined(this.windDirectionKw) && keywordId == this.windDirectionKw.id)
-         || (!isNullOrUndefined(this.windspeedKw) && keywordId == this.windspeedKw.id))
+      if (keywordId == this.conditionKw.id ||
+         (!isNullOrUndefined(this.forecastDatetimeKw) && keywordId == this.forecastDatetimeKw.id) ||
+         (!isNullOrUndefined(this.temperatureKw) && keywordId == this.temperatureKw.id) ||
+         (!isNullOrUndefined(this.temperatureMinKw) && keywordId == this.temperatureMinKw.id) ||
+         (!isNullOrUndefined(this.temperatureMaxKw) && keywordId == this.temperatureMaxKw.id) ||
+         (!isNullOrUndefined(this.humidityKw) && keywordId == this.humidityKw.id) ||
+         (!isNullOrUndefined(this.pressureKw) && keywordId == this.pressureKw.id) ||
+         (!isNullOrUndefined(this.rainKw) && keywordId == this.rainKw.id) ||
+         (!isNullOrUndefined(this.snowKw) && keywordId == this.snowKw.id) ||
+         (!isNullOrUndefined(this.uvKw) && keywordId == this.uvKw.id) ||
+         (!isNullOrUndefined(this.visibilityKw) && keywordId == this.visibilityKw.id) ||
+         (!isNullOrUndefined(this.windDirectionKw) && keywordId == this.windDirectionKw.id) ||
+         (!isNullOrUndefined(this.windspeedKw) && keywordId == this.windspeedKw.id))
          return this;
    }
 
@@ -75,8 +107,12 @@ function ConditionsDevice(keywords) {
       this.values.set(parseInt(keywordId), data);
    }
 
+   this.isLiveConditions = function () {
+      return isNullOrUndefined(this.forecastDatetimeKw);
+   }
+
    this.getForecastDateTime = function (format) {
-      if (isNullOrUndefined(this.forecastDatetimeKw))
+      if (this.isLiveConditions())
          return $.t("widgets.weather-multi:LiveConditions");
       const date = moment(new Date(this.values.get(this.forecastDatetimeKw.id)));
       switch (format) {
@@ -92,114 +128,214 @@ function ConditionsDevice(keywords) {
       }
    }
 
-   this.getCondition = function () { return this.values.get(this.conditionKw.id); }
+   this.getCondition = function () {
+      return this.values.get(this.conditionKw.id);
+   }
    this.getWeatherIconPath = function (iconset) {
       var path = "widgets/weather-multi/images/conditions/" + iconset + "/";
       switch (iconset) {
          case "material":
             switch (this.getCondition()) {
-               case "Sunny": return path + "Sunny.png";
-               case "Cloudy": return path + "Cloudy.png";
-               case "CloudyGusts": return path + "Cloudy.png";
-               case "CloudyWindy": return path + "Cloudy.png";
-               case "CloudyHigh": return path + "Cloudy.png";
-               case "PartlyCloudy": return path + "PartlySunny.png";
-               case "Fog": return path + "Fog.png";
-               case "Hail": return path + "Sleet.png";
-               case "Haze": return path + "Fog.png";
-               case "Drizzle": return path + "Rain.png";
-               case "Lightning": return path + "Storm.png";
-               case "Rain": return path + "Rain.png";
-               case "RainMix": return path + "Rain.png";
-               case "RainWind": return path + "Rain.png";
-               case "Showers": return path + "Rain.png";
-               case "Sleet": return path + "Sleet.png";
-               case "SleetStorm": return path + "Sleet.png";
-               case "Snow": return path + "Snow.png";
-               case "SnowThunderstorm": return path + "Snow.png";
-               case "SnowWind": return path + "Snow.png";
-               case "Sprinkle": return path + "Snow.png";
-               case "StormShowers": return path + "Rain.png";
-               case "Thunderstorm": return path + "Storm.png";
-               case "Windy": return path + "Sunny.png";
-               case "LightWind": return path + "Sunny.png";
-               case "NightClear": return path + "Night_Clear.png";
-               case "NightCloudy": return path + "Night_Cloudy.png";
-               case "NightCloudyGusts": return path + "Night_Cloudy.png";
-               case "NightCloudyWindy": return path + "Night_Cloudy.png";
-               case "NightCloudyHigh": return path + "Night_Cloudy.png";
-               case "NightPartlyCloudy": return path + "Night_Cloudy.png";
-               case "NightFog": return path + "Night_Cloudy.png";
-               case "NightHail": return path + "Night_Rain.png";
-               case "NightHaze": return path + "Night_Cloudy.png";
-               case "NightLightning": return path + "Storm.png";
-               case "NightRain": return path + "Night_Rain.png";
-               case "NightRainMix": return path + "Night_Rain.png";
-               case "NightRainWind": return path + "Night_Rain.png";
-               case "NightShowers": return path + "Night_Rain.png";
-               case "NightSleet": return path + "Night_Rain.png";
-               case "NightSleetStorm": return path + "Night_Rain.png";
-               case "NightSnow": return path + "Night_Snow.png";
-               case "NightSnowThunderstorm": return path + "Night_Snow.png";
-               case "NightSnowWind": return path + "Night_Snow.png";
-               case "NightSprinkle": return path + "Night_Snow.png";
-               case "NightStormShowers": return path + "Night_Rain.png";
-               case "NightThunderstorm": return path + "Night_Rain.png";
-               case "NightWindy": return path + "Night_Clear.png";
-               case "NightLightWind": return path + "Night_Clear.png";
+               case "Sunny":
+                  return path + "Sunny.png";
+               case "Cloudy":
+                  return path + "Cloudy.png";
+               case "CloudyGusts":
+                  return path + "Cloudy.png";
+               case "CloudyWindy":
+                  return path + "Cloudy.png";
+               case "CloudyHigh":
+                  return path + "Cloudy.png";
+               case "PartlyCloudy":
+                  return path + "PartlySunny.png";
+               case "Fog":
+                  return path + "Fog.png";
+               case "Hail":
+                  return path + "Sleet.png";
+               case "Haze":
+                  return path + "Fog.png";
+               case "Drizzle":
+                  return path + "Rain.png";
+               case "Lightning":
+                  return path + "Storm.png";
+               case "Rain":
+                  return path + "Rain.png";
+               case "RainMix":
+                  return path + "Rain.png";
+               case "RainWind":
+                  return path + "Rain.png";
+               case "Showers":
+                  return path + "Rain.png";
+               case "Sleet":
+                  return path + "Sleet.png";
+               case "SleetStorm":
+                  return path + "Sleet.png";
+               case "Snow":
+                  return path + "Snow.png";
+               case "SnowThunderstorm":
+                  return path + "Snow.png";
+               case "SnowWind":
+                  return path + "Snow.png";
+               case "Sprinkle":
+                  return path + "Snow.png";
+               case "StormShowers":
+                  return path + "Rain.png";
+               case "Thunderstorm":
+                  return path + "Storm.png";
+               case "Windy":
+                  return path + "Sunny.png";
+               case "LightWind":
+                  return path + "Sunny.png";
+               case "NightClear":
+                  return path + "Night_Clear.png";
+               case "NightCloudy":
+                  return path + "Night_Cloudy.png";
+               case "NightCloudyGusts":
+                  return path + "Night_Cloudy.png";
+               case "NightCloudyWindy":
+                  return path + "Night_Cloudy.png";
+               case "NightCloudyHigh":
+                  return path + "Night_Cloudy.png";
+               case "NightPartlyCloudy":
+                  return path + "Night_Cloudy.png";
+               case "NightFog":
+                  return path + "Night_Cloudy.png";
+               case "NightHail":
+                  return path + "Night_Rain.png";
+               case "NightHaze":
+                  return path + "Night_Cloudy.png";
+               case "NightLightning":
+                  return path + "Storm.png";
+               case "NightRain":
+                  return path + "Night_Rain.png";
+               case "NightRainMix":
+                  return path + "Night_Rain.png";
+               case "NightRainWind":
+                  return path + "Night_Rain.png";
+               case "NightShowers":
+                  return path + "Night_Rain.png";
+               case "NightSleet":
+                  return path + "Night_Rain.png";
+               case "NightSleetStorm":
+                  return path + "Night_Rain.png";
+               case "NightSnow":
+                  return path + "Night_Snow.png";
+               case "NightSnowThunderstorm":
+                  return path + "Night_Snow.png";
+               case "NightSnowWind":
+                  return path + "Night_Snow.png";
+               case "NightSprinkle":
+                  return path + "Night_Snow.png";
+               case "NightStormShowers":
+                  return path + "Night_Rain.png";
+               case "NightThunderstorm":
+                  return path + "Night_Rain.png";
+               case "NightWindy":
+                  return path + "Night_Clear.png";
+               case "NightLightWind":
+                  return path + "Night_Clear.png";
             }
             break;
          case "color":
             switch (this.values.get(this.conditionKw.id)) {
-               case "Sunny": return path + "sunny.png";
-               case "Cloudy": return path + "cloudy.png";
-               case "CloudyGusts": return path + "wind.png";
-               case "CloudyWindy": return path + "wind.png";
-               case "CloudyHigh": return path + "cloudy.png";
-               case "PartlyCloudy": return path + "partly-cloudy.png";
-               case "Fog": return path + "fog.png";
-               case "Hail": return path + "freezing-rain.png";
-               case "Haze": return path + "hazy.png";
-               case "Drizzle": return path + "drizzle.png";
-               case "Lightning": return path + "thunder-storm.png";
-               case "Rain": return path + "rainy.png";
-               case "RainMix": return path + "rainy-snow.png";
-               case "RainWind": return path + "rainy.png";
-               case "Showers": return path + "showers.png";
-               case "Sleet": return path + "sleet.png";
-               case "SleetStorm": return path + "sleet.png";
-               case "Snow": return path + "snow.png";
-               case "SnowThunderstorm": return path + "blowing-snow.png";
-               case "SnowWind": return path + "snow.png";
-               case "Sprinkle": return path + "snow.png";
-               case "StormShowers": return path + "rainy.png";
-               case "Thunderstorm": return path + "thunder-storm.png";
-               case "Windy": return path + "wind.png";
-               case "LightWind": return path + "wind.png";
-               case "NightClear": return path + "moon.png";
-               case "NightCloudy": return path + "m-cloudy-night.png";
-               case "NightCloudyGusts": return path + "m-cloudy-night.png";
-               case "NightCloudyWindy": return path + "m-cloudy-night.png";
-               case "NightCloudyHigh": return path + "m-cloudy-night.png";
-               case "NightPartlyCloudy": return path + "p-c-night.png";
-               case "NightFog": return path + "m-cloudy-night.png";
-               case "NightHail": return path + "m-c-night-rain.png";
-               case "NightHaze": return path + "m-cloudy-night.png";
-               case "NightLightning": return path + "m-c-night-rain.png";
-               case "NightRain": return path + "m-c-night-rain.png";
-               case "NightRainMix": return path + "m-c-night-rain.png";
-               case "NightRainWind": return path + "m-c-night-rain.png";
-               case "NightShowers": return path + "m-c-night-rain.png";
-               case "NightSleet": return path + "m-c-night-rain.png";
-               case "NightSleetStorm": return path + "m-c-night-rain.png";
-               case "NightSnow": return path + "m-c-night-snow.png";
-               case "NightSnowThunderstorm": return path + "m-c-night-snow.png";
-               case "NightSnowWind": return path + "m-c-night-snow.png";
-               case "NightSprinkle": return path + "m-c-night-snow.png";
-               case "NightStormShowers": return path + "m-c-night-rain.png";
-               case "NightThunderstorm": return path + "m-c-night-rain.png";
-               case "NightWindy": return path + "moon.png";
-               case "NightLightWind": return path + "moon.png";
+               case "Sunny":
+                  return path + "sunny.png";
+               case "Cloudy":
+                  return path + "cloudy.png";
+               case "CloudyGusts":
+                  return path + "wind.png";
+               case "CloudyWindy":
+                  return path + "wind.png";
+               case "CloudyHigh":
+                  return path + "cloudy.png";
+               case "PartlyCloudy":
+                  return path + "partly-cloudy.png";
+               case "Fog":
+                  return path + "fog.png";
+               case "Hail":
+                  return path + "freezing-rain.png";
+               case "Haze":
+                  return path + "hazy.png";
+               case "Drizzle":
+                  return path + "drizzle.png";
+               case "Lightning":
+                  return path + "thunder-storm.png";
+               case "Rain":
+                  return path + "rainy.png";
+               case "RainMix":
+                  return path + "rainy-snow.png";
+               case "RainWind":
+                  return path + "rainy.png";
+               case "Showers":
+                  return path + "showers.png";
+               case "Sleet":
+                  return path + "sleet.png";
+               case "SleetStorm":
+                  return path + "sleet.png";
+               case "Snow":
+                  return path + "snow.png";
+               case "SnowThunderstorm":
+                  return path + "blowing-snow.png";
+               case "SnowWind":
+                  return path + "snow.png";
+               case "Sprinkle":
+                  return path + "snow.png";
+               case "StormShowers":
+                  return path + "rainy.png";
+               case "Thunderstorm":
+                  return path + "thunder-storm.png";
+               case "Windy":
+                  return path + "wind.png";
+               case "LightWind":
+                  return path + "wind.png";
+               case "NightClear":
+                  return path + "moon.png";
+               case "NightCloudy":
+                  return path + "m-cloudy-night.png";
+               case "NightCloudyGusts":
+                  return path + "m-cloudy-night.png";
+               case "NightCloudyWindy":
+                  return path + "m-cloudy-night.png";
+               case "NightCloudyHigh":
+                  return path + "m-cloudy-night.png";
+               case "NightPartlyCloudy":
+                  return path + "p-c-night.png";
+               case "NightFog":
+                  return path + "m-cloudy-night.png";
+               case "NightHail":
+                  return path + "m-c-night-rain.png";
+               case "NightHaze":
+                  return path + "m-cloudy-night.png";
+               case "NightLightning":
+                  return path + "m-c-night-rain.png";
+               case "NightRain":
+                  return path + "m-c-night-rain.png";
+               case "NightRainMix":
+                  return path + "m-c-night-rain.png";
+               case "NightRainWind":
+                  return path + "m-c-night-rain.png";
+               case "NightShowers":
+                  return path + "m-c-night-rain.png";
+               case "NightSleet":
+                  return path + "m-c-night-rain.png";
+               case "NightSleetStorm":
+                  return path + "m-c-night-rain.png";
+               case "NightSnow":
+                  return path + "m-c-night-snow.png";
+               case "NightSnowThunderstorm":
+                  return path + "m-c-night-snow.png";
+               case "NightSnowWind":
+                  return path + "m-c-night-snow.png";
+               case "NightSprinkle":
+                  return path + "m-c-night-snow.png";
+               case "NightStormShowers":
+                  return path + "m-c-night-rain.png";
+               case "NightThunderstorm":
+                  return path + "m-c-night-rain.png";
+               case "NightWindy":
+                  return path + "moon.png";
+               case "NightLightWind":
+                  return path + "moon.png";
             }
             break;
       }
@@ -209,6 +345,19 @@ function ConditionsDevice(keywords) {
 
    this.getTemperature = function () {
       return isNullOrUndefinedOrEmpty(this.values.get(this.temperatureKw.id)) ? "" : (round(this.values.get(this.temperatureKw.id), 1) + this.temperatureUnity);
+   }
+
+   this.temperatureToDisplay = function () {
+      // Prefer to display min-max temperatures for forecast conditions, and average temperature for live conditions
+      if (this.isLiveConditions()) {
+         if (this.hasTemperatureAvg()) return TemperatureToDisplay.AVERAGE;
+         if (this.hasTemperatureMinMax()) return TemperatureToDisplay.MIN_MAX;
+         return TemperatureToDisplay.NONE;
+      }
+
+      if (this.hasTemperatureMinMax()) return TemperatureToDisplay.MIN_MAX;
+      if (this.hasTemperatureAvg()) return TemperatureToDisplay.AVERAGE;
+      return TemperatureToDisplay.NONE;
    }
 
    this.hasTemperatureMinMax = function () {
@@ -232,7 +381,7 @@ function ConditionsDevice(keywords) {
       return !(this.isSnow() ? isNullOrUndefined(this.values.get(this.snowKw.id)) : isNullOrUndefined(this.values.get(this.rainKw.id)));
    }
    this.getRainMm = function () {
-      return isNullOrUndefinedOrEmpty(this.values.get(this.rainKw.id)) ? "0 mm" : (round(this.values.get(this.rainKw.id), 1) +  " mm");
+      return isNullOrUndefinedOrEmpty(this.values.get(this.rainKw.id)) ? "0 mm" : (round(this.values.get(this.rainKw.id), 1) + " mm");
    }
    this.getSnowCm = function () {
       // Note : 1 mm of precipitation gives approximatively 1 cm of snow
@@ -328,11 +477,11 @@ widgetViewModelCtor =
 
                WeatherIcon: device.getWeatherIconPath(self.widget.configuration.Iconset),
 
-               DisplayTemperatureMinMax: device.hasTemperatureMinMax() ? "display: block" : "display: none",
+               DisplayTemperatureMinMax: device.temperatureToDisplay() == TemperatureToDisplay.MIN_MAX ? "display: block" : "display: none",
                TempMax: device.getTemperatureMax(),
                TempMin: device.getTemperatureMin(),
 
-               DisplayTemperatureAvg: (!device.hasTemperatureMinMax() && device.hasTemperatureAvg()) ? "display: block" : "display: none",
+               DisplayTemperatureAvg: device.temperatureToDisplay() == TemperatureToDisplay.AVERAGE ? "display: block" : "display: none",
                TempAvg: device.getTemperatureAvg(),
 
                DisplayRainOrSnow: device.hasRainOrSnow() ? "display: block" : "display: none",
@@ -353,7 +502,7 @@ widgetViewModelCtor =
 
       this.configurationChanged = function () {
          var self = this;
-         
+
          if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
 
