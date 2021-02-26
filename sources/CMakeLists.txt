@@ -590,6 +590,8 @@ set(YADOMS_SRC
    server/task/TaskStatus.cpp
    server/task/backup/Backup.h
    server/task/backup/Backup.cpp
+   server/task/backup/Restore.h
+   server/task/backup/Restore.cpp
    server/task/exportData/ExportData.h
    server/task/exportData/ExportData.cpp
    server/task/packLogs/PackLogs.h

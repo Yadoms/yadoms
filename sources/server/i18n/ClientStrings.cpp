@@ -62,6 +62,11 @@ namespace i18n
    std::string CClientStrings::BackupClean                                  = "task.backup.clean";
    std::string CClientStrings::BackupSuccess                                = "task.backup.success";
 
+   std::string CClientStrings::RestorePrepare                               = "task.restore.prepare";
+   std::string CClientStrings::RestoreDecompress                            = "task.restore.decompress";
+   std::string CClientStrings::RestoreSuccess                               = "task.restore.success";
+   std::string CClientStrings::RestoreRestarting                            = "task.restore.restarting";
+
    std::string CClientStrings::PackLogsPrepare                              = "task.packLogs.prepare";
    std::string CClientStrings::PackLogsCopyFile                             = "task.packLogs.copyfiles";
    std::string CClientStrings::PackLogsCompress                             = "task.packLogs.compress";

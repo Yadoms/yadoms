@@ -1,16 +1,15 @@
 #pragma once
 
-#include "entities/Entities.h"
-
-
-namespace database { 
-
+namespace database
+{
    //---------------------------------
-   ///\brief Interface fro backing up data to a file
+   ///\brief Interface for backing up data to a file
    //---------------------------------
    class IDataBackup
    {
    public:
+      virtual ~IDataBackup() = default;
+
       //---------------------------------
       ///\brief Define a function prototype for updating the backup progress
       //---------------------------------
@@ -33,15 +32,6 @@ namespace database {
       ///\param [in] backupFolder : the backup folder
       ///\param [in] reporter : a function pointer for reporting progression
       //---------------------------------
-      virtual void backupData(const std::string & backupFolder, ProgressFunc reporter) const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~IDataBackup()
-      {
-      }
+      virtual void backupData(const std::string& backupFolder, ProgressFunc reporter) const = 0;
    };
-
- 
 } //namespace database 

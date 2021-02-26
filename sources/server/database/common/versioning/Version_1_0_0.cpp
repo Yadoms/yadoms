@@ -2,9 +2,11 @@
 #include "Version_1_0_0.h"
 #include "database/common/Query.h"
 #include "database/common/DatabaseTables.h"
+#include "database/IPluginRequester.h"
 #include <shared/versioning/SemVer.h>
 #include "VersionException.h"
 #include <shared/Log.h>
+
 
 namespace database
 {

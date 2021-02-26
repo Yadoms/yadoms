@@ -3,10 +3,10 @@
 #include "PackLogs.h"
 #include "tools/FileSystem.h"
 #include <Poco/Zip/Compress.h>
-#include <shared/currentTime/Provider.h>
 #include <Poco/Zip/ZipException.h>
 #include <Poco/Delegate.h>
 #include "i18n/ClientStrings.h"
+#include <shared/Log.h>
 
 namespace task
 {
@@ -126,7 +126,7 @@ namespace task
       {
          //zip folder content (51 -> 98)
          auto zipFilenameFinal = m_pathProvider->backupPath() / "logs.zip";
-         auto zipFilename = m_pathProvider->backupPath() / "logs.zip.inprogress";
+         const auto zipFilename = m_pathProvider->backupPath() / "logs.zip.inprogress";
 
          boost::filesystem::remove(zipFilenameFinal);
          boost::filesystem::remove(zipFilename);

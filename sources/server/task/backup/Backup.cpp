@@ -5,6 +5,7 @@
 #include "Backup.h"
 #include "tools/FileSystem.h"
 #include <shared/tools/Filesystem.h>
+#include <shared/Log.h>
 #include <Poco/Zip/Compress.h>
 #include <shared/currentTime/Provider.h>
 #include <Poco/Zip/ZipException.h>

@@ -22,17 +22,24 @@ MaintenanceManager.startBackup = function() {
 };
 
 /**
- * Get the last database backup information
+ * Get the last backup information
  */
 MaintenanceManager.lastBackupInformation = function() {
 	return RestEngine.getJson("rest/maintenance/backup");
 };
 
 /**
- * Delete the last database backup
+ * Delete the given backup
  */
 MaintenanceManager.deleteBackup = function(name) {
 	return RestEngine.deleteJson("rest/maintenance/backup/" + name);
+};
+
+/**
+ * Restore the given backup
+ */
+MaintenanceManager.restoreBackup = function(name) {
+	return RestEngine.deleteJson("rest/maintenance/restore/" + name);
 };
 
 /**
@@ -50,7 +57,7 @@ MaintenanceManager.startLogsDownload = function() {
 };
 
 /**
- * Get the last database backup information
+ * Get the last backup information
  */
 MaintenanceManager.lastLogsDownloadInformation = function() {
 	return RestEngine.getJson("rest/maintenance/logs");

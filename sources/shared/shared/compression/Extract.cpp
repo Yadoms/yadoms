@@ -16,23 +16,23 @@ namespace shared
       {
       }
 
-      boost::filesystem::path CExtract::here(const boost::filesystem::path& downloadedPackage)
+      boost::filesystem::path CExtract::here(const boost::filesystem::path& compressedFile)
       {
-         return to(downloadedPackage,
-                   downloadedPackage.parent_path() / downloadedPackage.stem());
+         return to(compressedFile,
+                   compressedFile.parent_path() / compressedFile.stem());
       }
 
-      boost::filesystem::path CExtract::to(const boost::filesystem::path& downloadedPackage,
+      boost::filesystem::path CExtract::to(const boost::filesystem::path& compressedFile,
                                            const boost::filesystem::path& extractPath)
       {
          //verification of the extension
-         const auto extension = boost::filesystem::extension(downloadedPackage);
+         const auto extension = boost::filesystem::extension(compressedFile);
          if ((!boost::iends_with(extension, "zip")) && (!boost::iends_with(extension, "tar.gz")))
             throw exception::CNotSupported(
-               "Invalid extension package : " + downloadedPackage.string() + ". Only zip or tar.gz supported. " +
+               "Invalid extension package : " + compressedFile.string() + ". Only zip or tar.gz supported. " +
                extension);
 
-         Poco::FileStream inp(downloadedPackage.string(), std::ios::binary);
+         Poco::FileStream inp(compressedFile.string(), std::ios::binary);
 
          // decompress to current working dir
          Poco::Zip::Decompress dec(inp, extractPath.string());

@@ -68,6 +68,12 @@
             "clean": "Cleaning...",
             "success": "Backup succeeded"
          },
+         "restore": {
+            "prepare": "Preparing restoration...",
+            "decompress": "Uncompressing files...",
+            "success": "Restoration succeeded",
+            "restarting": "Restarting Yadoms..."
+         },
          "packLogs": {
             "prepare": "Preparing logs...",
             "copyfiles": "Copying logs...",
@@ -817,8 +823,11 @@
                      "actions": "Actions",
                      "download": "Download",
                      "delete": "Delete",
+                     "restore": "Restore",
                      "deleteConfirmTitle": "Confirm delete",
-                     "deleteConfirm": "Delete the backup ?"
+                     "deleteConfirm": "Delete the backup ?",
+                     "restoreConfirmTitle": "Confirm restore backup",
+                     "restoreConfirm": "Restoring the backup will erase all current data. Are you sure to proceed restoration ?"
                   }
                },
                "logs-download": {

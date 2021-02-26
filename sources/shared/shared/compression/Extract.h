@@ -17,12 +17,12 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	Extract an archive next to its location
          //--------------------------------------------------------------   
-         boost::filesystem::path here(const boost::filesystem::path& downloadedPackage);
+         boost::filesystem::path here(const boost::filesystem::path& compressedFile);
 
          //--------------------------------------------------------------
          /// \brief	Extract an archive into a directory
          //--------------------------------------------------------------   
-         boost::filesystem::path to(const boost::filesystem::path& downloadedPackage,
+         boost::filesystem::path to(const boost::filesystem::path& compressedFile,
                                     const boost::filesystem::path& extractPath);
 
       private:
