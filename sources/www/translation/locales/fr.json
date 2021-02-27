@@ -828,7 +828,8 @@
                      "deleteConfirm": "Supprimer la sauvegarde ?",
                      "restoreConfirmTitle": "Confirmer la restauration",
                      "restoreConfirm": "Restaurer le backup effacera toutes les données actuelles. Etes-vous sûr de vouloir procéder à la restauration ?"
-                  }
+                  },            
+                  "restoring": "Restauration en cours..."
                },
                "logs-download": {
                   "title": "Journaux",

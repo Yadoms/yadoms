@@ -18,7 +18,7 @@
 SETLOCAL ENABLEDELAYEDEXPANSION
  
 SET YadomsExecutable=yadoms.exe
-SET BeforeBackupRestoreDirectory=beforeBackupRestore
+SET BeforeRestoreDirectory=beforeBackupRestore
  
 set CurrentScriptDir=%~dp0
  
@@ -79,31 +79,34 @@ echo %YadomsExecutable% ends
 @ECHO ON
 
 echo Move current data ...
-if exist %BeforeBackupRestoreDirectory% (
-   rmdir /S /Q %BeforeBackupRestoreDirectory%
+if exist %BeforeRestoreDirectory% (
+   rmdir /S /Q %BeforeRestoreDirectory%
    )
-mkdir %BeforeBackupRestoreDirectory%
+mkdir %BeforeRestoreDirectory%
 :: Database
 if exist yadoms.db3 (
-   move /Y yadoms.db3 %BeforeBackupRestoreDirectory%
+   move /Y yadoms.db3 %BeforeRestoreDirectory%
    )
 :: Yadoms.ini
 if exist yadoms.ini (
-   move /Y yadoms.ini %BeforeBackupRestoreDirectory%
+   move /Y yadoms.ini %BeforeRestoreDirectory%
    )
 :: Scripts
 if exist scripts (
-   move /Y scripts %BeforeBackupRestoreDirectory%
+   move /Y scripts %BeforeRestoreDirectory%
    )
 :: Plugin data
 if exist data (
-   move /Y data %BeforeBackupRestoreDirectory%
+   move /Y data %BeforeRestoreDirectory%
    )
 
 echo Restoring data ...
 :: Merge all the backup content into Yadoms current directory
 for /d %%i in ("%restoredDataDirectory%\*.*") do move /Y "%%i" "%CurrentScriptDir%"
 for %%i in ("%restoredDataDirectory%\*.*") do move /Y "%%i" "%CurrentScriptDir%"
+
+echo Cleanup ...
+rmdir /S /Q %restoredDataDirectory%
 
 
 echo Data restored successfully

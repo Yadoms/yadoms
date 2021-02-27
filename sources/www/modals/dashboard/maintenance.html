@@ -96,6 +96,22 @@
    </div>
 </div>
 
+<div class="hidden" id="yadoms-restoring-splash">
+   <h1 class="restoring">
+      <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+      <span data-i18n="modals.dashboard.sub-windows.maintenance.backup.restoring"></span>
+   </h1>
+   <h1 class="restarting hidden">
+      <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+      <span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.restarting"></span>
+   </h1>
+   <div class="progress progress-striped active">
+      <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+         style="width: 100%">
+      </div>
+   </div>
+</div>
+
 <script>
    function showLastBackupInformation() {
       MaintenanceManager.lastBackupInformation()
@@ -167,36 +183,6 @@
                            });
                      });
 
-                     $("#" + id + '_delete').unbind('click').bind('click', function () {
-                        Yadoms.modals.confirmation.loadAsync()
-                           .done(function () {
-                              Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
-                                 $.t(
-                                    "modals.dashboard.sub-windows.maintenance.backup.backuplist.deleteConfirmTitle"
-                                 ),
-                                 $.t(
-                                    "modals.dashboard.sub-windows.maintenance.backup.backuplist.deleteConfirm"
-                                 ),
-                                 function () {
-                                    MaintenanceManager.deleteBackup(info.url)
-                                       .done(function (f) {
-                                          console.log("Backup of " + DateTimeFormatter
-                                             .isoDateToString(
-                                                info.modificationDate) +
-                                             " deleted with success");
-                                       })
-                                       .fail(function (err) {
-                                          console.error("Fail to delete the backup");
-                                          console.error(err);
-                                       })
-                                       .always(function () {
-                                          //refresh list
-                                          showLastBackupInformation();
-                                       });
-                                 });
-                           });
-                     });
-
                      $("#" + id + '_restore').unbind('click').bind('click', function () {
                         Yadoms.modals.confirmation.loadAsync()
                            .done(function () {
@@ -213,10 +199,7 @@
                                           console.log("Backup of " + DateTimeFormatter
                                              .isoDateToString(info.modificationDate) +
                                              " is restoring...");
-
-                                          console.log("Wait for Yadoms restart...");
-                                          //TODO
-
+                                          displayRestoreModal();
                                        })
                                        .fail(function (err) {
                                           console.error("Fail to restore the backup");
@@ -338,6 +321,64 @@
                });
          });
       });
+   }
+
+   function displayRestoreModal() {
+      var $splash = $('div#yadoms-restoring-splash');
+      $splash.i18n();
+      $splash.removeClass("hidden");
+
+      stopPeriodicTask();
+
+      waitForYadomsExit();
+   }
+
+   function waitForYadomsExit() {
+      console.log("Wait Yadoms restart...");
+      var timeout = setTimeout(function () {
+         //the timeout has expired. So server is not alive anymore
+         waitForYadomsReturn();
+      }, 5000);
+
+      //We can consider that the server has exited if it doesn't answer "pong" to the websocket "ping"
+      $(document).on("isalive", function () {
+         //we have received a alive answer
+         //we resend a new isAlive call until it doesn't answer
+         console.log("Yadoms still alive, wait more...");
+         clearTimeout(timeout);
+         timeout = setTimeout(function () {
+            //the timeout has expired. So server is not alive anymore
+            console.log("Timeout, Yadoms exited");
+            waitForYadomsReturn();
+         }, 5000);
+         //we send the ping and wait for the answer
+         WebSocketEngine.sendIsServerAlive();
+      });
+
+      //we send the ping and wait for the answer
+      WebSocketEngine.sendIsServerAlive();
+   }
+
+   function waitForYadomsReturn() {
+      console.log("Wait Yadoms exiting...");
+      var $splash = $('div#yadoms-restoring-splash');
+      $splash.find("h1.updating").addClass("hidden");
+      $splash.find("h1.restarting").removeClass("hidden");
+
+      //we try to get information from server loop until the server answer
+      EventLoggerManager.getLast({
+            timeout: 2000
+         })
+         .done(function () {
+            //we received an answer, the server is back
+            //we reload full page (clearing cache)
+            console.log("Yadoms is back, reload page (discarding cache)...");
+            location.reload(true);
+         })
+         .fail(function (error) {
+            console.log("Yadoms is not back, wait more... (" + error + ")");
+            setTimeout(waitForYadomsReturn(), 1000);
+         });
    }
 
    function enableLogsDownloadSection() {

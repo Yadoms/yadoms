@@ -828,7 +828,8 @@
                      "deleteConfirm": "Delete the backup ?",
                      "restoreConfirmTitle": "Confirm restore backup",
                      "restoreConfirm": "Restoring the backup will erase all current data. Are you sure to proceed restoration ?"
-                  }
+                  },            
+                  "restoring": "Restoring in progress..."
                },
                "logs-download": {
                   "title": "Logs",

@@ -16,7 +16,7 @@ namespace web
 
       std::vector<int> CAcquisitionFilterFrame::getFilter() const
       {
-         return m_internalContainer.get<std::vector<int>>(m_dataFieldName);
+         return m_internalContainer.get<std::vector<int>>(DataFieldName);
       }
    } //namespace ws
 } //namespace web

@@ -8,10 +8,11 @@
 * Fix #715 : Fix model field update from rule REST api
 * Fix #717 : Fix crash when requesting a NULL lastAcquisition
 * Fix #718 : Find compatible devices for devices merging
-* New feature #704 : Add update warning message for version to be installed
+* New feature #523 : Add backup restoration
 * New feature #572 : Proxy support for http requests
 * New feature #603 : Manage redirections for http requests
 * New feature #680 : Add HTTP devices autodetection in shared
+* New feature #704 : Add update warning message for version to be installed
 * New feature #705 : Add obsolete management for modules
 * New feature #721 : Display rule interpreter icon in automation page
 * Fix dynamically configurable devices translations

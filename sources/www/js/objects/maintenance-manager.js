@@ -39,7 +39,7 @@ MaintenanceManager.deleteBackup = function(name) {
  * Restore the given backup
  */
 MaintenanceManager.restoreBackup = function(name) {
-	return RestEngine.deleteJson("rest/maintenance/restore/" + name);
+	return RestEngine.putJson("rest/maintenance/restore/" + name);
 };
 
 /**

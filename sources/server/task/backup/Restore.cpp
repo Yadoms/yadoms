@@ -88,7 +88,7 @@ namespace task
 
       void CRestore::runRestoreScript(const boost::filesystem::path& tempDirectory) const
       {
-         const auto executablePath("restoreBackup.cmd"); //TODO gérer .sh pour Linux
+         const auto executablePath("restoreBackup.cmd");
 
          Poco::Process::Args args;
          args.push_back(std::to_string(boost::this_process::get_id()));
