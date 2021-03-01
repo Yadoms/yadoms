@@ -49,7 +49,7 @@ done;
 
 # Kill Yadoms if not gracefully stopped
 waitedTime=0
-kill -2 $yadomsCurrentPid > /dev/null
+kill -2 $yadomsCurrentPid > /dev/null 2>&1
 while ps -p $yadomsCurrentPid > /dev/null; do 
    sleep 1; 
    waitedTime=$((waitedTime+1))
@@ -60,7 +60,7 @@ while ps -p $yadomsCurrentPid > /dev/null; do
 done;
 
 # Last chance : Kill it anyway
-kill -9 $yadomsCurrentPid > /dev/null
+kill -9 $yadomsCurrentPid > /dev/null 2>&1
 waitedTime=0
 while ps -p $yadomsCurrentPid > /dev/null; do 
    sleep 1; 
@@ -77,15 +77,15 @@ echo "Process Yadoms is now stopped" >> $logFile 2>&1
 
 echo "Move current data to $beforeRestoreDirectory..." >> $logFile 2>&1
 if [ -d "$beforeRestoreDirectory" ]; then rm -Rf $beforeRestoreDirectory; fi
-mkdir %beforeRestoreDirectory%
-if [ -f "yadoms.db3" ]; then mv -f yadoms.db3 %beforeRestoreDirectory%/; fi
-if [ -f "yadoms.ini" ]; then mv -f yadoms.ini %beforeRestoreDirectory%/; fi
-if [ -d "scripts" ]; then mv -f scripts %beforeRestoreDirectory%/; fi
-if [ -d "data" ]; then mv -f data %beforeRestoreDirectory%/; fi
+mkdir $beforeRestoreDirectory
+if [ -f "yadoms.db3" ]; then mv -f yadoms.db3 $beforeRestoreDirectory/; fi
+if [ -f "yadoms.ini" ]; then mv -f yadoms.ini $beforeRestoreDirectory/; fi
+if [ -d "scripts" ]; then mv -f scripts $beforeRestoreDirectory/; fi
+if [ -d "data" ]; then mv -f data $beforeRestoreDirectory/; fi
 
 echo "Restoring data..." >> $logFile 2>&1
 # Merge all the backup content into Yadoms current directory
-mv -f %restoredDataDirectory%/* .
+mv -f $restoredDataDirectory/* .
 
 echo "Cleanup..." >> $logFile 2>&1
 rm -Rf $restoredDataDirectory
