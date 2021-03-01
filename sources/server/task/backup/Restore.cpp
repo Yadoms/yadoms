@@ -88,14 +88,14 @@ namespace task
 
       void CRestore::runRestoreScript(const boost::filesystem::path& tempDirectory) const
       {
-         const auto executablePath("restoreBackup.cmd");
+         static const auto ExecutablePath(BACKUP_RESTORATION_SCRIPT_FILENAME);
 
          Poco::Process::Args args;
          args.push_back(std::to_string(boost::this_process::get_id()));
          args.push_back(tempDirectory.string());
 
-         YADOMS_LOG(debug) << "Launch script \"" << executablePath << "\" with args " << boost::algorithm::join(args, ", ");
-         const auto handle = tools::COperatingSystem::launchNativeScript(executablePath, args);
+         YADOMS_LOG(debug) << "Launch script \"" << ExecutablePath << "\" with args " << boost::algorithm::join(args, ", ");
+         const auto handle = tools::COperatingSystem::launchNativeScript(ExecutablePath, args);
 
          // As script is waiting Yadoms stops, wait for 5 seconds to ensure it doesn't stop prematurely
          boost::this_thread::sleep(boost::posix_time::seconds(5));

@@ -1227,10 +1227,12 @@ endif(COTIRE_USE)
 
 #copy backup restoration scripts into build directory
 if(WIN32)
-   set(backupRestorationScript ${CMAKE_SOURCE_DIR}/server/task/backup/scripts/restoreBackup.cmd)
+   set(backupRestorationScriptFilename restoreBackup.cmd)
 else()
-   set(backupRestorationScript ${CMAKE_SOURCE_DIR}/server/task/backup/scripts/restoreBackup.sh)
+   set(backupRestorationScriptFilename restoreBackup.sh)
 endif()
+add_definitions(-DBACKUP_RESTORATION_SCRIPT_FILENAME="${backupRestorationScriptFilename}")
+set(backupRestorationScript ${CMAKE_SOURCE_DIR}/server/task/backup/scripts/${backupRestorationScriptFilename})
 
 add_custom_command(TARGET yadoms POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
