@@ -13,28 +13,25 @@ namespace web
       class CFrameBase
       {
       public:
-         //-----------------------------
-         ///\brief Destructor
-         //-----------------------------
-         virtual ~CFrameBase();
+         virtual ~CFrameBase() = default;
 
          //-----------------------------
          ///\brief Enumeration for all frame type
          //-----------------------------
          DECLARE_ENUM_HEADER(EFrameType,
-            ((AcquisitionFilter))
-            ((AcquisitionUpdate))
-            ((AcquisitionSummaryUpdate))
-            ((DeviceNew))
-            ((LogEventNew))
-            ((TaskUpdateNotification))
-            ((IsAlive))
-            ((TimeNotification))
-            ((KeywordDeleted))
-            ((DeviceDeleted))
-            ((KeywordNew))
-            ((DeviceBlackListed))
-         ) ;
+                             ((AcquisitionFilter))
+                             ((AcquisitionUpdate))
+                             ((AcquisitionSummaryUpdate))
+                             ((DeviceNew))
+                             ((LogEventNew))
+                             ((TaskUpdateNotification))
+                             ((IsAlive))
+                             ((TimeNotification))
+                             ((KeywordDeleted))
+                             ((DeviceDeleted))
+                             ((KeywordNew))
+                             ((DeviceBlackListed))
+         )
 
       protected:
          //-----------------------------
@@ -54,12 +51,12 @@ namespace web
          //-----------------------------
          ///\brief Get the frame type
          //-----------------------------
-         EFrameType getType();
+         EFrameType getType() const;
 
          //-----------------------------
          ///\brief Serialize the frame
          //-----------------------------
-         const std::string serialize() const;
+         std::string serialize() const;
 
          //-----------------------------
          ///\brief Get the type field name
@@ -76,13 +73,11 @@ namespace web
          //-----------------------------
          ///\brief The TYPE field name
          //-----------------------------
-         static const std::string m_typeFieldName;
+         static const std::string TypeFieldName;
          //-----------------------------
          ///\bruef The DATA field name
          //-----------------------------
-         static const std::string m_dataFieldName;
+         static const std::string DataFieldName;
       };
    } //namespace ws
 } //namespace web
-
-

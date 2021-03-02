@@ -9,11 +9,5 @@ namespace web
          : CFrameBase(EFrameType::kIsAlive)
       {
       }
-
-      CIsAliveFrame::~CIsAliveFrame()
-      {
-      }
    } //namespace ws
 } //namespace web
-
-

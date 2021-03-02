@@ -4,10 +4,13 @@
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/Result.h"
 #include "task/backup/Backup.h"
+#include "task/backup/Restore.h"
 #include "task/exportData/ExportData.h"
 #include "task/packLogs/PackLogs.h"
 #include <shared/Log.h>
 #include <boost/date_time/c_local_time_adjustor.hpp>
+#include <utility>
+
 
 namespace web
 {
@@ -22,11 +25,11 @@ namespace web
                                     boost::shared_ptr<database::IKeywordRequester> keywordRequester,
                                     boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                                     boost::shared_ptr<task::CScheduler> taskScheduler)
-            : m_pathProvider(pathProvider),
-              m_databaseRequester(databaseRequester),
-              m_keywordRequester(keywordRequester),
-              m_acquisitionRequester(acquisitionRequester),
-              m_taskScheduler(taskScheduler)
+            : m_pathProvider(std::move(pathProvider)),
+              m_databaseRequester(std::move(databaseRequester)),
+              m_keywordRequester(std::move(keywordRequester)),
+              m_acquisitionRequester(std::move(acquisitionRequester)),
+              m_taskScheduler(std::move(taskScheduler))
          {
          }
 
@@ -37,6 +40,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("backup"), CMaintenance::getBackups);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("backup"), CMaintenance::startBackup);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup")("*"), CMaintenance::deleteBackup);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("restore")("*"), CMaintenance::restoreBackup);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup"), CMaintenance::deleteAllBackups);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("packlogs"), CMaintenance::startPackLogs);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("logs"), CMaintenance::getLogs);
@@ -111,21 +115,21 @@ namespace web
                {
                   auto backup = m_pathProvider->backupPath();
 
-                  if (!backup.empty() && boost::filesystem::exists(backup) && boost::filesystem::is_directory(backup))
+                  if (!backup.empty() && exists(backup) && is_directory(backup))
                   {
                      shared::CDataContainer result;
                      result.createArray("backups");
                      // Check all subdirectories in plugin path
                      for (boost::filesystem::directory_iterator i(backup); i != boost::filesystem::directory_iterator(); ++i)
                      {
-                        if (boost::filesystem::is_regular_file(i->path()))
+                        if (is_regular_file(i->path()))
                         {
                            if (!boost::starts_with(i->path().filename().string(), "backup_"))
                               continue;
 
-                           auto fileSize = boost::filesystem::file_size(i->path());
+                           auto fileSize = file_size(i->path());
 
-                           const auto lastWriteTimeT = boost::filesystem::last_write_time(i->path());
+                           const auto lastWriteTimeT = last_write_time(i->path());
                            auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
                               boost::posix_time::from_time_t(lastWriteTimeT));
 
@@ -166,7 +170,7 @@ namespace web
                   const auto urlToDelete = parameters[2];
 
                   const auto backup = m_pathProvider->backupPath();
-                  if (boost::filesystem::exists(backup / urlToDelete))
+                  if (exists(backup / urlToDelete))
                   {
                      boost::system::error_code ec;
                      if (boost::filesystem::remove(backup / urlToDelete, ec))
@@ -175,6 +179,44 @@ namespace web
                   }
                   //backup do not exists
                   return CResult::GenerateError("file do not exists");
+               }
+
+               return CResult::GenerateError("invalid parameter. Can not retrieve file to delete");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in deleting backup data");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::restoreBackup(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() > 2)
+               {
+                  const auto backupFileName = parameters[2];
+
+                  const boost::shared_ptr<task::ITask> task(boost::make_shared<task::backup::CRestore>(backupFileName,
+                                                                                                       m_pathProvider));
+
+                  std::string taskUid;
+                  if (!m_taskScheduler->runTask(task, taskUid))
+                  {
+                     YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
+                     return CResult::GenerateError("Task : " + task->getName() + " failed to start");
+                  }
+
+                  YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+
+                  shared::CDataContainer result;
+                  result.set("taskId", taskUid);
+                  return CResult::GenerateSuccess(result);
                }
 
                return CResult::GenerateError("invalid parameter. Can not retrieve file to delete");
@@ -202,7 +244,7 @@ namespace web
                // Check all subdirectories in plugin path
                for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
                {
-                  if (boost::filesystem::is_regular_file(i->path()))
+                  if (is_regular_file(i->path()))
                   {
                      if (!boost::starts_with(i->path().filename().string(), "backup_"))
                         continue;
@@ -261,18 +303,18 @@ namespace web
             {
                auto backupPath = m_pathProvider->backupPath();
 
-               if (!backupPath.empty() && boost::filesystem::exists(backupPath) && boost::filesystem::is_directory(backupPath))
+               if (!backupPath.empty() && exists(backupPath) && is_directory(backupPath))
                {
                   for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
                   {
                      if (i->path().filename().string() != "logs.zip")
                         continue;
 
-                     if (boost::filesystem::is_regular_file(i->path()))
+                     if (is_regular_file(i->path()))
                      {
-                        const auto fileSize = boost::filesystem::file_size(i->path());
+                        const auto fileSize = file_size(i->path());
 
-                        const auto lastWriteTimeT = boost::filesystem::last_write_time(i->path());
+                        const auto lastWriteTimeT = last_write_time(i->path());
                         const auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
                            boost::posix_time::from_time_t(lastWriteTimeT));
 
@@ -312,7 +354,7 @@ namespace web
                std::string errors;
                for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
                {
-                  if (boost::filesystem::is_regular_file(i->path()))
+                  if (is_regular_file(i->path()))
                   {
                      if (i->path().filename().string() != "logs.zip")
                         continue;
@@ -381,18 +423,18 @@ namespace web
             {
                auto backupPath = m_pathProvider->backupPath();
 
-               if (!backupPath.empty() && boost::filesystem::exists(backupPath) && boost::filesystem::is_directory(backupPath))
+               if (!backupPath.empty() && exists(backupPath) && is_directory(backupPath))
                {
                   for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
                   {
                      if (i->path().filename().string() != "exportData.zip")
                         continue;
 
-                     if (boost::filesystem::is_regular_file(i->path()))
+                     if (is_regular_file(i->path()))
                      {
-                        const auto fileSize = boost::filesystem::file_size(i->path());
+                        const auto fileSize = file_size(i->path());
 
-                        const auto lastWriteTimeT = boost::filesystem::last_write_time(i->path());
+                        const auto lastWriteTimeT = last_write_time(i->path());
                         const auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
                            boost::posix_time::from_time_t(lastWriteTimeT));
 

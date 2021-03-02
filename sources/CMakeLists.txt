@@ -590,6 +590,8 @@ set(YADOMS_SRC
    server/task/TaskStatus.cpp
    server/task/backup/Backup.h
    server/task/backup/Backup.cpp
+   server/task/backup/Restore.h
+   server/task/backup/Restore.cpp
    server/task/exportData/ExportData.h
    server/task/exportData/ExportData.cpp
    server/task/packLogs/PackLogs.h
@@ -1220,7 +1222,29 @@ if(COTIRE_USE)
                          COMMAND ${CMAKE_COMMAND} -E copy_directory
                          ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms_unity>/www/)
    endif(COTIRE_USE_UNITY)
-endif(COTIRE_USE)                          
+endif(COTIRE_USE)     
+
+
+#copy backup restoration scripts into build directory
+if(WIN32)
+   set(backupRestorationScriptFilename restoreBackup.cmd)
+else()
+   set(backupRestorationScriptFilename restoreBackup.sh)
+endif()
+add_definitions(-DBACKUP_RESTORATION_SCRIPT_FILENAME="${backupRestorationScriptFilename}")
+set(backupRestorationScript ${CMAKE_SOURCE_DIR}/server/task/backup/scripts/${backupRestorationScriptFilename})
+
+add_custom_command(TARGET yadoms POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                      ${backupRestorationScript} $<TARGET_FILE_DIR:yadoms>/)
+      
+if(COTIRE_USE)   
+   if(COTIRE_USE_UNITY)
+      add_custom_command(TARGET yadoms_unity POST_BUILD
+                         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                            ${backupRestorationScript} $<TARGET_FILE_DIR:yadoms_unity>/)
+   endif(COTIRE_USE_UNITY)
+endif(COTIRE_USE)                       
 
 ##################################################################################################
 ## CPACK
@@ -1232,6 +1256,10 @@ install(TARGETS yadoms RUNTIME DESTINATION ${INSTALL_BINDIR})
 
 #set yadoms.ini configuration file to be copied in bindir
 install(FILES ${CMAKE_SOURCE_DIR}/../config/yadoms.ini
+   DESTINATION ${INSTALL_BINDIR})
+
+#set backup restoration script to be copied in bindir
+install(FILES ${backupRestorationScript}
    DESTINATION ${INSTALL_BINDIR})
 
 #Configure all building targets to allow finding dependencies next to them

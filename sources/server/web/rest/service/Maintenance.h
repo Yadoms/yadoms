@@ -37,6 +37,8 @@ namespace web
                                                                                    const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteBackup(const std::vector<std::string>& parameters,
                                                                                      const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> restoreBackup(const std::vector<std::string>& parameters,
+                                                                                     const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllBackups(const std::vector<std::string>& parameters,
                                                                                          const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> startPackLogs(const std::vector<std::string>& parameters,
