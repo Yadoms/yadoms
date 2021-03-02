@@ -59,7 +59,7 @@ namespace tools
       buffer << infile.rdbuf();
       auto content = buffer.str();
       boost::replace_all(content, "\r\n", "\n");
-      const auto normalizedScriptPath(boost::filesystem::path(scriptPath).parent_path() / (std::string("normalized_") + boost::filesystem::path(scriptPath).filename()));
+      const auto normalizedScriptPath(boost::filesystem::path(scriptPath).parent_path() / (std::string("normalized_") + boost::filesystem::path(scriptPath).filename().string()));
       std::ofstream outfile(normalizedScriptPath.string(), std::ios::out | std::ios::trunc);
       outfile << content;
       outfile.close();
