@@ -24,6 +24,13 @@ namespace automation
          virtual std::vector<std::string> getLoadedInterpreters(bool loadIfNecessary = true) = 0;
 
          //-----------------------------------------------------
+         ///\brief               Get all available interpreters
+         ///\param loadIfNecessary Load interpreters when true
+         ///\return              The list of available interpreters
+         //-----------------------------------------------------
+         virtual std::vector<std::string> getAvailablenterpreters(bool loadIfNecessary = true) = 0;
+
+         //-----------------------------------------------------
          ///\brief               Get loaded interpreters with associated information
          ///\return              The list of loaded interpreters (available or not) with their information
          //-----------------------------------------------------

@@ -48,7 +48,7 @@
          PluginManager.getAll()
             .done(function (pluginlist) {
                // Active "new rule" button only if at least one interpreter available
-               AutomationInterpreterManager.getAll()
+               AutomationInterpreterManager.getAvailable()
                   .done(function (interpreters) {
                      if (Object.keys(interpreters).length > 0)
                         Yadoms.AutomationCenterDashboardRegisterButtonAddNewRule();

@@ -6,6 +6,7 @@
 * Fix #702 : Support links in update&install page
 * Fix #703 : Fix display and translations of file type fields of configuration
 * Fix #715 : Fix model field update from rule REST api
+* Fix #716 : Show only available rule editors when creating a new rule
 * Fix #717 : Fix crash when requesting a NULL lastAcquisition
 * Fix #718 : Find compatible devices for devices merging
 * New feature #523 : Add backup restoration

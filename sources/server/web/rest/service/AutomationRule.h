@@ -24,6 +24,8 @@ namespace web
             static const std::string& getRestKeyword();
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllInterpreters(const std::vector<std::string>& parameters,
                                                                                            const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAvailableInterpreters(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllRules(const std::vector<std::string>& parameters,
                                                                                     const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getRule(const std::vector<std::string>& parameters,
@@ -49,7 +51,7 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteRule(const std::vector<std::string>& parameters,
                                                                                    const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> duplicateRule(const std::vector<std::string>& parameters,
-                                                                                   const std::string& requestContent) const;
+                                                                                      const std::string& requestContent) const;
 
             boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
                                                                                             const std::vector<std::string>& parameters,
@@ -65,5 +67,3 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-
