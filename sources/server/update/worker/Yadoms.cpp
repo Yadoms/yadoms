@@ -4,11 +4,12 @@
 #include <shared/ServiceLocator.h>
 #include <Poco/Process.h>
 #include <shared/compression/Extract.h>
-#include "tools/FileSystem.h"
 #include "i18n/ClientStrings.h"
 #include <shared/process/SoftwareStop.h> 
 #include "tools/OperatingSystem.h"
 #include <boost/process/environment.hpp>
+
+#include "shared/tools/Filesystem.h"
 
 namespace update
 {
@@ -86,7 +87,7 @@ namespace update
                   progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsDeployFailed, ex.what(), callbackData);
 
                   //remove folder
-                  tools::CFileSystem::remove(extractedPackageLocation, true);
+                  shared::tools::CFilesystem::remove(extractedPackageLocation, true);
                }
             }
             catch (std::exception& ex)
@@ -97,7 +98,7 @@ namespace update
             }
 
             //no more need downloaded zip package
-            tools::CFileSystem::remove(downloadedPackage, false);
+            shared::tools::CFilesystem::remove(downloadedPackage, false);
          }
          catch (std::exception& ex)
          {

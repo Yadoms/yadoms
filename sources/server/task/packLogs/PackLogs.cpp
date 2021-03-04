@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "task/ITask.h"
 #include "PackLogs.h"
-#include "tools/FileSystem.h"
 #include <Poco/Zip/Compress.h>
 #include <Poco/Zip/ZipException.h>
 #include <Poco/Delegate.h>
 #include "i18n/ClientStrings.h"
 #include <shared/Log.h>
+
+#include "shared/tools/Filesystem.h"
 
 namespace task
 {
@@ -102,7 +103,7 @@ namespace task
 
       bool CPackLogs::copyLogsFiles(boost::filesystem::path& logsTempFolder) const
       {
-         if (tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider->logsPath(), logsTempFolder / "logs"))
+         if (shared::tools::CFilesystem::copyDirectoryRecursivelyTo(m_pathProvider->logsPath(), logsTempFolder / "logs"))
          {
             onProgressionUpdatedInternal(50.0f, i18n::CClientStrings::PackLogsCopyFile);
 

@@ -1,12 +1,8 @@
 #include "stdafx.h"
 #include "WorkerHelpers.h"
 
-#include <Poco/File.h>
-#include <Poco/URI.h>
-
 #include <shared/Log.h>
 #include <shared/DataContainer.h>
-#include "tools/FileSystem.h"
 #include <shared/http/UrlHelpers.h>
 #include <shared/http/FileDownloader.h>
 #include <shared/compression/Extract.h>
@@ -16,6 +12,8 @@
 #include <shared/tools/Random.h>
 #include <shared/exception/Extract.hpp>
 #include <utility>
+
+#include "shared/tools/Filesystem.h"
 
 
 namespace update
@@ -78,7 +76,7 @@ namespace update
          if (packageName.empty())
             packageName = "temp.zip";
 
-         auto targetPath(tools::CFileSystem::createTemporaryFolder());
+         auto targetPath(shared::tools::CFilesystem::createTemporaryFolder());
          targetPath /= packageName;
 
          shared::http::CFileDownloader::downloadFile(downloadUrl,
@@ -97,7 +95,7 @@ namespace update
          if (packageName.empty())
             packageName = "temp.zip";
 
-         auto targetPath(tools::CFileSystem::createTemporaryFolder());
+         auto targetPath(shared::tools::CFilesystem::createTemporaryFolder());
          targetPath /= packageName;
 
          shared::http::CFileDownloader::downloadFileAndVerify(downloadUrl,
@@ -153,11 +151,11 @@ namespace update
                   realItemFolder.append(itemName);
 
                   //if item directory already exists, remove it
-                  if (tools::CFileSystem::exists(realItemFolder.string()))
-                     tools::CFileSystem::remove(realItemFolder.string(), true);
+                  if (shared::tools::CFilesystem::exists(realItemFolder.string()))
+                     shared::tools::CFilesystem::remove(realItemFolder.string(), true);
 
                   //rename random item folder to good item name
-                  tools::CFileSystem::rename(tempItemFolder, realItemFolder);
+                  shared::tools::CFilesystem::rename(tempItemFolder, realItemFolder);
 
                   return realItemFolder;
                }
@@ -170,7 +168,7 @@ namespace update
                {
                   //delete folder tempItemFolder
                   YADOMS_LOG(error) << "Operation fail (std::exception):" << ex.what();
-                  tools::CFileSystem::remove(tempItemFolder, true);
+                  shared::tools::CFilesystem::remove(tempItemFolder, true);
                   throw;
                }
             }
@@ -178,14 +176,14 @@ namespace update
             {
                //delete folder tempItemFolder
                YADOMS_LOG(error) << "Operation fail (read json):" << ex.what();
-               tools::CFileSystem::remove(tempItemFolder, true);
+               shared::tools::CFilesystem::remove(tempItemFolder, true);
                throw;
             }
          }
          catch (shared::exception::CExtract& ex)
          {
             YADOMS_LOG(error) << "Cannot extract package :" << ex.what();
-            tools::CFileSystem::remove(tempItemFolder, true);
+            shared::tools::CFilesystem::remove(tempItemFolder, true);
             throw;
          }
       }

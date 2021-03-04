@@ -4,13 +4,12 @@
 
 #include <shared/ServiceLocator.h>
 
-#include <Poco/File.h>
-
 
 #include "automation/interpreter/Information.h"
 #include "automation/IRuleManager.h"
 #include "i18n/ClientStrings.h"
 #include "shared/Executable.h"
+#include "shared/tools/Filesystem.h"
 
 namespace update
 {
@@ -80,11 +79,7 @@ namespace update
 
          //delete downloaded zip file
          if (!downloadedPackage.string().empty())
-         {
-            Poco::File toDelete(downloadedPackage.string());
-            if (toDelete.exists())
-               toDelete.remove();
-         }
+            shared::tools::CFilesystem::remove(downloadedPackage);
       }
 
       void CScriptInterpreter::update(CWorkerHelpers::WorkerProgressFunc progressCallback,
@@ -94,7 +89,7 @@ namespace update
       {
          YADOMS_LOG(information) << "Updating scriptInterpreter " << scriptInterpreterName << " from " << downloadUrl;
 
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("scriptInterpreterName", scriptInterpreterName);
          callbackData->set("downloadUrl", downloadUrl);
 
@@ -167,11 +162,7 @@ namespace update
 
          //delete downloaded zip file
          if (!downloadedPackage.string().empty())
-         {
-            Poco::File toDelete(downloadedPackage.string());
-            if (toDelete.exists())
-               toDelete.remove();
-         }
+            shared::tools::CFilesystem::remove(downloadedPackage);
       }
 
       void CScriptInterpreter::remove(CWorkerHelpers::WorkerProgressFunc progressCallback,
@@ -202,9 +193,7 @@ namespace update
             auto scriptInterpreterPath(scriptInterpretersPath);
             scriptInterpreterPath.append(scriptInterpreterName);
 
-            Poco::File toDelete(scriptInterpreterPath.string());
-            if (toDelete.exists())
-               toDelete.remove(true);
+            shared::tools::CFilesystem::remove(scriptInterpreterPath);
 
             /////////////////////////////////////////////
             //3. update scriptInterpreter manager

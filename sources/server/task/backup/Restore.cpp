@@ -4,7 +4,6 @@
 
 #include <boost/process/environment.hpp>
 
-#include "tools/FileSystem.h"
 #include <Poco/Zip/Compress.h>
 #include <Poco/Zip/ZipException.h>
 #include <Poco/Delegate.h>
@@ -17,6 +16,7 @@
 #include "shared/compression/Extract.h"
 #include "shared/Log.h"
 #include "shared/process/SoftwareStop.h"
+#include "shared/tools/Filesystem.h"
 #include "tools/OperatingSystem.h"
 
 namespace task
@@ -49,7 +49,7 @@ namespace task
 
             // Create/clean temp directory
             notifyProgress(pFunctor, 0, i18n::CClientStrings::RestorePrepare);
-            tempDirectory = tools::CFileSystem::createTemporaryFolder();
+            tempDirectory = shared::tools::CFilesystem::createTemporaryFolder();
 
             // Unzip in temp directory
             notifyProgress(pFunctor, 5, i18n::CClientStrings::RestoreDecompress);
@@ -68,13 +68,13 @@ namespace task
          catch (const std::exception& e)
          {
             YADOMS_LOG(error) << "Error restoring backup, " << e.what();
-            tools::CFileSystem::remove(tempDirectory);
+            shared::tools::CFilesystem::remove(tempDirectory);
             throw;
          }
          catch (...)
          {
             YADOMS_LOG(error) << "Unknown error restoring backup";
-            tools::CFileSystem::remove(tempDirectory);
+            shared::tools::CFilesystem::remove(tempDirectory);
             throw;
          }
       }

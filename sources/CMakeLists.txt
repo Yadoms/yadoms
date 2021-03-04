@@ -736,8 +736,6 @@ source_group(server\\web\\ws  server/web/ws/*.*)
 set(YADOMS_SRC ${YADOMS_SRC}
    server/tools/SupportedPlatformsChecker.h
    server/tools/SupportedPlatformsChecker.cpp
-   server/tools/FileSystem.h
-   server/tools/FileSystem.cpp
 )
 
 IF(WIN32)

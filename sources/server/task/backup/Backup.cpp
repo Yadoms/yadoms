@@ -3,7 +3,6 @@
 #include "database/IDataBackup.h"
 #include "task/ITask.h"
 #include "Backup.h"
-#include "tools/FileSystem.h"
 #include <shared/tools/Filesystem.h>
 #include <shared/Log.h>
 #include <Poco/Zip/Compress.h>
@@ -168,12 +167,12 @@ namespace task
          }
 
          //backup scripts (40 -> 50%)
-         if (tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider->scriptsPath(), backupTempFolder / "scripts"))
+         if (shared::tools::CFilesystem::copyDirectoryRecursivelyTo(m_pathProvider->scriptsPath(), backupTempFolder / "scripts"))
          {
             onProgressionUpdatedInternal(0, 100, 40.0f, 50.0f, i18n::CClientStrings::BackupCopyFile);
 
             //backup plugins data  (50 -> 60%)
-            if (tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider->pluginsDataPath(), backupTempFolder / "data"))
+            if (shared::tools::CFilesystem::copyDirectoryRecursivelyTo(m_pathProvider->pluginsDataPath(), backupTempFolder / "data"))
             {
                boost::system::error_code ec;
                boost::filesystem::copy_file("yadoms.ini", backupTempFolder / "yadoms.ini", ec);
@@ -211,7 +210,7 @@ namespace task
          boost::replace_all(dateAsIsoString, ",", "_");
 
          auto zipFilenameFinal = m_pathProvider->backupPath() / (boost::format("backup_%1%.zip") % dateAsIsoString).str();
-         auto zipFilename = m_pathProvider->backupPath() / (boost::format("backup_%1%.zip.inprogress") % dateAsIsoString).str();
+         const auto zipFilename = m_pathProvider->backupPath() / (boost::format("backup_%1%.zip.inprogress") % dateAsIsoString).str();
          try
          {
             //count files

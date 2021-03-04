@@ -3,6 +3,7 @@
 #### Yadoms
 * New PhilipsHue plugin (Thanks to Oussama Dahmaz)
 * Fix #617 : File download progress is yet again available
+* Fix #682 : Unify filesystem functions and reduce dependencies to Poco
 * Fix #702 : Support links in update&install page
 * Fix #703 : Fix display and translations of file type fields of configuration
 * Fix #715 : Fix model field update from rule REST api
