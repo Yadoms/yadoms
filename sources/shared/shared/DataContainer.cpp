@@ -339,7 +339,7 @@ namespace shared
 
 	void CDataContainer::printSizeToLog(std::ostream& os) const
 	{
-		//os << "Size=" << getPointer()->GetAllocator().Size() << " ChunkSize=" << getPointer()->GetAllocator().Capacity() << " StackCapcity=" << getPointer()->GetStackCapacity() << std::endl;
+		os << "Size=" << getPointer()->GetAllocator().Size() << " ChunkSize=" << getPointer()->GetAllocator().Capacity() << " StackCapcity=" << getPointer()->GetStackCapacity() << std::endl;
 	}
 
 	std::string CDataContainer::generatePath(const std::string & parameterName, const char pathChar)
@@ -657,7 +657,7 @@ namespace shared
 		if (v.IsDouble())
 		{
 			const double b = v.GetDouble();
-			if (b< INT32_MIN || b>INT32_MAX)
+			if (b< (double)INT32_MIN || b>INT32_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to int32") % b).str());
 			return static_cast<int>(b);
 		}
@@ -691,7 +691,9 @@ namespace shared
 	int64_t CDataContainer::convertToInt64(const rapidjson::Value & v)
 	{
 		if (v.IsInt64())
+		{
 			return v.GetInt64();
+		}
 
 		if (v.IsUint64())
 		{
@@ -752,7 +754,7 @@ namespace shared
 		if (v.IsDouble())
 		{
 			const double b = v.GetDouble();
-			if (b< INT8_MIN || b>INT8_MAX)
+			if (b< (double)INT8_MIN || b>INT8_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to char/int8") % b).str());
 			return static_cast<char>(b);
 		}
@@ -847,7 +849,7 @@ namespace shared
 		if (v.IsDouble())
 		{
 			const double b = v.GetDouble();
-			if (b< INT16_MIN || b>INT16_MAX)
+			if (b< (double)INT16_MIN || b>INT16_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to signed Short/Int16") % b).str());
 			return static_cast<short>(b);
 		}

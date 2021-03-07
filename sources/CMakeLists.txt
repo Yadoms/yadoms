@@ -209,8 +209,7 @@ add_definitions(-DPOCO_STATIC)
 add_definitions(-DPOCO_NO_AUTOMATIC_LIBS)
 if(MSVC)
 	#fix for linking with external OpenSSL
-	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libcrypto.lib ")
-	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libssl.lib ")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}  /NODEFAULTLIB:libssl /NODEFAULTLIB:libcrypto")
 endif(MSVC)
 
 add_definitions(-DPOCO_EXTERNAL_OPENSSL=42) #force an unknown value (empty value do not work correctly)
@@ -596,12 +595,12 @@ set(YADOMS_SRC
    server/task/Scheduler.cpp
    server/task/TaskEvent.h
    server/task/TaskEvent.cpp
-   server/task/TaskFactory.h
-   server/task/TaskFactory.cpp
    server/task/TaskStatus.h
    server/task/TaskStatus.cpp
    server/task/backup/Backup.h
    server/task/backup/Backup.cpp
+   server/task/backup/Restore.h
+   server/task/backup/Restore.cpp
    server/task/exportData/ExportData.h
    server/task/exportData/ExportData.cpp
    server/task/packLogs/PackLogs.h
@@ -746,8 +745,6 @@ source_group(server\\web\\ws  server/web/ws/*.*)
 set(YADOMS_SRC ${YADOMS_SRC}
    server/tools/SupportedPlatformsChecker.h
    server/tools/SupportedPlatformsChecker.cpp
-   server/tools/FileSystem.h
-   server/tools/FileSystem.cpp
 )
 
 IF(WIN32)
@@ -846,8 +843,10 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/database/common/adapters/DatabaseAdapters.cpp
    server/database/common/adapters/GenericAdapter.h
    server/database/common/adapters/GenericAdapter.cpp
-   server/database/common/adapters/HugeDataVectorAdapter.h
-   server/database/common/adapters/HugeDataVectorAdapter.cpp
+   server/database/common/adapters/HugeDataVectorForKeywordDataAdapter.h
+   server/database/common/adapters/HugeDataVectorForKeywordDataAdapter.cpp
+   server/database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapter.h
+   server/database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapter.cpp
    server/database/common/adapters/IResultAdapter.h
    server/database/common/adapters/MultipleValueAdapter.hpp
    server/database/common/adapters/SingleValueAdapter.hpp
@@ -899,6 +898,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/database/common/versioning/Version_5_0_0.cpp
    server/database/common/versioning/Version_5_1_0.h
    server/database/common/versioning/Version_5_1_0.cpp
+   server/database/common/versioning/Version_5_2_0.h
+   server/database/common/versioning/Version_5_2_0.cpp
    server/database/common/versioning/VersionUpgraderFactory.h
    server/database/common/versioning/VersionUpgraderFactory.cpp
    server/database/common/versioning/VersionException.h
@@ -1266,7 +1267,29 @@ if(COTIRE_USE)
                          COMMAND ${CMAKE_COMMAND} -E copy_directory
                          ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms_unity>/www/)
    endif(COTIRE_USE_UNITY)
-endif(COTIRE_USE)                          
+endif(COTIRE_USE)     
+
+
+#copy backup restoration scripts into build directory
+if(WIN32)
+   set(backupRestorationScriptFilename restoreBackup.cmd)
+else()
+   set(backupRestorationScriptFilename restoreBackup.sh)
+endif()
+add_definitions(-DBACKUP_RESTORATION_SCRIPT_FILENAME="${backupRestorationScriptFilename}")
+set(backupRestorationScript ${CMAKE_SOURCE_DIR}/server/task/backup/scripts/${backupRestorationScriptFilename})
+
+add_custom_command(TARGET yadoms POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                      ${backupRestorationScript} $<TARGET_FILE_DIR:yadoms>/)
+      
+if(COTIRE_USE)   
+   if(COTIRE_USE_UNITY)
+      add_custom_command(TARGET yadoms_unity POST_BUILD
+                         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                            ${backupRestorationScript} $<TARGET_FILE_DIR:yadoms_unity>/)
+   endif(COTIRE_USE_UNITY)
+endif(COTIRE_USE)                       
 
 ##################################################################################################
 ## CPACK
@@ -1278,6 +1301,10 @@ install(TARGETS yadoms RUNTIME DESTINATION ${INSTALL_BINDIR})
 
 #set yadoms.ini configuration file to be copied in bindir
 install(FILES ${CMAKE_SOURCE_DIR}/../config/yadoms.ini
+   DESTINATION ${INSTALL_BINDIR})
+
+#set backup restoration script to be copied in bindir
+install(FILES ${backupRestorationScript}
    DESTINATION ${INSTALL_BINDIR})
 
 #Configure all building targets to allow finding dependencies next to them

@@ -2,6 +2,7 @@
 
 // STL
 #include <queue>
+#include <type_traits>
 
 // Boost
 #include <boost/date_time/posix_time/posix_time.hpp>

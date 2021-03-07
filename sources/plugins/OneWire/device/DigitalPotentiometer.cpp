@@ -14,7 +14,8 @@ CDigitalPotentiometer::CDigitalPotentiometer(EOneWireFamily family,
       m_io(io),
       m_potentiometerMode(boost::make_shared<yApi::historization::CSwitch>("PotentiometerMode")),
       m_dim(boost::make_shared<yApi::historization::CDimmable>("dim")),
-      m_keywords({m_potentiometerMode, m_dim})
+      m_keywords({m_potentiometerMode, m_dim}),
+      m_lastHistorizationDate(shared::currentTime::Provider().now() - HistorizationPeriod - boost::posix_time::minutes(1))
 {
    BOOST_ASSERT_MSG(m_identification->family() == kDigitalPotentiometer, "Invalid family number");
 }

@@ -26,7 +26,7 @@ namespace database
                for (auto nCol = 0; nCol < nCols; nCol++)
                   cols.push_back(std::string(resultHandler->getColumnName(nCol)));
 
-               while (resultHandler->next_step())
+               while (resultHandler->nextStep())
                {
                   std::map<std::string, std::string> newRow;
                   for (auto nCol = 0; nCol < nCols; nCol++)

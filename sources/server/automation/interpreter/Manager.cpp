@@ -2,6 +2,7 @@
 #include "Manager.h"
 #include "Factory.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include <utility>
 #include "tools/SupportedPlatformsChecker.h"
 #include <shared/Executable.h>
 #include <shared/Log.h>
@@ -11,7 +12,7 @@ namespace automation
    namespace interpreter
    {
       CManager::CManager(boost::shared_ptr<const IPathProvider> pathProvider)
-         : m_pathProvider(pathProvider),
+         : m_pathProvider(std::move(pathProvider)),
            m_factory(boost::make_shared<CFactory>(m_pathProvider))
       {
       }
@@ -111,14 +112,14 @@ namespace automation
          // for example a sub-directory "Python" containing a "python.exe" file (Windows) / "python" (other platforms)
          std::vector<boost::filesystem::path> interpreters;
 
-         if (boost::filesystem::exists(m_pathProvider->scriptInterpretersPath()) && boost::filesystem::is_directory(
+         if (exists(m_pathProvider->scriptInterpretersPath()) && is_directory(
             m_pathProvider->scriptInterpretersPath()))
          {
             for (boost::filesystem::directory_iterator subDirIterator(m_pathProvider->scriptInterpretersPath());
                  subDirIterator != boost::filesystem::directory_iterator();
                  ++subDirIterator)
             {
-               if (boost::filesystem::is_directory(subDirIterator->status()))
+               if (is_directory(subDirIterator->status()))
                {
                   // Sub-directory, check if it is a interpreter (= contains a executable file with same name)
                   const auto expectedExecutableName(shared::CExecutable::ToFileName(subDirIterator->path().filename().string()));
@@ -126,7 +127,7 @@ namespace automation
                        fileIterator != boost::filesystem::directory_iterator();
                        ++fileIterator)
                   {
-                     if (boost::filesystem::is_regular_file(fileIterator->status()) && // It's a file...
+                     if (is_regular_file(fileIterator->status()) && // It's a file...
                         boost::iequals(fileIterator->path().filename().string(), expectedExecutableName)) // ...with the same name as sub-directory...
                      {
                         interpreters.push_back(subDirIterator->path());
@@ -139,20 +140,41 @@ namespace automation
          return interpreters;
       }
 
-      std::vector<std::string> CManager::getLoadedInterpreters()
+      std::vector<std::string> CManager::getLoadedInterpreters(bool loadIfNecessary)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
          std::vector<std::string> interpreters;
 
          // Update loaded interpreters list if necessary
-         loadInterpreters();
+         if (loadIfNecessary)
+            loadInterpreters();
 
          // Now find corresponding interpreter
          std::transform(m_loadedInterpreters.begin(), m_loadedInterpreters.end(), std::back_inserter(interpreters),
                         [](const auto& c) -> std::string { return c.first; });
 
          return interpreters;
+      }
+
+      std::vector<std::string> CManager::getAvailablenterpreters(bool loadIfNecessary)
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+
+         std::vector<std::string> availableInterpreters;
+
+         // Update loaded interpreters list if necessary
+         if (loadIfNecessary)
+            loadInterpreters();
+
+         // Filter only available interpreters
+         for (const auto loadedInterpreter : m_loadedInterpreters)
+         {
+            if (loadedInterpreter.second->isAvailable())
+               availableInterpreters.push_back(loadedInterpreter.first);
+         }
+
+         return availableInterpreters;
       }
 
       std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> CManager::getAvailableInterpretersInformation()
@@ -209,7 +231,7 @@ namespace automation
          auto interpreter = m_loadedInterpreters.find(interpreterType);
          if (interpreter == m_loadedInterpreters.end())
             throw std::runtime_error("Interpreter " + interpreterType + " was not found");
-         if (!interpreter->second->isAvalaible())
+         if (!interpreter->second->isAvailable())
             throw std::runtime_error("Interpreter " + interpreterType + " is not available (see interpreter description)");
 
          return interpreter->second;
@@ -293,7 +315,7 @@ namespace automation
       {
          const auto logFile(getScriptLogFilename(ruleId));
 
-         if (!boost::filesystem::exists(logFile))
+         if (!exists(logFile))
             throw shared::exception::CInvalidParameter(logFile.string());
 
          std::ifstream file(logFile.string().c_str());

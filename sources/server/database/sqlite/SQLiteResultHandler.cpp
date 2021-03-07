@@ -4,20 +4,13 @@
 #include <Poco/DateTimeParser.h>
 
 
-namespace database {
-   namespace sqlite {
-
-
-
-      CSQLiteResultHandler::CSQLiteResultHandler(sqlite3_stmt *pStatement)
-         :m_pStatement(pStatement)
+namespace database
+{
+   namespace sqlite
+   {
+      CSQLiteResultHandler::CSQLiteResultHandler(sqlite3_stmt* pStatement)
+         : m_pStatement(pStatement)
       {
-
-      }
-
-      CSQLiteResultHandler::~CSQLiteResultHandler()
-      {
-
       }
 
       // database::common::IResultHandler implementation
@@ -31,14 +24,17 @@ namespace database {
          return std::string(sqlite3_column_name(m_pStatement, columnIndex));
       }
 
-      bool CSQLiteResultHandler::next_step()
+      bool CSQLiteResultHandler::nextStep()
       {
          return sqlite3_step(m_pStatement) == SQLITE_ROW;
       }
 
       std::string CSQLiteResultHandler::extractValueAsString(const int columnIndex)
       {
-         return std::string((char*)sqlite3_column_text(m_pStatement, columnIndex));
+         const auto str = reinterpret_cast<const char*>(sqlite3_column_text(m_pStatement, columnIndex));
+         if (str == nullptr)
+            return std::string();
+         return std::string(str);
       }
 
       int CSQLiteResultHandler::extractValueAsInt(const int columnIndex)
@@ -48,7 +44,7 @@ namespace database {
 
       float CSQLiteResultHandler::extractValueAsFloat(const int columnIndex)
       {
-         return (float)sqlite3_column_double(m_pStatement, columnIndex);
+         return static_cast<float>(sqlite3_column_double(m_pStatement, columnIndex));
       }
 
       double CSQLiteResultHandler::extractValueAsDouble(const int columnIndex)
@@ -56,9 +52,9 @@ namespace database {
          return sqlite3_column_double(m_pStatement, columnIndex);
       }
 
-      unsigned char* CSQLiteResultHandler::extractValueAsBlob(const int columnIndex)
+      const unsigned char* CSQLiteResultHandler::extractValueAsBlob(const int columnIndex)
       {
-         return (unsigned char*)sqlite3_column_blob(m_pStatement, columnIndex);
+         return static_cast<const unsigned char*>(sqlite3_column_blob(m_pStatement, columnIndex));
       }
 
       bool CSQLiteResultHandler::extractValueAsBool(const int columnIndex)
@@ -86,8 +82,5 @@ namespace database {
       {
          return shared::CDataContainer::make(extractValueAsString(columnIndex));
       }
-
-
    } //namespace sqlite
 } //namespace database 
-

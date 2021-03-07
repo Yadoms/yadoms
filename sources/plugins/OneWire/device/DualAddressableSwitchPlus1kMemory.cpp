@@ -13,7 +13,8 @@ CDualAddressableSwitchPlus1kMemory::CDualAddressableSwitchPlus1kMemory(EOneWireF
     : m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2406")),
       m_io(io),
       m_ioA(boost::make_shared<yApi::historization::CSwitch>("io_A")),
-      m_keywords({m_ioA})
+      m_keywords({m_ioA}),
+      m_lastHistorizationDate(shared::currentTime::Provider().now() - HistorizationPeriod - boost::posix_time::minutes(1))
 {
    BOOST_ASSERT_MSG(m_identification->family() == kDualAddressableSwitchPlus1kMemory, "Invalid family number");
 

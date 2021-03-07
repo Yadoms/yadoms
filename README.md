@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/Yadoms/yadoms.svg?branch=master)](https://travis-ci.org/Yadoms/yadoms) [![Build Status](https://ci.appveyor.com/api/projects/status/github/yadoms/yadoms-build-windows?branch=master&svg=true)](https://ci.appveyor.com/project/yadoms/yadoms)
+![Binaries generation](https://github.com/Yadoms/yadoms/workflows/Binaries%20generation/badge.svg)
+![Unit tests](https://github.com/Yadoms/yadoms/workflows/Unit%20tests/badge.svg)
 
 # yadoms
 Yadoms is an open source project. 

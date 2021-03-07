@@ -73,6 +73,8 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME ON)
 add_definitions(-DBOOST_SPIRIT_THREADSAFE)
+add_definitions(-DBOOST_TEST_DETECT_MEMORY_LEAK)
+add_definitions(-DBOOST_TEST_DETECT_FP_EXCEPTIONS)
 
 
 # define all needed boost libraries
@@ -145,19 +147,27 @@ set(LIBS
 # POCO_LIBS : define all required poco libraries
 ###############################################
 
-SET ( POCO_LIBS
-	PocoUtil
+SET (POCO_LIBS
+   PocoUtil
    PocoNetSSL
    PocoZip
-	PocoXML
-	PocoNet
+   PocoXML
+   PocoNet
    PocoJSON
-	PocoFoundation
+   PocoFoundation
 )
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
 set(POCO_USE_STATIC_LIBS 1)
-set(POCO_USE_STATIC_RUNTIME 1)
+set(POCO_USE_STATIC_RUNTIME 1) 
+add_definitions(-DPOCO_STATIC)
+add_definitions(-DPOCO_NO_AUTOMATIC_LIBS)
+if(MSVC)
+	#fix for linking with external OpenSSL
+	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libcrypto.lib ")
+	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libssl.lib ")
+endif(MSVC)
+
 add_definitions(-DPOCO_EXTERNAL_OPENSSL=42) #force an unknown value (empty value do not work correctly)
 include(${YADOMS_PATH}/cmake/FindPoco.cmake)
 
@@ -258,7 +268,6 @@ ELSE()
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${YADOMS_PATH}/server/tools/linux)
    set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${YADOMS_PATH}/shared/linux)
 ENDIF()
-message("YADOMS_INCL_DIR=${YADOMS_INCL_DIR}")
 # include OPENSSL_INCLUDE_DIR before YADOMS_INCL_DIR because YADOMS_INCL_DIR include postgresql which may embed its own openssl files (not used)
 # but this may infer in some compilation cases
 include_directories(

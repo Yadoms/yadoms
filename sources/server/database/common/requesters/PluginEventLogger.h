@@ -21,16 +21,16 @@ namespace database
             //--------------------------------------------------------------
             explicit CPluginEventLogger(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 
-            //--------------------------------------------------------------
-            /// \Brief		   Destructor
-            //--------------------------------------------------------------
-            virtual ~CPluginEventLogger();
+            virtual ~CPluginEventLogger() = default;
 
             // IPluginEventLoggerRequester implementation
-            int addEvent(const std::string& pluginName, const std::string& pluginVersion, const entities::EEventType& eventType, const std::string& message = std::string()) override;
+            int addEvent(const std::string& pluginName,
+                         const std::string& pluginVersion,
+                         const entities::EEventType& eventType,
+                         const std::string& message = std::string()) override;
             int addEvent(const entities::CPluginEventLogger& pluginLogEntry) override;
-            std::vector<boost::shared_ptr<entities::CPluginEventLogger>> getPluginEvents(const std::string& pluginName, const std::string& pluginVersion) override;
-            std::vector<boost::shared_ptr<entities::CPluginEventLogger>> getPluginEvents(const std::string& pluginName, const std::string& pluginVersion, const boost::posix_time::ptime& fromDate) override;
+            std::vector<boost::shared_ptr<entities::CPluginEventLogger>> getPluginEvents(const std::string& pluginName,
+                                                                                         const boost::posix_time::ptime& fromDate) override;
             // [END] IPluginEventLoggerRequester implementation
 
          private:
@@ -42,5 +42,3 @@ namespace database
       } //namespace requesters
    } //namespace common
 } //namespace database 
-
-

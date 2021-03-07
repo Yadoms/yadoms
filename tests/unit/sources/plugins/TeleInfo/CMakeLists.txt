@@ -39,7 +39,7 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
       )
       
 	   source_group(Windows Windows/*.*)
-   ELSEIF (UNIX AND NOT APPLE)
+   ELSEIF (UNIX)
       set(YADOMS_SOURCES ${YADOMS_SOURCES}
 	      # Add Common Linux and RaspberryPI sources
          plugins/TeleInfo/Linux/TeleInfoFactory.h
@@ -73,7 +73,7 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
          Windows/TeleInfoConfigurationMock.h
       )
       source_group(Windows Windows/*.*)
-   ELSEIF (UNIX AND NOT APPLE)
+   ELSEIF (UNIX)
       ADD_SOURCES(
          Linux/TeleInfoConfigurationMock.cpp
          Linux/TeleInfoConfigurationMock.h

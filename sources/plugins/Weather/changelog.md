@@ -1,3 +1,9 @@
+### 1.3.0
+  * Fix UV historization
+
+### 1.2.0
+  * Fix Rain/snow historization
+
 ### 1.1.1
 * Fix #690 : Fix rain/snow historization when value at 0
 

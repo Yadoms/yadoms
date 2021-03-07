@@ -20,12 +20,7 @@ namespace pluginSystem
       typedef std::map<std::string, boost::shared_ptr<const shared::plugin::information::IInformation>> AvailablePluginMap;
 
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~IFactory()
-      {
-      }
+      virtual ~IFactory() = default;
 
       //--------------------------------------------------------------
       /// \brief	                     Find all installed plugins

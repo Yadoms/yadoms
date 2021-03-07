@@ -32,25 +32,7 @@ TaskManager.factory = function (json) {
 };
 
 /**
- * Create a task
- * @param {string} taskType The task type
- */
-TaskManager.createTask = function(taskType) {
-    assert(!isNullOrUndefined(taskType), "taskType must be defined");
-
-    var d = $.Deferred();
-
-   RestEngine.postJson("/rest/task/", { data: JSON.stringify({ type: taskType }) })
-    .done(function (data) {
-       d.resolve(TaskManager.factory(data));
-    })
-    .fail(d.reject);
-
-    return d.promise();
-};
-
-/**
- * Create all tasks
+ * Get all tasks
  */
 TaskManager.getAllTasks = function() {
    var d = $.Deferred();
@@ -69,7 +51,7 @@ TaskManager.getAllTasks = function() {
 }
 
 /**
- * Create all tasks matching a name
+ * Get all tasks matching a name
  * @param {string} name The task type to filter. If param is undefined, all tasks are returned
  */
 TaskManager.getTasksByName = function(name) {
@@ -90,7 +72,7 @@ TaskManager.getTasksByName = function(name) {
 }
 
 /**
- * Create all tasks running matching a name
+ * Get all tasks running matching a name
  * @param {string} name The task type to filter. If param is undefined, all tasks are returned
  */
 TaskManager.getTasksRunning = function(name) {

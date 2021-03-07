@@ -2,7 +2,7 @@
     <h1 class="page-header">
         <span class="glyphicon glyphicon-save"></span>&nbsp;
         <span data-i18n="modals.dashboard.sub-windows.install-update.title"></span>
-        <i class="making-async-action pull-right fa fa-circle-o-notch fa-spin hidden"></i>
+        <i class="making-async-action pull-right fa fa-circle-notch fa-spin hidden"></i>
     </h1>
     <div class="checkbox">
         <label>
@@ -535,7 +535,7 @@
         }, 5000);
 
         //We can consider that the server has exit if it doesn't answer "pong" to the websocket "ping"
-        $(document).on("isAlive", function () {
+        $(document).on("isalive", function () {
             //we have received a alive answer
             //we resend a new isAlive call until it doesn't answer
             console.log("Yadoms still alive, wait more...");
@@ -733,7 +733,7 @@
      */
     function updateHeaderUpdateAvailableLabel(objectType) {
         var $line = $("div#install-update-" + objectType + "-heading-panel .update-available-label");
-        var $updateAvailableLabels = $("table#" + objectType + "-install-update-list span.update-available-label").not(
+        var $updateAvailableLabels = $("table#" + objectType + "-install-update-list span.update-available-label.label-success").not(
             ".hidden");
         if ($updateAvailableLabels.length > 0) {
             //there is at least one item that have an update available
@@ -760,10 +760,19 @@
 
         $line.find("em.local-version").text(isNullOrUndefined(item.versions.installed) ? "" : item.versions.installed);
 
-        var newestVersionLabel = (isNullOrUndefined(item.versions.newest) || $.isEmptyObject(item.versions.newest)) ?
-            "" : Object.keys(item.versions.newest)[0];
-        $line.find("em.latest-version").text(newestVersionLabel);
-        $line.find("span.latest-installable-version").text(newestVersionLabel);
+        if (!isNullOrUndefined(item.obsolete) && item.obsolete) {
+            // Deprecated item
+            $line.find("em.latest-version").addClass("fas fa-cross");
+            $line.find("em.latest-version").text("  " + $.t("modals.dashboard.sub-windows.install-update.generic.obsolete"));
+        } else {
+            // Valid item
+            var newestVersionLabel = (isNullOrUndefined(item.versions.newest) || $.isEmptyObject(item.versions
+                .newest)) ?
+                "" : Object.keys(item.versions.newest)[0];
+            $line.find("em.latest-version").removeClass("fas fa-cross");
+            $line.find("em.latest-version").text(newestVersionLabel);
+            $line.find("span.latest-installable-version").text(newestVersionLabel);
+        }
 
         // Create a combo
         var $cbVersion = $line.find("ul.versions");
@@ -837,8 +846,19 @@
             }
 
             // Show new version indicator (if module already installed)
-            if (newestVersionLabel && !isNullOrUndefinedOrEmpty(item.versions.installed)) {
-                $line.find("span.update-available-label").removeClass("hidden");
+            if (newestVersionLabel) {
+                if (isNullOrUndefinedOrEmpty(item.versions.installed)) {
+                    // New item available
+                    $line.find("span.update-available-label").removeClass("label-success");
+                    $line.find("span.update-available-label").addClass("label-info");
+                    $line.find("span.update-available-label").removeClass("hidden");
+                }
+                else {
+                    // Item update available
+                    $line.find("span.update-available-label").removeClass("label-info");
+                    $line.find("span.update-available-label").addClass("label-success");
+                    $line.find("span.update-available-label").removeClass("hidden");
+                }
             } else {
                 $line.find("span.update-available-label").addClass("hidden");
             }

@@ -1,44 +1,39 @@
 ### 2.5.0-beta.1
 
 #### Yadoms
+* New PhilipsHue plugin (Thanks to Oussama Dahmaz)
 * Fix #617 : File download progress is yet again available
+* Fix #682 : Unify filesystem functions and reduce dependencies to Poco
 * Fix #702 : Support links in update&install page
 * Fix #703 : Fix display and translations of file type fields of configuration
-* New feature #704 : Add update warning message for version to be installed
+* Fix #715 : Fix model field update from rule REST api
+* Fix #716 : Show only available rule editors when creating a new rule
+* Fix #717 : Fix crash when requesting a NULL lastAcquisition
+* Fix #718 : Find compatible devices for devices merging
+* New feature #523 : Add backup restoration
 * New feature #572 : Proxy support for http requests
 * New feature #603 : Manage redirections for http requests
 * New feature #680 : Add HTTP devices autodetection in shared
+* New feature #704 : Add update warning message for version to be installed
+* New feature #705 : Add obsolete management for modules
+* New feature #721 : Display rule interpreter icon in automation page
 * Fix dynamically configurable devices translations
+* Fix removing interpreter
+* Rename plugin/device states capacity (remove `_capacity` suffix)
 * Update font-awesome library
 * Update LibCurl (7.72.0)
 
 
-### 2.4.0-beta.5
+### 2.4.1
 
 #### Yadoms
-* Fix Yadoms crash when no data available with getKeywordData web-service
-* Fix #700 : Improve message when an interpreter is not available
+* Fix old (python 2.7 based) Blockly rule edition
+* Fix #720 : Add execute rights on installed rule interpreter
+* Fix removing interpreter
+* Add blue tag on new items in update page
 
 
-### 2.4.0-beta.4
-
-#### Yadoms
-* Fix historisation of Datacontainer based keywords
-
-
-### 2.4.0-beta.3
-
-#### Yadoms
-* Fix #684 : Fix JSON improper warnings in log
-
-
-### 2.4.0-beta.2
-
-#### Yadoms
-* Add possibility to force Python 2.7 and Python 3.x paths in yadoms.ini
-
-
-### 2.4.0-beta.1
+### 2.4.0
 
 #### Yadoms
 * New feature #538 : New meteo plugin (remove weather underground)
@@ -51,6 +46,7 @@
 * New feature #609 : Forecast weather widget updated
 * New feature #670 and #669 : Add Lolin ePaper plugin (httpscreen plugin)
 * New feature #645 #642 #624 : Add Lametric Time device plugin
+* New feature : add possibility to force Python 2.7 and Python 3.x paths in yadoms.ini
 * New platform supported : Synology DS218+
 * Fix #469 : Wes plugin : fix reading units
 * Fix #518 : ZWave fix  bad tag filtering
@@ -76,6 +72,13 @@
 * Fix #653 : remove boost::locale dependency
 * Fix #654 : fix python interpreter with 3.8.1
 * Fix #668 : GUI : Fix display on event keyword and keywords without acquisition
+* Fix #684 : Fix JSON improper warnings in log
+* Fix #700 : Improve message when an interpreter is not available
+* Fix #708 : Fix crash when display graph with a lot of data 
+* Fix historisation of Datacontainer based keywords
+* Fix Yadoms crash when no data available with getKeywordData web-service
+* Fix Script API wrappers build on Windows
+* Fix GithubActions to generate releases
 * Wiki updated (#644, #591)
 * Known issue #617 : No more progression displayed when downloading file
 

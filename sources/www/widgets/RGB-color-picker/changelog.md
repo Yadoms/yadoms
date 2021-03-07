@@ -1,3 +1,6 @@
+### 1.1.2
+* Fix color picker change value for all declared widget - #710
+
 ### 1.1.1
 * Better keyword selection filtering
 

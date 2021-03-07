@@ -12,7 +12,7 @@ namespace web
       {
          shared::CDataContainer local;
          local.set(m_keyword, content);
-         m_internalContainer.set(m_dataFieldName, local);
+         m_internalContainer.set(DataFieldName, local);
       }
 
       CKeywordNewFrame::~CKeywordNewFrame()

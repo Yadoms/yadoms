@@ -36,7 +36,7 @@ void CProfile_D2_01_12::readInitialState(const std::string& senderId,
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
-                                                  CProfile_D2_01_Common::kAllOutputChannels);
+                                                  CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels);
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_12::states(unsigned char rorg,
@@ -66,13 +66,13 @@ void CProfile_D2_01_12::sendCommand(const std::string& keyword,
    {
       m_channel1->setCommand(commandBody);
       value = m_channel1->get();
-      channel = CProfile_D2_01_Common::kOutputChannel1;
+      channel = CProfile_D2_01_Common::EOutputChannel::kOutputChannel1;
    }
    else if (keyword == m_channel2->getKeyword())
    {
       m_channel2->setCommand(commandBody);
       value = m_channel2->get();
-      channel = CProfile_D2_01_Common::kOutputChannel2;
+      channel = CProfile_D2_01_Common::EOutputChannel::kOutputChannel2;
    }
    else
       return;
@@ -104,7 +104,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      CProfile_D2_01_Common::kAllOutputChannels,
+                                                      CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -117,7 +117,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(messageHandler,
                                                                           senderId,
                                                                           m_deviceId,
-                                                                          CProfile_D2_01_Common::kAllOutputChannels,
+                                                                          CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels,
                                                                           connectedSwitchsType,
                                                                           autoOffTimerValue,
                                                                           delayOffTimer,

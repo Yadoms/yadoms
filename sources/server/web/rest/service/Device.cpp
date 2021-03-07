@@ -146,12 +146,22 @@ namespace web
                                                                   refKeyword->Name == candidateKeyword->Name &&
                                                                   refKeyword->Type == candidateKeyword->Type &&
                                                                   refKeyword->Units == candidateKeyword->Units &&
-                                                                  refKeyword->TypeInfo == candidateKeyword->TypeInfo &&
-                                                                  refKeyword->Measure == candidateKeyword->Measure &&
-                                                                  refKeyword->Details == candidateKeyword->Details)
+                                                                  refKeyword->Measure == candidateKeyword->Measure)
                                                                {
+                                                                  if (refKeyword->TypeInfo.isDefined() != candidateKeyword->TypeInfo.isDefined())
+                                                                     return false;
+                                                                  if (candidateKeyword->TypeInfo.isDefined() &&
+                                                                     *refKeyword->TypeInfo() != *candidateKeyword->TypeInfo())
+                                                                     return false;
+
+                                                                  if (refKeyword->Details.isDefined() != candidateKeyword->Details.isDefined())
+                                                                     return false;
+                                                                  if (candidateKeyword->Details.isDefined() &&
+                                                                     *refKeyword->Details() != *candidateKeyword->Details())
+                                                                     return false;
+
                                                                   // A common device was found
-                                                                  boost::shared_ptr<shared::CDataContainer> commonKeyword = shared::CDataContainer::make();
+                                                                  auto commonKeyword = shared::CDataContainer::make();
                                                                   commonKeyword->set("from", refKeyword);
                                                                   commonKeyword->set("to", candidateKeyword);
                                                                   commonKeywords.push_back(commonKeyword);
@@ -657,25 +667,24 @@ namespace web
          {
             try
             {
-               if (parameters.size() >= 1)
+               if (parameters.empty())
+                  return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+
+               //get device id from URL
+               const auto deviceId = boost::lexical_cast<int>(parameters[1]);
+
+               database::entities::CDevice deviceToUpdate;
+               deviceToUpdate.fillFromSerializedString(requestContent);
+               if (deviceToUpdate.FriendlyName.isDefined())
                {
-                  //get device id from URL
-                  const auto deviceId = boost::lexical_cast<int>(parameters[1]);
+                  //update data in base
+                  m_deviceRequester->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
 
-                  database::entities::CDevice deviceToUpdate;
-                  deviceToUpdate.fillFromSerializedString(requestContent);
-                  if (deviceToUpdate.FriendlyName.isDefined())
-                  {
-                     //update data in base
-                     m_deviceRequester->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
-
-                     //return the device info
-                     const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
-                     return CResult::GenerateSuccess(deviceFound);
-                  }
-                  return CResult::GenerateError("invalid request content. could not retrieve device friendlyName");
+                  //return the device info
+                  const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
+                  return CResult::GenerateSuccess(deviceFound);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return CResult::GenerateError("invalid request content. could not retrieve device friendlyName");
             }
             catch (std::exception& ex)
             {

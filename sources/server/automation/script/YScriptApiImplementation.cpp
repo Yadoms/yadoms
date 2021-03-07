@@ -5,6 +5,7 @@
 #include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 
 namespace automation
 {
@@ -16,16 +17,12 @@ namespace automation
                                                            boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                                                            boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                                                            boost::shared_ptr<IGeneralInfo> generalInfo)
-         : m_pluginGateway(pluginGateway),
-           m_dbAcquisitionRequester(dbAcquisitionRequester),
-           m_dbDeviceRequester(dbDeviceRequester),
-           m_keywordAccessLayer(keywordAccessLayer),
-           m_dbRecipientRequester(dbRecipientRequester),
-           m_generalInfo(generalInfo)
-      {
-      }
-
-      CYScriptApiImplementation::~CYScriptApiImplementation()
+         : m_pluginGateway(std::move(pluginGateway)),
+           m_dbAcquisitionRequester(std::move(dbAcquisitionRequester)),
+           m_dbDeviceRequester(std::move(dbDeviceRequester)),
+           m_keywordAccessLayer(std::move(keywordAccessLayer)),
+           m_dbRecipientRequester(std::move(dbRecipientRequester)),
+           m_generalInfo(std::move(generalInfo))
       {
       }
 
@@ -47,30 +44,31 @@ namespace automation
          try
          {
             auto devices = m_dbDeviceRequester->getDevicesIdFromFriendlyName(deviceName);
-            for (auto device = devices.begin(); device != devices.end(); ++device)
+            for (const auto& device : devices)
             {
                try
                {
-                  auto deviceKeywords = m_keywordAccessLayer->getKeywordIdFromFriendlyName((*device)->Id, keywordName);
+                  auto deviceKeywords = m_keywordAccessLayer->getKeywordIdFromFriendlyName(device->Id, keywordName);
                   keywords.insert(keywords.end(), deviceKeywords.begin(), deviceKeywords.end());
                }
                catch (shared::exception::CEmptyResult&)
                {
-                  // Keyword was not found in this device
-                  continue;
                }
             }
          }
          catch (shared::exception::CEmptyResult&)
          {
-            throw std::out_of_range((boost::format("getKeywordId, keyword %1% for device %2% not found because device was not found") % keywordName % deviceName).str());
+            throw std::out_of_range(
+               (boost::format("getKeywordId, keyword %1% for device %2% not found because device was not found") % keywordName % deviceName).str());
          }
 
          if (keywords.size() == 1)
             return keywords[0]->Id;
-         if (keywords.size() == 0)
+         if (keywords.empty())
             throw std::out_of_range((boost::format("getKeywordId, keyword %1% for device %2% not found") % keywordName % deviceName).str());
-         throw std::out_of_range((boost::format("getKeywordId, several keywords found for %1% for device %2%. Please rename keywords or device.") % keywordName % deviceName).str());
+         throw std::out_of_range(
+            (boost::format("getKeywordId, several keywords found for %1% for device %2%. Please rename keywords or device.") % keywordName %
+               deviceName).str());
       }
 
       int CYScriptApiImplementation::getRecipientId(const std::string& firstName, const std::string& lastName) const
@@ -116,8 +114,9 @@ namespace automation
          return container.serialize();
       }
 
-      boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplementation::waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification>> action,
-                                                                                                           const std::string& timeout)
+      boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplementation::waitForAction(
+         const boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification>>& action,
+         const std::string& timeout)
       {
          boost::shared_ptr<notification::acquisition::CNotification> newAcquisition;
 
@@ -200,10 +199,10 @@ namespace automation
          if (receiveDateTimeEvent)
          {
             const auto now = shared::currentTime::Provider().now();
-            boost::posix_time::ptime nextMinute(now.date(),
-                                                boost::posix_time::time_duration(now.time_of_day().hours(),
-                                                                                 now.time_of_day().minutes() + 1,
-                                                                                 0));
+            const boost::posix_time::ptime nextMinute(now.date(),
+                                                      boost::posix_time::time_duration(now.time_of_day().hours(),
+                                                                                       now.time_of_day().minutes() + 1,
+                                                                                       0));
             const auto durationForNextMinute = nextMinute - now;
 
             if (!timeout.empty())
@@ -251,9 +250,9 @@ namespace automation
                                                                                               const std::string& timeout) const
       {
          enum
-            {
-               kKeyword = shared::event::kUserFirstId
-            };
+         {
+            kKeyword = shared::event::kUserFirstId
+         };
 
          auto eventHandler(boost::make_shared<shared::event::CEventHandler>());
 
@@ -267,7 +266,8 @@ namespace automation
                assertExistingKeyword(kwId);
 
             //create the action (= what to do when notification is observed)
-            auto keywordEventAction(boost::make_shared<notification::action::CEventPtrAction<notification::acquisition::CNotification>>(eventHandler, kKeyword));
+            auto keywordEventAction(
+               boost::make_shared<notification::action::CEventPtrAction<notification::acquisition::CNotification>>(eventHandler, kKeyword));
 
             //create the acquisition observer
             auto observer(boost::make_shared<notification::acquisition::CObserver>(keywordEventAction));
@@ -288,7 +288,7 @@ namespace automation
          //wait for event
          try
          {
-            auto resultCode = eventHandler->waitForEvents(timeoutDuration);
+            const auto resultCode = eventHandler->waitForEvents(timeoutDuration);
 
             switch (resultCode)
             {
@@ -296,7 +296,7 @@ namespace automation
                {
                   YADOMS_LOG(debug) << "CYScriptApiImplementation : kTimeout";
                   // Type already set (by timeout configuration)
-                  result.setValue(boost::posix_time::to_iso_string(shared::currentTime::Provider().now()));
+                  result.setValue(to_iso_string(shared::currentTime::Provider().now()));
                   break;
                }
 
@@ -307,7 +307,8 @@ namespace automation
                   result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword);
                   if (newAcquisition)
                   {
-                     YADOMS_LOG(debug) << "CYScriptApiImplementation : kKeyword #" << newAcquisition->getAcquisition()->KeywordId() << " : " << newAcquisition->getAcquisition()->Value();
+                     YADOMS_LOG(debug) << "CYScriptApiImplementation : kKeyword #" << newAcquisition->getAcquisition()->KeywordId() << " : " <<
+                        newAcquisition->getAcquisition()->Value();
                      result.setKeywordId(newAcquisition->getAcquisition()->KeywordId);
                      result.setValue(newAcquisition->getAcquisition()->Value);
                   }
@@ -332,13 +333,28 @@ namespace automation
 
       std::vector<int> CYScriptApiImplementation::getKeywordsByCapacity(const std::string& capacity) const
       {
+         // Before database v5.2.0, "pluginState" capacity was named "pluginState_capacity"
+         // (the same for "pluginStateMessage", "deviceState" and "devicetateMessage" capacity)
+         // In case of old rules (written before database v5.2.0), do a translation
+         std::string capacityToSearch;
+         if (capacity == "pluginState_capacity")
+            capacityToSearch = "pluginState";
+         else if (capacity == "pluginStateMessage_capacity")
+            capacityToSearch = "pluginStateMessage";
+         else if (capacity == "deviceState_capacity")
+            capacityToSearch = "deviceState";
+         else if (capacity == "deviceStateMessage_capacity")
+            capacityToSearch = "deviceStateMessage";
+         else
+            capacityToSearch = capacity;
+
          //get list of keywords
-         auto keywordMatchingCapacity = m_keywordAccessLayer->getKeywordsMatchingCapacity(capacity);
+         auto keywordMatchingCapacity = m_keywordAccessLayer->getKeywordsMatchingCapacity(capacityToSearch);
 
          //extract only id
          std::vector<int> result;
-         for (auto i = keywordMatchingCapacity.begin(); i != keywordMatchingCapacity.end(); ++i)
-            result.push_back((*i)->Id());
+         for (auto& i : keywordMatchingCapacity)
+            result.push_back(i->Id());
          return result;
       }
 
@@ -353,7 +369,7 @@ namespace automation
          assertExistingKeyword(keywordId);
          assertExistingRecipient(recipientId);
 
-         shared::plugin::yPluginApi::historization::CMessageFormatter body(0, recipientId, message);
+         const shared::plugin::yPluginApi::historization::CMessageFormatter body(0, recipientId, message);
          m_pluginGateway->sendKeywordCommandAsync(keywordId, body.formatValue());
       }
 
@@ -391,5 +407,3 @@ namespace automation
       }
    }
 } // namespace automation::script
-
-

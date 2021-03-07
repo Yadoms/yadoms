@@ -35,7 +35,7 @@ void CProfile_D2_01_0D::readInitialState(const std::string& senderId,
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
-                                                  CProfile_D2_01_Common::kAllOutputChannels);
+                                                  CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels);
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0D::states(unsigned char rorg,
@@ -65,7 +65,7 @@ void CProfile_D2_01_0D::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
-                                                                CProfile_D2_01_Common::kAllOutputChannels,
+                                                                CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels,
                                                                 m_channel->get());
 }
 
@@ -81,7 +81,7 @@ void CProfile_D2_01_0D::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      CProfile_D2_01_Common::kAllOutputChannels,
+                                                      CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,

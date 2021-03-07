@@ -59,7 +59,7 @@ namespace pluginSystem
 
       try
       {
-         auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue.get_max_msg_size()));
+         const auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue.get_max_msg_size()));
          size_t messageSize;
          unsigned int messagePriority;
          const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(
@@ -291,7 +291,7 @@ namespace pluginSystem
          throw std::out_of_range((boost::format("Unsupported plugin state received : %1%") % msg.pluginstate()).str());
       }
 
-      shared::CDataContainer dc(msg.custommessagedata());
+      const shared::CDataContainer dc(msg.custommessagedata());
 
       const auto values = dc.get<std::map<std::string, std::string>>();
 
@@ -319,7 +319,7 @@ namespace pluginSystem
          throw std::out_of_range((boost::format("Unsupported device state received : %1%") % msg.devicestate()).str());
       }
 
-      shared::CDataContainer dc(msg.custommessagedata());
+      const shared::CDataContainer dc(msg.custommessagedata());
       const auto values = dc.get<std::map<std::string, std::string>>();
       m_pluginApi->updateDeviceState(msg.device(), state, msg.custommessageid(), values);
    }

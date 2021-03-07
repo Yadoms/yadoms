@@ -23,10 +23,10 @@ private:
    std::string getForecastWeatherDeviceNameForDay(unsigned int forecastDay) const;
    std::string getForecastWeatherDeviceNameForHour(unsigned int forecastHour) const;
    static boost::shared_ptr<shared::CDataContainer> syncRequest(const std::string& url);
-   void requestLiveWeather(boost::shared_ptr<const shared::ILocation> forLocation) const;
+   void requestLiveWeather(const shared::ILocation& forLocation) const;
    void processLiveWeatherAnswer(const boost::shared_ptr<shared::CDataContainer>& weatherData,
                                  const boost::shared_ptr<shared::CDataContainer>& uvIndexData) const;
-   void requestForecastWeather(boost::shared_ptr<const shared::ILocation> forLocation) const;
+   void requestForecastWeather(const shared::ILocation& forLocation) const;
    void historize3HoursForecast(unsigned int hourIndex,
                                 const boost::posix_time::ptime& forecastDatetime,
                                 const boost::shared_ptr<shared::CDataContainer>& forecast) const;

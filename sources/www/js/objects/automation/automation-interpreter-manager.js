@@ -41,6 +41,29 @@ AutomationInterpreterManager.getAll = function () {
    return d.promise();
 };
 
+/**
+ * Get all available interpreters
+ * @param callback
+ * @param sync : true if function must be blocking (synchronous)
+ */
+AutomationInterpreterManager.getAvailable = function () {
+   var d = new $.Deferred();
+
+   RestEngine.getJson("rest/automation/interpreter/available")
+   .done(function(data) {
+      var interpreters = [];
+      
+      for (var position = 0, len = data.interpreters.length; position < len; position++) {
+         var interpreter = AutomationInterpreterManager.factory(data.interpreters[position]);
+         interpreters[interpreter.type] = interpreter;         
+      }
+      d.resolve(interpreters);
+   })
+   .fail(d.reject);
+
+   return d.promise();
+};
+
 
 /**
  * Get all interpreters from database and package.json

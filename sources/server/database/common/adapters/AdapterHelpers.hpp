@@ -238,7 +238,7 @@
          std::vector<std::string> cols; \
          for (int nCol = 0; nCol < nCols; nCol++) \
             cols.push_back(resultHandler->getColumnName(nCol)); \
-         while (resultHandler->next_step()) \
+         while (resultHandler->nextStep()) \
          { \
             boost::shared_ptr<ENTITY_CLASS(_tablename)> newEntity(new ENTITY_CLASS(_tablename)()); \
             for (int nCol = 0; nCol < nCols; nCol++) \

@@ -15,7 +15,7 @@ function AutomationEditorManager(){}
 AutomationEditorManager.getAll = function() {
    var d = new $.Deferred();
 
-   AutomationInterpreterManager.getAll()
+   AutomationInterpreterManager.getAvailable()
    .done(function (interpreters) {
       var editors = [];
 

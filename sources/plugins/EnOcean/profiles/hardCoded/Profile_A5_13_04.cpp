@@ -58,8 +58,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const auto second = static_cast<unsigned short>(bitset_extract(data, 18, 6));
    const auto amPmTimeFormat = bitset_extract(data, 30, 1) ? true : false;
 
-   if (amPmTimeFormat && (hour < 1 || hour > 12) ||
-      !amPmTimeFormat && (hour < 0 || hour > 23))
+   if ((amPmTimeFormat && (hour < 1 || hour > 12)) ||
+      (!amPmTimeFormat && (hour < 0 || hour > 23)))
    {
       YADOMS_LOG(error) << "Unsupported data received for profile " << profile() <<
          " : hour=" << hour;

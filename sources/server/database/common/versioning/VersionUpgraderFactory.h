@@ -15,8 +15,8 @@ namespace database
             static boost::shared_ptr<IVersionUpgrade> GetUpgrader();
 
          private:
-            CVersionUpgraderFactory();
-            virtual ~CVersionUpgraderFactory();
+            CVersionUpgraderFactory() = default;
+            virtual ~CVersionUpgraderFactory() = default;
          };
       } //namespace versioning
    } //namespace common

@@ -12,7 +12,7 @@ namespace shared
       {
          namespace historization
          {
-            DECLARE_CAPACITY(PluginStateMessageCapacity, "pluginStateMessage_capacity", CStandardUnits::NoUnit(), EKeywordDataType::kJson);
+            DECLARE_CAPACITY(PluginStateMessageCapacity, "pluginStateMessage", CStandardUnits::NoUnit(), EKeywordDataType::kJson);
 
             CPluginStateMessage::CPluginStateMessage(const std::string& keywordName,
                                                      const EKeywordAccessMode& accessMode)
@@ -31,7 +31,7 @@ namespace shared
             void CPluginStateMessage::setMessage(const std::string& messageId,
                                                  const std::string& messageData)
             {
-               boost::shared_ptr<CDataContainer> dc = shared::CDataContainer::make();
+               auto dc = CDataContainer::make();
                dc->set("messageId", messageId);
                dc->set("messageData", messageData);
                set(dc);
@@ -52,10 +52,10 @@ namespace shared
             {
                //convert map to dataContainer
                CDataContainer dc;
-               for (auto i = messageDataParameters.begin(); i != messageDataParameters.end(); ++i)
-                  dc.set(i->first, i->second);
+               for (const auto& messageDataParameter : messageDataParameters)
+                  dc.set(messageDataParameter.first, messageDataParameter.second);
 
-               auto dcSerialized = dc.serialize(); //use variable to allow use of reference parameter
+               const auto dcSerialized = dc.serialize(); //use variable to allow use of reference parameter
                setMessage(messageId, dcSerialized);
             }
 

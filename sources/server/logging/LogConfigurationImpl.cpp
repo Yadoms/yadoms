@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "LogConfigurationImpl.h"
-#include "LogConfigurationException.h"
 #include <Poco/Logger.h>
-#include "tools/FileSystem.h"
 
 namespace logging
 {

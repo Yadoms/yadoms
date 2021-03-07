@@ -21,7 +21,7 @@ namespace shared
                ((Custom))
             );
 
-            DECLARE_CAPACITY(DeviceStateCapacity, "deviceState_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::
+            DECLARE_CAPACITY(DeviceStateCapacity, "deviceState", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::
                yPluginApi::EKeywordDataType::kEnum);
 
             CDeviceState::CDeviceState(const std::string& keywordName,

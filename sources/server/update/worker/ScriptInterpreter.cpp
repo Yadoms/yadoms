@@ -4,10 +4,12 @@
 
 #include <shared/ServiceLocator.h>
 
-#include <Poco/File.h>
 
+#include "automation/interpreter/Information.h"
 #include "automation/IRuleManager.h"
 #include "i18n/ClientStrings.h"
+#include "shared/Executable.h"
+#include "shared/tools/Filesystem.h"
 
 namespace update
 {
@@ -31,7 +33,7 @@ namespace update
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
             downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback,
-                                                                         i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
+                                                                i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
             /////////////////////////////////////////////
@@ -41,8 +43,14 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy scriptInterpreter package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdateScriptInterpreterDeploy, std::string(), callbackData);
-               const auto pluginPath = CWorkerHelpers::deployPackage(downloadedPackage, scriptInterpretersPath.string());
+               const auto scriptInterpreterPath = CWorkerHelpers::deployPackage(downloadedPackage, scriptInterpretersPath.string());
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
+
+               // Change executable file permission to authorize execution
+               const automation::interpreter::CInformation scriptInterpreterInformation(scriptInterpreterPath);
+               permissions(scriptInterpreterInformation.getPath() / shared::CExecutable::ToFileName(scriptInterpreterInformation.getType()),
+                           boost::filesystem::perms::add_perms
+                           | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
 
                // Refresh scriptInterpreter list
                YADOMS_LOG(information) << "Refresh scriptInterpreter list";
@@ -53,7 +61,7 @@ namespace update
 
                YADOMS_LOG(information) << "ScriptInterpreter installed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, std::string(),
-                  shared::CDataContainer::make());
+                                shared::CDataContainer::make());
             }
             catch (std::exception& ex)
             {
@@ -71,11 +79,7 @@ namespace update
 
          //delete downloaded zip file
          if (!downloadedPackage.string().empty())
-         {
-            Poco::File toDelete(downloadedPackage.string());
-            if (toDelete.exists())
-               toDelete.remove();
-         }
+            shared::tools::CFilesystem::remove(downloadedPackage);
       }
 
       void CScriptInterpreter::update(CWorkerHelpers::WorkerProgressFunc progressCallback,
@@ -85,7 +89,7 @@ namespace update
       {
          YADOMS_LOG(information) << "Updating scriptInterpreter " << scriptInterpreterName << " from " << downloadUrl;
 
-         boost::shared_ptr<shared::CDataContainer> callbackData = shared::CDataContainer::make();
+         auto callbackData = shared::CDataContainer::make();
          callbackData->set("scriptInterpreterName", scriptInterpreterName);
          callbackData->set("downloadUrl", downloadUrl);
 
@@ -100,7 +104,7 @@ namespace update
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
             downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback,
-                                                                         i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
+                                                                i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
             /////////////////////////////////////////////
@@ -158,11 +162,7 @@ namespace update
 
          //delete downloaded zip file
          if (!downloadedPackage.string().empty())
-         {
-            Poco::File toDelete(downloadedPackage.string());
-            if (toDelete.exists())
-               toDelete.remove();
-         }
+            shared::tools::CFilesystem::remove(downloadedPackage);
       }
 
       void CScriptInterpreter::remove(CWorkerHelpers::WorkerProgressFunc progressCallback,
@@ -182,13 +182,10 @@ namespace update
             //1. stop any instance
             /////////////////////////////////////////////
 
-            //TOFIX must stop the interpreter itself and wait for stopped
             //stop all rules using this scriptInterpreter
             auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
             if (automationRuleManager)
-            {
                automationRuleManager->deleteAllRulesMatchingInterpreter(scriptInterpreterName);
-            }
 
             /////////////////////////////////////////////
             //2. remove scriptInterpreter folder
@@ -196,9 +193,7 @@ namespace update
             auto scriptInterpreterPath(scriptInterpretersPath);
             scriptInterpreterPath.append(scriptInterpreterName);
 
-            Poco::File toDelete(scriptInterpreterPath.string());
-            if (toDelete.exists())
-               toDelete.remove(true);
+            shared::tools::CFilesystem::remove(scriptInterpreterPath);
 
             /////////////////////////////////////////////
             //3. update scriptInterpreter manager

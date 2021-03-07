@@ -9,11 +9,7 @@ namespace automation
    class IRuleManager
    {
    public:
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~IRuleManager()
-      = default;
+      virtual ~IRuleManager() = default;
 
       //-----------------------------------------------------
       ///\brief               Start the Rule manager (start all rules)
@@ -26,10 +22,16 @@ namespace automation
       virtual void stop() = 0;
 
       //-----------------------------------------------------
-      ///\brief               Get all available interpreters (re-scan interpreters)
+      ///\brief               Get all loaded interpreters (re-scan interpreters)
       ///\return              The interpreter list
       //-----------------------------------------------------
       virtual std::vector<std::string> getLoadedInterpreters() = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Get all available interpreters (re-scan interpreters)
+      ///\return              The interpreter list
+      //-----------------------------------------------------
+      virtual std::vector<std::string> getAvailableInterpreters() = 0;
 
       //-----------------------------------------------------
       ///\brief               Get all rules

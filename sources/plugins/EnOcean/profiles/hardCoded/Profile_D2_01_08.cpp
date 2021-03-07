@@ -13,7 +13,7 @@ CProfile_D2_01_08::CProfile_D2_01_08(const std::string& deviceId,
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_channel, m_loadEnergy, m_resetLoadEnergy, m_loadPower, m_overCurrent}),
-     m_outputChannel(CProfile_D2_01_Common::kOutputChannel1)
+     m_outputChannel(CProfile_D2_01_Common::EOutputChannel::kOutputChannel1)
 {
 }
 
@@ -49,13 +49,13 @@ void CProfile_D2_01_08::readInitialState(const std::string& senderId,
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
-                                                  CProfile_D2_01_Common::kAllOutputChannels);
+                                                  CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels);
 
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
-                                                  CProfile_D2_01_Common::kOutputChannel1);
+                                                  CProfile_D2_01_Common::EOutputChannel::kOutputChannel1);
 
 
    // Need to wait a bit between outgoing messages, to be sure to receive answer
@@ -63,8 +63,8 @@ void CProfile_D2_01_08::readInitialState(const std::string& senderId,
    CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                        senderId,
                                                        m_deviceId,
-                                                       CProfile_D2_01_Common::kAllOutputChannels,
-                                                       CProfile_D2_01_Common::kQueryPower);
+                                                       CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels,
+                                                       CProfile_D2_01_Common::EPowerQueryType::kQueryPower);
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_08::states(
@@ -79,13 +79,13 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   switch (bitset_extract(data, 4, 4))
+   switch (static_cast<CProfile_D2_01_Common::E_D2_01_Command>(bitset_extract(data, 4, 4)))
    {
-   case CProfile_D2_01_Common::kActuatorStatusResponse:
+   case CProfile_D2_01_Common::E_D2_01_Command::kActuatorStatusResponse:
       {
          // Learn output channel to use
          auto receiveOutputChannel = bitset_extract(data, 11, 5);
-         if (receiveOutputChannel != CProfile_D2_01_Common::kInputChannel)
+         if (receiveOutputChannel != static_cast<unsigned int>(CProfile_D2_01_Common::EOutputChannel::kInputChannel))
             m_outputChannel = static_cast<CProfile_D2_01_Common::EOutputChannel>(receiveOutputChannel);
 
          return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
@@ -95,7 +95,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                      CProfile_D2_01_Common::noPowerFailure,
                                                                      m_overCurrent);
       }
-   case CProfile_D2_01_Common::kActuatorMeasurementResponse:
+   case CProfile_D2_01_Common::E_D2_01_Command::kActuatorMeasurementResponse:
       {
          auto historizers = CProfile_D2_01_Common::extractActuatorMeasurementResponse(rorg,
                                                                                       data,
@@ -110,8 +110,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
             CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
-                                                                CProfile_D2_01_Common::kAllOutputChannels,
-                                                                CProfile_D2_01_Common::kQueryEnergy);
+                                                                CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels,
+                                                                CProfile_D2_01_Common::EPowerQueryType::kQueryEnergy);
          }
 
          return historizers;
@@ -143,7 +143,7 @@ void CProfile_D2_01_08::sendCommand(const std::string& keyword,
                                                                senderId,
                                                                m_deviceId,
                                                                m_outputChannel,
-                                                               false,
+                                                               true,
                                                                true,
                                                                0,
                                                                0);
@@ -156,7 +156,7 @@ void CProfile_D2_01_08::sendCommand(const std::string& keyword,
                                                           senderId,
                                                           m_deviceId,
                                                           m_outputChannel,
-                                                          CProfile_D2_01_Common::kQueryPower);
+                                                          CProfile_D2_01_Common::EPowerQueryType::kQueryPower);
    }
 }
 

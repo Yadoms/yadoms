@@ -1,3 +1,6 @@
+### 1.4.0
+* Fix Historization with latest Boost versions
+
 ### 1.3.0
 * Fix #562  : update usage of CDataContainer for better memory optimizations
 

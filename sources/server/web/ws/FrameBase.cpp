@@ -5,8 +5,8 @@ namespace web
 {
    namespace ws
    {
-      const std::string CFrameBase::m_typeFieldName = "type";
-      const std::string CFrameBase::m_dataFieldName = "data";
+      const std::string CFrameBase::TypeFieldName = "type";
+      const std::string CFrameBase::DataFieldName = "data";
 
       DECLARE_ENUM_IMPLEMENTATION_NESTED(CFrameBase::EFrameType, EFrameType,
          ((AcquisitionFilter))
@@ -31,24 +31,20 @@ namespace web
 
       CFrameBase::CFrameBase(const EFrameType& type)
       {
-         m_internalContainer.set<EFrameType>(m_typeFieldName, type);
+         m_internalContainer.set<EFrameType>(TypeFieldName, type);
       }
 
-      CFrameBase::~CFrameBase()
+      CFrameBase::EFrameType CFrameBase::getType() const
       {
-      }
-
-      CFrameBase::EFrameType CFrameBase::getType()
-      {
-         return m_internalContainer.get<EFrameType>(m_typeFieldName);
+         return m_internalContainer.get<EFrameType>(TypeFieldName);
       }
 
       const std::string& CFrameBase::getTypeFieldName()
       {
-         return m_typeFieldName;
+         return TypeFieldName;
       }
 
-      const std::string CFrameBase::serialize() const
+      std::string CFrameBase::serialize() const
       {
          return m_internalContainer.serialize();
       }

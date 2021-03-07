@@ -59,6 +59,12 @@ MACRO(SCRIPT_API_WRAPPER_LINK _targetName)
       # for this target, precompiled header has no real sense
       set_target_properties(${_targetName} PROPERTIES COTIRE_ENABLE_PRECOMPILED_HEADER FALSE)
       
+	  
+	if(MSVC)
+		#fix for linking with external OpenSSL (due to SWIG_LINK_LIBRARIES, default link flags are not used)
+		set_target_properties(${_targetName} PROPERTIES LINK_FLAGS "/NODEFAULTLIB:libssl /NODEFAULTLIB:libcrypto")		
+	endif(MSVC)
+	  
 		cotire(${_targetName})
 	endif()	   
 ENDMACRO()

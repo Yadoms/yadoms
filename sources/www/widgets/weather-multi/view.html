@@ -20,8 +20,14 @@
                </div>
 
                <div class="block" data-bind="attr:{ style: DisplayTemperatureAvg }">
-                  <img class="block-image" src="widgets/weather-multi/images/temp-avg.png"/>
-                  <span data-bind="text: TempAvg"></span>
+                  <div class="block">
+                     <!-- Empty block to align with columns containing min/max values -->
+                     <img class="block-image"/>
+                  </div>
+                  <div class="block">
+                     <img class="block-image" src="widgets/weather-multi/images/temp-avg.png"/>
+                     <span data-bind="text: TempAvg"></span>
+                  </div>
                </div>
 
                <div class="block" data-bind="attr:{ style: DisplayRainOrSnow }">

@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <type_traits>
 
 //include only needed files
 #include <boost/algorithm/string.hpp>

@@ -69,6 +69,7 @@ namespace pluginSystem
       /// \param[in] pbMsg The message
       /// \param[in] checkExpectedMessageFunction Callback checking that answer is the expected one
       /// \param[in] onReceiveFunction Callback to process the received message
+      /// \param[in] timeout Timeout processing request
       //--------------------------------------------------------------
       void send(const plugin_IPC::toPlugin::msg& pbMsg,
                 boost::function1<bool, const plugin_IPC::toYadoms::msg&> checkExpectedMessageFunction,
@@ -84,8 +85,7 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief	Process messages
-      /// \param[in] request Received requests
-      /// \param[in] messageQueue Message Queue used for answer
+      /// \param msg Message to process
       //--------------------------------------------------------------
       void processSetPluginState(const plugin_IPC::toYadoms::SetPluginState& msg) const;
       void processGetConfiguration(const plugin_IPC::toYadoms::ConfigurationRequest& msg);

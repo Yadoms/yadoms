@@ -38,8 +38,9 @@ namespace database
                                                                     const std::string& increment,
                                                                     boost::posix_time::ptime& dataTime) override;
             boost::shared_ptr<entities::CAcquisitionSummary> saveSummaryData(int keywordId,
-                                                                             database::entities::EAcquisitionSummaryType curType,
-                                                                             boost::posix_time::ptime& dataTime) override;
+                                                                             entities::EAcquisitionSummaryType curType,
+                                                                             boost::posix_time::ptime& dataTime)
+            override;
             void getKeywordsHavingDate(const boost::posix_time::ptime& timeFrom,
                                        const boost::posix_time::ptime& timeTo,
                                        std::vector<int>& results) override;
@@ -49,36 +50,48 @@ namespace database
             void moveAllData(int fromKw, int toKw) override;
             void removeKeywordData(int keywordId) override;
             boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(int keywordId,
-                                                                                     boost::posix_time::ptime time) override;
-            void exportAcquisitions(const int keywordId,
+                                                                                     boost::posix_time::ptime time)
+            override;
+            void exportAcquisitions(int keywordId,
                                     std::function<void(const boost::posix_time::ptime& date,
                                                        const std::string& value,
                                                        int nbTotalLines)> exportOneLineFunction) override;
-            std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(int keywordId,
-                                                                                            boost::posix_time::ptime timeFrom = boost::posix_time::
-                                                                                               not_a_date_time,
-                                                                                            boost::posix_time::ptime timeTo = boost::posix_time::
-                                                                                               not_a_date_time,
-                                                                                            int limit = -1) override;
+            std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(
+               int keywordId,
+               boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
+               boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
+               int limit = -1) override;
 
             std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> getKeywordDataByDay(int keywordId,
-                                                                                              boost::posix_time::ptime timeFrom,
-                                                                                              boost::posix_time::ptime timeTo) override;
+                                                                                              boost::posix_time::ptime
+                                                                                              timeFrom,
+                                                                                              boost::posix_time::ptime
+                                                                                              timeTo) override;
             std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> getKeywordDataByHour(int keywordId,
-                                                                                               boost::posix_time::ptime timeFrom,
-                                                                                               boost::posix_time::ptime timeTo) override;
+                                                                                               boost::posix_time::ptime
+                                                                                               timeFrom,
+                                                                                               boost::posix_time::ptime
+                                                                                               timeTo) override;
             std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> getKeywordDataByMonth(int keywordId,
-                                                                                                boost::posix_time::ptime timeFrom,
-                                                                                                boost::posix_time::ptime timeTo) override;
+                                                                                                boost::posix_time::ptime
+                                                                                                timeFrom,
+                                                                                                boost::posix_time::ptime
+                                                                                                timeTo) override;
             std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> getKeywordDataByYear(int keywordId,
-                                                                                               boost::posix_time::ptime timeFrom,
-                                                                                               boost::posix_time::ptime timeTo) override;
-            std::string getHugeVectorKeywordDataByDay(int keywordId,
-                                                      boost::posix_time::ptime timeFrom,
-                                                      boost::posix_time::ptime timeTo) override;
+                                                                                               boost::posix_time::ptime
+                                                                                               timeFrom,
+                                                                                               boost::posix_time::ptime
+                                                                                               timeTo) override;
+            std::string getHugeVectorKeywordData(int keywordId,
+                                                 boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
+                                                 boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
+                                                 int limit = -1) override;
             std::string getHugeVectorKeywordDataByHour(int keywordId,
                                                        boost::posix_time::ptime timeFrom,
                                                        boost::posix_time::ptime timeTo) override;
+            std::string getHugeVectorKeywordDataByDay(int keywordId,
+                                                      boost::posix_time::ptime timeFrom,
+                                                      boost::posix_time::ptime timeTo) override;
             std::string getHugeVectorKeywordDataByMonth(int keywordId,
                                                         boost::posix_time::ptime timeFrom,
                                                         boost::posix_time::ptime timeTo) override;
@@ -99,9 +112,9 @@ namespace database
             /// \param [in] timeFrom      The start date (optional)
             /// \param [in] timeTo        The end date (optional)
             /// \return                   CAcquisitionSummary data
-            /// \throw                    CInvalidParameter if deviceId is unknown
+            /// \throw                    CInvalidParameter if keywordId is unknown
             //--------------------------------------------------------------
-            std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> getKeywordSummaryDataByType(
+            std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> getKeywordSummaryDataByType(
                const entities::EAcquisitionSummaryType& type,
                int keywordId,
                boost::posix_time::ptime timeFrom,
@@ -114,12 +127,27 @@ namespace database
             /// \param [in] timeFrom      The start date (optional)
             /// \param [in] timeTo        The end date (optional)
             /// \return                   CAcquisitionSummary data
-            /// \throw                    CInvalidParameter if deviceId is unknown
+            /// \throw                    CInvalidParameter if keywordId is unknown
             //--------------------------------------------------------------
             std::string getHugeVectorKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type,
                                                               int keywordId,
                                                               boost::posix_time::ptime timeFrom,
                                                               boost::posix_time::ptime timeTo) const;
+
+            //--------------------------------------------------------------
+            /// \brief                    Build the request for retrieving keyword data
+            /// \param [in] keywordId     keywordId Id
+            /// \param [in] timeFrom      The start date (optional)
+            /// \param [in] timeTo        The end date (optional)
+            /// \param [in] limit         The limit (optional)
+            /// \return                   The request
+            /// \throw                    CInvalidParameter if keywordId is unknown
+            //--------------------------------------------------------------
+            boost::shared_ptr<CQuery> requestKeywordData(
+               int keywordId,
+               boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
+               boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
+               int limit = -1) const;
 
             //--------------------------------------------------------------
             /// \Brief		   Pointer to keyword requester

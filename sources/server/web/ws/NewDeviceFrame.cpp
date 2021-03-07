@@ -12,7 +12,7 @@ namespace web
       {
          shared::CDataContainer local;
          local.set(m_device, content);
-         m_internalContainer.set(m_dataFieldName, local);
+         m_internalContainer.set(DataFieldName, local);
       }
 
       CNewDeviceFrame::~CNewDeviceFrame()

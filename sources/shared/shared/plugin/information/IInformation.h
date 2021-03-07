@@ -14,12 +14,7 @@ namespace shared
          class IInformation
          {
          public:
-            //--------------------------------------------------------------
-            /// \brief	    Destructor
-            //--------------------------------------------------------------
-            virtual ~IInformation()
-            {
-            }
+            virtual ~IInformation() = default;
 
             //--------------------------------------------------------------
             /// \brief	    get the plugin type
@@ -48,14 +43,14 @@ namespace shared
             virtual const std::string& getUrl() const = 0;
 
             //--------------------------------------------------------------
-            /// \brief	    get all identity informations in printable format
-            /// \return     all plugin informations (plugin name and version)
+            /// \brief	    get all identity information in printable format
+            /// \return     all plugin information (plugin name and version)
             //--------------------------------------------------------------
             virtual std::string getIdentity() const = 0;
 
             //--------------------------------------------------------------
-            /// \brief	    get all informations in printable format
-            /// \return     all plugin informations
+            /// \brief	    get all information in printable format
+            /// \return     all plugin information
             //--------------------------------------------------------------
             virtual std::string toString() const = 0;
 
@@ -85,7 +80,7 @@ namespace shared
             /// \brief	    Provide the package.json content
             /// \return     the package.json content
             //--------------------------------------------------------------
-            virtual boost::shared_ptr<const shared::CDataContainer> getPackage() const = 0;
+            virtual boost::shared_ptr<const CDataContainer> getPackage() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    Get the plugin path
@@ -97,5 +92,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::information
-
-

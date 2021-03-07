@@ -14,11 +14,20 @@ cd projects
 #The powershell ((dir -Filter all_unity.vcxproj -Recurse | %{$_.DirectoryName} | Resolve-Path -Relative).substring(2)+"\all_unity" -replace '\\','/')
 #give the relative path of all_unity.vcxproj; removing extensions, removing first '.\' and replacing \ by /
 cmake --build . --config Release --target ((dir -Filter all_unity.vcxproj -Recurse | %{$_.DirectoryName} | Resolve-Path -Relative).substring(2)+"\all_unity" -replace '\\','/')
-
+if(! $?)
+{
+   "Buil failed"
+   exit(1)
+}
 
 Write-Host "Build Yadoms package"
 cp ..\config\yadoms.ini ..\builds\Release
 cmake --build . --config Release --target package
+if(! $?)
+{
+   "Package failed"
+   exit(2)
+}
 cd ..
 
 md package
@@ -37,6 +46,6 @@ Out-File -InputObject $content -FilePath .\package.json -Encoding UTF8
 Copy-Item ..\sources\server\changelog.md .\
 Get-ChildItem * -Include *.ilk -Recurse | Remove-Item
 Get-ChildItem * -Include yadoms.ini -Recurse | Remove-Item
-Compress-Archive -Path .\* -DestinationPath ..\build\package\update-package-Windows.zip
+Compress-Archive -Path .\* -DestinationPath ..\builds\package\update-package-Windows.zip
 cd ..
   

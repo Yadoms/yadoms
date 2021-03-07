@@ -3,39 +3,37 @@
 #include "sqlite3.h"
 #include "database/common/IResultHandler.h"
 
-namespace database { 
-namespace sqlite { 
-
-   class CSQLiteResultHandler : public database::common::IResultHandler
+namespace database
+{
+   namespace sqlite
    {
-   public:
-      explicit CSQLiteResultHandler(sqlite3_stmt *pStatement);
-      virtual ~CSQLiteResultHandler();
+      class CSQLiteResultHandler final : public common::IResultHandler
+      {
+      public:
+         explicit CSQLiteResultHandler(sqlite3_stmt* pStatement);
+         virtual ~CSQLiteResultHandler() = default;
 
-      // database::common::IResultHandler implementation
-      int getColumnCount() override;
-      std::string getColumnName(const int columnIndex) override;
-      bool next_step() override;
-      std::string extractValueAsString(const int columnIndex) override;
-      int extractValueAsInt(const int columnIndex) override;
-      float extractValueAsFloat(const int columnIndex) override;
-      double extractValueAsDouble(const int columnIndex) override;
-      unsigned char* extractValueAsBlob(const int columnIndex) override;
-      bool extractValueAsBool(const int columnIndex) override;
-      bool isValueNull(const int columnIndex) override;
-      boost::posix_time::ptime extractValueAsBoostTime(const int columnIndex) override;
-      Poco::DateTime extractValueAsPocoTime(const int columnIndex) override;
-      boost::shared_ptr<shared::CDataContainer> extractValueAsDataContainer(const int columnIndex) override;
-      // [END] - database::common::IResultHandler implementation
+         // database::common::IResultHandler implementation
+         int getColumnCount() override;
+         std::string getColumnName(int columnIndex) override;
+         bool nextStep() override;
+         std::string extractValueAsString(int columnIndex) override;
+         int extractValueAsInt(int columnIndex) override;
+         float extractValueAsFloat(int columnIndex) override;
+         double extractValueAsDouble(int columnIndex) override;
+         const unsigned char* extractValueAsBlob(int columnIndex) override;
+         bool extractValueAsBool(int columnIndex) override;
+         bool isValueNull(int columnIndex) override;
+         boost::posix_time::ptime extractValueAsBoostTime(int columnIndex) override;
+         Poco::DateTime extractValueAsPocoTime(int columnIndex) override;
+         boost::shared_ptr<shared::CDataContainer> extractValueAsDataContainer(int columnIndex) override;
+         // [END] - database::common::IResultHandler implementation
 
-   private:
-      //--------------------------------------------------------------
-      /// \Brief		database statement
-      //--------------------------------------------------------------
-      sqlite3_stmt *m_pStatement;
-
-   };
-
-} //namespace sqlite
+      private:
+         //--------------------------------------------------------------
+         /// \Brief		database statement
+         //--------------------------------------------------------------
+         sqlite3_stmt* m_pStatement;
+      };
+   } //namespace sqlite
 } //namespace database 
-

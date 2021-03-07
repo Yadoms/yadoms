@@ -839,7 +839,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       bufferHandler.push(shared::communication::CByteBuffer(serialTeleInfoMessage::normalizeFrame("<etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BAS")));
 
       //push after all last characters individually
-      for (int counter = 0; counter < frame.size(); ++counter)
+      for (size_t counter = 0; counter < frame.size(); ++counter)
       {
          std::vector<unsigned char> vect;
          vect.push_back(frame[counter]);

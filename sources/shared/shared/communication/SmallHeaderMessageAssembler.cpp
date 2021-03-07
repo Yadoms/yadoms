@@ -15,10 +15,6 @@ namespace shared
       {
       }
 
-      SmallHeaderMessageAssembler::~SmallHeaderMessageAssembler()
-      {
-      }
-
       void SmallHeaderMessageAssembler::appendPart(boost::shared_ptr<const unsigned char[]> message,
                                                    size_t messageSize)
       {
@@ -28,8 +24,8 @@ namespace shared
             return;
          }
 
-         SmallHeaderMessageAssemblerPart part(message,
-                                              messageSize);
+         const SmallHeaderMessageAssemblerPart part(message,
+                                                    messageSize);
 
          if (part.isFirst())
          {
@@ -70,7 +66,7 @@ namespace shared
 
       void SmallHeaderMessageAssembler::allocFullMessage(size_t partCount)
       {
-         auto newSize = partCount * (m_maxPartSize - SmallHeaderMessageAssemblerPart::headerSize());
+         const auto newSize = partCount * (m_maxPartSize - SmallHeaderMessageAssemblerPart::headerSize());
          if (!m_fullMessage || newSize > m_fullMessageSize)
          {
             m_fullMessageSize = newSize;

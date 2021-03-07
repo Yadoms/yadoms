@@ -14,7 +14,8 @@ C4kRamWithCounter::C4kRamWithCounter(EOneWireFamily family,
       m_io(io),
       m_countA(boost::make_shared<yApi::historization::CCounter>("counter_A", yApi::EKeywordAccessMode::kGet, yApi::EMeasureType::kCumulative)),
       m_countB(boost::make_shared<yApi::historization::CCounter>("counter_B", yApi::EKeywordAccessMode::kGet, yApi::EMeasureType::kCumulative)),
-      m_keywords({m_countA, m_countB})
+      m_keywords({m_countA, m_countB}),
+      m_lastHistorizationDate(shared::currentTime::Provider().now() - HistorizationPeriod - boost::posix_time::minutes(1))
 {
    BOOST_ASSERT_MSG(m_identification->family() == k4kRamWithCounter, "Invalid family number");
 }

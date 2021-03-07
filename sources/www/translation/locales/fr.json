@@ -68,6 +68,12 @@
             "clean": "Nettoyage...",
             "success": "Sauvegarde réussie"
          },
+         "restore": {
+            "prepare": "Preparing de la restauration...",
+            "decompress": "Décompression des fichiers...",
+            "success": "Restauration réussie",
+            "restarting": "Redémarrage de Yadoms..."
+         },
          "packLogs": {
             "prepare": "Préparation des journaux...",
             "copyfiles": "Copie des journaux...",
@@ -710,6 +716,7 @@
                "table": {
                   "name": "Nom",
                   "description": "Description",
+                  "type": "Type",
                   "autoStart": "Démarrer automatiquement",
                   "actions": "Actions",
                   "state": "Etat"
@@ -790,7 +797,8 @@
                   "confirmInstallTitle": "Confirmation d'installation",
                   "confirmInstall": "Installer {{objectName}} en version {{version}} ?",
                   "confirmRemoveTitle": "Confirmer la désinstallation",
-                  "confirmRemove": "Désinstaller {{objectName}} ?"
+                  "confirmRemove": "Désinstaller {{objectName}} ?",
+                  "obsolete": "Obsolète"
                },
                "plugins": {
                   "title": "Plugins"
@@ -816,9 +824,13 @@
                      "actions": "Actions",
                      "download": "Télécharger",
                      "delete": "Supprimer",
+                     "restore": "Restaurer",
                      "deleteConfirmTitle": "Confirmer la suppression",
-                     "deleteConfirm": "Supprimer la sauvegarde ?"
-                  }
+                     "deleteConfirm": "Supprimer la sauvegarde ?",
+                     "restoreConfirmTitle": "Confirmer la restauration",
+                     "restoreConfirm": "Restaurer le backup effacera toutes les données actuelles. Etes-vous sûr de vouloir procéder à la restauration ?"
+                  },            
+                  "restoring": "Restauration en cours..."
                },
                "logs-download": {
                   "title": "Journaux",

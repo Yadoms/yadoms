@@ -26,17 +26,14 @@ namespace pluginSystem
       CIndicatorQualifier(boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLogger,
                           boost::shared_ptr<dataAccessLayer::IEventLogger> mainLogger);
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~CIndicatorQualifier();
+      virtual ~CIndicatorQualifier() = default;
 
       // IQualifier implementation
-      void signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
-      void signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
-      void signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason) override;
-      bool isSafe(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
-      int getQualityLevel(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
+      void signalLoad(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
+      void signalUnload(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
+      void signalCrash(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason) override;
+      bool isSafe(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
+      int getQualityLevel(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation) override;
       // [END] IQualifier implementation
 
    private:
@@ -84,5 +81,3 @@ namespace pluginSystem
       boost::shared_ptr<database::IPluginEventLoggerRequester> m_pluginLogger;
    };
 } // namespace pluginSystem
-
-
