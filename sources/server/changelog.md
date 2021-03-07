@@ -191,6 +191,7 @@
 _Please note that changes on modules (plugins, widgets...) are now specified in their respective change-logs files, no more in this file._
 
 #### Web Client
+* Fix #688 - [2.4.0-beta.4] Indicator widget : icons list empty
 * Fix unsupported browser detection
 * Optimize REST request handling at the startup of the web client
 * Fix rolling title, when change the title of the widget
