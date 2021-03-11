@@ -1,3 +1,6 @@
+### 1.3.1
+  * Fix crash when bad network connection
+
 ### 1.3.0
   * Fix UV historization
 

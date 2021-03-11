@@ -164,7 +164,7 @@ void COpenWeatherService::processLiveWeatherAnswer(const boost::shared_ptr<share
 
       if (weatherData->containsValue("visibility"))
          weatherDevice.setVisibility(weatherData->get<int>("visibility"));
-      if (uvIndexData->containsValue("value"))
+      if (uvIndexData && uvIndexData->containsValue("value"))
          weatherDevice.setUV(uvIndexData->get<double>("value"));
 
       weatherDevice.historize(m_api);
@@ -435,7 +435,7 @@ const
          }
       }
 
-      if (uvIndexData->containsChildArray("list"))
+      if (uvIndexData && uvIndexData->containsChildArray("list"))
       {
          const auto& forecasts = uvIndexData->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("list");
 
