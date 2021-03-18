@@ -178,8 +178,8 @@ namespace shared
 
             try
             {
-               auto evt = boost::dynamic_pointer_cast<CEvent<DataType>>(m_lastEvent);
-               return evt.get() != NULL;
+               dynamic_cast<CEvent<DataType>&>(*m_lastEvent);
+               return true;
             }
             catch (std::bad_cast&)
             {

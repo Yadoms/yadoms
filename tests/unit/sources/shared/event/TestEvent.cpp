@@ -272,6 +272,23 @@ BOOST_AUTO_TEST_CASE(EventWithBadData)
    BOOST_CHECK(evtHandler.isEventType<std::string>());
    BOOST_REQUIRE_NO_THROW(evtHandler.getEventData<std::string>());
 
+   // Send ptr
+   auto* const ptr = static_cast<char*>(malloc(3));
+   evtHandler.postEvent(idEvent, ptr);
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), idEvent);
+
+   BOOST_CHECK(!evtHandler.isEventType<int*>());
+   BOOST_REQUIRE_THROW(evtHandler.getEventData<int*>(), std::bad_cast);
+
+   BOOST_CHECK(!evtHandler.isEventType<char>());
+   BOOST_REQUIRE_THROW(evtHandler.getEventData<char>(), std::bad_cast);
+
+   BOOST_CHECK(evtHandler.isEventType<char*>());
+   BOOST_REQUIRE_NO_THROW(evtHandler.getEventData<char*>());
+
+   free(ptr);
+
 
    // Send no data
    evtHandler.postEvent(idEvent);
