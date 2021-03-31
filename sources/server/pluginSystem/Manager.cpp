@@ -26,8 +26,8 @@ namespace pluginSystem
 {
    CManager::CManager(boost::shared_ptr<const IPathProvider> pathProvider,
                       const shared::versioning::CSemVer& yadomsVersion,
-                      boost::shared_ptr<database::IDataProvider> dataProvider,
-                      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+                      const boost::shared_ptr<database::IDataProvider>& dataProvider,
+                      const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
                       boost::shared_ptr<shared::ILocation> location,
                       boost::shared_ptr<task::CScheduler> taskScheduler)
       : m_factory(boost::make_shared<CFactory>(pathProvider,
@@ -738,9 +738,7 @@ namespace pluginSystem
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
 
-      YADOMS_LOG(debug) << "Send extra query " << query->getData()->query() << " to plugin " << instance
-                                                                                                ->about()->
-                                                                                                DisplayName();
+      YADOMS_LOG(debug) << "Send extra query " << query->getData()->query() << " to plugin " << instance->about()->DisplayName();
 
       const auto task(boost::make_shared<task::plugins::CExtraQuery>(instance, query));
 
@@ -757,8 +755,7 @@ namespace pluginSystem
    }
 
    void CManager::postManuallyDeviceCreationRequest(int id,
-                                                    boost::shared_ptr<shared::plugin::yPluginApi::
-                                                       IManuallyDeviceCreationRequest>& request) const
+                                                    boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const
    {
       try
       {

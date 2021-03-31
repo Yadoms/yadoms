@@ -4,37 +4,42 @@
 #include "TaskEvent.h"
 #include <shared/currentTime/Provider.h>
 #include <shared/Log.h>
-#include "database/entities/Entities.h"
 #include <shared/ServiceLocator.h>
 #include "notification/Helpers.hpp"
 #include <shared/DataContainer.h>
+
+#include <utility>
 #include "i18n/ClientStrings.h"
 
 #include "InstanceNotificationData.h"
 
-namespace task {
-
-   //------------------------------
-   ///\brief Constructor
-   //------------------------------
-   CInstance::CInstance(boost::shared_ptr<ITask> task, boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int eventCode, const std::string & guid)
-      : CThreadBase("Task " + task->getName()), m_currentIsRunning(false), m_currentProgression(0.0f), m_currentMessage(""), 
-      m_taskData(shared::CDataContainer::make()), m_task(task), m_eventHandler(eventHandler), m_eventCode(eventCode),
-      m_guid(guid), m_currentStatus(ETaskStatus::kStarted), 
-      m_creationDate(shared::currentTime::Provider().now())      
+namespace task
+{
+   CInstance::CInstance(const boost::shared_ptr<ITask>& task,
+                        boost::shared_ptr<shared::event::CEventHandler> eventHandler,
+                        const int eventCode,
+                        std::string guid)
+      : CThreadBase("Task " + task->getName()),
+        m_currentIsRunning(false),
+        m_currentProgression(0.0f),
+        m_currentMessage(""),
+        m_taskData(shared::CDataContainer::make()),
+        m_task(task),
+        m_eventHandler(std::move(eventHandler)),
+        m_eventCode(eventCode),
+        m_guid(std::move(guid)),
+        m_currentStatus(ETaskStatus::kStarted),
+        m_creationDate(shared::currentTime::Provider().now())
    {
       BOOST_ASSERT(m_task);
-      start();
+      CThreadBase::start();
    }
 
-   //------------------------------
-   ///\brief public destructor
-   //------------------------------
    CInstance::~CInstance()
    {
-      stop();
+      CThreadBase::stop();
    }
-   
+
    boost::shared_ptr<ITask> CInstance::getTask() const
    {
       return m_task;
@@ -53,8 +58,8 @@ namespace task {
    std::string CInstance::getMessage() const
    {
       return m_currentMessage;
-   } 
-   
+   }
+
    std::string CInstance::getExceptionMessage() const
    {
       return m_currentException;
@@ -80,7 +85,8 @@ namespace task {
       return m_creationDate;
    }
 
-   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, const std::string& message, const std::string& exception, boost::shared_ptr<shared::CDataContainer> taskData)
+   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, const std::string& message, const std::string& exception,
+                                         boost::shared_ptr<shared::CDataContainer> taskData)
    {
       if (!isRunning)
          m_currentStatus = ETaskStatus::kFail;
@@ -96,7 +102,7 @@ namespace task {
       m_currentProgression = progression;
       m_currentMessage = message;
       m_currentException = exception;
-      m_taskData = taskData;
+      m_taskData = std::move(taskData);
 
       if (m_currentProgression)
          YADOMS_LOG(debug) << m_task->getName() << " report progression " << m_currentProgression.get() << " with message " << m_currentMessage;
@@ -123,7 +129,8 @@ namespace task {
 
          // Execute task code
          m_task->onSetTaskId(getGuid());
-         m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3, boost::placeholders::_4, boost::placeholders::_5));
+         m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, boost::placeholders::_1, boost::placeholders::_2,
+                                    boost::placeholders::_3, boost::placeholders::_4, boost::placeholders::_5));
 
          //check if task is still running (modified by callback)
          if (m_currentIsRunning && m_currentStatus != ETaskStatus::kSuccess)
@@ -158,5 +165,4 @@ namespace task {
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
    }
-   
 } //namespace task

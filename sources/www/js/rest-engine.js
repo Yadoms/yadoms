@@ -2,7 +2,7 @@
  * Created by jeanmichelDECORET on 08/10/15.
  */
 
- 
+
 /** Classe qui gère les requetes REST auprès du server
 
 Cette classe ne s'instancie pas et ouvre simplement des méthodes statiques accessible depuis n'importe quel code JS
@@ -13,16 +13,16 @@ Cette classe ne s'instancie pas et ouvre simplement des méthodes statiques acce
  * Constructor which does nothing because it is used as a static class
  * @constructor
  */
-function RestEngine(){}
+function RestEngine() {}
 
 /**
  * Send a REST GET asynchronous request
  * @param {string} url The URL requested : "/devices/32"
  * @param {JSON} data The $.ajax options
  * @return a promise
-*/
+ */
 RestEngine.get = function (url, data) {
-    return RestEngine.restCall_("GET", url, data);
+   return RestEngine.restCall_("GET", url, data);
 };
 
 /**
@@ -30,9 +30,9 @@ RestEngine.get = function (url, data) {
  * @param {string} url The URL requested : "/devices/32"
  * @param {JSON} data The $.ajax options (dataType will be overwritten by 'json')
  * @return a promise
-*/
+ */
 RestEngine.getJson = function (url, data) {
-    return RestEngine.get(url, RestEngine.makeJsonOptions_(data));
+   return RestEngine.get(url, RestEngine.makeJsonOptions_(data));
 };
 
 /**
@@ -40,11 +40,11 @@ RestEngine.getJson = function (url, data) {
  * @param {string} url The URL requested : "/devices/32"
  * @param {JSON} data The $.ajax options (dataType will be overwritten by 'script')
  * @return a promise
-*/
+ */
 RestEngine.getScript = function (url, data) {
-    var completeData = data || {};
-    completeData.dataType = "script";
-    return RestEngine.get(url, completeData);
+   var completeData = data || {};
+   completeData.dataType = "script";
+   return RestEngine.get(url, completeData);
 };
 
 /**
@@ -52,11 +52,11 @@ RestEngine.getScript = function (url, data) {
  * @param {string} url The URL requested : "/devices/32"
  * @param {JSON} data The $.ajax options (dataType will be overwritten by 'html')
  * @return a promise
-*/
+ */
 RestEngine.getHtml = function (url, data) {
-    var completeData = data || {};
-    completeData.dataType = "html";
-    return RestEngine.get(url, completeData);
+   var completeData = data || {};
+   completeData.dataType = "html";
+   return RestEngine.get(url, completeData);
 };
 
 /**
@@ -76,7 +76,7 @@ RestEngine.put = function (url, data) {
  * @return a promise
  */
 RestEngine.putJson = function (url, data) {
-    return RestEngine.put(url, RestEngine.makeJsonOptions_(data));
+   return RestEngine.put(url, RestEngine.makeJsonOptions_(data));
 };
 
 /**
@@ -96,7 +96,7 @@ RestEngine.post = function (url, data) {
  * @return a promise
  */
 RestEngine.postJson = function (url, data) {
-    return RestEngine.post(url, RestEngine.makeJsonOptions_(data));
+   return RestEngine.post(url, RestEngine.makeJsonOptions_(data));
 
 };
 
@@ -117,7 +117,7 @@ RestEngine.delete = function (url, data) {
  * @return a promise
  */
 RestEngine.deleteJson = function (url, data) {
-    return RestEngine.delete(url, RestEngine.makeJsonOptions_(data));
+   return RestEngine.delete(url, RestEngine.makeJsonOptions_(data));
 };
 
 
@@ -127,12 +127,12 @@ RestEngine.deleteJson = function (url, data) {
  * @return {JSON} The $.ajax options for json data
  * @private
  */
-RestEngine.makeJsonOptions_ = function(data) {
-    var completeData = data || {};
-    completeData.dataType = "json";
-    if (!completeData.contentType)
-        completeData.contentType = "application/x-www-form-urlencoded;charset=utf-8";
-    return completeData;
+RestEngine.makeJsonOptions_ = function (data) {
+   var completeData = data || {};
+   completeData.dataType = "json";
+   if (!completeData.contentType)
+      completeData.contentType = "application/x-www-form-urlencoded;charset=utf-8";
+   return completeData;
 }
 
 /**
@@ -145,30 +145,29 @@ RestEngine.makeJsonOptions_ = function(data) {
  * @return a promise
  * @private
  */
-RestEngine.restCall_ = function(type, url, data){
+RestEngine.restCall_ = function (type, url, data) {
    assert(!isNullOrUndefined(type), "type must be defined");
    assert(!isNullOrUndefined(url), "url must be defined");
-   
-	var d = $.Deferred();
 
-	var ajaxOptions = data || {};
+   var d = $.Deferred();
+
+   var ajaxOptions = data || {};
    ajaxOptions.type = type;
-   
+
    ajaxOptions.url = url;
-   if(!isNullOrUndefinedOrEmpty(Yadoms.baseUrl)) {
+   if (!isNullOrUndefinedOrEmpty(Yadoms.baseUrl)) {
       ajaxOptions.url = concatenateUrl(Yadoms.baseUrl, url);
    }
-   
+
    //We send request to server
    $.ajax(ajaxOptions)
       .done(function (data) {
-          if (ajaxOptions.dataType === "json" && !isNullOrUndefined(data) && data.result != undefined) {
+         if (ajaxOptions.dataType === "json" && !isNullOrUndefined(data) && data.result != undefined) {
             //if JSON dataType expected, we parse the json answer
             if (data.result && data.result === true) {
                //if answer is ok we return data field
                d.resolve(data.data);
-            }
-            else {
+            } else {
                d.reject(data.message);
             }
          } else {
@@ -176,37 +175,58 @@ RestEngine.restCall_ = function(type, url, data){
             d.resolve(data);
          }
       })
-      .fail(function(jqXhr, textStatus, errorThrown) {
+      .fail(function (jqXhr, textStatus, errorThrown) {
          //we build an error using HTTP error code
          d.reject(jqXhr.status + errorThrown);
       });
-   
+
    return d.promise();
 }
 
-RestEngine.getBinaryFiles = function(url){
+RestEngine.getBinaryFiles = function (url) {
    var d = $.Deferred();
    var xhr = new XMLHttpRequest();
    xhr.open('GET', url, true);
    xhr.responseType = 'arraybuffer';
- 
-   xhr.onload = function(e) {
+
+   xhr.onload = function (e) {
       // response is unsigned 8 bit integer
-      try{
-         var responseArray = new Uint8Array(this.response); 
+      try {
+         var responseArray = new Uint8Array(this.response);
          var inflator = new Zlib.Gunzip(responseArray);
-         var inflated = inflator.decompress();             
+         var inflated = inflator.decompress();
          d.resolve(new TextDecoder("utf-8").decode(inflated));
-      }
-      catch(error){
+      } catch (error) {
          d.reject(error);
       }
    };
-   
+
    xhr.onerror = function (event) {
       console.error(event);
       d.reject(event);
    }
    xhr.send();
+   return d.promise();
+}
+
+RestEngine.sendBinaryFiles = function (url, file) {
+   var d = $.Deferred();
+
+   let formData = new FormData();
+   formData.append("file", file);
+
+   fetch(url, {
+         method: "POST",
+         body: formData,
+         cache: 'no-cache'
+      })
+      .done(function () {
+         debugger;
+      })
+      .fail(function (error) {
+         console.error(error);
+         d.reject(error);
+      })
+
    return d.promise();
 }

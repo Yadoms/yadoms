@@ -527,6 +527,16 @@ namespace shared
          return out;
       }
 
+      std::string CHttpMethods::urlEncode(const std::string& url)
+      {
+         return cURLpp::escape(url);
+      }
+
+      std::string CHttpMethods::urlDecode(const std::string& url)
+      {
+         return cURLpp::unescape(url);
+      }
+
       boost::shared_ptr<CDataContainer> CHttpMethods::processJsonResponse(
          const std::map<std::string, std::string>& receivedHeaders,
          const std::string& data)

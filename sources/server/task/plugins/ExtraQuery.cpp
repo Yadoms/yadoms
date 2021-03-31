@@ -8,7 +8,8 @@ namespace task
 {
    namespace plugins
    {
-      CExtraQuery::CExtraQuery(boost::shared_ptr<pluginSystem::IInstance> pluginInstance, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query)
+      CExtraQuery::CExtraQuery(const boost::shared_ptr<pluginSystem::IInstance>& pluginInstance,
+                               const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery>& query)
          : m_pluginInstance(pluginInstance), m_query(query)
       {
          std::string mainKeyword = ":extraQueries.";
@@ -19,10 +20,6 @@ namespace task
 
          if (!m_pluginInstance)
             throw shared::exception::CInvalidParameter("pluginInstance");
-      }
-
-      CExtraQuery::~CExtraQuery()
-      {
       }
 
       const std::string& CExtraQuery::getName() const
@@ -46,5 +43,3 @@ namespace task
       }
    } //namespace plugins
 } //namespace task
-
-

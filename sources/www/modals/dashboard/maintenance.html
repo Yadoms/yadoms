@@ -39,6 +39,13 @@
                      <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.actions"></td>
                   </tr>
                </table>
+
+               <span>
+                  <span data-i18n="modals.dashboard.sub-windows.maintenance.backup.uploadBackup"></span>
+                  <input type="file" accept=".zip" id="backupFileToRestore" class="backupFileToRestore" />
+                  <span id="backupFileToRestoreUploadProgress" hidden="true"></span>
+               </span>
+
             </div>
          </div>
       </div>
@@ -304,7 +311,94 @@
             });
       });
 
+      $("input#backupFileToRestore").change(function () {
+         var file = this.files[0];
+         if (file.name.match('^backup_[0-9]{8}T[0-9]{6}\.[0-9]+\.zip$') == null) {
+            notifyError($.t("modals.dashboard.sub-windows.maintenance.backup.invalidBackupFilename"))
+            return;
+         }
+
+         reader = new FileReader();
+         uploadFile(0, file, reader);
+         //RestEngine.sendBinaryFiles("/rest/maintenance/uploadBackup", file);
+
+
+
+         //TODO
+         // var fr = new FileReader();
+         // fr.onload = function (evt) {
+         //    debugger;
+         //    // file is loaded
+         //    var base64identifier = 'base64,';
+         //    var contentBase64 = evt.target.result.substring(evt.target.result.indexOf(base64identifier) +
+         //       base64identifier.length);
+
+         //    var fileResult = {
+         //       name: file.name,
+         //       size: file.size,
+         //       type: file.type,
+         //       lastModified: DateTimeFormatter.dateToIsoDate(file.lastModified),
+         //       content: contentBase64
+         //    };
+
+         //    d.resolve(fileResult); //TODO
+         // };
+
+         // fr.onerror = function (evt) {
+         //    notifyError($.t("modals.dashboard.sub-windows.maintenance.backup.failToAddBackup"));
+         // }
+
+         // fr.readAsDataURL(file);
+      });
+
       showLastBackupInformation();
+   }
+
+   function uploadFile(start, file, reader) { //TODO déplacer ?
+      const sliceSize = 1000 * 1024; //TODO mettre qqc de plus réaliste
+      const url = "/rest/maintenance/uploadBackup"
+      var nextSlice = start + sliceSize + 1;
+      var blob = file.slice(start, nextSlice);
+
+      reader.onloadend = function (event) {
+         if (event.target.readyState !== FileReader.DONE) {
+            return;
+         }
+
+         $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            cache: false,
+            data: {
+               action: 'dbi_upload_file',
+               file: file.name,
+               file_type: file.type,
+               file_data: event.target.result,
+               // nonce: dbi_vars.upload_file_nonce
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+               console.log(jqXHR, textStatus, errorThrown);
+            },
+            success: function (data) {
+               var sizeDone = start + sliceSize;
+               var percentDone = Math.floor((sizeDone / file.size) * 100);
+
+               if (nextSlice < file.size) {
+                  // Update upload progress
+                  $('#backupFileToRestoreUploadProgress').html(
+                     `Uploading File -  ${percentDone}%`); //TODO traduire
+
+                  // More to upload, call function recursively
+                  uploadFile(nextSlice, file, reader);
+               } else {
+                  // Update upload progress
+                  $('#backupFileToRestoreUploadProgress').html('Upload Complete!'); //TODO traduire
+               }
+            }
+         });
+      }
+      reader.readAsDataURL(blob);
    }
 
    function registerNotificationForLogsDownloadTask(taskId) {
@@ -420,12 +514,14 @@
                   type: 'enum',
                   name: $.t('modals.dashboard.sub-windows.maintenance.exportData.device.deviceListCombo.name'),
                   description: $.t(
-                     'modals.dashboard.sub-windows.maintenance.exportData.device.deviceListCombo.description'),
+                     'modals.dashboard.sub-windows.maintenance.exportData.device.deviceListCombo.description'
+                  ),
                   values: {}
                },
                keywordListSection: {
                   type: 'enum',
-                  name: $.t('modals.dashboard.sub-windows.maintenance.exportData.device.keywordListCombo.name'),
+                  name: $.t(
+                     'modals.dashboard.sub-windows.maintenance.exportData.device.keywordListCombo.name'),
                   description: $.t(
                      'modals.dashboard.sub-windows.maintenance.exportData.device.keywordListCombo.description'
                   ),

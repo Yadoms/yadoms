@@ -62,6 +62,7 @@
                      $form.find("input,select,textarea[aria-invalid='true']")[0].scrollIntoView(false);
                   },
                   submitSuccess: function($form, event) {
+                     debugger;
                      event.preventDefault();
                      
                      nameParameter.getCurrentConfiguration()

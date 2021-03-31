@@ -5,9 +5,12 @@
 #include "web/rest/Result.h"
 #include "task/backup/Backup.h"
 #include "task/backup/Restore.h"
+#include "task/backup/UploadFile.h"
 #include "task/exportData/ExportData.h"
 #include "task/packLogs/PackLogs.h"
 #include <shared/Log.h>
+#include <shared/encryption/Base64.h>
+#include <shared/http/HttpMethods.h>
 #include <boost/date_time/c_local_time_adjustor.hpp>
 #include <utility>
 
@@ -21,14 +24,13 @@ namespace web
          std::string CMaintenance::m_restKeyword = std::string("maintenance");
 
          CMaintenance::CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider,
-                                    boost::shared_ptr<database::IDatabaseRequester> databaseRequester,
-                                    boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-                                    boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
+                                    const boost::shared_ptr<database::IDataProvider>& dataProvider,
                                     boost::shared_ptr<task::CScheduler> taskScheduler)
             : m_pathProvider(std::move(pathProvider)),
-              m_databaseRequester(std::move(databaseRequester)),
-              m_keywordRequester(std::move(keywordRequester)),
-              m_acquisitionRequester(std::move(acquisitionRequester)),
+              m_dataProvider(dataProvider),
+              m_databaseRequester(dataProvider->getDatabaseRequester()),
+              m_keywordRequester(dataProvider->getKeywordRequester()),
+              m_acquisitionRequester(dataProvider->getAcquisitionRequester()),
               m_taskScheduler(std::move(taskScheduler))
          {
          }
@@ -42,6 +44,8 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup")("*"), CMaintenance::deleteBackup);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("restore")("*"), CMaintenance::restoreBackup);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup"), CMaintenance::deleteAllBackups);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("uploadBackup"), CMaintenance::uploadBackup,
+                                                        CMaintenance::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("packlogs"), CMaintenance::startPackLogs);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("logs"), CMaintenance::getLogs);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("logs"), CMaintenance::deleteAllLogs);
@@ -53,6 +57,37 @@ namespace web
          const std::string& CMaintenance::getRestKeyword()
          {
             return m_restKeyword;
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+                                                                                                       const std::vector<std::string>& parameters,
+                                                                                                       const std::string& requestContent) const
+         {
+            auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+            boost::shared_ptr<shared::serialization::IDataSerializable> result;
+            try
+            {
+               if (pTransactionalEngine)
+                  pTransactionalEngine->transactionBegin();
+               result = realMethod(parameters, requestContent);
+            }
+            catch (std::exception& ex)
+            {
+               result = CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               result = CResult::GenerateError("unknown exception plugin rest method");
+            }
+
+            if (pTransactionalEngine)
+            {
+               if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
+                  pTransactionalEngine->transactionCommit();
+               else
+                  pTransactionalEngine->transactionRollback();
+            }
+            return result;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getDatabaseInformation(const std::vector<std::string>& parameters,
@@ -81,11 +116,13 @@ namespace web
             {
                if (m_databaseRequester->backupSupported())
                {
-                  const boost::shared_ptr<task::ITask> task(boost::make_shared<task::backup::CBackup>(m_pathProvider, m_databaseRequester));
+                  const boost::shared_ptr<task::ITask> task(
+                     boost::make_shared<task::backup::CBackup>(m_pathProvider, m_databaseRequester));
 
                   std::string taskUid;
                   if (m_taskScheduler->runTask(task, taskUid))
-                     YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+                     YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " <<
+                        taskUid;
                   else
                      YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
 
@@ -120,7 +157,8 @@ namespace web
                      shared::CDataContainer result;
                      result.createArray("backups");
                      // Check all subdirectories in plugin path
-                     for (boost::filesystem::directory_iterator i(backup); i != boost::filesystem::directory_iterator(); ++i)
+                     for (boost::filesystem::directory_iterator i(backup); i != boost::filesystem::directory_iterator();
+                          ++i)
                      {
                         if (is_regular_file(i->path()))
                         {
@@ -130,8 +168,9 @@ namespace web
                            auto fileSize = file_size(i->path());
 
                            const auto lastWriteTimeT = last_write_time(i->path());
-                           auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
-                              boost::posix_time::from_time_t(lastWriteTimeT));
+                           auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::
+                              utc_to_local(
+                                 boost::posix_time::from_time_t(lastWriteTimeT));
 
                            shared::CDataContainer file;
                            file.set("size", fileSize);
@@ -212,7 +251,8 @@ namespace web
                      return CResult::GenerateError("Task : " + task->getName() + " failed to start");
                   }
 
-                  YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+                  YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " <<
+                     taskUid;
 
                   shared::CDataContainer result;
                   result.set("taskId", taskUid);
@@ -242,7 +282,8 @@ namespace web
                std::string errors;
                std::vector<shared::CDataContainer> files;
                // Check all subdirectories in plugin path
-               for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
+               for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator();
+                    ++i)
                {
                   if (is_regular_file(i->path()))
                   {
@@ -268,6 +309,130 @@ namespace web
             }
          }
 
+         void decodeXhrFile(const std::string& requestContent) //TODO mettre dans la classe
+         {
+            static const std::string Base64Key(";base64,");
+            const auto position = std::search(requestContent.begin(),
+                                              requestContent.end(),
+                                              Base64Key.begin(),
+                                              Base64Key.end(),
+                                              [](const auto c1, const auto c2)
+                                              {
+                                                 return std::tolower(c1) == std::tolower(c2);
+                                              });
+            if (position == requestContent.end())
+               throw std::runtime_error("Invalid file");
+            const auto dataStart = position + Base64Key.size();
+
+            std::ofstream out2file("data.tmp", std::fstream::app | std::ios::binary);
+            out2file << shared::encryption::CBase64::decode(std::string(dataStart, requestContent.end()));
+            return;
+
+            //std::string boundary;
+            //std::string contentDisposition;
+            //std::string contentType;
+            //std::string fileContent;
+
+            //std::stringstream ss;
+            //ss << decodedData;
+
+            //std::string line, nextLine;
+
+            //if (!std::getline(ss, line))
+            //   throw std::runtime_error("Invalid file");
+            //boundary = line.substr(0, line.length() - 1);
+
+            //while (std::getline(ss, line))
+            //{
+            //   if (line.find("Content-Disposition") == 0)
+            //   {
+            //      contentDisposition = line;
+            //   }
+            //   else if (line.find("Content-Type") == 0)
+            //   {
+            //      contentType = line;
+            //   }
+            //   else if (line.find(boundary) == 0)
+            //   {
+            //      return;
+            //   }
+            //   else if (line.length() == 1)
+            //   {
+            //      // Time to get raw data
+
+            //      std::ofstream out2file("data2.tmp", std::ios::binary);
+            //      out2file << decodedData;
+            //      return;
+
+            //      auto idx = 0;
+            //      std::ofstream outfile("data.tmp", std::ios::binary);
+            //      while (std::getline(ss, line))
+            //      {
+            //         if (line.length() != 1 || line.length() == 1 && line[0] == '\r')
+            //         {
+            //            if (line.find(boundary) == 0)
+            //               return;
+
+            //            idx += line.length();
+            //            outfile << line;
+            //            continue;
+            //         }
+
+            //         // End can be formed by an empty line (just a '\r') followed by the boundary string
+            //         while (line.length() == 1)
+            //         {
+            //            if (!std::getline(ss, nextLine))
+            //               throw std::runtime_error("Invalid file");
+
+            //            if (nextLine.find(boundary) == 0)
+            //               return;
+
+            //            idx += line.length();
+            //            outfile << line;
+            //            line = nextLine;
+            //         }
+            //         idx += line.length();
+            //         outfile << line;
+            //      }
+            //   }
+            //}
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::uploadBackup(const std::vector<std::string>& parameters,
+                                                                                                const std::string& requestContent) const
+         {
+            try
+            {
+               decodeXhrFile(shared::http::CHttpMethods::urlDecode(requestContent));
+               const auto backupFileName = "TODO.backup";
+
+               const boost::shared_ptr<task::ITask> task(boost::make_shared<task::backup::CUploadFile>(backupFileName,
+                                                                                                       m_pathProvider));
+
+               std::string taskUid;
+               if (!m_taskScheduler->runTask(task, taskUid))
+               {
+                  YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
+                  return CResult::GenerateError("Task : " + task->getName() + " failed to start");
+               }
+
+               YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " <<
+                  taskUid;
+
+               shared::CDataContainer result;
+               result.set("taskId", taskUid);
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in sending extra query to plugin");
+            }
+         }
+
          boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::startPackLogs(const std::vector<std::string>& parameters,
                                                                                                  const std::string& requestContent)
          {
@@ -277,7 +442,8 @@ namespace web
 
                std::string taskUid;
                if (m_taskScheduler->runTask(task, taskUid))
-                  YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+                  YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " <<
+                     taskUid;
                else
                   YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
 
@@ -305,7 +471,8 @@ namespace web
 
                if (!backupPath.empty() && exists(backupPath) && is_directory(backupPath))
                {
-                  for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
+                  for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator()
+                       ; ++i)
                   {
                      if (i->path().filename().string() != "logs.zip")
                         continue;
@@ -315,8 +482,9 @@ namespace web
                         const auto fileSize = file_size(i->path());
 
                         const auto lastWriteTimeT = last_write_time(i->path());
-                        const auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
-                           boost::posix_time::from_time_t(lastWriteTimeT));
+                        const auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::
+                           utc_to_local(
+                              boost::posix_time::from_time_t(lastWriteTimeT));
 
                         shared::CDataContainer file;
                         file.set("size", fileSize);
@@ -352,7 +520,8 @@ namespace web
 
                boost::system::error_code ec;
                std::string errors;
-               for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
+               for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator();
+                    ++i)
                {
                   if (is_regular_file(i->path()))
                   {
@@ -394,7 +563,8 @@ namespace web
 
                   std::string taskUid;
                   if (m_taskScheduler->runTask(task, taskUid))
-                     YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+                     YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " <<
+                        taskUid;
                   else
                      YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
 
@@ -425,7 +595,8 @@ namespace web
 
                if (!backupPath.empty() && exists(backupPath) && is_directory(backupPath))
                {
-                  for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
+                  for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator()
+                       ; ++i)
                   {
                      if (i->path().filename().string() != "exportData.zip")
                         continue;
@@ -435,8 +606,9 @@ namespace web
                         const auto fileSize = file_size(i->path());
 
                         const auto lastWriteTimeT = last_write_time(i->path());
-                        const auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
-                           boost::posix_time::from_time_t(lastWriteTimeT));
+                        const auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::
+                           utc_to_local(
+                              boost::posix_time::from_time_t(lastWriteTimeT));
 
                         shared::CDataContainer file;
                         file.set("size", fileSize);

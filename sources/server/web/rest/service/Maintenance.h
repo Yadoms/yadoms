@@ -5,6 +5,7 @@
 #include "IPathProvider.h"
 #include "database/IAcquisitionRequester.h"
 #include "database/IDatabaseRequester.h"
+#include "database/IDataProvider.h"
 #include "database/IKeywordRequester.h"
 
 namespace web
@@ -17,9 +18,7 @@ namespace web
          {
          public:
             explicit CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider,
-                                  boost::shared_ptr<database::IDatabaseRequester> databaseRequester,
-                                  boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-                                  boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
+                                  const boost::shared_ptr<database::IDataProvider>& dataProvider,
                                   boost::shared_ptr<task::CScheduler> taskScheduler);
             virtual ~CMaintenance() = default;
 
@@ -38,9 +37,11 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteBackup(const std::vector<std::string>& parameters,
                                                                                      const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> restoreBackup(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
+                                                                                      const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllBackups(const std::vector<std::string>& parameters,
                                                                                          const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> uploadBackup(const std::vector<std::string>& parameters,
+                                                                                     const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> startPackLogs(const std::vector<std::string>& parameters,
                                                                                       const std::string& requestContent);
             boost::shared_ptr<shared::serialization::IDataSerializable> getLogs(const std::vector<std::string>& parameters,
@@ -53,8 +54,13 @@ namespace web
                                                                                       const std::string& requestContent) const;
 
          private:
+            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+                                                                                            const std::vector<std::string>& parameters,
+                                                                                            const std::string& requestContent) const;
+
             static std::string m_restKeyword;
             boost::shared_ptr<const IPathProvider> m_pathProvider;
+            boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<database::IDatabaseRequester> m_databaseRequester;
             boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
             boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;

@@ -68,6 +68,12 @@
             "clean": "Cleaning...",
             "success": "Backup succeeded"
          },
+         "uploadFile": {
+            "prepare": "TODO...",
+            "decompress": "TODO...",
+            "success": "TODO",
+            "restarting": "TODO..."
+         },
          "restore": {
             "prepare": "Preparing restoration...",
             "decompress": "Uncompressing files...",
@@ -815,6 +821,9 @@
                   "title": "Backups",
                   "startBackup": "Start a database backup",
                   "deleteAll": "Delete all backups",
+                  "uploadBackup": "Upload a backup",
+                  "invalidBackupFilename": "This file is not a Yadoms backup",
+                  "failToAddBackup": "Fail to add backup",
                   "backuplist": {
                      "date": "Date",
                      "size": "File size",

@@ -528,6 +528,11 @@ div#please-wait-modal i {
     margin-bottom: 5px;
 }
 
+.backupFileToRestore {
+    display: inline-block !important;
+    margin-left: 20px;
+}
+
 @media (max-width: 920px) {
     .onlyLargeScreen {
         visibility: collapse;
