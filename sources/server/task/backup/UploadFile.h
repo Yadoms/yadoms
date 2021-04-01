@@ -9,7 +9,7 @@ namespace task
       //------------------------------------------
       ///\brief   Restore backup task
       //-----------------------------------------
-      class CUploadFile : public ITask
+      class CUploadFile : public ITask //TODO utile ?
       {
       public:
          explicit CUploadFile(std::string backupFileName,

@@ -209,7 +209,7 @@ RestEngine.getBinaryFiles = function (url) {
    return d.promise();
 }
 
-function uploadFile(url, start, file, reader, sliceSize, onProgressFct, onDoneFct) {
+function uploadFile(url, start, requestGuid, file, reader, sliceSize, onProgressFct, onDoneFct) {
    var nextSlice = start + sliceSize + 1;
    var blob = file.slice(start, nextSlice);
 
@@ -224,11 +224,10 @@ function uploadFile(url, start, file, reader, sliceSize, onProgressFct, onDoneFc
          dataType: 'json',
          cache: false,
          data: {
-            action: 'dbi_upload_file',
-            file: file.name,
-            file_type: file.type,
-            file_data: event.target.result,
-            // nonce: dbi_vars.upload_file_nonce
+            guid: requestGuid,
+            filename: file.name,
+            filetype: file.type,
+            filedata: event.target.result
          },
          error: function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
@@ -243,7 +242,7 @@ function uploadFile(url, start, file, reader, sliceSize, onProgressFct, onDoneFc
                   onProgressFct(percentDone);
 
                // More to upload, call function recursively
-               uploadFile(url, nextSlice, file, reader, sliceSize, onProgressFct, onDoneFct);
+               uploadFile(url, nextSlice, requestGuid, file, reader, sliceSize, onProgressFct, onDoneFct);
             } else {
                // Update upload progress
                if (typeof onDoneFct === "function")
@@ -258,7 +257,8 @@ function uploadFile(url, start, file, reader, sliceSize, onProgressFct, onDoneFc
 RestEngine.sendBinaryFiles = function (url, file, onProgressFct, onDoneFct) {
    // Send by 50Ko if file size < 5Mo, else by 1Mo
    const sliceSize = file.size < (5000 * 1024 * 1024) ? 50 * 1024 : (1000 * 1024 * 1024);
+   const requestGuid = createUUID();
 
    reader = new FileReader();
-   uploadFile(url, 0, file, reader, sliceSize, onProgressFct, onDoneFct);
+   uploadFile(url, 0, requestGuid, file, reader, sliceSize, onProgressFct, onDoneFct);
 }

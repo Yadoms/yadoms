@@ -12,6 +12,7 @@
 #include <shared/encryption/Base64.h>
 #include <shared/http/HttpMethods.h>
 #include <boost/date_time/c_local_time_adjustor.hpp>
+#include <regex>
 #include <utility>
 
 
@@ -44,8 +45,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup")("*"), CMaintenance::deleteBackup);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("restore")("*"), CMaintenance::restoreBackup);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup"), CMaintenance::deleteAllBackups);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("uploadBackup"), CMaintenance::uploadBackup,
-                                                        CMaintenance::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("uploadBackup"), CMaintenance::uploadBackup);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("packlogs"), CMaintenance::startPackLogs);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("logs"), CMaintenance::getLogs);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("logs"), CMaintenance::deleteAllLogs);
@@ -309,7 +309,7 @@ namespace web
             }
          }
 
-         void decodeXhrFile(const std::string& requestContent) //TODO mettre dans la classe
+         std::string fileUploadChunkRead(const std::string& requestContent) //TODO déplacer
          {
             static const std::string Base64Key(";base64,");
             const auto position = std::search(requestContent.begin(),
@@ -324,78 +324,27 @@ namespace web
                throw std::runtime_error("Invalid file");
             const auto dataStart = position + Base64Key.size();
 
-            std::ofstream out2file("data.tmp", std::fstream::app | std::ios::binary);
-            out2file << shared::encryption::CBase64::decode(std::string(dataStart, requestContent.end()));
-            return;
+            return shared::encryption::CBase64::decode(std::string(dataStart, requestContent.end()));
+         }
 
-            //std::string boundary;
-            //std::string contentDisposition;
-            //std::string contentType;
-            //std::string fileContent;
+         std::string fileUploadChunkReadGuid(const std::string& requestContent) //TODO déplacer
+         {
+            const std::regex pattern("guid=([a-z0-9-]+)&",
+                                     std::regex_constants::icase);
+            std::smatch match;
+            if (!std::regex_search(requestContent, match, pattern) || match.size() < 2)
+               throw std::runtime_error("Fail to decode XHR file : no guid found");
+            return match[1].str();
+         }
 
-            //std::stringstream ss;
-            //ss << decodedData;
-
-            //std::string line, nextLine;
-
-            //if (!std::getline(ss, line))
-            //   throw std::runtime_error("Invalid file");
-            //boundary = line.substr(0, line.length() - 1);
-
-            //while (std::getline(ss, line))
-            //{
-            //   if (line.find("Content-Disposition") == 0)
-            //   {
-            //      contentDisposition = line;
-            //   }
-            //   else if (line.find("Content-Type") == 0)
-            //   {
-            //      contentType = line;
-            //   }
-            //   else if (line.find(boundary) == 0)
-            //   {
-            //      return;
-            //   }
-            //   else if (line.length() == 1)
-            //   {
-            //      // Time to get raw data
-
-            //      std::ofstream out2file("data2.tmp", std::ios::binary);
-            //      out2file << decodedData;
-            //      return;
-
-            //      auto idx = 0;
-            //      std::ofstream outfile("data.tmp", std::ios::binary);
-            //      while (std::getline(ss, line))
-            //      {
-            //         if (line.length() != 1 || line.length() == 1 && line[0] == '\r')
-            //         {
-            //            if (line.find(boundary) == 0)
-            //               return;
-
-            //            idx += line.length();
-            //            outfile << line;
-            //            continue;
-            //         }
-
-            //         // End can be formed by an empty line (just a '\r') followed by the boundary string
-            //         while (line.length() == 1)
-            //         {
-            //            if (!std::getline(ss, nextLine))
-            //               throw std::runtime_error("Invalid file");
-
-            //            if (nextLine.find(boundary) == 0)
-            //               return;
-
-            //            idx += line.length();
-            //            outfile << line;
-            //            line = nextLine;
-            //         }
-            //         idx += line.length();
-            //         outfile << line;
-            //      }
-            //   }
-            //}
+         std::string fileUploadChunkReadFilename(const std::string& requestContent) //TODO déplacer
+         {
+            const std::regex pattern(R"(filename=([\w,\s\.-]*)&)",
+                                     std::regex_constants::icase);
+            std::smatch match;
+            if (!std::regex_search(requestContent, match, pattern) || match.size() < 2)
+               throw std::runtime_error("Fail to decode XHR file : no filename found");
+            return match[1].str();
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::uploadBackup(const std::vector<std::string>& parameters,
@@ -403,25 +352,23 @@ namespace web
          {
             try
             {
-               decodeXhrFile(shared::http::CHttpMethods::urlDecode(requestContent));
-               const auto backupFileName = "TODO.backup";
+               const auto decodedRequestContent = shared::http::CHttpMethods::urlDecode(requestContent);
 
-               const boost::shared_ptr<task::ITask> task(boost::make_shared<task::backup::CUploadFile>(backupFileName,
-                                                                                                       m_pathProvider));
+               const auto guid = fileUploadChunkReadGuid(requestContent);
+               const auto filename = fileUploadChunkReadFilename(requestContent);
 
-               std::string taskUid;
-               if (!m_taskScheduler->runTask(task, taskUid))
-               {
-                  YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
-                  return CResult::GenerateError("Task : " + task->getName() + " failed to start");
-               }
+               const std::regex backupFilenamePattern(R"(^backup_[0-9]{8}T[0-9]{6}\.[0-9]+\.zip$)",
+                                                      std::regex_constants::icase);
+               std::smatch match;
+               if (!std::regex_search(filename, match, backupFilenamePattern) || match.size() != 1)
+                  throw std::runtime_error("Fail to decode XHR file : no valid filename found");
 
-               YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " <<
-                  taskUid;
+               const auto chunk = fileUploadChunkRead(decodedRequestContent);
 
-               shared::CDataContainer result;
-               result.set("taskId", taskUid);
-               return CResult::GenerateSuccess(result);
+               std::ofstream outFile("data.tmp", std::fstream::app | std::ios::binary);
+               outFile << chunk;
+
+               return CResult::GenerateSuccess();
             }
             catch (std::exception& ex)
             {
