@@ -209,24 +209,56 @@ RestEngine.getBinaryFiles = function (url) {
    return d.promise();
 }
 
-RestEngine.sendBinaryFiles = function (url, file) {
-   var d = $.Deferred();
+function uploadFile(url, start, file, reader, sliceSize, onProgressFct, onDoneFct) {
+   var nextSlice = start + sliceSize + 1;
+   var blob = file.slice(start, nextSlice);
 
-   let formData = new FormData();
-   formData.append("file", file);
+   reader.onloadend = function (event) {
+      if (event.target.readyState !== FileReader.DONE) {
+         return;
+      }
 
-   fetch(url, {
-         method: "POST",
-         body: formData,
-         cache: 'no-cache'
-      })
-      .done(function () {
-         debugger;
-      })
-      .fail(function (error) {
-         console.error(error);
-         d.reject(error);
-      })
+      $.ajax({
+         url: url,
+         type: 'POST',
+         dataType: 'json',
+         cache: false,
+         data: {
+            action: 'dbi_upload_file',
+            file: file.name,
+            file_type: file.type,
+            file_data: event.target.result,
+            // nonce: dbi_vars.upload_file_nonce
+         },
+         error: function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR, textStatus, errorThrown);
+         },
+         success: function (data) {
+            var sizeDone = start + sliceSize;
+            var percentDone = Math.floor((sizeDone / file.size) * 100);
 
-   return d.promise();
+            if (nextSlice < file.size) {
+               // Update upload progress
+               if (typeof onProgressFct === "function")
+                  onProgressFct(percentDone);
+
+               // More to upload, call function recursively
+               uploadFile(url, nextSlice, file, reader, sliceSize, onProgressFct, onDoneFct);
+            } else {
+               // Update upload progress
+               if (typeof onDoneFct === "function")
+                  onDoneFct();
+            }
+         }
+      });
+   }
+   reader.readAsDataURL(blob);
+}
+
+RestEngine.sendBinaryFiles = function (url, file, onProgressFct, onDoneFct) {
+   // Send by 50Ko if file size < 5Mo, else by 1Mo
+   const sliceSize = file.size < (5000 * 1024 * 1024) ? 50 * 1024 : (1000 * 1024 * 1024);
+
+   reader = new FileReader();
+   uploadFile(url, 0, file, reader, sliceSize, onProgressFct, onDoneFct);
 }

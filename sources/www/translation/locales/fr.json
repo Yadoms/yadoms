@@ -68,12 +68,6 @@
             "clean": "Nettoyage...",
             "success": "Sauvegarde réussie"
          },
-         "uploadFile": {
-            "prepare": "TODO...",
-            "decompress": "TODO...",
-            "success": "TODO",
-            "restarting": "TODO..."
-         },
          "restore": {
             "prepare": "Preparing de la restauration...",
             "decompress": "Décompression des fichiers...",
@@ -823,7 +817,7 @@
                   "deleteAll": "Effacer toutes les sauvegardes",
                   "uploadBackup": "Ajouter un backup",
                   "invalidBackupFilename": "Fichier non reconnu comme étant un backup Yadoms",
-                  "failToAddBackup": "Ajouter un backup",
+                  "backupUploaded": "Backup envoyé",
                   "backuplist": {
                      "date": "Date",
                      "size": "Taille",

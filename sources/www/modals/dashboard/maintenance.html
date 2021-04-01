@@ -43,7 +43,14 @@
                <span>
                   <span data-i18n="modals.dashboard.sub-windows.maintenance.backup.uploadBackup"></span>
                   <input type="file" accept=".zip" id="backupFileToRestore" class="backupFileToRestore" />
-                  <span id="backupFileToRestoreUploadProgress" hidden="true"></span>
+                  <span id="backupFileToRestoreUploadProgress" class="action-progression"
+                     style="width: 340px; display: inline-block;">
+                     <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+                        </div>
+                     </div>
+                  </span>
+
                </span>
 
             </div>
@@ -311,6 +318,7 @@
             });
       });
 
+      $("#backupFileToRestoreUploadProgress").hide();
       $("input#backupFileToRestore").change(function () {
          var file = this.files[0];
          if (file.name.match('^backup_[0-9]{8}T[0-9]{6}\.[0-9]+\.zip$') == null) {
@@ -318,87 +326,22 @@
             return;
          }
 
-         reader = new FileReader();
-         uploadFile(0, file, reader);
-         //RestEngine.sendBinaryFiles("/rest/maintenance/uploadBackup", file);
-
-
-
-         //TODO
-         // var fr = new FileReader();
-         // fr.onload = function (evt) {
-         //    debugger;
-         //    // file is loaded
-         //    var base64identifier = 'base64,';
-         //    var contentBase64 = evt.target.result.substring(evt.target.result.indexOf(base64identifier) +
-         //       base64identifier.length);
-
-         //    var fileResult = {
-         //       name: file.name,
-         //       size: file.size,
-         //       type: file.type,
-         //       lastModified: DateTimeFormatter.dateToIsoDate(file.lastModified),
-         //       content: contentBase64
-         //    };
-
-         //    d.resolve(fileResult); //TODO
-         // };
-
-         // fr.onerror = function (evt) {
-         //    notifyError($.t("modals.dashboard.sub-windows.maintenance.backup.failToAddBackup"));
-         // }
-
-         // fr.readAsDataURL(file);
+         $("#backupFileToRestoreUploadProgress").show();
+         RestEngine.sendBinaryFiles("/rest/maintenance/uploadBackup",
+            file,
+            function (progressPercent) {
+               $("#backupFileToRestoreUploadProgress").find("div.progress-bar").css("width", progressPercent +
+                  "%");
+            },
+            function () {
+               notifySuccess($.t("modals.dashboard.sub-windows.maintenance.backup.backupUploaded"))
+               $("#backupFileToRestoreUploadProgress").hide();
+               $("input#backupFileToRestore")[0].value = '';
+               showLastBackupInformation();
+            });
       });
 
       showLastBackupInformation();
-   }
-
-   function uploadFile(start, file, reader) { //TODO déplacer ?
-      const sliceSize = 1000 * 1024; //TODO mettre qqc de plus réaliste
-      const url = "/rest/maintenance/uploadBackup"
-      var nextSlice = start + sliceSize + 1;
-      var blob = file.slice(start, nextSlice);
-
-      reader.onloadend = function (event) {
-         if (event.target.readyState !== FileReader.DONE) {
-            return;
-         }
-
-         $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            cache: false,
-            data: {
-               action: 'dbi_upload_file',
-               file: file.name,
-               file_type: file.type,
-               file_data: event.target.result,
-               // nonce: dbi_vars.upload_file_nonce
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-               console.log(jqXHR, textStatus, errorThrown);
-            },
-            success: function (data) {
-               var sizeDone = start + sliceSize;
-               var percentDone = Math.floor((sizeDone / file.size) * 100);
-
-               if (nextSlice < file.size) {
-                  // Update upload progress
-                  $('#backupFileToRestoreUploadProgress').html(
-                     `Uploading File -  ${percentDone}%`); //TODO traduire
-
-                  // More to upload, call function recursively
-                  uploadFile(nextSlice, file, reader);
-               } else {
-                  // Update upload progress
-                  $('#backupFileToRestoreUploadProgress').html('Upload Complete!'); //TODO traduire
-               }
-            }
-         });
-      }
-      reader.readAsDataURL(blob);
    }
 
    function registerNotificationForLogsDownloadTask(taskId) {
