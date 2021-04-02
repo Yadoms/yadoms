@@ -12,7 +12,9 @@ namespace hardware
          boost::shared_ptr<database::ISerialPortRequester> serialPortDatabaseRequester)
       {
          return boost::make_shared<CSerialPortsManager>(boost::make_shared<CSerialPortsLister>(usbDeviceListers),
-                                                        serialPortDatabaseRequester);
+                                                        serialPortDatabaseRequester,
+            std::vector<std::string>() /*TODO récupérer cette liste de yadoms.ini*/,
+            boost::shared_ptr<IManuallyDefinedPortLister>() /*TODO lister les);
       }
    } // namespace serial
 } // namespace hardware

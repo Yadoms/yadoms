@@ -22,7 +22,6 @@ namespace hardware
          std::vector<boost::shared_ptr<ISerialPort>> iSerialPorts;
          std::copy(serialPorts.begin(), serialPorts.end(), std::back_inserter(iSerialPorts));
          return iSerialPorts;
-         //TODO : LastKnownSerialPortPath contient le chemin USB en cas d'adaptateur USB. Le port série est perdu.
       }
 
       std::vector<boost::shared_ptr<CSerialPort>> CSerialPortsLister::listAllSerialPorts() const

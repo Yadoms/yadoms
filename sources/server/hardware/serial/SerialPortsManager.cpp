@@ -10,9 +10,148 @@ namespace hardware
    namespace serial
    {
       CSerialPortsManager::CSerialPortsManager(boost::shared_ptr<ISerialPortsLister> serialPortLister,
-                                               boost::shared_ptr<database::ISerialPortRequester> serialPortDatabaseRequester)
+                                               boost::shared_ptr<database::ISerialPortRequester> serialPortDatabaseRequester,
+                                               std::vector<std::string> reserverdPorts,
+                                               boost::shared_ptr<IManuallyDefinedPortLister> manuallyDefinedPortLister)
          : m_serialPortLister(std::move(serialPortLister)),
-           m_serialPortDatabaseRequester(std::move(serialPortDatabaseRequester))
+           m_serialPortDatabaseRequester(std::move(serialPortDatabaseRequester)),
+           m_reserverdPorts(std::move(reserverdPorts)),
+           m_manuallyDefinedPortLister(std::move(manuallyDefinedPortLister))
+      {
+      }
+
+      bool CSerialPortsManager::isPortIn(const std::string& port,
+                                         const std::vector<boost::shared_ptr<ISerialPort>>& in)
+      {
+         return std::find(
+            in.begin(),
+            in.end(),
+            [&port](const auto& item)
+            {
+               return item->lastKnownSerialPortPath() == port;
+            }) != in.end();
+      }
+
+      bool CSerialPortsManager::isPortIn(const std::string& port,
+                                         const std::vector<std::string>& in)
+      {
+         return std::find(in.begin(), in.end(), port) != in.end();
+      }
+
+      std::vector<std::string> CSerialPortsManager::portListAsString(const std::vector<boost::shared_ptr<ISerialPort>>& in) const
+      {
+         std::vector<std::string> availablePortsAsStrings;
+         std::transform(in.begin(),
+                        in.end(),
+                        std::back_inserter(availablePortsAsStrings),
+                        [](const auto& p)
+                        {
+                           return p->lastKnownSerialPortPath();
+                        });
+         return availablePortsAsStrings;
+      }
+
+      std::vector<std::string> CSerialPortsManager::requestPort(int pluginInstanceId,
+                                                                const boost::shared_ptr<shared::CDataContainer> filter,
+                                                                const std::string& manuallyDefinedPort)
+      {
+         YADOMS_LOG(debug) << "Plugin instance #" << pluginInstanceId << " requests a serial port...";
+         if (!manuallyDefinedPort.empty())
+            YADOMS_LOG(debug) << "... with the manually defined port " << manuallyDefinedPort;
+
+         auto availablePorts = m_serialPortLister->listSerialPorts();
+
+         // System reserved ports are not available for plugins
+         std::remove_if(availablePorts.begin(),
+                        availablePorts.end(),
+                        [this](const auto& availablePort)
+                        {
+                           return isPortIn(availablePort->lastKnownSerialPortPath(),
+                                           m_reserverdPorts);
+                        });
+
+         //TODO vérifier qu'il reste des ports dispos
+
+         // Manage port forced by plugin instance configuration
+         const auto manuallyDefinedPort = m_pluginManager->getManuallyDefinedSerialPort(pluginInstanceId);
+         if (!manuallyDefinedPort.empty())
+         {
+            if (!isPortIn(manuallyDefinedPort, availablePorts))
+            {
+               YADOMS_LOG(error) << "Manually defined port " << manuallyDefinedPort << " is not available (reserved by system, see yadoms.ini)";
+               YADOMS_LOG(error) << "No serial port available for plugin instance #" << pluginInstanceId;
+               return std::vector<std::string>();
+            }
+            YADOMS_LOG(information) << "Return serial port " << manuallyDefinedPort << " for plugin instance #" << pluginInstanceId;
+            return std::list<std::string>({manuallyDefinedPort});
+         }
+
+         // Manually defined ports (from all plugin instances) are not available
+         const auto manuallyDefinedPorts = m_pluginManager->getAllManuallyDefinedSerialPorts();
+         std::remove_if(availablePorts.begin(),
+                        availablePorts.end(),
+                        [this, &manuallyDefinedPorts](const auto& availablePort)
+                        {
+                           return isPortIn(availablePort->lastKnownSerialPortPath(),
+                                           manuallyDefinedPorts);
+                        });
+
+         //TODO vérifier qu'il reste des ports dispos
+
+         // Search for filter
+         if (!filter)
+         {
+            //TODO modifier ce fonctionnel pour placer la requête en file d'attente
+            //TODO L'idée est tous les plugins qui demandent un port série avec filtre soient
+            //TODO servis en priorité, et seuls les plugins ne fournissant pas de filtre seront retardés
+
+            // No filter defined, return all available ports. Plugin must now try all these ports, then call reservePort.
+
+            const auto availablePortsAsStrings = portListAsString(availablePorts);
+            YADOMS_LOG(information) << "No serial port filter defined for plugin instance #" << pluginInstanceId << ", return all available ports : ";
+            for (const auto& ap : availablePortsAsStrings)
+               YADOMS_LOG(information) << "  - " << ap;
+            return availablePortsAsStrings;
+         }
+
+         // A filter is defined, try to auto-detect port
+         std::remove_if(availablePorts.begin(),
+                        availablePorts.end(),
+                        [this, &manuallyDefinedPorts](const auto& availablePort)
+                        {
+                           return matchFilter(availablePort,
+                                              filter);
+                        });
+
+         // No more need serial port detailed information
+         const auto availablePortsAsStrings = portListAsString(availablePorts);
+
+         if (availablePortsAsStrings.empty())
+         {
+            YADOMS_LOG(error) << "No compatible serial port was found for plugin instance #" << pluginInstanceId;
+            return std::vector<std::string>();
+         }
+
+         if (availablePortsAsStrings.size() == 1)
+         {
+            YADOMS_LOG(information) << "Serial port found for plugin instance #" << pluginInstanceId << " : " << availablePortsAsStrings[0];
+            return availablePortsAsStrings;
+         }
+
+         // Despite filter, several ports still match
+         // Request database to build a list beginning by the last port used
+         const auto lastSerialPortUsed = m_serialPortDatabaseRequester->getLastSerialPortUsedForPlugin(pluginInstanceId);
+         if (isPortIn(lastSerialPortUsed, availablePortsAsStrings) && lastSerialPortUsed != availablePortsAsStrings.front())
+            moveToFirst(availablePortsAsStrings, lastSerialPortUsed);
+
+         //TODO mettre en file d'attente ? Des fois que y'ait plus le choix plus tard (un seul port restant)
+         YADOMS_LOG(information) << "Several serial ports found for plugin instance #" << pluginInstanceId << " : ";
+         for (const auto& ap : availablePortsAsStrings)
+            YADOMS_LOG(information) << "  - " << ap;
+         return availablePortsAsStrings;
+      }
+
+      void CSerialPortsManager::releasePort(int pluginId)
       {
       }
 
@@ -130,7 +269,8 @@ namespace hardware
          {
             // Port moved
             // ==> Update port
-            m_serialPortDatabaseRequester->updateSerialPort(hardwareSerialPort->lastKnownSerialPortPath(), fromHardwareSerialPort(*hardwareSerialPort));
+            m_serialPortDatabaseRequester->updateSerialPort(hardwareSerialPort->lastKnownSerialPortPath(),
+                                                            fromHardwareSerialPort(*hardwareSerialPort));
             return;
          }
 

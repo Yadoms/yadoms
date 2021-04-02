@@ -7,7 +7,7 @@ namespace hardware
 {
    namespace serial
    {
-      class CSerialPortsLister : public ISerialPortsLister //TODO renommer en CWinapiSerialPortsLister ?
+      class CSerialPortsLister : public ISerialPortsLister
       {
       public:
          explicit CSerialPortsLister(boost::shared_ptr<usb::IDevicesLister> usbDeviceListers);

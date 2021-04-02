@@ -461,6 +461,7 @@ set(YADOMS_SRC
 
    server/hardware/serial/Factory.cpp
    server/hardware/serial/Factory.h
+   server/hardware/serial/IManuallyDefinedPortLister.h
    server/hardware/serial/ISerialPort.h
    server/hardware/serial/ISerialPortsLister.h
    server/hardware/serial/ISerialPortsManager.h
