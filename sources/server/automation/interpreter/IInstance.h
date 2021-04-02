@@ -33,7 +33,7 @@ namespace automation
          ///\brief               Check if interpreter is fully avalaible
          ///\return              true if fully avalaible (all needed ressources are working)
          //-----------------------------------------------------
-         virtual bool isAvalaible() = 0;
+         virtual bool isAvailable() = 0;
 
          //-----------------------------------------------------
          ///\brief               Load the script content

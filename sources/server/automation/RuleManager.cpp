@@ -5,7 +5,8 @@
 #include "Rule.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
-#include "RuleException.hpp"
+
+#include "NoInterpreterException.hpp"
 #include "script/GeneralInfo.h"
 #include "script/Properties.h"
 
@@ -103,9 +104,11 @@ namespace automation
 
    void CRuleManager::startRule(int ruleId)
    {
+      auto ruleLabel = std::to_string(ruleId);
       try
       {
          auto ruleData = getRule(ruleId);
+         ruleLabel = ruleData->Name();
 
          if (isRuleStarted(ruleData->Id()))
             return; // Rule already started
@@ -125,33 +128,39 @@ namespace automation
                                                       m_generalInfo));
          m_startedRules[ruleId] = newRule;
       }
+      catch (CNoInterpreterException& e)
+      {
+         const auto error((boost::format("Invalid rule %1%, no corresponding interpreter available : %2%") % ruleLabel % e.what()).str());
+         recordRuleStopped(ruleId, error);
+         throw CRuleException(error);
+      }
       catch (shared::exception::CEmptyResult& e)
       {
-         const auto error((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleId % e.what()).str());
+         const auto error((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleLabel % e.what()).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (shared::exception::CInvalidParameter& e)
       {
-         const auto error((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleId % e.what()).str());
+         const auto error((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleLabel % e.what()).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (shared::exception::COutOfRange& e)
       {
-         const auto error((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleId % e.what()).str());
+         const auto error((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleLabel % e.what()).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (std::exception& e)
       {
-         const auto error((boost::format("Failed to start rule %1% : %2%") % ruleId % e.what()).str());
+         const auto error((boost::format("Failed to start rule %1% : %2%") % ruleLabel % e.what()).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (...)
       {
-         const auto error((boost::format("Failed to start rule %1% : unknown error") % ruleId).str());
+         const auto error((boost::format("Failed to start rule %1% : unknown error") % ruleLabel).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }

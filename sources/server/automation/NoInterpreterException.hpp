@@ -1,23 +1,23 @@
 #pragma once
 
-#include <shared/exception/Exception.hpp>
+#include "RuleException.hpp"
 
 
 //--------------------------------------------------------------
-/// \brief	Exception handling for automation rule
+/// \brief	Exception handling for automation rule when no corresponding interpreter found
 //--------------------------------------------------------------
-class CRuleException : public shared::exception::CException
+class CNoInterpreterException : public CRuleException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   explicit CRuleException(const std::string& message)
-      :CException(message)
+   explicit CNoInterpreterException(const std::string& message)
+      :CRuleException(message)
    {
    }
 
-   virtual ~CRuleException() noexcept = default;
+   virtual ~CNoInterpreterException() noexcept = default;
 };
 

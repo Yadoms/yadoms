@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "AutomationRule.h"
+
+#include "automation/NoInterpreterException.hpp"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/Result.h"
 #include "automation/RuleException.hpp"
@@ -238,6 +240,10 @@ namespace web
 
                const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
                return CResult::GenerateSuccess(ruleFound);
+            }
+            catch (CNoInterpreterException& e)
+            {
+               return CResult::GenerateError(e.what());
             }
             catch (CRuleException& e)
             {

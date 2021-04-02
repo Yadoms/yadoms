@@ -45,7 +45,7 @@ namespace automation
          m_ipcAdapter->postStopRequest();
       }
 
-      bool CInstance::isAvalaible()
+      bool CInstance::isAvailable()
       {
          return m_avalaible;
       }

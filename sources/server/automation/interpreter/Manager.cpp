@@ -210,7 +210,7 @@ namespace automation
          auto interpreter = m_loadedInterpreters.find(interpreterType);
          if (interpreter == m_loadedInterpreters.end())
             throw std::runtime_error("Interpreter " + interpreterType + " was not found");
-         if (!interpreter->second->isAvalaible())
+         if (!interpreter->second->isAvailable())
             throw std::runtime_error("Interpreter " + interpreterType + " is not available (see interpreter description)");
 
          return interpreter->second;
