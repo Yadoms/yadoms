@@ -20,6 +20,13 @@ namespace shared
                                                      const boost::filesystem::path& to);
 
          //---------------------------------------------
+         ///\brief Return file size
+         ///\param filePath File path to return size
+         ///\return the size in bytes
+         //---------------------------------------------
+         static uintmax_t CFilesystem::fileSize(const boost::filesystem::path& filePath);
+
+         //---------------------------------------------
          ///\brief Compute directory size
          ///\param [in] directory Directory to compute size
          ///\param [in] recurse True to compute directory tree size
@@ -33,6 +40,13 @@ namespace shared
          ///\return The temporary folder path
          //---------------------------------------------   
          static boost::filesystem::path createTemporaryFolder();
+
+         //---------------------------------------------
+         ///\brief Get a temporary full path filename (file in temporary folder)
+         ///\return The temporary filename
+         ///\note Doesn't create the file
+         //---------------------------------------------   
+         static boost::filesystem::path CFilesystem::createTemporaryFilename();
 
          //---------------------------------------------
          ///\brief Check if a file/directory exists

@@ -227,6 +227,7 @@ function uploadFile(url, start, requestGuid, file, reader, sliceSize, onProgress
             guid: requestGuid,
             filename: file.name,
             filetype: file.type,
+            filesize: file.size,
             filedata: event.target.result
          },
          error: function (jqXHR, textStatus, errorThrown) {

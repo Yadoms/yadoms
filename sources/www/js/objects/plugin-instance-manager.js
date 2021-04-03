@@ -298,7 +298,6 @@ PluginInstanceManager.getLog = function (pluginInstance) {
  * @return {Promise} A promise for the result
  */
 PluginInstanceManager.postExtraQuery= function (pluginInstance, commandName, commandData) {
-    debugger;
 	assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
 	return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/extraQuery/" + commandName, { data: JSON.stringify(commandData) });
 };

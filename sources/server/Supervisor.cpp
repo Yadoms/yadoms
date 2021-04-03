@@ -19,6 +19,7 @@
 #include "web/rest/service/Recipient.h"
 #include "web/rest/service/Update.h"
 #include "web/rest/service/Maintenance.h"
+#include "web/rest/service/UploadFileManager.h"
 #include <shared/ThreadBase.h>
 #include "task/Scheduler.h"
 #include "communication/PluginGateway.h"
@@ -175,7 +176,8 @@ void CSupervisor::run()
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider,
                                                               pDataProvider,
-                                                              taskManager));
+                                                              taskManager,
+                                                              boost::make_shared<web::rest::service::CUploadFileManager>()));
 
       webServer->start();
 

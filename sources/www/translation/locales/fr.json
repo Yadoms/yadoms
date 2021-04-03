@@ -815,7 +815,7 @@
                   "title": "Sauvegardes",
                   "startBackup": "Démarrer une nouvelle sauvegarde",
                   "deleteAll": "Effacer toutes les sauvegardes",
-                  "uploadBackup": "Ajouter un backup",
+                  "uploadBackup": "Restorer un backup à partir d'un fichier",
                   "invalidBackupFilename": "Fichier non reconnu comme étant un backup Yadoms",
                   "backupUploaded": "Backup envoyé",
                   "backuplist": {

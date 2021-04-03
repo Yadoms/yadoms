@@ -592,8 +592,6 @@ set(YADOMS_SRC
    server/task/backup/Backup.cpp
    server/task/backup/Restore.h
    server/task/backup/Restore.cpp
-   server/task/backup/UploadFile.h
-   server/task/backup/UploadFile.cpp
    server/task/exportData/ExportData.h
    server/task/exportData/ExportData.cpp
    server/task/packLogs/PackLogs.h
@@ -645,11 +643,10 @@ set(YADOMS_SRC
    server/web/rest/service/Device.cpp
    server/web/rest/service/EventLogger.h
    server/web/rest/service/EventLogger.cpp
+   server/web/rest/service/IUploadFileManager.h
+   server/web/rest/service/IRestService.h
    server/web/rest/service/Maintenance.h
    server/web/rest/service/Maintenance.cpp
-   server/web/rest/service/System.h
-   server/web/rest/service/System.cpp
-   server/web/rest/service/IRestService.h
    server/web/rest/service/Page.h
    server/web/rest/service/Page.cpp
    server/web/rest/service/Plugin.h
@@ -658,10 +655,16 @@ set(YADOMS_SRC
    server/web/rest/service/PluginEventLogger.cpp
    server/web/rest/service/Recipient.h
    server/web/rest/service/Recipient.cpp
+   server/web/rest/service/System.h
+   server/web/rest/service/System.cpp
    server/web/rest/service/Task.h
    server/web/rest/service/Task.cpp
    server/web/rest/service/Update.h
    server/web/rest/service/Update.cpp
+   server/web/rest/service/UploadFileManager.h
+   server/web/rest/service/UploadFileManager.cpp
+   server/web/rest/service/UploadFileThread.h
+   server/web/rest/service/UploadFileThread.cpp
    server/web/rest/service/Widget.h
    server/web/rest/service/Widget.cpp
    

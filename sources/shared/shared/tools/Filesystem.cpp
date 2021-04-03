@@ -41,6 +41,11 @@ namespace shared
          return finalPath;
       }
 
+      uintmax_t CFilesystem::fileSize(const boost::filesystem::path& filePath)
+      {
+         return file_size(filePath);
+      }
+
       uintmax_t CFilesystem::directorySize(const boost::filesystem::path& directory,
                                            bool recurse)
       {
@@ -67,6 +72,13 @@ namespace shared
          const auto tempPath = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
          create_directories(tempPath);
          return tempPath;
+      }
+
+      boost::filesystem::path CFilesystem::createTemporaryFilename()
+      {
+         const auto tempPath = boost::filesystem::temp_directory_path();
+         create_directories(tempPath);
+         return tempPath / boost::filesystem::unique_path();
       }
 
       bool CFilesystem::exists(const std::string& path)

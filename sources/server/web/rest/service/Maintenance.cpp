@@ -5,7 +5,6 @@
 #include "web/rest/Result.h"
 #include "task/backup/Backup.h"
 #include "task/backup/Restore.h"
-#include "task/backup/UploadFile.h"
 #include "task/exportData/ExportData.h"
 #include "task/packLogs/PackLogs.h"
 #include <shared/Log.h>
@@ -26,13 +25,15 @@ namespace web
 
          CMaintenance::CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider,
                                     const boost::shared_ptr<database::IDataProvider>& dataProvider,
-                                    boost::shared_ptr<task::CScheduler> taskScheduler)
+                                    boost::shared_ptr<task::CScheduler> taskScheduler,
+                                    boost::shared_ptr<IUploadFileManager> uploadFileManager)
             : m_pathProvider(std::move(pathProvider)),
               m_dataProvider(dataProvider),
               m_databaseRequester(dataProvider->getDatabaseRequester()),
               m_keywordRequester(dataProvider->getKeywordRequester()),
               m_acquisitionRequester(dataProvider->getAcquisitionRequester()),
-              m_taskScheduler(std::move(taskScheduler))
+              m_taskScheduler(std::move(taskScheduler)),
+              m_uploadFileManager(uploadFileManager)
          {
          }
 
@@ -309,7 +310,7 @@ namespace web
             }
          }
 
-         std::string fileUploadChunkRead(const std::string& requestContent) //TODO déplacer
+         boost::shared_ptr<std::string> CMaintenance::fileUploadChunkRead(const std::string& requestContent) const
          {
             static const std::string Base64Key(";base64,");
             const auto position = std::search(requestContent.begin(),
@@ -324,10 +325,10 @@ namespace web
                throw std::runtime_error("Invalid file");
             const auto dataStart = position + Base64Key.size();
 
-            return shared::encryption::CBase64::decode(std::string(dataStart, requestContent.end()));
+            return boost::make_shared<std::string>(shared::encryption::CBase64::decode(std::string(dataStart, requestContent.end())));
          }
 
-         std::string fileUploadChunkReadGuid(const std::string& requestContent) //TODO déplacer
+         std::string CMaintenance::fileUploadChunkReadGuid(const std::string& requestContent) const
          {
             const std::regex pattern("guid=([a-z0-9-]+)&",
                                      std::regex_constants::icase);
@@ -337,7 +338,7 @@ namespace web
             return match[1].str();
          }
 
-         std::string fileUploadChunkReadFilename(const std::string& requestContent) //TODO déplacer
+         std::string CMaintenance::fileUploadChunkReadFilename(const std::string& requestContent) const
          {
             const std::regex pattern(R"(filename=([\w,\s\.-]*)&)",
                                      std::regex_constants::icase);
@@ -345,6 +346,16 @@ namespace web
             if (!std::regex_search(requestContent, match, pattern) || match.size() < 2)
                throw std::runtime_error("Fail to decode XHR file : no filename found");
             return match[1].str();
+         }
+
+         unsigned int CMaintenance::fileUploadChunkReadFileSize(const std::string& requestContent) const
+         {
+            const std::regex pattern(R"(filesize=([0-9]+)&)",
+                                     std::regex_constants::icase);
+            std::smatch match;
+            if (!std::regex_search(requestContent, match, pattern) || match.size() < 2)
+               throw std::runtime_error("Fail to decode XHR file : no file size found");
+            return std::stoul(match[1].str());
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::uploadBackup(const std::vector<std::string>& parameters,
@@ -356,6 +367,7 @@ namespace web
 
                const auto guid = fileUploadChunkReadGuid(requestContent);
                const auto filename = fileUploadChunkReadFilename(requestContent);
+               const auto fileSize = fileUploadChunkReadFileSize(requestContent);
 
                const std::regex backupFilenamePattern(R"(^backup_[0-9]{8}T[0-9]{6}\.[0-9]+\.zip$)",
                                                       std::regex_constants::icase);
@@ -365,8 +377,10 @@ namespace web
 
                const auto chunk = fileUploadChunkRead(decodedRequestContent);
 
-               std::ofstream outFile("data.tmp", std::fstream::app | std::ios::binary);
-               outFile << chunk;
+               m_uploadFileManager->storeChunk(guid,
+                                               m_pathProvider->backupPath() / filename,
+                                               fileSize,
+                                               chunk);
 
                return CResult::GenerateSuccess();
             }

@@ -17,6 +17,7 @@
 * New feature #704 : Add update warning message for version to be installed
 * New feature #705 : Add obsolete management for modules
 * New feature #721 : Display rule interpreter icon in automation page
+* New feature #728 : Add restore backup function from a file
 * Fix dynamically configurable devices translations
 * Fix removing interpreter
 * Rename plugin/device states capacity (remove `_capacity` suffix)
