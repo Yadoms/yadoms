@@ -1,5 +1,5 @@
-![Binaries generation](https://github.com/Yadoms/yadoms/workflows/Binaries%20generation/badge.svg)
-![Unit tests](https://github.com/Yadoms/yadoms/workflows/Unit%20tests/badge.svg)
+[![Binaries generation](https://github.com/Yadoms/yadoms/workflows/Binaries%20generation/badge.svg)](https://github.com/Yadoms/yadoms/actions/workflows/generate_binaries.yml)
+[![Unit tests](https://github.com/Yadoms/yadoms/workflows/Unit%20tests/badge.svg)](https://github.com/Yadoms/yadoms/actions/workflows/unit_tests.yml)
 
 # yadoms
 
