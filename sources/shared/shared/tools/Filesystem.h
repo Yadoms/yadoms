@@ -24,7 +24,7 @@ namespace shared
          ///\param filePath File path to return size
          ///\return the size in bytes
          //---------------------------------------------
-         static uintmax_t CFilesystem::fileSize(const boost::filesystem::path& filePath);
+         static uintmax_t fileSize(const boost::filesystem::path& filePath);
 
          //---------------------------------------------
          ///\brief Compute directory size
@@ -46,7 +46,7 @@ namespace shared
          ///\return The temporary filename
          ///\note Doesn't create the file
          //---------------------------------------------   
-         static boost::filesystem::path CFilesystem::createTemporaryFilename();
+         static boost::filesystem::path createTemporaryFilename();
 
          //---------------------------------------------
          ///\brief Check if a file/directory exists
