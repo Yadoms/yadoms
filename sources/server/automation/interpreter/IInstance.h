@@ -11,12 +11,7 @@ namespace automation
       class IInstance
       {
       public:
-         //-----------------------------------------------------
-         ///\brief               Destructor
-         //-----------------------------------------------------
-         virtual ~IInstance()
-         {
-         }
+         virtual ~IInstance() = default;
 
          //-----------------------------------------------------
          ///\brief               Get information about the interpreter associated with this instance
@@ -30,8 +25,8 @@ namespace automation
          virtual void requestToStop() = 0;
 
          //-----------------------------------------------------
-         ///\brief               Check if interpreter is fully avalaible
-         ///\return              true if fully avalaible (all needed ressources are working)
+         ///\brief               Check if interpreter is fully available
+         ///\return              true if fully available (all needed resources are working)
          //-----------------------------------------------------
          virtual bool isAvailable() = 0;
 
@@ -55,7 +50,7 @@ namespace automation
          ///\param[in] scriptInstanceId   The script instance ID
          ///\param[in] scriptPath         The script path
          ///\param[in] yScriptApiId       The script API instance ID
-         ///\param[in] scriptPath         The script log path
+         ///\param[in] scriptLogPath      The script log path
          //-----------------------------------------------------    
          virtual void startScript(int scriptInstanceId,
                                   const boost::filesystem::path& scriptPath,

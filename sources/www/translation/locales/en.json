@@ -68,6 +68,12 @@
             "clean": "Cleaning...",
             "success": "Backup succeeded"
          },
+         "restore": {
+            "prepare": "Preparing restoration...",
+            "decompress": "Uncompressing files...",
+            "success": "Restoration succeeded",
+            "restarting": "Restarting Yadoms..."
+         },
          "packLogs": {
             "prepare": "Preparing logs...",
             "copyfiles": "Copying logs...",
@@ -809,6 +815,9 @@
                   "title": "Backups",
                   "startBackup": "Start a database backup",
                   "deleteAll": "Delete all backups",
+                  "uploadBackup": "Upload a backup",
+                  "invalidBackupFilename": "This file is not a Yadoms backup",
+                  "backupUploaded": "Backup uploaded",
                   "backuplist": {
                      "date": "Date",
                      "size": "File size",
@@ -817,9 +826,13 @@
                      "actions": "Actions",
                      "download": "Download",
                      "delete": "Delete",
+                     "restore": "Restore",
                      "deleteConfirmTitle": "Confirm delete",
-                     "deleteConfirm": "Delete the backup ?"
-                  }
+                     "deleteConfirm": "Delete the backup ?",
+                     "restoreConfirmTitle": "Confirm restore backup",
+                     "restoreConfirm": "Restoring the backup will erase all current data. Are you sure to proceed restoration ?"
+                  },            
+                  "restoring": "Restoring in progress..."
                },
                "logs-download": {
                   "title": "Logs",

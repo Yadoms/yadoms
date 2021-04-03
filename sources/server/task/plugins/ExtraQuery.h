@@ -9,18 +9,15 @@ namespace task
       //------------------------------------------
       ///\brief   Extra query task
       //-----------------------------------------
-      class CExtraQuery : public ITask
+      class CExtraQuery final : public ITask
       {
       public:
          //------------------------------------------
          ///\brief   Constructor
          //------------------------------------------
-         explicit CExtraQuery(boost::shared_ptr<pluginSystem::IInstance> pluginInstance, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query);
-
-         //------------------------------------------
-         ///\brief   Destructor
-         //------------------------------------------
-         virtual ~CExtraQuery();
+         explicit CExtraQuery(const boost::shared_ptr<pluginSystem::IInstance>& pluginInstance,
+                              const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery>& query);
+         ~CExtraQuery() override = default;
 
          // ITask implementation
          const std::string& getName() const override;
@@ -51,5 +48,3 @@ namespace task
       };
    } //namespace plugins
 } //namespace task
-
-

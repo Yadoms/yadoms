@@ -2,10 +2,10 @@
 #include "Plugin.h"
 #include <shared/Log.h>
 #include <shared/Executable.h>
-#include "tools/FileSystem.h"
 #include "pluginSystem/Manager.h"
 #include "i18n/ClientStrings.h"
 #include "pluginSystem/Information.h"
+#include "shared/tools/Filesystem.h"
 
 namespace update
 {
@@ -75,7 +75,7 @@ namespace update
 
          //delete downloaded zip file
          if (!downloadedPackage.empty())
-            tools::CFileSystem::remove(downloadedPackage);
+            shared::tools::CFilesystem::remove(downloadedPackage);
       }
 
       void CPlugin::update(CWorkerHelpers::WorkerProgressFunc progressCallback,
@@ -151,7 +151,7 @@ namespace update
 
          //delete downloaded zip file
          if (!downloadedPackage.empty())
-            tools::CFileSystem::remove(downloadedPackage);
+            shared::tools::CFilesystem::remove(downloadedPackage);
       }
 
       void CPlugin::remove(CWorkerHelpers::WorkerProgressFunc progressCallback,
@@ -177,7 +177,7 @@ namespace update
             /////////////////////////////////////////////
             //2. remove plugin folder
             /////////////////////////////////////////////
-            tools::CFileSystem::remove(pluginsPath / pluginName);
+            shared::tools::CFilesystem::remove(pluginsPath / pluginName);
 
             /////////////////////////////////////////////
             //3. update plugin manager

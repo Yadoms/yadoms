@@ -11,17 +11,8 @@ namespace web
       class CIsAliveFrame : public CFrameBase
       {
       public:
-         //-----------------------------
-         ///\brief Constructor
-         //-----------------------------
          explicit CIsAliveFrame();
-
-         //-----------------------------
-         ///\brief Destructor
-         //-----------------------------
-         virtual ~CIsAliveFrame();
+         virtual ~CIsAliveFrame() = default;
       };
    } //namespace ws
 } //namespace web
-
-

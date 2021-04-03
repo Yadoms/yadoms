@@ -31,6 +31,7 @@ namespace web
          void CAutomationRule::configureDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordInterpreter), CAutomationRule::getAllInterpreters);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordInterpreter)("available"), CAutomationRule::getAvailableInterpreters);
 
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("codeTemplate"), CAutomationRule::getRuleCodeTemplate);
 
@@ -85,6 +86,14 @@ namespace web
          {
             shared::CDataContainer t;
             t.set("interpreters", m_rulesManager->getLoadedInterpreters());
+            return CResult::GenerateSuccess(t);
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getAvailableInterpreters(const std::vector<std::string>& parameters,
+                                                                                                         const std::string& requestContent) const
+         {
+            shared::CDataContainer t;
+            t.set("interpreters", m_rulesManager->getAvailableInterpreters());
             return CResult::GenerateSuccess(t);
          }
 

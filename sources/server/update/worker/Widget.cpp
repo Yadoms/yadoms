@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "Widget.h"
-#include "tools/FileSystem.h"
-#include <Poco/File.h>
-#include <Poco/DirectoryIterator.h>
 #include "i18n/ClientStrings.h"
 #include <shared/Log.h>
+
+#include "shared/tools/Filesystem.h"
 #include "WidgetInformation.h"
 
 namespace update
@@ -31,7 +30,7 @@ namespace update
 
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, std::string(), callbackData);
             downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload,
-                                                                         0.0, 90.0);
+                                                                0.0, 90.0);
             YADOMS_LOG(information) << "Downloading widget package with success";
 
 
@@ -62,7 +61,7 @@ namespace update
 
          //delete downloaded zip file
          if (!downloadedPackage.empty())
-            tools::CFileSystem::remove(downloadedPackage);
+            shared::tools::CFilesystem::remove(downloadedPackage);
       }
 
 
@@ -87,7 +86,7 @@ namespace update
             YADOMS_LOG(information) << "Downloading widget package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, std::string(), callbackData);
             downloadedPackage = CWorkerHelpers::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload,
-                                                                         0.0, 90.0);
+                                                                0.0, 90.0);
             YADOMS_LOG(information) << "Downloading widget package with success";
 
 
@@ -119,7 +118,7 @@ namespace update
 
          //delete downloaded zip file
          if (!downloadedPackage.string().empty())
-            tools::CFileSystem::remove(downloadedPackage);
+            shared::tools::CFilesystem::remove(downloadedPackage);
       }
 
       void CWidget::remove(CWorkerHelpers::WorkerProgressFunc progressCallback,
@@ -137,13 +136,8 @@ namespace update
          {
             /////////////////////////////////////////////
             //1. remove widget folder
-            /////////////////////////////////////////////
-            Poco::Path widgetPath(widgetsPath.string());
-            widgetPath.append(widgetName);
-
-            Poco::File toDelete(widgetPath);
-            if (toDelete.exists())
-               toDelete.remove(true);
+            /////////////////////////////////////////////            
+            shared::tools::CFilesystem::remove(widgetsPath / widgetName);
 
             progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), callbackData);
          }
@@ -159,16 +153,16 @@ namespace update
       {
          AvailableWidgetMap widgets;
 
-         for (Poco::DirectoryIterator it(Poco::Path(widgetsPath.string())); it != Poco::DirectoryIterator(); ++it)
+         for (auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(widgetsPath), {}))
          {
             try
             {
-               const auto widget = boost::make_shared<CWidgetInformation>(it->path());
+               const auto widget = boost::make_shared<CWidgetInformation>(entry.path());
                widgets[widget->getType()] = widget;
             }
             catch (std::exception& e)
             {
-               YADOMS_LOG(warning) << "Unknown widget in " << it->path() << ", " << e.what();
+               YADOMS_LOG(warning) << "Unknown widget in " << entry.path() << ", " << e.what();
             }
          }
 

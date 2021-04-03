@@ -1,3 +1,6 @@
+### 2.0.2
+* Fix crash when random dialog failed (case of bad powered dongle)
+
 ### 2.0.1
 * Fix power measurment lost when doing reset load energy for D2-01-0x profiles
 

@@ -102,6 +102,11 @@ namespace automation
       return m_interpreterManager->getLoadedInterpreters();
    }
 
+   std::vector<std::string> CRuleManager::getAvailableInterpreters()
+   {
+      return m_interpreterManager->getAvailablenterpreters();
+   }
+
    void CRuleManager::startRule(int ruleId)
    {
       auto ruleLabel = std::to_string(ruleId);

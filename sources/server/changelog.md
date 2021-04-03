@@ -3,17 +3,21 @@
 #### Yadoms
 * New PhilipsHue plugin (Thanks to Oussama Dahmaz)
 * Fix #617 : File download progress is yet again available
+* Fix #682 : Unify filesystem functions and reduce dependencies to Poco
 * Fix #702 : Support links in update&install page
 * Fix #703 : Fix display and translations of file type fields of configuration
 * Fix #715 : Fix model field update from rule REST api
+* Fix #716 : Show only available rule editors when creating a new rule
 * Fix #717 : Fix crash when requesting a NULL lastAcquisition
 * Fix #718 : Find compatible devices for devices merging
-* New feature #704 : Add update warning message for version to be installed
+* New feature #523 : Add backup restoration
 * New feature #572 : Proxy support for http requests
 * New feature #603 : Manage redirections for http requests
 * New feature #680 : Add HTTP devices autodetection in shared
+* New feature #704 : Add update warning message for version to be installed
 * New feature #705 : Add obsolete management for modules
 * New feature #721 : Display rule interpreter icon in automation page
+* New feature #728 : Add restore backup function from a file
 * Fix dynamically configurable devices translations
 * Fix removing interpreter
 * Rename plugin/device states capacity (remove `_capacity` suffix)
@@ -188,6 +192,7 @@
 _Please note that changes on modules (plugins, widgets...) are now specified in their respective change-logs files, no more in this file._
 
 #### Web Client
+* Fix #688 - [2.4.0-beta.4] Indicator widget : icons list empty
 * Fix unsupported browser detection
 * Optimize REST request handling at the startup of the web client
 * Fix rolling title, when change the title of the widget

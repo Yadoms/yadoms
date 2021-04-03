@@ -16,10 +16,10 @@ namespace task
       //------------------------------
       ///\brief Constructor
       //------------------------------
-      CInstance(boost::shared_ptr<ITask> task,
+      CInstance(const boost::shared_ptr<ITask>& task,
                 boost::shared_ptr<shared::event::CEventHandler> eventHandler,
                 const int eventCode,
-                const std::string& guid);
+                std::string guid);
 
       //------------------------------
       ///\brief public destructor

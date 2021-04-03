@@ -68,6 +68,12 @@
             "clean": "Nettoyage...",
             "success": "Sauvegarde réussie"
          },
+         "restore": {
+            "prepare": "Preparing de la restauration...",
+            "decompress": "Décompression des fichiers...",
+            "success": "Restauration réussie",
+            "restarting": "Redémarrage de Yadoms..."
+         },
          "packLogs": {
             "prepare": "Préparation des journaux...",
             "copyfiles": "Copie des journaux...",
@@ -809,6 +815,9 @@
                   "title": "Sauvegardes",
                   "startBackup": "Démarrer une nouvelle sauvegarde",
                   "deleteAll": "Effacer toutes les sauvegardes",
+                  "uploadBackup": "Restorer un backup à partir d'un fichier",
+                  "invalidBackupFilename": "Fichier non reconnu comme étant un backup Yadoms",
+                  "backupUploaded": "Backup envoyé",
                   "backuplist": {
                      "date": "Date",
                      "size": "Taille",
@@ -817,9 +826,13 @@
                      "actions": "Actions",
                      "download": "Télécharger",
                      "delete": "Supprimer",
+                     "restore": "Restaurer",
                      "deleteConfirmTitle": "Confirmer la suppression",
-                     "deleteConfirm": "Supprimer la sauvegarde ?"
-                  }
+                     "deleteConfirm": "Supprimer la sauvegarde ?",
+                     "restoreConfirmTitle": "Confirmer la restauration",
+                     "restoreConfirm": "Restaurer le backup effacera toutes les données actuelles. Etes-vous sûr de vouloir procéder à la restauration ?"
+                  },            
+                  "restoring": "Restauration en cours..."
                },
                "logs-download": {
                   "title": "Journaux",

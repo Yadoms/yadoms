@@ -3,8 +3,8 @@
 namespace i18n
 {
    //-----------------------------------------------------------------------------
-   /// \class   Class which contains i18n strings that a client can use
-   //----------------------------------------------------------------------------   
+   /// \brief Class which contains i18n strings that a client can use
+   //----------------------------------------------------------------------------
    class CClientStrings
    {
    public:
@@ -59,12 +59,17 @@ namespace i18n
       static std::string DatabaseBackupInProgress;
       static std::string DatabaseBackupSuccess;
       static std::string DatabaseBackupFail;
-      
+
       static std::string BackupPrepare;
       static std::string BackupCopyFile;
       static std::string BackupCompress;
       static std::string BackupClean;
       static std::string BackupSuccess;
+
+      static std::string RestorePrepare;
+      static std::string RestoreDecompress;
+      static std::string RestoreSuccess;
+      static std::string RestoreRestarting;
 
       static std::string PackLogsPrepare;
       static std::string PackLogsCopyFile;
@@ -87,5 +92,4 @@ namespace i18n
       static std::string TaskEnd;
       static std::string TaskStarted;
    };
-   
 } // namespace i18n

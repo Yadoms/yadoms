@@ -18,16 +18,13 @@ namespace web
          //-----------------------------
          explicit CDeviceDeletedFrame(boost::shared_ptr<const database::entities::CDevice> content);
 
-         //-----------------------------
-         ///\brief Destructor
-         //-----------------------------
-         virtual ~CDeviceDeletedFrame();
+         virtual ~CDeviceDeletedFrame() = default;
 
       protected:
          //-----------------------------
          ///\bruef The acquisition field name
          //-----------------------------
-         static const std::string m_device;
+         static const std::string Device;
       };
    } //namespace ws
 } //namespace web

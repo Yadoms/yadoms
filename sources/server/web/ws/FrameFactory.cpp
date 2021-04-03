@@ -3,6 +3,8 @@
 #include "AcquisitionFilterFrame.h"
 #include <shared/Log.h>
 
+#include "IsAliveFrame.h"
+
 namespace web
 {
    namespace ws
@@ -11,19 +13,21 @@ namespace web
       {
          try
          {
-            shared::CDataContainer obj(frameAsString);
+            const shared::CDataContainer obj(frameAsString);
             if (obj.containsValue(CFrameBase::getTypeFieldName()))
             {
                switch (obj.get<CFrameBase::EFrameType>(CFrameBase::getTypeFieldName()))
                {
                case CFrameBase::EFrameType::kAcquisitionFilterValue:
                   return boost::make_shared<CAcquisitionFilterFrame>(frameAsString);
+               case CFrameBase::EFrameType::kIsAliveValue:
+                  return boost::make_shared<CIsAliveFrame>();
 
                default:
                   throw shared::exception::COutOfRange("Unknown type");
                }
             }
-            
+
             YADOMS_LOG(debug) << "Cannot find frame type : " << frameAsString;
          }
          catch (shared::exception::CInvalidParameter&)
@@ -47,5 +51,3 @@ namespace web
       }
    } //namespace ws
 } //namespace web
-
-

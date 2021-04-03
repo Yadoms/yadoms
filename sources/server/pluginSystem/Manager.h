@@ -35,14 +35,14 @@ namespace pluginSystem
       /// \param [in]   yadomsVersion           The Yadoms version
       /// \param [in]   dataProvider            Database link
       /// \param [in]   dataAccessLayer         The database access layer
-      /// \param [in]   locationProvider        The location provider
+      /// \param [in]   location                The location
       /// \param [in]   taskScheduler           The task scheduler
       //--------------------------------------------------------------
       CManager(boost::shared_ptr<const IPathProvider> pathProvider,
                const shared::versioning::CSemVer& yadomsVersion,
-               boost::shared_ptr<database::IDataProvider> dataProvider,
-               boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-               boost::shared_ptr<shared::ILocation> locationProvider,
+               const boost::shared_ptr<database::IDataProvider>& dataProvider,
+               const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
+               boost::shared_ptr<shared::ILocation> location,
                boost::shared_ptr<task::CScheduler> taskScheduler);
 
       //--------------------------------------------------------------

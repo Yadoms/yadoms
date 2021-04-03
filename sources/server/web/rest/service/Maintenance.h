@@ -5,7 +5,9 @@
 #include "IPathProvider.h"
 #include "database/IAcquisitionRequester.h"
 #include "database/IDatabaseRequester.h"
+#include "database/IDataProvider.h"
 #include "database/IKeywordRequester.h"
+#include "IUploadFileManager.h"
 
 namespace web
 {
@@ -17,10 +19,9 @@ namespace web
          {
          public:
             explicit CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider,
-                                  boost::shared_ptr<database::IDatabaseRequester> databaseRequester,
-                                  boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-                                  boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
-                                  boost::shared_ptr<task::CScheduler> taskScheduler);
+                                  const boost::shared_ptr<database::IDataProvider>& dataProvider,
+                                  boost::shared_ptr<task::CScheduler> taskScheduler,
+                                  boost::shared_ptr<IUploadFileManager> uploadFileManager);
             virtual ~CMaintenance() = default;
 
             // IRestService implementation
@@ -37,8 +38,12 @@ namespace web
                                                                                    const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteBackup(const std::vector<std::string>& parameters,
                                                                                      const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> restoreBackup(const std::vector<std::string>& parameters,
+                                                                                      const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllBackups(const std::vector<std::string>& parameters,
                                                                                          const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> uploadBackup(const std::vector<std::string>& parameters,
+                                                                                     const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> startPackLogs(const std::vector<std::string>& parameters,
                                                                                       const std::string& requestContent);
             boost::shared_ptr<shared::serialization::IDataSerializable> getLogs(const std::vector<std::string>& parameters,
@@ -51,12 +56,23 @@ namespace web
                                                                                       const std::string& requestContent) const;
 
          private:
+            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+                                                                                            const std::vector<std::string>& parameters,
+                                                                                            const std::string& requestContent) const;
+
+            boost::shared_ptr<std::string> fileUploadChunkRead(const std::string& requestContent) const;
+            std::string fileUploadChunkReadGuid(const std::string& requestContent) const;
+            std::string fileUploadChunkReadFilename(const std::string& requestContent) const;
+            unsigned int fileUploadChunkReadFileSize(const std::string& requestContent) const;
+
             static std::string m_restKeyword;
             boost::shared_ptr<const IPathProvider> m_pathProvider;
+            boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<database::IDatabaseRequester> m_databaseRequester;
             boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
             boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
             boost::shared_ptr<task::CScheduler> m_taskScheduler;
+            boost::shared_ptr<IUploadFileManager> m_uploadFileManager;
          };
       } //namespace service
    } //namespace rest

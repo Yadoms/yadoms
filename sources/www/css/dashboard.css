@@ -408,6 +408,23 @@
     margin-top: 20px;
 }
 
+/*Yadoms updating blocking splash screen*/
+#yadoms-restoring-splash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 10000;
+    background-color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+#yadoms-restoring-splash .progress {
+    margin-top: 20px;
+}
+
 .panel-heading {
     cursor: pointer;
 }
@@ -509,6 +526,11 @@ div#please-wait-modal i {
 .backupButton {
     margin-right: 10px;
     margin-bottom: 5px;
+}
+
+.backupFileToRestore {
+    display: inline-block !important;
+    margin-left: 20px;
 }
 
 @media (max-width: 920px) {

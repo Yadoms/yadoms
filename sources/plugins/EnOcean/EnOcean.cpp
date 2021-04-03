@@ -204,7 +204,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          YADOMS_LOG(error) << "Logical error : " << e.what();
       }
-      catch (CProtocolException& e)
+      catch (std::exception& e)
       {
          YADOMS_LOG(error) << "Error communicating with EnOcean dongle " << e.what();
          protocolErrorProcess();
@@ -361,6 +361,11 @@ void CEnOcean::processConnectionEvent()
       protocolErrorProcess();
    }
    catch (shared::communication::CPortException& e)
+   {
+      YADOMS_LOG(error) << "Error connecting to EnOcean dongle : " << e.what();
+      // Disconnection will be notified, we just have to wait...
+   }
+   catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Error connecting to EnOcean dongle : " << e.what();
       // Disconnection will be notified, we just have to wait...

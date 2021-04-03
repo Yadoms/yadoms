@@ -37,14 +37,12 @@ namespace shared
          /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
          /// \return     the answer of the request
          //--------------------------------------------------------------
-         static void sendGetRequest(
-            const std::string& url,
-            const boost::function<void(
-               const std::map<std::string, std::string>& receivedHeaders,
-               const std::string& data)>& responseHandlerFct,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static void sendGetRequest(const std::string& url,
+                                    const boost::function<void(const std::map<std::string, std::string>& receivedHeaders,
+                                                               const std::string& data)>& responseHandlerFct,
+                                    const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+                                    const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+                                    int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
          //--------------------------------------------------------------
          /// \brief	    Send GET request to remote server
@@ -54,11 +52,10 @@ namespace shared
          /// \param[in]  timeoutSeconds      timeout for the request (seconds)
          /// \return     the answer of the request
          //--------------------------------------------------------------
-         static std::string sendGetRequest(
-            const std::string& url,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static std::string sendGetRequest(const std::string& url,
+                                           const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+                                           const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+                                           int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
          //--------------------------------------------------------------
          /// \brief	    Send GET request to remote server (for JSON answer)
@@ -68,11 +65,12 @@ namespace shared
          /// \param[in]  timeoutSeconds      timeout for the request (seconds)
          /// \return     the answer of the request
          //--------------------------------------------------------------
-         static boost::shared_ptr<CDataContainer> sendJsonGetRequest(
-            const std::string& url,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static boost::shared_ptr<CDataContainer> sendJsonGetRequest(const std::string& url,
+                                                                     const std::map<std::string, std::string>& headerParameters = std::map<
+                                                                        std::string, std::string>(),
+                                                                     const std::map<std::string, std::string>& parameters = std::map<
+                                                                        std::string, std::string>(),
+                                                                     int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
 
          //--------------------------------------------------------------
@@ -91,15 +89,14 @@ namespace shared
          /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
          /// \return     the answer of the request
          //--------------------------------------------------------------
-         static void sendPostRequest(
-            const std::string& url,
-            const std::string& body,
-            const boost::function<void(
-               const std::map<std::string, std::string>& receivedHeaders,
-               const std::string& data)>& responseHandlerFct,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static void sendPostRequest(const std::string& url,
+                                     const std::string& body,
+                                     const boost::function<void(
+                                        const std::map<std::string, std::string>& receivedHeaders,
+                                        const std::string& data)>& responseHandlerFct,
+                                     const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+                                     const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+                                     int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
          //--------------------------------------------------------------
          /// \brief	    Send POST request to remote server
@@ -110,12 +107,11 @@ namespace shared
          /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
          /// \return     the answer of the request
          //--------------------------------------------------------------
-         static std::string sendPostRequest(
-            const std::string& url,
-            const std::string& body,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static std::string sendPostRequest(const std::string& url,
+                                            const std::string& body,
+                                            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+                                            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+                                            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
          //--------------------------------------------------------------
          /// \brief	    Send POST request to remote server (for JSON answer)
@@ -126,12 +122,13 @@ namespace shared
          /// \param[in]  timeoutSeconds      timeout for the request (seconds)
          /// \return     the answer of the request
          //--------------------------------------------------------------
-         static boost::shared_ptr<CDataContainer> sendJsonPostRequest(
-            const std::string& url,
-            const std::string& body,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static boost::shared_ptr<CDataContainer> sendJsonPostRequest(const std::string& url,
+                                                                      const std::string& body,
+                                                                      const std::map<std::string, std::string>& headerParameters = std::map<
+                                                                         std::string, std::string>(),
+                                                                      const std::map<std::string, std::string>& parameters = std::map<
+                                                                         std::string, std::string>(),
+                                                                      int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
 
          //--------------------------------------------------------------
@@ -149,13 +146,11 @@ namespace shared
          /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
          /// \return     the answer of the request
          //--------------------------------------------------------------
-         static void sendHeadRequest(
-            const std::string& url,
-            const boost::function<void(
-               const std::map<std::string, std::string>& receivedHeaders)>& responseHandlerFct,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static void sendHeadRequest(const std::string& url,
+                                     const boost::function<void(const std::map<std::string, std::string>& receivedHeaders)>& responseHandlerFct,
+                                     const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+                                     const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+                                     int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
          //--------------------------------------------------------------
          /// \brief	    Send HEAD request to remote server
@@ -165,11 +160,12 @@ namespace shared
          /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
          /// \return     the received headers
          //--------------------------------------------------------------
-         static std::map<std::string, std::string> sendHeadRequest(
-            const std::string& url,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static std::map<std::string, std::string> sendHeadRequest(const std::string& url,
+                                                                   const std::map<std::string, std::string>& headerParameters = std::map<
+                                                                      std::string, std::string>(),
+                                                                   const std::map<std::string, std::string>& parameters = std::map<
+                                                                      std::string, std::string>(),
+                                                                   int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
          //--------------------------------------------------------------
          //--------------------------------------------------------------
@@ -186,15 +182,13 @@ namespace shared
          /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
          /// \return     the answer of the request
          //--------------------------------------------------------------
-         static void sendPutRequest(
-            const std::string& url,
-            const std::string& body,
-            const boost::function<void(
-               const std::map<std::string, std::string>& receivedHeaders,
-               const std::string& data)>& responseHandlerFct,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static void sendPutRequest(const std::string& url,
+                                    const std::string& body,
+                                    const boost::function<void(const std::map<std::string, std::string>& receivedHeaders,
+                                                               const std::string& data)>& responseHandlerFct,
+                                    const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+                                    const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+                                    int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
          //--------------------------------------------------------------
          /// \brief	    Send PUT request to remote server
@@ -205,12 +199,11 @@ namespace shared
          /// \param[in]  timeoutSeconds      Timeout for the request (seconds)
          /// \return     the answer of the request
          //--------------------------------------------------------------
-         static std::string sendPutRequest(
-            const std::string& url,
-            const std::string& body,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static std::string sendPutRequest(const std::string& url,
+                                           const std::string& body,
+                                           const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
+                                           const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
+                                           int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
 
          //--------------------------------------------------------------
          /// \brief	    Send PUT request to remote server (for JSON answer)
@@ -221,17 +214,31 @@ namespace shared
          /// \param[in]  timeoutSeconds      timeout for the request (seconds)
          /// \return     the answer of the request
          //--------------------------------------------------------------
-         static boost::shared_ptr<CDataContainer> sendJsonPutRequest(
-            const std::string& url,
-            const std::string& body,
-            const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
-            const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>(),
-            int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+         static boost::shared_ptr<CDataContainer> sendJsonPutRequest(const std::string& url,
+                                                                     const std::string& body,
+                                                                     const std::map<std::string, std::string>& headerParameters = std::map<
+                                                                        std::string, std::string>(),
+                                                                     const std::map<std::string, std::string>& parameters = std::map<
+                                                                        std::string, std::string>(),
+                                                                     int timeoutSeconds = HttpRequestDefaultTimeoutSeconds);
+
+         //--------------------------------------------------------------
+         /// \brief	    Encode an URL (escape some characters)
+         /// \param[in]  url                 input URL
+         /// \return     Encoded URL
+         //--------------------------------------------------------------
+         static std::string urlEncode(const std::string& url);
+
+         //--------------------------------------------------------------
+         /// \brief	    Decode an URL (unescape some characters)
+         /// \param[in]  url                 input URL
+         /// \return     Decoded URL
+         //--------------------------------------------------------------
+         static std::string urlDecode(const std::string& url);
 
       protected:
-         static boost::shared_ptr<CDataContainer> processJsonResponse(
-            const std::map<std::string, std::string>& receivedHeaders,
-            const std::string& data);
+         static boost::shared_ptr<CDataContainer> processJsonResponse(const std::map<std::string, std::string>& receivedHeaders,
+                                                                      const std::string& data);
       };
    }
 } // namespace shared::http

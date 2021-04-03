@@ -23,16 +23,12 @@ namespace automation
          : m_interpreterInformation(interpreterInformation),
            m_process(process),
            m_ipcAdapter(ipcAdapter),
-           m_avalaible(false)
+           m_available(false)
       {
          m_ipcAdapter->postInit(m_interpreterInformation,
                                 logPath,
                                 shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getLogLevel());
-         m_avalaible = getAvalaibility();
-      }
-
-      CInstance::~CInstance()
-      {
+         m_available = getAvailability();
       }
 
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CInstance::aboutInterpreter() const
@@ -47,7 +43,7 @@ namespace automation
 
       bool CInstance::isAvailable()
       {
-         return m_avalaible;
+         return m_available;
       }
 
       std::string CInstance::loadScriptContent(const std::string& scriptPath) const
@@ -170,7 +166,7 @@ namespace automation
          }
       }
 
-      bool CInstance::getAvalaibility() const
+      bool CInstance::getAvailability() const
       {
          communication::callback::CSynchronousCallback<bool> callback;
          auto request(boost::make_shared<CAvalaibleRequest>(callback));

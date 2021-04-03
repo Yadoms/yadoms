@@ -17,11 +17,7 @@ namespace automation
                    const boost::filesystem::path& logPath,
                    boost::shared_ptr<shared::process::IProcess> process,
                    boost::shared_ptr<IIpcAdapter> ipcAdapter);
-
-         //--------------------------------------------------------------
-         /// \brief	Destructor
-         //--------------------------------------------------------------
-         virtual ~CInstance();
+         virtual ~CInstance()=default;
 
          // IInstance Implementation
          boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> aboutInterpreter() const override;
@@ -40,7 +36,7 @@ namespace automation
          // [END] IInstance Implementation
 
       protected:
-         bool getAvalaibility() const;
+         bool getAvailability() const;
 
       private:
          const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> m_interpreterInformation;
@@ -48,7 +44,7 @@ namespace automation
          boost::shared_ptr<shared::process::IProcess> m_process;
          boost::shared_ptr<IIpcAdapter> m_ipcAdapter;
 
-         bool m_avalaible;
+         bool m_available;
       };
    }
 } // namespace automation::interpreter
