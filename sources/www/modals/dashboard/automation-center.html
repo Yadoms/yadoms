@@ -157,7 +157,6 @@
          $ruleRow.find("input.cb-autoStart").removeProp("checked");
 
       //we manage the state
-      debugger;
       switch (rule.state) {
          case "Stopped":
             $ruleRow.find("span.label-status").addClass("label-warning").removeClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.stopped"));
@@ -165,12 +164,11 @@
             break;
          case "Running":
             $ruleRow.find("span.label-status").addClass("label-success").removeClass("label-danger").removeClass("label-warning").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.running"));
-            $ruleRow.find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success").empty().append("<span class=\"fa fa-stop\"></span>");;
+            $ruleRow.find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success").empty().append("<span class=\"fa fa-stop\"></span>");
             break;
          case "Error":
             $ruleRow.find("span.label-status").addClass("label-danger").removeClass("label-success").removeClass("label-warning").text($.t("modals.dashboard.sub-windows.automation-center.ruleState.error"));
-            $ruleRow.find("td.automation-rule-state").addClass("tooltiptext").>Tooltip text</span>
-            $ruleRow.find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning").empty().append("<span class=\"fa fa-play\"></span>");;
+            $ruleRow.find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning").empty().append("<span class=\"fa fa-play\"></span>");
             break;
       }
 
@@ -207,7 +205,6 @@
                }
             })
             .fail(function (error) {
-               debugger;
                notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleStartError", { rule: rule.name }), error);
                getAutomationRuleDomRow(rule).find("button.btn-startStop").prop('disabled', false);
             });

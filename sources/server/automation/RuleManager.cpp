@@ -137,7 +137,7 @@ namespace automation
       {
          const auto error((boost::format("Invalid rule %1%, no corresponding interpreter available : %2%") % ruleLabel % e.what()).str());
          recordRuleStopped(ruleId, error);
-         throw CRuleException(error);
+         throw CNoInterpreterException(error);
       }
       catch (shared::exception::CEmptyResult& e)
       {
