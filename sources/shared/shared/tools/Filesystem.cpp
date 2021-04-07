@@ -188,10 +188,16 @@ namespace shared
          return true;
       }
 
-      void CFilesystem::remove(const boost::filesystem::path& path, bool recursive)
+      void CFilesystem::remove(const boost::filesystem::path& path,
+                               bool recursive)
       {
-         if (boost::filesystem::exists(path))
-            return remove(path.string(), recursive);
+         if (!exists(path))
+            return;
+
+         if (recursive)
+            boost::filesystem::remove_all(path);
+         else
+            boost::filesystem::remove(path);
       }
 
       void CFilesystem::rename(const boost::filesystem::path& source,
