@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Rule.h"
 
-#include "NoInterpreterException.hpp"
+#include <utility>
 #include "script/YScriptApiImplementation.h"
 #include "script/Properties.h"
 #include "script/IpcAdapter.h"
@@ -16,7 +16,7 @@ namespace automation
                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                 boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                 boost::shared_ptr<script::IGeneralInfo> generalInfo)
-      : m_ruleData(ruleData),
+      : m_ruleData(std::move(ruleData)),
         m_interpreterManager(interpreterManager)
    {
       start(pluginGateway,
@@ -25,10 +25,6 @@ namespace automation
             keywordAccessLayer,
             dbRecipientRequester,
             generalInfo);
-   }
-
-   CRule::~CRule()
-   {
    }
 
    void CRule::start(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
@@ -50,15 +46,7 @@ namespace automation
 
       const script::CProperties ruleProperties(m_ruleData);
 
-      try
-      {
-         m_scriptInterpreter = m_interpreterManager->getAvailableInterpreterInstance(m_ruleData->Interpreter());
-      }
-      catch (std::exception& e)
-      {
-         YADOMS_LOG(error) << "Unable to start rule, " << e.what();
-         throw CNoInterpreterException(e.what());
-      }
+      m_scriptInterpreter = m_interpreterManager->getAvailableInterpreterInstance(m_ruleData->Interpreter());
 
       m_scriptInterpreter->startScript(m_ruleData->Id(),
                                        ruleProperties.scriptPath(),

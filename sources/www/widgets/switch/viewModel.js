@@ -87,7 +87,6 @@ widgetViewModelCtor =
                   break;
             }
          }
-         console.log("switch val = " + result);
          return result;
       }, this);
 

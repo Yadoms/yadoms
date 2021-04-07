@@ -339,7 +339,6 @@ set(YADOMS_SRC
    server/automation/IRule.h
    server/automation/IRuleManager.h
    server/automation/IRuleThreadHandler.h
-   server/automation/NoInterpreterException.hpp
    server/automation/Rule.h
    server/automation/Rule.cpp
    server/automation/RuleException.hpp

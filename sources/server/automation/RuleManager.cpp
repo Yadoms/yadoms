@@ -5,8 +5,7 @@
 #include "Rule.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
-
-#include "NoInterpreterException.hpp"
+#include "RuleException.hpp"
 #include "script/GeneralInfo.h"
 #include "script/Properties.h"
 
@@ -132,12 +131,6 @@ namespace automation
                                                       m_dbRecipientRequester,
                                                       m_generalInfo));
          m_startedRules[ruleId] = newRule;
-      }
-      catch (CNoInterpreterException& e)
-      {
-         const auto error((boost::format("Invalid rule %1%, no corresponding interpreter available : %2%") % ruleLabel % e.what()).str());
-         recordRuleStopped(ruleId, error);
-         throw CNoInterpreterException(error);
       }
       catch (shared::exception::CEmptyResult& e)
       {
