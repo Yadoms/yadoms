@@ -12,7 +12,7 @@ namespace web
          //-----------------------------------------------------------------------------
          /// \brief  REST handler class for update and check for update
          //-----------------------------------------------------------------------------      
-         class CUpdate : public IRestService
+         class CUpdate final : public IRestService
          {
          public:
             //-----------------------------------------------------------------------------
@@ -20,11 +20,7 @@ namespace web
             /// \param [in] updateManager   The update manager
             //-----------------------------------------------------------------------------      
             explicit CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager);
-
-            //-----------------------------------------------------------------------------
-            /// \brief  Destructor
-            //-----------------------------------------------------------------------------      
-            virtual ~CUpdate();
+            ~CUpdate() override = default;
 
 
             // IRestService implementation

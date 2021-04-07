@@ -16,7 +16,7 @@ namespace automation
    //-----------------------------------------------------
    ///\brief A rule
    //-----------------------------------------------------
-   class CRule : public IRule
+   class CRule final : public IRule
    {
    public:
       CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
@@ -27,7 +27,7 @@ namespace automation
             boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
             boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
             boost::shared_ptr<script::IGeneralInfo> generalInfo);
-      virtual ~CRule();
+      ~CRule() = default;
 
       // IRule Implementation
       void requestStop() override;
@@ -45,14 +45,16 @@ namespace automation
                  boost::shared_ptr<script::IGeneralInfo> generalInfo);
 
       boost::shared_ptr<script::IIpcAdapter> createScriptIpcAdapter(int ruleId,
-                                                                    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> apiImplementation) const;
+                                                                    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> apiImplementation)
+      const;
 
-      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptApiImplementation(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-                                                                                               boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
-                                                                                               boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
-                                                                                               boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
-                                                                                               boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
-                                                                                               boost::shared_ptr<script::IGeneralInfo> generalInfo) const;
+      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptApiImplementation(
+         boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+         boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+         boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+         boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+         boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+         boost::shared_ptr<script::IGeneralInfo> generalInfo) const;
 
    private:
       boost::shared_ptr<const database::entities::CRule> m_ruleData;

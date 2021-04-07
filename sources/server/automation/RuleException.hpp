@@ -18,11 +18,6 @@ public:
    {
    }
 
-   //--------------------------------------------------------------
-   /// \brief      Destructor
-   //--------------------------------------------------------------
-   virtual ~CRuleException() throw()
-   {
-   }
+   virtual ~CRuleException() noexcept = default;
 };
 

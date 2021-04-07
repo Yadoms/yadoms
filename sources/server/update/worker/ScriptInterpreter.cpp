@@ -185,7 +185,7 @@ namespace update
             //stop all rules using this scriptInterpreter
             auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
             if (automationRuleManager)
-               automationRuleManager->deleteAllRulesMatchingInterpreter(scriptInterpreterName);
+               automationRuleManager->stopAllRulesMatchingInterpreter(scriptInterpreterName);
 
             /////////////////////////////////////////////
             //2. remove scriptInterpreter folder

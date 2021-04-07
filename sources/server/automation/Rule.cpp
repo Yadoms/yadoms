@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Rule.h"
+
+#include <utility>
 #include "script/YScriptApiImplementation.h"
 #include "script/Properties.h"
 #include "script/IpcAdapter.h"
@@ -14,7 +16,7 @@ namespace automation
                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                 boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                 boost::shared_ptr<script::IGeneralInfo> generalInfo)
-      : m_ruleData(ruleData),
+      : m_ruleData(std::move(ruleData)),
         m_interpreterManager(interpreterManager)
    {
       start(pluginGateway,
@@ -25,10 +27,6 @@ namespace automation
             generalInfo);
    }
 
-   CRule::~CRule()
-   {
-   }
-
    void CRule::start(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                      boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                      boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
@@ -36,17 +34,17 @@ namespace automation
                      boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                      boost::shared_ptr<script::IGeneralInfo> generalInfo)
    {
-      auto apiImplementation = createScriptApiImplementation(pluginGateway,
-                                                             dbAcquisitionRequester,
-                                                             dbDeviceRequester,
-                                                             keywordAccessLayer,
-                                                             dbRecipientRequester,
-                                                             generalInfo);
+      const auto apiImplementation = createScriptApiImplementation(pluginGateway,
+                                                                   dbAcquisitionRequester,
+                                                                   dbDeviceRequester,
+                                                                   keywordAccessLayer,
+                                                                   dbRecipientRequester,
+                                                                   generalInfo);
 
       m_ipcAdapter = createScriptIpcAdapter(m_ruleData->Id(),
                                             apiImplementation);
 
-      script::CProperties ruleProperties(m_ruleData);
+      const script::CProperties ruleProperties(m_ruleData);
 
       m_scriptInterpreter = m_interpreterManager->getAvailableInterpreterInstance(m_ruleData->Interpreter());
 
@@ -62,18 +60,20 @@ namespace automation
    }
 
    boost::shared_ptr<script::IIpcAdapter> CRule::createScriptIpcAdapter(int ruleId,
-                                                                        boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> apiImplementation) const
+                                                                        boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> apiImplementation)
+   const
    {
       return boost::make_shared<script::CIpcAdapter>(apiImplementation,
                                                      ruleId);
    }
 
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptApiImplementation(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-                                                                                                   boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
-                                                                                                   boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
-                                                                                                   boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
-                                                                                                   boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
-                                                                                                   boost::shared_ptr<script::IGeneralInfo> generalInfo) const
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptApiImplementation(
+      boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+      boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+      boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+      boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+      boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+      boost::shared_ptr<script::IGeneralInfo> generalInfo) const
    {
       return boost::make_shared<script::CYScriptApiImplementation>(pluginGateway,
                                                                    dbAcquisitionRequester,
