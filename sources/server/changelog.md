@@ -10,6 +10,7 @@
 * Fix #716 : Show only available rule editors when creating a new rule
 * Fix #717 : Fix crash when requesting a NULL lastAcquisition
 * Fix #718 : Find compatible devices for devices merging
+* Fix #722 : Uninstalling interpreter doesn't delete corresponding rules anymore
 * New feature #523 : Add backup restoration
 * New feature #572 : Proxy support for http requests
 * New feature #603 : Manage redirections for http requests
