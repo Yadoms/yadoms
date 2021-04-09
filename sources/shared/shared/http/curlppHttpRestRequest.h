@@ -29,6 +29,8 @@ namespace shared
          IHttpRestRequest& withParameters(const std::map<std::string, std::string>& parameters) override;
          IHttpRestRequest& withTimeout(int timeoutSeconds) override;
          IHttpRestRequest& withBody(const std::string& body) override;
+         IHttpRestRequest& withBasicAuthentication(const std::string& user,
+                                                   const std::string& password) override;
 
          void send(const std::function<void(const std::map<std::string, std::string>& receivedHeaders,
                                             const std::string& data)>& responseHandlerFct) override;

@@ -66,6 +66,14 @@ namespace shared
          return *this;
       }
 
+      IHttpRestRequest& CCurlppHttpRestRequest::withBasicAuthentication(const std::string& user,
+                                                                        const std::string& password)
+      {
+         m_request.setOpt(curlpp::options::HttpAuth(CURLAUTH_BASIC));
+         m_request.setOpt(curlpp::options::UserPwd(user + ":" + password));
+         return *this;
+      }
+
       void CCurlppHttpRestRequest::send(const std::function<void(const std::map<std::string, std::string>& receivedHeaders,
                                                                  const std::string& data)>& responseHandlerFct)
       {

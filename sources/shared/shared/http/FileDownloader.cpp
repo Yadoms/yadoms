@@ -43,6 +43,20 @@ namespace shared
          request.setOpt(new curlpp::options::FollowLocation(true));
          request.setOpt(new curlpp::options::MaxRedirs(3));
 
+         // HTTPS support : skip peer and host verification
+         static const std::string HttpsHeader("https://");
+         if (std::search(url.begin(), url.end(),
+                         HttpsHeader.begin(), HttpsHeader.end(),
+                         [](const char ch1, const char ch2)
+                         {
+                            return std::tolower(ch1) == std::tolower(ch2);
+                         })
+            != url.end())
+         {
+            request.setOpt(new curlpp::options::SslVerifyPeer(false));
+            request.setOpt(new curlpp::options::SslVerifyHost(false));
+         }
+
          // Progress
          request.setOpt(new curlpp::options::NoProgress(false));
          request.setOpt(new curlpp::options::ProgressFunction(

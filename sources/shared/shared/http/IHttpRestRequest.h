@@ -34,6 +34,8 @@ namespace shared
          virtual IHttpRestRequest& withParameters(const std::map<std::string, std::string>& parameters) = 0;
          virtual IHttpRestRequest& withTimeout(int timeoutSeconds) = 0;
          virtual IHttpRestRequest& withBody(const std::string& body) = 0;
+         virtual IHttpRestRequest& withBasicAuthentication(const std::string& user,
+                                                           const std::string& password) = 0;
 
          virtual void send(const std::function<void(const std::map<std::string, std::string>& receivedHeaders,
                                                     const std::string& data)>& responseHandlerFct) = 0;
