@@ -11,8 +11,7 @@ urlManagerMock::urlManagerMock()
 boost::shared_ptr<shared::CDataContainer> urlManagerMock::getRegisteredEquipments(
    const std::string& apikey,
    const int page,
-   const bool activated,
-   int timeoutSeconds)
+   const bool activated)
 {
    return boost::make_shared<shared::CDataContainer>();
 }
@@ -29,8 +28,7 @@ void urlManagerMock::addMessagesForEquipment(boost::shared_ptr<shared::CDataCont
 
 boost::shared_ptr<shared::CDataContainer> urlManagerMock::getDeviceInformation(
    const std::string& apikey,
-   const std::string& devEUI,
-   int timeoutSeconds)
+   const std::string& devEUI)
 {
    return RegisteredEquipments;
 }
@@ -38,8 +36,7 @@ boost::shared_ptr<shared::CDataContainer> urlManagerMock::getDeviceInformation(
 boost::shared_ptr<shared::CDataContainer> urlManagerMock::listDeviceCommands(
    const std::string& apikey,
    const std::string& devEUI,
-   const int page,
-   int timeoutSeconds)
+   const int page)
 {
    return DeviceMessages;
 }
