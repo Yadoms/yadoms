@@ -1,129 +1,30 @@
 #include "stdafx.h"
 #include "HttpMethods.h"
 #include <shared/exception/HttpException.hpp>
-#include <shared/Log.h>
 #include <curlpp/cURLpp.hpp>
-#include <curlpp/Options.hpp>
-#include <curlpp/Infos.hpp>
 #include <regex>
-#include "curlppHelpers.h"
-#include "Proxy.h"
+#include "HttpMethod.h"
 
 namespace shared
 {
    namespace http
    {
-      class CCurlResources final
-      {
-      public:
-         CCurlResources()
-         {
-            cURLpp::initialize(CURL_GLOBAL_ALL);
-         }
-
-         ~CCurlResources()
-         {
-            cURLpp::terminate();
-         }
-      };
-
-      // ReSharper disable once CppDeclaratorNeverUsed
-      static CCurlResources CurlResources;
-
-
       void CHttpMethods::sendGetRequest(const std::string& url,
                                         const boost::function<void(
                                            const std::map<std::string, std::string>& receivedHeaders,
                                            const std::string& data)>& responseHandlerFct,
                                         const std::map<std::string, std::string>& headerParameters,
-                                        const std::map<std::string, std::string>& parameters,
-                                        int timeoutSeconds)
+                                        const std::map<std::string, std::string>& parameters)
       {
-         curlpp::Easy request;
-
-         request.setOpt(new curlpp::options::HttpGet(true));
-
-         request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
-
-         // Proxy
-         if (CProxy::available())
-            CCurlppHelpers::setProxy(request,
-                                     url,
-                                     CProxy::getHost(),
-                                     CProxy::getPort(),
-                                     CProxy::getUsername(),
-                                     CProxy::getPassword(),
-                                     CProxy::getBypassRegex());
-
-         // Follow redirections
-         request.setOpt(new curlpp::options::FollowLocation(true));
-         request.setOpt(new curlpp::options::MaxRedirs(3));
-
-         // URL + parameters
-         request.setOpt(
-            new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
-
-         // HTTPS support : skip peer and host verification
-         static const std::string HttpsHeader("https://");
-         if (std::search(url.begin(), url.end(),
-                         HttpsHeader.begin(), HttpsHeader.end(),
-                         [](const char ch1, const char ch2)
-                         {
-                            return std::tolower(ch1) == std::tolower(ch2);
-                         })
-            != url.end())
-         {
-            request.setOpt(new curlpp::options::SslVerifyPeer(false));
-            request.setOpt(new curlpp::options::SslVerifyHost(false));
-         }
-
-         // Headers
-         CCurlppHelpers::setHeaders(request, headerParameters);
-
-         // Response headers
-         std::string headersBuffer;
-         request.setOpt(curlpp::options::HeaderFunction(
-            [&headersBuffer](char* ptr, size_t size, size_t nbItems)
-            {
-               const auto incomingSize = size * nbItems;
-               headersBuffer.append(ptr, incomingSize);
-               return incomingSize;
-            }));
-
-         // Response data
-         std::string dataBuffer;
-         request.setOpt(curlpp::options::WriteFunction(
-            [&dataBuffer](char* ptr, size_t size, size_t nbItems)
-            {
-               const auto incomingSize = size * nbItems;
-               dataBuffer.append(ptr, incomingSize);
-               return incomingSize;
-            }));
-
-         try
-         {
-            request.perform();
-         }
-         catch (const curlpp::LibcurlRuntimeError& error)
-         {
-            const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
-               whatCode()).str();
-            YADOMS_LOG(warning) << message;
-            if (ECodes::isDefined(curlpp::infos::ResponseCode::get(request)))
-               throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
-            throw std::runtime_error(message);
-         }
-
-         CCurlppHelpers::checkResult(request);
-
-         responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer),
-                            dataBuffer);
+         CHttpMethod(CHttpMethod::ERequest::kGet, url)
+            .withHeaderParameters(headerParameters)
+            .withParameters(parameters)
+            .send(responseHandlerFct);
       }
 
       std::string CHttpMethods::sendGetRequest(const std::string& url,
                                                const std::map<std::string, std::string>& headerParameters,
-                                               const std::map<std::string, std::string>& parameters,
-                                               int timeoutSeconds)
+                                               const std::map<std::string, std::string>& parameters)
       {
          std::string out;
          sendGetRequest(url,
@@ -133,17 +34,14 @@ namespace shared
                            out = data;
                         },
                         headerParameters,
-                        parameters,
-                        timeoutSeconds);
+                        parameters);
 
          return out;
       }
 
-      boost::shared_ptr<CDataContainer> CHttpMethods::sendJsonGetRequest(
-         const std::string& url,
-         const std::map<std::string, std::string>& headerParameters,
-         const std::map<std::string, std::string>& parameters,
-         int timeoutSeconds)
+      boost::shared_ptr<CDataContainer> CHttpMethods::sendJsonGetRequest(const std::string& url,
+                                                                         const std::map<std::string, std::string>& headerParameters,
+                                                                         const std::map<std::string, std::string>& parameters)
       {
          boost::shared_ptr<CDataContainer> out;
          sendGetRequest(url,
@@ -154,8 +52,7 @@ namespace shared
                                                      data);
                         },
                         headerParameters,
-                        parameters,
-                        timeoutSeconds);
+                        parameters);
 
          return out;
       }
@@ -166,96 +63,20 @@ namespace shared
                                             const std::map<std::string, std::string>& receivedHeaders,
                                             const std::string& data)>& responseHandlerFct,
                                          const std::map<std::string, std::string>& headerParameters,
-                                         const std::map<std::string, std::string>& parameters,
-                                         int timeoutSeconds)
+                                         const std::map<std::string, std::string>& parameters)
       {
-         curlpp::Easy request;
-
-         request.setOpt(new curlpp::options::PostFields(body));
-
-         request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
-
-         // Proxy
-         if (CProxy::available())
-            CCurlppHelpers::setProxy(request,
-                                     url,
-                                     CProxy::getHost(),
-                                     CProxy::getPort(),
-                                     CProxy::getUsername(),
-                                     CProxy::getPassword(),
-                                     CProxy::getBypassRegex());
-
-         // Follow redirections
-         request.setOpt(new curlpp::options::FollowLocation(true));
-         request.setOpt(new curlpp::options::MaxRedirs(3));
-
-         // URL + parameters
-         request.setOpt(
-            new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
-
-         // HTTPS support : skip peer and host verification
-         static const std::string HttpsHeader("https://");
-         if (std::search(url.begin(), url.end(),
-                         HttpsHeader.begin(), HttpsHeader.end(),
-                         [](const char ch1, const char ch2)
-                         {
-                            return std::tolower(ch1) == std::tolower(ch2);
-                         })
-            != url.end())
-         {
-            request.setOpt(new curlpp::options::SslVerifyPeer(false));
-            request.setOpt(new curlpp::options::SslVerifyHost(false));
-         }
-
-         // Headers
-         CCurlppHelpers::setHeaders(request, headerParameters);
-
-         // Response headers
-         std::string headersBuffer;
-         request.setOpt(curlpp::options::HeaderFunction(
-            [&headersBuffer](char* ptr, size_t size, size_t nbItems)
-            {
-               const auto incomingSize = size * nbItems;
-               headersBuffer.append(ptr, incomingSize);
-               return incomingSize;
-            }));
-
-         // Response data
-         std::string dataBuffer;
-         request.setOpt(curlpp::options::WriteFunction(
-            [&dataBuffer](char* ptr, size_t size, size_t nbItems)
-            {
-               const auto incomingSize = size * nbItems;
-               dataBuffer.append(ptr, incomingSize);
-               return incomingSize;
-            }));
-
-         try
-         {
-            request.perform();
-         }
-         catch (const curlpp::LibcurlRuntimeError& error)
-         {
-            const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
-               whatCode()).str();
-            YADOMS_LOG(warning) << message;
-            if (ECodes::isDefined(curlpp::infos::ResponseCode::get(request)))
-               throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
-            throw std::runtime_error(message);
-         }
-
-         CCurlppHelpers::checkResult(request);
-
-         responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer),
-                            dataBuffer);
+         CHttpMethod(CHttpMethod::ERequest::kPost, url)
+            .withBody(body)
+            .withHeaderParameters(headerParameters)
+            .withParameters(parameters)
+            .send(responseHandlerFct);
       }
 
       std::string CHttpMethods::sendPostRequest(
          const std::string& url,
          const std::string& body,
          const std::map<std::string, std::string>& headerParameters,
-         const std::map<std::string, std::string>& parameters,
-         int timeoutSeconds)
+         const std::map<std::string, std::string>& parameters)
       {
          std::string out;
          sendPostRequest(url,
@@ -266,8 +87,7 @@ namespace shared
                             out = data;
                          },
                          headerParameters,
-                         parameters,
-                         timeoutSeconds);
+                         parameters);
 
          return out;
       }
@@ -276,8 +96,7 @@ namespace shared
          const std::string& url,
          const std::string& body,
          const std::map<std::string, std::string>& headerParameters,
-         const std::map<std::string, std::string>& parameters,
-         int timeoutSeconds)
+         const std::map<std::string, std::string>& parameters)
       {
          boost::shared_ptr<CDataContainer> out;
          sendPostRequest(url,
@@ -289,8 +108,7 @@ namespace shared
                                                       data);
                          },
                          headerParameters,
-                         parameters,
-                         timeoutSeconds);
+                         parameters);
 
          return out;
       }
@@ -300,87 +118,21 @@ namespace shared
                                             const std::map<std::string, std::string>& receivedHeaders)>&
                                          responseHandlerFct,
                                          const std::map<std::string, std::string>& headerParameters,
-                                         const std::map<std::string, std::string>& parameters,
-                                         int timeoutSeconds)
+                                         const std::map<std::string, std::string>& parameters)
       {
-         curlpp::Easy request;
-
-         request.setOpt(new curlpp::options::HttpGet(true));
-
-         request.setOpt(new curlpp::options::NoBody(true));
-
-         request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
-
-         // Proxy
-         if (CProxy::available())
-            CCurlppHelpers::setProxy(request,
-                                     url,
-                                     CProxy::getHost(),
-                                     CProxy::getPort(),
-                                     CProxy::getUsername(),
-                                     CProxy::getPassword(),
-                                     CProxy::getBypassRegex());
-
-         // Follow redirections
-         request.setOpt(new curlpp::options::FollowLocation(true));
-         request.setOpt(new curlpp::options::MaxRedirs(3));
-
-         // URL + parameters
-         request.setOpt(
-            new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
-
-         // HTTPS support : skip peer and host verification
-         static const std::string HttpsHeader("https://");
-         if (std::search(url.begin(), url.end(),
-                         HttpsHeader.begin(), HttpsHeader.end(),
-                         [](const char ch1, const char ch2)
-                         {
-                            return std::tolower(ch1) == std::tolower(ch2);
-                         })
-            != url.end())
-         {
-            request.setOpt(new curlpp::options::SslVerifyPeer(false));
-            request.setOpt(new curlpp::options::SslVerifyHost(false));
-         }
-
-         // Headers
-         CCurlppHelpers::setHeaders(request, headerParameters);
-
-         // Response headers
-         std::string headersBuffer;
-         request.setOpt(curlpp::options::HeaderFunction(
-            [&headersBuffer](char* ptr, size_t size, size_t nbItems)
+         CHttpMethod(CHttpMethod::ERequest::kHead, url)
+            .withHeaderParameters(headerParameters)
+            .withParameters(parameters)
+            .send([&responseHandlerFct](const std::map<std::string, std::string>& receivedHeaders,
+                                        const std::string&)
             {
-               const auto incomingSize = size * nbItems;
-               headersBuffer.append(ptr, incomingSize);
-               return incomingSize;
-            }));
-
-         try
-         {
-            request.perform();
-         }
-         catch (const curlpp::LibcurlRuntimeError& error)
-         {
-            const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
-               whatCode()).str();
-            YADOMS_LOG(warning) << message;
-            if (ECodes::isDefined(curlpp::infos::ResponseCode::get(request)))
-               throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
-            throw std::runtime_error(message);
-         }
-
-         CCurlppHelpers::checkResult(request);
-
-         responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer));
+               responseHandlerFct(receivedHeaders);
+            });
       }
 
       std::map<std::string, std::string> CHttpMethods::sendHeadRequest(const std::string& url,
-                                                                       const std::map<std::string, std::string>&
-                                                                       headerParameters,
-                                                                       const std::map<std::string, std::string>&
-                                                                       parameters,
-                                                                       int timeoutSeconds)
+                                                                       const std::map<std::string, std::string>& headerParameters,
+                                                                       const std::map<std::string, std::string>& parameters)
       {
          std::map<std::string, std::string> out;
          sendHeadRequest(url,
@@ -389,105 +141,27 @@ namespace shared
                             out = receivedHeaders;
                          },
                          headerParameters,
-                         parameters,
-                         timeoutSeconds);
+                         parameters);
 
          return out;
       }
 
       void CHttpMethods::sendPutRequest(const std::string& url, const std::string& body,
-                                        const boost::function<void(
-                                           const std::map<std::string, std::string>& receivedHeaders,
-                                           const std::string& data)>
-                                        & responseHandlerFct,
+                                        const boost::function<void(const std::map<std::string, std::string>& receivedHeaders,
+                                                                   const std::string& data)>& responseHandlerFct,
                                         const std::map<std::string, std::string>& headerParameters,
-                                        const std::map<std::string, std::string>& parameters, int timeoutSeconds)
+                                        const std::map<std::string, std::string>& parameters)
       {
-         curlpp::Easy request;
-
-         request.setOpt(new curlpp::options::CustomRequest("PUT"));
-         request.setOpt(new curlpp::options::PostFields(body));
-
-         request.setOpt(new curlpp::options::Timeout(timeoutSeconds));
-
-         // Proxy
-         if (CProxy::available())
-            CCurlppHelpers::setProxy(request,
-                                     url,
-                                     CProxy::getHost(),
-                                     CProxy::getPort(),
-                                     CProxy::getUsername(),
-                                     CProxy::getPassword(),
-                                     CProxy::getBypassRegex());
-
-         // Follow redirections
-         request.setOpt(new curlpp::options::FollowLocation(true));
-         request.setOpt(new curlpp::options::MaxRedirs(3));
-
-         // URL + parameters
-         request.setOpt(
-            new curlpp::options::Url(url + CCurlppHelpers::stringifyParameters(parameters)));
-
-         // HTTPS support : skip peer and host verification
-         static const std::string HttpsHeader("https://");
-         if (std::search(url.begin(), url.end(),
-                         HttpsHeader.begin(), HttpsHeader.end(),
-                         [](const char ch1, const char ch2)
-                         {
-                            return std::tolower(ch1) == std::tolower(ch2);
-                         })
-            != url.end())
-         {
-            request.setOpt(new curlpp::options::SslVerifyPeer(false));
-            request.setOpt(new curlpp::options::SslVerifyHost(false));
-         }
-
-         // Headers
-         CCurlppHelpers::setHeaders(request, headerParameters);
-
-         // Response headers
-         std::string headersBuffer;
-         request.setOpt(curlpp::options::HeaderFunction(
-            [&headersBuffer](char* ptr, size_t size, size_t nbItems)
-            {
-               const auto incomingSize = size * nbItems;
-               headersBuffer.append(ptr, incomingSize);
-               return incomingSize;
-            }));
-
-         // Response data
-         std::string dataBuffer;
-         request.setOpt(curlpp::options::WriteFunction(
-            [&dataBuffer](char* ptr, size_t size, size_t nbItems)
-            {
-               const auto incomingSize = size * nbItems;
-               dataBuffer.append(ptr, incomingSize);
-               return incomingSize;
-            }));
-
-         try
-         {
-            request.perform();
-         }
-         catch (const curlpp::LibcurlRuntimeError& error)
-         {
-            const auto message = (boost::format("Fail to send GET HTTP request : %1%, code %2%") % error.what() % error.
-               whatCode()).str();
-            YADOMS_LOG(warning) << message;
-            if (ECodes::isDefined(curlpp::infos::ResponseCode::get(request)))
-               throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
-            throw std::runtime_error(message);
-         }
-
-         CCurlppHelpers::checkResult(request);
-
-         responseHandlerFct(CCurlppHelpers::formatResponseHeaders(headersBuffer),
-                            dataBuffer);
+         CHttpMethod(CHttpMethod::ERequest::kPut, url)
+            .withBody(body)
+            .withHeaderParameters(headerParameters)
+            .withParameters(parameters)
+            .send(responseHandlerFct);
       }
 
       std::string CHttpMethods::sendPutRequest(const std::string& url, const std::string& body,
                                                const std::map<std::string, std::string>& headerParameters,
-                                               const std::map<std::string, std::string>& parameters, int timeoutSeconds)
+                                               const std::map<std::string, std::string>& parameters)
       {
          std::string out;
          sendPutRequest(url,
@@ -498,18 +172,15 @@ namespace shared
                            out = data;
                         },
                         headerParameters,
-                        parameters,
-                        timeoutSeconds);
+                        parameters);
 
          return out;
       }
 
       boost::shared_ptr<CDataContainer> CHttpMethods::sendJsonPutRequest(const std::string& url,
                                                                          const std::string& body,
-                                                                         const std::map<std::string, std::string>&
-                                                                         headerParameters,
-                                                                         const std::map<std::string, std::string>&
-                                                                         parameters, int timeoutSeconds)
+                                                                         const std::map<std::string, std::string>& headerParameters,
+                                                                         const std::map<std::string, std::string>& parameters)
       {
          boost::shared_ptr<CDataContainer> out;
          sendPutRequest(url,
@@ -521,18 +192,17 @@ namespace shared
                                                      data);
                         },
                         headerParameters,
-                        parameters,
-                        timeoutSeconds);
+                        parameters);
 
          return out;
       }
 
-      std::string CHttpMethods::urlEncode(const std::string& url)
+      std::string CHttpMethods::urlEncode(const std::string& url) //TODO utile ?
       {
          return cURLpp::escape(url);
       }
 
-      std::string CHttpMethods::urlDecode(const std::string& url)
+      std::string CHttpMethods::urlDecode(const std::string& url) //TODO utile ?
       {
          return cURLpp::unescape(url);
       }

@@ -9,7 +9,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	Helpers for cCURLpp use
       //--------------------------------------------------------------
-      class CCurlppHelpers
+      class CCurlppHelpers//TODO virer ?
       {
       public:
          CCurlppHelpers() = delete;
@@ -24,7 +24,7 @@ namespace shared
                               const std::string& proxyBypassRegex);
 
          static void setHeaders(curlpp::Easy& request,
-                                const std::map<std::basic_string<char>, std::basic_string<char>>& headerParameters);
+                                const std::map<std::basic_string<char>, std::basic_string<char>>& headerParameters);//TODO utile ?
 
          static std::string stringifyParameters(const std::map<std::string, std::string>& parameters);
 
