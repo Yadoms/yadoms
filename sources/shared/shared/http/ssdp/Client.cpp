@@ -4,7 +4,6 @@
 #include <chrono>
 #include <regex>
 #include <Poco/Net/IPAddress.h>
-#include <shared/http/HttpMethods.h>
 #include <shared/Log.h>
 
 namespace shared

@@ -19,7 +19,6 @@
 #include <Poco/Environment.h>
 #include <Poco/Format.h>
 #include <google/protobuf/stubs/common.h>
-#include "shared/http/HttpMethods.h"
 #include "shared/http/Proxy.h"
 
 //define the main entry point

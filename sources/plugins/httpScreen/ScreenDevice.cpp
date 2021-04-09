@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ScreenDevice.h"
-#include <shared/http/HttpMethods.h>
 
 #include "Command.h"
 #include "CommandParser.h"
