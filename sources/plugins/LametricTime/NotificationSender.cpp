@@ -1,5 +1,5 @@
 #include "NotificationSender.h"
-#include "shared/http/HttpMethods.h"
+#include "shared/http/HttpRestHelpers.h"
 #include "shared/Log.h"
 #include "shared/exception/HttpException.hpp"
 #include "CustomizeIconHelper.h"
@@ -34,7 +34,7 @@ void CNotificationSender::displayText(const std::string& text,
 
    try
    {
-      shared::http::CHttpMethods::sendPostRequest(url,
+      shared::http::CHttpRestHelpers::sendPostRequest(url,
                                                   body,
                                                   headerPostParameters);
    }

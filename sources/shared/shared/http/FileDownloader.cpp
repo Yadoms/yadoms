@@ -7,7 +7,6 @@
 #include <shared/encryption/Md5.h>
 #include <Poco/StreamCopier.h>
 #include <fstream>
-#include <shared/http/HttpMethods.h>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
 #include <curlpp/Infos.hpp>
@@ -15,8 +14,6 @@
 #include "Proxy.h"
 #include "curlppHelpers.h"
 #include "shared/exception/HttpException.hpp"
-
-using boost::asio::ip::tcp;
 
 namespace shared
 {
@@ -39,14 +36,8 @@ namespace shared
                                     });
 
          // Proxy
-         if (CProxy::available())
-            CCurlppHelpers::setProxy(request,
-                                     url,
-                                     CProxy::getHost(),
-                                     CProxy::getPort(),
-                                     CProxy::getUsername(),
-                                     CProxy::getPassword(),
-                                     CProxy::getBypassRegex());
+         CCurlppHelpers::setProxy(request,
+                                  url);
 
          // Follow redirections
          request.setOpt(new curlpp::options::FollowLocation(true));

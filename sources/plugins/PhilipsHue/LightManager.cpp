@@ -1,6 +1,6 @@
 #include "LightManager.h"
 #include "shared/Log.h"
-#include "shared/http/HttpMethods.h"
+#include "shared/http/HttpRestHelpers.h"
 #include "ColorConverter.h"
 #include "Entities/HueStreaming.h"
 
@@ -18,7 +18,7 @@ std::map<int, CHueLightInformations> CLightManager::getAllLights()
 
    try
    {
-      auto response = shared::http::CHttpMethods::sendJsonGetRequest(lightUrl);
+      auto response = shared::http::CHttpRestHelpers::sendJsonGetRequest(lightUrl);
       auto lightCounter = 1;;
       while (response->exists(std::to_string(lightCounter)))
       {
@@ -143,7 +143,7 @@ CHueLightInformations CLightManager::getLightAttributesAndState(const int id)
 
    try
    {
-      auto response = shared::http::CHttpMethods::sendJsonGetRequest(lightUrl);
+      auto response = shared::http::CHttpRestHelpers::sendJsonGetRequest(lightUrl);
 
       hueLightAttributesAndState.setState(getHueLightInformationsState(response));
       hueLightAttributesAndState.setSwUpdate(getHueLightInformationsSwUpdate(response));
@@ -736,7 +736,7 @@ void CLightManager::setLightState(const std::string& lightUrl, shared::CDataCont
 {
    try
    {
-      const auto response = shared::http::CHttpMethods::sendJsonPutRequest(lightUrl, body.serialize());
+      const auto response = shared::http::CHttpRestHelpers::sendJsonPutRequest(lightUrl, body.serialize());
    }
    catch (std::exception& e)
    {
@@ -820,7 +820,7 @@ void CLightManager::searchForNewLights()
    std::map<int, CHueLightInformations> newHueLights;
    try
    {
-      const auto response = shared::http::CHttpMethods::sendJsonPostRequest(lightUrl, body);
+      const auto response = shared::http::CHttpRestHelpers::sendJsonPostRequest(lightUrl, body);
 
       startReadingNewLights();
    }

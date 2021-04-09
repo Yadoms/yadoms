@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "IpApiAutoLocation.h"
 #include <shared/Log.h>
-#include <shared/http/HttpMethods.h>
+#include <shared/http/HttpRestHelpers.h>
 
 
 namespace location
@@ -16,7 +16,7 @@ namespace location
    {
       try
       {
-         const auto ipApiResult(shared::http::CHttpMethods::sendJsonGetRequest("http://ip-api.com/json/?fields=status,lat,lon,timezone"));
+         const auto ipApiResult(shared::http::CHttpRestHelpers::sendJsonGetRequest("http://ip-api.com/json/?fields=status,lat,lon,timezone"));
          
          if (ipApiResult->get<std::string>("status") == "fail")
             throw shared::exception::CException("ip-api.com service failed with error : " + ipApiResult->get<std::string>("message"));

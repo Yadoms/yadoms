@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "OledScreenDevice.h"
-#include <shared/http/HttpMethods.h>
+#include <shared/http/HttpRestHelpers.h>
 
 COledScreenDevice::COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller, int lineCount)
 	:m_controller(controller), m_deviceName("oledssd1306"), m_lineCount(lineCount)

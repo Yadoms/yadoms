@@ -1,5 +1,5 @@
 #include "HueService.h"
-#include "shared/http/HttpMethods.h"
+#include "shared/http/HttpRestHelpers.h"
 #include "shared/Log.h"
 #include <boost/asio.hpp>
 #include "shared/http/ssdp/IDiscoveredDevice.h"
@@ -47,7 +47,7 @@ void CHueService::requestUsername() const
          const auto body = buildAuthorizedUsernameBody();
          const auto headerPostParameters = buildCommonHeaderParameters();
 
-         const auto out = shared::http::CHttpMethods::sendJsonPostRequest(url,
+         const auto out = shared::http::CHttpRestHelpers::sendJsonPostRequest(url,
                                                                           body,
                                                                           headerPostParameters);
 

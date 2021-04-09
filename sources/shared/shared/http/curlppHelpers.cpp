@@ -2,7 +2,6 @@
 #include "curlppHelpers.h"
 #include <regex>
 #include <shared/Log.h>
-#include "HttpMethods.h"
 #include <curlpp/Options.hpp>
 #include <curlpp/Infos.hpp>
 #include <curlpp/cURLpp.hpp>
@@ -14,21 +13,19 @@ namespace shared
    namespace http
    {
       void CCurlppHelpers::setProxy(curlpp::Easy& request,
-                                    const std::string& url,
-                                    const std::string& proxyHost,
-                                    int proxyPort,
-                                    const std::string& proxyUsername,
-                                    const std::string& proxyPassword,
-                                    const std::string& proxyBypassRegex)
+                                    const std::string& url)
       {
-         if (!proxyBypassRegex.empty() && std::regex_search(url, std::regex(proxyBypassRegex)))
+         if (!CProxy::available())
             return;
 
-         request.setOpt(new curlpp::options::Proxy(proxyHost));
-         if (proxyPort != CProxy::kUseProxyDefaultPort)
-            request.setOpt(new curlpp::options::ProxyPort(proxyPort));
-         if (!proxyUsername.empty() && !proxyPassword.empty())
-            request.setOpt(new curlpp::options::ProxyUserPwd(proxyUsername + ":" + proxyPassword));
+         if (!CProxy::getBypassRegex().empty() && std::regex_search(url, std::regex(CProxy::getBypassRegex())))
+            return;
+
+         request.setOpt(new curlpp::options::Proxy(CProxy::getHost()));
+         if (CProxy::getPort() != CProxy::kUseProxyDefaultPort)
+            request.setOpt(new curlpp::options::ProxyPort(CProxy::getPort()));
+         if (!CProxy::getUsername().empty() && !CProxy::getPassword().empty())
+            request.setOpt(new curlpp::options::ProxyUserPwd(CProxy::getUsername() + ":" + CProxy::getPassword()));
       }
 
       void CCurlppHelpers::setHeaders(curlpp::Easy& request,
@@ -69,33 +66,6 @@ namespace shared
             YADOMS_LOG(warning) << message;
             throw exception::CHttpException(message, ECodes(curlpp::infos::ResponseCode::get(request)));
          }
-      }
-
-      std::map<std::string, std::string> CCurlppHelpers::formatResponseHeaders(const std::string& headersBuffer)
-      {
-         std::vector<std::string> headerKeyValues;
-         split(headerKeyValues, headersBuffer, boost::is_any_of("\n"), boost::algorithm::token_compress_on);
-
-         std::map<std::string, std::string> responseHeaders;
-         for (const auto& headerKeyValue : headerKeyValues)
-         {
-            const auto separatorIterator = headerKeyValue.find(':');
-            if (separatorIterator == std::string::npos)
-               continue;
-
-            // Http headers are not case-sensitive
-            // Make all lower to facilitate search and comparison
-
-            auto key = headerKeyValue.substr(0, separatorIterator);
-            boost::to_lower(key);
-
-            auto value = headerKeyValue.substr(separatorIterator + 1, std::string::npos);
-            boost::to_lower(value);
-
-            responseHeaders[key] = value;
-         }
-
-         return responseHeaders;
       }
    }
 } // namespace shared::http

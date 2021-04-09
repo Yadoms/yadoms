@@ -9,7 +9,7 @@
 #include "task/packLogs/PackLogs.h"
 #include <shared/Log.h>
 #include <shared/encryption/Base64.h>
-#include <shared/http/HttpMethods.h>
+#include <shared/http/HttpHelpers.h>
 #include <boost/date_time/c_local_time_adjustor.hpp>
 #include <regex>
 #include <utility>
@@ -363,7 +363,7 @@ namespace web
          {
             try
             {
-               const auto decodedRequestContent = shared::http::CHttpMethods::urlDecode(requestContent);
+               const auto decodedRequestContent = shared::http::CHttpHelpers::urlDecode(requestContent);
 
                const auto guid = fileUploadChunkReadGuid(requestContent);
                const auto filename = fileUploadChunkReadFilename(requestContent);

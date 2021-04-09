@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "shared/Log.h"
-#include "shared/http/HttpMethods.h"
 #include "Client.h"
 #include "DiscoverService.h"
 #include "DiscoveredDevice.h"
+#include "shared/http/HttpRestHelpers.h"
 
 namespace shared
 {
@@ -20,7 +20,7 @@ namespace shared
                try
                {
                   devicesDescription.emplace_back(
-                     boost::make_shared<CDiscoveredDevice>(CHttpMethods::sendGetRequest(descriptionUrl)));
+                     boost::make_shared<CDiscoveredDevice>(CHttpRestHelpers::sendGetRequest(descriptionUrl)));
                }
                catch (std::exception& e)
                {

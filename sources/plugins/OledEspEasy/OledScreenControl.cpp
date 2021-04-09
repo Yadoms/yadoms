@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "OledScreenControl.h"
-#include <shared/Log.h>
-#include <shared/http/HttpMethods.h>
 
 COledScreenControl::COledScreenControl()
 	:m_on_event(boost::make_shared<yApi::historization::CEvent>("switch_on", yApi::EKeywordAccessMode::kGetSet)),

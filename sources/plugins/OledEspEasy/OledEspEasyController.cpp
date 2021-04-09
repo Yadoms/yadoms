@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "OledEspEasyController.h"
 #include <shared/Log.h>
-#include <shared/http/HttpMethods.h>
+#include <shared/http/HttpRestHelpers.h>
 #include "shared/StringExtension.h"
 
 COledEspEasyController::COledEspEasyController(const COledEspEasyConfiguration& configuration)
@@ -49,7 +49,7 @@ void COledEspEasyController::sendCommand(const ECommands& command, const std::ve
       {
          cmd << "," << arg;
       }
-      shared::http::CHttpMethods::sendGetRequest(cmd.str());
+      shared::http::CHttpRestHelpers::sendGetRequest(cmd.str());
    }
    catch (std::exception& ex)
    {

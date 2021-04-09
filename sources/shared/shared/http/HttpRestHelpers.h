@@ -1,19 +1,24 @@
 #pragma once
 #include <shared/DataContainer.h>
 
+#include "IHttpRestRequest.h"
+
 
 namespace shared
 {
    namespace http
    {
       //--------------------------------------------------------------
-      /// \brief	Helpers fot HTTP(s) requests
+      /// \brief	Helpers fot HTTP(s) REST requests
       //--------------------------------------------------------------
-      class CHttpMethods final //TODO renommer en CHttpHelpers
+      class CHttpRestHelpers final
       {
       public:
-         CHttpMethods() = delete;
-         ~CHttpMethods() = default;
+         CHttpRestHelpers() = delete;
+         ~CHttpRestHelpers() = default;
+
+         static boost::shared_ptr<IHttpRestRequest> createHttpRestRequest(IHttpRestRequest::EType requestType,
+                                                                          const std::string& url);
 
 
          //--------------------------------------------------------------
@@ -194,24 +199,6 @@ namespace shared
             const std::string& body,
             const std::map<std::string, std::string>& headerParameters = std::map<std::string, std::string>(),
             const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>());
-
-         //--------------------------------------------------------------
-         /// \brief	    Encode an URL (escape some characters)
-         /// \param[in]  url                 input URL
-         /// \return     Encoded URL
-         //--------------------------------------------------------------
-         static std::string urlEncode(const std::string& url);
-
-         //--------------------------------------------------------------
-         /// \brief	    Decode an URL (unescape some characters)
-         /// \param[in]  url                 input URL
-         /// \return     Decoded URL
-         //--------------------------------------------------------------
-         static std::string urlDecode(const std::string& url);
-
-      protected:
-         static boost::shared_ptr<CDataContainer> processJsonResponse(const std::map<std::string, std::string>& receivedHeaders,
-                                                                      const std::string& data);
       };
    }
 } // namespace shared::http

@@ -1,5 +1,5 @@
 #include "DeviceState.h"
-#include "shared/http/HttpMethods.h"
+#include "shared/http/HttpRestHelpers.h"
 
 
 CDeviceState::CDeviceState(CConfiguration& lametricConfiguration)
@@ -11,7 +11,7 @@ boost::shared_ptr<shared::CDataContainer> CDeviceState::getState(const CUrlManag
 {
 	const auto url = buildUrl(requestType);
 
-	return shared::http::CHttpMethods::sendJsonGetRequest(
+	return shared::http::CHttpRestHelpers::sendJsonGetRequest(
 		url,
 		m_urlManagerHelper->buildCommonHeaderParameters(m_lametricConfiguration));
 }
@@ -40,7 +40,7 @@ void CDeviceState::getDeviceState()
 {
 	const auto url = buildUrl(CUrlManagerHelper::kRequestApi);
 
-	shared::http::CHttpMethods::sendHeadRequest(
+	shared::http::CHttpRestHelpers::sendHeadRequest(
 		url,
 		m_urlManagerHelper->buildCommonHeaderParameters(m_lametricConfiguration));
 }

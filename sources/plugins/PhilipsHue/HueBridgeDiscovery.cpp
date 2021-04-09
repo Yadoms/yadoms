@@ -1,6 +1,6 @@
 #include "HueBridgeDiscovery.h"
 #include "shared/http/ssdp/DiscoverService.h"
-#include "shared/http/HttpMethods.h"
+#include "shared/http/HttpRestHelpers.h"
 #include "shared/http/ssdp/DiscoveredDevice.h"
 #include "shared/Log.h"
 
@@ -55,7 +55,7 @@ CHueInformations CHueBridgeDiscovery::getHueInformations()
 
       boost::shared_ptr<shared::http::ssdp::IDiscoveredDevice> devicesDescription =
          boost::make_shared<shared::http::ssdp::CDiscoveredDevice>(
-            shared::http::CHttpMethods::sendGetRequest(descriptionUrl));
+            shared::http::CHttpRestHelpers::sendGetRequest(descriptionUrl));
 
       bridgeInformations.setIp(getIpAddress(devicesDescription->xmlContent()->get<std::string>("root.URLBase")));
       bridgeInformations.

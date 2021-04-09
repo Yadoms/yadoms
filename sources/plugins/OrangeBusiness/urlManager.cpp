@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "urlManager.h"
+#include <shared/http/HttpRestHelpers.h>
 
 urlManager::urlManager():
    m_url("https://liveobjects.orange-business.com/api/v0"), //liveobjects
@@ -25,7 +26,7 @@ boost::shared_ptr<shared::CDataContainer> urlManager::getRegisteredEquipments(co
       parameters["status"] = "ACTIVATED";
 
    const auto deviceUrl = m_url.str() + "/vendors/lora/devices";
-   return shared::http::CHttpMethods::sendJsonGetRequest(deviceUrl,
+   return shared::http::CHttpRestHelpers::sendJsonGetRequest(deviceUrl,
                                                          headerParameters,
                                                          parameters);
 }
@@ -40,7 +41,7 @@ boost::shared_ptr<shared::CDataContainer> urlManager::getDeviceInformation(const
    };
 
    const auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI;
-   return shared::http::CHttpMethods::sendJsonGetRequest(deviceUrl,
+   return shared::http::CHttpRestHelpers::sendJsonGetRequest(deviceUrl,
                                                          headerParameters,
                                                          std::map<std::string, std::string>());
 }
@@ -60,7 +61,7 @@ boost::shared_ptr<shared::CDataContainer> urlManager::listDeviceCommands(const s
    };
 
    const auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/data/streams/urn:lora:" + devEUI + "!uplink";
-   return shared::http::CHttpMethods::sendJsonGetRequest(deviceUrl,
+   return shared::http::CHttpRestHelpers::sendJsonGetRequest(deviceUrl,
                                                          headerParameters,
                                                          parameters);
 }

@@ -2,7 +2,7 @@
 #include "UpdateSite.h"
 #include <Poco/Environment.h>
 #include "startupOptions/IStartupOptions.h"
-#include <shared/http/HttpMethods.h>
+#include <shared/http/HttpRestHelpers.h>
 #include <shared/ServiceLocator.h>
 
 namespace update
@@ -81,7 +81,7 @@ namespace update
                {"Accept", "application/json"},
                {"Connection", "close"}
             };
-            const auto lastVersionInformation(shared::http::CHttpMethods::sendJsonGetRequest(url,
+            const auto lastVersionInformation(shared::http::CHttpRestHelpers::sendJsonGetRequest(url,
                                                                                              headerParameters,
                                                                                              parameters));
 

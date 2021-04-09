@@ -2,7 +2,7 @@
 #include "OpenWeatherService.h"
 #include "ForecastWeatherDevice.h"
 #include "LiveWeatherDevice.h"
-#include <shared/http/HttpMethods.h>
+#include <shared/http/HttpRestHelpers.h>
 #include <algorithm>
 
 
@@ -71,7 +71,7 @@ boost::shared_ptr<shared::CDataContainer> COpenWeatherService::syncRequest(const
    try
    {
       YADOMS_LOG(debug) << "URL = " << url;
-      const auto answer = shared::http::CHttpMethods::sendJsonGetRequest(url);
+      const auto answer = shared::http::CHttpRestHelpers::sendJsonGetRequest(url);
 
       answer->printToLog(YADOMS_LOG(debug));
 

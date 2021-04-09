@@ -122,12 +122,15 @@ set(SHARED_LIB_SRC
    shared/http/Codes.cpp
    shared/http/curlppHelpers.h
    shared/http/curlppHelpers.cpp
+   shared/http/curlppHttpRestRequest.h
+   shared/http/curlppHttpRestRequest.cpp
    shared/http/FileDownloader.h
    shared/http/FileDownloader.cpp
-   shared/http/HttpMethod.h
-   shared/http/HttpMethod.cpp
-   shared/http/HttpMethods.h
-   shared/http/HttpMethods.cpp
+   shared/http/HttpHelpers.h
+   shared/http/HttpHelpers.cpp
+   shared/http/HttpRestHelpers.h
+   shared/http/HttpRestHelpers.cpp
+   shared/http/IHttpRestRequest.h
    shared/http/Proxy.h
    shared/http/Proxy.cpp
    shared/http/UrlHelpers.h
