@@ -29,13 +29,18 @@ void CNotificationSender::displayText(const std::string& text,
 
    const auto body = buildMessageBody(priorityMessage, iconToDisplay, text);
 
+   const auto headerPostParameters = m_urlManagerHelper->buildCommonHeaderParameters();
 
-   const auto headerPostParameters = m_urlManagerHelper->buildCommonHeaderParameters(m_configuration);
+   const auto user = "Basic";
+
+   const auto password = m_configuration.getAPIKey();
 
    try
    {
-      shared::http::CHttpRestHelpers::sendPostRequest(url,
+      shared::http::CHttpRestHelpers::sendPostRequestWithBasicAuthentication(url,
                                                   body,
+                                                  user,
+                                                  password,
                                                   headerPostParameters);
    }
    catch (std::exception& e)

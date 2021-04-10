@@ -49,10 +49,9 @@ public:
 
    /**
     * \brief     Build common Headers parameters
-    * \param[in] lametricConfiguration              Lametric Configuration
     * \return    the common Headers parameters
     */
-   static std::map<std::string, std::string> buildCommonHeaderParameters(const CConfiguration& lametricConfiguration);
+   static std::map<std::string, std::string> buildCommonHeaderParameters();
 
 private:
    const CConfiguration m_lametricConfiguration;
