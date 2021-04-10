@@ -1,8 +1,6 @@
 #include "DeviceState.h"
 #include "shared/http/HttpRestHelpers.h"
-#include "shared/http/curlppHttpRestRequest.h"
 #include "shared/Log.h"
-
 
 CDeviceState::CDeviceState(CConfiguration& lametricConfiguration)
    : m_lametricConfiguration(lametricConfiguration)
@@ -13,9 +11,16 @@ boost::shared_ptr<shared::CDataContainer> CDeviceState::getState(const CUrlManag
 {
    const auto url = buildUrl(requestType);
 
-   return shared::http::CHttpRestHelpers::sendJsonGetRequest(
-      url,
-      m_urlManagerHelper->buildCommonHeaderParameters(m_lametricConfiguration));
+   boost::shared_ptr<shared::CDataContainer> response;
+   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, url)
+      ->withHeaderParameters(m_urlManagerHelper->buildCommonHeaderParameters())
+      .withBasicAuthentication("Basic", m_lametricConfiguration.getAPIKey())
+      .send([&response](auto data)
+      {
+         response = std::move(data);
+      });
+
+   return response;
 }
 
 boost::shared_ptr<shared::CDataContainer> CDeviceState::getDeviceInformations()
@@ -45,7 +50,7 @@ void CDeviceState::getDeviceState()
    boost::shared_ptr<shared::CDataContainer> response;
    try
    {
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::CCurlppHttpRestRequest::EType::kHead, url)
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kHead, url)
          ->withHeaderParameters(m_urlManagerHelper->buildCommonHeaderParameters())
          .withBasicAuthentication("Basic", m_lametricConfiguration.getAPIKey())
          .send([&response](auto data)

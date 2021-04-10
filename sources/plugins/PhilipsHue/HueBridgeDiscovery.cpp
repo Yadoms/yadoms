@@ -3,7 +3,6 @@
 #include "shared/http/HttpRestHelpers.h"
 #include "shared/http/ssdp/DiscoveredDevice.h"
 #include "shared/Log.h"
-#include "shared/http/curlppHttpRestRequest.h"
 
 CHueBridgeDiscovery::CHueBridgeDiscovery(boost::shared_ptr<CUrlManager>& urlManager)
    : m_urlManager(urlManager)
@@ -55,7 +54,7 @@ CHueInformations CHueBridgeDiscovery::getHueInformations()
       const auto descriptionUrl = m_urlManager->getPatternUrl(urlPatternPath);
 
       std::string out;
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::CCurlppHttpRestRequest::EType::kGet,
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet,
                                                             descriptionUrl)
          ->send([&out](const std::map<std::string, std::string>& receivedHeaders,
                        const std::string& data)

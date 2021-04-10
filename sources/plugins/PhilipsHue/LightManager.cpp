@@ -3,7 +3,6 @@
 #include "shared/http/HttpRestHelpers.h"
 #include "ColorConverter.h"
 #include "Entities/HueStreaming.h"
-#include "shared/http/curlppHttpRestRequest.h"
 
 CLightManager::CLightManager(boost::shared_ptr<CUrlManager>& urlManager)
    : m_urlManager(urlManager),
@@ -146,7 +145,7 @@ CHueLightInformations CLightManager::getLightAttributesAndState(const int id)
    {
       boost::shared_ptr<shared::CDataContainer> response;
 
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::CCurlppHttpRestRequest::EType::kGet, lightUrl)
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, lightUrl)
          ->send([&response](boost::shared_ptr<shared::CDataContainer> data)
          {
             response = std::move(data);

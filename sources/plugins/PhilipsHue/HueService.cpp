@@ -3,8 +3,6 @@
 #include "shared/Log.h"
 #include <boost/asio.hpp>
 #include "shared/http/ssdp/IDiscoveredDevice.h"
-#include "shared/http/curlppHttpRestRequest.h"
-
 
 CHueService::CHueService(shared::event::CEventHandler& mainEventHandler,
                          int evtKeyStateReceived,
@@ -47,7 +45,7 @@ void CHueService::requestUsername() const
 
          boost::shared_ptr<shared::CDataContainer> out;
 
-         shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::CCurlppHttpRestRequest::EType::kPost, url)
+         shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kPost, url)
             ->withBody(buildAuthorizedUsernameBody())
             .withHeaderParameters(buildCommonHeaderParameters())
             .send([&out](boost::shared_ptr<shared::CDataContainer> data)

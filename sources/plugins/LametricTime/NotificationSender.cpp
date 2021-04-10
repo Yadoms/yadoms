@@ -3,7 +3,7 @@
 #include "shared/Log.h"
 #include "shared/exception/HttpException.hpp"
 #include "CustomizeIconHelper.h"
-#include "shared/http/curlppHttpRestRequest.h"
+
 
 const std::string CNotificationSender::IconTypeName("iconType");
 
@@ -36,7 +36,7 @@ void CNotificationSender::displayText(const std::string& text,
    try
    {
       boost::shared_ptr<shared::CDataContainer> response;
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::CCurlppHttpRestRequest::EType::kPost, url)
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kPost, url)
          ->withBody(body)
          .withHeaderParameters(headerPostParameters)
          .withBasicAuthentication("Basic", m_configuration.getAPIKey())
