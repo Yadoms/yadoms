@@ -44,79 +44,15 @@ namespace shared
          return out;
       }
 
-      void CHttpRestHelpers::sendGetRequestWithBasicAuthentication(const std::string& url, const std::string& user,
-                                                                   const std::string& password,
-                                                                   const boost::function<void(
-                                                                      const std::map<std::string, std::string>&
-                                                                      receivedHeaders, const std::string& data)>
-                                                                   & responseHandlerFct,
-                                                                   const std::map<std::string, std::string>&
-                                                                   headerParameters,
-                                                                   const std::map<std::string, std::string>& parameters)
-      {
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kGet, url)
-            ->withHeaderParameters(headerParameters)
-            .withParameters(parameters)
-            .withBasicAuthentication(user, password)
-            .send(responseHandlerFct);
-      }
-
-      std::string CHttpRestHelpers::sendGetRequestWithBasicAuthentication(const std::string& url,
-                                                                          const std::string& user,
-                                                                          const std::string& password,
-                                                                          const std::map<std::string, std::string>&
-                                                                          headerParameters,
-                                                                          const std::map<std::string, std::string>&
-                                                                          parameters)
-      {
-         std::string out;
-         sendGetRequestWithBasicAuthentication(url,
-                                               user,
-                                               password,
-                                               [&out](const std::map<std::string, std::string>& receivedHeaders,
-                                                      const std::string& data)
-                                               {
-                                                  out = data;
-                                               },
-                                               headerParameters,
-                                               parameters);
-
-         return out;
-      }
-
       boost::shared_ptr<CDataContainer> CHttpRestHelpers::sendJsonGetRequest(const std::string& url,
-                                                                             const std::map<std::string, std::string>&
-                                                                             headerParameters,
-                                                                             const std::map<std::string, std::string>&
-                                                                             parameters)
+                                                                             const std::map<std::string, std::string>& headerParameters,
+                                                                             const std::map<std::string, std::string>& parameters)
       {
          boost::shared_ptr<CDataContainer> out;
 
          createHttpRestRequest(CCurlppHttpRestRequest::EType::kGet, url)
             ->withHeaderParameters(headerParameters)
             .withParameters(parameters)
-            .send([&out](boost::shared_ptr<CDataContainer> data)
-            {
-               out = std::move(data);
-            });
-
-         return out;
-      }
-
-      boost::shared_ptr<CDataContainer>
-      CHttpRestHelpers::sendJsonGetRequestWithBasicAuthentication(const std::string& url,
-                                                                  const std::string& user,
-                                                                  const std::string& password,
-                                                                  const std::map<std::string, std::string>&
-                                                                  headerParameters,
-                                                                  const std::map<std::string, std::string>& parameters)
-      {
-         boost::shared_ptr<CDataContainer> out;
-
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kGet, url)
-            ->withHeaderParameters(headerParameters)
-            .withParameters(parameters)
-            .withBasicAuthentication(user, password)
             .send([&out](boost::shared_ptr<CDataContainer> data)
             {
                out = std::move(data);
@@ -160,48 +96,6 @@ namespace shared
          return out;
       }
 
-      void CHttpRestHelpers::sendPostRequestWithBasicAuthentication(const std::string& url, const std::string& body,
-                                                                    const std::string& user,
-                                                                    const std::string& password,
-                                                                    const boost::function<void(
-                                                                       const std::map<std::string, std::string>&,
-                                                                       const std::string&)>& responseHandlerFct,
-                                                                    const std::map<std::string, std::string>&
-                                                                    headerParameters,
-                                                                    const std::map<std::string, std::string>&
-                                                                    parameters)
-      {
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kPost, url)
-            ->withBody(body)
-            .withHeaderParameters(headerParameters)
-            .withParameters(parameters)
-            .withBasicAuthentication(user, password)
-            .send(responseHandlerFct);
-      }
-
-      std::string
-      CHttpRestHelpers::sendPostRequestWithBasicAuthentication(const std::string& url, const std::string& body,
-                                                               const std::string& user, const std::string& password,
-                                                               const std::map<std::string, std::string>&
-                                                               headerParameters,
-                                                               const std::map<std::string, std::string>& parameters)
-      {
-         std::string out;
-         sendPostRequestWithBasicAuthentication(url,
-                                                body,
-                                                user,
-                                                password,
-                                                [&out](const std::map<std::string, std::string>& receivedHeaders,
-                                                       const std::string& data)
-                                                {
-                                                   out = data;
-                                                },
-                                                headerParameters,
-                                                parameters);
-
-         return out;
-      }
-
       boost::shared_ptr<CDataContainer> CHttpRestHelpers::sendJsonPostRequest(
          const std::string& url,
          const std::string& body,
@@ -214,26 +108,6 @@ namespace shared
             ->withBody(body)
             .withHeaderParameters(headerParameters)
             .withParameters(parameters)
-            .send([&out](boost::shared_ptr<CDataContainer> data)
-            {
-               out = std::move(data);
-            });
-
-         return out;
-      }
-
-      boost::shared_ptr<CDataContainer> CHttpRestHelpers::sendJsonPostRequestWithBasicAuthentication(
-         const std::string& url, const std::string& body, const std::string& user, const std::string& password,
-         const std::map<std::string, std::string>& headerParameters,
-         const std::map<std::string, std::string>& parameters)
-      {
-         boost::shared_ptr<CDataContainer> out;
-
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kPost, url)
-            ->withBody(body)
-            .withHeaderParameters(headerParameters)
-            .withParameters(parameters)
-            .withBasicAuthentication(user, password)
             .send([&out](boost::shared_ptr<CDataContainer> data)
             {
                out = std::move(data);
@@ -259,32 +133,9 @@ namespace shared
             });
       }
 
-      void CHttpRestHelpers::sendHeadRequestWithBasicAuthentication(const std::string& url, const std::string& user,
-                                                                    const std::string& password,
-                                                                    const boost::function<void(
-                                                                       const std::map<std::string, std::string>&
-                                                                       receivedHeaders)>& responseHandlerFct,
-                                                                    const std::map<std::string, std::string>&
-                                                                    headerParameters,
-                                                                    const std::map<std::string, std::string>&
-                                                                    parameters)
-      {
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kHead, url)
-            ->withHeaderParameters(headerParameters)
-            .withParameters(parameters)
-            .withBasicAuthentication(user, password)
-            .send([&responseHandlerFct](const std::map<std::string, std::string>& receivedHeaders,
-                                        const std::string&)
-            {
-               responseHandlerFct(receivedHeaders);
-            });
-      }
-
       std::map<std::string, std::string> CHttpRestHelpers::sendHeadRequest(const std::string& url,
-                                                                           const std::map<std::string, std::string>&
-                                                                           headerParameters,
-                                                                           const std::map<std::string, std::string>&
-                                                                           parameters)
+                                                                           const std::map<std::string, std::string>& headerParameters,
+                                                                           const std::map<std::string, std::string>& parameters)
       {
          std::map<std::string, std::string> out;
          sendHeadRequest(url,
@@ -298,27 +149,9 @@ namespace shared
          return out;
       }
 
-      std::map<std::string, std::string> CHttpRestHelpers::sendHeadRequestWithBasicAuthentication(
-         const std::string& url, const std::string& user, const std::string& password,
-         const std::map<std::string, std::string>& headerParameters,
-         const std::map<std::string, std::string>& parameters)
-      {
-         std::map<std::string, std::string> out;
-         sendHeadRequestWithBasicAuthentication(url, user, password,
-                                                [&out](const std::map<std::string, std::string>& receivedHeaders)
-                                                {
-                                                   out = receivedHeaders;
-                                                },
-                                                headerParameters,
-                                                parameters);
-
-         return out;
-      }
-
       void CHttpRestHelpers::sendPutRequest(const std::string& url, const std::string& body,
-                                            const boost::function<void(
-                                               const std::map<std::string, std::string>& receivedHeaders,
-                                               const std::string& data)>& responseHandlerFct,
+                                            const boost::function<void(const std::map<std::string, std::string>& receivedHeaders,
+                                                                       const std::string& data)>& responseHandlerFct,
                                             const std::map<std::string, std::string>& headerParameters,
                                             const std::map<std::string, std::string>& parameters)
       {
@@ -326,24 +159,6 @@ namespace shared
             ->withBody(body)
             .withHeaderParameters(headerParameters)
             .withParameters(parameters)
-            .send(responseHandlerFct);
-      }
-
-      void CHttpRestHelpers::sendPutRequestWithBasicAuthentication(const std::string& url, const std::string& body,
-                                                                   const std::string& user, const std::string& password,
-                                                                   const boost::function<void(
-                                                                      const std::map<std::string, std::string>&
-                                                                      receivedHeaders, const std::string& data)>
-                                                                   & responseHandlerFct,
-                                                                   const std::map<std::string, std::string>&
-                                                                   headerParameters,
-                                                                   const std::map<std::string, std::string>& parameters)
-      {
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kPut, url)
-            ->withBody(body)
-            .withHeaderParameters(headerParameters)
-            .withParameters(parameters)
-            .withBasicAuthentication(user, password)
             .send(responseHandlerFct);
       }
 
@@ -365,37 +180,10 @@ namespace shared
          return out;
       }
 
-      std::string CHttpRestHelpers::sendPutRequestWithBasicAuthentication(const std::string& url,
-                                                                          const std::string& body,
-                                                                          const std::string& user,
-                                                                          const std::string& password,
-                                                                          const std::map<std::string, std::string>&
-                                                                          headerParameters,
-                                                                          const std::map<std::string, std::string>&
-                                                                          parameters)
-      {
-         std::string out;
-         sendPutRequestWithBasicAuthentication(url,
-                                               body,
-                                               user,
-                                               password,
-                                               [&out](const std::map<std::string, std::string>& receivedHeaders,
-                                                      const std::string& data)
-                                               {
-                                                  out = data;
-                                               },
-                                               headerParameters,
-                                               parameters);
-
-         return out;
-      }
-
       boost::shared_ptr<CDataContainer> CHttpRestHelpers::sendJsonPutRequest(const std::string& url,
                                                                              const std::string& body,
-                                                                             const std::map<std::string, std::string>&
-                                                                             headerParameters,
-                                                                             const std::map<std::string, std::string>&
-                                                                             parameters)
+                                                                             const std::map<std::string, std::string>& headerParameters,
+                                                                             const std::map<std::string, std::string>& parameters)
       {
          boost::shared_ptr<CDataContainer> out;
 
@@ -403,26 +191,6 @@ namespace shared
             ->withBody(body)
             .withHeaderParameters(headerParameters)
             .withParameters(parameters)
-            .send([&out](boost::shared_ptr<CDataContainer> data)
-            {
-               out = std::move(data);
-            });
-
-         return out;
-      }
-
-      boost::shared_ptr<CDataContainer> CHttpRestHelpers::sendJsonPutRequestWithBasicAuthentication(
-         const std::string& url, const std::string& body, const std::string& user, const std::string& password,
-         const std::map<std::string, std::string>& headerParameters,
-         const std::map<std::string, std::string>& parameters)
-      {
-         boost::shared_ptr<CDataContainer> out;
-
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kPut, url)
-            ->withBody(body)
-            .withHeaderParameters(headerParameters)
-            .withParameters(parameters)
-            .withBasicAuthentication(user, password)
             .send([&out](boost::shared_ptr<CDataContainer> data)
             {
                out = std::move(data);
