@@ -4,6 +4,7 @@
 #include "shared/exception/HttpException.hpp"
 #include "CustomizeIconHelper.h"
 
+
 const std::string CNotificationSender::IconTypeName("iconType");
 
 CNotificationSender::CNotificationSender(CConfiguration& lametricConfiguration)
@@ -30,13 +31,19 @@ void CNotificationSender::displayText(const std::string& text,
    const auto body = buildMessageBody(priorityMessage, iconToDisplay, text);
 
 
-   const auto headerPostParameters = m_urlManagerHelper->buildCommonHeaderParameters(m_configuration);
+   const auto headerPostParameters = m_urlManagerHelper->buildCommonHeaderParameters();
 
    try
    {
-      shared::http::CHttpRestHelpers::sendPostRequest(url,
-                                                  body,
-                                                  headerPostParameters);
+      boost::shared_ptr<shared::CDataContainer> response;
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kPost, url)
+         ->withBody(body)
+         .withHeaderParameters(headerPostParameters)
+         .withBasicAuthentication("Basic", m_configuration.getAPIKey())
+         .send([&response](auto data)
+         {
+            response = data;
+         });
    }
    catch (std::exception& e)
    {
@@ -51,7 +58,7 @@ std::string CNotificationSender::buildMessageBody(const std::string& priorityMes
 {
    std::string secondFrameIcon = !getCustomizeIcon().empty() ? m_customizeIcon : CCustomizeIconHelper::YadomsIcon;
    shared::CDataContainer body;
-	body.set("priority", priorityMessage);
+   body.set("priority", priorityMessage);
    body.set("icon_type", iconToDisplay);
 
    shared::CDataContainer frame1;

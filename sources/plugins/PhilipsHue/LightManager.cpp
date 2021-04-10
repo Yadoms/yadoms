@@ -143,7 +143,13 @@ CHueLightInformations CLightManager::getLightAttributesAndState(const int id)
 
    try
    {
-      auto response = shared::http::CHttpRestHelpers::sendJsonGetRequest(lightUrl);
+      boost::shared_ptr<shared::CDataContainer> response;
+
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, lightUrl)
+         ->send([&response](boost::shared_ptr<shared::CDataContainer> data)
+         {
+            response = std::move(data);
+         });
 
       hueLightAttributesAndState.setState(getHueLightInformationsState(response));
       hueLightAttributesAndState.setSwUpdate(getHueLightInformationsSwUpdate(response));

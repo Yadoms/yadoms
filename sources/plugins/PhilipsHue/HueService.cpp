@@ -4,7 +4,6 @@
 #include <boost/asio.hpp>
 #include "shared/http/ssdp/IDiscoveredDevice.h"
 
-
 CHueService::CHueService(shared::event::CEventHandler& mainEventHandler,
                          int evtKeyStateReceived,
                          int evtKeyStateTimeout,
@@ -44,12 +43,15 @@ void CHueService::requestUsername() const
          const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kApi);
          const auto url = m_urlManager->getPatternUrl(urlPatternPath);
 
-         const auto body = buildAuthorizedUsernameBody();
-         const auto headerPostParameters = buildCommonHeaderParameters();
+         boost::shared_ptr<shared::CDataContainer> out;
 
-         const auto out = shared::http::CHttpRestHelpers::sendJsonPostRequest(url,
-                                                                          body,
-                                                                          headerPostParameters);
+         shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kPost, url)
+            ->withBody(buildAuthorizedUsernameBody())
+            .withHeaderParameters(buildCommonHeaderParameters())
+            .send([&out](boost::shared_ptr<shared::CDataContainer> data)
+            {
+               out = std::move(data);
+            });
 
          authorizedUsername = out->get("0.success.username");
 

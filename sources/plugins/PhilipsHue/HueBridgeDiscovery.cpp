@@ -53,9 +53,17 @@ CHueInformations CHueBridgeDiscovery::getHueInformations()
       const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kDescription);
       const auto descriptionUrl = m_urlManager->getPatternUrl(urlPatternPath);
 
-      boost::shared_ptr<shared::http::ssdp::IDiscoveredDevice> devicesDescription =
-         boost::make_shared<shared::http::ssdp::CDiscoveredDevice>(
-            shared::http::CHttpRestHelpers::sendGetRequest(descriptionUrl));
+      std::string out;
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet,
+                                                            descriptionUrl)
+         ->send([&out](const std::map<std::string, std::string>& receivedHeaders,
+                       const std::string& data)
+         {
+            out = data;
+         });
+
+      const boost::shared_ptr<shared::http::ssdp::IDiscoveredDevice> devicesDescription =
+         boost::make_shared<shared::http::ssdp::CDiscoveredDevice>(out);
 
       bridgeInformations.setIp(getIpAddress(devicesDescription->xmlContent()->get<std::string>("root.URLBase")));
       bridgeInformations.
