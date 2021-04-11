@@ -36,6 +36,7 @@ namespace shared
                                             const std::string& data)>& responseHandlerFct) override;
 
          void send(const std::function<void(boost::shared_ptr<CDataContainer> data)>& responseHandlerFct) override;
+         std::string send() override;
          // [END] IHttpRestRequest implementation
 
       private:

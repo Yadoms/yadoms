@@ -26,9 +26,16 @@ boost::shared_ptr<shared::CDataContainer> urlManager::getRegisteredEquipments(co
       parameters["status"] = "ACTIVATED";
 
    const auto deviceUrl = m_url.str() + "/vendors/lora/devices";
-   return shared::http::CHttpRestHelpers::sendJsonGetRequest(deviceUrl,
-                                                         headerParameters,
-                                                         parameters);
+
+   boost::shared_ptr<shared::CDataContainer> response;
+   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, deviceUrl)
+      ->withHeaderParameters(headerParameters)
+      .withParameters(parameters)
+      .send([&response](boost::shared_ptr<shared::CDataContainer> data)
+      {
+         response = data;
+      });
+   return response;
 }
 
 boost::shared_ptr<shared::CDataContainer> urlManager::getDeviceInformation(const std::string& apikey,
@@ -41,9 +48,15 @@ boost::shared_ptr<shared::CDataContainer> urlManager::getDeviceInformation(const
    };
 
    const auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI;
-   return shared::http::CHttpRestHelpers::sendJsonGetRequest(deviceUrl,
-                                                         headerParameters,
-                                                         std::map<std::string, std::string>());
+
+   boost::shared_ptr<shared::CDataContainer> response;
+   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, deviceUrl)
+      ->withHeaderParameters(headerParameters)
+      .send([&response](boost::shared_ptr<shared::CDataContainer> data)
+      {
+         response = data;
+      });
+   return response;
 }
 
 boost::shared_ptr<shared::CDataContainer> urlManager::listDeviceCommands(const std::string& apikey,
@@ -61,7 +74,14 @@ boost::shared_ptr<shared::CDataContainer> urlManager::listDeviceCommands(const s
    };
 
    const auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/data/streams/urn:lora:" + devEUI + "!uplink";
-   return shared::http::CHttpRestHelpers::sendJsonGetRequest(deviceUrl,
-                                                         headerParameters,
-                                                         parameters);
+
+   boost::shared_ptr<shared::CDataContainer> response;
+   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, deviceUrl)
+      ->withHeaderParameters(headerParameters)
+      .withParameters(parameters)
+      .send([&response](boost::shared_ptr<shared::CDataContainer> data)
+      {
+         response = data;
+      });
+   return response;
 }

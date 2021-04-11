@@ -180,6 +180,17 @@ namespace shared
          });
       }
 
+      std::string CCurlppHttpRestRequest::send()
+      {
+         std::string out;
+         send([&out](const std::map<std::string, std::string>& receivedHeaders,
+                     const std::string& data)
+         {
+            out = data;
+         });
+         return out;
+      }
+
       std::map<std::string, std::string> CCurlppHttpRestRequest::formatResponseHeaders(const std::string& headersBuffer) const
       {
          std::vector<std::string> headerKeyValues;

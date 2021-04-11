@@ -80,10 +80,16 @@ namespace update
                {"User-Agent", "yadoms"},
                {"Accept", "application/json"},
                {"Connection", "close"}
-            };
-            const auto lastVersionInformation(shared::http::CHttpRestHelpers::sendJsonGetRequest(url,
-                                                                                             headerParameters,
-                                                                                             parameters));
+            }; 
+
+            boost::shared_ptr<shared::CDataContainer> lastVersionInformation;
+            shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, url)
+               ->withHeaderParameters(headerParameters)
+               .withParameters(parameters)
+               .send([&lastVersionInformation](boost::shared_ptr<shared::CDataContainer> data)
+               {
+                  lastVersionInformation = data;
+               });
 
             if (!lastVersionInformation->containsValue(DistantScriptResult))
                throw std::runtime_error("Fail to get data from " + url);
