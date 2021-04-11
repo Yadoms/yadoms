@@ -1,23 +1,26 @@
-# cURLpp is available from https://github.com/jpbarrette/curlpp
+include(ExternalProject)
 
+   set(CURLPP_ROOT ${CMAKE_BINARY_DIR}/external-libs/curlpp)
 
-set(CURL_INCLUDE_DIR ${CURL_SOURCE_DIR}/include)
-set(CURL_LIBRARY libcurl)
-set(CURLPP_BUILD_SHARED_LIBS OFF)
+   list(APPEND CURLPP_BUILD_ARGS "-DCURL_INCLUDE_DIR=${CURL_SOURCE_DIR}/include")
+   list(APPEND CURLPP_BUILD_ARGS "-DCURL_LIBRARY=libcurl")
+   list(APPEND CURLPP_BUILD_ARGS "-DCURLPP_BUILD_SHARED_LIBS=OFF")
+   list(APPEND CURLPP_BUILD_ARGS "-DCURLPP_STATIC_CRT=ON")
 
-add_subdirectory(curlpp-0.8.1)
+   ExternalProject_Add (curlpp_build
+      GIT_REPOSITORY    https://github.com/jpbarrette/curlpp.git
+      GIT_TAG           origin/master
+      GIT_SHALLOW       ON
+      GIT_CONFIG        advice.detachedHead=false
+      PREFIX            ${CURLPP_ROOT}
+      CMAKE_ARGS        ${CURLPP_BUILD_ARGS}
+      INSTALL_COMMAND   ""
+      INSTALL_DIR       ${CURLPP_ROOT}
+      BUILD_ALWAYS      OFF
+   )
 
-if(COTIRE_USE)
-   if(COTIRE_USE_UNITY)
-      set_target_properties(curlpp_static PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
-   else()
-      set_target_properties(curlpp_static PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-   endif()
-   
-   cotire(curlpp_static)
-endif()
+SET_PROPERTY(TARGET curlpp_build PROPERTY FOLDER "External Libs")
 
-get_target_property(CURLPP_INCLUDE_DIRECTORIES curlpp_static INCLUDE_DIRECTORIES)
-set(CURLPP_INCLUDE_DIRECTORIES ${CURLPP_INCLUDE_DIRECTORIES} PARENT_SCOPE)
-
-SET_PROPERTY(TARGET curlpp_static PROPERTY FOLDER "External Libs")
+ExternalProject_Get_Property(curlpp_build INSTALL_DIR)
+set(CURLPP_INCLUDE_DIRECTORIES ${INSTALL_DIR}/src/curlpp_build/include PARENT_SCOPE)
+set(CURLPP_LIBRARY ${INSTALL_DIR}/src/curlpp_build-build/$<CONFIG>/libcurlpp.lib PARENT_SCOPE)
