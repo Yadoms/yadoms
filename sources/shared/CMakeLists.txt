@@ -498,21 +498,24 @@ source_group(platformSpecific\\mac\\process shared/mac/shared/process/*.*)
 ########################
 add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 
-add_dependencies(yadoms-shared curlpp_build)
+add_dependencies(yadoms-shared curl_build curlpp_build)
+message("CURL_LIBRARY=${CURL_LIBRARY}")
 target_link_libraries(yadoms-shared
    ${LIBS}
    ${CMAKE_DL_LIBS}
+   ${CURL_LIBRARY}
    ${CURLPP_LIBRARY}
-   libcurl
 )
 
+message("CURL_INCLUDE_DIR=${CURL_INCLUDE_DIR}")
 set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
    ${BOOST_INCL_DIR}
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${PLATFORM_SPECIFIC_INCL_DIR}
    ${Poco_INCLUDE_DIRS}
    ${OPENSSL_INCLUDE_DIR}
-   ${CURLPP_INCLUDE_DIRECTORIES}
+   ${CURL_INCLUDE_DIR}
+   ${CURLPP_INCLUDE_DIR}
 )
 
 if(COTIRE_USE)
@@ -534,7 +537,8 @@ if(COTIRE_USE)
          ${PLATFORM_SPECIFIC_INCL_DIR}
          ${Poco_INCLUDE_DIRS}
          ${OPENSSL_INCLUDE_DIR}
-         ${CURLPP_INCLUDE_DIRECTORIES}
+         ${CURL_INCLUDE_DIR}
+         ${CURLPP_INCLUDE_DIR}
       )
    endif()	
 else()

@@ -277,6 +277,7 @@ set(LIBS
    ${CMAKE_THREAD_LIBS_INIT}
    ${Boost_LIBRARIES}
    ${Protobuf_LIBRARIES}
+   ${CURLPP_LIBRARY}
    ${LIBS}
 )
 
@@ -1110,7 +1111,14 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 ## Link
 ##################################################################################################
-target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms
+   yadoms-shared
+   plugin_IPC
+   interpreter_IPC script_IPC
+   ${YADOMS_EXTERNAL_LINK}
+   ${LIBS}
+   ${CMAKE_DL_LIBS}
+)
 
 ##################################################################################################
 ## RPATH
