@@ -499,7 +499,6 @@ source_group(platformSpecific\\mac\\process shared/mac/shared/process/*.*)
 add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 
 add_dependencies(yadoms-shared curl_build curlpp_build)
-message("CURL_LIBRARY=${CURL_LIBRARY}")
 target_link_libraries(yadoms-shared
    ${LIBS}
    ${CMAKE_DL_LIBS}
@@ -507,7 +506,6 @@ target_link_libraries(yadoms-shared
    ${CURLPP_LIBRARY}
 )
 
-message("CURL_INCLUDE_DIR=${CURL_INCLUDE_DIR}")
 set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
    ${BOOST_INCL_DIR}
    ${CMAKE_CURRENT_SOURCE_DIR}
