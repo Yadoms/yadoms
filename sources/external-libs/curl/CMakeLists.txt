@@ -1,33 +1,3 @@
-
-
-# set(BUILD_CURL_EXE OFF)
-# set(BUILD_SHARED_LIBS OFF)
-# if(MSVC)
-   # set(CURL_STATIC_CRT ON)
-# endif()
-
-# Enable only needed protocols
-# set(CURL_DISABLE_FTP ON)
-# set(CURL_DISABLE_LDAP ON)
-# set(CURL_DISABLE_TELNET ON)
-# set(CURL_DISABLE_DICT ON)
-# set(CURL_DISABLE_FILE ON)
-# set(CURL_DISABLE_TFTP ON)
-# set(CURL_DISABLE_HTTP OFF)
-# set(CURL_DISABLE_LDAPS ON)
-# set(CURL_DISABLE_RTSP ON)
-# set(CURL_DISABLE_PROXY OFF)
-# set(CURL_DISABLE_POP3 ON)
-# set(CURL_DISABLE_IMAP ON)
-# set(CURL_DISABLE_SMB ON)
-# set(CURL_DISABLE_SMTP ON)
-# set(CURL_DISABLE_GOPHER ON)
-# set(CURL_ENABLE_MQTT OFF)
-
-# set(CMAKE_USE_OPENSSL ON)
-
-# add_subdirectory(curl-curl-7_72_0)
-
 include(ExternalProject)
 
 
@@ -59,17 +29,11 @@ list(APPEND CURL_BUILD_ARGS "-DCURL_DISABLE_MQTT=ON")
 list(APPEND CURL_BUILD_ARGS "-DCMAKE_USE_OPENSSL=ON")
 
 
-### MARCHE PAS : ça définit une variable CMake, pas une directive de préprocessing ! ! !
-list(APPEND CURL_BUILD_ARGS "-DCURL_STATICLIB=1")
-
-
-
 ExternalProject_Add(curl_build
    URL               https://curl.se/download/curl-7.76.0.zip
    PREFIX            ${CURL_ROOT}
    CMAKE_ARGS        ${CURL_BUILD_ARGS}
    INSTALL_COMMAND   ""
-   INSTALL_DIR       ${CURL_ROOT} #TODO utile ?
    BUILD_ALWAYS      OFF
 )
 

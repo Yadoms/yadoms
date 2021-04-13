@@ -11,13 +11,12 @@ list(APPEND CURLPP_BUILD_ARGS "-DCURLPP_STATIC_CRT=ON")
 ExternalProject_Add (curlpp_build
    DEPENDS           curl_build
    GIT_REPOSITORY    https://github.com/jpbarrette/curlpp.git
-   GIT_TAG           31a72ca0b01516829ea0af9046f5911cc735ffb0
+   GIT_TAG           5e25a51e8dc75e05b707e08536abee28e0a45738
    GIT_SHALLOW       ON
    GIT_CONFIG        advice.detachedHead=false
    PREFIX            ${CURLPP_ROOT}
    CMAKE_ARGS        ${CURLPP_BUILD_ARGS}
    INSTALL_COMMAND   ""
-   INSTALL_DIR       ${CURLPP_ROOT} #TODO utile ?
    BUILD_ALWAYS      OFF
 )
 
