@@ -528,7 +528,13 @@ if(COTIRE_USE)
    cotire(yadoms-shared)
 	
    if(COTIRE_USE_UNITY)
-      target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} curlpp_static_unity)
+      add_dependencies(yadoms-shared_unity curl_build curlpp_build)
+      target_link_libraries(yadoms-shared_unity
+         ${LIBS}
+         ${CMAKE_DL_LIBS}
+         ${CURL_LIBRARY}
+         ${CURLPP_LIBRARY}
+      )
       set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
          ${BOOST_INCL_DIR}
          ${CMAKE_CURRENT_SOURCE_DIR}
