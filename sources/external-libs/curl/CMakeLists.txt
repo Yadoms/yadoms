@@ -41,4 +41,11 @@ SET_PROPERTY(TARGET curl_build PROPERTY FOLDER "External Libs")
 
 ExternalProject_Get_Property(curl_build INSTALL_DIR)
 set(CURL_INCLUDE_DIR ${INSTALL_DIR}/src/curl_build/include PARENT_SCOPE)
-set(CURL_LIBRARY ${INSTALL_DIR}/src/curl_build-build/lib/$<CONFIG>/libcurl$<$<CONFIG:Debug>:-d>.lib PARENT_SCOPE)
+
+find_library(CURL_LIBRARY
+   NAMES curl libcurl-d
+   PATHS ${INSTALL_DIR}/src/curl_build-build/lib
+   PATH_SUFFIXES . Debug Release
+   NO_DEFAULT_PATH
+   REQUIRED
+)
