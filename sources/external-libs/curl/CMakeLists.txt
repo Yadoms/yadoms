@@ -31,7 +31,7 @@ list(APPEND CURL_BUILD_ARGS "-DCMAKE_USE_OPENSSL=ON")
 
 
 ExternalProject_Add(curl_build
-   URL               https://curl.se/download/curl-7.76.0.zip
+   URL               https://curl.se/download/curl-7.76.1.zip
    PREFIX            ${CURL_ROOT}
    CMAKE_ARGS        ${CURL_BUILD_ARGS}
    INSTALL_COMMAND   ""
