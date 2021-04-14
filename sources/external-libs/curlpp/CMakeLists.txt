@@ -25,4 +25,9 @@ SET_PROPERTY(TARGET curlpp_build PROPERTY FOLDER "External Libs")
 
 ExternalProject_Get_Property(curlpp_build INSTALL_DIR)
 set(CURLPP_INCLUDE_DIR ${INSTALL_DIR}/src/curlpp_build/include PARENT_SCOPE)
-set(CURLPP_LIBRARY ${INSTALL_DIR}/src/curlpp_build-build/$<CONFIG>/libcurlpp.lib PARENT_SCOPE)
+
+if(WIN32)
+   set(CURLPP_LIBRARY ${INSTALL_DIR}/src/curlpp_build-build/$<CONFIG>/libcurlpp.lib PARENT_SCOPE)
+else()
+   set(CURLPP_LIBRARY ${INSTALL_DIR}/src/curlpp_build-build/libcurlpp.a PARENT_SCOPE)
+endif()
