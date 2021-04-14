@@ -43,27 +43,30 @@ SET_PROPERTY(TARGET curl_build PROPERTY FOLDER "External Libs")
 ExternalProject_Get_Property(curl_build INSTALL_DIR)
 set(CURL_INCLUDE_DIR ${INSTALL_DIR}/src/curl_build/include PARENT_SCOPE)
 
+
+file(GLOB DIR_RETURN ${INSTALL_DIR}/*)
+message("DIR_RETURN_ROOT=${DIR_RETURN}")
+file(GLOB DIR_RETURN ${INSTALL_DIR}/src/*)
+message("DIR_RETURN_SRC=${DIR_RETURN}")
 file(GLOB DIR_RETURN ${INSTALL_DIR}/src/curl_build-build/*)
-message("DIR_RETURN=${DIR_RETURN}")
+message("DIR_RETURN_SRC_CURL_BUILD-build=${DIR_RETURN}")
 file(GLOB DIR_RETURN ${INSTALL_DIR}/src/curl_build-build/lib/*)
-message("DIR_RETURN_LIB=${DIR_RETURN}")
+message("DIR_RETURN_SRC_CURL_BUILD-build_LIB=${DIR_RETURN}")
 file(GLOB DIR_RETURN ${INSTALL_DIR}/src/curl_build-build/lib/debug/*)
-message("DIR_RETURN_LIB_DEBUG=${DIR_RETURN}")
+message("DIR_RETURN_SRC_CURL_BUILD-build_LIB_DEBUG=${DIR_RETURN}")
 
 find_library(CURL_LIBRARY_DEBUG
    NAMES libcurl-d
    PATHS ${INSTALL_DIR}/src/curl_build-build/lib
-   PATH_SUFFIXES . Debug Release
+   PATH_SUFFIXES . Debug
    NO_DEFAULT_PATH
-   REQUIRED
 )
 
 find_library(CURL_LIBRARY_RELEASE
    NAMES libcurl
    PATHS ${INSTALL_DIR}/src/curl_build-build/lib
-   PATH_SUFFIXES . Debug Release
+   PATH_SUFFIXES . Release
    NO_DEFAULT_PATH
-   REQUIRED
 )
 message("CURL_LIBRARY_DEBUG=${CURL_LIBRARY_DEBUG}")
 message("CURL_LIBRARY_RELEASE=${CURL_LIBRARY_RELEASE}")
