@@ -28,6 +28,7 @@ ENDIF()
 add_subdirectory(communication)
 add_subdirectory(event)
 add_subdirectory(http)
+add_subdirectory(plugin)
 add_subdirectory(tools)
 
 

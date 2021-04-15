@@ -229,6 +229,8 @@ source_group(shared\\http\\ssdp shared/http/ssdp/*.*)
 source_group(shared\\plugin shared/plugin/*.*)
 source_group(shared\\plugin\\configuration shared/plugin/configuration/*.*)
 source_group(shared\\plugin\\information shared/plugin/information/*.*)
+source_group(shared\\plugin\\yPluginApi shared/plugin/yPluginApi/*.*)
+source_group(shared\\plugin\\yPluginApi\\historization shared/plugin/yPluginApi/historization/*.*)
 source_group(shared\\serialization shared/serialization/*.*)
 source_group(shared\\xpl shared/xpl/*.*)
 

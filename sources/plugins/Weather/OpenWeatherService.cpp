@@ -441,7 +441,7 @@ const
 
          for (const auto& forecast : forecasts)
          {
-            const auto forecastDatetime = boost::posix_time::from_time_t(forecast->get<int>("dt"));
+            const auto forecastDatetime = boost::posix_time::from_time_t(forecast->get<std::time_t>("dt"));
 
             if (forecastDatetime.date() > shared::currentTime::Provider().now().date())
             {

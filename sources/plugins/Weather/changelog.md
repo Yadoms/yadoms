@@ -1,3 +1,7 @@
+### 1.3.2
+  * Fix [Y2038 failure](https://en.wikipedia.org/wiki/Year_2038_problem)
+  * Fix #730 : invalid date format recorded (make "invalid date" displayed on Safari)
+
 ### 1.3.1
   * Fix crash when bad network connection
 
