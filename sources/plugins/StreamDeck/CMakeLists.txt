@@ -48,6 +48,9 @@ if(OpenCV_FOUND)
 			source_group(sources\\windows windows/*.*)
 
 		elseif(UNIX AND NOT APPLE)
+			set(UDEV_PATH_INCLUDES ${LIBUDEV_ROOT})
+			set(UDEV_PATH_LIB ${LIBUDEV_ROOT})
+			
 			include(FindLibUdev.cmake)
 			set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
 			 	hidapi/sources/linux/hid.c

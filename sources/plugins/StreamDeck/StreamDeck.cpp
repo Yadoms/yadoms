@@ -220,7 +220,7 @@ void CStreamDeck::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto SecondKeySection = shared::CDataContainer::make();
             auto whenKeyIsPressedOptionSection = shared::CDataContainer::make();
 
-            for (auto i = 0; i < keys.size(); ++i)
+            for (unsigned int i = 0; i < keys.size(); ++i)
             {
                shared::CDataContainer keyOptions;
                keyOptions.set("type", "section");
