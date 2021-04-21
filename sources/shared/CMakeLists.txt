@@ -503,7 +503,13 @@ source_group(platformSpecific\\mac\\process shared/mac/shared/process/*.*)
 ########################
 add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 
-target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS} curlpp_static libcurl)
+add_dependencies(yadoms-shared curl_build curlpp_build)
+target_link_libraries(yadoms-shared
+   ${LIBS}
+   ${CMAKE_DL_LIBS}
+   ${CURL_LIBRARY}
+   ${CURLPP_LIBRARY}
+)
 
 set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
    ${BOOST_INCL_DIR}
@@ -511,7 +517,8 @@ set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
    ${PLATFORM_SPECIFIC_INCL_DIR}
    ${Poco_INCLUDE_DIRS}
    ${OPENSSL_INCLUDE_DIR}
-   ${CURLPP_INCLUDE_DIRECTORIES}
+   ${CURL_INCLUDE_DIR}
+   ${CURLPP_INCLUDE_DIR}
 )
 
 if(COTIRE_USE)
@@ -526,14 +533,21 @@ if(COTIRE_USE)
    cotire(yadoms-shared)
 	
    if(COTIRE_USE_UNITY)
-      target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} curlpp_static_unity)
+      add_dependencies(yadoms-shared_unity curl_build curlpp_build)
+      target_link_libraries(yadoms-shared_unity
+         ${LIBS}
+         ${CMAKE_DL_LIBS}
+         ${CURL_LIBRARY}
+         ${CURLPP_LIBRARY}
+      )
       set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
          ${BOOST_INCL_DIR}
          ${CMAKE_CURRENT_SOURCE_DIR}
          ${PLATFORM_SPECIFIC_INCL_DIR}
          ${Poco_INCLUDE_DIRS}
          ${OPENSSL_INCLUDE_DIR}
-         ${CURLPP_INCLUDE_DIRECTORIES}
+         ${CURL_INCLUDE_DIR}
+         ${CURLPP_INCLUDE_DIR}
       )
    endif()	
 else()

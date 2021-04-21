@@ -260,6 +260,14 @@ endif()
 
 
 ###############################################
+# Curl / CurlPp
+#
+###############################################
+add_definitions("-DCURL_STATICLIB")
+
+
+
+###############################################
 # define libraries to link with
 #
 ###############################################
@@ -277,6 +285,7 @@ set(LIBS
    ${CMAKE_THREAD_LIBS_INIT}
    ${Boost_LIBRARIES}
    ${Protobuf_LIBRARIES}
+   ${CURLPP_LIBRARY}
    ${LIBS}
 )
 
@@ -297,7 +306,7 @@ set(USE_POCO_WEBSERVER TRUE)
 #include libs (have their own CMakeList.txt)
 add_subdirectory(external-libs)
 
-
+message("CMAKE_TOOLCHAIN_FILE 1 : ${CMAKE_TOOLCHAIN_FILE}")
 
 ##################################################################################################
 ## Yadoms
@@ -1110,7 +1119,14 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 ## Link
 ##################################################################################################
-target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms
+   yadoms-shared
+   plugin_IPC
+   interpreter_IPC script_IPC
+   ${YADOMS_EXTERNAL_LINK}
+   ${LIBS}
+   ${CMAKE_DL_LIBS}
+)
 
 ##################################################################################################
 ## RPATH
