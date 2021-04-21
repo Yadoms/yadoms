@@ -306,7 +306,7 @@ set(USE_POCO_WEBSERVER TRUE)
 #include libs (have their own CMakeList.txt)
 add_subdirectory(external-libs)
 
-
+message("CMAKE_TOOLCHAIN_FILE 1 : ${CMAKE_TOOLCHAIN_FILE}")
 
 ##################################################################################################
 ## Yadoms
