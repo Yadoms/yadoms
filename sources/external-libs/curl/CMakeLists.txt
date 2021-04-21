@@ -33,6 +33,7 @@ list(APPEND CURL_BUILD_ARGS "-DCMAKE_USE_OPENSSL=ON")
 if(CMAKE_TOOLCHAIN_FILE)
    message("CURL : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC_RPI_GCC} and ${CC_RPI_GXX})")
    #in case of cross compiling, need to append the toolchain file to ExternalProject
+   list(APPEND CURL_BUILD_ARGS "-DCC_RPI_ROOT=${CC_RPI_ROOT}")
    list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GCC=${CC_RPI_GCC}")
    list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GXX=${CC_RPI_GXX}")
    list(APPEND CURL_BUILD_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
