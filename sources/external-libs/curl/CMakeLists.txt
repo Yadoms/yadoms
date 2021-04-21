@@ -32,10 +32,28 @@ list(APPEND CURL_BUILD_ARGS "-DCMAKE_USE_OPENSSL=ON")
 
 if(CMAKE_TOOLCHAIN_FILE)
    message("CURL : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC_RPI_GCC} and ${CC_RPI_GXX})")
-   #in case of cross compiling, need to append the toolchain file to ExternalProject
+   #in case of cross compiling, need to append the toolchain file to ExternalProject and all the path provided in CMakeListUserConfig
    list(APPEND CURL_BUILD_ARGS "-DCC_RPI_ROOT=${CC_RPI_ROOT}")
    list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GCC=${CC_RPI_GCC}")
    list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GXX=${CC_RPI_GXX}")
+   
+   #append all potentials dependecnies that exteranl project may need (openssl mostly)
+   if(OPENSSL_ROOT)
+      list(APPEND CURL_BUILD_ARGS "-DOPENSSL_ROOT=${OPENSSL_ROOT}")
+   endif()
+   if(PROTOBUF_ROOT)
+      list(APPEND CURL_BUILD_ARGS "-DPROTOBUF_ROOT=${PROTOBUF_ROOT}")
+   endif()
+   if(SWIG_ROOT)
+      list(APPEND CURL_BUILD_ARGS "-DSWIG_ROOT=${SWIG_ROOT}")
+   endif()   
+   if(Python2_ROOT)
+      list(APPEND CURL_BUILD_ARGS "-DPython2_ROOT=${Python2_ROOT}")
+   endif()  
+   if(Python3_ROOT)
+      list(APPEND CURL_BUILD_ARGS "-DPython2_ROOT=${Python3_ROOT}")
+   endif()  
+   
    list(APPEND CURL_BUILD_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
 endif(CMAKE_TOOLCHAIN_FILE)
 
