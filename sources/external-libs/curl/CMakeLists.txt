@@ -1,8 +1,6 @@
 include(ExternalProject)
 include(SelectLibraryConfigurations)
 
-message("CMAKE_TOOLCHAIN_FILE 2 : ${CMAKE_TOOLCHAIN_FILE}")
-
 set(CURL_ROOT ${CMAKE_BINARY_DIR}/external-libs/curl)
 
 list(APPEND CURL_BUILD_ARGS "-DBUILD_CURL_EXE=OFF")
@@ -32,6 +30,13 @@ list(APPEND CURL_BUILD_ARGS "-DCURL_DISABLE_GOPHER=ON")
 list(APPEND CURL_BUILD_ARGS "-DCURL_DISABLE_MQTT=ON")
 list(APPEND CURL_BUILD_ARGS "-DCMAKE_USE_OPENSSL=ON")
 
+if(CMAKE_TOOLCHAIN_FILE)
+   message("CURL : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC_RPI_GCC} and ${CC_RPI_GXX})")
+   #in case of cross compiling, need to append the toolchain file to ExternalProject
+   list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GCC=${CC_RPI_GCC}")
+   list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GXX=${CC_RPI_GXX}")
+   list(APPEND CURL_BUILD_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add(curl_build
    URL               https://curl.se/download/curl-7.76.1.zip
