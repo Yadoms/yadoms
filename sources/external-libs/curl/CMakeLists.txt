@@ -39,7 +39,7 @@ if(CMAKE_TOOLCHAIN_FILE)
    
    #append all potentials dependecnies that exteranl project may need (openssl mostly)
    if(OPENSSL_ROOT)
-      list(APPEND CURL_BUILD_ARGS "-DOPENSSL_ROOT=${OPENSSL_ROOT}")
+      list(APPEND CURL_BUILD_ARGS "-DOPENSSL_ROOT_DIR=${OPENSSL_ROOT}")
    endif()
    if(PROTOBUF_ROOT)
       list(APPEND CURL_BUILD_ARGS "-DPROTOBUF_ROOT=${PROTOBUF_ROOT}")
