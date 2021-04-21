@@ -1,6 +1,7 @@
 include(ExternalProject)
 include(SelectLibraryConfigurations)
 
+message("CMAKE_TOOLCHAIN_FILE 2 : ${CMAKE_TOOLCHAIN_FILE}")
 
 set(CURL_ROOT ${CMAKE_BINARY_DIR}/external-libs/curl)
 
