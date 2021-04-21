@@ -32,10 +32,34 @@ list(APPEND CURL_BUILD_ARGS "-DCMAKE_USE_OPENSSL=ON")
 
 if(CMAKE_TOOLCHAIN_FILE)
    message("CURL : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC_RPI_GCC} and ${CC_RPI_GXX})")
-   #in case of cross compiling, need to append the toolchain file to ExternalProject and all the path provided in CMakeListUserConfig
-   list(APPEND CURL_BUILD_ARGS "-DCC_RPI_ROOT=${CC_RPI_ROOT}")
-   list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GCC=${CC_RPI_GCC}")
-   list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GXX=${CC_RPI_GXX}")
+
+   #provide OSXCROSS vars
+   if(OSXCROSS_HOST)
+      list(APPEND CURL_BUILD_ARGS "-DOSXCROSS_HOST=${OSXCROSS_HOST}")
+   endif()
+   if(OSXCROSS_TARGET_DIR)
+      list(APPEND CURL_BUILD_ARGS "-DOSXCROSS_TARGET_DIR=${OSXCROSS_TARGET_DIR}")
+   endif()
+   if(OSXCROSS_TARGET)
+      list(APPEND CURL_BUILD_ARGS "-DOSXCROSS_TARGET=${OSXCROSS_TARGET}")
+   endif()
+   if(OSXCROSS_SDK)
+      list(APPEND CURL_BUILD_ARGS "-DOSXCROSS_SDK=${OSXCROSS_SDK}")
+   endif()
+
+
+   #provide RPI_ROOT and also GCC and G++ (used by toolchain file)
+   if(CC_RPI_ROOT)
+      list(APPEND CURL_BUILD_ARGS "-DCC_RPI_ROOT=${CC_RPI_ROOT}")
+   endif()
+   
+   if(CC_RPI_GCC)
+      list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GCC=${CC_RPI_GCC}")
+   endif()
+  
+   if(CC_RPI_GXX)
+      list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GXX=${CC_RPI_GXX}")
+   endif()
    
    #append all potentials dependecnies that exteranl project may need (openssl mostly)
    if(OPENSSL_ROOT)
