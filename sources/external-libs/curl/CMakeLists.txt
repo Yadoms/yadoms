@@ -34,9 +34,13 @@ if(CMAKE_TOOLCHAIN_FILE)
    message("CURL : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC_RPI_GCC} and ${CC_RPI_GXX})")
 
    #provide OSXCROSS vars
+   set(CURL_PATHCMD)
    if(OSXCROSS_HOST)
       list(APPEND CURL_BUILD_ARGS "-DOSXCROSS_HOST=${OSXCROSS_HOST}")
+      
+      set(CURL_PATHCMD ${OSXCROSS_HOST}-osxcross-conf)      
    endif()
+   
    if(OSXCROSS_TARGET_DIR)
       list(APPEND CURL_BUILD_ARGS "-DOSXCROSS_TARGET_DIR=${OSXCROSS_TARGET_DIR}")
    endif()
@@ -79,10 +83,13 @@ if(CMAKE_TOOLCHAIN_FILE)
    endif()  
    
    list(APPEND CURL_BUILD_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+   
+   
 endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add(curl_build
    URL               https://curl.se/download/curl-7.76.1.zip
+   PATCH_COMMAND     ${CURL_PATHCMD}
    PREFIX            ${CURL_ROOT}
    CMAKE_ARGS        ${CURL_BUILD_ARGS}
    INSTALL_COMMAND   ""
