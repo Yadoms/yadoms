@@ -1,0 +1,84 @@
+{
+   "name": "Stream Deck",
+   "description": "Support de l'équipement Stream Deck (voir [site web Stream Deck](https://www.elgato.com/fr/gaming/stream-deck))",
+   "configurationSchema": {
+      "UsbDevices": {
+         "name": "Périphérique USB",
+         "description": "Sélectionner un périphérique compatible"
+      }
+   },
+   "customLabels": {
+      "pluginState": {
+         "failedToConnect": "La connexion a échoué...",
+         "initializationError": "Erreur d'initialisation"
+      },
+      "createKey": {
+         "step1": "Prétraitements",
+         "step2": "Encodage",
+         "step3": "Envoi des données",
+         "step4": "Affichage sur l'équipement"
+      }
+   },
+   "extraQueries": {
+      "createKey": {
+         "name": "Création d'une clé personnalisée",
+         "description": "Personnaliser les clés stream Deck avec vos propres images",
+         "commandData": {
+            "dynamicKeyIndex": {
+               "name": "Touche",
+               "description": "Le numéro de la touche. Les touches sont énumérées en partant du coin haut à droite"
+            },
+            "customText": {
+               "name": "Texte personnalisé",
+               "description": "Texte personnalisé à afficher en dessous de l'icône (OPTIONNEL)"
+            },
+            "fileContent": {
+               "name": "Icône",
+               "description": "Le chemin vers votre icône"
+            }
+         }
+      },
+      "resetKeys": {
+         "name": "Réinitialiser toutes les touches"
+      }
+   },
+   "deviceConfiguration": {
+      "dynamicConfigurationSchema": {
+         "schemas": {
+            "keyCreationDynamic": {
+               "mainSection": {
+                  "name": "Création des touches",
+                  "description": "Personnaliser vos touches stream deck avec des icones predefinies et des textes personnalisable. Si la case à touche n'est pas cochée, la touche sera vide",
+                  "content": {
+                     "keyElement": {
+                        "content": {
+                           "iconsArray": {
+                              "name": "Icône",
+                              "description": "La liste des icones disponible (voir [le Wiki](https://github.com/Yadoms/yadoms/wiki/StreamDeck#available-icons))"
+                           },
+                           "customTextArray": {
+                              "name": "Texte personnalisé",
+                              "description": "Texte personnalisé à afficher en dessous de l'icône (OPTIONNEL)"
+                           },
+                           "whenKeyIsPressedElement": {
+                              "name": "Activer le changement de l'icône lorsque la touche est enfoncée",
+                              "content": {
+                                 "iconsWhenKeyIsPressedArray": {
+                                    "name": "Icône",
+                                    "description": "La liste des icones disponible (voir [le Wiki](https://github.com/Yadoms/yadoms/wiki/StreamDeck#available-icons))"
+                                 },
+                                 "customTextWhenKeyIsPressedArray": {
+                                    "name": "Texte personnalisé",
+                                    "description": "Texte personnalisé à afficher en dessous de l'icône (OPTIONNEL)"
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+}

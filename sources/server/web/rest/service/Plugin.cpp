@@ -46,7 +46,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("state"), CPlugin::getInstanceState);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("log"), CPlugin::getInstanceLog);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstance);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("instanceRunning"), CPlugin::getInstanceRunning);

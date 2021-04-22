@@ -249,7 +249,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                en.set("values", ev);
                en.set("defaultValue", "DAY");
 
-               boost::shared_ptr<shared::CDataContainer> result = shared::CDataContainer::make();
+               auto result = shared::CDataContainer::make();
                result->set("interval", en);
 
                request->sendSuccess(result);

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AsyncSerialPort.h"
 #include <shared/Log.h>
-#include <shared/Peripherals.h>
+#include <shared/SerialPortHelper.h>
 #include "PortException.hpp"
 #include "Buffer.hpp"
 
@@ -77,13 +77,12 @@ namespace shared
          // Open the port
          try
          {
-
             YADOMS_LOG(debug) << "Open " << m_port << "...";
             m_boostSerialPort.open(m_port);
          }
          catch (boost::system::system_error& e)
          {
-            notifyEventHandler("asyncPort.serial.failToOpen", {{ "port", m_port }});
+            notifyEventHandler("asyncPort.serial.failToOpen", {{"port", m_port}});
             YADOMS_LOG(error) << " : Failed to open serial port : " << e.what();
             return false;
          }
@@ -135,8 +134,8 @@ namespace shared
 
       void CAsyncSerialPort::flush()
       {
-         // Hardware flush
-         CPeripherals::flushSerialPort(m_boostSerialPort);
+         // Hardware flush 
+         CSerialPortHelper::flushSerialPort(m_boostSerialPort);
 
          // Clear the receive buffer
          if (!!m_receiveBufferHandler)
@@ -163,7 +162,8 @@ namespace shared
             {
                YADOMS_LOG(debug) << " : Fail to reconnect, retry in a while...";
                m_connectRetryTimer.expires_from_now(m_connectRetryDelay);
-               m_connectRetryTimer.async_wait(boost::bind(&CAsyncSerialPort::reconnectTimerHandler, this, boost::asio::placeholders::error));
+               m_connectRetryTimer.async_wait(boost::bind(&CAsyncSerialPort::reconnectTimerHandler, this,
+                                                          boost::asio::placeholders::error));
                return;
             }
 
@@ -209,9 +209,15 @@ namespace shared
             disconnect();
 
             if (error == boost::asio::error::bad_descriptor)
-               notifyEventHandler("asyncPort.serial.failToCommunicateWithHardware", { {"message", error.message() }, { "code" , (boost::format("%1%") % error.value()).str() } });
+               notifyEventHandler("asyncPort.serial.failToCommunicateWithHardware", {
+                                     {"message", error.message()},
+                                     {"code", (boost::format("%1%") % error.value()).str()}
+                                  });
             else
-               notifyEventHandler("asyncPort.serial.error", { { "message", error.message() },{ "code" , (boost::format("%1%") % error.value()).str() } });
+               notifyEventHandler("asyncPort.serial.error", {
+                                     {"message", error.message()},
+                                     {"code", (boost::format("%1%") % error.value()).str()}
+                                  });
             return;
          }
 
@@ -245,7 +251,7 @@ namespace shared
             if (m_flowControl.value() == boost::asio::serial_port_base::flow_control::none
                || m_writeTimeout == boost::date_time::pos_infin)
             {
-               boost::asio::write(m_boostSerialPort, buffer);
+               write(m_boostSerialPort, buffer);
             }
             else
             {
@@ -253,16 +259,16 @@ namespace shared
                // In this case, use async write and apply timeout
                event::CEventHandler evtHandler;
                enum
-                  {
-                     kSendFinished = event::kUserFirstId
-                  };
+               {
+                  kSendFinished = event::kUserFirstId
+               };
                m_writeTimeouted = false;
-               boost::asio::async_write(m_boostSerialPort, buffer, 
-                                                      [&evtHandler](const boost::system::error_code& ec,
-                                                         std::size_t bytes_transferred)
-                                                      {
-                                                         evtHandler.postEvent(kSendFinished, ec);
-                                                      });
+               async_write(m_boostSerialPort, buffer,
+                           [&evtHandler](const boost::system::error_code& ec,
+                                         std::size_t bytes_transferred)
+                           {
+                              evtHandler.postEvent(kSendFinished, ec);
+                           });
 
                switch (evtHandler.waitForEvents(m_writeTimeout))
                {
@@ -307,30 +313,30 @@ namespace shared
       {
          if (m_connectStateEventHandler)
          {
-            auto param = boost::make_shared<CAsyncPortConnectionNotification>();
-            m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+            m_connectStateEventHandler->postEvent(m_connectStateEventId,
+                                                  boost::make_shared<CAsyncPortConnectionNotification>());
          }
       }
 
-      void CAsyncSerialPort::notifyEventHandler(const std::string & i18nErrorMessage) const
+      void CAsyncSerialPort::notifyEventHandler(const std::string& i18nErrorMessage) const
       {
          if (m_connectStateEventHandler)
          {
-            auto param = boost::make_shared<CAsyncPortConnectionNotification>(i18nErrorMessage);
-            m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+            m_connectStateEventHandler->postEvent(m_connectStateEventId,
+                                                  boost::make_shared<CAsyncPortConnectionNotification
+                                                  >(i18nErrorMessage));
          }
       }
 
-      void CAsyncSerialPort::notifyEventHandler(const std::string & i18nErrorMessage, const std::map<std::string, std::string> & i18nMessageParameters) const
+      void CAsyncSerialPort::notifyEventHandler(const std::string& i18nErrorMessage,
+                                                const std::map<std::string, std::string>& i18nMessageParameters) const
       {
          if (m_connectStateEventHandler)
          {
-            auto param = boost::make_shared<CAsyncPortConnectionNotification>(i18nErrorMessage, i18nMessageParameters);
-            m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+            m_connectStateEventHandler->postEvent(m_connectStateEventId,
+                                                  boost::make_shared<CAsyncPortConnectionNotification>(
+                                                     i18nErrorMessage, i18nMessageParameters));
          }
       }
-
    }
 } // namespace shared::communication
-
-

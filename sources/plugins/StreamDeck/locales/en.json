@@ -1,0 +1,84 @@
+{
+   "name": "Stream Deck",
+   "description": "Stream Deck devices support (see [site web](https://www.elgato.com/fr/gaming/stream-deck))",
+   "configurationSchema": {
+      "UsbDevices": {
+         "name": "USB device",
+         "description": "Select a compatible device"
+      }
+   },
+   "customLabels": {
+      "pluginState": {
+         "failedToConnect": "The connexion failed...",
+         "initializationError": "Initialization error"
+      },
+      "createKey": {
+         "step1": "Preprossing",
+         "step2": "Encoding",
+         "step3": "Send data",
+         "step4": "Display on device"
+      }
+   },
+   "extraQueries": {
+      "createKey": {
+         "name": "Create a custom key",
+         "description": "Customize stream Deck keys with your own images",
+         "commandData": {
+            "dynamicKeyIndex": {
+               "name": "Key",
+               "description": "The key number, The Keys are enumerated from the top right corner !"
+            },
+            "customText": {
+               "name": "Custom text",
+               "description": "Custom text to display below the icon (Optional)"
+            },
+            "fileContent": {
+               "name": "Icon",
+               "description": "Path of the icon"
+            }
+         }
+      },
+      "resetKeys": {
+         "name": "Reset all keys"
+      }
+   },
+   "deviceConfiguration": {
+      "dynamicConfigurationSchema": {
+         "schemas": {
+            "keyCreationDynamic": {
+               "mainSection": {
+                  "name": "Build keys",
+                  "description": "Personalize your stream deck keys with predefined icons and customizable texts. If the key box is not checked, the key will be empty.",
+                  "content": {
+                     "keyElement": {
+                        "content": {
+                           "iconsArray": {
+                              "name": "Icons",
+                              "description": "List of available icons (see [the Wiki](https://github.com/Yadoms/yadoms/wiki/StreamDeck#available-icons))"
+                           },
+                           "customTextArray": {
+                              "name": "Custom text",
+                              "description": "Custom text to display below the icon (OPTIONAL)"
+                           },
+                           "whenKeyIsPressedElement": {
+                              "name": "Enable changing icon image when the key is pressed",
+                              "content": {
+                                 "iconsWhenKeyIsPressedArray": {
+                                    "name": "Icons",
+                                    "description": "List of available icons (see [the Wiki](https://github.com/Yadoms/yadoms/wiki/StreamDeck#available-icons))"
+                                 },
+                                 "customTextWhenKeyIsPressedArray": {
+                                    "name": "Custom text",
+                                    "description": "Custom text to display below the icon (OPTIONAL)"
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+}
