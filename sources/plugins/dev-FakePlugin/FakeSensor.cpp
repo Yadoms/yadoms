@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "FakeSensor.h"
-#include <shared/currentTime/Provider.h>
 #include <shared/tools/Random.h>
+#include <utility>
 
-CFakeSensor::CFakeSensor(const std::string& deviceName)
-   : m_deviceName(deviceName),
+CFakeSensor::CFakeSensor(std::string deviceName)
+   : m_deviceName(std::move(deviceName)),
      m_temperature1(boost::make_shared<yApi::historization::CTemperature>("temp1")),
      m_temperature2(boost::make_shared<yApi::historization::CTemperature>("temp2")),
      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("Battery")),
@@ -12,21 +12,14 @@ CFakeSensor::CFakeSensor(const std::string& deviceName)
                                                                  yApi::EKeywordAccessMode::kGet,
                                                                  yApi::EMeasureType::kAbsolute,
                                                                  yApi::typeInfo::CDoubleTypeInfo().setMin(0).setMax(5).setPrecision(0.1))),
-   m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-     m_dateTime(boost::make_shared<yApi::historization::CDateTime>("dateTime",
-                                                                   shared::plugin::yPluginApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_temperature1, m_temperature2, m_batteryLevel, m_signalPower, m_dateTime, m_current})
+     m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+     m_historizers({m_temperature1, m_temperature2, m_batteryLevel, m_signalPower, m_current})
 {
    m_temperature1->set(25.0);
    m_temperature2->set(10.0);
    m_batteryLevel->set(100);
    m_current->set(2);
    m_signalPower->set(50);
-   m_dateTime->set(shared::currentTime::Provider().now());
-}
-
-CFakeSensor::~CFakeSensor()
-{
 }
 
 void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
@@ -36,7 +29,7 @@ void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
       api->declareDevice(m_deviceName, getType(), getModel(), m_historizers);
 }
 
-void CFakeSensor::read()
+void CFakeSensor::read() const
 {
    // Generate a random variation on temperature (-1.0° to 1.0°)
    auto offset = static_cast<int>(shared::tools::CRandom::generate(-10, 10)) / 10.0;
@@ -55,9 +48,6 @@ void CFakeSensor::read()
    // Decrease battery level (min 20%)
    if (m_batteryLevel->get() > 20)
       m_batteryLevel->set(m_batteryLevel->get() - 1);
-
-   //set the current date time onto m_datetime keyword
-   m_dateTime->set(shared::currentTime::Provider().now());
 
    // Generate a random variation on temperature (-1° to 1°)
    offset = static_cast<int>(shared::tools::CRandom::generate(-10, 10)) / 10.0;
@@ -95,4 +85,3 @@ const std::string& CFakeSensor::getType()
    static const std::string type("fakeSensorType");
    return type;
 }
-

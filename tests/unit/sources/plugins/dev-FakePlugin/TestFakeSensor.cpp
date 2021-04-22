@@ -4,7 +4,6 @@
 // Includes needed to compile tested classes
 #include <../../../../sources/shared/shared/plugin/yPluginApi/StandardCapacities.h>
 #include <../../../../sources/plugins/dev-FakePlugin/FakeSensor.h>
-#include <../../../../sources/shared/shared/currentTime/Provider.h>
 
 #include "../../mock/server/pluginSystem/DefaultYPluginApiMock.hpp"
 #include "../../mock/shared/currentTime/DefaultCurrentTimeMock.h"
@@ -24,7 +23,7 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
       if (itKw == api->getKeywords().end())
          BOOST_ERROR(keyword + " keyword not found");
 
-      auto kw = itKw->second;
+      const auto kw = itKw->second;
 
       BOOST_CHECK_EQUAL(kw.m_device, device);
       BOOST_CHECK_EQUAL(kw.m_capacity, capacity.getName());
@@ -32,18 +31,17 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
 
    BOOST_AUTO_TEST_CASE(DeviceDeclaration)
    {
-      CFakeSensor sensor(SensorId);
-      auto api(boost::make_shared<CDefaultYPluginApiMock>());
+      const auto api(boost::make_shared<CDefaultYPluginApiMock>());
+      const CFakeSensor sensor(SensorId);
 
       sensor.declareDevice(api);
 
       // Check keywords declaration
-      BOOST_CHECK_EQUAL(api->getKeywords().size(), static_cast<unsigned int>(6));
+      BOOST_CHECK_EQUAL(api->getKeywords().size(), static_cast<unsigned int>(5));
       ckeckKeyword(api, "temp1", SensorId, yApi::CStandardCapacities::Temperature());
       ckeckKeyword(api, "temp2", SensorId, yApi::CStandardCapacities::Temperature());
       ckeckKeyword(api, "Battery", SensorId, yApi::CStandardCapacities::BatteryLevel());
       ckeckKeyword(api, "signalPower", SensorId, yApi::CStandardCapacities::SignalPower());
-      ckeckKeyword(api, "dateTime", SensorId, yApi::CStandardCapacities::DateTime());
       ckeckKeyword(api, "current", SensorId, yApi::CStandardCapacities::Current());
    }
 
@@ -69,13 +67,13 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
 
    BOOST_AUTO_TEST_CASE(Historization)
    {
-      auto api(boost::make_shared<CDefaultYPluginApiMock>());
+      const auto api(boost::make_shared<CDefaultYPluginApiMock>());
       useTimeMock();
 
-      CFakeSensor sensor(SensorId);
+      const CFakeSensor sensor(SensorId);
       sensor.historizeData(api);
 
-      BOOST_CHECK_EQUAL(api->getData().size(), static_cast<unsigned int>(6));
+      BOOST_CHECK_EQUAL(api->getData().size(), static_cast<unsigned int>(5));
       BOOST_CHECK_EQUAL(readLastData(api, "temp1").m_device, SensorId);
       BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), 25.0);
       BOOST_CHECK_EQUAL(readLastData(api, "temp2").m_device, SensorId);
@@ -86,14 +84,11 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
       BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "signalPower").m_value), 50);
       BOOST_CHECK_EQUAL(readLastData(api, "current").m_device, SensorId);
       BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(api, "current").m_value), 2.0);
-      BOOST_CHECK_EQUAL(readLastData(api, "dateTime").m_device, SensorId);
-      auto readLastTime = boost::posix_time::time_from_string(readLastData(api, "dateTime").m_value);
-      BOOST_CHECK_EQUAL(readLastTime, shared::currentTime::Provider().now());
 
       sensor.read();
       sensor.historizeData(api);
 
-      BOOST_CHECK_EQUAL(api->getData().size(), static_cast<unsigned int>(12));
+      BOOST_CHECK_EQUAL(api->getData().size(), static_cast<unsigned int>(10));
       BOOST_CHECK_EQUAL(readLastData(api, "temp1").m_device, SensorId);
       BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), 24.0);
       BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), 26.0);
@@ -105,16 +100,12 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
       BOOST_CHECK_EQUAL(readLastData(api, "signalPower").m_device, SensorId);
       BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "signalPower").m_value), 50);
       BOOST_CHECK_EQUAL(readLastData(api, "current").m_device, SensorId);
-      BOOST_CHECK_EQUAL(readLastData(api, "dateTime").m_device, SensorId);
-      readLastTime = boost::posix_time::time_from_string(readLastData(api, "dateTime").m_value);
-      BOOST_CHECK_EQUAL(readLastTime, shared::currentTime::Provider().now());
    }
 
    BOOST_AUTO_TEST_CASE(BatteryDecrease)
    {
-      auto api(boost::make_shared<CDefaultYPluginApiMock>());
-
-      CFakeSensor sensor(SensorId);
+      const auto api(boost::make_shared<CDefaultYPluginApiMock>());
+      const CFakeSensor sensor(SensorId);
 
       // Decrease from 100 at each read
       // Stop decrease at 20%
@@ -131,8 +122,8 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
 
    BOOST_AUTO_TEST_CASE(TemperatureVariations)
    {
-      CFakeSensor sensor(SensorId);
-      auto api(boost::make_shared<CDefaultYPluginApiMock>());
+      const auto api(boost::make_shared<CDefaultYPluginApiMock>());
+      const CFakeSensor sensor(SensorId);
 
       // Loop of 100 tests
       // Temperature variation must be +/- 1° from previous value for temp1 and +/- 2° from previous value for temp12

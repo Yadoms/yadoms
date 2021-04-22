@@ -7,8 +7,7 @@
 #include "../../testCommon/fileSystem.h"
 
 
-
-class CTestPath
+class CTestPath final
 {
 public:
    explicit CTestPath(const std::string& testDirectory)
@@ -38,7 +37,7 @@ public:
       {
          testCommon::filesystem::removeDirectory(m_testDirectory);
       }
-      catch(boost::filesystem::filesystem_error&)
+      catch (boost::filesystem::filesystem_error&)
       {
          // Under Windows, directory can be locked for a little duration after directory creation
          // So wait a bit and re-try
@@ -51,7 +50,7 @@ private:
    const std::string& m_testDirectory;
 };
 
-class CTestConfigFile
+class CTestConfigFile final
 {
 public:
    CTestConfigFile()
@@ -67,7 +66,7 @@ public:
       testCommon::filesystem::removeFile(m_configFile, false);
    }
 
-   void writeSettings(std::string setting, std::string value) const
+   void writeSettings(const std::string setting, const std::string value) const
    {
       std::ofstream file(m_configFile.c_str(), std::ios_base::out | std::ios_base::app);
       file << setting << " = " << value << "\n";
@@ -90,36 +89,27 @@ static const std::string testFalsePath("FalsePath");
 #include <Poco/Util/Validator.h>
 #include <Poco/Util/LayeredConfiguration.h>
 #include <Poco/Util/AbstractConfiguration.h>
-#include <Poco/Util/SystemConfiguration.h>
 #include <Poco/Util/MapConfiguration.h>
 #include <Poco/Util/OptionException.h>
 
 BOOST_AUTO_TEST_SUITE(TestLoader)
 
 
-   class CStartupOptionMockup
+   class CStartupOptionMockup final
    {
    public:
-      class CMyConf : public Poco::Util::MapConfiguration
+      class CMyConf final: public Poco::Util::MapConfiguration
       {
       public:
-         CMyConf()
-         {
-         }
-
-         virtual ~CMyConf()
-         {
-         }
+         CMyConf() = default;
+         virtual ~CMyConf() = default;
       };
 
-      Poco::Util::OptionSet os;
-
-      CStartupOptionMockup(int argc, char* argv[], bool unixStyle)
-         :m_config(new CMyConf), m_options(*(m_config.get()))
+      CStartupOptionMockup(int argc, const char* argv[], bool unixStyle)
+         : m_config(new CMyConf), m_options(*(m_config.get()))
       {
-         
-         m_options.defineOptions(os);
-         Poco::Util::OptionProcessor processor(os);
+         m_options.defineOptions(m_os);
+         Poco::Util::OptionProcessor processor(m_os);
          processor.setUnixStyle(unixStyle);
          for (auto i = 0; i < argc; ++i)
          {
@@ -129,12 +119,11 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
             {
                if (!name.empty()) // "--" option to end options processing or deferred argument
                {
-                  handleOption(os, name, value);
+                  handleOption(m_os, name, value);
                }
             }
          }
          processor.checkRequired();
-         
       }
 
       startupOptions::CStartupOptions& options()
@@ -165,7 +154,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
          }
       }
 
-
+      Poco::Util::OptionSet m_os;
       Poco::AutoPtr<Poco::Util::AbstractConfiguration> m_config;
       startupOptions::CStartupOptions m_options;
    };
@@ -201,7 +190,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(helpRequest)
    {
-      char* argv[] = {"./TestLoader", "-help"};
+      const char* argv[] = {"./TestLoader", "-help"};
       BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), std::exception) ;
    }
 
@@ -212,14 +201,14 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(helpRequestShort)
    {
-      char* argv[] = {"./TestLoader", "-h"};
+      const char* argv[] = {"./TestLoader", "-h"};
       BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), std::exception) ;
    }
 
 
    BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "--port:2000"};
+      const char* argv[] = {"./TestLoader", "--port:2000"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -244,7 +233,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "--port", "2000"};
+      const char* argv[] = {"./TestLoader", "--port", "2000"};
 
       CStartupOptionMockup loader(3, argv, true);
 
@@ -269,7 +258,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Port_por_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "--por", "2000"};
+      const char* argv[] = {"./TestLoader", "--por", "2000"};
 
       CStartupOptionMockup loader(3, argv, true);
 
@@ -294,7 +283,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Port_Initialisation_Error1)
    {
-      char* argv[] = {"./TestLoader", "--webServer", "192.168.1.1"};
+      const char* argv[] = {"./TestLoader", "--webServer", "192.168.1.1"};
 
       BOOST_CHECK_THROW(CStartupOptionMockup loader(3, argv, true), Poco::Exception) ;
    }
@@ -306,7 +295,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Port_Initialisation_Error2)
    {
-      char* argv[] = {"./TestLoader", "-port", "2000"};
+      const char* argv[] = {"./TestLoader", "-port", "2000"};
 
       //Test the exception, and if this one is the correct one !
       BOOST_CHECK_THROW(CStartupOptionMockup loader(3, argv, true), Poco::Exception) ;
@@ -319,7 +308,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "--databaseSqliteFile:toto.db3"};
+      const char* argv[] = {"./TestLoader", "--databaseSqliteFile:toto.db3"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -344,7 +333,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "-Dtoto.db3"};
+      const char* argv[] = {"./TestLoader", "-Dtoto.db3"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -369,7 +358,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "-ltrace"};
+      const char* argv[] = {"./TestLoader", "-ltrace"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -394,7 +383,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "-ldebug"};
+      const char* argv[] = {"./TestLoader", "-ldebug"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -419,7 +408,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "-linformation"};
+      const char* argv[] = {"./TestLoader", "-linformation"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -444,7 +433,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "-lwarning"};
+      const char* argv[] = {"./TestLoader", "-lwarning"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -469,7 +458,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "-lerror"};
+      const char* argv[] = {"./TestLoader", "-lerror"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -494,7 +483,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "-lfatal"};
+      const char* argv[] = {"./TestLoader", "-lfatal"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -520,7 +509,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Log_l_notice_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "-lnotice"};
+      const char* argv[] = {"./TestLoader", "-lnotice"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -545,7 +534,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_Log_l_critical_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "-lcritical"};
+      const char* argv[] = {"./TestLoader", "-lcritical"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -570,12 +559,13 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(All_Loggerlevels)
    {
-      static const std::set<std::string> levels = boost::assign::list_of("none")("fatal")("critical")("error")("warning")("notice")("information")("debug")("trace");
+      static const std::set<std::string> levels = boost::assign::
+         list_of("none")("fatal")("critical")("error")("warning")("notice")("information")("debug")("trace");
       for (std::set<std::string>::const_iterator it = levels.begin(); it != levels.end(); ++it)
       {
          std::string opt("-l");
          opt += *it;
-         char* argv[] = {"./TestLoader", const_cast<char*>(opt.c_str())};
+         const char* argv[] = {"./TestLoader", const_cast<char*>(opt.c_str())};
          CStartupOptionMockup loader(2, argv, true);
          BOOST_CHECK_EQUAL(loader.options().getLogLevel(), *it) ;
       }
@@ -588,7 +578,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
    {
-      char* argv[] = {"./TestLoader", "-ltoto"};
+      const char* argv[] = {"./TestLoader", "-ltoto"};
       BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Util::InvalidArgumentException) ;
    }
 
@@ -599,7 +589,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Unknow_option_NoError)
    {
-      char* argv[] = {"./TestLoader", "-binfo"};
+      const char* argv[] = {"./TestLoader", "-binfo"};
       BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Util::UnknownOptionException) ;
    }
 
@@ -610,7 +600,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "-i192.168.1.1"};
+      const char* argv[] = {"./TestLoader", "-i192.168.1.1"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -635,7 +625,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
    {
-      char* argv[] = {"./TestLoader", "--webServerIp:192.168.1.1"};
+      const char* argv[] = {"./TestLoader", "--webServerIp:192.168.1.1"};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -660,7 +650,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error1)
    {
-      char* argv[] = {"./TestLoader", "--webServe:192.168.1.1"};
+      const char* argv[] = {"./TestLoader", "--webServe:192.168.1.1"};
 
       BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Exception) ;
    }
@@ -672,7 +662,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error2)
    {
-      char* argv[] = {"./TestLoader", "-i:192.168.1."};
+      const char* argv[] = {"./TestLoader", "-i:192.168.1."};
 
       BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Exception) ;
    }
@@ -688,7 +678,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       std::string arg = "-w";
       arg += testNewWebServerPath;
 
-      char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
+      const char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -716,7 +706,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       CTestPath webServerPath(testNewWebServerPath);
       std::string arg = "--webServerPath:";
       arg += testNewWebServerPath;
-      char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
+      const char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
       CStartupOptionMockup loader(2, argv, true);
 
@@ -746,7 +736,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       std::string arg = "--webServerPath:";
       arg += testFalsePath;
 
-      char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
+      const char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
       BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Exception) ;
    }
@@ -760,15 +750,15 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       CTestPath webServerPath(testNewWebServerPath);
 
-      char* argv[] =
-         {
-            "./TestLoader",
-            "--port", "8085",
-            "--databaseSqliteFile", "test.db3",
-            "--webServerIp", "192.168.1.3",
-            "--webServerPath", const_cast<char*>(testNewWebServerPath.c_str()),
-            "--logLevel", "warning"
-         };
+      const char* argv[] =
+      {
+         "./TestLoader",
+         "--port", "8085",
+         "--databaseSqliteFile", "test.db3",
+         "--webServerIp", "192.168.1.3",
+         "--webServerPath", const_cast<char*>(testNewWebServerPath.c_str()),
+         "--logLevel", "warning"
+      };
 
       CStartupOptionMockup loader(11, argv, true);
 
@@ -798,15 +788,15 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       std::string arg = "-w:";
       arg += testNewWebServerPath;
 
-      char* argv[] =
-         {
-            "./TestLoader",
-            "-p8085",
-            "-Dtest.db3",
-            "-i192.168.1.3",
-            "-lwarning",
-            const_cast<char*>(arg.c_str())
-         };
+      const char* argv[] =
+      {
+         "./TestLoader",
+         "-p8085",
+         "-Dtest.db3",
+         "-i192.168.1.3",
+         "-lwarning",
+         const_cast<char*>(arg.c_str())
+      };
 
       CStartupOptionMockup loader(6, argv, true);
 
@@ -831,10 +821,9 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Parameter_Missing_No_Exception)
    {
-      char* argv[] = {"./TestLoader", "-p"};
+      const char* argv[] = {"./TestLoader", "-p"};
 
       BOOST_CHECK_THROW(CStartupOptionMockup app(2, argv, true), Poco::Exception) ;
    }
 
-   BOOST_AUTO_TEST_SUITE_END()
-
+BOOST_AUTO_TEST_SUITE_END()

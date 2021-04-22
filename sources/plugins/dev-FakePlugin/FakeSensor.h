@@ -7,9 +7,11 @@ namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	Fake temperature sensor
-/// \note   Use to simulate a temperature sensor, with 2 variables values :
-///         - temperature : start at 25°, and vary from +- 0.0 to 1.0° at each read
+/// \note   Use to simulate a temperature sensor, with some variables values :
+///         - 2 temperatures : start at 25°, and vary from +- 0.0 to 1.0° at each read
 ///         - battery level : start at 100%, decrease by 1% at each read, to 20%
+///         - current : start at 2A, and vary from +- 0.0 to 5.0A at each read
+///         - signal power : fixed at 50%
 //--------------------------------------------------------------
 class CFakeSensor
 {
@@ -18,12 +20,12 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   explicit CFakeSensor(const std::string& deviceName);
+   explicit CFakeSensor(std::string deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CFakeSensor();
+   virtual ~CFakeSensor() = default;
 
    //--------------------------------------------------------------
    /// \brief	            Declare device and associated keywords if necessary
@@ -34,7 +36,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
    //--------------------------------------------------------------
-   void read();
+   void read() const;
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
@@ -52,8 +54,8 @@ public:
    /// \brief	    Returns the fake sensor model
    /// \return     The fake sensor model
    //--------------------------------------------------------------
-   static const std::string& getModel();   
-   
+   static const std::string& getModel();
+
    //--------------------------------------------------------------
    /// \brief	    Returns the fake sensor type
    /// \return     The fake sensor type
@@ -92,13 +94,7 @@ private:
    boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
 
    //--------------------------------------------------------------
-   /// \brief	The keyword associated with date time under string format useful only for demo
-   //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CDateTime> m_dateTime;
-
-   //--------------------------------------------------------------
    /// \brief	Historizers vector
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> m_historizers;
 };
-
