@@ -93,6 +93,13 @@ SET(COTIRE_USE_UNITY ON)
 #set(GAMMU_ROOT "/path/to/gammu/gammu-1.38.0")
 
 
+##### Plugin Streamdeck ######
+#
+# Plugin Streamdeck needs OpenCV
+#
+#set(OpenCV_DIR "path/to/opencvDir")
+
+
 ##### Script interpreters ######
 #
 # Script interpreters needs Swig (needed for all script interpreters)

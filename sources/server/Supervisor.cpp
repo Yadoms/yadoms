@@ -35,6 +35,7 @@
 #include "dateTime/TimeZoneProvider.h"
 #include "dateTime/TimeZoneDatabase.h"
 #include "automation/interpreter/Manager.h"
+#include "hardware/usb/DevicesListerFactory.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
                          const shared::versioning::CSemVer& yadomsVersion)
@@ -162,7 +163,8 @@ void CSupervisor::run()
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CEventLogger>(dal->getEventLogger()));
       webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CSystem>(timezoneDatabase));
+         boost::make_shared<web::rest::service::CSystem>(timezoneDatabase,
+                                                         hardware::usb::CDevicesListerFactory::createDeviceLister()));
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CAcquisition>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(
