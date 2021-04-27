@@ -64,18 +64,18 @@ BrandingText "@CPACK_NSIS_PACKAGE_NAME@"
  var PythonExecutable
  
 /*
- * Check if Python 2.7 is installed.
+ * Check if Python 3.9 is installed.
  * Result: $PythonExecutable contains the python executable path; of is empty if python not found
  *
  */
-Function CheckPython27
-   ReadRegStr $1 HKEY_LOCAL_MACHINE "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
+Function CheckPython3_9_32bits
+   ReadRegStr $1 HKEY_LOCAL_MACHINE "SOFTWARE\Python\PythonCore\3.9-32\InstallPath" ""
    StrCmp $1 "" 0 done ;if $1 is not empty, then goto next line, else goto "done"
-   ReadRegStr $1 HKEY_LOCAL_MACHINE "SOFTWARE\WOW6432Node\Python\PythonCore\2.7\InstallPath" ""
+   ReadRegStr $1 HKEY_LOCAL_MACHINE "SOFTWARE\WOW6432Node\Python\PythonCore\3.9-32\InstallPath" ""
    StrCmp $1 "" 0 done ;if $1 is not empty, then goto next line, else goto "done"
-   ReadRegStr $1 HKEY_CURRENT_USER "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
+   ReadRegStr $1 HKEY_CURRENT_USER "SOFTWARE\Python\PythonCore\3.9-32\InstallPath" ""
    StrCmp $1 "" 0 done ;if $1 is not empty, then goto next line, else goto "done"
-   ReadRegStr $1 HKEY_CURRENT_USER "SOFTWARE\WOW6432Node\Python\PythonCore\2.7\InstallPath" ""
+   ReadRegStr $1 HKEY_CURRENT_USER "SOFTWARE\WOW6432Node\Python\PythonCore\3.9-32\InstallPath" ""
    StrCmp $1 "" end done ;if $1 is not empty, then goto next line, else goto "done"
 done:
     StrCpy $PythonExecutable "$1\python.exe"
@@ -84,24 +84,25 @@ FunctionEnd
 
 /*
  * Install Python on system
+ * python-3.9.x.exe /quiet InstallAllUsers=1 PrependPath=1
  */
 Function InstallPython
-  File /oname=$TEMP\python.msi "@CPACK_NSIS_PLUGINS_ROOT@\python-2.7.14.msi"
+  File /oname=$TEMP\python-3.9.4.exe "@CPACK_NSIS_PLUGINS_ROOT@\python-3.9.4.exe"
 
   DetailPrint "Installing Python..."
   SetDetailsPrint none
-  ExecWait '"$SYSDIR\msiexec.exe" /i "$TEMP\python.msi" /qb!"' $0
+  ExecWait '"$TEMP\python-3.9.4.exe" /quiet InstallAllUsers=1 PrependPath=1' $0
   SetDetailsPrint both
   DetailPrint "Python installation returned $0"
 
-  Delete =$TEMP\python.msi
+  Delete =$TEMP\python-3.9.4.exe
 FunctionEnd
 
 /*
  * Check if Python exists, and install it if required
  */
 Function CheckAndInstallPython
-   Call CheckPython27
+   Call CheckPython3_9_32bits
    StrCmp $PythonExecutable "" 0 +2
    Call InstallPython
 FunctionEnd
@@ -781,7 +782,7 @@ Section "-Core installation"
   end_of_install_service:
   
   IntCmp $INSTALL_PYTHON 0 end_of_install_python
-  DetailPrint "Checking Python 2.7 and install it if needed"
+  DetailPrint "Checking Python 3.9 and install it if needed"
   Call CheckAndInstallPython
   end_of_install_python:
 
@@ -822,8 +823,8 @@ LangString TEXT_IO_OPTIONS_DESKTOP_ICON ${LANG_FRENCH} "Raccourci sur le Bureau"
 LangString TEXT_IO_OPTIONS_DESKTOP_ICON ${LANG_ENGLISH} "Desktop Icon"
 LangString TEXT_IO_OPTIONS_AS_SERVICE ${LANG_FRENCH} "Installer @CPACK_PACKAGE_NAME@ en tant que service Windows"
 LangString TEXT_IO_OPTIONS_AS_SERVICE ${LANG_ENGLISH} "Install @CPACK_PACKAGE_NAME@ as a service"
-LangString TEXT_IO_OPTIONS_PYTHON ${LANG_FRENCH} "Installer Python 2.7 (requis pour les scripts d'automatisation)"
-LangString TEXT_IO_OPTIONS_PYTHON ${LANG_ENGLISH} "Install Python 2.7 (required for automation rules)"
+LangString TEXT_IO_OPTIONS_PYTHON ${LANG_FRENCH} "Installer Python 3.9.4 (requis pour les scripts d'automatisation)"
+LangString TEXT_IO_OPTIONS_PYTHON ${LANG_ENGLISH} "Install Python 3.9.4 (required for automation rules)"
 
 
 Function InstallOptionsPage

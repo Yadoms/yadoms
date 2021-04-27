@@ -21,7 +21,7 @@ State=1
 
 [Field 3]
 Type=CheckBox
-Text=Install Python 2.7 (required by script interpreters)
+Text=Install Python 3.9 (required by script interpreters)
 Left=0
 Right=-1
 Top=60
