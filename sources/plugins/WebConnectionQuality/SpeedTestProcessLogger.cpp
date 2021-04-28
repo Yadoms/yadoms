@@ -9,10 +9,6 @@ CSpeedTestProcessLogger::CSpeedTestProcessLogger(const std::string& logPrefix)
 {
 }
 
-CSpeedTestProcessLogger::~CSpeedTestProcessLogger()
-{
-}
-
 void CSpeedTestProcessLogger::init()
 {
 }

@@ -1,12 +1,12 @@
 #pragma once
 
-class CSpeedTestEventData
+class CSpeedTestEventData final
 {
 public:
    CSpeedTestEventData(int returnCode,
                        const std::string& error,
                        const std::string& result);
-   virtual ~CSpeedTestEventData();
+   ~CSpeedTestEventData() = default;
 
    bool success() const;
    int returnCode() const;

@@ -6,10 +6,10 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 
-class CWebConnectionQualityConfiguration
+class CWebConnectionQualityConfiguration final
 {
 public:
-   virtual ~CWebConnectionQualityConfiguration();
+   ~CWebConnectionQualityConfiguration() = default;
 
    void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data);
    void trace() const;
@@ -19,4 +19,3 @@ public:
 private:
    yApi::YPluginConfiguration m_configuration;
 };
-

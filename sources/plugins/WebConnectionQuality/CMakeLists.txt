@@ -18,8 +18,8 @@ set(WEBCONNECTIONQUALITY_PLUGIN_SOURCES
 	WebConnectionQualityConfiguration.h
 	WebConnectionQualityConfiguration.cpp 
    
-   specificHistorizers/NetworkBandwithHistorizer.h
-   specificHistorizers/NetworkBandwithHistorizer.cpp
+   specificHistorizers/NetworkBandwidthHistorizer.h
+   specificHistorizers/NetworkBandwidthHistorizer.cpp
 )
 
 #########################################

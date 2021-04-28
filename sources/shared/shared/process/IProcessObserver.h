@@ -10,12 +10,7 @@ namespace shared
       class IProcessObserver
       {
       public:
-         //--------------------------------------------------------------
-         /// \brief	Destructor
-         //--------------------------------------------------------------
-         virtual ~IProcessObserver()
-         {
-         }
+         virtual ~IProcessObserver() = default;
 
          //--------------------------------------------------------------
          /// \brief	               Called when the process starts
@@ -32,5 +27,3 @@ namespace shared
       };
    }
 } // namespace shared::process
-
-

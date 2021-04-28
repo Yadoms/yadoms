@@ -17,13 +17,9 @@ static const auto DeviceName("Web connection quality");
 CWebConnectionQuality::CWebConnectionQuality()
    : m_connectedKw(boost::make_shared<yApi::historization::CSwitch>("Connected", yApi::EKeywordAccessMode::kGet)),
      m_pingKw(boost::make_shared<yApi::historization::CDuration>("Ping")),
-     m_uploadKw(boost::make_shared<specificHistorizers::CNetworkBandwithHistorizer>("Upload")),
-     m_downloadKw(boost::make_shared<specificHistorizers::CNetworkBandwithHistorizer>("Download")),
+     m_uploadKw(boost::make_shared<specificHistorizers::CNetworkBandwidthHistorizer>("Upload")),
+     m_downloadKw(boost::make_shared<specificHistorizers::CNetworkBandwidthHistorizer>("Download")),
      m_keywords({m_connectedKw, m_pingKw, m_uploadKw, m_downloadKw})
-{
-}
-
-CWebConnectionQuality::~CWebConnectionQuality()
 {
 }
 
@@ -116,7 +112,7 @@ void CWebConnectionQuality::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CWebConnectionQuality::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+void CWebConnectionQuality::declareDevice(const boost::shared_ptr<yApi::IYPluginApi>& api) const
 {
    if (api->deviceExists(DeviceName))
       return;
@@ -127,13 +123,13 @@ void CWebConnectionQuality::declareDevice(boost::shared_ptr<yApi::IYPluginApi> a
                       m_keywords);
 }
 
-void CWebConnectionQuality::startMeasure(boost::shared_ptr<yApi::IYPluginApi> api)
+void CWebConnectionQuality::startMeasure(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    YADOMS_LOG(information) << "Start measure...";
 
    std::vector<std::string> args;
    args.push_back((api->getInformation()->getPath() / "speedtest.py").string());
-   args.push_back("--json");
+   args.emplace_back("--json");
 
    const auto commandLine = boost::make_shared<shared::process::CNativeExecutableCommandLine>(
       shared::CExecutable::ToFileName("python"),
@@ -151,14 +147,14 @@ void CWebConnectionQuality::startMeasure(boost::shared_ptr<yApi::IYPluginApi> ap
                                                                       processLogger);
 }
 
-void CWebConnectionQuality::processResult(boost::shared_ptr<yApi::IYPluginApi> api,
+void CWebConnectionQuality::processResult(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                           const std::string& result) const
 {
    YADOMS_LOG(information) << "Process result...";
 
    try
    {
-      shared::CDataContainer resultContainer(result);
+      const shared::CDataContainer resultContainer(result);
 
       YADOMS_LOG(information) << "Result file gives :";
       resultContainer.printToLog(YADOMS_LOG(debug));

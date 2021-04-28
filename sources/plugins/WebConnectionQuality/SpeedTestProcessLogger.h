@@ -1,11 +1,11 @@
 #pragma once
 #include <shared/process/IExternalProcessLogger.h>
 
-class CSpeedTestProcessLogger : public shared::process::IExternalProcessLogger
+class CSpeedTestProcessLogger final : public shared::process::IExternalProcessLogger
 {
 public:
    explicit CSpeedTestProcessLogger(const std::string& logPrefix);
-   virtual ~CSpeedTestProcessLogger();
+   ~CSpeedTestProcessLogger() = default;
 
    // IExternalProcessLogger Implementation
    void init() override;

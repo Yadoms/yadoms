@@ -2,9 +2,6 @@
 #include "WebConnectionQualityConfiguration.h"
 #include "shared/Log.h"
 
-CWebConnectionQualityConfiguration::~CWebConnectionQualityConfiguration()
-{
-}
 
 void CWebConnectionQualityConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data)
 {

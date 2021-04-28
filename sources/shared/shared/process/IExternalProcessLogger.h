@@ -10,12 +10,7 @@ namespace shared
       class IExternalProcessLogger
       {
       public:
-         //-----------------------------------------------------
-         ///\brief               Destructor
-         //-----------------------------------------------------
-         virtual ~IExternalProcessLogger()
-         {
-         }
+         virtual ~IExternalProcessLogger() = default;
 
          //-----------------------------------------------------
          ///\brief               Init the logger
@@ -38,4 +33,3 @@ namespace shared
       };
    }
 } // namespace shared::process
-

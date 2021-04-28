@@ -11,10 +11,6 @@ CSpeedTestEventData::CSpeedTestEventData(int returnCode,
 {
 }
 
-CSpeedTestEventData::~CSpeedTestEventData()
-{
-}
-
 bool CSpeedTestEventData::success() const
 {
    return m_returnCode == 0;

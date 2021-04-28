@@ -6,14 +6,13 @@
 
 namespace plugin_cpp_api
 {
-
    //--------------------------------------------------------------
-   /// \class General plugin interface
+   /// \brief General plugin interface
    //--------------------------------------------------------------
    class IPlugin
    {
    public:
-      virtual ~IPlugin() {}
+      virtual ~IPlugin() = default;
 
       //--------------------------------------------------------------
       /// \brief              Main plugin function
@@ -25,5 +24,4 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       virtual void doWork(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api) = 0;
    };
-
 } // namespace plugin_cpp_api

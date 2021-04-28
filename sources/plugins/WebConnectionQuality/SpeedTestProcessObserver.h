@@ -4,13 +4,13 @@
 #include "SpeedTestProcessLogger.h"
 
 
-class CSpeedTestProcessObserver : public shared::process::IProcessObserver
+class CSpeedTestProcessObserver final : public shared::process::IProcessObserver
 {
 public:
    explicit CSpeedTestProcessObserver(shared::event::CEventHandler& pluginEventHandler,
                                       int eventId,
-                                      boost::shared_ptr<CSpeedTestProcessLogger> speedTestProcessLoggerlogger);
-   virtual ~CSpeedTestProcessObserver();
+                                      boost::shared_ptr<CSpeedTestProcessLogger> speedTestProcessLogger);
+   ~CSpeedTestProcessObserver() = default;
 
 protected:
    // IProcessObserver Implementation
@@ -21,6 +21,6 @@ protected:
 
 private:
    shared::event::CEventHandler& m_pluginEventHandler;
-   int m_eventId;
-   boost::shared_ptr<CSpeedTestProcessLogger> m_speedTestProcessLoggerlogger;
+   const int m_eventId;
+   boost::shared_ptr<CSpeedTestProcessLogger> m_speedTestProcessLogger;
 };
