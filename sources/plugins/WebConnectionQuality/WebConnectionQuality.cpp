@@ -160,9 +160,9 @@ void CWebConnectionQuality::processResult(const boost::shared_ptr<yApi::IYPlugin
       resultContainer.printToLog(YADOMS_LOG(debug));
       
       m_connectedKw->set(true);
-      m_pingKw->set(static_cast<unsigned int>(resultContainer.get<double>("ping") / 1000.0));
-      m_downloadKw->set(static_cast<unsigned int>(resultContainer.get<double>("download")));
-      m_uploadKw->set(static_cast<unsigned int>(resultContainer.get<double>("upload")));
+      m_pingKw->set(resultContainer.get<double>("ping") / 1000.0);
+      m_downloadKw->set(resultContainer.get<unsigned int>("download"));
+      m_uploadKw->set(resultContainer.get<unsigned int>("upload"));
 
       YADOMS_LOG(information) << "  - ping : " << m_pingKw->get();
       YADOMS_LOG(information) << "  - download : " << m_downloadKw->get();

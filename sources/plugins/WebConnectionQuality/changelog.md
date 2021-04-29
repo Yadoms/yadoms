@@ -1,5 +1,6 @@
-### 2.1.1-beta.1
+### 2.1.1
 * Fix speedtest fail from March 8, 2021 (speedtest.net server response changed)
+* Fix ping delay
 
 ### 2.1.0
 * Fix #562  : update usage of CDataContainer for better memory optimizations
