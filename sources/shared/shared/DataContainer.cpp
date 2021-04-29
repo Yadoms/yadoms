@@ -10,6 +10,7 @@
 #include "rapidjson/pointer.h"
 #include "rapidjson/error/error.h"
 #include "rapidjson/error/en.h"
+#include <float.h>
 
 #define MIN_USER_BUFFER_SIZE(itemcount) (12  + (32*itemcount))
 
