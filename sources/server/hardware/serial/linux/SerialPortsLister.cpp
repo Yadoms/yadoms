@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <shared/Log.h>
 #include "SerialPortsLister.h"
-#include <termios.h>
 
 namespace hardware
 {
@@ -56,7 +55,8 @@ namespace hardware
                if (boost::filesystem::is_symlink(*dirIter))
                {
                   std::string friendlyName(dirIter->path().leaf().string()); // friendlyName comes from udev rules (ex : "ttyUSB_EnOcean")
-                  std::string portName(dirIterr->path().string());            // portName is "/dev/ttyUSB_EnOcean"
+                  std::string portName(dirIter->path().string());            // portName is "/dev/ttyUSB_EnOcean"
+                  YADOMS_LOG(debug) << "Found SL serial port " << friendlyName << ", " << portName;
                   (*serialPorts)[portName]=friendlyName;
                }
             }
