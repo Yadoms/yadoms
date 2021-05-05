@@ -19,7 +19,7 @@ namespace hardware
          return serialPorts;
       }
 
-      boost::shared_ptr<SerialPortsMap> CSerialPortsLister::listPhysicalSerialPorts()
+      boost::shared_ptr<CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listPhysicalSerialPorts()
       {
          boost::filesystem::path ttyDir("/sys/class/tty");
 
@@ -42,7 +42,7 @@ namespace hardware
          return serialPorts;
       }
 
-      boost::shared_ptr<SerialPortsMap> CSerialPortsLister::listSymbolicLinksToSerialPorts()
+      boost::shared_ptr<CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSymbolicLinksToSerialPorts()
       {
          boost::filesystem::path ttyDir("/dev");
 
