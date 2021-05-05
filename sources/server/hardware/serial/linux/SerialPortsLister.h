@@ -16,6 +16,10 @@ namespace hardware
          //--------------------------------------------------------------
          typedef std::map<std::string, std::string> SerialPortsMap;
          static boost::shared_ptr<SerialPortsMap> listSerialPorts();
+
+      private:
+         static boost::shared_ptr<SerialPortsMap> listPhysicalSerialPorts();
+         static boost::shared_ptr<SerialPortsMap> listSymbolicLinksToSerialPorts();
       };
    } // namespace serial
 } // namespace hardware
