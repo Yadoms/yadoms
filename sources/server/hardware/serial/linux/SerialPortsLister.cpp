@@ -13,13 +13,13 @@ namespace hardware
          auto symbolicLinksToSerialPorts = listSymbolicLinksToSerialPorts();
 
          auto serialPorts(boost::make_shared<SerialPortsMap>());
-         serialPorts.insert(physicalSerialPorts.begin(), physicalSerialPorts.end());
-         serialPorts.insert(symbolicLinksToSerialPorts.begin(), symbolicLinksToSerialPorts.end());
+         serialPorts->insert(physicalSerialPorts->begin(), physicalSerialPorts->end());
+         serialPorts->insert(symbolicLinksToSerialPorts->begin(), symbolicLinksToSerialPorts->end());
 
          return serialPorts;
       }
 
-      boost::shared_ptr<SerialPortsMap> listPhysicalSerialPorts()
+      boost::shared_ptr<SerialPortsMap> CSerialPortsLister::listPhysicalSerialPorts()
       {
          boost::filesystem::path ttyDir("/sys/class/tty");
 
@@ -42,7 +42,7 @@ namespace hardware
          return serialPorts;
       }
 
-      boost::shared_ptr<SerialPortsMap> listSymbolicLinksToSerialPorts()
+      boost::shared_ptr<SerialPortsMap> CSerialPortsLister::listSymbolicLinksToSerialPorts()
       {
          boost::filesystem::path ttyDir("/dev");
 
@@ -55,8 +55,8 @@ namespace hardware
             {
                if (boost::filesystem::is_symlink(*dirIter))
                {
-                  std::string friendlyName(dirIter->leaf().string()); // friendlyName comes from udev rules (ex : "ttyUSB_EnOcean")
-                  std::string portName(dirIter->string());            // portName is "/dev/ttyUSB_EnOcean"
+                  std::string friendlyName(dirIter->path().leaf().string()); // friendlyName comes from udev rules (ex : "ttyUSB_EnOcean")
+                  std::string portName(dirIterr->path().string());            // portName is "/dev/ttyUSB_EnOcean"
                   (*serialPorts)[portName]=friendlyName;
                }
             }
