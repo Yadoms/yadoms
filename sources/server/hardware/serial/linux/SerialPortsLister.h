@@ -15,11 +15,11 @@ namespace hardware
          /// \return       The serial ports names (keys are real name, values are common name or comment ("used by..."))
          //--------------------------------------------------------------
          typedef std::map<std::string, std::string> SerialPortsMap;
-         static boost::shared_ptr<SerialPortsMap> listSerialPorts();
+         static boost::shared_ptr<const SerialPortsMap> listSerialPorts();
 
       private:
-         static boost::shared_ptr<SerialPortsMap> listPhysicalSerialPorts();
-         static boost::shared_ptr<SerialPortsMap> listSymbolicLinksToSerialPorts();
+         static boost::shared_ptr<const SerialPortsMap> listPhysicalSerialPorts();
+         static boost::shared_ptr<const SerialPortsMap> listSymbolicLinksToSerialPorts();
       };
    } // namespace serial
 } // namespace hardware

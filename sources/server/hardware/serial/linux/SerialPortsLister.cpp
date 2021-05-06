@@ -6,7 +6,7 @@ namespace hardware
 {
    namespace serial
    {
-      boost::shared_ptr<CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSerialPorts()
+      boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSerialPorts()
       {
          YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts()...";
          
@@ -21,15 +21,19 @@ namespace hardware
          YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts(), insert symbolicLinksToSerialPorts...";
          serialPorts->insert(symbolicLinksToSerialPorts->begin(), symbolicLinksToSerialPorts->end());
 
+         YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts(), found :";
+         for (const auto sp : serialPorts)
+            YADOMS_LOG(debug) << "  - " << sp->first << ", " << sp->second;
+
          YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts() => found " << serialPorts->size() << " ports";
          return serialPorts;
       }
 
-      boost::shared_ptr<CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listPhysicalSerialPorts()
+      boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listPhysicalSerialPorts()
       {
          boost::filesystem::path ttyDir("/sys/class/tty");
 
-         auto serialPorts(boost::make_shared<SerialPortsMap>());
+         auto serialPorts = boost::make_shared<SerialPortsMap>();
 
          if (boost::filesystem::exists(ttyDir) && boost::filesystem::is_directory(ttyDir))
          {
@@ -48,13 +52,13 @@ namespace hardware
          return serialPorts;
       }
 
-      boost::shared_ptr<CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSymbolicLinksToSerialPorts()
+      boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSymbolicLinksToSerialPorts()
       {
          YADOMS_LOG(debug) << "CSerialPortsLister::listSymbolicLinksToSerialPorts()...";
 
          boost::filesystem::path ttyDir("/dev");
 
-         auto serialPorts(boost::make_shared<SerialPortsMap>());
+         auto serialPorts = boost::make_shared<SerialPortsMap>();
          
          YADOMS_LOG(debug) << "CSerialPortsLister::listSymbolicLinksToSerialPorts(), if (boost::filesystem::exists(ttyDir) && boost::filesystem::is_directory(ttyDir)) ...";
          if (boost::filesystem::exists(ttyDir) && boost::filesystem::is_directory(ttyDir))
