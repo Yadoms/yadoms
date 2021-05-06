@@ -21,7 +21,7 @@ namespace hardware
          YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts(), insert symbolicLinksToSerialPorts...";
          serialPorts->insert(symbolicLinksToSerialPorts->begin(), symbolicLinksToSerialPorts->end());
 
-         YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts() => found " << serialPorts.size() << " ports";
+         YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts() => found " << serialPorts->size() << " ports";
          return serialPorts;
       }
 
@@ -76,7 +76,7 @@ namespace hardware
             }
          }
          
-         YADOMS_LOG(debug) << "CSerialPortsLister::listSymbolicLinksToSerialPorts() => found " << serialPorts.size() << " ports";
+         YADOMS_LOG(debug) << "CSerialPortsLister::listSymbolicLinksToSerialPorts() => found " << serialPorts->size() << " ports";
          return serialPorts;
       }
    } // namespace serial
