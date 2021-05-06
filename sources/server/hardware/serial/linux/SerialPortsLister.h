@@ -19,7 +19,9 @@ namespace hardware
 
       private:
          static boost::shared_ptr<const SerialPortsMap> listPhysicalSerialPorts();
-         static boost::shared_ptr<const SerialPortsMap> listSymbolicLinksToSerialPorts();
+         static boost::shared_ptr<const SerialPortsMap> listSymbolicLinksToSerialPorts(boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> physicalPorts);
+         static bool linkTargetIsPhysicalPort(const boost::filesystem::path& linkTarget,
+                                              boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> physicalPorts);
       };
    } // namespace serial
 } // namespace hardware

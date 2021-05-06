@@ -13,17 +13,17 @@ namespace hardware
          YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts(), call listPhysicalSerialPorts...";
          auto physicalSerialPorts = listPhysicalSerialPorts();
          YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts(), call listSymbolicLinksToSerialPorts...";
-         auto symbolicLinksToSerialPorts = listSymbolicLinksToSerialPorts();
+         auto symbolicLinksToSerialPorts = listSymbolicLinksToSerialPorts(physicalSerialPorts);
 
-         auto serialPorts(boost::make_shared<SerialPortsMap>());
+         auto serialPorts = boost::make_shared<SerialPortsMap>();
          YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts(), insert physicalSerialPorts...";
          serialPorts->insert(physicalSerialPorts->begin(), physicalSerialPorts->end());
          YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts(), insert symbolicLinksToSerialPorts...";
          serialPorts->insert(symbolicLinksToSerialPorts->begin(), symbolicLinksToSerialPorts->end());
 
          YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts(), found :";
-         for (const auto sp : serialPorts)
-            YADOMS_LOG(debug) << "  - " << sp->first << ", " << sp->second;
+         for (const auto& sp : *serialPorts)
+            YADOMS_LOG(debug) << "  - " << sp.first << ", " << sp.second;
 
          YADOMS_LOG(debug) << "CSerialPortsLister::listSerialPorts() => found " << serialPorts->size() << " ports";
          return serialPorts;
@@ -52,7 +52,7 @@ namespace hardware
          return serialPorts;
       }
 
-      boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSymbolicLinksToSerialPorts()
+      boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> CSerialPortsLister::listSymbolicLinksToSerialPorts(boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> physicalPorts)
       {
          YADOMS_LOG(debug) << "CSerialPortsLister::listSymbolicLinksToSerialPorts()...";
 
@@ -68,7 +68,7 @@ namespace hardware
             for (boost::filesystem::directory_iterator dirIter(ttyDir) ; dirIter != endIter ; ++dirIter)
             {
                YADOMS_LOG(debug) << "CSerialPortsLister::listSymbolicLinksToSerialPorts(), if (boost::filesystem::is_symlink(*dirIter)) ...";
-               if (boost::filesystem::is_symlink(*dirIter))
+               if (boost::filesystem::is_symlink(*dirIter) && linkTargetIsPhysicalPort(*dirIter, physicalPorts))
                {
                   YADOMS_LOG(debug) << "CSerialPortsLister::listSymbolicLinksToSerialPorts(), std::string friendlyName(dirIter->path().leaf().string()); ...";
                   std::string friendlyName(dirIter->path().leaf().string()); // friendlyName comes from udev rules (ex : "ttyUSB_EnOcean")
@@ -83,5 +83,13 @@ namespace hardware
          YADOMS_LOG(debug) << "CSerialPortsLister::listSymbolicLinksToSerialPorts() => found " << serialPorts->size() << " ports";
          return serialPorts;
       }
+
+      bool CSerialPortsLister::linkTargetIsPhysicalPort(const boost::filesystem::path& linkTarget,
+                                                        boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> physicalPorts)
+      {
+         YADOMS_LOG(debug) << "CSerialPortsLister::linkTargetIsPhysicalPort(" << linkTarget.string() << ") = " << (physicalPorts->find(linkTarget.leaf().string()) != physicalPorts->end() ? "YES" : "NO");
+         return physicalPorts->find(linkTarget.leaf().string()) != physicalPorts->end();
+      }
+
    } // namespace serial
 } // namespace hardware
