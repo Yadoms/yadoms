@@ -84,10 +84,12 @@ namespace hardware
          return serialPorts;
       }
 
-      bool CSerialPortsLister::linkTargetIsPhysicalPort(const boost::filesystem::path& linkTarget,
+      bool CSerialPortsLister::linkTargetIsPhysicalPort(const boost::filesystem::path& link,
                                                         boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> physicalPorts)
       {
-         YADOMS_LOG(debug) << "CSerialPortsLister::linkTargetIsPhysicalPort(" << linkTarget.string() << ") = " << (physicalPorts->find(linkTarget.leaf().string()) != physicalPorts->end() ? "YES" : "NO");
+         YADOMS_LOG(debug) << "CSerialPortsLister::linkTargetIsPhysicalPort(" << link.string() << ") = " << (physicalPorts->find(link.leaf().string()) != physicalPorts->end() ? "YES" : "NO");
+         const auto linkTarget = read_symlink(link);
+         YADOMS_LOG(debug) << "linkTarget = " << linkTarget.string();
          return physicalPorts->find(linkTarget.leaf().string()) != physicalPorts->end();
       }
 
