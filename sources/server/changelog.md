@@ -21,6 +21,7 @@
 * New feature #705 : Add obsolete management for modules
 * New feature #721 : Display rule interpreter icon in automation page
 * New feature #728 : Add restore backup function from a file
+* List also serial ports from symbolic links (from UDEV rules) under Linux
 * Fix dynamically configurable devices translations
 * Fix removing interpreter
 * Rename plugin/device states capacity (remove `_capacity` suffix)
