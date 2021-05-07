@@ -1,3 +1,6 @@
+### 1.1.2
+* Fix unit display
+
 ### 1.1.1
 * Better keyword selection filtering
 

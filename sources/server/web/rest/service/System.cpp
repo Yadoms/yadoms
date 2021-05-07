@@ -81,6 +81,7 @@ namespace web
          {
             try
             {
+               YADOMS_LOG(debug) << "List serial ports...";
                const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
 
                shared::CDataContainer result;
