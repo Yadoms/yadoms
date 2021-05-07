@@ -8,6 +8,7 @@ Features
 
 	Edit
 	Many devices support
+   EnOcean
 	RfxCom
 	ZWave
 	Automation rule

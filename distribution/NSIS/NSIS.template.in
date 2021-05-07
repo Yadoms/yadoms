@@ -776,16 +776,14 @@ Section "-Core installation"
 @CPACK_NSIS_CREATE_ICONS_DESKTOP_NOSERVICE@
   end_of_install_desktop_icons:
   
+  IntCmp $INSTALL_PYTHON 0 end_of_install_python
+  DetailPrint "Checking Python 3.9 and install it if needed"
+  Call CheckAndInstallPython
+  end_of_install_python:  
   
   IntCmp $INSTALL_SERVICE 0 end_of_install_service
 @CPACK_NSIS_INSTALL_SERVICE@
   end_of_install_service:
-  
-  IntCmp $INSTALL_PYTHON 0 end_of_install_python
-  DetailPrint "Checking Python 3.9 and install it if needed"
-  Call CheckAndInstallPython
-  end_of_install_python:
-
   
   
   ; Write special uninstall registry entries
