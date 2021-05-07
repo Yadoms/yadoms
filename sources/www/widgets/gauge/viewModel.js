@@ -118,7 +118,9 @@ widgetViewModelCtor = function gaugeViewModel() {
                     self.value(data.value);
                 }
 
-                self.unit(isNullOrUndefinedOrEmpty(data.unit) ? "" : $.t(data.unit));
+                // data.unit is provided only once (at first call)
+                if (!isNullOrUndefinedOrEmpty(data.unit))
+                  self.unit($.t(data.unit));
             }
         } catch (error) {
             self.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
