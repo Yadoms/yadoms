@@ -89,10 +89,12 @@ namespace hardware
          YADOMS_LOG(debug) << "CSerialPortsLister::linkTargetIsPhysicalPort(" << link.string() << ") = " << (physicalPorts->find(link.leaf().string()) != physicalPorts->end() ? "YES" : "NO");
          const auto linkTarget = read_symlink(link);
          YADOMS_LOG(debug) << "linkTarget = " << linkTarget.string();
-         return std::find(physicalPorts->begin(), physicalPorts->end(), [&linkTarget](const auto& pp){
-            YADOMS_LOG(debug) << "boost::filesystem::path(pp.first).leaf() = " << boost::filesystem::path(pp.first).leaf() << ", linkTarget.leaf() = " << linkTarget.leaf();
-            return boost::filesystem::path(pp.first).leaf() == linkTarget.leaf()}) != physicalPorts->end();
-         return physicalPorts->find(linkTarget.leaf().string()) != physicalPorts->end();
+         return std::find(physicalPorts->begin(),
+                          physicalPorts->end(),
+                          [&linkTarget](const auto& pp) {
+                             YADOMS_LOG(debug) << "boost::filesystem::path(pp.first).leaf() = " << boost::filesystem::path(pp.first).leaf() << ", linkTarget.leaf() = " << linkTarget.leaf();
+                             return boost::filesystem::path(pp.first).leaf() == linkTarget.leaf();
+                          }) != physicalPorts->end();
       }
 
    } // namespace serial
