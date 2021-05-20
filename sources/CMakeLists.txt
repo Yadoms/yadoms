@@ -311,7 +311,6 @@ set(USE_POCO_WEBSERVER TRUE)
 #include libs (have their own CMakeList.txt)
 add_subdirectory(external-libs)
 
-message("CMAKE_TOOLCHAIN_FILE 1 : ${CMAKE_TOOLCHAIN_FILE}")
 
 ##################################################################################################
 ## Yadoms
@@ -1158,7 +1157,8 @@ set(YADOMS_ALL_INCL_DIR
    ${BOOST_INCL_DIR} 
    ${OPENSSL_INCLUDE_DIR}
    ${Poco_INCLUDE_DIRS}
-   ${YADOMS_INCL_DIR} 
+   ${YADOMS_INCL_DIR}
+   ${OATPP_INCLUDE_DIR}
 )
 
 set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
@@ -1173,6 +1173,7 @@ target_link_libraries(yadoms
    ${YADOMS_EXTERNAL_LINK}
    ${LIBS}
    ${CMAKE_DL_LIBS}
+   ${OATPP_LIBRARY}
 )
 
 ##################################################################################################
