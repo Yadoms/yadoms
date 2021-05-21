@@ -55,7 +55,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp_build
    GIT_REPOSITORY    https://github.com/oatpp/oatpp.git
-   GIT_TAG           origin/master
+   GIT_TAG           origin/master   # TODO remplacer par un tag fixe dès qu'une version compilera pour win32 (1.3.0 ?)
    GIT_SHALLOW       ON
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_PATHCMD}   
