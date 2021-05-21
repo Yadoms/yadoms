@@ -1,27 +1,23 @@
 #pragma once
-
-#include "IRestHandler.h"
-#include <Poco/SharedPtr.h>
 #include "IWebServerConfigurator.h"
 
-namespace web {
+namespace web
+{
    //
-   //\brief Interface for web server
+   //\Brief Interface for web server
    //
    class IWebServer
    {
    public:
-      virtual ~IWebServer()
-      {
-      }
+      virtual ~IWebServer() = default;
 
       //
-      //\brief Start the webserver
+      //\Brief Start the webserver
       //
       virtual void start() = 0;
 
       //
-      //\brief Stop the webserver
+      //\Brief Stop the webserver
       //
       virtual void stop() = 0;
 
@@ -32,5 +28,4 @@ namespace web {
       //-----------------------------------------
       virtual IWebServerConfigurator* getConfigurator() = 0;
    };
-
 } //namespace web
