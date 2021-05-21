@@ -228,12 +228,6 @@ Var AR_RegFlags
 !include "WinMessages.NSH"
 !verbose 4
 
-;----------------------------------------
-; based upon a script of "Written by KiCHiK 2003-01-18 05:57:02"
-;----------------------------------------
-!verbose 3
-!include "WinMessages.NSH"
-!verbose 4
 ;====================================================
 ; get_NT_environment
 ;     Returns: the selected environment
