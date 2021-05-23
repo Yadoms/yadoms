@@ -20,7 +20,7 @@ const std::string& CHueLightInformations::getName() const
    return m_name;
 }
 
-const std::string& CHueLightInformations::getModelId() const
+const ELightType& CHueLightInformations::getModelId() const
 {
    return m_modelId;
 }
@@ -87,7 +87,106 @@ void CHueLightInformations::setName(const std::string& name)
 
 void CHueLightInformations::setModelId(const std::string& modelId)
 {
-   m_modelId = modelId;
+   if (modelId == ELightType::kLCT001.toString())
+   {
+      m_modelId = ELightType::kLCT001;
+   }
+   else if (modelId == ELightType::kLCT002.toString())
+   {
+      m_modelId = ELightType::kLCT002;
+   }
+   else if (modelId == ELightType::kLCT003.toString())
+   {
+      m_modelId = ELightType::kLCT003;
+   }
+   else if (modelId == ELightType::kLCT007.toString())
+   {
+      m_modelId = ELightType::kLCT007;
+   }
+   else if (modelId == ELightType::kLLM001.toString())
+   {
+      m_modelId = ELightType::kLLM001;
+   }
+   else if (modelId == ELightType::kLCT010.toString())
+   {
+      m_modelId = ELightType::kLCT010;
+   }
+   else if (modelId == ELightType::kLCT011.toString())
+   {
+      m_modelId = ELightType::kLCT011;
+   }
+   else if (modelId == ELightType::kLCT012.toString())
+   {
+      m_modelId = ELightType::kLCT012;
+   }
+   else if (modelId == ELightType::kLCT014.toString())
+   {
+      m_modelId = ELightType::kLCT014;
+   }
+   else if (modelId == ELightType::kLCT015.toString())
+   {
+      m_modelId = ELightType::kLCT015;
+   }
+   else if (modelId == ELightType::kLCT016.toString())
+   {
+      m_modelId = ELightType::kLCT016;
+   }
+   else if (modelId == ELightType::kLLC020.toString())
+   {
+      m_modelId = ELightType::kLLC020;
+   }
+   else if (modelId == ELightType::kLST002.toString())
+   {
+      m_modelId = ELightType::kLST002;
+   }
+   else if (modelId == ELightType::kLCA003.toString())
+   {
+      m_modelId = ELightType::kLCA003;
+   }
+   else if (modelId == ELightType::kLCB001.toString())
+   {
+      m_modelId = ELightType::kLCB001;
+   }
+   else if (modelId == ELightType::kLST001.toString())
+   {
+      m_modelId = ELightType::kLST001;
+   }
+   else if (modelId == ELightType::kLLC005.toString())
+   {
+      m_modelId = ELightType::kLLC005;
+   }
+   else if (modelId == ELightType::kLLC006.toString())
+   {
+      m_modelId = ELightType::kLLC006;
+   }
+   else if (modelId == ELightType::kLLC007.toString())
+   {
+      m_modelId = ELightType::kLLC007;
+   }
+   else if (modelId == ELightType::kLLC010.toString())
+   {
+      m_modelId = ELightType::kLLC010;
+   }
+   else if (modelId == ELightType::kLLC011.toString())
+   {
+      m_modelId = ELightType::kLLC011;
+   }
+   else if (modelId == ELightType::kLLC012.toString())
+   {
+      m_modelId = ELightType::kLLC012;
+   }
+   else if (modelId == ELightType::kLLC013.toString())
+   {
+      m_modelId = ELightType::kLLC013;
+   }
+   else if (modelId == ELightType::kLLC014.toString())
+   {
+      m_modelId = ELightType::kLLC014;
+   }
+   else
+   {
+      m_modelId = ELightType::kOther;
+   }
 }
 
 void CHueLightInformations::setManufacturerName(const std::string& manufacturerName)

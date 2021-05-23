@@ -3,7 +3,8 @@
 #include "Configuration.h"
 #include "HueBridgeDiscovery.h"
 #include "HueService.h"
-#include "ILightManager.h"
+#include "Devices/Interfaces/ILightsService.h"
+#include "Devices/Interfaces/ILight.h"
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -46,13 +47,12 @@ private:
    std::vector<boost::shared_ptr<IHueService>> m_huesService;
    boost::shared_ptr<IHueService> m_hueService;
    std::vector<boost::shared_ptr<CUrlManager>> m_urlsManager;
-   boost::shared_ptr<CUrlManager> m_urlManager;
    boost::shared_ptr<IHueBridgeDiscovery> m_hueBridgeDiscovery;
-   boost::shared_ptr<ILightManager> m_lightManager;
-   std::vector<boost::shared_ptr<ILightManager>> m_lightManagers;
+   boost::shared_ptr<ILightsService> m_lightsService;
+   std::vector<boost::shared_ptr<ILightsService>> m_lightManagers;
 
-   std::map<int, CHueLightInformations> m_detectedLights;
    std::vector<std::map<int, CHueLightInformations>> m_detectedLightsByBridge;
+   std::vector< boost::shared_ptr<ILight>> m_detectedLights;
 
    void closeReadingBridgeButtonState();
    void declareDevice();

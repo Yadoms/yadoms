@@ -3,6 +3,7 @@
 #include "HueSwUpdate.h"
 #include "HueCapabilities.h"
 #include "HueConfig.h"
+#include "../Devices/Utils/LightType.h"
 
 class CHueLightInformations
 {
@@ -16,7 +17,7 @@ public:
    const CHueSwUpdate& getSwUpdate() const;
    const std::string& getType() const;
    const std::string& getName() const;
-   const std::string& getModelId() const;
+   const ELightType& getModelId() const;
    const std::string& getManufacturerName() const;
    const std::string& getProductName() const;
    const CHueCapabilities& getCapabilities() const;
@@ -45,7 +46,7 @@ private:
    CHueSwUpdate m_swUpdate;
    std::string m_type;
    std::string m_name;
-   std::string m_modelId;
+   ELightType m_modelId;
    std::string m_manufacturerName;
    std::string m_productName;
    CHueCapabilities m_capabilities;
