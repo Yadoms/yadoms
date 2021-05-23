@@ -17,4 +17,10 @@ public:
 
    virtual std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>
    getHistorizables() = 0;
+
+   virtual std::string getName() = 0;
+
+   virtual std::string getType() = 0;
+
+   virtual std::string getModelId() = 0;
 };

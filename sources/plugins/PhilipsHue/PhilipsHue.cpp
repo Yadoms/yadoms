@@ -126,14 +126,17 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             closeReadingBridgeButtonState();
             //if (m_configuration.getPairingMode() == kAuto)
             //{
-            for (auto i = 0; i < m_HuesInformations.size(); i++)
+            for (auto i = 0; i < m_bridges.size(); i++)
             {
-               m_lightManagers.push_back(CFactory::createLightsService(m_urlsManager[0]));
-               auto lights = m_lightManagers[i]->getAllLights();
-               m_detectedLightsByBridge.push_back(lights);
-               m_detectedLights.push_back(CFactory::createLight(m_urlsManager[0], lights[i + 1]));
-               declareDeviceByBrdige();
+               m_lightManagers.push_back(CFactory::createLightsService(m_urlsManager[i]));
+
+               for(auto light : m_lightManagers[i]->getAllLights())
+               {
+                  m_detectedLights.push_back(CFactory::createLight(m_urlsManager[i], light.second));
+               }
+    
             }
+            declareDeviceByBrdige();
             //}
             //else
             //{
@@ -180,7 +183,8 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                      extraQuery->sendError(exception.what());
                      throw;
                   }
-                  declareDevice();
+                  // TODO : 
+                  //declareDevice();
                   extraQuery->sendSuccess(shared::CDataContainer::make());
                }
                else if (extraQuery->getData()->query() == "searchForBridge")
@@ -230,7 +234,7 @@ void CPhilipsHue::init()
                                                    kEvtKeyStateTimeout,
                                                    m_urlsManager[0]);
 
-         m_HuesInformations.push_back(m_hueBridgeDiscovery->getHueInformations());
+         m_bridges.push_back(m_hueBridgeDiscovery->getHueInformations());
 
          m_api->setPluginState(yApi::historization::EPluginState::kCustom, "askToPressBridgeButton");
          m_hueService->startReadingBridgeButtonState();
@@ -257,11 +261,8 @@ void CPhilipsHue::fillHuesInformations()
    try
    {
       m_api->setPluginState(yApi::historization::EPluginState::kCustom, "BridgesSearchInProgress");
-      auto foundBridges = m_hueBridgeDiscovery->FindBridges();
-      for (auto& foundBridge : foundBridges)
-      {
-         m_HuesInformations.push_back(foundBridge);
-      }
+      m_bridges = m_hueBridgeDiscovery->FindBridges();
+
       m_api->setPluginState(yApi::historization::EPluginState::kCustom, "BridgesFound");
    }
    catch (const std::exception& exception)
@@ -277,9 +278,9 @@ void CPhilipsHue::startReadingBridgeButtonState()
 {
    try
    {
-      for (auto i = 0; i < m_HuesInformations.size(); i++)
+      for (auto i = 0; i < m_bridges.size(); i++)
       {
-         m_urlsManager.push_back(boost::make_shared<CUrlManager>(m_HuesInformations[i], m_configuration));
+         m_urlsManager.push_back(boost::make_shared<CUrlManager>(m_bridges[i], m_configuration));
 
          m_huesService.push_back(CFactory::createHueService(m_api->getEventHandler(),
                                                             kEvtKeyStateReceived,
@@ -307,7 +308,7 @@ void CPhilipsHue::closeReadingBridgeButtonState()
 {
    if (m_configuration.getPairingMode() == EPairingMode::kAuto)
    {
-      for (auto i = 0; i < m_HuesInformations.size(); i++)
+      for (auto i = 0; i < m_bridges.size(); i++)
       {
          m_huesService[i]->closeReadingBridgeButtonState();
       }
@@ -334,20 +335,17 @@ void CPhilipsHue::closeReadingBridgeButtonState()
 
 void CPhilipsHue::declareDeviceByBrdige()
 {
-   for (auto i = 0; i < m_detectedLightsByBridge.size(); i++)
+   for (auto light : m_detectedLights)
    {
-      for (auto j = 1; j <= m_detectedLightsByBridge[i].size(); j++)
-      {
-         std::map<std::string, std::string> bridgeId;
-         bridgeId.insert(std::pair<std::string, std::string>("bridgeId", std::to_string(i)));
+      //         std::map<std::string, std::string> bridgeId;
+      //         bridgeId.insert(std::pair<std::string, std::string>("bridgeId", std::to_string(i)));
 
-         YADOMS_LOG(information) << "Creating the device :" << m_detectedLightsByBridge[i].at(j).getName();
-         if (!m_api->deviceExists(m_detectedLightsByBridge[i].at(j).getName()))
-            m_api->declareDevice(m_detectedLightsByBridge[i].at(j).getName(),
-                                 m_detectedLightsByBridge[i].at(j).getType(),
-                                 m_detectedLightsByBridge[i].at(j).getModelId(),
-                                 m_historizers,
-                                 shared::CDataContainer::make(bridgeId));
-      }
+      YADOMS_LOG(information) << "Creating the device :" << light->getName();
+      if (!m_api->deviceExists(light->getName()))
+         m_api->declareDevice(light->getName(),
+                              light->getType(),
+                              light->getModelId(),
+                              light->getHistorizables());
    }
 }
+

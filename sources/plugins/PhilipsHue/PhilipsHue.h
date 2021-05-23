@@ -42,7 +42,6 @@ private:
    boost::shared_ptr<yApi::IYPluginApi> m_api;
 
    static const std::string PhilipsHueBridgeName;
-   std::vector<CHueInformations> m_HuesInformations;
    CHueInformations m_HueInformations;
    std::vector<boost::shared_ptr<IHueService>> m_huesService;
    boost::shared_ptr<IHueService> m_hueService;
@@ -54,8 +53,9 @@ private:
    std::vector<std::map<int, CHueLightInformations>> m_detectedLightsByBridge;
    std::vector< boost::shared_ptr<ILight>> m_detectedLights;
 
+   std::vector<CHueInformations> m_bridges;
    void closeReadingBridgeButtonState();
-   void declareDevice();
+   //void declareDevice();
    void declareDeviceByBrdige();
 
    boost::shared_ptr<yApi::historization::CSwitch> m_switch;

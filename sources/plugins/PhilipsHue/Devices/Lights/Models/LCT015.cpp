@@ -6,12 +6,13 @@
 const std::string CLct015::LightState("STATE");
 const std::string CLct015::RgbColor("RgbColor");
 
-CLct015::CLct015(boost::shared_ptr<CUrlManager>& urlManager, int& lightId)
+CLct015::CLct015(boost::shared_ptr<CUrlManager>& urlManager, CHueLightInformations& lightInformations, int& lightId)
    : m_urlManager(urlManager),
      m_lightId(lightId), m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
      m_rgb(boost::make_shared<yApi::historization::CColorRGB>(
         RgbColor, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)),
-   m_historizables({m_switch, m_rgb})
+     m_historizables({m_switch, m_rgb}),
+     m_lightInformations(lightInformations)
 {
 }
 
@@ -69,7 +70,8 @@ void CLct015::setLightColorUsingXy(const std::string& hexRgb)
    setLightState(lightUrl, body);
 }
 
-std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> CLct015::getHistorizables()
+std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> CLct015::
+getHistorizables()
 {
    return m_historizables;
 }
@@ -88,4 +90,19 @@ void CLct015::setLightState(const std::string& lightUrl, shared::CDataContainer&
       YADOMS_LOG(error) << "Fail to send Get http request or interpret answer " << lightUrl << " : " << e.what();
       throw;
    }
+}
+
+std::string CLct015::getName()
+{
+   return m_lightInformations.getName();
+}
+
+std::string CLct015::getType()
+{
+   return m_lightInformations.getType();
+}
+
+std::string CLct015::getModelId()
+{
+   return m_lightInformations.getModelId();
 }

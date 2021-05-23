@@ -40,7 +40,7 @@ boost::shared_ptr<ILight> CFactory::createLight(boost::shared_ptr<CUrlManager>& 
    switch (lightInformations.getModelId())
    {
    case ELightType::kLCT015Value:
-      light = boost::make_shared<CLct015>(urlManager, id);
+      light = boost::make_shared<CLct015>(urlManager, lightInformations, id);
       break;
    default:
       break;

@@ -7,7 +7,7 @@ class CLct015 : public ILight
 {
 public:
 
-   CLct015(boost::shared_ptr<CUrlManager>& urlManager, int& lightId);
+   CLct015(boost::shared_ptr<CUrlManager>& urlManager, CHueLightInformations& lightInformations, int& lightId);
    virtual ~CLct015() = default;
 
    void lightOn() override;
@@ -16,7 +16,14 @@ public:
 
    void setLightColorUsingXy(const std::string& hexRgb) override;
 
-   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> getHistorizables();
+   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> getHistorizables() override;
+
+   std::string getName() override;
+
+   std::string getType() override;
+
+   std::string getModelId() override;
+
 private :
    static void setLightState(const std::string& lightUrl, shared::CDataContainer& body);
    void setLightId(std::string& lightName, std::map<int, CHueLightInformations>& detectedLights);
@@ -27,4 +34,5 @@ private :
    boost::shared_ptr<yApi::historization::CSwitch> m_switch;
    boost::shared_ptr<yApi::historization::CColorRGB> m_rgb;
    std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> m_historizables;
+   CHueLightInformations m_lightInformations;
 };
