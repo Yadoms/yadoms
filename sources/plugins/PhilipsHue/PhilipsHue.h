@@ -51,7 +51,7 @@ private:
    std::vector<boost::shared_ptr<ILightsService>> m_lightManagers;
 
    std::vector<std::map<int, CHueLightInformations>> m_detectedLightsByBridge;
-   std::vector< boost::shared_ptr<ILight>> m_detectedLights;
+   std::vector<boost::shared_ptr<ILight>> m_detectedLights;
 
    std::vector<CHueInformations> m_bridges;
    void closeReadingBridgeButtonState();
@@ -64,4 +64,5 @@ private:
    static const std::string LightState;
    static const std::string RgbColor;
 
+   int getLightId(std::string& lightName);
 };

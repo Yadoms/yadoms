@@ -76,6 +76,24 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             //{
             const auto deviceDetails = m_api->getDeviceDetails(lightName);
             const auto bridgeId = std::stoi(deviceDetails->get<std::string>("bridgeId"));
+
+            const auto lightId = getLightId(lightName);
+
+            if (command->getKeyword() == LightState)
+            {
+               if (command->getBody() == "1")
+               {
+                  m_detectedLights[lightId]->lightOn();
+               }
+               else
+               {
+                  m_detectedLights[lightId]->lightOff();
+               }
+            }
+            else if (command->getKeyword() == RgbColor)
+            {
+               m_detectedLights[lightId]->setLightColorUsingXy(command->getBody());
+            }
             // TODO : Handle light ON/OFF
             //   m_lightManagers[bridgeId]->setLightId(lightName, m_detectedLightsByBridge[bridgeId]);
             //   if (command->getKeyword() == LightState)
@@ -124,26 +142,19 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             YADOMS_LOG(information) << "key bridge is pressed";
             closeReadingBridgeButtonState();
-            //if (m_configuration.getPairingMode() == kAuto)
-            //{
+            // TODO : Move it to a method
             for (auto i = 0; i < m_bridges.size(); i++)
             {
                m_lightManagers.push_back(CFactory::createLightsService(m_urlsManager[i]));
 
-               for(auto light : m_lightManagers[i]->getAllLights())
+               for (auto& light : m_lightManagers[i]->getAllLights())
                {
-                  m_detectedLights.push_back(CFactory::createLight(m_urlsManager[i], light.second));
+                  auto lightPair = std::make_pair(light.first, light.second);
+                  auto test = CFactory::createLight(m_urlsManager[i], lightPair);
+                  m_detectedLights.push_back(test);
                }
-    
             }
             declareDeviceByBrdige();
-            //}
-            //else
-            //{
-            //   m_lightsService = CFactory::createLightManager(m_urlManager);
-            //   m_detectedLights = m_lightsService->getAllLights();
-            //   declareDevice();
-            //}
 
             m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 
@@ -335,17 +346,42 @@ void CPhilipsHue::closeReadingBridgeButtonState()
 
 void CPhilipsHue::declareDeviceByBrdige()
 {
-   for (auto light : m_detectedLights)
+   auto i = 0;
+   for (auto& bridge : m_bridges)
    {
-      //         std::map<std::string, std::string> bridgeId;
-      //         bridgeId.insert(std::pair<std::string, std::string>("bridgeId", std::to_string(i)));
+      std::map<std::string, std::string> bridgeId;
+      bridgeId.insert(std::pair<std::string, std::string>("bridgeId", std::to_string(i)));
 
-      YADOMS_LOG(information) << "Creating the device :" << light->getName();
-      if (!m_api->deviceExists(light->getName()))
-         m_api->declareDevice(light->getName(),
-                              light->getType(),
-                              light->getModelId(),
-                              light->getHistorizables());
+      for (auto light : m_detectedLights)
+      {
+         YADOMS_LOG(information) << "Creating the device :" << light->getName();
+         if (!m_api->deviceExists(light->getName()))
+         {
+            m_api->declareDevice(light->getName(),
+                                 light->getType(),
+                                 light->getModelId(),
+                                 light->getHistorizables(),
+                                 shared::CDataContainer::make(bridgeId));
+         }
+      }
+      i++;
    }
 }
 
+int CPhilipsHue::getLightId(std::string& lightName)
+{
+   const auto it = std::find_if(std::begin(m_detectedLights), std::end(m_detectedLights),
+                                [&lightName](auto&& pair)
+                                {
+                                   return pair->getName() == lightName;
+                                });
+
+   if (it == std::end(m_detectedLights))
+   {
+      YADOMS_LOG(warning) << "Light not found";
+      throw std::runtime_error("Light ID is not found");
+   }
+   YADOMS_LOG(information) << "Light ID = " << it->get()->getDeviceId() << " is found ";
+
+   return it->get()->getDeviceId();
+}

@@ -21,5 +21,5 @@ public:
    static boost::shared_ptr<IHueBridgeDiscovery> createHueBridgeDiscovery();
    static boost::shared_ptr<ILightsService> createLightsService(boost::shared_ptr<CUrlManager>& urlManager);
    static boost::shared_ptr<ILight> createLight(boost::shared_ptr<CUrlManager>& urlManager,
-                                                CHueLightInformations& lightInformations);
+                                                std::pair<int, CHueLightInformations>& lightInformations);
 };

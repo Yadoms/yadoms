@@ -7,8 +7,6 @@ class ILight
 public:
    virtual ~ILight() = default;
 
-   virtual void setLightId(std::string& lightName, std::map<int, CHueLightInformations>& detectedLights) = 0;
-
    virtual void lightOn() = 0;
 
    virtual void lightOff() = 0;
@@ -23,4 +21,6 @@ public:
    virtual std::string getType() = 0;
 
    virtual std::string getModelId() = 0;
+
+   virtual int getDeviceId() = 0;
 };

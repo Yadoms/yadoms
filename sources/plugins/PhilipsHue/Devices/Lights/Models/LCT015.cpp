@@ -6,9 +6,9 @@
 const std::string CLct015::LightState("STATE");
 const std::string CLct015::RgbColor("RgbColor");
 
-CLct015::CLct015(boost::shared_ptr<CUrlManager>& urlManager, CHueLightInformations& lightInformations, int& lightId)
+CLct015::CLct015(boost::shared_ptr<CUrlManager>& urlManager, std::pair<int, CHueLightInformations>& lightInformations)
    : m_urlManager(urlManager),
-     m_lightId(lightId), m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
+     m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
      m_rgb(boost::make_shared<yApi::historization::CColorRGB>(
         RgbColor, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)),
      m_historizables({m_switch, m_rgb}),
@@ -16,26 +16,9 @@ CLct015::CLct015(boost::shared_ptr<CUrlManager>& urlManager, CHueLightInformatio
 {
 }
 
-void CLct015::setLightId(std::string& lightName, std::map<int, CHueLightInformations>& detectedLights)
-{
-   const auto it = std::find_if(std::begin(detectedLights), std::end(detectedLights),
-                                [&lightName](auto&& pair)
-                                {
-                                   return pair.second.getName() == lightName;
-                                });
-
-   if (it == std::end(detectedLights))
-   {
-      YADOMS_LOG(warning) << "Light not found";
-      throw std::runtime_error("Light ID is not found");
-   }
-   YADOMS_LOG(information) << "Light ID = " << m_lightId << " is found ";
-   m_lightId = it->first;
-}
-
 void CLct015::lightOn()
 {
-   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
+   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightInformations.first);
    const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
 
    shared::CDataContainer body;
@@ -46,7 +29,7 @@ void CLct015::lightOn()
 
 void CLct015::lightOff()
 {
-   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
+   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightInformations.first);
    const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
 
    shared::CDataContainer body;
@@ -56,7 +39,7 @@ void CLct015::lightOff()
 
 void CLct015::setLightColorUsingXy(const std::string& hexRgb)
 {
-   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
+   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightInformations.first);
    const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
 
    auto rgb = CColorConverter::hexToRgb(hexRgb);
@@ -94,15 +77,20 @@ void CLct015::setLightState(const std::string& lightUrl, shared::CDataContainer&
 
 std::string CLct015::getName()
 {
-   return m_lightInformations.getName();
+   return m_lightInformations.second.getName();
 }
 
 std::string CLct015::getType()
 {
-   return m_lightInformations.getType();
+   return m_lightInformations.second.getType();
 }
 
 std::string CLct015::getModelId()
 {
-   return m_lightInformations.getModelId();
+   return m_lightInformations.second.getModelId();
+}
+
+int CLct015::getDeviceId()
+{
+   return m_lightInformations.first;
 }
