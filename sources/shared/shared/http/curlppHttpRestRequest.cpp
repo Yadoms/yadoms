@@ -60,8 +60,8 @@ namespace shared
 
       IHttpRestRequest& CCurlppHttpRestRequest::withBody(const std::string& body)
       {
-         if (m_requestType != EType::kPost)
-            throw std::runtime_error("CCurlppHttpRestRequest : body is only supported for POST requests");
+         if (m_requestType != EType::kPost && m_requestType != EType::kPut)
+            throw std::runtime_error("CCurlppHttpRestRequest : body is only supported for POST and PUT requests");
          m_body = body;
          return *this;
       }
