@@ -14,7 +14,7 @@ namespace web
       {
          std::string CUpdate::m_restKeyword = std::string("update");
 
-         CUpdate::CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager)
+         CUpdate::CUpdate(boost::shared_ptr<update::IUpdateManager> updateManager)
             : m_updateManager(std::move(updateManager))
          {
          }
