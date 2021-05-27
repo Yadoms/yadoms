@@ -3,25 +3,21 @@
 #include "IRestHandler.h"
 #include "authentication/IAuthentication.h"
 
-namespace web {
+namespace web
+{
    //
    //\brief Interface for web server configurator
    //
    class IWebServerConfigurator
    {
    public:
-      //-----------------------------------------
-      ///\brief      Virtual destructor
-      //-----------------------------------------
-      virtual ~IWebServerConfigurator()
-      {
-      }
+      virtual ~IWebServerConfigurator() = default;
 
       //-----------------------------------------
       ///\brief      Configure the website handler
       ///\param [in] doc_root    the path to files
       //-----------------------------------------
-      virtual void websiteHandlerConfigure(const std::string & doc_root) = 0;
+      virtual void websiteHandlerConfigure(const std::string& doc_root) = 0;
 
       //--------------------------------------
       ///\brief   Configure an alias for the website handler
@@ -31,13 +27,13 @@ namespace web {
       /// Example configureAlias("/test/", "c:\\path\\to\\alias\\files\\")
       ///         -> then http://server:port/test/index.html will take c:\\path\\to\\alias\\files\\index.html
       //--------------------------------------
-      virtual void websiteHandlerAddAlias(const std::string & alias, const std::string & path) = 0;
+      virtual void websiteHandlerAddAlias(const std::string& alias, const std::string& path) = 0;
 
       //-----------------------------------------
       ///\brief      Configure the REST service handler
       ///\param [in] restKeywordBase the REST keyword which permit to determine rest queries (i.e.: /rest/)
       //-----------------------------------------
-      virtual void restHandlerConfigure(const std::string & restKeywordBase) = 0;
+      virtual void restHandlerConfigure(const std::string& restKeywordBase) = 0;
 
       //-----------------------------------------
       ///\brief      Register a REST service
@@ -49,8 +45,8 @@ namespace web {
       ///\brief      Configure the WebSocket service handler
       ///\param [in] webSocketKeyword  the keyword which permit to determine websocket queries (i.e.: ws/)
       //-----------------------------------------
-      virtual void webSocketConfigure(const std::string & webSocketKeyword) = 0;
-      
+      virtual void webSocketConfigure(const std::string& webSocketKeyword) = 0;
+
       //-----------------------------------------
       ///\brief      Configure the webserver to use authentication
       ///\param [in] authenticator  the authentication provider
@@ -62,7 +58,5 @@ namespace web {
       ///\param [in] allowExternalAccess  true if externals access are allowed (android app for example)
       //-----------------------------------------
       virtual void allowExternalAccess(bool allowExternalAccess) =0;
-
    };
-
 } //namespace web

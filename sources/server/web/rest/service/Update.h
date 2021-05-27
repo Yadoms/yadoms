@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "IRestService.h"
-#include "update/UpdateManager.h"
-#include <shared/enumeration/EnumHelpers.hpp>
+#include "update/IUpdateManager.h"
 
 namespace web
 {
@@ -19,7 +18,7 @@ namespace web
             /// \brief  Constructor
             /// \param [in] updateManager   The update manager
             //-----------------------------------------------------------------------------      
-            explicit CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager);
+            explicit CUpdate(boost::shared_ptr<update::IUpdateManager> updateManager);
             ~CUpdate() override = default;
 
 
@@ -132,7 +131,7 @@ namespace web
             //-----------------------------------------------------------------------------
             /// \brief  The dependancies
             //-----------------------------------------------------------------------------         
-            boost::shared_ptr<update::CUpdateManager> m_updateManager;
+            boost::shared_ptr<update::IUpdateManager> m_updateManager;
 
             //-----------------------------------------------------------------------------
             /// \brief  The rest keyword

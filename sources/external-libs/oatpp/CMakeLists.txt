@@ -78,7 +78,6 @@ endif()
 
 
 # TODO
-# - Voir pourquoi les OATPP_BUILD_ARGS n'ont pas l'air d'être passés
 # - Corriger OATPP_INCLUDE_DIR
 # - Corriger OATPP_LIBRARY pour win32
 # - Corriger OATPP_LIBRARY pour linux
