@@ -18,6 +18,9 @@ jobs:
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /entrypoint_docker.sh'
+    - name: Get tag/branch name
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
     - name: Archive Linux-Binaries artifacts
       uses: actions/upload-artifact@v2
       with:
