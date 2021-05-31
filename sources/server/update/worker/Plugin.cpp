@@ -117,9 +117,14 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy package " << downloadedPackage.string();
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, std::string(), callbackData);
-               auto pluginPath = CWorkerHelpers::deployPackage(downloadedPackage, pluginsPath.string());
+               const auto pluginPath = CWorkerHelpers::deployPackage(downloadedPackage, pluginsPath.string());
                YADOMS_LOG(information) << "Plugin deployed with success";
 
+               // Change executable file permission to authorize execution
+               const pluginSystem::CInformation pluginInformation(pluginPath.string());
+               boost::filesystem::permissions(pluginInformation.getPath() / shared::CExecutable::ToFileName(pluginInformation.getType()),
+                                              boost::filesystem::perms::add_perms
+                                              | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
 
                YADOMS_LOG(information) << "Refresh plugin list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
