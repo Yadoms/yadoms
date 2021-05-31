@@ -2,6 +2,7 @@
 
 #### Yadoms
 * New PhilipsHue plugin (Thanks to Oussama Dahmaz)
+* New StreamDeck plugin (Thanks to Oussama Dahmaz)
 * Fix #617 : File download progress is yet again available
 * Fix #635 : Add basic authentication in REST requests as client
 * Fix #682 : Unify filesystem functions and reduce dependencies to Poco
