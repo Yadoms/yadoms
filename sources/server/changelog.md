@@ -1,3 +1,8 @@
+### 2.5.0-beta.2
+
+#### Yadoms
+* Fix plugin update
+
 ### 2.5.0-beta.1
 
 #### Yadoms
