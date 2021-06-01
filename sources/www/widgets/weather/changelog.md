@@ -1,6 +1,3 @@
-### 1.2.1
-* Prefer to display min-max temperatures for forecast conditions, and average temperature for live conditions
-
 ### 1.2.0
 * Fix keywords managment (no more compatible with WeatherUnderground plugin data)
 
