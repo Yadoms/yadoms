@@ -1,3 +1,8 @@
+### 2.5.0-beta.3
+
+#### Yadoms
+* Fix script interpreters update
+
 ### 2.5.0-beta.2
 
 #### Yadoms
