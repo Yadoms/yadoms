@@ -114,7 +114,7 @@ function ConditionsDevice(keywords) {
    this.getForecastDateTime = function (format) {
       if (this.isLiveConditions())
          return $.t("widgets.weather-multi:LiveConditions");
-      const date = moment(new Date(this.values.get(this.forecastDatetimeKw.id)));
+      const date = moment(this.values.get(this.forecastDatetimeKw.id), 'YYYYMMDDTHHmmssZ')
       switch (format) {
          case "shortDate":
             return date.format('dddd D');
