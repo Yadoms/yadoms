@@ -47,9 +47,7 @@ namespace update
 
                // Change executable file permission to authorize execution
                const pluginSystem::CInformation pluginInformation(pluginPath.string());
-               boost::filesystem::permissions(pluginInformation.getPath() / shared::CExecutable::ToFileName(pluginInformation.getType()),
-                                              boost::filesystem::perms::add_perms
-                                              | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
+               shared::tools::CFilesystem::makeExecutable(pluginInformation.getPath() / shared::CExecutable::ToFileName(pluginInformation.getType()));
 
                YADOMS_LOG(information) << "Refresh plugin list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
@@ -122,9 +120,7 @@ namespace update
 
                // Change executable file permission to authorize execution
                const pluginSystem::CInformation pluginInformation(pluginPath.string());
-               boost::filesystem::permissions(pluginInformation.getPath() / shared::CExecutable::ToFileName(pluginInformation.getType()),
-                                              boost::filesystem::perms::add_perms
-                                              | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
+               shared::tools::CFilesystem::makeExecutable(pluginInformation.getPath() / shared::CExecutable::ToFileName(pluginInformation.getType()));
 
                YADOMS_LOG(information) << "Refresh plugin list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);

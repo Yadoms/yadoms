@@ -205,5 +205,12 @@ namespace shared
       {
          return boost::filesystem::rename(source, destination);
       }
+
+      void CFilesystem::makeExecutable(const boost::filesystem::path& file)
+      {
+         boost::filesystem::permissions(file,
+                                        boost::filesystem::perms::add_perms
+                                        | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
+      }
    } // namespace tools 
 } // namespace shared

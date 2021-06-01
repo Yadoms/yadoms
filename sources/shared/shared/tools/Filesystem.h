@@ -109,6 +109,12 @@ namespace shared
          //---------------------------------------------   
          static void rename(const boost::filesystem::path& source,
                             const boost::filesystem::path& destination);
+
+         //---------------------------------------------
+         ///\brief Set file as executable
+         ///\param [in] file              The file to add executable attribute
+         //---------------------------------------------   
+         static void makeExecutable(const boost::filesystem::path& file);
       };
    } // namespace tools 
 } // namespace shared

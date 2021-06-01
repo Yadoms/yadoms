@@ -48,9 +48,8 @@ namespace update
 
                // Change executable file permission to authorize execution
                const automation::interpreter::CInformation scriptInterpreterInformation(scriptInterpreterPath);
-               permissions(scriptInterpreterInformation.getPath() / shared::CExecutable::ToFileName(scriptInterpreterInformation.getType()),
-                           boost::filesystem::perms::add_perms
-                           | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
+               shared::tools::CFilesystem::makeExecutable(
+                  scriptInterpreterInformation.getPath() / shared::CExecutable::ToFileName(scriptInterpreterInformation.getType()));
 
                // Refresh scriptInterpreter list
                YADOMS_LOG(information) << "Refresh scriptInterpreter list";
@@ -127,6 +126,10 @@ namespace update
                const auto scriptInterpreterPath = CWorkerHelpers::deployPackage(downloadedPackage, scriptInterpretersPath.string());
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
 
+               // Change executable file permission to authorize execution
+               const automation::interpreter::CInformation scriptInterpreterInformation(scriptInterpreterPath);
+               shared::tools::CFilesystem::makeExecutable(
+                  scriptInterpreterInformation.getPath() / shared::CExecutable::ToFileName(scriptInterpreterInformation.getType()));
 
                // Refresh scriptInterpreter list
                YADOMS_LOG(information) << "Refresh scriptInterpreter list";
