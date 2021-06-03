@@ -37,6 +37,7 @@
 #include "web/rest/service/Update.h"
 #include "web/rest/service/UploadFileManager.h"
 #include "web/rest/service/Widget.h"
+#include "web/oatppServer/WebServer.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
                          const shared::versioning::CSemVer& yadomsVersion)
@@ -123,8 +124,7 @@ void CSupervisor::run()
                                                                           startupOptions->getDeveloperMode(),
                                                                           m_pathProvider));
 
-
-      // Start Web server
+      // Start Web servers
       auto pocoBasedWebServer = createPocoBasedWebServer(startupOptions,
                                                          dataAccessLayer,
                                                          dataProvider,
@@ -134,8 +134,18 @@ void CSupervisor::run()
                                                          automationRulesManager,
                                                          updateManager,
                                                          taskManager);
+      auto oatppBasedWebServer = createOatppBasedWebServer(startupOptions,
+                                                           dataAccessLayer,
+                                                           dataProvider,
+                                                           pluginManager,
+                                                           pluginGateway,
+                                                           timezoneDatabase,
+                                                           automationRulesManager,
+                                                           updateManager,
+                                                           taskManager);
 
       pocoBasedWebServer->start();
+      oatppBasedWebServer->start();
 
       // Start the plugin manager (start all plugin instances)
       pluginManager->start(boost::posix_time::minutes(2));
@@ -166,7 +176,9 @@ void CSupervisor::run()
 
       //stop web server
       pocoBasedWebServer->stop();
+      oatppBasedWebServer->stop();
       pocoBasedWebServer.reset();
+      oatppBasedWebServer.reset();
 
       //stop the automation rules
       shared::CServiceLocator::instance().remove<automation::IRuleManager>(automationRulesManager);
@@ -255,6 +267,87 @@ boost::shared_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
                                                             "/rest/",
                                                             "/ws",
                                                             allowExternalAccess));
+
+   webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider->pluginsPath().string());
+   webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
+   webServer->getConfigurator()->websiteHandlerAddAlias("backups", m_pathProvider->backupPath().string());
+
+   webServer->getConfigurator()->configureAuthentication(
+      boost::make_shared<authentication::CBasicAuthentication>(dataAccessLayer->getConfigurationManager(),
+                                                               startupOptions->getNoPasswordFlag()));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CPlugin>(dataProvider,
+                                                      pluginManager,
+                                                      dataAccessLayer->getDeviceManager(),
+                                                      *pluginGateway,
+                                                      startupOptions->getDeveloperMode()));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CDevice>(dataProvider,
+                                                      pluginManager,
+                                                      dataAccessLayer->getDeviceManager(),
+                                                      dataAccessLayer->getKeywordManager(),
+                                                      *pluginGateway));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CPage>(dataProvider));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CWidget>(dataProvider, webServerPath));
+   webServer->getConfigurator()->
+              restHandlerRegisterService(
+                 boost::make_shared<web::rest::service::CConfiguration>(dataAccessLayer->getConfigurationManager()));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CPluginEventLogger>(dataProvider));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CEventLogger>(dataAccessLayer->getEventLogger()));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CSystem>(timezoneDatabase,
+                                                      hardware::usb::CDevicesListerFactory::createDeviceLister()));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CAcquisition>(dataProvider));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CAutomationRule>(dataProvider,
+                                                              automationRulesManager));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CTask>(taskManager));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CRecipient>(dataProvider));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CUpdate>(updateManager));
+   webServer->getConfigurator()->restHandlerRegisterService(
+      boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider,
+                                                           dataProvider,
+                                                           taskManager,
+                                                           boost::make_shared<web::rest::service::CUploadFileManager>()));
+
+   return webServer;
+}
+
+boost::shared_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
+   const boost::shared_ptr<const startupOptions::IStartupOptions>& startupOptions,
+   const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
+   boost::shared_ptr<database::IDataProvider> dataProvider,
+   boost::shared_ptr<pluginSystem::CManager> pluginManager,
+   const boost::shared_ptr<communication::CPluginGateway>& pluginGateway,
+   boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
+   boost::shared_ptr<automation::IRuleManager> automationRulesManager,
+   boost::shared_ptr<update::IUpdateManager> updateManager,
+   boost::shared_ptr<task::CScheduler> taskManager) const
+{
+   const auto webServerIp = startupOptions->getWebServerIPAddress();
+   const auto webServerUseSSL = startupOptions->getIsWebServerUseSSL();
+   const auto webServerPort = startupOptions->getWebServerPortNumber();
+   const auto securedWebServerPort = startupOptions->getSSLWebServerPortNumber();
+   const auto webServerPath = m_pathProvider->webServerPath().string();
+   const auto scriptInterpretersPath = m_pathProvider->scriptInterpretersPath().string();
+   const auto allowExternalAccess = startupOptions->getWebServerAllowExternalAccess();
+
+   auto webServer(boost::make_shared<web::oatppServer::CWebServer>(webServerIp,
+                                                                   webServerUseSSL,
+                                                                   webServerPort,
+                                                                   securedWebServerPort,
+                                                                   webServerPath,
+                                                                   "/rest/",
+                                                                   "/ws",
+                                                                   allowExternalAccess));
 
    webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider->pluginsPath().string());
    webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);

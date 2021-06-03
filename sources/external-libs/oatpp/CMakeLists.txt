@@ -68,7 +68,7 @@ ExternalProject_Add (oatpp_build
 SET_PROPERTY(TARGET oatpp_build PROPERTY FOLDER "External Libs")
 
 ExternalProject_Get_Property(oatpp_build INSTALL_DIR)
-set(OATPP_INCLUDE_DIR ${INSTALL_DIR}/src/oatpp_build/include PARENT_SCOPE)
+set(OATPP_INCLUDE_DIR ${INSTALL_DIR}/src/oatpp_build/src PARENT_SCOPE)
 
 if(WIN32)
    set(OATPP_LIBRARY ${INSTALL_DIR}/src/oatpp_build-build/src/$<CONFIG>/oatpp.lib PARENT_SCOPE)
