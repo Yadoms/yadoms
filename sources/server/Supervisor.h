@@ -64,6 +64,15 @@ private:
                                                                boost::shared_ptr<automation::IRuleManager> automationRulesManager,
                                                                boost::shared_ptr<update::IUpdateManager> updateManager,
                                                                boost::shared_ptr<task::CScheduler> taskManager) const;
+   boost::shared_ptr<web::IWebServer> createOatppBasedWebServer(const boost::shared_ptr<const startupOptions::IStartupOptions>& startupOptions,
+                                                                const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
+                                                                boost::shared_ptr<database::IDataProvider> dataProvider,
+                                                                boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                                                                const boost::shared_ptr<communication::CPluginGateway>& pluginGateway,
+                                                                boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
+                                                                boost::shared_ptr<automation::IRuleManager> automationRulesManager,
+                                                                boost::shared_ptr<update::IUpdateManager> updateManager,
+                                                                boost::shared_ptr<task::CScheduler> taskManager) const;
 
 
    //-----------------------------------------------------------------------------

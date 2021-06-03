@@ -305,8 +305,6 @@ set(LIBS
 set(USE_SQLITE_DATABASE TRUE)
 #Use PostgreSQL database system
 set(USE_PGSQL_DATABASE TRUE)
-#Use Poco web server
-set(USE_POCO_WEBSERVER TRUE)
 
 #include libs (have their own CMakeList.txt)
 add_subdirectory(external-libs)
@@ -1014,31 +1012,51 @@ IF(USE_PGSQL_DATABASE)
    ENDIF(PostgreSQL_FOUND)   
 ENDIF(USE_PGSQL_DATABASE)
 
-#Web server
-IF(USE_POCO_WEBSERVER)
-   set(YADOMS_SRC ${YADOMS_SRC}
-      server/web/poco/WebServer.h
-      server/web/poco/WebServer.cpp
-      server/web/poco/AuthenticationRequestHandler.h
-      server/web/poco/AuthenticationRequestHandler.cpp
-      server/web/poco/HttpRequestHandlerFactory.h
-      server/web/poco/HttpRequestHandlerFactory.cpp   
-      server/web/poco/HttpRequestHandlerContainer.h
-      server/web/poco/HttpRequestHandlerContainer.cpp
-      server/web/poco/RestRequestHandler.h
-      server/web/poco/RestRequestHandler.cpp
-      server/web/poco/WebsiteCacheManager.h
-      server/web/poco/WebsiteCacheManager.cpp
-      server/web/poco/WebsiteRequestHandler.h
-      server/web/poco/WebsiteRequestHandler.cpp
-      server/web/poco/WebSocketRequestHandler.h
-      server/web/poco/WebSocketRequestHandler.cpp   
-      server/web/poco/MimeType.h
-      server/web/poco/MimeType.cpp   
-   )
-   
-   source_group(server\\web\\poco  server/web/poco/*.*)
-ENDIF()
+# Poco-based Web server
+set(YADOMS_SRC ${YADOMS_SRC}
+   server/web/poco/WebServer.h
+   server/web/poco/WebServer.cpp
+   server/web/poco/AuthenticationRequestHandler.h
+   server/web/poco/AuthenticationRequestHandler.cpp
+   server/web/poco/HttpRequestHandlerFactory.h
+   server/web/poco/HttpRequestHandlerFactory.cpp   
+   server/web/poco/HttpRequestHandlerContainer.h
+   server/web/poco/HttpRequestHandlerContainer.cpp
+   server/web/poco/RestRequestHandler.h
+   server/web/poco/RestRequestHandler.cpp
+   server/web/poco/WebsiteCacheManager.h
+   server/web/poco/WebsiteCacheManager.cpp
+   server/web/poco/WebsiteRequestHandler.h
+   server/web/poco/WebsiteRequestHandler.cpp
+   server/web/poco/WebSocketRequestHandler.h
+   server/web/poco/WebSocketRequestHandler.cpp   
+   server/web/poco/MimeType.h
+   server/web/poco/MimeType.cpp   
+)
+source_group(server\\web\\poco  server/web/poco/*.*)
+
+# Oatpp-based Web server
+set(YADOMS_SRC ${YADOMS_SRC}
+   server/web/oatppServer/WebServer.h
+   server/web/oatppServer/WebServer.cpp
+#   server/web/oatppServer/AuthenticationRequestHandler.h
+#   server/web/oatppServer/AuthenticationRequestHandler.cpp
+#   server/web/oatppServer/HttpRequestHandlerFactory.h
+#   server/web/oatppServer/HttpRequestHandlerFactory.cpp   
+#   server/web/oatppServer/HttpRequestHandlerContainer.h
+#   server/web/oatppServer/HttpRequestHandlerContainer.cpp
+#   server/web/oatppServer/RestRequestHandler.h
+#   server/web/oatppServer/RestRequestHandler.cpp
+#   server/web/oatppServer/WebsiteCacheManager.h
+#   server/web/oatppServer/WebsiteCacheManager.cpp
+#   server/web/oatppServer/WebsiteRequestHandler.h
+#   server/web/oatppServer/WebsiteRequestHandler.cpp
+#   server/web/oatppServer/WebSocketRequestHandler.h
+#   server/web/oatppServer/WebSocketRequestHandler.cpp   
+#   server/web/oatppServer/MimeType.h
+#   server/web/oatppServer/MimeType.cpp   
+)
+source_group(server\\web\\oatppServer  server/web/oatppServer/*.*)
 
 
 
