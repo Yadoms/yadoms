@@ -4,7 +4,6 @@
 #include <shared/Log.h>
 #include "shared/http/ssdp/DiscoverService.h"
 #include "Factory.h"
-#include "Devices/Utils/ColorConverter.h"
 
 IMPLEMENT_PLUGIN(CPhilipsHue)
 
@@ -78,21 +77,21 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             const auto bridgeId = std::stoi(deviceDetails->get<std::string>("bridgeId"));
 
             const auto lightId = getLightId(lightName);
-
+            const auto detectedLightId = lightId - 1;
             if (command->getKeyword() == LightState)
             {
                if (command->getBody() == "1")
                {
-                  m_detectedLights[lightId]->lightOn();
+                  m_detectedLights[detectedLightId]->lightOn();
                }
                else
                {
-                  m_detectedLights[lightId]->lightOff();
+                  m_detectedLights[detectedLightId]->lightOff();
                }
             }
             else if (command->getKeyword() == RgbColor)
             {
-               m_detectedLights[lightId]->setLightColorUsingXy(command->getBody());
+               m_detectedLights[detectedLightId]->setLightColorUsingXy(command->getBody());
             }
             // TODO : Handle light ON/OFF
             //   m_lightManagers[bridgeId]->setLightId(lightName, m_detectedLightsByBridge[bridgeId]);
@@ -150,6 +149,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                for (auto& light : m_lightManagers[i]->getAllLights())
                {
                   auto lightPair = std::make_pair(light.first, light.second);
+                  // TODO : rename 
                   auto test = CFactory::createLight(m_urlsManager[i], lightPair);
                   m_detectedLights.push_back(test);
                }
@@ -346,13 +346,12 @@ void CPhilipsHue::closeReadingBridgeButtonState()
 
 void CPhilipsHue::declareDeviceByBrdige()
 {
-   auto i = 0;
-   for (auto& bridge : m_bridges)
+   for (auto i = 0; i < m_bridges.size(); i++)
    {
       std::map<std::string, std::string> bridgeId;
       bridgeId.insert(std::pair<std::string, std::string>("bridgeId", std::to_string(i)));
 
-      for (auto light : m_detectedLights)
+      for (auto& light : m_detectedLights)
       {
          YADOMS_LOG(information) << "Creating the device :" << light->getName();
          if (!m_api->deviceExists(light->getName()))
@@ -364,7 +363,6 @@ void CPhilipsHue::declareDeviceByBrdige()
                                  shared::CDataContainer::make(bridgeId));
          }
       }
-      i++;
    }
 }
 
