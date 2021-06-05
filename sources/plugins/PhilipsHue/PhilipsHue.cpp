@@ -92,7 +92,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                m_detectedLights[detectedLightId]->setLightColorUsingXy(command->getBody());
             }
-            
+
             break;
          }
       case kCustomEvent:
@@ -136,8 +136,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   try
                   {
                      m_lightsService->searchForNewLights();
-                     // TODO : 
-                     //m_detectedLights = m_lightsService->getNewLights();
+                     declareNewLights();
                   }
                   catch (std::exception& exception)
                   {
@@ -145,8 +144,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                      extraQuery->sendError(exception.what());
                      throw;
                   }
-                  // TODO : 
-                  //declareDevice();
+                  declareDeviceByBrdige();
                   extraQuery->sendSuccess(shared::CDataContainer::make());
                }
                else if (extraQuery->getData()->query() == "searchForBridge")
@@ -310,6 +308,21 @@ void CPhilipsHue::declareLights()
       m_lightManagers.push_back(CFactory::createLightsService(m_urlsManager[i]));
 
       for (auto& light : m_lightManagers[i]->getAllLights())
+      {
+         auto lightPair = std::make_pair(light.first, light.second);
+         auto detectedLight = CFactory::createLight(m_urlsManager[i], lightPair);
+         m_detectedLights.push_back(detectedLight);
+      }
+   }
+}
+
+void CPhilipsHue::declareNewLights()
+{
+   for (auto i = 0; i < m_bridges.size(); i++)
+   {
+      m_lightManagers.push_back(CFactory::createLightsService(m_urlsManager[i]));
+
+      for (auto& light : m_lightsService->getNewLights())
       {
          auto lightPair = std::make_pair(light.first, light.second);
          auto detectedLight = CFactory::createLight(m_urlsManager[i], lightPair);
