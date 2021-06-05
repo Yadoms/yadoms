@@ -55,8 +55,8 @@ private:
 
    std::vector<CHueInformations> m_bridges;
    void closeReadingBridgeButtonState();
-   //void declareDevice();
    void declareDeviceByBrdige();
+   void declareLights();
 
    boost::shared_ptr<yApi::historization::CSwitch> m_switch;
    boost::shared_ptr<yApi::historization::CColorRGB> m_rgb;
