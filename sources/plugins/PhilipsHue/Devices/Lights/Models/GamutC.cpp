@@ -80,7 +80,7 @@ std::string CGamutC::getName()
    return m_lightInformations.second.getName();
 }
 
-std::string CGamutC::getType()
+ELightType CGamutC::getType()
 {
    return m_lightInformations.second.getType();
 }
@@ -93,4 +93,19 @@ std::string CGamutC::getModelId()
 int CGamutC::getDeviceId()
 {
    return m_lightInformations.first;
+}
+
+bool CGamutC::hasColorControl()
+{
+   return true;
+}
+
+bool CGamutC::hasBrightnessControl()
+{
+   return true;
+}
+
+bool CGamutC::hasTemperatureControl()
+{
+   return true;
 }

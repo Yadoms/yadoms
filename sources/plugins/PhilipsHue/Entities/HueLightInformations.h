@@ -3,8 +3,9 @@
 #include "HueSwUpdate.h"
 #include "HueCapabilities.h"
 #include "HueConfig.h"
-#include "../Devices/Utils/LightType.h"
+#include "../Devices/Utils/LightModel.h"
 #include "../Devices/Utils/ColorType.h"
+#include "../Devices/Utils/LightType.h"
 
 class CHueLightInformations
 {
@@ -16,9 +17,9 @@ public:
 
    const CHueState& getState() const;
    const CHueSwUpdate& getSwUpdate() const;
-   const std::string& getType() const;
+   const ELightType& getType() const;
    const std::string& getName() const;
-   const ELightType& getModelId() const;
+   const ELightModel& getModelId() const;
    const std::string& getManufacturerName() const;
    const std::string& getProductName() const;
    const CHueCapabilities& getCapabilities() const;
@@ -31,7 +32,7 @@ public:
 
    void setState(const CHueState& state);
    void setSwUpdate(const CHueSwUpdate& swUpdate);
-   void setType(const std::string& type);
+   void setType(const ELightType& type);
    void setName(const std::string& name);
    void setModelId(const std::string& modelId);
    void setManufacturerName(const std::string& manufacturerName);
@@ -47,9 +48,9 @@ public:
 private:
    CHueState m_state;
    CHueSwUpdate m_swUpdate;
-   std::string m_type;
+   ELightType m_type;
    std::string m_name;
-   ELightType m_modelId;
+   ELightModel m_modelId;
    std::string m_manufacturerName;
    std::string m_productName;
    CHueCapabilities m_capabilities;

@@ -21,11 +21,17 @@ public:
 
    std::string getName() override;
 
-   std::string getType() override;
+   ELightType getType() override;
 
    std::string getModelId() override;
 
    int getDeviceId() override;
+
+   bool hasColorControl() override;
+
+   bool hasBrightnessControl() override;
+
+   bool hasTemperatureControl() override;
 
 private :
    static void setLightState(const std::string& lightUrl, shared::CDataContainer& body);

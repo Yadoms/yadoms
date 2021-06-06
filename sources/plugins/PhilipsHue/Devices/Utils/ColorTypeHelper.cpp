@@ -9,55 +9,85 @@ const std::set<std::string> CColorTypeHelper::GamutATypes{
    "LST001", "LLC005", "LLC006", "LLC007", "LLC010", "LLC011", "LLC012", "LLC013", "LLC014"
 };
 
-const std::string CColorTypeHelper::OnOffLight{"on/off light"};
-const std::string CColorTypeHelper::OnOffPluginInUnit{"on/off plug-in unit"};
-const std::string CColorTypeHelper::DimmableLight{"dimmable light"};
-const std::string CColorTypeHelper::DimmablePluginInUnit{"dimmable plug-in unit"};
-const std::string CColorTypeHelper::ColorTemperatureLight{"color temperature light"};
-const std::string CColorTypeHelper::ColorLight{"color light"};
-const std::string CColorTypeHelper::ExtendedColorLight{"extended color light"};
 
-EColorType CColorTypeHelper::getColorType(boost::shared_ptr<shared::CDataContainer>& response)
+EColorType CColorTypeHelper::getColorType(boost::shared_ptr<shared::CDataContainer>& response, std::string& type,
+                                          int& lightCounter)
 {
-   if (response->exists(EHueLightResponseType::kType.toString()) && !response
-      ->
-      isNull(EHueLightResponseType::kType.toString()))
+   boost::algorithm::to_lower(type);
+   if (type == ELightType::kON_OFF_LIGHT.toString() || type == ELightType::kON_OFF_PLUGIN_IN_UNIT.toString())
    {
-      const auto type = response->get<std::string>(EHueLightResponseType::kType.toString());
-      if (type == OnOffLight || type == OnOffPluginInUnit)
-      {
-         return EColorType::kNONE;
-      }
-      if (type == DimmableLight || type == DimmablePluginInUnit)
-      {
-         return EColorType::kNONE;
-      }
-      if (type == ColorTemperatureLight)
-      {
-         return EColorType::kTEMPERATURE;
-      }
-      if (type == ColorLight)
-      {
-         return getGamutOrLegacyColorType(response, false);
-      }
-      if (type == ExtendedColorLight)
-      {
-         return getGamutOrLegacyColorType(response, true);
-      }
+      return EColorType::kNONE;
    }
+   if (type == ELightType::kDIMMABLE_LIGHT.toString() || type == ELightType::kDIMMABLE_PLUGIN_IN_UNIT.toString())
+   {
+      return EColorType::kNONE;
+   }
+   if (type == ELightType::kCOLOR_TEMPERATURE_LIGHT.toString())
+   {
+      return EColorType::kTEMPERATURE;
+   }
+   if (type == ELightType::kCOLOR_LIGHT.toString())
+   {
+      return getGamutOrLegacyColorType(response, false, lightCounter);
+   }
+   if (type == ELightType::kEXTENDED_COLOR_LIGHT.toString())
+   {
+      return getGamutOrLegacyColorType(response, true, lightCounter);
+   }
+
+   const auto message = "Could not determine Light color type";
+   YADOMS_LOG(error) << message;
+   throw std::runtime_error(message);
+}
+
+ELightType CColorTypeHelper::getLightType(std::string& type)
+{
+   boost::algorithm::to_lower(type);
+   if (type == ELightType::kON_OFF_LIGHT.toString())
+   {
+      return ELightType::kON_OFF_LIGHT;
+   }
+   if (type == ELightType::kON_OFF_PLUGIN_IN_UNIT.toString())
+   {
+      return ELightType::kON_OFF_PLUGIN_IN_UNIT;
+   }
+   if (type == ELightType::kDIMMABLE_LIGHT.toString())
+   {
+      return ELightType::kDIMMABLE_LIGHT;
+   }
+   if (type == ELightType::kDIMMABLE_PLUGIN_IN_UNIT.toString())
+   {
+      return ELightType::kDIMMABLE_PLUGIN_IN_UNIT;
+   }
+   if (type == ELightType::kCOLOR_TEMPERATURE_LIGHT.toString())
+   {
+      return ELightType::kCOLOR_TEMPERATURE_LIGHT;
+   }
+   if (type == ELightType::kCOLOR_LIGHT.toString())
+   {
+      return ELightType::kCOLOR_LIGHT;
+   }
+   if (type == ELightType::kEXTENDED_COLOR_LIGHT.toString())
+   {
+      return ELightType::kEXTENDED_COLOR_LIGHT;
+   }
+
    const auto message = "Could not determine Light type";
    YADOMS_LOG(error) << message;
    throw std::runtime_error(message);
 }
 
-EColorType CColorTypeHelper::getGamutOrLegacyColorType(boost::shared_ptr<shared::CDataContainer>& response, bool hasCt)
+EColorType CColorTypeHelper::getGamutOrLegacyColorType(boost::shared_ptr<shared::CDataContainer>& response, bool hasCt,
+                                                       int& lightCounter)
 {
    // Try to get color Gamut from capabilities
-   if (response->exists(EHueLightResponseType::kCapabilitiesControlColorGamutType.toString()) && !response
+   if (response->exists(
+         std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlColorGamutType.toString()) && !
+      response
       ->
-      isNull(EHueLightResponseType::kCapabilitiesControlColorGamutType.toString()))
+      isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kCapabilitiesControlColorGamutType.toString()))
    {
-      const auto gamut = response->get<std::string>(
+      const auto gamut = response->get<std::string>(std::to_string(lightCounter) + "." +
          EHueLightResponseType::kCapabilitiesControlColorGamutType.toString());
       if (gamut == "A")
       {
@@ -74,11 +104,12 @@ EColorType CColorTypeHelper::getGamutOrLegacyColorType(boost::shared_ptr<shared:
       return hasCt ? EColorType::kGAMUT_OTHER_TEMPERATURE : EColorType::kGAMUT_OTHER;
    }
    // Old version without capabilities, fall back to hardcoded types
-   if (response->exists(EHueLightResponseType::kModelId.toString()) && !response
+   if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kModelId.toString()) && !response
       ->
-      isNull(EHueLightResponseType::kModelId.toString()))
+      isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kModelId.toString()))
    {
-      const auto modelId = response->get<std::string>(EHueLightResponseType::kModelId.toString());
+      const auto modelId = response->get<std::string>(
+         std::to_string(lightCounter) + "." + EHueLightResponseType::kModelId.toString());
 
       if (GamutATypes.count(modelId))
       {

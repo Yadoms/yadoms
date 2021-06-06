@@ -81,6 +81,8 @@ set(PHILIPS_HUE_PLUGIN_DEVICES_UTILS_SOURCES
 	Devices/Utils/HueLightsResponseType.h
 	Devices/Utils/ColorConverter.h
 	Devices/Utils/ColorConverter.cpp
+	Devices/Utils/LightModel.cpp
+	Devices/Utils/LightModel.h
 	Devices/Utils/LightType.cpp
 	Devices/Utils/LightType.h
 	Devices/Utils/ColorType.h

@@ -6,11 +6,12 @@
 
 const std::string CGamutNone::LightState("STATE");
 
-CGamutNone::CGamutNone(boost::shared_ptr<CUrlManager>& urlManager, std::pair<int, CHueLightInformations>& lightInformations)
+CGamutNone::CGamutNone(boost::shared_ptr<CUrlManager>& urlManager,
+                       std::pair<int, CHueLightInformations>& lightInformations)
    : m_urlManager(urlManager),
-   m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
-   m_historizables({ m_switch}),
-   m_lightInformations(lightInformations)
+     m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
+     m_historizables({m_switch}),
+     m_lightInformations(lightInformations)
 {
 }
 
@@ -78,7 +79,7 @@ std::string CGamutNone::getName()
    return m_lightInformations.second.getName();
 }
 
-std::string CGamutNone::getType()
+ELightType CGamutNone::getType()
 {
    return m_lightInformations.second.getType();
 }
@@ -91,4 +92,23 @@ std::string CGamutNone::getModelId()
 int CGamutNone::getDeviceId()
 {
    return m_lightInformations.first;
+}
+
+bool CGamutNone::hasColorControl()
+{
+   return false;
+}
+
+bool CGamutNone::hasBrightnessControl()
+{
+   if (getType() == ELightType::kDIMMABLE_LIGHT || getType() == ELightType::kDIMMABLE_PLUGIN_IN_UNIT)
+   {
+      return true;
+   }
+   return false;
+}
+
+bool CGamutNone::hasTemperatureControl()
+{
+   return false;
 }

@@ -32,9 +32,10 @@ std::map<int, CHueLightInformations> CLightsService::getAllLights()
             ->
             isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kType.toString()))
          {
-            hueLightInformations.setType(
-               response->get<std::string>(
-                  std::to_string(lightCounter) + "." + EHueLightResponseType::kType.toString()));
+            auto type = response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kType.toString());
+            hueLightInformations.setType(CColorTypeHelper::getLightType(type));
+            hueLightInformations.setColorType(CColorTypeHelper::getColorType(response, type, lightCounter));
          }
          if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kName.toString()) && !response
             ->
@@ -119,7 +120,7 @@ std::map<int, CHueLightInformations> CLightsService::getAllLights()
                response->get<std::string>(
                   std::to_string(lightCounter) + "." + EHueLightResponseType::kProductId.toString()));
          }
-         hueLightInformations.setColorType(CColorTypeHelper::getColorType(response));
+
 
          hueLightsInformations.insert({lightCounter, hueLightInformations});
          lightCounter++;
@@ -159,7 +160,8 @@ CHueLightInformations CLightsService::getLightAttributesAndState(const int id)
          ->
          isNull(EHueLightResponseType::kType.toString()))
       {
-         hueLightAttributesAndState.setType(response->get<std::string>(EHueLightResponseType::kType.toString()));
+         auto type = response->get<std::string>(EHueLightResponseType::kType.toString());
+         hueLightAttributesAndState.setType(CColorTypeHelper::getLightType(type));
       }
       if (response->exists(EHueLightResponseType::kName.toString()) && !response
          ->
@@ -340,7 +342,8 @@ CHueSwUpdate CLightsService::getHueLightInformationsSwUpdate(boost::shared_ptr<s
    return swUpdate;
 }
 
-CHueCapabilities CLightsService::getHueLightInformationsCapabilities(boost::shared_ptr<shared::CDataContainer>& response)
+CHueCapabilities CLightsService::getHueLightInformationsCapabilities(
+   boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueCapabilities capabilities;
    if (response->exists(EHueLightResponseType::kCapabilitiesCertified.toString()) && !response
@@ -447,7 +450,7 @@ CHueConfig CLightsService::getHueLightInformationsConfig(boost::shared_ptr<share
 }
 
 CHueState CLightsService::getHueLightInformationsStateById(int& lightId,
-                                                          boost::shared_ptr<shared::CDataContainer>& response)
+                                                           boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueState state;
    // Fill State
@@ -564,7 +567,7 @@ CHueState CLightsService::getHueLightInformationsStateById(int& lightId,
 }
 
 CHueSwUpdate CLightsService::getHueLightInformationsSwUpdateById(int& lightId,
-                                                                boost::shared_ptr<shared::CDataContainer>& response)
+                                                                 boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueSwUpdate swUpdate;
    if (response->exists(std::to_string(lightId) + "." + EHueLightResponseType::kSwUpdateState.toString()) &&
@@ -588,8 +591,8 @@ CHueSwUpdate CLightsService::getHueLightInformationsSwUpdateById(int& lightId,
 }
 
 CHueCapabilities CLightsService::getHueLightInformationsCapabilitiesById(int& lightId,
-                                                                        boost::shared_ptr<shared::CDataContainer>&
-                                                                        response)
+                                                                         boost::shared_ptr<shared::CDataContainer>&
+                                                                         response)
 {
    CHueCapabilities capabilities;
    if (response->exists(
@@ -686,7 +689,7 @@ CHueCapabilities CLightsService::getHueLightInformationsCapabilitiesById(int& li
 }
 
 CHueConfig CLightsService::getHueLightInformationsConfigById(int& lightId,
-                                                            boost::shared_ptr<shared::CDataContainer>& response)
+                                                             boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueConfig config;
    if (response->exists(std::to_string(lightId) + "." + EHueLightResponseType::kConfigArchetype.toString())

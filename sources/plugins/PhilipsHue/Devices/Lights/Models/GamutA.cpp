@@ -8,11 +8,11 @@ const std::string CGamutA::RgbColor("RgbColor");
 
 CGamutA::CGamutA(boost::shared_ptr<CUrlManager>& urlManager, std::pair<int, CHueLightInformations>& lightInformations)
    : m_urlManager(urlManager),
-   m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
-   m_rgb(boost::make_shared<yApi::historization::CColorRGB>(
-      RgbColor, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)),
-   m_historizables({ m_switch, m_rgb }),
-   m_lightInformations(lightInformations)
+     m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
+     m_rgb(boost::make_shared<yApi::historization::CColorRGB>(
+        RgbColor, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)),
+     m_historizables({m_switch, m_rgb}),
+     m_lightInformations(lightInformations)
 {
 }
 
@@ -80,7 +80,7 @@ std::string CGamutA::getName()
    return m_lightInformations.second.getName();
 }
 
-std::string CGamutA::getType()
+ELightType CGamutA::getType()
 {
    return m_lightInformations.second.getType();
 }
@@ -93,4 +93,19 @@ std::string CGamutA::getModelId()
 int CGamutA::getDeviceId()
 {
    return m_lightInformations.first;
+}
+
+bool CGamutA::hasColorControl()
+{
+   return true;
+}
+
+bool CGamutA::hasBrightnessControl()
+{
+   return true;
+}
+
+bool CGamutA::hasTemperatureControl()
+{
+   return true;
 }

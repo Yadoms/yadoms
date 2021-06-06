@@ -18,9 +18,16 @@ public:
 
    virtual std::string getName() = 0;
 
-   virtual std::string getType() = 0;
+   virtual ELightType getType() = 0;
 
    virtual std::string getModelId() = 0;
 
    virtual int getDeviceId() = 0;
+
+   virtual bool hasColorControl() = 0;
+
+   virtual bool hasBrightnessControl() = 0;
+
+   virtual bool hasTemperatureControl() = 0;
+
 };
