@@ -1,16 +1,16 @@
-#include "LightManager.h"
+#include "LightsService.h"
 #include "shared/Log.h"
 #include "shared/http/HttpRestHelpers.h"
-#include "ColorConverter.h"
-#include "Entities/HueStreaming.h"
+#include "../../Utils/ColorConverter.h"
+#include "../../../Entities/HueStreaming.h"
+#include "../../Utils/ColorTypeHelper.h"
 
-CLightManager::CLightManager(boost::shared_ptr<CUrlManager>& urlManager)
-   : m_urlManager(urlManager),
-     m_lightId(0)
+CLightsService::CLightsService(boost::shared_ptr<CUrlManager>& urlManager)
+   : m_urlManager(urlManager)
 {
 }
 
-std::map<int, CHueLightInformations> CLightManager::getAllLights()
+std::map<int, CHueLightInformations> CLightsService::getAllLights()
 {
    std::map<int, CHueLightInformations> hueLightsInformations;
    const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kGetAllLights);
@@ -32,9 +32,10 @@ std::map<int, CHueLightInformations> CLightManager::getAllLights()
             ->
             isNull(std::to_string(lightCounter) + "." + EHueLightResponseType::kType.toString()))
          {
-            hueLightInformations.setType(
-               response->get<std::string>(
-                  std::to_string(lightCounter) + "." + EHueLightResponseType::kType.toString()));
+            auto type = response->get<std::string>(
+               std::to_string(lightCounter) + "." + EHueLightResponseType::kType.toString());
+            hueLightInformations.setType(CColorTypeHelper::getLightType(type));
+            hueLightInformations.setColorType(CColorTypeHelper::getColorType(response, type, lightCounter));
          }
          if (response->exists(std::to_string(lightCounter) + "." + EHueLightResponseType::kName.toString()) && !response
             ->
@@ -120,6 +121,7 @@ std::map<int, CHueLightInformations> CLightManager::getAllLights()
                   std::to_string(lightCounter) + "." + EHueLightResponseType::kProductId.toString()));
          }
 
+
          hueLightsInformations.insert({lightCounter, hueLightInformations});
          lightCounter++;
       }
@@ -135,7 +137,7 @@ std::map<int, CHueLightInformations> CLightManager::getAllLights()
    return hueLightsInformations;
 }
 
-CHueLightInformations CLightManager::getLightAttributesAndState(const int id)
+CHueLightInformations CLightsService::getLightAttributesAndState(const int id)
 {
    CHueLightInformations hueLightAttributesAndState;
    const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kGetLightAttributesAndState, id);
@@ -158,7 +160,8 @@ CHueLightInformations CLightManager::getLightAttributesAndState(const int id)
          ->
          isNull(EHueLightResponseType::kType.toString()))
       {
-         hueLightAttributesAndState.setType(response->get<std::string>(EHueLightResponseType::kType.toString()));
+         auto type = response->get<std::string>(EHueLightResponseType::kType.toString());
+         hueLightAttributesAndState.setType(CColorTypeHelper::getLightType(type));
       }
       if (response->exists(EHueLightResponseType::kName.toString()) && !response
          ->
@@ -236,7 +239,7 @@ CHueLightInformations CLightManager::getLightAttributesAndState(const int id)
    return hueLightAttributesAndState;
 }
 
-CHueState CLightManager::getHueLightInformationsState(boost::shared_ptr<shared::CDataContainer>& response)
+CHueState CLightsService::getHueLightInformationsState(boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueState state;
    if (response->exists(EHueLightResponseType::kStateOn.toString()) && !response
@@ -321,7 +324,7 @@ CHueState CLightManager::getHueLightInformationsState(boost::shared_ptr<shared::
    return state;
 }
 
-CHueSwUpdate CLightManager::getHueLightInformationsSwUpdate(boost::shared_ptr<shared::CDataContainer>& response)
+CHueSwUpdate CLightsService::getHueLightInformationsSwUpdate(boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueSwUpdate swUpdate;
    if (response->exists(EHueLightResponseType::kSwUpdateState.toString()) && !response
@@ -339,7 +342,8 @@ CHueSwUpdate CLightManager::getHueLightInformationsSwUpdate(boost::shared_ptr<sh
    return swUpdate;
 }
 
-CHueCapabilities CLightManager::getHueLightInformationsCapabilities(boost::shared_ptr<shared::CDataContainer>& response)
+CHueCapabilities CLightsService::getHueLightInformationsCapabilities(
+   boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueCapabilities capabilities;
    if (response->exists(EHueLightResponseType::kCapabilitiesCertified.toString()) && !response
@@ -404,7 +408,7 @@ CHueCapabilities CLightManager::getHueLightInformationsCapabilities(boost::share
    return capabilities;
 }
 
-CHueConfig CLightManager::getHueLightInformationsConfig(boost::shared_ptr<shared::CDataContainer>& response)
+CHueConfig CLightsService::getHueLightInformationsConfig(boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueConfig config;
    if (response->exists(EHueLightResponseType::kConfigArchetype.toString()) && !response
@@ -445,8 +449,8 @@ CHueConfig CLightManager::getHueLightInformationsConfig(boost::shared_ptr<shared
    return config;
 }
 
-CHueState CLightManager::getHueLightInformationsStateById(int& lightId,
-                                                          boost::shared_ptr<shared::CDataContainer>& response)
+CHueState CLightsService::getHueLightInformationsStateById(int& lightId,
+                                                           boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueState state;
    // Fill State
@@ -562,8 +566,8 @@ CHueState CLightManager::getHueLightInformationsStateById(int& lightId,
    return state;
 }
 
-CHueSwUpdate CLightManager::getHueLightInformationsSwUpdateById(int& lightId,
-                                                                boost::shared_ptr<shared::CDataContainer>& response)
+CHueSwUpdate CLightsService::getHueLightInformationsSwUpdateById(int& lightId,
+                                                                 boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueSwUpdate swUpdate;
    if (response->exists(std::to_string(lightId) + "." + EHueLightResponseType::kSwUpdateState.toString()) &&
@@ -586,9 +590,9 @@ CHueSwUpdate CLightManager::getHueLightInformationsSwUpdateById(int& lightId,
    return swUpdate;
 }
 
-CHueCapabilities CLightManager::getHueLightInformationsCapabilitiesById(int& lightId,
-                                                                        boost::shared_ptr<shared::CDataContainer>&
-                                                                        response)
+CHueCapabilities CLightsService::getHueLightInformationsCapabilitiesById(int& lightId,
+                                                                         boost::shared_ptr<shared::CDataContainer>&
+                                                                         response)
 {
    CHueCapabilities capabilities;
    if (response->exists(
@@ -684,8 +688,8 @@ CHueCapabilities CLightManager::getHueLightInformationsCapabilitiesById(int& lig
    return capabilities;
 }
 
-CHueConfig CLightManager::getHueLightInformationsConfigById(int& lightId,
-                                                            boost::shared_ptr<shared::CDataContainer>& response)
+CHueConfig CLightsService::getHueLightInformationsConfigById(int& lightId,
+                                                             boost::shared_ptr<shared::CDataContainer>& response)
 {
    CHueConfig config;
    if (response->exists(std::to_string(lightId) + "." + EHueLightResponseType::kConfigArchetype.toString())
@@ -738,23 +742,8 @@ CHueConfig CLightManager::getHueLightInformationsConfigById(int& lightId,
    return config;
 }
 
-void CLightManager::setLightState(const std::string& lightUrl, shared::CDataContainer& body)
-{
-   try
-   {
-      const auto response = shared::http::CHttpRestHelpers::sendJsonPutRequest(lightUrl, body.serialize());
-   }
-   catch (std::exception& e)
-   {
-      const auto message = (boost::format("Fail to send Get http request or interpret answer \"%1%\" : %2%") % lightUrl
-         %
-         e.what()).str();
-      YADOMS_LOG(error) << "Fail to send Get http request or interpret answer " << lightUrl << " : " << e.what();
-      throw;
-   }
-}
 
-void CLightManager::setNewLights(const boost::system::error_code& errorCode)
+void CLightsService::setNewLights(const boost::system::error_code& errorCode)
 {
    // boost::asio::error::operation_aborted : Normal behaviour-Invoked when we cancelled the timer
    if (errorCode && errorCode != boost::asio::error::operation_aborted)
@@ -764,61 +753,8 @@ void CLightManager::setNewLights(const boost::system::error_code& errorCode)
    closeReadingNewLights();
 }
 
-void CLightManager::setLightId(std::string& lightName, std::map<int, CHueLightInformations>& detectedLights)
-{
-   const auto it = std::find_if(std::begin(detectedLights), std::end(detectedLights),
-                                [&lightName](auto&& pair)
-                                {
-                                   return pair.second.getName() == lightName;
-                                });
 
-   if (it == std::end(detectedLights))
-   {
-      YADOMS_LOG(warning) << "Light not found";
-      throw std::runtime_error("Light ID is not found");
-   }
-   YADOMS_LOG(information) << "Light ID = " << m_lightId << " is found ";
-   m_lightId = it->first;
-}
-
-void CLightManager::lightOn()
-{
-   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
-   const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
-
-   shared::CDataContainer body;
-   body.set("on", true);
-   setLightState(lightUrl, body);
-}
-
-
-void CLightManager::lightOff()
-{
-   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
-   const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
-
-   shared::CDataContainer body;
-   body.set("on", false);
-   setLightState(lightUrl, body);
-}
-
-void CLightManager::setLightColorUsingXy(const std::string& hexRgb)
-{
-   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightId);
-   const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
-
-   auto rgb = CColorConverter::hexToRgb(hexRgb);
-   const auto xy = CColorConverter::rgbToXy(rgb);
-
-   shared::CDataContainer body;
-   body.set("on", true);
-   body.set("xy.0", xy.getX());
-   body.set("xy.1", xy.getY());
-
-   setLightState(lightUrl, body);
-}
-
-void CLightManager::searchForNewLights()
+void CLightsService::searchForNewLights()
 {
    const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kGetAllLights);
    const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
@@ -840,21 +776,21 @@ void CLightManager::searchForNewLights()
    }
 }
 
-std::map<int, CHueLightInformations> CLightManager::getNewLights()
+std::map<int, CHueLightInformations> CLightsService::getNewLights()
 {
    return m_newLights;
 }
 
-void CLightManager::startReadingNewLights()
+void CLightsService::startReadingNewLights()
 {
    boost::asio::steady_timer timer(m_ios, boost::asio::chrono::seconds(40));
-   timer.async_wait(boost::bind(&CLightManager::setNewLights, this,
+   timer.async_wait(boost::bind(&CLightsService::setNewLights, this,
                                 boost::asio::placeholders::error));
 
    m_ios.run();
 }
 
-void CLightManager::closeReadingNewLights()
+void CLightsService::closeReadingNewLights()
 {
    m_ios.stop();
 }

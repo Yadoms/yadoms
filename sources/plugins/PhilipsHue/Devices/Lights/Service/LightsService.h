@@ -1,25 +1,22 @@
 #pragma once
-#include "UrlManager.h"
-#include "ILightManager.h"
-#include "HueLightsResponseType.h"
 
-class CLightManager : public ILightManager
+#include "../../Utils/HueLightsResponseType.h"
+#include "../../../Entities/HueState.h"
+#include "../../../Entities/HueSwUpdate.h"
+#include "../../../Entities/HueCapabilities.h"
+#include "../../../Entities/HueConfig.h"
+#include "../../../UrlManager.h"
+#include "../../Interfaces/ILightsService.h"
+
+class CLightsService : public ILightsService
 {
 public:
-   explicit CLightManager(boost::shared_ptr<CUrlManager>& urlManager);
-   virtual ~CLightManager() = default;
+   explicit CLightsService(boost::shared_ptr<CUrlManager>& urlManager);
+   virtual ~CLightsService() = default;
 
    std::map<int, CHueLightInformations> getAllLights() override;
 
    CHueLightInformations getLightAttributesAndState(int id) override;
-
-   void setLightId(std::string& lightName, std::map<int, CHueLightInformations>& detectedLights) override;
-
-   void lightOn() override;
-
-   void lightOff() override;
-
-   void setLightColorUsingXy(const std::string& hexRgb) override;
 
    void searchForNewLights() override;
 
@@ -39,14 +36,11 @@ private:
    static CHueConfig getHueLightInformationsConfigById(int& lightId,
                                                        boost::shared_ptr<shared::CDataContainer>& response);
 
-   static void setLightState(const std::string& lightUrl, shared::CDataContainer& body);
-
    void setNewLights(const boost::system::error_code& errorCode);
    void startReadingNewLights();
    void closeReadingNewLights();
 
    boost::shared_ptr<CUrlManager>& m_urlManager;
-   int m_lightId;
    std::map<int, CHueLightInformations> m_newLights;
    boost::asio::io_service m_ios;
 
