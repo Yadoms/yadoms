@@ -89,6 +89,11 @@ std::string CGamutNone::getModelId()
    return m_lightInformations.second.getModelId();
 }
 
+bool CGamutNone::getState()
+{
+   return m_lightInformations.second.getState().isOn();
+}
+
 int CGamutNone::getDeviceId()
 {
    return m_lightInformations.first;

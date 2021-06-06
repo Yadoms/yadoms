@@ -66,4 +66,8 @@ private:
    static const std::string RgbColor;
 
    int getLightId(std::string& lightName);
+
+   void historizeLightState(std::string& lightName, bool state);
+
+
 };

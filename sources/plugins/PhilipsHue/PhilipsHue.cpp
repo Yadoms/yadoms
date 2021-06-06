@@ -82,10 +82,12 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                if (command->getBody() == "1")
                {
                   m_detectedLights[detectedLightId]->lightOn();
+                  historizeLightState(lightName, true);
                }
                else
                {
                   m_detectedLights[detectedLightId]->lightOff();
+                  historizeLightState(lightName, false);
                }
             }
             else if (command->getKeyword() == RgbColor)
@@ -281,6 +283,7 @@ void CPhilipsHue::closeReadingBridgeButtonState()
 
 void CPhilipsHue::declareDeviceByBrdige()
 {
+   auto keywordsToHistorize = m_historizers;
    for (auto i = 0; i < m_bridges.size(); i++)
    {
       std::map<std::string, std::string> bridgeId;
@@ -288,14 +291,16 @@ void CPhilipsHue::declareDeviceByBrdige()
 
       for (auto& light : m_detectedLights)
       {
-         YADOMS_LOG(information) << "Creating the device :" << light->getName();
-         if (!m_api->deviceExists(light->getName()))
+         auto lightName = light->getName();
+         YADOMS_LOG(information) << "Creating the device :" << lightName;
+         if (!m_api->deviceExists(lightName))
          {
-            m_api->declareDevice(light->getName(),
+            m_api->declareDevice(lightName,
                                  light->getType(),
                                  light->getModelId(),
                                  light->getHistorizables(),
                                  shared::CDataContainer::make(bridgeId));
+            historizeLightState(lightName, light->getState());
          }
       }
    }
@@ -347,4 +352,10 @@ int CPhilipsHue::getLightId(std::string& lightName)
    YADOMS_LOG(information) << "Light ID = " << it->get()->getDeviceId() << " is found ";
 
    return it->get()->getDeviceId();
+}
+
+void CPhilipsHue::historizeLightState(std::string& lightName, bool state)
+{
+   m_switch->set(state);
+   m_api->historizeData(lightName, m_switch);
 }
