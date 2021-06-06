@@ -25,6 +25,8 @@ public:
 
    std::string getModelId() override;
 
+   bool getState() override;
+
    int getDeviceId() override;
 
    bool hasColorControl() override;

@@ -20,6 +20,8 @@ public:
 
    virtual ELightType getType() = 0;
 
+   virtual bool getState() = 0;
+
    virtual std::string getModelId() = 0;
 
    virtual int getDeviceId() = 0;

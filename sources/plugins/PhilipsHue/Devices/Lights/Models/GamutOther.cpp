@@ -91,6 +91,11 @@ std::string CGamutOther::getModelId()
    return m_lightInformations.second.getModelId();
 }
 
+bool CGamutOther::getState()
+{
+   return m_lightInformations.second.getState().isOn();
+}
+
 int CGamutOther::getDeviceId()
 {
    return m_lightInformations.first;
