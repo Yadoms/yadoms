@@ -4,6 +4,7 @@
 #include "HueCapabilities.h"
 #include "HueConfig.h"
 #include "../Devices/Utils/LightType.h"
+#include "../Devices/Utils/ColorType.h"
 
 class CHueLightInformations
 {
@@ -26,6 +27,7 @@ public:
    const std::string& getSwVersion() const;
    const std::string& getSwConfigId() const;
    const std::string& getProductId() const;
+   const EColorType& getColorType() const;
 
    void setState(const CHueState& state);
    void setSwUpdate(const CHueSwUpdate& swUpdate);
@@ -40,6 +42,7 @@ public:
    void setSwVersion(const std::string& swVersion);
    void setSwConfigId(const std::string& swConfigId);
    void setProductId(const std::string& productId);
+   void setColorType(const EColorType& colorType);
 
 private:
    CHueState m_state;
@@ -55,4 +58,5 @@ private:
    std::string m_swVersion;
    std::string m_swConfigId;
    std::string m_productId;
+   EColorType m_colorType;
 };

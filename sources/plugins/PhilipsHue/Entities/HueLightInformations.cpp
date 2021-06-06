@@ -65,6 +65,11 @@ const std::string& CHueLightInformations::getProductId() const
    return m_productId;
 }
 
+const EColorType& CHueLightInformations::getColorType() const
+{
+   return m_colorType;
+}
+
 void CHueLightInformations::setState(const CHueState& state)
 {
    m_state = state;
@@ -227,4 +232,9 @@ void CHueLightInformations::setSwConfigId(const std::string& swConfigId)
 void CHueLightInformations::setProductId(const std::string& productId)
 {
    m_productId = productId;
+}
+
+void CHueLightInformations::setColorType(const EColorType& colorType)
+{
+   m_colorType = colorType;
 }

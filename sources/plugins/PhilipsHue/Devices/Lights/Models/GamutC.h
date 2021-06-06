@@ -3,12 +3,12 @@
 #include "../../Interfaces/ILight.h"
 #include <plugin_cpp_api/IPlugin.h>
 
-class CLct015 : public ILight
+class CGamutC : public ILight
 {
 public:
 
-   CLct015(boost::shared_ptr<CUrlManager>& urlManager, std::pair<int, CHueLightInformations>& lightInformations);
-   virtual ~CLct015() = default;
+   CGamutC(boost::shared_ptr<CUrlManager>& urlManager, std::pair<int, CHueLightInformations>& lightInformations);
+   virtual ~CGamutC() = default;
 
    void lightOn() override;
 

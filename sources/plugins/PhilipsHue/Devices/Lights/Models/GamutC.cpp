@@ -1,12 +1,12 @@
-#include "LCT015.h"
+#include "GamutC.h"
 #include "../../Utils/ColorConverter.h"
 #include "shared/http/HttpRestHelpers.h"
 #include "shared/Log.h"
 
-const std::string CLct015::LightState("STATE");
-const std::string CLct015::RgbColor("RgbColor");
+const std::string CGamutC::LightState("STATE");
+const std::string CGamutC::RgbColor("RgbColor");
 
-CLct015::CLct015(boost::shared_ptr<CUrlManager>& urlManager, std::pair<int, CHueLightInformations>& lightInformations)
+CGamutC::CGamutC(boost::shared_ptr<CUrlManager>& urlManager, std::pair<int, CHueLightInformations>& lightInformations)
    : m_urlManager(urlManager),
      m_switch(boost::make_shared<yApi::historization::CSwitch>(LightState)),
      m_rgb(boost::make_shared<yApi::historization::CColorRGB>(
@@ -16,7 +16,7 @@ CLct015::CLct015(boost::shared_ptr<CUrlManager>& urlManager, std::pair<int, CHue
 {
 }
 
-void CLct015::lightOn()
+void CGamutC::lightOn()
 {
    const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightInformations.first);
    const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
@@ -27,7 +27,7 @@ void CLct015::lightOn()
 }
 
 
-void CLct015::lightOff()
+void CGamutC::lightOff()
 {
    const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightInformations.first);
    const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
@@ -37,7 +37,7 @@ void CLct015::lightOff()
    setLightState(lightUrl, body);
 }
 
-void CLct015::setLightColorUsingXy(const std::string& hexRgb)
+void CGamutC::setLightColorUsingXy(const std::string& hexRgb)
 {
    const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kLightState, m_lightInformations.first);
    const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
@@ -53,13 +53,13 @@ void CLct015::setLightColorUsingXy(const std::string& hexRgb)
    setLightState(lightUrl, body);
 }
 
-std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> CLct015::
+std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> CGamutC::
 getHistorizables()
 {
    return m_historizables;
 }
 
-void CLct015::setLightState(const std::string& lightUrl, shared::CDataContainer& body)
+void CGamutC::setLightState(const std::string& lightUrl, shared::CDataContainer& body)
 {
    try
    {
@@ -75,22 +75,22 @@ void CLct015::setLightState(const std::string& lightUrl, shared::CDataContainer&
    }
 }
 
-std::string CLct015::getName()
+std::string CGamutC::getName()
 {
    return m_lightInformations.second.getName();
 }
 
-std::string CLct015::getType()
+std::string CGamutC::getType()
 {
    return m_lightInformations.second.getType();
 }
 
-std::string CLct015::getModelId()
+std::string CGamutC::getModelId()
 {
    return m_lightInformations.second.getModelId();
 }
 
-int CLct015::getDeviceId()
+int CGamutC::getDeviceId()
 {
    return m_lightInformations.first;
 }

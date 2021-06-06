@@ -3,6 +3,7 @@
 #include "shared/http/HttpRestHelpers.h"
 #include "../../Utils/ColorConverter.h"
 #include "../../../Entities/HueStreaming.h"
+#include "../../Utils/ColorTypeHelper.h"
 
 CLightsService::CLightsService(boost::shared_ptr<CUrlManager>& urlManager)
    : m_urlManager(urlManager)
@@ -118,6 +119,7 @@ std::map<int, CHueLightInformations> CLightsService::getAllLights()
                response->get<std::string>(
                   std::to_string(lightCounter) + "." + EHueLightResponseType::kProductId.toString()));
          }
+         hueLightInformations.setColorType(CColorTypeHelper::getColorType(response));
 
          hueLightsInformations.insert({lightCounter, hueLightInformations});
          lightCounter++;

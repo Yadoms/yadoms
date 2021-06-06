@@ -52,8 +52,18 @@ set(PHILIPS_HUE_PLUGIN_SOURCES
 )
 
 set(PHILIPS_HUE_PLUGIN_LIGHTS_MODELS_SOURCES
-	Devices/Lights/Models/LCT015.cpp
-	Devices/Lights/Models/LCT015.h
+	Devices/Lights/Models/GamutC.cpp
+	Devices/Lights/Models/GamutC.h	
+	Devices/Lights/Models/GamutA.cpp
+	Devices/Lights/Models/GamutA.h	
+	Devices/Lights/Models/GamutB.cpp
+	Devices/Lights/Models/GamutB.h
+	Devices/Lights/Models/GamutOther.cpp
+	Devices/Lights/Models/GamutOther.h
+	Devices/Lights/Models/GamutNone.cpp
+	Devices/Lights/Models/GamutNone.h
+
+
 )
 
 set(PHILIPS_HUE_PLUGIN_LIGHTS_SERVICE_SOURCES
@@ -73,6 +83,10 @@ set(PHILIPS_HUE_PLUGIN_DEVICES_UTILS_SOURCES
 	Devices/Utils/ColorConverter.cpp
 	Devices/Utils/LightType.cpp
 	Devices/Utils/LightType.h
+	Devices/Utils/ColorType.h
+	Devices/Utils/ColorType.cpp
+	Devices/Utils/ColorTypeHelper.h
+	Devices/Utils/ColorTypeHelper.cpp
 )
 
 #########################################
