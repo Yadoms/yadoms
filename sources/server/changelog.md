@@ -1,3 +1,8 @@
+### 2.5.0-beta.4
+
+#### Yadoms
+* Fix saving parameter list order in plugin/device/widget configuration
+
 ### 2.5.0-beta.3
 
 #### Yadoms

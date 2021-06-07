@@ -301,8 +301,8 @@ ListParameterHandler.prototype.getCurrentConfiguration = function () {
   $.each(self.items, function (key, value) {
     var deferred = value.getCurrentConfiguration();
     deferredArray.push(deferred);
-    deferred.done(function (data) {
-      self.configurationValues.push(data);
+    deferred.done(key, function (data) {
+      self.configurationValues[key] = data;
     });
   });
 
