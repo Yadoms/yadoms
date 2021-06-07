@@ -5,64 +5,101 @@ include("../YadomsPluginsCommon.cmake")
 ## Place here all the plugin source files
 #########################################
 set(PHILIPS_HUE_PLUGIN_SOURCES
-	stdafx.h
 	stdafx.cpp
-	PhilipsHue.h
 	PhilipsHue.cpp 
-	Configuration.h
 	Configuration.cpp
-	HueBridgeDiscovery.h
 	HueBridgeDiscovery.cpp
+	HueService.cpp
+	Factory.cpp
+	UrlManager.cpp
+	Entities/HueInformations.cpp
+	Entities/Rgb.cpp
+	Entities/Hsv.cpp
+	Entities/Xy.cpp
+	Entities/HueLightInformations.cpp
+	Entities/HueState.cpp
+	Entities/HueSwUpdate.cpp
+	Entities/HueCapabilities.cpp
+	Entities/HueControl.cpp
+	Entities/HueColorGamut.cpp
+	Entities/HueCt.cpp
+	Entities/HueStreaming.cpp
+	Entities/HueConfig.cpp
+	Entities/HueStartUp.cpp
+	stdafx.h
+	PhilipsHue.h
+	Configuration.h
+	HueBridgeDiscovery.h
 	IHueBridgeDiscovery.h
 	HueService.h
-	HueService.cpp
 	Factory.h
-	Factory.cpp
 	IHueService.h
 	UrlManager.h
-	UrlManager.cpp
-	LightManager.h
-	LightManager.cpp
-	ILightManager.h
-	ColorConverter.h
-	ColorConverter.cpp
 	Entities/HueInformations.h
-	Entities/HueInformations.cpp
 	Entities/Rgb.h
-	Entities/Rgb.cpp
 	Entities/Hsv.h
-	Entities/Hsv.cpp
 	Entities/Xy.h
-	Entities/Xy.cpp
 	Entities/HueLightInformations.h
-	Entities/HueLightInformations.cpp
 	Entities/HueState.h
-	Entities/HueState.cpp
 	Entities/HueSwUpdate.h
-	Entities/HueSwUpdate.cpp
 	Entities/HueCapabilities.h
-	Entities/HueCapabilities.cpp
 	Entities/HueControl.h
-	Entities/HueControl.cpp
 	Entities/HueColorGamut.h
-	Entities/HueColorGamut.cpp
 	Entities/HueCt.h
-	Entities/HueCt.cpp
 	Entities/HueStreaming.h
-	Entities/HueStreaming.cpp
 	Entities/HueConfig.h
-	Entities/HueConfig.cpp
 	Entities/HueStartUp.h
-	Entities/HueStartUp.cpp
-	HueLightsResponseType.h
-	HueLightsResponseType.cpp
+)
+
+set(PHILIPS_HUE_PLUGIN_LIGHTS_MODELS_SOURCES
+	Devices/Lights/Models/GamutC.cpp
+	Devices/Lights/Models/GamutC.h	
+	Devices/Lights/Models/GamutA.cpp
+	Devices/Lights/Models/GamutA.h	
+	Devices/Lights/Models/GamutB.cpp
+	Devices/Lights/Models/GamutB.h
+	Devices/Lights/Models/GamutOther.cpp
+	Devices/Lights/Models/GamutOther.h
+	Devices/Lights/Models/GamutNone.cpp
+	Devices/Lights/Models/GamutNone.h
+
+
+)
+
+set(PHILIPS_HUE_PLUGIN_LIGHTS_SERVICE_SOURCES
+	Devices/Lights/Service/LightsService.h
+	Devices/Lights/Service/LightsService.cpp
+)
+
+set(PHILIPS_HUE_PLUGIN_DEVICES_INTERFACES_SOURCES
+	Devices/Interfaces/ILightsService.h
+	Devices/Interfaces/ILight.h
+)
+
+set(PHILIPS_HUE_PLUGIN_DEVICES_UTILS_SOURCES
+	Devices/Utils/HueLightsResponseType.cpp
+	Devices/Utils/HueLightsResponseType.h
+	Devices/Utils/ColorConverter.h
+	Devices/Utils/ColorConverter.cpp
+	Devices/Utils/LightModel.cpp
+	Devices/Utils/LightModel.h
+	Devices/Utils/LightType.cpp
+	Devices/Utils/LightType.h
+	Devices/Utils/ColorType.h
+	Devices/Utils/ColorType.cpp
+	Devices/Utils/ColorTypeHelper.h
+	Devices/Utils/ColorTypeHelper.cpp
 )
 
 #########################################
 ## Place here all additional groups (solution folder)
 #########################################
-source_group(sources ./*.*)
 source_group(sources\\Entities Entities/*.*)
+source_group(sources\\Devices\\Lights\\Models FILES ${PHILIPS_HUE_PLUGIN_LIGHTS_MODELS_SOURCES})
+source_group(sources\\Devices\\Lights\\Service FILES ${PHILIPS_HUE_PLUGIN_LIGHTS_SERVICE_SOURCES})
+source_group(sources\\Devices\\Interfaces FILES ${PHILIPS_HUE_PLUGIN_DEVICES_INTERFACES_SOURCES})
+source_group(sources\\Devices\\Utils FILES ${PHILIPS_HUE_PLUGIN_DEVICES_UTILS_SOURCES})
+source_group(sources ./*.*)
 
 #########################################
 ## Place here all additional include directories
@@ -88,7 +125,6 @@ set(PHILIPS_HUE_PLUGIN_LINK
 ## Always leave these lines to configure plugin correctly
 ## even if EMPTY_PLUGIN_INCLDIR or EMPTY_PLUGIN_LINK are empty
 #########################################
-PLUGIN_SOURCES(PhilipsHue ${PHILIPS_HUE_PLUGIN_SOURCES})
+PLUGIN_SOURCES(PhilipsHue ${PHILIPS_HUE_PLUGIN_SOURCES} ${PHILIPS_HUE_PLUGIN_LIGHTS_MODELS_SOURCES} ${PHILIPS_HUE_PLUGIN_LIGHTS_SERVICE_SOURCES} ${PHILIPS_HUE_PLUGIN_DEVICES_INTERFACES_SOURCES} ${PHILIPS_HUE_PLUGIN_DEVICES_UTILS_SOURCES})
 PLUGIN_INCLDIR(PhilipsHue ${PHILIPS_HUE_PLUGIN_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(PhilipsHue ${PHILIPS_HUE_PLUGIN_ADDITIONAL_LIB})
-
