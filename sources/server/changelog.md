@@ -1,21 +1,9 @@
-### 2.5.0-beta.4
+### 2.5.0
 
 #### Yadoms
 * Fix saving parameter list order in plugin/device/widget configuration
-
-### 2.5.0-beta.3
-
-#### Yadoms
 * Fix script interpreters update
-
-### 2.5.0-beta.2
-
-#### Yadoms
 * Fix plugin update
-
-### 2.5.0-beta.1
-
-#### Yadoms
 * New PhilipsHue plugin (Thanks to Oussama Dahmaz)
 * New StreamDeck plugin (Thanks to Oussama Dahmaz)
 * Fix #617 : File download progress is yet again available
