@@ -3,6 +3,7 @@ include(ExternalProject)
 set(OATPP_ROOT ${CMAKE_BINARY_DIR}/external-libs/oatpp)
 
 list(APPEND OATPP_BUILD_ARGS "-DOATPP_BUILD_TESTS=OFF")
+list(APPEND OATPP_BUILD_ARGS "-DOATPP_MSVC_LINK_STATIC_RUNTIME=ON")
 if(NOT WIN32)
    list(APPEND OATPP_BUILD_ARGS "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
 endif()
@@ -16,7 +17,7 @@ message("OATPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC
       list(APPEND OATPP_BUILD_ARGS "-DOSXCROSS_HOST=${OSXCROSS_HOST}")
       list(APPEND OATPP_BUILD_ARGS "-DCMAKE_C_COMPILER=${OSXCROSS_HOST}-clang")
       list(APPEND OATPP_BUILD_ARGS "-DCMAKE_CXX_COMPILER=${OSXCROSS_HOST}-clang++")
-      set(OATPP_PATHCMD ${OSXCROSS_HOST}-osxcross-conf)      
+      set(OATPP_PATCH_CMD ${OSXCROSS_HOST}-osxcross-conf)      
    endif()
    
    if(OSXCROSS_TARGET_DIR)
@@ -54,11 +55,15 @@ message("OATPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC
 endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp_build
-   GIT_REPOSITORY    https://github.com/oatpp/oatpp.git
-   GIT_TAG           origin/master   # TODO remplacer par un tag fixe dès qu'une version compilera pour win32 (1.3.0 ?)
+# Depot original, a remettre lorsque PR de support de lib de runtime static MSVC sera integree
+   # GIT_REPOSITORY    https://github.com/oatpp/oatpp.git
+   # GIT_TAG           origin/master   # TODO remplacer par un tag fixe dès qu'une version compilera pour win32 (1.3.0 ?)
+   GIT_REPOSITORY    https://github.com/Yadoms/oatpp.git
+   GIT_TAG           origin/LinkWithMsvcStaticRuntime
+   
    GIT_SHALLOW       ON
    GIT_CONFIG        advice.detachedHead=false
-   PATCH_COMMAND     ${OATPP_PATHCMD}   
+   PATCH_COMMAND     ${OATPP_PATCH_CMD}   
    PREFIX            ${OATPP_ROOT}
    CMAKE_ARGS        ${OATPP_BUILD_ARGS}
    INSTALL_COMMAND   ""

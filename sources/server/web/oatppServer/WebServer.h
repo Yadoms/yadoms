@@ -1,7 +1,7 @@
 #pragma once
-#include <boost/smart_ptr/shared_ptr.hpp>
+#include <oatpp/network/Server.hpp>
+#include "HttpRequestHandlerFactory.h"
 #include "web/IWebServer.h"
-#include "web/rest/service/IRestService.h"
 
 namespace web
 {
@@ -45,6 +45,10 @@ namespace web
 
       private:
          //TODO boost::shared_ptr<Poco::Net::HTTPServer> m_embeddedWebServer;
+         std::shared_ptr<oatpp::network::Server> m_server;
+         bool m_interrupt;
+
+         std::shared_ptr<CHttpRequestHandlerFactory> m_httpRequestHandlerFactory;
       };
    } //namespace oatppServer
 } //namespace web
