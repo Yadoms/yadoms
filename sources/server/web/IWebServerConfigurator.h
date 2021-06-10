@@ -15,9 +15,9 @@ namespace web
 
       //-----------------------------------------
       ///\brief      Configure the website handler
-      ///\param [in] doc_root    the path to files
+      ///\param [in] docRoot    the path to files
       //-----------------------------------------
-      virtual void websiteHandlerConfigure(const std::string& doc_root) = 0;
+      virtual void websiteHandlerConfigure(const std::string& docRoot) = 0;
 
       //--------------------------------------
       ///\brief   Configure an alias for the website handler
