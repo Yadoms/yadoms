@@ -1,5 +1,7 @@
 #pragma once
 #include <oatpp/network/Server.hpp>
+#include <oatpp/web/server/HttpConnectionHandler.hpp>
+
 #include "HttpRequestHandlerFactory.h"
 #include "web/IWebServer.h"
 
@@ -31,11 +33,7 @@ namespace web
                     const std::string& restKeywordBase,
                     const std::string& webSocketKeywordBase,
                     bool allowExternalAccess);
-
-         //
-         //\brief Descturtor
-         //
-         virtual ~CWebServer();
+         ~CWebServer() override;
 
          // IWebServer implementation
          void start() override;
@@ -44,9 +42,10 @@ namespace web
          // [END] IWebServer implementation
 
       private:
-         //TODO boost::shared_ptr<Poco::Net::HTTPServer> m_embeddedWebServer;
+         std::shared_ptr<oatpp::web::server::HttpConnectionHandler> m_httpConnectionHandler;
+         std::shared_ptr<oatpp::network::ServerConnectionProvider> m_tcpConnectionProvider;
          std::shared_ptr<oatpp::network::Server> m_server;
-         bool m_interrupt;
+         std::thread m_serverThread;
 
          std::shared_ptr<CHttpRequestHandlerFactory> m_httpRequestHandlerFactory;
       };

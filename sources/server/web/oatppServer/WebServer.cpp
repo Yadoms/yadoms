@@ -33,8 +33,7 @@ namespace web
                              const std::string& restKeywordBase,
                              const std::string& webSocketKeywordBase,
                              bool allowExternalAccess)
-         : m_interrupt(false),
-           m_httpRequestHandlerFactory(std::make_shared<CHttpRequestHandlerFactory>())
+         : m_httpRequestHandlerFactory(std::make_shared<CHttpRequestHandlerFactory>())
       {
          oatpp::base::Environment::init();
 
@@ -42,16 +41,17 @@ namespace web
          auto httpRouter = oatpp::web::server::HttpRouter::createShared();
          httpRouter->route("GET", "/hello", std::make_shared<CRestRequestHandler>()); //TODO
 
-         const auto httpConnectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(httpRouter);
+         m_httpConnectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(httpRouter);
 
-         const auto tcpConnectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared(
+         m_tcpConnectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared(
             {
                (address.empty() ? "0.0.0.0" : address).c_str(),
                port,
                oatpp::network::Address::IP_4
             });
 
-         m_server = std::make_shared<oatpp::network::Server>(tcpConnectionProvider, httpConnectionHandler);
+         m_server = std::make_shared<oatpp::network::Server>(m_tcpConnectionProvider,
+                                                             m_httpConnectionHandler);
 
          // Configure the factory
          m_httpRequestHandlerFactory->websiteHandlerConfigure(docRoot);
@@ -144,13 +144,27 @@ namespace web
       // IWebServer implementation
       void CWebServer::start()
       {
-         m_server->run([this]() { return !m_interrupt; });
+         m_serverThread = std::thread([this]
+         {
+            m_server->run();
+         });
       }
 
       void CWebServer::stop()
       {
-         m_interrupt = false;
-         //TODO wait for server stopped
+         // First, stop the ServerConnectionProvider so we don't accept any new connections
+         m_tcpConnectionProvider->stop();
+
+         // Stop server if still running
+         if (m_server->getStatus() == oatpp::network::Server::STATUS_RUNNING)
+            m_server->stop();
+
+         // Finally, stop the ConnectionHandler and wait until all running connections are closed
+         m_httpConnectionHandler->stop();
+
+         // Wait for thread stopped
+         if (m_serverThread.joinable())
+            m_serverThread.join();
       }
 
       IWebServerConfigurator* CWebServer::getConfigurator()
