@@ -6,12 +6,7 @@ namespace dataAccessLayer
    class IKeywordManager
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~IKeywordManager()
-      {
-      }
+      virtual ~IKeywordManager() = default;
 
       //--------------------------------------------------------------
       /// \brief                          Check if keyword exists
@@ -53,8 +48,8 @@ namespace dataAccessLayer
       /// \return                         The list of found keywords
       /// \throw                          shared::exception::CEmptyResult if none found
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordIdFromFriendlyName(
-         int deviceId, const std::string& friendlyName) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId,
+                                                                                                        const std::string& friendlyName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords 
@@ -83,11 +78,11 @@ namespace dataAccessLayer
       /// \param [in]      capacityAccessMode   the capacity access mode
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getDeviceKeywordsWithCapacity(
-         int deviceId,
-         const std::string& capacityName,
-         const shared::plugin::yPluginApi::
-         EKeywordAccessMode& capacityAccessMode) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getDeviceKeywordsWithCapacity(int deviceId,
+                                                                                                         const std::string& capacityName,
+                                                                                                         const shared::plugin::yPluginApi::
+                                                                                                         EKeywordAccessMode& capacityAccessMode) const
+      = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get the keyword list which match some criteria
@@ -179,6 +174,15 @@ namespace dataAccessLayer
       //--------------------------------------------------------------
       virtual void updateKeywordBlacklistState(int keywordId,
                                                const bool blacklist) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief           Update keyword ID
+      /// \param [in]      keywordEntryToKeep The keyword entry to keep, retrieve by its ID
+      /// \param [in]      newId             The new ID to apply to this entry (must not exist)
+      /// \note /!\ Use it only if you really know what you are doing /!\
+      //--------------------------------------------------------------
+      virtual void updateKeywordId(int keywordEntryToKeep,
+                                   int newId) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove a keyword

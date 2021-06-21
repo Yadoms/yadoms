@@ -73,6 +73,8 @@ namespace database
                                   const std::string& type) override;
             void updateDeviceBlacklistState(int deviceId,
                                             bool blacklist) override;
+            void updateDeviceId(int deviceEntryToKeep,
+                                int newId) override;
             bool isDeviceBlacklisted(int deviceId) const override;
             void removeDevice(int deviceId) override;
             void removeDevice(int pluginId,

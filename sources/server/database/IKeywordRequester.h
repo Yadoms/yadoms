@@ -148,5 +148,14 @@ namespace database
       //--------------------------------------------------------------
       virtual void updateLastValue(int keywordId, const boost::posix_time::ptime& valueDatetime,
                                    const std::string& value) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief           Update keyword ID
+      /// \param [in]      keywordEntryToKeep The keyword entry to keep, retrieve by its ID
+      /// \param [in]      newId             The new ID to apply to this entry (must not exist)
+      /// \note /!\ Use it only if you really know what you are doing /!\
+      //--------------------------------------------------------------
+      virtual void updateKeywordId(int keywordEntryToKeep,
+                                   int newId) = 0;
    };
 } //namespace database 
