@@ -1,7 +1,7 @@
 #pragma once
 #include <oatpp/network/Server.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
-
+#include "HttpPages.h"
 #include "HttpRequestHandlerFactory.h"
 #include "web/IWebServer.h"
 
@@ -39,6 +39,10 @@ namespace web
          void start() override;
          void stop() override;
          IWebServerConfigurator* getConfigurator() override;
+         static void refreshRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter);
+         static void routeAllFiles(const boost::filesystem::path& rootFolder,
+                                   const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
+                                   const std::shared_ptr<CHttpPages>& pagesFiles);
          // [END] IWebServer implementation
 
       private:

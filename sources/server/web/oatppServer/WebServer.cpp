@@ -4,113 +4,12 @@
 #include <oatpp/network/tcp/server/ConnectionProvider.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
-#include <utility>
 #include <shared/Log.h>
 
 namespace web
 {
    namespace oatppServer
    {
-      class CHttpPages final : public oatpp::web::server::HttpRequestHandler
-      {
-         static const std::map<std::string, std::string> MimeTypes;
-
-         static constexpr auto HeaderContentType = "Content-Type";
-         static constexpr auto DefaultMimetype = "application/octet-stream";
-
-         //TODO déplacer, et coder...
-      public:
-         CHttpPages(std::string name,
-                    boost::filesystem::path siteLocation)
-            : m_name(std::move(name)),
-              m_siteLocation(std::move(siteLocation))
-         {
-         }
-
-         ~CHttpPages() override = default;
-
-         /**
-          * Handle incoming request and return outgoing response.
-          */
-         std::shared_ptr<OutgoingResponse> handle(const std::shared_ptr<IncomingRequest>& request) override
-         {
-            auto page = request->getStartingLine().path.std_str();
-            if (page == "/")
-               page = "/index.html";
-            const auto fullPath = m_siteLocation / page;
-
-            const auto buffer = oatpp::base::StrBuffer::loadFromFile(fullPath.string().c_str());
-            if (buffer == nullptr)
-            {
-               YADOMS_LOG(error) << "[" << m_name << "] => *** The resource \' " << page << "\' was not found";
-               return ResponseFactory::createResponse(Status::CODE_404, getDefinedPage("The requested resource was not found!").c_str());
-            }
-
-            auto response = ResponseFactory::createResponse(Status::CODE_200, oatpp::String(buffer));
-            response->putHeader(HeaderContentType, getMimeTypeFromPath(page));
-            return response;
-         }
-
-         const char* getMimeTypeFromPath(const std::string& path) const
-         {
-            const auto find = MimeTypes.find(extension(boost::filesystem::path(path)));
-            if (find == MimeTypes.end())
-            {
-               YADOMS_LOG(error) << "[" << m_name << "] => *** Mimetype not supported for page \'" << path << "\'";
-               return DefaultMimetype;
-            }
-            return find->second.c_str();
-         }
-
-         static std::string getDefinedPage(const std::string& text)
-         //TODO la page 404 (ou autre codes d'erreur) ne devrait-elle pas être gérée par le front ?
-         {
-            std::stringstream ss;
-            ss << "<html>";
-            ss << "<head>";
-            ss << "<title>TVM</title>";
-            ss << "</head>";
-            ss << "<body>";
-            ss << "<h1>";
-            ss << text;
-            ss << "</h1>";
-            ss << "</body>";
-            ss << "</html>";
-            return ss.str();
-         }
-
-
-         //TODO : voir code DAT
-         //void AddFileToCache(const std::string& filePath);
-         //void ClearCache();
-         //void AddVirtualPage(const std::string& page, const std::string& destination);
-         //void ClearVirtualPages();
-
-      private:
-         const std::string m_name; //TODO utile ?
-         const boost::filesystem::path m_siteLocation;
-      };
-
-      const std::map<std::string, std::string> CHttpPages::MimeTypes =
-      {
-         {".html", "text/html"},
-         {".json", "text/json"},
-         {".jpg", "image/jpeg"},
-         {".jpeg", "image/jpeg"},
-         {".png", "image/png"},
-         {".gif", "image/gif"},
-         {".ico", "image/x-icon"},
-         {".css", "text/css"},
-         {".js", "text/javascript"},
-         {".xml", "text/xml"},
-         {".bmp", "image/bmp"},
-         {".pdf", "application/pdf"},
-         {".wav", "audio/x-wav"},
-         {".wave", "audio/x-wav"},
-         {".svg", "image/svg+xml"},
-         {".ttf", "font/ttf"}
-      };
-
       CWebServer::CWebServer(const std::string& address,
                              bool useSSL,
                              unsigned short port,
@@ -125,7 +24,7 @@ namespace web
 
          // Create Router component
          auto httpRouter = oatpp::web::server::HttpRouter::createShared();
-         httpRouter->route("GET", "/", std::make_shared<CHttpPages>("Yadoms client", "www"));
+         refreshRoutes(httpRouter);
 
          m_httpConnectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(httpRouter);
 
@@ -256,6 +155,33 @@ namespace web
       IWebServerConfigurator* CWebServer::getConfigurator()
       {
          return m_httpRequestHandlerFactory.get();
+      }
+
+      void CWebServer::refreshRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter)
+      {
+         const auto pagesFiles = std::make_shared<CHttpPages>("Yadoms client", "www");
+         httpRouter->route("GET", "/", pagesFiles);
+
+         routeAllFiles("www", httpRouter, pagesFiles);
+      }
+
+      void CWebServer::routeAllFiles(const boost::filesystem::path& rootFolder,
+                                     const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
+                                     const std::shared_ptr<CHttpPages>& pagesFiles)
+      {
+         for (boost::filesystem::recursive_directory_iterator end, dir(rootFolder); dir != end; ++dir)
+         {
+            if (dir->status().type() == boost::filesystem::directory_file)
+               continue;
+
+            //TODO faire mieux en utilisant les paths
+            auto file = dir->path().string();
+            auto page = file.substr(rootFolder.size());
+#if _WIN32
+            std::replace(page.begin(), page.end(), '\\', '/');
+#endif
+            httpRouter->route("GET", page.c_str(), pagesFiles);
+         }
       }
    } //namespace oatppServer
 } //namespace web

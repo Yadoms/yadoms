@@ -1037,6 +1037,8 @@ source_group(server\\web\\poco  server/web/poco/*.*)
 
 # Oatpp-based Web server
 set(YADOMS_SRC ${YADOMS_SRC}
+   server/web/oatppServer/HttpPages.h
+   server/web/oatppServer/HttpPages.cpp
    server/web/oatppServer/WebServer.h
    server/web/oatppServer/WebServer.cpp
 #   server/web/oatppServer/AuthenticationRequestHandler.h
