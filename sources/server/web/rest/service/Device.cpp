@@ -162,8 +162,8 @@ namespace web
 
                                                                   // A common device was found
                                                                   auto commonKeyword = shared::CDataContainer::make();
-                                                                  commonKeyword->set("from", refKeyword);
-                                                                  commonKeyword->set("to", candidateKeyword);
+                                                                  commonKeyword->set("from", candidateKeyword);
+                                                                  commonKeyword->set("to", refKeyword);
                                                                   commonKeywords.push_back(commonKeyword);
                                                                   return true;
                                                                }
