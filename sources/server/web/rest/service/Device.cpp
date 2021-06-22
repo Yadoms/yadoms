@@ -2,6 +2,7 @@
 #include "Device.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <unordered_set>
+#include <utility>
 
 #include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
@@ -17,16 +18,16 @@ namespace web
          std::string CDevice::m_restKeyword = std::string("device");
 
 
-         CDevice::CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
+         CDevice::CDevice(const boost::shared_ptr<database::IDataProvider>& dataProvider,
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
                           boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                           boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
               m_deviceRequester(dataProvider->getDeviceRequester()),
-              m_pluginManager(pluginManager),
-              m_deviceManager(deviceManager),
-              m_keywordManager(keywordManager),
+              m_pluginManager(std::move(pluginManager)),
+              m_deviceManager(std::move(deviceManager)),
+              m_keywordManager(std::move(keywordManager)),
               m_messageSender(messageSender)
          {
          }
@@ -739,6 +740,11 @@ namespace web
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::mergeDevices(const std::vector<std::string>& parameters,
                                                                                            const std::string& requestContent) const
          {
+            // Merging device goal is :
+            // - Keep new device name so plugin can still historize to the new device
+            // - Keep old device ID (and keywords) to make widgets referencing it still working and currently running rules to continue to address it
+            // - Keep old friendly name to make stopped rules to retrieve known devices/keywords
+
             try
             {
                const shared::CDataContainer content(requestContent);
@@ -791,6 +797,8 @@ namespace web
                   const auto toKw = keywordCorrespondence->get<int>("to");
                   m_keywordManager->updateKeywordId(toKw,
                                                     fromKw);
+                  m_keywordManager->updateDeviceId(fromKw,
+                                                   sourceDeviceId);
                }
 
                // Restart concerned plugins
