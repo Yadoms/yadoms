@@ -21,10 +21,6 @@ namespace web
          {
          }
 
-         CConfiguration::~CConfiguration()
-         {
-         }
-
          void CConfiguration::configurePocoDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("server"), CConfiguration::getServerConfiguration);

@@ -145,6 +145,9 @@ namespace web
 
       void CWebServer::stop()
       {
+         if (!m_serverThread.joinable())
+            return;
+
          // First, stop the ServerConnectionProvider so we don't accept any new connections
          m_tcpConnectionProvider->stop();
 

@@ -13,7 +13,7 @@ namespace web
          {
          public:
             explicit CConfiguration(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
-            ~CConfiguration() override;
+            ~CConfiguration() override = default;
 
             // IRestService implementation
             void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
