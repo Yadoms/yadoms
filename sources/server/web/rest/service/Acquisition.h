@@ -16,7 +16,8 @@ namespace web
             virtual ~CAcquisition() = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
             // [END] IRestService implementation
 
             static const std::string& getRestKeyword();
@@ -51,6 +52,7 @@ namespace web
                                                                                              const std::string& requestContent) const;
 
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
             static std::string m_restKeyword;
          };
       } //namespace service

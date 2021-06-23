@@ -25,7 +25,8 @@ namespace web
             virtual ~CMaintenance() = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
             // [END] IRestService implementation
 
             static const std::string& getRestKeyword();
@@ -73,6 +74,7 @@ namespace web
             boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
             boost::shared_ptr<task::CScheduler> m_taskScheduler;
             boost::shared_ptr<IUploadFileManager> m_uploadFileManager;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
          };
       } //namespace service
    } //namespace rest

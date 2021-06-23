@@ -645,6 +645,8 @@ set(YADOMS_SRC
    server/web/rest/RestDispatcherHelpers.hpp
    server/web/rest/Result.h
    server/web/rest/Result.cpp
+   server/web/rest/ResultV2.h
+   server/web/rest/ResultV2.cpp
    server/web/rest/StringContainer.h
    server/web/rest/StringContainer.cpp
 
@@ -660,6 +662,7 @@ set(YADOMS_SRC
    server/web/rest/service/EventLogger.cpp
    server/web/rest/service/IUploadFileManager.h
    server/web/rest/service/IRestService.h
+   server/web/rest/service/IRestAccessPoint.h
    server/web/rest/service/Maintenance.h
    server/web/rest/service/Maintenance.cpp
    server/web/rest/service/Page.h
@@ -670,6 +673,8 @@ set(YADOMS_SRC
    server/web/rest/service/PluginEventLogger.cpp
    server/web/rest/service/Recipient.h
    server/web/rest/service/Recipient.cpp
+   server/web/rest/service/RestAccessPoint.h
+   server/web/rest/service/RestAccessPoint.cpp
    server/web/rest/service/System.h
    server/web/rest/service/System.cpp
    server/web/rest/service/Task.h

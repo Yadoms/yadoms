@@ -12,7 +12,7 @@ namespace web
       ///\note    Each rest method handler have to be registered with a pattern /device/*; with a function pointer to call in case of such a query
       ///         All the patterns are sorted so wildcard are low priority
       //-------------------------------------- 
-      class CRestDispatcher
+      class CRestDispatcher //TODO spécifique poco ? (à déplacer dans l'implémentation poco du webserver ?)
       {
       public:
          //--------------------------------------   

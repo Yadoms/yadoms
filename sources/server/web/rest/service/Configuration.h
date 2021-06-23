@@ -1,6 +1,7 @@
 #pragma once
 #include "IRestService.h"
 #include "dataAccessLayer/IConfigurationManager.h"
+#include "web/rest/ResultV2.h"
 
 namespace web
 {
@@ -8,16 +9,16 @@ namespace web
    {
       namespace service
       {
-         class CConfiguration : public IRestService
+         class CConfiguration final : public IRestService
          {
          public:
             explicit CConfiguration(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
-            virtual ~CConfiguration();
+            ~CConfiguration() override;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
             // [END] IRestService implementation
-
 
          private:
             boost::shared_ptr<shared::serialization::IDataSerializable> resetServerConfiguration(const std::vector<std::string>& parameters,
@@ -35,8 +36,19 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> saveExternalConfiguration(const std::vector<std::string>& parameters,
                                                                                                   const std::string& requestContent) const;
 
+            // REST Api v2
+            boost::shared_ptr<IRestAnswer> getServerConfigurationV2(const std::map<std::string,
+                                                                                   std::string>& parameters,
+                                                                    const std::string& body) const;
+            boost::shared_ptr<IRestAnswer> CConfiguration::getDatabaseVersionV2(const std::map<std::string,
+                                                                                               std::string>& parameters,
+                                                                                const std::string& body) const;
+
+
             boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
             static std::string m_restKeyword;
+
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
          };
       } //namespace service
    } //namespace rest

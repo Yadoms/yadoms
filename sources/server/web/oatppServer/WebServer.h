@@ -18,19 +18,21 @@ namespace web
          //
          //\brief                         Create aa embedded w<eb server
          //\param[in] address             IP address.  In general, use  "0.0.0.0"
-         //\param[in] useSSL              Determine if the server use a SSL certificate
-         //\param[in] port                port to listen on for browser requests e.g. 8080 
-         //\param[in] securedPort         port to listen on for HTTPS browser requests e.g. 443
-         //\param[in] docRoot            path to folder containing html e.g. "./"
-         //\param[in] restKeywordBase     the string which identifies a rest url ex: /rest/
+         //\param[in] useSsl              Determine if the server use a SSL certificate
+         //\param[in] port                Port to listen on for browser requests e.g. 8080 
+         //\param[in] securedPort         Port to listen on for HTTPS browser requests e.g. 443
+         //\param[in] docRoot             Path to folder containing html e.g. "./"
+         //\param[in] restKeywordBase     The string which identifies a rest url ex: /rest/
+         //\param[in] restServices        Vector of rest services
          //\param[in] allowExternalAccess Indicate if external access are allowed (in fact it add CORS headers to answer requests)
          //
          CWebServer(const std::string& address,
-                    bool useSSL,
+                    bool useSsl,
                     unsigned short port,
                     unsigned short securedPort,
                     const std::string& docRoot,
                     const std::string& restKeywordBase,
+                    const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
                     const std::string& webSocketKeywordBase,
                     bool allowExternalAccess);
          ~CWebServer() override;
@@ -38,20 +40,25 @@ namespace web
          // IWebServer implementation
          void start() override;
          void stop() override;
-         IWebServerConfigurator* getConfigurator() override;
-         static void refreshRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter);
-         static void routeAllFiles(const boost::filesystem::path& rootFolder,
-                                   const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
-                                   const std::shared_ptr<CHttpPages>& pagesFiles);
+         IWebServerConfigurator* getConfigurator() override; //TODO utile ?
          // [END] IWebServer implementation
 
       private:
+         static void refreshWebRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
+                                      const std::string& docRoot);
+         static void routeAllFiles(const boost::filesystem::path& rootFolder,
+                                   const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
+                                   const std::shared_ptr<CHttpPages>& pagesFiles);
+         void refreshRestRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
+                                const std::string& restKeywordBase) const;
+
          std::shared_ptr<oatpp::web::server::HttpConnectionHandler> m_httpConnectionHandler;
          std::shared_ptr<oatpp::network::ServerConnectionProvider> m_tcpConnectionProvider;
          std::shared_ptr<oatpp::network::Server> m_server;
          std::thread m_serverThread;
 
          std::shared_ptr<CHttpRequestHandlerFactory> m_httpRequestHandlerFactory;
+         const boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>> m_restServices;
       };
    } //namespace oatppServer
 } //namespace web

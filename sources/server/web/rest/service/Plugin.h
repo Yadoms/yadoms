@@ -11,18 +11,19 @@ namespace web
    {
       namespace service
       {
-         class CPlugin : public IRestService
+         class CPlugin final : public IRestService
          {
          public:
-            explicit CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
-                             boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                             boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-                             communication::ISendMessageAsync& messageSender,
-                             bool developerMode);
-            virtual ~CPlugin() = default;
+            CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
+                    boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                    boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                    communication::ISendMessageAsync& messageSender,
+                    bool developerMode);
+            ~CPlugin() override = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
             // [END] IRestService implementation
 
             const std::string& getRestKeyword() const;
@@ -31,7 +32,7 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstance(const std::vector<std::string>& parameters,
                                                                                               const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceWithState(const std::vector<std::string>& parameters,
-                                                                                                       const std::string& requestContent) const;
+               const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceForManualDeviceCreation(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
@@ -41,7 +42,7 @@ namespace web
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters,
-                                                                                                          const std::string& requestContent) const;
+               const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> sendExtraQuery(const std::vector<std::string>& parameters,
                                                                                        const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> sendDeviceExtraQuery(
@@ -91,6 +92,7 @@ namespace web
             communication::ISendMessageAsync& m_messageSender;
 
             bool m_developerMode;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
          };
       } //namespace service
    } //namespace rest

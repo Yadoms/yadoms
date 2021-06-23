@@ -21,7 +21,8 @@ namespace web
             virtual ~CSystem() = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
             // [END] IRestService implementation
 
             static const std::string& getRestKeyword();
@@ -58,6 +59,7 @@ namespace web
             static std::string m_restKeyword;
 
             boost::shared_ptr<IRunningInformation> m_runningInformation;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
 
             static shared::CDataContainer m_virtualDevicesSupportedCapacities;
 

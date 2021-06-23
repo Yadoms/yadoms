@@ -18,7 +18,8 @@ namespace web
             virtual ~CAutomationRule() = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
             // [END] IRestService implementation
 
             static const std::string& getRestKeyword();
@@ -60,9 +61,10 @@ namespace web
          private:
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<automation::IRuleManager> m_rulesManager;
-            static const std::string m_restKeyword;
-            static const std::string m_restSubKeywordInterpreter;
-            static const std::string m_restSubKeywordRule;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
+            static const std::string RestKeyword;
+            static const std::string RestSubKeywordInterpreter;
+            static const std::string RestSubKeywordRule;
          };
       } //namespace service
    } //namespace rest

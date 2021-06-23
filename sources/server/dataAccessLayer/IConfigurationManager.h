@@ -6,9 +6,7 @@ namespace dataAccessLayer
    class IConfigurationManager
    {
    public:
-      virtual ~IConfigurationManager()
-      {
-      }
+      virtual ~IConfigurationManager() = default;
 
       //--------------------------------------------------------------
       /// \brief      Read a configuration entry

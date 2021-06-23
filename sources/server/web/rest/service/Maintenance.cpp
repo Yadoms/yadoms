@@ -38,7 +38,7 @@ namespace web
          }
 
 
-         void CMaintenance::configureDispatcher(CRestDispatcher& dispatcher)
+         void CMaintenance::configurePocoDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CMaintenance::getDatabaseInformation);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("backup"), CMaintenance::getBackups);
@@ -52,6 +52,17 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("logs"), CMaintenance::deleteAllLogs);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("startExportData")("*"), CMaintenance::startExportData);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("exportData"), CMaintenance::getExportData);
+         }
+
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CMaintenance::accessPoints()
+         {
+            if (m_accessPoints != nullptr)
+               return m_accessPoints;
+
+            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            //TODO
+
+            return m_accessPoints;
          }
 
 

@@ -10,7 +10,7 @@ namespace authentication
    //-------------------------------------
    ///\brief Class which handle basic authentication (single user/password check)
    //-------------------------------------
-   class CBasicAuthentication : public IAuthentication
+   class CBasicAuthentication final : public IAuthentication
    {
    public:
       //-------------------------------------
@@ -20,11 +20,7 @@ namespace authentication
       //-------------------------------------
       CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
                            bool skipPasswordCheck);
-
-      //-------------------------------------
-      ///\brief Destructor
-      //-------------------------------------
-      virtual ~CBasicAuthentication();
+      ~CBasicAuthentication() override;
 
       // IAuthentifier implementation
       bool isAuthenticationActive() const override;

@@ -34,7 +34,7 @@ namespace web
             return m_restKeyword;
          }
 
-         void CDevice::configureDispatcher(CRestDispatcher& dispatcher)
+         void CDevice::configurePocoDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CDevice::getOneDevice);
@@ -82,6 +82,17 @@ namespace web
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"),
                                                         CDevice::deleteDevice,
                                                         CDevice:: transactionalMethod);
+         }
+
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CDevice::accessPoints()
+         {
+            if (m_accessPoints != nullptr)
+               return m_accessPoints;
+
+            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            //TODO
+
+            return m_accessPoints;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getOneDevice(

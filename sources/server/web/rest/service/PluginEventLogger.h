@@ -17,7 +17,8 @@ namespace web
 
          public:
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
             // [END] IRestService implementation
 
             const std::string& getRestKeyword() const;
@@ -28,6 +29,7 @@ namespace web
          private:
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             const std::string m_restKeyword;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
          };
       } //namespace service
    } //namespace rest

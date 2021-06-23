@@ -26,10 +26,21 @@ namespace web
             return m_restKeyword;
          }
 
-         void CTask::configureDispatcher(CRestDispatcher& dispatcher)
+         void CTask::configurePocoDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CTask::getAllTasks);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CTask::getOneTask);
+         }
+
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CTask::accessPoints()
+         {
+            if (m_accessPoints != nullptr)
+               return m_accessPoints;
+
+            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            //TODO
+
+            return m_accessPoints;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CTask::getOneTask(const std::vector<std::string>& parameters,

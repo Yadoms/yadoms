@@ -23,7 +23,7 @@ namespace web
             return m_restKeyword;
          }
 
-         void CPage::configureDispatcher(CRestDispatcher& dispatcher)
+         void CPage::configurePocoDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPage::getAllPages);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPage::getOnePage);
@@ -41,6 +41,17 @@ namespace web
                                                         CPage::replaceAllWidgetsForPage, CPage::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")(CWidget::getRestKeyword()),
                                                         CPage::deleteAllWidgetsForPage, CPage::transactionalMethod);
+         }
+
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CPage::accessPoints()
+         {
+            if (m_accessPoints != nullptr)
+               return m_accessPoints;
+
+            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            //TODO
+
+            return m_accessPoints;
          }
 
 

@@ -112,7 +112,7 @@ namespace web
          for (auto& i : m_restService)
          {
             if (i.get() != nullptr)
-               i->configureDispatcher(m_restDispatcher);
+               i->configurePocoDispatcher(m_restDispatcher);
          }
       }
    } //namespace poco

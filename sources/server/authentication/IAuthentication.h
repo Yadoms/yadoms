@@ -8,12 +8,7 @@ namespace authentication
    class IAuthentication
    {
    public:
-      //-------------------------------------
-      ///\brief Destructor
-      //-------------------------------------
-      virtual ~IAuthentication()
-      {
-      }
+      virtual ~IAuthentication() = default;
 
       //-------------------------------------
       ///\brief Indicates if authentication is active

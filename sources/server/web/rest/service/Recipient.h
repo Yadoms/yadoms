@@ -14,7 +14,8 @@ namespace web { namespace rest { namespace service {
 
    public:
       // IRestService implementation
-      void configureDispatcher(CRestDispatcher & dispatcher) override;
+      void configurePocoDispatcher(CRestDispatcher & dispatcher) override;
+      boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
       // [END] IRestService implementation
 
       static const std::string & getRestKeyword();
@@ -32,6 +33,7 @@ namespace web { namespace rest { namespace service {
       static std::string m_restKeyword;
       static std::string m_restFieldKeyword;
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
+      boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
       boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
    };
 

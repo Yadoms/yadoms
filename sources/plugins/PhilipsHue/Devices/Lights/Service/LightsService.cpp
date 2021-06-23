@@ -147,7 +147,7 @@ CHueLightInformations CLightsService::getLightAttributesAndState(const int id)
    {
       boost::shared_ptr<shared::CDataContainer> response;
 
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, lightUrl)
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestMethod::kGet, lightUrl)
          ->send([&response](boost::shared_ptr<shared::CDataContainer> data)
          {
             response = std::move(data);

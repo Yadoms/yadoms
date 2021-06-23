@@ -39,7 +39,7 @@ namespace web
       ///\brief      Register a REST service
       ///\param [in] restService the REST service to register
       //-----------------------------------------
-      virtual void restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService> restService) = 0;
+      virtual void restHandlerRegisterService(boost::shared_ptr<rest::service::IRestService> restService) = 0;
 
       //-----------------------------------------
       ///\brief      Configure the WebSocket service handler

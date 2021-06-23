@@ -4,11 +4,11 @@
 
 namespace dataAccessLayer
 {
-   class CConfigurationManager : public IConfigurationManager
+   class CConfigurationManager final : public IConfigurationManager
    {
    public:
       explicit CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester);
-      virtual ~CConfigurationManager();
+      ~CConfigurationManager() override;
 
       // IConfigurationManager implementation
       std::string getExternalConfiguration(const std::string& section) const override;

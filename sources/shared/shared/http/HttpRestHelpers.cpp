@@ -8,7 +8,7 @@ namespace shared
 {
    namespace http
    {
-      boost::shared_ptr<IHttpRestRequest> CHttpRestHelpers::createHttpRestRequest(IHttpRestRequest::EType requestType,
+      boost::shared_ptr<IHttpRestRequest> CHttpRestHelpers::createHttpRestRequest(ERestMethod requestType,
                                                                                   const std::string& url)
       {
          return boost::make_shared<CCurlppHttpRestRequest>(requestType, url);
@@ -19,7 +19,7 @@ namespace shared
       {
          std::string out;
 
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kGet, url)
+         createHttpRestRequest(ERestMethod::kGet, url)
             ->withParameters(parameters)
             .send([&out](const std::map<std::string, std::string>& receivedHeaders,
                          const std::string& data)
@@ -35,7 +35,7 @@ namespace shared
       {
          boost::shared_ptr<CDataContainer> out;
 
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kGet, url)
+         createHttpRestRequest(ERestMethod::kGet, url)
             ->withParameters(parameters)
             .send([&out](boost::shared_ptr<CDataContainer> data)
             {
@@ -52,7 +52,7 @@ namespace shared
       {
          std::string out;
 
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kPost, url)
+         createHttpRestRequest(ERestMethod::kPost, url)
             ->withBody(body)
             .withParameters(parameters)
             .send([&out](const std::map<std::string, std::string>& receivedHeaders,
@@ -71,7 +71,7 @@ namespace shared
       {
          boost::shared_ptr<CDataContainer> out;
 
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kPost, url)
+         createHttpRestRequest(ERestMethod::kPost, url)
             ->withBody(body)
             .withParameters(parameters)
             .send([&out](boost::shared_ptr<CDataContainer> data)
@@ -87,7 +87,7 @@ namespace shared
       {
          std::map<std::string, std::string> out;
 
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kHead, url)
+         createHttpRestRequest(ERestMethod::kHead, url)
             ->withParameters(parameters)
             .send([&out](const std::map<std::string, std::string>& receivedHeaders,
                          const std::string&)
@@ -104,7 +104,7 @@ namespace shared
       {
          std::string out;
 
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kPut, url)
+         createHttpRestRequest(ERestMethod::kPut, url)
             ->withBody(body)
             .withParameters(parameters)
             .send([&out](const std::map<std::string, std::string>& receivedHeaders,
@@ -122,7 +122,7 @@ namespace shared
       {
          boost::shared_ptr<CDataContainer> out;
 
-         createHttpRestRequest(CCurlppHttpRestRequest::EType::kPut, url)
+         createHttpRestRequest(ERestMethod::kPut, url)
             ->withBody(body)
             .withParameters(parameters)
             .send([&out](boost::shared_ptr<CDataContainer> data)

@@ -21,7 +21,8 @@ namespace web
             virtual ~CDevice() = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
             // [END] IRestService implementation
 
             static const std::string& getRestKeyword();
@@ -210,6 +211,7 @@ namespace web
             ///\brief   Keyword manager
             //-----------------------------------------
             boost::shared_ptr<dataAccessLayer::IKeywordManager> m_keywordManager;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
 
             //-----------------------------------------
             ///\brief   The rest keyword which identifies this rule

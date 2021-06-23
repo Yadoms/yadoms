@@ -25,7 +25,7 @@ namespace web { namespace rest { namespace service {
       return m_restKeyword;
    }
 
-   void CRecipient::configureDispatcher(CRestDispatcher & dispatcher)
+   void CRecipient::configurePocoDispatcher(CRestDispatcher & dispatcher)
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CRecipient::getAllRecipients);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CRecipient::getOneRecipient);
@@ -38,6 +38,16 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restFieldKeyword)("*"), CRecipient::getAllRecipientsByField);
    }
 
+   boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CRecipient::accessPoints()
+   {
+      if (m_accessPoints != nullptr)
+         return m_accessPoints;
+
+      m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+      //TODO
+
+      return m_accessPoints;
+   }
 
 
    boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)

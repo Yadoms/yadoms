@@ -22,7 +22,7 @@ namespace web
          {
          }
 
-         void CAcquisition::configureDispatcher(CRestDispatcher& dispatcher)
+         void CAcquisition::configurePocoDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("keyword")("lastdata"),
                                         CAcquisition::getKeywordListLastData);
@@ -82,6 +82,17 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("year")("*")("*"),
                                         CAcquisition::getKeywordDataByYear);
             //get keyword data between two dates
+         }
+
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CAcquisition::accessPoints()
+         {
+            if (m_accessPoints != nullptr)
+               return m_accessPoints;
+
+            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            //TODO
+
+            return m_accessPoints;
          }
 
          const std::string& CAcquisition::getRestKeyword()
@@ -316,11 +327,11 @@ namespace web
                      timeFrom = boost::posix_time::from_iso_string(parameters[3]);
 
                   if (parameters.size() > 4)
-                     timeTo = boost::posix_time::from_iso_string(parameters[4]);                  
+                     timeTo = boost::posix_time::from_iso_string(parameters[4]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordData(keywordId,
-                                                                                                           timeFrom,
-                                                                                                           timeTo);
+                     timeFrom,
+                     timeTo);
                   return boost::make_shared<CStringContainer>(allData);
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
@@ -395,8 +406,8 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByHour(keywordId,
-                                                                                                           timeFrom,
-                                                                                                           timeTo);
+                     timeFrom,
+                     timeTo);
                   return boost::make_shared<CStringContainer>(allData);
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
@@ -434,8 +445,8 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByDay(keywordId,
-                                                                                                          timeFrom,
-                                                                                                          timeTo);
+                     timeFrom,
+                     timeTo);
                   return boost::make_shared<CStringContainer>(allData);
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
@@ -473,8 +484,8 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByMonth(keywordId,
-                                                                                                            timeFrom,
-                                                                                                            timeTo);
+                     timeFrom,
+                     timeTo);
                   return boost::make_shared<CStringContainer>(allData);
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
@@ -512,8 +523,8 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByYear(keywordId,
-                                                                                                           timeFrom,
-                                                                                                           timeTo);
+                     timeFrom,
+                     timeTo);
                   return boost::make_shared<CStringContainer>(allData);
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");

@@ -19,13 +19,24 @@ namespace web
          {
          }
 
-         void CEventLogger::configureDispatcher(CRestDispatcher& dispatcher)
+         void CEventLogger::configurePocoDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CEventLogger::getEvents);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("last"), CEventLogger::getLastEvent);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("from")("*"), CEventLogger::getEventsFrom);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("limit")("*")("*"), CEventLogger::getEventsRange);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword), CEventLogger::addEvent);
+         }
+
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CEventLogger::accessPoints()
+         {
+            if (m_accessPoints != nullptr)
+               return m_accessPoints;
+
+            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            //TODO
+
+            return m_accessPoints;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CEventLogger::getEvents(const std::vector<std::string>& parameters,

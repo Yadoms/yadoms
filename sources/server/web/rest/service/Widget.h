@@ -17,7 +17,8 @@ namespace web
             virtual ~CWidget() = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
             // [END] IRestService implementation
 
 
@@ -35,6 +36,7 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string>& parameters, const std::string& requestContent) const;
          private:
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
             static std::string m_restKeyword;
             std::string m_webServerPath;
          };

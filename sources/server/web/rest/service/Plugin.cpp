@@ -33,7 +33,7 @@ namespace web
             return m_restKeyword;
          }
 
-         void CPlugin::configureDispatcher(CRestDispatcher& dispatcher)
+         void CPlugin::configurePocoDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePlugins);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CPlugin::getAllAvailablePluginsParameterized);
@@ -41,7 +41,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstance);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instanceWithState"), CPlugin::getAllPluginsInstanceWithState);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::
-               getAllPluginsInstanceForManualDeviceCreation);
+                                        getAllPluginsInstanceForManualDeviceCreation);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("state"), CPlugin::getInstanceState);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices);
@@ -53,18 +53,28 @@ namespace web
 
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::
-               transactionalMethod);
+                                                        transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraQuery")("*"), CPlugin::sendExtraQuery, CPlugin
-               ::transactionalMethod);
+                                                        ::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::
-               sendDeviceExtraQuery, CPlugin::transactionalMethod);
+                                                        sendDeviceExtraQuery, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod
             );
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::
-               transactionalMethod);
+                                                        transactionalMethod);
          }
 
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CPlugin::accessPoints()
+         {
+            if (m_accessPoints != nullptr)
+               return m_accessPoints;
+
+            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            //TODO
+
+            return m_accessPoints;
+         }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
                                                                                                   const std::vector<std::string>& parameters,
@@ -121,7 +131,7 @@ namespace web
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstance(const std::vector<std::string>& parameters,
-                                                                                                    const std::string& requestContent) const
+            const std::string& requestContent) const
          {
             shared::CDataContainer t;
             t.set(getRestKeyword(), m_pluginManager->getInstanceList());
@@ -189,7 +199,7 @@ namespace web
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePlugins(const std::vector<std::string>& parameters,
-                                                                                                     const std::string& requestContent) const
+            const std::string& requestContent) const
          {
             try
             {
@@ -359,7 +369,9 @@ namespace web
                   const auto query = parameters[3];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                      requestContent.empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(requestContent),
+                                                                                      requestContent.empty()
+                                                                                         ? shared::CDataContainer::make()
+                                                                                         : shared::CDataContainer::make(requestContent),
                                                                                       "");
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
@@ -398,7 +410,9 @@ namespace web
                   const auto query = parameters[4];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                      requestContent.empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(requestContent),
+                                                                                      requestContent.empty()
+                                                                                         ? shared::CDataContainer::make()
+                                                                                         : shared::CDataContainer::make(requestContent),
                                                                                       device->Name());
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
@@ -676,7 +690,8 @@ namespace web
                                                                         content.exists("model") ? content.get<std::string>("model") : "",
                                                                         shared::CDataContainer::make());
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
-                                                                                     content.get<boost::shared_ptr<shared::CDataContainer>>("configuration"));
+                                                                                     content.get<boost::shared_ptr<shared::CDataContainer>>(
+                                                                                        "configuration"));
 
                      // Send request to plugin
                      communication::callback::CSynchronousCallback<std::string> cb;
@@ -696,7 +711,7 @@ namespace web
 
                            if (res.success)
                               return CResult::GenerateSuccess(m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId,
-                                                                                                                      device->Name()));
+                                 device->Name()));
 
                            // The plugin failed to process manually creation request, we have to remove the just created device
                            m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
