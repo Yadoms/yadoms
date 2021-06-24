@@ -12,8 +12,8 @@
                <div data-i18n="modals.merge-devices.help2"></div>
                <div data-i18n="modals.merge-devices.help3"></div>
             </div>
-            <div class="modal-target-device-select"></div>
-            <div class="modal-source-device-select"></div>
+            <div class="modal-new-device-select"></div>
+            <div class="modal-old-device-select"></div>
             <div class="modal-body form-group"> </div>
             <div class="device-merge-summary modal-explanation"> </div>
             <div class="modal-footer">
@@ -29,56 +29,56 @@
 <script>
    Yadoms.showMergeDevicesModal = function () {
 
-      sourceDeviceId = null;
-      targetDeviceId = null;
+      oldDeviceId = null;
+      newDeviceId = null;
       compatibleDevices = null;
 
       DeviceManager.getAll()
          .done((allDevices) => {
-            $targetDeviceSelect = $("div#merge-devices-modal .modal-target-device-select");
-            $targetDeviceSelect.empty();
+            $newDeviceSelect = $("div#merge-devices-modal .modal-new-device-select");
+            $newDeviceSelect.empty();
             $deviceMergeSummary = $("div#merge-devices-modal .device-merge-summary");
             $deviceMergeSummary.empty();
 
-            targetDeviceListSchema = {
-               targetDeviceListSection: {
+            newDeviceListSchema = {
+               newDeviceListSection: {
                   type: 'enum',
-                  name: $.t('modals.merge-devices.target-device.targetDeviceListCombo.name'),
-                  description: $.t('modals.merge-devices.target-device.targetDeviceListCombo.description'),
+                  name: $.t('modals.merge-devices.new-device.newDeviceListCombo.name'),
+                  description: $.t('modals.merge-devices.new-device.newDeviceListCombo.description'),
                   values: {}
                }
             };
 
-            // Populate the target devices list
+            // Populate the new devices list
             $.each(allDevices, function (key, device) {
                if (device.blacklist === "true")
                   return true;
-               targetDeviceListSchema.targetDeviceListSection.values[device.id] = device.friendlyName;
+               newDeviceListSchema.newDeviceListSection.values[device.id] = device.friendlyName;
             });
 
             var configMgr = new ConfigurationControlManager(
-               targetDeviceListSchema,
+               newDeviceListSchema,
                null,
                "modals.merge-devices.",
-               $targetDeviceSelect);
+               $newDeviceSelect);
 
-            // When opening the modal, if a target device is already selected, process it
+            // When opening the modal, if a new device is already selected, process it
             configMgr.getCurrentConfiguration()
                .done(function (config) {
-                  if (config.targetDeviceListSection)
-                     onTargetDeviceSelected(config.targetDeviceListSection);
+                  if (config.newDeviceListSection)
+                     onNewDeviceSelected(config.newDeviceListSection);
                });
-            // When user selects another target device
-            $targetDeviceSelect.find("select").change(function () {
+            // When user selects another new device
+            $newDeviceSelect.find("select").change(function () {
                configMgr.getCurrentConfiguration()
                   .done(function (config) {
-                     if (config.targetDeviceListSection)
-                        onTargetDeviceSelected(config.targetDeviceListSection);
+                     if (config.newDeviceListSection)
+                        onNewDeviceSelected(config.newDeviceListSection);
                   })
             });
 
             // i18n
-            $targetDeviceSelect.i18n();
+            $newDeviceSelect.i18n();
             configMgr.afterI18n();
          });
 
@@ -93,88 +93,89 @@
       return d.promise();
    }
 
-   onTargetDeviceSelected = function (selectedDeviceIndex) {
+   onNewDeviceSelected = function (selectedDeviceIndex) {
       DeviceManager.get(parseInt(selectedDeviceIndex))
          .done((device) => {
-            this.targetDevice = device;
+            this.newDevice = device;
 
-            DeviceManager.getCompatibleForMerge(targetDevice.id)
+            DeviceManager.getCompatibleForMerge(newDevice.id)
                .done((compatibleDevices) => {
+                  debugger;
                   this.compatibleDevices = compatibleDevices;
 
-                  $sourceDeviceSelect = $("div#merge-devices-modal .modal-source-device-select");
-                  $sourceDeviceSelect.empty();
+                  $oldDeviceSelect = $("div#merge-devices-modal .modal-old-device-select");
+                  $oldDeviceSelect.empty();
 
                   if (this.compatibleDevices.compatibleDevices.length === 0) {
-                     $sourceDeviceSelect.append("<div class='no-compatible-device'>" + $.t(
-                        'modals.merge-devices.source-device.no-compatible-device') + "</div>");
-                     this.sourceDeviceId = null;
+                     $oldDeviceSelect.append("<div class='no-compatible-device'>" + $.t(
+                        'modals.merge-devices.old-device.no-compatible-device') + "</div>");
+                     this.oldDeviceId = null;
                      updateSummary();
                      return;
                   }
 
-                  // Populate the source devices list
-                  sourceDeviceListSchema = {
-                     sourceDeviceListSection: {
+                  // Populate the old devices list
+                  oldDeviceListSchema = {
+                     oldDeviceListSection: {
                         type: 'enum',
-                        name: $.t('modals.merge-devices.source-device.sourceDeviceListCombo.name'),
+                        name: $.t('modals.merge-devices.old-device.oldDeviceListCombo.name'),
                         description: $.t(
-                           'modals.merge-devices.source-device.sourceDeviceListCombo.description'),
+                           'modals.merge-devices.old-device.oldDeviceListCombo.description'),
                         values: {}
                      }
                   };
                   $.each(this.compatibleDevices.compatibleDevices, function (key, device) {
                      if (device.blacklist === "true")
                         return true;
-                     sourceDeviceListSchema.sourceDeviceListSection.values[device.id] = device.friendlyName;
+                        oldDeviceListSchema.oldDeviceListSection.values[device.id] = device.friendlyName;
                   });
 
                   var configMgr = new ConfigurationControlManager(
-                     sourceDeviceListSchema,
+                     oldDeviceListSchema,
                      null,
                      "modals.merge-devices.",
-                     $sourceDeviceSelect);
+                     $oldDeviceSelect);
 
-                  // When displaying the combo, if a source device is already selected, process it
+                  // When displaying the combo, if a old device is already selected, process it
                   configMgr.getCurrentConfiguration()
                      .done(function (config) {
-                        if (config.sourceDeviceListSection)
-                           onSourceDeviceSelected(config.sourceDeviceListSection);
+                        if (config.oldDeviceListSection)
+                           onOldDeviceSelected(config.oldDeviceListSection);
                      })
-                  // When user selects another source device
-                  $sourceDeviceSelect.find("select").change(function () {
+                  // When user selects another old device
+                  $oldDeviceSelect.find("select").change(function () {
                      configMgr.getCurrentConfiguration()
                         .done(function (config) {
-                           if (config.sourceDeviceListSection)
-                              onSourceDeviceSelected(config.sourceDeviceListSection);
+                           if (config.oldDeviceListSection)
+                              onOldDeviceSelected(config.oldDeviceListSection);
                         })
                   })
 
                   // i18n
-                  $sourceDeviceSelect.i18n();
+                  $oldDeviceSelect.i18n();
                   configMgr.afterI18n();
                })
                .fail(() => {
-                  notifyError($.t('modals.merge-devices.source-device.no-compatible-device'));
+                  notifyError($.t('modals.merge-devices.old-device.no-compatible-device'));
                   return;
                });
          });
    }
 
-   onSourceDeviceSelected = function (selectedDeviceIndex) {
-      this.sourceDeviceId = parseInt(selectedDeviceIndex);
+   onOldDeviceSelected = function (selectedDeviceIndex) {
+      this.oldDeviceId = parseInt(selectedDeviceIndex);
       updateSummary();
    }
 
-   getSourceDevice = function () {
-      sourceDevice = null;
+   getOldDevice = function () {
+      oldDevice = null;
       $.each(this.compatibleDevices.compatibleDevices, function (key, compatibleDevice) {
-         if (compatibleDevice.id === sourceDeviceId) {
-            sourceDevice = compatibleDevice;
+         if (compatibleDevice.id === oldDeviceId) {
+            oldDevice = compatibleDevice;
             return true;
          }
       });
-      return sourceDevice;
+      return oldDevice;
    }
 
    updateSummary = function () {
@@ -183,42 +184,13 @@
       $deviceMergeSummary = $("div#merge-devices-modal .device-merge-summary");
       $deviceMergeSummary.empty();
 
-      if (isNullOrUndefined(this.sourceDeviceId))
+      if (isNullOrUndefined(this.oldDeviceId))
          return;
-      sourceDevice = getSourceDevice();
-      if (isNullOrUndefined(sourceDevice))
+         oldDevice = getOldDevice();
+      if (isNullOrUndefined(oldDevice))
          return;
 
       $okButton.removeAttr('disabled')
-
-      $deviceMergeSummary.append("<div>" +
-         $.t('modals.merge-devices.summaryStart1', {
-            "sourceDeviceName": sourceDevice.friendlyName,
-            "targetDeviceName": targetDevice.friendlyName
-         }) +
-         "</div>");
-      $deviceMergeSummary.append("<div>" +
-         $.t('modals.merge-devices.summaryStart2', {
-            "sourceDeviceName": sourceDevice.friendlyName,
-            "targetDeviceName": targetDevice.friendlyName
-         }) +
-         "</div>");
-
-      $.each(this.compatibleDevices.commonKeywordsByDevice[this.sourceDeviceId], function (key, keywordPair) {
-         $deviceMergeSummary.append("<ul>" +
-            $.t('modals.merge-devices.summaryKeywordLine', {
-               "sourceKeywordName": keywordPair.from.friendlyName,
-               "sourceDeviceName": sourceDevice.friendlyName,
-               "targetKeywordName": keywordPair.to.friendlyName,
-               "targetDeviceName": targetDevice.friendlyName
-            }) +
-            "</ul>");
-      });
-
-      $deviceMergeSummary.append("<div>" +
-         $.t('modals.merge-devices.summaryEnd', {
-            "sourceDeviceName": sourceDevice.friendlyName,
-         }) + "</div>");
       $deviceMergeSummary.append(
          "</br>");
       $deviceMergeSummary.append(
@@ -230,18 +202,18 @@
    }
 
    onSubmit = function () {
-
-      commonKeywordsByDevice = this.compatibleDevices.commonKeywordsByDevice[this.sourceDeviceId].map(function (k) {
+debugger;
+      commonKeywordsByDevice = this.compatibleDevices.commonKeywordsByDevice[this.oldDeviceId].map(function (k) {
          o = {};
-         o.from = k.from.id;
-         o.to = k.to.id;
+         o.old = k.old.id;
+         o.new = k.new.id;
          return o;
       });
 
       Yadoms.modals.pleaseWait.loadAsync()
          .done(function () {
             Yadoms.showPleaseWaitModal($.t("modals.merge-devices.please-wait-message"));
-            DeviceManager.mergeDevices(sourceDeviceId, targetDevice.id, commonKeywordsByDevice)
+            DeviceManager.mergeDevices(oldDeviceId, newDevice.id, commonKeywordsByDevice)
                .done(() => {
                   notifySuccess($.t("modals.merge-devices.mergeSuccess"));
                })

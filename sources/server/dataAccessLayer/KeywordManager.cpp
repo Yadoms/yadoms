@@ -187,11 +187,11 @@ namespace dataAccessLayer
                                                      notification::change::EChangeType::kDelete);
    }
 
-   void CKeywordManager::updateKeywordId(int keywordEntryToKeep,
-                                         int newId)
+   void CKeywordManager::updateKeywordName(int keywordId,
+                                           const std::string& newName)
    {
-      m_keywordRequester->updateKeywordId(keywordEntryToKeep,
-                                          newId);
+      m_keywordRequester->updateKeywordName(keywordId,
+                                            newName);
    }
 
    void CKeywordManager::removeKeyword(int deviceId, const std::string& keyword)

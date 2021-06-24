@@ -48,8 +48,8 @@ namespace dataAccessLayer
                                      const std::string& newFriendlyName) override;
       void updateKeywordBlacklistState(int keywordId,
                                        const bool blacklist) override;
-      void updateKeywordId(int keywordEntryToKeep,
-                           int newId) override;
+      void updateKeywordName(int keywordId,
+                             const std::string& newName) override;
       void removeKeyword(int deviceId,
                          const std::string& keyword) override;
       void removeKeyword(int keywordId) override;

@@ -374,19 +374,19 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update device blacklist");
          }
 
-         void CDevice::updateDeviceId(int deviceEntryToKeep,
-                                      int newId)
+         void CDevice::updateDeviceName(int deviceId,
+                                        const std::string& newName)
          {
-            if (!deviceExists(deviceEntryToKeep))
+            if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
 
             auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
-                     Set(CDeviceTable::getIdColumnName(), newId).
-                     Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceEntryToKeep);
+                     Set(CDeviceTable::getNameColumnName(), newName).
+                     Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
 
             if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
-               throw shared::exception::CEmptyResult("Fail to update device ID");
+               throw shared::exception::CEmptyResult("Fail to update device name");
          }
 
          bool CDevice::isDeviceBlacklisted(int deviceId) const

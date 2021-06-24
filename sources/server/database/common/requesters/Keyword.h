@@ -48,8 +48,8 @@ namespace database
             void removeKeyword(int keywordId) override;
             void updateKeywordFriendlyName(int keywordId, const std::string& newFriendlyName) override;
             void updateLastValue(int keywordId, const boost::posix_time::ptime& valueDatetime, const std::string& value) override;
-            void updateKeywordId(int keywordEntryToKeep,
-                                 int newId) override;
+            void updateKeywordName(int keywordId,
+                                   const std::string& newName) override;
             // [END] IKeywordRequester implementation
 
          private:

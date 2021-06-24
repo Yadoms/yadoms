@@ -231,13 +231,13 @@ namespace database
                                               bool blacklist) = 0;
 
       //--------------------------------------------------------------
-      /// \brief           Update device ID
-      /// \param [in]      deviceEntryToKeep The device entry to keep, retrieve by its ID
-      /// \param [in]      newId             The new ID to apply to this entry (must not exist)
+      /// \brief           Update device name (be careful, plugins reference a device by its name, renaming it may brake plugin historization)
+      /// \param [in]      deviceId The device to rename
+      /// \param [in]      newName The new name
       /// \note /!\ Use it only if you really know what you are doing /!\
       //--------------------------------------------------------------
-      virtual void updateDeviceId(int deviceEntryToKeep,
-                                  int newId) = 0;
+      virtual void updateDeviceName(int deviceId,
+                                    const std::string& newName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Check if device is blacklisted

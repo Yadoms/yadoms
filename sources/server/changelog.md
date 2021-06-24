@@ -1,3 +1,9 @@
+### 2.5.1
+
+#### Yadoms
+* Fix merging devices
+
+
 ### 2.5.0
 
 #### Yadoms

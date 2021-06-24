@@ -367,16 +367,16 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update keyword last value");
          }
 
-         void CKeyword::updateKeywordId(int keywordEntryToKeep,
-                                        int newId)
+         void CKeyword::updateKeywordName(int keywordId,
+                                          const std::string& newName)
          {
             auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CKeywordTable::getTableName()).
-                     Set(CKeywordTable::getIdColumnName(), newId).
-                     Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordEntryToKeep);
+                     Set(CKeywordTable::getNameColumnName(), newName).
+                     Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
             if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
-               throw shared::exception::CEmptyResult("Fail to update device ID");
+               throw shared::exception::CEmptyResult("Fail to update keyword name");
          }
       } //namespace requesters
    } //namespace common

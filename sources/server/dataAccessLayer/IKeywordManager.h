@@ -176,13 +176,13 @@ namespace dataAccessLayer
                                                const bool blacklist) = 0;
 
       //--------------------------------------------------------------
-      /// \brief           Update keyword ID
-      /// \param [in]      keywordEntryToKeep The keyword entry to keep, retrieve by its ID
-      /// \param [in]      newId             The new ID to apply to this entry (must not exist)
+      /// \brief           Update keyword name (be careful, plugins reference a keyword by its name, renaming it may brake plugin historization)
+      /// \param [in]      keywordId The keyword to rename
+      /// \param [in]      newName The new name
       /// \note /!\ Use it only if you really know what you are doing /!\
       //--------------------------------------------------------------
-      virtual void updateKeywordId(int keywordEntryToKeep,
-                                   int newId) = 0;
+      virtual void updateKeywordName(int keywordId,
+                                     const std::string& newName) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove a keyword

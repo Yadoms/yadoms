@@ -480,6 +480,7 @@ widgetViewModelCtor =
             });
          })
 
+         debugger;
          $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
             .done(function () {
                if (self.chart) { self.chart.interval = self.interval; }//we save interval in the chart

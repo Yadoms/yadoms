@@ -164,8 +164,8 @@ namespace web
 
                                                                   // A common device was found
                                                                   auto commonKeyword = shared::CDataContainer::make();
-                                                                  commonKeyword->set("from", candidateKeyword);
-                                                                  commonKeyword->set("to", refKeyword);
+                                                                  commonKeyword->set("old", candidateKeyword);
+                                                                  commonKeyword->set("new", refKeyword);
                                                                   commonKeywords.push_back(commonKeyword);
                                                                   return true;
                                                                }
@@ -744,21 +744,30 @@ namespace web
             // - Keep new device name so plugin can still historize to the new device
             // - Keep old device ID (and keywords) to make widgets referencing it still working and currently running rules to continue to address it
             // - Keep old friendly name to make stopped rules to retrieve known devices/keywords
+            //
+            // To achieve this :
+            // - old device ID must be kept
+            // - old keywords IDs must be kept
+            // - historic of new keywords must be added to historic of old keywords
+            // - new device name must be copied to old device (because plugin looks for the new device)
+            // - new keywords name must be copied to old keywords (because plugin looks for the new device)
+            // - new device must be deleted (associated keywords will be deleted too)
+            //
 
             try
             {
                const shared::CDataContainer content(requestContent);
-               const auto sourceDeviceId = content.get<int>("sourceDeviceId");
-               const auto targetDeviceId = content.get<int>("targetDeviceId");
+               const auto oldDeviceId = content.get<int>("oldDeviceId");
+               const auto newDeviceId = content.get<int>("newDeviceId");
                const auto keywordCorrespondences = content.get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("keywordCorrespondences");
 
                // Merge acquisitions
                YADOMS_LOG(information) << "Starting merging 2 devices...";
 
-               // Stop concerned plugins (needed to prevent plugin on historize on the new device, and to force it to retrieve right device ID)
+               // Stop concerned plugins (needed to prevent plugin historizes on the new device, and to force it to retrieve right device ID)
                const std::unordered_set<int> pluginsToStop{
-                  m_deviceRequester->getDevice(sourceDeviceId)->PluginId(),
-                  m_deviceRequester->getDevice(targetDeviceId)->PluginId()
+                  m_deviceRequester->getDevice(oldDeviceId)->PluginId(),
+                  m_deviceRequester->getDevice(newDeviceId)->PluginId()
                };
                std::unordered_set<int> pluginsToRestart;
                for (const auto& pluginToStop : pluginsToStop)
@@ -772,34 +781,33 @@ namespace web
                for (const auto& keywordCorrespondence : keywordCorrespondences)
                {
                   // Move acquisitions
-                  const auto fromKw = keywordCorrespondence->get<int>("from");
-                  const auto toKw = keywordCorrespondence->get<int>("to");
-                  m_dataProvider->getAcquisitionRequester()->moveAllData(fromKw, toKw);
+                  const auto oldKw = keywordCorrespondence->get<int>("old");
+                  const auto newKw = keywordCorrespondence->get<int>("new");
+                  m_dataProvider->getAcquisitionRequester()->moveAllData(newKw, oldKw);
                   // Update last acquisition in keyword table
-                  const auto lastData = m_dataProvider->getAcquisitionRequester()->getKeywordData(toKw,
+                  const auto lastData = m_dataProvider->getAcquisitionRequester()->getKeywordData(oldKw,
                                                                                                   boost::posix_time::not_a_date_time,
                                                                                                   boost::posix_time::not_a_date_time,
                                                                                                   1);
-                  m_dataProvider->getKeywordRequester()->updateLastValue(fromKw,
+                  m_dataProvider->getKeywordRequester()->updateLastValue(oldKw,
                                                                          lastData.empty() ? boost::posix_time::not_a_date_time : lastData[0].get<0>(),
                                                                          lastData.empty() ? std::string() : lastData[0].get<1>());
                }
-               // Remove no more used device
-               m_deviceRequester->removeDevice(sourceDeviceId);
 
                // Change ID of target device, to make plugin using old one (no concurrency problem : plugin is stopped)
-               m_deviceRequester->updateDeviceId(targetDeviceId,
-                                                 sourceDeviceId);
+               m_deviceRequester->updateDeviceName(oldDeviceId,
+                                                   m_deviceRequester->getDevice(newDeviceId)->Name());
+
                // Do the same for keywords
                for (const auto& keywordCorrespondence : keywordCorrespondences)
                {
-                  const auto fromKw = keywordCorrespondence->get<int>("from");
-                  const auto toKw = keywordCorrespondence->get<int>("to");
-                  m_keywordManager->updateKeywordId(toKw,
-                                                    fromKw);
-                  m_keywordManager->updateDeviceId(fromKw,
-                                                   sourceDeviceId);
+                  const auto oldKw = keywordCorrespondence->get<int>("old");
+                  const auto newKw = keywordCorrespondence->get<int>("new");
+                  m_keywordManager->updateKeywordName(oldKw,
+                                                      m_keywordManager->getKeyword(newKw)->Name());
                }
+               // Remove no more used device
+               m_deviceRequester->removeDevice(newDeviceId);
 
                // Restart concerned plugins
                for (const auto& pluginToRestart : pluginsToRestart)
