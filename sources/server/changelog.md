@@ -1,7 +1,7 @@
-### 2.5.1
+### 2.5.1-beta.4
 
 #### Yadoms
-* Fix merging devices
+* Fix #738 : Fix merging devices
 
 
 ### 2.5.0
