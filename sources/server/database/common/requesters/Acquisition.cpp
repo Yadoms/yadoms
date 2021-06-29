@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Acquisition.h"
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
 #include "database/common/adapters/DatabaseAdapters.h"
@@ -19,7 +20,7 @@ namespace database
       {
          CAcquisition::CAcquisition(boost::shared_ptr<IDatabaseRequester> databaseRequester,
                                     boost::shared_ptr<CKeyword> keywordRequester)
-            : m_keywordRequester(keywordRequester),
+            : m_keywordRequester(std::move(keywordRequester)),
               m_databaseRequester(std::move(databaseRequester))
          {
          }
@@ -877,10 +878,10 @@ namespace database
                   qSelect->And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, timeTo);
             }
 
+            qSelect->OrderBy(CAcquisitionTable::getDateColumnName());
+
             if (limit > 0)
                qSelect->Limit(limit);
-
-            qSelect->OrderBy(CAcquisitionTable::getDateColumnName());
 
             return qSelect;
          }

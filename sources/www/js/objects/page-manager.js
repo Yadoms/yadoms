@@ -114,6 +114,7 @@ PageManager.createPage = function (pageName, pageOrder) {
 PageManager.updatePage = function (pageId, pageName, pageOrder) {
     assert(!isNullOrUndefined(pageId), "pageId must be defined");
     assert(!isNullOrUndefined(pageName), "pageId must be defined");
+    debugger;
     return RestEngine.putJson("/rest/page/" + pageId, {
         data: JSON.stringify({
             id: pageId,
@@ -362,6 +363,7 @@ PageManager.movePage = function (page, direction) {
             page.pageOrder = nearestPageOrder;
 
             //we make an array of pages to send to rest server
+            debugger;
             RestEngine.putJson("/rest/page", {
                     data: JSON.stringify(PageManager.pages)
                 })
@@ -437,6 +439,7 @@ PageManager.enableCustomization = function (page, enable) {
  * @returns {Promise} 
  */
 PageManager.saveCustomization = function (page) {
+    debugger;
     return RestEngine.putJson("/rest/page/" + page.id + "/widget", {
         data: JSON.stringify(page.widgets)
     });
