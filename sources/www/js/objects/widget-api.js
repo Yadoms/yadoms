@@ -27,7 +27,6 @@ WidgetApi.prototype.setState = function (newState) {
    if (this.widget.getState() != newState) {
       this.widget.setState(newState);
       if (newState == widgetStateEnum.InvalidConfiguration){
-         debugger;
          this.widget.$gridWidget.find(".panel-widget-desactivated").removeClass("hidden");
          var message = $.t("objects.widgetManager.widgetDisabled", {widgetName: this.widget.title || this.widget.type});
          this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);

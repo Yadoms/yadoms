@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Page.h"
 #include <shared/exception/NotImplemented.hpp>
+#include <utility>
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/Result.h"
 #include "Widget.h"
@@ -14,7 +15,7 @@ namespace web
          std::string CPage::m_restKeyword = std::string("page");
 
          CPage::CPage(boost::shared_ptr<database::IDataProvider> dataProvider)
-            : m_dataProvider(dataProvider)
+            : m_dataProvider(std::move(dataProvider))
          {
          }
 
@@ -175,7 +176,7 @@ namespace web
                m_dataProvider->getPageRequester()->removeAllPages();
 
                auto pagesToUpdate = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CPage>>>("");
-               for (const auto pageToUpdate : pagesToUpdate)
+               for (const auto& pageToUpdate : pagesToUpdate)
                   m_dataProvider->getPageRequester()->addPage(*pageToUpdate);
 
                const auto allPages = m_dataProvider->getPageRequester()->getPages();
@@ -279,7 +280,7 @@ namespace web
                   //rreate all
                   auto widgetsToAdd = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CWidget>>>("");
 
-                  for (const auto widgetToAdd : widgetsToAdd)
+                  for (const auto& widgetToAdd : widgetsToAdd)
                      m_dataProvider->getWidgetRequester()->addWidget(*widgetToAdd);
 
                   return CResult::GenerateSuccess();

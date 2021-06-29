@@ -490,14 +490,15 @@ widgetViewModelCtor =
 
          $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
             .always(function () {
-               if (keywords.length != self.widget.configuration.devices.length) {
-                  self.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
-                  return;
-               }
-
                arrayOfDeffered = [];
                var defferedPluginInstance = new $.Deferred();
                arrayOfDeffered.push(defferedPluginInstance);
+
+               if (keywords.length != self.widget.configuration.devices.length) {
+                  self.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+                  defferedPluginInstance.resolve();
+                  return;
+               }
 
                var deffered2 = self.widgetApi.getKeywordsInformation(keywords, ["accessMode", "capacity", "friendlyName", "unit", "measure", "dataType", "pluginId", "typeInfo"]);
                arrayOfDeffered.push(deffered2);
