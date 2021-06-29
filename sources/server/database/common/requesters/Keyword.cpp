@@ -192,8 +192,8 @@ namespace database
          {
             auto subQuery = m_databaseRequester->newQuery();
             subQuery->Select().
-               From(CKeywordTable::getTableName()).
-               WhereTrue();
+                      From(CKeywordTable::getTableName()).
+                      WhereTrue();
 
             if (!expectedKeywordTypes.empty())
                subQuery->And(CKeywordTable::getTypeColumnName(), CQUERY_OP_IN, expectedKeywordTypes);
@@ -262,11 +262,11 @@ namespace database
                acquisition->Value = result->LastAcquisitionValue();
                return acquisition;
             }
+
             if (throwIfNotExists)
-            {
                throw shared::exception::CEmptyResult(
                   (boost::format("Cannot retrieve any acquisition for the keyword id=%1% in database") % keywordId).str());
-            }
+
             return boost::shared_ptr<entities::CAcquisition>();
          }
 
@@ -282,14 +282,12 @@ namespace database
             m_databaseRequester->queryEntities(&adapter, *qSelect);
 
             if (!adapter.getResults().empty())
-            {
                return adapter.getResults()[0]->LastAcquisitionValue();
-            }
+
             if (throwIfNotExists)
-            {
                throw shared::exception::CEmptyResult(
                   (boost::format("Cannot retrieve any acquisition for the keyword id=%1% in database") % keywordId).str());
-            }
+
             return std::string();
          }
 
@@ -338,21 +336,21 @@ namespace database
                                                   const std::string& newFriendlyName)
          {
             //get a good name
-            if (!newFriendlyName.empty())
-            {
-               const auto keywordToUpdate = getKeyword(keywordId);
-               if (!keywordToUpdate)
-                  throw shared::exception::CEmptyResult("Can not find keyword");
+            if (newFriendlyName.empty())
+               return;
 
-               //insert in db
-               auto qUpdate = m_databaseRequester->newQuery();
-               qUpdate->Update(CKeywordTable::getTableName()).
-                        Set(CKeywordTable::getFriendlyNameColumnName(), newFriendlyName).
-                        Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+            const auto keywordToUpdate = getKeyword(keywordId);
+            if (!keywordToUpdate)
+               throw shared::exception::CEmptyResult("Can not find keyword");
 
-               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
-                  throw shared::exception::CEmptyResult("Fail to update keyword friendlyName");
-            }
+            //insert in db
+            auto qUpdate = m_databaseRequester->newQuery();
+            qUpdate->Update(CKeywordTable::getTableName()).
+                     Set(CKeywordTable::getFriendlyNameColumnName(), newFriendlyName).
+                     Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
+            if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update keyword friendlyName");
          }
 
          void CKeyword::updateLastValue(int keywordId,
@@ -367,6 +365,18 @@ namespace database
 
             if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                throw shared::exception::CEmptyResult("Fail to update keyword last value");
+         }
+
+         void CKeyword::updateKeywordName(int keywordId,
+                                          const std::string& newName)
+         {
+            auto qUpdate = m_databaseRequester->newQuery();
+            qUpdate->Update(CKeywordTable::getTableName()).
+                     Set(CKeywordTable::getNameColumnName(), newName).
+                     Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
+            if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update keyword name");
          }
       } //namespace requesters
    } //namespace common

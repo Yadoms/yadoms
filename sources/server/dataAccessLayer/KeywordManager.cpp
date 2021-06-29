@@ -124,7 +124,8 @@ namespace dataAccessLayer
    }
 
    void CKeywordManager::addKeyword(int deviceId,
-                                    const shared::plugin::yPluginApi::historization::IHistorizable& keyword, boost::shared_ptr<shared::CDataContainer> details)
+                                    const shared::plugin::yPluginApi::historization::IHistorizable& keyword,
+                                    boost::shared_ptr<shared::CDataContainer> details)
    {
       addKeyword(*makeKeywordEntity(deviceId, keyword, details));
    }
@@ -184,6 +185,13 @@ namespace dataAccessLayer
       //post notification
       notification::CHelpers::postChangeNotification(keywordToBlacklist,
                                                      notification::change::EChangeType::kDelete);
+   }
+
+   void CKeywordManager::updateKeywordName(int keywordId,
+                                           const std::string& newName)
+   {
+      m_keywordRequester->updateKeywordName(keywordId,
+                                            newName);
    }
 
    void CKeywordManager::removeKeyword(int deviceId, const std::string& keyword)

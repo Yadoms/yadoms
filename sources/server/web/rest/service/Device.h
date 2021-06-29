@@ -13,7 +13,7 @@ namespace web
          class CDevice : public IRestService
          {
          public:
-            CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
+            CDevice(const boost::shared_ptr<database::IDataProvider>& dataProvider,
                     boost::shared_ptr<pluginSystem::CManager> pluginManager,
                     boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                     boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,

@@ -148,5 +148,14 @@ namespace database
       //--------------------------------------------------------------
       virtual void updateLastValue(int keywordId, const boost::posix_time::ptime& valueDatetime,
                                    const std::string& value) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief           Update keyword name (be careful, plugins reference a keyword by its name, renaming it may brake plugin historization)
+      /// \param [in]      keywordId The keyword to rename
+      /// \param [in]      newName The new name
+      /// \note /!\ Use it only if you really know what you are doing /!\
+      //--------------------------------------------------------------
+      virtual void updateKeywordName(int keywordId,
+                                     const std::string& newName) = 0;
    };
 } //namespace database 

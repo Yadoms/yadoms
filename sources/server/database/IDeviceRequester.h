@@ -54,8 +54,7 @@ namespace database
       /// \return                         The list of found devices
       /// \throw                          shared::exception::CEmptyResult if none found
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevicesIdFromFriendlyName(
-         const std::string& friendlyName) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevicesIdFromFriendlyName(const std::string& friendlyName) const = 0;
 
 
       //--------------------------------------------------------------
@@ -230,6 +229,15 @@ namespace database
       //--------------------------------------------------------------
       virtual void updateDeviceBlacklistState(int deviceId,
                                               bool blacklist) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief           Update device name (be careful, plugins reference a device by its name, renaming it may brake plugin historization)
+      /// \param [in]      deviceId The device to rename
+      /// \param [in]      newName The new name
+      /// \note /!\ Use it only if you really know what you are doing /!\
+      //--------------------------------------------------------------
+      virtual void updateDeviceName(int deviceId,
+                                    const std::string& newName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Check if device is blacklisted
