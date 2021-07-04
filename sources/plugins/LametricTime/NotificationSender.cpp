@@ -36,7 +36,7 @@ void CNotificationSender::displayText(const std::string& text,
    try
    {
       boost::shared_ptr<shared::CDataContainer> response;
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kPost, url)
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestMethod::kPost, url)
          ->withBody(body)
          .withHeaderParameters(headerPostParameters)
          .withBasicAuthentication("Basic", m_configuration.getAPIKey())

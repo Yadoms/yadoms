@@ -28,7 +28,7 @@ boost::shared_ptr<shared::CDataContainer> urlManager::getRegisteredEquipments(co
    const auto deviceUrl = m_url.str() + "/vendors/lora/devices";
 
    boost::shared_ptr<shared::CDataContainer> response;
-   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, deviceUrl)
+   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestMethod::kGet, deviceUrl)
       ->withHeaderParameters(headerParameters)
       .withParameters(parameters)
       .send([&response](boost::shared_ptr<shared::CDataContainer> data)
@@ -50,7 +50,7 @@ boost::shared_ptr<shared::CDataContainer> urlManager::getDeviceInformation(const
    const auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI;
 
    boost::shared_ptr<shared::CDataContainer> response;
-   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, deviceUrl)
+   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestMethod::kGet, deviceUrl)
       ->withHeaderParameters(headerParameters)
       .send([&response](boost::shared_ptr<shared::CDataContainer> data)
       {
@@ -76,7 +76,7 @@ boost::shared_ptr<shared::CDataContainer> urlManager::listDeviceCommands(const s
    const auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/data/streams/urn:lora:" + devEUI + "!uplink";
 
    boost::shared_ptr<shared::CDataContainer> response;
-   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, deviceUrl)
+   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestMethod::kGet, deviceUrl)
       ->withHeaderParameters(headerParameters)
       .withParameters(parameters)
       .send([&response](boost::shared_ptr<shared::CDataContainer> data)

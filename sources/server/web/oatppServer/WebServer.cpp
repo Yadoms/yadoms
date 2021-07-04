@@ -52,6 +52,7 @@ namespace web
          m_httpRequestHandlerFactory->webSocketConfigure(webSocketKeywordBase);
          m_httpRequestHandlerFactory->allowExternalAccess(allowExternalAccess);
 
+         //TODO ménage
          ////setup HTTPServer Params (define name and version; to match common http server configuration)
          //Poco::Net::HTTPServerParams::Ptr serverParams(new Poco::Net::HTTPServerParams());
          //serverParams->setServerName("Yadoms");
