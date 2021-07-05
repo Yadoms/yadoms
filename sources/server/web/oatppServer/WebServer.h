@@ -32,19 +32,20 @@ namespace web
                     unsigned short securedPort,
                     const std::string& docRoot,
                     const std::string& restKeywordBase,
-                    const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
+                    boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>> restServices,
                     const std::string& webSocketKeywordBase,
                     bool allowExternalAccess);
          ~CWebServer() override;
 
          // IWebServer implementation
-         void start() override;
-         void stop() override;
          IWebServerConfigurator* getConfigurator() override; //TODO utile ?
          // [END] IWebServer implementation
 
       private:
-         static void refreshWebRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
+         void start();
+         void stop();
+
+         static void refreshWebPagesRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                       const std::string& docRoot);
          static void routeAllFiles(const boost::filesystem::path& rootFolder,
                                    const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,

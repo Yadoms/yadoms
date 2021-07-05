@@ -33,20 +33,46 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration);
          }
 
+#define GET_DEFINE(path, handler) \
+          boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kGet, \
+          path, \
+          [this](const std::map<std::string, std::string>& parameters, const std::string& body) \
+               { return handler(parameters, body); })
+
+         //constexpr auto GET(const std::string& path,
+         //                   std::function<boost::shared_ptr<IRestAnswer>(std::map<std::string, std::string>, std::string)> handler)
+         //{
+         //   return boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kGet,
+         //                                               path,
+         //                                               [this](const std::map<std::string, std::string>& parameters, const std::string& body)
+         //                                               {
+         //                                                  return handler(parameters, body);
+         //                                               });
+         //}
+
+
          boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CConfiguration::accessPoints()
          {
             if (m_accessPoints != nullptr)
                return m_accessPoints;
 
             m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            m_accessPoints->push_back(GET_DEFINE(m_restKeyword + "/server", getServerConfigurationV2));;
+            //m_accessPoints->push_back(GET(m_restKeyword + "/server", getServerConfigurationV2));; //TODO voir si on peut utiliser des constexpr
             m_accessPoints->push_back(boost::make_shared<CRestAccessPoint>(
-               shared::http::ERestMethod::kGet, m_restKeyword + "/server", std::bind(&CConfiguration::getServerConfigurationV2, this,
-                                                                                     std::placeholders::_1,
-                                                                                     std::placeholders::_2)));
+               shared::http::ERestMethod::kGet, m_restKeyword + "/server", [this](const std::map<std::string,
+                                                                                                 std::string>& parameters,
+                                                                                  const std::string& body)
+               {
+                  return getServerConfigurationV2(parameters, body);
+               }));
             m_accessPoints->push_back(boost::make_shared<CRestAccessPoint>(
-               shared::http::ERestMethod::kGet, m_restKeyword + "/databaseVersion", std::bind(&CConfiguration::getDatabaseVersionV2, this,
-                                                                                              std::placeholders::_1,
-                                                                                              std::placeholders::_2)));
+               shared::http::ERestMethod::kGet, m_restKeyword + "/databaseVersion", [this](const std::map<std::string,
+                                                                                                          std::string>& parameters,
+                                                                                           const std::string& body)
+               {
+                  return getDatabaseVersionV2(parameters, body);
+               }));
 
             {
                //boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kGet, m_restKeyword + "/server",
@@ -150,7 +176,7 @@ namespace web
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getDatabaseVersion(const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
+                                                                                                        const std::string& requestContent) const
          {
             try
             {
@@ -173,7 +199,7 @@ namespace web
             catch (shared::exception::CEmptyResult&)
             {
                return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
-                  "Fail to get database version");
+                                                           "Fail to get database version");
             }
          }
 

@@ -11,17 +11,6 @@ namespace web
    public:
       virtual ~IWebServer() = default;
 
-      //
-      //\Brief Start the webserver
-      //
-      virtual void start() = 0;
-
-      //
-      //\Brief Stop the webserver
-      //
-      virtual void stop() = 0;
-
-
       //-----------------------------------------
       ///\brief      Get the web server configurator
       ///\return     An object which permit the webserver configuration

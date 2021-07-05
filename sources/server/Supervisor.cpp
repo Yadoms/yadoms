@@ -134,6 +134,7 @@ void CSupervisor::run()
                                                          automationRulesManager,
                                                          updateManager,
                                                          taskManager);
+
       auto oatppBasedWebServer = createOatppBasedWebServer(startupOptions,
                                                            dataAccessLayer,
                                                            dataProvider,
@@ -143,9 +144,6 @@ void CSupervisor::run()
                                                            automationRulesManager,
                                                            updateManager,
                                                            taskManager);
-
-      pocoBasedWebServer->start();
-      oatppBasedWebServer->start();
 
       // Start the plugin manager (start all plugin instances)
       pluginManager->start(boost::posix_time::minutes(2));
@@ -175,8 +173,6 @@ void CSupervisor::run()
       dateTimeNotificationService.stop();
 
       //stop web server
-      pocoBasedWebServer->stop();
-      oatppBasedWebServer->stop();
       pocoBasedWebServer.reset();
       oatppBasedWebServer.reset();
 
@@ -259,14 +255,14 @@ boost::shared_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
    const auto scriptInterpretersPath = m_pathProvider->scriptInterpretersPath().string();
    const auto allowExternalAccess = startupOptions->getWebServerAllowExternalAccess();
 
-   boost::shared_ptr<web::IWebServer> webServer(boost::make_shared<web::poco::CWebServer>(webServerIp,
-                                                                                          webServerUseSsl,
-                                                                                          webServerPort,
-                                                                                          securedWebServerPort,
-                                                                                          webServerPath,
-                                                                                          "/rest/",
-                                                                                          "/ws",
-                                                                                          allowExternalAccess));
+   auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp,
+                                                            webServerUseSsl,
+                                                            webServerPort,
+                                                            securedWebServerPort,
+                                                            webServerPath,
+                                                            "/rest/",
+                                                            "/ws",
+                                                            allowExternalAccess));
 
    webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider->pluginsPath().string());
    webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
@@ -317,6 +313,8 @@ boost::shared_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
                                                            dataProvider,
                                                            taskManager,
                                                            boost::make_shared<web::rest::service::CUploadFileManager>()));
+
+   webServer->start();
 
    return webServer;
 }

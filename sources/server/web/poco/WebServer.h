@@ -31,12 +31,14 @@ namespace web
          ~CWebServer() override;
 
          // IWebServer implementation
-         void start() override;
-         void stop() override;
          IWebServerConfigurator* getConfigurator() override;
          // [END] IWebServer implementation
 
+         void start() const;
+         void stop() const;
+
       private:
+
          boost::shared_ptr<Poco::Net::HTTPServer> m_embeddedWebServer;
 
          //Poco::SharedPtr is needed (not boost::shared_ptr)

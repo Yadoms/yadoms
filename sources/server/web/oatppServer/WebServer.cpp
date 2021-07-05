@@ -19,18 +19,18 @@ namespace web
                              unsigned short securedPort,
                              const std::string& docRoot,
                              const std::string& restKeywordBase,
-                             const boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>>& restServices,
+                             boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>> restServices,
                              const std::string& webSocketKeywordBase,
                              bool allowExternalAccess)
          : m_httpRequestHandlerFactory(std::make_shared<CHttpRequestHandlerFactory>()),
-           m_restServices(restServices)
+           m_restServices(std::move(restServices))
       {
          oatpp::base::Environment::init();
 
          // Create Router component
          const auto httpRouter = oatpp::web::server::HttpRouter::createShared();
-         refreshWebRoutes(httpRouter,
-                          docRoot);
+         refreshWebPagesRoutes(httpRouter,
+                               docRoot);
          refreshRestRoutes(httpRouter,
                            restKeywordBase);
 
@@ -51,6 +51,8 @@ namespace web
          m_httpRequestHandlerFactory->restHandlerConfigure(restKeywordBase);
          m_httpRequestHandlerFactory->webSocketConfigure(webSocketKeywordBase);
          m_httpRequestHandlerFactory->allowExternalAccess(allowExternalAccess);
+
+         start();
 
          //TODO ménage
          ////setup HTTPServer Params (define name and version; to match common http server configuration)
@@ -130,7 +132,7 @@ namespace web
 
       CWebServer::~CWebServer()
       {
-         CWebServer::stop();
+         stop();
          oatpp::base::Environment::destroy();
       }
 
@@ -169,8 +171,8 @@ namespace web
          return m_httpRequestHandlerFactory.get();
       }
 
-      void CWebServer::refreshWebRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
-                                        const std::string& docRoot)
+      void CWebServer::refreshWebPagesRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
+                                             const std::string& docRoot)
       {
          const auto pagesFiles = std::make_shared<CHttpPages>("Yadoms client", docRoot);
          httpRouter->route("GET", "/", pagesFiles);

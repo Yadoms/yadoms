@@ -486,7 +486,7 @@ namespace pluginSystem
             requestStopInstance(runningInstance.first);
       }
 
-      const auto timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(30);
+      const auto timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(20);
       do
       {
          {
@@ -584,7 +584,7 @@ namespace pluginSystem
 
    void CManager::onPluginStopped(int pluginInstanceId)
    {
-      boost::thread([this, pluginInstanceId]()
+      boost::thread waitForPluginStoppedThread([this, pluginInstanceId]()
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 

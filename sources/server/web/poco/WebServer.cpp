@@ -102,18 +102,18 @@ namespace web
 
       CWebServer::~CWebServer()
       {
-         CWebServer::stop();
+         stop();
       }
 
 
       // IWebServer implementation
-      void CWebServer::start()
+      void CWebServer::start() const
       {
          // start the HTTPServer
          m_embeddedWebServer->start();
       }
 
-      void CWebServer::stop()
+      void CWebServer::stop() const
       {
          if (m_embeddedWebServer.get())
             m_embeddedWebServer->stopAll(true);
