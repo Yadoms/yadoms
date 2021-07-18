@@ -114,3 +114,25 @@ bool CGamutC::hasTemperatureControl()
 {
    return true;
 }
+
+void CGamutC::rename(std::string& newLightName)
+{
+   const auto urlPatternPath = m_urlManager->getUrlPatternPath(CUrlManager::kGetLightAttributesAndState, m_lightInformations.first);
+   const auto lightUrl = m_urlManager->getPatternUrl(urlPatternPath);
+
+   shared::CDataContainer body;
+   body.set("name", newLightName);
+
+   try
+   {
+      const auto response = shared::http::CHttpRestHelpers::sendJsonPutRequest(lightUrl, body.serialize());
+   }
+   catch (std::exception& e)
+   {
+      const auto message = (boost::format("Fail to send Put http request or interpret answer \"%1%\" : %2%") % lightUrl
+         %
+         e.what()).str();
+      YADOMS_LOG(error) << "Fail to send Put http request or interpret answer " << lightUrl << " : " << e.what();
+      throw;
+   }
+}

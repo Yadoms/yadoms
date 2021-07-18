@@ -41,5 +41,8 @@
       "searchForBridge": {
          "iconClass": "fa fa-spinner fa-spin"
       }
+   },
+   "deviceConfiguration": {
+      "dynamicConfigurationSchema": "true"
    }
 }
