@@ -214,10 +214,15 @@ namespace web
          {
             try
             {
-               const auto response = m_handler(toMap(request->getPathVariables()),
+               const auto answer = m_handler(toMap(request->getPathVariables()),
                                                request->getStartingLine().method != "GET" ? request->readBodyToString()->c_str() : std::string());
-               return ResponseFactory::createResponse(toStatusCode(response->code()),
-                                                      oatpp::String(response->body().c_str()));
+
+               const auto response = ResponseFactory::createResponse(toStatusCode(answer->code()),
+                  oatpp::String(answer->body().c_str()));
+
+               response->putHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE, toContentType(answer->bodyType()));
+
+               return response;
             }
             catch (const std::exception& exception)
             {
@@ -306,6 +311,23 @@ namespace web
                YADOMS_LOG(error) << "Invalid Rest error " << static_cast<unsigned>(error);
                return Status::CODE_500;
             }
+         }
+
+         static const oatpp::String& toContentType(const rest::BodyType& bodyType)
+         {
+            static const auto PlainText = oatpp::String("text/plain");
+            static const auto Json = oatpp::String("application/json");
+
+            switch (bodyType)
+            {
+            case rest::BodyType::kPlainText: 
+               return PlainText;
+            case rest::BodyType::kJson:
+               return Json;
+            default:  // NOLINT(clang-diagnostic-covered-switch-default)
+               throw std::invalid_argument("Invalid REST body type " + std::to_string(static_cast<int>(bodyType)));
+            }
+
          }
 
          std::function<boost::shared_ptr<rest::IRestAnswer>(std::map<std::string, std::string>, std::string)> m_handler;
