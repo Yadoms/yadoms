@@ -43,6 +43,9 @@ namespace web
             boost::shared_ptr<IRestAnswer> CConfiguration::getDatabaseVersionV2(const std::map<std::string,
                                                                                                std::string>& parameters,
                                                                                 const std::string& body) const;
+            boost::shared_ptr<IRestAnswer> getExternalConfigurationV2(const std::map<std::string,
+                                                                                     std::string>& parameters,
+                                                                      const std::string& body) const;
 
 
             boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;

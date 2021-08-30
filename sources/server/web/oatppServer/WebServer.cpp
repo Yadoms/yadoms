@@ -214,7 +214,7 @@ namespace web
          {
             try
             {
-               const auto answer = m_handler(toMap(request->getPathVariables()),
+               const auto answer = m_handler(toMap(request->getQueryParameters()),
                                                request->getStartingLine().method != "GET" ? request->readBodyToString()->c_str() : std::string());
 
                const auto response = ResponseFactory::createResponse(toStatusCode(answer->code()),
@@ -238,6 +238,14 @@ namespace web
          {
             std::map<std::string, std::string> out;
             for (const auto& variable : in.getVariables())
+               out.emplace(variable.first.std_str(), variable.second.std_str());
+            return out;
+         }
+
+         static std::map<std::string, std::string> toMap(const oatpp::web::protocol::http::QueryParams& in)
+         {
+            std::map<std::string, std::string> out;
+            for (const auto& variable : in.getAll())
                out.emplace(variable.first.std_str(), variable.second.std_str());
             return out;
          }

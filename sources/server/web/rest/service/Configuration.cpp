@@ -48,6 +48,7 @@ namespace web
             m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
             m_accessPoints->push_back(AP_GET(m_restKeyword + "/server", getServerConfigurationV2));
             m_accessPoints->push_back(AP_GET(m_restKeyword + "/databaseVersion", getDatabaseVersionV2));
+            m_accessPoints->push_back(AP_GET(m_restKeyword + "/external", getExternalConfigurationV2));
 
             {
                //boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kGet, m_restKeyword + "/server",
@@ -195,6 +196,22 @@ namespace web
             catch (shared::exception::CEmptyResult&)
             {
                return CResult::GenerateError((boost::format("[Section = %1%] not found.") % section).str());
+            }
+         }
+
+
+         boost::shared_ptr<IRestAnswer> CConfiguration::getExternalConfigurationV2(const std::map<std::string,
+                                                                                                  std::string>& parameters,
+                                                                                   const std::string& body) const
+         {
+            try
+            {
+               return boost::make_shared<CSuccessRestAnswer>(m_configurationManager->getExternalConfiguration(parameters.at("section")));
+            }
+            catch (shared::exception::CEmptyResult&)
+            {
+               return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
+                                                           "Fail to get external configuration");
             }
          }
 
