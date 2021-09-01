@@ -49,7 +49,7 @@ namespace web
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             m_endPoints->push_back(EP(kGet, m_restKeyword + "/server", getServerConfigurationV2));
             m_endPoints->push_back(EP(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
-            //TODO manque RESET
+            m_endPoints->push_back(EP(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
 
             m_endPoints->push_back(EP(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2));
 
@@ -71,6 +71,20 @@ namespace web
             catch (shared::exception::CEmptyResult&)
             {
                return CResult::GenerateError("Fail to reset server configuration");
+            }
+         }
+
+         boost::shared_ptr<IRestAnswer> CConfiguration::resetServerConfigurationV2(boost::shared_ptr<IRestRequest> request) const
+         {
+            try
+            {
+               m_configurationManager->resetServerConfiguration();
+               return boost::make_shared<CSuccessRestAnswer>(*m_configurationManager->getServerConfiguration());
+            }
+            catch (std::exception&)
+            {
+               return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
+                                                           "Fail to reset server configuration");
             }
          }
 

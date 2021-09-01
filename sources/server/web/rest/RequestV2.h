@@ -76,7 +76,8 @@ namespace web
          std::string body() override
          {
             if (m_method == shared::http::ERestVerb::kGet
-               || m_method == shared::http::ERestVerb::kHead)
+               || m_method == shared::http::ERestVerb::kHead
+               || m_method == shared::http::ERestVerb::kDelete)
                return std::string();
 
             return m_request->readBodyToString()->c_str();
