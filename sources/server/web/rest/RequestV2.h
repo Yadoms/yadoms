@@ -3,7 +3,7 @@
 #include <oatpp/web/server/HttpRequestHandler.hpp>
 #include <shared/http/Codes.h>
 #include "ContentType.h"
-#include "shared/http/HttpRestMethod.h"
+#include "shared/http/HttpRestVerb.h"
 
 //TODO renommer le fichier
 
@@ -16,7 +16,7 @@ namespace web
       public:
          virtual ~IRestRequest() = default;
 
-         virtual shared::http::ERestMethod method() = 0;
+         virtual shared::http::ERestVerb method() = 0;
 
          virtual std::string parameter(const std::string& key) = 0;
          virtual std::string parameter(const std::string& key,
@@ -37,13 +37,13 @@ namespace web
       public:
          explicit COatppRestRequest(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request)
             : m_request(std::move(request)),
-              m_method(shared::http::ToRestMethod(m_request->getStartingLine().method.std_str()))
+              m_method(shared::http::ToRestVerb(m_request->getStartingLine().method.std_str()))
          {
          }
 
          ~COatppRestRequest() override = default;
 
-         shared::http::ERestMethod method() override
+         shared::http::ERestVerb method() override
          {
             return m_method;
          }
@@ -75,8 +75,8 @@ namespace web
 
          std::string body() override
          {
-            if (m_method == shared::http::ERestMethod::kGet
-               || m_method == shared::http::ERestMethod::kHead)
+            if (m_method == shared::http::ERestVerb::kGet
+               || m_method == shared::http::ERestVerb::kHead)
                return std::string();
 
             return m_request->readBodyToString()->c_str();
@@ -143,7 +143,7 @@ namespace web
          }
 
          std::shared_ptr<oatpp::web::protocol::http::incoming::Request> m_request;
-         shared::http::ERestMethod m_method;
+         shared::http::ERestVerb m_method;
          boost::shared_ptr<std::map<EContentType, float>> m_parsedAcceptContentType;
       };
    } //namespace rest

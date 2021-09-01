@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/DataContainer.h>
 #include "IHttpRestRequest.h"
-#include "HttpRestMethod.h"
+#include "HttpRestVerb.h"
 
 namespace shared
 {
@@ -19,7 +19,7 @@ namespace shared
          CHttpRestHelpers() = delete;
          ~CHttpRestHelpers() = default;
 
-         static boost::shared_ptr<IHttpRestRequest> createHttpRestRequest(ERestMethod requestType,
+         static boost::shared_ptr<IHttpRestRequest> createHttpRestRequest(ERestVerb requestType,
                                                                           const std::string& url);
 
 

@@ -83,7 +83,7 @@ namespace update
             }; 
 
             boost::shared_ptr<shared::CDataContainer> lastVersionInformation;
-            shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestMethod::kGet, url)
+            shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kGet, url)
                ->withHeaderParameters(headerParameters)
                .withParameters(parameters)
                .send([&lastVersionInformation](boost::shared_ptr<shared::CDataContainer> data)

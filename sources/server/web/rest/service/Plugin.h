@@ -23,7 +23,7 @@ namespace web
 
             // IRestService implementation
             void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
-            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
             const std::string& getRestKeyword() const;
@@ -92,7 +92,7 @@ namespace web
             communication::ISendMessageAsync& m_messageSender;
 
             bool m_developerMode;
-            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
          };
       } //namespace service
    } //namespace rest

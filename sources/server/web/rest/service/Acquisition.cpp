@@ -84,15 +84,15 @@ namespace web
             //get keyword data between two dates
          }
 
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CAcquisition::accessPoints()
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CAcquisition::endPoints()
          {
-            if (m_accessPoints != nullptr)
-               return m_accessPoints;
+            if (m_endPoints != nullptr)
+               return m_endPoints;
 
-            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             //TODO
 
-            return m_accessPoints;
+            return m_endPoints;
          }
 
          const std::string& CAcquisition::getRestKeyword()

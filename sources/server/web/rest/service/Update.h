@@ -24,7 +24,7 @@ namespace web
 
             // IRestService implementation
             void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
-            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
             //-----------------------------------------------------------------------------
@@ -133,7 +133,7 @@ namespace web
             /// \brief  The dependancies
             //-----------------------------------------------------------------------------         
             boost::shared_ptr<update::IUpdateManager> m_updateManager;
-            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
             //-----------------------------------------------------------------------------
             /// \brief  The rest keyword

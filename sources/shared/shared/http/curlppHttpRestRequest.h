@@ -7,7 +7,7 @@
 
 #include "shared/DataContainer.h"
 #include "IHttpRestRequest.h"
-#include "HttpRestMethod.h"
+#include "HttpRestVerb.h"
 
 
 namespace shared
@@ -20,7 +20,7 @@ namespace shared
       class CCurlppHttpRestRequest final : public IHttpRestRequest
       {
       public:
-         CCurlppHttpRestRequest(ERestMethod requestType,
+         CCurlppHttpRestRequest(ERestVerb requestType,
                                 std::string url);
 
          ~CCurlppHttpRestRequest() override = default;
@@ -46,7 +46,7 @@ namespace shared
                                                                const std::string& data) const;
 
          curlpp::Easy m_request;
-         const ERestMethod m_requestType;
+         const ERestVerb m_requestType;
          const std::string m_url;
          int m_timeoutSeconds;
          std::map<std::string, std::string> m_headerParameters;

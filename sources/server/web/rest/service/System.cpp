@@ -40,15 +40,15 @@ namespace web
                                         ::getVirtualDevicesSupportedCapacities);
          }
 
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CSystem::accessPoints()
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CSystem::endPoints()
          {
-            if (m_accessPoints != nullptr)
-               return m_accessPoints;
+            if (m_endPoints != nullptr)
+               return m_endPoints;
 
-            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             //TODO
 
-            return m_accessPoints;
+            return m_endPoints;
          }
 
 

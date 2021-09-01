@@ -38,15 +38,15 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restFieldKeyword)("*"), CRecipient::getAllRecipientsByField);
    }
 
-   boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CRecipient::accessPoints()
+   boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CRecipient::endPoints()
    {
-      if (m_accessPoints != nullptr)
-         return m_accessPoints;
+      if (m_endPoints != nullptr)
+         return m_endPoints;
 
-      m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+      m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
       //TODO
 
-      return m_accessPoints;
+      return m_endPoints;
    }
 
 

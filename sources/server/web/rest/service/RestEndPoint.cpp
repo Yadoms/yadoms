@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "RestAccessPoint.h"
+#include "RestEndPoint.h"
 
 namespace web
 {
@@ -7,7 +7,7 @@ namespace web
    {
       namespace service
       {
-         CRestAccessPoint::CRestAccessPoint(const shared::http::ERestMethod& method,
+         CRestEndPoint::CRestEndPoint(const shared::http::ERestVerb& method,
                                             const std::string& path,
                                             std::function<boost::shared_ptr<IRestAnswer>(boost::shared_ptr<IRestRequest>)> handler)
             : m_method(method),
@@ -16,17 +16,17 @@ namespace web
          {
          }
 
-         shared::http::ERestMethod CRestAccessPoint::method() const
+         shared::http::ERestVerb CRestEndPoint::verb() const
          {
             return m_method;
          }
 
-         std::string CRestAccessPoint::path() const
+         std::string CRestEndPoint::path() const
          {
             return m_path;
          }
 
-         std::function<boost::shared_ptr<IRestAnswer>(boost::shared_ptr<IRestRequest>)> CRestAccessPoint::handler() const
+         std::function<boost::shared_ptr<IRestAnswer>(boost::shared_ptr<IRestRequest>)> CRestEndPoint::handler() const
          {
             return m_handler;
          }

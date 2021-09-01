@@ -313,13 +313,15 @@ namespace web
       void CWebServer::refreshRestRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                          const std::string& restKeywordBase) const
       {
+         static const std::string RestApiVersion("v2");
+
          for (const auto& service : *m_restServices)
          {
-            for (const auto& accessPoint : *service->accessPoints())
+            for (const auto& endPoint : *service->endPoints())
             {
-               httpRouter->route(ToString(accessPoint->method()).c_str(),
-                                 std::string("/" + restKeywordBase + "/" + accessPoint->path()).c_str(),
-                                 std::make_shared<COatppRestHandler>(accessPoint->handler()));
+               httpRouter->route(ToString(endPoint->verb()).c_str(),
+                                 std::string("/" + restKeywordBase + "/" + RestApiVersion + "/" + endPoint->path()).c_str(),
+                                 std::make_shared<COatppRestHandler>(endPoint->handler()));
             }
          }
       }

@@ -32,7 +32,7 @@ namespace shared
       static CCurlResources CurlResources;
 
 
-      CCurlppHttpRestRequest::CCurlppHttpRestRequest(ERestMethod requestType,
+      CCurlppHttpRestRequest::CCurlppHttpRestRequest(ERestVerb requestType,
                                                      std::string url)
          : m_requestType(requestType),
            m_url(std::move(url)),
@@ -60,7 +60,7 @@ namespace shared
 
       IHttpRestRequest& CCurlppHttpRestRequest::withBody(const std::string& body)
       {
-         if (m_requestType != ERestMethod::kPost && m_requestType != ERestMethod::kPut)
+         if (m_requestType != ERestVerb::kPost && m_requestType != ERestVerb::kPut)
             throw std::runtime_error("CCurlppHttpRestRequest : body is only supported for POST and PUT requests");
          m_body = body;
          return *this;
@@ -79,17 +79,17 @@ namespace shared
       {
          switch (m_requestType)
          {
-         case ERestMethod::kGet:
+         case ERestVerb::kGet:
             m_request.setOpt(new curlpp::options::HttpGet(true));
             break;
-         case ERestMethod::kHead:
+         case ERestVerb::kHead:
             m_request.setOpt(new curlpp::options::HttpGet(true));
             m_request.setOpt(new curlpp::options::NoBody(true));
             break;
-         case ERestMethod::kPost:
+         case ERestVerb::kPost:
             m_request.setOpt(new curlpp::options::PostFields(m_body));
             break;
-         case ERestMethod::kPut:
+         case ERestVerb::kPut:
             m_request.setOpt(new curlpp::options::CustomRequest("PUT"));
             m_request.setOpt(new curlpp::options::PostFields(m_body));
             break;
@@ -139,7 +139,7 @@ namespace shared
 
          // Response data
          std::string dataBuffer;
-         if (m_requestType != ERestMethod::kHead)
+         if (m_requestType != ERestVerb::kHead)
          {
             m_request.setOpt(curlpp::options::WriteFunction(
                [&dataBuffer](char* ptr, size_t size, size_t nbItems)

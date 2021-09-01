@@ -54,7 +54,7 @@ CHueInformations CHueBridgeDiscovery::getHueInformations()
       const auto descriptionUrl = m_urlManager->getPatternUrl(urlPatternPath);
 
       std::string out;
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestMethod::kGet,
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kGet,
                                                             descriptionUrl)
          ->send([&out](const std::map<std::string, std::string>& receivedHeaders,
                        const std::string& data)

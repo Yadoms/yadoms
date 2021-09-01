@@ -32,15 +32,15 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CTask::getOneTask);
          }
 
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CTask::accessPoints()
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CTask::endPoints()
          {
-            if (m_accessPoints != nullptr)
-               return m_accessPoints;
+            if (m_endPoints != nullptr)
+               return m_endPoints;
 
-            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             //TODO
 
-            return m_accessPoints;
+            return m_endPoints;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CTask::getOneTask(const std::vector<std::string>& parameters,

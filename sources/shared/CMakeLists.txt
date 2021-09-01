@@ -130,7 +130,7 @@ set(SHARED_LIB_SRC
    shared/http/HttpHelpers.cpp
    shared/http/HttpRestHelpers.h
    shared/http/HttpRestHelpers.cpp
-   shared/http/HttpRestMethod.h
+   shared/http/HttpRestVerb.h
    shared/http/IHttpRestRequest.h
    shared/http/Proxy.h
    shared/http/Proxy.cpp

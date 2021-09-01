@@ -22,7 +22,7 @@ namespace web
 
             // IRestService implementation
             void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
-            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
             static const std::string& getRestKeyword();
@@ -211,7 +211,7 @@ namespace web
             ///\brief   Keyword manager
             //-----------------------------------------
             boost::shared_ptr<dataAccessLayer::IKeywordManager> m_keywordManager;
-            boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> m_accessPoints;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
             //-----------------------------------------
             ///\brief   The rest keyword which identifies this rule

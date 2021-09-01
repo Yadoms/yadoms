@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 #include <string>
-#include "shared/http/HttpRestMethod.h"
+#include "shared/http/HttpRestVerb.h"
 #include "web/rest/RequestV2.h"
 #include "web/rest/ResultV2.h"
 
@@ -12,17 +12,17 @@ namespace web
       namespace service
       {
          //----------------------------
-         ///\brief   Interface for REST access point
+         ///\brief   Interface for REST end-point
          //----------------------------
-         class IRestAccessPoint
+         class IRestEndPoint
          {
          public:
-            virtual ~IRestAccessPoint() = default;
+            virtual ~IRestEndPoint() = default;
 
             //--------------------------------------   
-            ///\brief   Method
+            ///\brief   Verb
             //-------------------------------------- 
-            virtual shared::http::ERestMethod method() const = 0;
+            virtual shared::http::ERestVerb verb() const = 0;
 
             //--------------------------------------   
             ///\brief   Path (url part after "/rest/")

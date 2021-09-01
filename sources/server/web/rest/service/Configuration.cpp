@@ -1,7 +1,7 @@
 ﻿#include "Configuration.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <utility>
-#include "RestAccessPoint.h"
+#include "RestEndPoint.h"
 #include "stdafx.h"
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
@@ -14,7 +14,7 @@ namespace web
    {
       namespace service
       {
-         std::string CConfiguration::m_restKeyword = std::string("configuration");
+         std::string CConfiguration::m_restKeyword = std::string("configurations");
 
 
          CConfiguration::CConfiguration(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
@@ -34,60 +34,29 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration);
          }
 
-#define AP(method, path, handler) \
-          boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::method, \
+#define EP(verb, path, handler) \
+          boost::make_shared<CRestEndPoint>(shared::http::ERestVerb::verb, \
           path, \
           [this](boost::shared_ptr<IRestRequest> request) \
                { return handler(request); })
 
 
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CConfiguration::accessPoints()
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CConfiguration::endPoints()
          {
-            if (m_accessPoints != nullptr)
-               return m_accessPoints;
+            if (m_endPoints != nullptr)
+               return m_endPoints;
 
-            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
-            m_accessPoints->push_back(AP(kGet, m_restKeyword + "/server", getServerConfigurationV2));
-            m_accessPoints->push_back(AP(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2));
-            m_accessPoints->push_back(AP(kGet, m_restKeyword + "/external", getExternalConfigurationV2));
-            m_accessPoints->push_back(AP(kPut, m_restKeyword + "/external", saveExternalConfigurationV2));
+            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
+            m_endPoints->push_back(EP(kGet, m_restKeyword + "/server", getServerConfigurationV2));
+            m_endPoints->push_back(EP(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
+            //TODO manque RESET
 
-            {
-               //boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kGet, m_restKeyword + "/server",
-               //                                     std::bind(getServerConfigurationV2, this, std::placeholders::_1, std::placeholders::_2))//,
-               //TODO remettre
-               //boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kPut, m_restKeyword + "/server/reset",
-               //                                     &resetServerConfiguration),
-               //boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kPut, m_restKeyword + "/server",
-               //                                     &saveServerConfiguration),
+            m_endPoints->push_back(EP(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2));
 
-               //boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kGet, m_restKeyword + "/databaseVersion",
-               //                                     &getDatabaseVersion),
+            m_endPoints->push_back(EP(kGet, m_restKeyword + "/external", getExternalConfigurationV2));
+            m_endPoints->push_back(EP(kPut, m_restKeyword + "/external", saveExternalConfigurationV2));
 
-               //boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kGet, m_restKeyword + "/external/{section}",
-               //                                     &getExternalConfiguration),
-               //boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kPut, m_restKeyword + "/external/{section}",
-               //                                     &saveExternalConfiguration)
-            }
-
-            //TODO virer
-            //m_accessPoints = boost::make_shared<std::vector<std::IRestAccessPoint>>();
-            //m_accessPoints->push_back(
-            //   boost::make_shared<AccessPoint>(shared::http::ERestMethod::kGet, m_restKeyword + "/server", getServerConfiguration));
-            //m_accessPoints->push_back(
-            //   boost::make_shared<AccessPoint>(shared::http::ERestMethod::kPut, m_restKeyword + "/server/reset", resetServerConfiguration));
-            //m_accessPoints->push_back(
-            //   boost::make_shared<AccessPoint>(shared::http::ERestMethod::kPut, m_restKeyword + "/server", saveServerConfiguration));
-
-            //m_accessPoints->push_back(
-            //   boost::make_shared<AccessPoint>(shared::http::ERestMethod::kGet, m_restKeyword + "/databaseVersion", getDatabaseVersion));
-
-            //m_accessPoints->push_back(
-            //   boost::make_shared<AccessPoint>(shared::http::ERestMethod::kGet, m_restKeyword + "/external", getExternalConfiguration));
-            //m_accessPoints->push_back(
-            //   boost::make_shared<AccessPoint>(shared::http::ERestMethod::kPut, m_restKeyword + "/external", saveExternalConfiguration));
-
-            return m_accessPoints;
+            return m_endPoints;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::resetServerConfiguration(
@@ -151,6 +120,20 @@ namespace web
             }
          }
 
+         boost::shared_ptr<IRestAnswer> CConfiguration::saveServerConfigurationV2(const boost::shared_ptr<IRestRequest>& request) const
+         {
+            try
+            {
+               m_configurationManager->saveServerConfiguration(shared::CDataContainer(request->body()));
+               return boost::make_shared<CSuccessRestAnswer>(*m_configurationManager->getServerConfiguration());
+            }
+            catch (std::exception&)
+            {
+               return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
+                                                           "Fail to get database version");
+            }
+         }
+
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getDatabaseVersion(const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -176,7 +159,6 @@ namespace web
                                                            "Fail to get database version");
             }
          }
-
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getExternalConfiguration(
             const std::vector<std::string>& parameters,

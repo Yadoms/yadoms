@@ -84,15 +84,15 @@ namespace web
                                                         CDevice:: transactionalMethod);
          }
 
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CDevice::accessPoints()
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CDevice::endPoints()
          {
-            if (m_accessPoints != nullptr)
-               return m_accessPoints;
+            if (m_endPoints != nullptr)
+               return m_endPoints;
 
-            m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
+            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             //TODO
 
-            return m_accessPoints;
+            return m_endPoints;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getOneDevice(

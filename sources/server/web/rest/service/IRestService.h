@@ -1,5 +1,5 @@
 #pragma once
-#include "IRestAccessPoint.h"
+#include "IRestEndPoint.h"
 #include "web/rest/RestDispatcher.h"
 
 namespace web
@@ -22,9 +22,9 @@ namespace web
             virtual void configurePocoDispatcher(CRestDispatcher& dispatcher) = 0;
 
             //--------------------------------------   
-            ///\brief   List all access points of the service (Oatpp-based webserver)
+            ///\brief   List all end-points of the service (Oatpp-based webserver)
             //-------------------------------------- 
-            virtual boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> accessPoints() = 0;
+            virtual boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() = 0;
          };
       } //namespace service
    } //namespace rest
