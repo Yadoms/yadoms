@@ -7,6 +7,8 @@
 #include <utility>
 #include <shared/Log.h>
 
+#include "web/rest/ContentType.h"
+#include "web/rest/RequestV2.h"
 #include "web/rest/ResultV2.h"
 
 namespace web
@@ -202,7 +204,7 @@ namespace web
       class COatppRestHandler final : public oatpp::web::server::HttpRequestHandler //TODO déplacer
       {
       public:
-         explicit COatppRestHandler(std::function<boost::shared_ptr<rest::IRestAnswer>(std::map<std::string, std::string>, std::string)> handler)
+         explicit COatppRestHandler(std::function<boost::shared_ptr<rest::IRestAnswer>(boost::shared_ptr<rest::IRestRequest>)> handler)
             : m_handler(std::move(handler))
          {
          }
@@ -214,13 +216,13 @@ namespace web
          {
             try
             {
-               const auto answer = m_handler(toMap(request->getQueryParameters()),
-                                               request->getStartingLine().method != "GET" ? request->readBodyToString()->c_str() : std::string());
+               const auto answer = m_handler(boost::make_shared<rest::COatppRestRequest>(request));
 
-               const auto response = ResponseFactory::createResponse(toStatusCode(answer->code()),
-                  oatpp::String(answer->body().c_str()));
+               auto response = ResponseFactory::createResponse(toStatusCode(answer->code()),
+                                                               oatpp::String(answer->body().c_str()));
 
-               response->putHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE, toContentType(answer->bodyType()));
+               response->putHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE,
+                                   ToString(answer->contentType()).c_str());
 
                return response;
             }
@@ -234,22 +236,6 @@ namespace web
          // [END] oatpp::web::server::HttpRequestHandler Implementation
 
       private:
-         static std::map<std::string, std::string> toMap(const oatpp::web::url::mapping::Pattern::MatchMap& in)
-         {
-            std::map<std::string, std::string> out;
-            for (const auto& variable : in.getVariables())
-               out.emplace(variable.first.std_str(), variable.second.std_str());
-            return out;
-         }
-
-         static std::map<std::string, std::string> toMap(const oatpp::web::protocol::http::QueryParams& in)
-         {
-            std::map<std::string, std::string> out;
-            for (const auto& variable : in.getAll())
-               out.emplace(variable.first.std_str(), variable.second.std_str());
-            return out;
-         }
-
          static const oatpp::web::protocol::http::Status& toStatusCode(const shared::http::ECodes& error)
          {
             switch (error)
@@ -321,24 +307,7 @@ namespace web
             }
          }
 
-         static const oatpp::String& toContentType(const rest::BodyType& bodyType)
-         {
-            static const auto PlainText = oatpp::String("text/plain");
-            static const auto Json = oatpp::String("application/json");
-
-            switch (bodyType)
-            {
-            case rest::BodyType::kPlainText: 
-               return PlainText;
-            case rest::BodyType::kJson:
-               return Json;
-            default:  // NOLINT(clang-diagnostic-covered-switch-default)
-               throw std::invalid_argument("Invalid REST body type " + std::to_string(static_cast<int>(bodyType)));
-            }
-
-         }
-
-         std::function<boost::shared_ptr<rest::IRestAnswer>(std::map<std::string, std::string>, std::string)> m_handler;
+         std::function<boost::shared_ptr<rest::IRestAnswer>(boost::shared_ptr<rest::IRestRequest>)> m_handler;
       };
 
       void CWebServer::refreshRestRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,

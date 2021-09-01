@@ -1,8 +1,8 @@
 #pragma once
+#include <utility>
 #include <shared/DataContainer.h>
 #include <shared/http/Codes.h>
-
-#include <utility>
+#include "ContentType.h"
 
 //TODO renommer le fichier
 
@@ -10,12 +10,6 @@ namespace web
 {
    namespace rest
    {
-      enum class BodyType
-      {
-         kPlainText,
-         kJson
-      };
-
       class IRestAnswer //TODO ménage
       {
       public:
@@ -23,7 +17,7 @@ namespace web
 
          virtual shared::http::ECodes code() const = 0;
          virtual std::string body() const = 0;
-         virtual BodyType bodyType() const = 0;
+         virtual EContentType contentType() const = 0;
       };
 
       class CSuccessRestAnswer final : public IRestAnswer //TODO ménage
@@ -32,15 +26,15 @@ namespace web
          CSuccessRestAnswer(const shared::CDataContainer& result)
             : m_code(shared::http::ECodes::kOK),
               m_body(result.serialize()),
-              m_bodyType(BodyType::kJson)
+              m_contentType(EContentType::kJson)
          {
          }
 
          CSuccessRestAnswer(std::string result,
-                            const BodyType& bodyType = BodyType::kPlainText)
+                            const EContentType& contentType = EContentType::kPlainText)
             : m_code(shared::http::ECodes::kOK),
               m_body(std::move(result)),
-              m_bodyType(bodyType)
+              m_contentType(contentType)
          {
          }
 
@@ -56,15 +50,15 @@ namespace web
             return m_body;
          }
 
-         BodyType bodyType() const override
+         EContentType contentType() const override
          {
-            return m_bodyType;
+            return m_contentType;
          }
 
       private:
          const shared::http::ECodes m_code;
          const std::string m_body;
-         const BodyType m_bodyType;
+         const EContentType m_contentType;
       };
 
       class CErrorRestAnswer final : public IRestAnswer //TODO ménage
@@ -89,9 +83,9 @@ namespace web
             return m_body;
          }
 
-         BodyType bodyType() const override
+         EContentType contentType() const override
          {
-            return BodyType::kPlainText;
+            return EContentType::kPlainText;
          }
 
       private:

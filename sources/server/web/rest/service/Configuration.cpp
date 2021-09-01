@@ -1,5 +1,6 @@
 ﻿#include "Configuration.h"
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 #include "RestAccessPoint.h"
 #include "stdafx.h"
 #include "web/rest/RestDispatcher.h"
@@ -17,7 +18,7 @@ namespace web
 
 
          CConfiguration::CConfiguration(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
-            : m_configurationManager(configurationManager)
+            : m_configurationManager(std::move(configurationManager))
          {
          }
 
@@ -33,11 +34,11 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration);
          }
 
-#define AP_GET(path, handler) \
-          boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kGet, \
+#define AP(method, path, handler) \
+          boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::method, \
           path, \
-          [this](const std::map<std::string, std::string>& parameters, const std::string& body) \
-               { return handler(parameters, body); })
+          [this](boost::shared_ptr<IRestRequest> request) \
+               { return handler(request); })
 
 
          boost::shared_ptr<std::vector<boost::shared_ptr<IRestAccessPoint>>> CConfiguration::accessPoints()
@@ -46,9 +47,10 @@ namespace web
                return m_accessPoints;
 
             m_accessPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestAccessPoint>>>();
-            m_accessPoints->push_back(AP_GET(m_restKeyword + "/server", getServerConfigurationV2));
-            m_accessPoints->push_back(AP_GET(m_restKeyword + "/databaseVersion", getDatabaseVersionV2));
-            m_accessPoints->push_back(AP_GET(m_restKeyword + "/external", getExternalConfigurationV2));
+            m_accessPoints->push_back(AP(kGet, m_restKeyword + "/server", getServerConfigurationV2));
+            m_accessPoints->push_back(AP(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2));
+            m_accessPoints->push_back(AP(kGet, m_restKeyword + "/external", getExternalConfigurationV2));
+            m_accessPoints->push_back(AP(kPut, m_restKeyword + "/external", saveExternalConfigurationV2));
 
             {
                //boost::make_shared<CRestAccessPoint>(shared::http::ERestMethod::kGet, m_restKeyword + "/server",
@@ -117,15 +119,13 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::getServerConfigurationV2(const std::map<std::string,
-                                                                                                std::string>& parameters,
-                                                                                 const std::string& body) const
+         boost::shared_ptr<IRestAnswer> CConfiguration::getServerConfigurationV2(boost::shared_ptr<IRestRequest> request) const
          {
             try
             {
                return boost::make_shared<CSuccessRestAnswer>(*m_configurationManager->getServerConfiguration());
             }
-            catch (shared::exception::CEmptyResult&)
+            catch (std::exception&)
             {
                return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
                                                            "Fail to get server configuration");
@@ -152,7 +152,7 @@ namespace web
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getDatabaseVersion(const std::vector<std::string>& parameters,
-                                                                                                        const std::string& requestContent) const
+            const std::string& requestContent) const
          {
             try
             {
@@ -164,15 +164,13 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::getDatabaseVersionV2(const std::map<std::string,
-                                                                                            std::string>& parameters,
-                                                                             const std::string& body) const
+         boost::shared_ptr<IRestAnswer> CConfiguration::getDatabaseVersionV2(boost::shared_ptr<IRestRequest> request) const
          {
             try
             {
                return boost::make_shared<CSuccessRestAnswer>(m_configurationManager->getDatabaseVersion());
             }
-            catch (shared::exception::CEmptyResult&)
+            catch (std::exception&)
             {
                return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
                                                            "Fail to get database version");
@@ -199,16 +197,13 @@ namespace web
             }
          }
 
-
-         boost::shared_ptr<IRestAnswer> CConfiguration::getExternalConfigurationV2(const std::map<std::string,
-                                                                                                  std::string>& parameters,
-                                                                                   const std::string& body) const
+         boost::shared_ptr<IRestAnswer> CConfiguration::getExternalConfigurationV2(const boost::shared_ptr<IRestRequest>& request) const
          {
             try
             {
-               return boost::make_shared<CSuccessRestAnswer>(m_configurationManager->getExternalConfiguration(parameters.at("section")));
+               return boost::make_shared<CSuccessRestAnswer>(m_configurationManager->getExternalConfiguration(request->parameter("section")));
             }
-            catch (shared::exception::CEmptyResult&)
+            catch (std::exception&)
             {
                return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
                                                            "Fail to get external configuration");
@@ -226,7 +221,7 @@ namespace web
             try
             {
                m_configurationManager->saveExternalConfiguration(section,
-                                                                 shared::CDataContainer(requestContent));
+                                                                 requestContent);
 
                return CResult::GenerateSuccess(m_configurationManager->getExternalConfiguration(section));
             }
@@ -237,6 +232,26 @@ namespace web
             catch (...)
             {
                return CResult::GenerateError("Unknown exception in updating a configuration value");
+            }
+         }
+
+         boost::shared_ptr<IRestAnswer> CConfiguration::saveExternalConfigurationV2(const boost::shared_ptr<IRestRequest>& request) const
+         {
+            try
+            {
+               if (request->contentType() != EContentType::kPlainText)
+                  return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kBadRequest,
+                                                              "Fail to save external configuration, provided configuration must be plain text contentType");
+
+               m_configurationManager->saveExternalConfiguration(request->parameter("section"),
+                                                                 request->body());
+
+               return boost::make_shared<CSuccessRestAnswer>(m_configurationManager->getExternalConfiguration(request->parameter("section")));
+            }
+            catch (std::exception&)
+            {
+               return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kInternalServerError,
+                                                           "Fail to save external configuration");
             }
          }
       } //namespace service

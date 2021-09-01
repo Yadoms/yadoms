@@ -8,12 +8,12 @@ namespace dataAccessLayer
    {
    public:
       explicit CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester);
-      ~CConfigurationManager() override;
+      ~CConfigurationManager() override = default;
 
       // IConfigurationManager implementation
       std::string getExternalConfiguration(const std::string& section) const override;
       void saveExternalConfiguration(const std::string& section,
-                                     const shared::CDataContainer& value) override;
+                                     const std::string& value) override;
       boost::shared_ptr<shared::CDataContainer> getServerConfiguration() const override;
       void saveServerConfiguration(const shared::CDataContainer& newConfiguration) override;
       void resetServerConfiguration() override;
@@ -24,14 +24,15 @@ namespace dataAccessLayer
       boost::shared_ptr<shared::CDataContainer> getBasicAuthentication() const override;
       // [END] - IConfigurationManager implementation
 
-   protected:
+   private:
+      static bool quiteEqual(double a, double b);
+
       std::string getConfiguration(const std::string& section) const;
       void saveConfiguration(const std::string& section,
-                             const shared::CDataContainer& value) const;
+                             const std::string& value) const;
 
-      void notifyServerConfigurationChanged(boost::shared_ptr<shared::CDataContainer> serverConfiguration);
+      void notifyServerConfigurationChanged(const boost::shared_ptr<shared::CDataContainer>& serverConfiguration);
 
-   private:
       boost::shared_ptr<database::IConfigurationRequester> m_configurationRequester;
       mutable boost::recursive_mutex m_configurationMutex;
 

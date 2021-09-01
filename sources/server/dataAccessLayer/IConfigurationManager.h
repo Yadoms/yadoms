@@ -23,7 +23,7 @@ namespace dataAccessLayer
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void saveExternalConfiguration(const std::string& section,
-                                             const shared::CDataContainer& value) = 0;
+                                             const std::string& value) = 0;
 
       //--------------------------------------------------------------
       /// \brief      Load server configuration

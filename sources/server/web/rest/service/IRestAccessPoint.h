@@ -2,6 +2,7 @@
 #include <functional>
 #include <string>
 #include "shared/http/HttpRestMethod.h"
+#include "web/rest/RequestV2.h"
 #include "web/rest/ResultV2.h"
 
 namespace web
@@ -35,7 +36,7 @@ namespace web
             /// - Second arg : body
             /// Returns the answer
             //-------------------------------------- 
-            virtual std::function<boost::shared_ptr<IRestAnswer>(std::map<std::string, std::string>, std::string)> handler() const = 0;
+             virtual std::function<boost::shared_ptr<IRestAnswer>(boost::shared_ptr<IRestRequest>)> handler() const = 0;
          };
       } //namespace service
    } //namespace rest

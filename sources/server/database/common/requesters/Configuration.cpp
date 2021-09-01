@@ -2,6 +2,7 @@
 #include "Configuration.h"
 #include <shared/currentTime/Provider.h>
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 #include "database/common/adapters/DatabaseAdapters.h"
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
@@ -14,11 +15,7 @@ namespace database
       namespace requesters
       {
          CConfiguration::CConfiguration(boost::shared_ptr<IDatabaseRequester> databaseRequester)
-            : m_databaseRequester(databaseRequester)
-         {
-         }
-
-         CConfiguration::~CConfiguration()
+            : m_databaseRequester(std::move(databaseRequester))
          {
          }
 
@@ -31,7 +28,7 @@ namespace database
 
             adapters::CConfigurationAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
-            if (adapter.getResults().size() >= 1)
+            if (!adapter.getResults().empty())
                return adapter.getResults()[0];
 
             const auto sEx = (boost::format("Cannot retrieve Configuration Section=%1% in database") % section).str();

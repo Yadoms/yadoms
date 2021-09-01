@@ -37,16 +37,10 @@ namespace web
                                                                                                   const std::string& requestContent) const;
 
             // REST Api v2
-            boost::shared_ptr<IRestAnswer> getServerConfigurationV2(const std::map<std::string,
-                                                                                   std::string>& parameters,
-                                                                    const std::string& body) const;
-            boost::shared_ptr<IRestAnswer> CConfiguration::getDatabaseVersionV2(const std::map<std::string,
-                                                                                               std::string>& parameters,
-                                                                                const std::string& body) const;
-            boost::shared_ptr<IRestAnswer> getExternalConfigurationV2(const std::map<std::string,
-                                                                                     std::string>& parameters,
-                                                                      const std::string& body) const;
-
+            boost::shared_ptr<IRestAnswer> getServerConfigurationV2(boost::shared_ptr<IRestRequest> request) const;
+            boost::shared_ptr<IRestAnswer> getDatabaseVersionV2(boost::shared_ptr<IRestRequest> request) const;
+            boost::shared_ptr<IRestAnswer> getExternalConfigurationV2(const boost::shared_ptr<IRestRequest>& request) const;
+            boost::shared_ptr<IRestAnswer> saveExternalConfigurationV2(const boost::shared_ptr<IRestRequest>& request) const;
 
             boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
             static std::string m_restKeyword;
