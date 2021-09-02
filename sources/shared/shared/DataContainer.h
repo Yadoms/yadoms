@@ -2018,9 +2018,9 @@ namespace shared
 
       rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      for (auto i = values.begin(); i != values.end(); ++i)
+      for (const auto& value : values)
       {
-         rapidjson::Value val(i->c_str(), i->size(), allocator);
+         rapidjson::Value val(value.c_str(), static_cast<rapidjson::SizeType>(value.size()), allocator);
          v.PushBack(val, allocator);
       }
    }

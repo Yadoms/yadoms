@@ -7,8 +7,6 @@ IF(NOT DISABLE_TEST_DATACONTAINER)
       shared/shared/Log.cpp
       shared/shared/logInternal/LogStreamEnhanced.h
       shared/shared/logInternal/LogStreamEnhanced.cpp
-	   server/web/rest/Result.h
-	   server/web/rest/Result.cpp
    )
    ADD_SOURCES(TestDataContainer.cpp)
    
