@@ -12,7 +12,7 @@ boost::shared_ptr<shared::CDataContainer> CDeviceState::getState(const CUrlManag
    const auto url = buildUrl(requestType);
 
    boost::shared_ptr<shared::CDataContainer> response;
-   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestMethod::kGet, url)
+   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kGet, url)
       ->withHeaderParameters(m_urlManagerHelper->buildCommonHeaderParameters())
       .withBasicAuthentication("Basic", m_lametricConfiguration.getAPIKey())
       .send([&response](auto data)
@@ -50,7 +50,7 @@ void CDeviceState::getDeviceState()
    boost::shared_ptr<shared::CDataContainer> response;
    try
    {
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestMethod::kHead, url)
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kHead, url)
          ->withHeaderParameters(m_urlManagerHelper->buildCommonHeaderParameters())
          .withBasicAuthentication("Basic", m_lametricConfiguration.getAPIKey())
          .send([&response](auto data)

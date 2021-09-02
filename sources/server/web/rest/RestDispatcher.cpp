@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "RestDispatcher.h"
-#include "Result.h"
 #include <shared/Log.h>
 
 namespace web
@@ -143,7 +142,7 @@ namespace web
          const std::vector<std::string>& url,
          const std::string& requestContent)
       {
-         if (encapsulatedMethod != NULL)
+         if (encapsulatedMethod != nullptr)
             return encapsulatedMethod(realMethod, url, requestContent);
          return realMethod(url, requestContent);
       }
