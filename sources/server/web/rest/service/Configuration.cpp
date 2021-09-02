@@ -37,7 +37,7 @@ namespace web
 #define EP(verb, path, handler) \
           boost::make_shared<CRestEndPoint>(shared::http::ERestVerb::verb, \
           path, \
-          [this](boost::shared_ptr<IRestRequest> request) \
+          [this](boost::shared_ptr<IRequest> request) \
                { return handler(request); })
 
 
@@ -74,7 +74,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::resetServerConfigurationV2(boost::shared_ptr<IRestRequest> request) const
+         boost::shared_ptr<IRestAnswer> CConfiguration::resetServerConfigurationV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -102,7 +102,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::getServerConfigurationV2(boost::shared_ptr<IRestRequest> request) const
+         boost::shared_ptr<IRestAnswer> CConfiguration::getServerConfigurationV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -134,7 +134,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::saveServerConfigurationV2(const boost::shared_ptr<IRestRequest>& request) const
+         boost::shared_ptr<IRestAnswer> CConfiguration::saveServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -161,7 +161,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::getDatabaseVersionV2(boost::shared_ptr<IRestRequest> request) const
+         boost::shared_ptr<IRestAnswer> CConfiguration::getDatabaseVersionV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -193,7 +193,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::getExternalConfigurationV2(const boost::shared_ptr<IRestRequest>& request) const
+         boost::shared_ptr<IRestAnswer> CConfiguration::getExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -231,7 +231,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::saveExternalConfigurationV2(const boost::shared_ptr<IRestRequest>& request) const
+         boost::shared_ptr<IRestAnswer> CConfiguration::saveExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {

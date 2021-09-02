@@ -641,13 +641,12 @@ set(YADOMS_SRC
    server/web/IWebServerConfigurator.h
  
    server/web/rest/ContentType.h
+   server/web/rest/IRequest.h
    server/web/rest/RestDispatcher.h
    server/web/rest/RestDispatcher.cpp
    server/web/rest/RestDispatcherHelpers.hpp
    server/web/rest/Result.h
    server/web/rest/Result.cpp
-   server/web/rest/RequestV2.h
-   server/web/rest/RequestV2.cpp
    server/web/rest/ResultV2.h
    server/web/rest/ResultV2.cpp
    server/web/rest/StringContainer.h
@@ -1053,6 +1052,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 #   server/web/oatppServer/AuthenticationRequestHandler.cpp
    server/web/oatppServer/HttpRequestHandlerFactory.h
    server/web/oatppServer/HttpRequestHandlerFactory.cpp   
+   server/web/oatppServer/RestRequest.h
+   server/web/oatppServer/RestRequest.cpp   
    server/web/oatppServer/RestRequestHandler.h
    server/web/oatppServer/RestRequestHandler.cpp   
 #   server/web/oatppServer/HttpRequestHandlerContainer.h

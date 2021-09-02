@@ -1,7 +1,7 @@
 #pragma once
 #include <oatpp/web/server/HttpRequestHandler.hpp>
 
-#include "web/rest/RequestV2.h"
+#include "web/rest/IRequest.h"
 #include "web/rest/ResultV2.h"
 
 namespace web
@@ -11,7 +11,7 @@ namespace web
       class CRestRequestHandler final : public oatpp::web::server::HttpRequestHandler
       {
       public:
-         explicit CRestRequestHandler(std::function<boost::shared_ptr<rest::IRestAnswer>(boost::shared_ptr<rest::IRestRequest>)> handler);
+         explicit CRestRequestHandler(std::function<boost::shared_ptr<rest::IRestAnswer>(boost::shared_ptr<rest::IRequest>)> handler);
          ~CRestRequestHandler() override = default;
 
          // oatpp::web::server::HttpRequestHandler Implementation
@@ -21,7 +21,7 @@ namespace web
       private:
          static const oatpp::web::protocol::http::Status& toStatusCode(const shared::http::ECodes& error);
 
-         std::function<boost::shared_ptr<rest::IRestAnswer>(boost::shared_ptr<rest::IRestRequest>)> m_handler;
+         std::function<boost::shared_ptr<rest::IRestAnswer>(boost::shared_ptr<rest::IRequest>)> m_handler;
       };
    } //namespace oatppServer
 } //namespace web

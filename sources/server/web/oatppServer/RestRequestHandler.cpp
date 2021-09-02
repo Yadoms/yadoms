@@ -1,11 +1,12 @@
 #include "stdafx.h"
-#include "CRestRequestHandler.h"
+#include "RestRequestHandler.h"
+#include "RestRequest.h"
 
 namespace web
 {
    namespace oatppServer
    {
-      CRestRequestHandler::CRestRequestHandler(std::function<boost::shared_ptr<rest::IRestAnswer>(boost::shared_ptr<rest::IRestRequest>)> handler)
+      CRestRequestHandler::CRestRequestHandler(std::function<boost::shared_ptr<rest::IRestAnswer>(boost::shared_ptr<rest::IRequest>)> handler)
          : m_handler(std::move(handler))
       {
       }
@@ -15,7 +16,7 @@ namespace web
       {
          try
          {
-            const auto answer = m_handler(boost::make_shared<rest::COatppRestRequest>(request));
+            const auto answer = m_handler(boost::make_shared<CRestRequest>(request));
 
             auto response = oatpp::web::protocol::http::outgoing::ResponseFactory::createResponse(toStatusCode(answer->code()),
                                                                                                   oatpp::String(answer->body().c_str()));

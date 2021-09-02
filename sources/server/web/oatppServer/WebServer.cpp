@@ -6,8 +6,8 @@
 #include <oatpp/web/server/HttpRouter.hpp>
 #include <utility>
 
-#include "CRestRequestHandler.h"
-#include "web/rest/RequestV2.h"
+#include "RestRequestHandler.h"
+#include "web/rest/IRequest.h"
 
 namespace web
 {
