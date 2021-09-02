@@ -1053,6 +1053,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 #   server/web/oatppServer/AuthenticationRequestHandler.cpp
    server/web/oatppServer/HttpRequestHandlerFactory.h
    server/web/oatppServer/HttpRequestHandlerFactory.cpp   
+   server/web/oatppServer/RestRequestHandler.h
+   server/web/oatppServer/RestRequestHandler.cpp   
 #   server/web/oatppServer/HttpRequestHandlerContainer.h
 #   server/web/oatppServer/HttpRequestHandlerContainer.cpp
 #   server/web/oatppServer/RestRequestHandler.h
