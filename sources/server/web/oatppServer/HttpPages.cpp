@@ -31,10 +31,8 @@ namespace web
          {".ttf", "font/ttf"}
       };
 
-      CHttpPages::CHttpPages(std::string name,
-                             boost::filesystem::path siteLocation)
-         : m_name(std::move(name)),
-           m_siteLocation(std::move(siteLocation))
+      CHttpPages::CHttpPages(boost::filesystem::path siteLocation)
+         : m_siteLocation(std::move(siteLocation))
       {
       }
 
@@ -48,12 +46,15 @@ namespace web
          const auto buffer = oatpp::base::StrBuffer::loadFromFile(fullPath.string().c_str());
          if (buffer == nullptr)
          {
-            YADOMS_LOG(error) << "[" << m_name << "] => *** The resource \' " << page << "\' was not found";
-            return ResponseFactory::createResponse(Status::CODE_404, getDefinedPage("The requested resource was not found!").c_str());
+            YADOMS_LOG(error) << "The resource \' " << page << "\' was not found";
+            return ResponseFactory::createResponse(Status::CODE_404,
+                                                   getDefinedPage("The requested resource was not found!").c_str());
          }
 
-         auto response = ResponseFactory::createResponse(Status::CODE_200, oatpp::String(buffer));
-         response->putHeader(HeaderContentType, getMimeTypeFromPath(page));
+         auto response = ResponseFactory::createResponse(Status::CODE_200,
+                                                         oatpp::String(buffer));
+         response->putHeader(HeaderContentType,
+                             getMimeTypeFromPath(page));
          return response;
       }
 
@@ -62,7 +63,7 @@ namespace web
          const auto find = MimeTypes.find(extension(boost::filesystem::path(path)));
          if (find == MimeTypes.end())
          {
-            YADOMS_LOG(error) << "[" << m_name << "] => *** Mimetype not supported for page \'" << path << "\'";
+            YADOMS_LOG(error) << "Mimetype not supported for page \'" << path << "\'";
             return DefaultMimetype;
          }
          return find->second.c_str();

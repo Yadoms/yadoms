@@ -174,7 +174,7 @@ namespace web
       void CWebServer::refreshWebPagesRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                              const std::string& docRoot)
       {
-         const auto pagesFiles = std::make_shared<CHttpPages>("Yadoms client", docRoot);
+         const auto pagesFiles = std::make_shared<CHttpPages>(docRoot);
          httpRouter->route("GET", "/", pagesFiles);
 
          routeAllFiles(docRoot, httpRouter, pagesFiles);
@@ -188,14 +188,12 @@ namespace web
          {
             if (dir->status().type() == boost::filesystem::directory_file)
                continue;
-
-            //TODO faire mieux en utilisant les paths
-            auto file = dir->path().string();
-            auto page = file.substr(rootFolder.size());
+                        
+            auto relativeUrl = boost::filesystem::relative(dir->path(), rootFolder).string();
 #if _WIN32
-            std::replace(page.begin(), page.end(), '\\', '/');
+            std::replace(relativeUrl.begin(), relativeUrl.end(), '\\', '/');
 #endif
-            httpRouter->route("GET", page.c_str(), pagesFiles);
+            httpRouter->route("GET", relativeUrl.c_str(), pagesFiles);
          }
       }
 

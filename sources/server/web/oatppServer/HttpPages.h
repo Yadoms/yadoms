@@ -12,8 +12,7 @@ namespace web
       class CHttpPages final : public oatpp::web::server::HttpRequestHandler
       {
       public:
-         CHttpPages(std::string name,
-            boost::filesystem::path siteLocation);
+         CHttpPages(boost::filesystem::path siteLocation);
          ~CHttpPages() override = default;
 
          // oatpp::web::server::HttpRequestHandler Implementation
@@ -35,7 +34,6 @@ namespace web
          static constexpr auto HeaderContentType = "Content-Type";
          static constexpr auto DefaultMimetype = "application/octet-stream";
 
-         const std::string m_name; //TODO utile ?
          const boost::filesystem::path m_siteLocation;
       };
    } //namespace oatppServer
