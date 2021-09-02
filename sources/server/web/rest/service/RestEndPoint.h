@@ -28,6 +28,13 @@ namespace web
             const std::string m_path;
             std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)> m_handler;
          };
+
+         /// Macro to simplify adding a new endpoint
+#define MAKE_ENDPOINT(verb, path, handler) \
+          boost::make_shared<CRestEndPoint>(shared::http::ERestVerb::verb, \
+          path, \
+          [this](boost::shared_ptr<IRequest> request) \
+               { return handler(request); })
       } //namespace service
    } //namespace rest
 } //namespace web 

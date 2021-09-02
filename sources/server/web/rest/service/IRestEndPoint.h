@@ -36,7 +36,7 @@ namespace web
             /// - Second arg : body
             /// Returns the answer
             //-------------------------------------- 
-             virtual std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)> handler() const = 0;
+            virtual std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)> handler() const = 0;
          };
       } //namespace service
    } //namespace rest

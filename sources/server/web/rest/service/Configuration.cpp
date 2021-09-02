@@ -35,27 +35,21 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration);
          }
 
-#define EP(verb, path, handler) \
-          boost::make_shared<CRestEndPoint>(shared::http::ERestVerb::verb, \
-          path, \
-          [this](boost::shared_ptr<IRequest> request) \
-               { return handler(request); })
-
-
          boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CConfiguration::endPoints()
          {
             if (m_endPoints != nullptr)
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            m_endPoints->push_back(EP(kGet, m_restKeyword + "/server", getServerConfigurationV2));
-            m_endPoints->push_back(EP(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
-            m_endPoints->push_back(EP(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/server", getServerConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/server", getServerConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
 
-            m_endPoints->push_back(EP(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2));
 
-            m_endPoints->push_back(EP(kGet, m_restKeyword + "/external", getExternalConfigurationV2));
-            m_endPoints->push_back(EP(kPut, m_restKeyword + "/external", saveExternalConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/external", getExternalConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/external", saveExternalConfigurationV2));
 
             return m_endPoints;
          }
