@@ -1,9 +1,8 @@
 ﻿#include "stdafx.h"
 #include "Task.h"
-#include <shared/exception/NotImplemented.hpp>
+#include "web/poco/RestResult.h"
 #include <utility>
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/Result.h"
 #include "task/IInstance.h"
 #include "task/Scheduler.h"
 #include "task/ITask.h"
@@ -51,11 +50,11 @@ namespace web
                const auto taskUid = parameters[1];
                const auto taskFound = m_taskManager->getTask(taskUid);
                if (taskFound == nullptr)
-                  return CResult::GenerateError("Task not found");
+                  return poco::CRestResult::GenerateError("Task not found");
 
-               return CResult::GenerateSuccess(serialize(taskFound));
+               return poco::CRestResult::GenerateSuccess(serialize(taskFound));
             }
-            return CResult::GenerateError("Invalid parameter count (need guid of the task in url)");
+            return poco::CRestResult::GenerateError("Invalid parameter count (need guid of the task in url)");
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CTask::getAllTasks(const std::vector<std::string>& parameters,
@@ -69,7 +68,7 @@ namespace web
             for (const auto& it : taskList)
                collection.appendArray("task", serialize(it));
 
-            return CResult::GenerateSuccess(collection);
+            return poco::CRestResult::GenerateSuccess(collection);
          }
 
          boost::shared_ptr<shared::CDataContainer> CTask::serialize(const boost::shared_ptr<const task::IInstance>& instance) const

@@ -645,10 +645,11 @@ set(YADOMS_SRC
    server/web/rest/RestDispatcher.h
    server/web/rest/RestDispatcher.cpp
    server/web/rest/RestDispatcherHelpers.hpp
-   server/web/rest/Result.h
-   server/web/rest/Result.cpp
-   server/web/rest/ResultV2.h
-   server/web/rest/ResultV2.cpp
+   server/web/rest/IAnswer.h
+   server/web/rest/ErrorAnswer.h
+   server/web/rest/ErrorAnswer.cpp
+   server/web/rest/SuccessAnswer.h
+   server/web/rest/SuccessAnswer.cpp
    server/web/rest/StringContainer.h
    server/web/rest/StringContainer.cpp
 
@@ -1031,6 +1032,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/poco/HttpRequestHandlerContainer.cpp
    server/web/poco/RestRequestHandler.h
    server/web/poco/RestRequestHandler.cpp
+   server/web/poco/RestResult.h
+   server/web/poco/RestResult.cpp
    server/web/poco/WebsiteCacheManager.h
    server/web/poco/WebsiteCacheManager.cpp
    server/web/poco/WebsiteRequestHandler.h

@@ -1,12 +1,13 @@
-﻿#include "Configuration.h"
+﻿#include "stdafx.h"
+#include "Configuration.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <utility>
 #include "RestEndPoint.h"
-#include "stdafx.h"
+#include "web/poco/RestResult.h"
+#include "web/rest/ErrorAnswer.h"
+#include "web/rest/SuccessAnswer.h"
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/Result.h"
-#include "web/rest/ResultV2.h"
 
 namespace web
 {
@@ -66,25 +67,25 @@ namespace web
             try
             {
                m_configurationManager->resetServerConfiguration();
-               return CResult::GenerateSuccess(m_configurationManager->getServerConfiguration());
+               return poco::CRestResult::GenerateSuccess(m_configurationManager->getServerConfiguration());
             }
             catch (shared::exception::CEmptyResult&)
             {
-               return CResult::GenerateError("Fail to reset server configuration");
+               return poco::CRestResult::GenerateError("Fail to reset server configuration");
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::resetServerConfigurationV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CConfiguration::resetServerConfigurationV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
                m_configurationManager->resetServerConfiguration();
-               return boost::make_shared<CSuccessRestAnswer>(*m_configurationManager->getServerConfiguration());
+               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getServerConfiguration());
             }
             catch (std::exception&)
             {
-               return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
-                                                           "Fail to reset server configuration");
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                       "Fail to reset server configuration");
             }
          }
 
@@ -94,24 +95,24 @@ namespace web
          {
             try
             {
-               return CResult::GenerateSuccess(m_configurationManager->getServerConfiguration());
+               return poco::CRestResult::GenerateSuccess(m_configurationManager->getServerConfiguration());
             }
             catch (shared::exception::CEmptyResult&)
             {
-               return CResult::GenerateError("Fail to get server configuration");
+               return poco::CRestResult::GenerateError("Fail to get server configuration");
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::getServerConfigurationV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CConfiguration::getServerConfigurationV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
-               return boost::make_shared<CSuccessRestAnswer>(*m_configurationManager->getServerConfiguration());
+               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getServerConfiguration());
             }
             catch (std::exception&)
             {
-               return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
-                                                           "Fail to get server configuration");
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                       "Fail to get server configuration");
             }
          }
 
@@ -122,29 +123,29 @@ namespace web
             try
             {
                m_configurationManager->saveServerConfiguration(shared::CDataContainer(requestContent));
-               return CResult::GenerateSuccess();
+               return poco::CRestResult::GenerateSuccess();
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("Fail to save server configuration");
+               return poco::CRestResult::GenerateError("Fail to save server configuration");
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::saveServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const
+         boost::shared_ptr<IAnswer> CConfiguration::saveServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
                m_configurationManager->saveServerConfiguration(shared::CDataContainer(request->body()));
-               return boost::make_shared<CSuccessRestAnswer>(*m_configurationManager->getServerConfiguration());
+               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getServerConfiguration());
             }
             catch (std::exception&)
             {
-               return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
-                                                           "Fail to get database version");
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                       "Fail to get database version");
             }
          }
 
@@ -153,24 +154,24 @@ namespace web
          {
             try
             {
-               return CResult::GenerateSuccess(m_configurationManager->getDatabaseVersion());
+               return poco::CRestResult::GenerateSuccess(m_configurationManager->getDatabaseVersion());
             }
             catch (shared::exception::CEmptyResult&)
             {
-               return CResult::GenerateError("Fail to get server configuration");
+               return poco::CRestResult::GenerateError("Fail to get server configuration");
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::getDatabaseVersionV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CConfiguration::getDatabaseVersionV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
-               return boost::make_shared<CSuccessRestAnswer>(m_configurationManager->getDatabaseVersion());
+               return boost::make_shared<CSuccessAnswer>(m_configurationManager->getDatabaseVersion());
             }
             catch (std::exception&)
             {
-               return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
-                                                           "Fail to get database version");
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                       "Fail to get database version");
             }
          }
 
@@ -179,30 +180,30 @@ namespace web
             const std::string& requestContent) const
          {
             if (parameters.size() < 3)
-               return CResult::GenerateError("GET /rest/configuration request : missing section name");
+               return poco::CRestResult::GenerateError("GET /rest/configuration request : missing section name");
             const auto section = parameters[2];
 
             try
             {
                const auto configFound = m_configurationManager->getExternalConfiguration(section);
-               return CResult::GenerateSuccess(configFound);
+               return poco::CRestResult::GenerateSuccess(configFound);
             }
             catch (shared::exception::CEmptyResult&)
             {
-               return CResult::GenerateError((boost::format("[Section = %1%] not found.") % section).str());
+               return poco::CRestResult::GenerateError((boost::format("[Section = %1%] not found.") % section).str());
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::getExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const
+         boost::shared_ptr<IAnswer> CConfiguration::getExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
-               return boost::make_shared<CSuccessRestAnswer>(m_configurationManager->getExternalConfiguration(request->parameter("section")));
+               return boost::make_shared<CSuccessAnswer>(m_configurationManager->getExternalConfiguration(request->parameter("section")));
             }
             catch (std::exception&)
             {
-               return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kNotFound,
-                                                           "Fail to get external configuration");
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                       "Fail to get external configuration");
             }
          }
 
@@ -211,7 +212,7 @@ namespace web
             const std::string& requestContent) const
          {
             if (parameters.size() < 3)
-               return CResult::GenerateError("PUT /rest/configuration request : missing section name");
+               return poco::CRestResult::GenerateError("PUT /rest/configuration request : missing section name");
             const auto section = parameters[2];
 
             try
@@ -219,35 +220,35 @@ namespace web
                m_configurationManager->saveExternalConfiguration(section,
                                                                  requestContent);
 
-               return CResult::GenerateSuccess(m_configurationManager->getExternalConfiguration(section));
+               return poco::CRestResult::GenerateSuccess(m_configurationManager->getExternalConfiguration(section));
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("Unknown exception in updating a configuration value");
+               return poco::CRestResult::GenerateError("Unknown exception in updating a configuration value");
             }
          }
 
-         boost::shared_ptr<IRestAnswer> CConfiguration::saveExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const
+         boost::shared_ptr<IAnswer> CConfiguration::saveExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
                if (request->contentType() != EContentType::kPlainText)
-                  return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kBadRequest,
-                                                              "Fail to save external configuration, provided configuration must be plain text contentType");
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "Fail to save external configuration, provided configuration must be plain text contentType");
 
                m_configurationManager->saveExternalConfiguration(request->parameter("section"),
                                                                  request->body());
 
-               return boost::make_shared<CSuccessRestAnswer>(m_configurationManager->getExternalConfiguration(request->parameter("section")));
+               return boost::make_shared<CSuccessAnswer>(m_configurationManager->getExternalConfiguration(request->parameter("section")));
             }
             catch (std::exception&)
             {
-               return boost::make_shared<CErrorRestAnswer>(shared::http::ECodes::kInternalServerError,
-                                                           "Fail to save external configuration");
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to save external configuration");
             }
          }
       } //namespace service

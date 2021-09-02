@@ -1,5 +1,6 @@
 #pragma once
 
+//TODO déplacer dans poco
 
 #define ADD_URL_PATTERN(r, data, idx, elem) \
    temp.push_back( elem );

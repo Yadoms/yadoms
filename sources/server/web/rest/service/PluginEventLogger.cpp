@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "PluginEventLogger.h"
-
 #include <utility>
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/Result.h"
+#include "web/poco/RestResult.h"
 
 namespace web
 {
@@ -45,7 +44,7 @@ namespace web
             boost::posix_time::ptime fromDate;
 
             if (parameters.empty())
-               return CResult::GenerateError("Need plugin name");
+               return poco::CRestResult::GenerateError("Need plugin name");
 
             const auto pluginName = parameters[1];
 
@@ -56,7 +55,7 @@ namespace web
 
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), dvList);
-            return CResult::GenerateSuccess(collection);
+            return poco::CRestResult::GenerateSuccess(collection);
          }
       } //namespace service
    } //namespace rest

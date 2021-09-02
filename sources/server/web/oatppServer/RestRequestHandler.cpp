@@ -6,7 +6,7 @@ namespace web
 {
    namespace oatppServer
    {
-      CRestRequestHandler::CRestRequestHandler(std::function<boost::shared_ptr<rest::IRestAnswer>(boost::shared_ptr<rest::IRequest>)> handler)
+      CRestRequestHandler::CRestRequestHandler(std::function<boost::shared_ptr<rest::IAnswer>(boost::shared_ptr<rest::IRequest>)> handler)
          : m_handler(std::move(handler))
       {
       }

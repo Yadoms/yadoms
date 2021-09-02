@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Device.h"
 #include <shared/exception/EmptyResult.hpp>
-#include "web/rest/Result.h"
+#include "web/poco/RestResult.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "communication/callback/SynchronousCallback.h"
 #include "database/common/requesters/Keyword.h"
@@ -104,7 +104,7 @@ namespace web
                objectId = parameters[1];
 
             const auto deviceFound = m_deviceRequester->getDevice(boost::lexical_cast<int>(objectId), true);
-            return CResult::GenerateSuccess(deviceFound);
+            return poco::CRestResult::GenerateSuccess(deviceFound);
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getCompatibleForMergeDevice(
@@ -114,7 +114,7 @@ namespace web
             try
             {
                if (parameters.size() <= 1)
-                  return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
 
                const auto refDeviceId = boost::lexical_cast<int>(parameters[1]);
 
@@ -198,15 +198,15 @@ namespace web
                shared::CDataContainer collection;
                collection.set("compatibleDevices", compatibleDevices);
                collection.set("commonKeywordsByDevice", commonKeywordsForCompatibleDevices);
-               return CResult::GenerateSuccess(collection);
+               return poco::CRestResult::GenerateSuccess(collection);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in executing getDeviceConfigurationSchema query");
+               return poco::CRestResult::GenerateError("unknown exception in executing getDeviceConfigurationSchema query");
             }
          }
 
@@ -234,29 +234,29 @@ namespace web
                         {
                            const auto res = cb.getCallbackResult();
                            if (res.success)
-                              return CResult::GenerateSuccess(res.result());
-                           return CResult::GenerateError(res.errorMessage);
+                              return poco::CRestResult::GenerateSuccess(res.result());
+                           return poco::CRestResult::GenerateError(res.errorMessage);
                         }
                      case shared::event::kTimeout:
-                        return CResult::GenerateError("The plugin did not respond");
+                        return poco::CRestResult::GenerateError("The plugin did not respond");
                      default:
-                        return CResult::GenerateError("Unknown plugin result");
+                        return poco::CRestResult::GenerateError("Unknown plugin result");
                      }
                   }
                   catch (shared::exception::CException& ex)
                   {
-                     return CResult::GenerateError(ex);
+                     return poco::CRestResult::GenerateError(ex);
                   }
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in executing getDeviceConfigurationSchema query");
+               return poco::CRestResult::GenerateError("unknown exception in executing getDeviceConfigurationSchema query");
             }
          }
 
@@ -266,7 +266,7 @@ namespace web
             const auto dvList = m_deviceRequester->getDevices(true);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), dvList);
-            return CResult::GenerateSuccess(collection);
+            return poco::CRestResult::GenerateSuccess(collection);
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getKeyword(
@@ -279,17 +279,17 @@ namespace web
                {
                   const auto keywordId = boost::lexical_cast<int>(parameters[2]);
                   const auto keyword = m_keywordManager->getKeyword(keywordId);
-                  return CResult::GenerateSuccess(keyword);
+                  return poco::CRestResult::GenerateSuccess(keyword);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving keyword");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 
@@ -309,18 +309,18 @@ namespace web
                   {
                      result.set(std::to_string(keywordLastData.get<0>()), keywordLastData.get<1>());
                   }
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving keyword");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 
@@ -333,15 +333,15 @@ namespace web
                const auto result = m_keywordManager->getAllKeywords();
                shared::CDataContainer collection;
                collection.set("keywords", result);
-               return CResult::GenerateSuccess(collection);
+               return poco::CRestResult::GenerateSuccess(collection);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving keyword");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 
@@ -361,17 +361,17 @@ namespace web
                   const auto result = m_deviceRequester->getDeviceWithCapacity(capacityName, cam);
                   shared::CDataContainer collection;
                   collection.set(getRestKeyword(), result);
-                  return CResult::GenerateSuccess(collection);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
@@ -390,17 +390,17 @@ namespace web
                   const auto result = m_deviceRequester->getDeviceWithCapacityType(cam, typ);
                   shared::CDataContainer collection;
                   collection.set(getRestKeyword(), result);
-                  return CResult::GenerateSuccess(collection);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
@@ -418,17 +418,17 @@ namespace web
                   const auto result = m_deviceRequester->getDeviceWithKeywordAccessMode(cam);
                   shared::CDataContainer collection;
                   collection.set(getRestKeyword(), result);
-                  return CResult::GenerateSuccess(collection);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve access-mode in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve access-mode in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
@@ -446,17 +446,17 @@ namespace web
                   const auto result = m_deviceRequester->getDeviceWithKeywordHistoryDepth(historyDepth);
                   shared::CDataContainer collection;
                   collection.set(getRestKeyword(), result);
-                  return CResult::GenerateSuccess(collection);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve history-depth in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve history-depth in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
             }
          }
 
@@ -526,15 +526,15 @@ namespace web
                shared::CDataContainer collection;
                collection.set("devices", devices);
                collection.set("keywords", keywords);
-               return CResult::GenerateSuccess(collection);
+               return poco::CRestResult::GenerateSuccess(collection);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
             }
          }
 
@@ -554,17 +554,17 @@ namespace web
                   const auto result = m_keywordManager->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
                   shared::CDataContainer collection;
                   collection.set("keyword", result);
-                  return CResult::GenerateSuccess(collection);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
@@ -584,19 +584,19 @@ namespace web
                      const auto allKeywordsForDevice = m_keywordManager->getKeywords(deviceId);
                      shared::CDataContainer collection;
                      collection.set("keyword", allKeywordsForDevice);
-                     return CResult::GenerateSuccess(collection);
+                     return poco::CRestResult::GenerateSuccess(collection);
                   }
-                  return CResult::GenerateError("Fail to retrieve device in database");
+                  return poco::CRestResult::GenerateError("Fail to retrieve device in database");
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
@@ -614,22 +614,22 @@ namespace web
                   try
                   {
                      m_messageSender.sendKeywordCommandAsync(keywordId, requestContent);
-                     return CResult::GenerateSuccess();
+                     return poco::CRestResult::GenerateSuccess();
                   }
                   catch (shared::exception::CEmptyResult&)
                   {
-                     return CResult::GenerateError("invalid parameter. Can not retrieve keyword in database");
+                     return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve keyword in database");
                   }
                }
-               return CResult::GenerateError("invalid parameter. Not enough parameters in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Not enough parameters in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in sending command to keyword");
+               return poco::CRestResult::GenerateError("unknown exception in sending command to keyword");
             }
          }
 
@@ -657,17 +657,17 @@ namespace web
                      m_deviceManager->updateDeviceBlacklistState(deviceId, true);
                   }
 
-                  return CResult::GenerateSuccess();
+                  return poco::CRestResult::GenerateSuccess();
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading device data");
+               return poco::CRestResult::GenerateError("unknown exception in reading device data");
             }
          }
 
@@ -679,7 +679,7 @@ namespace web
             try
             {
                if (parameters.empty())
-                  return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
 
                //get device id from URL
                const auto deviceId = boost::lexical_cast<int>(parameters[1]);
@@ -693,17 +693,17 @@ namespace web
 
                   //return the device info
                   const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
-                  return CResult::GenerateSuccess(deviceFound);
+                  return poco::CRestResult::GenerateSuccess(deviceFound);
                }
-               return CResult::GenerateError("invalid request content. could not retrieve device friendlyName");
+               return poco::CRestResult::GenerateError("invalid request content. could not retrieve device friendlyName");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating device friendly name");
+               return poco::CRestResult::GenerateError("unknown exception in updating device friendly name");
             }
          }
 
@@ -744,17 +744,17 @@ namespace web
 
                   //return the device info
                   const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
-                  return CResult::GenerateSuccess(deviceFound);
+                  return poco::CRestResult::GenerateSuccess(deviceFound);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating device configuration");
+               return poco::CRestResult::GenerateError("unknown exception in updating device configuration");
             }
          }
 
@@ -802,15 +802,15 @@ namespace web
 
                YADOMS_LOG(information) << "Device merge done...";
 
-               return CResult::GenerateSuccess();
+               return poco::CRestResult::GenerateSuccess();
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in merging devices");
+               return poco::CRestResult::GenerateError("unknown exception in merging devices");
             }
          }
 
@@ -828,17 +828,17 @@ namespace web
 
                   //return the device info
                   const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
-                  return CResult::GenerateSuccess(deviceFound);
+                  return poco::CRestResult::GenerateSuccess(deviceFound);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating device configuration");
+               return poco::CRestResult::GenerateError("unknown exception in updating device configuration");
             }
          }
 
@@ -859,19 +859,19 @@ namespace web
                   if (keywordToUpdate.FriendlyName.isDefined())
                   {
                      m_keywordManager->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
-                     return CResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
+                     return poco::CRestResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
                   }
-                  return CResult::GenerateError("invalid request content. could not retrieve keyword friendlyName");
+                  return poco::CRestResult::GenerateError("invalid request content. could not retrieve keyword friendlyName");
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating device friendly name");
+               return poco::CRestResult::GenerateError("unknown exception in updating device friendly name");
             }
          }
 
@@ -891,19 +891,19 @@ namespace web
                   if (keywordToUpdate.Blacklist.isDefined())
                   {
                      m_keywordManager->updateKeywordBlacklistState(keywordId, keywordToUpdate.Blacklist());
-                     return CResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
+                     return poco::CRestResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
                   }
-                  return CResult::GenerateError("invalid request content. could not retrieve keyword blacklist");
+                  return poco::CRestResult::GenerateError("invalid request content. could not retrieve keyword blacklist");
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating device friendly name");
+               return poco::CRestResult::GenerateError("unknown exception in updating device friendly name");
             }
          }
 
@@ -923,16 +923,16 @@ namespace web
             }
             catch (std::exception& ex)
             {
-               result = CResult::GenerateError(ex);
+               result = poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               result = CResult::GenerateError("unknown exception device rest method");
+               result = poco::CRestResult::GenerateError("unknown exception device rest method");
             }
 
             if (pTransactionalEngine)
             {
-               if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
+               if (poco::CRestResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
                   pTransactionalEngine->transactionCommit();
                else
                   pTransactionalEngine->transactionRollback();

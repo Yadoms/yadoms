@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "EventLogger.h"
-#include "web/rest/Result.h"
+#include "web/poco/RestResult.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 
 namespace web
@@ -47,15 +47,15 @@ namespace web
                auto dvList = m_dataProvider->getEvents();
                shared::CDataContainer collection;
                collection.set(m_restKeyword, dvList);
-               return CResult::GenerateSuccess(collection);
+               return poco::CRestResult::GenerateSuccess(collection);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading events");
+               return poco::CRestResult::GenerateError("unknown exception in reading events");
             }
          }
 
@@ -65,15 +65,15 @@ namespace web
             try
             {
                auto lastEvent = m_dataProvider->getLastEvent();
-               return CResult::GenerateSuccess(lastEvent);
+               return poco::CRestResult::GenerateSuccess(lastEvent);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading the last events");
+               return poco::CRestResult::GenerateError("unknown exception in reading the last events");
             }
          }
 
@@ -88,17 +88,17 @@ namespace web
                   auto eventList = m_dataProvider->getEventsFrom(eventIdFrom);
                   shared::CDataContainer collection;
                   collection.set(m_restKeyword, eventList);
-                  return CResult::GenerateSuccess(collection);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve Id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve Id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading events");
+               return poco::CRestResult::GenerateError("unknown exception in reading events");
             }
          }
 
@@ -114,17 +114,17 @@ namespace web
                   auto eventList = m_dataProvider->getEventsRange(offset, count);
                   shared::CDataContainer collection;
                   collection.set(m_restKeyword, eventList);
-                  return CResult::GenerateSuccess(collection);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve Id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve Id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading events");
+               return poco::CRestResult::GenerateError("unknown exception in reading events");
             }
          }
 
@@ -137,15 +137,15 @@ namespace web
                database::entities::CEventLogger entityToAdd;
                entityToAdd.fillFromSerializedString(requestContent);
                m_dataProvider->addEvent(entityToAdd);
-               return CResult::GenerateSuccess();
+               return poco::CRestResult::GenerateSuccess();
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new event entry");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new event entry");
             }
          }
       } //namespace service

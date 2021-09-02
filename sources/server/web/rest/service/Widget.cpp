@@ -3,7 +3,7 @@
 #include <shared/exception/NotImplemented.hpp>
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
-#include "web/rest/Result.h"
+#include "web/poco/RestResult.h"
 #include <fstream>
 
 namespace web
@@ -61,16 +61,16 @@ namespace web
             }
             catch (std::exception& ex)
             {
-               result = CResult::GenerateError(ex);
+               result = poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               result = CResult::GenerateError("unknown exception widget rest method");
+               result = poco::CRestResult::GenerateError("unknown exception widget rest method");
             }
 
             if (pTransactionalEngine)
             {
-               if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
+               if (poco::CRestResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
                   pTransactionalEngine->transactionCommit();
                else
                   pTransactionalEngine->transactionRollback();
@@ -94,17 +94,17 @@ namespace web
                {
                   const auto objectId = boost::lexical_cast<int>(parameters[1]);
                   const auto widgetFound = m_dataProvider->getWidgetRequester()->getWidget(objectId);
-                  return CResult::GenerateSuccess(widgetFound);
+                  return poco::CRestResult::GenerateSuccess(widgetFound);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving one widget");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving one widget");
             }
          }
 
@@ -114,7 +114,7 @@ namespace web
             const auto widgetList = m_dataProvider->getWidgetRequester()->getWidgets();
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), widgetList);
-            return CResult::GenerateSuccess(collection);
+            return poco::CRestResult::GenerateSuccess(collection);
          }
 
 
@@ -127,15 +127,15 @@ namespace web
                widgetToAdd.fillFromSerializedString(requestContent);
                const auto idCreated = m_dataProvider->getWidgetRequester()->addWidget(widgetToAdd);
                const auto widgetFound = m_dataProvider->getWidgetRequester()->getWidget(idCreated);
-               return CResult::GenerateSuccess(widgetFound);
+               return poco::CRestResult::GenerateSuccess(widgetFound);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new widget");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new widget");
             }
          }
 
@@ -157,19 +157,19 @@ namespace web
                      m_dataProvider->getWidgetRequester()->updateWidget(widgetToUpdate, true);
 
                      const auto wi = m_dataProvider->getWidgetRequester()->getWidget(widgetToUpdate.Id());
-                     return CResult::GenerateSuccess(wi);
+                     return poco::CRestResult::GenerateSuccess(wi);
                   }
-                  return CResult::GenerateError("The widget from URL is different than request content one");
+                  return poco::CRestResult::GenerateError("The widget from URL is different than request content one");
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating a widget value");
+               return poco::CRestResult::GenerateError("unknown exception in updating a widget value");
             }
          }
 
@@ -183,17 +183,17 @@ namespace web
                {
                   const auto widgetId = boost::lexical_cast<int>(parameters[1]);
                   m_dataProvider->getWidgetRequester()->removeWidget(widgetId);
-                  return CResult::GenerateSuccess();
+                  return poco::CRestResult::GenerateSuccess();
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in deleting one widget");
+               return poco::CRestResult::GenerateError("unknown exception in deleting one widget");
             }
          }
 
@@ -207,15 +207,15 @@ namespace web
                   getRestKeyword());
                for (const auto& i : widgetsToAdd)
                   m_dataProvider->getWidgetRequester()->addWidget(*i);
-               return CResult::GenerateSuccess();
+               return poco::CRestResult::GenerateSuccess();
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating all widgets");
+               return poco::CRestResult::GenerateError("unknown exception in updating all widgets");
             }
          }
 
@@ -225,15 +225,15 @@ namespace web
             try
             {
                m_dataProvider->getWidgetRequester()->removeAllWidgets();
-               return CResult::GenerateSuccess();
+               return poco::CRestResult::GenerateSuccess();
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in deleting all widgets");
+               return poco::CRestResult::GenerateError("unknown exception in deleting all widgets");
             }
          }
 
@@ -279,17 +279,17 @@ namespace web
                      }
                   }
                   
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
-               return CResult::GenerateError(widgetPath + " is not a valid directory.");
+               return poco::CRestResult::GenerateError(widgetPath + " is not a valid directory.");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in finding wWidget packages");
+               return poco::CRestResult::GenerateError("unknown exception in finding wWidget packages");
             }
          }
       } //namespace service

@@ -3,7 +3,7 @@
 #include <string>
 #include "shared/http/HttpRestVerb.h"
 #include "web/rest/IRequest.h"
-#include "web/rest/ResultV2.h"
+#include "web/rest/IAnswer.h"
 
 namespace web
 {
@@ -36,7 +36,7 @@ namespace web
             /// - Second arg : body
             /// Returns the answer
             //-------------------------------------- 
-             virtual std::function<boost::shared_ptr<IRestAnswer>(boost::shared_ptr<IRequest>)> handler() const = 0;
+             virtual std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)> handler() const = 0;
          };
       } //namespace service
    } //namespace rest

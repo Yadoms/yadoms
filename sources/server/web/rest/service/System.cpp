@@ -2,7 +2,6 @@
 #include "System.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
-#include "web/rest/Result.h"
 #include "tools/OperatingSystem.h"
 #include "SerialPortsLister.h"
 #include <shared/currentTime/Provider.h>
@@ -11,6 +10,7 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <startupOptions/IStartupOptions.h>
 #include "dateTime/TimeZoneDatabase.h"
+#include "web/poco/RestResult.h"
 
 namespace web
 {
@@ -82,10 +82,10 @@ namespace web
                   return platformIs("mac");
                if (boost::iequals(query, "supportedTimezones"))
                   return getSupportedTimezones();
-               return CResult::GenerateError("unsupported binding query : " + query);
+               return poco::CRestResult::GenerateError("unsupported binding query : " + query);
             }
 
-            return CResult::GenerateError("Cannot retrieve url parameters");
+            return poco::CRestResult::GenerateError("Cannot retrieve url parameters");
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSerialPorts() const
@@ -102,15 +102,15 @@ namespace web
                   //in case of key contains a dot, just ensure the full key is taken into account
                }
 
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving all serial ports");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving all serial ports");
             }
          }
 
@@ -140,7 +140,7 @@ namespace web
                   for (const auto& device : existingDevices)
                      result.set(device->nativeConnectionString(), device->yadomsFriendlyName(), 0x00);
                   //in case of key contains a dot, just ensure the full key is taken into account
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
 
                // Filter USB devices by request content
@@ -166,15 +166,15 @@ namespace web
                   }
                }
 
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving filtered USB devices");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving filtered USB devices");
             }
          }
 
@@ -194,15 +194,15 @@ namespace web
                              (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
                              0x00); //in case of key contains a dot, just ensure the full key is taken into account
                }
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving all serial ports");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving all serial ports");
             }
          }
 
@@ -222,15 +222,15 @@ namespace web
                if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
                   result.set("developerMode", "true");
 
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving system information");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -242,15 +242,15 @@ namespace web
             {
                shared::CDataContainer result;
                result.set("now", shared::currentTime::Provider().now());
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving system information");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -262,15 +262,15 @@ namespace web
             {
                shared::CDataContainer result;
                result.set("capacities", getVirtualDevicesSupportedCapacities());
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving system information");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -281,15 +281,15 @@ namespace web
             {
                shared::CDataContainer result;
                result.set("result", tools::COperatingSystem::getName() == refPlatform);
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving system information");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -389,15 +389,15 @@ namespace web
                   result.set(supportedTimezone, supportedTimezone);
                }
 
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving all serial ports");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving all serial ports");
             }
          }
       } //namespace service

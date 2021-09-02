@@ -1,7 +1,7 @@
 #pragma once
 #include "IRestService.h"
 #include "dataAccessLayer/IConfigurationManager.h"
-#include "web/rest/ResultV2.h"
+#include "web/rest/IAnswer.h"
 
 namespace web
 {
@@ -36,12 +36,12 @@ namespace web
                                                                                                   const std::string& requestContent) const;
 
             // REST Api v2
-            boost::shared_ptr<IRestAnswer> getServerConfigurationV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IRestAnswer> saveServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
-            boost::shared_ptr<IRestAnswer> resetServerConfigurationV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IRestAnswer> getDatabaseVersionV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IRestAnswer> getExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
-            boost::shared_ptr<IRestAnswer> saveExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getServerConfigurationV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> saveServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> resetServerConfigurationV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getDatabaseVersionV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> saveExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
 
             boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
             static std::string m_restKeyword;

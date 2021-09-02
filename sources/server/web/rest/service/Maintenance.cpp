@@ -2,7 +2,7 @@
 #include "Maintenance.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
-#include "web/rest/Result.h"
+#include "web/poco/RestResult.h"
 #include "task/backup/Backup.h"
 #include "task/backup/Restore.h"
 #include "task/exportData/ExportData.h"
@@ -13,6 +13,7 @@
 #include <boost/date_time/c_local_time_adjustor.hpp>
 #include <regex>
 #include <utility>
+
 
 
 namespace web
@@ -85,16 +86,16 @@ namespace web
             }
             catch (std::exception& ex)
             {
-               result = CResult::GenerateError(ex);
+               result = poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               result = CResult::GenerateError("unknown exception plugin rest method");
+               result = poco::CRestResult::GenerateError("unknown exception plugin rest method");
             }
 
             if (pTransactionalEngine)
             {
-               if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
+               if (poco::CRestResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
                   pTransactionalEngine->transactionCommit();
                else
                   pTransactionalEngine->transactionRollback();
@@ -109,15 +110,15 @@ namespace web
             {
                auto result = m_databaseRequester->getInformation();
                result->set("backupSupport", m_databaseRequester->backupSupported());
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving database information");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving database information");
             }
          }
 
@@ -141,17 +142,17 @@ namespace web
 
                   shared::CDataContainer result;
                   result.set("taskId", taskUid);
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
-               return CResult::GenerateError("backup not supported");
+               return poco::CRestResult::GenerateError("backup not supported");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in starting backup");
+               return poco::CRestResult::GenerateError("unknown exception in starting backup");
             }
          }
 
@@ -194,20 +195,20 @@ namespace web
                         }
                      }
 
-                     return CResult::GenerateSuccess(result);
+                     return poco::CRestResult::GenerateSuccess(result);
                   }
                   //backup do not exists
-                  return CResult::GenerateError();
+                  return poco::CRestResult::GenerateError();
                }
-               return CResult::GenerateError("backup not supported");
+               return poco::CRestResult::GenerateError("backup not supported");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving last backup data");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving last backup data");
             }
          }
 
@@ -225,22 +226,22 @@ namespace web
                   {
                      boost::system::error_code ec;
                      if (boost::filesystem::remove(backup / urlToDelete, ec))
-                        return CResult::GenerateSuccess();
-                     return CResult::GenerateError(ec.message());
+                        return poco::CRestResult::GenerateSuccess();
+                     return poco::CRestResult::GenerateError(ec.message());
                   }
                   //backup do not exists
-                  return CResult::GenerateError("file do not exists");
+                  return poco::CRestResult::GenerateError("file do not exists");
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve file to delete");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve file to delete");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in deleting backup data");
+               return poco::CRestResult::GenerateError("unknown exception in deleting backup data");
             }
          }
 
@@ -260,7 +261,7 @@ namespace web
                   if (!m_taskScheduler->runTask(task, taskUid))
                   {
                      YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
-                     return CResult::GenerateError("Task : " + task->getName() + " failed to start");
+                     return poco::CRestResult::GenerateError("Task : " + task->getName() + " failed to start");
                   }
 
                   YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " <<
@@ -268,18 +269,18 @@ namespace web
 
                   shared::CDataContainer result;
                   result.set("taskId", taskUid);
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve file to delete");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve file to delete");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in deleting backup data");
+               return poco::CRestResult::GenerateError("unknown exception in deleting backup data");
             }
          }
 
@@ -308,16 +309,16 @@ namespace web
                }
 
                if (errors.empty())
-                  return CResult::GenerateSuccess();
-               return CResult::GenerateError(errors);
+                  return poco::CRestResult::GenerateSuccess();
+               return poco::CRestResult::GenerateError(errors);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in deleting backup data");
+               return poco::CRestResult::GenerateError("unknown exception in deleting backup data");
             }
          }
 
@@ -393,15 +394,15 @@ namespace web
                                                fileSize,
                                                chunk);
 
-               return CResult::GenerateSuccess();
+               return poco::CRestResult::GenerateSuccess();
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in sending extra query to plugin");
+               return poco::CRestResult::GenerateError("unknown exception in sending extra query to plugin");
             }
          }
 
@@ -422,15 +423,15 @@ namespace web
 
                shared::CDataContainer result;
                result.set("taskId", taskUid);
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in packing logs");
+               return poco::CRestResult::GenerateError("unknown exception in packing logs");
             }
          }
 
@@ -466,20 +467,20 @@ namespace web
                         file.set("inprogress", boost::iends_with(i->path().filename().string(), ".inprogress"));
                         shared::CDataContainer result;
                         result.set("logs", file);
-                        return CResult::GenerateSuccess(result);
+                        return poco::CRestResult::GenerateSuccess(result);
                      }
                   }
                }
                // Logs don't exist
-               return CResult::GenerateError();
+               return poco::CRestResult::GenerateError();
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving last logs data");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving last logs data");
             }
          }
 
@@ -506,16 +507,16 @@ namespace web
                }
 
                if (errors.empty())
-                  return CResult::GenerateSuccess();
-               return CResult::GenerateError(errors);
+                  return poco::CRestResult::GenerateSuccess();
+               return poco::CRestResult::GenerateError(errors);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in deleting backup data");
+               return poco::CRestResult::GenerateError("unknown exception in deleting backup data");
             }
          }
 
@@ -543,18 +544,18 @@ namespace web
 
                   shared::CDataContainer result;
                   result.set("taskId", taskUid);
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve file to delete");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve file to delete");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in export data");
+               return poco::CRestResult::GenerateError("unknown exception in export data");
             }
          }
 
@@ -590,20 +591,20 @@ namespace web
                         file.set("inprogress", boost::iends_with(i->path().filename().string(), ".inprogress"));
                         shared::CDataContainer result;
                         result.set("exportData", file);
-                        return CResult::GenerateSuccess(result);
+                        return poco::CRestResult::GenerateSuccess(result);
                      }
                   }
                }
                // Logs don't exist
-               return CResult::GenerateError();
+               return poco::CRestResult::GenerateError();
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving last exportData");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving last exportData");
             }
          }
       } //namespace service

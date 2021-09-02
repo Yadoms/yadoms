@@ -9,7 +9,7 @@ namespace web
       {
          CRestEndPoint::CRestEndPoint(const shared::http::ERestVerb& method,
                                             const std::string& path,
-                                            std::function<boost::shared_ptr<IRestAnswer>(boost::shared_ptr<IRequest>)> handler)
+                                            std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)> handler)
             : m_method(method),
               m_path(path),
               m_handler(std::move(handler))
@@ -26,7 +26,7 @@ namespace web
             return m_path;
          }
 
-         std::function<boost::shared_ptr<IRestAnswer>(boost::shared_ptr<IRequest>)> CRestEndPoint::handler() const
+         std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)> CRestEndPoint::handler() const
          {
             return m_handler;
          }

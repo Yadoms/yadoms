@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AutomationRule.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/Result.h"
+#include "web/poco/RestResult.h"
 #include "automation/RuleException.hpp"
 
 namespace web
@@ -73,16 +73,16 @@ namespace web
             }
             catch (std::exception& ex)
             {
-               result = CResult::GenerateError(ex);
+               result = poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               result = CResult::GenerateError("unknown exception automation rule rest method");
+               result = poco::CRestResult::GenerateError("unknown exception automation rule rest method");
             }
 
             if (pTransactionalEngine)
             {
-               if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
+               if (poco::CRestResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
                   pTransactionalEngine->transactionCommit();
                else
                   pTransactionalEngine->transactionRollback();
@@ -95,7 +95,7 @@ namespace web
          {
             shared::CDataContainer t;
             t.set("interpreters", m_rulesManager->getLoadedInterpreters());
-            return CResult::GenerateSuccess(t);
+            return poco::CRestResult::GenerateSuccess(t);
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getAvailableInterpreters(const std::vector<std::string>& parameters,
@@ -103,7 +103,7 @@ namespace web
          {
             shared::CDataContainer t;
             t.set("interpreters", m_rulesManager->getAvailableInterpreters());
-            return CResult::GenerateSuccess(t);
+            return poco::CRestResult::GenerateSuccess(t);
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getAllRules(const std::vector<std::string>& parameters,
@@ -113,7 +113,7 @@ namespace web
 
             shared::CDataContainer t;
             t.set("rules", rules);
-            return CResult::GenerateSuccess(t);
+            return poco::CRestResult::GenerateSuccess(t);
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getRule(const std::vector<std::string>& parameters,
@@ -124,19 +124,19 @@ namespace web
                if (parameters.size() != 3)
                   throw CRuleException("invalid parameter in URL");
 
-               return CResult::GenerateSuccess(m_rulesManager->getRule(boost::lexical_cast<int>(parameters[2])));
+               return poco::CRestResult::GenerateSuccess(m_rulesManager->getRule(boost::lexical_cast<int>(parameters[2])));
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to retrieve rule : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to retrieve rule : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving the rule");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving the rule");
             }
          }
 
@@ -150,19 +150,19 @@ namespace web
 
                shared::CDataContainer result;
                result.set("code", m_rulesManager->getRuleCode(boost::lexical_cast<int>(parameters[2])));
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving the rule");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving the rule");
             }
          }
 
@@ -176,19 +176,19 @@ namespace web
 
                shared::CDataContainer result;
                result.set("code", m_rulesManager->getRuleTemplateCode(parameters[2]));
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving the rule");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving the rule");
             }
          }
 
@@ -202,19 +202,19 @@ namespace web
 
                shared::CDataContainer result;
                result.set("log", m_rulesManager->getRuleLog(boost::lexical_cast<int>(parameters[2])));
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving the rule");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving the rule");
             }
          }
 
@@ -227,19 +227,19 @@ namespace web
                   throw CRuleException("invalid parameter in URL");
 
                m_rulesManager->deleteRuleLog(boost::lexical_cast<int>(parameters[2]));
-               return CResult::GenerateSuccess();
+               return poco::CRestResult::GenerateSuccess();
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving the rule");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving the rule");
             }
          }
 
@@ -257,19 +257,19 @@ namespace web
                m_rulesManager->startRule(ruleId);
 
                const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
-               return CResult::GenerateSuccess(ruleFound);
+               return poco::CRestResult::GenerateSuccess(ruleFound);
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to start rule : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to start rule : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in starting the rule");
+               return poco::CRestResult::GenerateError("unknown exception in starting the rule");
             }
          }
 
@@ -287,19 +287,19 @@ namespace web
                m_rulesManager->stopRuleAndWaitForStopped(ruleId);
 
                const auto ruleFound = m_rulesManager->getRule(ruleId);
-               return CResult::GenerateSuccess(ruleFound);
+               return poco::CRestResult::GenerateSuccess(ruleFound);
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to stop rule : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to stop rule : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in stopping the rule");
+               return poco::CRestResult::GenerateError("unknown exception in stopping the rule");
             }
          }
 
@@ -316,19 +316,19 @@ namespace web
                const auto idCreated = m_rulesManager->createRule(ruleData, content.get<std::string>("code"));
 
                const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(idCreated);
-               return CResult::GenerateSuccess(ruleFound);
+               return poco::CRestResult::GenerateSuccess(ruleFound);
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to create rule : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to create rule : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new rule");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new rule");
             }
          }
 
@@ -352,19 +352,19 @@ namespace web
                m_rulesManager->updateRule(ruleData);
 
                const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
-               return CResult::GenerateSuccess(ruleFound);
+               return poco::CRestResult::GenerateSuccess(ruleFound);
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to update rule : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to update rule : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating a rule");
+               return poco::CRestResult::GenerateError("unknown exception in updating a rule");
             }
          }
 
@@ -393,19 +393,19 @@ namespace web
 
                shared::CDataContainer result;
                result.set("code", m_rulesManager->getRuleCode(ruleId));
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to update rule : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to update rule : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating a rule");
+               return poco::CRestResult::GenerateError("unknown exception in updating a rule");
             }
          }
 
@@ -429,20 +429,20 @@ namespace web
                const auto newRuleId = m_rulesManager->duplicateRule(ruleId, name);
 
                const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(newRuleId);
-               return CResult::GenerateSuccess(ruleFound);
+               return poco::CRestResult::GenerateSuccess(ruleFound);
             }
 
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to duplicate rule : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to duplicate rule : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in duplicating a rule");
+               return poco::CRestResult::GenerateError("unknown exception in duplicating a rule");
             }
          }
 
@@ -457,19 +457,19 @@ namespace web
 
                const auto instanceId = boost::lexical_cast<int>(parameters[2]);
                m_rulesManager->deleteRule(instanceId);
-               return CResult::GenerateSuccess();
+               return poco::CRestResult::GenerateSuccess();
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to delete rule : ") + e.what());
+               return poco::CRestResult::GenerateError(std::string("Fail to delete rule : ") + e.what());
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in deleting a rule");
+               return poco::CRestResult::GenerateError("unknown exception in deleting a rule");
             }
          }
       } //namespace service

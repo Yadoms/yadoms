@@ -1,19 +1,17 @@
 #pragma once
-
 #include <shared/DataContainer.h>
-#include <shared/IDataContainable.h>
 
 namespace web
 {
-   namespace rest
+   namespace poco
    {
       //-----------------------------------------
       ///\brief   Class which generate REST result messages
       //-----------------------------------------
-      class CResult
+      class CRestResult
       {
       public:
-         virtual ~CResult() = default;
+         virtual ~CRestResult() = default;
 
          //-----------------------------------------
          ///\brief   Generate an error JSON message
@@ -50,7 +48,7 @@ namespace web
 
          //-----------------------------------------
          ///\brief   Generate a success JSON message
-         ///\param [in] data : a datacontainable object
+         ///\param [in] dataContainableObject : a datacontainable object
          ///\return  the message as shared::CDataContainer format
          //-----------------------------------------
          template <class T>
@@ -69,7 +67,7 @@ namespace web
          //-----------------------------------------
          ///\brief   Generate a JSON message
          ///\param [in] result : true for success, false for warning
-         ///\param [in] errorMessage : error message (can be empty)
+         ///\param [in] message : error message (can be empty)
          ///\param [in] data : additionnal data (can be empty)
          ///\return  the message as shared::CDataContainer format
          //-----------------------------------------
@@ -79,7 +77,7 @@ namespace web
          //-----------------------------------------
          ///\brief   Generate a JSON message
          ///\param [in] result : true for success, false for warning
-         ///\param [in] errorMessage : error message (can be empty)
+         ///\param [in] message : error message (can be empty)
          ///\param [in] data : string
          ///\return  the message as shared::CDataContainer format
          //-----------------------------------------
@@ -88,7 +86,7 @@ namespace web
          //-----------------------------------------
          ///\brief   Generate a JSON message
          ///\param [in] result : true for success, false for warning
-         ///\param [in] errorMessage : error message (can be empty)
+         ///\param [in] message : error message (can be empty)
          ///\param [in] data : a datacontainable object
          ///\return  the message as shared::CDataContainer format
          //-----------------------------------------
@@ -102,7 +100,6 @@ namespace web
             return error;
          }
 
-      private:
          //-----------------------------------------
          ///\brief   Identifier for result in Json
          //-----------------------------------------
@@ -116,5 +113,5 @@ namespace web
          //-----------------------------------------
          static std::string m_dataFieldName;
       };
-   } //namespace rest
+   } //namespace poco
 } //namespace web 

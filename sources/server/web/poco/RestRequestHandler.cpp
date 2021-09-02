@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "RestRequestHandler.h"
 #include <shared/Log.h>
-#include "web/rest/Result.h"
 #include <Poco/URI.h>
 
 #include <utility>
+
+#include "RestResult.h"
 
 namespace web
 {
@@ -81,12 +82,12 @@ namespace web
          catch (std::exception& ex)
          {
             YADOMS_LOG(error) << "An exception occured in treating REST url : " << requestPath << std::endl << "Exception : " << ex.what();
-            return rest::CResult::GenerateError(ex)->serialize();
+            return CRestResult::GenerateError(ex)->serialize();
          }
          catch (...)
          {
             YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << requestPath;
-            return rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + requestPath)->serialize();
+            return CRestResult::GenerateError("An unknown exception occured in treating REST url : " + requestPath)->serialize();
          }
       }
 
