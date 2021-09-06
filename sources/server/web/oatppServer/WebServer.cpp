@@ -189,7 +189,7 @@ namespace web
             if (dir->status().type() == boost::filesystem::directory_file)
                continue;
                         
-            auto relativeUrl = boost::filesystem::relative(dir->path(), rootFolder).string();
+            auto relativeUrl = relative(dir->path(), rootFolder).string();
 #if _WIN32
             std::replace(relativeUrl.begin(), relativeUrl.end(), '\\', '/');
 #endif
