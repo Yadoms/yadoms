@@ -12,7 +12,7 @@ namespace web
       {
       public:
          explicit CRestRequestHandler(std::function<boost::shared_ptr<rest::IAnswer>(boost::shared_ptr<rest::IRequest>)> handler);
-         ~CRestRequestHandler() override = default;
+         ~CRestRequestHandler() override;
 
          // oatpp::web::server::HttpRequestHandler Implementation
          std::shared_ptr<OutgoingResponse> handle(const std::shared_ptr<IncomingRequest>& request) override;
