@@ -1,5 +1,4 @@
 #pragma once
-#include <oatpp/network/Server.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include "HttpPages.h"
 #include "HttpRequestHandlerFactory.h"
