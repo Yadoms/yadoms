@@ -16,7 +16,6 @@ namespace web
          ~CHttpRequestHandlerFactory() override = default;
 
          // IWebServerConfigurator implementation
-         void websiteHandlerConfigure(const std::string& docRoot) override;
          void restHandlerConfigure(const std::string& restKeywordBase) override;
          void restHandlerRegisterService(boost::shared_ptr<rest::service::IRestService> restService) override;
          void webSocketConfigure(const std::string& webSocketKeyword) override;
@@ -25,7 +24,6 @@ namespace web
          // [END] IWebServerConfigurator implementation
 
       private:
-         std::string m_configDocRoot;
          std::string m_restKeywordBase;
          std::string m_webSocketKeyword;
          std::vector<boost::shared_ptr<rest::service::IRestService>> m_restService;

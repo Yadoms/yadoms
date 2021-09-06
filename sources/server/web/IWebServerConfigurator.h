@@ -14,12 +14,6 @@ namespace web
       virtual ~IWebServerConfigurator() = default;
 
       //-----------------------------------------
-      ///\brief      Configure the website handler
-      ///\param [in] docRoot    the path to files
-      //-----------------------------------------
-      virtual void websiteHandlerConfigure(const std::string& docRoot) = 0;
-
-      //-----------------------------------------
       ///\brief      Configure the REST service handler
       ///\param [in] restKeywordBase the REST keyword which permit to determine rest queries (i.e.: /rest/)
       //-----------------------------------------

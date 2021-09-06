@@ -10,11 +10,6 @@ namespace web
       {
       }
 
-      void CHttpRequestHandlerFactory::websiteHandlerConfigure(const std::string& docRoot)
-      {
-         m_configDocRoot = docRoot;
-      }
-
       void CHttpRequestHandlerFactory::restHandlerConfigure(const std::string& restKeywordBase)
       {
          m_restKeywordBase = restKeywordBase;

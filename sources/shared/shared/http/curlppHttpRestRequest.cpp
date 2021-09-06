@@ -77,7 +77,7 @@ namespace shared
       void CCurlppHttpRestRequest::send(const std::function<void(const std::map<std::string, std::string>& receivedHeaders,
                                                                  const std::string& data)>& responseHandlerFct)
       {
-         switch (m_requestType)
+         switch (m_requestType)  // NOLINT(clang-diagnostic-switch-enum)
          {
          case ERestVerb::kGet:
             m_request.setOpt(new curlpp::options::HttpGet(true));

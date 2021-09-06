@@ -24,9 +24,9 @@ namespace web
       {
       }
 
-      void CHttpRequestHandlerFactory::websiteHandlerConfigure(const std::string& doc_root)
+      void CHttpRequestHandlerFactory::websiteHandlerConfigure(const std::string& docRoot)
       {
-         m_configDocRoot = doc_root;
+         m_configDocRoot = docRoot;
       }
 
       void CHttpRequestHandlerFactory::websiteHandlerAddAlias(const std::string& alias, const std::string& path)

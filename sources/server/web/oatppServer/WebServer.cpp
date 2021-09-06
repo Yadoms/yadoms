@@ -47,7 +47,6 @@ namespace web
                                                              m_httpConnectionHandler);
 
          // Configure the factory
-         m_httpRequestHandlerFactory->websiteHandlerConfigure(docRoot);
          m_httpRequestHandlerFactory->restHandlerConfigure(restKeywordBase);
          m_httpRequestHandlerFactory->webSocketConfigure(webSocketKeywordBase);
          m_httpRequestHandlerFactory->allowExternalAccess(allowExternalAccess);

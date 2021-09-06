@@ -24,7 +24,6 @@ namespace web
          virtual ~CHttpRequestHandlerFactory();
 
          // IWebServerConfigurator implementation
-         void websiteHandlerConfigure(const std::string& doc_root) override;
          void restHandlerConfigure(const std::string& restKeywordBase) override;
          void restHandlerRegisterService(boost::shared_ptr<rest::service::IRestService> restService) override;
          void webSocketConfigure(const std::string& webSocketKeyword) override;
@@ -36,6 +35,7 @@ namespace web
          Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request);
          // [END] Poco::Net::HTTPRequestHandlerFactory implementation
 
+         void websiteHandlerConfigure(const std::string& docRoot);
          void websiteHandlerAddAlias(const std::string& alias,
                                      const std::string& path);
 

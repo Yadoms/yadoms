@@ -1113,7 +1113,7 @@ set(YADOMS_SRC ${YADOMS_SRC}
 #define YADOMS output
 add_executable(yadoms ${YADOMS_SRC})
 
-add_dependencies(yadoms oatpp_build) #TODO
+add_dependencies(yadoms oatpp_build)
 
 if(COTIRE_USE)
    #nothing to do
