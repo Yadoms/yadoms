@@ -93,6 +93,8 @@ namespace shared
             m_request.setOpt(new curlpp::options::CustomRequest("PUT"));
             m_request.setOpt(new curlpp::options::PostFields(m_body));
             break;
+         default:
+            throw std::invalid_argument("Unsupported REST verb " + ToString(m_requestType));
          }
 
          m_request.setOpt(new curlpp::options::Timeout(m_timeoutSeconds));
