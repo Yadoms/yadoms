@@ -1,5 +1,4 @@
 #pragma once
-#include <oatpp/web/server/HttpRequestHandler.hpp>
 #include "IRestEndPoint.h"
 #include "web/rest/IRequest.h"
 
