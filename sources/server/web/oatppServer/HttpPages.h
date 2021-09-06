@@ -1,6 +1,5 @@
 #pragma once
-#include <oatpp/network/Server.hpp>
-#include <oatpp/web/server/HttpConnectionHandler.hpp>
+#include <oatpp/web/server/HttpRequestHandler.hpp>
 
 namespace web
 {

@@ -171,6 +171,12 @@ namespace web
          return m_httpRequestHandlerFactory.get();
       }
 
+      void CWebServer::websiteHandlerAddAlias(const std::string& alias,
+                                              const std::string& path)
+      {
+         m_aliases[alias] = path;
+      }
+
       void CWebServer::refreshWebPagesRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                              const std::string& docRoot)
       {
@@ -188,7 +194,7 @@ namespace web
          {
             if (dir->status().type() == boost::filesystem::directory_file)
                continue;
-                        
+
             auto relativeUrl = relative(dir->path(), rootFolder).string();
 #if _WIN32
             std::replace(relativeUrl.begin(), relativeUrl.end(), '\\', '/');

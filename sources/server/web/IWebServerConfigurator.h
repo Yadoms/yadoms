@@ -8,7 +8,7 @@ namespace web
    //
    //\brief Interface for web server configurator
    //
-   class IWebServerConfigurator
+   class IWebServerConfigurator //TODO virer (ne sert que pour Poco, donc pas d'interface nécessaire)
    {
    public:
       virtual ~IWebServerConfigurator() = default;
@@ -18,16 +18,6 @@ namespace web
       ///\param [in] docRoot    the path to files
       //-----------------------------------------
       virtual void websiteHandlerConfigure(const std::string& docRoot) = 0;
-
-      //--------------------------------------
-      ///\brief   Configure an alias for the website handler
-      ///\param [in]    alias : the alias used (must start and end with /)
-      ///\param [in]    path : the path of the alias file
-      ///
-      /// Example configureAlias("/test/", "c:\\path\\to\\alias\\files\\")
-      ///         -> then http://server:port/test/index.html will take c:\\path\\to\\alias\\files\\index.html
-      //--------------------------------------
-      virtual void websiteHandlerAddAlias(const std::string& alias, const std::string& path) = 0;
 
       //-----------------------------------------
       ///\brief      Configure the REST service handler

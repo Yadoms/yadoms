@@ -24,21 +24,27 @@ namespace web
          //\param[in] restKeywordBase     the string which identifies a rest url ex: /rest/
          //\param[in] allowExternalAccess Indicate if external access are allowed (in fact it add CORS headers to answer requests)
          //
-         CWebServer(const std::string& address, const bool useSSL, const unsigned short port, const unsigned short securedPort,
-                    const std::string& doc_root, const std::string& restKeywordBase, const std::string& webSocketKeywordBase,
+         CWebServer(const std::string& address,
+                    bool useSsl,
+                    unsigned short port,
+                    unsigned short securedPort,
+                    const std::string& docRoot,
+                    const std::string& restKeywordBase,
+                    const std::string& webSocketKeywordBase,
                     bool allowExternalAccess);
 
          ~CWebServer() override;
 
          // IWebServer implementation
          IWebServerConfigurator* getConfigurator() override;
+         void websiteHandlerAddAlias(const std::string& alias,
+                                     const std::string& path) override;
          // [END] IWebServer implementation
 
          void start() const;
          void stop() const;
 
       private:
-
          boost::shared_ptr<Poco::Net::HTTPServer> m_embeddedWebServer;
 
          //Poco::SharedPtr is needed (not boost::shared_ptr)

@@ -264,9 +264,9 @@ boost::shared_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
                                                             "/ws",
                                                             allowExternalAccess));
 
-   webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider->pluginsPath().string());
-   webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
-   webServer->getConfigurator()->websiteHandlerAddAlias("backups", m_pathProvider->backupPath().string());
+   webServer->websiteHandlerAddAlias("plugins", m_pathProvider->pluginsPath().string());
+   webServer->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
+   webServer->websiteHandlerAddAlias("backups", m_pathProvider->backupPath().string());
 
    webServer->getConfigurator()->configureAuthentication(
       boost::make_shared<authentication::CBasicAuthentication>(dataAccessLayer->getConfigurationManager(),
@@ -378,9 +378,9 @@ boost::shared_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
                                                                                                  "/ws",
                                                                                                  allowExternalAccess));
 
-   webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider->pluginsPath().string());
-   webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
-   webServer->getConfigurator()->websiteHandlerAddAlias("backups", m_pathProvider->backupPath().string());
+   webServer->websiteHandlerAddAlias("plugins", m_pathProvider->pluginsPath().string());
+   webServer->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
+   webServer->websiteHandlerAddAlias("backups", m_pathProvider->backupPath().string());
 
    webServer->getConfigurator()->configureAuthentication(
       boost::make_shared<authentication::CBasicAuthentication>(dataAccessLayer->getConfigurationManager(),

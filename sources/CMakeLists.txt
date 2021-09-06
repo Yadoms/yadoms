@@ -1200,6 +1200,7 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 ## Link
 ##################################################################################################
+message("OATPP_LIBRARY2=${OATPP_LIBRARY}") # TODO virer
 target_link_libraries(yadoms
    yadoms-shared
    plugin_IPC

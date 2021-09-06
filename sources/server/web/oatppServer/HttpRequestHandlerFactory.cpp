@@ -15,12 +15,6 @@ namespace web
          m_configDocRoot = docRoot;
       }
 
-      void CHttpRequestHandlerFactory::websiteHandlerAddAlias(const std::string& alias,
-         const std::string& path)
-      {
-         m_alias[alias] = path;
-      }
-
       void CHttpRequestHandlerFactory::restHandlerConfigure(const std::string& restKeywordBase)
       {
          m_restKeywordBase = restKeywordBase;

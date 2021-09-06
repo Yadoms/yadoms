@@ -1,4 +1,9 @@
 #pragma once
+#include <oatpp/network/ConnectionProvider.hpp>
+#include <oatpp/network/Server.hpp>
+#include <oatpp/web/server/HttpConnectionHandler.hpp>
+#include <oatpp/web/server/HttpRouter.hpp>
+
 #include "HttpPages.h"
 #include "HttpRequestHandlerFactory.h"
 #include "web/IWebServer.h"
@@ -36,7 +41,9 @@ namespace web
          ~CWebServer() override;
 
          // IWebServer implementation
-         IWebServerConfigurator* getConfigurator() override; //TODO utile ?
+         IWebServerConfigurator* getConfigurator() override; //TODO virer
+         void websiteHandlerAddAlias(const std::string& alias,
+                                     const std::string& path) override;
          // [END] IWebServer implementation
 
       private:
@@ -44,17 +51,20 @@ namespace web
          void stop();
 
          static void refreshWebPagesRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
-                                      const std::string& docRoot);
+                                           const std::string& docRoot);
          static void routeAllFiles(const boost::filesystem::path& rootFolder,
                                    const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                    const std::shared_ptr<CHttpPages>& pagesFiles);
          void refreshRestRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                 const std::string& restKeywordBase) const;
 
+      private:
          std::shared_ptr<oatpp::web::server::HttpConnectionHandler> m_httpConnectionHandler;
          std::shared_ptr<oatpp::network::ServerConnectionProvider> m_tcpConnectionProvider;
          std::shared_ptr<oatpp::network::Server> m_server;
          std::thread m_serverThread;
+
+         std::map<std::string, std::string> m_aliases;
 
          std::shared_ptr<CHttpRequestHandlerFactory> m_httpRequestHandlerFactory;
          const boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>> m_restServices;

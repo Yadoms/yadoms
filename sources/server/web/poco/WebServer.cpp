@@ -14,13 +14,18 @@ namespace web
 {
    namespace poco
    {
-      CWebServer::CWebServer(const std::string& address, const bool useSSL, const unsigned short port, const unsigned short securedPort,
-                             const std::string& doc_root, const std::string& restKeywordBase, const std::string& webSocketKeywordBase,
+      CWebServer::CWebServer(const std::string& address,
+                             bool useSsl,
+                             unsigned short port,
+                             unsigned short securedPort,
+                             const std::string& docRoot,
+                             const std::string& restKeywordBase,
+                             const std::string& webSocketKeywordBase,
                              bool allowExternalAccess)
          : m_httpRequestHandlerFactory(new CHttpRequestHandlerFactory())
       {
          //configure the factory
-         m_httpRequestHandlerFactory->websiteHandlerConfigure(doc_root);
+         m_httpRequestHandlerFactory->websiteHandlerConfigure(docRoot);
          m_httpRequestHandlerFactory->restHandlerConfigure(restKeywordBase);
          m_httpRequestHandlerFactory->webSocketConfigure(webSocketKeywordBase);
          m_httpRequestHandlerFactory->allowExternalAccess(allowExternalAccess);
@@ -55,7 +60,7 @@ namespace web
          //in case of "0.0.0.0" or empty , then do not use it, just use port, listen on all interfaces
          Poco::Net::SocketAddress sa(ipAddress, port);
          Poco::Net::ServerSocket svs(sa);
-         if (useSSL)
+         if (useSsl)
          {
             auto fail = false;
 
@@ -122,6 +127,13 @@ namespace web
       IWebServerConfigurator* CWebServer::getConfigurator()
       {
          return m_httpRequestHandlerFactory.get();
+      }
+
+      void CWebServer::websiteHandlerAddAlias(const std::string& alias,
+                                              const std::string& path)
+      {
+         m_httpRequestHandlerFactory->websiteHandlerAddAlias(alias,
+                                                             path);
       }
    } //namespace poco
 } //namespace web
