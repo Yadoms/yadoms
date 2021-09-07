@@ -11,7 +11,7 @@ namespace web
       {
       }
 
-      CRestRequestHandler::~CRestRequestHandler()
+      CRestRequestHandler::~CRestRequestHandler() //TODO remettre = default
       {
       }
 

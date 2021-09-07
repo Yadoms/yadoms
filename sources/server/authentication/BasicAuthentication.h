@@ -2,7 +2,6 @@
 #include "IAuthentication.h"
 #include "dataAccessLayer/IConfigurationManager.h"
 #include "notification/IObserver.h"
-#include "database/entities/Entities.h"
 
 
 namespace authentication
@@ -18,7 +17,7 @@ namespace authentication
       ///\param [in]    configurationManager    Configuration manager
       ///\param [in]    skipPasswordCheck       If true the password will never be checked
       //-------------------------------------
-      CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
+      CBasicAuthentication(const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
                            bool skipPasswordCheck);
       ~CBasicAuthentication() override;
 

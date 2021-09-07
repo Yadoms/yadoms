@@ -7,6 +7,8 @@
 #include <Poco/Net/ServerSocket.h>
 #include <Poco/Net/SecureServerSocket.h>
 #include <shared/ServiceLocator.h>
+
+#include <utility>
 #include "IRunningInformation.h"
 
 
@@ -15,8 +17,8 @@ namespace web
    namespace poco
    {
       CWebServer::CWebServer(const std::string& address,
-                             bool useSsl,
                              unsigned short port,
+                             bool useSsl,
                              unsigned short securedPort,
                              const std::string& docRoot,
                              const std::string& restKeywordBase,
@@ -58,7 +60,7 @@ namespace web
 
          // set-up a HTTPServer instance
          //in case of "0.0.0.0" or empty , then do not use it, just use port, listen on all interfaces
-         Poco::Net::SocketAddress sa(ipAddress, port);
+         const Poco::Net::SocketAddress sa(ipAddress, port);
          Poco::Net::ServerSocket svs(sa);
          if (useSsl)
          {
@@ -120,13 +122,10 @@ namespace web
 
       void CWebServer::stop() const
       {
-         if (m_embeddedWebServer.get())
-            m_embeddedWebServer->stopAll(true);
-      }
+         if (!m_embeddedWebServer)
+            return;
 
-      IWebServerConfigurator* CWebServer::getConfigurator()
-      {
-         return m_httpRequestHandlerFactory.get();
+         m_embeddedWebServer->stopAll(true);
       }
 
       void CWebServer::websiteHandlerAddAlias(const std::string& alias,
@@ -134,6 +133,16 @@ namespace web
       {
          m_httpRequestHandlerFactory->websiteHandlerAddAlias(alias,
                                                              path);
+      }
+
+      void CWebServer::configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator)
+      {
+         m_httpRequestHandlerFactory->configureAuthentication(std::move(authenticator));
+      }
+
+      void CWebServer::restHandlerRegisterService(boost::shared_ptr<rest::service::IRestService> restService)
+      {
+         m_httpRequestHandlerFactory->restHandlerRegisterService(std::move(restService));
       }
    } //namespace poco
 } //namespace web

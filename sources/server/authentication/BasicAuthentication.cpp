@@ -1,60 +1,70 @@
 #include "stdafx.h"
 #include "BasicAuthentication.h"
-#include <shared/Log.h>
 #include <Poco/MD5Engine.h>
-
-
+#include <shared/Log.h>
 #include "notification/Helpers.hpp"
 
 namespace authentication
 {
-   CBasicAuthentication::CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
+   CBasicAuthentication::CBasicAuthentication(const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
                                               bool skipPasswordCheck)
-      : m_configurationManager(configurationManager), m_skipPasswordCheck(skipPasswordCheck)
+      : m_configurationManager(configurationManager),
+        m_isAuthenticationActive(false),
+        m_skipPasswordCheck(skipPasswordCheck)
    {
-      if (!m_skipPasswordCheck)
-      {
-         updateConfiguration();
+      if (m_skipPasswordCheck)
+         return;
 
-         configurationManager->subscribeOnServerConfigurationChanged([&](boost::shared_ptr<const shared::CDataContainer> serverConfiguration)
+      updateConfiguration();
+
+      configurationManager->subscribeOnServerConfigurationChanged(
+         [&](const boost::shared_ptr<const shared::CDataContainer>&)
          {
             updateConfiguration();
          });
-      }
    }
 
    CBasicAuthentication::~CBasicAuthentication()
    {
-      if (!m_skipPasswordCheck && m_observer)
+      try
       {
+         if (m_skipPasswordCheck || !m_observer)
+            return;
+
          notification::CHelpers::unsubscribeObserver(m_observer);
+      }
+      catch(std::exception& ex)
+      {
+         YADOMS_LOG(error) << "Error destroying BasicAuthentication : " << ex.what();
       }
    }
 
    bool CBasicAuthentication::isAuthenticationActive() const
    {
-      return (!m_skipPasswordCheck && m_isAuthenticationActive);
+      return !m_skipPasswordCheck && m_isAuthenticationActive;
    }
 
    bool CBasicAuthentication::authenticate(const std::string& username, const std::string& password) const
    {
-      if (isAuthenticationActive())
+      if (!isAuthenticationActive())
+         return true;
+
+      boost::lock_guard<boost::mutex> lock(m_configurationMutex);
+
+      try
       {
-         boost::lock_guard<boost::mutex> lock(m_configurationMutex);
+         Poco::MD5Engine md5;
+         md5.update(password);
+         const auto cypherPassword(Poco::DigestEngine::digestToHex(md5.digest()));
 
-         try
-         {
-            Poco::MD5Engine md5;
-            md5.update(password);
-            const auto cypherPassword(Poco::DigestEngine::digestToHex(md5.digest()));
-
-            return boost::iequals(username, m_currentAuthenticationUsername) && boost::equals(cypherPassword, m_currentAuthenticationPassword);
-         }
-         catch (std::exception& ex)
-         {
-            YADOMS_LOG(error) << "Fail to read configuration value :" << ex.what();
-         }
+         return boost::iequals(username, m_currentAuthenticationUsername)
+            && boost::equals(cypherPassword, m_currentAuthenticationPassword);
       }
+      catch (std::exception& ex)
+      {
+         YADOMS_LOG(error) << "Fail to read configuration value :" << ex.what();
+      }
+
       return true;
    }
 

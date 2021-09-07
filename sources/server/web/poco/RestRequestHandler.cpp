@@ -81,7 +81,7 @@ namespace web
          }
          catch (std::exception& ex)
          {
-            YADOMS_LOG(error) << "An exception occured in treating REST url : " << requestPath << std::endl << "Exception : " << ex.what();
+            YADOMS_LOG(error) << "An exception occurred in treating REST url : " << requestPath << std::endl << "Exception : " << ex.what();
             return CRestResult::GenerateError(ex)->serialize();
          }
          catch (...)

@@ -638,7 +638,6 @@ set(YADOMS_SRC
    
    server/web/IRestHandler.h
    server/web/IWebServer.h
-   server/web/IWebServerConfigurator.h
  
    server/web/rest/ContentType.h
    server/web/rest/IRequest.h
@@ -1053,8 +1052,6 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/oatppServer/WebServer.cpp
 #   server/web/oatppServer/AuthenticationRequestHandler.h
 #   server/web/oatppServer/AuthenticationRequestHandler.cpp
-   server/web/oatppServer/HttpRequestHandlerFactory.h
-   server/web/oatppServer/HttpRequestHandlerFactory.cpp   
    server/web/oatppServer/RestRequest.h
    server/web/oatppServer/RestRequest.cpp   
    server/web/oatppServer/RestRequestHandler.h

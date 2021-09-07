@@ -14,15 +14,17 @@ namespace web
    namespace oatppServer
    {
       CWebServer::CWebServer(const std::string& address,
-                             bool useSsl,
                              unsigned short port,
+                             bool useSsl,
                              unsigned short securedPort,
-                             const std::string& docRoot,
+                             const boost::filesystem::path& docRoot,
                              const std::string& restKeywordBase,
                              boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>> restServices,
                              const std::string& webSocketKeywordBase,
-                             bool allowExternalAccess)
-         : m_httpRequestHandlerFactory(std::make_shared<CHttpRequestHandlerFactory>()),
+                             bool allowExternalAccess,
+                             boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
+                             const boost::shared_ptr<authentication::IAuthentication>& basicAuthentication)
+         : m_aliases(std::move(aliases)),
            m_restServices(std::move(restServices))
       {
          oatpp::base::Environment::init();
@@ -47,9 +49,12 @@ namespace web
                                                              m_httpConnectionHandler);
 
          // Configure the factory
-         m_httpRequestHandlerFactory->restHandlerConfigure(restKeywordBase);
-         m_httpRequestHandlerFactory->webSocketConfigure(webSocketKeywordBase);
-         m_httpRequestHandlerFactory->allowExternalAccess(allowExternalAccess);
+         //TODO RAF :
+         // - HTTPS
+         // - aliases
+         // - websockets
+         // - allowExternalAccess
+         // - basicAuthentication
 
          start();
 
@@ -165,19 +170,8 @@ namespace web
             m_serverThread.join();
       }
 
-      IWebServerConfigurator* CWebServer::getConfigurator()
-      {
-         return m_httpRequestHandlerFactory.get();
-      }
-
-      void CWebServer::websiteHandlerAddAlias(const std::string& alias,
-                                              const std::string& path)
-      {
-         m_aliases[alias] = path;
-      }
-
       void CWebServer::refreshWebPagesRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
-                                             const std::string& docRoot)
+                                             const boost::filesystem::path& docRoot)
       {
          const auto pagesFiles = std::make_shared<CHttpPages>(docRoot);
          httpRouter->route("GET", "/", pagesFiles);

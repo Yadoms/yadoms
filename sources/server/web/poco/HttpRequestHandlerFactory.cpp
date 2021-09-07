@@ -1,15 +1,12 @@
 #include "stdafx.h"
 #include "HttpRequestHandlerFactory.h"
-
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
-
-
-#include "WebSocketRequestHandler.h"
-#include "RestRequestHandler.h"
-#include "WebsiteRequestHandler.h"
 #include "AuthenticationRequestHandler.h"
 #include "HttpRequestHandlerContainer.h"
+#include "RestRequestHandler.h"
+#include "WebsiteRequestHandler.h"
+#include "WebSocketRequestHandler.h"
 
 namespace web
 {
@@ -49,14 +46,14 @@ namespace web
          m_webSocketKeyword = webSocketKeyword;
       }
 
-      void CHttpRequestHandlerFactory::configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator)
-      {
-         m_authenticator = authenticator;
-      }
-
       void CHttpRequestHandlerFactory::allowExternalAccess(bool allowExternalAccess)
       {
          m_allowExternalAccess = allowExternalAccess;
+      }
+
+      void CHttpRequestHandlerFactory::configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator)
+      {
+         m_authenticator = authenticator;
       }
 
       Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createRequestHandler(const Poco::Net::HTTPServerRequest& request)
@@ -78,10 +75,10 @@ namespace web
       }
 
 
-      Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createWebSocketRequestHandler() const
+      Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createWebSocketRequestHandler()
       {
          //WebSockets are persistents connections, so recreate request handler for each request
-         auto realRequestHandler = new CWebSocketRequestHandler();
+         const auto realRequestHandler = new CWebSocketRequestHandler();
          return realRequestHandler;
       }
 
@@ -96,7 +93,8 @@ namespace web
          if (m_authenticator)
          {
             if (!m_restRequestHandlerWithAuthentication)
-               m_restRequestHandlerWithAuthentication = boost::make_shared<CAuthenticationRequestHandler>(m_authenticator, m_restRequestHandler, true);
+               m_restRequestHandlerWithAuthentication = boost::make_shared<
+                  CAuthenticationRequestHandler>(m_authenticator, m_restRequestHandler, true);
             realRequestHandler = m_restRequestHandlerWithAuthentication;
          }
          return new CHttpRequestHandlerContainer(realRequestHandler, m_allowExternalAccess);
@@ -113,7 +111,8 @@ namespace web
          if (m_authenticator)
          {
             if (!m_httpRequestHandlerWithAuthentication)
-               m_httpRequestHandlerWithAuthentication = boost::make_shared<CAuthenticationRequestHandler>(m_authenticator, m_httpRequestHandler, true);
+               m_httpRequestHandlerWithAuthentication = boost::make_shared<
+                  CAuthenticationRequestHandler>(m_authenticator, m_httpRequestHandler, true);
             realRequestHandler = m_httpRequestHandlerWithAuthentication;
          }
 

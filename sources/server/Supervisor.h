@@ -2,24 +2,19 @@
 #include <Poco/Runnable.h>
 #include <shared/event/EventHandler.hpp>
 #include <shared/versioning/SemVer.h>
-
-#include "automation/IRuleManager.h"
-#include "communication/PluginGateway.h"
+#include "IPathProvider.h"
+#include "authentication/IAuthentication.h"
 #include "dataAccessLayer/IDataAccessLayer.h"
-#include "database/IDataProvider.h"
 #include "dateTime/TimeZoneDatabase.h"
 #include "dateTime/TimeZoneProvider.h"
-#include "IPathProvider.h"
-#include "pluginSystem/Manager.h"
-#include "startupOptions/IStartupOptions.h"
-#include "update/IUpdateManager.h"
 #include "web/IWebServer.h"
+#include "web/rest/service/IRestService.h"
 
 
 //-----------------------------------------------------------------------------
 /// \brief              Yadoms supervisor
 //-----------------------------------------------------------------------------
-class CSupervisor : public Poco::Runnable
+class CSupervisor final : public Poco::Runnable
 {
    //--------------------------------------------------------------
    /// \brief	Event IDs
@@ -36,13 +31,10 @@ public:
    /// \param[in] pathProvider            The Yadoms paths provider
    /// \param[in] yadomsVersion           The Yadoms version
    //-----------------------------------------------------------------------------
-   explicit CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
-                        const shared::versioning::CSemVer& yadomsVersion);
+   CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
+               const shared::versioning::CSemVer& yadomsVersion);
 
-   //-----------------------------------------------------------------------------
-   /// \brief		                     Destructor
-   //-----------------------------------------------------------------------------
-   virtual ~CSupervisor() = default;
+   ~CSupervisor() override = default;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     The main method (blocking, returns at Yadoms exit)
@@ -55,24 +47,29 @@ public:
    void requestToStop();
 
 private:
-   boost::shared_ptr<web::IWebServer> createPocoBasedWebServer(const boost::shared_ptr<const startupOptions::IStartupOptions>& startupOptions,
-                                                               const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
-                                                               boost::shared_ptr<database::IDataProvider> dataProvider,
-                                                               boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                                                               const boost::shared_ptr<communication::CPluginGateway>& pluginGateway,
-                                                               boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
-                                                               boost::shared_ptr<automation::IRuleManager> automationRulesManager,
-                                                               boost::shared_ptr<update::IUpdateManager> updateManager,
-                                                               boost::shared_ptr<task::CScheduler> taskManager) const;
-   boost::shared_ptr<web::IWebServer> createOatppBasedWebServer(const boost::shared_ptr<const startupOptions::IStartupOptions>& startupOptions,
-                                                                const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
-                                                                boost::shared_ptr<database::IDataProvider> dataProvider,
-                                                                boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                                                                const boost::shared_ptr<communication::CPluginGateway>& pluginGateway,
-                                                                boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
-                                                                boost::shared_ptr<automation::IRuleManager> automationRulesManager,
-                                                                boost::shared_ptr<update::IUpdateManager> updateManager,
-                                                                boost::shared_ptr<task::CScheduler> taskManager) const;
+   boost::shared_ptr<web::IWebServer> createPocoBasedWebServer(
+      const std::string& address,
+      unsigned short port,
+      bool useSsl,
+      unsigned short securedPort,
+      bool allowExternalAccess,
+      const boost::filesystem::path& webServerPath,
+      const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
+      const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
+      const boost::shared_ptr<std::map<std::string, boost::filesystem::path>>& aliases,
+      const boost::shared_ptr<authentication::IAuthentication>& basicAuthentication) const;
+
+   boost::shared_ptr<web::IWebServer> createOatppBasedWebServer(
+      const std::string& address,
+      unsigned short port,
+      bool useSsl,
+      unsigned short securedPort,
+      bool allowExternalAccess,
+      const boost::filesystem::path& webServerPath,
+      const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
+      boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>> restServices,
+      boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
+      const boost::shared_ptr<authentication::IAuthentication>& basicAuthentication) const;
 
 
    //-----------------------------------------------------------------------------

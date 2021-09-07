@@ -25,14 +25,14 @@ namespace web
 
          void CConfiguration::configurePocoDispatcher(CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("server"), CConfiguration::getServerConfiguration);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server")("reset"), CConfiguration::resetServerConfiguration);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server"), CConfiguration::saveServerConfiguration);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("server"), CConfiguration::getServerConfiguration)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server")("reset"), CConfiguration::resetServerConfiguration)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server"), CConfiguration::saveServerConfiguration)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("databaseVersion"), CConfiguration::getDatabaseVersion);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("databaseVersion"), CConfiguration::getDatabaseVersion)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("external")("*"), CConfiguration::getExternalConfiguration);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("external")("*"), CConfiguration::getExternalConfiguration)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration)
          }
 
          boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CConfiguration::endPoints()

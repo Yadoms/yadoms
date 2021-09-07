@@ -142,7 +142,7 @@ namespace web
          const std::vector<std::string>& url,
          const std::string& requestContent)
       {
-         if (encapsulatedMethod != nullptr)
+         if (!encapsulatedMethod.empty())
             return encapsulatedMethod(realMethod, url, requestContent);
          return realMethod(url, requestContent);
       }
