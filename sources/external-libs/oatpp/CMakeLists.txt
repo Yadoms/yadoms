@@ -74,7 +74,7 @@ set(OATPP_INCLUDE_DIR ${INSTALL_DIR}/src/oatpp_build/src PARENT_SCOPE)
 if(WIN32)
    set(OATPP_LIBRARY ${INSTALL_DIR}/src/oatpp_build-build/src/$<CONFIG>/oatpp.lib PARENT_SCOPE)
 else()
-   set(OATPP_LIBRARY ${INSTALL_DIR}/src/oatpp_build-build/liboatpp.a PARENT_SCOPE)
+   set(OATPP_LIBRARY ${INSTALL_DIR}/src/oatpp_build-build/src/liboatpp.a PARENT_SCOPE)
 endif()
 
 
