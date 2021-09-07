@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "EventLogger.h"
 #include "web/poco/RestResult.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
 
 namespace web
 {
@@ -15,11 +14,7 @@ namespace web
          {
          }
 
-         CEventLogger::~CEventLogger()
-         {
-         }
-
-         void CEventLogger::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CEventLogger::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CEventLogger::getEvents);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("last"), CEventLogger::getLastEvent);

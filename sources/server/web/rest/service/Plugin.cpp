@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Plugin.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "pluginSystem/BindingQueryData.h"
@@ -33,7 +32,7 @@ namespace web
             return m_restKeyword;
          }
 
-         void CPlugin::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CPlugin::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePlugins);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CPlugin::getAllAvailablePluginsParameterized);
@@ -76,7 +75,7 @@ namespace web
             return m_endPoints;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
                                                                                                   const std::vector<std::string>& parameters,
                                                                                                   const std::string& requestContent) const
          {

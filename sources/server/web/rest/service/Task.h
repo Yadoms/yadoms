@@ -16,7 +16,7 @@ namespace web
             ~CTask() override = default;
 
             // IRestService implementation
-            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 

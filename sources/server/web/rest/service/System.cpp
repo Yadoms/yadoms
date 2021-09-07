@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "System.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/RestDispatcher.h"
 #include "tools/OperatingSystem.h"
 #include "SerialPortsLister.h"
 #include <shared/currentTime/Provider.h>
@@ -30,7 +28,7 @@ namespace web
          }
 
 
-         void CSystem::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CSystem::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBinding);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation

@@ -2,6 +2,7 @@
 
 #include "IRestService.h"
 #include "database/IDataProvider.h"
+#include "web/poco/RestDispatcher.h"
 
 namespace web
 {
@@ -9,14 +10,14 @@ namespace web
    {
       namespace service
       {
-         class CAcquisition : public IRestService
+         class CAcquisition final : public IRestService
          {
          public:
             explicit CAcquisition(boost::shared_ptr<database::IDataProvider> dataProvider);
-            virtual ~CAcquisition() = default;
+            ~CAcquisition() override = default;
 
             // IRestService implementation
-            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 

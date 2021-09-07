@@ -2,7 +2,6 @@
 #include "Task.h"
 #include "web/poco/RestResult.h"
 #include <utility>
-#include "web/rest/RestDispatcherHelpers.hpp"
 #include "task/IInstance.h"
 #include "task/Scheduler.h"
 #include "task/ITask.h"
@@ -25,7 +24,7 @@ namespace web
             return m_restKeyword;
          }
 
-         void CTask::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CTask::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CTask::getAllTasks);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CTask::getOneTask);

@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Recipient.h"
 #include <shared/exception/NotImplemented.hpp>
-#include "web/rest/RestDispatcherHelpers.hpp"
+
 #include "web/poco/RestResult.h"
 
 namespace web
@@ -28,7 +28,7 @@ namespace web
             return m_restKeyword;
          }
 
-         void CRecipient::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CRecipient::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CRecipient::getAllRecipients);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CRecipient::getOneRecipient);
@@ -58,7 +58,8 @@ namespace web
 
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::transactionalMethod(
-            CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string>& parameters, const std::string& requestContent)
+            poco::CRestDispatcher::CRestMethodHandler realMethod,
+            const std::vector<std::string>& parameters, const std::string& requestContent)
          {
             boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             boost::shared_ptr<shared::serialization::IDataSerializable> result;

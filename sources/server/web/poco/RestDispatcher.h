@@ -2,10 +2,11 @@
 
 #include <shared/DataContainer.h>
 #include <shared/serialization/IDataSerializable.h>
+#include "RestDispatcherHelpers.hpp"
 
 namespace web
 {
-   namespace rest
+   namespace poco
    {
       //--------------------------------------   
       ///\brief   Class which role is to dispatch rest queries to appropriate code
@@ -82,7 +83,7 @@ namespace web
             ///\param [in]    handler     The function pointer to call when url match configuration pattern
             ///\param [in]    indirector  The function pointer which will call the functionPtr (indirect so some common process can be handled in this function)
             //-------------------------------------- 
-            CUrlPattern(const std::vector<std::string>& pattern,
+            CUrlPattern(std::vector<std::string> pattern,
                         CRestMethodHandler& handler,
                         CRestMethodIndirector& indirector);
 
@@ -156,8 +157,8 @@ namespace web
          ///\return        the data in Json format
          //-------------------------------------- 
          static boost::shared_ptr<shared::serialization::IDataSerializable> callRealMethod(
-            CRestMethodHandler realMethod,
-            CRestMethodIndirector encapsulatedMethod,
+            const CRestMethodHandler& realMethod,
+            const CRestMethodIndirector& encapsulatedMethod,
             const std::vector<std::string>& url,
             const std::string& requestContent);
 
@@ -167,5 +168,5 @@ namespace web
          typedef std::multiset<CUrlPattern> RestMethodMap;
          std::map<std::string, RestMethodMap> m_handledFunctions{};
       };
-   } //namespace rest
+   } //namespace poco
 } //namespace web 

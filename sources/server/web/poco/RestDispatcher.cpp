@@ -2,9 +2,11 @@
 #include "RestDispatcher.h"
 #include <shared/Log.h>
 
+#include <utility>
+
 namespace web
 {
-   namespace rest
+   namespace poco
    {
       void CRestDispatcher::registerRestMethodHandler(const std::string& requestType,
                                                       const std::vector<std::string>& configKeywords,
@@ -16,11 +18,10 @@ namespace web
                                                             indirectPtr));
       }
 
-
-      CRestDispatcher::CUrlPattern::CUrlPattern(const std::vector<std::string>& pattern,
+      CRestDispatcher::CUrlPattern::CUrlPattern(std::vector<std::string> pattern,
                                                 CRestMethodHandler& handler,
                                                 CRestMethodIndirector& indirector)
-         : m_pattern(pattern),
+         : m_pattern(std::move(pattern)),
            m_methodHandler(handler),
            m_methodIndirector(indirector)
       {
@@ -48,33 +49,27 @@ namespace web
          for (unsigned int i = 0; i < minSize; i++)
          {
             if (getPattern()[i] != "*" && right.getPattern()[i] != "*")
-            {
-               //none of them have a wildcard, see next character
-            }
-            else if (getPattern()[i] != "*" && right.getPattern()[i] == "*")
-            {
+               continue;//none of them have a wildcard, see next character
+
+            if (getPattern()[i] != "*" && right.getPattern()[i] == "*")
                return true;
-            }
-            else if (getPattern()[i] == "*" && right.getPattern()[i] != "*")
-            {
+
+            if (getPattern()[i] == "*" && right.getPattern()[i] != "*")
                return false;
-            }
-            else
-            {
-               //do nothing, see next step
-            }
+
+            //do nothing, see next step
          }
 
-         return (getPattern().size() < right.getPattern().size());
+         return getPattern().size() < right.getPattern().size();
       }
 
       std::string CRestDispatcher::CUrlPattern::toString() const
       {
          std::string pattern;
-         for (unsigned int i = 0; i < getPattern().size(); ++i)
+         for (const auto& i : getPattern())
          {
             pattern += "/";
-            pattern += getPattern()[i];
+            pattern += i;
          }
          return pattern;
       }
@@ -82,15 +77,13 @@ namespace web
 
       void CRestDispatcher::printContentToLog()
       {
-         for (auto iFunction = m_handledFunctions.begin(); iFunction != m_handledFunctions.end(); ++iFunction)
+         for (const auto& handledFunction : m_handledFunctions)
          {
             YADOMS_LOG(debug) << "******************************************************";
-            YADOMS_LOG(debug) << "Requests type : " << iFunction->first;
+            YADOMS_LOG(debug) << "Requests type : " << handledFunction.first;
 
-            for (auto iPatterns = iFunction->second.begin(); iPatterns != iFunction->second.end(); ++iPatterns)
-            {
-               YADOMS_LOG(debug) << iPatterns->toString();
-            }
+            for (const auto& iPatterns : handledFunction.second)
+               YADOMS_LOG(debug) << iPatterns.toString();
          }
       }
 
@@ -137,8 +130,8 @@ namespace web
       }
 
       boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::callRealMethod(
-         CRestMethodHandler realMethod,
-         CRestMethodIndirector encapsulatedMethod,
+         const CRestMethodHandler& realMethod,
+         const CRestMethodIndirector& encapsulatedMethod,
          const std::vector<std::string>& url,
          const std::string& requestContent)
       {
@@ -146,5 +139,5 @@ namespace web
             return encapsulatedMethod(realMethod, url, requestContent);
          return realMethod(url, requestContent);
       }
-   } //namespace rest
+   } //namespace poco
 } //namespace web 

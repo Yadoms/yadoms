@@ -2,7 +2,6 @@
 
 #include "IRestService.h"
 #include "database/IDataProvider.h"
-#include "web/rest/RestDispatcher.h"
 
 namespace web
 {
@@ -10,30 +9,40 @@ namespace web
    {
       namespace service
       {
-         class CWidget : public IRestService
+         class CWidget final : public IRestService
          {
          public:
             explicit CWidget(boost::shared_ptr<database::IDataProvider> dataProvider, const std::string& webServerPath);
-            virtual ~CWidget() = default;
+            ~CWidget() override = default;
 
             // IRestService implementation
-            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
 
             static const std::string& getRestKeyword();
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> getOneWidget(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllWidgets(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> addWidget(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> deleteOneWidget(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllWidgets(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> replaceAllWidgets(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> updateOneWidget(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> findWidgetPackages(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getOneWidget(const std::vector<std::string>& parameters,
+                                                                                     const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllWidgets(const std::vector<std::string>& parameters,
+                                                                                      const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> addWidget(const std::vector<std::string>& parameters,
+                                                                                  const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteOneWidget(const std::vector<std::string>& parameters,
+                                                                                        const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllWidgets(const std::vector<std::string>& parameters,
+                                                                                         const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> replaceAllWidgets(const std::vector<std::string>& parameters,
+                                                                                          const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateOneWidget(const std::vector<std::string>& parameters,
+                                                                                        const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> findWidgetPackages(
+               const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(
+               poco::CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string>& parameters,
+               const std::string& requestContent) const;
          private:
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;

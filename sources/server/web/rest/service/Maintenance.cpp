@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Maintenance.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/RestDispatcher.h"
 #include "web/poco/RestResult.h"
 #include "task/backup/Backup.h"
 #include "task/backup/Restore.h"
@@ -39,7 +37,7 @@ namespace web
          }
 
 
-         void CMaintenance::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CMaintenance::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CMaintenance::getDatabaseInformation);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("backup"), CMaintenance::getBackups);
@@ -72,7 +70,7 @@ namespace web
             return m_restKeyword;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
                                                                                                        const std::vector<std::string>& parameters,
                                                                                                        const std::string& requestContent) const
          {

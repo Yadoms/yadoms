@@ -1,7 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Page.h"
 #include <shared/exception/NotImplemented.hpp>
-#include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 #include "Widget.h"
 
@@ -23,7 +22,7 @@ namespace web
             return m_restKeyword;
          }
 
-         void CPage::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CPage::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPage::getAllPages);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPage::getOnePage);
@@ -56,7 +55,7 @@ namespace web
 
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CPage::transactionalMethod(
-            CRestDispatcher::CRestMethodHandler realMethod,
+            poco::CRestDispatcher::CRestMethodHandler realMethod,
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {

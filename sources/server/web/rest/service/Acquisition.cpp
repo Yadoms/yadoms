@@ -1,7 +1,5 @@
 ﻿#include "stdafx.h"
 #include "Acquisition.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/RestDispatcher.h"
 #include "web/poco/RestResult.h"
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
@@ -22,7 +20,7 @@ namespace web
          {
          }
 
-         void CAcquisition::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CAcquisition::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("keyword")("lastdata"),
                                         CAcquisition::getKeywordListLastData);

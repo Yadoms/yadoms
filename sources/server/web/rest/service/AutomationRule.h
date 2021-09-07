@@ -3,6 +3,7 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "../../../automation/IRuleManager.h"
+#include "web/poco/RestDispatcher.h"
 
 namespace web
 {
@@ -10,15 +11,15 @@ namespace web
    {
       namespace service
       {
-         class CAutomationRule : public IRestService
+         class CAutomationRule final : public IRestService
          {
          public:
             CAutomationRule(boost::shared_ptr<database::IDataProvider> dataProvider,
                             boost::shared_ptr<automation::IRuleManager> rulesManager);
-            virtual ~CAutomationRule() = default;
+            ~CAutomationRule() override = default;
 
             // IRestService implementation
-            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
@@ -54,7 +55,7 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> duplicateRule(const std::vector<std::string>& parameters,
                                                                                       const std::string& requestContent) const;
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
                                                                                             const std::vector<std::string>& parameters,
                                                                                             const std::string& requestContent) const;
 

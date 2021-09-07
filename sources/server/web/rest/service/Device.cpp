@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Device.h"
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 #include "web/poco/RestResult.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
 #include "communication/callback/SynchronousCallback.h"
 #include "database/common/requesters/Keyword.h"
 
@@ -15,16 +15,16 @@ namespace web
          std::string CDevice::m_restKeyword = std::string("device");
 
 
-         CDevice::CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
+         CDevice::CDevice(const boost::shared_ptr<database::IDataProvider>& dataProvider,
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
                           boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                           boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
               m_deviceRequester(dataProvider->getDeviceRequester()),
-              m_pluginManager(pluginManager),
-              m_deviceManager(deviceManager),
-              m_keywordManager(keywordManager),
+              m_pluginManager(std::move(pluginManager)),
+              m_deviceManager(std::move(deviceManager)),
+              m_keywordManager(std::move(keywordManager)),
               m_messageSender(messageSender)
          {
          }
@@ -34,54 +34,53 @@ namespace web
             return m_restKeyword;
          }
 
-         void CDevice::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CDevice::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CDevice::getOneDevice);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CDevice::getOneDevice)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"),
-                                        CDevice::getCompatibleForMergeDevice);
+                                        CDevice::getCompatibleForMergeDevice)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"),
-                                        CDevice::getDeviceConfigurationSchema);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), CDevice::getAllKeywords);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CDevice::getKeyword);
+                                        CDevice::getDeviceConfigurationSchema)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), CDevice::getAllKeywords)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CDevice::getKeyword)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacity")("*")("*"),
-                                        CDevice::getDevicesWithCapacity);
+                                        CDevice::getDevicesWithCapacity)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacitytype")("*")("*"),
-                                        CDevice::getDeviceWithCapacityType);
+                                        CDevice::getDeviceWithCapacityType)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordaccess")("*"),
-                                        CDevice::getDeviceWithKeywordAccessMode);
+                                        CDevice::getDeviceWithKeywordAccessMode)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordhistorydepth")("*"),
-                                        CDevice::getDeviceWithKeywordHistoryDepth
-            );
+                                        CDevice::getDeviceWithKeywordHistoryDepth)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("matchkeywordcriteria"),
                                                         CDevice::getDeviceMatchKeywordCriteria,
-                                                        CDevice::transactionalMethod);
+                                                        CDevice::transactionalMethod)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"),
-                                        CDevice::getDeviceKeywordsForCapacity);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
+                                        CDevice::getDeviceKeywordsForCapacity)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"),
                                                         CDevice::getKeywordsLastState,
-                                                        CDevice:: transactionalMethod);
+                                                        CDevice:: transactionalMethod)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"),
                                                         CDevice::updateDeviceConfiguration,
-                                                        CDevice::transactionalMethod);
+                                                        CDevice::transactionalMethod)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"),
                                                         CDevice::mergeDevices,
-                                                        CDevice:: transactionalMethod);
+                                                        CDevice:: transactionalMethod)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"),
                                                         CDevice::restoreDevice,
-                                                        CDevice:: transactionalMethod);
+                                                        CDevice:: transactionalMethod)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"),
                                                         CDevice::updateKeywordFriendlyName,
-                                                        CDevice::transactionalMethod);
+                                                        CDevice::transactionalMethod)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("blacklist"),
-                                                        CDevice:: updateKeywordBlacklist, CDevice::transactionalMethod);
+                                                        CDevice:: updateKeywordBlacklist, CDevice::transactionalMethod)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"),
                                                         CDevice::sendKeywordCommand,
-                                                        CDevice::transactionalMethod);
+                                                        CDevice::transactionalMethod)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"),
                                                         CDevice::deleteDevice,
-                                                        CDevice:: transactionalMethod);
+                                                        CDevice:: transactionalMethod)
          }
 
          boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CDevice::endPoints()
@@ -714,39 +713,34 @@ namespace web
          {
             try
             {
-               if (parameters.size() >= 1)
+               if (parameters.empty())
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+
+               //get device id from URL
+               const auto deviceId = boost::lexical_cast<int>(parameters[1]);
+
+               //deserialize device from request data
+               database::entities::CDevice deviceToUpdate;
+               deviceToUpdate.fillFromSerializedString(requestContent);
+
+               //update friendly name
+               if (deviceToUpdate.FriendlyName.isDefined())
+                  m_deviceRequester->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
+
+               if (deviceToUpdate.Model.isDefined())
+                  m_deviceRequester->updateDeviceModel(deviceId, deviceToUpdate.Model());
+
+               if (deviceToUpdate.Configuration.isDefined())
                {
-                  //get device id from URL
-                  const auto deviceId = boost::lexical_cast<int>(parameters[1]);
-
-                  //deserialize device from request data
-                  database::entities::CDevice deviceToUpdate;
-                  deviceToUpdate.fillFromSerializedString(requestContent);
-
-                  //update friendly name
-                  if (deviceToUpdate.FriendlyName.isDefined())
-                  {
-                     m_deviceRequester->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
-                  }
-
-                  if (deviceToUpdate.Model.isDefined())
-                  {
-                     m_deviceRequester->updateDeviceModel(deviceId, deviceToUpdate.Model());
-                  }
-
-                  if (deviceToUpdate.Configuration.isDefined())
-                  {
-                     //update data in base
-                     m_deviceRequester->updateDeviceConfiguration(deviceId, deviceToUpdate.Configuration());
-                     m_messageSender.sendSetDeviceConfiguration(deviceId,
-                                                                deviceToUpdate.Configuration());
-                  }
-
-                  //return the device info
-                  const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
-                  return poco::CRestResult::GenerateSuccess(deviceFound);
+                  //update data in base
+                  m_deviceRequester->updateDeviceConfiguration(deviceId, deviceToUpdate.Configuration());
+                  m_messageSender.sendSetDeviceConfiguration(deviceId,
+                                                             deviceToUpdate.Configuration());
                }
-               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+
+               //return the device info
+               const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
+               return poco::CRestResult::GenerateSuccess(deviceFound);
             }
             catch (std::exception& ex)
             {
@@ -787,12 +781,12 @@ namespace web
                                                                                                   not_a_date_time,
                                                                                                   1);
                   m_dataProvider->getKeywordRequester()->updateLastValue(fromKw,
-                                                                         lastData.size() != 0
-                                                                            ? lastData[0].get<0>()
-                                                                            : boost::posix_time::not_a_date_time,
-                                                                         lastData.size() != 0
-                                                                            ? lastData[0].get<1>()
-                                                                            : std::string());
+                                                                         lastData.empty()
+                                                                            ? boost::posix_time::not_a_date_time
+                                                                            : lastData[0].get<0>(),
+                                                                         lastData.empty()
+                                                                            ? std::string()
+                                                                            : lastData[0].get<1>());
                }
                // Change name of target device, to make plugin using this device from now
                m_deviceRequester->rename(targetDeviceId, m_deviceRequester->getDevice(sourceDeviceId)->Name());
@@ -821,16 +815,15 @@ namespace web
          {
             try
             {
-               if (parameters.size() >= 1)
-               {
-                  const auto deviceId = boost::lexical_cast<int>(parameters[1]);
-                  m_deviceManager->updateDeviceBlacklistState(deviceId, false);
+               if (parameters.empty())
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
 
-                  //return the device info
-                  const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
-                  return poco::CRestResult::GenerateSuccess(deviceFound);
-               }
-               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               const auto deviceId = boost::lexical_cast<int>(parameters[1]);
+               m_deviceManager->updateDeviceBlacklistState(deviceId, false);
+
+               //return the device info
+               const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
+               return poco::CRestResult::GenerateSuccess(deviceFound);
             }
             catch (std::exception& ex)
             {
@@ -909,7 +902,7 @@ namespace web
 
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::transactionalMethod(
-            CRestDispatcher::CRestMethodHandler realMethod,
+            const poco::CRestDispatcher::CRestMethodHandler realMethod,
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {

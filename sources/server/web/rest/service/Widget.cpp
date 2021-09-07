@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Widget.h"
 #include <shared/exception/NotImplemented.hpp>
-#include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/RestDispatcher.h"
 #include "web/poco/RestResult.h"
 #include <fstream>
 
@@ -21,19 +19,18 @@ namespace web
          {
          }
 
-
-         void CWidget::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CWidget::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CWidget::getAllWidgets);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CWidget::getOneWidget);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("package"), CWidget::findWidgetPackages);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CWidget::addWidget, CWidget::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CWidget::updateOneWidget, CWidget::
-               transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CWidget::deleteAllWidgets, CWidget::transactionalMethod
-            );
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CWidget::deleteOneWidget, CWidget::
-               transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CWidget::updateOneWidget,
+                                                        CWidget::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CWidget::deleteAllWidgets,
+                                                        CWidget::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CWidget::deleteOneWidget,
+                                                        CWidget::transactionalMethod);
          }
 
          boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CWidget::endPoints()
@@ -47,9 +44,10 @@ namespace web
             return m_endPoints;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
-                                                                                                  const std::vector<std::string>& parameters,
-                                                                                                  const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::transactionalMethod(
+            poco::CRestDispatcher::CRestMethodHandler realMethod,
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             boost::shared_ptr<shared::serialization::IDataSerializable> result;
@@ -278,7 +276,7 @@ namespace web
                         }
                      }
                   }
-                  
+
                   return poco::CRestResult::GenerateSuccess(result);
                }
                return poco::CRestResult::GenerateError(widgetPath + " is not a valid directory.");

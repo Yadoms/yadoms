@@ -4,13 +4,12 @@
 #include <Poco/Net/HTTPServerResponse.h>
 #include "web/IRestHandler.h"
 #include "web/rest/service/IRestService.h"
-#include "web/rest/RestDispatcher.h"
 
 namespace web
 {
    namespace poco
    {
-      class CRestRequestHandler : public Poco::Net::HTTPRequestHandler, public IRestHandler
+      class CRestRequestHandler final : public Poco::Net::HTTPRequestHandler, public IRestHandler
       {
       public:
          //--------------------------------------   
@@ -21,10 +20,7 @@ namespace web
          CRestRequestHandler(std::string restBaseKeyword,
                              const std::vector<boost::shared_ptr<rest::service::IRestService>>& services);
 
-         //--------------------------------------   
-         ///\brief  Destructor
-         //--------------------------------------   
-         virtual ~CRestRequestHandler() = default;
+         ~CRestRequestHandler() override = default;
 
          // Poco::Net::HTTPRequestHandler implementation
          void handleRequest(Poco::Net::HTTPServerRequest& request,
@@ -69,7 +65,7 @@ namespace web
          //--------------------------------------   
          ///\brief  The rest dispatcher
          //-------------------------------------- 
-         rest::CRestDispatcher m_restDispatcher;
+         CRestDispatcher m_restDispatcher;
       };
    } //namespace poco
 } //namespace web

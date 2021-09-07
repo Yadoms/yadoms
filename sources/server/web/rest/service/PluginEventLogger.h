@@ -9,15 +9,14 @@ namespace web
    {
       namespace service
       {
-         class CPluginEventLogger : public IRestService
+         class CPluginEventLogger final : public IRestService
          {
          public:
             explicit CPluginEventLogger(boost::shared_ptr<database::IDataProvider> dataProvider);
-            virtual ~CPluginEventLogger() = default;
+            ~CPluginEventLogger() override = default;
 
-         public:
             // IRestService implementation
-            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 

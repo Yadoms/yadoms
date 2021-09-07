@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "PluginEventLogger.h"
 #include <utility>
-#include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 
 namespace web
@@ -21,7 +20,7 @@ namespace web
             return m_restKeyword;
          }
 
-         void CPluginEventLogger::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CPluginEventLogger::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*"), CPluginEventLogger::getLogsForPluginName);
          }

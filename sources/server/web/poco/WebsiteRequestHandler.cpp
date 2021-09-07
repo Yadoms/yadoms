@@ -71,7 +71,7 @@ namespace web { namespace poco {
             if (is)
             {
                response.setChunkedTransferEncoding(true);
-               response.setContentType(CMimeType::extension_to_type(extension));
+               response.setContentType(CMimeType::extensionToType(extension));
                std::ostream& ostr = response.send();
                char buf[512];
                while (is.read(buf, sizeof(buf)).gcount() > 0)

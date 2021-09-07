@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "AutomationRule.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 #include "automation/RuleException.hpp"
 
@@ -26,7 +25,7 @@ namespace web
             return RestKeyword;
          }
 
-         void CAutomationRule::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CAutomationRule::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordInterpreter), CAutomationRule::getAllInterpreters);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordInterpreter)("available"), CAutomationRule::getAvailableInterpreters);
@@ -58,7 +57,7 @@ namespace web
             return m_endPoints;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
                                                                                                           const std::vector<std::string>& parameters,
                                                                                                           const std::string& requestContent) const
          {

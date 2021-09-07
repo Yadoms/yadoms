@@ -6,8 +6,6 @@
 #include "web/poco/RestResult.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/SuccessAnswer.h"
-#include "web/rest/RestDispatcher.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
 
 namespace web
 {
@@ -23,7 +21,7 @@ namespace web
          {
          }
 
-         void CConfiguration::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CConfiguration::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("server"), CConfiguration::getServerConfiguration)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server")("reset"), CConfiguration::resetServerConfiguration)

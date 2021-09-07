@@ -1,6 +1,5 @@
 #pragma once
 #include "IRestService.h"
-#include "web/rest/RestDispatcher.h"
 #include "hardware/usb/IDevicesLister.h"
 #include "IRunningInformation.h"
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
@@ -13,15 +12,15 @@ namespace web
    {
       namespace service
       {
-         class CSystem : public IRestService
+         class CSystem final : public IRestService
          {
          public:
             explicit CSystem(boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
                              boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister);
-            virtual ~CSystem() = default;
+            ~CSystem() override = default;
 
             // IRestService implementation
-            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 

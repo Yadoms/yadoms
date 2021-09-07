@@ -1,6 +1,6 @@
 #pragma once
 #include "IRestEndPoint.h"
-#include "web/rest/RestDispatcher.h"
+#include "web/poco/RestDispatcher.h"
 
 namespace web
 {
@@ -19,7 +19,7 @@ namespace web
             //--------------------------------------   
             ///\brief   Method called to initialize the dispatcher (Poco-based webserver)
             //-------------------------------------- 
-            virtual void configurePocoDispatcher(CRestDispatcher& dispatcher) = 0;
+            virtual void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) = 0;
 
             //--------------------------------------   
             ///\brief   List all end-points of the service (Oatpp-based webserver)

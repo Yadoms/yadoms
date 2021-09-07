@@ -641,9 +641,6 @@ set(YADOMS_SRC
  
    server/web/rest/ContentType.h
    server/web/rest/IRequest.h
-   server/web/rest/RestDispatcher.h
-   server/web/rest/RestDispatcher.cpp
-   server/web/rest/RestDispatcherHelpers.hpp
    server/web/rest/IAnswer.h
    server/web/rest/ErrorAnswer.h
    server/web/rest/ErrorAnswer.cpp
@@ -1029,6 +1026,9 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/poco/HttpRequestHandlerFactory.cpp   
    server/web/poco/HttpRequestHandlerContainer.h
    server/web/poco/HttpRequestHandlerContainer.cpp
+   server/web/poco/RestDispatcher.h
+   server/web/poco/RestDispatcher.cpp
+   server/web/poco/RestDispatcherHelpers.hpp
    server/web/poco/RestRequestHandler.h
    server/web/poco/RestRequestHandler.cpp
    server/web/poco/RestResult.h

@@ -10,18 +10,18 @@ namespace web
    {
       namespace service
       {
-         class CDevice : public IRestService
+         class CDevice final : public IRestService
          {
          public:
-            CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
+            CDevice(const boost::shared_ptr<database::IDataProvider>& dataProvider,
                     boost::shared_ptr<pluginSystem::CManager> pluginManager,
                     boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                     boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
                     communication::ISendMessageAsync& messageSender);
-            virtual ~CDevice() = default;
+            ~CDevice() override = default;
 
             // IRestService implementation
-            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
@@ -187,7 +187,7 @@ namespace web
             ///\brief   Transactional method used to encapsulate operation in transactions
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(
-               CRestDispatcher::CRestMethodHandler realMethod,
+               poco::CRestDispatcher::CRestMethodHandler realMethod,
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 

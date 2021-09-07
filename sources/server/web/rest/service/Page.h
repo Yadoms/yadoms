@@ -9,15 +9,14 @@ namespace web
    {
       namespace service
       {
-         class CPage : public IRestService
+         class CPage final : public IRestService
          {
          public:
             explicit CPage(boost::shared_ptr<database::IDataProvider> dataProvider);
-            virtual ~CPage() = default;
+            ~CPage() override = default;
 
-         public:
             // IRestService implementation
-            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
@@ -51,7 +50,7 @@ namespace web
                const std::string& requestContent) const;
 
             boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(
-               CRestDispatcher::CRestMethodHandler realMethod,
+               poco::CRestDispatcher::CRestMethodHandler realMethod,
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 

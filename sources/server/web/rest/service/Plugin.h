@@ -22,7 +22,7 @@ namespace web
             ~CPlugin() override = default;
 
             // IRestService implementation
-            void configurePocoDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
@@ -74,7 +74,7 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getBinding(const std::vector<std::string>& parameters,
                                                                                    const std::string& requestContent) const;
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
                                                                                             const std::vector<std::string>& parameters,
                                                                                             const std::string& requestContent) const;
 

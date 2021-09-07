@@ -2,7 +2,6 @@
 #include "Update.h"
 
 #include <utility>
-#include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 
 
@@ -24,7 +23,7 @@ namespace web
             return m_restKeyword;
          }
 
-         void CUpdate::configurePocoDispatcher(CRestDispatcher& dispatcher)
+         void CUpdate::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scan"), CUpdate::scanForUpdates);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("list")("*"), CUpdate::availableUpdates);
