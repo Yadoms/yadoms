@@ -7,6 +7,8 @@
 #include "communication/callback/SynchronousCallback.h"
 #include <shared/Log.h>
 
+#include "web/poco/RestDispatcherHelpers.hpp"
+
 namespace web
 {
    namespace rest

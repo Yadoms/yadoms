@@ -2,6 +2,7 @@
 #include "Recipient.h"
 #include <shared/exception/NotImplemented.hpp>
 
+#include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 
 namespace web

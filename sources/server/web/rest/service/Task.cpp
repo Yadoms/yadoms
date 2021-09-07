@@ -5,6 +5,7 @@
 #include "task/IInstance.h"
 #include "task/Scheduler.h"
 #include "task/ITask.h"
+#include "web/poco/RestDispatcherHelpers.hpp"
 
 namespace web
 {

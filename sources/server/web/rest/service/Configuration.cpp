@@ -3,6 +3,7 @@
 #include <shared/exception/EmptyResult.hpp>
 #include <utility>
 #include "RestEndPoint.h"
+#include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/SuccessAnswer.h"

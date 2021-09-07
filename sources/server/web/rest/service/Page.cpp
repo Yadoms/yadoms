@@ -3,6 +3,7 @@
 #include <shared/exception/NotImplemented.hpp>
 #include "web/poco/RestResult.h"
 #include "Widget.h"
+#include "web/poco/RestDispatcherHelpers.hpp"
 
 namespace web
 {

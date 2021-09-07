@@ -2,6 +2,7 @@
 #include "AutomationRule.h"
 #include "web/poco/RestResult.h"
 #include "automation/RuleException.hpp"
+#include "web/poco/RestDispatcherHelpers.hpp"
 
 namespace web
 {

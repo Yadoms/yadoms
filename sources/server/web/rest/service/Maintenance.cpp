@@ -12,6 +12,7 @@
 #include <regex>
 #include <utility>
 
+#include "web/poco/RestDispatcherHelpers.hpp"
 
 
 namespace web

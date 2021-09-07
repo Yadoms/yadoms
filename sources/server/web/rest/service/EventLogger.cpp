@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "EventLogger.h"
+
+#include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 
 namespace web

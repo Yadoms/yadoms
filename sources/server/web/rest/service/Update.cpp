@@ -2,6 +2,8 @@
 #include "Update.h"
 
 #include <utility>
+
+#include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 
 

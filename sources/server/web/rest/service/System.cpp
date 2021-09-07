@@ -8,6 +8,7 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <startupOptions/IStartupOptions.h>
 #include "dateTime/TimeZoneDatabase.h"
+#include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 
 namespace web
@@ -31,11 +32,10 @@ namespace web
          void CSystem::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBinding);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation
-            );
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"), CSystem
-                                        ::getVirtualDevicesSupportedCapacities);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"),
+                                        CSystem::getVirtualDevicesSupportedCapacities);
          }
 
          boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CSystem::endPoints()

@@ -4,6 +4,8 @@
 #include "web/poco/RestResult.h"
 #include <fstream>
 
+#include "web/poco/RestDispatcherHelpers.hpp"
+
 namespace web
 {
    namespace rest

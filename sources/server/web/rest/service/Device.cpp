@@ -5,6 +5,7 @@
 #include "web/poco/RestResult.h"
 #include "communication/callback/SynchronousCallback.h"
 #include "database/common/requesters/Keyword.h"
+#include "web/poco/RestDispatcherHelpers.hpp"
 
 namespace web
 {

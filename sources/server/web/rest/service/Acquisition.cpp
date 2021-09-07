@@ -4,6 +4,8 @@
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include <utility>
+
+#include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/rest/StringContainer.h"
 
 namespace web
