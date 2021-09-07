@@ -55,8 +55,11 @@ message("OATPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC
 endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp_build
-   GIT_REPOSITORY    https://github.com/oatpp/oatpp.git
-   GIT_TAG           777617321d9fbff5c48c58da55f282cd99bcec47
+   # TODO remettre lorsque Pr validée
+   # GIT_REPOSITORY    https://github.com/oatpp/oatpp.git
+   # GIT_TAG           777617321d9fbff5c48c58da55f282cd99bcec47
+   GIT_REPOSITORY    https://github.com/Yadoms/oatpp.git
+   GIT_TAG           a39630d6d05f3628e638bdd049cd677615afe788
    GIT_SHALLOW       ON
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_PATCH_CMD}   
@@ -77,8 +80,3 @@ else()
    set(OATPP_LIBRARY ${INSTALL_DIR}/src/oatpp_build-build/src/liboatpp.a PARENT_SCOPE)
 endif()
 
-
-# TODO
-# - Corriger OATPP_INCLUDE_DIR
-# - Corriger OATPP_LIBRARY pour win32
-# - Corriger OATPP_LIBRARY pour linux
