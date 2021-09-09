@@ -1050,24 +1050,10 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/oatppServer/HttpPages.cpp
    server/web/oatppServer/WebServer.h
    server/web/oatppServer/WebServer.cpp
-#   server/web/oatppServer/AuthenticationRequestHandler.h
-#   server/web/oatppServer/AuthenticationRequestHandler.cpp
    server/web/oatppServer/RestRequest.h
    server/web/oatppServer/RestRequest.cpp   
    server/web/oatppServer/RestRequestHandler.h
-   server/web/oatppServer/RestRequestHandler.cpp   
-#   server/web/oatppServer/HttpRequestHandlerContainer.h
-#   server/web/oatppServer/HttpRequestHandlerContainer.cpp
-#   server/web/oatppServer/RestRequestHandler.h
-#   server/web/oatppServer/RestRequestHandler.cpp
-#   server/web/oatppServer/WebsiteCacheManager.h
-#   server/web/oatppServer/WebsiteCacheManager.cpp
-#   server/web/oatppServer/WebsiteRequestHandler.h
-#   server/web/oatppServer/WebsiteRequestHandler.cpp
-#   server/web/oatppServer/WebSocketRequestHandler.h
-#   server/web/oatppServer/WebSocketRequestHandler.cpp   
-#   server/web/oatppServer/MimeType.h
-#   server/web/oatppServer/MimeType.cpp   
+   server/web/oatppServer/RestRequestHandler.cpp    
 )
 source_group(server\\web\\oatppServer  server/web/oatppServer/*.*)
 
@@ -1110,7 +1096,7 @@ set(YADOMS_SRC ${YADOMS_SRC}
 #define YADOMS output
 add_executable(yadoms ${YADOMS_SRC})
 
-add_dependencies(yadoms oatpp_build)
+add_dependencies(yadoms oatpp_build oatpp-websocket_build)
 
 if(COTIRE_USE)
    #nothing to do
@@ -1192,6 +1178,7 @@ set(YADOMS_ALL_INCL_DIR
    ${Poco_INCLUDE_DIRS}
    ${YADOMS_INCL_DIR}
    ${OATPP_INCLUDE_DIR}
+   ${OATPP_WEBSOCKET_INCLUDE_DIR}
 )
 
 set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
@@ -1207,6 +1194,7 @@ target_link_libraries(yadoms
    ${LIBS}
    ${CMAKE_DL_LIBS}
    ${OATPP_LIBRARY}
+   ${OATPP_WEBSOCKET_LIBRARY}
 )
 
 ##################################################################################################

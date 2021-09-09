@@ -55,6 +55,7 @@ namespace web
          // - websockets
          // - allowExternalAccess
          // - basicAuthentication
+         // - ajout headers avec infos serveur (nom, version, etc... Voir Poco webserver)
 
          start();
 
