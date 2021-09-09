@@ -65,8 +65,8 @@ message("OATPP-WEBSOCKET : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE},
 endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp-websocket_build
-   GIT_REPOSITORY    https://github.com/oatpp/oatpp-websocket.git
-   GIT_TAG           bdaf6958da91d173dad394f99d6624e87004bdfb
+   GIT_REPOSITORY    https://github.com/yadoms/oatpp-websocket.git
+   GIT_TAG           b9baf4dcac1fb0ba3bba6a8c355e8817fd0b4ca6
    GIT_SHALLOW       ON
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_WEBSOCKET_PATCH_CMD}   
