@@ -45,7 +45,7 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
 
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2)); //TODO déplacer dans getSystemInformation ?
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/external", getExternalConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/external", saveExternalConfigurationV2));
