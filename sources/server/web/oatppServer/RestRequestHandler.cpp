@@ -11,10 +11,6 @@ namespace web
       {
       }
 
-      CRestRequestHandler::~CRestRequestHandler() //TODO remettre = default
-      {
-      }
-
       std::shared_ptr<oatpp::web::server::HttpRequestHandler::OutgoingResponse> CRestRequestHandler::handle(
          const std::shared_ptr<IncomingRequest>& request)
       {
