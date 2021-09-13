@@ -187,7 +187,7 @@ namespace web
             ///\brief   Transactional method used to encapsulate operation in transactions
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(
-               poco::CRestDispatcher::CRestMethodHandler realMethod,
+               const poco::CRestDispatcher::CRestMethodHandler realMethod,
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 

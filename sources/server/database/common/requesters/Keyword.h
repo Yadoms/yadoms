@@ -28,13 +28,19 @@ namespace database
             // IKeywordRequester implementation
             void addKeyword(const entities::CKeyword& newKeyword) override;
             std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCapacity(const std::string& capacity) const override;
-            std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCriteria(const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes, const std::vector<std::string>& expectedCapacities, const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses, const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth, bool blacklisted) const override;
+            std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCriteria(
+               const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
+               const std::vector<std::string>& expectedCapacities,
+               const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
+               const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth, bool blacklisted) const override;
             boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId, const std::string& keyword) const override;
             boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const override;
-            std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId, const std::string& friendlyName) const override;
+            std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId,
+                                                                                            const std::string& friendlyName) const override;
             std::vector<boost::shared_ptr<entities::CKeyword>> getKeywords(int deviceId) const override;
             std::vector<boost::shared_ptr<entities::CKeyword>> getAllKeywords() const override;
-            std::vector<boost::shared_ptr<entities::CKeyword>> getDeviceKeywordsWithCapacity(int deviceId, const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const override;
+            std::vector<boost::shared_ptr<entities::CKeyword>> getDeviceKeywordsWithCapacity(
+               int deviceId, const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const override;
             boost::shared_ptr<entities::CAcquisition> getKeywordLastAcquisition(const int keywordId, bool throwIfNotExists = true) override;
             std::string getKeywordLastData(int keywordId, bool throwIfNotExists = true) override;
             std::vector<boost::tuple<int, std::string>> getKeywordListLastData(const std::vector<int>& keywordIds) override;
@@ -42,6 +48,8 @@ namespace database
             void removeKeyword(int keywordId) override;
             void updateKeywordFriendlyName(int keywordId, const std::string& newFriendlyName) override;
             void updateLastValue(int keywordId, const boost::posix_time::ptime& valueDatetime, const std::string& value) override;
+            void updateKeywordName(int keywordId,
+                                   const std::string& newName) override;
             // [END] IKeywordRequester implementation
 
          private:
@@ -53,5 +61,3 @@ namespace database
       } //namespace requesters
    } //namespace common
 } //namespace database 
-
-

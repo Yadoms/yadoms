@@ -34,6 +34,8 @@ public:
 
    bool hasTemperatureControl() override;
 
+   void rename(std::string& newLightName) override;
+
 private:
    static void setLightState(const std::string& lightUrl, shared::CDataContainer& body);
    boost::shared_ptr<CUrlManager> m_urlManager;

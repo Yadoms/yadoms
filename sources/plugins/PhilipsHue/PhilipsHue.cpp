@@ -156,6 +156,38 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             break;
          }
+      case yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest:
+         {
+
+         auto body = shared::CDataContainer::make();
+         shared::CDataContainer options;
+         options.set("type", "string");
+         options.set("i18nKey", "Hue");
+         body->set("HueNewLightNameToBridge", options);
+
+         auto deviceConfigurationSchemaRequest = m_api
+            ->getEventHandler().getEventData<boost::shared_ptr<yApi::
+            IDeviceConfigurationSchemaRequest>>();
+
+         deviceConfigurationSchemaRequest->sendSuccess(body);
+         break;
+         }
+      case yApi::IYPluginApi::kSetDeviceConfiguration:
+         {
+         auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::
+            ISetDeviceConfiguration>>();
+         auto config = deviceConfiguration->configuration();
+         YADOMS_LOG(debug) << "Configuration = " << config->serialize();
+         auto newLightName = config->get<std::string>("HueNewLightNameToBridge");
+
+         if(!newLightName.empty())
+         {
+            auto lightName = deviceConfiguration->name();
+            const auto lightId = getLightId(lightName);
+            m_detectedLights[lightId]->rename(newLightName);
+         }
+         break;
+         }
       default:
          {
             YADOMS_LOG(error) << "Unknown or unsupported message id " << m_api->getEventHandler().getEventId();
@@ -296,7 +328,7 @@ void CPhilipsHue::declareDeviceByBrdige()
          if (!m_api->deviceExists(lightName))
          {
             m_api->declareDevice(lightName,
-                                 light->getType(),
+                                 "HueLight",
                                  light->getModelId(),
                                  light->getHistorizables(),
                                  shared::CDataContainer::make(bridgeId));

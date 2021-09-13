@@ -334,21 +334,21 @@ DeviceManager.updateToServer = function (device) {
 
 /**
  * Merge 2 devices
- * @param {Object} sourceDeviceId The source device id
- * @param {Object} targetDeviceId The target device id
+ * @param {Object} oldDeviceId The old device id
+ * @param {Object} newDeviceId The new device id
  * @param {Object} keywordCorrespondences The correspondance between keywords
  * @ return {Promise}
  */
-DeviceManager.mergeDevices = function (sourceDeviceId, targetDeviceId, keywordCorrespondences) {
-    assert(!isNullOrUndefined(sourceDeviceId), "sourceDeviceId must be defined");
-    assert(!isNullOrUndefined(targetDeviceId), "targetDeviceId must be defined");
+DeviceManager.mergeDevices = function (oldDeviceId, newDeviceId, keywordCorrespondences) {
+    assert(!isNullOrUndefined(oldDeviceId), "oldDeviceId must be defined");
+    assert(!isNullOrUndefined(newDeviceId), "newDeviceId must be defined");
     assert(!isNullOrUndefined(keywordCorrespondences), "keywordCorrespondences must be defined");
 
     var d = new $.Deferred();
 
     mergeInfo = {
-        "sourceDeviceId": sourceDeviceId,
-        "targetDeviceId": targetDeviceId,
+        "oldDeviceId": oldDeviceId,
+        "newDeviceId": newDeviceId,
         "keywordCorrespondences": keywordCorrespondences
     }
 

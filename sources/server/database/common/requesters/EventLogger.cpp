@@ -27,7 +27,7 @@ namespace database
 
          int CEventLogger::addEvent(const entities::ESystemEventCode& eventCode, const std::string& who, const std::string& what)
          {
-            auto insertDate = shared::currentTime::Provider().now();
+            const auto insertDate = shared::currentTime::Provider().now();
 
             auto qInsert = m_databaseRequester->newQuery();
             qInsert->InsertInto(CEventLoggerTable::getTableName(), CEventLoggerTable::getCodeColumnName(), CEventLoggerTable::getWhoColumnName(), CEventLoggerTable::getWhatColumnName(), CEventLoggerTable::getDateColumnName()).
@@ -90,7 +90,7 @@ namespace database
             adapters::CEventLoggerAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, * qSelect);
 
-            auto list = adapter.getResults();
+            const auto list = adapter.getResults();
             if (list.empty())
                return boost::shared_ptr<entities::CEventLogger>();
             return adapter.getResults()[0];

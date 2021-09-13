@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Device.h"
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 #include "database/common/adapters/DatabaseAdapters.h"
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/DatabaseTables.h"
@@ -14,7 +15,7 @@ namespace database
       namespace requesters
       {
          CDevice::CDevice(boost::shared_ptr<IDatabaseRequester> databaseRequester)
-            : m_databaseRequester(databaseRequester)
+            : m_databaseRequester(std::move(databaseRequester))
          {
          }
 
@@ -22,8 +23,8 @@ namespace database
          {
             try
             {
-               const auto f= getDevice(deviceId, true);
-               return f && f.get() != NULL;
+               const auto f = getDevice(deviceId, true);
+               return f && f.get() != nullptr;
             }
             catch (shared::exception::CEmptyResult&)
             {
@@ -36,7 +37,7 @@ namespace database
             try
             {
                const auto f = getDeviceInPlugin(pluginId, deviceName, true);
-               return f && f.get() != NULL;
+               return f && f.get() != nullptr;
             }
             catch (shared::exception::CEmptyResult&)
             {
@@ -236,7 +237,7 @@ namespace database
 
             //get a good name
             auto realFriendlyName = friendlyName;
-            if (realFriendlyName == std::string())
+            if (realFriendlyName.empty())
                realFriendlyName = name;
 
             //insert in db
@@ -273,17 +274,17 @@ namespace database
             //device not found, creation is enabled
 
             //get a good name
-            if (newFriendlyName != std::string())
-            {
-               //insert in db
-               auto qUpdate = m_databaseRequester->newQuery();
-               qUpdate->Update(CDeviceTable::getTableName()).
-                        Set(CDeviceTable::getFriendlyNameColumnName(), newFriendlyName).
-                        Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+            if (newFriendlyName.empty())
+               return;
 
-               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
-                  throw shared::exception::CEmptyResult("Fail to update device friendlyName");
-            }
+            //insert in db
+            auto qUpdate = m_databaseRequester->newQuery();
+            qUpdate->Update(CDeviceTable::getTableName()).
+                     Set(CDeviceTable::getFriendlyNameColumnName(), newFriendlyName).
+                     Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+
+            if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update device friendlyName");
          }
 
          void CDevice::rename(int deviceId, const std::string& newName)
@@ -371,6 +372,21 @@ namespace database
 
             if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                throw shared::exception::CEmptyResult("Fail to update device blacklist");
+         }
+
+         void CDevice::updateDeviceName(int deviceId,
+                                        const std::string& newName)
+         {
+            if (!deviceExists(deviceId))
+               throw shared::exception::CEmptyResult("The device does not exists");
+
+            auto qUpdate = m_databaseRequester->newQuery();
+            qUpdate->Update(CDeviceTable::getTableName()).
+                     Set(CDeviceTable::getNameColumnName(), newName).
+                     Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+
+            if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update device name");
          }
 
          bool CDevice::isDeviceBlacklisted(int deviceId) const
@@ -492,15 +508,11 @@ namespace database
 
             adapters::CDeviceAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
-            auto devicestoDelete = adapter.getResults();
+            auto devicesToDelete = adapter.getResults();
 
-            for (auto i = devicestoDelete.begin(); i != devicestoDelete.end(); ++i)
-            {
-               removeDevice((*i)->Id());
-            }
+            for (const auto& i : devicesToDelete)
+               removeDevice(i->Id());
          }
-
-         // [END] IDeviceRequester implementation
       } //namespace requesters
    } //namespace common
 } //namespace database 
