@@ -48,7 +48,7 @@ message("CURLPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${C
       list(APPEND CURLPP_BUILD_ARGS "-DCC_RPI_GXX=${CC_RPI_GXX}")
    endif()
    
-   #append all potentials dependecnies that exteranl project may need (openssl mostly)
+   #append all potentials dependencies that external project may need (openssl mostly)
    if(OPENSSL_ROOT)
       list(APPEND CURLPP_BUILD_ARGS "-DOPENSSL_ROOT_DIR=${OPENSSL_ROOT}")
    endif()
@@ -62,7 +62,7 @@ message("CURLPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${C
       list(APPEND CURLPP_BUILD_ARGS "-DPython2_ROOT=${Python2_ROOT}")
    endif()  
    if(Python3_ROOT)
-      list(APPEND CURLPP_BUILD_ARGS "-DPython2_ROOT=${Python3_ROOT}")
+      list(APPEND CURLPP_BUILD_ARGS "-DPython3_ROOT=${Python3_ROOT}")
    endif()  
    
    list(APPEND CURLPP_BUILD_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
@@ -73,7 +73,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 ExternalProject_Add (curlpp_build
    DEPENDS           curl_build
    GIT_REPOSITORY    https://github.com/jpbarrette/curlpp.git
-   GIT_TAG           02e4a60e7d541bbfd11bf21bbb76bd584863b5df
+   GIT_TAG           a67c73dde2c5d50b3dd3f898b8c185c23de827f3
    GIT_SHALLOW       ON
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${CURLPP_PATHCMD}   
