@@ -32,4 +32,5 @@ public:
 
    virtual bool hasTemperatureControl() = 0;
 
+   virtual void rename(std::string& newLightName) = 0;
 };

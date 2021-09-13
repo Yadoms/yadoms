@@ -13,9 +13,10 @@ include(CMakeFindFrameworks)
 cmake_find_frameworks(IOKit)
 cmake_find_frameworks(CoreFoundation)
 cmake_find_frameworks(Carbon)
+cmake_find_frameworks(SystemConfiguration)
 
 if (IOKit_FRAMEWORKS)
-   set(IOKIT_LIBRARY "-framework IOKit -framework CoreFoundation -framework CoreServices" CACHE FILEPATH "IOKit framework" FORCE)
+   set(IOKIT_LIBRARY "-framework IOKit -framework CoreFoundation -framework CoreServices -framework SystemConfiguration" CACHE FILEPATH "IOKit framework" FORCE)
    set(IOKIT_FOUND 1)
 endif (IOKit_FRAMEWORKS)
 
