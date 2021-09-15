@@ -703,10 +703,10 @@ void CEnOcean::processNoEepTeachInMessage(boost::shared_ptr<IRorg> rorg,
    declareDeviceWithoutProfile(deviceId);
 }
 
-void CEnOcean::processDataTelegram(message::CRadioErp1ReceivedMessage erp1Message,
-                                   boost::dynamic_bitset<> erp1UserData,
-                                   const boost::dynamic_bitset<> erp1Status,
-                                   std::string deviceId)
+void CEnOcean::processDataTelegram(const message::CRadioErp1ReceivedMessage& erp1Message,
+                                   const boost::dynamic_bitset<>& erp1UserData,
+                                   const boost::dynamic_bitset<>& erp1Status,
+                                   const std::string& deviceId)
 {
    if (m_devices.find(deviceId) == m_devices.end())
    {
@@ -755,7 +755,7 @@ void CEnOcean::processDataTelegram(message::CRadioErp1ReceivedMessage erp1Messag
    m_api->historizeData(deviceId, keywordsToHistorize);
 }
 
-void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+void CEnOcean::processEvent(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
 {
    if (esp3Packet->header().dataLength() < 1)
       throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % esp3Packet->header().dataLength()).str());
@@ -856,7 +856,7 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
 }
 
 bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
-                             boost::shared_ptr<const message::CUTE_ReceivedMessage> uteMessage,
+                             const boost::shared_ptr<const message::CUTE_ReceivedMessage>& uteMessage,
                              bool isReversed,
                              const std::string& deviceId)
 {

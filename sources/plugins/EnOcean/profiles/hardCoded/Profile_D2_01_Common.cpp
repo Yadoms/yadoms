@@ -202,8 +202,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return historizers;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::
-extractActuatorStatusResponse2Channels(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse2Channels(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
    boost::shared_ptr<yApi::historization::CSwitch> channel1,

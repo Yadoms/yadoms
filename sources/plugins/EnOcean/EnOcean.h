@@ -19,11 +19,11 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	This plugin supports EnOcean
 //--------------------------------------------------------------
-class CEnOcean : public plugin_cpp_api::IPlugin
+class CEnOcean final : public plugin_cpp_api::IPlugin
 {
 public:
    CEnOcean();
-   virtual ~CEnOcean() = default;
+   ~CEnOcean() override = default;
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
@@ -40,7 +40,7 @@ protected:
    /// \note                        Useful in case of first run of a new plugin version
    //--------------------------------------------------------------
    void createNewKeywords(const std::string& deviceName,
-                       const boost::shared_ptr<IType>& loadedDevice) const;
+                          const boost::shared_ptr<IType>& loadedDevice) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -57,7 +57,9 @@ protected:
    /// \brief	                     Called when dongle becomes unconnected
    /// \param[in] notification      The connection notification
    //--------------------------------------------------------------
-   void processUnConnectionEvent(boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
+   void processUnConnectionEvent(
+      boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<
+         shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
    /// \brief	                     Called when device was removed
@@ -109,14 +111,14 @@ protected:
                                  std::string deviceId);
    void processNoEepTeachInMessage(boost::shared_ptr<IRorg> rorg,
                                    std::string deviceId);
-   void processDataTelegram(message::CRadioErp1ReceivedMessage erp1Message,
-                            boost::dynamic_bitset<> erp1UserData,
-                            const boost::dynamic_bitset<> erp1Status,
-                            std::string deviceId);
-   static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+   void processDataTelegram(const message::CRadioErp1ReceivedMessage& erp1Message,
+                            const boost::dynamic_bitset<>& erp1UserData,
+                            const boost::dynamic_bitset<>& erp1Status,
+                            const std::string& deviceId);
+   static void processEvent(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
    void processUTE(message::CRadioErp1ReceivedMessage& erp1Message);
    bool sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
-                      boost::shared_ptr<const message::CUTE_ReceivedMessage> uteMessage,
+                      const boost::shared_ptr<const message::CUTE_ReceivedMessage>& uteMessage,
                       bool isReversed,
                       const std::string& deviceId);
 
