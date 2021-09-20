@@ -11,6 +11,7 @@
 #include "IMessageHandler.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
 #include "message/UTE_AnswerSendMessage.h"
+#include "profiles/IRorg.h"
 
 
 // Shortcut to yPluginApi namespace
@@ -46,7 +47,7 @@ protected:
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void processDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command);
+   void processDeviceCommand(const boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand>& command);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when dongle becomes connected
@@ -58,7 +59,7 @@ protected:
    /// \param[in] notification      The connection notification
    //--------------------------------------------------------------
    void processUnConnectionEvent(
-      boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<
+      const boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>& notification = boost::shared_ptr<
          shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
@@ -79,11 +80,11 @@ protected:
    /// \brief	                     Called when the data are received from the UPS
    /// \param [in] message          Message received
    //--------------------------------------------------------------
-   void processDataReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> message);
+   void processDataReceived(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Add signal power to historizable keyword list
-   /// \param [in/out] keywords     Keyword list
+   /// \param [in,out] keywords     Keyword list
    /// \param [in] deviceId         Device ID
    /// \param [in] signalPower      The current signal strength value (%)
    //--------------------------------------------------------------
@@ -103,14 +104,14 @@ protected:
    /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
    void processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
-   static void processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+   static void processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
    void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
                                      const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse);
-   void processEepTeachInMessage(boost::dynamic_bitset<> erp1UserData,
-                                 boost::shared_ptr<IRorg> rorg,
-                                 std::string deviceId);
-   void processNoEepTeachInMessage(boost::shared_ptr<IRorg> rorg,
-                                   std::string deviceId);
+   void processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserData,
+                                 const boost::shared_ptr<IRorg>& rorg,
+                                 const std::string& deviceId);
+   void processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
+                                   const std::string& deviceId);
    void processDataTelegram(const message::CRadioErp1ReceivedMessage& erp1Message,
                             const boost::dynamic_bitset<>& erp1UserData,
                             const boost::dynamic_bitset<>& erp1Status,
@@ -201,7 +202,7 @@ protected:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] extraQuery       Extra query
    //--------------------------------------------------------------
-   void startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
+   void startManualPairing(const boost::shared_ptr<yApi::IYPluginApi>& api,
                            boost::shared_ptr<yApi::IExtraQuery> extraQuery);
 
 private:
