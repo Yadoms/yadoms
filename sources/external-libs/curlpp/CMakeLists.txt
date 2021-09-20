@@ -73,7 +73,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 ExternalProject_Add (curlpp_build
    DEPENDS           curl_build
    GIT_REPOSITORY    https://github.com/jpbarrette/curlpp.git
-   GIT_TAG           a67c73dde2c5d50b3dd3f898b8c185c23de827f3
+   GIT_TAG           e94744a17a872fb7c53d4c266689e21aa813b88f
    GIT_SHALLOW       ON
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${CURLPP_PATHCMD}   
