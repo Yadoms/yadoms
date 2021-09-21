@@ -1,15 +1,16 @@
 #include "stdafx.h"
 #include "Profile_D2_03_0A.h"
+
+#include <utility>
 #include "profiles/bitsetHelpers.hpp"
 
-CProfile_D2_03_0A::CProfile_D2_03_0A(const std::string& deviceId,
+CProfile_D2_03_0A::CProfile_D2_03_0A(std::string deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_deviceId(deviceId),
+   : m_deviceId(std::move(deviceId)),
      m_simplePress(boost::make_shared<yApi::historization::CEvent>("SimplePress", yApi::EKeywordAccessMode::kGet)),
      m_doublePress(boost::make_shared<yApi::historization::CEvent>("DoublePress", yApi::EKeywordAccessMode::kGet)),
      m_longPress(boost::make_shared<yApi::historization::CEvent>("LongPress", yApi::EKeywordAccessMode::kGet)),
-     m_longPressReleased(
-        boost::make_shared<yApi::historization::CEvent>("LongPressReleased", yApi::EKeywordAccessMode::kGet)),
+     m_longPressReleased(boost::make_shared<yApi::historization::CEvent>("LongPressReleased", yApi::EKeywordAccessMode::kGet)),
      m_battery(boost::make_shared<yApi::historization::CBatteryLevel>("Battery", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_simplePress, m_doublePress, m_longPress, m_longPressReleased, m_battery})
 {
@@ -17,14 +18,14 @@ CProfile_D2_03_0A::CProfile_D2_03_0A(const std::string& deviceId,
 
 const std::string& CProfile_D2_03_0A::profile() const
 {
-   static const std::string profile("D2-03-0A");
-   return profile;
+   static const std::string Profile("D2-03-0A");
+   return Profile;
 }
 
 const std::string& CProfile_D2_03_0A::title() const
 {
-   static const std::string title("Light, Switching + Blind Control - Push Button - Single Button");
-   return title;
+   static const std::string Title(R"(Light, Switching + Blind Control - Push Button - Single Button)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_03_0A::allHistorizers() const
@@ -46,7 +47,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 {
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   enum EEvent
+   enum class EEvent
    {
       kSimplePress = 1,
       kDoublePress = 2,
@@ -56,26 +57,26 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    switch (static_cast<EEvent>(bitset_extract(data, 8, 8)))
    {
-   case kSimplePress:
-      historizers.push_back(m_simplePress);
+   case EEvent::kSimplePress:
+      historizers.emplace_back(m_simplePress);
       break;
-   case kDoublePress:
-      historizers.push_back(m_doublePress);
+   case EEvent::kDoublePress:
+      historizers.emplace_back(m_doublePress);
       break;
-   case kLongPress:
-      historizers.push_back(m_longPress);
+   case EEvent::kLongPress:
+      historizers.emplace_back(m_longPress);
       break;
-   case kLongPressReleased:
-      historizers.push_back(m_longPressReleased);
+   case EEvent::kLongPressReleased:
+      historizers.emplace_back(m_longPressReleased);
       break;
-   default:
+   default:  // NOLINT(clang-diagnostic-covered-switch-default)
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
          " : Event=" << bitset_extract(data, 8, 8);
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
-   m_battery->set(bitset_extract(data, 0, 8));
-   historizers.push_back(m_battery);
+   m_battery->set(static_cast<int>(bitset_extract(data, 0, 8)));
+   historizers.emplace_back(m_battery);
 
    return historizers;
 }

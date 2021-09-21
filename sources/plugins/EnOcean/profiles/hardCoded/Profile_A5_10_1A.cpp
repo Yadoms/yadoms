@@ -4,9 +4,7 @@
 
 CProfile_A5_10_1A::CProfile_A5_10_1A(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_voltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
+   : m_voltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
      m_setPoint(boost::make_shared<yApi::historization::CTemperature>("SetPoint")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
      m_fan(boost::make_shared<specificHistorizers::CFan6Speeds>("Fan")),
@@ -24,7 +22,7 @@ const std::string& CProfile_A5_10_1A::profile() const
 const std::string& CProfile_A5_10_1A::title() const
 {
    static const std::string Title(
-      "Room Operating Panel - Supply voltage monitor, Temperature Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
+      R"(Room Operating Panel - Supply voltage monitor, Temperature Set Point, Temperature Sensor, Fan Speed and Occupancy Control)");
    return Title;
 }
 
@@ -52,14 +50,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (rawVoltage <= 250)
    {
       m_voltage->set(rawVoltage * 5.0 / 250.0);
-      historizers.push_back(m_voltage);
+      historizers.emplace_back(m_voltage);
    }
 
    m_setPoint->set(static_cast<double>(250 - bitset_extract(data, 8, 8)) * 40.0 / 250.0);
-   historizers.push_back(m_setPoint);
+   historizers.emplace_back(m_setPoint);
 
    m_temperature->set(static_cast<double>(250 - bitset_extract(data, 16, 8)) * 40.0 / 250.0);
-   historizers.push_back(m_temperature);
+   historizers.emplace_back(m_temperature);
 
    switch (bitset_extract(status, 25, 3))
    {
@@ -94,7 +92,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
       // Occupancy sensor available
       m_occupancy->set(bitset_extract(status, 31, 1) ? true : false);
-      historizers.push_back(m_occupancy);
+      historizers.emplace_back(m_occupancy);
    }
 
    return historizers;

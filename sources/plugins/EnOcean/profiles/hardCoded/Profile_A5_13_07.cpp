@@ -6,9 +6,7 @@
 
 CProfile_A5_13_07::CProfile_A5_13_07(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_direction(boost::make_shared<yApi::historization::CDirection>("Direction")),
+   : m_direction(boost::make_shared<yApi::historization::CDirection>("Direction")),
      m_averageSpeed(boost::make_shared<yApi::historization::CSpeed>("Average speed", yApi::EKeywordAccessMode::kGet)),
      m_maximumSpeed(boost::make_shared<yApi::historization::CSpeed>("Maximum speed", yApi::EKeywordAccessMode::kGet)),
      m_battery(boost::make_shared<yApi::historization::CBatteryLevel>("Battery")),
@@ -24,7 +22,7 @@ const std::string& CProfile_A5_13_07::profile() const
 
 const std::string& CProfile_A5_13_07::title() const
 {
-   static const std::string Title("Environmental Applications - Wind Sensor");
+   static const std::string Title(R"(Environmental Applications - Wind Sensor)");
    return Title;
 }
 

@@ -4,24 +4,22 @@
 #include <shared/Log.h>
 
 CProfile_F6_10_01::CProfile_F6_10_01(const std::string& deviceId,
-   boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-   m_deviceId(deviceId),
-   m_movement(boost::make_shared<specificHistorizers::CMechanicalHandleMovement>("Movement")),
-   m_historizers({ m_movement })
+                                     boost::shared_ptr<yApi::IYPluginApi> api)
+   : m_movement(boost::make_shared<specificHistorizers::CMechanicalHandleMovement>("Movement")),
+     m_historizers({m_movement})
 {
 }
 
 const std::string& CProfile_F6_10_01::profile() const
 {
-   static const std::string profile("F6-10-01");
-   return profile;
+   static const std::string Profile("F6-10-01");
+   return Profile;
 }
 
 const std::string& CProfile_F6_10_01::title() const
 {
-   static const std::string title("Mechanical handle - Windows handle ERP2");
-   return title;
+   static const std::string Title(R"(Mechanical handle - Windows handle ERP2)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_10_01::allHistorizers() const
@@ -30,7 +28,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_F6_10_01::readInitialState(const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+                                         boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // Read-only device
 }
@@ -61,16 +59,16 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_F6_10_01::sendCommand(const std::string& keyword,
-   const std::string& commandBody,
-   const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+                                    const std::string& commandBody,
+                                    const std::string& senderId,
+                                    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    throw std::logic_error("device supports no command sending");
 }
 
 void CProfile_F6_10_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
-   const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+                                          const std::string& senderId,
+                                          boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // Device supports no configuration
 }

@@ -6,9 +6,7 @@
 
 CProfile_A5_13_05::CProfile_A5_13_05(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_elevation(boost::make_shared<yApi::historization::CDirection>("Elevation")),
+   : m_elevation(boost::make_shared<yApi::historization::CDirection>("Elevation")),
      m_azimuth(boost::make_shared<yApi::historization::CDirection>("Azimuth")),
      m_historizers({m_elevation, m_azimuth})
 {
@@ -22,7 +20,7 @@ const std::string& CProfile_A5_13_05::profile() const
 
 const std::string& CProfile_A5_13_05::title() const
 {
-   static const std::string Title("Environmental Applications - Direction Exchange");
+   static const std::string Title(R"(Environmental Applications - Direction Exchange)");
    return Title;
 }
 

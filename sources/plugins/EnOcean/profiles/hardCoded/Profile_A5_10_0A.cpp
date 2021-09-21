@@ -4,9 +4,7 @@
 
 CProfile_A5_10_0A::CProfile_A5_10_0A(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_setPoint(boost::make_shared<specificHistorizers::CSetPoint>("SetPoint")),
+   : m_setPoint(boost::make_shared<specificHistorizers::CSetPoint>("SetPoint")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
      m_contact(boost::make_shared<yApi::historization::CSwitch>("Contact")),
      m_historizers({m_setPoint, m_temperature, m_contact})
@@ -21,8 +19,7 @@ const std::string& CProfile_A5_10_0A::profile() const
 
 const std::string& CProfile_A5_10_0A::title() const
 {
-   static const std::string Title(
-      "Room Operating Panel - Temperature Sensor, Set Point Adjust and Single Input Contact");
+   static const std::string Title(R"(Room Operating Panel - Temperature Sensor, Set Point Adjust and Single Input Contact)");
    return Title;
 }
 

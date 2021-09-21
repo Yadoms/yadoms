@@ -3,7 +3,7 @@
 #include <profiles/eep.h>
 #include <profiles/bitsetHelpers.hpp>
 
-enum E_A5_09_05_ScaleMultiplier
+enum class E_A5_09_05_ScaleMultiplier
 {
    kA5_09_05_Multiplier_0_01 = 0,
    kA5_09_05_Multiplier_0_1 = 1,
@@ -21,13 +21,13 @@ CProfile_A5_09_05::CProfile_A5_09_05(const std::string& deviceId,
 
 const std::string& CProfile_A5_09_05::profile() const
 {
-   static const std::string Profile("Gas sensor - VOC sensor");
+   static const std::string Profile("A5-09-05");
    return Profile;
 }
 
 const std::string& CProfile_A5_09_05::title() const
 {
-   static const std::string Title("Gas sensor");
+   static const std::string Title(R"(VOC sensor)");
    return Title;
 }
 
@@ -51,23 +51,23 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (rorg != CRorgs::ERorgIds::k4BS_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   m_volatileOrganicCompound->set(specificHistorizers::EVolatileOrganicCompound(bitset_extract(data, 16, 8)));
+   m_volatileOrganicCompound->set(specificHistorizers::EVolatileOrganicCompound(static_cast<int>(bitset_extract(data, 16, 8))));
 
    auto concentration = static_cast<double>(bitset_extract(data, 0, 16));
    const auto multiplier = static_cast<E_A5_09_05_ScaleMultiplier> (bitset_extract(data, 30, 2));
 
    switch (multiplier)
    {
-   case kA5_09_05_Multiplier_0_01:
+   case E_A5_09_05_ScaleMultiplier::kA5_09_05_Multiplier_0_01:
       concentration *= 0.01;
       break;
-   case kA5_09_05_Multiplier_0_1:
+   case E_A5_09_05_ScaleMultiplier::kA5_09_05_Multiplier_0_1:
       concentration *= 0.1;
       break;
-   case kA5_09_05_Multiplier_1:
+   case E_A5_09_05_ScaleMultiplier::kA5_09_05_Multiplier_1:
       concentration *= 1.0;
       break;
-   case kA5_09_05_Multiplier_10:
+   case E_A5_09_05_ScaleMultiplier::kA5_09_05_Multiplier_10:
       concentration *= 10.0;
       break;
    }

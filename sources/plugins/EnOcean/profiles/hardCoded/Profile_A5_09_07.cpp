@@ -21,7 +21,7 @@ const std::string& CProfile_A5_09_07::profile() const
 
 const std::string& CProfile_A5_09_07::title() const
 {
-   static const std::string Title("Gas sensor - Particles");
+   static const std::string Title(R"(Gas sensor - Particles)");
    return Title;
 }
 
@@ -53,21 +53,21 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
       // PM10 active
       m_concentration10um->set(static_cast<double>(bitset_extract(data, 0, 9)) / 1000000.0);
-      historizers.push_back(m_concentration10um);
+      historizers.emplace_back(m_concentration10um);
    }
 
    if (bitset_extract(data, 30, 1))
    {
       // PM2.5 active
       m_concentration10um->set(static_cast<double>(bitset_extract(data, 9, 9)) / 1000000.0);
-      historizers.push_back(m_concentration10um);
+      historizers.emplace_back(m_concentration10um);
    }
 
    if (bitset_extract(data, 31, 1))
    {
       // PM1 active
       m_concentration10um->set(static_cast<double>(bitset_extract(data, 18, 9)) / 1000000.0);
-      historizers.push_back(m_concentration10um);
+      historizers.emplace_back(m_concentration10um);
    }
 
    return historizers;

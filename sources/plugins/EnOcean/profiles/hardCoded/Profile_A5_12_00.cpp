@@ -6,28 +6,27 @@
 
 CProfile_A5_12_00::CProfile_A5_12_00(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_deviceId(deviceId)
 {
-   for (auto indexChannel = 0; indexChannel < NB_CHANNELS; ++indexChannel)
+   for (auto indexChannel = 0; indexChannel < NbChannels; ++indexChannel)
    {
       const auto strChannel = std::to_string(indexChannel);
       m_cumulative[indexChannel] = boost::make_shared<yApi::historization::CCounter>("Cumulative (" + strChannel + ")");
-      m_historizers.push_back(m_cumulative[indexChannel]);
+      m_historizers.emplace_back(m_cumulative[indexChannel]);
       m_currentValue[indexChannel] = boost::make_shared<yApi::historization::CFrequency>("Current value (" + strChannel + ")");
-      m_historizers.push_back(m_currentValue[indexChannel]);
+      m_historizers.emplace_back(m_currentValue[indexChannel]);
    }
 }
 
 const std::string& CProfile_A5_12_00::profile() const
 {
-   static const std::string profile("A5-12-00");
-   return profile;
+   static const std::string Profile("A5-12-00");
+   return Profile;
 }
 
 const std::string& CProfile_A5_12_00::title() const
 {
-   static const std::string title("Automated Meter Reading - Counter");
-   return title;
+   static const std::string Title(R"(Automated Meter Reading - Counter)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_12_00::allHistorizers() const
@@ -50,8 +49,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (rorg != CRorgs::ERorgIds::k4BS_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   const int meterReading = bitset_extract(data, 0, 24);
-   const int channel = bitset_extract(data, 24, 4);
+   const auto meterReading = static_cast<int>(bitset_extract(data, 0, 24));
+   const auto channel = static_cast<int>(bitset_extract(data, 24, 4));
    const auto dataType = static_cast<CProfile_A5_12_Common::E_A5_12_DataType> (bitset_extract(data, 29, 1));
    const auto divisor = static_cast<CProfile_A5_12_Common::E_A5_12_Divisor> (bitset_extract(data, 30, 2));
 
@@ -60,15 +59,15 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    switch (dataType)
    {
-   case CProfile_A5_12_Common::kCumulativeValue:
+   case CProfile_A5_12_Common::E_A5_12_DataType::kCumulativeValue:
       m_cumulative[channel]->set(CProfile_A5_12_Common::applyDivisorInInt(meterReading, divisor));
-      historizers.push_back(m_cumulative[channel]);
+      historizers.emplace_back(m_cumulative[channel]);
       break;
-   case CProfile_A5_12_Common::kCurrentValue:
+   case CProfile_A5_12_Common::E_A5_12_DataType::kCurrentValue:
       m_currentValue[channel]->set(CProfile_A5_12_Common::applyDivisorInDouble(meterReading, divisor));
-      historizers.push_back(m_currentValue[channel]);
+      historizers.emplace_back(m_currentValue[channel]);
       break;
-   default:
+   default:  // NOLINT(clang-diagnostic-covered-switch-default)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 

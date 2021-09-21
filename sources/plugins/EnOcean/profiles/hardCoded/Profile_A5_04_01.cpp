@@ -20,7 +20,7 @@ const std::string& CProfile_A5_04_01::profile() const
 
 const std::string& CProfile_A5_04_01::title() const
 {
-   static const std::string Title("Temperature (0 to 40°C) and humidity sensor (0 to 100%)");
+   static const std::string Title(R"(Temperature (0 to 40°C) and humidity sensor (0 to 100%))");
    return Title;
 }
 
@@ -48,14 +48,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   m_humidity->set(static_cast<double>(bitset_extract(data, 8, 8) * 100.0 / 250.0));
-   historizers.push_back(m_humidity);
+   m_humidity->set(bitset_extract(data, 8, 8) * 100.0 / 250.0);
+   historizers.emplace_back(m_humidity);
 
    if (bitset_extract(data, 30, 1))
    {
       // Temperature sensor available
       m_temperature->set(static_cast<double>(bitset_extract(data, 16, 8)) * 40.0 / 250.0);
-      historizers.push_back(m_temperature);
+      historizers.emplace_back(m_temperature);
    }
 
    return historizers;

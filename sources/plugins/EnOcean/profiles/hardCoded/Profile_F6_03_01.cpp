@@ -5,9 +5,7 @@
 
 CProfile_F6_03_01::CProfile_F6_03_01(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_buttonA(boost::make_shared<yApi::historization::CSwitch>("Button A", yApi::EKeywordAccessMode::kGet)),
+   : m_buttonA(boost::make_shared<yApi::historization::CSwitch>("Button A", yApi::EKeywordAccessMode::kGet)),
      m_buttonB(boost::make_shared<yApi::historization::CSwitch>("Button B", yApi::EKeywordAccessMode::kGet)),
      m_buttonC(boost::make_shared<yApi::historization::CSwitch>("Button C", yApi::EKeywordAccessMode::kGet)),
      m_buttonD(boost::make_shared<yApi::historization::CSwitch>("Button D", yApi::EKeywordAccessMode::kGet)),
@@ -17,14 +15,14 @@ CProfile_F6_03_01::CProfile_F6_03_01(const std::string& deviceId,
 
 const std::string& CProfile_F6_03_01::profile() const
 {
-   static const std::string profile("F6-03-01");
-   return profile;
+   static const std::string Profile("F6-03-01");
+   return Profile;
 }
 
 const std::string& CProfile_F6_03_01::title() const
 {
-   static const std::string title("Rocker switch, 4 rocker - Light and Blind Control - Application style 1");
-   return title;
+   static const std::string Title(R"(Rocker switch, 4 rocker - Light and Blind Control - Application style 1)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_03_01::allHistorizers() const
@@ -73,35 +71,35 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
    case 0:
       m_buttonA->set(true);
-      historizers.push_back(m_buttonA);
+      historizers.emplace_back(m_buttonA);
       break;
    case 1:
       m_buttonA->set(false);
-      historizers.push_back(m_buttonA);
+      historizers.emplace_back(m_buttonA);
       break;
    case 2:
       m_buttonB->set(true);
-      historizers.push_back(m_buttonB);
+      historizers.emplace_back(m_buttonB);
       break;
    case 3:
       m_buttonB->set(false);
-      historizers.push_back(m_buttonB);
+      historizers.emplace_back(m_buttonB);
       break;
    case 4:
       m_buttonC->set(false);
-      historizers.push_back(m_buttonC);
+      historizers.emplace_back(m_buttonC);
       break;
    case 5:
       m_buttonC->set(false);
-      historizers.push_back(m_buttonC);
+      historizers.emplace_back(m_buttonC);
       break;
    case 6:
       m_buttonD->set(false);
-      historizers.push_back(m_buttonD);
+      historizers.emplace_back(m_buttonD);
       break;
    case 7:
       m_buttonD->set(false);
-      historizers.push_back(m_buttonD);
+      historizers.emplace_back(m_buttonD);
       break;
    default:
       YADOMS_LOG(error) << "Profile F6_03_01 : receive unsupported rocker first action value " << rocker1stAction;
@@ -116,35 +114,35 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       {
       case 0:
          m_buttonA->set(true);
-         historizers.push_back(m_buttonA);
+         historizers.emplace_back(m_buttonA);
          break;
       case 1:
          m_buttonA->set(false);
-         historizers.push_back(m_buttonA);
+         historizers.emplace_back(m_buttonA);
          break;
       case 2:
          m_buttonB->set(true);
-         historizers.push_back(m_buttonB);
+         historizers.emplace_back(m_buttonB);
          break;
       case 3:
          m_buttonB->set(false);
-         historizers.push_back(m_buttonB);
+         historizers.emplace_back(m_buttonB);
          break;
       case 4:
          m_buttonC->set(true);
-         historizers.push_back(m_buttonC);
+         historizers.emplace_back(m_buttonC);
          break;
       case 5:
          m_buttonC->set(false);
-         historizers.push_back(m_buttonC);
+         historizers.emplace_back(m_buttonC);
          break;
       case 6:
          m_buttonD->set(true);
-         historizers.push_back(m_buttonD);
+         historizers.emplace_back(m_buttonD);
          break;
       case 7:
          m_buttonD->set(false);
-         historizers.push_back(m_buttonD);
+         historizers.emplace_back(m_buttonD);
          break;
       default:
          YADOMS_LOG(error) << "Profile F6_03_01 : receive unsupported rocker second action value " << rocker2ndAction;

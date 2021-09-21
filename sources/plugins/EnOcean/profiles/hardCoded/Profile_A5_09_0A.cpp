@@ -21,7 +21,7 @@ const std::string& CProfile_A5_09_0A::profile() const
 
 const std::string& CProfile_A5_09_0A::title() const
 {
-   static const std::string Title("Gas sensor - Hydrogen gas sensor");
+   static const std::string Title(R"(Gas sensor - Hydrogen gas sensor)");
    return Title;
 }
 
@@ -53,17 +53,17 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
       // Supply voltage sensor available
       m_supplyVoltage->set(static_cast<double>(bitset_extract(data, 24, 4)) * 3.0 / 15.0 + 2.0);
-      historizers.push_back(m_supplyVoltage);
+      historizers.emplace_back(m_supplyVoltage);
    }
 
-   m_concentrationPpm->set(static_cast<double>(bitset_extract(data, 0, 16)));
-   historizers.push_back(m_concentrationPpm);
+   m_concentrationPpm->set(bitset_extract(data, 0, 16));
+   historizers.emplace_back(m_concentrationPpm);
 
    if (bitset_extract(data, 30, 1))
    {
       // Temperature sensor available
       m_temperature->set(static_cast<double>(bitset_extract(data, 16, 8)) * 80.0 / 255.0 - 20.0);
-      historizers.push_back(m_temperature);
+      historizers.emplace_back(m_temperature);
    }
 
    return historizers;
