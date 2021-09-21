@@ -6,9 +6,7 @@
 
 CProfile_A5_13_04::CProfile_A5_13_04(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_dayOfWeek(boost::make_shared<specificHistorizers::CDayOfWeek>("DayOfWeek")),
+   : m_dayOfWeek(boost::make_shared<specificHistorizers::CDayOfWeek>("DayOfWeek")),
      m_time(boost::make_shared<yApi::historization::CDuration>("TimeOfDay")),
      m_gpsSource(boost::make_shared<yApi::historization::CSwitch>("GPS source", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_dayOfWeek, m_time, m_gpsSource})
@@ -23,7 +21,7 @@ const std::string& CProfile_A5_13_04::profile() const
 
 const std::string& CProfile_A5_13_04::title() const
 {
-   static const std::string Title("Environmental Applications - Time and Day Exchange");
+   static const std::string Title(R"(Environmental Applications - Time and Day Exchange)");
    return Title;
 }
 
@@ -82,7 +80,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
-   m_time->set(static_cast<double>(hour * 24 * 60 + minute * 60 + second));
+   m_time->set(hour * 24 * 60 + minute * 60 + second);
 
    m_gpsSource->set(bitset_extract(data, 31, 1) ? true : false);
 

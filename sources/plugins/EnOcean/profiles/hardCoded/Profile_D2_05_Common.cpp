@@ -44,7 +44,7 @@ void CProfile_D2_05_Common::sendGoToPositionAndAngle(boost::shared_ptr<IMessageH
    bitset_insert(userData, 17, 3, 0);
    bitset_insert(userData, 21, 3, lockingMode);
    bitset_insert(userData, 24, 4, 0);
-   bitset_insert(userData, 28, 4, kGoToPositionAndAngle);
+   bitset_insert(userData, 28, 4, static_cast<int>(E_D2_01_Command::kGoToPositionAndAngle));
 
    sendMessage(messageHandler,
                senderId,
@@ -59,7 +59,7 @@ void CProfile_D2_05_Common::sendStop(boost::shared_ptr<IMessageHandler> messageH
 {
    boost::dynamic_bitset<> userData(1 * 8);
    bitset_insert(userData, 0, 4, 0);
-   bitset_insert(userData, 4, 4, kStop);
+   bitset_insert(userData, 4, 4, static_cast<int>(E_D2_01_Command::kStop));
 
    sendMessage(messageHandler,
                senderId,
@@ -74,7 +74,7 @@ void CProfile_D2_05_Common::sendQueryPositionAndAngle(boost::shared_ptr<IMessage
 {
    boost::dynamic_bitset<> userData(1 * 8);
    bitset_insert(userData, 0, 4, 0);
-   bitset_insert(userData, 4, 4, kQueryPositionAndAngle);
+   bitset_insert(userData, 4, 4, static_cast<int>(E_D2_01_Command::kQueryPositionAndAngle));
 
    sendMessage(messageHandler,
                senderId,
@@ -94,7 +94,7 @@ extractReplyPositionAndAngleResponse(unsigned char rorg,
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   if (bitset_extract(data, 28, 4) != kReplyPositionAndAngle)
+   if (static_cast<E_D2_01_Command>(bitset_extract(data, 28, 4)) != E_D2_01_Command::kReplyPositionAndAngle)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
    if (bitset_extract(data, 24, 4) != 0)
@@ -103,8 +103,8 @@ extractReplyPositionAndAngleResponse(unsigned char rorg,
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   const int position = bitset_extract(data, 1, 7);
-   const int angle = bitset_extract(data, 9, 7);
+   const auto position = static_cast<int>(bitset_extract(data, 1, 7));
+   const auto angle = static_cast<int>(bitset_extract(data, 9, 7));
    const auto locking = static_cast<specificHistorizers::EBlindLockingMode>(bitset_extract(data, 21, 3));
 
    if (position != 127)
@@ -112,14 +112,14 @@ extractReplyPositionAndAngleResponse(unsigned char rorg,
       curtain->set(position > 50
                       ? yApi::historization::ECurtainCommand::kOpen
                       : yApi::historization::ECurtainCommand::kClose);
-      historizers.push_back(curtain);
+      historizers.emplace_back(curtain);
    }
    else if (angle != 127)
    {
       curtain->set(angle > 50
                       ? yApi::historization::ECurtainCommand::kOpen
                       : yApi::historization::ECurtainCommand::kClose);
-      historizers.push_back(curtain);
+      historizers.emplace_back(curtain);
    }
 
    switch (locking)
@@ -128,7 +128,7 @@ extractReplyPositionAndAngleResponse(unsigned char rorg,
    case specificHistorizers::EBlindLockingMode::kBlockageValue:
    case specificHistorizers::EBlindLockingMode::kAlarmValue:
       lockingMode->set(locking);
-      historizers.push_back(lockingMode);
+      historizers.emplace_back(lockingMode);
       break;
    default:
       YADOMS_LOG(warning) << "ReplyPositionAndAngleResponse : received unsupported locking mode value " << locking;
@@ -168,7 +168,7 @@ void CProfile_D2_05_Common::sendSetParameters(boost::shared_ptr<IMessageHandler>
    bitset_insert(data, 16, 8, measuredDurationOfRotationMs);
    bitset_insert(data, 29, 3, alarmAction);
    bitset_insert(data, 32, 4, 0);
-   bitset_insert(data, 36, 4, kSetParameters);
+   bitset_insert(data, 36, 4, static_cast<int>(E_D2_01_Command::kSetParameters));
 
    sendMessage(messageHandler,
                senderId,

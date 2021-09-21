@@ -5,9 +5,11 @@
 #include "Profile_D2_01_Common.h"
 #include <shared/Log.h>
 
-CProfile_D2_01_05::CProfile_D2_01_05(const std::string& deviceId,
+#include <utility>
+
+CProfile_D2_01_05::CProfile_D2_01_05(std::string deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_deviceId(deviceId),
+   : m_deviceId(std::move(deviceId)),
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_resetLoadEnergy(boost::make_shared<yApi::historization::CEvent>("ResetLoadEnergy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
@@ -20,14 +22,14 @@ CProfile_D2_01_05::CProfile_D2_01_05(const std::string& deviceId,
 
 const std::string& CProfile_D2_01_05::profile() const
 {
-   static const std::string profile("D2-01-05");
-   return profile;
+   static const std::string Profile("D2-01-05");
+   return Profile;
 }
 
 const std::string& CProfile_D2_01_05::title() const
 {
-   static const std::string title("Electronic dimmer with energy measurement and local control");
-   return title;
+   static const std::string Title(R"(Electronic dimmer with energy measurement and local control)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_05::allHistorizers() const
@@ -72,9 +74,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       {
          return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                      data,
-                                                                     CProfile_D2_01_Common::noChannel1,
+                                                                     CProfile_D2_01_Common::NoChannel1,
                                                                      m_dimmer,
-                                                                     CProfile_D2_01_Common::noPowerFailure,
+                                                                     CProfile_D2_01_Common::NoPowerFailure,
                                                                      m_overCurrent);
       }
    case CProfile_D2_01_Common::E_D2_01_Command::kActuatorMeasurementResponse:

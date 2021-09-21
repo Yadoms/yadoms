@@ -5,10 +5,9 @@
 #include "message/MessageHelpers.h"
 
 
-CProfile_D2_00_01::CProfile_D2_00_01(const std::string& deviceId,
+CProfile_D2_00_01::CProfile_D2_00_01(const std::basic_string<char>& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
+   : m_deviceId(deviceId),
      m_temperatureMeasure(boost::make_shared<yApi::historization::CTemperature>("Temperature measure",
                                                                                 yApi::EKeywordAccessMode::kGet)),
      m_temperatureSetPoint(boost::make_shared<yApi::historization::CTemperature>("Temperature set point",
@@ -58,7 +57,7 @@ const std::string& CProfile_D2_00_01::profile() const
 
 const std::string& CProfile_D2_00_01::title() const
 {
-   static const std::string Title("Room Control Panel (RCP) - RCP with Temperature Measurement and Display (BI-DIR)");
+   static const std::string Title(R"(Room Control Panel (RCP) - RCP with Temperature Measurement and Display (BI-DIR))");
    return Title;
 }
 
@@ -85,30 +84,30 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    switch (msgId)
    {
-   case kRepeatedUserActionOnRcp:
+   case EMsgId::kRepeatedUserActionOnRcp:
       {
          const auto fanSpeedRawValue = bitset_extract(data, 1, 3);
          switch (fanSpeedRawValue)
          {
          case 1:
             m_fanSpeed->set(specificHistorizers::EFan4Speeds::kSpeed0);
-            historizers.push_back(m_fanSpeed);
+            historizers.emplace_back(m_fanSpeed);
             break;
          case 2:
             m_fanSpeed->set(specificHistorizers::EFan4Speeds::kSpeed1);
-            historizers.push_back(m_fanSpeed);
+            historizers.emplace_back(m_fanSpeed);
             break;
          case 3:
             m_fanSpeed->set(specificHistorizers::EFan4Speeds::kSpeed2);
-            historizers.push_back(m_fanSpeed);
+            historizers.emplace_back(m_fanSpeed);
             break;
          case 4:
             m_fanSpeed->set(specificHistorizers::EFan4Speeds::kSpeed3);
-            historizers.push_back(m_fanSpeed);
+            historizers.emplace_back(m_fanSpeed);
             break;
          case 5:
             m_fanSpeed->set(specificHistorizers::EFan4Speeds::kAuto);
-            historizers.push_back(m_fanSpeed);
+            historizers.emplace_back(m_fanSpeed);
             break;
          default:
             YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
@@ -121,11 +120,11 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
          {
          case 1:
             m_presence->set(true);
-            historizers.push_back(m_presence);
+            historizers.emplace_back(m_presence);
             break;
          case 2:
             m_presence->set(false);
-            historizers.push_back(m_presence);
+            historizers.emplace_back(m_presence);
             break;
          default:
             break;
@@ -134,18 +133,18 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
          if (bitset_extract(data, 11, 5) == 0x05)
          {
             m_temperatureSetPoint->set(static_cast<double>(bitset_extract(data, 16, 16)) / 100.0);
-            historizers.push_back(m_temperatureSetPoint);
+            historizers.emplace_back(m_temperatureSetPoint);
          }
 
          break;
       }
-   case kMeasurementResult:
+   case EMsgId::kMeasurementResult:
       {
          if (bitset_extract(data, 16, 4) == 0)
          {
             m_temperatureSetPoint->set(
                static_cast<double>(bitset_extract(data, 20, 4) << 8 || bitset_extract(data, 8, 8)) / 100.0);
-            historizers.push_back(m_temperatureSetPoint);
+            historizers.emplace_back(m_temperatureSetPoint);
          }
 
          break;
@@ -187,7 +186,7 @@ void CProfile_D2_00_01::sendCommand(const std::string& keyword,
    // Send message
    boost::dynamic_bitset<> userData(5 * 8);
 
-   bitset_insert(userData, 5, 3, kDisplayContent);
+   bitset_insert(userData, 5, 3, static_cast<int>(EMsgId::kDisplayContent));
 
    enum EFanMode { kAuto = 0, kManual = 1 };
    if (m_displayFan->get())
@@ -330,7 +329,7 @@ void CProfile_D2_00_01::sendConfiguration(const shared::CDataContainer& deviceCo
    boost::dynamic_bitset<> data(6 * 8);
 
    bitset_insert(data, 4, 1, 0);
-   bitset_insert(data, 5, 3, kSensorConfiguration);
+   bitset_insert(data, 5, 3, static_cast<int>(EMsgId::kSensorConfiguration));
    bitset_insert(data, 9, 7, static_cast<int>(setPointRangeLimit * 10.0));
    bitset_insert(data, 17, 7, setPointSteps);
    bitset_insert(data, 24, 4, (temperatureMeasurementTiming / 10) & 0x0F);

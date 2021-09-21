@@ -20,7 +20,7 @@ const std::string& CProfile_A5_04_04::profile() const
 
 const std::string& CProfile_A5_04_04::title() const
 {
-   static const std::string Title("Temperature (-40 to 120°C) and humidity sensor (0 to 100%)");
+   static const std::string Title(R"(Temperature (-40 to 120°C) and humidity sensor (0 to 100%))");
    return Title;
 }
 
@@ -52,14 +52,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (humidity < 200)
    {
       m_humidity->set(static_cast<double>(humidity) * 100.0 / 199.0);
-      historizers.push_back(m_humidity);
+      historizers.emplace_back(m_humidity);
    }
 
    const auto temperature = bitset_extract(data, 12, 12);
    if (temperature < 1600)
    {
       m_temperature->set(static_cast<double>(temperature) * 160.0 / 1599.0 - 40.0);
-      historizers.push_back(m_temperature);
+      historizers.emplace_back(m_temperature);
    }
 
    return historizers;

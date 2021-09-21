@@ -2,12 +2,12 @@
 #include "Profile_A5_07_01.h"
 #include "../bitsetHelpers.hpp"
 #include "profiles/eep.h"
-#include <algorithm>
+
+#include "Profile_A5_12_Common.h"
 
 CProfile_A5_07_01::CProfile_A5_07_01(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
+   : m_deviceId(deviceId),
      m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
      m_pir(boost::make_shared<yApi::historization::CSwitch>("Pir status", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_supplyVoltage, m_pir})
@@ -22,8 +22,7 @@ const std::string& CProfile_A5_07_01::profile() const
 
 const std::string& CProfile_A5_07_01::title() const
 {
-   static const std::string Title(
-      "Occupancy Sensor - Occupancy with Supply voltage monitor");
+   static const std::string Title("Occupancy Sensor - Occupancy with Supply voltage monitor");
    return Title;
 }
 
@@ -48,13 +47,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    if (bitset_extract(data, 31, 1))
    {
-      m_supplyVoltage->set(
-         static_cast<double>(std::max(bitset_extract(data, 0, 8), static_cast<unsigned>(250))) * 5.0 / 250.0);
-      historizers.push_back(m_supplyVoltage);
+      m_supplyVoltage->set(static_cast<double>(CProfile_A5_12_Common::clamp(bitset_extract(data, 0, 8),
+                                                                            static_cast<unsigned>(0),
+                                                                            static_cast<unsigned>(250))) * 5.0 / 250.0);
+      historizers.emplace_back(m_supplyVoltage);
    }
 
    m_pir->set(bitset_extract(data, 16, 8) >= 128);
-   historizers.push_back(m_pir);
+   historizers.emplace_back(m_pir);
 
    return historizers;
 }

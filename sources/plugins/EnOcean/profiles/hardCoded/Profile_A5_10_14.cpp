@@ -4,12 +4,10 @@
 
 CProfile_A5_10_14::CProfile_A5_10_14(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_humidity(boost::make_shared<yApi::historization::CHumidity>("Humidity")),
+   : m_humidity(boost::make_shared<yApi::historization::CHumidity>("Humidity")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
      m_dayNight(boost::make_shared<yApi::historization::CSwitch>("DayNight", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_humidity, m_temperature, m_dayNight })
+     m_historizers({m_humidity, m_temperature, m_dayNight})
 {
 }
 
@@ -21,8 +19,7 @@ const std::string& CProfile_A5_10_14::profile() const
 
 const std::string& CProfile_A5_10_14::title() const
 {
-   static const std::string Title(
-      "Room Operating Panel - Temperature and Humidity Sensor, Day/Night Control");
+   static const std::string Title(R"(Room Operating Panel - Temperature and Humidity Sensor, Day/Night Control)");
    return Title;
 }
 

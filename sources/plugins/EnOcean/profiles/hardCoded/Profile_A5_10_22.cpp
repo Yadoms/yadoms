@@ -4,9 +4,7 @@
 
 CProfile_A5_10_22::CProfile_A5_10_22(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_setPoint(boost::make_shared<specificHistorizers::CSetPoint>("SetPoint", yApi::EKeywordAccessMode::kGet)),
+   : m_setPoint(boost::make_shared<specificHistorizers::CSetPoint>("SetPoint", yApi::EKeywordAccessMode::kGet)),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
      m_humidity(boost::make_shared<yApi::historization::CHumidity>("Humidity")),
      m_fan(boost::make_shared<specificHistorizers::CFan4Speeds>("Fan")),
@@ -22,8 +20,7 @@ const std::string& CProfile_A5_10_22::profile() const
 
 const std::string& CProfile_A5_10_22::title() const
 {
-   static const std::string Title(
-      "Room Operating Panel - Temperature, Setpoint, Humidity and Fan Speed");
+   static const std::string Title(R"(Room Operating Panel - Temperature, Setpoint, Humidity and Fan Speed)");
    return Title;
 }
 
@@ -48,35 +45,35 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
    m_setPoint->set(bitset_extract(status, 0, 8));
-   historizers.push_back(m_setPoint);
+   historizers.emplace_back(m_setPoint);
 
    m_humidity->set(static_cast<double>(bitset_extract(data, 8, 8)) * 100.0 / 250.0);
-   historizers.push_back(m_humidity);
+   historizers.emplace_back(m_humidity);
 
    m_temperature->set(static_cast<double>(bitset_extract(data, 16, 8)) * 40.0 / 250.0);
-   historizers.push_back(m_temperature);
+   historizers.emplace_back(m_temperature);
 
    switch (bitset_extract(status, 24, 3))
    {
    case 0:
       m_fan->set(specificHistorizers::EFan4Speeds::kAuto);
-      historizers.push_back(m_fan);
+      historizers.emplace_back(m_fan);
       break;
    case 1:
       m_fan->set(specificHistorizers::EFan4Speeds::kSpeed0);
-      historizers.push_back(m_fan);
+      historizers.emplace_back(m_fan);
       break;
    case 2:
       m_fan->set(specificHistorizers::EFan4Speeds::kSpeed1);
-      historizers.push_back(m_fan);
+      historizers.emplace_back(m_fan);
       break;
    case 3:
       m_fan->set(specificHistorizers::EFan4Speeds::kSpeed2);
-      historizers.push_back(m_fan);
+      historizers.emplace_back(m_fan);
       break;
    case 4:
       m_fan->set(specificHistorizers::EFan4Speeds::kSpeed3);
-      historizers.push_back(m_fan);
+      historizers.emplace_back(m_fan);
       break;
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<

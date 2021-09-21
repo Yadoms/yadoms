@@ -6,9 +6,7 @@
 
 CProfile_A5_13_01::CProfile_A5_13_01(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_dawn(boost::make_shared<yApi::historization::CIllumination>("Dawn sensor")),
+   : m_dawn(boost::make_shared<yApi::historization::CIllumination>("Dawn sensor")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Outdoor temperature")),
      m_windSpeed(boost::make_shared<yApi::historization::CSpeed>("Wind speed")),
      m_dayLight(boost::make_shared<yApi::historization::CSwitch>("Daylight", yApi::EKeywordAccessMode::kGet)),
@@ -34,8 +32,7 @@ const std::string& CProfile_A5_13_01::profile() const
 
 const std::string& CProfile_A5_13_01::title() const
 {
-   static const std::string Title(
-      "Environmental Applications - Weather Station");
+   static const std::string Title(R"(Environmental Applications - Weather Station)");
    return Title;
 }
 

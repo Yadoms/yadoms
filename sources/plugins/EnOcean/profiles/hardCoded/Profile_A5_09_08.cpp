@@ -19,7 +19,7 @@ const std::string& CProfile_A5_09_08::profile() const
 
 const std::string& CProfile_A5_09_08::title() const
 {
-   static const std::string Title("Gas sensor - Pure CO2 sensor");
+   static const std::string Title(R"(Gas sensor - Pure CO2 sensor)");
    return Title;
 }
 
@@ -44,7 +44,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (rorg != CRorgs::ERorgIds::k4BS_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   m_concentrationPpm->set(static_cast<double>(bitset_extract(data, 16, 8) * 2000.0 / 255.0));
+   m_concentrationPpm->set(bitset_extract(data, 16, 8) * 2000.0 / 255.0);
 
    return m_historizers;
 }

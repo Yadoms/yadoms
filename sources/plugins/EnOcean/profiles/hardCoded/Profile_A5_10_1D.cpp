@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "Profile_A5_10_1D.h"
+
+#include "Profile_A5_12_Common.h"
 #include "../bitsetHelpers.hpp"
 
 CProfile_A5_10_1D::CProfile_A5_10_1D(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_humidity(boost::make_shared<yApi::historization::CHumidity>("Humidity")),
+   : m_humidity(boost::make_shared<yApi::historization::CHumidity>("Humidity")),
      m_humiditySetPoint(boost::make_shared<yApi::historization::CHumidity>("HumiditySetPoint")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
      m_fan(boost::make_shared<specificHistorizers::CFan6Speeds>("Fan")),
@@ -24,7 +24,7 @@ const std::string& CProfile_A5_10_1D::profile() const
 const std::string& CProfile_A5_10_1D::title() const
 {
    static const std::string Title(
-      "Room Operating Panel - Humidity, Humidity Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
+      R"(Room Operating Panel - Humidity, Humidity Set Point, Temperature Sensor, Fan Speed and Occupancy Control)");
    return Title;
 }
 
@@ -48,16 +48,18 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 {
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   m_humidity->set(
-      static_cast<double>(std::max(bitset_extract(data, 0, 8), static_cast<unsigned>(250))) * 100.0 / 250.0);
-   historizers.push_back(m_humidity);
+   m_humidity->set(static_cast<double>(CProfile_A5_12_Common::clamp(bitset_extract(data, 0, 8),
+                                                                    static_cast<unsigned>(0),
+                                                                    static_cast<unsigned>(250))) * 100.0 / 250.0);
+   historizers.emplace_back(m_humidity);
 
-   m_humidity->set(
-      static_cast<double>(std::max(bitset_extract(data, 8, 8), static_cast<unsigned>(250))) * 100.0 / 250.0);
-   historizers.push_back(m_humiditySetPoint);
+   m_humidity->set(static_cast<double>(CProfile_A5_12_Common::clamp(bitset_extract(data, 8, 8),
+                                                                    static_cast<unsigned>(0),
+                                                                    static_cast<unsigned>(250))) * 100.0 / 250.0);
+   historizers.emplace_back(m_humiditySetPoint);
 
    m_temperature->set(static_cast<double>(250 - bitset_extract(data, 16, 8)) * 40.0 / 250.0);
-   historizers.push_back(m_temperature);
+   historizers.emplace_back(m_temperature);
 
    switch (bitset_extract(status, 25, 3))
    {
@@ -86,13 +88,13 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       m_fan->set(specificHistorizers::EFan6Speeds::kOff);
       break;
    }
-   historizers.push_back(m_fan);
+   historizers.emplace_back(m_fan);
 
    if (bitset_extract(status, 30, 1))
    {
       // Occupancy sensor available
       m_occupancy->set(bitset_extract(status, 31, 1) ? true : false);
-      historizers.push_back(m_occupancy);
+      historizers.emplace_back(m_occupancy);
    }
 
    return historizers;

@@ -20,7 +20,7 @@ const std::string& CProfile_A5_04_03::profile() const
 
 const std::string& CProfile_A5_04_03::title() const
 {
-   static const std::string Title("Temperature (-20 to 60°C) and humidity sensor (0 to 100%)");
+   static const std::string Title(R"(Temperature (-20 to 60°C) and humidity sensor (0 to 100%))");
    return Title;
 }
 
@@ -45,7 +45,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (rorg != CRorgs::ERorgIds::k4BS_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   m_humidity->set(static_cast<double>(bitset_extract(data, 0, 8) * 100.0 / 255.0));
+   m_humidity->set(bitset_extract(data, 0, 8) * 100.0 / 255.0);
    m_temperature->set(static_cast<double>(bitset_extract(data, 14, 10)) * 80.0 / 1023.0 - 20.0);
 
    return m_historizers;

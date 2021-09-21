@@ -5,23 +5,21 @@
 
 CProfile_F6_10_00::CProfile_F6_10_00(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_movement(boost::make_shared<specificHistorizers::CMechanicalHandleMovement>("Movement")),
+   : m_movement(boost::make_shared<specificHistorizers::CMechanicalHandleMovement>("Movement")),
      m_historizers({m_movement})
 {
 }
 
 const std::string& CProfile_F6_10_00::profile() const
 {
-   static const std::string profile("F6-10-00");
-   return profile;
+   static const std::string Profile("F6-10-00");
+   return Profile;
 }
 
 const std::string& CProfile_F6_10_00::title() const
 {
-   static const std::string title("Mechanical handle - Windows handle");
-   return title;
+   static const std::string Title(R"(Mechanical handle - Windows handle)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_10_00::allHistorizers() const
