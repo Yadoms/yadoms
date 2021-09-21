@@ -6,9 +6,7 @@
 
 CProfile_A5_13_10::CProfile_A5_13_10(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_elevation(boost::make_shared<yApi::historization::CDirection>("Elevation")),
+   : m_elevation(boost::make_shared<yApi::historization::CDirection>("Elevation")),
      m_azimuth(boost::make_shared<yApi::historization::CDirection>("Azimuth")),
      m_dayLight(boost::make_shared<yApi::historization::CSwitch>("Daylight", yApi::EKeywordAccessMode::kGet)),
      m_illumination(boost::make_shared<yApi::historization::CIlluminationWm2>("Illumination")),
@@ -24,7 +22,7 @@ const std::string& CProfile_A5_13_10::profile() const
 
 const std::string& CProfile_A5_13_10::title() const
 {
-   static const std::string Title("Environmental Applications - Sun position and radiation");
+   static const std::string Title(R"(Environmental Applications - Sun position and radiation)");
    return Title;
 }
 

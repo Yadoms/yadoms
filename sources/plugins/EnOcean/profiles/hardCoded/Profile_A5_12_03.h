@@ -7,7 +7,7 @@ class CProfile_A5_12_03 : public IType
 public:
    CProfile_A5_12_03(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_A5_12_03() = default;
+   ~CProfile_A5_12_03() override = default;
 
    // IType implementation
    const std::string& profile() const override;
@@ -30,9 +30,8 @@ public:
    // [END] IType implementation
 
 private:
-   static const int NB_TARIFFS = 16;
-   const std::string m_deviceId;
-   boost::shared_ptr<yApi::historization::CVolume> m_volume[NB_TARIFFS];
-   boost::shared_ptr<yApi::historization::CDebit> m_debit[NB_TARIFFS];
+   static constexpr int NbTariffs = 16;
+   boost::shared_ptr<yApi::historization::CVolume> m_volume[NbTariffs];
+   boost::shared_ptr<yApi::historization::CDebit> m_debit[NbTariffs];
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };

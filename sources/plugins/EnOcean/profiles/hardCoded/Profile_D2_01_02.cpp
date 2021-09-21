@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "Profile_D2_01_02.h"
+
+#include <utility>
 #include "Profile_D2_01_Common.h"
 
-CProfile_D2_01_02::CProfile_D2_01_02(const std::string& deviceId,
+CProfile_D2_01_02::CProfile_D2_01_02(std::string deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_deviceId(deviceId),
+   : m_deviceId(std::move(deviceId)),
      m_dimmer(boost::make_shared<yApi::historization::CDimmable>("Dimmer", yApi::EKeywordAccessMode::kGetSet)),
      m_historizers({m_dimmer})
 {
@@ -12,14 +14,14 @@ CProfile_D2_01_02::CProfile_D2_01_02(const std::string& deviceId,
 
 const std::string& CProfile_D2_01_02::profile() const
 {
-   static const std::string profile("D2-01-02");
-   return profile;
+   static const std::string Profile("D2-01-02");
+   return Profile;
 }
 
 const std::string& CProfile_D2_01_02::title() const
 {
-   static const std::string title("Electronic dimmer with local Control");
-   return title;
+   static const std::string Title(R"(Electronic dimmer with local Control)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_02::allHistorizers() const
@@ -46,10 +48,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 {
    return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                data,
-                                                               CProfile_D2_01_Common::noChannel1,
+                                                               CProfile_D2_01_Common::NoChannel1,
                                                                m_dimmer,
-                                                               CProfile_D2_01_Common::noPowerFailure,
-                                                               CProfile_D2_01_Common::noOverCurrent);
+                                                               CProfile_D2_01_Common::NoPowerFailure,
+                                                               CProfile_D2_01_Common::NoOverCurrent);
 }
 
 void CProfile_D2_01_02::sendCommand(const std::string& keyword,

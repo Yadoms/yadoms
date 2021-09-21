@@ -4,23 +4,21 @@
 
 CProfile_F6_04_02::CProfile_F6_04_02(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_cardAction(boost::make_shared<yApi::historization::CSwitch>("Button A", yApi::EKeywordAccessMode::kGet)),
+   : m_cardAction(boost::make_shared<yApi::historization::CSwitch>("Button A", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_cardAction})
 {
 }
 
 const std::string& CProfile_F6_04_02::profile() const
 {
-   static const std::string profile("F6-04-02");
-   return profile;
+   static const std::string Profile("F6-04-02");
+   return Profile;
 }
 
 const std::string& CProfile_F6_04_02::title() const
 {
-   static const std::string title("Position switch - Key Card Activated Switch ERP2");
-   return title;
+   static const std::string Title(R"(Position switch - Key Card Activated Switch ERP2)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_04_02::allHistorizers() const

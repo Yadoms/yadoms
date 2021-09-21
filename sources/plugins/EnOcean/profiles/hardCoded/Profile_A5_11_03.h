@@ -8,7 +8,7 @@ class CProfile_A5_11_03 : public IType
 public:
    CProfile_A5_11_03(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_A5_11_03() = default;
+   ~CProfile_A5_11_03() override = default;
 
    // IType implementation
    const std::string& profile() const override;
@@ -31,8 +31,6 @@ public:
    // [END] IType implementation
 
 private:
-   boost::shared_ptr<yApi::IYPluginApi> m_api;
-   const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CDimmable> m_blindPosition;
    boost::shared_ptr<yApi::historization::CDirection> m_angle;
    boost::shared_ptr<yApi::historization::CSwitch> m_errorState;

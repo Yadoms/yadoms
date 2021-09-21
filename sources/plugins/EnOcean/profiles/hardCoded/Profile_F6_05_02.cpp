@@ -5,11 +5,9 @@
 
 CProfile_F6_05_02::CProfile_F6_05_02(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_smoke(boost::make_shared<yApi::historization::CSwitch>("Smoke detected", yApi::EKeywordAccessMode::kGet)),
+   : m_smoke(boost::make_shared<yApi::historization::CSwitch>("Smoke detected", yApi::EKeywordAccessMode::kGet)),
      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("Battery", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({ m_smoke, m_batteryLevel})
+     m_historizers({m_smoke, m_batteryLevel})
 {
 }
 
@@ -21,7 +19,7 @@ const std::string& CProfile_F6_05_02::profile() const
 
 const std::string& CProfile_F6_05_02::title() const
 {
-   static const std::string Title("Smoke Detector");
+   static const std::string Title(R"(Smoke Detector)");
    return Title;
 }
 
@@ -36,11 +34,12 @@ void CProfile_F6_05_02::readInitialState(const std::string& senderId,
    // Read-only device
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_05_02::states(unsigned char rorg,
-                                                                                                   const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status,
-                                                                                                   const std::string& senderId,
-                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_05_02::states(
+   unsigned char rorg,
+   const boost::dynamic_bitset<>& data,
+   const boost::dynamic_bitset<>& status,
+   const std::string& senderId,
+   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    switch (bitset_to_byte(data))
    {

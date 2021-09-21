@@ -6,11 +6,9 @@
 
 CProfile_A5_13_03::CProfile_A5_13_03(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-   m_date(boost::make_shared<yApi::historization::CDateTime>("Date")),
-   m_gpsSource(boost::make_shared<yApi::historization::CSwitch>("GPS source", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({ m_date, m_gpsSource })
+   : m_date(boost::make_shared<yApi::historization::CDateTime>("Date")),
+     m_gpsSource(boost::make_shared<yApi::historization::CSwitch>("GPS source", yApi::EKeywordAccessMode::kGet)),
+     m_historizers({m_date, m_gpsSource})
 {
 }
 
@@ -22,7 +20,7 @@ const std::string& CProfile_A5_13_03::profile() const
 
 const std::string& CProfile_A5_13_03::title() const
 {
-   static const std::string Title("Environmental Applications - Date Exchange");
+   static const std::string Title(R"(Environmental Applications - Date Exchange)");
    return Title;
 }
 

@@ -4,9 +4,7 @@
 
 CProfile_A5_11_02::CProfile_A5_11_02(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_controllerValue(boost::make_shared<yApi::historization::CDimmable>("ControllerValue", yApi::EKeywordAccessMode::kGet)),
+   : m_controllerValue(boost::make_shared<yApi::historization::CDimmable>("ControllerValue", yApi::EKeywordAccessMode::kGet)),
      m_automaticFan(boost::make_shared<specificHistorizers::CFan4Speeds>("FanAutomaticSpeed")),
      m_manualFan(boost::make_shared<specificHistorizers::CFan4Speeds>("FanManualSpeed")),
      m_setPoint(boost::make_shared<yApi::historization::CTemperature>("SetPoint")),
@@ -57,41 +55,41 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
    m_controllerValue->set(static_cast<int>(bitset_extract(data, 0, 8)) * 100 / 255);
-   historizers.push_back(m_controllerValue);
+   historizers.emplace_back(m_controllerValue);
 
    switch (bitset_extract(data, 8, 8))
    {
    case 0:
       m_manualFan->set(specificHistorizers::EFan4Speeds::kSpeed0);
-      historizers.push_back(m_manualFan);
+      historizers.emplace_back(m_manualFan);
       break;
    case 1:
       m_manualFan->set(specificHistorizers::EFan4Speeds::kSpeed1);
-      historizers.push_back(m_manualFan);
+      historizers.emplace_back(m_manualFan);
       break;
    case 2:
       m_manualFan->set(specificHistorizers::EFan4Speeds::kSpeed2);
-      historizers.push_back(m_manualFan);
+      historizers.emplace_back(m_manualFan);
       break;
    case 3:
       m_manualFan->set(specificHistorizers::EFan4Speeds::kSpeed3);
-      historizers.push_back(m_manualFan);
+      historizers.emplace_back(m_manualFan);
       break;
    case 16:
       m_automaticFan->set(specificHistorizers::EFan4Speeds::kSpeed0);
-      historizers.push_back(m_automaticFan);
+      historizers.emplace_back(m_automaticFan);
       break;
    case 17:
       m_automaticFan->set(specificHistorizers::EFan4Speeds::kSpeed1);
-      historizers.push_back(m_automaticFan);
+      historizers.emplace_back(m_automaticFan);
       break;
    case 18:
       m_automaticFan->set(specificHistorizers::EFan4Speeds::kSpeed2);
-      historizers.push_back(m_automaticFan);
+      historizers.emplace_back(m_automaticFan);
       break;
    case 19:
       m_automaticFan->set(specificHistorizers::EFan4Speeds::kSpeed3);
-      historizers.push_back(m_automaticFan);
+      historizers.emplace_back(m_automaticFan);
       break;
    case 255:
       break;
@@ -102,26 +100,26 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    }
 
    m_setPoint->set(bitset_extract(status, 16, 8) * 51.2 / 255);
-   historizers.push_back(m_setPoint);
+   historizers.emplace_back(m_setPoint);
 
    m_alarm->set(bitset_extract(status, 24, 1) ? true : false);
-   historizers.push_back(m_alarm);
+   historizers.emplace_back(m_alarm);
 
    switch (bitset_extract(data, 25, 2))
    {
    case 1:
       m_controllerModeHeating->set(true);
-      historizers.push_back(m_controllerModeHeating);
+      historizers.emplace_back(m_controllerModeHeating);
       break;
    case 2:
       m_controllerModeHCooling->set(true);
-      historizers.push_back(m_controllerModeHCooling);
+      historizers.emplace_back(m_controllerModeHCooling);
       break;
    case 3:
       m_controllerModeHeating->set(false);
       m_controllerModeHCooling->set(false);
-      historizers.push_back(m_controllerModeHeating);
-      historizers.push_back(m_controllerModeHCooling);
+      historizers.emplace_back(m_controllerModeHeating);
+      historizers.emplace_back(m_controllerModeHCooling);
       break;
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
@@ -130,20 +128,20 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    }
 
    m_controllerStateOverriden->set(bitset_extract(status, 27, 1) ? true : false);
-   historizers.push_back(m_controllerStateOverriden);
+   historizers.emplace_back(m_controllerStateOverriden);
 
    m_energyHoldOff->set(bitset_extract(status, 29, 1) ? true : false);
-   historizers.push_back(m_energyHoldOff);
+   historizers.emplace_back(m_energyHoldOff);
 
    switch (bitset_extract(data, 30, 2))
    {
    case 0:
       m_occupancy->set(true);
-      historizers.push_back(m_occupancy);
+      historizers.emplace_back(m_occupancy);
       break;
    case 1:
       m_occupancy->set(false);
-      historizers.push_back(m_occupancy);
+      historizers.emplace_back(m_occupancy);
       break;
    default:
       break;

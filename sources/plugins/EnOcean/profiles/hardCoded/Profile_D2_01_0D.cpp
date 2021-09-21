@@ -12,14 +12,14 @@ CProfile_D2_01_0D::CProfile_D2_01_0D(const std::string& deviceId,
 
 const std::string& CProfile_D2_01_0D::profile() const
 {
-   static const std::string profile("D2-01-0D");
-   return profile;
+   static const std::string Profile("D2-01-0D");
+   return Profile;
 }
 
 const std::string& CProfile_D2_01_0D::title() const
 {
-   static const std::string title("Micro smart plug with 1 channel, no metering capabilities");
-   return title;
+   static const std::string Title(R"(Micro smart plug with 1 channel, no metering capabilities)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0D::allHistorizers() const
@@ -47,9 +47,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                data,
                                                                m_channel,
-                                                               CProfile_D2_01_Common::noDimmable,
-                                                               CProfile_D2_01_Common::noPowerFailure,
-                                                               CProfile_D2_01_Common::noOverCurrent);
+                                                               CProfile_D2_01_Common::NoDimmable,
+                                                               CProfile_D2_01_Common::NoPowerFailure,
+                                                               CProfile_D2_01_Common::NoOverCurrent);
 }
 
 void CProfile_D2_01_0D::sendCommand(const std::string& keyword,

@@ -3,7 +3,7 @@
 #include <profiles/eep.h>
 #include <profiles/bitsetHelpers.hpp>
 
-enum E_A5_09_0B_ScaleMultiplier
+enum class E_A5_09_0B_ScaleMultiplier
 {
    kA5_09_0B_Multiplier_0_001 = 0,
    kA5_09_0B_Multiplier_0_01 = 1,
@@ -16,7 +16,7 @@ enum E_A5_09_0B_ScaleMultiplier
    kA5_09_0B_Multiplier_100000 = 8,
 };
 
-enum E_A5_09_0B_Unit
+enum class E_A5_09_0B_Unit
 {
    kA5_09_0B_uSvh = 0,
    kA5_09_0B_cpm = 1,
@@ -51,7 +51,7 @@ const std::string& CProfile_A5_09_0B::profile() const
 
 const std::string& CProfile_A5_09_0B::title() const
 {
-   static const std::string Title("Gas sensor - Radioactivity sensor");
+   static const std::string Title(R"(Gas sensor - Radioactivity sensor)");
    return Title;
 }
 
@@ -83,7 +83,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
       // Supply voltage sensor available
       m_supplyVoltage->set(static_cast<double>(bitset_extract(data, 0, 4)) * 3.0 / 15.0 + 2.0);
-      historizers.push_back(m_supplyVoltage);
+      historizers.emplace_back(m_supplyVoltage);
    }
 
    auto radiationLevel = static_cast<double>(bitset_extract(data, 8, 16));
@@ -92,50 +92,50 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    switch (scaleMultiplier)
    {
-   case kA5_09_0B_Multiplier_0_001: radiationLevel *= 0.001;
+   case E_A5_09_0B_ScaleMultiplier::kA5_09_0B_Multiplier_0_001: radiationLevel *= 0.001;
       break;
-   case kA5_09_0B_Multiplier_0_01: radiationLevel *= 0.01;
+   case E_A5_09_0B_ScaleMultiplier::kA5_09_0B_Multiplier_0_01: radiationLevel *= 0.01;
       break;
-   case kA5_09_0B_Multiplier_0_1: radiationLevel *= 0.1;
+   case E_A5_09_0B_ScaleMultiplier::kA5_09_0B_Multiplier_0_1: radiationLevel *= 0.1;
       break;
-   case kA5_09_0B_Multiplier_1:
+   case E_A5_09_0B_ScaleMultiplier::kA5_09_0B_Multiplier_1:
       break;
-   case kA5_09_0B_Multiplier_10: radiationLevel *= 10.0;
+   case E_A5_09_0B_ScaleMultiplier::kA5_09_0B_Multiplier_10: radiationLevel *= 10.0;
       break;
-   case kA5_09_0B_Multiplier_100: radiationLevel *= 100.0;
+   case E_A5_09_0B_ScaleMultiplier::kA5_09_0B_Multiplier_100: radiationLevel *= 100.0;
       break;
-   case kA5_09_0B_Multiplier_1000: radiationLevel *= 1000.0;
+   case E_A5_09_0B_ScaleMultiplier::kA5_09_0B_Multiplier_1000: radiationLevel *= 1000.0;
       break;
-   case kA5_09_0B_Multiplier_10000: radiationLevel *= 10000.0;
+   case E_A5_09_0B_ScaleMultiplier::kA5_09_0B_Multiplier_10000: radiationLevel *= 10000.0;
       break;
-   case kA5_09_0B_Multiplier_100000: radiationLevel *= 100000.0;
+   case E_A5_09_0B_ScaleMultiplier::kA5_09_0B_Multiplier_100000: radiationLevel *= 100000.0;
       break;
-   default:
-      YADOMS_LOG(error) << "A5-09-0B profile : received unknown multiplier" << scaleMultiplier;
+   default: // NOLINT(clang-diagnostic-covered-switch-default)
+      YADOMS_LOG(error) << "A5-09-0B profile : received unknown multiplier" << static_cast<int>(scaleMultiplier);
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
    switch (unit)
    {
-   case kA5_09_0B_uSvh:
+   case E_A5_09_0B_Unit::kA5_09_0B_uSvh:
       // radiationLevel is given in µSv/h, expected in Sv/s
       m_sieverPerSecondRadioActivity->set(radiationLevel / 1000000.0 / 3600.0);
-      historizers.push_back(m_sieverPerSecondRadioActivity);
+      historizers.emplace_back(m_sieverPerSecondRadioActivity);
       break;
-   case kA5_09_0B_cpm:
+   case E_A5_09_0B_Unit::kA5_09_0B_cpm:
       // radiationLevel is given in cpm, expected in cps
       m_countPerSecondRadioActivity->set(radiationLevel / 60.0);
-      historizers.push_back(m_countPerSecondRadioActivity);
+      historizers.emplace_back(m_countPerSecondRadioActivity);
       break;
-   case kA5_09_0B_BqL:
+   case E_A5_09_0B_Unit::kA5_09_0B_BqL:
       // radiationLevel is given in Bq/L, expected in Bq/m3
       m_volumicRadioActivity->set(radiationLevel / 1000.0);
-      historizers.push_back(m_volumicRadioActivity);
+      historizers.emplace_back(m_volumicRadioActivity);
       break;
-   case kA5_09_0B_BqKg:
+   case E_A5_09_0B_Unit::kA5_09_0B_BqKg:
       // radiationLevel is given in Bq/kg, expected in Bq/g
       m_massRadioActivity->set(radiationLevel / 1000.0);
-      historizers.push_back(m_massRadioActivity);
+      historizers.emplace_back(m_massRadioActivity);
       break;
    }
 

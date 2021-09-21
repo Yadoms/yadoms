@@ -7,8 +7,7 @@
 
 CProfile_A5_11_05::CProfile_A5_11_05(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
+   : m_deviceId(deviceId),
      m_channel1(boost::make_shared<yApi::historization::CSwitch>("Channel 1", yApi::EKeywordAccessMode::kGet)),
      m_channel2(boost::make_shared<yApi::historization::CSwitch>("Channel 2", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_channel1, m_channel2})
@@ -23,8 +22,7 @@ const std::string& CProfile_A5_11_05::profile() const
 
 const std::string& CProfile_A5_11_05::title() const
 {
-   static const std::string Title(
-      "Controller Status - Dual-Channel Switch Actuator (BI-DIR)");
+   static const std::string Title(R"(Controller Status - Dual-Channel Switch Actuator (BI-DIR))");
    return Title;
 }
 

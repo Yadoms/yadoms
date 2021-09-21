@@ -9,7 +9,7 @@
 
 class CProfile_D2_00_01 : public IType
 {
-   enum EMsgId
+   enum class EMsgId
    {
       kFirstUserActionOnRcp = 1,
       kDisplayContent = 2,
@@ -21,7 +21,7 @@ class CProfile_D2_00_01 : public IType
 public:
    CProfile_D2_00_01(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_D2_00_01() = default;
+   ~CProfile_D2_00_01() override = default;
 
    // IType implementation
    const std::string& profile() const override;
@@ -47,8 +47,7 @@ public:
 
 private:
    static double toFarenheit(double celcius);
-
-   boost::shared_ptr<yApi::IYPluginApi> m_api;
+   
    const std::string m_deviceId;
 
    // Input devices
