@@ -1,14 +1,15 @@
 #include "stdafx.h"
 #include "Profile_D2_02_01.h"
+
+#include <utility>
 #include "../bitsetHelpers.hpp"
 #include "profiles/eep.h"
 #include "message/MessageHelpers.h"
 
 
-CProfile_D2_02_01::CProfile_D2_02_01(const std::string& deviceId,
+CProfile_D2_02_01::CProfile_D2_02_01(std::string deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
+   : m_deviceId(std::move(deviceId)),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature",
                                                                          yApi::EKeywordAccessMode::kGet)),
      m_illumination(boost::make_shared<yApi::historization::CIllumination>("Illumination",
@@ -41,15 +42,15 @@ void CProfile_D2_02_01::readInitialState(const std::string& senderId,
 {
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-   sendSensorMeasurementQuery(kTemperature, senderId, messageHandler);
+   sendSensorMeasurementQuery(EMeasurementType::kTemperature, senderId, messageHandler);
 
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-   sendSensorMeasurementQuery(kIllumination, senderId, messageHandler);
+   sendSensorMeasurementQuery(EMeasurementType::kIllumination, senderId, messageHandler);
 
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-   sendSensorMeasurementQuery(kSmoke, senderId, messageHandler);
+   sendSensorMeasurementQuery(EMeasurementType::kSmoke, senderId, messageHandler);
 }
 
 void CProfile_D2_02_01::sendSensorMeasurementQuery(EMeasurementType query,
@@ -57,8 +58,8 @@ void CProfile_D2_02_01::sendSensorMeasurementQuery(EMeasurementType query,
                                                    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    boost::dynamic_bitset<> userData(2 * 8);
-   bitset_insert(userData, 4, 4, kSensorMeasurementQuery);
-   bitset_insert(userData, 8, 3, query);
+   bitset_insert(userData, 4, 4, static_cast<int>(EMsgId::kSensorMeasurementQuery));
+   bitset_insert(userData, 8, 3, static_cast<int>(query));
 
    message::CMessageHelpers::sendMessage(CRorgs::k4BS_Telegram,
                                          messageHandler,
@@ -75,7 +76,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const std::string& senderId,
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   if (bitset_extract(data, 4, 4) != kSensorMeasurement)
+   if (static_cast<EMsgId>(bitset_extract(data, 4, 4)) != EMsgId::kSensorMeasurement)
    {
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
          " : Command ID=" << bitset_extract(data, 4, 4);
@@ -86,19 +87,19 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    const auto rawValue = bitset_extract(data, 16, 16);
 
-   switch (static_cast<EMeasurementType>(bitset_extract(data, 8, 3)))
+   switch (static_cast<EMeasurementType>(bitset_extract(data, 8, 3)))  // NOLINT(clang-diagnostic-switch-enum)
    {
-   case kTemperature:
+   case EMeasurementType::kTemperature:
       m_temperature->set(static_cast<double>(rawValue) * 160.0 / 65535.0 - 40.0);
-      historizers.push_back(m_temperature);
+      historizers.emplace_back(m_temperature);
       break;
-   case kIllumination:
+   case EMeasurementType::kIllumination:
       m_illumination->set(static_cast<double>(rawValue) * 2047.0 / 65535.0);
-      historizers.push_back(m_illumination);
+      historizers.emplace_back(m_illumination);
       break;
-   case kSmoke:
+   case EMeasurementType::kSmoke:
       m_smoke->set(rawValue ? true : false);
-      historizers.push_back(m_smoke);
+      historizers.emplace_back(m_smoke);
       break;
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
@@ -127,7 +128,7 @@ void CProfile_D2_02_01::sendConfiguration(const shared::CDataContainer& deviceCo
    const auto minMessagesInterval = deviceConfiguration.get<unsigned int>("minMessagesInterval");
 
    boost::dynamic_bitset<> userData(6 * 8);
-   bitset_insert(userData, 4, 4, kActuatorSetMeasurement);
+   bitset_insert(userData, 4, 4, static_cast<int>(EMsgId::kActuatorSetMeasurement));
    bitset_insert(userData, 8, 1, 1);
 
    // Delta temperature report is expressed as binary value as 0..4095.

@@ -5,9 +5,7 @@
 
 CProfile_F6_02_03::CProfile_F6_02_03(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_autoMode(boost::make_shared<yApi::historization::CSwitch>("Auto mode", yApi::EKeywordAccessMode::kGet)),
+   : m_autoMode(boost::make_shared<yApi::historization::CSwitch>("Auto mode", yApi::EKeywordAccessMode::kGet)),
      m_upDown(boost::make_shared<yApi::historization::CSwitch>("Dim to up(1)/down(0)", yApi::EKeywordAccessMode::kGet)),
      m_manualOnOff(
         boost::make_shared<yApi::historization::CEvent>("Manual state toggle", yApi::EKeywordAccessMode::kGet)),
@@ -17,14 +15,14 @@ CProfile_F6_02_03::CProfile_F6_02_03(const std::string& deviceId,
 
 const std::string& CProfile_F6_02_03::profile() const
 {
-   static const std::string profile("F6-02-03");
-   return profile;
+   static const std::string Profile("F6-02-03");
+   return Profile;
 }
 
 const std::string& CProfile_F6_02_03::title() const
 {
-   static const std::string title("Rocker switch, 2 rockers - Light control, application style 1");
-   return title;
+   static const std::string Title(R"(Rocker switch, 2 rockers - Light control, application style 1)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_02_03::allHistorizers() const
@@ -75,20 +73,20 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
    case 0x30:
       m_autoMode->set(true);
-      historizers.push_back(m_autoMode);
+      historizers.emplace_back(m_autoMode);
       break;
    case 0x10:
       m_autoMode->set(false);
-      historizers.push_back(m_autoMode);
-      historizers.push_back(m_manualOnOff);
+      historizers.emplace_back(m_autoMode);
+      historizers.emplace_back(m_manualOnOff);
       break;
    case 0x70:
       m_upDown->set(true);
-      historizers.push_back(m_upDown);
+      historizers.emplace_back(m_upDown);
       break;
    case 0x50:
       m_upDown->set(false);
-      historizers.push_back(m_upDown);
+      historizers.emplace_back(m_upDown);
       break;
    default:
       YADOMS_LOG(error) << "Profile F6_02_03 : receive unsupported rocker action value " << action;

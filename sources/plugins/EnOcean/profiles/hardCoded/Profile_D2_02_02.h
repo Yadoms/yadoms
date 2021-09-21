@@ -6,7 +6,7 @@
 
 class CProfile_D2_02_02 : public IType
 {
-   enum EMsgId
+   enum class EMsgId
    {
       kSensorMeasurement = 1,
       kSensorTestTrigger = 2,
@@ -14,7 +14,7 @@ class CProfile_D2_02_02 : public IType
       kSensorMeasurementQuery = 4
    };
 
-   enum EMeasurementType
+   enum class EMeasurementType
    {
       kTemperature = 0,
       kIllumination = 1,
@@ -23,9 +23,9 @@ class CProfile_D2_02_02 : public IType
    };
 
 public:
-   CProfile_D2_02_02(const std::string& deviceId,
+   CProfile_D2_02_02(std::string deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_D2_02_02() = default;
+   ~CProfile_D2_02_02() override = default;
 
    // IType implementation
    const std::string& profile() const override;
@@ -53,8 +53,7 @@ private:
    void sendSensorMeasurementQuery(EMeasurementType query,
                                    const std::string& senderId,
                                    boost::shared_ptr<IMessageHandler> messageHandler) const;
-
-   boost::shared_ptr<yApi::IYPluginApi> m_api;
+   
    const std::string m_deviceId;
 
    boost::shared_ptr<yApi::historization::CTemperature> m_temperature;

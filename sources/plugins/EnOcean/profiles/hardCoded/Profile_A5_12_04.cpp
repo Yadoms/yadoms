@@ -6,8 +6,7 @@
 
 CProfile_A5_12_04::CProfile_A5_12_04(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_deviceId(deviceId),
-     m_weight(boost::make_shared<yApi::historization::CWeight>("Weight")),
+   : m_weight(boost::make_shared<yApi::historization::CWeight>("Weight")),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature")),
      m_battery(boost::make_shared<yApi::historization::CBatteryLevel>("Battery level")),
      m_historizers({m_weight, m_temperature, m_battery})
@@ -16,14 +15,14 @@ CProfile_A5_12_04::CProfile_A5_12_04(const std::string& deviceId,
 
 const std::string& CProfile_A5_12_04::profile() const
 {
-   static const std::string profile("A5-12-04");
-   return profile;
+   static const std::string Profile("A5-12-04");
+   return Profile;
 }
 
 const std::string& CProfile_A5_12_04::title() const
 {
-   static const std::string title("Automated Meter Reading - Temperature and Load Sensor");
-   return title;
+   static const std::string Title(R"(Automated Meter Reading - Temperature and Load Sensor)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_A5_12_04::allHistorizers() const

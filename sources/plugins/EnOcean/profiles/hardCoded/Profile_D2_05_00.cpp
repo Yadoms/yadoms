@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "Profile_D2_05_00.h"
+
+#include <utility>
 #include "Profile_D2_05_Common.h"
 
-CProfile_D2_05_00::CProfile_D2_05_00(const std::string& deviceId,
+CProfile_D2_05_00::CProfile_D2_05_00(std::string deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_deviceId(deviceId),
+   : m_deviceId(std::move(deviceId)),
      m_curtain(boost::make_shared<yApi::historization::CCurtain>("Curtain")),
      m_lockingMode(boost::make_shared<specificHistorizers::CBlindLockingMode>("lockingMode")),
      m_historizers({m_curtain, m_lockingMode})
@@ -13,14 +15,14 @@ CProfile_D2_05_00::CProfile_D2_05_00(const std::string& deviceId,
 
 const std::string& CProfile_D2_05_00::profile() const
 {
-   static const std::string profile("D2-05-00");
-   return profile;
+   static const std::string Profile("D2-05-00");
+   return Profile;
 }
 
 const std::string& CProfile_D2_05_00::title() const
 {
-   static const std::string title("Blinds control for position and angle");
-   return title;
+   static const std::string Title(R"(Blinds control for position and angle)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_05_00::allHistorizers() const

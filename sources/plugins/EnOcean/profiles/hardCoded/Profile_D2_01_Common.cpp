@@ -129,16 +129,11 @@ void CProfile_D2_01_Common::sendActuatorStatusQuery(boost::shared_ptr<IMessageHa
 }
 
 
-const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noChannel1 = boost::shared_ptr<yApi::
-   historization::CSwitch>();
-const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noChannel2 = boost::shared_ptr<yApi::
-   historization::CSwitch>();
-const boost::shared_ptr<yApi::historization::CDimmable> CProfile_D2_01_Common::noDimmable = boost::shared_ptr<yApi::
-   historization::CDimmable>();
-const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noPowerFailure = boost::shared_ptr<yApi::
-   historization::CSwitch>();
-const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noOverCurrent = boost::shared_ptr<yApi::
-   historization::CSwitch>();
+const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::NoChannel1 = boost::shared_ptr<yApi::historization::CSwitch>();
+const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::NoChannel2 = boost::shared_ptr<yApi::historization::CSwitch>();
+const boost::shared_ptr<yApi::historization::CDimmable> CProfile_D2_01_Common::NoDimmable = boost::shared_ptr<yApi::historization::CDimmable>();
+const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::NoPowerFailure = boost::shared_ptr<yApi::historization::CSwitch>();
+const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::NoOverCurrent = boost::shared_ptr<yApi::historization::CSwitch>();
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse(
    unsigned char rorg,
@@ -159,7 +154,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
    const auto ioChannel = bitset_extract(data, 11, 5);
-   const int dimValue = bitset_extract(data, 17, 7);
+   const auto dimValue = static_cast<int>(bitset_extract(data, 17, 7));
    const auto state = dimValue == 0 ? false : true;
    const auto overCurrentState = bitset_extract(data, 8, 1) != 0;
 
@@ -172,12 +167,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       if (!!channel1)
       {
          channel1->set(state);
-         historizers.push_back(channel1);
+         historizers.emplace_back(channel1);
       }
       else if (!!dimmer)
       {
          dimmer->set(dimValue);
-         historizers.push_back(dimmer);
+         historizers.emplace_back(dimmer);
       }
       else
       {
@@ -188,7 +183,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (!!overCurrent)
    {
       overCurrent->set(overCurrentState);
-      historizers.push_back(overCurrent);
+      historizers.emplace_back(overCurrent);
    }
 
    const auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
@@ -196,7 +191,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (powerFailureSupported && !!powerFailure)
    {
       powerFailure->set(powerFailureState);
-      historizers.push_back(powerFailure);
+      historizers.emplace_back(powerFailure);
    }
 
    return historizers;
@@ -222,7 +217,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
    const auto ioChannel = bitset_extract(data, 11, 5);
-   const int dimValue = bitset_extract(data, 17, 7);
+   const auto dimValue = static_cast<int>(bitset_extract(data, 17, 7));
    const auto state = dimValue == 0 ? false : true;
    const auto overCurrentState = bitset_extract(data, 8, 1) != 0;
    switch (ioChannel)
@@ -231,12 +226,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       if (!!channel1)
       {
          channel1->set(state);
-         historizers.push_back(channel1);
+         historizers.emplace_back(channel1);
       }
       else if (!!dimmer)
       {
          dimmer->set(dimValue);
-         historizers.push_back(dimmer);
+         historizers.emplace_back(dimmer);
       }
       else
       {
@@ -247,7 +242,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       if (!!channel2)
       {
          channel2->set(state);
-         historizers.push_back(channel2);
+         historizers.emplace_back(channel2);
       }
       else
       {
@@ -262,7 +257,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (!!overCurrent)
    {
       overCurrent->set(overCurrentState);
-      historizers.push_back(overCurrent);
+      historizers.emplace_back(overCurrent);
    }
 
    const auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
@@ -270,7 +265,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (powerFailureSupported && !!powerFailure)
    {
       powerFailure->set(powerFailureState);
-      historizers.push_back(powerFailure);
+      historizers.emplace_back(powerFailure);
    }
 
    return historizers;
@@ -325,14 +320,10 @@ void CProfile_D2_01_Common::sendActuatorMeasurementQuery(boost::shared_ptr<IMess
                "Actuator Measurement Query");
 }
 
-const boost::shared_ptr<yApi::historization::CEnergy> CProfile_D2_01_Common::noInputEnergy = boost::shared_ptr<yApi::
-   historization::CEnergy>();
-const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::noInputPower = boost::shared_ptr<yApi::
-   historization::CPower>();
-const boost::shared_ptr<yApi::historization::CEnergy> CProfile_D2_01_Common::noLoadEnergy = boost::shared_ptr<yApi::
-   historization::CEnergy>();
-const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::noLoadPower = boost::shared_ptr<yApi::
-   historization::CPower>();
+const boost::shared_ptr<yApi::historization::CEnergy> CProfile_D2_01_Common::NoInputEnergy = boost::shared_ptr<yApi::historization::CEnergy>();
+const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::NoInputPower = boost::shared_ptr<yApi::historization::CPower>();
+const boost::shared_ptr<yApi::historization::CEnergy> CProfile_D2_01_Common::NoLoadEnergy = boost::shared_ptr<yApi::historization::CEnergy>();
+const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::NoLoadPower = boost::shared_ptr<yApi::historization::CPower>();
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorMeasurementResponse(
    unsigned char rorg,
@@ -351,7 +342,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const auto unit = static_cast<E_D2_01_MeasurementUnit>(bitset_extract(data, 8, 3));
    const auto rawValue = bitset_extract(data, 16, 32);
 
-   switch (ioChannel)
+   switch (ioChannel)  // NOLINT(hicpp-multiway-paths-covered)
    {
    case 0: // Output channel
       {
@@ -364,7 +355,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
             {
                loadEnergy->set(extractEnergyWh(unit,
                                                rawValue));
-               historizers.push_back(loadEnergy);
+               historizers.emplace_back(loadEnergy);
             }
             break;
          case E_D2_01_MeasurementUnit::kPowerW:
@@ -373,10 +364,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
             {
                loadPower->set(extractPowerValueW(unit,
                                                  rawValue));
-               historizers.push_back(loadPower);
+               historizers.emplace_back(loadPower);
             }
             break;
-         default:
+         default:  // NOLINT(clang-diagnostic-covered-switch-default)
             YADOMS_LOG(warning) << "ActuatorMeasurementResponse : received unsupported channel value " << ioChannel;
             break;
          }
@@ -476,14 +467,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.emplace_back(pilotWire);
       break;
    case EPilotWireMode::kComfort_1:
-      pilotWire->set(specificHistorizers::EPilotWire::kComfort);
+      pilotWire->set(specificHistorizers::EPilotWire::kComfort2);
       historizers.emplace_back(pilotWire);
       break;
    case EPilotWireMode::kComfort_2:
-      pilotWire->set(specificHistorizers::EPilotWire::kComfort);
+      pilotWire->set(specificHistorizers::EPilotWire::kComfort3);
       historizers.emplace_back(pilotWire);
       break;
-   default:
+   default:  // NOLINT(clang-diagnostic-covered-switch-default)
       YADOMS_LOG(warning) << "ActuatorPilotWireModeResponse : received unsupported pilotWireMode value " << static_cast<unsigned int>(pilotWireMode);
       break;
    }
@@ -534,7 +525,7 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
 Poco::Int64 CProfile_D2_01_Common::extractEnergyWh(E_D2_01_MeasurementUnit unit,
                                                    unsigned int rawValue)
 {
-   switch (unit)
+   switch (unit)  // NOLINT(clang-diagnostic-switch-enum)
    {
    case E_D2_01_MeasurementUnit::kEnergyWs:
       return static_cast<Poco::Int64>(rawValue) * 3600;
@@ -552,10 +543,10 @@ Poco::Int64 CProfile_D2_01_Common::extractEnergyWh(E_D2_01_MeasurementUnit unit,
 double CProfile_D2_01_Common::extractPowerValueW(E_D2_01_MeasurementUnit unit,
                                                  unsigned int rawValue)
 {
-   switch (unit)
+   switch (unit)  // NOLINT(clang-diagnostic-switch-enum)
    {
    case E_D2_01_MeasurementUnit::kPowerW:
-      return static_cast<double>(rawValue);
+      return rawValue;
    case E_D2_01_MeasurementUnit::kPowerKW:
       return static_cast<double>(rawValue) * 1000;
    default:

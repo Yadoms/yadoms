@@ -5,9 +5,7 @@
 
 CProfile_F6_05_01::CProfile_F6_05_01(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_waterLeakage(boost::make_shared<yApi::historization::CEvent>("Water leakage", yApi::EKeywordAccessMode::kGet)),
+   : m_waterLeakage(boost::make_shared<yApi::historization::CEvent>("Water leakage", yApi::EKeywordAccessMode::kGet)),
      m_historizers({ m_waterLeakage })
 {
 }
@@ -20,7 +18,7 @@ const std::string& CProfile_F6_05_01::profile() const
 
 const std::string& CProfile_F6_05_01::title() const
 {
-   static const std::string Title("Liquid Leakage Sensor");
+   static const std::string Title(R"(Liquid Leakage Sensor)");
    return Title;
 }
 

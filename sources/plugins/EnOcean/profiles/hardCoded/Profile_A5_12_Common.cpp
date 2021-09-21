@@ -8,11 +8,11 @@ int CProfile_A5_12_Common::applyDivisorInInt(int meterReading,
 {
    switch (divisor)
    {
-   case kDivBy10:
+   case E_A5_12_Divisor::kDivBy10:
       return meterReading * (multiplier / 10);
-   case kDivBy100:
+   case E_A5_12_Divisor::kDivBy100:
       return meterReading * (multiplier / 100);
-   case kDivBy1000:
+   case E_A5_12_Divisor::kDivBy1000:
       return meterReading * (multiplier / 1000);
    default:
       return meterReading;
@@ -24,11 +24,11 @@ double CProfile_A5_12_Common::applyDivisorInDouble(int meterReading,
 {
    switch (divisor)
    {
-   case kDivBy10:
+   case E_A5_12_Divisor::kDivBy10:
       return static_cast<double>(meterReading) / 10.0;
-   case kDivBy100:
+   case E_A5_12_Divisor::kDivBy100:
       return static_cast<double>(meterReading) / 100.0;
-   case kDivBy1000:
+   case E_A5_12_Divisor::kDivBy1000:
       return static_cast<double>(meterReading) / 1000.0;
    default:
       return static_cast<double>(meterReading);

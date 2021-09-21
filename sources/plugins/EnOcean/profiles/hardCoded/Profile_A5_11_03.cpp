@@ -4,9 +4,7 @@
 
 CProfile_A5_11_03::CProfile_A5_11_03(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_blindPosition(boost::make_shared<yApi::historization::CDimmable>("BlindPosition", yApi::EKeywordAccessMode::kGet)),
+   : m_blindPosition(boost::make_shared<yApi::historization::CDimmable>("BlindPosition", yApi::EKeywordAccessMode::kGet)),
      m_angle(boost::make_shared<yApi::historization::CDirection>("Angle")),
      m_errorState(boost::make_shared<yApi::historization::CSwitch>("ErrorState", yApi::EKeywordAccessMode::kGet)),
      m_errorMessage(boost::make_shared<yApi::historization::CText>("ErrorMessage")),
@@ -29,8 +27,7 @@ const std::string& CProfile_A5_11_03::profile() const
 
 const std::string& CProfile_A5_11_03::title() const
 {
-   static const std::string Title(
-      "Controller Status - Blind Status");
+   static const std::string Title(R"(Controller Status - Blind Status)");
    return Title;
 }
 
@@ -57,14 +54,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (bitset_extract(data, 16, 1))
    {
       m_blindPosition->set(static_cast<int>(bitset_extract(data, 0, 8) * 100 / 255));
-      historizers.push_back(m_blindPosition);
+      historizers.emplace_back(m_blindPosition);
    }
 
    if (bitset_extract(data, 17, 1))
    {
       const auto absAngle = static_cast<int>(bitset_extract(data, 9, 7));
       m_angle->set(bitset_extract(data, 8, 1) ? -absAngle : absAngle);
-      historizers.push_back(m_angle);
+      historizers.emplace_back(m_angle);
    }
 
    switch (bitset_extract(data, 18, 2))
@@ -72,20 +69,20 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    case 0:
       m_errorState->set(false);
       m_errorMessage->set(std::string());
-      historizers.push_back(m_errorState);
-      historizers.push_back(m_errorMessage);
+      historizers.emplace_back(m_errorState);
+      historizers.emplace_back(m_errorMessage);
       break;
    case 1:
       m_errorState->set(true);
       m_errorMessage->set("End-positions are not configured");
-      historizers.push_back(m_errorState);
-      historizers.push_back(m_errorMessage);
+      historizers.emplace_back(m_errorState);
+      historizers.emplace_back(m_errorMessage);
       break;
    case 2:
       m_errorState->set(true);
       m_errorMessage->set("Internal Failure");
-      historizers.push_back(m_errorState);
-      historizers.push_back(m_errorMessage);
+      historizers.emplace_back(m_errorState);
+      historizers.emplace_back(m_errorMessage);
       break;
    default:
       break;
@@ -95,15 +92,15 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
    case 1:
       m_curtain->set(yApi::historization::ECurtainCommand::kStop);
-      historizers.push_back(m_curtain);
+      historizers.emplace_back(m_curtain);
       break;
    case 2:
       m_curtain->set(yApi::historization::ECurtainCommand::kOpen);
-      historizers.push_back(m_curtain);
+      historizers.emplace_back(m_curtain);
       break;
    case 3:
       m_curtain->set(yApi::historization::ECurtainCommand::kClose);
-      historizers.push_back(m_curtain);
+      historizers.emplace_back(m_curtain);
       break;
    default:
       break;
@@ -113,25 +110,25 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
    case 1:
       m_currentMovement->set(yApi::historization::ECurtainCommand::kStop);
-      historizers.push_back(m_currentMovement);
+      historizers.emplace_back(m_currentMovement);
       break;
    case 2:
       m_currentMovement->set(yApi::historization::ECurtainCommand::kOpen);
-      historizers.push_back(m_currentMovement);
+      historizers.emplace_back(m_currentMovement);
       break;
    case 3:
       m_currentMovement->set(yApi::historization::ECurtainCommand::kClose);
-      historizers.push_back(m_currentMovement);
+      historizers.emplace_back(m_currentMovement);
       break;
    default:
       break;
    }
 
    m_serviceMode->set(bitset_extract(status, 24, 1) ? true : false);
-   historizers.push_back(m_serviceMode);
+   historizers.emplace_back(m_serviceMode);
 
    m_inverseMode->set(bitset_extract(status, 25, 1) ? true : false);
-   historizers.push_back(m_inverseMode);
+   historizers.emplace_back(m_inverseMode);
 
    return historizers;
 }

@@ -6,9 +6,7 @@
 
 CProfile_A5_13_08::CProfile_A5_13_08(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_rain(boost::make_shared<yApi::historization::CRain>("Rain")),
+   : m_rain(boost::make_shared<yApi::historization::CRain>("Rain")),
      m_battery(boost::make_shared<yApi::historization::CBatteryLevel>("Battery")),
      m_historizers({m_rain, m_battery})
 {
@@ -22,7 +20,7 @@ const std::string& CProfile_A5_13_08::profile() const
 
 const std::string& CProfile_A5_13_08::title() const
 {
-   static const std::string Title("Environmental Applications - Rain Sensor");
+   static const std::string Title(R"(Environmental Applications - Rain Sensor)");
    return Title;
 }
 

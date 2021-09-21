@@ -116,11 +116,11 @@ public:
                                        EOutputChannel outputChannel);
 
    // CMD 0x04 - Actuator Status Response
-   static const boost::shared_ptr<yApi::historization::CSwitch> noChannel1;
-   static const boost::shared_ptr<yApi::historization::CSwitch> noChannel2;
-   static const boost::shared_ptr<yApi::historization::CDimmable> noDimmable;
-   static const boost::shared_ptr<yApi::historization::CSwitch> noPowerFailure;
-   static const boost::shared_ptr<yApi::historization::CSwitch> noOverCurrent;
+   static const boost::shared_ptr<yApi::historization::CSwitch> NoChannel1;
+   static const boost::shared_ptr<yApi::historization::CSwitch> NoChannel2;
+   static const boost::shared_ptr<yApi::historization::CDimmable> NoDimmable;
+   static const boost::shared_ptr<yApi::historization::CSwitch> NoPowerFailure;
+   static const boost::shared_ptr<yApi::historization::CSwitch> NoOverCurrent;
    static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorStatusResponse(
       unsigned char rorg,
       const boost::dynamic_bitset<>& data,
@@ -155,10 +155,10 @@ public:
                                             EPowerQueryType queryType);
 
    // CMD 0x07 - Actuator Measurement Response
-   static const boost::shared_ptr<yApi::historization::CEnergy> noInputEnergy;
-   static const boost::shared_ptr<yApi::historization::CPower> noInputPower;
-   static const boost::shared_ptr<yApi::historization::CEnergy> noLoadEnergy;
-   static const boost::shared_ptr<yApi::historization::CPower> noLoadPower;
+   static const boost::shared_ptr<yApi::historization::CEnergy> NoInputEnergy;
+   static const boost::shared_ptr<yApi::historization::CPower> NoInputPower;
+   static const boost::shared_ptr<yApi::historization::CEnergy> NoLoadEnergy;
+   static const boost::shared_ptr<yApi::historization::CPower> NoLoadPower;
    static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorMeasurementResponse(
       unsigned char rorg,
       const boost::dynamic_bitset<>& data,
