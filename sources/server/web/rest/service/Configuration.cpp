@@ -41,7 +41,6 @@ namespace web
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/server", getServerConfigurationV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/server", getServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
 
