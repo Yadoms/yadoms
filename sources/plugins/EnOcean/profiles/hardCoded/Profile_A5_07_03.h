@@ -34,7 +34,7 @@ public:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_supplyVoltage;
    boost::shared_ptr<yApi::historization::CIllumination> m_illumination;
-   boost::shared_ptr<yApi::historization::CEvent> m_pir;
+   boost::shared_ptr<yApi::historization::CSwitch> m_pir;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };
 
