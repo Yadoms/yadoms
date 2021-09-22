@@ -74,7 +74,6 @@ ExternalProject_Add (curlpp_build
    DEPENDS           curl_build
    GIT_REPOSITORY    https://github.com/jpbarrette/curlpp.git
    GIT_TAG           02e4a60e7d541bbfd11bf21bbb76bd584863b5df
-   GIT_SHALLOW       ON
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${CURLPP_PATHCMD}   
    PREFIX            ${CURLPP_ROOT}
