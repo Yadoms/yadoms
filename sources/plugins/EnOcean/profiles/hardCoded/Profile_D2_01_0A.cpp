@@ -13,14 +13,14 @@ CProfile_D2_01_0A::CProfile_D2_01_0A(const std::string& deviceId,
 
 const std::string& CProfile_D2_01_0A::profile() const
 {
-   static const std::string profile("D2-01-0A");
-   return profile;
+   static const std::string Profile("D2-01-0A");
+   return Profile;
 }
 
 const std::string& CProfile_D2_01_0A::title() const
 {
-   static const std::string title("Electronic switch with local control");
-   return title;
+   static const std::string Title(R"(Electronic switch with local control)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0A::allHistorizers() const
@@ -39,18 +39,19 @@ void CProfile_D2_01_0A::readInitialState(const std::string& senderId,
                                                   CProfile_D2_01_Common::EOutputChannel::kAllOutputChannels);
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0A::states(unsigned char rorg,
-                                                                                                   const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status,
-                                                                                                   const std::string& senderId,
-                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0A::states(
+   unsigned char rorg,
+   const boost::dynamic_bitset<>& data,
+   const boost::dynamic_bitset<>& status,
+   const std::string& senderId,
+   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                data,
                                                                m_channel,
-                                                               CProfile_D2_01_Common::noDimmable,
+                                                               CProfile_D2_01_Common::NoDimmable,
                                                                m_powerFailure,
-                                                               CProfile_D2_01_Common::noOverCurrent);
+                                                               CProfile_D2_01_Common::NoOverCurrent);
 }
 
 void CProfile_D2_01_0A::sendCommand(const std::string& keyword,
@@ -93,4 +94,3 @@ void CProfile_D2_01_0A::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       0.0,
                                                       0.0);
 }
-

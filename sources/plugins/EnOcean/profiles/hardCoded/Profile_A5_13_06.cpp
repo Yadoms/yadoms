@@ -2,15 +2,12 @@
 #include "Profile_A5_13_06.h"
 #include "../bitsetHelpers.hpp"
 #include "profiles/eep.h"
-#include <algorithm>
 
 CProfile_A5_13_06::CProfile_A5_13_06(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_latitude(boost::make_shared<yApi::historization::CDirectionDouble>("Latitude")),
+   : m_latitude(boost::make_shared<yApi::historization::CDirectionDouble>("Latitude")),
      m_longitude(boost::make_shared<yApi::historization::CDirectionDouble>("Longitude")),
-     m_historizers({ m_latitude, m_longitude })
+     m_historizers({m_latitude, m_longitude})
 {
 }
 
@@ -22,8 +19,7 @@ const std::string& CProfile_A5_13_06::profile() const
 
 const std::string& CProfile_A5_13_06::title() const
 {
-   static const std::string Title(
-      "Environmental Applications - Geographic Position Exchange");
+   static const std::string Title(R"(Environmental Applications - Geographic Position Exchange)");
    return Title;
 }
 

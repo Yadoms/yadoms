@@ -26,10 +26,6 @@ namespace message
    {
    }
 
-   CUTE_GigaConceptReversedReceivedMessage::~CUTE_GigaConceptReversedReceivedMessage()
-   {
-   }
-
    bool CUTE_GigaConceptReversedReceivedMessage::bidirectionalCommunication() const
    {
       return (m_erp1.userData()[6] & 0x80) ? true : false;

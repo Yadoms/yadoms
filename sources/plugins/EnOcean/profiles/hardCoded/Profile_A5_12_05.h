@@ -7,7 +7,7 @@ class CProfile_A5_12_05 : public IType
 public:
    CProfile_A5_12_05(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_A5_12_05() = default;
+   ~CProfile_A5_12_05() override = default;
 
    // IType implementation
    const std::string& profile() const override;
@@ -30,9 +30,8 @@ public:
    // [END] IType implementation
 
 private:
-   static const int NB_POSSESSED = 10;
-   const std::string m_deviceId;
-   boost::shared_ptr<yApi::historization::CSwitch> m_possessed[NB_POSSESSED];
+   static constexpr int NbPossessed = 10;
+   boost::shared_ptr<yApi::historization::CSwitch> m_possessed[NbPossessed];
    boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
    boost::shared_ptr<yApi::historization::CBatteryLevel> m_battery;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;

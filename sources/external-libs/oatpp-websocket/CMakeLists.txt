@@ -67,7 +67,6 @@ ExternalProject_Add (oatpp-websocket_build
    DEPENDS           oatpp_build
    GIT_REPOSITORY    https://github.com/oatpp/oatpp-websocket.git
    GIT_TAG           bdaf6958da91d173dad394f99d6624e87004bdfb
-   GIT_SHALLOW       ON
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_WEBSOCKET_PATCH_CMD}   
    PREFIX            ${OATPP_WEBSOCKET_ROOT}

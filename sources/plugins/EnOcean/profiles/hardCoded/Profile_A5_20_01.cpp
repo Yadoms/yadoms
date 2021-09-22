@@ -2,45 +2,29 @@
 #include "Profile_A5_20_01.h"
 #include "../bitsetHelpers.hpp"
 #include "profiles/eep.h"
-#include "message/RadioErp1SendMessage.h"
-#include "message/ResponseReceivedMessage.h"
 #include "message/MessageHelpers.h"
 
 
 CProfile_A5_20_01::CProfile_A5_20_01(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_currentValue(
-        boost::make_shared<yApi::historization::CDimmable>("Current Value", yApi::EKeywordAccessMode::kGet)),
+   : m_deviceId(deviceId),
+     m_currentValue(boost::make_shared<yApi::historization::CDimmable>("Current Value", yApi::EKeywordAccessMode::kGet)),
      m_serviceOn(boost::make_shared<yApi::historization::CSwitch>("Service On", yApi::EKeywordAccessMode::kGet)),
-     m_energyInputEnable(
-        boost::make_shared<yApi::historization::CSwitch>("Energy Input Enable", yApi::EKeywordAccessMode::kGet)),
-     m_energyStorageCharged(
-        boost::make_shared<yApi::historization::CSwitch>("Energy Storage Charged", yApi::EKeywordAccessMode::kGet)),
+     m_energyInputEnable(boost::make_shared<yApi::historization::CSwitch>("Energy Input Enable", yApi::EKeywordAccessMode::kGet)),
+     m_energyStorageCharged(boost::make_shared<yApi::historization::CSwitch>("Energy Storage Charged", yApi::EKeywordAccessMode::kGet)),
      m_battery(boost::make_shared<yApi::historization::CBatteryLevel>("Battery", yApi::EKeywordAccessMode::kGet)),
      m_coverOpen(boost::make_shared<yApi::historization::CSwitch>("Cover Open", yApi::EKeywordAccessMode::kGet)),
-     m_temperatureFailure(
-        boost::make_shared<yApi::historization::CSwitch>("Temperature Failure", yApi::EKeywordAccessMode::kGet)),
+     m_temperatureFailure(boost::make_shared<yApi::historization::CSwitch>("Temperature Failure", yApi::EKeywordAccessMode::kGet)),
      m_windowOpen(boost::make_shared<yApi::historization::CSwitch>("Window Open", yApi::EKeywordAccessMode::kGet)),
-     m_actuatorObstructed(
-        boost::make_shared<yApi::historization::CSwitch>("Actuator Obstructed", yApi::EKeywordAccessMode::kGet)),
-     m_temperature(
-        boost::make_shared<yApi::historization::CTemperature>("Temperature", yApi::EKeywordAccessMode::kGet)),
-     m_valvePosition(
-        boost::make_shared<yApi::historization::CDimmable>("Valve Position")),
-     m_temperatureSetPoint(
-        boost::make_shared<yApi::historization::CTemperature>("Temperature", yApi::EKeywordAccessMode::kGetSet)),
-     m_currentTemperatureFromExternalSensor(
-        boost::make_shared<yApi::historization::CTemperature>("Temperature", yApi::EKeywordAccessMode::kGetSet)),
-     m_runInitSequence(
-        boost::make_shared<yApi::historization::CEvent>("Run init sequence", yApi::EKeywordAccessMode::kGetSet)),
-     m_liftSet(
-        boost::make_shared<yApi::historization::CEvent>("Lift set", yApi::EKeywordAccessMode::kGetSet)),
-     m_summerMode(
-        boost::make_shared<yApi::historization::CSwitch>("Summer mode", yApi::EKeywordAccessMode::kGet)),
-     m_setPointInverse(
-        boost::make_shared<yApi::historization::CSwitch>("Set point inverse", yApi::EKeywordAccessMode::kGet)),
+     m_actuatorObstructed(boost::make_shared<yApi::historization::CSwitch>("Actuator Obstructed", yApi::EKeywordAccessMode::kGet)),
+     m_temperature(boost::make_shared<yApi::historization::CTemperature>("Temperature", yApi::EKeywordAccessMode::kGet)),
+     m_valvePosition(boost::make_shared<yApi::historization::CDimmable>("Valve Position")),
+     m_temperatureSetPoint(boost::make_shared<yApi::historization::CTemperature>("Temperature", yApi::EKeywordAccessMode::kGetSet)),
+     m_currentTemperatureFromExternalSensor(boost::make_shared<yApi::historization::CTemperature>("Temperature", yApi::EKeywordAccessMode::kGetSet)),
+     m_runInitSequence(boost::make_shared<yApi::historization::CEvent>("Run init sequence", yApi::EKeywordAccessMode::kGetSet)),
+     m_liftSet(boost::make_shared<yApi::historization::CEvent>("Lift set", yApi::EKeywordAccessMode::kGetSet)),
+     m_summerMode(boost::make_shared<yApi::historization::CSwitch>("Summer mode", yApi::EKeywordAccessMode::kGet)),
+     m_setPointInverse(boost::make_shared<yApi::historization::CSwitch>("Set point inverse", yApi::EKeywordAccessMode::kGet)),
      m_historizers({
         m_currentValue, m_serviceOn, m_energyInputEnable, m_energyStorageCharged, m_battery, m_coverOpen,
         m_temperatureFailure, m_windowOpen, m_actuatorObstructed, m_temperature, m_valvePosition, m_temperatureSetPoint,
@@ -57,8 +41,7 @@ const std::string& CProfile_A5_20_01::profile() const
 
 const std::string& CProfile_A5_20_01::title() const
 {
-   static const std::string Title(
-      "HVAC Components - Battery Powered Actuator (BI-DIR)");
+   static const std::string Title(R"(HVAC Components - Battery Powered Actuator (BI-DIR))");
    return Title;
 }
 
@@ -139,11 +122,11 @@ void CProfile_A5_20_01::sendCommand(const std::string& keyword,
    bitset_insert(userData, 22, 1, m_setPointInverse->get());
 
    message::CMessageHelpers::sendMessage(CRorgs::k4BS_Telegram,
-      messageHandler,
-      senderId,
-      m_deviceId,
-      userData,
-      "send command");
+                                         messageHandler,
+                                         senderId,
+                                         m_deviceId,
+                                         userData,
+                                         "send command");
 }
 
 void CProfile_A5_20_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration,

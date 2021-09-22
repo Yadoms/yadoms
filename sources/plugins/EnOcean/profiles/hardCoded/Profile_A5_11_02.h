@@ -10,7 +10,7 @@ class CProfile_A5_11_02 : public IType
 public:
    CProfile_A5_11_02(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_A5_11_02() = default;
+   ~CProfile_A5_11_02() override = default;
 
    // IType implementation
    const std::string& profile() const override;
@@ -33,8 +33,6 @@ public:
    // [END] IType implementation
 
 private:
-   boost::shared_ptr<yApi::IYPluginApi> m_api;
-   const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CDimmable> m_controllerValue;
    boost::shared_ptr<specificHistorizers::CFan4Speeds> m_automaticFan;
    boost::shared_ptr<specificHistorizers::CFan4Speeds> m_manualFan;

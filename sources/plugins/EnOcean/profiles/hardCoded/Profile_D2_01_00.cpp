@@ -12,14 +12,14 @@ CProfile_D2_01_00::CProfile_D2_01_00(const std::string& deviceId,
 
 const std::string& CProfile_D2_01_00::profile() const
 {
-   static const std::string profile("D2-01-00");
-   return profile;
+   static const std::string Profile("D2-01-00");
+   return Profile;
 }
 
 const std::string& CProfile_D2_01_00::title() const
 {
-   static const std::string title("Electronic switch with energy measurement and local control");
-   return title;
+   static const std::string Title(R"(Electronic switch with energy measurement and local control)");
+   return Title;
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_00::allHistorizers() const
@@ -42,14 +42,15 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                    const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status,
                                                                                                    const std::string& senderId,
-                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler)
+const
 {
    return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                data,
                                                                m_channel,
-                                                               CProfile_D2_01_Common::noDimmable,
-                                                               CProfile_D2_01_Common::noPowerFailure,
-                                                               CProfile_D2_01_Common::noOverCurrent);
+                                                               CProfile_D2_01_Common::NoDimmable,
+                                                               CProfile_D2_01_Common::NoPowerFailure,
+                                                               CProfile_D2_01_Common::NoOverCurrent);
 }
 
 void CProfile_D2_01_00::sendCommand(const std::string& keyword,

@@ -6,9 +6,7 @@
 
 CProfile_A5_30_04::CProfile_A5_30_04(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_di0(boost::make_shared<yApi::historization::CSwitch>("Digital input 0", yApi::EKeywordAccessMode::kGet)),
+   : m_di0(boost::make_shared<yApi::historization::CSwitch>("Digital input 0", yApi::EKeywordAccessMode::kGet)),
      m_di1(boost::make_shared<yApi::historization::CSwitch>("Digital input 1", yApi::EKeywordAccessMode::kGet)),
      m_di2(boost::make_shared<yApi::historization::CSwitch>("Digital input 2", yApi::EKeywordAccessMode::kGet)),
      m_analog(boost::make_shared<specificHistorizers::CAnalog>("Analog input", 0, 255, yApi::EKeywordAccessMode::kGet)),
@@ -24,8 +22,7 @@ const std::string& CProfile_A5_30_04::profile() const
 
 const std::string& CProfile_A5_30_04::title() const
 {
-   static const std::string Title(
-      "Digital Input - 3 Digital Inputs, 1 Digital Input 8 Bits");
+   static const std::string Title(R"(Digital Input - 3 Digital Inputs, 1 Digital Input 8 Bits)");
    return Title;
 }
 
@@ -46,7 +43,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const std::string& senderId,
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   m_di0->set(bitset_extract(data, 31, 1)?true:false);
+   m_di0->set(bitset_extract(data, 31, 1) ? true : false);
    m_di1->set(bitset_extract(data, 30, 1) ? true : false);
    m_di2->set(bitset_extract(data, 29, 1) ? true : false);
    m_analog->set(bitset_extract(data, 16, 8));

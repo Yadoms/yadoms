@@ -6,9 +6,7 @@
 
 CProfile_A5_30_05::CProfile_A5_30_05(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
+   : m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
      m_button(boost::make_shared<yApi::historization::CEvent>("Button", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_supplyVoltage, m_button})
 {
@@ -22,8 +20,7 @@ const std::string& CProfile_A5_30_05::profile() const
 
 const std::string& CProfile_A5_30_05::title() const
 {
-   static const std::string Title(
-      "Digital Input - Single Input Contact, Retransmission, Battery Monitor");
+   static const std::string Title(R"(Digital Input - Single Input Contact, Retransmission, Battery Monitor)");
    return Title;
 }
 
@@ -47,10 +44,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
    m_supplyVoltage->set(static_cast<double>(bitset_extract(data, 8, 8)) * 3.3 / 255.0);
-   historizers.push_back(m_supplyVoltage);
+   historizers.emplace_back(m_supplyVoltage);
 
    if (bitset_extract(data, 16, 1) == 0)
-      historizers.push_back(m_button);
+      historizers.emplace_back(m_button);
 
    return m_historizers;
 }

@@ -6,9 +6,7 @@
 
 CProfile_A5_14_0A::CProfile_A5_14_0A(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_api(api),
-     m_deviceId(deviceId),
-     m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
+   : m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
      m_contact(boost::make_shared<yApi::historization::CSwitch>("Contact open", yApi::EKeywordAccessMode::kGet)),
      m_tilt(boost::make_shared<yApi::historization::CEvent>("Tilt", yApi::EKeywordAccessMode::kGet)),
      m_vibration(boost::make_shared<yApi::historization::CSwitch>("Vibration detected", yApi::EKeywordAccessMode::kGet)),
@@ -25,7 +23,7 @@ const std::string& CProfile_A5_14_0A::profile() const
 const std::string& CProfile_A5_14_0A::title() const
 {
    static const std::string Title(
-      "Multi-Func Sensor - Window/Door-Sensor with States Open/Closed/Tilt, Supply voltage monitor and Vibration detection");
+      R"(Multi-Func Sensor - Window/Door-Sensor with States Open/Closed/Tilt, Supply voltage monitor and Vibration detection)");
    return Title;
 }
 
@@ -49,20 +47,20 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
    m_supplyVoltage->set(static_cast<double>(bitset_extract(data, 0, 8) * 5.0 / 250.0));
-   historizers.push_back(m_supplyVoltage);
+   historizers.emplace_back(m_supplyVoltage);
 
    switch (bitset_extract(data, 29, 2))
    {
    case 0:
       m_contact->set(false);
-      historizers.push_back(m_contact);
+      historizers.emplace_back(m_contact);
       break;
    case 1:
-      historizers.push_back(m_tilt);
+      historizers.emplace_back(m_tilt);
       break;
    case 3:
       m_contact->set(true);
-      historizers.push_back(m_contact);
+      historizers.emplace_back(m_contact);
       break;
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
@@ -71,7 +69,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    }
 
    m_vibration->set(bitset_extract(data, 31, 1) ? true : false);
-   historizers.push_back(m_vibration);
+   historizers.emplace_back(m_vibration);
 
    return historizers;
 }

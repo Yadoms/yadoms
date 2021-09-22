@@ -8,7 +8,7 @@ namespace yApi = shared::plugin::yPluginApi;
 class CProfile_D2_05_Common
 {
 public:
-   enum E_D2_01_Command
+   enum class E_D2_01_Command
    {
       kGoToPositionAndAngle = 0x01,
       kStop = 0x02,
@@ -43,8 +43,8 @@ public:
                                          const std::string& targetId);
 
    // CMD 0x04 - Reply Position and Angle
-   static const boost::shared_ptr<yApi::historization::CDimmable> noVerticalPosition;
-   static const boost::shared_ptr<yApi::historization::CDimmable> noRotationAngle;
+   static const boost::shared_ptr<yApi::historization::CDimmable> NoVerticalPosition;
+   static const boost::shared_ptr<yApi::historization::CDimmable> NoRotationAngle;
    static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractReplyPositionAndAngleResponse(unsigned char rorg,
                                                                                                                         const boost::dynamic_bitset<>& data,
                                                                                                                         boost::shared_ptr<yApi::historization::CCurtain> curtain,

@@ -12,7 +12,7 @@ namespace message
    class CUTE_ReceivedMessage
    {
    public:
-      enum ETeachInRequest
+      enum class ETeachInRequest
       {
          kTeachInRequest = 0,
          kTeachInDeletionRequest,
@@ -30,11 +30,7 @@ namespace message
       /// \param[in] message                 The ERP1 radio message
       //--------------------------------------------------------------
       explicit CUTE_ReceivedMessage(const CRadioErp1ReceivedMessage& message);
-
-      //--------------------------------------------------------------
-      /// \brief	                           Destructor
-      //--------------------------------------------------------------
-      virtual ~CUTE_ReceivedMessage();
+      virtual ~CUTE_ReceivedMessage() = default;
 
       virtual bool bidirectionalCommunication() const;
       virtual bool teachInResponseExpected() const;
@@ -47,9 +43,7 @@ namespace message
       virtual unsigned char rorg() const;
       virtual std::string senderId() const;
 
-      protected:
+   protected:
       const CRadioErp1ReceivedMessage& m_erp1;
    };
 } // namespace message
-
-

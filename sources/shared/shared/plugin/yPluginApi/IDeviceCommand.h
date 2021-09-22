@@ -12,12 +12,7 @@ namespace shared
          class IDeviceCommand
          {
          public:
-            //-----------------------------------------------------
-            ///\brief               Destructor
-            //-----------------------------------------------------
-            virtual ~IDeviceCommand()
-            {
-            }
+            virtual ~IDeviceCommand()=default;
 
             //-----------------------------------------------------
             ///\brief               Get the target device
