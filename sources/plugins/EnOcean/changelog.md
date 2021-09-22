@@ -1,3 +1,6 @@
+### 2.0.4
+* A5_07_03 profil : change motion detection (event) to occupancy (switch) keyword
+
 ### 2.0.3
 * Fix A5-09-05 profil management
 * Fix D2-01-XX profils with pilot wire management
