@@ -1,3 +1,9 @@
+### 2.5.1-beta.2
+
+#### Yadoms
+* Fix some profiles management for EnOcean plugin (see local changelog)
+
+
 ### 2.5.1-beta.1
 
 #### Yadoms

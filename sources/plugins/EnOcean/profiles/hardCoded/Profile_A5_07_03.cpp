@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Profile_A5_07_03.h"
-
 #include "Profile_A5_12_Common.h"
 #include "../bitsetHelpers.hpp"
 
@@ -9,7 +8,7 @@ CProfile_A5_07_03::CProfile_A5_07_03(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_supplyVoltage(boost::make_shared<yApi::historization::CVoltage>("Supply voltage")),
      m_illumination(boost::make_shared<yApi::historization::CIllumination>("Illumination")),
-     m_pir(boost::make_shared<yApi::historization::CEvent>("Motion detected", yApi::EKeywordAccessMode::kGet)),
+     m_pir(boost::make_shared<yApi::historization::CSwitch>("Occupancy", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_supplyVoltage, m_illumination, m_pir})
 {
 }
@@ -43,22 +42,17 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const std::string& senderId,
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
-
    m_supplyVoltage->set(static_cast<double>(CProfile_A5_12_Common::clamp(bitset_extract(data, 0, 8),
                                                                          static_cast<unsigned>(0),
                                                                          static_cast<unsigned>(250))) * 5.0 / 250.0);
-   historizers.emplace_back(m_supplyVoltage);
 
    m_illumination->set(CProfile_A5_12_Common::clamp(bitset_extract(data, 8, 10),
                                                     static_cast<unsigned>(0),
                                                     static_cast<unsigned>(1000)));
-   historizers.emplace_back(m_illumination);
 
-   if (bitset_extract(data, 28, 1))
-      historizers.emplace_back(m_pir);
+   m_pir->set(bitset_extract(data, 24, 1));
 
-   return historizers;
+   return m_historizers;
 }
 
 void CProfile_A5_07_03::sendCommand(const std::string& keyword,
