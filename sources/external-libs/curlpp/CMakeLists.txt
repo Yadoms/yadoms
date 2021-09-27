@@ -79,7 +79,6 @@ ExternalProject_Add (curlpp_build
    PREFIX            ${CURLPP_ROOT}
    CMAKE_ARGS        ${CURLPP_BUILD_ARGS}
    INSTALL_COMMAND   ""
-   BUILD_ALWAYS      OFF
 )
 
 SET_PROPERTY(TARGET curlpp_build PROPERTY FOLDER "External Libs")

@@ -63,7 +63,6 @@ ExternalProject_Add (oatpp_build
    PREFIX            ${OATPP_ROOT}
    CMAKE_ARGS        ${OATPP_BUILD_ARGS}
    INSTALL_COMMAND   ""
-   BUILD_ALWAYS      OFF
 )
 
 SET_PROPERTY(TARGET oatpp_build PROPERTY FOLDER "External Libs")

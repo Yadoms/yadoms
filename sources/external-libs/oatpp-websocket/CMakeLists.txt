@@ -2,10 +2,7 @@ include(ExternalProject)
 
 set(OATPP_WEBSOCKET_ROOT ${CMAKE_BINARY_DIR}/external-libs/oatpp-websocket)
 
-message("OATPP_ROOT=${OATPP_ROOT}")
-message("OATPP_LIBRARY=${OATPP_LIBRARY}")
 get_filename_component(OATPP_LIBRARY_DIR ${OATPP_LIBRARY} DIRECTORY)
-message("OATPP_LIBRARY_DIR=${OATPP_LIBRARY_DIR}")
 
 list(APPEND OATPP_WEBSOCKET_BUILD_ARGS "-DOATPP_MODULES_LOCATION=CUSTOM")
 list(APPEND OATPP_WEBSOCKET_BUILD_ARGS "-DOATPP_DIR_SRC=${OATPP_ROOT}/src/oatpp_build/src")
@@ -72,7 +69,6 @@ ExternalProject_Add (oatpp-websocket_build
    PREFIX            ${OATPP_WEBSOCKET_ROOT}
    CMAKE_ARGS        ${OATPP_WEBSOCKET_BUILD_ARGS}
    INSTALL_COMMAND   ""
-   BUILD_ALWAYS      OFF
 )
 
 SET_PROPERTY(TARGET oatpp-websocket_build PROPERTY FOLDER "External Libs")

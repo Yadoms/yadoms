@@ -4,10 +4,11 @@
 #include <oatpp/network/tcp/server/ConnectionProvider.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
+#include <oatpp/core/macro/component.hpp>
+
 #include <utility>
 
 #include "RestRequestHandler.h"
-#include "web/rest/IRequest.h"
 
 namespace web
 {
@@ -200,12 +201,11 @@ namespace web
       void CWebServer::refreshRestRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                          const std::string& restKeywordBase) const
       {
-         static const std::string RestApiVersion("v2");
-
          for (const auto& service : *m_restServices)
          {
             for (const auto& endPoint : *service->endPoints())
             {
+               static constexpr char* RestApiVersion(R"(v2)");
                httpRouter->route(ToString(endPoint->verb()).c_str(),
                                  std::string("/" + restKeywordBase + "/" + RestApiVersion + "/" + endPoint->path()).c_str(),
                                  std::make_shared<CRestRequestHandler>(endPoint->handler()));

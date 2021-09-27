@@ -7,7 +7,7 @@
 
 namespace dataAccessLayer
 {
-   class CDeviceManager : public IDeviceManager
+   class CDeviceManager final : public IDeviceManager
    {
    public:
       //--------------------------------------------------------------
@@ -22,10 +22,7 @@ namespace dataAccessLayer
                      boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                      boost::shared_ptr<IKeywordManager> keywordManager);
 
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~CDeviceManager();
+      ~CDeviceManager() override = default;
 
       // IDeviceManager Implementation
       bool deviceExists(int deviceId) const override;
