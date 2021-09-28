@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "WebServer.h"
+#include <utility>
 #include <oatpp/network/Server.hpp>
 #include <oatpp/network/tcp/server/ConnectionProvider.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
-#include <utility>
-
 #include "RestRequestHandler.h"
-#include "web/rest/IRequest.h"
+#include "ConnectionProvider.h"
+
 
 namespace web
 {
@@ -38,7 +38,7 @@ namespace web
 
          m_httpConnectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(httpRouter);
 
-         m_tcpConnectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared(
+         m_tcpConnectionProvider = CConnectionProvider::createShared(
             {
                (address.empty() ? "0.0.0.0" : address).c_str(),
                port,

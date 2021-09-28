@@ -5,6 +5,7 @@
 #include <oatpp/web/server/HttpRouter.hpp>
 
 #include "HttpPages.h"
+#include "RestRequestHandler.h"
 #include "authentication/IAuthentication.h"
 #include "web/IWebServer.h"
 #include "web/rest/service/IRestService.h"
