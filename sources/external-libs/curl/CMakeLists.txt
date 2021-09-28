@@ -94,7 +94,6 @@ ExternalProject_Add(curl_build
    PREFIX            ${CURL_ROOT}
    CMAKE_ARGS        ${CURL_BUILD_ARGS}
    INSTALL_COMMAND   ""
-   BUILD_ALWAYS      OFF
 )
 
 SET_PROPERTY(TARGET curl_build PROPERTY FOLDER "External Libs")

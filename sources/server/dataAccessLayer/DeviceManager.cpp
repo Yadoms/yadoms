@@ -3,20 +3,20 @@
 #include "notification/Helpers.hpp"
 #include <shared/plugin/yPluginApi/historization/DeviceStateMessage.h>
 
+#include <utility>
+
 namespace dataAccessLayer
 {
    CDeviceManager::CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester,
                                   boost::shared_ptr<database::IKeywordRequester> keywordRequester,
                                   boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                                   boost::shared_ptr<IKeywordManager> keywordManager)
-      : m_deviceRequester(deviceRequester),
-        m_keywordRequester(keywordRequester),
-        m_acquisitionRequester(acquisitionRequester),
-        m_keywordManager(keywordManager)
+      : m_deviceRequester(std::move(deviceRequester)),
+        m_keywordRequester(std::move(keywordRequester)),
+        m_acquisitionRequester(std::move(acquisitionRequester)),
+        m_keywordManager(std::move(keywordManager))
    {
    }
-
-   CDeviceManager::~CDeviceManager() = default;
 
    bool CDeviceManager::deviceExists(int deviceId) const
    {
@@ -135,9 +135,9 @@ namespace dataAccessLayer
          cleanupDevice(deviceId);
 
       //update blacklist state of all attached keywords
-      auto keywords = m_keywordRequester->getKeywords(deviceId);
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         m_keywordRequester->updateKeywordBlacklistState((*keyword)->Id, blacklist);
+      const auto keywords = m_keywordRequester->getKeywords(deviceId);
+      for (auto& keyword : keywords)
+         m_keywordRequester->updateKeywordBlacklistState(keyword->Id, blacklist);
 
       //update device blacklist state
       m_deviceRequester->updateDeviceBlacklistState(deviceId,
@@ -185,13 +185,13 @@ namespace dataAccessLayer
       stateKeywords = m_keywordRequester->getDeviceKeywordsWithCapacity(deviceId, ds.getCapacity().getName(),
                                                                         shared::plugin::yPluginApi::EKeywordAccessMode::
                                                                         kGet);
-      for (auto i = stateKeywords.begin(); i != stateKeywords.end(); ++i)
-         m_acquisitionRequester->saveData((*i)->Id, ds.formatValue(), currentDate);
+      for (const auto& stateKeyword : stateKeywords)
+         m_acquisitionRequester->saveData(stateKeyword->Id, ds.formatValue(), currentDate);
 
       stateMessageKeywords = m_keywordRequester->getDeviceKeywordsWithCapacity(
          deviceId, dsm.getCapacity().getName(), shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
-      for (auto i = stateMessageKeywords.begin(); i != stateMessageKeywords.end(); ++i)
-         m_acquisitionRequester->saveData((*i)->Id, dsm.formatValue(), currentDate);
+      for (const auto& stateMessageKeyword : stateMessageKeywords)
+         m_acquisitionRequester->saveData(stateMessageKeyword->Id, dsm.formatValue(), currentDate);
    }
 
    void CDeviceManager::removeDevice(int deviceId)
@@ -199,9 +199,9 @@ namespace dataAccessLayer
       const auto device = m_deviceRequester->getDevice(deviceId, true);
 
       cleanupDevice(deviceId);
-      auto keywords = m_keywordRequester->getKeywords(deviceId);
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         m_keywordManager->removeKeyword((*keyword)->Id);
+      const auto keywords = m_keywordRequester->getKeywords(deviceId);
+      for (const auto& keyword : keywords)
+         m_keywordManager->removeKeyword(keyword->Id);
 
       m_deviceRequester->removeDevice(deviceId);
 
@@ -219,15 +219,15 @@ namespace dataAccessLayer
 
    void CDeviceManager::removeAllDeviceForPlugin(int pluginId)
    {
-      auto devicesToDelete = getDevicesForPluginInstance(pluginId);
-      for (auto device = devicesToDelete.begin(); device != devicesToDelete.end(); ++device)
-         removeDevice(pluginId, (*device));
+      const auto devicesToDelete = getDevicesForPluginInstance(pluginId);
+      for (const auto& device : devicesToDelete)
+         removeDevice(pluginId, device);
    }
 
    void CDeviceManager::cleanupDevice(int deviceId)
    {
-      auto keywords = m_keywordRequester->getKeywords(deviceId);
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         m_acquisitionRequester->removeKeywordData((*keyword)->Id);
+      const auto keywords = m_keywordRequester->getKeywords(deviceId);
+      for (const auto& keyword : keywords)
+         m_acquisitionRequester->removeKeywordData(keyword->Id);
    }
 } //namespace dataAccessLayer 

@@ -5,6 +5,8 @@
 #include <oatpp/network/tcp/server/ConnectionProvider.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
+#include <oatpp/core/macro/component.hpp>
+
 #include "RestRequestHandler.h"
 #include "ConnectionProvider.h"
 
@@ -58,81 +60,6 @@ namespace web
          // - ajout headers avec infos serveur (nom, version, etc... Voir Poco webserver)
 
          start();
-
-         //TODO ménage
-         ////setup HTTPServer Params (define name and version; to match common http server configuration)
-         //Poco::Net::HTTPServerParams::Ptr serverParams(new Poco::Net::HTTPServerParams());
-         //serverParams->setServerName("Yadoms");
-         //const auto runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
-         //serverParams->setSoftwareVersion(runningInformation->getSoftwareVersion().getVersion().toString());
-         //serverParams->setKeepAlive(false); //this line fix global catch exception on multiple browser refresh
-
-         ////in case of "0.0.0.0" or empty , then do not use it, just use port, listen on all interfaces
-         //Poco::Net::IPAddress ipAddress;
-         //if (address == "0.0.0.0" || address.empty())
-         //{
-         //   ipAddress = Poco::Net::IPAddress::wildcard();
-         //}
-         //else
-         //{
-         //   if (!Poco::Net::IPAddress::tryParse(address, ipAddress))
-         //   {
-         //      //invalid IP provided
-         //      YADOMS_LOG(warning) << "*******************************************************";
-         //      YADOMS_LOG(warning) << "Invalid IP address provided in web server configuration";
-         //      YADOMS_LOG(warning) << "Listening on any ip address";
-         //      YADOMS_LOG(warning) << "*******************************************************";
-         //      ipAddress = Poco::Net::IPAddress::wildcard();
-         //   }
-         //}
-
-         //// set-up a HTTPServer instance
-         ////in case of "0.0.0.0" or empty , then do not use it, just use port, listen on all interfaces
-         //Poco::Net::SocketAddress sa(ipAddress, port);
-         //Poco::Net::ServerSocket svs(sa);
-         //if (useSSL)
-         //{
-         //   auto fail = false;
-
-         //   try
-         //   {
-         //      const Poco::Net::SocketAddress saSecure(address, securedPort);
-         //      svs = Poco::Net::SecureServerSocket(saSecure);
-         //   }
-         //   catch (Poco::Exception& ex)
-         //   {
-         //      //fail to download package
-         //      YADOMS_LOG(error) << "Fail to configure HTTPS: " << ex.message();
-         //      fail = true;
-         //   }
-         //   catch (std::exception& ex)
-         //   {
-         //      //fail to download package
-         //      YADOMS_LOG(error) << "Fail to configure HTTPS: " << ex.what();
-         //      fail = true;
-         //   }
-         //   catch (...)
-         //   {
-         //      //fail to download package
-         //      YADOMS_LOG(error) << "Fail to configure HTTPS";
-         //      fail = true;
-         //   }
-         //   if (fail)
-         //   {
-         //      //we activate the default classic web server
-         //      YADOMS_LOG(warning) << "**********************************************************";
-         //      YADOMS_LOG(warning) << "Using HTTP instead of HTTPS due to malformed configuration";
-         //      YADOMS_LOG(warning) << "**********************************************************";
-         //      const Poco::Net::SocketAddress saHttp(address, port);
-         //      svs = Poco::Net::ServerSocket(saHttp);
-         //   }
-         //}
-
-         //auto a = false;
-         //auto b = 0;
-         //svs.getLinger(a, b);
-         //svs.setLinger(true, 2);
-         //m_embeddedWebServer = boost::make_shared<Poco::Net::HTTPServer>(m_httpRequestHandlerFactory, svs, serverParams);
       }
 
       CWebServer::~CWebServer()
@@ -200,12 +127,11 @@ namespace web
       void CWebServer::refreshRestRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                          const std::string& restKeywordBase) const
       {
-         static const std::string RestApiVersion("v2");
-
          for (const auto& service : *m_restServices)
          {
             for (const auto& endPoint : *service->endPoints())
             {
+               static constexpr char* RestApiVersion(R"(v2)");
                httpRouter->route(ToString(endPoint->verb()).c_str(),
                                  std::string("/" + restKeywordBase + "/" + RestApiVersion + "/" + endPoint->path()).c_str(),
                                  std::make_shared<CRestRequestHandler>(endPoint->handler()));
