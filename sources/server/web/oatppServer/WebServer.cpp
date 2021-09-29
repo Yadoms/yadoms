@@ -25,7 +25,7 @@ namespace web
                              const std::string& webSocketKeywordBase,
                              bool allowExternalAccess,
                              boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
-                             const boost::shared_ptr<authentication::IAuthentication>& basicAuthentication)
+                             const boost::shared_ptr<IAuthentication>& authentication)
          : m_aliases(std::move(aliases)),
            m_restServices(std::move(restServices))
       {
@@ -34,9 +34,11 @@ namespace web
          // Create Router component
          const auto httpRouter = oatpp::web::server::HttpRouter::createShared();
          refreshWebPagesRoutes(httpRouter,
-                               docRoot);
+                               docRoot,
+                               authentication);
          refreshRestRoutes(httpRouter,
-                           restKeywordBase);
+                           restKeywordBase,
+                           authentication);
 
          m_httpConnectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(httpRouter);
 
@@ -56,8 +58,7 @@ namespace web
          // - aliases
          // - websockets
          // - allowExternalAccess
-         // - basicAuthentication
-         // - ajout headers avec infos serveur (nom, version, etc... Voir Poco webserver)
+         // - ajout headers avec infos serveur (nom, version, etc... Voir Poco webserver) ?
 
          start();
       }
@@ -99,9 +100,11 @@ namespace web
       }
 
       void CWebServer::refreshWebPagesRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
-                                             const boost::filesystem::path& docRoot)
+                                             const boost::filesystem::path& docRoot,
+                                             const boost::shared_ptr<IAuthentication>& authentication)
       {
-         const auto pagesFiles = std::make_shared<CHttpPages>(docRoot);
+         const auto pagesFiles = std::make_shared<CHttpPages>(docRoot,
+                                                              authentication);
          httpRouter->route("GET", "/", pagesFiles);
 
          routeAllFiles(docRoot, httpRouter, pagesFiles);
@@ -125,7 +128,8 @@ namespace web
       }
 
       void CWebServer::refreshRestRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
-                                         const std::string& restKeywordBase) const
+                                         const std::string& restKeywordBase,
+                                         const boost::shared_ptr<IAuthentication>& authentication) const
       {
          for (const auto& service : *m_restServices)
          {
@@ -134,7 +138,8 @@ namespace web
                static constexpr char* RestApiVersion(R"(v2)");
                httpRouter->route(ToString(endPoint->verb()).c_str(),
                                  std::string("/" + restKeywordBase + "/" + RestApiVersion + "/" + endPoint->path()).c_str(),
-                                 std::make_shared<CRestRequestHandler>(endPoint->handler()));
+                                 std::make_shared<CRestRequestHandler>(endPoint->handler(),
+                                                                       authentication));
             }
          }
       }

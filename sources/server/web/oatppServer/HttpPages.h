@@ -1,6 +1,8 @@
 #pragma once
 #include <oatpp/web/server/HttpRequestHandler.hpp>
 
+#include "IAuthentication.h"
+
 namespace web
 {
    namespace oatppServer
@@ -11,7 +13,8 @@ namespace web
       class CHttpPages final : public oatpp::web::server::HttpRequestHandler
       {
       public:
-         CHttpPages(boost::filesystem::path siteLocation);
+         CHttpPages(boost::filesystem::path siteLocation,
+                    boost::shared_ptr<IAuthentication> authentication);
          ~CHttpPages() override = default;
 
          // oatpp::web::server::HttpRequestHandler Implementation
@@ -34,6 +37,7 @@ namespace web
          static constexpr auto DefaultMimetype = "application/octet-stream";
 
          const boost::filesystem::path m_siteLocation;
+         boost::shared_ptr<IAuthentication> m_authentication;
       };
    } //namespace oatppServer
 } //namespace web

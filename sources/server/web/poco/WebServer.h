@@ -39,7 +39,7 @@ namespace web
          void restHandlerRegisterService(boost::shared_ptr<rest::service::IRestService> restService);
          void websiteHandlerAddAlias(const std::string& alias,
                                      const std::string& path);
-         void configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator);
+         void configureAuthentication(boost::shared_ptr<IAuthentication> authenticator);
 
          void start() const;
          void stop() const;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RestRequestHandler.h"
 
-#include <oatpp/web/server/handler/AuthorizationHandler.hpp>
+#include <utility>
 
 #include "RestRequest.h"
 
@@ -9,26 +9,17 @@ namespace web
 {
    namespace oatppServer
    {
-      CRestRequestHandler::CRestRequestHandler(std::function<boost::shared_ptr<rest::IAnswer>(boost::shared_ptr<rest::IRequest>)> handler)
-         : m_handler(std::move(handler))
+      CRestRequestHandler::CRestRequestHandler(std::function<boost::shared_ptr<rest::IAnswer>(boost::shared_ptr<rest::IRequest>)> handler,
+                                               boost::shared_ptr<IAuthentication> authentication)
+         : m_handler(std::move(handler)),
+           m_authentication(std::move(authentication))
       {
       }
 
       std::shared_ptr<oatpp::web::server::HttpRequestHandler::OutgoingResponse> CRestRequestHandler::handle(
          const std::shared_ptr<IncomingRequest>& request)
       {
-         // TODO retravailler ça pour injecter l'authorizationHandler
-         const auto authorizationHeader = request->getHeader(oatpp::web::protocol::http::Header::AUTHORIZATION);
-
-         const auto bah = std::make_shared<oatpp::web::server::handler::BasicAuthorizationHandler>();
-         const auto ao = std::static_pointer_cast<oatpp::web::server::handler::DefaultBasicAuthorizationObject>(
-            bah->handleAuthorization(authorizationHeader));
-         if (ao->userId != "seb" || ao->password != "test")
-         {
-            Headers responseHeaders;
-            bah->addErrorResponseHeaders(responseHeaders);
-            throw HttpError(Status::CODE_401, "Unauthorized", responseHeaders);
-         }
+         m_authentication->authenticate(request);
 
          try
          {

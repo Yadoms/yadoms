@@ -2,7 +2,7 @@
 #include <Poco/Net/HTTPServer.h>
 
 #include "web/rest/service/IRestService.h"
-#include "authentication/IAuthentication.h"
+#include "IAuthentication.h"
 
 namespace web
 {
@@ -28,7 +28,7 @@ namespace web
          void webSocketConfigure(const std::string& webSocketKeyword);
          void restHandlerRegisterService(boost::shared_ptr<rest::service::IRestService> restService);
          void allowExternalAccess(bool allowExternalAccess);
-         void configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator);
+         void configureAuthentication(boost::shared_ptr<IAuthentication> authenticator);
 
       private:
          //==============================================
@@ -54,7 +54,7 @@ namespace web
          std::string m_webSocketKeyword;
          std::vector<boost::shared_ptr<rest::service::IRestService>> m_restService;
          std::map<std::string, std::string> m_alias;
-         boost::shared_ptr<authentication::IAuthentication> m_authenticator;
+         boost::shared_ptr<IAuthentication> m_authenticator;
          bool m_allowExternalAccess;
 
          boost::shared_ptr<Poco::Net::HTTPRequestHandler> m_restRequestHandler;

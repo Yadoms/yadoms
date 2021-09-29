@@ -4,9 +4,8 @@
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
 
+#include "IAuthentication.h"
 #include "HttpPages.h"
-#include "RestRequestHandler.h"
-#include "authentication/IAuthentication.h"
 #include "web/IWebServer.h"
 #include "web/rest/service/IRestService.h"
 
@@ -33,7 +32,7 @@ namespace web
          //\param[in] aliases             Aliases from specific paths
          //                   Example configureAlias("/test/", "c:\\path\\to\\alias\\files\\")
          //                   -> then http://server:port/test/index.html will take c:\\path\\to\\alias\\files\\index.html
-         //\param[in] basicAuthentication Basic authentication handling
+         //\param[in] authentication      Authentication handling
          CWebServer(const std::string& address,
                     unsigned short port,
                     bool useSsl,
@@ -44,7 +43,7 @@ namespace web
                     const std::string& webSocketKeywordBase,
                     bool allowExternalAccess,
                     boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
-                    const boost::shared_ptr<authentication::IAuthentication>& basicAuthentication);
+                    const boost::shared_ptr<IAuthentication>& authentication);
          ~CWebServer() override;
 
       private:
@@ -52,12 +51,14 @@ namespace web
          void stop();
 
          static void refreshWebPagesRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
-                                           const boost::filesystem::path& docRoot);
+                                           const boost::filesystem::path& docRoot,
+                                           const boost::shared_ptr<IAuthentication>& authentication);
          static void routeAllFiles(const boost::filesystem::path& rootFolder,
                                    const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                    const std::shared_ptr<CHttpPages>& pagesFiles);
          void refreshRestRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
-                                const std::string& restKeywordBase) const;
+                                const std::string& restKeywordBase,
+                                const boost::shared_ptr<IAuthentication>& authentication) const;
 
 
          std::shared_ptr<oatpp::web::server::HttpConnectionHandler> m_httpConnectionHandler;

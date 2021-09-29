@@ -51,7 +51,7 @@ namespace web
          m_allowExternalAccess = allowExternalAccess;
       }
 
-      void CHttpRequestHandlerFactory::configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator)
+      void CHttpRequestHandlerFactory::configureAuthentication(boost::shared_ptr<IAuthentication> authenticator)
       {
          m_authenticator = authenticator;
       }
