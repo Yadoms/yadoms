@@ -11,7 +11,7 @@ namespace web
       class CHttpPages final : public oatpp::web::server::HttpRequestHandler
       {
       public:
-         CHttpPages(boost::filesystem::path siteLocation);
+         explicit CHttpPages(boost::filesystem::path siteLocation);
          ~CHttpPages() override = default;
 
          // oatpp::web::server::HttpRequestHandler Implementation

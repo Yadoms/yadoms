@@ -328,9 +328,9 @@ boost::shared_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
                                                                                                  useSsl,
                                                                                                  securedPort + 1, //TODO virer le +1 (pour test...)
                                                                                                  webServerPath,
-                                                                                                 "/rest/",
+                                                                                                 "rest",
                                                                                                  restServices,
-                                                                                                 "/ws",
+                                                                                                 "ws",
                                                                                                  allowExternalAccess,
                                                                                                  aliases,
                                                                                                  basicAuthentication));

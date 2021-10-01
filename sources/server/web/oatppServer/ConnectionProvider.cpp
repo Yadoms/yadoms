@@ -5,6 +5,7 @@ namespace web
 {
    namespace oatppServer
    {
+      //TODO supprimer les connections aussi quand elles se ferment d'elles-mêmes (voir https://github.com/oatpp/oatpp/issues/476#issuecomment-930076506)
       CConnectionProvider::CConnectionProvider(const oatpp::network::Address& address,
                                                bool useExtendedConnections)
          : ConnectionProvider(address,

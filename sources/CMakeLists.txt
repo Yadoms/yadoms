@@ -1056,6 +1056,10 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/oatppServer/RestRequest.cpp   
    server/web/oatppServer/RestRequestHandler.h
    server/web/oatppServer/RestRequestHandler.cpp    
+   server/web/oatppServer/WebsocketInstanceListener.h
+   server/web/oatppServer/WebsocketInstanceListener.cpp    
+   server/web/oatppServer/WebsocketListener.h
+   server/web/oatppServer/WebsocketListener.cpp    
 )
 source_group(server\\web\\oatppServer  server/web/oatppServer/*.*)
 

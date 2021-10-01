@@ -1,20 +1,43 @@
 #include "stdafx.h"
 #include "WebServer.h"
 #include <utility>
+#include <oatpp/core/macro/component.hpp>
 #include <oatpp/network/Server.hpp>
 #include <oatpp/network/tcp/server/ConnectionProvider.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
-#include <oatpp/core/macro/component.hpp>
-
-#include "RestRequestHandler.h"
+#include <oatpp-websocket/Handshaker.hpp>
 #include "ConnectionProvider.h"
-
+#include "RestRequestHandler.h"
+#include "WebsocketInstanceListener.h"
 
 namespace web
 {
    namespace oatppServer
    {
+      class CHandshakeRequestHandler final : public oatpp::web::server::HttpRequestHandler
+      {
+      public:
+         explicit CHandshakeRequestHandler(std::shared_ptr<oatpp::websocket::ConnectionHandler> websocketConnectionHandler)
+            : m_websocketConnectionHandler(std::move(websocketConnectionHandler))
+         {
+         }
+
+         ~CHandshakeRequestHandler() override = default;
+
+         // oatpp::web::server::HttpRequestHandler Implementation
+         std::shared_ptr<OutgoingResponse> handle(const std::shared_ptr<IncomingRequest>& request) override
+         {
+            return oatpp::websocket::Handshaker::serversideHandshake(request->getHeaders(),
+                                                                     m_websocketConnectionHandler);
+         }
+
+         // [END] oatpp::web::server::HttpRequestHandler Implementation
+
+      private:
+         std::shared_ptr<oatpp::websocket::ConnectionHandler> m_websocketConnectionHandler;
+      };
+
       CWebServer::CWebServer(const std::string& address,
                              unsigned short port,
                              bool useSsl,
@@ -31,7 +54,7 @@ namespace web
       {
          oatpp::base::Environment::init();
 
-         // Create Router component
+         // HTTP
          const auto httpRouter = oatpp::web::server::HttpRouter::createShared();
          refreshWebPagesRoutes(httpRouter,
                                docRoot);
@@ -49,6 +72,14 @@ namespace web
 
          m_server = std::make_shared<oatpp::network::Server>(m_tcpConnectionProvider,
                                                              m_httpConnectionHandler);
+
+         // Websocket
+         m_websocketConnectionHandler = oatpp::websocket::ConnectionHandler::createShared();
+         m_websocketConnectionHandler->setSocketInstanceListener(std::make_shared<CWebsocketInstanceListener>());
+         httpRouter->route("GET",
+                           std::string("/" + webSocketKeywordBase).c_str(), //TODO besoin préfix "/" ? TODO besoin versionner API ws ?
+                           std::make_shared<CHandshakeRequestHandler>(m_websocketConnectionHandler));
+
 
          // Configure the factory
          //TODO RAF :

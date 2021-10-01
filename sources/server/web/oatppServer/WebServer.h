@@ -3,6 +3,7 @@
 #include <oatpp/network/Server.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
+#include <oatpp-websocket/ConnectionHandler.hpp>
 
 #include "HttpPages.h"
 #include "RestRequestHandler.h"
@@ -62,6 +63,7 @@ namespace web
 
          std::shared_ptr<oatpp::web::server::HttpConnectionHandler> m_httpConnectionHandler;
          std::shared_ptr<oatpp::network::ServerConnectionProvider> m_tcpConnectionProvider;
+         std::shared_ptr<oatpp::websocket::ConnectionHandler> m_websocketConnectionHandler;
          std::shared_ptr<oatpp::network::Server> m_server;
          std::thread m_serverThread;
 
