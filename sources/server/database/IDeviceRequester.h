@@ -45,8 +45,7 @@ namespace database
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CDevice> getDeviceInPlugin(int pluginId,
                                                                      const std::string& name,
-                                                                     bool blacklistedIncluded = false) const =
-      0;
+                                                                     bool blacklistedIncluded = false) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get devices identified by a friendly name.
@@ -234,7 +233,7 @@ namespace database
       /// \brief           Update device name (be careful, plugins reference a device by its name, renaming it may brake plugin historization)
       /// \param [in]      deviceId The device to rename
       /// \param [in]      newName The new name
-      /// \note /!\ Use it only if you really know what you are doing /!\
+      /// \note !!! ATTENTION !!! Use it only if you really know what you are doing
       //--------------------------------------------------------------
       virtual void updateDeviceName(int deviceId,
                                     const std::string& newName) = 0;

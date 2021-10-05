@@ -166,7 +166,7 @@ namespace web
          {
             for (const auto& endPoint : *service->endPoints())
             {
-               static constexpr char* RestApiVersion(R"(v2)");
+               static constexpr char* RestApiVersion("v2");
                httpRouter->route(ToString(endPoint->verb()).c_str(),
                                  std::string("/" + restKeywordBase + "/" + RestApiVersion + "/" + endPoint->path()).c_str(),
                                  std::make_shared<CRestRequestHandler>(endPoint->handler(),

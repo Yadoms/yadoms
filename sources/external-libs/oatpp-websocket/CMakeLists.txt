@@ -3,6 +3,8 @@ include(ExternalProject)
 set(OATPP_WEBSOCKET_ROOT ${CMAKE_BINARY_DIR}/external-libs/oatpp-websocket)
 
 get_filename_component(OATPP_LIBRARY_DIR ${OATPP_LIBRARY} DIRECTORY)
+message("TODO_supprimer : OATPP_LIBRARY=${OATPP_LIBRARY}")
+message("TODO_supprimer : OATPP_LIBRARY_DIR=${OATPP_LIBRARY_DIR}")
 
 list(APPEND OATPP_WEBSOCKET_BUILD_ARGS "-DOATPP_MODULES_LOCATION=CUSTOM")
 list(APPEND OATPP_WEBSOCKET_BUILD_ARGS "-DOATPP_DIR_SRC=${OATPP_ROOT}/src/oatpp_build/src")
