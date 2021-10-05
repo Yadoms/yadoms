@@ -1201,8 +1201,8 @@ target_link_libraries(yadoms
    ${YADOMS_EXTERNAL_LINK}
    ${LIBS}
    ${CMAKE_DL_LIBS}
-   ${OATPP_LIBRARY}
    ${OATPP_WEBSOCKET_LIBRARY}
+   ${OATPP_LIBRARY}
 )
 
 ##################################################################################################
