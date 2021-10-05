@@ -5,7 +5,6 @@ namespace web
 {
    namespace oatppServer
    {
-      //TODO supprimer les connections aussi quand elles se ferment d'elles-mêmes (voir https://github.com/oatpp/oatpp/issues/476#issuecomment-930076506)
       CConnectionProvider::CConnectionProvider(const oatpp::network::Address& address,
                                                bool useExtendedConnections)
          : ConnectionProvider(address,
@@ -16,7 +15,8 @@ namespace web
       CConnectionProvider::~CConnectionProvider()
       {
          for (const auto& c : m_connections)
-            c->close();
+            if (const auto& ptr = c.lock())
+               ptr->close();
       }
 
       std::shared_ptr<CConnectionProvider> CConnectionProvider::createShared(const oatpp::network::Address& address,
@@ -30,7 +30,21 @@ namespace web
       {
          auto connection = ConnectionProvider::get();
          if (connection)
+         {
             m_connections.emplace(std::static_pointer_cast<oatpp::network::tcp::Connection>(connection));
+            // The following code allows to limit the memory consumption in case of loss of shared_ptr following a close from a client.
+            auto it = m_connections.begin();
+            while (it != m_connections.end())
+            {
+               // We copy the current iterator then we increment it.
+               const auto current = it++;
+               if ((*current).lock() == nullptr)
+               {
+                  // we don't invalidate the iterator, because it already points to the next element.
+                  m_connections.erase(current);
+               }
+            }
+         }
          return connection;
       }
    } //namespace oatppServer

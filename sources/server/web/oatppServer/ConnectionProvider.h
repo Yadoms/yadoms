@@ -23,7 +23,22 @@ namespace web
          std::shared_ptr<oatpp::data::stream::IOStream> get() override;
 
       private:
-         std::set<std::shared_ptr<oatpp::network::tcp::Connection>> m_connections;
+         using WeakConnection = std::weak_ptr<oatpp::network::tcp::Connection>;
+
+         struct LessCompare
+         {
+            bool operator()(const WeakConnection& lhs,
+                            const WeakConnection& rhs) const
+            {
+               const auto lPtr = lhs.lock();
+               const auto rPtr = rhs.lock();
+               if (!rPtr) return false; // nothing after expired pointer 
+               if (!lPtr) return true; // every not expired after expired pointer
+               return lPtr < rPtr;
+            }
+         };
+
+         std::set<WeakConnection, LessCompare> m_connections;
       };
    } //namespace oatppServer
 } //namespace web

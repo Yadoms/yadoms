@@ -135,7 +135,7 @@ namespace web
                                                              path);
       }
 
-      void CWebServer::configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator)
+      void CWebServer::configureAuthentication(boost::shared_ptr<IAuthentication> authenticator)
       {
          m_httpRequestHandlerFactory->configureAuthentication(std::move(authenticator));
       }

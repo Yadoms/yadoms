@@ -333,10 +333,6 @@ set(YADOMS_SRC
    server/Supervisor.cpp
    server/Supervisor.h
 
-   server/authentication/IAuthentication.h
-   server/authentication/BasicAuthentication.h
-   server/authentication/BasicAuthentication.cpp
-
    server/dateTime/DateTimeNotifier.h
    server/dateTime/DateTimeNotifier.cpp
    server/dateTime/ITimeZoneProvider.h
@@ -1022,10 +1018,13 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/poco/WebServer.cpp
    server/web/poco/AuthenticationRequestHandler.h
    server/web/poco/AuthenticationRequestHandler.cpp
+   server/web/poco/BasicAuthentication.h
+   server/web/poco/BasicAuthentication.cpp
    server/web/poco/HttpRequestHandlerFactory.h
    server/web/poco/HttpRequestHandlerFactory.cpp   
    server/web/poco/HttpRequestHandlerContainer.h
    server/web/poco/HttpRequestHandlerContainer.cpp
+   server/web/poco/IAuthentication.h
    server/web/poco/RestDispatcher.h
    server/web/poco/RestDispatcher.cpp
    server/web/poco/RestDispatcherHelpers.hpp
@@ -1046,16 +1045,19 @@ source_group(server\\web\\poco  server/web/poco/*.*)
 
 # Oatpp-based Web server
 set(YADOMS_SRC ${YADOMS_SRC}
+   server/web/oatppServer/Authentication.h
+   server/web/oatppServer/Authentication.cpp
    server/web/oatppServer/ConnectionProvider.h
    server/web/oatppServer/ConnectionProvider.cpp  
    server/web/oatppServer/HttpPages.h
    server/web/oatppServer/HttpPages.cpp
-   server/web/oatppServer/WebServer.h
-   server/web/oatppServer/WebServer.cpp
+   server/web/oatppServer/IAuthentication.h
    server/web/oatppServer/RestRequest.h
    server/web/oatppServer/RestRequest.cpp   
    server/web/oatppServer/RestRequestHandler.h
-   server/web/oatppServer/RestRequestHandler.cpp    
+   server/web/oatppServer/RestRequestHandler.cpp
+   server/web/oatppServer/WebServer.h
+   server/web/oatppServer/WebServer.cpp    
    server/web/oatppServer/WebsocketInstanceListener.h
    server/web/oatppServer/WebsocketInstanceListener.cpp    
    server/web/oatppServer/WebsocketListener.h

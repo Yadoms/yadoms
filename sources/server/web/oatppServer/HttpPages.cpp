@@ -3,7 +3,6 @@
 #include <oatpp/network/Server.hpp>
 #include <oatpp/network/tcp/server/ConnectionProvider.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
-#include <oatpp/web/server/HttpRouter.hpp>
 #include <utility>
 #include <shared/Log.h>
 
@@ -31,13 +30,17 @@ namespace web
          {".ttf", "font/ttf"}
       };
 
-      CHttpPages::CHttpPages(boost::filesystem::path siteLocation)
-         : m_siteLocation(std::move(siteLocation))
+      CHttpPages::CHttpPages(boost::filesystem::path siteLocation,
+                             boost::shared_ptr<IAuthentication> authentication)
+         : m_siteLocation(std::move(siteLocation)),
+           m_authentication(std::move(authentication))
       {
       }
 
       std::shared_ptr<oatpp::web::server::HttpRequestHandler::OutgoingResponse> CHttpPages::handle(const std::shared_ptr<IncomingRequest>& request)
       {
+         m_authentication->authenticate(request);
+
          auto page = request->getStartingLine().path.std_str();
          if (page == "/")
             page = "/index.html";

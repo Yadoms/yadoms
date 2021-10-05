@@ -3,7 +3,6 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/versioning/SemVer.h>
 #include "IPathProvider.h"
-#include "authentication/IAuthentication.h"
 #include "dataAccessLayer/IDataAccessLayer.h"
 #include "dateTime/TimeZoneDatabase.h"
 #include "dateTime/TimeZoneProvider.h"
@@ -57,7 +56,8 @@ private:
       const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
       const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
       const boost::shared_ptr<std::map<std::string, boost::filesystem::path>>& aliases,
-      const boost::shared_ptr<authentication::IAuthentication>& basicAuthentication) const;
+      const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
+      bool skipPasswordCheck) const;
 
    boost::shared_ptr<web::IWebServer> createOatppBasedWebServer(
       const std::string& address,
@@ -69,7 +69,8 @@ private:
       const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
       boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>> restServices,
       boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
-      const boost::shared_ptr<authentication::IAuthentication>& basicAuthentication) const;
+      const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
+      bool skipPasswordCheck) const;
 
 
    //-----------------------------------------------------------------------------
