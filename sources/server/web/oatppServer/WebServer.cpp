@@ -9,7 +9,7 @@
 #include <oatpp-websocket/Handshaker.hpp>
 #include "ConnectionProvider.h"
 #include "RestRequestHandler.h"
-#include "WebsocketInstanceListener.h"
+#include "WebSocketConnection.h"
 
 namespace web
 {
@@ -77,7 +77,7 @@ namespace web
 
          // Websocket
          m_websocketConnectionHandler = oatpp::websocket::ConnectionHandler::createShared();
-         m_websocketConnectionHandler->setSocketInstanceListener(std::make_shared<CWebsocketInstanceListener>());
+         m_websocketConnectionHandler->setSocketInstanceListener(std::make_shared<CWebSocketConnection>());
          httpRouter->route("GET",
                            std::string("/" + webSocketKeywordBase).c_str(), //TODO besoin préfix "/" ? TODO besoin versionner API ws ?
                            std::make_shared<CHandshakeRequestHandler>(m_websocketConnectionHandler));
@@ -166,7 +166,7 @@ namespace web
          {
             for (const auto& endPoint : *service->endPoints())
             {
-               static constexpr char RestApiVersion[] = "v2";
+               static constexpr auto* RestApiVersion = "v2";
                httpRouter->route(ToString(endPoint->verb()).c_str(),
                                  std::string("/" + restKeywordBase + "/" + RestApiVersion + "/" + endPoint->path()).c_str(),
                                  std::make_shared<CRestRequestHandler>(endPoint->handler(),

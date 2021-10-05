@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "WebsocketInstanceListener.h"
+#include "WebSocketConnection.h"
 #include "WebsocketListener.h"
 
 #include "shared/Log.h"
@@ -8,9 +8,9 @@ namespace web
 {
    namespace oatppServer
    {
-      std::atomic<v_int32> CWebsocketInstanceListener::m_clientsCount(0);
+      std::atomic<v_int32> CWebSocketConnection::m_clientsCount(0);
 
-      void CWebsocketInstanceListener::onAfterCreate(const oatpp::websocket::WebSocket& socket,
+      void CWebSocketConnection::onAfterCreate(const oatpp::websocket::WebSocket& socket,
                                                      const std::shared_ptr<const ParameterMap>& params)
       {
          ++m_clientsCount;
@@ -21,7 +21,7 @@ namespace web
          socket.setListener(std::make_shared<CWebsocketListener>());
       }
 
-      void CWebsocketInstanceListener::onBeforeDestroy(const oatpp::websocket::WebSocket& socket)
+      void CWebSocketConnection::onBeforeDestroy(const oatpp::websocket::WebSocket& socket)
       {
          --m_clientsCount;
          YADOMS_LOG(information) << "Connection closed (Client count=" << m_clientsCount.load() << ")";

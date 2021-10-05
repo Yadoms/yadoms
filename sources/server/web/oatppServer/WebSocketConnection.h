@@ -5,7 +5,7 @@ namespace web
 {
    namespace oatppServer
    {
-      class CWebsocketInstanceListener : public oatpp::websocket::ConnectionHandler::SocketInstanceListener
+      class CWebSocketConnection : public oatpp::websocket::ConnectionHandler::SocketInstanceListener
       {
       public:
          void onAfterCreate(const oatpp::websocket::WebSocket& socket,

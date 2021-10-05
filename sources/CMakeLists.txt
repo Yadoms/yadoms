@@ -1058,8 +1058,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/oatppServer/RestRequestHandler.cpp
    server/web/oatppServer/WebServer.h
    server/web/oatppServer/WebServer.cpp    
-   server/web/oatppServer/WebsocketInstanceListener.h
-   server/web/oatppServer/WebsocketInstanceListener.cpp    
+   server/web/oatppServer/WebSocketConnection.h
+   server/web/oatppServer/WebSocketConnection.cpp    
    server/web/oatppServer/WebsocketListener.h
    server/web/oatppServer/WebsocketListener.cpp    
 )
