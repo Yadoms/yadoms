@@ -14,6 +14,9 @@ namespace web
    {
       namespace service
       {
+         std::string CConfiguration::m_restKeyword = std::string("configurations");
+
+
          CConfiguration::CConfiguration(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
             : m_configurationManager(std::move(configurationManager))
          {
