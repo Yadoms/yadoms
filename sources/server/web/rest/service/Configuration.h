@@ -43,9 +43,9 @@ namespace web
             boost::shared_ptr<IAnswer> getExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> saveExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
 
-            boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
-            static std::string m_restKeyword;
+            static std::string m_restKeyword = std::string("configurations");
 
+            boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
          };
       } //namespace service
