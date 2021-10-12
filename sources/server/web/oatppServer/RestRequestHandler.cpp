@@ -19,7 +19,8 @@ namespace web
       std::shared_ptr<oatpp::web::server::HttpRequestHandler::OutgoingResponse> CRestRequestHandler::handle(
          const std::shared_ptr<IncomingRequest>& request)
       {
-         m_authentication->authenticate(request);
+         if (m_authentication)
+            m_authentication->authenticate(request);
 
          try
          {

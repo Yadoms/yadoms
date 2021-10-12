@@ -670,6 +670,8 @@ set(YADOMS_SRC
    server/web/rest/service/Recipient.cpp
    server/web/rest/service/RestEndPoint.h
    server/web/rest/service/RestEndPoint.cpp
+   server/web/rest/service/RestEndPointDoc.h
+   server/web/rest/service/RestEndPointDoc.cpp
    server/web/rest/service/System.h
    server/web/rest/service/System.cpp
    server/web/rest/service/Task.h

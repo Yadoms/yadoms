@@ -3,6 +3,7 @@
 #include <oatpp/network/Server.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
+#include <oatpp/web/server/api/Endpoint.hpp>
 #include <oatpp-websocket/ConnectionHandler.hpp>
 
 #include "IAuthentication.h"
@@ -60,6 +61,9 @@ namespace web
          void refreshRestRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                 const std::string& restKeywordBase,
                                 const boost::shared_ptr<IAuthentication>& authentication) const;
+         void refreshSwaggerDoc(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter) const;
+
+         std::shared_ptr<oatpp::web::server::api::Endpoint> toDocumentedEndPoint(boost::shared_ptr<rest::service::IRestEndPoint> restEndPoint) const;
 
 
          std::shared_ptr<oatpp::web::server::HttpConnectionHandler> m_httpConnectionHandler;

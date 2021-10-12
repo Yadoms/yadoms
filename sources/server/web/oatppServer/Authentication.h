@@ -25,22 +25,21 @@ namespace web
          ~CAuthentication() override;
 
          // IAuthentication implementation
-         void authenticate(const std::shared_ptr<oatpp::web::server::HttpRequestHandler::IncomingRequest>& request) const;
+         void authenticate(const std::shared_ptr<oatpp::web::server::HttpRequestHandler::IncomingRequest>& request) const override;
          // [END] IAuthentication implementation
 
 
       private:
          enum class Kind
          {
-            None,
-            Basic
+            kNone,
+            kBasic
          };
 
          bool basicAuthenticate(const std::string& username,
                                 const std::string& password) const;
 
          Kind fromConfiguration(bool skipPasswordCheck);
-
 
          void updateConfiguration();
 

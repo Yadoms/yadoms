@@ -40,10 +40,10 @@ namespace web
       {
          switch (m_kind)
          {
-         case Kind::None:
+         case Kind::kNone:
             return;
 
-         case Kind::Basic:
+         case Kind::kBasic:
             {
                const auto authorizationHeader = request->getHeader(oatpp::web::protocol::http::Header::AUTHORIZATION);
 
@@ -94,20 +94,20 @@ namespace web
       CAuthentication::Kind CAuthentication::fromConfiguration(bool skipPasswordCheck)
       {
          if (skipPasswordCheck)
-            return Kind::None;
+            return Kind::kNone;
 
          updateConfiguration();
 
          if (!m_isAuthenticationActive)
-            return Kind::None;
+            return Kind::kNone;
 
          if (m_currentAuthenticationUsername.empty() || m_currentAuthenticationPassword.empty())
          {
             YADOMS_LOG(error) << "Basic authentication is active but username or password is empty";
-            return Kind::None;
+            return Kind::kNone;
          }
 
-         return Kind::Basic;
+         return Kind::kBasic;
       }
 
       void CAuthentication::updateConfiguration()

@@ -6,7 +6,9 @@
 #include <oatpp/network/tcp/server/ConnectionProvider.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
+#include <oatpp/web/server/api/Endpoint.hpp>
 #include <oatpp-websocket/Handshaker.hpp>
+#include <oatpp-swagger/Controller.hpp>
 #include "ConnectionProvider.h"
 #include "RestRequestHandler.h"
 #include "WebSocketConnection.h"
@@ -81,6 +83,11 @@ namespace web
          httpRouter->route("GET",
                            std::string("/" + webSocketKeywordBase).c_str(), //TODO besoin préfix "/" ? TODO besoin versionner API ws ?
                            std::make_shared<CHandshakeRequestHandler>(m_websocketConnectionHandler));
+
+
+         // Swagger
+         // TODO conditionner l'activation par une option dans le .ini
+         refreshSwaggerDoc(httpRouter);
 
 
          // Configure the factory
@@ -173,6 +180,49 @@ namespace web
                                                                        authentication));
             }
          }
+      }
+
+      void CWebServer::refreshSwaggerDoc(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter) const
+      {
+         const auto documentedEndpoints = oatpp::swagger::Controller::Endpoints::createShared();
+         for (const auto& service : *m_restServices)
+         {
+            for (const auto& endPoint : *service->endPoints())
+            {
+               //TODO déplacer l'interface swagger dans "/rest/v2/"
+               if (!endPoint->doc())
+                  continue;
+
+               auto documentedEndPoint = toDocumentedEndPoint(endPoint);
+               documentedEndpoints->pushBack(documentedEndPoint);
+            }
+         }
+
+         const auto swaggerController = oatpp::swagger::Controller::createShared(documentedEndpoints);
+         swaggerController->addEndpointsToRouter(httpRouter);
+      }
+
+      std::shared_ptr<oatpp::web::server::api::Endpoint> CWebServer::toDocumentedEndPoint(
+         boost::shared_ptr<rest::service::IRestEndPoint> restEndPoint) const
+      {
+         return std::make_shared<oatpp::web::server::api::Endpoint>(
+            std::make_shared<CRestRequestHandler>(restEndPoint->handler(), nullptr),
+            [&restEndPoint]()
+            {
+               auto info = std::make_shared<oatpp::web::server::api::Endpoint::Info>();
+
+               info->summary = restEndPoint->doc()->summary().c_str();
+               info->description = restEndPoint->doc()->description().c_str();
+
+               for(const auto& tag:restEndPoint->doc()->tags())
+                  info->addTag(tag.c_str());
+
+               //TODO
+               //for (const auto& response : restEndPoint->doc()->responses())
+               //   info->addResponse(response.first, response.second);
+
+               return info;
+            });
       }
    } //namespace oatppServer
 } //namespace web
