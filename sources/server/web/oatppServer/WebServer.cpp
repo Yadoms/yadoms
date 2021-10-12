@@ -198,6 +198,9 @@ namespace web
             }
          }
 
+         if (documentedEndpoints->count() == 0)
+            return;
+
          const auto swaggerController = oatpp::swagger::Controller::createShared(documentedEndpoints);
          swaggerController->addEndpointsToRouter(httpRouter);
       }
