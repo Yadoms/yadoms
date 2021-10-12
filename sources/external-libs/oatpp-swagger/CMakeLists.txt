@@ -63,8 +63,8 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp-swagger_build
    DEPENDS           oatpp_build
-   GIT_REPOSITORY    https://github.com/oatpp/oatpp-swagger.git
-   GIT_TAG           7735b530901c35539754cd2bc62b7b21242f315d
+   GIT_REPOSITORY    https://github.com/Yadoms/oatpp-swagger.git
+   GIT_TAG           967643332c959d6aaf4cfe6b5f6a8de7ee288437
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_SWAGGER_PATCH_CMD}   
    PREFIX            ${OATPP_SWAGGER_ROOT}
