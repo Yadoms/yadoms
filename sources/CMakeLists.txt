@@ -1106,7 +1106,7 @@ set(YADOMS_SRC ${YADOMS_SRC}
 #define YADOMS output
 add_executable(yadoms ${YADOMS_SRC})
 
-add_dependencies(yadoms oatpp_build oatpp-websocket_build)
+add_dependencies(yadoms oatpp_build oatpp-websocket_build oatpp-swagger_build)
 
 if(COTIRE_USE)
    #nothing to do
