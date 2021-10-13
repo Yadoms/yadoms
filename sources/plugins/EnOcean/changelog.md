@@ -1,12 +1,15 @@
+### 2.0.5
+* D2_01_0F, D2_01_12 profiles : fix configuration
+
 ### 2.0.4
-* A5_07_03 profil : change motion detection (event) to occupancy (switch) keyword
+* A5_07_03 profile : change motion detection (event) to occupancy (switch) keyword
 
 ### 2.0.3
-* Fix A5-09-05 profil management
-* Fix D2-01-XX profils with pilot wire management
-* Fix A5_07_XX profils management
-* Fix A5_10_XX profils management
-* Fix A5_07_03 profil declaration (Illumination keyword was missing)
+* Fix A5-09-05 profile management
+* Fix D2-01-XX profiles with pilot wire management
+* Fix A5_07_XX profiles management
+* Fix A5_10_XX profiles management
+* Fix A5_07_03 profile declaration (Illumination keyword was missing)
 
 ### 2.0.2
 * Fix crash when random dialog failed (case of bad powered dongle)

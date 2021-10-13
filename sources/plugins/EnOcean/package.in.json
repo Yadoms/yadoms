@@ -610,8 +610,8 @@
           "name": "Connected switchs type",
           "type": "enum",
           "values": {
-            "switch": "Switch",
-            "pushButton": "Push button",
+            "externalSwitch": "Switch",
+            "externalPushButton": "Push button",
             "autodetection": "Autodetect"
           },
           "defaultValue": "autodetection"
