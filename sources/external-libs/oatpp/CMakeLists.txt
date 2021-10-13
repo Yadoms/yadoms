@@ -57,7 +57,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp_build
    GIT_REPOSITORY    https://github.com/oatpp/oatpp.git
-   GIT_TAG           0dee902a69e8b0da293b15bc35133727927263d7
+   GIT_TAG           d9e8e0cb3462a383ad1cc66e43d5bd33f1b0dd21
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_PATCH_CMD}   
    PREFIX            ${OATPP_ROOT}

@@ -395,8 +395,8 @@
         "connectedSwitchsType": {
           "name": "Connected switchs type",
           "values": {
-            "switch": "Switch",
-            "pushButton": "Push button",
+            "externalSwitch": "Switch",
+            "externalPushButton": "Push button",
             "autodetection": "Autodetect"
           }
         },
