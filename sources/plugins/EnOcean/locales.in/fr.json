@@ -396,8 +396,8 @@
         "connectedSwitchsType": {
           "name": "Type des interrupteurs",
           "values": {
-            "switch": "Interrupteurs",
-            "pushButton": "Poussoirs",
+            "externalSwitch": "Interrupteurs",
+            "externalPushButton": "Poussoirs",
             "autodetection": "Détection automatique"
           }
         },
