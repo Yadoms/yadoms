@@ -29,8 +29,9 @@ namespace web
             auto response = oatpp::web::protocol::http::outgoing::ResponseFactory::createResponse(toStatusCode(answer->code()),
                                                                                                   oatpp::String(answer->body().c_str()));
 
-            response->putHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE,
-                                ToString(answer->contentType()).c_str());
+            if (answer->contentType() != rest::EContentType::kNone)
+               response->putHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE,
+                                   ToString(answer->contentType()).c_str());
 
             return response;
          }

@@ -9,8 +9,8 @@ namespace web
       class CErrorAnswer final : public IAnswer
       {
       public:
-         CErrorAnswer(const shared::http::ECodes& code,
-                      std::string message);
+         explicit CErrorAnswer(const shared::http::ECodes& code,
+                               std::string message = std::string());
          ~CErrorAnswer() override = default;
 
          shared::http::ECodes code() const override;

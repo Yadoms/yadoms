@@ -87,7 +87,7 @@ namespace web
 
          // Swagger
          // TODO conditionner l'activation par une option dans le .ini
-         refreshSwaggerDoc(httpRouter);
+         //TODO remettre refreshSwaggerDoc(httpRouter);
 
 
          // Configure the factory

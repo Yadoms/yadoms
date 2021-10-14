@@ -34,24 +34,6 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration)
          }
 
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CConfiguration::endPoints()
-         {
-            if (m_endPoints != nullptr)
-               return m_endPoints;
-
-            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/server", getServerConfigurationV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
-
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2)); //TODO déplacer dans getSystemInformation ?
-
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/external", getExternalConfigurationV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/external", saveExternalConfigurationV2));
-
-            return m_endPoints;
-         }
-
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::resetServerConfiguration(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
@@ -67,20 +49,6 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CConfiguration::resetServerConfigurationV2(boost::shared_ptr<IRequest> request) const
-         {
-            try
-            {
-               m_configurationManager->resetServerConfiguration();
-               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getServerConfiguration());
-            }
-            catch (std::exception&)
-            {
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
-                                                       "Fail to reset server configuration");
-            }
-         }
-
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getServerConfiguration(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
@@ -92,19 +60,6 @@ namespace web
             catch (shared::exception::CEmptyResult&)
             {
                return poco::CRestResult::GenerateError("Fail to get server configuration");
-            }
-         }
-
-         boost::shared_ptr<IAnswer> CConfiguration::getServerConfigurationV2(boost::shared_ptr<IRequest> request) const
-         {
-            try
-            {
-               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getServerConfiguration());
-            }
-            catch (std::exception&)
-            {
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
-                                                       "Fail to get server configuration");
             }
          }
 
@@ -127,20 +82,6 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CConfiguration::saveServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const
-         {
-            try
-            {
-               m_configurationManager->saveServerConfiguration(shared::CDataContainer(request->body()));
-               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getServerConfiguration());
-            }
-            catch (std::exception&)
-            {
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
-                                                       "Fail to get database version");
-            }
-         }
-
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getDatabaseVersion(const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -151,19 +92,6 @@ namespace web
             catch (shared::exception::CEmptyResult&)
             {
                return poco::CRestResult::GenerateError("Fail to get server configuration");
-            }
-         }
-
-         boost::shared_ptr<IAnswer> CConfiguration::getDatabaseVersionV2(boost::shared_ptr<IRequest> request) const
-         {
-            try
-            {
-               return boost::make_shared<CSuccessAnswer>(m_configurationManager->getDatabaseVersion());
-            }
-            catch (std::exception&)
-            {
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
-                                                       "Fail to get database version");
             }
          }
 
@@ -186,19 +114,6 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CConfiguration::getExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const
-         {
-            try
-            {
-               return boost::make_shared<CSuccessAnswer>(m_configurationManager->getExternalConfiguration(request->parameter("section")));
-            }
-            catch (std::exception&)
-            {
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
-                                                       "Fail to get external configuration");
-            }
-         }
-
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::saveExternalConfiguration(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
@@ -210,7 +125,7 @@ namespace web
             try
             {
                m_configurationManager->saveExternalConfiguration(section,
-                                                                 requestContent);
+                                                                 shared::CDataContainer(requestContent));
 
                return poco::CRestResult::GenerateSuccess(m_configurationManager->getExternalConfiguration(section));
             }
@@ -224,23 +139,117 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CConfiguration::saveExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const
+
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CConfiguration::endPoints()
+         {
+            if (m_endPoints != nullptr)
+               return m_endPoints;
+
+            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/server", getServerConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
+
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2)); // TODO déplacer dans CSystem::getSystemInformation (ce n'est pas de la configuration)
+
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/external", getExternalConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/external", saveExternalConfigurationV2));
+
+            return m_endPoints;
+         }
+
+         boost::shared_ptr<IAnswer> CConfiguration::resetServerConfigurationV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
-               if (request->contentType() != EContentType::kPlainText)
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "Fail to save external configuration, provided configuration must be plain text contentType");
+               m_configurationManager->resetServerConfiguration();
+               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getServerConfiguration());
+            }
+            catch (std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                       "Fail to reset server configuration");
+            }
+         }
 
-               m_configurationManager->saveExternalConfiguration(request->parameter("section"),
-                                                                 request->body());
+         boost::shared_ptr<IAnswer> CConfiguration::getServerConfigurationV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getServerConfiguration());
+            }
+            catch (std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                       "Fail to get server configuration");
+            }
+         }
 
-               return boost::make_shared<CSuccessAnswer>(m_configurationManager->getExternalConfiguration(request->parameter("section")));
+         boost::shared_ptr<IAnswer> CConfiguration::saveServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               if (request->contentType() != EContentType::kJson)
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnsupportedMediaType);
+
+               m_configurationManager->saveServerConfiguration(shared::CDataContainer(request->body()));
+               return boost::make_shared<CSuccessAnswer>();
             }
             catch (std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to save external configuration");
+                                                       "Fail to save server configuration");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CConfiguration::getDatabaseVersionV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               shared::CDataContainer container;
+               container.set("databaseVersion", m_configurationManager->getDatabaseVersion());
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+            catch (std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get database version");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CConfiguration::getExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getExternalConfiguration(request->parameter("section")));
+            }
+            catch (const shared::exception::CEmptyResult&)
+            {
+               return boost::make_shared<CSuccessAnswer>();
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "No external configuration for " + request->parameter("section") + " section");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CConfiguration::saveExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               if (request->contentType() != EContentType::kJson)
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnsupportedMediaType);
+
+               m_configurationManager->saveExternalConfiguration(request->parameter("section"),
+                                                                 shared::CDataContainer(request->body()));
+
+               return boost::make_shared<CSuccessAnswer>();
+            }
+            catch (std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to save external configuration for " + request->parameter("section") + " section");
             }
          }
       } //namespace service

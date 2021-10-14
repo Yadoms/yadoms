@@ -11,14 +11,15 @@ namespace dataAccessLayer
       ~CConfigurationManager() override = default;
 
       // IConfigurationManager implementation
-      std::string getExternalConfiguration(const std::string& section) const override;
+      boost::shared_ptr<shared::CDataContainer> getExternalConfiguration(const std::string& section) const override;
       void saveExternalConfiguration(const std::string& section,
-                                     const std::string& value) override;
+                                     const shared::CDataContainer& value) override;
       boost::shared_ptr<shared::CDataContainer> getServerConfiguration() const override;
       void saveServerConfiguration(const shared::CDataContainer& newConfiguration) override;
       void resetServerConfiguration() override;
       std::string getDatabaseVersion() const override;
-      void subscribeOnServerConfigurationChanged(boost::function1<void, boost::shared_ptr<shared::CDataContainer> > onServerConfigurationChangedFct) override;
+      void subscribeOnServerConfigurationChanged(
+         boost::function1<void, boost::shared_ptr<shared::CDataContainer>> onServerConfigurationChangedFct) override;
       boost::shared_ptr<shared::CDataContainer> getLocation() const override;
       void saveAutoDetectedLocation(const shared::CDataContainer& newLocation) override;
       boost::shared_ptr<shared::CDataContainer> getBasicAuthentication() const override;

@@ -21,7 +21,7 @@ namespace database
 
          boost::shared_ptr<entities::CConfiguration> CConfiguration::getConfiguration(const std::string& section)
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CConfigurationTable::getTableName()).
                      Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section);
@@ -37,7 +37,7 @@ namespace database
 
          std::vector<boost::shared_ptr<entities::CConfiguration>> CConfiguration::getConfigurations()
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CConfigurationTable::getTableName());
 
@@ -49,7 +49,7 @@ namespace database
          void CConfiguration::updateConfiguration(const std::string& section,
                                                   const std::string& value)
          {
-            auto query = m_databaseRequester->newQuery();
+            const auto query = m_databaseRequester->newQuery();
             query->InsertOrReplaceInto(CConfigurationTable::getTableName(),
                                        CConfigurationTable::getSectionColumnName(),
                                        CConfigurationTable::getValueColumnName(),

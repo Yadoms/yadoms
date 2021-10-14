@@ -14,7 +14,7 @@ namespace dataAccessLayer
       /// \return     The configuration entry found
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::string getExternalConfiguration(const std::string& section) const = 0;
+      virtual boost::shared_ptr<shared::CDataContainer> getExternalConfiguration(const std::string& section) const = 0;
 
       //--------------------------------------------------------------
       /// \brief      Update a configuration entry
@@ -23,7 +23,7 @@ namespace dataAccessLayer
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void saveExternalConfiguration(const std::string& section,
-                                             const std::string& value) = 0;
+                                             const shared::CDataContainer& value) = 0;
 
       //--------------------------------------------------------------
       /// \brief      Load server configuration

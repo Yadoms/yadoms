@@ -5,6 +5,12 @@ namespace web
 {
    namespace rest
    {
+      CSuccessAnswer::CSuccessAnswer()
+         : m_code(shared::http::ECodes::kNoContent),
+           m_contentType(EContentType::kNone)
+      {
+      }
+
       CSuccessAnswer::CSuccessAnswer(const shared::CDataContainer& result)
          : m_code(shared::http::ECodes::kOK),
            m_body(result.serialize()),

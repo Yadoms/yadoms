@@ -45,16 +45,16 @@ namespace dataAccessLayer
    {
    }
 
-   std::string CConfigurationManager::getExternalConfiguration(const std::string& section) const
+   boost::shared_ptr<shared::CDataContainer> CConfigurationManager::getExternalConfiguration(const std::string& section) const
    {
-      return getConfiguration("external." + section);
+      return boost::make_shared<shared::CDataContainer>(getConfiguration("external." + section));
    }
 
    void CConfigurationManager::saveExternalConfiguration(const std::string& section,
-                                                         const std::string& value)
+                                                         const shared::CDataContainer& value)
    {
       saveConfiguration("external." + section,
-                        value);
+                        value.serialize());
    }
 
    void CConfigurationManager::notifyServerConfigurationChanged(const boost::shared_ptr<shared::CDataContainer>& serverConfiguration)
@@ -91,7 +91,7 @@ namespace dataAccessLayer
 
       // If location changed, mark it as user-modified
       const auto currentConfiguration = getServerConfiguration();
-      auto configurationToSave = newConfiguration.copy();
+      const auto configurationToSave = newConfiguration.copy();
       if (!quiteEqual(newConfiguration.get<double>("location.latitude"), currentConfiguration->get<double>("location.latitude")) ||
          !quiteEqual(newConfiguration.get<double>("location.longitude"), currentConfiguration->get<double>("location.longitude")) ||
          !quiteEqual(newConfiguration.get<double>("location.altitude"), currentConfiguration->get<double>("location.altitude")) ||
@@ -106,7 +106,7 @@ namespace dataAccessLayer
 
    void CConfigurationManager::resetServerConfiguration()
    {
-      auto resetConfiguration = m_defaultServerConfiguration->copy();
+      const auto resetConfiguration = m_defaultServerConfiguration->copy();
       // Reset configuration must not overwrite firstStart flag
       resetConfiguration->set("firstStart", getServerConfiguration()->get<bool>("firstStart"));
       saveServerConfiguration(*resetConfiguration);
@@ -131,7 +131,7 @@ namespace dataAccessLayer
    void CConfigurationManager::saveAutoDetectedLocation(const shared::CDataContainer& newLocation)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_configurationMutex);
-      auto serverConfiguration = getServerConfiguration()->copy();
+      const auto serverConfiguration = getServerConfiguration()->copy();
 
       // Overwrite location only if not set by user
       if (serverConfiguration->get<std::string>("location.status") == "userDefined")

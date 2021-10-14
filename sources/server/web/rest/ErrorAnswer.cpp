@@ -10,6 +10,9 @@ namespace web
          : m_code(code),
            m_body(std::move(message))
       {
+         YADOMS_LOG(error) << "Answer " << m_code.toString();
+         if (!m_body.empty())
+            YADOMS_LOG(error) << " : " + m_body;
       }
 
       shared::http::ECodes CErrorAnswer::code() const
@@ -24,7 +27,7 @@ namespace web
 
       EContentType CErrorAnswer::contentType() const
       {
-         return EContentType::kPlainText;
+         return m_body.empty() ? EContentType::kNone : EContentType::kPlainText;
       }
    } //namespace rest
 } //namespace web 

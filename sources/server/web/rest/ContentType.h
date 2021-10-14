@@ -9,7 +9,8 @@ namespace web
       {
          kOctetStream,
          kPlainText,
-         kJson
+         kJson,
+         kNone
       };
 
       static const std::string ContentTypeOctetStreamString("application/octet-stream");

@@ -7,7 +7,8 @@ namespace web
    {
       CRestRequest::CRestRequest(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request)
          : m_request(std::move(request)),
-           m_method(shared::http::ToRestVerb(m_request->getStartingLine().method.std_str()))
+           m_method(shared::http::ToRestVerb(m_request->getStartingLine().method.std_str())),
+           m_body(readBody(m_request)) // Need to consume body for each request (or next request will be malformed and oatpp will answer 404)
       {
       }
 
@@ -48,7 +49,7 @@ namespace web
             || m_method == shared::http::ERestVerb::kDelete)
             return std::string();
 
-         return m_request->readBodyToString()->c_str();
+         return m_body;
       }
 
       float CRestRequest::acceptContentType(rest::EContentType contentType)
@@ -108,6 +109,18 @@ namespace web
             map->emplace(rest::EContentType::kJson, DefaultQuality);
 
          return map;
+      }
+
+      std::string CRestRequest::readBody(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request) const
+      {
+          // Need to consume body for each body-containing request (if not next request will be malformed and oatpp will answer 404)
+
+         if (m_method == shared::http::ERestVerb::kGet
+            || m_method == shared::http::ERestVerb::kHead
+            || m_method == shared::http::ERestVerb::kDelete)
+            return std::string();
+
+         return request->readBodyToString()->c_str();
       }
    } //namespace oatppServer
 } //namespace web 

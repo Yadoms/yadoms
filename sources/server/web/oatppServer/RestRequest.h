@@ -27,10 +27,12 @@ namespace web
          static std::map<std::string, std::string> toMap(const oatpp::web::url::mapping::Pattern::MatchMap& in);
          static std::map<std::string, std::string> toMap(const oatpp::web::protocol::http::QueryParams& in);
          boost::shared_ptr<std::map<rest::EContentType, float>> parseAcceptContentType() const;
+         std::string readBody(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request) const;
 
          std::shared_ptr<oatpp::web::protocol::http::incoming::Request> m_request;
          shared::http::ERestVerb m_method;
          boost::shared_ptr<std::map<rest::EContentType, float>> m_parsedAcceptContentType;
+         const std::string m_body;
       };
    } //namespace oatppServer
 } //namespace web
