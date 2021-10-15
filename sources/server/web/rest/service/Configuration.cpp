@@ -165,7 +165,7 @@ namespace web
                m_configurationManager->resetServerConfiguration();
                return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getServerConfiguration());
             }
-            catch (std::exception&)
+            catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
                                                        "Fail to reset server configuration");
@@ -178,7 +178,7 @@ namespace web
             {
                return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getServerConfiguration());
             }
-            catch (std::exception&)
+            catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
                                                        "Fail to get server configuration");
@@ -195,7 +195,7 @@ namespace web
                m_configurationManager->saveServerConfiguration(shared::CDataContainer(request->body()));
                return boost::make_shared<CSuccessAnswer>();
             }
-            catch (std::exception&)
+            catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to save server configuration");
@@ -210,7 +210,7 @@ namespace web
                container.set("databaseVersion", m_configurationManager->getDatabaseVersion());
                return boost::make_shared<CSuccessAnswer>(container);
             }
-            catch (std::exception&)
+            catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get database version");
@@ -246,7 +246,7 @@ namespace web
 
                return boost::make_shared<CSuccessAnswer>();
             }
-            catch (std::exception&)
+            catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to save external configuration for " + request->parameter("section") + " section");

@@ -3,6 +3,8 @@
 #include "hardware/usb/IDevicesLister.h"
 #include "IRunningInformation.h"
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
+
+#include "dataAccessLayer/IConfigurationManager.h"
 #include "dateTime/TimeZoneDatabase.h"
 #include "shared/plugin/yPluginApi/MeasureType.h"
 
@@ -16,15 +18,14 @@ namespace web
          {
          public:
             explicit CSystem(boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
-                             boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister);
+                             boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
+                             boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
             ~CSystem() override = default;
 
             // IRestService implementation
             void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
-
-            static const std::string& getRestKeyword();
 
 
             boost::shared_ptr<shared::serialization::IDataSerializable> getBinding(
@@ -41,6 +42,8 @@ namespace web
                const std::string& requestContent) const;
 
          private:
+            boost::shared_ptr<IAnswer> getSystemInformationV2(boost::shared_ptr<IRequest> request) const;
+
             boost::shared_ptr<shared::serialization::IDataSerializable> getSerialPorts() const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getUsbDevices(
                const std::string& requestContent) const;
@@ -58,6 +61,7 @@ namespace web
             static std::string m_restKeyword;
 
             boost::shared_ptr<IRunningInformation> m_runningInformation;
+            boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
             static shared::CDataContainer m_virtualDevicesSupportedCapacities;

@@ -7,9 +7,15 @@
 #include <shared/ServiceLocator.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <startupOptions/IStartupOptions.h>
+
+#include <utility>
+
+#include "RestEndPoint.h"
 #include "dateTime/TimeZoneDatabase.h"
 #include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
+#include "web/rest/ErrorAnswer.h"
+#include "web/rest/SuccessAnswer.h"
 
 namespace web
 {
@@ -21,38 +27,23 @@ namespace web
          shared::CDataContainer CSystem::m_virtualDevicesSupportedCapacities;
 
          CSystem::CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
-                          boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister)
+                          boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
+                          boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
             : m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>()),
+              m_configurationManager(std::move(configurationManager)),
               m_timezoneDatabase(timezoneDatabase),
-              m_usbDevicesLister(usbDevicesLister)
+              m_usbDevicesLister(std::move(usbDevicesLister))
          {
          }
 
 
          void CSystem::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBinding);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBinding)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"),
-                                        CSystem::getVirtualDevicesSupportedCapacities);
-         }
-
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CSystem::endPoints()
-         {
-            if (m_endPoints != nullptr)
-               return m_endPoints;
-
-            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            //TODO
-
-            return m_endPoints;
-         }
-
-
-         const std::string& CSystem::getRestKeyword()
-         {
-            return m_restKeyword;
+                                        CSystem::getVirtualDevicesSupportedCapacities)
          }
 
 
@@ -182,7 +173,7 @@ namespace web
             try
             {
                shared::CDataContainer result;
-               auto networkInterfaces = Poco::Net::NetworkInterface::list();
+               const auto networkInterfaces = Poco::Net::NetworkInterface::list();
                for (const auto& nit : networkInterfaces)
                {
                   if (nit.address().isLoopback() && !includeLoopback)
@@ -295,7 +286,7 @@ namespace web
                                                           const std::vector<shared::plugin::yPluginApi::EMeasureType>&
                                                           acceptedMeasureTypes)
          {
-            auto capacityContainer = shared::CDataContainer::make();
+            const auto capacityContainer = shared::CDataContainer::make();
             capacityContainer->set("name", capacity.getName());
             capacityContainer->set("unit", capacity.getUnit());
             capacityContainer->set("dataType", capacity.getType());
@@ -396,6 +387,54 @@ namespace web
             catch (...)
             {
                return poco::CRestResult::GenerateError("unknown exception in retrieving all serial ports");
+            }
+         }
+
+
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CSystem::endPoints()
+         {
+            if (m_endPoints != nullptr)
+               return m_endPoints;
+
+            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
+            //TODO m_endPoints->push_back(MAKE_ENDPOINT(kPost, m_restKeyword + "/binding", getBindingV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/information", getSystemInformationV2));
+            //TODO m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/currentTime", getCurrentTimeV2));
+            //TODO m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/virtualDevicesSupportedCapacities", getVirtualDevicesSupportedCapacitiesV2));
+
+            return m_endPoints;
+         }
+
+
+         boost::shared_ptr<IAnswer> CSystem::getSystemInformationV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               const auto fieldsValue = request->parameter("fields", std::string());
+
+               shared::CDataContainer result;
+               if (fieldsValue.empty() || fieldsValue.find("runningPlatform") != std::string::npos)
+                  result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
+               if (fieldsValue.empty() || fieldsValue.find("yadomsVersion") != std::string::npos)
+                  result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().getVersion().toString());
+               if (fieldsValue.empty() || fieldsValue.find("startupTime") != std::string::npos)
+                  result.set("startupTime", m_runningInformation->getStartupDateTime());
+               if (fieldsValue.empty() || fieldsValue.find("executablePath") != std::string::npos)
+                  result.set("executablePath", m_runningInformation->getExecutablePath());
+               if (fieldsValue.empty() || fieldsValue.find("serverReady") != std::string::npos)
+                  result.set("serverReady", m_runningInformation->isServerFullyLoaded());
+               if (fieldsValue.empty() || fieldsValue.find("databaseVersion") != std::string::npos)
+                  result.set("databaseVersion", m_configurationManager->getDatabaseVersion());
+
+               if (fieldsValue.empty() || fieldsValue.find("developerMode") != std::string::npos)
+                  result.set("developerMode", shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode());
+
+               return boost::make_shared<CSuccessAnswer>(result);
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                       "Fail to get server configuration");
             }
          }
       } //namespace service
