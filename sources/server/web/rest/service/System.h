@@ -43,10 +43,14 @@ namespace web
 
          private:
             boost::shared_ptr<IAnswer> getSystemInformationV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getCurrentTimeV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getBindingSerialPorts(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getBindingUsbDevices(boost::shared_ptr<IRequest> request) const;
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> getSerialPorts() const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getUsbDevices(
-               const std::string& requestContent) const;
+            boost::shared_ptr<shared::CDataContainer> getSerialPorts() const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getUsbDevices(const std::string& requestContent) const;
+            boost::shared_ptr<shared::CDataContainer> getUsbDevicesV2(std::vector<std::pair<int, int>> usbDevices) const;
             boost::shared_ptr<shared::serialization::IDataSerializable>
             getNetworkInterfaces(bool includeLoopback) const;
             boost::shared_ptr<shared::serialization::IDataSerializable>

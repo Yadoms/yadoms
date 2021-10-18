@@ -77,7 +77,7 @@ namespace web
             return poco::CRestResult::GenerateError("Cannot retrieve url parameters");
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSerialPorts() const
+         boost::shared_ptr<shared::CDataContainer> CSystem::getSerialPorts() const
          {
             try
             {
@@ -103,8 +103,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(
-            const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(const std::string& requestContent) const
          {
             try
             {
@@ -165,6 +164,55 @@ namespace web
             {
                return poco::CRestResult::GenerateError("unknown exception in retrieving filtered USB devices");
             }
+         }
+
+         boost::shared_ptr<shared::CDataContainer> CSystem::getUsbDevicesV2(std::vector<std::pair<int, int>> usbDevices) const
+         {
+            const auto existingDevices = m_usbDevicesLister->listUsbDevices();
+            YADOMS_LOG(debug) << "USB existing devices :";
+            for (const auto& device : existingDevices)
+            {
+               YADOMS_LOG(debug) << "  - "
+                  << "vid=" << device->vendorId()
+                  << ", pid=" << device->productId()
+                  << ", name=" << device->yadomsFriendlyName()
+                  << ", connectionId=" << device->nativeConnectionString()
+                  << ", serial=" << device->serialNumber();
+            }
+
+            // If request content is empty, return all existing USB devices
+            if (usbDevices.empty())
+            {
+               shared::CDataContainer result;
+               for (const auto& device : existingDevices)
+                  result.set(device->nativeConnectionString(), device->yadomsFriendlyName(), 0x00);
+               //in case of key contains a dot, just ensure the full key is taken into account
+               return poco::CRestResult::GenerateSuccess(result);
+            }
+
+            // Filter USB devices by request content
+
+            auto result = boost::make_shared<shared::CDataContainer>();
+            YADOMS_LOG(debug) << "USB requested devices :";
+            for (const auto& usbDevice : usbDevices)
+            {
+               YADOMS_LOG(debug) << "  - "
+                  << "vid=" << usbDevice.first
+                  << ", pid=" << usbDevice.second;
+
+               for (const auto& existingDevice : existingDevices)
+               {
+                  if (existingDevice->vendorId() == usbDevice.first
+                     && existingDevice->productId() == usbDevice.second)
+                  {
+                     //in case of key contains a dot, just ensure the full key is taken into account
+                     result->set(existingDevice->nativeConnectionString(), existingDevice->yadomsFriendlyName(),
+                                 0x00);
+                  }
+               }
+            }
+
+            return result;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(
@@ -397,14 +445,15 @@ namespace web
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            //TODO m_endPoints->push_back(MAKE_ENDPOINT(kPost, m_restKeyword + "/binding", getBindingV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/binding/serial-ports", getBindingSerialPorts));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/binding/usb-devices", getBindingUsbDevices));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/information", getSystemInformationV2));
-            //TODO m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/currentTime", getCurrentTimeV2));
-            //TODO m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/virtualDevicesSupportedCapacities", getVirtualDevicesSupportedCapacitiesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/current-time", getCurrentTimeV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/virtual-devices-supported-capacities",
+                                                 getVirtualDevicesSupportedCapacitiesV2));
 
             return m_endPoints;
          }
-
 
          boost::shared_ptr<IAnswer> CSystem::getSystemInformationV2(boost::shared_ptr<IRequest> request) const
          {
@@ -429,6 +478,9 @@ namespace web
                if (fieldsValue.empty() || fieldsValue.find("developerMode") != std::string::npos)
                   result.set("developerMode", shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode());
 
+               if (result.empty())
+                  return boost::make_shared<CSuccessAnswer>();
+
                return boost::make_shared<CSuccessAnswer>(result);
             }
             catch (const std::exception&)
@@ -437,6 +489,118 @@ namespace web
                                                        "Fail to get server configuration");
             }
          }
+
+         boost::shared_ptr<IAnswer> CSystem::getCurrentTimeV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               shared::CDataContainer container;
+               container.set("now", shared::currentTime::Provider().now());
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get server current time");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CSystem::getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               shared::CDataContainer container;
+               container.set("capacities", getVirtualDevicesSupportedCapacities());
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get server current time");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CSystem::getBindingSerialPorts(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               
+               YADOMS_LOG(debug) << "List serial ports...";
+               const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
+
+               shared::CDataContainer result;
+               for (const auto& serialPort : *serialPorts)
+               {
+                  result.set(serialPort.first, serialPort.second, 0x00);
+                  //in case of key contains a dot, just ensure the full key is taken into account
+               }
+               if (result.empty())
+                  return boost::make_shared<CSuccessAnswer>();
+
+               shared::CDataContainer container;
+               container.set("serialPorts", result);
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get server current time");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CSystem::getBindingUsbDevices(boost::shared_ptr<IRequest> request) const
+         {
+            //TODO tout à faire...
+            try
+            {
+               const std::vector<std::pair<int, int>> usbDevices; //TODO récupérer de l'URL
+               const auto p = request->parameters();
+
+               const auto foundDevices = getUsbDevicesV2(usbDevices);
+
+               shared::CDataContainer container;
+               container.set("usbDevices", foundDevices);
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get server current time");
+            }
+         }
+
+
+         //TODO mettre les champs manquants
+         /*               if (parameters.size() > 2)
+                        {
+                           const auto query = parameters[2];
+         
+                           if (boost::iequals(query, "serialPorts"))
+                              return getSerialPorts();
+                           if (boost::iequals(query, "usbDevices"))
+                              return getUsbDevices(requestContent);
+                           if (boost::iequals(query, "NetworkInterfaces"))
+                              return getNetworkInterfaces(true);
+                           if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
+                              return getNetworkInterfaces(false);
+                           if (boost::iequals(query, "platformIsWindows"))
+                              return platformIs("windows");
+                           if (boost::iequals(query, "platformIsLinux"))
+                              return platformIs("linux");
+                           if (boost::iequals(query, "platformIsMac"))
+                              return platformIs("mac");
+                           if (boost::iequals(query, "supportedTimezones"))
+                              return getSupportedTimezones();
+                           return poco::CRestResult::GenerateError("unsupported binding query : " + query);
+                        }
+         
+                        return poco::CRestResult::GenerateError("Cannot retrieve url parameters")*/;
+         //}
+         //catch (const std::exception&)
+         //{
+         //   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+         //                                           "Fail to get server current time");
+         //}
       } //namespace service
    } //namespace rest
 } //namespace web 

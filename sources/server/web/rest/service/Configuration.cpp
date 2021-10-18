@@ -149,9 +149,6 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/server", getServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
-
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/databaseVersion", getDatabaseVersionV2)); // TODO déplacer dans CSystem::getSystemInformation (ce n'est pas de la configuration)
-
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/external", getExternalConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/external", saveExternalConfigurationV2));
 
@@ -199,21 +196,6 @@ namespace web
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to save server configuration");
-            }
-         }
-
-         boost::shared_ptr<IAnswer> CConfiguration::getDatabaseVersionV2(boost::shared_ptr<IRequest> request) const
-         {
-            try
-            {
-               shared::CDataContainer container;
-               container.set("databaseVersion", m_configurationManager->getDatabaseVersion());
-               return boost::make_shared<CSuccessAnswer>(container);
-            }
-            catch (const std::exception&)
-            {
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get database version");
             }
          }
 
