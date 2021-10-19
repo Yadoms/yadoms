@@ -47,6 +47,7 @@ namespace web
             boost::shared_ptr<IAnswer> getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getSerialPorts(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getUsbDevices(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getNetworkInterfacesV2(boost::shared_ptr<IRequest> request) const;
 
             boost::shared_ptr<shared::CDataContainer> getSerialPorts() const;
             static std::vector<std::pair<int, int>> toPairsVector(const std::string& param);

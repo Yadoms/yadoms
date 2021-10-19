@@ -447,12 +447,13 @@ namespace web
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/serial-ports", getSerialPorts));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/usb-devices", getUsbDevices));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/information", getSystemInformationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/current-time", getCurrentTimeV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/virtual-devices-supported-capacities",
                                                  getVirtualDevicesSupportedCapacitiesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/serial-ports", getSerialPorts));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/usb-devices", getUsbDevices));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/network-interfaces", getNetworkInterfacesV2));
 
             return m_endPoints;
          }
@@ -531,10 +532,8 @@ namespace web
 
                shared::CDataContainer result;
                for (const auto& serialPort : *serialPorts)
-               {
-                  result.set(serialPort.first, serialPort.second, 0x00);
                   //in case of key contains a dot, just ensure the full key is taken into account
-               }
+                  result.set(serialPort.first, serialPort.second, 0x00);
 
                if (result.empty())
                   return boost::make_shared<CSuccessAnswer>();
@@ -546,7 +545,7 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get server current time");
+                                                       "Fail to get serial ports");
             }
          }
 
@@ -593,6 +592,39 @@ namespace web
             }
          }
 
+
+         boost::shared_ptr<IAnswer> CSystem::getNetworkInterfacesV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               const auto includeLoopback = request->parameter("loopback", std::string()) == "include";
+
+               shared::CDataContainer result;
+               const auto networkInterfaces = Poco::Net::NetworkInterface::list();
+               for (const auto& nit : networkInterfaces)
+               {
+                  if (nit.address().isLoopback() && !includeLoopback)
+                     continue;
+
+                  //in case of key contains a dot, just ensure the full key is taken into account
+                  result.set(nit.name(),
+                             (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
+                             0x00);
+               }
+
+               if (result.empty())
+                  return boost::make_shared<CSuccessAnswer>();
+
+               shared::CDataContainer container;
+               container.set("networkInterfaces", result);
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get network interfaces");
+            }
+         }
 
          //TODO mettre les champs manquants
          /*               if (parameters.size() > 2)
