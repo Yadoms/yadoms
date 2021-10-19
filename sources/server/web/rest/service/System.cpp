@@ -533,12 +533,16 @@ namespace web
 
                std::vector<std::string> result;
                for (const auto& timezone : supportedTimezones)
+               {
                   for (const auto& filterValue : filterValues)
+                  {
                      if (timezone.find(filterValue) != std::string::npos)
                      {
                         result.push_back(timezone);
                         break; // Don't add twice
                      }
+                  }
+               }
 
                shared::CDataContainer container;
                container.set("supportedTimezones", result);
