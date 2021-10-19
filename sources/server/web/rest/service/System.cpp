@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "System.h"
+
+#include <regex>
+
 #include "tools/OperatingSystem.h"
 #include "SerialPortsLister.h"
 #include <shared/currentTime/Provider.h>
@@ -166,7 +169,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::CDataContainer> CSystem::getUsbDevicesV2(std::vector<std::pair<int, int>> usbDevices) const
+         boost::shared_ptr<shared::CDataContainer> CSystem::getUsbDevicesV2(const std::vector<std::pair<int, int>>& requestedUsbDevices) const
          {
             const auto existingDevices = m_usbDevicesLister->listUsbDevices();
             YADOMS_LOG(debug) << "USB existing devices :";
@@ -181,20 +184,19 @@ namespace web
             }
 
             // If request content is empty, return all existing USB devices
-            if (usbDevices.empty())
+            if (requestedUsbDevices.empty())
             {
-               shared::CDataContainer result;
+               auto result = boost::make_shared<shared::CDataContainer>();
                for (const auto& device : existingDevices)
-                  result.set(device->nativeConnectionString(), device->yadomsFriendlyName(), 0x00);
-               //in case of key contains a dot, just ensure the full key is taken into account
-               return poco::CRestResult::GenerateSuccess(result);
+                  //in case of key contains a dot, just ensure the full key is taken into account
+                  result->set(device->nativeConnectionString(), device->yadomsFriendlyName(), 0x00);
+               return result;
             }
 
             // Filter USB devices by request content
-
             auto result = boost::make_shared<shared::CDataContainer>();
             YADOMS_LOG(debug) << "USB requested devices :";
-            for (const auto& usbDevice : usbDevices)
+            for (const auto& usbDevice : requestedUsbDevices)
             {
                YADOMS_LOG(debug) << "  - "
                   << "vid=" << usbDevice.first
@@ -445,8 +447,8 @@ namespace web
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/binding/serial-ports", getBindingSerialPorts));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/binding/usb-devices", getBindingUsbDevices));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/serial-ports", getSerialPorts));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/usb-devices", getUsbDevices));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/information", getSystemInformationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/current-time", getCurrentTimeV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/virtual-devices-supported-capacities",
@@ -520,11 +522,10 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getBindingSerialPorts(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CSystem::getSerialPorts(boost::shared_ptr<IRequest> request) const
          {
             try
             {
-               
                YADOMS_LOG(debug) << "List serial ports...";
                const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
 
@@ -534,6 +535,7 @@ namespace web
                   result.set(serialPort.first, serialPort.second, 0x00);
                   //in case of key contains a dot, just ensure the full key is taken into account
                }
+
                if (result.empty())
                   return boost::make_shared<CSuccessAnswer>();
 
@@ -548,15 +550,37 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getBindingUsbDevices(boost::shared_ptr<IRequest> request) const
+         //TODO rendre template, ça peut resservir
+         std::vector<std::pair<int, int>> CSystem::toPairsVector(const std::string& param)
          {
-            //TODO tout à faire...
+            static constexpr char ItemsSeparator = ',';
+            static constexpr char ValuesSeparator = '-';
+
+            std::vector<std::pair<int, int>> vector;
+
+            const std::regex pattern(R"(\[([0-9]*)\-([0-9]*)\])");
+            std::smatch matches;
+
+            for (auto match = std::sregex_iterator(param.begin(), param.end(), pattern); match != std::sregex_iterator(); ++match)
+            {
+               const auto result = *match;
+               vector.emplace_back(std::stoul((*match)[1]),
+                                   std::stoul((*match)[2]));
+            }
+
+            return vector;
+         }
+
+         boost::shared_ptr<IAnswer> CSystem::getUsbDevices(boost::shared_ptr<IRequest> request) const
+         {
             try
             {
-               const std::vector<std::pair<int, int>> usbDevices; //TODO récupérer de l'URL
-               const auto p = request->parameters();
+               const auto filter = request->parameter("filter-vid-pid", std::string());
 
-               const auto foundDevices = getUsbDevicesV2(usbDevices);
+               const auto foundDevices = getUsbDevicesV2(filter.empty() ? std::vector<std::pair<int, int>>() : toPairsVector(filter));
+
+               if (foundDevices->empty())
+                  return boost::make_shared<CSuccessAnswer>();
 
                shared::CDataContainer container;
                container.set("usbDevices", foundDevices);
@@ -565,7 +589,7 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get server current time");
+                                                       "Fail to get USB devices");
             }
          }
 
