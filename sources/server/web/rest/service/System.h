@@ -44,6 +44,7 @@ namespace web
          private:
             boost::shared_ptr<IAnswer> getSystemInformationV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getCurrentTimeV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getSupportedTimezonesV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getSerialPorts(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getUsbDevices(boost::shared_ptr<IRequest> request) const;

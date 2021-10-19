@@ -449,6 +449,7 @@ namespace web
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/information", getSystemInformationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/current-time", getCurrentTimeV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/supported-timezones", getSupportedTimezonesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/virtual-devices-supported-capacities",
                                                  getVirtualDevicesSupportedCapacitiesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/serial-ports", getSerialPorts));
@@ -508,6 +509,48 @@ namespace web
             }
          }
 
+         boost::shared_ptr<IAnswer> CSystem::getSupportedTimezonesV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               const auto& supportedTimezones = m_timezoneDatabase->allIds();
+
+               if (supportedTimezones.empty())
+                  return boost::make_shared<CSuccessAnswer>();
+
+               const auto filter = request->parameter("filter", std::string());
+
+               if (filter.empty())
+               {
+                  shared::CDataContainer container;
+                  container.set("supportedTimezones", supportedTimezones);
+                  return boost::make_shared<CSuccessAnswer>(container);
+               }
+
+               std::vector<std::string> filterValues;
+               for (const auto& t : boost::tokenizer<boost::char_separator<char>>(filter, boost::char_separator<char>(",")))
+                  filterValues.push_back(t);
+
+               std::vector<std::string> result;
+               for (const auto& timezone : supportedTimezones)
+                  for (const auto& filterValue : filterValues)
+                     if (timezone.find(filterValue) != std::string::npos)
+                     {
+                        result.push_back(timezone);
+                        break; // Don't add twice
+                     }
+
+               shared::CDataContainer container;
+               container.set("supportedTimezones", result);
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get supported timezones");
+            }
+         }
+
          boost::shared_ptr<IAnswer> CSystem::getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request) const
          {
             try
@@ -549,12 +592,8 @@ namespace web
             }
          }
 
-         //TODO rendre template, ça peut resservir
          std::vector<std::pair<int, int>> CSystem::toPairsVector(const std::string& param)
          {
-            static constexpr char ItemsSeparator = ',';
-            static constexpr char ValuesSeparator = '-';
-
             std::vector<std::pair<int, int>> vector;
 
             const std::regex pattern(R"(\[([0-9]*)\-([0-9]*)\])");
@@ -591,7 +630,6 @@ namespace web
                                                        "Fail to get USB devices");
             }
          }
-
 
          boost::shared_ptr<IAnswer> CSystem::getNetworkInterfacesV2(boost::shared_ptr<IRequest> request) const
          {
@@ -650,7 +688,8 @@ namespace web
                            return poco::CRestResult::GenerateError("unsupported binding query : " + query);
                         }
          
-                        return poco::CRestResult::GenerateError("Cannot retrieve url parameters")*/;
+                        return poco::CRestResult::GenerateError("Cannot retrieve url parameters")*/
+         ;
          //}
          //catch (const std::exception&)
          //{
