@@ -466,8 +466,10 @@ namespace web
                const auto fieldsValue = request->parameter("fields", std::string());
 
                shared::CDataContainer result;
-               if (fieldsValue.empty() || fieldsValue.find("runningPlatform") != std::string::npos)
-                  result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
+               if (fieldsValue.empty() || fieldsValue.find("platform") != std::string::npos)
+                  result.set("platform", m_runningInformation->getOperatingSystemName());
+               if (fieldsValue.empty() || fieldsValue.find("platform-family") != std::string::npos)
+                  result.set("platform-family", tools::COperatingSystem::getName());
                if (fieldsValue.empty() || fieldsValue.find("yadomsVersion") != std::string::npos)
                   result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().getVersion().toString());
                if (fieldsValue.empty() || fieldsValue.find("startupTime") != std::string::npos)
@@ -617,7 +619,7 @@ namespace web
          {
             try
             {
-               const auto filter = request->parameter("filter-vid-pid", std::string());
+               const auto filter = request->parameter("vid-pid", std::string());
 
                const auto foundDevices = getUsbDevicesV2(filter.empty() ? std::vector<std::pair<int, int>>() : toPairsVector(filter));
 
@@ -667,39 +669,6 @@ namespace web
                                                        "Fail to get network interfaces");
             }
          }
-
-         //TODO mettre les champs manquants
-         /*               if (parameters.size() > 2)
-                        {
-                           const auto query = parameters[2];
-         
-                           if (boost::iequals(query, "serialPorts"))
-                              return getSerialPorts();
-                           if (boost::iequals(query, "usbDevices"))
-                              return getUsbDevices(requestContent);
-                           if (boost::iequals(query, "NetworkInterfaces"))
-                              return getNetworkInterfaces(true);
-                           if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
-                              return getNetworkInterfaces(false);
-                           if (boost::iequals(query, "platformIsWindows"))
-                              return platformIs("windows");
-                           if (boost::iequals(query, "platformIsLinux"))
-                              return platformIs("linux");
-                           if (boost::iequals(query, "platformIsMac"))
-                              return platformIs("mac");
-                           if (boost::iequals(query, "supportedTimezones"))
-                              return getSupportedTimezones();
-                           return poco::CRestResult::GenerateError("unsupported binding query : " + query);
-                        }
-         
-                        return poco::CRestResult::GenerateError("Cannot retrieve url parameters")*/
-         ;
-         //}
-         //catch (const std::exception&)
-         //{
-         //   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-         //                                           "Fail to get server current time");
-         //}
       } //namespace service
    } //namespace rest
 } //namespace web 
