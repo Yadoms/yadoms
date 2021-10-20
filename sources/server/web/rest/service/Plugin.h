@@ -26,6 +26,7 @@ namespace web
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
+         private:
             const std::string& getRestKeyword() const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getOnePlugin(const std::vector<std::string>& parameters,
                                                                                      const std::string& requestContent) const;
@@ -78,16 +79,18 @@ namespace web
                                                                                             const std::vector<std::string>& parameters,
                                                                                             const std::string& requestContent) const;
 
-         protected:
+            boost::shared_ptr<IAnswer> getAllAvailablePluginsV2(boost::shared_ptr<IRequest> request) const;
+
+
             std::string generateUniqueDeviceName(const int pluginId) const;
 
-         private:
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
 
             boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
 
             std::string m_restKeyword;
+            static const std::string RestKeywordV2;
 
             communication::ISendMessageAsync& m_messageSender;
 

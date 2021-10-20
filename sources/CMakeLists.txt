@@ -664,6 +664,7 @@ set(YADOMS_SRC
    server/web/rest/service/Page.cpp
    server/web/rest/service/Plugin.h
    server/web/rest/service/Plugin.cpp
+   server/web/rest/service/PluginV2.cpp
    server/web/rest/service/PluginEventLogger.h
    server/web/rest/service/PluginEventLogger.cpp
    server/web/rest/service/Recipient.h
