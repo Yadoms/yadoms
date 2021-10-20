@@ -2,6 +2,7 @@
 #include "Plugin.h"
 #include "RestEndPoint.h"
 #include "web/rest/ErrorAnswer.h"
+#include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
 
 namespace web
@@ -73,7 +74,7 @@ namespace web
                }
 
                if (pluginEntries.empty())
-                  return boost::make_shared<CSuccessAnswer>();
+                  return boost::make_shared<CNoContentAnswer>();
 
                shared::CDataContainer container;
                container.set("plugins", pluginEntries);

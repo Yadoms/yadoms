@@ -6,6 +6,7 @@
 #include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 #include "web/rest/ErrorAnswer.h"
+#include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
 
 namespace web
@@ -190,7 +191,7 @@ namespace web
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnsupportedMediaType);
 
                m_configurationManager->saveServerConfiguration(shared::CDataContainer(request->body()));
-               return boost::make_shared<CSuccessAnswer>();
+               return boost::make_shared<CNoContentAnswer>();
             }
             catch (const std::exception&)
             {
@@ -207,7 +208,7 @@ namespace web
             }
             catch (const shared::exception::CEmptyResult&)
             {
-               return boost::make_shared<CSuccessAnswer>();
+               return boost::make_shared<CNoContentAnswer>();
             }
             catch (const std::exception&)
             {
@@ -226,7 +227,7 @@ namespace web
                m_configurationManager->saveExternalConfiguration(request->parameter("section"),
                                                                  shared::CDataContainer(request->body()));
 
-               return boost::make_shared<CSuccessAnswer>();
+               return boost::make_shared<CNoContentAnswer>();
             }
             catch (const std::exception&)
             {

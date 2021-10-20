@@ -9,7 +9,6 @@ namespace web
       class CSuccessAnswer final : public IAnswer
       {
       public:
-         explicit CSuccessAnswer();
          explicit CSuccessAnswer(const shared::CDataContainer& result);
          explicit CSuccessAnswer(std::string result,
                                  const EContentType& contentType = EContentType::kPlainText);

@@ -640,6 +640,8 @@ set(YADOMS_SRC
    server/web/rest/IAnswer.h
    server/web/rest/ErrorAnswer.h
    server/web/rest/ErrorAnswer.cpp
+   server/web/rest/NoContentAnswer.h
+   server/web/rest/NoContentAnswer.cpp
    server/web/rest/SuccessAnswer.h
    server/web/rest/SuccessAnswer.cpp
    server/web/rest/StringContainer.h

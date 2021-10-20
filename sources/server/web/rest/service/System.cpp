@@ -18,6 +18,7 @@
 #include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 #include "web/rest/ErrorAnswer.h"
+#include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
 
 namespace web
@@ -485,7 +486,7 @@ namespace web
                   result.set("developerMode", shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode());
 
                if (result.empty())
-                  return boost::make_shared<CSuccessAnswer>();
+                  return boost::make_shared<CNoContentAnswer>();
 
                return boost::make_shared<CSuccessAnswer>(result);
             }
@@ -518,7 +519,7 @@ namespace web
                const auto& supportedTimezones = m_timezoneDatabase->allIds();
 
                if (supportedTimezones.empty())
-                  return boost::make_shared<CSuccessAnswer>();
+                  return boost::make_shared<CNoContentAnswer>();
 
                const auto filter = request->parameter("filter", std::string());
 
@@ -585,7 +586,7 @@ namespace web
                   result.set(serialPort.first, serialPort.second, 0x00);
 
                if (result.empty())
-                  return boost::make_shared<CSuccessAnswer>();
+                  return boost::make_shared<CNoContentAnswer>();
 
                shared::CDataContainer container;
                container.set("serialPorts", result);
@@ -624,7 +625,7 @@ namespace web
                const auto foundDevices = getUsbDevicesV2(filter.empty() ? std::vector<std::pair<int, int>>() : toPairsVector(filter));
 
                if (foundDevices->empty())
-                  return boost::make_shared<CSuccessAnswer>();
+                  return boost::make_shared<CNoContentAnswer>();
 
                shared::CDataContainer container;
                container.set("usbDevices", foundDevices);
@@ -657,7 +658,7 @@ namespace web
                }
 
                if (result.empty())
-                  return boost::make_shared<CSuccessAnswer>();
+                  return boost::make_shared<CNoContentAnswer>();
 
                shared::CDataContainer container;
                container.set("networkInterfaces", result);
