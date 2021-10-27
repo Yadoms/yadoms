@@ -30,11 +30,11 @@ void CTftScreen::update(const std::vector<CCommand>& cmds)
    {
       if (cmd.isControl())
       {
-         m_controller->sendCommand(m_ip, "oledcmd", cmd.get());
+         m_controller->sendCommand(m_ip, "TFTCMD", cmd.get());
       }
       else
       {
-         m_controller->sendCommand(m_ip, "oled", cmd.get());
+         m_controller->sendCommand(m_ip, "TFT", cmd.get());
       }
    }
 }
