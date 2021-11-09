@@ -79,7 +79,8 @@ namespace web
                                                                                             const std::vector<std::string>& parameters,
                                                                                             const std::string& requestContent) const;
 
-            boost::shared_ptr<IAnswer> getAllAvailablePluginsV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getAvailablePlugins(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getPluginsInstances(boost::shared_ptr<IRequest> request) const;
 
 
             std::string generateUniqueDeviceName(const int pluginId) const;
