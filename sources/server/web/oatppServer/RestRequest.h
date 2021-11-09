@@ -18,6 +18,7 @@ namespace web
          std::string parameter(const std::string& key) override;
          std::string parameter(const std::string& key,
                                const std::string& defaultValue) override;
+         std::unique_ptr<std::set<std::string>> parameterAsFlagList(const std::string& key) override;
          std::map<std::string, std::string> parameters() override;
          rest::EContentType contentType() override;
          std::string body() override;

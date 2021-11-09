@@ -464,25 +464,25 @@ namespace web
          {
             try
             {
-               const auto fieldsValue = request->parameter("fields", std::string());
+               const auto fields = request->parameterAsFlagList("fields");
 
                shared::CDataContainer result;
-               if (fieldsValue.empty() || fieldsValue.find("platform") != std::string::npos)
+               if (fields->empty() || fields->find("platform") != fields->end())
                   result.set("platform", m_runningInformation->getOperatingSystemName());
-               if (fieldsValue.empty() || fieldsValue.find("platform-family") != std::string::npos)
+               if (fields->empty() || fields->find("platform-family") != fields->end())
                   result.set("platform-family", tools::COperatingSystem::getName());
-               if (fieldsValue.empty() || fieldsValue.find("yadomsVersion") != std::string::npos)
+               if (fields->empty() || fields->find("yadomsVersion") != fields->end())
                   result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().getVersion().toString());
-               if (fieldsValue.empty() || fieldsValue.find("startupTime") != std::string::npos)
+               if (fields->empty() || fields->find("startupTime") != fields->end())
                   result.set("startupTime", m_runningInformation->getStartupDateTime());
-               if (fieldsValue.empty() || fieldsValue.find("executablePath") != std::string::npos)
+               if (fields->empty() || fields->find("executablePath") != fields->end())
                   result.set("executablePath", m_runningInformation->getExecutablePath());
-               if (fieldsValue.empty() || fieldsValue.find("serverReady") != std::string::npos)
+               if (fields->empty() || fields->find("serverReady") != fields->end())
                   result.set("serverReady", m_runningInformation->isServerFullyLoaded());
-               if (fieldsValue.empty() || fieldsValue.find("databaseVersion") != std::string::npos)
+               if (fields->empty() || fields->find("databaseVersion") != fields->end())
                   result.set("databaseVersion", m_configurationManager->getDatabaseVersion());
 
-               if (fieldsValue.empty() || fieldsValue.find("developerMode") != std::string::npos)
+               if (fields->empty() || fields->find("developerMode") != fields->end())
                   result.set("developerMode", shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode());
 
                if (result.empty())
@@ -520,30 +520,26 @@ namespace web
 
                if (supportedTimezones.empty())
                   return boost::make_shared<CNoContentAnswer>();
+               
+               const auto filters = request->parameterAsFlagList("filter");
 
-               const auto filter = request->parameter("filter", std::string());
-
-               if (filter.empty())
+               if (filters->empty())
                {
                   shared::CDataContainer container;
                   container.set("supportedTimezones", supportedTimezones);
                   return boost::make_shared<CSuccessAnswer>(container);
                }
 
-               std::vector<std::string> filterValues;
-               for (const auto& t : boost::tokenizer<boost::char_separator<char>>(filter, boost::char_separator<char>(",")))
-                  filterValues.push_back(t);
-
                std::vector<std::string> result;
                for (const auto& timezone : supportedTimezones)
                {
-                  for (const auto& filterValue : filterValues)
+                  for (const auto& filterValue : *filters)
                   {
-                     if (timezone.find(filterValue) != std::string::npos)
-                     {
-                        result.push_back(timezone);
-                        break; // Don't add twice
-                     }
+                     if (timezone.find(filterValue) == std::string::npos)
+                        continue;
+
+                     result.push_back(timezone);
+                     break; // Don't add twice
                   }
                }
 

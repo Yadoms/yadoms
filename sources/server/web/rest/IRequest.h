@@ -16,6 +16,7 @@ namespace web
          virtual std::string parameter(const std::string& key) = 0;
          virtual std::string parameter(const std::string& key,
                                        const std::string& defaultValue) = 0;
+         virtual std::unique_ptr<std::set<std::string>> parameterAsFlagList(const std::string& key) = 0;
          virtual std::map<std::string, std::string> parameters() = 0;
 
          virtual EContentType contentType() = 0;

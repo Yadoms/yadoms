@@ -32,6 +32,20 @@ namespace web
                                              oatpp::String(defaultValue.c_str()))->std_str();
       }
 
+      std::unique_ptr<std::set<std::string>> CRestRequest::parameterAsFlagList(const std::string& key)
+      {
+         const auto flagsString = parameter(key, std::string());
+         if (flagsString.empty())
+            return std::make_unique<std::set<std::string>>();
+
+         auto flags = std::make_unique<std::set<std::string>>();
+         for (const auto& t : boost::tokenizer<boost::char_separator<char>>(flagsString,
+                                                                            boost::char_separator<char>(",")))
+            flags->insert(t);
+
+         return flags;
+      }
+
       std::map<std::string, std::string> CRestRequest::parameters()
       {
          return toMap(m_request->getQueryParameters());
@@ -113,7 +127,7 @@ namespace web
 
       std::string CRestRequest::readBody(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request) const
       {
-          // Need to consume body for each body-containing request (if not next request will be malformed and oatpp will answer 404)
+         // Need to consume body for each body-containing request (if not next request will be malformed and oatpp will answer 404)
 
          if (m_method == shared::http::ERestVerb::kGet
             || m_method == shared::http::ERestVerb::kHead

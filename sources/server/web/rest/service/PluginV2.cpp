@@ -22,6 +22,22 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, RestKeywordV2, getAvailablePlugins));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, RestKeywordV2 + "/instances", getPluginsInstances));
 
+            //TODO RAF
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("log"), CPlugin::getInstanceLog)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstance)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("instanceRunning"), CPlugin::getInstanceRunning)
+
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraQuery")("*"), CPlugin::sendExtraQuery, CPlugin::transactionalMethod)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethod)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::transactionalMethod)
+
             return m_endPoints;
          }
 
@@ -51,24 +67,24 @@ namespace web
                // - SupportManuallyCreatedDevice
                // - SupportDeviceRemovedNotification
                // - package
-               const auto fieldsValue = request->parameter("fields", std::string());
+               const auto fields = request->parameterAsFlagList("fields");
                std::vector<boost::shared_ptr<shared::CDataContainer>> pluginEntries;
                for (const auto& plugin : foundPlugins)
                {
                   auto pluginEntry = boost::make_shared<shared::CDataContainer>();
-                  if (fieldsValue.empty() || fieldsValue.find("type") != std::string::npos)
+                  if (fields->empty() || fields->find("type") != fields->end())
                      pluginEntry->set("type", plugin->getType());
-                  if (fieldsValue.empty() || fieldsValue.find("version") != std::string::npos)
+                  if (fields->empty() || fields->find("version") != fields->end())
                      pluginEntry->set("version", plugin->getVersion().toString());
-                  if (fieldsValue.empty() || fieldsValue.find("author") != std::string::npos)
+                  if (fields->empty() || fields->find("author") != fields->end())
                      pluginEntry->set("author", plugin->getAuthor());
-                  if (fieldsValue.empty() || fieldsValue.find("url") != std::string::npos)
+                  if (fields->empty() || fields->find("url") != fields->end())
                      pluginEntry->set("url", plugin->getUrl());
-                  if (fieldsValue.empty() || fieldsValue.find("support-manually-created-device") != std::string::npos)
+                  if (fields->empty() || fields->find("support-manually-created-device") != fields->end())
                      pluginEntry->set("SupportManuallyCreatedDevice", plugin->getSupportManuallyCreatedDevice());
-                  if (fieldsValue.empty() || fieldsValue.find("support-device-removed-notification") != std::string::npos)
+                  if (fields->empty() || fields->find("support-device-removed-notification") != fields->end())
                      pluginEntry->set("SupportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
-                  if (fieldsValue.empty() || fieldsValue.find("package") != std::string::npos)
+                  if (fields->empty() || fields->find("package") != fields->end())
                      pluginEntry->set("package", *plugin->getPackage());
 
                   pluginEntries.push_back(pluginEntry);
@@ -100,9 +116,9 @@ namespace web
                   instances = m_pluginManager->getInstanceList();
                else
                   instances.push_back(m_pluginManager->getInstance(static_cast<int>(std::stol(id))));
-
-               const auto filter = request->parameter("filter", std::string());
-               if (filter.find("for-manual-device-creation") != std::string::npos)
+               
+               const auto filters = request->parameterAsFlagList("filter");
+               if (filters->find("for-manual-device-creation") != filters->end())
                {
                   auto pluginList = m_pluginManager->getPluginList();
                   instances.erase(std::remove_if(instances.begin(),
@@ -129,26 +145,26 @@ namespace web
                // - category
                // - state
                // - full-state (state + messageId if any)
-               const auto fieldsValue = request->parameter("fields", std::string());
+               const auto fields = request->parameterAsFlagList("fields");
                std::vector<boost::shared_ptr<shared::CDataContainer>> instancesEntries;
                for (const auto& instance : instances)
                {
                   auto instanceEntry = boost::make_shared<shared::CDataContainer>();
-                  if (fieldsValue.empty() || fieldsValue.find("id") != std::string::npos)
+                  if (fields->empty() || fields->find("id") != fields->end())
                      instanceEntry->set("id", instance->Id());
-                  if (fieldsValue.empty() || fieldsValue.find("display-name") != std::string::npos)
+                  if (fields->empty() || fields->find("display-name") != fields->end())
                      instanceEntry->set("displayName", instance->DisplayName());
-                  if (fieldsValue.empty() || fieldsValue.find("type") != std::string::npos)
+                  if (fields->empty() || fields->find("type") != fields->end())
                      instanceEntry->set("type", instance->Type());
-                  if (fieldsValue.empty() || fieldsValue.find("configuration") != std::string::npos)
+                  if (fields->empty() || fields->find("configuration") != fields->end())
                      instanceEntry->set("configuration", instance->Configuration());
-                  if (fieldsValue.empty() || fieldsValue.find("auto-start") != std::string::npos)
+                  if (fields->empty() || fields->find("auto-start") != fields->end())
                      instanceEntry->set("autoStart", instance->AutoStart());
-                  if (fieldsValue.empty() || fieldsValue.find("category") != std::string::npos)
+                  if (fields->empty() || fields->find("category") != fields->end())
                      instanceEntry->set("category", instance->Category());
-                  if (fieldsValue.empty() || fieldsValue.find("state") != std::string::npos)
+                  if (fields->empty() || fields->find("state") != fields->end())
                      instanceEntry->set("state", m_pluginManager->getInstanceState(instance->Id()));
-                  if (fieldsValue.empty() || fieldsValue.find("full-state") != std::string::npos)
+                  if (fields->empty() || fields->find("full-state") != fields->end())
                      instanceEntry->set("fullState", m_pluginManager->getInstanceFullState(instance->Id()));
 
                   instancesEntries.push_back(instanceEntry);
