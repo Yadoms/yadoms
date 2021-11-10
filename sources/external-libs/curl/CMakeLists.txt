@@ -89,7 +89,9 @@ if(CMAKE_TOOLCHAIN_FILE)
 endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add(curl_build
-   URL               https://curl.se/download/curl-7.79.1.zip
+   GIT_REPOSITORY    https://github.com/curl/curl.git
+   GIT_TAG           curl-7_80_0
+   GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${CURL_PATHCMD}
    PREFIX            ${CURL_ROOT}
    CMAKE_ARGS        ${CURL_BUILD_ARGS}
