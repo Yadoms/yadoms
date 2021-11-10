@@ -1,3 +1,14 @@
+### 2.5.1-beta.4
+
+#### Yadoms
+* Fix HTTP SCREEN plugin for TFT screens (see local changelog)
+
+### 2.5.1-beta.3
+
+#### Yadoms
+* Fix EnOcean plugin profile (see local changelog)
+
+
 ### 2.5.1-beta.2
 
 #### Yadoms
