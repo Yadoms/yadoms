@@ -19,6 +19,7 @@ namespace web
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins", getAvailablePlugins));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances", getPluginsInstances));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}", getPluginsInstances));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/devices", getInstanceDevices));
 
@@ -109,16 +110,16 @@ namespace web
          {
             try
             {
-               // Filtering
-               const auto id = request->queryParam("id", std::string());
+               // ID
+               const auto id = request->pathVariable("id", std::string());
                std::vector<boost::shared_ptr<database::entities::CPlugin>> instances;
                if (id.empty())
                   instances = m_pluginManager->getInstanceList();
                else
                   instances.push_back(m_pluginManager->getInstance(static_cast<int>(std::stol(id))));
 
-               const auto filters = request->queryParamAsList("filter");
-               if (filters->find("for-manual-device-creation") != filters->end())
+               // Filtering
+               if (request->queryParamExists("for-manual-device-creation"))
                {
                   auto pluginList = m_pluginManager->getPluginList();
                   instances.erase(std::remove_if(instances.begin(),
@@ -136,16 +137,8 @@ namespace web
                                                  }), instances.end());
                }
 
-               // Get requested fields. Supported fields are :
-               // - id
-               // - display-name
-               // - type
-               // - configuration
-               // - auto-start
-               // - category
-               // - state
-               // - full-state (state + messageId if any)
-               const auto fields = request->queryParamAsList("fields");
+               // Get requested fields
+               const auto fields = request->queryParamAsList("prop");
                std::vector<boost::shared_ptr<shared::CDataContainer>> instancesEntries;
                for (const auto& instance : instances)
                {
@@ -153,19 +146,19 @@ namespace web
                   if (fields->empty() || fields->find("id") != fields->end())
                      instanceEntry->set("id", instance->Id());
                   if (fields->empty() || fields->find("display-name") != fields->end())
-                     instanceEntry->set("displayName", instance->DisplayName());
+                     instanceEntry->set("display-name", instance->DisplayName());
                   if (fields->empty() || fields->find("type") != fields->end())
                      instanceEntry->set("type", instance->Type());
                   if (fields->empty() || fields->find("configuration") != fields->end())
                      instanceEntry->set("configuration", instance->Configuration());
                   if (fields->empty() || fields->find("auto-start") != fields->end())
-                     instanceEntry->set("autoStart", instance->AutoStart());
+                     instanceEntry->set("auto-start", instance->AutoStart());
                   if (fields->empty() || fields->find("category") != fields->end())
                      instanceEntry->set("category", instance->Category());
                   if (fields->empty() || fields->find("state") != fields->end())
                      instanceEntry->set("state", m_pluginManager->getInstanceState(instance->Id()));
                   if (fields->empty() || fields->find("full-state") != fields->end())
-                     instanceEntry->set("fullState", m_pluginManager->getInstanceFullState(instance->Id()));
+                     instanceEntry->set("full-state", m_pluginManager->getInstanceFullState(instance->Id()));
 
                   instancesEntries.push_back(instanceEntry);
                }

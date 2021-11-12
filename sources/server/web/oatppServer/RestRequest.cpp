@@ -19,22 +19,46 @@ namespace web
 
       std::string CRestRequest::pathVariable(const std::string& key)
       {
-         return m_request->getPathVariable(key.c_str())->std_str();
-      }
-
-      std::string CRestRequest::queryParam(const std::string& key)
-      {
-         const auto value = m_request->getQueryParameter(oatpp::data::share::StringKeyLabel(key.c_str()));
+         const auto value = m_request->getPathVariable(key.c_str());
          if (!value)
             throw std::invalid_argument(key + "not found in request");
          return value->std_str();
       }
 
+      std::string CRestRequest::pathVariable(const std::string& key,
+                                             const std::string& defaultValue)
+      {
+         const auto value = m_request->getPathVariable(key.c_str());
+         if (!value)
+            return defaultValue;
+         return value->std_str();
+      }
+
+      bool CRestRequest::queryParamExists(const std::string& key)
+      {
+         const auto params = queryParams();
+         return params->find(key) != params->end();
+      }
+
+      std::string CRestRequest::queryParam(const std::string& key)
+      {
+         const auto params = queryParams();
+         const auto param = params->find(key);
+         if (param == params->end())
+            throw std::invalid_argument(key + "not found in request");
+
+         return param->second;
+      }
+
       std::string CRestRequest::queryParam(const std::string& key,
                                            const std::string& defaultValue)
       {
-         return m_request->getQueryParameter(oatpp::data::share::StringKeyLabel(key.c_str()),
-                                             oatpp::String(defaultValue.c_str()))->std_str();
+         const auto params = queryParams();
+         const auto param = params->find(key);
+         if (param == params->end())
+            return defaultValue;
+
+         return param->second;
       }
 
       std::unique_ptr<std::set<std::string>> CRestRequest::queryParamAsList(const std::string& key,
@@ -52,9 +76,11 @@ namespace web
          return flags;
       }
 
-      std::map<std::string, std::string> CRestRequest::queryParams()
+      boost::shared_ptr<const std::map<std::string, std::string>> CRestRequest::queryParams()
       {
-         return toMap(m_request->getQueryParameters());
+         if (!m_queryParams)
+            m_queryParams = boost::make_shared<std::map<std::string, std::string>>(toMap(m_request->getQueryParameters()));
+         return m_queryParams;
       }
 
       rest::EContentType CRestRequest::contentType()

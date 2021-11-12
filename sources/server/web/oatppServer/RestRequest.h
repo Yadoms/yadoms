@@ -16,12 +16,15 @@ namespace web
 
          shared::http::ERestVerb method() override;
          std::string pathVariable(const std::string& key) override;
+         std::string pathVariable(const std::string& key,
+                                  const std::string& defaultValue) override;
+         bool queryParamExists(const std::string& key) override;
          std::string queryParam(const std::string& key) override;
          std::string queryParam(const std::string& key,
                                 const std::string& defaultValue) override;
          std::unique_ptr<std::set<std::string>> queryParamAsList(const std::string& key,
                                                                  char separator) override;
-         std::map<std::string, std::string> queryParams() override;
+         boost::shared_ptr<const std::map<std::string, std::string>> queryParams() override;
          rest::EContentType contentType() override;
          std::string body() override;
          float acceptContentType(rest::EContentType contentType) override;
@@ -31,9 +34,10 @@ namespace web
          static std::map<std::string, std::string> toMap(const oatpp::web::protocol::http::QueryParams& in);
          boost::shared_ptr<std::map<rest::EContentType, float>> parseAcceptContentType() const;
          std::string readBody(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request) const;
-      private:
+
          std::shared_ptr<oatpp::web::protocol::http::incoming::Request> m_request;
          shared::http::ERestVerb m_method;
+         boost::shared_ptr<std::map<std::string, std::string>> m_queryParams;
          boost::shared_ptr<std::map<rest::EContentType, float>> m_parsedAcceptContentType;
          const std::string m_body;
       };
