@@ -46,7 +46,7 @@ namespace web
             try
             {
                // Filter by type
-               const auto typeValue = request->parameter("type", std::string());
+               const auto types = request->queryParamAsList("by-type");
                std::vector<boost::shared_ptr<const shared::plugin::information::IInformation>> foundPlugins;
                for (const auto& plugin : m_pluginManager->getPluginList())
                {
@@ -56,7 +56,7 @@ namespace web
                   if (!m_developerMode && boost::starts_with(plugin.first, "dev-"))
                      continue;
 
-                  if (typeValue.empty() || typeValue.find(plugin.second->getType()) != std::string::npos)
+                  if (types->empty() || types->find(plugin.second->getType()) != types->end())
                      foundPlugins.push_back(plugin.second);
                }
 
@@ -67,7 +67,7 @@ namespace web
                // - SupportManuallyCreatedDevice
                // - SupportDeviceRemovedNotification
                // - package
-               const auto fields = request->parameterAsFlagList("fields");
+               const auto fields = request->queryParamAsList("prop");
                std::vector<boost::shared_ptr<shared::CDataContainer>> pluginEntries;
                for (const auto& plugin : foundPlugins)
                {
@@ -110,14 +110,14 @@ namespace web
             try
             {
                // Filtering
-               const auto id = request->parameter("id", std::string());
+               const auto id = request->queryParam("id", std::string());
                std::vector<boost::shared_ptr<database::entities::CPlugin>> instances;
                if (id.empty())
                   instances = m_pluginManager->getInstanceList();
                else
                   instances.push_back(m_pluginManager->getInstance(static_cast<int>(std::stol(id))));
 
-               const auto filters = request->parameterAsFlagList("filter");
+               const auto filters = request->queryParamAsList("filter");
                if (filters->find("for-manual-device-creation") != filters->end())
                {
                   auto pluginList = m_pluginManager->getPluginList();
@@ -145,7 +145,7 @@ namespace web
                // - category
                // - state
                // - full-state (state + messageId if any)
-               const auto fields = request->parameterAsFlagList("fields");
+               const auto fields = request->queryParamAsList("fields");
                std::vector<boost::shared_ptr<shared::CDataContainer>> instancesEntries;
                for (const auto& instance : instances)
                {
@@ -190,13 +190,13 @@ namespace web
             try
             {
                // Filtering
-               const auto id = request->parameter("id", std::string());
+               const auto id = request->queryParam("id", std::string());
                if (id.empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
                                                           "plugin-instance id was not provided");
                const auto instanceId = static_cast<int>(std::stol(id));
 
-               const auto filters = request->parameterAsFlagList("filter");
+               const auto filters = request->queryParamAsList("filter");
                const auto withBlacklisted = filters->find("with-blacklisted") != filters->end();
 
                const auto devices = m_dataProvider->getDeviceRequester()->getDevices(instanceId,
@@ -212,7 +212,7 @@ namespace web
                // - configuration
                // - type
                // - blacklisted
-               const auto fields = request->parameterAsFlagList("fields");
+               const auto fields = request->queryParamAsList("fields");
                std::vector<boost::shared_ptr<shared::CDataContainer>> deviceEntries;
                for (const auto& device : devices)
                {

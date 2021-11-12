@@ -204,7 +204,7 @@ namespace web
          {
             try
             {
-               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getExternalConfiguration(request->parameter("section")));
+               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getExternalConfiguration(request->queryParam("section")));
             }
             catch (const shared::exception::CEmptyResult&)
             {
@@ -213,7 +213,7 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "No external configuration for " + request->parameter("section") + " section");
+                                                       "No external configuration for " + request->queryParam("section") + " section");
             }
          }
 
@@ -224,7 +224,7 @@ namespace web
                if (request->contentType() != EContentType::kJson)
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnsupportedMediaType);
 
-               m_configurationManager->saveExternalConfiguration(request->parameter("section"),
+               m_configurationManager->saveExternalConfiguration(request->queryParam("section"),
                                                                  shared::CDataContainer(request->body()));
 
                return boost::make_shared<CNoContentAnswer>();
@@ -232,7 +232,7 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to save external configuration for " + request->parameter("section") + " section");
+                                                       "Fail to save external configuration for " + request->queryParam("section") + " section");
             }
          }
       } //namespace service

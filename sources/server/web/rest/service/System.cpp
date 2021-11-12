@@ -464,7 +464,7 @@ namespace web
          {
             try
             {
-               const auto fields = request->parameterAsFlagList("fields");
+               const auto fields = request->queryParamAsList("fields");
 
                shared::CDataContainer result;
                if (fields->empty() || fields->find("platform") != fields->end())
@@ -521,7 +521,7 @@ namespace web
                if (supportedTimezones.empty())
                   return boost::make_shared<CNoContentAnswer>();
                
-               const auto filters = request->parameterAsFlagList("filter");
+               const auto filters = request->queryParamAsList("filter");
 
                if (filters->empty())
                {
@@ -616,7 +616,7 @@ namespace web
          {
             try
             {
-               const auto filter = request->parameter("vid-pid", std::string());
+               const auto filter = request->queryParam("vid-pid", std::string());
 
                const auto foundDevices = getUsbDevicesV2(filter.empty() ? std::vector<std::pair<int, int>>() : toPairsVector(filter));
 
@@ -638,7 +638,7 @@ namespace web
          {
             try
             {
-               const auto includeLoopback = request->parameter("loopback", std::string()) == "include";
+               const auto includeLoopback = request->queryParam("loopback", std::string()) == "include";
 
                shared::CDataContainer result;
                const auto networkInterfaces = Poco::Net::NetworkInterface::list();

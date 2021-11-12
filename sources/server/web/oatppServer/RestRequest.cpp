@@ -17,7 +17,12 @@ namespace web
          return m_method;
       }
 
-      std::string CRestRequest::parameter(const std::string& key)
+      std::string CRestRequest::pathVariable(const std::string& key)
+      {
+         return m_request->getPathVariable(key.c_str())->std_str();
+      }
+
+      std::string CRestRequest::queryParam(const std::string& key)
       {
          const auto value = m_request->getQueryParameter(oatpp::data::share::StringKeyLabel(key.c_str()));
          if (!value)
@@ -25,28 +30,29 @@ namespace web
          return value->std_str();
       }
 
-      std::string CRestRequest::parameter(const std::string& key,
-                                          const std::string& defaultValue)
+      std::string CRestRequest::queryParam(const std::string& key,
+                                           const std::string& defaultValue)
       {
          return m_request->getQueryParameter(oatpp::data::share::StringKeyLabel(key.c_str()),
                                              oatpp::String(defaultValue.c_str()))->std_str();
       }
 
-      std::unique_ptr<std::set<std::string>> CRestRequest::parameterAsFlagList(const std::string& key)
+      std::unique_ptr<std::set<std::string>> CRestRequest::queryParamAsList(const std::string& key,
+                                                                            char separator)
       {
-         const auto flagsString = parameter(key, std::string());
+         const auto flagsString = queryParam(key, std::string());
          if (flagsString.empty())
             return std::make_unique<std::set<std::string>>();
 
          auto flags = std::make_unique<std::set<std::string>>();
          for (const auto& t : boost::tokenizer<boost::char_separator<char>>(flagsString,
-                                                                            boost::char_separator<char>(",")))
+                                                                            boost::char_separator<char>(&separator)))
             flags->insert(t);
 
          return flags;
       }
 
-      std::map<std::string, std::string> CRestRequest::parameters()
+      std::map<std::string, std::string> CRestRequest::queryParams()
       {
          return toMap(m_request->getQueryParameters());
       }
