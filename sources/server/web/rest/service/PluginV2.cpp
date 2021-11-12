@@ -11,16 +11,16 @@ namespace web
    {
       namespace service
       {
-         const std::string CPlugin::RestKeywordV2 = std::string("plugins");
-
          boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CPlugin::endPoints()
          {
             if (m_endPoints != nullptr)
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, RestKeywordV2, getAvailablePlugins));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, RestKeywordV2 + "/instances", getPluginsInstances));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins", getAvailablePlugins));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances", getPluginsInstances));
+
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/devices", getInstanceDevices));
 
             //TODO RAF
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices)
@@ -116,7 +116,7 @@ namespace web
                   instances = m_pluginManager->getInstanceList();
                else
                   instances.push_back(m_pluginManager->getInstance(static_cast<int>(std::stol(id))));
-               
+
                const auto filters = request->parameterAsFlagList("filter");
                if (filters->find("for-manual-device-creation") != filters->end())
                {
@@ -175,6 +175,75 @@ namespace web
 
                shared::CDataContainer container;
                container.set("instances", instancesEntries);
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get available instances");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CPlugin::getInstanceDevices(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // Filtering
+               const auto id = request->parameter("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                                                          "plugin-instance id was not provided");
+               const auto instanceId = static_cast<int>(std::stol(id));
+
+               const auto filters = request->parameterAsFlagList("filter");
+               const auto withBlacklisted = filters->find("with-blacklisted") != filters->end();
+
+               const auto devices = m_dataProvider->getDeviceRequester()->getDevices(instanceId,
+                                                                                     withBlacklisted);
+
+               // Get requested fields. Supported fields are :
+               // - id
+               // - plugin-id
+               // - name
+               // - friendly-name
+               // - model
+               // - details
+               // - configuration
+               // - type
+               // - blacklisted
+               const auto fields = request->parameterAsFlagList("fields");
+               std::vector<boost::shared_ptr<shared::CDataContainer>> deviceEntries;
+               for (const auto& device : devices)
+               {
+                  auto instanceEntry = boost::make_shared<shared::CDataContainer>();
+                  if (fields->empty() || fields->find("id") != fields->end())
+                     instanceEntry->set("id", device->Id());
+                  if (fields->empty() || fields->find("plugin-id") != fields->end())
+                     instanceEntry->set("plugin-id", device->PluginId());
+                  if (fields->empty() || fields->find("name") != fields->end())
+                     instanceEntry->set("name", device->Name());
+                  if (fields->empty() || fields->find("friendly-name") != fields->end())
+                     instanceEntry->set("friendly-name", device->FriendlyName());
+                  if (fields->empty() || fields->find("model") != fields->end())
+                     instanceEntry->set("model", device->Model());
+                  if (fields->empty() || fields->find("details") != fields->end())
+                     instanceEntry->set("details", device->Details());
+                  if (fields->empty() || fields->find("configuration") != fields->end())
+                     instanceEntry->set("configuration", device->Configuration());
+                  if (fields->empty() || fields->find("type") != fields->end())
+                     instanceEntry->set("type", device->Type());
+                  if (fields->empty() || fields->find("blacklisted") != fields->end())
+                     instanceEntry->set("blacklisted", device->Blacklist());
+
+                  deviceEntries.push_back(instanceEntry);
+               }
+
+               if (deviceEntries.empty())
+                  return boost::make_shared<CNoContentAnswer>();
+
+               shared::CDataContainer container;
+               container.set("devices", deviceEntries);
                return boost::make_shared<CSuccessAnswer>(container);
             }
 

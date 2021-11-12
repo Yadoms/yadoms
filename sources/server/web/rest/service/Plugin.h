@@ -81,6 +81,7 @@ namespace web
 
             boost::shared_ptr<IAnswer> getAvailablePlugins(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getPluginsInstances(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getInstanceDevices(boost::shared_ptr<IRequest> request) const;
 
 
             std::string generateUniqueDeviceName(const int pluginId) const;
@@ -91,7 +92,6 @@ namespace web
             boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
 
             std::string m_restKeyword;
-            static const std::string RestKeywordV2;
 
             communication::ISendMessageAsync& m_messageSender;
 
