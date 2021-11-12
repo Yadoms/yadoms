@@ -21,7 +21,7 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances", getPluginsInstances));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}", getPluginsInstances));
 
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/devices", getInstanceDevices));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/devices", getInstanceDevices));
 
             //TODO RAF
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices)
@@ -61,31 +61,25 @@ namespace web
                      foundPlugins.push_back(plugin.second);
                }
 
-               // Get requested fields. Supported fields are :
-               // - version
-               // - author
-               // - url
-               // - SupportManuallyCreatedDevice
-               // - SupportDeviceRemovedNotification
-               // - package
-               const auto fields = request->queryParamAsList("prop");
+               // Get requested props
+               const auto props = request->queryParamAsList("prop");
                std::vector<boost::shared_ptr<shared::CDataContainer>> pluginEntries;
                for (const auto& plugin : foundPlugins)
                {
                   auto pluginEntry = boost::make_shared<shared::CDataContainer>();
-                  if (fields->empty() || fields->find("type") != fields->end())
+                  if (props->empty() || props->find("type") != props->end())
                      pluginEntry->set("type", plugin->getType());
-                  if (fields->empty() || fields->find("version") != fields->end())
+                  if (props->empty() || props->find("version") != props->end())
                      pluginEntry->set("version", plugin->getVersion().toString());
-                  if (fields->empty() || fields->find("author") != fields->end())
+                  if (props->empty() || props->find("author") != props->end())
                      pluginEntry->set("author", plugin->getAuthor());
-                  if (fields->empty() || fields->find("url") != fields->end())
+                  if (props->empty() || props->find("url") != props->end())
                      pluginEntry->set("url", plugin->getUrl());
-                  if (fields->empty() || fields->find("support-manually-created-device") != fields->end())
-                     pluginEntry->set("SupportManuallyCreatedDevice", plugin->getSupportManuallyCreatedDevice());
-                  if (fields->empty() || fields->find("support-device-removed-notification") != fields->end())
-                     pluginEntry->set("SupportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
-                  if (fields->empty() || fields->find("package") != fields->end())
+                  if (props->empty() || props->find("support-manually-created-device") != props->end())
+                     pluginEntry->set("support-manually-created-device", plugin->getSupportManuallyCreatedDevice());
+                  if (props->empty() || props->find("support-device-removed-notification") != props->end())
+                     pluginEntry->set("support-device-removed-notification", plugin->getSupportDeviceRemovedNotification());
+                  if (props->empty() || props->find("package") != props->end())
                      pluginEntry->set("package", *plugin->getPackage());
 
                   pluginEntries.push_back(pluginEntry);
@@ -137,27 +131,27 @@ namespace web
                                                  }), instances.end());
                }
 
-               // Get requested fields
-               const auto fields = request->queryParamAsList("prop");
+               // Get requested props
+               const auto props = request->queryParamAsList("prop");
                std::vector<boost::shared_ptr<shared::CDataContainer>> instancesEntries;
                for (const auto& instance : instances)
                {
                   auto instanceEntry = boost::make_shared<shared::CDataContainer>();
-                  if (fields->empty() || fields->find("id") != fields->end())
+                  if (props->empty() || props->find("id") != props->end())
                      instanceEntry->set("id", instance->Id());
-                  if (fields->empty() || fields->find("display-name") != fields->end())
+                  if (props->empty() || props->find("display-name") != props->end())
                      instanceEntry->set("display-name", instance->DisplayName());
-                  if (fields->empty() || fields->find("type") != fields->end())
+                  if (props->empty() || props->find("type") != props->end())
                      instanceEntry->set("type", instance->Type());
-                  if (fields->empty() || fields->find("configuration") != fields->end())
+                  if (props->empty() || props->find("configuration") != props->end())
                      instanceEntry->set("configuration", instance->Configuration());
-                  if (fields->empty() || fields->find("auto-start") != fields->end())
+                  if (props->empty() || props->find("auto-start") != props->end())
                      instanceEntry->set("auto-start", instance->AutoStart());
-                  if (fields->empty() || fields->find("category") != fields->end())
+                  if (props->empty() || props->find("category") != props->end())
                      instanceEntry->set("category", instance->Category());
-                  if (fields->empty() || fields->find("state") != fields->end())
+                  if (props->empty() || props->find("state") != props->end())
                      instanceEntry->set("state", m_pluginManager->getInstanceState(instance->Id()));
-                  if (fields->empty() || fields->find("full-state") != fields->end())
+                  if (props->empty() || props->find("full-state") != props->end())
                      instanceEntry->set("full-state", m_pluginManager->getInstanceFullState(instance->Id()));
 
                   instancesEntries.push_back(instanceEntry);
@@ -182,51 +176,43 @@ namespace web
          {
             try
             {
-               // Filtering
-               const auto id = request->queryParam("id", std::string());
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               std::vector<boost::shared_ptr<database::entities::CPlugin>> instances;
                if (id.empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
                                                           "plugin-instance id was not provided");
                const auto instanceId = static_cast<int>(std::stol(id));
 
-               const auto filters = request->queryParamAsList("filter");
-               const auto withBlacklisted = filters->find("with-blacklisted") != filters->end();
+               // Filtering
+               const auto withBlacklisted = request->queryParamExists("with-blacklisted");
 
                const auto devices = m_dataProvider->getDeviceRequester()->getDevices(instanceId,
                                                                                      withBlacklisted);
 
-               // Get requested fields. Supported fields are :
-               // - id
-               // - plugin-id
-               // - name
-               // - friendly-name
-               // - model
-               // - details
-               // - configuration
-               // - type
-               // - blacklisted
-               const auto fields = request->queryParamAsList("fields");
+               // Get requested props
+               const auto props = request->queryParamAsList("prop");
                std::vector<boost::shared_ptr<shared::CDataContainer>> deviceEntries;
                for (const auto& device : devices)
                {
                   auto instanceEntry = boost::make_shared<shared::CDataContainer>();
-                  if (fields->empty() || fields->find("id") != fields->end())
+                  if (props->empty() || props->find("id") != props->end())
                      instanceEntry->set("id", device->Id());
-                  if (fields->empty() || fields->find("plugin-id") != fields->end())
+                  if (props->empty() || props->find("plugin-id") != props->end())
                      instanceEntry->set("plugin-id", device->PluginId());
-                  if (fields->empty() || fields->find("name") != fields->end())
+                  if (props->empty() || props->find("name") != props->end())
                      instanceEntry->set("name", device->Name());
-                  if (fields->empty() || fields->find("friendly-name") != fields->end())
+                  if (props->empty() || props->find("friendly-name") != props->end())
                      instanceEntry->set("friendly-name", device->FriendlyName());
-                  if (fields->empty() || fields->find("model") != fields->end())
+                  if (props->empty() || props->find("model") != props->end())
                      instanceEntry->set("model", device->Model());
-                  if (fields->empty() || fields->find("details") != fields->end())
+                  if (props->empty() || props->find("details") != props->end())
                      instanceEntry->set("details", device->Details());
-                  if (fields->empty() || fields->find("configuration") != fields->end())
+                  if (props->empty() || props->find("configuration") != props->end())
                      instanceEntry->set("configuration", device->Configuration());
-                  if (fields->empty() || fields->find("type") != fields->end())
+                  if (props->empty() || props->find("type") != props->end())
                      instanceEntry->set("type", device->Type());
-                  if (fields->empty() || fields->find("blacklisted") != fields->end())
+                  if (props->empty() || props->find("blacklisted") != props->end())
                      instanceEntry->set("blacklisted", device->Blacklist());
 
                   deviceEntries.push_back(instanceEntry);

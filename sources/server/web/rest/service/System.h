@@ -45,24 +45,22 @@ namespace web
             boost::shared_ptr<IAnswer> getSystemInformationV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getCurrentTimeV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getSupportedTimezonesV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request);
             boost::shared_ptr<IAnswer> getSerialPorts(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getUsbDevices(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getNetworkInterfacesV2(boost::shared_ptr<IRequest> request) const;
 
             boost::shared_ptr<shared::CDataContainer> getSerialPorts() const;
-            static std::vector<std::pair<int, int>> toPairsVector(const std::string& param);
+            static std::vector<std::pair<int, int>> toPairsVector(const std::unique_ptr<std::set<std::string>>& vidPidList);
             boost::shared_ptr<shared::serialization::IDataSerializable> getUsbDevices(const std::string& requestContent) const;
             boost::shared_ptr<shared::CDataContainer> getUsbDevicesV2(const std::vector<std::pair<int, int>>& requestedUsbDevices) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable>
-            getNetworkInterfaces(bool includeLoopback) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable>
-            platformIs(const std::string& refPlatform) const;
-            static void addVirtualDevicesSupportedCapacity(
-               const shared::plugin::yPluginApi::CStandardCapacity& capacity,
-               const std::vector<shared::plugin::yPluginApi::EMeasureType>&
-                  acceptedMeasureTypes = std::vector<shared::plugin::yPluginApi::EMeasureType>());
+            boost::shared_ptr<shared::serialization::IDataSerializable> getNetworkInterfaces(bool includeLoopback) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> platformIs(const std::string& refPlatform) const;
+            static void addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
+                                                           const std::vector<shared::plugin::yPluginApi::EMeasureType>&
+                                                              acceptedMeasureTypes = std::vector<shared::plugin::yPluginApi::EMeasureType>());
             static const shared::CDataContainer& getVirtualDevicesSupportedCapacities();
+            std::shared_ptr<std::vector<shared::plugin::yPluginApi::CStandardCapacity>> getVirtualDevicesSupportedCapacitiesV2();
             boost::shared_ptr<shared::serialization::IDataSerializable> getSupportedTimezones() const;
 
             static std::string m_restKeyword;
@@ -72,6 +70,7 @@ namespace web
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
             static shared::CDataContainer m_virtualDevicesSupportedCapacities;
+            std::shared_ptr<std::vector<shared::plugin::yPluginApi::CStandardCapacity>> m_virtualDevicesSupportedCapacitiesV2;
 
             boost::shared_ptr<dateTime::CTimeZoneDatabase> m_timezoneDatabase;
             boost::shared_ptr<hardware::usb::IDevicesLister> m_usbDevicesLister;

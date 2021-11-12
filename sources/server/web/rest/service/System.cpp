@@ -419,6 +419,52 @@ namespace web
             return m_virtualDevicesSupportedCapacities;
          }
 
+         std::shared_ptr<std::vector<shared::plugin::yPluginApi::CStandardCapacity>> CSystem::getVirtualDevicesSupportedCapacitiesV2()
+         {
+            if (m_virtualDevicesSupportedCapacitiesV2)
+               return m_virtualDevicesSupportedCapacitiesV2;
+
+            m_virtualDevicesSupportedCapacitiesV2 = std::make_shared<std::vector<shared::plugin::yPluginApi::CStandardCapacity>>();
+
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::ApparentPower());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::ArmingAlarm());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::BatteryLevel());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::CameraMove());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::ColorRGB());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::ColorRGBW());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Counter());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Current());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Curtain());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Dimmable());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Direction());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Distance());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Duration());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Energy());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Event());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Frequency());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Humidity());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Illumination());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Load());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Power());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::PowerFactor());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Pressure());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Rain());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::RainRate());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Rssi());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Speed());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Switch());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Temperature());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Text());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::UpDownStop());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Uv());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Voltage());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Volume());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::WeatherCondition());
+            m_virtualDevicesSupportedCapacitiesV2->push_back(shared::plugin::yPluginApi::CStandardCapacities::Weight());
+
+            return m_virtualDevicesSupportedCapacitiesV2;
+         }
+
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSupportedTimezones() const
          {
             try
@@ -453,6 +499,8 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/supported-timezones", getSupportedTimezonesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/virtual-devices-supported-capacities",
                                                  getVirtualDevicesSupportedCapacitiesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/virtual-devices-supported-capacities/{capacity}",
+                                                 getVirtualDevicesSupportedCapacitiesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/serial-ports", getSerialPorts));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/usb-devices", getUsbDevices));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/network-interfaces", getNetworkInterfacesV2));
@@ -464,26 +512,26 @@ namespace web
          {
             try
             {
-               const auto fields = request->queryParamAsList("fields");
+               const auto fields = request->queryParamAsList("prop");
 
                shared::CDataContainer result;
                if (fields->empty() || fields->find("platform") != fields->end())
                   result.set("platform", m_runningInformation->getOperatingSystemName());
                if (fields->empty() || fields->find("platform-family") != fields->end())
                   result.set("platform-family", tools::COperatingSystem::getName());
-               if (fields->empty() || fields->find("yadomsVersion") != fields->end())
-                  result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().getVersion().toString());
-               if (fields->empty() || fields->find("startupTime") != fields->end())
-                  result.set("startupTime", m_runningInformation->getStartupDateTime());
-               if (fields->empty() || fields->find("executablePath") != fields->end())
-                  result.set("executablePath", m_runningInformation->getExecutablePath());
-               if (fields->empty() || fields->find("serverReady") != fields->end())
-                  result.set("serverReady", m_runningInformation->isServerFullyLoaded());
-               if (fields->empty() || fields->find("databaseVersion") != fields->end())
-                  result.set("databaseVersion", m_configurationManager->getDatabaseVersion());
+               if (fields->empty() || fields->find("yadoms-version") != fields->end())
+                  result.set("yadoms-version", m_runningInformation->getSoftwareVersion().getVersion().toString());
+               if (fields->empty() || fields->find("startup-time") != fields->end())
+                  result.set("startup-time", m_runningInformation->getStartupDateTime());
+               if (fields->empty() || fields->find("executable-path") != fields->end())
+                  result.set("executable-path", m_runningInformation->getExecutablePath());
+               if (fields->empty() || fields->find("server-ready") != fields->end())
+                  result.set("server-ready", m_runningInformation->isServerFullyLoaded());
+               if (fields->empty() || fields->find("database-version") != fields->end())
+                  result.set("database-version", m_configurationManager->getDatabaseVersion());
 
-               if (fields->empty() || fields->find("developerMode") != fields->end())
-                  result.set("developerMode", shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode());
+               if (fields->empty() || fields->find("developer-mode") != fields->end())
+                  result.set("developer-mode", shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode());
 
                if (result.empty())
                   return boost::make_shared<CNoContentAnswer>();
@@ -520,7 +568,7 @@ namespace web
 
                if (supportedTimezones.empty())
                   return boost::make_shared<CNoContentAnswer>();
-               
+
                const auto filters = request->queryParamAsList("filter");
 
                if (filters->empty())
@@ -554,12 +602,52 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CSystem::getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request)
          {
             try
             {
+               // Capacity
+               const auto capacityFilter = request->pathVariable("capacity", std::string());
+
+               // Filtering
+               std::vector<shared::plugin::yPluginApi::CStandardCapacity> capacities;
+               if (capacityFilter.empty())
+               {
+                  capacities = *getVirtualDevicesSupportedCapacitiesV2();
+               }
+               else
+               {
+                  const auto tempCapacities = *getVirtualDevicesSupportedCapacitiesV2();
+                  const auto foundCapacity = std::find_if(tempCapacities.begin(),
+                                                          tempCapacities.end(),
+                                                          [&capacityFilter](const auto& capacity)
+                                                          {
+                                                             return capacityFilter == capacity.getName();
+                                                          });
+                  if (foundCapacity == tempCapacities.end())
+                     return boost::make_shared<CNoContentAnswer>();
+
+                  capacities.push_back(*foundCapacity);
+               }
+
+               // Get requested props
+               const auto props = request->queryParamAsList("prop");
+               std::vector<boost::shared_ptr<shared::CDataContainer>> capacityEntries;
+               for (const auto& capacity : capacities)
+               {
+                  auto capacityEntry = boost::make_shared<shared::CDataContainer>();
+                  if (props->empty() || props->find("name") != props->end())
+                     capacityEntry->set("name", capacity.getName());
+                  if (props->empty() || props->find("unit") != props->end())
+                     capacityEntry->set("unit", capacity.getUnit());
+                  if (props->empty() || props->find("type") != props->end())
+                     capacityEntry->set("type", capacity.getType());
+
+                  capacityEntries.push_back(capacityEntry);
+               }
+
                shared::CDataContainer container;
-               container.set("capacities", getVirtualDevicesSupportedCapacities());
+               container.set("capacities", capacityEntries);
                return boost::make_shared<CSuccessAnswer>(container);
             }
             catch (const std::exception&)
@@ -585,7 +673,7 @@ namespace web
                   return boost::make_shared<CNoContentAnswer>();
 
                shared::CDataContainer container;
-               container.set("serialPorts", result);
+               container.set("serial-ports", result);
                return boost::make_shared<CSuccessAnswer>(container);
             }
             catch (const std::exception&)
@@ -595,30 +683,35 @@ namespace web
             }
          }
 
-         std::vector<std::pair<int, int>> CSystem::toPairsVector(const std::string& param)
+         std::vector<std::pair<int, int>> CSystem::toPairsVector(const std::unique_ptr<std::set<std::string>>& vidPidList)
          {
-            std::vector<std::pair<int, int>> vector;
+            std::vector<std::pair<int, int>> vidPidVector;
 
-            const std::regex pattern(R"(\[([0-9]*)\-([0-9]*)\])");
-            std::smatch matches;
-
-            for (auto match = std::sregex_iterator(param.begin(), param.end(), pattern); match != std::sregex_iterator(); ++match)
+            for (const auto& vidPid : *vidPidList)
             {
-               const auto result = *match;
-               vector.emplace_back(std::stoul((*match)[1]),
-                                   std::stoul((*match)[2]));
+               const std::regex pattern(R"(\[([0-9]*)\-([0-9]*)\])");
+               std::smatch match;
+
+               if (!std::regex_match(vidPid, match, pattern))
+               {
+                  YADOMS_LOG(warning) << "vidPid value wrong format " << vidPid << ", ignored";
+                  continue;
+               }
+
+               vidPidVector.emplace_back(std::stoul(match[1]),
+                                         std::stoul(match[2]));
             }
 
-            return vector;
+            return vidPidVector;
          }
 
          boost::shared_ptr<IAnswer> CSystem::getUsbDevices(boost::shared_ptr<IRequest> request) const
          {
             try
             {
-               const auto filter = request->queryParam("vid-pid", std::string());
+               const auto vidPidFilter = request->queryParamAsList("vid-pid");
 
-               const auto foundDevices = getUsbDevicesV2(filter.empty() ? std::vector<std::pair<int, int>>() : toPairsVector(filter));
+               const auto foundDevices = getUsbDevicesV2(vidPidFilter->empty() ? std::vector<std::pair<int, int>>() : toPairsVector(vidPidFilter));
 
                if (foundDevices->empty())
                   return boost::make_shared<CNoContentAnswer>();
@@ -638,7 +731,7 @@ namespace web
          {
             try
             {
-               const auto includeLoopback = request->queryParam("loopback", std::string()) == "include";
+               const auto includeLoopback = request->queryParamExists("with-loopback");
 
                shared::CDataContainer result;
                const auto networkInterfaces = Poco::Net::NetworkInterface::list();
