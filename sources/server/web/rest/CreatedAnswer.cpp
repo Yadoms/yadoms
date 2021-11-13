@@ -6,6 +6,7 @@ namespace web
    namespace rest
    {
       CCreatedAnswer::CCreatedAnswer(const std::string& resourceCreatedPath)
+         : m_customHeaders(std::make_shared<std::map<std::string, std::string>>())
       {
          (*m_customHeaders)["Location"] = resourceCreatedPath;
       }

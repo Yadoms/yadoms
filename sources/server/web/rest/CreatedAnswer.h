@@ -17,7 +17,7 @@ namespace web
          std::shared_ptr<std::map<std::string, std::string>> customHeaders() const override;
 
       private:
-         std::shared_ptr<std::map<std::string, std::string>> m_customHeaders = std::make_shared<std::map<std::string, std::string>>();
+         std::shared_ptr<std::map<std::string, std::string>> m_customHeaders;
       };
    } //namespace rest
 } //namespace web 
