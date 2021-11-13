@@ -8,7 +8,6 @@ namespace web
       class CNoContentAnswer final : public IAnswer
       {
       public:
-         CNoContentAnswer() = default;
          ~CNoContentAnswer() override = default;
 
          shared::http::ECodes code() const override;

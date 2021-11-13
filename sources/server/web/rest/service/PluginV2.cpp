@@ -28,6 +28,7 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}", getPluginsInstances));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/create", createPluginsInstance));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "plugins-instances/{id}", deletePluginsInstance));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/devices", getInstanceDevices));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/log", getPluginsInstancesLog));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/binding/{query}", getPluginsInstancesBinding));
@@ -39,8 +40,6 @@ namespace web
             //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod)
             //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraQuery")("*"), CPlugin::sendExtraQuery, CPlugin::transactionalMethod)
             //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::transactionalMethod)
 
             return m_endPoints;
          }
@@ -216,6 +215,28 @@ namespace web
                                                const auto idCreated = m_pluginManager->createInstance(plugin);
                                                return boost::make_shared<CCreatedAnswer>("plugins-instances/" + std::to_string(idCreated));
                                             });
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to create plugin instance");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CPlugin::deletePluginsInstance(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "plugin-instance id was not provided");
+               const auto instanceId = static_cast<int>(std::stol(id));
+
+               m_pluginManager->deleteInstance(instanceId);
+
+               return boost::make_shared<CNoContentAnswer>();
             }
             catch (const std::exception&)
             {
