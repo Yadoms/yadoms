@@ -13,7 +13,8 @@ namespace shared
          kPut,
          kPost,
          kHead,
-         kDelete
+         kDelete,
+         kPatch,
       };
 
       static const std::string RestVerbGetString("GET");
@@ -21,6 +22,7 @@ namespace shared
       static const std::string RestVerbPostString("POST");
       static const std::string RestVerbHeadString("HEAD");
       static const std::string RestVerbDeleteString("DELETE");
+      static const std::string RestVerbPatchString("PATCH");
 
       static const std::string& ToString(const ERestVerb& verb)
       {
@@ -31,6 +33,7 @@ namespace shared
          case ERestVerb::kPost: return RestVerbPostString;
          case ERestVerb::kHead: return RestVerbHeadString;
          case ERestVerb::kDelete: return RestVerbDeleteString;
+         case ERestVerb::kPatch: return RestVerbPatchString;
          default:  // NOLINT(clang-diagnostic-covered-switch-default)
             throw std::out_of_range(
                "Can not convert HTTP REST verb into string, invalid verb : " + std::to_string(static_cast<unsigned int>(verb)));
@@ -49,6 +52,8 @@ namespace shared
             return ERestVerb::kHead;
          if (verb == RestVerbDeleteString)
             return ERestVerb::kDelete;
+         if (verb == RestVerbPatchString)
+            return ERestVerb::kPatch;
 
          throw std::out_of_range("Can not convert HTTP REST verb from string, invalid verb : " + verb);
       }

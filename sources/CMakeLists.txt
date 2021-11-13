@@ -642,6 +642,8 @@ set(YADOMS_SRC
    server/web/rest/CreatedAnswer.cpp
    server/web/rest/ErrorAnswer.h
    server/web/rest/ErrorAnswer.cpp
+   server/web/rest/Helpers.h
+   server/web/rest/Helpers.cpp
    server/web/rest/NoContentAnswer.h
    server/web/rest/NoContentAnswer.cpp
    server/web/rest/SuccessAnswer.h
