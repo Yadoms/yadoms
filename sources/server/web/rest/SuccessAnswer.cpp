@@ -34,5 +34,10 @@ namespace web
       {
          return m_contentType;
       }
+
+      std::shared_ptr<std::map<std::string, std::string>> CSuccessAnswer::customHeaders() const
+      {
+         return nullptr;
+      }
    } //namespace rest
 } //namespace web 

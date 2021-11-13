@@ -17,6 +17,7 @@ namespace web
          shared::http::ECodes code() const override;
          std::string body() const override;
          EContentType contentType() const override;
+         std::shared_ptr<std::map<std::string, std::string>> customHeaders() const override;
 
       private:
          const shared::http::ECodes m_code;

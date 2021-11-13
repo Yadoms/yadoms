@@ -33,6 +33,12 @@ namespace web
                response->putHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE,
                                    ToString(answer->contentType()).c_str());
 
+            const auto customHeaders = answer->customHeaders();
+            if (customHeaders)
+               for (const auto& header : *customHeaders)
+                  response->putHeader(header.first.c_str(),
+                                      header.second.c_str());
+
             return response;
          }
          catch (const std::exception& exception)

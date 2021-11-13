@@ -28,6 +28,8 @@ namespace web
 
          private:
             const std::string& getRestKeyword() const;
+            boost::shared_ptr<IAnswer> transactionalMethodV2(boost::shared_ptr<IRequest> request,
+                                                             const std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)>& realMethod) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getOnePlugin(const std::vector<std::string>& parameters,
                                                                                      const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstance(const std::vector<std::string>& parameters,
@@ -81,6 +83,7 @@ namespace web
 
             boost::shared_ptr<IAnswer> getAvailablePlugins(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getPluginsInstances(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> createPluginsInstance(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getInstanceDevices(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getPluginsInstancesLog(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getPluginsInstancesBinding(boost::shared_ptr<IRequest> request) const;

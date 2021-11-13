@@ -638,6 +638,8 @@ set(YADOMS_SRC
    server/web/rest/ContentType.h
    server/web/rest/IRequest.h
    server/web/rest/IAnswer.h
+   server/web/rest/CreatedAnswer.h
+   server/web/rest/CreatedAnswer.cpp
    server/web/rest/ErrorAnswer.h
    server/web/rest/ErrorAnswer.cpp
    server/web/rest/NoContentAnswer.h

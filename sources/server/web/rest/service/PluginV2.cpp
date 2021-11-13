@@ -1,8 +1,12 @@
+#include <utility>
+
 #include "stdafx.h"
 #include "Plugin.h"
 #include "RestEndPoint.h"
 #include "communication/callback/SynchronousCallback.h"
 #include "pluginSystem/BindingQueryData.h"
+#include "web/poco/RestResult.h"
+#include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
@@ -23,6 +27,7 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances", getPluginsInstances));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}", getPluginsInstances));
 
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/create", createPluginsInstance));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/devices", getInstanceDevices));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/log", getPluginsInstancesLog));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/binding/{query}", getPluginsInstancesBinding));
@@ -39,6 +44,35 @@ namespace web
             //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::transactionalMethod)
 
             return m_endPoints;
+         }
+
+         boost::shared_ptr<IAnswer> CPlugin::transactionalMethodV2(
+            boost::shared_ptr<IRequest> request,
+            const std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)>& realMethod) const
+         {
+            const auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+            boost::shared_ptr<IAnswer> answer;
+            try
+            {
+               if (pTransactionalEngine)
+                  pTransactionalEngine->transactionBegin();
+               answer = realMethod(std::move(request));
+            }
+            catch (std::exception&)
+            {
+               answer = boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                         "Fail to process transactional method");
+            }
+
+            if (pTransactionalEngine)
+            {
+               if (answer->code() / 100 == shared::http::ECodes::kOKValue / 100)
+                  pTransactionalEngine->transactionCommit();
+               else
+                  pTransactionalEngine->transactionRollback();
+            }
+
+            return answer;
          }
 
          boost::shared_ptr<IAnswer> CPlugin::getAvailablePlugins(boost::shared_ptr<IRequest> request) const
@@ -168,6 +202,26 @@ namespace web
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get available instances");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CPlugin::createPluginsInstance(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               return transactionalMethodV2(std::move(request),
+                                            [this](const auto& req)
+                                            {
+                                               database::entities::CPlugin plugin;
+                                               plugin.fillFromSerializedString(req->body());
+                                               const auto idCreated = m_pluginManager->createInstance(plugin);
+                                               return boost::make_shared<CCreatedAnswer>("plugins-instances/" + std::to_string(idCreated));
+                                            });
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to create plugin instance");
             }
          }
 

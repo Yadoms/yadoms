@@ -29,5 +29,10 @@ namespace web
       {
          return m_body.empty() ? EContentType::kNone : EContentType::kPlainText;
       }
+
+      std::shared_ptr<std::map<std::string, std::string>> CErrorAnswer::customHeaders() const
+      {
+         return nullptr;
+      }
    } //namespace rest
 } //namespace web 

@@ -19,5 +19,10 @@ namespace web
       {
          return EContentType::kNone;
       }
+
+      std::shared_ptr<std::map<std::string, std::string>> CNoContentAnswer::customHeaders() const
+      {
+         return nullptr;
+      }
    } //namespace rest
 } //namespace web 
