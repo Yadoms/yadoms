@@ -22,15 +22,12 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}", getPluginsInstances));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/devices", getInstanceDevices));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/log", getPluginsInstancesLog));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/start", startPluginsInstance));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/stop", stopPluginsInstance));
 
             //TODO RAF
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("log"), CPlugin::getInstanceLog)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstance)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("instanceRunning"), CPlugin::getInstanceRunning)
 
             //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod)
             //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod)
@@ -179,7 +176,6 @@ namespace web
             {
                // ID
                const auto id = request->pathVariable("id", std::string());
-               std::vector<boost::shared_ptr<database::entities::CPlugin>> instances;
                if (id.empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
                                                           "plugin-instance id was not provided");
@@ -234,13 +230,33 @@ namespace web
             }
          }
 
+         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesLog(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                                                          "plugin-instance id was not provided");
+               const auto instanceId = static_cast<int>(std::stol(id));
+
+               return boost::make_shared<CSuccessAnswer>(m_pluginManager->getInstanceLog(instanceId));
+            }
+
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get available instances");
+            }
+         }
+
          boost::shared_ptr<IAnswer> CPlugin::startPluginsInstance(boost::shared_ptr<IRequest> request) const
          {
             try
             {
                // ID
                const auto id = request->pathVariable("id", std::string());
-               std::vector<boost::shared_ptr<database::entities::CPlugin>> instances;
                if (id.empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
                                                           "plugin-instance id was not provided");
@@ -266,7 +282,6 @@ namespace web
             {
                // ID
                const auto id = request->pathVariable("id", std::string());
-               std::vector<boost::shared_ptr<database::entities::CPlugin>> instances;
                if (id.empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
                                                           "plugin-instance id was not provided");
