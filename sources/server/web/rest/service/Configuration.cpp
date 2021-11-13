@@ -207,7 +207,7 @@ namespace web
                // Section
                const auto section = request->pathVariable("section", std::string());
                if (section.empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "External configuration section was not provided");
 
                return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getExternalConfiguration(section));
@@ -230,7 +230,7 @@ namespace web
                // Section
                const auto section = request->pathVariable("section", std::string());
                if (section.empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "External configuration section was not provided");
 
                if (request->contentType() != EContentType::kJson)

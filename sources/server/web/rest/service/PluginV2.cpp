@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Plugin.h"
 #include "RestEndPoint.h"
+#include "communication/callback/SynchronousCallback.h"
+#include "pluginSystem/BindingQueryData.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
@@ -23,6 +25,7 @@ namespace web
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/devices", getInstanceDevices));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/log", getPluginsInstancesLog));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/binding/{query}", getPluginsInstancesBinding));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/start", startPluginsInstance));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/stop", stopPluginsInstance));
 
@@ -177,7 +180,7 @@ namespace web
                // ID
                const auto id = request->pathVariable("id", std::string());
                if (id.empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "plugin-instance id was not provided");
                const auto instanceId = static_cast<int>(std::stol(id));
 
@@ -237,11 +240,68 @@ namespace web
                // ID
                const auto id = request->pathVariable("id", std::string());
                if (id.empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "plugin-instance id was not provided");
                const auto instanceId = static_cast<int>(std::stol(id));
 
                return boost::make_shared<CSuccessAnswer>(m_pluginManager->getInstanceLog(instanceId));
+            }
+
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get available instances");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesBinding(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "plugin-instance id was not provided");
+               const auto instanceId = static_cast<int>(std::stol(id));
+
+               // Query
+               const auto query = request->pathVariable("query", std::string());
+               if (query.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "binding query was not provided");
+
+               //create a callback (allow waiting for result)              
+               communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>> cb;
+
+               //create the data container to send to plugin
+               const pluginSystem::CBindingQueryData data(query);
+
+               //send request to plugin
+               m_messageSender.sendBindingQueryRequest(instanceId, data, cb);
+
+               //wait for result
+               switch (cb.waitForResult())
+               {
+               case communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>>::kResult:
+                  {
+                     const auto res = cb.getCallbackResult();
+
+                     if (res.success)
+                        return boost::make_shared<CSuccessAnswer>(*res.result());
+
+                     return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                             res.errorMessage);
+                  }
+
+               case shared::event::kTimeout:
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                          "The plugin did not respond");
+
+               default:
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                          "Unknown plugin result");
+               }
             }
 
             catch (const std::exception&)
@@ -258,7 +318,7 @@ namespace web
                // ID
                const auto id = request->pathVariable("id", std::string());
                if (id.empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "plugin-instance id was not provided");
                const auto instanceId = static_cast<int>(std::stol(id));
 
@@ -283,7 +343,7 @@ namespace web
                // ID
                const auto id = request->pathVariable("id", std::string());
                if (id.empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "plugin-instance id was not provided");
                const auto instanceId = static_cast<int>(std::stol(id));
 
