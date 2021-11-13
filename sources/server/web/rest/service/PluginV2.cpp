@@ -22,9 +22,10 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}", getPluginsInstances));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/devices", getInstanceDevices));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/start", startPluginsInstance));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/stop", stopPluginsInstance));
 
             //TODO RAF
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("log"), CPlugin::getInstanceLog)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance)
@@ -224,6 +225,55 @@ namespace web
                shared::CDataContainer container;
                container.set("devices", deviceEntries);
                return boost::make_shared<CSuccessAnswer>(container);
+            }
+
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get available instances");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CPlugin::startPluginsInstance(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               std::vector<boost::shared_ptr<database::entities::CPlugin>> instances;
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                                                          "plugin-instance id was not provided");
+               const auto instanceId = static_cast<int>(std::stol(id));
+
+               m_pluginManager->startInstance(instanceId);
+
+               shared::CDataContainer container;
+               container.set("started", m_pluginManager->isInstanceRunning(instanceId));
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get available instances");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CPlugin::stopPluginsInstance(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               std::vector<boost::shared_ptr<database::entities::CPlugin>> instances;
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                                                          "plugin-instance id was not provided");
+               const auto instanceId = static_cast<int>(std::stol(id));
+
+               m_pluginManager->stopInstance(instanceId);
+               return boost::make_shared<CNoContentAnswer>();
             }
 
             catch (const std::exception&)
