@@ -178,15 +178,16 @@ namespace web
          {
             try
             {
-               return CHelpers::transactionalMethodV2(std::move(request),
-                                                      m_dataProvider,
-                                                      [this](const auto& req)
-                                                      {
-                                                         database::entities::CPlugin plugin;
-                                                         plugin.fillFromSerializedString(req->body());
-                                                         const auto idCreated = m_pluginManager->createInstance(plugin);
-                                                         return boost::make_shared<CCreatedAnswer>("plugins-instances/" + std::to_string(idCreated));
-                                                      });
+               return CHelpers::transactionalMethodV2(
+                  std::move(request),
+                  m_dataProvider,
+                  [this](const auto& req) -> boost::shared_ptr<IAnswer>
+                  {
+                     database::entities::CPlugin plugin;
+                     plugin.fillFromSerializedString(req->body());
+                     const auto idCreated = m_pluginManager->createInstance(plugin);
+                     return boost::make_shared<CCreatedAnswer>("plugins-instances/" + std::to_string(idCreated));
+                  });
             }
             catch (const std::exception&)
             {
@@ -225,16 +226,23 @@ namespace web
          {
             try
             {
-               // ID
-               const auto id = request->pathVariable("id", std::string());
-               if (id.empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "plugin-instance id was not provided");
-               const auto instanceId = static_cast<int>(std::stol(id));
+               return CHelpers::transactionalMethodV2(
+                  std::move(request),
+                  m_dataProvider,
+                  [this](const auto& req) -> boost::shared_ptr<IAnswer>
+                  {
+                     // ID
+                     const auto id = req->pathVariable("id", std::string());
+                     if (id.empty())
+                        return boost::make_shared<CErrorAnswer>(
+                           shared::http::ECodes::kBadRequest,
+                           "plugin-instance id was not provided");
+                     const auto instanceId = static_cast<int>(std::stol(id));
 
-               m_pluginManager->deleteInstance(instanceId);
+                     m_pluginManager->deleteInstance(instanceId);
 
-               return boost::make_shared<CNoContentAnswer>();
+                     return boost::make_shared<CNoContentAnswer>();
+                  });
             }
             catch (const std::exception&)
             {
