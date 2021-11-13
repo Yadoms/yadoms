@@ -150,8 +150,8 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/server", getServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/external", getExternalConfigurationV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/external", saveExternalConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/external/{section}", getExternalConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/external/{section}", saveExternalConfigurationV2));
 
             return m_endPoints;
          }
@@ -204,7 +204,13 @@ namespace web
          {
             try
             {
-               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getExternalConfiguration(request->queryParam("section")));
+               // Section
+               const auto section = request->pathVariable("section", std::string());
+               if (section.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                                                          "External configuration section was not provided");
+
+               return boost::make_shared<CSuccessAnswer>(*m_configurationManager->getExternalConfiguration(section));
             }
             catch (const shared::exception::CEmptyResult&)
             {
@@ -221,10 +227,16 @@ namespace web
          {
             try
             {
+               // Section
+               const auto section = request->pathVariable("section", std::string());
+               if (section.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnprocessableentity,
+                                                          "External configuration section was not provided");
+
                if (request->contentType() != EContentType::kJson)
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnsupportedMediaType);
 
-               m_configurationManager->saveExternalConfiguration(request->queryParam("section"),
+               m_configurationManager->saveExternalConfiguration(section,
                                                                  shared::CDataContainer(request->body()));
 
                return boost::make_shared<CNoContentAnswer>();
