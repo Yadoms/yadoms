@@ -32,11 +32,6 @@ namespace web
          {
          }
 
-         const std::string& CDevice::getRestKeyword()
-         {
-            return m_restKeyword;
-         }
-
          void CDevice::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices)
@@ -84,17 +79,6 @@ namespace web
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"),
                                                         CDevice::deleteDevice,
                                                         CDevice:: transactionalMethod)
-         }
-
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CDevice::endPoints()
-         {
-            if (m_endPoints != nullptr)
-               return m_endPoints;
-
-            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            //TODO
-
-            return m_endPoints;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getOneDevice(const std::vector<std::string>& parameters,
@@ -265,7 +249,7 @@ namespace web
          {
             const auto dvList = m_deviceRequester->getDevices(true);
             shared::CDataContainer collection;
-            collection.set(getRestKeyword(), dvList);
+            collection.set(m_restKeyword, dvList);
             return poco::CRestResult::GenerateSuccess(collection);
          }
 
@@ -356,7 +340,7 @@ namespace web
                   //run query
                   const auto result = m_deviceRequester->getDeviceWithCapacity(capacityName, cam);
                   shared::CDataContainer collection;
-                  collection.set(getRestKeyword(), result);
+                  collection.set(m_restKeyword, result);
                   return poco::CRestResult::GenerateSuccess(collection);
                }
                return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
@@ -384,7 +368,7 @@ namespace web
                   //run query
                   const auto result = m_deviceRequester->getDeviceWithCapacityType(cam, typ);
                   shared::CDataContainer collection;
-                  collection.set(getRestKeyword(), result);
+                  collection.set(m_restKeyword, result);
                   return poco::CRestResult::GenerateSuccess(collection);
                }
                return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
@@ -412,7 +396,7 @@ namespace web
                   //run query
                   const auto result = m_deviceRequester->getDeviceWithKeywordAccessMode(cam);
                   shared::CDataContainer collection;
-                  collection.set(getRestKeyword(), result);
+                  collection.set(m_restKeyword, result);
                   return poco::CRestResult::GenerateSuccess(collection);
                }
                return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve access-mode in url");
@@ -440,7 +424,7 @@ namespace web
                   //run query
                   const auto result = m_deviceRequester->getDeviceWithKeywordHistoryDepth(historyDepth);
                   shared::CDataContainer collection;
-                  collection.set(getRestKeyword(), result);
+                  collection.set(m_restKeyword, result);
                   return poco::CRestResult::GenerateSuccess(collection);
                }
                return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve history-depth in url");

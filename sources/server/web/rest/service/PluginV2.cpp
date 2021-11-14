@@ -31,16 +31,11 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/create", createPluginsInstance));
             m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "plugins-instances/{id}", updatePluginsInstance));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "plugins-instances/{id}", deletePluginsInstance));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/devices", getInstanceDevices));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/log", getPluginsInstancesLog));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/binding/{query}", getPluginsInstancesBinding));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/start", startPluginsInstance));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/stop", stopPluginsInstance));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/extra-query/{query}", sendExtraQueryToPluginInstance));
-
-            //TODO RAF
-            //TODO : déplacer dans le service Device : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod)
-            //TODO : déplacer dans le service Device : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethod)
 
             return m_endPoints;
          }
@@ -249,66 +244,6 @@ namespace web
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to create plugin instance");
-            }
-         }
-
-         boost::shared_ptr<IAnswer> CPlugin::getInstanceDevices(boost::shared_ptr<IRequest> request) const
-         {
-            try
-            {
-               // ID
-               const auto id = request->pathVariable("id", std::string());
-               if (id.empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "plugin-instance id was not provided");
-               const auto instanceId = static_cast<int>(std::stol(id));
-
-               // Filtering
-               const auto withBlacklisted = request->queryParamExists("with-blacklisted");
-
-               const auto devices = m_dataProvider->getDeviceRequester()->getDevices(instanceId,
-                                                                                     withBlacklisted);
-
-               // Get requested props
-               const auto props = request->queryParamAsList("prop");
-               std::vector<boost::shared_ptr<shared::CDataContainer>> deviceEntries;
-               for (const auto& device : devices)
-               {
-                  auto instanceEntry = boost::make_shared<shared::CDataContainer>();
-                  if (props->empty() || props->find("id") != props->end())
-                     instanceEntry->set("id", device->Id());
-                  if (props->empty() || props->find("plugin-id") != props->end())
-                     instanceEntry->set("plugin-id", device->PluginId());
-                  if (props->empty() || props->find("name") != props->end())
-                     instanceEntry->set("name", device->Name());
-                  if (props->empty() || props->find("friendly-name") != props->end())
-                     instanceEntry->set("friendly-name", device->FriendlyName());
-                  if (props->empty() || props->find("model") != props->end())
-                     instanceEntry->set("model", device->Model());
-                  if (props->empty() || props->find("details") != props->end())
-                     instanceEntry->set("details", device->Details());
-                  if (props->empty() || props->find("configuration") != props->end())
-                     instanceEntry->set("configuration", device->Configuration());
-                  if (props->empty() || props->find("type") != props->end())
-                     instanceEntry->set("type", device->Type());
-                  if (props->empty() || props->find("blacklisted") != props->end())
-                     instanceEntry->set("blacklisted", device->Blacklist());
-
-                  deviceEntries.push_back(instanceEntry);
-               }
-
-               if (deviceEntries.empty())
-                  return boost::make_shared<CNoContentAnswer>();
-
-               shared::CDataContainer container;
-               container.set("devices", deviceEntries);
-               return boost::make_shared<CSuccessAnswer>(container);
-            }
-
-            catch (const std::exception&)
-            {
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get available instances");
             }
          }
 

@@ -84,7 +84,6 @@ namespace web
             boost::shared_ptr<IAnswer> createPluginsInstance(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> updatePluginsInstance(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> deletePluginsInstance(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getInstanceDevices(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getPluginsInstancesLog(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getPluginsInstancesBinding(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> startPluginsInstance(boost::shared_ptr<IRequest> request) const;

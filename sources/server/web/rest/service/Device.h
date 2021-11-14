@@ -25,8 +25,6 @@ namespace web
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
-            static const std::string& getRestKeyword();
-
          private:
             //-----------------------------------------
             ///\brief   get a device
@@ -190,6 +188,9 @@ namespace web
                const poco::CRestDispatcher::CRestMethodHandler realMethod,
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
+
+            
+            boost::shared_ptr<IAnswer> getDevices(boost::shared_ptr<IRequest> request) const;
 
             //-----------------------------------------
             ///\brief   Data provider

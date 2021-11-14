@@ -12,7 +12,7 @@ namespace database
          //--------------------------------------------------------------
          /// \Brief		   Device requester for SQLite database
          //--------------------------------------------------------------
-         class CDevice : public IDeviceRequester
+         class CDevice final : public IDeviceRequester
          {
          public:
             //--------------------------------------------------------------
@@ -20,8 +20,7 @@ namespace database
             /// \param [in]	databaseRequester the database requester
             //--------------------------------------------------------------
             explicit CDevice(boost::shared_ptr<IDatabaseRequester> databaseRequester);
-
-            virtual ~CDevice() = default;
+            ~CDevice() override = default;
 
             // IDeviceRequester implementation
             bool deviceExists(int deviceId) const override;
@@ -38,20 +37,18 @@ namespace database
                                                               const std::string& type,
                                                               const std::string& model,
                                                               boost::shared_ptr<shared::CDataContainer> details) override;
-            std::vector<boost::shared_ptr<entities::CDevice>> getDevices(bool blacklistedIncluded = false) const
-            override;
+            std::vector<boost::shared_ptr<entities::CDevice>> getDevices(bool blacklistedIncluded = false) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(const std::set<int>& deviceIds) const override;
             std::vector<std::string> getDevicesNames(int pluginId,
                                                      bool blacklistedIncluded = false) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(int pluginId,
-                                                                         bool blacklistedIncluded = false) const
-            override;
+                                                                         bool blacklistedIncluded = false) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(const std::vector<std::string>& names,
                                                                          bool blacklistedIncluded) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevicesIdFromFriendlyName(const std::string& friendlyName) const override;
-            std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,
-                                                                                    const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode)
-            const override;
+            std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacity(
+               const std::string& capacityName,
+               const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacityType(
                const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
                const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const override;

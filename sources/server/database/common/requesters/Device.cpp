@@ -45,9 +45,10 @@ namespace database
             }
          }
 
-         boost::shared_ptr<entities::CDevice> CDevice::getDevice(int deviceId, bool blacklistedIncluded) const
+         boost::shared_ptr<entities::CDevice> CDevice::getDevice(int deviceId,
+                                                                 bool blacklistedIncluded) const
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             if (blacklistedIncluded)
                qSelect->Select().
@@ -67,10 +68,12 @@ namespace database
             return adapter.getResults()[0];
          }
 
-         boost::shared_ptr<entities::CDevice> CDevice::getDeviceInPlugin(int pluginId, const std::string& name, bool blacklistedIncluded) const
+         boost::shared_ptr<entities::CDevice> CDevice::getDeviceInPlugin(int pluginId,
+                                                                         const std::string& name,
+                                                                         bool blacklistedIncluded) const
          {
             //search for such a device
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             if (blacklistedIncluded)
                qSelect->Select().
@@ -94,7 +97,7 @@ namespace database
 
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevicesIdFromFriendlyName(const std::string& friendlyName) const
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CDeviceTable::getTableName()).
                      Where(CDeviceTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, friendlyName).
@@ -109,7 +112,7 @@ namespace database
                                                                                           const shared::plugin::yPluginApi::EKeywordAccessMode&
                                                                                           accessMode) const
          {
-            auto subQuery = m_databaseRequester->newQuery();
+            const auto subQuery = m_databaseRequester->newQuery();
             subQuery->Select(CKeywordTable::getDeviceIdColumnName()).
                       From(CKeywordTable::getTableName()).
                       Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacityName);
@@ -120,7 +123,7 @@ namespace database
                subQuery->And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, accessMode);
             }
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CDeviceTable::getTableName()).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, *subQuery).
@@ -135,7 +138,7 @@ namespace database
             const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
             const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const
          {
-            auto subQuery = m_databaseRequester->newQuery();
+            const auto subQuery = m_databaseRequester->newQuery();
             subQuery->Select(CKeywordTable::getDeviceIdColumnName()).
                       From(CKeywordTable::getTableName()).
                       Where(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, capacityType);
@@ -146,7 +149,7 @@ namespace database
                subQuery->And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode);
             }
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CDeviceTable::getTableName()).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, *subQuery).
@@ -161,7 +164,7 @@ namespace database
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDeviceWithKeywordAccessMode(
             const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const
          {
-            auto subQuery = m_databaseRequester->newQuery();
+            const auto subQuery = m_databaseRequester->newQuery();
             subQuery->Select(CKeywordTable::getDeviceIdColumnName()).
                       From(CKeywordTable::getTableName());
 
@@ -171,7 +174,7 @@ namespace database
                subQuery->Where(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode);
             }
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CDeviceTable::getTableName()).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, *subQuery).
@@ -186,7 +189,7 @@ namespace database
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDeviceWithKeywordHistoryDepth(
             const shared::plugin::yPluginApi::EHistoryDepth& historyDepth) const
          {
-            auto subQuery = m_databaseRequester->newQuery();
+            const auto subQuery = m_databaseRequester->newQuery();
             subQuery->Select(CKeywordTable::getDeviceIdColumnName()).
                       From(CKeywordTable::getTableName());
 
@@ -196,7 +199,7 @@ namespace database
                subQuery->Where(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_EQUAL, historyDepth);
             }
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CDeviceTable::getTableName()).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, *subQuery).
@@ -213,7 +216,7 @@ namespace database
 
             const auto referenceDevice = getDevice(refDevice);
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CDeviceTable::getTableName()).
                      Where(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, 0).
@@ -241,7 +244,7 @@ namespace database
                realFriendlyName = name;
 
             //insert in db
-            auto qInsert = m_databaseRequester->newQuery();
+            const auto qInsert = m_databaseRequester->newQuery();
             qInsert->InsertInto(CDeviceTable::getTableName(),
                                 CDeviceTable::getPluginIdColumnName(),
                                 CDeviceTable::getNameColumnName(),
@@ -278,7 +281,7 @@ namespace database
                return;
 
             //insert in db
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
                      Set(CDeviceTable::getFriendlyNameColumnName(), newFriendlyName).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -295,7 +298,7 @@ namespace database
             if (newName.empty())
                throw shared::exception::CEmptyResult("Invalid name provided");
 
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
                      Set(CDeviceTable::getNameColumnName(), newName).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -309,7 +312,7 @@ namespace database
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
 
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
                      Set(CDeviceTable::getConfigurationColumnName(), configuration->serialize()).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -323,7 +326,7 @@ namespace database
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
 
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
                      Set(CDeviceTable::getDetailsColumnName(), details->serialize()).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -337,7 +340,7 @@ namespace database
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
 
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
                      Set(CDeviceTable::getModelColumnName(), model).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -351,7 +354,7 @@ namespace database
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
 
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
                      Set(CDeviceTable::getTypeColumnName(), type).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -365,7 +368,7 @@ namespace database
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
 
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
                      Set(CDeviceTable::getBlacklistColumnName(), blacklist).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -380,7 +383,7 @@ namespace database
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
 
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CDeviceTable::getTableName()).
                      Set(CDeviceTable::getNameColumnName(), newName).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -397,7 +400,7 @@ namespace database
 
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices(bool blacklistedIncluded) const
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             if (blacklistedIncluded)
                qSelect->Select().
@@ -414,7 +417,7 @@ namespace database
 
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices(const std::set<int>& deviceIds) const
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             qSelect->Select().
                      From(CDeviceTable::getTableName()).
@@ -428,7 +431,7 @@ namespace database
          std::vector<std::string> CDevice::getDevicesNames(int pluginId,
                                                            bool blacklistedIncluded) const
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             if (blacklistedIncluded)
                qSelect->Select(CDeviceTable::getNameColumnName()).
@@ -448,7 +451,7 @@ namespace database
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices(int pluginId,
                                                                                bool blacklistedIncluded) const
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             if (blacklistedIncluded)
                qSelect->Select().
@@ -468,7 +471,7 @@ namespace database
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices(const std::vector<std::string>& names,
                                                                                bool blacklistedIncluded = false) const
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             qSelect->Select().
                      From(CDeviceTable::getTableName()).
@@ -484,7 +487,7 @@ namespace database
 
          void CDevice::removeDevice(int deviceId)
          {
-            auto qDelete = m_databaseRequester->newQuery();
+            const auto qDelete = m_databaseRequester->newQuery();
             qDelete->DeleteFrom(CDeviceTable::getTableName()).
                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
             if (m_databaseRequester->queryStatement(*qDelete) <= 0)
@@ -502,13 +505,13 @@ namespace database
 
          void CDevice::removeAllDeviceForPlugin(int pluginId)
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CDeviceTable::getTableName()).Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId);
 
             adapters::CDeviceAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
-            auto devicesToDelete = adapter.getResults();
+            const auto devicesToDelete = adapter.getResults();
 
             for (const auto& i : devicesToDelete)
                removeDevice(i->Id());
