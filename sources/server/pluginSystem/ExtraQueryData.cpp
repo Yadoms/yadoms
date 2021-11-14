@@ -1,18 +1,16 @@
 #include "stdafx.h"
 #include "ExtraQueryData.h"
 
+#include <utility>
+
 namespace pluginSystem
 {
-   CExtraQueryData::CExtraQueryData(const std::string& query,
-                                    const boost::shared_ptr<shared::CDataContainer>& data,
-                                    const std::string& device)
-      : m_query(query),
-        m_data(data),
-        m_device(device)
-   {
-   }
-
-   CExtraQueryData::~CExtraQueryData()
+   CExtraQueryData::CExtraQueryData(std::string query,
+                                    boost::shared_ptr<shared::CDataContainer> data,
+                                    std::string deviceId)
+      : m_query(std::move(query)),
+        m_data(std::move(data)),
+        m_deviceId(std::move(deviceId))
    {
    }
 
@@ -28,7 +26,7 @@ namespace pluginSystem
 
    const std::string& CExtraQueryData::device() const
    {
-      return m_device;
+      return m_deviceId;
    }
 } // namespace pluginSystem	
 

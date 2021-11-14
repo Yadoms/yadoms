@@ -88,6 +88,7 @@ namespace web
             boost::shared_ptr<IAnswer> getPluginsInstancesLog(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getPluginsInstancesBinding(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> startPluginsInstance(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> sendExtraQueryToPluginInstance(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> stopPluginsInstance(boost::shared_ptr<IRequest> request) const;
 
 

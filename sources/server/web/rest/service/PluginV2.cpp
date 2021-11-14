@@ -5,6 +5,7 @@
 #include "RestEndPoint.h"
 #include "communication/callback/SynchronousCallback.h"
 #include "pluginSystem/BindingQueryData.h"
+#include "pluginSystem/ExtraQueryData.h"
 #include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
@@ -35,11 +36,11 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/binding/{query}", getPluginsInstancesBinding));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/start", startPluginsInstance));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/stop", stopPluginsInstance));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/extra-query/{query}", sendExtraQueryToPluginInstance));
 
             //TODO RAF
             //TODO : déplacer dans le service Device : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraQuery")("*"), CPlugin::sendExtraQuery, CPlugin::transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethod)
+            //TODO : déplacer dans le service Device : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethod)
 
             return m_endPoints;
          }
@@ -405,6 +406,52 @@ namespace web
                shared::CDataContainer container;
                container.set("started", m_pluginManager->isInstanceRunning(instanceId));
                return boost::make_shared<CSuccessAnswer>(container);
+            }
+
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get available instances");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CPlugin::sendExtraQueryToPluginInstance(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "plugin-instance id was not provided");
+               const auto instanceId = static_cast<int>(std::stol(id));
+
+               // Query
+               const auto query = request->pathVariable("query", std::string());
+               if (query.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "query to plugin-instance was not provided");
+
+               return CHelpers::transactionalMethodV2(
+                  std::move(request),
+                  m_dataProvider,
+                  [this, &instanceId, &query](const auto& req) -> boost::shared_ptr<IAnswer>
+                  {
+                     const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
+                                                                                         req->body().empty()
+                                                                                            ? shared::CDataContainer::make()
+                                                                                            : shared::CDataContainer::make(req->body()),
+                                                                                         std::string());
+                     const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+
+                     if (taskId.empty())
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                                "Fail to get extra query task");
+
+                     shared::CDataContainer result;
+                     result.set("taskId", taskId);
+                     return boost::make_shared<CSuccessAnswer>(result);
+                  });
             }
 
             catch (const std::exception&)
