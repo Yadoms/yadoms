@@ -15,6 +15,7 @@ namespace web
          ~CRestRequest() override = default;
 
          shared::http::ERestVerb method() override;
+         bool pathVariableExists(const std::string& key) override;
          std::string pathVariable(const std::string& key) override;
          std::string pathVariable(const std::string& key,
                                   const std::string& defaultValue) override;
@@ -34,7 +35,7 @@ namespace web
          static std::map<std::string, std::string> toMap(const oatpp::web::protocol::http::QueryParams& in);
          boost::shared_ptr<std::map<rest::EContentType, float>> parseAcceptContentType() const;
          std::string readBody(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request) const;
-
+      private:
          std::shared_ptr<oatpp::web::protocol::http::incoming::Request> m_request;
          shared::http::ERestVerb m_method;
          boost::shared_ptr<std::map<std::string, std::string>> m_queryParams;

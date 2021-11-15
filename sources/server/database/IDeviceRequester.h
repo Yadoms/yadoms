@@ -97,6 +97,31 @@ namespace database
       virtual std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithKeywordHistoryDepth(
          const shared::plugin::yPluginApi::EHistoryDepth& historyDepth) const = 0;
 
+      //--------------------------------------------------------------
+      /// \brief                                             General search function for devices
+      /// \param [in] deviceId                               Search device matching this ID
+      /// \param [in] pluginInstanceId                       Search devices for this plugin instance ID
+      /// \param [in] friendlyName                           Search devices matching this friendly name
+      /// \param [in] type                                   Search devices matching this type
+      /// \param [in] model                                   Search devices matching this model
+      /// \param [in] containsKeywordWithCapacityName        Search devices matching this capacity name
+      /// \param [in] containsKeywordWithCapacityAccessMode  Search devices matching this capacity access mode
+      /// \param [in] containsKeywordWithCapacityType        Search devices matching this capacity type
+      /// \param [in] containsKeywordWithHistoryDepth        The history depth
+      /// \param [in] blacklistedIncluded                    Include blacklisted devices
+      /// \return                                            The device list
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(
+         boost::optional<int> deviceId,
+         boost::optional<int> pluginInstanceId,
+         boost::optional<std::string> friendlyName,
+         boost::optional<std::string> type,
+         boost::optional<std::string> model,
+         boost::optional<std::string> containsKeywordWithCapacityName,
+         boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode> containsKeywordWithCapacityAccessMode,
+         boost::optional<shared::plugin::yPluginApi::EKeywordDataType> containsKeywordWithCapacityType,
+         boost::optional<shared::plugin::yPluginApi::EHistoryDepth> containsKeywordWithHistoryDepth,
+         bool blacklistedIncluded = false) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get the compatible device list which is compatible to a given device

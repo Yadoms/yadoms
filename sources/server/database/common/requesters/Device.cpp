@@ -210,6 +210,99 @@ namespace database
             return adapter.getResults();
          }
 
+         class WhereAndOn //TODO déplacer
+         {
+         public:
+            explicit WhereAndOn(CQuery& query)
+               : m_query(query),
+                 m_whereExists(false)
+            {
+            }
+
+            virtual ~WhereAndOn() = default;
+
+            template <class T1, class T2>
+            void appendCondition(const T1& field, const std::string& op, const T2& value)
+            {
+               if (m_whereExists)
+               {
+                  m_query.And(field, op, value);
+                  return;
+               }
+
+               m_whereExists = true;
+               m_query.Where(field, op, value);
+            }
+
+            CQuery& query() const
+            {
+               return m_query;
+            }
+
+         private:
+            CQuery& m_query;
+            bool m_whereExists;
+         };
+
+         std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices(
+            boost::optional<int> deviceId,
+            boost::optional<int> pluginInstanceId,
+            boost::optional<std::string> friendlyName,
+            boost::optional<std::string> type,
+            boost::optional<std::string> model,
+            boost::optional<std::string> containsKeywordWithCapacityName,
+            boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode> containsKeywordWithCapacityAccessMode,
+            boost::optional<shared::plugin::yPluginApi::EKeywordDataType> containsKeywordWithCapacityType,
+            boost::optional<shared::plugin::yPluginApi::EHistoryDepth> containsKeywordWithHistoryDepth,
+            bool blacklistedIncluded) const
+         {
+            const auto qSelect = m_databaseRequester->newQuery();
+
+            WhereAndOn whereAndOnQuery(qSelect->Select().
+                                                From(CDeviceTable::getTableName()));
+
+            if (deviceId)
+               whereAndOnQuery.appendCondition(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, *deviceId);
+            if (pluginInstanceId)
+               whereAndOnQuery.appendCondition(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, *pluginInstanceId);
+            if (friendlyName)
+               whereAndOnQuery.appendCondition(CDeviceTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, *friendlyName);
+            if (type)
+               whereAndOnQuery.appendCondition(CDeviceTable::getTypeColumnName(), CQUERY_OP_EQUAL, *type);
+            if (model)
+               whereAndOnQuery.appendCondition(CDeviceTable::getModelColumnName(), CQUERY_OP_EQUAL, *model);
+            if (blacklistedIncluded)
+               whereAndOnQuery.appendCondition(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklistedIncluded ? 1 : 0);
+
+            if (containsKeywordWithCapacityName
+               || containsKeywordWithCapacityAccessMode
+               || containsKeywordWithCapacityType
+               || containsKeywordWithHistoryDepth)
+            {
+               const auto subQuery = m_databaseRequester->newQuery();
+
+               WhereAndOn whereAndOnSubQuery(subQuery->Select(CKeywordTable::getDeviceIdColumnName()).
+                                                       From(CKeywordTable::getTableName()));
+
+               if (containsKeywordWithCapacityName)
+                  whereAndOnSubQuery.appendCondition(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, *containsKeywordWithCapacityName);
+               if (containsKeywordWithCapacityAccessMode)
+                  whereAndOnSubQuery.appendCondition(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL,
+                                                     *containsKeywordWithCapacityAccessMode);
+               if (containsKeywordWithCapacityType)
+                  whereAndOnSubQuery.appendCondition(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, *containsKeywordWithCapacityType);
+               if (containsKeywordWithHistoryDepth)
+                  whereAndOnSubQuery.appendCondition(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_EQUAL, *containsKeywordWithHistoryDepth);
+
+               whereAndOnQuery.appendCondition(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, *subQuery);
+            }
+
+            adapters::CDeviceAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
+
+            return adapter.getResults();
+         }
+
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getCompatibleForMergeDevice(int refDevice) const
          {
             // A device is compatible for merge with an other when pluginId and type are the same

@@ -96,7 +96,7 @@ namespace database
          //
          /// \brief           Destructor
          //
-         virtual ~CQuery();
+         virtual ~CQuery() = default;
 
          //
          /// \brief              Clear current query

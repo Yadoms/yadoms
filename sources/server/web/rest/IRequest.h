@@ -12,7 +12,8 @@ namespace web
          virtual ~IRequest() = default;
 
          virtual shared::http::ERestVerb method() = 0;
-
+         
+         virtual bool pathVariableExists(const std::string& key) = 0;
          virtual std::string pathVariable(const std::string& key) = 0;
          virtual std::string pathVariable(const std::string& key,
                                           const std::string& defaultValue) = 0;

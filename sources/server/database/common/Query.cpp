@@ -15,10 +15,6 @@ namespace database
       {
       }
 
-      CQuery::~CQuery()
-      {
-      }
-
       CQuery::CQuery(const CQuery& toCopy)
          : m_insertOrUpdateName(toCopy.m_insertOrUpdateName),
            m_currentQuery(toCopy.m_currentQuery),
@@ -91,6 +87,7 @@ namespace database
       //
       /// \brief           Append 'From (subquery)'
       /// \param  subquery   the subquery
+      /// \param name      The name
       /// \return          A reference to itself to allow method chaining
       //   
       CQuery& CQuery::FromParenthesis(const CQuery& subquery, const std::string & name)
@@ -295,7 +292,7 @@ namespace database
          return CQuery().Append(customQuery).ChangeQueryType(typeOfQuery);
       }
 
-      CQuery& CQuery::DropTable(const database::common::CDatabaseTable& tableName)
+      CQuery& CQuery::DropTable(const CDatabaseTable& tableName)
       {
          ChangeQueryType(kDrop);
          std::ostringstream ss;
@@ -321,23 +318,23 @@ namespace database
 
       void CQuery::AppendField(std::ostringstream& ss, const std::string& field)
       {
-         if (field.size() > 0)
+         if (!field.empty())
             ss << "," << field;
       }
 
       void CQuery::AppendOrderField(std::ostringstream& ss, const std::string& field, const E_OrderWay way)
       {
-         if (field.size() > 0)
+         if (!field.empty())
          {
             ss << "," << field;
-            if (way == CQuery::kDesc)
+            if (way == kDesc)
                ss << " DESC";
          }
       }
 
       void CQuery::AppendSet(std::ostringstream& ss, const std::string& field, const std::string& value)
       {
-         if (field.size() > 0)
+         if (!field.empty())
             ss << ", " << field << "=" << value;
       }
 
@@ -403,32 +400,32 @@ namespace database
 
       std::string CQuery::formatInt16ToSql(const Poco::Int16& anyStringValue)
       {
-         return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
       }
 
       std::string CQuery::formatUInt16ToSql(const Poco::UInt16& anyStringValue)
       {
-         return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
       }
 
       std::string CQuery::formatInt32ToSql(const Poco::Int32& anyStringValue)
       {
-         return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
       }
 
       std::string CQuery::formatUInt32ToSql(const Poco::UInt32& anyStringValue)
       {
-         return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
       }
 
       std::string CQuery::formatInt64ToSql(const Poco::Int64& anyStringValue)
       {
-         return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
       }
 
       std::string CQuery::formatUInt64ToSql(const Poco::UInt64& anyStringValue)
       {
-         return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
       }
 
 
