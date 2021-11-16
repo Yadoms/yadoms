@@ -189,8 +189,20 @@ namespace web
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
-            
             boost::shared_ptr<IAnswer> getDevices(boost::shared_ptr<IRequest> request) const;
+            
+            //-----------------------------------------
+            ///\brief   Convert set of strings into set of ExtendedEnum
+            //-----------------------------------------
+            template <typename T>
+            std::unique_ptr<std::set<T>> convert(const std::unique_ptr<std::set<std::string>> in) const
+            {
+               static_assert(std::is_base_of_v<shared::enumeration::IExtendedEnum, T>, "T must be derived from shared::enumeration::IExtendedEnum");
+               auto out = std::make_unique<std::set<T>>();
+               for (const auto& inItem : *in)
+                  out->insert(T(inItem));
+               return out;
+            }
 
             //-----------------------------------------
             ///\brief   Data provider

@@ -210,7 +210,7 @@ namespace database
             return adapter.getResults();
          }
 
-         class WhereAndOn //TODO déplacer
+         class WhereAndOn final //TODO déplacer
          {
          public:
             explicit WhereAndOn(CQuery& query)
@@ -219,7 +219,7 @@ namespace database
             {
             }
 
-            virtual ~WhereAndOn() = default;
+            ~WhereAndOn() = default;
 
             template <class T1, class T2>
             void appendCondition(const T1& field, const std::string& op, const T2& value)
@@ -250,9 +250,9 @@ namespace database
             boost::optional<std::string> friendlyName,
             boost::optional<std::string> type,
             boost::optional<std::string> model,
-            boost::optional<std::string> containsKeywordWithCapacityName,
+            const std::set<std::string>& containsKeywordWithCapacityName,
             boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode> containsKeywordWithCapacityAccessMode,
-            boost::optional<shared::plugin::yPluginApi::EKeywordDataType> containsKeywordWithCapacityType,
+            const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithCapacityType,
             boost::optional<shared::plugin::yPluginApi::EHistoryDepth> containsKeywordWithHistoryDepth,
             bool blacklistedIncluded) const
          {
@@ -274,9 +274,9 @@ namespace database
             if (blacklistedIncluded)
                whereAndOnQuery.appendCondition(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklistedIncluded ? 1 : 0);
 
-            if (containsKeywordWithCapacityName
+            if (!containsKeywordWithCapacityName.empty()
                || containsKeywordWithCapacityAccessMode
-               || containsKeywordWithCapacityType
+               || !containsKeywordWithCapacityType.empty()
                || containsKeywordWithHistoryDepth)
             {
                const auto subQuery = m_databaseRequester->newQuery();
@@ -284,13 +284,13 @@ namespace database
                WhereAndOn whereAndOnSubQuery(subQuery->Select(CKeywordTable::getDeviceIdColumnName()).
                                                        From(CKeywordTable::getTableName()));
 
-               if (containsKeywordWithCapacityName)
-                  whereAndOnSubQuery.appendCondition(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, *containsKeywordWithCapacityName);
+               if (!containsKeywordWithCapacityName.empty())
+                  whereAndOnSubQuery.appendCondition(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_IN, containsKeywordWithCapacityName);
                if (containsKeywordWithCapacityAccessMode)
                   whereAndOnSubQuery.appendCondition(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL,
                                                      *containsKeywordWithCapacityAccessMode);
-               if (containsKeywordWithCapacityType)
-                  whereAndOnSubQuery.appendCondition(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, *containsKeywordWithCapacityType);
+               if (!containsKeywordWithCapacityType.empty())
+                  whereAndOnSubQuery.appendCondition(CKeywordTable::getTypeColumnName(), CQUERY_OP_IN, containsKeywordWithCapacityType);
                if (containsKeywordWithHistoryDepth)
                   whereAndOnSubQuery.appendCondition(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_EQUAL, *containsKeywordWithHistoryDepth);
 

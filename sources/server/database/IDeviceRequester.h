@@ -103,10 +103,10 @@ namespace database
       /// \param [in] pluginInstanceId                       Search devices for this plugin instance ID
       /// \param [in] friendlyName                           Search devices matching this friendly name
       /// \param [in] type                                   Search devices matching this type
-      /// \param [in] model                                   Search devices matching this model
-      /// \param [in] containsKeywordWithCapacityName        Search devices matching this capacity name
+      /// \param [in] model                                  Search devices matching this model
+      /// \param [in] containsKeywordWithCapacityName        Search devices matching one of these capacity names
       /// \param [in] containsKeywordWithCapacityAccessMode  Search devices matching this capacity access mode
-      /// \param [in] containsKeywordWithCapacityType        Search devices matching this capacity type
+      /// \param [in] containsKeywordWithCapacityType        Search devices matching one of these capacity type
       /// \param [in] containsKeywordWithHistoryDepth        The history depth
       /// \param [in] blacklistedIncluded                    Include blacklisted devices
       /// \return                                            The device list
@@ -117,9 +117,9 @@ namespace database
          boost::optional<std::string> friendlyName,
          boost::optional<std::string> type,
          boost::optional<std::string> model,
-         boost::optional<std::string> containsKeywordWithCapacityName,
+         const std::set<std::string>& containsKeywordWithCapacityName,
          boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode> containsKeywordWithCapacityAccessMode,
-         boost::optional<shared::plugin::yPluginApi::EKeywordDataType> containsKeywordWithCapacityType,
+         const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithCapacityType,
          boost::optional<shared::plugin::yPluginApi::EHistoryDepth> containsKeywordWithHistoryDepth,
          bool blacklistedIncluded = false) const = 0;
 

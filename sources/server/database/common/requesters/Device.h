@@ -62,9 +62,9 @@ namespace database
                boost::optional<std::string> friendlyName,
                boost::optional<std::string> type,
                boost::optional<std::string> model,
-               boost::optional<std::string> containsKeywordWithCapacityName,
+               const std::set<std::string>& containsKeywordWithCapacityName,
                boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode> containsKeywordWithCapacityAccessMode,
-               boost::optional<shared::plugin::yPluginApi::EKeywordDataType> containsKeywordWithCapacityType,
+               const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithCapacityType,
                boost::optional<shared::plugin::yPluginApi::EHistoryDepth> containsKeywordWithHistoryDepth,
                bool blacklistedIncluded = false) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getCompatibleForMergeDevice(int refDevice) const override;

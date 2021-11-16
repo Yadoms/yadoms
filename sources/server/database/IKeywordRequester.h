@@ -70,7 +70,7 @@ namespace database
       /// \param [in] expectedKeywordHistoryDepth  The history depth criteria
       /// \param [in] blacklisted                  The blacklisted criteria
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordsMatchingCriteria(
+      virtual std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCriteria(
          const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
          const std::vector<std::string>& expectedCapacities,
          const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,

@@ -25,7 +25,6 @@ namespace web
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"), getDeviceConfigurationSchema)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), getAllKeywords)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), getKeyword)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("matchkeywordcriteria"), getDeviceMatchKeywordCriteria, transactionalMethod)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), getDeviceKeywordsForCapacity)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords)
             //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), getKeywordsLastState, transactionalMethod)
@@ -68,18 +67,17 @@ namespace web
                                          ? boost::make_optional(request->queryParam("from-model"))
                                          : boost::optional<std::string>();
                const auto containsKeywordWithCapacityName = request->queryParamExists("containing-keyword-with-capacity-name")
-                                                               ? boost::make_optional(request->queryParam("containing-keyword-with-capacity-name"))
-                                                               : boost::optional<std::string>();
+                                                               ? request->queryParamAsList("containing-keyword-with-capacity-name")
+                                                               : std::make_unique<std::set<std::string>>();
                const auto containsKeywordWithCapacityAccessMode = request->queryParamExists("containing-keyword-with-capacity-access-mode")
                                                                      ? boost::make_optional(
                                                                         shared::plugin::yPluginApi::EKeywordAccessMode(
                                                                            request->queryParam("containing-keyword-with-capacity-access-mode")))
                                                                      : boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>();
                const auto containsKeywordWithCapacityType = request->queryParamExists("containing-keyword-with-capacity-type")
-                                                               ? boost::make_optional(
-                                                                  shared::plugin::yPluginApi::EKeywordDataType(
-                                                                     request->queryParam("containing-keyword-with-capacity-type")))
-                                                               : boost::optional<shared::plugin::yPluginApi::EKeywordDataType>();
+                                                               ? convert<shared::plugin::yPluginApi::EKeywordDataType>(
+                                                                  request->queryParamAsList("containing-keyword-with-capacity-type"))
+                                                               : std::make_unique<std::set<shared::plugin::yPluginApi::EKeywordDataType>>();
                const auto containsKeywordWithHistoryDepth = request->queryParamExists("containing-keyword-with-history-depth")
                                                                ? boost::make_optional(
                                                                   shared::plugin::yPluginApi::EHistoryDepth(
@@ -93,9 +91,9 @@ namespace web
                                                                   fromFriendlyName,
                                                                   fromType,
                                                                   fromModel,
-                                                                  containsKeywordWithCapacityName,
+                                                                  *containsKeywordWithCapacityName,
                                                                   containsKeywordWithCapacityAccessMode,
-                                                                  containsKeywordWithCapacityType,
+                                                                  *containsKeywordWithCapacityType,
                                                                   containsKeywordWithHistoryDepth,
                                                                   withBlacklisted);
 
