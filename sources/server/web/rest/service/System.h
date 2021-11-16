@@ -28,16 +28,16 @@ namespace web
             // [END] IRestService implementation
 
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> getBinding(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getBindingV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getSystemInformation(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getSystemInformationV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getCurrentTime(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getCurrentTimeV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getVirtualDevicesSupportedCapacities(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getVirtualDevicesSupportedCapacitiesV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
@@ -46,8 +46,8 @@ namespace web
             boost::shared_ptr<IAnswer> getCurrentTimeV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getSupportedTimezonesV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request);
-            boost::shared_ptr<IAnswer> getSerialPorts(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getUsbDevices(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getSerialPortsV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getUsbDevicesV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getNetworkInterfacesV2(boost::shared_ptr<IRequest> request) const;
 
             boost::shared_ptr<shared::CDataContainer> getSerialPorts() const;

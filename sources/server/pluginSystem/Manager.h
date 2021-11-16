@@ -209,8 +209,7 @@ namespace pluginSystem
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       void postManuallyDeviceCreationRequest(int id,
-                                             boost::shared_ptr<shared::plugin::yPluginApi::
-                                                IManuallyDeviceCreationRequest>& request) const;
+                                             const boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a binding query request to a plugin
@@ -218,7 +217,7 @@ namespace pluginSystem
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       void postBindingQueryRequest(int id,
-                                   boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const;
+                                   const boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a device configuration schema request to a plugin

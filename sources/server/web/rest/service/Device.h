@@ -29,112 +29,112 @@ namespace web
             //-----------------------------------------
             ///\brief   get a device
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getOneDevice(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getOneDeviceV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get device compatible for merge operation
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getCompatibleForMergeDevice(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getCompatibleForMergeDeviceV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get configuration schema of specified device
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceConfigurationSchema(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceConfigurationSchemaV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get all devices
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllDevices(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllDevicesV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get all devices which supports a capacity
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDevicesWithCapacity(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDevicesWithCapacityV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get all the keywords which implement a device capacity
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceKeywordsForCapacity(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceKeywordsForCapacityV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get all the keywords which match a capacity type
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceWithCapacityType(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceWithCapacityTypeV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get all the devices with any keyword matching type
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceWithKeywordAccessMode(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceWithKeywordAccessModeV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get all the devices with any keyword history depth
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceWithKeywordHistoryDepth(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceWithKeywordHistoryDepthV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get all the devices matching some criteria
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceMatchKeywordCriteria(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceMatchKeywordCriteriaV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get all the keywords of a device
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceKeywords(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceKeywordsV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get the keywords last state (from unique keyword or keyword list)
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordsLastState(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordsLastStateV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get a keyword
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getKeyword(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get all keywords
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllKeywords(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllKeywordsV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   send a command to a keyword of a device
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> sendKeywordCommand(
+            boost::shared_ptr<shared::serialization::IDataSerializable> sendKeywordCommandV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   Delete a device in database
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> deleteDevice(
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteDeviceV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
@@ -148,35 +148,35 @@ namespace web
             //-----------------------------------------
             ///\brief   update a device configuration
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> updateDeviceConfiguration(
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateDeviceConfigurationV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   merge 2 devices
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> mergeDevices(
+            boost::shared_ptr<shared::serialization::IDataSerializable> mergeDevicesV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   update a keyword friendly name
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> updateKeywordFriendlyName(
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateKeywordFriendlyNameV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief  Restore a device
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> restoreDevice(
+            boost::shared_ptr<shared::serialization::IDataSerializable> restoreDeviceV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief  (un)blacklist a keyword
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> updateKeywordBlacklist(
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateKeywordBlacklistV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
@@ -184,20 +184,21 @@ namespace web
             //-----------------------------------------
             ///\brief   Transactional method used to encapsulate operation in transactions
             //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(
+            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethodV1(
                const poco::CRestDispatcher::CRestMethodHandler realMethod,
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
-            boost::shared_ptr<IAnswer> getDevices(boost::shared_ptr<IRequest> request) const;
-            
+            boost::shared_ptr<IAnswer> getDevicesV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getDeviceConfigurationSchemaV2(boost::shared_ptr<IRequest> request) const;
+
             //-----------------------------------------
             ///\brief   Convert set of strings into set of ExtendedEnum
             //-----------------------------------------
             template <typename T>
             std::unique_ptr<std::set<T>> convert(const std::unique_ptr<std::set<std::string>> in) const
             {
-               static_assert(std::is_base_of_v<shared::enumeration::IExtendedEnum, T>, "T must be derived from shared::enumeration::IExtendedEnum");
+               static_assert(std::is_base_of<shared::enumeration::IExtendedEnum, T>::value, "T must be derived from shared::enumeration::IExtendedEnum");
                auto out = std::make_unique<std::set<T>>();
                for (const auto& inItem : *in)
                   out->insert(T(inItem));

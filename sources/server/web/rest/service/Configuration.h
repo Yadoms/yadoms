@@ -21,18 +21,18 @@ namespace web
             // [END] IRestService implementation
 
          private:
-            boost::shared_ptr<shared::serialization::IDataSerializable> resetServerConfiguration(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> resetServerConfigurationV1(const std::vector<std::string>& parameters,
                                                                                                  const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getServerConfiguration(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getServerConfigurationV1(const std::vector<std::string>& parameters,
                                                                                                const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> saveServerConfiguration(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> saveServerConfigurationV1(const std::vector<std::string>& parameters,
                                                                                                 const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDatabaseVersion(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDatabaseVersionV1(const std::vector<std::string>& parameters,
                                                                                            const std::string& requestContent) const;
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> getExternalConfiguration(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getExternalConfigurationV1(const std::vector<std::string>& parameters,
                                                                                                  const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> saveExternalConfiguration(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> saveExternalConfigurationV1(const std::vector<std::string>& parameters,
                                                                                                   const std::string& requestContent) const;
 
             // REST Api v2

@@ -25,17 +25,17 @@ namespace web
 
          void CConfiguration::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("server"), CConfiguration::getServerConfiguration)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server")("reset"), CConfiguration::resetServerConfiguration)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server"), CConfiguration::saveServerConfiguration)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("server"), CConfiguration::getServerConfigurationV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server")("reset"), CConfiguration::resetServerConfigurationV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server"), CConfiguration::saveServerConfigurationV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("databaseVersion"), CConfiguration::getDatabaseVersion)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("databaseVersion"), CConfiguration::getDatabaseVersionV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("external")("*"), CConfiguration::getExternalConfiguration)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("external")("*"), CConfiguration::getExternalConfigurationV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfigurationV1)
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::resetServerConfiguration(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::resetServerConfigurationV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -50,7 +50,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getServerConfiguration(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getServerConfigurationV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -64,7 +64,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::saveServerConfiguration(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::saveServerConfigurationV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -83,7 +83,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getDatabaseVersion(const std::vector<std::string>& parameters,
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getDatabaseVersionV1(const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
             try
@@ -96,7 +96,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getExternalConfiguration(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getExternalConfigurationV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -115,7 +115,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::saveExternalConfiguration(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::saveExternalConfigurationV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {

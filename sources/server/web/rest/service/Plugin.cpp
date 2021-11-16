@@ -38,39 +38,42 @@ namespace web
 
          void CPlugin::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePlugins)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CPlugin::getAllAvailablePluginsParameterized)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("withPackage"), CPlugin::getAllAvailablePluginsWithPackage)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstance)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instanceWithState"), CPlugin::getAllPluginsInstanceWithState)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePluginsV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CPlugin::getAllAvailablePluginsParameterizedV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("withPackage"), CPlugin::getAllAvailablePluginsWithPackageV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstanceV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instanceWithState"), CPlugin::getAllPluginsInstanceWithStateV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::
-                                        getAllPluginsInstanceForManualDeviceCreation)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("state"), CPlugin::getInstanceState)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("log"), CPlugin::getInstanceLog)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstance)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("instanceRunning"), CPlugin::getInstanceRunning)
+                                        getAllPluginsInstanceForManualDeviceCreationV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePluginV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("state"), CPlugin::getInstanceStateV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevicesV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("log"), CPlugin::getInstanceLogV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("*")("binding")("*"), CPlugin::getBindingV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstanceV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstanceV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("instanceRunning"), CPlugin::getInstanceRunningV1)
 
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod)
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::
-                                                        transactionalMethod)
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPluginV1, CPlugin::transactionalMethodV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDeviceV1, CPlugin::
+                                                        transactionalMethodV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePluginV1,
+                                                        CPlugin::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraQuery")("*"), CPlugin::sendExtraQuery, CPlugin
-                                                        ::transactionalMethod)
+                                                        ::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::
-                                                        sendDeviceExtraQuery, CPlugin::transactionalMethod)
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod
+                                                        sendDeviceExtraQueryV1, CPlugin::transactionalMethodV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPluginsV1,
+                                                        CPlugin::transactionalMethodV1
             )
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::
-                                                        transactionalMethod)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePluginV1, CPlugin::
+                                                        transactionalMethodV1)
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
-                                                                                                  const std::vector<std::string>& parameters,
-                                                                                                  const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::transactionalMethodV1(
+            poco::CRestDispatcher::CRestMethodHandler realMethod,
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             const auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             boost::shared_ptr<shared::serialization::IDataSerializable> result;
@@ -99,8 +102,8 @@ namespace web
             return result;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getOnePlugin(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getOnePluginV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -122,7 +125,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstance(const std::vector<std::string>& parameters,
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceV1(const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
             shared::CDataContainer t;
@@ -130,7 +133,7 @@ namespace web
             return poco::CRestResult::GenerateSuccess(t);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceWithState(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceWithStateV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -159,7 +162,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceForManualDeviceCreation(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceForManualDeviceCreationV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -190,7 +193,7 @@ namespace web
             return poco::CRestResult::GenerateSuccess(t);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePlugins(const std::vector<std::string>& parameters,
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsV1(const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
             try
@@ -217,7 +220,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsParameterized(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsParameterizedV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -278,7 +281,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsWithPackage(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsWithPackageV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -308,8 +311,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::createPlugin(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::createPluginV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -328,8 +331,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::updatePlugin(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::updatePluginV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -388,7 +391,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::sendDeviceExtraQuery(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::sendDeviceExtraQueryV1(
             const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
@@ -429,8 +432,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::deletePlugin(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::deletePluginV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -453,8 +456,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::deleteAllPlugins(const std::vector<std::string>& parameters,
-                                                                                               const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::deleteAllPluginsV1(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const
          {
             auto hwList = m_pluginManager->getInstanceList();
 
@@ -464,7 +467,7 @@ namespace web
             return poco::CRestResult::GenerateSuccess();
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceState(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceStateV1(
             const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
@@ -491,7 +494,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceRunning(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceRunningV1(
             const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
@@ -516,8 +519,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getPluginDevices(const std::vector<std::string>& parameters,
-                                                                                               const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getPluginDevicesV1(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const
          {
             try
             {
@@ -543,8 +546,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::startInstance(const std::vector<std::string>& parameters,
-                                                                                            const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::startInstanceV1(const std::vector<std::string>& parameters,
+                                                                                              const std::string& requestContent) const
          {
             try
             {
@@ -577,8 +580,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::stopInstance(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::stopInstanceV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -606,8 +609,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceLog(const std::vector<std::string>& parameters,
-                                                                                             const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceLogV1(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent) const
          {
             try
             {
@@ -652,8 +655,8 @@ namespace web
             return std::string("manuallyCreatedDevice_") + std::to_string(lastNumber + 1);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::createDevice(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::createDeviceV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -745,8 +748,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getBinding(const std::vector<std::string>& parameters,
-                                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getBindingV1(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             try
             {

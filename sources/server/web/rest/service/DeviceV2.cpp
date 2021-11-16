@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Device.h"
 #include "RestEndPoint.h"
+#include "communication/callback/SynchronousCallback.h"
+#include <shared/exception/EmptyResult.hpp>
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
@@ -17,38 +19,39 @@ namespace web
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices", getDevices));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}", getDevices));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices", getDevicesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}", getDevicesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/configuration-schema", getDeviceConfigurationSchemaV2)); //TODO à tester
 
             //TODO RAF
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDevice)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"), getDeviceConfigurationSchema)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), getAllKeywords)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), getKeyword)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), getDeviceKeywordsForCapacity)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), getKeywordsLastState, transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), updateDeviceConfiguration, transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevices, transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"), restoreDevice, transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), updateKeywordFriendlyName, transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("blacklist"), updateKeywordBlacklist, transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), sendKeywordCommand, transactionalMethod)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), deleteDevice, transactionalMethod)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"), getDeviceConfigurationSchemaV1)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), getAllKeywordsV1)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), getKeywordV1)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), getDeviceKeywordsForCapacityV1)
+            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywordsV1)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), getKeywordsLastStateV1, transactionalMethodV1)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), updateDeviceConfigurationV1, transactionalMethodV1)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevicesV1, transactionalMethodV1)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"), restoreDeviceV1, transactionalMethodV1)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), updateKeywordFriendlyNameV1, transactionalMethodV1)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("blacklist"), updateKeywordBlacklistV1, transactionalMethodV1)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), sendKeywordCommandV1, transactionalMethodV1)
+            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), deleteDeviceV1, transactionalMethodV1)
 
             //TODO RAF
-            //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod)
-            //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethod)
+            //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethodV1)
+            //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethodV1)
 
 
             return m_endPoints;
          }
 
-         boost::shared_ptr<IAnswer> CDevice::getDevices(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::getDevicesV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
-               // ID               
+               // ID
                const auto deviceId = request->pathVariableExists("id")
                                         ? boost::make_optional(static_cast<int>(std::stol(request->pathVariable("id"))))
                                         : boost::optional<int>();
@@ -142,6 +145,66 @@ namespace web
                YADOMS_LOG(error) << "Error processing getDevices request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get devices");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CDevice::getDeviceConfigurationSchemaV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID               
+               if (!request->pathVariableExists("id"))
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "Device ID was not provided");
+               const auto deviceId = static_cast<int>(std::stol(request->pathVariable("id")));
+
+               //create a callback (allow waiting for result)              
+               communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>> cb;
+
+               //send request to plugin
+               m_messageSender.sendDeviceConfigurationSchemaRequest(deviceId, cb);
+
+               //wait for result
+               switch (cb.waitForResult())
+               {
+               case communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>>::kResult:
+                  {
+                     const auto res = cb.getCallbackResult();
+                     if (!res.success)
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                                "Fail to get device configuration schema (plugin error)");
+                     if (res.result()->empty())
+                        return boost::make_shared<CNoContentAnswer>();
+                     return boost::make_shared<CSuccessAnswer>(*res.result());
+                  }
+               case shared::event::kTimeout:
+                  {
+                     return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                             "Fail to get device configuration schema (timeout waiting plugin answer)");
+                  }
+               default:
+                  {
+                     return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                             "Fail to get device configuration schema (unknown error)");
+                  }
+               }
+            }            
+
+            catch (const shared::exception::CEmptyResult& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getDevices request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
+            }
+            catch (const shared::exception::COutOfRange& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getDevices request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getDevices request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get device configuration schema");
             }
          }
       } //namespace service

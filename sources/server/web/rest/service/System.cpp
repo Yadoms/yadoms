@@ -43,15 +43,15 @@ namespace web
 
          void CSystem::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBinding)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBindingV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformationV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTimeV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"),
-                                        CSystem::getVirtualDevicesSupportedCapacities)
+                                        CSystem::getVirtualDevicesSupportedCapacitiesV1)
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getBinding(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getBindingV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -246,7 +246,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSystemInformation(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSystemInformationV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -274,7 +274,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getCurrentTime(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getCurrentTimeV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -294,7 +294,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getVirtualDevicesSupportedCapacities(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getVirtualDevicesSupportedCapacitiesV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -501,8 +501,8 @@ namespace web
                                                  getVirtualDevicesSupportedCapacitiesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/virtual-devices-supported-capacities/{capacity}",
                                                  getVirtualDevicesSupportedCapacitiesV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/serial-ports", getSerialPorts));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/usb-devices", getUsbDevices));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/serial-ports", getSerialPortsV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/usb-devices", getUsbDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/network-interfaces", getNetworkInterfacesV2));
 
             return m_endPoints;
@@ -657,7 +657,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getSerialPorts(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CSystem::getSerialPortsV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -705,7 +705,7 @@ namespace web
             return vidPidVector;
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getUsbDevices(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CSystem::getUsbDevicesV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {

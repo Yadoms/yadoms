@@ -240,7 +240,7 @@ function ConfigurationManager() {
 
         RestEngine.getJson("rest/configurations/external/webClient")
             .done(function (data) {
-                loadedClientConfiguration = JSON.parse(data);
+                loadedClientConfiguration = data;
 
                 // Merge loaded configuration with default one, in case of some new fields not in loaded configuration
                 Object.assign(webClientConfiguration, defaultWebClientConfiguration);

@@ -1,5 +1,7 @@
 ﻿#include "stdafx.h"
 #include "PluginGateway.h"
+
+#include <utility>
 #include "pluginSystem/DeviceCommand.h"
 #include "pluginSystem/ExtraQuery.h"
 #include "pluginSystem/ManuallyDeviceCreationRequest.h"
@@ -15,13 +17,9 @@ namespace communication
    CPluginGateway::CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider,
                                   boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
                                   boost::shared_ptr<pluginSystem::CManager> pluginManager)
-      : m_dataProvider(dataProvider),
-        m_pluginManager(pluginManager),
-        m_acquisitionHistorizer(acquisitionHistorizer)
-   {
-   }
-
-   CPluginGateway::~CPluginGateway()
+      : m_dataProvider(std::move(dataProvider)),
+        m_pluginManager(std::move(pluginManager)),
+        m_acquisitionHistorizer(std::move(acquisitionHistorizer))
    {
    }
 
@@ -29,7 +27,7 @@ namespace communication
                                                 const std::string& body)
    {
       auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
-      auto device = m_dataProvider->getDeviceRequester()->getDevice(keyword->DeviceId);
+      const auto device = m_dataProvider->getDeviceRequester()->getDevice(keyword->DeviceId);
 
       if (keyword->AccessMode() != shared::plugin::yPluginApi::EKeywordAccessMode::kGetSetValue)
       {

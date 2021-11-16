@@ -24,23 +24,23 @@ namespace web
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins", getAvailablePlugins));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances", getPluginsInstances));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}", getPluginsInstances));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins", getAvailablePluginsV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances", getPluginsInstancesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}", getPluginsInstancesV2));
 
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/create", createPluginsInstance));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "plugins-instances/{id}", updatePluginsInstance));
-            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "plugins-instances/{id}", deletePluginsInstance));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/log", getPluginsInstancesLog));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/binding/{query}", getPluginsInstancesBinding));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/start", startPluginsInstance));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/stop", stopPluginsInstance));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/extra-query/{query}", sendExtraQueryToPluginInstance));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/create", createPluginsInstanceV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "plugins-instances/{id}", updatePluginsInstanceV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "plugins-instances/{id}", deletePluginsInstanceV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/log", getPluginsInstancesLogV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/binding/{query}", getPluginsInstancesBindingV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/start", startPluginsInstanceV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/stop", stopPluginsInstanceV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/extra-query/{query}", sendExtraQueryToPluginInstanceV2));
 
             return m_endPoints;
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::getAvailablePlugins(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::getAvailablePluginsV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -98,7 +98,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstances(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -170,7 +170,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::createPluginsInstance(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::createPluginsInstanceV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -192,7 +192,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::updatePluginsInstance(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::updatePluginsInstanceV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -218,7 +218,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::deletePluginsInstance(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::deletePluginsInstanceV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -247,7 +247,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesLog(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesLogV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -268,7 +268,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesBinding(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesBindingV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -325,7 +325,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::startPluginsInstance(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::startPluginsInstanceV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -350,7 +350,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::sendExtraQueryToPluginInstance(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::sendExtraQueryToPluginInstanceV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -396,7 +396,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::stopPluginsInstance(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::stopPluginsInstanceV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
