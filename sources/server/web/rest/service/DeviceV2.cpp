@@ -21,11 +21,10 @@ namespace web
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}", getDevicesV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/configuration-schema", getDeviceConfigurationSchemaV2)); //TODO à tester
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/dynamic-configuration-schema", getDeviceDynamicConfigurationSchemaV2));
 
             //TODO RAF
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"), getDeviceConfigurationSchemaV1)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), getAllKeywordsV1)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), getKeywordV1)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), getDeviceKeywordsForCapacityV1)
@@ -148,7 +147,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CDevice::getDeviceConfigurationSchemaV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::getDeviceDynamicConfigurationSchemaV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -188,7 +187,7 @@ namespace web
                                                              "Fail to get device configuration schema (unknown error)");
                   }
                }
-            }            
+            }
 
             catch (const shared::exception::CEmptyResult& exception)
             {

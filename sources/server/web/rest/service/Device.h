@@ -190,7 +190,7 @@ namespace web
                const std::string& requestContent) const;
 
             boost::shared_ptr<IAnswer> getDevicesV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getDeviceConfigurationSchemaV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getDeviceDynamicConfigurationSchemaV2(boost::shared_ptr<IRequest> request) const;
 
             //-----------------------------------------
             ///\brief   Convert set of strings into set of ExtendedEnum

@@ -83,6 +83,10 @@
                   {
                     "vendorId": 1133,
                     "productId": 50475
+                  },
+                  {
+                    "vendorId": 1118,
+                    "productId": 64
                   }
                 ]
               }
