@@ -78,6 +78,32 @@ namespace database
          bool blacklisted) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          General search function for keywords
+      /// \param [in] keywordId           Search keyword matching this ID
+      /// \param [in] deviceId            Search keywords matching this device ID
+      /// \param [in] friendlyName        Search keywords matching this friendly name
+      /// \param [in] capacityName        Search keywords matching one of these capacity names
+      /// \param [in] dataType            Search keywords matching one of these data type
+      /// \param [in] units               Search keywords matching this unit
+      /// \param [in] accessMode          Search keywords matching this access mode
+      /// \param [in] measure             Search keywords matching this measure
+      /// \param [in] historyDepth        Search keywords matching this history depth
+      /// \param [in] blacklistedIncluded Include blacklisted devices
+      /// \return                         The keywords list
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CKeyword>> getKeywords(
+         const boost::optional<int>& keywordId,
+         const boost::optional<int>& deviceId,
+         const boost::optional<std::string>& friendlyName,
+         const std::set<std::string>& capacityName,
+         const std::set<shared::plugin::yPluginApi::EKeywordDataType>& dataType,
+         const std::set<std::string>& units,
+         const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& accessMode,
+         const boost::optional<shared::plugin::yPluginApi::EMeasureType>& measure,
+         const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
+         bool blacklistedIncluded = false) = 0;
+
+      //--------------------------------------------------------------
       /// \brief           List all keywords which match capacity for a device
       /// \param [in]      deviceId             the device which own the keyword
       /// \param [in]      capacityName         the capacity name

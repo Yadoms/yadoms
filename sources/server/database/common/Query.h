@@ -3,30 +3,31 @@
 #include <Poco/Types.h>
 #include <Poco/DateTime.h>
 #include <Poco/Timestamp.h>
-#include <shared/enumeration/IExtendedEnum.h> 
+#include <shared/enumeration/IExtendedEnum.h>
 #include <shared/Field.hpp>
 #include "database/DatabaseException.hpp"
 #include "DatabaseColumn.h"
 #include <shared/DataContainer.h>
+
 namespace database
 {
    namespace common
    {
-#define EMPTY_STR ""
+      static constexpr char EMPTY_STR[] = "";
 
-#define CQUERY_OP_EQUAL "="
-#define CQUERY_OP_LIKE " LIKE "
-#define CQUERY_OP_IN " IN "
-#define CQUERY_OP_SUP ">"
-#define CQUERY_OP_INF "<"
-#define CQUERY_OP_NOT_EQUAL "<>"
-#define CQUERY_OP_SUP_EQUAL ">="
-#define CQUERY_OP_INF_EQUAL "<="
+      static constexpr char CQUERY_OP_EQUAL[] = "=";
+      static constexpr char CQUERY_OP_LIKE[] = " LIKE ";
+      static constexpr char CQUERY_OP_IN[] = " IN ";
+      static constexpr char CQUERY_OP_SUP[] = ">";
+      static constexpr char CQUERY_OP_INF[] = "<";
+      static constexpr char CQUERY_OP_NOT_EQUAL[] = "<>";
+      static constexpr char CQUERY_OP_SUP_EQUAL[] = ">=";
+      static constexpr char CQUERY_OP_INF_EQUAL[] = "<=";
 
-#define CQUERY_OP_PLUS "+"
-#define CQUERY_OP_MINUS "-"
-#define CQUERY_OP_DIVIDE "/"
-#define CQUERY_OP_MUL "*"
+      static constexpr char CQUERY_OP_PLUS[] = "+";
+      static constexpr char CQUERY_OP_MINUS[] = "-";
+      static constexpr char CQUERY_OP_DIVIDE[] = "/";
+      static constexpr char CQUERY_OP_MUL[] = "*";
 
 
       /*
@@ -69,13 +70,7 @@ namespace database
          class CNotUsedTemplateField
          {
          public:
-            CNotUsedTemplateField()
-            {
-            }
-
-            virtual ~CNotUsedTemplateField()
-            {
-            }
+            ~CNotUsedTemplateField() = default;
          };
 
       protected:
@@ -88,7 +83,7 @@ namespace database
          //
          /// \brief           Copy constructor
          //
-         CQuery(const CQuery& toCopy);
+         CQuery(const CQuery& toCopy) = default;
 
          CQuery& operator=(const CQuery&) = delete;
 
@@ -124,8 +119,12 @@ namespace database
          /// \param  field10  a field to append to the select fields
          /// \return          A reference to itself to allow method chaining
          //
-         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
-         inline CQuery& Select(const T1& field1, const T2& field2 = T2(), const T3& field3 = T3(), const T4& field4 = T4(), const T5& field5 = T5(), const T6& field6 = T6(), const T7& field7 = T7(), const T8& field8 = T8(), const T9& field9 = T9(), const T10& field10 = T10());
+         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 =
+                   CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class
+                   T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+         inline CQuery& Select(const T1& field1, const T2& field2 = T2(), const T3& field3 = T3(), const T4& field4 = T4(), const T5& field5 = T5(),
+                               const T6& field6 = T6(), const T7& field7 = T7(), const T8& field8 = T8(), const T9& field9 = T9(),
+                               const T10& field10 = T10());
 
 
          //
@@ -148,25 +147,33 @@ namespace database
          /// \param  field10  a field to append to the select fields
          /// \return          A reference to itself to allow method chaining
          //
-         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
-         inline CQuery& SelectCount(const T1& field1, const T2& field2 = T2(), const T3& field3 = T3(), const T4& field4 = T4(), const T5& field5 = T5(), const T6& field6 = T6(), const T7& field7 = T7(), const T8& field8 = T8(), const T9& field9 = T9(), const T10& field10 = T10());
+         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 =
+                   CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class
+                   T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+         inline CQuery& SelectCount(const T1& field1, const T2& field2 = T2(), const T3& field3 = T3(), const T4& field4 = T4(),
+                                    const T5& field5 = T5(), const T6& field6 = T6(), const T7& field7 = T7(), const T8& field8 = T8(),
+                                    const T9& field9 = T9(), const T10& field10 = T10());
 
          //
          /// \brief           Append 'From table1 [,table2 [,table3.. ]]'
-         /// \param  field1   a table name to append to the from clause
-         /// \param  field2   a table name to append to the from clause
-         /// \param  field3   a table name to append to the from clause
-         /// \param  field4   a table name to append to the from clause
-         /// \param  field5   a table name to append to the from clause
-         /// \param  field6   a table name to append to the from clause
-         /// \param  field7   a table name to append to the from clause
-         /// \param  field8   a table name to append to the from clause
-         /// \param  field9   a table name to append to the from clause
-         /// \param  field10  a table name to append to the from clause
+         /// \param  table1   a table name to append to the from clause
+         /// \param  table2   a table name to append to the from clause
+         /// \param  table3   a table name to append to the from clause
+         /// \param  table4   a table name to append to the from clause
+         /// \param  table5   a table name to append to the from clause
+         /// \param  table6   a table name to append to the from clause
+         /// \param  table7   a table name to append to the from clause
+         /// \param  table8   a table name to append to the from clause
+         /// \param  table9   a table name to append to the from clause
+         /// \param  table10  a table name to append to the from clause
          /// \return          A reference to itself to allow method chaining
          //   
-         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
-         inline CQuery& From(const T1& table1, const T2& table2 = T2(), const T3& table3 = T3(), const T4& table4 = T4(), const T5& table5 = T5(), const T6& table6 = T6(), const T7& table7 = T7(), const T8& table8 = T8(), const T9& table9 = T9(), const T10& table10 = T10());
+         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 =
+                   CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class
+                   T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+         inline CQuery& From(const T1& table1, const T2& table2 = T2(), const T3& table3 = T3(), const T4& table4 = T4(), const T5& table5 = T5(),
+                             const T6& table6 = T6(), const T7& table7 = T7(), const T8& table8 = T8(), const T9& table9 = T9(),
+                             const T10& table10 = T10());
 
          //
          /// \brief           Append 'From subquery'
@@ -192,11 +199,11 @@ namespace database
 
          //
          /// \brief           Append 'From (subquery)'
-         /// \param  subquery   the subquery
-         /// \param subqueryName
+         /// \param subquery     the subquery
+         /// \param subqueryName The subquery content
          /// \return          A reference to itself to allow method chaining
          //   
-         CQuery& FromParenthesis(const CQuery& subquery, const std::string & subqueryName);
+         CQuery& FromParenthesis(const CQuery& subquery, const std::string& subqueryName);
 
          //
          /// \brief           Append the where clause
@@ -210,7 +217,7 @@ namespace database
          ///                  Where("id", "=", "12")
          /// \param  field    the field name
          /// \param  op       the operator
-         /// \param  field    the value
+         /// \param  value    the value
          /// \return          A reference to itself to allow method chaining
          //     
          template <class T1, class T2>
@@ -326,7 +333,9 @@ namespace database
          /// \param  way10    the way of field10 (values can be ASC or DESC, empty do not append the way)   
          /// \return          A reference to itself to allow method chaining
          //     
-         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 =
+                   CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class
+                   T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
          inline CQuery& OrderBy(const T1& value1, const E_OrderWay way1 = kAsc,
                                 const T2& value2 = T2(), const E_OrderWay way2 = kAsc,
                                 const T3& value3 = T3(), const E_OrderWay way3 = kAsc,
@@ -353,7 +362,9 @@ namespace database
          /// \param  field10  a field name to append to the group by clause
          /// \return          A reference to itself to allow method chaining
          //      
-         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 =
+                   CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class
+                   T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
          inline CQuery& GroupBy(const T1& field1,
                                 const T2& field2 = T2(),
                                 const T3& field3 = T3(),
@@ -380,7 +391,9 @@ namespace database
          /// \param  field10  a field name to append to the insert into clause
          /// \return          A reference to itself to allow method chaining
          //         
-         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 =
+                   CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class
+                   T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
          inline CQuery& InsertInto(const database::common::CDatabaseTable& table,
                                    const T1& field1,
                                    const T2& field2 = T2(),
@@ -408,7 +421,9 @@ namespace database
          /// \param  field10  a field name to append to the insert into clause
          /// \return          A reference to itself to allow method chaining
          //         
-         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 =
+                   CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class
+                   T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
          inline CQuery& InsertOrReplaceInto(const database::common::CDatabaseTable& table,
                                             const T1& field1,
                                             const T2& field2 = T2(),
@@ -435,7 +450,9 @@ namespace database
          /// \param  value10  a value of the field
          /// \return          A reference to itself to allow method chaining
          //      
-         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
+         template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 =
+                   CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class
+                   T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
          inline CQuery& Values(const T1& value1,
                                const T2& value2 = T2(),
                                const T3& value3 = T3(),
@@ -598,7 +615,8 @@ namespace database
          /// \param              column2Name        the column name
          /// \return             A reference to itself to allow method chaining
          //   
-         CQuery& On(const std::string& tableIdentifier, const std::string& columnName, const std::string& table2Identifier, const std::string& column2Name);
+         CQuery& On(const std::string& tableIdentifier, const std::string& columnName, const std::string& table2Identifier,
+                    const std::string& column2Name);
 
          //
          /// \brief              append "ON columnName = column2Name"
@@ -667,7 +685,6 @@ namespace database
          static CQuery EmptyQuery;
 
       public:
-
          //================================================================================================
          //====== Formatters
          //================================================================================================
@@ -889,8 +906,12 @@ namespace database
          ///\param [in]	field       The field or query
          ///\return The query function
          //--------------------------------------------------------------
-         template <class T1, class T2, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
-         const CFunction concatenate(const T1& field1, const T2& field2, const T3& field3 = T3(), const T4& field4 = T4(), const T5& field5 = T5(), const T6& field6 = T6(), const T7& field7 = T7(), const T8& field8 = T8(), const T9& field9 = T9(), const T10& field10 = T10());
+         template <class T1, class T2, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 = CNotUsedTemplateField, class T6
+                   = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class T9 = CNotUsedTemplateField,
+                   class T10 = CNotUsedTemplateField>
+         const CFunction concatenate(const T1& field1, const T2& field2, const T3& field3 = T3(), const T4& field4 = T4(), const T5& field5 = T5(),
+                                     const T6& field6 = T6(), const T7& field7 = T7(), const T8& field8 = T8(), const T9& field9 = T9(),
+                                     const T10& field10 = T10());
 
       private:
          //
@@ -980,5 +1001,3 @@ namespace database
 #include "QuerySpecializations.h"
    } //namespace common
 } //namespace database 
-
-

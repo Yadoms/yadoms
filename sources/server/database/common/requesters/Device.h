@@ -57,15 +57,15 @@ namespace database
             std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithKeywordHistoryDepth(
                const shared::plugin::yPluginApi::EHistoryDepth& historyDepth) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(
-               boost::optional<int> deviceId,
-               boost::optional<int> pluginInstanceId,
-               boost::optional<std::string> friendlyName,
-               boost::optional<std::string> type,
-               boost::optional<std::string> model,
+               const boost::optional<int>& deviceId,
+               const boost::optional<int>& pluginInstanceId,
+               const boost::optional<std::string>& friendlyName,
+               const boost::optional<std::string>& type,
+               const boost::optional<std::string>& model,
                const std::set<std::string>& containsKeywordWithCapacityName,
-               boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode> containsKeywordWithCapacityAccessMode,
-               const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithCapacityType,
-               boost::optional<shared::plugin::yPluginApi::EHistoryDepth> containsKeywordWithHistoryDepth,
+               const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithCapacityAccessMode,
+               const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
+               const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
                bool blacklistedIncluded = false) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getCompatibleForMergeDevice(int refDevice) const override;
             void updateDeviceFriendlyName(int deviceId,

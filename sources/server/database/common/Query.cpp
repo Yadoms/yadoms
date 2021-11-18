@@ -15,14 +15,6 @@ namespace database
       {
       }
 
-      CQuery::CQuery(const CQuery& toCopy)
-         : m_insertOrUpdateName(toCopy.m_insertOrUpdateName),
-           m_currentQuery(toCopy.m_currentQuery),
-           m_queryType(toCopy.m_queryType),
-           m_fromWithClauseNeeded(toCopy.m_fromWithClauseNeeded)
-      {
-      }
-
       CQuery& CQuery::Clear()
       {
          m_queryType = kNotYetDefined;

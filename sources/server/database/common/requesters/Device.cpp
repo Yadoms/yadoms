@@ -210,95 +210,63 @@ namespace database
             return adapter.getResults();
          }
 
-         class WhereAndOn final //TODO déplacer
-         {
-         public:
-            explicit WhereAndOn(CQuery& query)
-               : m_query(query),
-                 m_whereExists(false)
-            {
-            }
-
-            ~WhereAndOn() = default;
-
-            template <class T1, class T2>
-            void appendCondition(const T1& field, const std::string& op, const T2& value)
-            {
-               if (m_whereExists)
-               {
-                  m_query.And(field, op, value);
-                  return;
-               }
-
-               m_whereExists = true;
-               m_query.Where(field, op, value);
-            }
-
-            CQuery& query() const
-            {
-               return m_query;
-            }
-
-         private:
-            CQuery& m_query;
-            bool m_whereExists;
-         };
-
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices(
-            boost::optional<int> deviceId,
-            boost::optional<int> pluginInstanceId,
-            boost::optional<std::string> friendlyName,
-            boost::optional<std::string> type,
-            boost::optional<std::string> model,
+            const boost::optional<int>& deviceId,
+            const boost::optional<int>& pluginInstanceId,
+            const boost::optional<std::string>& friendlyName,
+            const boost::optional<std::string>& type,
+            const boost::optional<std::string>& model,
             const std::set<std::string>& containsKeywordWithCapacityName,
-            boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode> containsKeywordWithCapacityAccessMode,
-            const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithCapacityType,
-            boost::optional<shared::plugin::yPluginApi::EHistoryDepth> containsKeywordWithHistoryDepth,
+            const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithCapacityAccessMode,
+            const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
+            const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
             bool blacklistedIncluded) const
          {
-            const auto qSelect = m_databaseRequester->newQuery();
+            const auto query = m_databaseRequester->newQuery();
 
-            WhereAndOn whereAndOnQuery(qSelect->Select().
-                                                From(CDeviceTable::getTableName()));
+            query->Select().
+                   From(CDeviceTable::getTableName()).
+                   WhereTrue();
 
             if (deviceId)
-               whereAndOnQuery.appendCondition(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, *deviceId);
+               query->And(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, *deviceId);
             if (pluginInstanceId)
-               whereAndOnQuery.appendCondition(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, *pluginInstanceId);
+               query->And(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, *pluginInstanceId);
             if (friendlyName)
-               whereAndOnQuery.appendCondition(CDeviceTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, *friendlyName);
+               query->And(CDeviceTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, *friendlyName);
             if (type)
-               whereAndOnQuery.appendCondition(CDeviceTable::getTypeColumnName(), CQUERY_OP_EQUAL, *type);
+               query->And(CDeviceTable::getTypeColumnName(), CQUERY_OP_EQUAL, *type);
             if (model)
-               whereAndOnQuery.appendCondition(CDeviceTable::getModelColumnName(), CQUERY_OP_EQUAL, *model);
+               query->And(CDeviceTable::getModelColumnName(), CQUERY_OP_EQUAL, *model);
             if (blacklistedIncluded)
-               whereAndOnQuery.appendCondition(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklistedIncluded ? 1 : 0);
+               query->And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklistedIncluded ? 1 : 0);
 
             if (!containsKeywordWithCapacityName.empty()
                || containsKeywordWithCapacityAccessMode
-               || !containsKeywordWithCapacityType.empty()
+               || !containsKeywordWithDataType.empty()
                || containsKeywordWithHistoryDepth)
             {
                const auto subQuery = m_databaseRequester->newQuery();
 
-               WhereAndOn whereAndOnSubQuery(subQuery->Select(CKeywordTable::getDeviceIdColumnName()).
-                                                       From(CKeywordTable::getTableName()));
+               subQuery->Select(CKeywordTable::getDeviceIdColumnName()).
+                         From(CKeywordTable::getTableName()).
+                         WhereTrue();
 
                if (!containsKeywordWithCapacityName.empty())
-                  whereAndOnSubQuery.appendCondition(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_IN, containsKeywordWithCapacityName);
+                  subQuery->And(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_IN, containsKeywordWithCapacityName);
                if (containsKeywordWithCapacityAccessMode)
-                  whereAndOnSubQuery.appendCondition(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL,
-                                                     *containsKeywordWithCapacityAccessMode);
-               if (!containsKeywordWithCapacityType.empty())
-                  whereAndOnSubQuery.appendCondition(CKeywordTable::getTypeColumnName(), CQUERY_OP_IN, containsKeywordWithCapacityType);
+                  subQuery->And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL,
+                                *containsKeywordWithCapacityAccessMode);
+               if (!containsKeywordWithDataType.empty())
+                  subQuery->And(CKeywordTable::getTypeColumnName(), CQUERY_OP_IN, containsKeywordWithDataType);
                if (containsKeywordWithHistoryDepth)
-                  whereAndOnSubQuery.appendCondition(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_EQUAL, *containsKeywordWithHistoryDepth);
+                  subQuery->And(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_EQUAL, *containsKeywordWithHistoryDepth);
 
-               whereAndOnQuery.appendCondition(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, *subQuery);
+               query->And(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, *subQuery);
             }
 
             adapters::CDeviceAdapter adapter;
-            m_databaseRequester->queryEntities(&adapter, *qSelect);
+            m_databaseRequester->queryEntities(&adapter, *query);
 
             return adapter.getResults();
          }

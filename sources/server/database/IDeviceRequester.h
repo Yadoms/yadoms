@@ -105,22 +105,22 @@ namespace database
       /// \param [in] type                                   Search devices matching this type
       /// \param [in] model                                  Search devices matching this model
       /// \param [in] containsKeywordWithCapacityName        Search devices matching one of these capacity names
-      /// \param [in] containsKeywordWithCapacityAccessMode  Search devices matching this capacity access mode
-      /// \param [in] containsKeywordWithCapacityType        Search devices matching one of these capacity type
-      /// \param [in] containsKeywordWithHistoryDepth        The history depth
+      /// \param [in] containsKeywordWithCapacityAccessMode  Search devices matching this access mode
+      /// \param [in] containsKeywordWithDataType            Search devices matching one of these capacity type
+      /// \param [in] containsKeywordWithHistoryDepth        Search devices matching this history depth
       /// \param [in] blacklistedIncluded                    Include blacklisted devices
-      /// \return                                            The device list
+      /// \return                                            The devices list
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(
-         boost::optional<int> deviceId,
-         boost::optional<int> pluginInstanceId,
-         boost::optional<std::string> friendlyName,
-         boost::optional<std::string> type,
-         boost::optional<std::string> model,
+         const boost::optional<int>& deviceId,
+         const boost::optional<int>& pluginInstanceId,
+         const boost::optional<std::string>& friendlyName,
+         const boost::optional<std::string>& type,
+         const boost::optional<std::string>& model,
          const std::set<std::string>& containsKeywordWithCapacityName,
-         boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode> containsKeywordWithCapacityAccessMode,
-         const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithCapacityType,
-         boost::optional<shared::plugin::yPluginApi::EHistoryDepth> containsKeywordWithHistoryDepth,
+         const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithCapacityAccessMode,
+         const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
+         const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
          bool blacklistedIncluded = false) const = 0;
 
       //--------------------------------------------------------------

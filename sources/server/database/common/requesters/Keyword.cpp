@@ -2,6 +2,7 @@
 #include "Keyword.h"
 #include "database/common/adapters/DatabaseAdapters.h"
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
 #include "database/common/adapters/MultipleValueAdapter.hpp"
@@ -13,13 +14,13 @@ namespace database
       namespace requesters
       {
          CKeyword::CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester)
-            : m_databaseRequester(databaseRequester)
+            : m_databaseRequester(std::move(databaseRequester))
          {
          }
 
          void CKeyword::addKeyword(const entities::CKeyword& newKeyword)
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             qSelect->SelectCount().
                      From(CKeywordTable::getTableName()).
@@ -29,7 +30,7 @@ namespace database
             if (m_databaseRequester->queryCount(*qSelect) == 0)
             {
                //create the database entry with needed fields
-               auto qInsert = m_databaseRequester->newQuery();
+               const auto qInsert = m_databaseRequester->newQuery();
                qInsert->InsertInto(CKeywordTable::getTableName(),
                                    CKeywordTable::getDeviceIdColumnName(),
                                    CKeywordTable::getCapacityNameColumnName(),
@@ -52,7 +53,7 @@ namespace database
                if (newKeyword.FriendlyName.isDefined())
                   friendlyName = newKeyword.FriendlyName();
 
-               auto update = m_databaseRequester->newQuery();
+               const auto update = m_databaseRequester->newQuery();
                update->Update(CKeywordTable::getTableName()).Set(CKeywordTable::getFriendlyNameColumnName(), friendlyName).
                        Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                        And(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, newKeyword.Name());
@@ -63,7 +64,7 @@ namespace database
 
                if (newKeyword.Details.isDefined())
                {
-                  auto updateDetails = m_databaseRequester->newQuery();
+                  const auto updateDetails = m_databaseRequester->newQuery();
                   updateDetails->Update(CKeywordTable::getTableName()).Set(CKeywordTable::getDetailsColumnName(), newKeyword.Details()).
                                  Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                                  And(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, newKeyword.Name());
@@ -74,7 +75,7 @@ namespace database
 
                if (newKeyword.Units.isDefined())
                {
-                  auto updateUnits = m_databaseRequester->newQuery();
+                  const auto updateUnits = m_databaseRequester->newQuery();
                   updateUnits->Update(CKeywordTable::getTableName()).Set(CKeywordTable::getUnitsColumnName(), newKeyword.Units()).
                                Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                                And(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, newKeyword.Name());
@@ -85,7 +86,7 @@ namespace database
 
                if (newKeyword.TypeInfo.isDefined())
                {
-                  auto updateValues = m_databaseRequester->newQuery();
+                  const auto updateValues = m_databaseRequester->newQuery();
                   updateValues->Update(CKeywordTable::getTableName()).Set(CKeywordTable::getTypeInfoColumnName(), newKeyword.TypeInfo()).
                                 Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                                 And(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, newKeyword.Name());
@@ -96,7 +97,7 @@ namespace database
 
                if (newKeyword.HistoryDepth.isDefined())
                {
-                  auto updateValues = m_databaseRequester->newQuery();
+                  const auto updateValues = m_databaseRequester->newQuery();
                   updateValues->Update(CKeywordTable::getTableName()).Set(CKeywordTable::getHistoryDepthColumnName(), newKeyword.HistoryDepth()).
                                 Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, newKeyword.DeviceId()).
                                 And(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, newKeyword.Name());
@@ -116,7 +117,7 @@ namespace database
          {
             adapters::CKeywordAdapter adapter;
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             qSelect->Select().
                      From(CKeywordTable::getTableName()).
@@ -135,7 +136,7 @@ namespace database
          {
             adapters::CKeywordAdapter adapter;
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CKeywordTable::getTableName()).
                      Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
@@ -150,7 +151,7 @@ namespace database
          std::vector<boost::shared_ptr<entities::CKeyword>> CKeyword::getKeywordIdFromFriendlyName(int deviceId,
                                                                                                    const std::string& friendlyName) const
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CKeywordTable::getTableName()).
                      Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId).
@@ -164,7 +165,7 @@ namespace database
          std::vector<boost::shared_ptr<entities::CKeyword>> CKeyword::getKeywords(int deviceId) const
          {
             adapters::CKeywordAdapter adapter;
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CKeywordTable::getTableName()).
                      Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId);
@@ -175,7 +176,7 @@ namespace database
          std::vector<boost::shared_ptr<entities::CKeyword>> CKeyword::getKeywordsMatchingCapacity(const std::string& capacity) const
          {
             adapters::CKeywordAdapter adapter;
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CKeywordTable::getTableName()).
                      Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacity);
@@ -190,46 +191,95 @@ namespace database
             const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth,
             bool blacklisted) const
          {
-            auto subQuery = m_databaseRequester->newQuery();
-            subQuery->Select().
-                      From(CKeywordTable::getTableName()).
-                      WhereTrue();
+            const auto query = m_databaseRequester->newQuery();
+            query->Select().
+                   From(CKeywordTable::getTableName()).
+                   WhereTrue();
 
             if (!expectedKeywordTypes.empty())
-               subQuery->And(CKeywordTable::getTypeColumnName(), CQUERY_OP_IN, expectedKeywordTypes);
+               query->And(CKeywordTable::getTypeColumnName(), CQUERY_OP_IN, expectedKeywordTypes);
 
             if (!expectedCapacities.empty())
-               subQuery->And(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_IN, expectedCapacities);
+               query->And(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_IN, expectedCapacities);
 
             if (!expectedKeywordAccesses.empty())
-               subQuery->And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_IN, expectedKeywordAccesses);
+               query->And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_IN, expectedKeywordAccesses);
 
             if (!expectedKeywordHistoryDepth.empty())
-               subQuery->And(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_IN, expectedKeywordHistoryDepth);
+               query->And(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_IN, expectedKeywordHistoryDepth);
 
-            subQuery->And(CKeywordTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklisted);
+            query->And(CKeywordTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklisted);
 
             adapters::CKeywordAdapter keywordsAdapter;
-            m_databaseRequester->queryEntities(&keywordsAdapter, *subQuery);
+            m_databaseRequester->queryEntities(&keywordsAdapter, *query);
             return keywordsAdapter.getResults();
+         }
+
+         std::vector<boost::shared_ptr<entities::CKeyword>> CKeyword::getKeywords(
+            const boost::optional<int>& keywordId,
+            const boost::optional<int>& deviceId,
+            const boost::optional<std::string>& friendlyName,
+            const std::set<std::string>& capacityName,
+            const std::set<shared::plugin::yPluginApi::EKeywordDataType>& dataType,
+            const std::set<std::string>& units,
+            const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& accessMode,
+            const boost::optional<shared::plugin::yPluginApi::EMeasureType>& measure,
+            const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
+            bool blacklistedIncluded)
+         {
+            const auto query = m_databaseRequester->newQuery();
+
+            query->Select().
+                   From(CKeywordTable::getTableName()).
+                   WhereTrue();
+
+            std::set<std::string> cleanedUnits;
+            for (const auto& unit : units)
+               cleanedUnits.emplace(unit.rfind("data.units.", 0) == 0 ? unit : "data.units." + unit);
+
+            if (keywordId)
+               query->And(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, *keywordId);
+            if (deviceId)
+               query->And(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, *deviceId);
+            if (friendlyName)
+               query->And(CKeywordTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, *friendlyName);
+            if (!capacityName.empty())
+               query->And(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_IN, capacityName);
+            if (!dataType.empty())
+               query->And(CKeywordTable::getTypeColumnName(), CQUERY_OP_IN, dataType);
+            if (!cleanedUnits.empty())
+               query->And(CKeywordTable::getUnitsColumnName(), CQUERY_OP_IN, cleanedUnits);
+            if (accessMode)
+               query->And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, *accessMode);
+            if (measure)
+               query->And(CKeywordTable::getMeasureColumnName(), CQUERY_OP_EQUAL, *measure);
+            if (historyDepth)
+               query->And(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_EQUAL, *historyDepth);
+            if (blacklistedIncluded)
+               query->And(CKeywordTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklistedIncluded ? 1 : 0);
+
+            adapters::CKeywordAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, *query);
+
+            return adapter.getResults();
          }
 
          std::vector<boost::shared_ptr<entities::CKeyword>> CKeyword::getAllKeywords() const
          {
             adapters::CKeywordAdapter adapter;
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().From(CKeywordTable::getTableName());
             m_databaseRequester->queryEntities(&adapter, *qSelect);
             return adapter.getResults();
          }
 
          std::vector<boost::shared_ptr<entities::CKeyword>> CKeyword::getDeviceKeywordsWithCapacity(int deviceId,
-                                                                                                    const std::string& capacityName,
-                                                                                                    const shared::plugin::yPluginApi::
-                                                                                                    EKeywordAccessMode& accessMode) const
+            const std::string& capacityName,
+            const shared::plugin::yPluginApi::
+            EKeywordAccessMode& accessMode) const
          {
             adapters::CKeywordAdapter adapter;
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CKeywordTable::getTableName()).
                      Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId).
@@ -243,7 +293,7 @@ namespace database
          boost::shared_ptr<entities::CAcquisition> CKeyword::getKeywordLastAcquisition(const int keywordId,
                                                                                        bool throwIfNotExists)
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CKeywordTable::getLastAcquisitionValueColumnName(), CKeywordTable::getLastAcquisitionDateColumnName()).
                      From(CKeywordTable::getTableName()).
                      Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
@@ -253,7 +303,7 @@ namespace database
 
             if (!adapter.getResults().empty())
             {
-               auto result = adapter.getResults()[0];
+               const auto result = adapter.getResults()[0];
 
                // Map result to acquisition entity
                auto acquisition = boost::make_shared<entities::CAcquisition>();
@@ -273,7 +323,7 @@ namespace database
          std::string CKeyword::getKeywordLastData(int keywordId,
                                                   bool throwIfNotExists)
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CKeywordTable::getLastAcquisitionValueColumnName()).
                      From(CKeywordTable::getTableName()).
                      Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
@@ -293,7 +343,7 @@ namespace database
 
          std::vector<boost::tuple<int, std::string>> CKeyword::getKeywordListLastData(const std::vector<int>& keywordIds)
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CKeywordTable::getIdColumnName(), CKeywordTable::getLastAcquisitionValueColumnName()).
                      From(CKeywordTable::getTableName()).
                      Where(CKeywordTable::getIdColumnName(), CQUERY_OP_IN, keywordIds);
@@ -312,7 +362,7 @@ namespace database
                throw shared::exception::CEmptyResult("Can not find keyword");
 
             //insert in db
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CKeywordTable::getTableName()).
                      Set(CKeywordTable::getBlacklistColumnName(), blacklist).
                      Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
@@ -325,7 +375,7 @@ namespace database
          void CKeyword::removeKeyword(const int keywordId)
          {
             //delete keyword
-            auto qDelete = m_databaseRequester->newQuery();
+            const auto qDelete = m_databaseRequester->newQuery();
             qDelete->DeleteFrom(CKeywordTable::getTableName()).
                      Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
             if (m_databaseRequester->queryStatement(*qDelete) <= 0)
@@ -344,7 +394,7 @@ namespace database
                throw shared::exception::CEmptyResult("Can not find keyword");
 
             //insert in db
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CKeywordTable::getTableName()).
                      Set(CKeywordTable::getFriendlyNameColumnName(), newFriendlyName).
                      Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);

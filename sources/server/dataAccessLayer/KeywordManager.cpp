@@ -52,7 +52,7 @@ namespace dataAccessLayer
    }
 
    std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getKeywordIdFromFriendlyName(int deviceId,
-                                                                                                              const std::string& friendlyName) const
+      const std::string& friendlyName) const
    {
       return m_keywordRequester->getKeywordIdFromFriendlyName(deviceId, friendlyName);
    }
@@ -93,6 +93,30 @@ namespace dataAccessLayer
                                                              expectedKeywordAccesses,
                                                              expectedKeywordHistoryDepth,
                                                              blacklisted);
+   }
+
+   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getKeywords(
+      const boost::optional<int>& keywordId,
+      const boost::optional<int>& deviceId,
+      const boost::optional<std::string>& friendlyName,
+      const std::set<std::string>& capacityName,
+      const std::set<shared::plugin::yPluginApi::EKeywordDataType>& dataType,
+      const std::set<std::string>& units,
+      const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& accessMode,
+      const boost::optional<shared::plugin::yPluginApi::EMeasureType>& measure,
+      const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
+      bool blacklistedIncluded)
+   {
+      return m_keywordRequester->getKeywords(keywordId,
+                                             deviceId,
+                                             friendlyName,
+                                             capacityName,
+                                             dataType,
+                                             units,
+                                             accessMode,
+                                             measure,
+                                             historyDepth,
+                                             blacklistedIncluded);
    }
 
    boost::shared_ptr<database::entities::CAcquisition> CKeywordManager::getKeywordLastAcquisition(const int keywordId,
