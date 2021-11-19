@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <boost/test/unit_test.hpp>
 #include <random>
+#include <utility>
 
 
 // Includes needed to compile tested classes
@@ -106,7 +107,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          "\"IntParameter\": \"42\""
          "}");
 
-      shared::CDataContainer cfg(oldJsonFormatStyle);
+      const shared::CDataContainer cfg(oldJsonFormatStyle);
 
       BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter"), true);
       BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter2"), false);
@@ -143,7 +144,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       ve.push_back(kEnumValue5);
       ve.push_back(kEnumValue7);
       test.set("vectorenum", ve);
-      std::vector<EEnumType> ve2 = test.get<std::vector<EEnumType>>("vectorenum");
+      auto ve2 = test.get<std::vector<EEnumType>>("vectorenum");
       BOOST_CHECK_EQUAL_COLLECTIONS(ve.begin(), ve.end(), ve2.begin(), ve2.end());
 
       //check vector of shared_ptr<int>
@@ -152,14 +153,14 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          vish.push_back(boost::make_shared<int>(i));
       test.set("vectorintsh", vish);
       auto vish2 = test.get<std::vector<boost::shared_ptr<int>>>("vectorintsh");
-      auto vish2bis = test.get<std::vector<int>>("vectorintsh");
+      auto vish2Bis = test.get<std::vector<int>>("vectorintsh");
       BOOST_CHECK_EQUAL(vish.size(), vish2.size());
       for (unsigned int i = 0; i < vish.size(); ++i)
          BOOST_CHECK_EQUAL(*(vish[i].get()) == *(vish2[i].get()), true);
 
-      BOOST_CHECK_EQUAL(vish.size(), vish2bis.size());
+      BOOST_CHECK_EQUAL(vish.size(), vish2Bis.size());
       for (unsigned int i = 0; i < vish.size(); ++i)
-         BOOST_CHECK_EQUAL(*(vish[i].get()) == vish2bis[i], true);
+         BOOST_CHECK_EQUAL(*(vish[i].get()) == vish2Bis[i], true);
 
       //check vector of shared_ptr<double>
       std::vector<boost::shared_ptr<double>> vdsh;
@@ -167,14 +168,14 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          vdsh.push_back(boost::make_shared<double>(i * 42.0));
       test.set("vectordoublesh", vdsh);
       auto vdsh2 = test.get<std::vector<boost::shared_ptr<double>>>("vectordoublesh");
-      auto vdsh2bis = test.get<std::vector<double>>("vectordoublesh");
+      auto vdsh2Bis = test.get<std::vector<double>>("vectordoublesh");
       BOOST_CHECK_EQUAL(vdsh.size(), vdsh2.size());
       for (unsigned int i = 0; i < vdsh.size(); ++i)
          BOOST_CHECK_EQUAL(*(vdsh[i].get()) == *(vdsh2[i].get()), true);
 
-      BOOST_CHECK_EQUAL(vdsh.size(), vdsh2bis.size());
+      BOOST_CHECK_EQUAL(vdsh.size(), vdsh2Bis.size());
       for (unsigned int i = 0; i < vdsh.size(); ++i)
-         BOOST_CHECK_EQUAL(*(vdsh[i].get()) == vdsh2bis[i], true);
+         BOOST_CHECK_EQUAL(*(vdsh[i].get()) == vdsh2Bis[i], true);
 
       //check vector of std::string
       std::vector<std::string> vstr;
@@ -189,15 +190,15 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
       //check vector of CDataContainer
 
-      boost::shared_ptr<shared::CDataContainer> cond1 = boost::make_shared<shared::CDataContainer>();
+      auto cond1 = boost::make_shared<shared::CDataContainer>();
       cond1->set("is.keyword", 8);
       cond1->set("is.expectedValue", "32");
 
-      boost::shared_ptr<shared::CDataContainer> cond2 = boost::make_shared<shared::CDataContainer>();
+      auto cond2 = boost::make_shared<shared::CDataContainer>();
       cond2->set("is.keyword", 9);
       cond2->set("is.expectedValue", 34);
 
-      boost::shared_ptr<shared::CDataContainer> cond3 = boost::make_shared<shared::CDataContainer>();
+      auto cond3 = boost::make_shared<shared::CDataContainer>();
       cond3->set("is.keyword", 10);
       cond3->set("is.expectedValue", ve);
 
@@ -277,7 +278,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       return error;
    }
 
-   boost::shared_ptr<shared::serialization::IDataSerializable> maketest(const unsigned int testcount)
+   boost::shared_ptr<shared::serialization::IDataSerializable> Maketest(const unsigned int testcount)
    {
       shared::CDataContainer result;
       std::vector<std::string> pluginCollection;
@@ -306,18 +307,18 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    }
 
 
-   std::string str1("str1");
-   std::string str2("str2");
+   std::string Str1("str1");
+   std::string Str2("str2");
 
-   std::string& getString1() { return str1; }
-   const std::string& getString2() { return str2; }
+   std::string& GetString1() { return Str1; }
+   const std::string& GetString2() { return Str2; }
 
-   shared::CDataContainer globalContainer;
-   shared::CDataContainer& getGlobalContainer() { return globalContainer; }
+   shared::CDataContainer GlobalContainer;
+   shared::CDataContainer& GetGlobalContainer() { return GlobalContainer; }
 
-   boost::shared_ptr<shared::CDataContainer> getDeviceInfo()
+   boost::shared_ptr<shared::CDataContainer> GetDeviceInfo()
    {
-      boost::shared_ptr<shared::CDataContainer> d = boost::make_shared<shared::CDataContainer>();
+      auto d = boost::make_shared<shared::CDataContainer>();
 
       {
          std::string id = "id";
@@ -360,8 +361,8 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          details.set("IsSecurity", true);
          details.set("IsZWave+", false);
 
-         details.set("str1", getString1());
-         details.set("str2", getString2());
+         details.set("str1", GetString1());
+         details.set("str2", GetString2());
 
          d->set("details", details);
       }
@@ -380,8 +381,8 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          std::string string4("str4");
          std::string string5("str5");
 
-         a.set("string1", getString1());
-         a.set("string2", getString2());
+         a.set("string1", GetString1());
+         a.set("string2", GetString2());
          a.set("string3", "str3");
          a.set("string4", string4);
          a.set("string5", string5.c_str());
@@ -417,7 +418,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
 
       {
-         boost::shared_ptr<shared::CDataContainer> info = getDeviceInfo();
+         boost::shared_ptr<shared::CDataContainer> info = GetDeviceInfo();
 
          BOOST_CHECK_EQUAL(info->get<std::string>("details.str1"), "str1");
          BOOST_CHECK_EQUAL(info->get<std::string>("details.str2"), "str2");
@@ -427,13 +428,13 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          plop.mergeFrom(info);
          a.mergeFrom(plop);
 
-         getGlobalContainer().mergeFrom(plop);
+         GetGlobalContainer().mergeFrom(plop);
       }
 
 
       //check after global objects modifications
-      str1 = "anotherStr1";
-      str2 = "anotherStr2";
+      Str1 = "anotherStr1";
+      Str2 = "anotherStr2";
 
       BOOST_CHECK_EQUAL(a.get<std::string>("string1"), "str1");
       BOOST_CHECK_EQUAL(a.get<std::string>("string2"), "str2");
@@ -450,8 +451,8 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(a.get<std::string>("details.str1"), "str1");
       BOOST_CHECK_EQUAL(a.get<std::string>("details.str2"), "str2");
 
-      BOOST_CHECK_EQUAL(getGlobalContainer().get<std::string>("details.str1"), "str1");
-      BOOST_CHECK_EQUAL(getGlobalContainer().get<std::string>("details.str2"), "str2");
+      BOOST_CHECK_EQUAL(GetGlobalContainer().get<std::string>("details.str1"), "str1");
+      BOOST_CHECK_EQUAL(GetGlobalContainer().get<std::string>("details.str2"), "str2");
    }
 
    BOOST_AUTO_TEST_CASE(RapidJsonInitAndCopy)
@@ -461,33 +462,33 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       */
       typedef std::pair<boost::shared_ptr<shared::CDataContainer>, int> DeviceInfoAndState;
       typedef std::map<std::string, DeviceInfoAndState> DeviceCache;
-      DeviceCache m_deviceCache;
+      DeviceCache deviceCache;
 
       {
-         boost::shared_ptr<shared::CDataContainer> info = getDeviceInfo();
-         std::string l("test3");
+         boost::shared_ptr<shared::CDataContainer> info = GetDeviceInfo();
+         const std::string l("test3");
 
          //directly access with []
-         DeviceInfoAndState& c = m_deviceCache["mydevice2"];
+         DeviceInfoAndState& c = deviceCache["mydevice2"];
          c.first = boost::make_shared<shared::CDataContainer>();
          c.first->mergeFrom(info);
 
-         m_deviceCache["mydevice2"].first->set("test1", "test2");
-         m_deviceCache["mydevice2"].first->set("test2", l);
+         deviceCache["mydevice2"].first->set("test1", "test2");
+         deviceCache["mydevice2"].first->set("test2", l);
 
          //insert pair instead of []
-         boost::shared_ptr<shared::CDataContainer> a = boost::make_shared<shared::CDataContainer>("{}");
-         m_deviceCache.insert(std::make_pair("mydevice", std::make_pair(a, 42)));
+         auto a = boost::make_shared<shared::CDataContainer>("{}");
+         deviceCache.insert(std::make_pair("mydevice", std::make_pair(a, 42)));
 
-         DeviceInfoAndState& b = m_deviceCache["mydevice"];
+         const DeviceInfoAndState& b = deviceCache["mydevice"];
          b.first->mergeFrom(info);
       }
 
       {
-         BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first->get("test1"), "test2");
+         BOOST_CHECK_EQUAL(deviceCache["mydevice2"].first->get("test1"), "test2");
 
-         auto& d = m_deviceCache["mydevice2"];
-         auto& e = m_deviceCache["mydevice2"].first;
+         const auto& d = deviceCache["mydevice2"];
+         const auto& e = deviceCache["mydevice2"].first;
 
          BOOST_CHECK_EQUAL(e->exists("test2"), true);
          BOOST_CHECK_EQUAL(e->get("test2"), "test3");
@@ -495,15 +496,15 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          BOOST_CHECK_EQUAL(d.first->exists("test2"), true);
          BOOST_CHECK_EQUAL(d.first->get("test2"), "test3");
 
-         BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first->exists("test2"), true);
-         BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first->get("test2"), "test3");
+         BOOST_CHECK_EQUAL(deviceCache["mydevice2"].first->exists("test2"), true);
+         BOOST_CHECK_EQUAL(deviceCache["mydevice2"].first->get("test2"), "test3");
       }
    }
 
    BOOST_AUTO_TEST_CASE(DataCopy)
    {
       shared::CDataContainer dc;
-      const unsigned int testcount = 10;
+      constexpr unsigned int testcount = 10;
 
       //ensure braces are used => in that case, inner container will be deleted to brace close
       {
@@ -527,7 +528,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       //the following test illustrate a bad string allocation (normally datacontainer copy should keep allocation; 
       //but if a string is copied into rapidjson value without allocator, then the string is kept as a simple reference
       //and this test fails if string are destroyed
-      auto k = maketest(testcount);
+      auto k = Maketest(testcount);
       shared::CDataContainer dc2(k->serialize());
       auto vstr = dc2.get<std::vector<std::string>>("data.plugins");
       BOOST_CHECK_EQUAL(vstr.size(), testcount);
@@ -545,7 +546,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       dc1.set("key1", "value1_dc1");
       dc1.set("key2", "value2_dc1");
 
-      auto dc2 = dc1.copy();
+      const auto dc2 = dc1.copy();
       dc2->set("key1", "value1_dc2");
       dc2->set("key2", "value2_dc2");
 
@@ -567,7 +568,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    BOOST_AUTO_TEST_CASE(DataCopy3)
    {
       boost::shared_ptr<shared::CDataContainer> dc;
-      const unsigned int testcount = 10;
+      constexpr unsigned int testcount = 10;
 
       //ensure braces are used => in that case, inner container will be deleted to brace close
       {
@@ -591,7 +592,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       //the following test illustrate a bad string allocation (normally datacontainer copy should keep allocation; 
       //but if a string is copied into rapidjson value without allocator, then the string is kept as a simple reference
       //and this test fails if string are destroyed
-      auto k = maketest(testcount);
+      auto k = Maketest(testcount);
       shared::CDataContainer dc2(k->serialize());
       auto vstr = dc2.get<std::vector<std::string>>("data.plugins");
       BOOST_CHECK_EQUAL(vstr.size(), testcount);
@@ -639,12 +640,12 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       //check that serialization match original values
       //just remove space, \n, \t and \r from strings
       auto str = cfg.serialize();
-      auto str_2 = defaultConf;
+      auto str2 = defaultConf;
 
       str.erase(std::remove_if(str.begin(), str.end(), boost::is_any_of(" \t\n\r")), str.end());
-      str_2.erase(std::remove_if(str_2.begin(), str_2.end(), boost::is_any_of(" \t\n\r")), str_2.end());
+      str2.erase(std::remove_if(str2.begin(), str2.end(), boost::is_any_of(" \t\n\r")), str2.end());
 
-      BOOST_CHECK_EQUAL(str, str_2);
+      BOOST_CHECK_EQUAL(str, str2);
 
 
       std::stringstream ss;
@@ -677,7 +678,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          "}"
          "}");
 
-      shared::CDataContainer cfg(defaultConf);
+      const shared::CDataContainer cfg(defaultConf);
 
       //check path existance
       BOOST_CHECK_EQUAL(cfg.exists(""), true);
@@ -718,11 +719,11 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          "\"supportedPlatforms2\":\"all\""
          "}");
 
-      shared::CDataContainer testPf(testPlatformContent);
+      const shared::CDataContainer testPf(testPlatformContent);
 
       //subnode test
       BOOST_CHECK_EQUAL(testPf.exists("supportedPlatforms"), true);
-      auto supportedPf = testPf.get<boost::shared_ptr<shared::CDataContainer>>("supportedPlatforms");
+      const auto supportedPf = testPf.get<boost::shared_ptr<shared::CDataContainer>>("supportedPlatforms");
       BOOST_CHECK_EQUAL(supportedPf->containsChild(), true);
       BOOST_CHECK_EQUAL(supportedPf->containsValue(), false);
       BOOST_CHECK_EQUAL(supportedPf->get<std::string>("mac"), "none");
@@ -730,7 +731,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
       //value test
       BOOST_CHECK_EQUAL(testPf.exists("supportedPlatforms2"), true);
-      auto supportedPf2 = testPf.get<boost::shared_ptr<shared::CDataContainer>>("supportedPlatforms2");
+      const auto supportedPf2 = testPf.get<boost::shared_ptr<shared::CDataContainer>>("supportedPlatforms2");
       BOOST_CHECK_EQUAL(supportedPf2->containsChild(), false);
       BOOST_CHECK_EQUAL(supportedPf2->containsValue(), true);
       BOOST_CHECK_EQUAL(supportedPf2->get<std::string>(), "all");
@@ -740,12 +741,12 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    {
    public:
       CTestClass()
-         : m_aIntValue(0), m_dValue(0), m_sValue("")
+         : m_aIntValue(0), m_dValue(0)
       {
       }
 
       CTestClass(int i, double d, std::string s)
-         : m_aIntValue(i), m_dValue(d), m_sValue(s)
+         : m_aIntValue(i), m_dValue(d), m_sValue(std::move(s))
       {
       }
 
@@ -787,7 +788,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    private:
       int m_aIntValue;
       double m_dValue;
-      std::string m_sValue;
+      std::string m_sValue = "";
    };
 
    BOOST_AUTO_TEST_CASE(DataContainable)
@@ -804,14 +805,14 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       shared::CDataContainer cont2;
       cont2.set("myobject", sp);
       auto result2 = cont2.get<boost::shared_ptr<CTestClass>>("myobject");
-      auto result2bis = cont2.get<CTestClass>("myobject");
+      auto result2Bis = cont2.get<CTestClass>("myobject");
       BOOST_CHECK_EQUAL(result2->equals(*sp.get()), true);
-      BOOST_CHECK_EQUAL(result2bis.equals(*sp.get()), true);
+      BOOST_CHECK_EQUAL(result2Bis.equals(*sp.get()), true);
 
       //containeur simple de std::vector<IDataContainable>
       std::vector<CTestClass> vc;
       for (auto i = 0; i < 10; ++i)
-         vc.push_back(CTestClass(i, 42.0 * i, "test of std::vector<IDataContainable>"));
+         vc.emplace_back(i, 42.0 * i, "test of std::vector<IDataContainable>");
       shared::CDataContainer contvec;
       contvec.set("mycollection", vc);
       auto vc2 = contvec.get<std::vector<CTestClass>>("mycollection");
@@ -824,14 +825,14 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       shared::CDataContainer contvecsh;
       contvecsh.set("mycollectionofshared", vcsh);
       auto vcsh2 = contvecsh.get<std::vector<boost::shared_ptr<CTestClass>>>("mycollectionofshared");
-      auto vc2bis = contvecsh.get<std::vector<CTestClass>>("mycollectionofshared");
+      auto vc2Bis = contvecsh.get<std::vector<CTestClass>>("mycollectionofshared");
       BOOST_CHECK_EQUAL(vcsh.size(), vcsh2.size());
       for (unsigned int i = 0; i < vcsh.size(); ++i)
          BOOST_CHECK_EQUAL(vcsh[i]->equals(*vcsh2[i].get()), true);
 
-      BOOST_CHECK_EQUAL(vcsh.size(), vc2bis.size());
+      BOOST_CHECK_EQUAL(vcsh.size(), vc2Bis.size());
       for (unsigned int i = 0; i < vcsh.size(); ++i)
-         BOOST_CHECK_EQUAL(vcsh[i]->equals(vc2bis[i]), true);
+         BOOST_CHECK_EQUAL(vcsh[i]->equals(vc2Bis[i]), true);
    }
 
 
@@ -863,7 +864,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       //vector de field
       std::vector<shared::CField<int>> vfi;
       for (auto i = 0; i < 10; ++i)
-         vfi.push_back(shared::CField<int>(i));
+         vfi.emplace_back(i);
 
       dc.set("VectorFieldInt", vfi);
       auto vi2 = dc.get<std::vector<int>>("VectorFieldInt");
@@ -892,7 +893,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
    BOOST_AUTO_TEST_CASE(SimpleConstruction)
    {
-      shared::CDataContainer dc("1");
+      const shared::CDataContainer dc("1");
       BOOST_CHECK_EQUAL(dc.serialize(), "1");
    }
 
@@ -1225,7 +1226,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
    BOOST_AUTO_TEST_CASE(CheckDataLimitsFloatingPrecision)
    {
-      shared::CDataContainer c(
+      const shared::CDataContainer c(
          "{"
          "   \"double\": 42.0,"
          "   \"float\": 42.0,"
@@ -1484,7 +1485,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
 
    template <typename T>
-   void CHECK_MAPS(const std::map<std::string, T>& input, const std::map<std::string, T>& output)
+   void CheckMaps(const std::map<std::string, T>& input, const std::map<std::string, T>& output)
    {
       BOOST_CHECK_EQUAL(input.size(), output.size());
       auto io = output.begin();
@@ -1498,7 +1499,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
 
    template <typename T>
-   void CHECK_MAPS_SHARED_PTR(const std::map<std::string, boost::shared_ptr<T>>& input, const std::map<std::string, boost::shared_ptr<T>>& output)
+   void CheckMapsSharedPtr(const std::map<std::string, boost::shared_ptr<T>>& input, const std::map<std::string, boost::shared_ptr<T>>& output)
    {
       BOOST_CHECK_EQUAL(input.size(), output.size());
       auto io = output.begin();
@@ -1512,16 +1513,16 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
    BOOST_AUTO_TEST_CASE(Map)
    {
-      std::map<std::string, std::string> input = {{"key1", "value1"}, {"key2", "value2"}, {"key3", "value3"}, {"key4", "value4"}};
-      shared::CDataContainer dc(input);
+      const std::map<std::string, std::string> input = {{"key1", "value1"}, {"key2", "value2"}, {"key3", "value3"}, {"key4", "value4"}};
+      const shared::CDataContainer dc(input);
 
-      auto output = dc.getAsMap<std::string>();
+      const auto output = dc.getAsMap<std::string>();
 
       //don't use BOOST_CHECK_EQUAL_COLLECTIONS because it do not builds with std::map
-      CHECK_MAPS<std::string>(input, output);
+      CheckMaps<std::string>(input, output);
 
-      auto output2 = dc.get<std::map<std::string, std::string>>();
-      CHECK_MAPS<std::string>(input, output2);
+      const auto output2 = dc.get<std::map<std::string, std::string>>();
+      CheckMaps<std::string>(input, output2);
    }
 
    BOOST_AUTO_TEST_CASE(MapOfContainers)
@@ -1570,20 +1571,20 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          }
       };
 
-      std::map<std::string, boost::shared_ptr<shared::CDataContainer>> grab = input.getAsMap<boost::shared_ptr<shared::CDataContainer>>();
+      const std::map<std::string, boost::shared_ptr<shared::CDataContainer>> grab = input.getAsMap<boost::shared_ptr<shared::CDataContainer>>();
 
-      CHECK_MAPS_SHARED_PTR<shared::CDataContainer>(grab, expected);
+      CheckMapsSharedPtr<shared::CDataContainer>(grab, expected);
    }
 
-   double fRand(double fMin, double fMax)
+   double FRand(double fMin, double fMax)
    {
-      double f = (double)rand() / RAND_MAX;
+      const double f = static_cast<double>(rand()) / RAND_MAX;
       return fMin + f * (fMax - fMin);
    }
 
-   char __global_buffer_human_readable_test[10];
+   char GlobalBufferHumanReadableTest[10];
 
-   char* get_human_readable_size(double size/*in bytes*/)
+   char* GetHumanReadableSize(double size/*in bytes*/)
    {
       int i = 0;
       const char* units[] = {"B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
@@ -1592,8 +1593,8 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          size /= 1024;
          i++;
       }
-      sprintf(__global_buffer_human_readable_test, "%.*f %s", i, size, units[i]);
-      return __global_buffer_human_readable_test;
+      sprintf(GlobalBufferHumanReadableTest, "%.*f %s", i, size, units[i]);
+      return GlobalBufferHumanReadableTest;
    }
 
 #ifdef WIN32
@@ -1606,7 +1607,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 #define DEBUG_HEAP_PRINT(title) \
          if(i%100000 == 0 || i<10)  {\
                   _CrtMemCheckpoint(&a);\
-                  std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << std::endl; \
+                  std::cout << "[" << (title) << "] Step=" << i << " : total = " << GetHumanReadableSize(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << std::endl; \
                   memcpy(&b, &a, sizeof(a)); \
          }
 
@@ -1624,7 +1625,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
             if (i % 100000 == 0 || i < 10) { \
                \
                   a = mallinfo(); \
-                  std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.uordblks) << "(" << a.uordblks << "). Diff = " << (a.uordblks - b.uordblks) << std::endl; \
+                  std::cout << "[" << title << "] Step=" << i << " : total = " << GetHumanReadableSize(a.uordblks) << "(" << a.uordblks << "). Diff = " << (a.uordblks - b.uordblks) << std::endl; \
                   memcpy(&b, &a, sizeof(a)); \
             }
 #else
@@ -1638,20 +1639,18 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 #endif
 
 
-   BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
+   BOOST_AUTO_TEST_CASE(DataContainerHugeAmountOfDataVector)
    {
       std::cout << "[START] DataContainer_HugeAmountOfData_Vector" << std::endl;
       {
-         std::vector<boost::shared_ptr<shared::CDataContainer>> objectList;
-
-
-         unsigned int i = 0;
          boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28),
                                      boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
          try
          {
+            unsigned int i = 0;
+            std::vector<boost::shared_ptr<shared::CDataContainer>> objectList;
             DEBUG_HEAP_INIT();
-            DEBUG_HEAP_PRINT("Init");
+            DEBUG_HEAP_PRINT("Init")
 
             for (i = 0; i < 1000000; ++i)
             {
@@ -1665,14 +1664,14 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
                result->set("date", dt);
                //result.printSizeToLog(std::cout);
 
-               auto val = std::to_string(fRand(0, 1000));
+               auto val = std::to_string(FRand(0, 1000));
                //std::cout << "Inserting 3+" << val.size() << "chars. => ";
                result->set("key", val);
                //result.printSizeToLog(std::cout);
 
                objectList.push_back(result);
                t1 += boost::posix_time::seconds(1);
-               DEBUG_HEAP_PRINT("Next");
+               DEBUG_HEAP_PRINT("Next")
             }
          }
          catch (...)
@@ -1683,36 +1682,36 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       std::cout << "[END] DataContainer_HugeAmountOfData_Vector" << std::endl;
    }
 
-   BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
+   BOOST_AUTO_TEST_CASE(DataContainerHugeAmountOfDataRapidjson)
    {
       std::cout << "[START] DataContainer_HugeAmountOfData_Rapidjson" << std::endl;
       {
          unsigned int itemCount = 100000;
-         auto whole = boost::make_shared<shared::CDataContainer>(30, itemCount);
+         const auto whole = boost::make_shared<shared::CDataContainer>(30, itemCount);
 
-         unsigned int i = 0;
          boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28),
                                      boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
          try
          {
+            unsigned int i = 0;
             DEBUG_HEAP_INIT();
-            DEBUG_HEAP_PRINT("Init");
+            DEBUG_HEAP_PRINT("Init")
 
             for (i = 0; i < itemCount; ++i)
             {
                shared::CDataContainer result(30, 2);
                std::string dt = boost::posix_time::to_iso_string(t1);
                result.set("date", dt);
-               result.set("key", std::to_string(fRand(0, 1000)));
+               result.set("key", std::to_string(FRand(0, 1000)));
                whole->set(dt, result);
                t1 += boost::posix_time::seconds(1);
             }
 
-            DEBUG_HEAP_PRINT("Avant");
+            DEBUG_HEAP_PRINT("Avant")
 
             auto k = GenerateContainer(whole);
 
-            DEBUG_HEAP_PRINT("Après");
+            DEBUG_HEAP_PRINT("Après")
          }
          catch (...)
          {
@@ -1723,7 +1722,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    }
 
 
-   BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
+   BOOST_AUTO_TEST_CASE(DataContainerHugeAmountOfDataArray)
    {
       std::cout << "[START] DataContainer_HugeAmountOfData_Array" << std::endl;
       {
@@ -1731,22 +1730,22 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
          whole.createArray("data");
 
-         unsigned int i = 0;
          boost::posix_time::ptime t1(boost::gregorian::date(1982, boost::gregorian::Mar, 28),
                                      boost::posix_time::hours(5) + boost::posix_time::minutes(4) + boost::posix_time::seconds(2));
          try
          {
+            unsigned int i = 0;
             DEBUG_HEAP_INIT();
-            DEBUG_HEAP_PRINT("Init");
+            DEBUG_HEAP_PRINT("Init")
 
             for (i = 0; i < 1000000; ++i)
             {
                shared::CDataContainer result(50, 2);
                result.set("date", boost::posix_time::to_iso_string(t1));
-               result.set("key", std::to_string(fRand(0, 1000)));
+               result.set("key", std::to_string(FRand(0, 1000)));
                whole.appendArray("data", result);
                t1 += boost::posix_time::seconds(1);
-               DEBUG_HEAP_PRINT("Next");
+               DEBUG_HEAP_PRINT("Next")
             }
          }
          catch (...)
@@ -1851,10 +1850,10 @@ BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
 }
 #endif
 
-   BOOST_AUTO_TEST_CASE(DataContainer_Array)
+   BOOST_AUTO_TEST_CASE(DataContainerArray)
    {
       shared::CDataContainer dc;
-      auto actualDatetime = boost::posix_time::second_clock::universal_time();
+      const auto actualDatetime = boost::posix_time::second_clock::universal_time();
 
       BOOST_CHECK_EQUAL(dc.createArray("test.myArray"), true);
 

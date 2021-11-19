@@ -4,6 +4,7 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/plugins/Linky/LinkyReceiveBufferHandler.h"
 #include <../../../../sources/shared/shared/communication/Buffer.hpp>
+#include <utility>
 #include <../../../../sources/shared/shared/communication/IBufferLogger.h>
 
 #include "../../mock/shared/currentTime/DefaultCurrentTimeMock.h"
@@ -13,14 +14,14 @@
 
 using namespace testCommon;
 
-class BufferLoggerMock : public shared::communication::IBufferLogger
+class BufferLoggerMock final : public shared::communication::IBufferLogger
 {
 public:
 	explicit BufferLoggerMock() {}
-	virtual ~BufferLoggerMock(){}
-	void logReceived(const shared::communication::CByteBuffer& data) {}
-	void logSent(const shared::communication::CByteBuffer& data) {}
-	std::string msgToString(const shared::communication::CByteBuffer& data) const { return ""; }
+   ~BufferLoggerMock() override {}
+	void logReceived(const shared::communication::CByteBuffer& data) override {}
+	void logSent(const shared::communication::CByteBuffer& data) override {}
+   static std::string msgToString(const shared::communication::CByteBuffer& data) { return ""; }
 };
 
 // A Mock just to gain public visibility of normally protected methods
@@ -34,7 +35,7 @@ public:
       : CLinkyReceiveBufferHandler(type,
                                    receiveDataEventHandler,
                                    receiveDataEventId,
-                                   logger,
+                                   std::move(logger),
                                    false)
    {
    }
@@ -46,7 +47,7 @@ public:
 
    boost::shared_ptr<std::map<std::string, std::vector<std::string> > > getMessages(boost::shared_ptr<const std::vector<unsigned char>> frame)
    {
-	   return CLinkyReceiveBufferHandler::getMessages(frame);
+	   return CLinkyReceiveBufferHandler::getMessages(std::move(frame));
    }
 };
 
@@ -126,7 +127,7 @@ BOOST_AUTO_TEST_CASE(CheckCrcHistorical)
 
 BOOST_AUTO_TEST_CASE(getMessagesLinky)
 {
-	const boost::shared_ptr<const std::vector<unsigned char>> frame = boost::make_shared<const std::vector<unsigned char>>(testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>"));
+	const auto frame = boost::make_shared<const std::vector<unsigned char>>(testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>"));
 	const std::map<std::string, std::vector<std::string> > expectedMap = {
       { "ADSC", {"041067003463"} },
       { "VTIC", {"01"} },

@@ -5,12 +5,10 @@
 #include "../../../../sources/plugins/Rfxcom/PairingHelper.h"
 #include "server/pluginSystem/DefaultYPluginApiMock.hpp"
 
-class CExtraQueryMock : public yApi::IExtraQuery
+class CExtraQueryMock final : public yApi::IExtraQuery
 {
 public:
-   virtual ~CExtraQueryMock()
-   {
-   }
+   ~CExtraQueryMock() override = default;
 
    boost::shared_ptr<yApi::IExtraQueryData> getData() const override { return boost::shared_ptr<yApi::IExtraQueryData>(); }
 

@@ -116,7 +116,7 @@ private:
 BOOST_AUTO_TEST_CASE(ReadDefaultInformation)
 {
    CTestPackageFile packageFile(DefaultPackageFileContent);
-   pluginSystem::CInformation info(DefaultPackagePath);
+   const pluginSystem::CInformation info(DefaultPackagePath);
 
    BOOST_CHECK_EQUAL(info.getType(), "FakePackage");
    BOOST_CHECK_EQUAL(info.getVersion().toString(), "0.0.1-beta");

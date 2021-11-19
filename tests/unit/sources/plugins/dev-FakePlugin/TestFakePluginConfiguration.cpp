@@ -7,12 +7,12 @@
 
 BOOST_AUTO_TEST_SUITE(TestFakePluginConfiguration)
 
-const boost::shared_ptr<shared::CDataContainer> conf = shared::CDataContainer::make("{"
+const boost::shared_ptr<shared::CDataContainer> Conf = shared::CDataContainer::make("{"
 	"\"EnumParameter\": \"EnumValue1\""
 	"}");
 
 
-const std::string default_package_in_json = "{\n"
+const std::string DefaultPackageInJson = "{\n"
 "  \"type\": \"dev-fakePlugin\",\n"
 "  \"version\": \"@PLUGIN_VERSION@\",\n"
 "  \"author\": \"Sébastien GALLOU\",\n"
@@ -228,13 +228,13 @@ BOOST_AUTO_TEST_CASE(ReadFakePluginDefaultConfiguration)
 		if (!boost::filesystem::exists(configPath)) {
 			configPath = "temp_package.in.json";
 			std::ofstream out("temp_package.in.json");
-			out << default_package_in_json;
+			out << DefaultPackageInJson;
 			out.close();
 		}
 	}
 
 	CFakePluginConfiguration cfg;
-	cfg.initializeWith(conf, boost::filesystem::path(configPath));
+	cfg.initializeWith(Conf, boost::filesystem::path(configPath));
 
 	BOOST_CHECK_EQUAL(cfg.getEnumParameter(), static_cast<EEnumType>(kEnumValue1));
 }
