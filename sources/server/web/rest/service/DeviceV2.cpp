@@ -221,7 +221,7 @@ namespace web
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "body was not provided");
 
-               const auto body = shared::CDataContainer::make();
+               const auto body = shared::CDataContainer::make(request->body());
 
                if (body->empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
