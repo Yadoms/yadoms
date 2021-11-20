@@ -26,7 +26,7 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/dynamic-configuration-schema", getDeviceDynamicConfigurationSchemaV2));
             //TODO RAF REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevicesV1, transactionalMethodV1)
-            m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "devices/{id}", updateDevicesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "devices/{id}", updateDeviceV2));
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), updateDeviceConfigurationV1, transactionalMethodV1)
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"), restoreDeviceV1, transactionalMethodV1)
             //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethodV1)
@@ -35,9 +35,8 @@ namespace web
             // Keywords
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords", getKeywordsV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords/{id}", getKeywordsV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "keywords/{id}", updateKeywordV2));
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), getKeywordsLastStateV1, transactionalMethodV1)
-            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), updateKeywordFriendlyNameV1, transactionalMethodV1)
-            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("blacklist"), updateKeywordBlacklistV1, transactionalMethodV1)
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), sendKeywordCommandV1, transactionalMethodV1)
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), deleteDeviceV1, transactionalMethodV1)
 
@@ -206,7 +205,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CDevice::updateDevicesV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::updateDeviceV2(boost::shared_ptr<IRequest> request) const
          {
             try
             {
@@ -357,6 +356,46 @@ namespace web
                YADOMS_LOG(error) << "Error processing getKeywords request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get keywords");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CDevice::updateKeywordV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "keyword id was not provided");
+               const auto keywordId = static_cast<int>(std::stol(id));
+
+               if (request->body().empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "body was not provided");
+
+               const auto body = shared::CDataContainer::make(request->body());
+
+               if (body->empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "body was not provided");
+
+               // Filter only client-modifiable fields
+               database::entities::CKeyword keywordToUpdate;
+               keywordToUpdate.Id = keywordId;
+               if (body->exists("friendly-name"))
+                  keywordToUpdate.FriendlyName = body->get<std::string>("friendly-name");
+               if (body->exists("blacklist"))
+                  keywordToUpdate.Blacklist = body->get<bool>("blacklist");
+
+               m_keywordManager->updateKeyword(keywordToUpdate);
+
+               return boost::make_shared<CNoContentAnswer>();
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to update keyword");
             }
          }
       } //namespace service

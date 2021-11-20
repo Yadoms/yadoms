@@ -428,6 +428,49 @@ namespace database
             if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                throw shared::exception::CEmptyResult("Fail to update keyword name");
          }
+
+         void CKeyword::updateKeyword(const entities::CKeyword& keyword) const
+         {
+            if (!keyword.Id.isDefined())
+               throw CDatabaseException("Need an id to update");
+
+            const auto query = m_databaseRequester->newQuery();
+            query->Update(CKeywordTable::getTableName());
+
+            if (keyword.DeviceId.isDefined())
+               query->MultiSet(CKeywordTable::getDeviceIdColumnName(), keyword.DeviceId());
+            if (keyword.CapacityName.isDefined())
+               query->MultiSet(CKeywordTable::getCapacityNameColumnName(), keyword.CapacityName());
+            if (keyword.AccessMode.isDefined())
+               query->MultiSet(CKeywordTable::getAccessModeColumnName(), keyword.AccessMode());
+            if (keyword.Name.isDefined())
+               query->MultiSet(CKeywordTable::getNameColumnName(), keyword.Name());
+            if (keyword.FriendlyName.isDefined())
+               query->MultiSet(CKeywordTable::getFriendlyNameColumnName(), keyword.FriendlyName());
+            if (keyword.Type.isDefined())
+               query->MultiSet(CKeywordTable::getTypeColumnName(), keyword.Type());
+            if (keyword.Units.isDefined())
+               query->MultiSet(CKeywordTable::getUnitsColumnName(), keyword.Units());
+            if (keyword.TypeInfo.isDefined())
+               query->MultiSet(CKeywordTable::getTypeInfoColumnName(), keyword.TypeInfo());
+            if (keyword.Measure.isDefined())
+               query->MultiSet(CKeywordTable::getMeasureColumnName(), keyword.Measure());
+            if (keyword.Details.isDefined())
+               query->MultiSet(CKeywordTable::getDetailsColumnName(), keyword.Details());
+            if (keyword.Blacklist.isDefined())
+               query->MultiSet(CKeywordTable::getBlacklistColumnName(), keyword.Blacklist());
+            if (keyword.LastAcquisitionValue.isDefined())
+               query->MultiSet(CKeywordTable::getLastAcquisitionValueColumnName(), keyword.LastAcquisitionValue());
+            if (keyword.LastAcquisitionDate.isDefined())
+               query->MultiSet(CKeywordTable::getLastAcquisitionDateColumnName(), keyword.LastAcquisitionDate());
+            if (keyword.HistoryDepth.isDefined())
+               query->MultiSet(CKeywordTable::getHistoryDepthColumnName(), keyword.HistoryDepth());
+
+            query->Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keyword.Id());
+
+            if (m_databaseRequester->queryStatement(*query) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update keyword");
+         }
       } //namespace requesters
    } //namespace common
 } //namespace database 

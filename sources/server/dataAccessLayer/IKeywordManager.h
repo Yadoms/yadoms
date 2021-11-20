@@ -212,6 +212,13 @@ namespace dataAccessLayer
                                      const std::string& newName) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Update the keyword
+      /// \param [in] keyword             The keyword to update
+      /// \throw  shared::exception::CEmptyResult if device doesn't exist
+      //--------------------------------------------------------------
+      virtual void updateKeyword(const database::entities::CKeyword& keyword) const = 0;      
+
+      //--------------------------------------------------------------
       /// \brief           Remove a keyword
       /// \param [in]      deviceId   the device which own the keyword
       /// \param [in]      keyword   the keyword to delete

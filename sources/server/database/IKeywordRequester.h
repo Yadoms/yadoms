@@ -182,6 +182,13 @@ namespace database
       /// \note !!! ATTENTION !!!  Use it only if you really know what you are doing
       //--------------------------------------------------------------
       virtual void updateKeywordName(int keywordId,
-                                     const std::string& newName) = 0;
+                                     const std::string& newName) = 0;      
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the keyword
+      /// \param [in] keyword             The keyword to update
+      /// \throw  shared::exception::CEmptyResult if device doesn't exist
+      //--------------------------------------------------------------
+      virtual void updateKeyword(const entities::CKeyword& keyword) const = 0;     
    };
 } //namespace database 

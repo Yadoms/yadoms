@@ -18,6 +18,7 @@ namespace dataAccessLayer
    {
       try
       {
+         // ReSharper disable once CppExpressionWithoutSideEffects
          getKeyword(deviceId, keywordName);
       }
       catch (shared::exception::CEmptyResult&)
@@ -31,6 +32,7 @@ namespace dataAccessLayer
    {
       try
       {
+         // ReSharper disable once CppExpressionWithoutSideEffects
          getKeyword(keywordId);
       }
       catch (shared::exception::CEmptyResult&)
@@ -157,7 +159,7 @@ namespace dataAccessLayer
    void CKeywordManager::addKeywords(int deviceId,
                                      const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
    {
-      auto transactionalEngine = m_dataProvider->getTransactionalEngine();
+      const auto transactionalEngine = m_dataProvider->getTransactionalEngine();
 
       try
       {
@@ -165,8 +167,8 @@ namespace dataAccessLayer
          if (transactionalEngine)
             transactionalEngine->transactionBegin();
 
-         for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-            addKeyword(deviceId, **keyword);
+         for (const auto& keyword : keywords)
+            addKeyword(deviceId, *keyword);
 
          if (transactionalEngine)
             transactionalEngine->transactionCommit();
@@ -183,7 +185,7 @@ namespace dataAccessLayer
                                                    const std::string& keyword,
                                                    const std::string& newFriendlyName)
    {
-      auto keywordToUpdate = getKeyword(deviceId, keyword);
+      const auto keywordToUpdate = getKeyword(deviceId, keyword);
       if (!keywordToUpdate)
          throw shared::exception::CEmptyResult("Can not find keyword");
 
@@ -218,9 +220,14 @@ namespace dataAccessLayer
                                             newName);
    }
 
+   void CKeywordManager::updateKeyword(const database::entities::CKeyword& keyword) const
+   {
+      m_keywordRequester->updateKeyword(keyword);
+   }
+
    void CKeywordManager::removeKeyword(int deviceId, const std::string& keyword)
    {
-      auto keywordToDelete = getKeyword(deviceId, keyword);
+      const auto keywordToDelete = getKeyword(deviceId, keyword);
       if (!keywordToDelete)
          throw shared::exception::CEmptyResult("Can not find keyword");
 

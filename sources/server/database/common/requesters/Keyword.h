@@ -62,6 +62,7 @@ namespace database
             void updateLastValue(int keywordId, const boost::posix_time::ptime& valueDatetime, const std::string& value) override;
             void updateKeywordName(int keywordId,
                                    const std::string& newName) override;
+            void updateKeyword(const entities::CKeyword& keyword) const override;
             // [END] IKeywordRequester implementation
 
          private:

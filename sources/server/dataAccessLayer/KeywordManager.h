@@ -61,6 +61,7 @@ namespace dataAccessLayer
                                        const bool blacklist) override;
       void updateKeywordName(int keywordId,
                              const std::string& newName) override;
+      void updateKeyword(const database::entities::CKeyword& keyword) const override;
       void removeKeyword(int deviceId,
                          const std::string& keyword) override;
       void removeKeyword(int keywordId) override;
