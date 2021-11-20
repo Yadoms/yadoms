@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Plugin.h"
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/adapters/DatabaseAdapters.h"
 #include "database/common/DatabaseTables.h"
@@ -14,18 +15,14 @@ namespace database
       namespace requesters
       {
          CPlugin::CPlugin(boost::shared_ptr<IDatabaseRequester> databaseRequester)
-            : m_databaseRequester(databaseRequester)
-         {
-         }
-
-         CPlugin::~CPlugin()
+            : m_databaseRequester(std::move(databaseRequester))
          {
          }
 
          // IPluginRequester implementation
          int CPlugin::addInstance(const entities::CPlugin& newPlugin)
          {
-            auto qInsert = m_databaseRequester->newQuery();
+            const auto qInsert = m_databaseRequester->newQuery();
 
             qInsert->InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getConfigurationColumnName(), CPluginTable::getAutoStartColumnName()).
                Values(newPlugin.DisplayName(),
@@ -37,7 +34,7 @@ namespace database
                throw shared::exception::CEmptyResult("No lines affected");
 
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CPluginTable::getIdColumnName()).
                From(CPluginTable::getTableName()).
                Where(CPluginTable::getDisplayNameColumnName(), CQUERY_OP_EQUAL, newPlugin.DisplayName()).
@@ -46,7 +43,7 @@ namespace database
 
             adapters::CSingleValueAdapter<int> adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
-            if (adapter.getResults().size() >= 1)
+            if (!adapter.getResults().empty())
                return adapter.getResults()[0];
 
             throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
@@ -56,7 +53,7 @@ namespace database
          {
             adapters::CPluginAdapter adapter;
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             qSelect->Select().
                From(CPluginTable::getTableName()).
@@ -73,7 +70,7 @@ namespace database
          {
             adapters::CPluginAdapter adapter;
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
 
             qSelect->Select().
                From(CPluginTable::getTableName()).
@@ -93,7 +90,7 @@ namespace database
          {
             adapters::CPluginAdapter adapter;
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().From(CPluginTable::getTableName());
 
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -102,7 +99,7 @@ namespace database
 
          void CPlugin::updateInstance(const entities::CPlugin& updatedPluginData)
          {
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
 
             if (!updatedPluginData.Id.isDefined())
                throw CDatabaseException("Need an id to update");
@@ -143,7 +140,7 @@ namespace database
 
          void CPlugin::removeInstance(int pluginId)
          {
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->DeleteFrom(CPluginTable::getTableName()).
                Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
 
@@ -153,7 +150,7 @@ namespace database
 
          void CPlugin::disableAutoStartForAllPluginInstances(const std::string& pluginName)
          {
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CPluginTable::getTableName()).
                Set(CPluginTable::getAutoStartColumnName(), false).
                Where(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, pluginName);

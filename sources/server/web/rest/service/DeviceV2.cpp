@@ -24,25 +24,22 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/dynamic-configuration-schema", getDeviceDynamicConfigurationSchemaV2));
+            //TODO RAF REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
+            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevicesV1, transactionalMethodV1)
+            m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "devices/{id}", updateDevicesV2));
+            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), updateDeviceConfigurationV1, transactionalMethodV1)
+            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"), restoreDeviceV1, transactionalMethodV1)
+            //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethodV1)
+            //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethodV1)
 
             // Keywords
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords", getKeywordsV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords/{id}", getKeywordsV2));
-
-            //TODO RAF
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), getKeywordsLastStateV1, transactionalMethodV1)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), updateDeviceConfigurationV1, transactionalMethodV1)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevicesV1, transactionalMethodV1)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"), restoreDeviceV1, transactionalMethodV1)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), updateKeywordFriendlyNameV1, transactionalMethodV1)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("blacklist"), updateKeywordBlacklistV1, transactionalMethodV1)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), sendKeywordCommandV1, transactionalMethodV1)
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), deleteDeviceV1, transactionalMethodV1)
-
-            //TODO RAF
-            //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethodV1)
-            //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethodV1)
+            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), getKeywordsLastStateV1, transactionalMethodV1)
+            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), updateKeywordFriendlyNameV1, transactionalMethodV1)
+            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("blacklist"), updateKeywordBlacklistV1, transactionalMethodV1)
+            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), sendKeywordCommandV1, transactionalMethodV1)
+            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), deleteDeviceV1, transactionalMethodV1)
 
 
             return m_endPoints;
@@ -209,6 +206,50 @@ namespace web
             }
          }
 
+         boost::shared_ptr<IAnswer> CDevice::updateDevicesV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "device id was not provided");
+               const auto deviceId = static_cast<int>(std::stol(id));
+
+               if (request->body().empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "body was not provided");
+
+               const auto body = shared::CDataContainer::make();
+
+               if (body->empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "body was not provided");
+
+               // Filter only client-modifiable fields
+               database::entities::CDevice deviceToUpdate;
+               deviceToUpdate.Id = deviceId;
+               if (body->exists("friendly-name"))
+                  deviceToUpdate.FriendlyName = body->get<std::string>("friendly-name");
+               if (body->exists("model"))
+                  deviceToUpdate.Model = body->get<std::string>("model");
+               if (body->exists("configuration"))
+                  deviceToUpdate.Configuration = body->get<boost::shared_ptr<shared::CDataContainer>>("configuration");
+               if (body->exists("blacklist"))
+                  deviceToUpdate.Blacklist = body->get<bool>("blacklist");
+
+               m_deviceManager->updateDevice(deviceToUpdate);
+
+               return boost::make_shared<CNoContentAnswer>();
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to update device");
+            }
+         }
+
          boost::shared_ptr<IAnswer> CDevice::getKeywordsV2(boost::shared_ptr<IRequest> request) const
          {
             try
@@ -233,9 +274,9 @@ namespace web
                                                 ? boost::make_optional(request->queryParam("from-friendly-name"))
                                                 : boost::optional<std::string>();
                const auto fromDataType = request->queryParamExists("from-data-type")
-                                                ? convert<shared::plugin::yPluginApi::EKeywordDataType>(
-                                                   request->queryParamAsList("from-data-type"))
-                                                : std::make_unique<std::set<shared::plugin::yPluginApi::EKeywordDataType>>();
+                                            ? convert<shared::plugin::yPluginApi::EKeywordDataType>(
+                                               request->queryParamAsList("from-data-type"))
+                                            : std::make_unique<std::set<shared::plugin::yPluginApi::EKeywordDataType>>();
                const auto fromUnits = request->queryParamExists("from-units")
                                          ? request->queryParamAsList("from-units")
                                          : std::make_unique<std::set<std::string>>();

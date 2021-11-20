@@ -469,7 +469,7 @@ namespace database
          /// \param  table    the table name
          /// \return          A reference to itself to allow method chaining
          //        
-         CQuery& Update(const database::common::CDatabaseTable& table);
+         CQuery& Update(const CDatabaseTable& table);
 
          //
          /// \brief           Append 'SET field1=value1 [,field2=value2...]]'
@@ -515,6 +515,9 @@ namespace database
                             const T08& field8 = T08(), const T8& value8 = T8(),
                             const T09& field9 = T09(), const T9& value9 = T9(),
                             const T11& field10 = T11(), const T10& value10 = T10());
+
+         template <class TFIELD, class TVALUE>
+         CQuery& MultiSet(const TFIELD& field1, const TVALUE& value1);
 
          //
          /// \brief           Append custom string to request
@@ -660,7 +663,7 @@ namespace database
          /// \param  tableName   the table name to delete
          /// \return             A reference to itself to allow method chaining
          //   
-         CQuery& DropTable(const database::common::CDatabaseTable& tableName);
+         CQuery& DropTable(const CDatabaseTable& tableName);
 
          //
          /// \brief              add a column to a table
@@ -668,7 +671,7 @@ namespace database
          /// \param  columnDefinition   the column definition
          /// \return             A reference to itself to allow method chaining
          //   
-         CQuery& AddTableColumn(const database::common::CDatabaseTable& tableName, const std::string& columnDefinition);
+         CQuery& AddTableColumn(const CDatabaseTable& tableName, const std::string& columnDefinition);
 
          //
          /// \brief              get the query type
@@ -697,9 +700,9 @@ namespace database
          virtual std::string formatUInt32ToSql(const Poco::UInt32& anyStringValue);
          virtual std::string formatInt64ToSql(const Poco::Int64& anyStringValue);
          virtual std::string formatUInt64ToSql(const Poco::UInt64& anyStringValue);
-         virtual std::string formatFloatToSql(const float& anyStringValue);
-         virtual std::string formatDoubleToSql(const double& anyStringValue);
-         virtual std::string formatBooleanToSql(const bool& anyStringValue);
+         virtual std::string formatFloatToSql(const float& anyValue);
+         virtual std::string formatDoubleToSql(const double& anyValue);
+         virtual std::string formatBooleanToSql(const bool& anyValue);
          virtual std::string formatDateToSql(const boost::posix_time::ptime& time);
          virtual std::string formatDateToSql(const Poco::DateTime& time);
          virtual std::string formatDateToSql(const Poco::Timestamp& time);
@@ -720,13 +723,9 @@ namespace database
          virtual std::string functionCount(const std::string& field);
          virtual std::string functionSum(const std::string& field);
 
-         class CFunction
+         class CFunction final
          {
          public:
-            CFunction()
-            {
-            }
-
             explicit CFunction(const std::string& sql)
                : m_sql(sql)
             {
@@ -739,9 +738,7 @@ namespace database
 
             CFunction& operator=(const CFunction&) = delete;
 
-            virtual ~CFunction()
-            {
-            }
+            ~CFunction() = default;
 
             std::string toSql() const
             {
@@ -772,7 +769,7 @@ namespace database
 
          //--------------------------------------------------------------
          ///\brief	generate min function ( ie: min(field0) )
-         ///\param [in]	field    The field or query
+         ///\param [in]	value    The value
          ///\return The query function
          //--------------------------------------------------------------
          template <class T>
@@ -780,7 +777,7 @@ namespace database
 
          //--------------------------------------------------------------
          ///\brief	generate min function ( ie: min(field0) ) with numeric cast
-         ///\param [in]	field    The field or query
+         ///\param [in]	fieldOrQuery    The field or query
          ///\return The query function
          //--------------------------------------------------------------
          template <class T>
@@ -788,7 +785,7 @@ namespace database
 
          //--------------------------------------------------------------
          ///\brief	generate max function ( ie: max(field0) )
-         ///\param [in]	field    The field or query
+         ///\param [in]	fieldOrQuery    The field or query
          ///\return The query function
          //--------------------------------------------------------------
          template <class T>
@@ -796,7 +793,7 @@ namespace database
 
          //--------------------------------------------------------------
          ///\brief	generate max function ( ie: max(field0) ) with numeric cast
-         ///\param [in]	field    The field or query
+         ///\param [in]	fieldOrQuery    The field or query
          ///\return The query function
          //--------------------------------------------------------------
          template <class T>
@@ -804,7 +801,7 @@ namespace database
 
          //--------------------------------------------------------------
          ///\brief	generate average function ( ie: average(field0) )
-         ///\param [in]	field    The field or query
+         ///\param [in]	fieldOrQuery    The field or query
          ///\return The query function
          //--------------------------------------------------------------
          template <class T>
@@ -812,7 +809,7 @@ namespace database
 
          //--------------------------------------------------------------
          ///\brief	generate average function ( ie: average(field0) ) with numeric cast
-         ///\param [in]	field    The field or query
+         ///\param [in]	fieldOrQuery    The field or query
          ///\return The query function
          //--------------------------------------------------------------
          template <class T>
@@ -829,8 +826,8 @@ namespace database
 
          //--------------------------------------------------------------
          ///\brief	generate cast function ( ie: CAST (field0 AS numeric) )
-         ///\param [in]	field       The field or query
-         ///\param [in]	type        The typing cast
+         ///\param [in]	fieldOrQuery   The field or query
+         ///\param [in]	type           The typing cast
          ///\return The query function
          //--------------------------------------------------------------
          template <class T>
@@ -838,7 +835,7 @@ namespace database
 
          //--------------------------------------------------------------
          ///\brief	generate cast function ( ie: CAST (field0 AS numeric) )
-         ///\param [in]	field       The field or query
+         ///\param [in]	fieldOrQuery       The field or query
          ///\return The query function
          //--------------------------------------------------------------
          template <class T>
@@ -846,7 +843,7 @@ namespace database
 
          //--------------------------------------------------------------
          ///\brief	generate date to iso string function 
-         ///\param [in]	field       The field or query
+         ///\param [in]	fieldOrQuery       The field or query
          ///\return The query function
          //--------------------------------------------------------------
          template <class T>
@@ -855,7 +852,8 @@ namespace database
 
          //--------------------------------------------------------------
          ///\brief	generate column naming sql
-         ///\param [in]	field       The field or query
+         ///\param [in]	fieldOrQuery      The field or query
+         ///\param [in]	columnName        The column name
          ///\return The query function
          //--------------------------------------------------------------
          template <class T>
@@ -995,6 +993,11 @@ namespace database
          /// \brief  Tells if adding from clause is needed to use WITH clause result (pgsql:true, sqlite:false)
          //
          bool m_fromWithClauseNeeded;
+
+         //
+         /// \brief  Manage a multi-SET operation
+         //
+         bool m_multiSetFirstOperation;
       };
 
       //include template specializations

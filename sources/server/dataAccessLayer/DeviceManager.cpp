@@ -155,7 +155,8 @@ namespace dataAccessLayer
 
    void CDeviceManager::updateDeviceState(int deviceId,
                                           const shared::plugin::yPluginApi::historization::EDeviceState& state,
-                                          const std::string& customMessageId, boost::shared_ptr<shared::CDataContainer> data) const
+                                          const std::string& customMessageId,
+                                          boost::shared_ptr<shared::CDataContainer> data) const
    {
       //if keywords do exist, create them
       shared::plugin::yPluginApi::historization::CDeviceState ds("deviceState");
@@ -192,6 +193,11 @@ namespace dataAccessLayer
          deviceId, dsm.getCapacity().getName(), shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
       for (const auto& stateMessageKeyword : stateMessageKeywords)
          m_acquisitionRequester->saveData(stateMessageKeyword->Id, dsm.formatValue(), currentDate);
+   }
+
+   void CDeviceManager::updateDevice(const database::entities::CDevice& device) const
+   {
+      m_deviceRequester->updateDevice(device);
    }
 
    void CDeviceManager::removeDevice(int deviceId)

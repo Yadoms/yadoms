@@ -407,7 +407,7 @@ namespace database
                                         const boost::posix_time::ptime& valueDatetime,
                                         const std::string& value)
          {
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CKeywordTable::getTableName())
                    .Set(CKeywordTable::getLastAcquisitionDateColumnName(), valueDatetime,
                         CKeywordTable::getLastAcquisitionValueColumnName(), value)
@@ -420,7 +420,7 @@ namespace database
          void CKeyword::updateKeywordName(int keywordId,
                                           const std::string& newName)
          {
-            auto qUpdate = m_databaseRequester->newQuery();
+            const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CKeywordTable::getTableName()).
                      Set(CKeywordTable::getNameColumnName(), newName).
                      Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);

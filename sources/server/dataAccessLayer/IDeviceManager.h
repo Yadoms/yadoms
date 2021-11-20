@@ -7,6 +7,8 @@ namespace dataAccessLayer
    class IDeviceManager
    {
    public:
+      virtual ~IDeviceManager() = default;
+
       //--------------------------------------------------------------
       /// \brief                          Check if device exists
       /// \param [in] deviceId            The device Id
@@ -173,6 +175,13 @@ namespace dataAccessLayer
                                      boost::shared_ptr<shared::CDataContainer> data) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Update the device
+      /// \param [in] device              The device to update
+      /// \throw  shared::exception::CEmptyResult if device doesn't exist
+      //--------------------------------------------------------------
+      virtual void updateDevice(const database::entities::CDevice& device) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Remove device 
       /// \param [in] deviceId   Device  Id
       /// \throw           shared::exception::CEmptyResult if fails
@@ -199,10 +208,5 @@ namespace dataAccessLayer
       /// \param [in] deviceId   The device ID to cleanup
       //--------------------------------------------------------------
       virtual void cleanupDevice(int deviceId) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~IDeviceManager() = default;
    };
 } //namespace dataAccessLayer 

@@ -11,7 +11,8 @@ namespace database
       CQuery::CQuery(const bool fromWithClauseNeeded)
          : m_insertOrUpdateName("INSERT OR REPLACE INTO"),
            m_queryType(kNotYetDefined),
-           m_fromWithClauseNeeded(fromWithClauseNeeded)
+           m_fromWithClauseNeeded(fromWithClauseNeeded),
+           m_multiSetFirstOperation(true)
       {
       }
 
@@ -82,10 +83,10 @@ namespace database
       /// \param name      The name
       /// \return          A reference to itself to allow method chaining
       //   
-      CQuery& CQuery::FromParenthesis(const CQuery& subquery, const std::string & name)
+      CQuery& CQuery::FromParenthesis(const CQuery& subquery, const std::string& name)
       {
          std::ostringstream ss;
-         ss << " FROM (" << subquery.str() << " " <<  name << ")";
+         ss << " FROM (" << subquery.str() << " " << name << ")";
          ss << " ";
          return Append(ss);
       }
@@ -216,7 +217,7 @@ namespace database
       CQuery& CQuery::Union()
       {
          std::ostringstream ss;
-         ss << " UNION " ;
+         ss << " UNION ";
          return Append(ss);
       }
 
@@ -236,7 +237,8 @@ namespace database
          return Append(ss);
       }
 
-      CQuery& CQuery::On(const std::string& tableIdentifier, const std::string& columnName, const std::string& table2Identifier, const std::string& column2Name)
+      CQuery& CQuery::On(const std::string& tableIdentifier, const std::string& columnName, const std::string& table2Identifier,
+                         const std::string& column2Name)
       {
          std::ostringstream ss;
          ss << " ON " << tableIdentifier << "." << columnName << " = " << table2Identifier << "." << column2Name << " ";
@@ -454,8 +456,8 @@ namespace database
       std::string CQuery::functionAvg(const std::string& sqlPart)
       {
          return (boost::format("avg(%1%)") % sqlPart).str();
-      }      
-      
+      }
+
       std::string CQuery::functionSum(const std::string& sqlPart)
       {
          return (boost::format("sum(%1%)") % sqlPart).str();
@@ -519,5 +521,3 @@ namespace database
       }
    } //namespace common
 } //namespace database 
-
-

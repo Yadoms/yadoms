@@ -214,7 +214,7 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to create plugin instance");
+                                                       "Fail to update plugin instance");
             }
          }
 

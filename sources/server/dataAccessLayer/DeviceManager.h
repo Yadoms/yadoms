@@ -55,8 +55,11 @@ namespace dataAccessLayer
       void updateDeviceModel(int deviceId, const std::string& model) override;
       void updateDeviceType(int deviceId, const std::string& type) override;
       void updateDeviceBlacklistState(int deviceId, bool blacklist) override;
-      void updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state,
-                             const std::string& customMessageId, boost::shared_ptr<shared::CDataContainer> data) const override;
+      void updateDeviceState(int deviceId,
+                             const shared::plugin::yPluginApi::historization::EDeviceState& state,
+                             const std::string& customMessageId,
+                             boost::shared_ptr<shared::CDataContainer> data) const override;
+      void updateDevice(const database::entities::CDevice& device) const override;
       void removeDevice(int deviceId) override;
       void removeDevice(int pluginId, const std::string& deviceName) override;
       void removeAllDeviceForPlugin(int pluginId) override;

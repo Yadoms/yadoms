@@ -453,6 +453,37 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update device name");
          }
 
+         void CDevice::updateDevice(const entities::CDevice& device) const
+         {
+            if (!device.Id.isDefined())
+               throw CDatabaseException("Need an id to update");
+
+            const auto query = m_databaseRequester->newQuery();
+            query->Update(CDeviceTable::getTableName());
+
+            if (device.PluginId.isDefined())
+               query->MultiSet(CDeviceTable::getPluginIdColumnName(), device.PluginId());
+            if (device.Name.isDefined())
+               query->MultiSet(CDeviceTable::getNameColumnName(), device.Name());
+            if (device.FriendlyName.isDefined())
+               query->MultiSet(CDeviceTable::getFriendlyNameColumnName(), device.FriendlyName());
+            if (device.Model.isDefined())
+               query->MultiSet(CDeviceTable::getModelColumnName(), device.Model());
+            if (device.Details.isDefined())
+               query->MultiSet(CDeviceTable::getDetailsColumnName(), device.Details());
+            if (device.Configuration.isDefined())
+               query->MultiSet(CDeviceTable::getConfigurationColumnName(), device.Configuration());
+            if (device.Type.isDefined())
+               query->MultiSet(CDeviceTable::getTypeColumnName(), device.Type());
+            if (device.Blacklist.isDefined())
+               query->MultiSet(CDeviceTable::getBlacklistColumnName(), device.Blacklist());
+
+            query->Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, device.Id());
+
+            if (m_databaseRequester->queryStatement(*query) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update device");
+         }
+
          bool CDevice::isDeviceBlacklisted(int deviceId) const
          {
             const auto& device = getDevice(deviceId, true);

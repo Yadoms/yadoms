@@ -264,6 +264,13 @@ namespace database
                                     const std::string& newName) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Update the device
+      /// \param [in] device              The device to update
+      /// \throw  shared::exception::CEmptyResult if device doesn't exist
+      //--------------------------------------------------------------
+      virtual void updateDevice(const entities::CDevice& device) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief                          Check if device is blacklisted
       /// \param [in] deviceId            The device id
       /// \return                         true if blacklisted

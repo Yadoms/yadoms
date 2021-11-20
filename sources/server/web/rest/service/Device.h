@@ -191,6 +191,7 @@ namespace web
 
             boost::shared_ptr<IAnswer> getDevicesV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getDeviceDynamicConfigurationSchemaV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> updateDevicesV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getKeywordsV2(boost::shared_ptr<IRequest> request) const;
 
             //-----------------------------------------

@@ -12,19 +12,16 @@ namespace database
          //--------------------------------------------------------------
          /// \Brief		   Plugin requester for SQLite database
          //--------------------------------------------------------------
-         class CPlugin : public IPluginRequester
+         class CPlugin final : public IPluginRequester
          {
          public:
             //--------------------------------------------------------------
             /// \Brief		   Constructor
-            /// \param [in]	pDatabaseHandler: the database handler
+            /// \param [in]	databaseRequester: the database handler
             //--------------------------------------------------------------
             explicit CPlugin(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 
-            //--------------------------------------------------------------
-            /// \Brief		   Destructor
-            //--------------------------------------------------------------
-            virtual ~CPlugin();
+            ~CPlugin() override = default;
 
             // IPluginRequester implementation
             int addInstance(const entities::CPlugin& newPlugin) override;
@@ -45,5 +42,3 @@ namespace database
       } //namespace requesters
    } //namespace common
 } //namespace database 
-
-
