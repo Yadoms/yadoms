@@ -33,6 +33,7 @@ namespace web
 
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "devices/create", createDeviceV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "devices/{id}", updateDeviceV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "devices/{id}", deleteDeviceV2));
             //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethodV1)
 
             // Keywords
@@ -40,8 +41,8 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords/{id}", getKeywordsV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "keywords/{id}", updateKeywordV2));
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), getKeywordsLastStateV1, transactionalMethodV1)
-            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), sendKeywordCommandV1, transactionalMethodV1)
-            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), deleteDeviceV1, transactionalMethodV1)
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "keywords/{id}/command/", sendCommandV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "keywords/{id}/command/{command}", sendCommandV2));
 
 
             return m_endPoints;
@@ -340,12 +341,44 @@ namespace web
 
                m_deviceManager->updateDevice(deviceToUpdate);
 
+               if (deviceToUpdate.Blacklist.isDefined() && deviceToUpdate.Blacklist())
+                  m_deviceManager->cleanupDevice(deviceId);
+
                return boost::make_shared<CNoContentAnswer>();
             }
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to update device");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CDevice::deleteDeviceV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               return CHelpers::transactionalMethodV2(
+                  std::move(request),
+                  m_dataProvider,
+                  [this](const auto& req) -> boost::shared_ptr<IAnswer>
+                  {
+                     // ID
+                     const auto id = req->pathVariable("id", std::string());
+                     if (id.empty())
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                                "device id was not provided");
+                     const auto deviceId = static_cast<int>(std::stol(id));
+
+                     m_pluginManager->notifyDeviceRemoved(deviceId);
+                     m_deviceManager->removeDevice(deviceId);
+
+                     return boost::make_shared<CNoContentAnswer>();
+                  });
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to delete device");
             }
          }
 
@@ -496,6 +529,28 @@ namespace web
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to update keyword");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CDevice::sendCommandV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "plugin-instance id was not provided");
+               const auto keywordId = static_cast<int>(std::stol(id));
+
+               m_messageSender.sendKeywordCommandAsync(keywordId, request->pathVariable("command", std::string()));
+               return boost::make_shared<CNoContentAnswer>();
+            }
+
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get available instances");
             }
          }
       } //namespace service

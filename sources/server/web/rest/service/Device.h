@@ -194,8 +194,10 @@ namespace web
             std::string generateUniqueDeviceName(int pluginId) const;
             boost::shared_ptr<IAnswer> createDeviceV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> updateDeviceV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> deleteDeviceV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getKeywordsV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> updateKeywordV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> sendCommandV2(boost::shared_ptr<IRequest> request) const;
 
             //-----------------------------------------
             ///\brief   Convert set of strings into set of ExtendedEnum

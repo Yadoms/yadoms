@@ -207,13 +207,13 @@ namespace database
          {
             if (m_keywordRequester->getKeyword(keywordId))
             {
-               auto q = m_databaseRequester->newQuery();
+               const auto q = m_databaseRequester->newQuery();
                q->DeleteFrom(CAcquisitionTable::getTableName()).
                   Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
                m_databaseRequester->queryStatement(*q);
 
-               auto qSummary = m_databaseRequester->newQuery();
+               const auto qSummary = m_databaseRequester->newQuery();
                qSummary->DeleteFrom(CAcquisitionSummaryTable::getTableName()).
                          Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
                m_databaseRequester->queryStatement(*qSummary);

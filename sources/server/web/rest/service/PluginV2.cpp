@@ -230,9 +230,8 @@ namespace web
                      // ID
                      const auto id = req->pathVariable("id", std::string());
                      if (id.empty())
-                        return boost::make_shared<CErrorAnswer>(
-                           shared::http::ECodes::kBadRequest,
-                           "plugin-instance id was not provided");
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                                "plugin-instance id was not provided");
                      const auto instanceId = static_cast<int>(std::stol(id));
 
                      m_pluginManager->deleteInstance(instanceId);
@@ -243,7 +242,7 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to create plugin instance");
+                                                       "Fail to delete plugin instance");
             }
          }
 
