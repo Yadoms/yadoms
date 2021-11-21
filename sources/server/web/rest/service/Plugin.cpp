@@ -673,7 +673,7 @@ namespace web
 
                   YADOMS_LOG(information) << "Manually device creation request received";
 
-                  const auto& deviceName = generateUniqueDeviceName(pluginId);
+                  const auto deviceName = generateUniqueDeviceName(pluginId);
 
                   try
                   {

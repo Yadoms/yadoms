@@ -247,7 +247,7 @@ namespace web
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                                 "invalid device creation request. Need at least plugin-id, name, type and configuration");
 
-                     const auto& deviceName = generateUniqueDeviceName(device->PluginId());
+                     device->Name = generateUniqueDeviceName(device->PluginId());
 
                      try
                      {
@@ -292,9 +292,9 @@ namespace web
                         YADOMS_LOG(error) << "Error creating device : " << ex.what() << ", will rollback...";
 
                         if (m_dataProvider->getDeviceRequester()->deviceExists(device->PluginId(),
-                                                                               deviceName))
+                                                                               device->Name()))
                            m_dataProvider->getDeviceRequester()->removeDevice(device->PluginId(),
-                                                                              deviceName);
+                                                                              device->Name());
                         throw;
                      }
                   });
