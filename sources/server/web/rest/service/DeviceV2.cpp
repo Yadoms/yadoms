@@ -3,7 +3,11 @@
 #include "RestEndPoint.h"
 #include "communication/callback/SynchronousCallback.h"
 #include <shared/exception/EmptyResult.hpp>
+
+#include "pluginSystem/ManuallyDeviceCreationData.h"
+#include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
+#include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
 
@@ -26,10 +30,9 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/dynamic-configuration-schema", getDeviceDynamicConfigurationSchemaV2));
             //TODO RAF REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevicesV1, transactionalMethodV1)
+
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "devices/create", createDeviceV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "devices/{id}", updateDeviceV2));
-            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), updateDeviceConfigurationV1, transactionalMethodV1)
-            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"), restoreDeviceV1, transactionalMethodV1)
-            //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethodV1)
             //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethodV1)
 
             // Keywords
@@ -202,6 +205,103 @@ namespace web
                YADOMS_LOG(error) << "Error processing getDevices request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get device configuration schema");
+            }
+         }
+
+         std::string CDevice::generateUniqueDeviceName(const int pluginId) const
+         {
+            static const boost::regex DeviceNamePattern("^manuallyCreatedDevice_([[:digit:]]*)$");
+            const auto& devices = m_dataProvider->getDeviceRequester()->getDevices(pluginId,
+                                                                                   true);
+            unsigned int lastNumber = 0;
+            for (const auto& device : devices)
+            {
+               boost::smatch result;
+               if (boost::regex_search(device->Name(), result, DeviceNamePattern))
+               {
+                  const auto number = std::stoul(std::string(result[1].first, result[1].second));
+                  if (lastNumber < number)
+                     lastNumber = number;
+               }
+            }
+
+            return std::string("manuallyCreatedDevice_") + std::to_string(lastNumber + 1);
+         }
+
+         boost::shared_ptr<IAnswer> CDevice::createDeviceV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               return CHelpers::transactionalMethodV2(
+                  std::move(request),
+                  m_dataProvider,
+                  [this](const auto& req) -> boost::shared_ptr<IAnswer>
+                  {
+                     auto device = boost::make_shared<database::entities::CDevice>();
+                     device->fillFromSerializedString(req->body());
+
+                     if (!device->PluginId.isDefined()
+                        || !device->Name.isDefined()
+                        || !device->Type.isDefined())
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                                "invalid device creation request. Need at least plugin-id, name, type and configuration");
+
+                     const auto& deviceName = generateUniqueDeviceName(device->PluginId());
+
+                     try
+                     {
+                        // Declare device
+                        device = m_deviceManager->createDevice(device);
+
+                        // Send request to plugin
+                        communication::callback::CSynchronousCallback<std::string> cb;
+                        const pluginSystem::CManuallyDeviceCreationData data(device->Name(),
+                                                                             device->Type(),
+                                                                             device->Configuration());
+                        m_messageSender.sendManuallyDeviceCreationRequest(device->PluginId(),
+                                                                          data,
+                                                                          cb);
+
+                        // Wait for plugin answer
+                        switch (cb.waitForResult())
+                        {
+                        case communication::callback::CSynchronousCallback<std::string>::kResult:
+                           {
+                              const auto res = cb.getCallbackResult();
+
+                              if (!res.success)
+                                 throw std::exception(res.errorMessage().c_str());
+
+                              return boost::make_shared<CCreatedAnswer>("devices/" + std::to_string(device->Id()));
+                           }
+
+                        case shared::event::kTimeout:
+                           {
+                              throw std::exception("The plugin did not respond");
+                           }
+
+                        default:
+                           {
+                              throw std::exception("Unknown plugin result");
+                           }
+                        }
+                     }
+                     catch (shared::exception::CException& ex)
+                     {
+                        YADOMS_LOG(error) << "Error creating device : " << ex.what() << ", will rollback...";
+
+                        if (m_dataProvider->getDeviceRequester()->deviceExists(device->PluginId(),
+                                                                               deviceName))
+                           m_dataProvider->getDeviceRequester()->removeDevice(device->PluginId(),
+                                                                              deviceName);
+                        throw;
+                     }
+                  });
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to create device");
             }
          }
 

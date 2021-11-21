@@ -47,6 +47,7 @@ namespace dataAccessLayer
                                                                   const std::string& type,
                                                                   const std::string& model,
                                                                   boost::shared_ptr<shared::CDataContainer> details) override;
+      boost::shared_ptr<database::entities::CDevice> createDevice(boost::shared_ptr<database::entities::CDevice> device) override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDevices() const override;
       std::vector<std::string> getDevicesForPluginInstance(int pluginId) const override;
       void updateDeviceFriendlyName(int deviceId, const std::string& newFriendlyName) override;

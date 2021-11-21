@@ -77,6 +77,16 @@ namespace dataAccessLayer
       return result;
    }
 
+   boost::shared_ptr<database::entities::CDevice> CDeviceManager::createDevice(boost::shared_ptr<database::entities::CDevice> device)
+   {
+      //create the device
+      auto result = m_deviceRequester->createDevice(device);
+
+      //post notification
+      notification::CHelpers::postChangeNotification(result, notification::change::EChangeType::kCreate);
+      return result;
+   }
+
    std::vector<boost::shared_ptr<database::entities::CDevice>> CDeviceManager::getDevices() const
    {
       return m_deviceRequester->getDevices();

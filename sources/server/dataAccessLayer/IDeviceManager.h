@@ -97,6 +97,14 @@ namespace dataAccessLayer
                                                                           boost::shared_ptr<shared::CDataContainer> details) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Create a device
+      /// \param [in] device              All devices data, ID excepted
+      /// \return                         The device created (all data, ID included)
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual boost::shared_ptr<database::entities::CDevice> createDevice(boost::shared_ptr<database::entities::CDevice> device) = 0;
+
+      //--------------------------------------------------------------
       /// \brief           List all devices
       /// \return          List of registered devices
       //--------------------------------------------------------------

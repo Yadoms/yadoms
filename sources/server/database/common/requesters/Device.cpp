@@ -290,8 +290,11 @@ namespace database
             return adapter.getResults();
          }
 
-         boost::shared_ptr<entities::CDevice> CDevice::createDevice(int pluginId, const std::string& name, const std::string& friendlyName,
-                                                                    const std::string& type, const std::string& model,
+         boost::shared_ptr<entities::CDevice> CDevice::createDevice(int pluginId,
+                                                                    const std::string& name,
+                                                                    const std::string& friendlyName,
+                                                                    const std::string& type,
+                                                                    const std::string& model,
                                                                     boost::shared_ptr<shared::CDataContainer> details)
          {
             if (deviceExists(pluginId, name))
@@ -324,6 +327,41 @@ namespace database
 
             //device is created, just find it in table and return entity
             auto deviceCreated = getDeviceInPlugin(pluginId, name);
+            if (!deviceCreated)
+               throw shared::exception::CEmptyResult("Fail to retrieve created device");
+
+            return deviceCreated;
+         }
+
+         boost::shared_ptr<entities::CDevice> CDevice::createDevice(boost::shared_ptr<entities::CDevice> device)
+         {
+            if (deviceExists(device->PluginId(), device->Name()))
+               throw shared::exception::CEmptyResult("Fail to create device (device already exists)");
+
+            const auto qInsert = m_databaseRequester->newQuery();
+            qInsert->InsertInto(CDeviceTable::getTableName(),
+                                CDeviceTable::getPluginIdColumnName(),
+                                CDeviceTable::getNameColumnName(),
+                                CDeviceTable::getFriendlyNameColumnName(),
+                                CDeviceTable::getTypeColumnName(),
+                                CDeviceTable::getModelColumnName(),
+                                CDeviceTable::getDetailsColumnName(),
+                                CDeviceTable::getConfigurationColumnName(),
+                                CDeviceTable::getBlacklistColumnName()).
+                     Values(device->PluginId(),
+                            device->Name(),
+                            device->FriendlyName().empty() ? device->Name() : device->FriendlyName(),
+                            device->Type(),
+                            device->Model(),
+                            device->Details()->serialize(),
+                            device->Configuration(),
+                            device->Blacklist());
+            if (m_databaseRequester->queryStatement(*qInsert) <= 0)
+               throw shared::exception::CEmptyResult("Error inserting new device");
+
+            //device is created, just find it in table and return ID
+            auto deviceCreated = getDeviceInPlugin(device->PluginId(),
+                                                   device->Name());
             if (!deviceCreated)
                throw shared::exception::CEmptyResult("Fail to retrieve created device");
 

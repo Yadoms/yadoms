@@ -132,7 +132,7 @@ namespace database
       virtual std::vector<boost::shared_ptr<entities::CDevice>> getCompatibleForMergeDevice(int refDevice) const = 0;
 
       //--------------------------------------------------------------
-      /// \brief                          Create a device identified by (pluginId and name).
+      /// \brief                          Create a device identified by pluginId and device name
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
       /// \param [in] friendlyName        The user friendly device name
@@ -148,6 +148,14 @@ namespace database
                                                                 const std::string& type,
                                                                 const std::string& model,
                                                                 boost::shared_ptr<shared::CDataContainer> details) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Create a device
+      /// \param [in] device              All devices data, ID excepted
+      /// \return                         The device created (all data, ID included)
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual boost::shared_ptr<entities::CDevice> createDevice(boost::shared_ptr<entities::CDevice> device) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices

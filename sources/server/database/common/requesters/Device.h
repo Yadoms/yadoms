@@ -37,6 +37,7 @@ namespace database
                                                               const std::string& type,
                                                               const std::string& model,
                                                               boost::shared_ptr<shared::CDataContainer> details) override;
+            boost::shared_ptr<entities::CDevice> createDevice(boost::shared_ptr<entities::CDevice> device) override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(bool blacklistedIncluded = false) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(const std::set<int>& deviceIds) const override;
             std::vector<std::string> getDevicesNames(int pluginId,
