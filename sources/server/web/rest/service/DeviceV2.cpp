@@ -271,19 +271,19 @@ namespace web
                               const auto res = cb.getCallbackResult();
 
                               if (!res.success)
-                                 throw std::exception(res.errorMessage().c_str());
+                                 throw std::runtime_error(res.errorMessage().c_str());
 
                               return boost::make_shared<CCreatedAnswer>("devices/" + std::to_string(device->Id()));
                            }
 
                         case shared::event::kTimeout:
                            {
-                              throw std::exception("The plugin did not respond");
+                              throw std::runtime_error("The plugin did not respond");
                            }
 
                         default:
                            {
-                              throw std::exception("Unknown plugin result");
+                              throw std::runtime_error("Unknown plugin result");
                            }
                         }
                      }
