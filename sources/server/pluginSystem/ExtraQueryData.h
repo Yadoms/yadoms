@@ -13,11 +13,11 @@ namespace pluginSystem
       ///\brief                        Constructor
       ///\param[in] query              The query
       ///\param[in] data               Query data
-      ///\param[in] deviceId           Device ID to apply query
+      ///\param[in] deviceName         Device name to apply query (if empty, apply query to plugin instance)
       //-----------------------------------------------------
       CExtraQueryData(std::string query,
                       boost::shared_ptr<shared::CDataContainer> data,
-                      std::string deviceId);
+                      std::string deviceName = std::string());
       ~CExtraQueryData() override = default;
 
       // IExtraQueryData implementation
@@ -29,6 +29,6 @@ namespace pluginSystem
    private:
       std::string m_query;
       boost::shared_ptr<shared::CDataContainer> m_data;
-      std::string m_deviceId;
+      std::string m_deviceName;
    };
 } // namespace pluginSystem	

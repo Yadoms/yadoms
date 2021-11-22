@@ -61,8 +61,9 @@ namespace communication
                                                           callback::ISynchronousCallback<std::string>& callback)
    {
       // Create the request
-      boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request(boost::make_shared<pluginSystem::CManuallyDeviceCreationRequest>(data,
-                                                                                                                                                             callback));
+      const boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request(
+         boost::make_shared<pluginSystem::CManuallyDeviceCreationRequest>(data,
+                                                                          callback));
 
       // Dispatch command to the right plugin
       m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
@@ -73,8 +74,8 @@ namespace communication
                                                 callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback)
    {
       // Create the request
-      boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request(boost::make_shared<pluginSystem::CBindingQueryRequest>(data,
-                                                                                                                                         callback));
+      const boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request(boost::make_shared<pluginSystem::CBindingQueryRequest>(data,
+         callback));
 
       // Dispatch command to the right plugin
       m_pluginManager->postBindingQueryRequest(pluginId, request);
@@ -94,5 +95,3 @@ namespace communication
                                                   configuration);
    }
 } //namespace communication
-
-

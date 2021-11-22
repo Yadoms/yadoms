@@ -191,6 +191,7 @@ namespace web
 
             boost::shared_ptr<IAnswer> getDevicesV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> getDeviceDynamicConfigurationSchemaV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> sendExtraQueryToDeviceV2(boost::shared_ptr<IRequest> request) const;
             std::string generateUniqueDeviceName(int pluginId) const;
             boost::shared_ptr<IAnswer> createDeviceV2(boost::shared_ptr<IRequest> request) const;
             boost::shared_ptr<IAnswer> updateDeviceV2(boost::shared_ptr<IRequest> request) const;

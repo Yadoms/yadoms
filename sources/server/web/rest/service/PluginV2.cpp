@@ -371,12 +371,11 @@ namespace web
                   m_dataProvider,
                   [this, &instanceId, &query](const auto& req) -> boost::shared_ptr<IAnswer>
                   {
-                     const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                         req->body().empty()
-                                                                                            ? shared::CDataContainer::make()
-                                                                                            : shared::CDataContainer::make(req->body()),
-                                                                                         std::string());
-                     const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+                     const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId,
+                                                                             boost::make_shared<pluginSystem::CExtraQueryData>(query,
+                                                                                req->body().empty()
+                                                                                   ? shared::CDataContainer::make()
+                                                                                   : shared::CDataContainer::make(req->body())));
 
                      if (taskId.empty())
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,

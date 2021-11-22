@@ -4,6 +4,7 @@
 #include "communication/callback/SynchronousCallback.h"
 #include <shared/exception/EmptyResult.hpp>
 
+#include "pluginSystem/ExtraQueryData.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
@@ -28,13 +29,13 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/dynamic-configuration-schema", getDeviceDynamicConfigurationSchemaV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/extra-query/{query}", sendExtraQueryToDeviceV2));
             //TODO RAF REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevicesV1, transactionalMethodV1)
 
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "devices/create", createDeviceV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "devices/{id}", updateDeviceV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "devices/{id}", deleteDeviceV2));
-            //TODO : Initialement dans le service plugin, à déplacer ici : REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethodV1)
 
             // Keywords
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords", getKeywordsV2));
@@ -206,6 +207,54 @@ namespace web
                YADOMS_LOG(error) << "Error processing getDevices request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get device configuration schema");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CDevice::sendExtraQueryToDeviceV2(boost::shared_ptr<IRequest> request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "device id was not provided");
+               const auto deviceId = static_cast<int>(std::stol(id));
+
+               // Query
+               const auto query = request->pathVariable("query", std::string());
+               if (query.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "query to device was not provided");
+
+               return CHelpers::transactionalMethodV2(
+                  std::move(request),
+                  m_dataProvider,
+                  [this, &deviceId, &query](const auto& req) -> boost::shared_ptr<IAnswer>
+                  {
+                     const auto device = m_deviceRequester->getDevice(deviceId);
+
+                     const auto taskId = m_messageSender.sendExtraQueryAsync(device->PluginId(),
+                                                                             boost::make_shared<pluginSystem::CExtraQueryData>(query,
+                                                                                req->body().empty()
+                                                                                   ? shared::CDataContainer::make()
+                                                                                   : shared::CDataContainer::make(req->body()),
+                                                                                device->Name()));
+
+                     if (taskId.empty())
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                                "Fail to get extra query task");
+
+                     shared::CDataContainer result;
+                     result.set("taskId", taskId);
+                     return boost::make_shared<CSuccessAnswer>(result);
+                  });
+            }
+
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get available instances");
             }
          }
 
