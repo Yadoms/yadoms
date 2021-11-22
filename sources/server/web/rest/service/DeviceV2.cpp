@@ -247,7 +247,7 @@ namespace web
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                                 "invalid device creation request. Need at least plugin-id, name, type and configuration");
 
-                     device->Name = generateUniqueDeviceName(device->PluginId());
+                     device->Name = this->generateUniqueDeviceName(device->PluginId());
 
                      try
                      {
