@@ -98,7 +98,7 @@ namespace dataAccessLayer
    }
 
    std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getKeywords(
-      const boost::optional<int>& keywordId,
+      const std::set<int>& keywordIds,
       const boost::optional<int>& deviceId,
       const boost::optional<std::string>& friendlyName,
       const std::set<std::string>& capacityName,
@@ -109,7 +109,7 @@ namespace dataAccessLayer
       const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
       bool blacklistedIncluded)
    {
-      return m_keywordRequester->getKeywords(keywordId,
+      return m_keywordRequester->getKeywords(keywordIds,
                                              deviceId,
                                              friendlyName,
                                              capacityName,

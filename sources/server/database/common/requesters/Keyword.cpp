@@ -216,7 +216,7 @@ namespace database
          }
 
          std::vector<boost::shared_ptr<entities::CKeyword>> CKeyword::getKeywords(
-            const boost::optional<int>& keywordId,
+            const std::set<int>& keywordIds,
             const boost::optional<int>& deviceId,
             const boost::optional<std::string>& friendlyName,
             const std::set<std::string>& capacityName,
@@ -237,8 +237,8 @@ namespace database
             for (const auto& unit : units)
                cleanedUnits.emplace(unit.rfind("data.units.", 0) == 0 ? unit : "data.units." + unit);
 
-            if (keywordId)
-               query->And(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, *keywordId);
+            if (!keywordIds.empty())
+               query->And(CKeywordTable::getIdColumnName(), CQUERY_OP_IN, keywordIds);
             if (deviceId)
                query->And(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, *deviceId);
             if (friendlyName)

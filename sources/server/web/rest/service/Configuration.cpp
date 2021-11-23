@@ -156,7 +156,7 @@ namespace web
             return m_endPoints;
          }
 
-         boost::shared_ptr<IAnswer> CConfiguration::resetServerConfigurationV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CConfiguration::resetServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -170,7 +170,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CConfiguration::getServerConfigurationV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CConfiguration::getServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {

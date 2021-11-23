@@ -80,16 +80,16 @@ namespace web
                                                                                               const std::vector<std::string>& parameters,
                                                                                               const std::string& requestContent) const;
 
-            boost::shared_ptr<IAnswer> getAvailablePluginsV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getPluginsInstancesV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> createPluginsInstanceV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> updatePluginsInstanceV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> deletePluginsInstanceV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getPluginsInstancesLogV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getPluginsInstancesBindingV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> startPluginsInstanceV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> sendExtraQueryToPluginInstanceV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> stopPluginsInstanceV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getAvailablePluginsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getPluginsInstancesV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> createPluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updatePluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deletePluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getPluginsInstancesLogV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getPluginsInstancesBindingV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> startPluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> sendExtraQueryToPluginInstanceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> stopPluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
 
 
             std::string generateUniqueDeviceName(const int pluginId) const;

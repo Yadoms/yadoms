@@ -146,7 +146,6 @@ void CSupervisor::run()
       restServices->push_back(boost::make_shared<web::rest::service::CSystem>(timezoneDatabase,
                                                                               hardware::usb::CDevicesListerFactory::createDeviceLister(),
                                                                               dataAccessLayer->getConfigurationManager()));
-      restServices->push_back(boost::make_shared<web::rest::service::CAcquisition>(dataProvider));
       restServices->push_back(boost::make_shared<web::rest::service::CAutomationRule>(dataProvider,
                                                                                       automationRulesManager));
       restServices->push_back(boost::make_shared<web::rest::service::CTask>(taskManager));

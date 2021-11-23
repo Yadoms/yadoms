@@ -42,13 +42,13 @@ namespace web
                const std::string& requestContent) const;
 
          private:
-            boost::shared_ptr<IAnswer> getSystemInformationV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getCurrentTimeV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getSupportedTimezonesV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request);
-            boost::shared_ptr<IAnswer> getSerialPortsV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getUsbDevicesV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getNetworkInterfacesV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getSystemInformationV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getCurrentTimeV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getSupportedTimezonesV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getVirtualDevicesSupportedCapacitiesV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> getSerialPortsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getUsbDevicesV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getNetworkInterfacesV2(const boost::shared_ptr<IRequest>& request) const;
 
             boost::shared_ptr<shared::CDataContainer> getSerialPorts() const;
             static std::vector<std::pair<int, int>> toPairsVector(const std::unique_ptr<std::set<std::string>>& vidPidList);

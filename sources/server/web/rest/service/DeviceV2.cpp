@@ -38,10 +38,11 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "devices/{id}", deleteDeviceV2));
 
             // Keywords
+            // TODO créer un service "KeywordV2" ?
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords", getKeywordsV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords/{id}", getKeywordsV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords/{ids}", getKeywordsV2));
+            //TODO m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords/{id}/acquisitions", getKeywordsAcquisitionsV2)); // Param resolution{all|hour|day|month|year}
             m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "keywords/{id}", updateKeywordV2));
-            //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), getKeywordsLastStateV1, transactionalMethodV1)
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "keywords/{id}/command/", sendCommandV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "keywords/{id}/command/{command}", sendCommandV2));
 
@@ -49,7 +50,7 @@ namespace web
             return m_endPoints;
          }
 
-         boost::shared_ptr<IAnswer> CDevice::getDevicesV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::getDevicesV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -80,7 +81,7 @@ namespace web
                                                                            request->queryParam("containing-keyword-with-capacity-access-mode")))
                                                                      : boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>();
                const auto containsKeywordWithDataType = request->queryParamExists("containing-keyword-with-capacity-type")
-                                                           ? convert<shared::plugin::yPluginApi::EKeywordDataType>(
+                                                           ? CHelpers::convertToEnumSet<shared::plugin::yPluginApi::EKeywordDataType>(
                                                               request->queryParamAsList("containing-keyword-with-capacity-type"))
                                                            : std::make_unique<std::set<shared::plugin::yPluginApi::EKeywordDataType>>();
                const auto containsKeywordWithHistoryDepth = request->queryParamExists("containing-keyword-with-history-depth")
@@ -150,7 +151,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CDevice::getDeviceDynamicConfigurationSchemaV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::getDeviceDynamicConfigurationSchemaV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -210,7 +211,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CDevice::sendExtraQueryToDeviceV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::sendExtraQueryToDeviceV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -228,7 +229,7 @@ namespace web
                                                           "query to device was not provided");
 
                return CHelpers::transactionalMethodV2(
-                  std::move(request),
+                  request,
                   m_dataProvider,
                   [this, &deviceId, &query](const auto& req) -> boost::shared_ptr<IAnswer>
                   {
@@ -278,12 +279,12 @@ namespace web
             return std::string("manuallyCreatedDevice_") + std::to_string(lastNumber + 1);
          }
 
-         boost::shared_ptr<IAnswer> CDevice::createDeviceV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::createDeviceV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
                return CHelpers::transactionalMethodV2(
-                  std::move(request),
+                  request,
                   m_dataProvider,
                   [this](const auto& req) -> boost::shared_ptr<IAnswer>
                   {
@@ -355,7 +356,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CDevice::updateDeviceV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::updateDeviceV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -402,12 +403,12 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CDevice::deleteDeviceV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::deleteDeviceV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
                return CHelpers::transactionalMethodV2(
-                  std::move(request),
+                  request,
                   m_dataProvider,
                   [this](const auto& req) -> boost::shared_ptr<IAnswer>
                   {
@@ -431,14 +432,14 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CDevice::getKeywordsV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::getKeywordsV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
                // ID
-               const auto keywordId = request->pathVariableExists("id")
-                                         ? boost::make_optional(static_cast<int>(std::stol(request->pathVariable("id"))))
-                                         : boost::optional<int>();
+               const auto keywordIds = request->pathVariableExists("ids")
+                                          ? CHelpers::convertToIntSet(request->pathVariableAsList("ids"))
+                                          : std::make_unique<std::set<int>>();
 
                // Filtering
                const auto fromDeviceId = request->queryParamExists("from-device-id")
@@ -455,7 +456,7 @@ namespace web
                                                 ? boost::make_optional(request->queryParam("from-friendly-name"))
                                                 : boost::optional<std::string>();
                const auto fromDataType = request->queryParamExists("from-data-type")
-                                            ? convert<shared::plugin::yPluginApi::EKeywordDataType>(
+                                            ? CHelpers::convertToEnumSet<shared::plugin::yPluginApi::EKeywordDataType>(
                                                request->queryParamAsList("from-data-type"))
                                             : std::make_unique<std::set<shared::plugin::yPluginApi::EKeywordDataType>>();
                const auto fromUnits = request->queryParamExists("from-units")
@@ -471,7 +472,7 @@ namespace web
                                                 : boost::optional<shared::plugin::yPluginApi::EHistoryDepth>();
 
                // Process the request
-               const auto keywords = m_keywordManager->getKeywords(keywordId,
+               const auto keywords = m_keywordManager->getKeywords(*keywordIds,
                                                                    fromDeviceId,
                                                                    fromFriendlyName,
                                                                    *fromCapacityName,
@@ -541,7 +542,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CDevice::updateKeywordV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::updateKeywordV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -581,7 +582,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CDevice::sendCommandV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CDevice::sendCommandV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {

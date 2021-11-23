@@ -30,12 +30,12 @@ namespace web
          std::string CSystem::m_restKeyword = std::string("system");
          shared::CDataContainer CSystem::m_virtualDevicesSupportedCapacities;
 
-         CSystem::CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
+         CSystem::CSystem(boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
                           boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
                           boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
             : m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>()),
               m_configurationManager(std::move(configurationManager)),
-              m_timezoneDatabase(timezoneDatabase),
+              m_timezoneDatabase(std::move(timezoneDatabase)),
               m_usbDevicesLister(std::move(usbDevicesLister))
          {
          }
@@ -508,7 +508,7 @@ namespace web
             return m_endPoints;
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getSystemInformationV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CSystem::getSystemInformationV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -545,7 +545,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getCurrentTimeV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CSystem::getCurrentTimeV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -560,7 +560,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getSupportedTimezonesV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CSystem::getSupportedTimezonesV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -602,7 +602,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getVirtualDevicesSupportedCapacitiesV2(boost::shared_ptr<IRequest> request)
+         boost::shared_ptr<IAnswer> CSystem::getVirtualDevicesSupportedCapacitiesV2(const boost::shared_ptr<IRequest>& request)
          {
             try
             {
@@ -657,7 +657,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getSerialPortsV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CSystem::getSerialPortsV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -705,7 +705,7 @@ namespace web
             return vidPidVector;
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getUsbDevicesV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CSystem::getUsbDevicesV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -727,7 +727,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CSystem::getNetworkInterfacesV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CSystem::getNetworkInterfacesV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {

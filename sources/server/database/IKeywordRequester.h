@@ -79,7 +79,7 @@ namespace database
 
       //--------------------------------------------------------------
       /// \brief                          General search function for keywords
-      /// \param [in] keywordId           Search keyword matching this ID
+      /// \param [in] keywordIds          Search keywords matching one of these IDs
       /// \param [in] deviceId            Search keywords matching this device ID
       /// \param [in] friendlyName        Search keywords matching this friendly name
       /// \param [in] capacityName        Search keywords matching one of these capacity names
@@ -92,7 +92,7 @@ namespace database
       /// \return                         The keywords list
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CKeyword>> getKeywords(
-         const boost::optional<int>& keywordId,
+         const std::set<int>& keywordIds,
          const boost::optional<int>& deviceId,
          const boost::optional<std::string>& friendlyName,
          const std::set<std::string>& capacityName,
@@ -182,13 +182,13 @@ namespace database
       /// \note !!! ATTENTION !!!  Use it only if you really know what you are doing
       //--------------------------------------------------------------
       virtual void updateKeywordName(int keywordId,
-                                     const std::string& newName) = 0;      
+                                     const std::string& newName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the keyword
       /// \param [in] keyword             The keyword to update
       /// \throw  shared::exception::CEmptyResult if device doesn't exist
       //--------------------------------------------------------------
-      virtual void updateKeyword(const entities::CKeyword& keyword) const = 0;     
+      virtual void updateKeyword(const entities::CKeyword& keyword) const = 0;
    };
 } //namespace database 

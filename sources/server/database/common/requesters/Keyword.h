@@ -35,7 +35,7 @@ namespace database
                const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth,
                bool blacklisted) const override;
             std::vector<boost::shared_ptr<entities::CKeyword>> getKeywords(
-               const boost::optional<int>& keywordId,
+               const std::set<int>& keywordIds,
                const boost::optional<int>& deviceId,
                const boost::optional<std::string>& friendlyName,
                const std::set<std::string>& capacityName,

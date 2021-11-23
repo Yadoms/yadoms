@@ -14,17 +14,17 @@ namespace web
       {
       }
 
-      shared::http::ERestVerb CRestRequest::method()
+      shared::http::ERestVerb CRestRequest::method() const
       {
          return m_method;
       }
 
-      bool CRestRequest::pathVariableExists(const std::string& key)
+      bool CRestRequest::pathVariableExists(const std::string& key) const
       {
          return !!m_request->getPathVariable(key.c_str());
       }
 
-      std::string CRestRequest::pathVariable(const std::string& key)
+      std::string CRestRequest::pathVariable(const std::string& key) const
       {
          const auto value = m_request->getPathVariable(key.c_str());
          if (!value)
@@ -33,7 +33,7 @@ namespace web
       }
 
       std::string CRestRequest::pathVariable(const std::string& key,
-                                             const std::string& defaultValue)
+                                             const std::string& defaultValue) const
       {
          const auto value = m_request->getPathVariable(key.c_str());
          if (!value)
@@ -41,13 +41,20 @@ namespace web
          return shared::http::CHttpHelpers::urlDecode(value->std_str());
       }
 
-      bool CRestRequest::queryParamExists(const std::string& key)
+      std::unique_ptr<std::set<std::string>> CRestRequest::pathVariableAsList(const std::string& key,
+                                                                              char separator) const
+      {
+         return toSet(pathVariable(key, std::string()),
+                      separator);
+      }
+
+      bool CRestRequest::queryParamExists(const std::string& key) const
       {
          const auto params = queryParams();
          return params->find(key) != params->end();
       }
 
-      std::string CRestRequest::queryParam(const std::string& key)
+      std::string CRestRequest::queryParam(const std::string& key) const
       {
          const auto params = queryParams();
          const auto param = params->find(key);
@@ -58,7 +65,7 @@ namespace web
       }
 
       std::string CRestRequest::queryParam(const std::string& key,
-                                           const std::string& defaultValue)
+                                           const std::string& defaultValue) const
       {
          const auto params = queryParams();
          const auto param = params->find(key);
@@ -69,33 +76,25 @@ namespace web
       }
 
       std::unique_ptr<std::set<std::string>> CRestRequest::queryParamAsList(const std::string& key,
-                                                                            char separator)
+                                                                            char separator) const
       {
-         const auto flagsString = queryParam(key, std::string());
-         if (flagsString.empty())
-            return std::make_unique<std::set<std::string>>();
-
-         auto flags = std::make_unique<std::set<std::string>>();
-         for (const auto& t : boost::tokenizer<boost::char_separator<char>>(flagsString,
-                                                                            boost::char_separator<char>(&separator)))
-            flags->insert(t);
-
-         return flags;
+         return toSet(queryParam(key, std::string()),
+                      separator);
       }
 
-      boost::shared_ptr<const std::map<std::string, std::string>> CRestRequest::queryParams()
+      boost::shared_ptr<const std::map<std::string, std::string>> CRestRequest::queryParams() const
       {
          if (!m_queryParams)
             m_queryParams = boost::make_shared<std::map<std::string, std::string>>(toMap(m_request->getQueryParameters()));
          return m_queryParams;
       }
 
-      rest::EContentType CRestRequest::contentType()
+      rest::EContentType CRestRequest::contentType() const
       {
          return rest::ToContentType(m_request->getHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE)->std_str());
       }
 
-      std::string CRestRequest::body()
+      std::string CRestRequest::body() const
       {
          if (m_method == shared::http::ERestVerb::kGet
             || m_method == shared::http::ERestVerb::kHead
@@ -105,7 +104,7 @@ namespace web
          return m_body;
       }
 
-      float CRestRequest::acceptContentType(rest::EContentType contentType)
+      float CRestRequest::acceptContentType(rest::EContentType contentType) const
       {
          if (!m_parsedAcceptContentType)
             m_parsedAcceptContentType = parseAcceptContentType();
@@ -131,6 +130,20 @@ namespace web
          for (const auto& variable : in.getAll())
             out.emplace(variable.first.std_str(), shared::http::CHttpHelpers::urlDecode(variable.second.std_str()));
          return out;
+      }
+
+      std::unique_ptr<std::set<std::string>> CRestRequest::toSet(const std::string& flagsString,
+                                                                 char separator)
+      {
+         if (flagsString.empty())
+            return std::make_unique<std::set<std::string>>();
+
+         auto flags = std::make_unique<std::set<std::string>>();
+         for (const auto& t : boost::tokenizer<boost::char_separator<char>>(flagsString,
+                                                                            boost::char_separator<char>(&separator)))
+            flags->insert(t);
+
+         return flags;
       }
 
       boost::shared_ptr<std::map<rest::EContentType, float>> CRestRequest::parseAcceptContentType() const

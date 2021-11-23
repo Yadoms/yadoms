@@ -40,7 +40,7 @@ namespace web
             return m_endPoints;
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::getAvailablePluginsV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::getAvailablePluginsV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -98,7 +98,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -170,12 +170,12 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::createPluginsInstanceV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::createPluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
                return CHelpers::transactionalMethodV2(
-                  std::move(request),
+                  request,
                   m_dataProvider,
                   [this](const auto& req) -> boost::shared_ptr<IAnswer>
                   {
@@ -192,7 +192,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::updatePluginsInstanceV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::updatePluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -218,7 +218,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::deletePluginsInstanceV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::deletePluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -246,7 +246,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesLogV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesLogV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -267,7 +267,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesBindingV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::getPluginsInstancesBindingV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -324,7 +324,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::startPluginsInstanceV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::startPluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -349,7 +349,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::sendExtraQueryToPluginInstanceV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::sendExtraQueryToPluginInstanceV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -394,7 +394,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CPlugin::stopPluginsInstanceV2(boost::shared_ptr<IRequest> request) const
+         boost::shared_ptr<IAnswer> CPlugin::stopPluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {

@@ -102,7 +102,7 @@ namespace dataAccessLayer
 
       //--------------------------------------------------------------
       /// \brief                          General search function for keywords
-      /// \param [in] keywordId           Search keyword matching this ID
+      /// \param [in] keywordIds          Search keywords matching one of these IDs
       /// \param [in] deviceId            Search keywords matching this device ID
       /// \param [in] friendlyName        Search keywords matching this friendly name
       /// \param [in] capacityName        Search keywords matching one of these capacity names
@@ -115,7 +115,7 @@ namespace dataAccessLayer
       /// \return                         The keywords list
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywords(
-         const boost::optional<int>& keywordId,
+         const std::set<int>& keywordIds,
          const boost::optional<int>& deviceId,
          const boost::optional<std::string>& friendlyName,
          const std::set<std::string>& capacityName,

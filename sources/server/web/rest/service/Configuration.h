@@ -36,9 +36,9 @@ namespace web
                                                                                                   const std::string& requestContent) const;
 
             // REST Api v2
-            boost::shared_ptr<IAnswer> getServerConfigurationV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> saveServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
-            boost::shared_ptr<IAnswer> resetServerConfigurationV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> resetServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> getExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> saveExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
 

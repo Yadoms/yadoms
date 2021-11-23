@@ -189,29 +189,16 @@ namespace web
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
 
-            boost::shared_ptr<IAnswer> getDevicesV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getDeviceDynamicConfigurationSchemaV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> sendExtraQueryToDeviceV2(boost::shared_ptr<IRequest> request) const;
+            boost::shared_ptr<IAnswer> getDevicesV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getDeviceDynamicConfigurationSchemaV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> sendExtraQueryToDeviceV2(const boost::shared_ptr<IRequest>& request) const;
             std::string generateUniqueDeviceName(int pluginId) const;
-            boost::shared_ptr<IAnswer> createDeviceV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> updateDeviceV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> deleteDeviceV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> getKeywordsV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> updateKeywordV2(boost::shared_ptr<IRequest> request) const;
-            boost::shared_ptr<IAnswer> sendCommandV2(boost::shared_ptr<IRequest> request) const;
-
-            //-----------------------------------------
-            ///\brief   Convert set of strings into set of ExtendedEnum
-            //-----------------------------------------
-            template <typename T>
-            std::unique_ptr<std::set<T>> convert(const std::unique_ptr<std::set<std::string>> in) const
-            {
-               static_assert(std::is_base_of<shared::enumeration::IExtendedEnum, T>::value, "T must be derived from shared::enumeration::IExtendedEnum");
-               auto out = std::make_unique<std::set<T>>();
-               for (const auto& inItem : *in)
-                  out->insert(T(inItem));
-               return out;
-            }
+            boost::shared_ptr<IAnswer> createDeviceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updateDeviceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deleteDeviceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getKeywordsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updateKeywordV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> sendCommandV2(const boost::shared_ptr<IRequest>& request) const;
 
             //-----------------------------------------
             ///\brief   Data provider
