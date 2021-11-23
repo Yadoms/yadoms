@@ -40,8 +40,8 @@ namespace web
             if (m_endPoints != nullptr)
                return m_endPoints;
 
+            // No end point for this service
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            //TODO
 
             return m_endPoints;
          }

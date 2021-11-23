@@ -86,6 +86,10 @@ namespace database
                                                  boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
                                                  boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
                                                  int limit = -1) override;
+            std::string getHugeVectorKeywordDataV2(const std::set<int>& keywordIds,
+                                                   const boost::posix_time::ptime& fromDate = boost::posix_time::not_a_date_time,
+                                                   const boost::posix_time::ptime& toDate = boost::posix_time::not_a_date_time,
+                                                   int limit = -1) override;
             std::string getHugeVectorKeywordDataByHour(int keywordId,
                                                        boost::posix_time::ptime timeFrom,
                                                        boost::posix_time::ptime timeTo) override;
@@ -148,6 +152,8 @@ namespace database
                boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
                boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
                int limit = -1) const;
+            boost::shared_ptr<CQuery> requestKeywordData(const std::set<int>& keywordIds, const boost::posix_time::ptime& fromDate,
+                                                         const boost::posix_time::ptime& toDate, int limit) const;
 
             //--------------------------------------------------------------
             /// \Brief		   Pointer to keyword requester

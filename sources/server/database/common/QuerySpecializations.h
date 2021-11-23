@@ -575,16 +575,16 @@ CQuery& CQuery::OrParenthesis(const T1& field, const std::string& op, const T2& 
 
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery& CQuery::OrderBy(const T1& value1, const CQuery::E_OrderWay way1,
-                               const T2& value2, const CQuery::E_OrderWay way2,
-                               const T3& value3, const CQuery::E_OrderWay way3,
-                               const T4& value4, const CQuery::E_OrderWay way4,
-                               const T5& value5, const CQuery::E_OrderWay way5,
-                               const T6& value6, const CQuery::E_OrderWay way6,
-                               const T7& value7, const CQuery::E_OrderWay way7,
-                               const T8& value8, const CQuery::E_OrderWay way8,
-                               const T9& value9, const CQuery::E_OrderWay way9,
-                               const T10& value10, const CQuery::E_OrderWay way10)
+inline CQuery& CQuery::OrderBy(const T1& value1, E_OrderWay way1,
+                               const T2& value2, E_OrderWay way2,
+                               const T3& value3, E_OrderWay way3,
+                               const T4& value4, E_OrderWay way4,
+                               const T5& value5, E_OrderWay way5,
+                               const T6& value6, E_OrderWay way6,
+                               const T7& value7, E_OrderWay way7,
+                               const T8& value8, E_OrderWay way8,
+                               const T9& value9, E_OrderWay way9,
+                               const T10& value10, E_OrderWay way10)
 {
    std::ostringstream ss;
    ss << " ORDER BY " << queryhelper<T1>::format(this, value1);

@@ -1,15 +1,15 @@
 #include "stdafx.h"
-#include "HugeDataVectorForKeywordDataAdapter.h"
+#include "HugeDataVectorForKeywordDataAdapterV1.h"
 #include <shared/exception/NotSupported.hpp>
 
 namespace database
 {
-	namespace common
-	{
-		namespace adapters
-		{
-			bool CHugeDataVectorForKeywordDataAdapter::adapt(boost::shared_ptr<IResultHandler> resultHandler)
-			{
+   namespace common
+   {
+      namespace adapters
+      {
+         bool CHugeDataVectorForKeywordDataAdapterV1::adapt(boost::shared_ptr<IResultHandler> resultHandler)
+         {
             const auto nCols = resultHandler->getColumnCount();
 
             m_internalValue.reserve(100 * nCols);
@@ -17,7 +17,7 @@ namespace database
 
             long size = 0;
             while (resultHandler->nextStep())
-            { 
+            {
                m_internalValue += R"({"date":")" + resultHandler->extractValueAsString(0);
                m_internalValue += R"(","key":)" + resultHandler->extractValueAsString(1) + "},";
                ++size;
@@ -35,17 +35,16 @@ namespace database
          }
 
 
-			std::vector<std::string> CHugeDataVectorForKeywordDataAdapter::getResults()
-			{
-				//getRawResults should be used
-				throw shared::exception::CNotSupported("CHugeDataVectorForKeywordDataAdapter::getResults");
-			}
+         std::vector<std::string> CHugeDataVectorForKeywordDataAdapterV1::getResults()
+         {
+            //getRawResults should be used
+            throw shared::exception::CNotSupported("CHugeDataVectorForKeywordDataAdapterV1::getResults");
+         }
 
-			std::string CHugeDataVectorForKeywordDataAdapter::getRawResults() const
-			{
-				return m_internalValue;
-			}
-
-		} //namespace adapters
-	} //namespace common
+         std::string CHugeDataVectorForKeywordDataAdapterV1::getRawResults() const
+         {
+            return m_internalValue;
+         }
+      } //namespace adapters
+   } //namespace common
 } //namespace database 

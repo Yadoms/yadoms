@@ -336,16 +336,16 @@ namespace database
          template <class T1, class T2 = CNotUsedTemplateField, class T3 = CNotUsedTemplateField, class T4 = CNotUsedTemplateField, class T5 =
                    CNotUsedTemplateField, class T6 = CNotUsedTemplateField, class T7 = CNotUsedTemplateField, class T8 = CNotUsedTemplateField, class
                    T9 = CNotUsedTemplateField, class T10 = CNotUsedTemplateField>
-         inline CQuery& OrderBy(const T1& value1, const E_OrderWay way1 = kAsc,
-                                const T2& value2 = T2(), const E_OrderWay way2 = kAsc,
-                                const T3& value3 = T3(), const E_OrderWay way3 = kAsc,
-                                const T4& value4 = T4(), const E_OrderWay way4 = kAsc,
-                                const T5& value5 = T5(), const E_OrderWay way5 = kAsc,
-                                const T6& value6 = T6(), const E_OrderWay way6 = kAsc,
-                                const T7& value7 = T7(), const E_OrderWay way7 = kAsc,
-                                const T8& value8 = T8(), const E_OrderWay way8 = kAsc,
-                                const T9& value9 = T9(), const E_OrderWay way9 = kAsc,
-                                const T10& value10 = T10(), const E_OrderWay way10 = kAsc);
+         inline CQuery& OrderBy(const T1& value1, E_OrderWay way1 = kAsc,
+                                const T2& value2 = T2(), E_OrderWay way2 = kAsc,
+                                const T3& value3 = T3(), E_OrderWay way3 = kAsc,
+                                const T4& value4 = T4(), E_OrderWay way4 = kAsc,
+                                const T5& value5 = T5(), E_OrderWay way5 = kAsc,
+                                const T6& value6 = T6(), E_OrderWay way6 = kAsc,
+                                const T7& value7 = T7(), E_OrderWay way7 = kAsc,
+                                const T8& value8 = T8(), E_OrderWay way8 = kAsc,
+                                const T9& value9 = T9(), E_OrderWay way9 = kAsc,
+                                const T10& value10 = T10(), E_OrderWay way10 = kAsc);
 
 
          //

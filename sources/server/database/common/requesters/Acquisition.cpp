@@ -5,12 +5,13 @@
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
 #include "database/common/adapters/DatabaseAdapters.h"
-#include "database/common/adapters/HugeDataVectorForKeywordDataAdapter.h"
-#include "database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapter.h"
+#include "database/common/adapters/HugeDataVectorForKeywordDataAdapterV1.h"
+#include "database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapterV1.h"
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/adapters/MultipleValueAdapter.hpp"
 #include "database/DatabaseException.hpp"
 #include "Keyword.h"
+#include "database/common/adapters/HugeDataVectorForKeywordDataAdapterV2.h"
 
 namespace database
 {
@@ -30,7 +31,7 @@ namespace database
                                                                           const std::string& data,
                                                                           boost::posix_time::ptime& dataTime)
          {
-            auto keywordEntity = m_keywordRequester->getKeyword(keywordId);
+            const auto keywordEntity = m_keywordRequester->getKeyword(keywordId);
             if (keywordEntity)
             {
                if (!keywordEntity->Blacklist())
@@ -43,7 +44,7 @@ namespace database
                   // Add value in acquisition table
                   if (keywordEntity->HistoryDepth() != shared::plugin::yPluginApi::EHistoryDepth::kNoHistory)
                   {
-                     auto q = m_databaseRequester->newQuery();
+                     const auto q = m_databaseRequester->newQuery();
                      q->InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(),
                                    CAcquisitionTable::getKeywordIdColumnName(),
                                    CAcquisitionTable::getValueColumnName()).
@@ -89,7 +90,7 @@ namespace database
                                                                                const std::string& increment,
                                                                                boost::posix_time::ptime& dataTime)
          {
-            auto keywordEntity = m_keywordRequester->getKeyword(keywordId);
+            const auto keywordEntity = m_keywordRequester->getKeyword(keywordId);
 
             if (!keywordEntity)
                throw shared::exception::CEmptyResult("The keyword do not exists, cannot increment data");
@@ -100,14 +101,14 @@ namespace database
             if (keywordEntity->Blacklist())
                return boost::shared_ptr<entities::CAcquisition>(); //return null instead of exception for performances
 
-            auto qLastKeywordValue = m_databaseRequester->newQuery();
+            const auto qLastKeywordValue = m_databaseRequester->newQuery();
             qLastKeywordValue->Select(
                                   qLastKeywordValue->castNumeric(CKeywordTable::getLastAcquisitionValueColumnName())).
                                From(CKeywordTable::getTableName()).
                                Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
             // Update last value in Keyword table
-            auto qUpdateValue = m_databaseRequester->newQuery();
+            const auto qUpdateValue = m_databaseRequester->newQuery();
             qUpdateValue->Update(CKeywordTable::getTableName())
                         .Set(CKeywordTable::getLastAcquisitionDateColumnName(), dataTime,
                              CKeywordTable::getLastAcquisitionValueColumnName(),
@@ -118,12 +119,12 @@ namespace database
             if (m_databaseRequester->queryStatement(*qUpdateValue) <= 0)
                throw shared::exception::CEmptyResult("No lines affected");
 
-            const auto newAcquisition = m_keywordRequester->getKeywordLastAcquisition(keywordId);
+            auto newAcquisition = m_keywordRequester->getKeywordLastAcquisition(keywordId);
 
             // Add value in acquisition table
             if (keywordEntity->HistoryDepth() != shared::plugin::yPluginApi::EHistoryDepth::kNoHistory)
             {
-               auto q = m_databaseRequester->newQuery();
+               const auto q = m_databaseRequester->newQuery();
                q->InsertInto(CAcquisitionTable::getTableName(),
                              CAcquisitionTable::getDateColumnName(),
                              CAcquisitionTable::getKeywordIdColumnName(),
@@ -228,7 +229,7 @@ namespace database
             int keywordId,
             boost::posix_time::ptime time)
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CAcquisitionTable::getTableName()).
                      Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
@@ -252,7 +253,7 @@ namespace database
                                                                   const std::string& value,
                                                                   int nbTotalLines)> exportOneLineFunction)
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CAcquisitionTable::getTableName()).
                      Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
@@ -260,12 +261,12 @@ namespace database
             adapters::CAcquisitionAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
 
-            const int totalLines = adapter.getResults().size();
+            const auto totalLines = adapter.getResults().size();
             for (const auto& line : adapter.getResults())
             {
                exportOneLineFunction(line->Date,
                                      line->Value,
-                                     totalLines);
+                                     static_cast<int>(totalLines));
             }
          }
 
@@ -288,13 +289,13 @@ namespace database
          }
 
          std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> CAcquisition::getKeywordDataByHour(int keywordId,
-                                                                                                          boost::
-                                                                                                          posix_time::
-                                                                                                          ptime
-                                                                                                          timeFrom,
-                                                                                                          boost::
-                                                                                                          posix_time::
-                                                                                                          ptime timeTo)
+            boost::
+            posix_time::
+            ptime
+            timeFrom,
+            boost::
+            posix_time::
+            ptime timeTo)
          {
             return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kHour,
                                                keywordId,
@@ -303,12 +304,12 @@ namespace database
          }
 
          std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> CAcquisition::getKeywordDataByDay(int keywordId,
-                                                                                                         boost::
-                                                                                                         posix_time::
-                                                                                                         ptime timeFrom,
-                                                                                                         boost::
-                                                                                                         posix_time::
-                                                                                                         ptime timeTo)
+            boost::
+            posix_time::
+            ptime timeFrom,
+            boost::
+            posix_time::
+            ptime timeTo)
          {
             return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
          }
@@ -335,7 +336,7 @@ namespace database
             boost::posix_time::ptime timeFrom,
             boost::posix_time::ptime timeTo) const
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CAcquisitionSummaryTable::getTableName()).
                      Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
@@ -367,10 +368,34 @@ namespace database
                                                   timeTo,
                                                   limit);
 
-            adapters::CHugeDataVectorForKeywordDataAdapter adapter;
+            adapters::CHugeDataVectorForKeywordDataAdapterV1 adapter;
             m_databaseRequester->queryEntities(&adapter, *query);
 
             return adapter.getRawResults();
+         }
+
+         std::string CAcquisition::getHugeVectorKeywordDataV2(const std::set<int>& keywordIds,
+                                                              const boost::posix_time::ptime& fromDate,
+                                                              const boost::posix_time::ptime& toDate,
+                                                              int limit)
+         {
+            std::string str;
+            for (const auto& keywordId : keywordIds)
+            {
+               str += str.empty() ? R"({"acquisitions":{)" : R"(,{)";
+
+               const auto query = requestKeywordData(keywordId,
+                                                     fromDate,
+                                                     toDate,
+                                                     limit);
+
+               adapters::CHugeDataVectorForKeywordDataAdapterV2 adapter;
+               m_databaseRequester->queryEntities(&adapter, *query);
+               str += "\"" + std::to_string(keywordId) + "\":" + adapter.getRawResults() + "}";
+            }
+            str += "}";
+
+            return str;
          }
 
          std::string CAcquisition::getHugeVectorKeywordDataByHour(int keywordId,
@@ -418,7 +443,7 @@ namespace database
                                                                          boost::posix_time::ptime timeFrom,
                                                                          boost::posix_time::ptime timeTo) const
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CAcquisitionSummaryTable::getTableName()).
                      Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
@@ -434,7 +459,7 @@ namespace database
             }
 
             qSelect->OrderBy(CAcquisitionSummaryTable::getDateColumnName());
-            adapters::CHugeDataVectorForKeywordSummaryDataAdapter adapter;
+            adapters::CHugeDataVectorForKeywordSummaryDataAdapterV1 adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
 
             return adapter.getRawResults();
@@ -452,7 +477,7 @@ namespace database
             and date < '20151105T110000'
       
             */
-            auto q = m_databaseRequester->newQuery();
+            const auto q = m_databaseRequester->newQuery();
             q->Select(q->distinct(CAcquisitionTable::getKeywordIdColumnName()))
              .From(CAcquisitionTable::getTableName())
              .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, timeFrom)
@@ -478,7 +503,7 @@ namespace database
             and acq.date<= "endDate"
             
             */
-            auto keyword = m_keywordRequester->getKeyword(keywordId);
+            const auto keyword = m_keywordRequester->getKeyword(keywordId);
 
             if (keyword)
             {
@@ -517,7 +542,7 @@ namespace database
                      if (m_databaseRequester->supportInsertOrUpdateStatement())
                      {
                         //process the request
-                        auto q = m_databaseRequester->newQuery();
+                        const auto q = m_databaseRequester->newQuery();
                         q->InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(),
                                                CAcquisitionSummaryTable::getTypeColumnName(),
                                                CAcquisitionSummaryTable::getDateColumnName(),
@@ -545,7 +570,7 @@ namespace database
                      else
                      {
                         //update
-                        auto compute = m_databaseRequester->newQuery();
+                        const auto compute = m_databaseRequester->newQuery();
 
                         compute->Select(compute->as(compute->averageWithCast(CAcquisitionTable::getValueColumnName()),
                                                     "avg"),
@@ -559,7 +584,7 @@ namespace database
                                  And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, fromDate).
                                  And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, toDate);
 
-                        auto q = m_databaseRequester->newQuery();
+                        const auto q = m_databaseRequester->newQuery();
 
 
                         q->With("acq", *compute).
@@ -661,7 +686,7 @@ namespace database
                      {
                         //sum(k.avgValue * k.count) / sum(k.count)  as moy
 
-                        auto q = m_databaseRequester->newQuery();
+                        const auto q = m_databaseRequester->newQuery();
                         q->InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(),
                                                CAcquisitionSummaryTable::getTypeColumnName(),
                                                CAcquisitionSummaryTable::getDateColumnName(),
@@ -698,7 +723,7 @@ namespace database
                      else
                      {
                         //update
-                        auto compute = m_databaseRequester->newQuery();
+                        const auto compute = m_databaseRequester->newQuery();
 
                         // ,
 
@@ -720,7 +745,7 @@ namespace database
                                  And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, fromDate).
                                  And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, toDate);
 
-                        auto q = m_databaseRequester->newQuery();
+                        const auto q = m_databaseRequester->newQuery();
 
                         q->With("acq", *compute).
                            Update(CAcquisitionSummaryTable::getTableName())
@@ -812,17 +837,17 @@ namespace database
          {
             //determine the real date of summary data 
             boost::posix_time::ptime fromDate;
-            const auto pt_tm = to_tm(date);
+            const auto ptTm = to_tm(date);
             if (curType == entities::EAcquisitionSummaryType::kHour)
             {
-               fromDate = boost::posix_time::ptime(date.date(), boost::posix_time::hours(pt_tm.tm_hour));
+               fromDate = boost::posix_time::ptime(date.date(), boost::posix_time::hours(ptTm.tm_hour));
             }
             else if (curType == entities::EAcquisitionSummaryType::kDay)
             {
                fromDate = boost::posix_time::ptime(date.date());
             }
 
-            auto checkQuery = m_databaseRequester->newQuery();
+            const auto checkQuery = m_databaseRequester->newQuery();
             checkQuery->SelectCount().
                         From(CAcquisitionSummaryTable::getTableName()).
                         Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, curType).
@@ -835,7 +860,7 @@ namespace database
          int CAcquisition::purgeAcquisitions(boost::posix_time::ptime purgeDate,
                                              int limit)
          {
-            auto q = m_databaseRequester->newQuery();
+            const auto q = m_databaseRequester->newQuery();
 
             if (limit == -1)
             {
@@ -844,7 +869,7 @@ namespace database
             }
             else
             {
-               auto subQuery = m_databaseRequester->newQuery();
+               const auto subQuery = m_databaseRequester->newQuery();
                subQuery->Select(CAcquisitionTable::getDateColumnName()).
                          From(CAcquisitionTable::getTableName()).
                          Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, purgeDate).
@@ -879,6 +904,32 @@ namespace database
             }
 
             qSelect->OrderBy(CAcquisitionTable::getDateColumnName());
+
+            if (limit > 0)
+               qSelect->Limit(limit);
+
+            return qSelect;
+         }
+
+         boost::shared_ptr<CQuery> CAcquisition::requestKeywordData(const std::set<int>& keywordIds,
+                                                                    const boost::posix_time::ptime& fromDate,
+                                                                    const boost::posix_time::ptime& toDate,
+                                                                    int limit) const
+         {
+            auto qSelect = m_databaseRequester->newQuery();
+            qSelect->Select(CAcquisitionTable::getKeywordIdColumnName(),
+                            CAcquisitionTable::getDateColumnName(),
+                            CAcquisitionTable::getValueColumnName()).
+                     From(CAcquisitionTable::getTableName()).
+                     Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_IN, keywordIds);
+
+            if (!fromDate.is_not_a_date_time())
+               qSelect->And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, fromDate);
+            if (!toDate.is_not_a_date_time())
+               qSelect->And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, toDate);
+
+            qSelect->OrderBy(CAcquisitionTable::getKeywordIdColumnName(), CQuery::kAsc,
+                             CAcquisitionTable::getDateColumnName(), CQuery::kAsc);
 
             if (limit > 0)
                qSelect->Limit(limit);

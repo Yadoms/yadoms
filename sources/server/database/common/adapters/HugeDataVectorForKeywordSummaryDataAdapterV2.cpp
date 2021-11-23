@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "HugeDataVectorForKeywordSummaryDataAdapter.h"
+#include "HugeDataVectorForKeywordSummaryDataAdapterV2.h"
 #include <shared/exception/NotSupported.hpp>
 
 namespace database
 {
-	namespace common
-	{
-		namespace adapters
-		{
-			bool CHugeDataVectorForKeywordSummaryDataAdapter::adapt(boost::shared_ptr<IResultHandler> resultHandler)
-			{
+   namespace common
+   {
+      namespace adapters
+      {
+         bool CHugeDataVectorForKeywordSummaryDataAdapterV2::adapt(boost::shared_ptr<IResultHandler> resultHandler)
+         {
             const auto nCols = resultHandler->getColumnCount();
 
-				if (nCols < 6) //since 2.3.0, summary table contains 7 columns
-				{
+            if (nCols < 6) //since 2.3.0, summary table contains 7 columns
+            {
                //ensure result string is json !!!
                m_internalValue = R"({"result":false,"message":"invalid query column count"})";
                return false;
@@ -44,17 +44,16 @@ namespace database
          }
 
 
-			std::vector<std::string> CHugeDataVectorForKeywordSummaryDataAdapter::getResults()
-			{
-				//getRawResults should be used
-				throw shared::exception::CNotSupported("CHugeDataVectorForKeywordSummaryDataAdapter::getResults");
-			}
+         std::vector<std::string> CHugeDataVectorForKeywordSummaryDataAdapterV2::getResults()
+         {
+            //getRawResults should be used
+            throw shared::exception::CNotSupported("CHugeDataVectorForKeywordSummaryDataAdapterV2::getResults");
+         }
 
-			std::string CHugeDataVectorForKeywordSummaryDataAdapter::getRawResults() const
-			{
-				return m_internalValue;
-			}
-
-		} //namespace adapters
-	} //namespace common
+         std::string CHugeDataVectorForKeywordSummaryDataAdapterV2::getRawResults() const
+         {
+            return m_internalValue;
+         }
+      } //namespace adapters
+   } //namespace common
 } //namespace database 

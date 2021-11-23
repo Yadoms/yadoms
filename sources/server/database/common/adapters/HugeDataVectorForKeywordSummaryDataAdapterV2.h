@@ -12,11 +12,11 @@ namespace database
          //--------------------------------------------------------------
          ///\Brief		Class which adapt in single string, using a json like output [[data],[data],....]
          //--------------------------------------------------------------
-         class CHugeDataVectorForKeywordSummaryDataAdapter : public IResultAdapterEx<std::string>
+         class CHugeDataVectorForKeywordSummaryDataAdapterV2 final : public IResultAdapterEx<std::string>
          {
          public:
-            CHugeDataVectorForKeywordSummaryDataAdapter() = default;
-            virtual ~CHugeDataVectorForKeywordSummaryDataAdapter() = default;
+            CHugeDataVectorForKeywordSummaryDataAdapterV2() = default;
+            ~CHugeDataVectorForKeywordSummaryDataAdapterV2() override = default;
 
             // ISQLiteResultAdapter implementation
             bool adapt(boost::shared_ptr<IResultHandler> resultHandler) override;

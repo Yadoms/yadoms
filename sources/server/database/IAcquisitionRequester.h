@@ -7,6 +7,15 @@ namespace database
    class IAcquisitionRequester
    {
    public:
+      enum class EResolution
+      {
+         kAll,
+         kHour,
+         kDay,
+         kMonth,
+         kYear
+      };
+
       virtual ~IAcquisitionRequester() = default;
 
       //--------------------------------------------------------------
@@ -92,8 +101,7 @@ namespace database
       ///\return     the acquisition
       //-----------------------------------------
       virtual boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(int keywordId,
-                                                                                       boost::posix_time::ptime time) =
-      0;
+                                                                                       boost::posix_time::ptime time) = 0;
 
       //-----------------------------------------
       ///\brief      Export acquisitions for a keyword
@@ -186,6 +194,20 @@ namespace database
          boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
          boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
          int limit = -1) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Get acquisitions for keywords
+      /// \param [in] keywordIds Search keywords matching one of these IDs
+      /// \param [in] fromDate   The start date (optional, boost::posix_time::not_a_date_time if not provided)
+      /// \param [in] toDate     The end date (optional, boost::posix_time::not_a_date_time if not provided)
+      /// \param [in] limit      Max count of records to return (optional, -1 if no limit)
+      /// \return                Json string
+      //--------------------------------------------------------------
+      virtual std::string getHugeVectorKeywordDataV2(const std::set<int>& keywordIds,
+                                                     const boost::posix_time::ptime& fromDate = boost::posix_time::not_a_date_time,
+                                                     const boost::posix_time::ptime& toDate = boost::posix_time::not_a_date_time,
+                                                     int limit = -1) = 0;
+
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)

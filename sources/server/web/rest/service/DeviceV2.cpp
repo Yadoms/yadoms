@@ -41,7 +41,8 @@ namespace web
             // TODO créer un service "KeywordV2" ?
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords", getKeywordsV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords/{ids}", getKeywordsV2));
-            //TODO m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords/{id}/acquisitions", getKeywordsAcquisitionsV2)); // Param resolution{all|hour|day|month|year}
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "keywords/{ids}/acquisitions", getKeywordsAcquisitionsV2));
+            // Param resolution{all|hour|day|month|year}
             m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "keywords/{id}", updateKeywordV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "keywords/{id}/command/", sendCommandV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "keywords/{id}/command/{command}", sendCommandV2));
@@ -527,6 +528,60 @@ namespace web
                shared::CDataContainer container;
                container.set("keywords", keywordEntries);
                return boost::make_shared<CSuccessAnswer>(container);
+            }
+
+            catch (const shared::exception::COutOfRange& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getKeywords request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getKeywords request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get keywords");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CDevice::getKeywordsAcquisitionsV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               // ID
+               const auto keywordIds = request->pathVariableExists("ids")
+                                          ? CHelpers::convertToIntSet(request->pathVariableAsList("ids"))
+                                          : std::make_unique<std::set<int>>();
+
+               // Filtering
+               const auto fromDate = request->queryParamExists("from-date")
+                                        ? boost::posix_time::from_iso_string(request->queryParam("from-date"))
+                                        : boost::posix_time::not_a_date_time;
+               const auto toDate = request->queryParamExists("to-date")
+                                      ? boost::posix_time::from_iso_string(request->queryParam("to-date"))
+                                      : boost::posix_time::not_a_date_time;
+               const auto resolution = request->queryParamExists("resolution")
+                                          ? boost::make_optional(
+                                             static_cast<database::IAcquisitionRequester::EResolution>(std::stol(request->queryParam("resolution"))))
+                                          : boost::optional<database::IAcquisitionRequester::EResolution>();
+               const auto limit = request->queryParamExists("limit")
+                                     ? static_cast<int>(std::stol(request->queryParam("limit")))
+                                     : -1;
+
+               // Process the request
+               //TODO exploiter resolution
+               const auto i = keywordIds->begin();
+               const auto a = *i;
+               const auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataV2(
+                  *keywordIds,
+                  fromDate,
+                  toDate,
+                  limit);
+
+               if (allData.empty())
+                  return boost::make_shared<CNoContentAnswer>();
+
+               return boost::make_shared<CSuccessAnswer>(allData,
+                                                         EContentType::kJson);
             }
 
             catch (const shared::exception::COutOfRange& exception)
