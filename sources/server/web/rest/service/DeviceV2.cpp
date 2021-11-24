@@ -559,23 +559,61 @@ namespace web
                const auto toDate = request->queryParamExists("to-date")
                                       ? boost::posix_time::from_iso_string(request->queryParam("to-date"))
                                       : boost::posix_time::not_a_date_time;
-               const auto resolution = request->queryParamExists("resolution")
-                                          ? boost::make_optional(
-                                             static_cast<database::IAcquisitionRequester::EResolution>(std::stol(request->queryParam("resolution"))))
-                                          : boost::optional<database::IAcquisitionRequester::EResolution>();
+               auto resolution = boost::optional<database::entities::EAcquisitionSummaryType>();
+               if (request->queryParamExists("resolution"))
+               {
+                  const auto resolutionStr = request->queryParam("resolution");
+                  if (resolutionStr == "hour")
+                     resolution = boost::make_optional(database::entities::EAcquisitionSummaryType::kHour);
+                  else if (resolutionStr == "day")
+                     resolution = boost::make_optional(database::entities::EAcquisitionSummaryType::kDay);
+                  else if (resolutionStr == "month")
+                     resolution = boost::make_optional(database::entities::EAcquisitionSummaryType::kMonth);
+                  else if (resolutionStr == "year")
+                     resolution = boost::make_optional(database::entities::EAcquisitionSummaryType::kYear);
+                  else if (resolutionStr != "all")
+                     throw shared::exception::COutOfRange("invalid resolution value : " + resolutionStr);
+               }
                const auto limit = request->queryParamExists("limit")
                                      ? static_cast<int>(std::stol(request->queryParam("limit")))
                                      : -1;
 
+               // Get requested props
+               bool average = false, min = false, max = false, count = false;
+               if (resolution.has_value())
+               {
+                  const auto props = request->queryParamAsList("prop");
+                  for (const auto& prop : *props)
+                  {
+                     if (prop == "average")
+                        average = true;
+                     else if (prop == "min")
+                        min = true;
+                     else if (prop == "max")
+                        max = true;
+                     else if (prop == "count")
+                        count = true;
+                  }
+               }
+
                // Process the request
-               //TODO exploiter resolution
-               const auto i = keywordIds->begin();
-               const auto a = *i;
-               const auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataV2(
-                  *keywordIds,
-                  fromDate,
-                  toDate,
-                  limit);
+               const auto allData = resolution.has_value()
+                                       ? m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordSummaryDataV2(
+                                          *resolution,
+                                          *keywordIds,
+                                          fromDate,
+                                          toDate,
+                                          limit,
+                                          average,
+                                          min,
+                                          max,
+                                          count)
+                                       : m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataV2(
+                                          *keywordIds,
+                                          fromDate,
+                                          toDate,
+                                          limit);
+
 
                if (allData.empty())
                   return boost::make_shared<CNoContentAnswer>();

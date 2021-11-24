@@ -15,7 +15,10 @@ namespace database
          class CHugeDataVectorForKeywordSummaryDataAdapterV2 final : public IResultAdapterEx<std::string>
          {
          public:
-            CHugeDataVectorForKeywordSummaryDataAdapterV2() = default;
+            CHugeDataVectorForKeywordSummaryDataAdapterV2(bool withAverage,
+                                                          bool withMin,
+                                                          bool withMax,
+                                                          bool withCount);
             ~CHugeDataVectorForKeywordSummaryDataAdapterV2() override = default;
 
             // ISQLiteResultAdapter implementation
@@ -31,6 +34,10 @@ namespace database
 
          private:
             std::string m_internalValue;
+            bool m_withAverage;
+            bool m_withMin;
+            bool m_withMax;
+            bool m_withCount;
          };
       } //namespace adapters
    } //namespace common

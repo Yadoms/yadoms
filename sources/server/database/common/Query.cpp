@@ -30,6 +30,29 @@ namespace database
       }
 
 
+      CQuery& CQuery::Select(const std::vector<CDatabaseColumn>& columns)
+      {
+         ChangeQueryType(kSelect);
+         std::ostringstream ss;
+         ss << "SELECT ";
+
+         bool first = true;
+         for (const auto& column : columns)
+         {
+            if (first)
+            {
+               ss << queryhelper<CDatabaseColumn>::format(this, column);
+               first = false;
+            }
+            else
+            {
+               AppendField(ss, queryhelper<CDatabaseColumn>::format(this, column));
+            }
+         }
+         Append(ss.str());
+         return *this;
+      }
+
       //
       /// \brief           Start a query with 'SELECT COUNT(*)'
       /// \return          A reference to itself to allow method chaining

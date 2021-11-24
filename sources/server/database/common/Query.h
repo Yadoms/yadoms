@@ -125,6 +125,7 @@ namespace database
          inline CQuery& Select(const T1& field1, const T2& field2 = T2(), const T3& field3 = T3(), const T4& field4 = T4(), const T5& field5 = T5(),
                                const T6& field6 = T6(), const T7& field7 = T7(), const T8& field8 = T8(), const T9& field9 = T9(),
                                const T10& field10 = T10());
+         CQuery& Select(const std::vector<CDatabaseColumn>& columns);
 
 
          //
