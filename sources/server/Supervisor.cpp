@@ -39,6 +39,7 @@
 #include "web/oatppServer/WebServer.h"
 #include "web/oatppServer/Authentication.h"
 #include "web/poco/BasicAuthentication.h"
+#include "web/rest/service/Keyword.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
                          const shared::versioning::CSemVer& yadomsVersion)
@@ -137,6 +138,9 @@ void CSupervisor::run()
                                                                               dataAccessLayer->getDeviceManager(),
                                                                               dataAccessLayer->getKeywordManager(),
                                                                               *pluginGateway));
+      restServices->push_back(boost::make_shared<web::rest::service::CKeyword>(dataProvider,
+                                                                               dataAccessLayer->getKeywordManager(),
+                                                                               *pluginGateway));
       restServices->push_back(boost::make_shared<web::rest::service::CPage>(dataProvider));
       restServices->push_back(boost::make_shared<web::rest::service::CWidget>(dataProvider,
                                                                               m_pathProvider->webServerPath().string()));
