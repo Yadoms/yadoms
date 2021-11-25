@@ -90,6 +90,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add(curl_build
    URL               https://curl.se/download/curl-7.76.1.zip
+   URL_HASH          SHA256=70258d07ac9958fbe228c2f38703061a77a172527114e4efc6aa6501c475d63c
    PATCH_COMMAND     ${CURL_PATHCMD}
    PREFIX            ${CURL_ROOT}
    CMAKE_ARGS        ${CURL_BUILD_ARGS}
