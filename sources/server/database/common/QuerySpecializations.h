@@ -19,6 +19,58 @@
 
 //==== This contains all template specializations methods for CQuery class
 
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting values
+//--------------------------------------------------------------
+template <typename T, class Enable = void>
+struct columnnamehelper
+{
+   static std::string format(CQuery* obj, const T& anyValue)
+   {
+      //dont use queryhelper <std::string> because Clang issue it
+      return boost::lexical_cast<std::string>(anyValue);
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting std::string to sql string
+//--------------------------------------------------------------
+template <>
+struct columnnamehelper<std::string>
+{
+   static std::string format(CQuery* obj, const std::string& anyValue)
+   {
+      return anyValue;
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting column to its name in queries
+//--------------------------------------------------------------
+template <>
+struct columnnamehelper<CDatabaseColumn>
+{
+   static std::string format(CQuery* obj, const CDatabaseColumn& anyValue)
+   {
+      return anyValue.GetName();
+   }
+};
+
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for get/set with an IExtendedEnum object
+//--------------------------------------------------------------
+template <>
+struct columnnamehelper<CQuery::CNotUsedTemplateField>
+{
+   static std::string format(CQuery* obj, const CQuery::CNotUsedTemplateField& anyValue)
+   {
+      throw CDatabaseException("CNotUsedTemplateField must not be used");
+   }
+};
+
+
 //--------------------------------------------------------------
 /// \brief	    Helper structure for converting values
 //--------------------------------------------------------------
@@ -604,25 +656,25 @@ inline CQuery& CQuery::GroupBy(const T1& field1,
                                const T10& field10)
 {
    std::ostringstream ss;
-   ss << " GROUP BY " << queryhelper<T1>::format(this, field1);
+   ss << " GROUP BY " << columnnamehelper<T1>::format(this, field1);
    if (typeid(field2) != typeid(CNotUsedTemplateField))
-      AppendField(ss, queryhelper<T2>::format(this, field2));
+      AppendField(ss, columnnamehelper<T2>::format(this, field2));
    if (typeid(field3) != typeid(CNotUsedTemplateField))
-      AppendField(ss, queryhelper<T3>::format(this, field3));
+      AppendField(ss, columnnamehelper<T3>::format(this, field3));
    if (typeid(field4) != typeid(CNotUsedTemplateField))
-      AppendField(ss, queryhelper<T4>::format(this, field4));
+      AppendField(ss, columnnamehelper<T4>::format(this, field4));
    if (typeid(field5) != typeid(CNotUsedTemplateField))
-      AppendField(ss, queryhelper<T5>::format(this, field5));
+      AppendField(ss, columnnamehelper<T5>::format(this, field5));
    if (typeid(field6) != typeid(CNotUsedTemplateField))
-      AppendField(ss, queryhelper<T6>::format(this, field6));
+      AppendField(ss, columnnamehelper<T6>::format(this, field6));
    if (typeid(field7) != typeid(CNotUsedTemplateField))
-      AppendField(ss, queryhelper<T7>::format(this, field7));
+      AppendField(ss, columnnamehelper<T7>::format(this, field7));
    if (typeid(field8) != typeid(CNotUsedTemplateField))
-      AppendField(ss, queryhelper<T8>::format(this, field8));
+      AppendField(ss, columnnamehelper<T8>::format(this, field8));
    if (typeid(field9) != typeid(CNotUsedTemplateField))
-      AppendField(ss, queryhelper<T9>::format(this, field9));
+      AppendField(ss, columnnamehelper<T9>::format(this, field9));
    if (typeid(field10) != typeid(CNotUsedTemplateField))
-      AppendField(ss, queryhelper<T10>::format(this, field10));
+      AppendField(ss, columnnamehelper<T10>::format(this, field10));
    return Append(ss);
 }
 

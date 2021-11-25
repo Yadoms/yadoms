@@ -89,7 +89,8 @@ if(CMAKE_TOOLCHAIN_FILE)
 endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add(curl_build
-   URL               https://curl.se/download/curl-7.78.0.zip
+   URL               https://curl.se/download/curl-7.76.1.zip
+   URL_HASH          SHA256=35dd8ddb0d89596bd117b62a84328b0a36a932311f8df147b760f990f40b1b70
    PATCH_COMMAND     ${CURL_PATHCMD}
    PREFIX            ${CURL_ROOT}
    CMAKE_ARGS        ${CURL_BUILD_ARGS}
