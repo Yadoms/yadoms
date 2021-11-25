@@ -228,7 +228,7 @@ namespace automation
          loadInterpreters();
 
          // Now find corresponding interpreter
-         auto interpreter = m_loadedInterpreters.find(interpreterType);
+         const auto interpreter = m_loadedInterpreters.find(interpreterType);
          if (interpreter == m_loadedInterpreters.end())
             throw std::runtime_error("Interpreter " + interpreterType + " was not found");
          if (!interpreter->second->isAvailable())

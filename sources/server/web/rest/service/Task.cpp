@@ -1,11 +1,15 @@
-﻿#include "stdafx.h"
-#include "Task.h"
-#include "web/poco/RestResult.h"
+﻿#include "Task.h"
 #include <utility>
+#include "RestEndPoint.h"
+#include "stdafx.h"
 #include "task/IInstance.h"
-#include "task/Scheduler.h"
 #include "task/ITask.h"
+#include "task/Scheduler.h"
 #include "web/poco/RestDispatcherHelpers.hpp"
+#include "web/poco/RestResult.h"
+#include "web/rest/ErrorAnswer.h"
+#include "web/rest/Helpers.h"
+#include "web/rest/SuccessAnswer.h"
 
 namespace web
 {
@@ -27,8 +31,8 @@ namespace web
 
          void CTask::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CTask::getAllTasks);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CTask::getOneTask);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CTask::getAllTasks)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CTask::getOneTask)
          }
 
          boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CTask::endPoints()
@@ -37,7 +41,8 @@ namespace web
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            //TODO
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "tasks", getTasksV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "tasks/{uuids}", getTasksV2));
 
             return m_endPoints;
          }
@@ -81,6 +86,79 @@ namespace web
             container->set("status", instance->getStatus());
             container->set("creationDate", instance->getCreationDate());
             return container;
+         }
+
+         boost::shared_ptr<IAnswer> CTask::getTasksV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               // ID
+               const auto taskIds = request->pathVariableExists("uuids")
+                                       ? request->pathVariableAsList("uuids")
+                                       : nullptr;
+
+               // Process the request
+               auto tasks = taskIds ? m_taskManager->getTasks(*taskIds) : m_taskManager->getAllTasks();
+
+               // Filtering
+               const auto fromName = request->queryParam("from-name", std::string());
+
+               const auto fromStatus = request->queryParamExists("from-status")
+                                          ? boost::make_optional(task::ETaskStatus(request->queryParam("from-status")))
+                                          : boost::optional<task::ETaskStatus>();
+
+
+               tasks.erase(std::remove_if(tasks.begin(),
+                                          tasks.end(),
+                                          [this, &fromName, &fromStatus](const auto& task)
+                                          {
+                                             if (!fromName.empty() && fromName != task->getName())
+                                                return true;
+
+                                             if (fromStatus && *fromStatus != task->getStatus())
+                                                return true;
+
+                                             return false;
+                                          }), tasks.end());
+
+               // Get requested props
+               const auto props = request->queryParamAsList("prop");
+               std::vector<boost::shared_ptr<shared::CDataContainer>> taskEntries;
+               for (const auto& task : tasks)
+               {
+                  auto taskEntry = boost::make_shared<shared::CDataContainer>();
+                  if (props->empty() || props->find("uuid") != props->end())
+                     taskEntry->set("uuid", task->getGuid());
+                  if (props->empty() || props->find("name") != props->end())
+                     taskEntry->set("name", task->getName());
+                  if (props->empty() || props->find("progression") != props->end())
+                     taskEntry->set("progression", task->getProgression());
+                  if (props->empty() || props->find("message") != props->end())
+                     taskEntry->set("message", task->getMessage());
+                  if (props->empty() || props->find("status") != props->end())
+                     taskEntry->set("status", task->getStatus());
+                  if (props->empty() || props->find("creationDate") != props->end())
+                     taskEntry->set("creationDate", task->getCreationDate());
+
+                  taskEntries.push_back(taskEntry);
+               }
+
+               shared::CDataContainer container;
+               container.set("tasks", taskEntries);
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+
+            catch (const shared::exception::COutOfRange& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getKeywords request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getKeywords request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get keywords");
+            }
          }
       } //namespace service
    } //namespace rest

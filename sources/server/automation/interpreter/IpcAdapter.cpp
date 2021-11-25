@@ -5,6 +5,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "serializers/Information.h"
 #include <shared/event/EventHandler.hpp>
+#include <utility>
 #include <shared/communication/SmallHeaderMessageCutter.h>
 #include <shared/communication/SmallHeaderMessageAssembler.h>
 
@@ -12,22 +13,31 @@ namespace automation
 {
    namespace interpreter
    {
-      const size_t CIpcAdapter::m_maxMessages(100);
-      const size_t CIpcAdapter::m_maxMessageSize(100000);
+      constexpr size_t CIpcAdapter::MaxMessages(100);
+      constexpr size_t CIpcAdapter::MaxMessageSize(100000);
 
-      CIpcAdapter::CIpcAdapter(const std::string& interpreterName,
+      CIpcAdapter::CIpcAdapter(std::string interpreterName,
                                boost::shared_ptr<shared::script::yInterpreterApi::IYInterpreterApi> apiImplementation)
-         : m_interpreterName(interpreterName),
-           m_apiImplementation(apiImplementation),
+         : m_interpreterName(std::move(interpreterName)),
+           m_apiImplementation(std::move(apiImplementation)),
            m_id(createId()),
            m_sendMessageQueueId(m_id + ".interpreter_IPC.toInterpreter"),
            m_receiveMessageQueueId(m_id + ".interpreter_IPC.toYadoms"),
            m_sendMessageQueueRemover(m_sendMessageQueueId),
            m_receiveMessageQueueRemover(m_receiveMessageQueueId),
-           m_sendMessageQueue(boost::interprocess::create_only, m_sendMessageQueueId.c_str(), m_maxMessages, m_maxMessageSize),
-           m_receiveMessageQueue(boost::interprocess::create_only, m_receiveMessageQueueId.c_str(), m_maxMessages, m_maxMessageSize),
-           m_messageCutter(boost::make_shared<shared::communication::SmallHeaderMessageCutter>(m_sendMessageQueue.get_max_msg_size(), m_maxMessages)),
-           m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this, shared::CLog::getCurrentThreadName()))
+           m_sendMessageQueue(boost::interprocess::create_only,
+                              m_sendMessageQueueId.c_str(),
+                              MaxMessages,
+                              MaxMessageSize),
+           m_receiveMessageQueue(boost::interprocess::create_only,
+                                 m_receiveMessageQueueId.c_str(),
+                                 MaxMessages,
+                                 MaxMessageSize),
+           m_messageCutter(boost::make_shared<shared::communication::SmallHeaderMessageCutter>(m_sendMessageQueue.get_max_msg_size(),
+                                                                                               MaxMessages)),
+           m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded,
+                                                     this,
+                                                     shared::CLog::getCurrentThreadName()))
       {
       }
 
@@ -55,12 +65,12 @@ namespace automation
          // compatible with the version of the headers we compiled against.
          GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-         YADOMS_LOG_CONFIGURE(logName);
+         YADOMS_LOG_CONFIGURE(logName)
          YADOMS_LOG(information) << "Message queue ID : " << m_id;
 
          try
          {
-            auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue.get_max_msg_size()));
+            const auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue.get_max_msg_size()));
             size_t messageSize;
             unsigned int messagePriority;
             const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(
@@ -139,13 +149,13 @@ namespace automation
             return;
          }
 
-         const auto cuttedMessage = m_messageCutter->cut(serializedMessage,
-                                                         pbMessageSize);
+         const auto cutMessage = m_messageCutter->cut(serializedMessage,
+                                                      pbMessageSize);
 
-         if (!cuttedMessage->empty())
+         if (!cutMessage->empty())
          {
             YADOMS_LOG(trace) << "[SEND] message " << pbMsg.OneOf_case() << " to interpreter " << m_interpreterName;
-            for (const auto& part : *cuttedMessage)
+            for (const auto& part : *cutMessage)
             {
                m_sendMessageQueue.send(part->formattedMessage(),
                                        part->formattedSize(),
@@ -156,7 +166,7 @@ namespace automation
 
       void CIpcAdapter::send(const interpreter_IPC::toInterpreter::msg& pbMsg,
                              boost::function1<bool, const interpreter_IPC::toYadoms::msg&> checkExpectedMessageFunction,
-                             boost::function1<void, const interpreter_IPC::toYadoms::msg&> onReceiveFunction,
+                             const boost::function1<void, const interpreter_IPC::toYadoms::msg&>& onReceiveFunction,
                              const boost::posix_time::time_duration& timeout)
       {
          shared::event::CEventHandler receivedEvtHandler;
@@ -185,18 +195,19 @@ namespace automation
          onReceiveFunction(receivedEvtHandler.getEventData<const interpreter_IPC::toYadoms::msg>());
       }
 
-      void CIpcAdapter::processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize)
+      void CIpcAdapter::processMessage(const boost::shared_ptr<const unsigned char[]>& message,
+                                       size_t messageSize)
       {
          if (messageSize < 1)
             throw shared::exception::CInvalidParameter("messageSize");
 
          // Unserialize message
          interpreter_IPC::toYadoms::msg toYadomsProtoBuffer;
-         if (!toYadomsProtoBuffer.ParseFromArray(message.get(), messageSize))
+         if (!toYadomsProtoBuffer.ParseFromArray(message.get(), static_cast<int>(messageSize)))
             throw shared::exception::CInvalidParameter("message : fail to parse received data into Protobuf format");
 
          YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from interpreter " << m_interpreterName << (
-               m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
+            m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
 
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
@@ -208,7 +219,7 @@ namespace automation
          }
 
          // Process message
-         switch (toYadomsProtoBuffer.OneOf_case())
+         switch (toYadomsProtoBuffer.OneOf_case()) // NOLINT(clang-diagnostic-switch-enum)
          {
          case interpreter_IPC::toYadoms::msg::kNotifiyScriptStopped: processNotifyScriptStopped(toYadomsProtoBuffer.notifiyscriptstopped());
             break;
@@ -227,7 +238,7 @@ namespace automation
       void CIpcAdapter::postStopRequest()
       {
          interpreter_IPC::toInterpreter::msg msg;
-         auto message = msg.mutable_system();
+         const auto message = msg.mutable_system();
          message->set_type(interpreter_IPC::toInterpreter::System_EventType_kRequestStop);
 
          send(msg);
@@ -239,7 +250,7 @@ namespace automation
       {
          YADOMS_LOG(debug) << "interpreter::CIpcAdapter::postInit...";
          interpreter_IPC::toInterpreter::msg msg;
-         auto message = msg.mutable_init();
+         const auto message = msg.mutable_init();
          serializers::CInformation(information).toPb(message->mutable_interpreterinformation());
          message->set_logfile(logFile.string());
          message->set_loglevel(logLevel);
@@ -280,7 +291,7 @@ namespace automation
       void CIpcAdapter::postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request)
       {
          interpreter_IPC::toInterpreter::msg req;
-         auto message = req.mutable_loadscriptcontentrequest();
+         const auto message = req.mutable_loadscriptcontentrequest();
          message->set_scriptpath(request->getScriptPath());
          std::string content;
          std::string error;
@@ -316,7 +327,7 @@ namespace automation
       void CIpcAdapter::postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request)
       {
          interpreter_IPC::toInterpreter::msg req;
-         auto message = req.mutable_savescriptcontentrequest();
+         const auto message = req.mutable_savescriptcontentrequest();
          message->set_scriptpath(request->getScriptPath());
          message->set_content(request->getScriptContent());
 
@@ -343,7 +354,7 @@ namespace automation
       void CIpcAdapter::postStartScript(boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request)
       {
          interpreter_IPC::toInterpreter::msg req;
-         auto message = req.mutable_startscript();
+         const auto message = req.mutable_startscript();
          message->set_scriptinstanceid(request->getScriptInstanceId());
          message->set_scriptpath(request->getScriptPath().string());
          message->set_scriptapiid(request->getScriptApiId());
@@ -355,7 +366,7 @@ namespace automation
       void CIpcAdapter::postStopScript(boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request)
       {
          interpreter_IPC::toInterpreter::msg req;
-         auto message = req.mutable_stopscript();
+         const auto message = req.mutable_stopscript();
          message->set_scriptinstanceid(request->getScriptInstanceId());
 
          send(req);
@@ -364,7 +375,7 @@ namespace automation
       void CIpcAdapter::postPurgeScriptLog(boost::shared_ptr<shared::script::yInterpreterApi::IPurgeScriptLog> request)
       {
          interpreter_IPC::toInterpreter::msg req;
-         auto message = req.mutable_purgescriptlog();
+         const auto message = req.mutable_purgescriptlog();
          message->set_scriptinstanceid(request->getScriptInstanceId());
          message->set_scriptlogpath(request->getScriptLogPath().string());
 

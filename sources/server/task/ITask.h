@@ -10,6 +10,8 @@ namespace task
    class ITask
    {
    public:
+      virtual ~ITask() = default;
+
       //---------------------------------
       ///\brief Define a function prototype for updating a task progress
       //
@@ -21,7 +23,8 @@ namespace task
       //    -> param 4 : std::string               : the exception message (should not be i18n messages; only when param1 is false)
       //    -> param 5 : shared::CDataContainer    : Some free data provided by task implementation (specific for each task)
       //---------------------------------
-      typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, boost::shared_ptr<shared::CDataContainer>> TaskProgressFunc;
+      typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, boost::shared_ptr<shared::CDataContainer>>
+      TaskProgressFunc;
 
       //------------------------------
       ///\brief Get the task name
@@ -42,14 +45,5 @@ namespace task
       ///\param [in] pFunctor : a function pointer to call on task update
       //------------------------------
       virtual void doWork(TaskProgressFunc pFunctor) = 0;
-
-      //------------------------------
-      ///\brief public destructor
-      //------------------------------
-      virtual ~ITask()
-      {
-      }
    };
 } //namespace task
-
-

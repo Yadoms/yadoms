@@ -10,21 +10,15 @@ namespace task
    //------------------------------
    ///\brief Class which handle one task
    //------------------------------
-   class CInstance : public shared::CThreadBase, public IInstance
+   class CInstance final : public shared::CThreadBase, public IInstance
    {
    public:
-      //------------------------------
-      ///\brief Constructor
-      //------------------------------
       CInstance(const boost::shared_ptr<ITask>& task,
                 boost::shared_ptr<shared::event::CEventHandler> eventHandler,
-                const int eventCode,
+                int eventCode,
                 std::string guid);
 
-      //------------------------------
-      ///\brief public destructor
-      //------------------------------
-      virtual ~CInstance();
+      ~CInstance() override;
 
       //---------------------------------
       ///\brief Get the current task
@@ -51,7 +45,7 @@ namespace task
       ///\param [in] exception : the internal error message (not i18n)
       ///\param [in] taskData : some free data provided by task implementation
       //---------------------------------
-      void OnTaskProgressUpdated(bool isRunning,
+      void onTaskProgressUpdated(bool isRunning,
                                  boost::optional<float> progression,
                                  const std::string& message,
                                  const std::string& exception,
@@ -121,5 +115,3 @@ namespace task
       boost::posix_time::ptime m_creationDate;
    };
 } //namespace task
-
-

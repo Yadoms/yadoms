@@ -2,25 +2,28 @@
 
 #include "IInstance.h"
 
-namespace task { 
-
+namespace task
+{
    //------------------------------------------
    ///\brief   Finished task container
    //-----------------------------------------
-   class CFinishedInstance : public IInstance
+   class CFinishedInstance final : public IInstance
    {
    public:
       //------------------------------------------
       ///\brief   Constructor
       //------------------------------------------
-      CFinishedInstance(const std::string & guid, const std::string & name, ETaskStatus status, boost::optional< float > progression, const std::string & message, const std::string & messageException, boost::shared_ptr<shared::CDataContainer> data, const boost::posix_time::ptime & creationDate);
+      CFinishedInstance(const std::string& guid,
+                        const std::string& name,
+                        ETaskStatus status,
+                        boost::optional<float> progression,
+                        const std::string& message,
+                        const std::string& messageException,
+                        boost::shared_ptr<shared::CDataContainer> data,
+                        const boost::posix_time::ptime& creationDate);
 
-      //------------------------------------------
-      ///\brief   Destructor
-      //------------------------------------------
-      virtual ~CFinishedInstance();
+      ~CFinishedInstance() override = default;
 
-   public:
       // IInstance implementation
       std::string getGuid() const override;
       boost::optional<float> getProgression() const override;
@@ -33,7 +36,6 @@ namespace task {
       // [END] - IInstance implementation
 
    private:
-
       //---------------------------------
       ///\brief The current name of the task
       //---------------------------------
@@ -47,8 +49,8 @@ namespace task {
       //--------------------------------------------------------------
       /// \brief			The current task instance progression
       //--------------------------------------------------------------
-      boost::optional< float > m_progression;
-      
+      boost::optional<float> m_progression;
+
       //------------------------------------------
       ///\brief   The status of the task
       //------------------------------------------
@@ -57,8 +59,8 @@ namespace task {
       //--------------------------------------------------------------
       /// \brief			The current message given by the task
       //--------------------------------------------------------------
-      std::string m_message;    
-      
+      std::string m_message;
+
       //--------------------------------------------------------------
       /// \brief			The current message exception given by the task
       //--------------------------------------------------------------
@@ -73,8 +75,5 @@ namespace task {
       ///\brief   The creation date
       //------------------------------------------
       boost::posix_time::ptime m_creationDate;
-
-
    };
-
 } //namespace task
