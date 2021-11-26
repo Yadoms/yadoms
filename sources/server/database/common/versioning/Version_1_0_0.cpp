@@ -93,15 +93,36 @@ namespace database
             }
             else
             {
-               auto qInsert = requester->newQuery();
-               qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
-                                            CConfigurationTable::getSectionColumnName(),
-                                            CConfigurationTable::getValueColumnName(),
-                                            CConfigurationTable::getLastModificationDateColumnName()).
-                        Values("databaseVersion",
-                               newVersion.toString(),
-                               insertDate);
-               requester->queryStatement(*qInsert);
+               if (requester->supportInsertOrUpdateStatement())
+               {
+                  auto qInsert = requester->newQuery();
+                  qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
+                     CConfigurationTable::getSectionColumnName(),
+                     CConfigurationTable::getValueColumnName(),
+                     CConfigurationTable::getLastModificationDateColumnName()).
+                     Values("databaseVersion", newVersion.toString(), insertDate);
+                  requester->queryStatement(*qInsert);
+               }
+               else
+               {
+                  auto query = requester->newQuery();
+                  query->Update(CConfigurationTable::getTableName())
+                     .Set(CConfigurationTable::getSectionColumnName(), "databaseVersion",
+                          CConfigurationTable::getValueColumnName(), newVersion.toString(),
+                          CConfigurationTable::getLastModificationDateColumnName(), insertDate);
+                  if (requester->queryStatement(*query) <= 0)
+                  {
+                     //fail to update, then insert
+                     //insert
+                     auto qInsert = requester->newQuery();
+                     qInsert->InsertInto(CConfigurationTable::getTableName(),
+                        CConfigurationTable::getSectionColumnName(),
+                        CConfigurationTable::getValueColumnName(),
+                        CConfigurationTable::getLastModificationDateColumnName()).
+                        Values("databaseVersion", newVersion.toString(), insertDate);
+                     requester->queryStatement(*qInsert);
+                  }
+               }
             }
          }
 

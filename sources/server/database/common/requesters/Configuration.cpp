@@ -50,16 +50,39 @@ namespace database
                                                   const std::string& value)
          {
             const auto query = m_databaseRequester->newQuery();
-            query->InsertOrReplaceInto(CConfigurationTable::getTableName(),
-                                       CConfigurationTable::getSectionColumnName(),
-                                       CConfigurationTable::getValueColumnName(),
-                                       CConfigurationTable::getLastModificationDateColumnName()).
-                   Values(section,
-                          value,
-                          shared::currentTime::Provider().now());
+            auto modifDate = shared::currentTime::Provider().now();
 
-            if (m_databaseRequester->queryStatement(*query) <= 0)
-               throw shared::exception::CEmptyResult("No lines affected");
+            if (m_databaseRequester->supportInsertOrUpdateStatement())
+            {
+               query->InsertOrReplaceInto(CConfigurationTable::getTableName(),
+                  CConfigurationTable::getSectionColumnName(),
+                  CConfigurationTable::getValueColumnName(),
+                  CConfigurationTable::getLastModificationDateColumnName()).
+                  Values(section, value, modifDate);
+
+               if (m_databaseRequester->queryStatement(*query) <= 0)
+                  throw shared::exception::CEmptyResult("No lines affected");
+            }
+            else
+            {
+               query->Update(CConfigurationTable::getTableName())
+                  .Set( CConfigurationTable::getSectionColumnName(), section,
+                        CConfigurationTable::getValueColumnName(), value,
+                        CConfigurationTable::getLastModificationDateColumnName(), modifDate);
+               if (m_databaseRequester->queryStatement(*query) <= 0)
+               {
+                  //fail to update, then insert
+                  //insert
+                  query->Clear();
+                  query->InsertInto(CConfigurationTable::getTableName(),
+                     CConfigurationTable::getSectionColumnName(),
+                     CConfigurationTable::getValueColumnName(),
+                     CConfigurationTable::getLastModificationDateColumnName()).
+                     Values(section, value, modifDate);
+                  if (m_databaseRequester->queryStatement(*query) <= 0)
+                     throw shared::exception::CEmptyResult("No lines affected");
+               }
+            }
          }
       } //namespace requesters
    } //namespace common
