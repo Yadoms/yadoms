@@ -32,7 +32,7 @@ namespace database {
       /// \param [in] recipientId   Recipient id
       /// \return                   The specified recipient
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CRecipient> getRecipient(const int recipientId) = 0;
+      virtual boost::shared_ptr<entities::CRecipient> getRecipient(int recipientId) = 0;
 
       //--------------------------------------------------------------
       /// \brief                    Get one recipient from first and last name

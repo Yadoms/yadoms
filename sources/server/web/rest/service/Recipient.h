@@ -15,9 +15,8 @@ namespace web
          {
          public:
             explicit CRecipient(boost::shared_ptr<database::IDataProvider> dataProvider);
-            ~CRecipient() override;
+            ~CRecipient() override = default;
 
-         public:
             // IRestService implementation
             void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;

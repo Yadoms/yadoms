@@ -19,11 +19,6 @@ namespace web
          {
          }
 
-
-         CRecipient::~CRecipient()
-         {
-         }
-
          const std::string& CRecipient::getRestKeyword()
          {
             return m_restKeyword;
