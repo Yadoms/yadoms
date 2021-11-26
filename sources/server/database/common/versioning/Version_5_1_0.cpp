@@ -32,6 +32,7 @@ namespace database
             }
          }
 
+         // ReSharper disable once CppInconsistentNaming
          void CVersion_5_1_0::updateFrom5_0_0(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             try

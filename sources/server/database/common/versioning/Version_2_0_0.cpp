@@ -15,16 +15,9 @@ namespace database
          // Modify this version to a greater value, to force update of current version
          const shared::versioning::CSemVer CVersion_2_0_0::Version(2, 0, 0);
 
-         CVersion_2_0_0::CVersion_2_0_0()
-         {
-         }
-
-         CVersion_2_0_0::~CVersion_2_0_0()
-         {
-         }
-
          // ISQLiteVersionUpgrade implementation
-         void CVersion_2_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester, const shared::versioning::CSemVer& currentVersion)
+         void CVersion_2_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester,
+                                              const shared::versioning::CSemVer& currentVersion)
          {
             if (currentVersion < Version)
             {
@@ -48,7 +41,8 @@ namespace database
          ///\param [in] pRequester : database requester object
          ///\throw      CVersionException if create database failed
          //-----------------------------------
-         void CVersion_2_0_0::UpdateFrom1_0_0(const boost::shared_ptr<IDatabaseRequester>& pRequester) const
+         // ReSharper disable once CppInconsistentNaming
+         void CVersion_2_0_0::UpdateFrom1_0_0(const boost::shared_ptr<IDatabaseRequester>& pRequester)
          {
             try
             {
@@ -86,5 +80,3 @@ namespace database
       } //namespace versioning
    } //namespace common
 } //namespace database 
-
-
