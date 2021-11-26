@@ -1,3 +1,8 @@
+### 2.5.1-beta.5
+
+#### Yadoms
+* Fix #741 : SQL request syntax with PostgreSQL
+
 ### 2.5.1-beta.4
 
 #### Yadoms
