@@ -16,14 +16,6 @@ namespace database
          // Modify this version to a greater value, to force update of current version
          const shared::versioning::CSemVer CVersion_4_1_0::Version(4, 1, 0);
 
-         CVersion_4_1_0::CVersion_4_1_0()
-         {
-         }
-
-         CVersion_4_1_0::~CVersion_4_1_0()
-         {
-         }
-
          // ISQLiteVersionUpgrade implementation
          void CVersion_4_1_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester,
                                               const shared::versioning::CSemVer& currentVersion)
@@ -50,7 +42,8 @@ namespace database
          ///\param [in] pRequester : database requester object
          ///\throw      CVersionException if create database failed
          //-----------------------------------
-         void CVersion_4_1_0::UpdateFrom4_0_1(const boost::shared_ptr<IDatabaseRequester>& pRequester) const
+         // ReSharper disable once CppInconsistentNaming
+         void CVersion_4_1_0::UpdateFrom4_0_1(const boost::shared_ptr<IDatabaseRequester>& pRequester)
          {
             try
             {
@@ -70,23 +63,23 @@ namespace database
                // UPDATE Keyword
                // SET lastAcquisitionDate = (SELECT date FROM Acquisition WHERE keywordId = id ORDER BY date DESC LIMIT 1),
                //     lastAcquisitionValue = (SELECT value FROM Acquisition WHERE keywordId = id ORDER BY date DESC LIMIT 1)
-               auto sub1 = pRequester->newQuery();
+               const auto sub1 = pRequester->newQuery();
                sub1->Select(CAcquisitionTable::getDateColumnName()).
                      From(CAcquisitionTable::getTableName()).
                      Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, CKeywordTable::getIdColumnName()).
                      OrderBy(CAcquisitionTable::getDateColumnName(), CQuery::E_OrderWay::kDesc).
                      Limit(1);
 
-               auto sub2 = pRequester->newQuery();
+               const auto sub2 = pRequester->newQuery();
                sub2->Select(CAcquisitionTable::getValueColumnName()).
                      From(CAcquisitionTable::getTableName()).
                      Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, CKeywordTable::getIdColumnName()).
                      OrderBy(CAcquisitionTable::getDateColumnName(), CQuery::E_OrderWay::kDesc).
                      Limit(1);
 
-               auto qUpdate = pRequester->newQuery();
+               const auto qUpdate = pRequester->newQuery();
                qUpdate->Update(CKeywordTable::getTableName()).
-                        Set(CKeywordTable::getLastAcquisitionDateColumnName(), *sub1, 
+                        Set(CKeywordTable::getLastAcquisitionDateColumnName(), *sub1,
                             CKeywordTable::getLastAcquisitionValueColumnName(), *sub2);
 
                pRequester->queryStatement(*qUpdate);
@@ -113,5 +106,3 @@ namespace database
       } //namespace versioning
    } //namespace common
 } //namespace database 
-
-

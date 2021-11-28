@@ -17,14 +17,6 @@ namespace database
          // Modify this version to a greater value, to force update of current version
          const shared::versioning::CSemVer CVersion_1_0_0::Version(1, 0, 0);
 
-         CVersion_1_0_0::CVersion_1_0_0()
-         {
-         }
-
-         CVersion_1_0_0::~CVersion_1_0_0()
-         {
-         }
-
          // ISQLiteVersionUpgrade implementation
          void CVersion_1_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester,
                                               const shared::versioning::CSemVer& currentVersion)
@@ -62,7 +54,7 @@ namespace database
 
             if (bNeedToCreateOrUpgrade)
             {
-               CreateDatabase(pRequester);
+               createDatabase(pRequester);
             }
          }
 
@@ -74,7 +66,7 @@ namespace database
             // As database version is stored in the Configuration table and this table structure changed,
             // we have to know the current table structure before get Database version
             // To check table structure, just check if "Database" record exists (if yes, database is from old version)
-            auto newDatabaseQuery = requester->newQuery();
+            const auto newDatabaseQuery = requester->newQuery();
             newDatabaseQuery->SelectCount().
                               From(CConfigurationTable::getTableName()).
                               Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database");
@@ -82,7 +74,7 @@ namespace database
 
             if (isOldDatabase)
             {
-               auto qUpdate = requester->newQuery();
+               const auto qUpdate = requester->newQuery();
 
                qUpdate->Update(CDatabaseTable("Configuration"))
                       .Set(CDatabaseColumn("value"), newVersion.toString())
@@ -93,15 +85,36 @@ namespace database
             }
             else
             {
-               auto qInsert = requester->newQuery();
-               qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
-                                            CConfigurationTable::getSectionColumnName(),
-                                            CConfigurationTable::getValueColumnName(),
-                                            CConfigurationTable::getLastModificationDateColumnName()).
-                        Values("databaseVersion",
-                               newVersion.toString(),
-                               insertDate);
-               requester->queryStatement(*qInsert);
+               if (requester->supportInsertOrUpdateStatement())
+               {
+                  const auto qInsert = requester->newQuery();
+                  qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
+                                               CConfigurationTable::getSectionColumnName(),
+                                               CConfigurationTable::getValueColumnName(),
+                                               CConfigurationTable::getLastModificationDateColumnName()).
+                           Values("databaseVersion", newVersion.toString(), insertDate);
+                  requester->queryStatement(*qInsert);
+               }
+               else
+               {
+                  const auto query = requester->newQuery();
+                  query->Update(CConfigurationTable::getTableName())
+                       .Set(CConfigurationTable::getSectionColumnName(), "databaseVersion",
+                            CConfigurationTable::getValueColumnName(), newVersion.toString(),
+                            CConfigurationTable::getLastModificationDateColumnName(), insertDate);
+                  if (requester->queryStatement(*query) <= 0)
+                  {
+                     //fail to update, then insert
+                     //insert
+                     const auto qInsert = requester->newQuery();
+                     qInsert->InsertInto(CConfigurationTable::getTableName(),
+                                         CConfigurationTable::getSectionColumnName(),
+                                         CConfigurationTable::getValueColumnName(),
+                                         CConfigurationTable::getLastModificationDateColumnName()).
+                              Values("databaseVersion", newVersion.toString(), insertDate);
+                     requester->queryStatement(*qInsert);
+                  }
+               }
             }
          }
 
@@ -113,7 +126,7 @@ namespace database
          ///\param [in] pRequester : database requester object
          ///\throw      CVersionException if create database failed
          //-----------------------------------
-         void CVersion_1_0_0::CreateDatabase(const boost::shared_ptr<IDatabaseRequester>& pRequester)
+         void CVersion_1_0_0::createDatabase(const boost::shared_ptr<IDatabaseRequester>& pRequester)
          {
             try
             {
@@ -149,7 +162,7 @@ namespace database
                if (!pRequester->dropTableIfExists(CRecipientFieldTable::getTableName()))
                   throw CVersionException("Failed to delete RecipientFields table");
 
-               auto scriptProvider = pRequester->getTableCreationScriptProvider();
+               const auto scriptProvider = pRequester->getTableCreationScriptProvider();
 
                //create tables
                if (!pRequester->createTableIfNotExists(CConfigurationTable::getTableName(), scriptProvider->getTableConfiguration()))
@@ -189,7 +202,7 @@ namespace database
                }
 
                //system plugin
-               auto qInsert = pRequester->newQuery();
+               const auto qInsert = pRequester->newQuery();
                qInsert->Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(),
                                            CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
                         Values("System", "System", true, entities::EPluginCategory::kSystem);
