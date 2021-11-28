@@ -34,7 +34,7 @@ namespace web
             //TODO RAF REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevicesV1, transactionalMethodV1)
 
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "devices/create", createDeviceV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "devices", createDeviceV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "devices/{id}", updateDeviceV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "devices/{id}", deleteDeviceV2));
 
@@ -66,10 +66,10 @@ namespace web
                const auto containsKeywordWithCapacityName = request->queryParamExists("containing-keyword-with-capacity-name")
                                                                ? request->queryParamAsList("containing-keyword-with-capacity-name")
                                                                : std::make_unique<std::set<std::string>>();
-               const auto containsKeywordWithCapacityAccessMode = request->queryParamExists("containing-keyword-with-capacity-access-mode")
+               const auto containsKeywordWithAccessMode = request->queryParamExists("containing-keyword-with-access-mode")
                                                                      ? boost::make_optional(
                                                                         shared::plugin::yPluginApi::EKeywordAccessMode(
-                                                                           request->queryParam("containing-keyword-with-capacity-access-mode")))
+                                                                           request->queryParam("containing-keyword-with-access-mode")))
                                                                      : boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>();
                const auto containsKeywordWithDataType = request->queryParamExists("containing-keyword-with-capacity-type")
                                                            ? CHelpers::convertToEnumSet<shared::plugin::yPluginApi::EKeywordDataType>(
@@ -89,7 +89,7 @@ namespace web
                                                                   fromType,
                                                                   fromModel,
                                                                   *containsKeywordWithCapacityName,
-                                                                  containsKeywordWithCapacityAccessMode,
+                                                                  containsKeywordWithAccessMode,
                                                                   *containsKeywordWithDataType,
                                                                   containsKeywordWithHistoryDepth,
                                                                   withBlacklisted);

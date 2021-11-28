@@ -28,10 +28,10 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances", getPluginsInstancesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}", getPluginsInstancesV2));
 
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/create", createPluginsInstanceV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances", createPluginsInstanceV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "plugins-instances/{id}", updatePluginsInstanceV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "plugins-instances/{id}", deletePluginsInstanceV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/log", getPluginsInstancesLogV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/logs", getPluginsInstancesLogV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}/binding/{query}", getPluginsInstancesBindingV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/start", startPluginsInstanceV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "plugins-instances/{id}/stop", stopPluginsInstanceV2));
@@ -223,7 +223,7 @@ namespace web
             try
             {
                return CHelpers::transactionalMethodV2(
-                  std::move(request),
+                  request,
                   m_dataProvider,
                   [this](const auto& req) -> boost::shared_ptr<IAnswer>
                   {
@@ -367,7 +367,7 @@ namespace web
                                                           "query to plugin-instance was not provided");
 
                return CHelpers::transactionalMethodV2(
-                  std::move(request),
+                  request,
                   m_dataProvider,
                   [this, &instanceId, &query](const auto& req) -> boost::shared_ptr<IAnswer>
                   {

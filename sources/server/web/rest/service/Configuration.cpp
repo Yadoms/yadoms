@@ -150,8 +150,8 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/server", getServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/external/{section}", getExternalConfigurationV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/external/{section}", saveExternalConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/externals/{section}", getExternalConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/externals/{section}", saveExternalConfigurationV2));
 
             return m_endPoints;
          }

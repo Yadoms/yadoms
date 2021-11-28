@@ -105,7 +105,7 @@ namespace database
       /// \param [in] type                                   Search devices matching this type
       /// \param [in] model                                  Search devices matching this model
       /// \param [in] containsKeywordWithCapacityName        Search devices matching one of these capacity names
-      /// \param [in] containsKeywordWithCapacityAccessMode  Search devices matching this access mode
+      /// \param [in] containsKeywordWithAccessMode          Search devices matching this access mode
       /// \param [in] containsKeywordWithDataType            Search devices matching one of these capacity type
       /// \param [in] containsKeywordWithHistoryDepth        Search devices matching this history depth
       /// \param [in] blacklistedIncluded                    Include blacklisted devices
@@ -118,7 +118,7 @@ namespace database
          const boost::optional<std::string>& type,
          const boost::optional<std::string>& model,
          const std::set<std::string>& containsKeywordWithCapacityName,
-         const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithCapacityAccessMode,
+         const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
          const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
          const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
          bool blacklistedIncluded = false) const = 0;

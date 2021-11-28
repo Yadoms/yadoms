@@ -217,7 +217,7 @@ namespace database
             const boost::optional<std::string>& type,
             const boost::optional<std::string>& model,
             const std::set<std::string>& containsKeywordWithCapacityName,
-            const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithCapacityAccessMode,
+            const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
             const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
             const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
             bool blacklistedIncluded) const
@@ -242,7 +242,7 @@ namespace database
                query->And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklistedIncluded ? 1 : 0);
 
             if (!containsKeywordWithCapacityName.empty()
-               || containsKeywordWithCapacityAccessMode
+               || containsKeywordWithAccessMode
                || !containsKeywordWithDataType.empty()
                || containsKeywordWithHistoryDepth)
             {
@@ -254,9 +254,9 @@ namespace database
 
                if (!containsKeywordWithCapacityName.empty())
                   subQuery->And(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_IN, containsKeywordWithCapacityName);
-               if (containsKeywordWithCapacityAccessMode)
+               if (containsKeywordWithAccessMode)
                   subQuery->And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL,
-                                *containsKeywordWithCapacityAccessMode);
+                                *containsKeywordWithAccessMode);
                if (!containsKeywordWithDataType.empty())
                   subQuery->And(CKeywordTable::getTypeColumnName(), CQUERY_OP_IN, containsKeywordWithDataType);
                if (containsKeywordWithHistoryDepth)
