@@ -64,7 +64,7 @@ namespace database
                const boost::optional<std::string>& type,
                const boost::optional<std::string>& model,
                const std::set<std::string>& containsKeywordWithCapacityName,
-               const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithCapacityAccessMode,
+               const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
                const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
                const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
                bool blacklistedIncluded = false) const override;
