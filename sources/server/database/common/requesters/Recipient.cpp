@@ -62,6 +62,42 @@ namespace database
             throw shared::exception::CEmptyResult("Cannot add recipient without first and last name");
          }
 
+         int CRecipient::createUser(const entities::CRecipient& user)
+         {
+            if (!user.FirstName.isDefined() || !user.LastName.isDefined())
+               throw shared::exception::CEmptyResult("Cannot add user without first and last name");
+
+            if (exists(user.FirstName(), user.LastName()))
+            {
+               const auto exMessage = (boost::format("Fail to insert user. The user %1% %2% already exists") % user.FirstName() %
+                  user.LastName()).str();
+               throw shared::exception::CInvalidParameter(exMessage);
+            }
+
+            // Create user
+            const auto qInsert = m_databaseRequester->newQuery();
+            qInsert->InsertInto(CRecipientTable::getTableName(),
+                                CRecipientTable::getFirstNameColumnName(), CRecipientTable::getLastNameColumnName()).
+                     Values(user.FirstName(), user.LastName());
+            if (m_databaseRequester->queryStatement(*qInsert) <= 0)
+               throw shared::exception::CEmptyResult("Fail to create user");
+
+            // Retrieve created user
+            const auto qSelect = m_databaseRequester->newQuery();
+            qSelect->Select(CRecipientTable::getIdColumnName()).
+                     From(CRecipientTable::getTableName()).
+                     Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, user.FirstName()).
+                     And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, user.LastName());
+
+            adapters::CSingleValueAdapter<int> adapter;
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
+
+            if (adapter.getResults().size() != 1)
+               throw shared::exception::CEmptyResult("Cannot retrieve inserted user");
+
+            return adapter.getResults()[0];
+         }
+
          boost::shared_ptr<entities::CRecipient> CRecipient::updateRecipient(const entities::CRecipient& recipient)
          {
             if (recipient.Id.isDefined())
@@ -90,6 +126,25 @@ namespace database
             throw shared::exception::CEmptyResult("The recipient id must be defined");
          }
 
+         void CRecipient::updateUser(const entities::CRecipient& user)
+         {
+            if (!user.Id.isDefined())
+               throw CDatabaseException("Need an id to update");
+
+            const auto query = m_databaseRequester->newQuery();
+            query->Update(CRecipientTable::getTableName());
+
+            if (user.FirstName.isDefined())
+               query->MultiSet(CRecipientTable::getFirstNameColumnName(), user.FirstName());
+            if (user.LastName.isDefined())
+               query->MultiSet(CRecipientTable::getLastNameColumnName(), user.LastName());
+
+            query->Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, user.Id());
+
+            if (m_databaseRequester->queryStatement(*query) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update user");
+         }
+
          std::vector<boost::shared_ptr<entities::CRecipient>> CRecipient::getRecipients()
          {
             const auto qSelect = m_databaseRequester->newQuery();
@@ -111,6 +166,28 @@ namespace database
             return recipients;
          }
 
+         std::vector<boost::shared_ptr<entities::CRecipient>> CRecipient::getUsers(const boost::optional<int>& userId,
+                                                                                   const boost::optional<std::string>& firstName,
+                                                                                   const boost::optional<std::string>& lastName)
+         {
+            const auto query = m_databaseRequester->newQuery();
+
+            query->Select().
+                   From(CRecipientTable::getTableName()).
+                   WhereTrue();
+
+            if (userId)
+               query->And(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, *userId);
+            if (firstName)
+               query->And(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, *firstName);
+            if (lastName)
+               query->And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, *lastName);
+
+            adapters::CRecipientAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, *query);
+
+            return adapter.getResults();
+         }
 
          boost::shared_ptr<entities::CRecipient> CRecipient::getRecipient(int recipientId)
          {
@@ -251,6 +328,21 @@ namespace database
             //delete recipient fields
             qDelete->Clear().DeleteFrom(CRecipientFieldTable::getTableName())
                    .Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientId);
+            m_databaseRequester->queryStatement(*qDelete);
+         }
+
+         void CRecipient::removeUser(int userId)
+         {
+            // Delete user
+            const auto qDelete = m_databaseRequester->newQuery();
+            qDelete->DeleteFrom(CRecipientTable::getTableName()).
+                     Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, userId);
+            if (m_databaseRequester->queryStatement(*qDelete) <= 0)
+               throw shared::exception::CEmptyResult("No lines affected");
+
+            // Delete recipient fields
+            qDelete->Clear().DeleteFrom(CRecipientFieldTable::getTableName())
+                   .Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, userId);
             m_databaseRequester->queryStatement(*qDelete);
          }
 

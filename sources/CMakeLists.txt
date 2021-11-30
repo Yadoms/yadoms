@@ -677,7 +677,8 @@ set(YADOMS_SRC
    server/web/rest/service/PluginEventLogger.h
    server/web/rest/service/PluginEventLogger.cpp
    server/web/rest/service/Recipient.h
-   server/web/rest/service/Recipient.cpp
+   server/web/rest/service/RecipientV1.cpp
+   server/web/rest/service/RecipientV2.cpp
    server/web/rest/service/RestEndPoint.h
    server/web/rest/service/RestEndPoint.cpp
    server/web/rest/service/RestEndPointDoc.h

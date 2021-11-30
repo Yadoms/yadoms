@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Recipient.h"
 #include <shared/exception/NotImplemented.hpp>
+#include <utility>
 
 #include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
@@ -15,7 +16,7 @@ namespace web
          std::string CRecipient::m_restFieldKeyword = std::string("field");
 
          CRecipient::CRecipient(boost::shared_ptr<database::IDataProvider> dataProvider)
-            : m_dataProvider(dataProvider)
+            : m_dataProvider(std::move(dataProvider))
          {
          }
 
@@ -26,34 +27,23 @@ namespace web
 
          void CRecipient::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CRecipient::getAllRecipients);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CRecipient::getOneRecipient);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CRecipient::removeAllRecipients,
-                                                        CRecipient::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CRecipient::removeOneRecipient,
-                                                        CRecipient::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CRecipient::addRecipient,
-                                                        CRecipient::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CRecipient::updateRecipient,
-                                                        CRecipient::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CRecipient::getAllRecipientsV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CRecipient::getOneRecipientV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CRecipient::removeAllRecipientsV1,
+                                                        CRecipient::transactionalMethodV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CRecipient::removeOneRecipientV1,
+                                                        CRecipient::transactionalMethodV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CRecipient::addRecipientV1,
+                                                        CRecipient::transactionalMethodV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CRecipient::updateRecipientV1,
+                                                        CRecipient::transactionalMethodV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restFieldKeyword), CRecipient::getAllRecipientFields);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restFieldKeyword)("*"), CRecipient::getAllRecipientsByField);
-         }
-
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CRecipient::endPoints()
-         {
-            if (m_endPoints != nullptr)
-               return m_endPoints;
-
-            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            //TODO
-
-            return m_endPoints;
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restFieldKeyword), CRecipient::getAllRecipientFieldsV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restFieldKeyword)("*"), CRecipient::getAllRecipientsByFieldV1)
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::transactionalMethod(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::transactionalMethodV1(
             poco::CRestDispatcher::CRestMethodHandler realMethod,
             const std::vector<std::string>& parameters, const std::string& requestContent)
          {
@@ -84,7 +74,7 @@ namespace web
             return result;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getOneRecipient(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getOneRecipientV1(
             const std::vector<std::string>& parameters, const std::string& requestContent)
          {
             if (parameters.size() <= 1)
@@ -95,7 +85,7 @@ namespace web
             return poco::CRestResult::GenerateSuccess(recipient);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getAllRecipientsByField(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getAllRecipientsByFieldV1(
             const std::vector<std::string>& parameters, const std::string& requestContent)
          {
             if (parameters.size() != 3)
@@ -109,7 +99,7 @@ namespace web
             return poco::CRestResult::GenerateSuccess(collection);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getAllRecipients(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getAllRecipientsV1(
             const std::vector<std::string>& parameters, const std::string& requestContent)
          {
             std::vector<boost::shared_ptr<database::entities::CRecipient>> dvList = m_dataProvider->getRecipientRequester()->getRecipients();
@@ -118,7 +108,7 @@ namespace web
             return poco::CRestResult::GenerateSuccess(collection);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getAllRecipientFields(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getAllRecipientFieldsV1(
             const std::vector<std::string>& parameters, const std::string& requestContent)
          {
             std::vector<boost::shared_ptr<database::entities::CRecipientField>> dvList = m_dataProvider->getRecipientRequester()->getFields();
@@ -127,7 +117,7 @@ namespace web
             return poco::CRestResult::GenerateSuccess(collection);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::addRecipient(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::addRecipientV1(
             const std::vector<std::string>& parameters, const std::string& requestContent)
          {
             try
@@ -147,7 +137,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::updateRecipient(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::updateRecipientV1(
             const std::vector<std::string>& parameters, const std::string& requestContent)
          {
             if (parameters.size() <= 1)
@@ -174,7 +164,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::removeOneRecipient(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::removeOneRecipientV1(
             const std::vector<std::string>& parameters, const std::string& requestContent)
          {
             try
@@ -197,7 +187,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::removeAllRecipients(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::removeAllRecipientsV1(
             const std::vector<std::string>& parameters, const std::string& requestContent)
          {
             try
