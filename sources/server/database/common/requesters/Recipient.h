@@ -20,14 +20,20 @@ namespace database
 
             // IRecipientRequester implementation
             boost::shared_ptr<entities::CRecipient> addRecipient(const entities::CRecipient& recipient) override;
+            int createUser(const entities::CRecipient& user) override;
             boost::shared_ptr<entities::CRecipient> updateRecipient(const entities::CRecipient& recipient) override;
+            void updateUser(const entities::CRecipient& user) override;
             std::vector<boost::shared_ptr<entities::CRecipient>> getRecipients() override;
+            std::vector<boost::shared_ptr<entities::CRecipient>> getUsers(const boost::optional<int>& userId,
+                                                                          const boost::optional<std::string>& firstName,
+                                                                          const boost::optional<std::string>& lastName) override;
             boost::shared_ptr<entities::CRecipient> getRecipient(int recipientId) override;
             boost::shared_ptr<entities::CRecipient> getRecipient(const std::string& firstName,
                                                                  const std::string& lastName) override;
             bool exists(const std::string& firstName, const std::string& lastName) override;
             bool exists(const int id) override;
             void removeRecipient(int recipientId) override;
+            void removeUser(int userId) override;
             void removeAllRecipients() override;
             bool fieldExists(const std::string& fieldName, const std::string& pluginName) const override;
             boost::shared_ptr<entities::CRecipientField> createField(const entities::CRecipientField& field) override;
