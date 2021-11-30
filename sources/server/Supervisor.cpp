@@ -144,7 +144,8 @@ void CSupervisor::run()
       restServices->push_back(boost::make_shared<web::rest::service::CPage>(dataProvider));
       restServices->push_back(boost::make_shared<web::rest::service::CWidget>(dataProvider,
                                                                               m_pathProvider->webServerPath().string()));
-      restServices->push_back(boost::make_shared<web::rest::service::CConfiguration>(dataAccessLayer->getConfigurationManager()));
+      restServices->push_back(boost::make_shared<web::rest::service::CConfiguration>(dataProvider,
+                                                                                     dataAccessLayer->getConfigurationManager()));
       restServices->push_back(boost::make_shared<web::rest::service::CPluginEventLogger>(dataProvider));
       restServices->push_back(boost::make_shared<web::rest::service::CEventLogger>(dataAccessLayer->getEventLogger()));
       restServices->push_back(boost::make_shared<web::rest::service::CSystem>(timezoneDatabase,

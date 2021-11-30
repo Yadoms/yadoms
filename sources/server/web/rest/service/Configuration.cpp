@@ -6,6 +6,7 @@
 #include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 #include "web/rest/ErrorAnswer.h"
+#include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
 
@@ -18,8 +19,10 @@ namespace web
          std::string CConfiguration::m_restKeyword = std::string("configurations");
 
 
-         CConfiguration::CConfiguration(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
-            : m_configurationManager(std::move(configurationManager))
+         CConfiguration::CConfiguration(boost::shared_ptr<database::IDataProvider> dataProvider,
+                                        boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
+            : m_dataProvider(std::move(dataProvider)),
+              m_configurationManager(std::move(configurationManager))
          {
          }
 
@@ -148,7 +151,7 @@ namespace web
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/server", getServerConfigurationV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/server", saveServerConfigurationV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPatch, m_restKeyword + "/server", updateServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, m_restKeyword + "/server", resetServerConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/externals/{section}", getExternalConfigurationV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPut, m_restKeyword + "/externals/{section}", saveExternalConfigurationV2));
@@ -183,15 +186,24 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CConfiguration::saveServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const
+         boost::shared_ptr<IAnswer> CConfiguration::updateServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
                if (request->contentType() != EContentType::kJson)
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnsupportedMediaType);
 
-               m_configurationManager->saveServerConfiguration(shared::CDataContainer(request->body()));
-               return boost::make_shared<CNoContentAnswer>();
+               return CHelpers::transactionalMethodV2(
+                  request,
+                  m_dataProvider,
+                  [this](const auto& req) -> boost::shared_ptr<IAnswer>
+                  {
+                     const auto currentConfiguration = m_configurationManager->getServerConfiguration();
+                     currentConfiguration->mergeFrom(shared::CDataContainer(req->body()));
+
+                     m_configurationManager->saveServerConfiguration(*currentConfiguration);
+                     return boost::make_shared<CNoContentAnswer>();
+                  });
             }
             catch (const std::exception&)
             {
