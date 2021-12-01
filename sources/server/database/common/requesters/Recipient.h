@@ -40,6 +40,9 @@ namespace database
             std::vector<boost::shared_ptr<entities::CRecipient>> findRecipientsFromField(const std::string& fieldName,
                                                                                          const std::string& expectedFieldValue) override;
             std::vector<boost::shared_ptr<entities::CRecipientField>> getFields() override;
+            std::vector<boost::shared_ptr<entities::CRecipientField>> getFields(const boost::optional<int>& userId,
+                                                                                const boost::optional<std::string>& pluginType,
+                                                                                const boost::optional<std::string>& fieldName) override;
             std::vector<boost::shared_ptr<entities::CRecipientField>> getFieldsByName(const std::string& fieldName) override;
             // [END] IRecipientRequester implementation
 

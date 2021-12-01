@@ -278,6 +278,28 @@ namespace database
             return adapter.getResults();
          }
 
+         std::vector<boost::shared_ptr<entities::CRecipientField>> CRecipient::getFields(const boost::optional<int>& userId,
+                                                                                         const boost::optional<std::string>& pluginType,
+                                                                                         const boost::optional<std::string>& fieldName)
+         {
+            const auto query = m_databaseRequester->newQuery();
+            query->Select().
+                   From(CRecipientFieldTable::getTableName()).
+                   WhereTrue();
+
+            if (userId)
+               query->And(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, *userId);
+            if (pluginType)
+               query->And(CRecipientFieldTable::getPluginTypeColumnName(), CQUERY_OP_EQUAL, *pluginType);
+            if (fieldName)
+               query->And(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, *fieldName);
+
+            adapters::CRecipientFieldAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, *query);
+
+            return adapter.getResults();
+         }
+
          std::vector<boost::shared_ptr<entities::CRecipientField>> CRecipient::getFieldsByName(const std::string& fieldName)
          {
             const auto qSelect = m_databaseRequester->newQuery();

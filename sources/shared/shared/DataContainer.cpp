@@ -520,7 +520,7 @@ namespace shared
 
 	void CDataContainer::setNull(const std::string& parameterName, const char pathChar) const
    {
-		auto v = this->findValue(parameterName, pathChar);
+      const auto v = this->findValue(parameterName, pathChar);
 		if (v)
 			v->SetNull();
 		throw exception::CInvalidParameter(parameterName + " : is not found");
@@ -540,7 +540,7 @@ namespace shared
 		return v.IsArray();
 	}
 
-	bool CDataContainer::isArray(const std::string& parameterName, char pathChar)
+	bool CDataContainer::isArray(const std::string& parameterName, char pathChar) const
 	{
 		const auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
 		if (ptr != NULL && ptr->IsArray())

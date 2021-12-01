@@ -92,7 +92,8 @@ void CSupervisor::run()
                                                                     dataProvider,
                                                                     dataAccessLayer,
                                                                     location,
-                                                                    taskManager));
+                                                                    taskManager,
+                                                                    startupOptions->getDeveloperMode()));
 
       // Start Task manager
       taskManager->start();
@@ -154,7 +155,8 @@ void CSupervisor::run()
       restServices->push_back(boost::make_shared<web::rest::service::CAutomationRule>(dataProvider,
                                                                                       automationRulesManager));
       restServices->push_back(boost::make_shared<web::rest::service::CTask>(taskManager));
-      restServices->push_back(boost::make_shared<web::rest::service::CRecipient>(dataProvider));
+      restServices->push_back(boost::make_shared<web::rest::service::CRecipient>(dataProvider,
+                                                                                 pluginManager));
       restServices->push_back(boost::make_shared<web::rest::service::CUpdate>(updateManager));
       restServices->push_back(boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider,
                                                                                    dataProvider,

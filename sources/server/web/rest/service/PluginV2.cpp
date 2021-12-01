@@ -48,16 +48,8 @@ namespace web
                const auto types = request->queryParamAsList("by-type");
                std::vector<boost::shared_ptr<const shared::plugin::information::IInformation>> foundPlugins;
                for (const auto& plugin : m_pluginManager->getPluginList())
-               {
-                  if (!plugin.second->isSupportedOnThisPlatform())
-                     continue;
-
-                  if (!m_developerMode && boost::starts_with(plugin.first, "dev-"))
-                     continue;
-
                   if (types->empty() || types->find(plugin.second->getType()) != types->end())
                      foundPlugins.push_back(plugin.second);
-               }
 
                // Get requested props
                const auto props = request->queryParamAsList("prop");

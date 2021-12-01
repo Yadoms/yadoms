@@ -29,12 +29,14 @@ namespace pluginSystem
                       const boost::shared_ptr<database::IDataProvider>& dataProvider,
                       const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
                       boost::shared_ptr<shared::ILocation> location,
-                      boost::shared_ptr<task::CScheduler> taskScheduler)
+                      boost::shared_ptr<task::CScheduler> taskScheduler,
+                      bool developperMode)
       : m_factory(boost::make_shared<CFactory>(pathProvider,
                                                yadomsVersion,
-                                               location)),
+                                               location,
+                                               developperMode)),
         m_dataProvider(dataProvider),
-        m_pluginDBTable(dataProvider->getPluginRequester()),
+        m_pluginDbTable(dataProvider->getPluginRequester()),
 #ifdef _DEBUG
         m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(),
                                                         dataAccessLayer->getEventLogger())),
@@ -143,13 +145,15 @@ namespace pluginSystem
       {
          try
          {
-            if (instance->Category() != database::entities::EPluginCategory::kSystem)
-               if (instance->AutoStart())
-               {
-                  YADOMS_LOG(debug) << "Start plugin instance " << instance->Id() << "...";
-                  startInstance(instance->Id());
-                  startedInstanceIds.insert(instance->Id());
-               }
+            if (instance->Category() == database::entities::EPluginCategory::kSystem)
+               continue;
+
+            if (!instance->AutoStart())
+               continue;
+
+            YADOMS_LOG(debug) << "Start plugin instance " << instance->Id() << "...";
+            startInstance(instance->Id());
+            startedInstanceIds.insert(instance->Id());
          }
          catch (CPluginException& ex)
          {
@@ -192,7 +196,7 @@ namespace pluginSystem
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
       // First step, record instance in database, to get its ID
-      const auto instanceId = m_pluginDBTable->addInstance(data);
+      const auto instanceId = m_pluginDbTable->addInstance(data);
 
       // Next create instance
       startInstance(instanceId);
@@ -204,7 +208,7 @@ namespace pluginSystem
    {
       try
       {
-         const auto instanceData = m_pluginDBTable->getInstance(id);
+         const auto instanceData = m_pluginDbTable->getInstance(id);
          if (instanceData->Category() == database::entities::EPluginCategory::kSystem)
             return;
 
@@ -214,7 +218,7 @@ namespace pluginSystem
          // Remove in database
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
          m_dataAccessLayer->getDeviceManager()->removeAllDeviceForPlugin(id);
-         m_pluginDBTable->removeInstance(id);
+         m_pluginDbTable->removeInstance(id);
 
          // Remove logs
          try
@@ -248,7 +252,7 @@ namespace pluginSystem
       try
       {
          //ensure instance exists
-         auto instanceData = m_pluginDBTable->getInstance(id);
+         auto instanceData = m_pluginDbTable->getInstance(id);
 
          const auto logFile(m_factory->pluginLogFile(id));
 
@@ -272,13 +276,13 @@ namespace pluginSystem
    std::vector<boost::shared_ptr<database::entities::CPlugin>> CManager::getInstanceList() const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-      return m_pluginDBTable->getInstances();
+      return m_pluginDbTable->getInstances();
    }
 
    boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int id) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-      return m_pluginDBTable->getInstance(id);
+      return m_pluginDbTable->getInstance(id);
    }
 
    boost::shared_ptr<IInstance> CManager::getRunningInstance(int id) const
@@ -301,10 +305,10 @@ namespace pluginSystem
          throw shared::exception::CException("Update instance : instance ID was not provided");
 
       // First get old configuration from database
-      const auto previousData = m_pluginDBTable->getInstance(newData.Id());
+      const auto previousData = m_pluginDbTable->getInstance(newData.Id());
 
       // Next, update configuration in database
-      m_pluginDBTable->updateInstance(newData);
+      m_pluginDbTable->updateInstance(newData);
 
       // Last, apply modifications
       if (newData.Configuration.isDefined()
@@ -596,7 +600,7 @@ namespace pluginSystem
 
    void CManager::startInternalPlugin()
    {
-      startInstance(m_pluginDBTable->getSystemInstance()->Id());
+      startInstance(m_pluginDbTable->getSystemInstance()->Id());
    }
 
    bool CManager::isInstanceRunning(int id) const

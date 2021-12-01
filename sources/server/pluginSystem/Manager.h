@@ -37,13 +37,15 @@ namespace pluginSystem
       /// \param [in]   dataAccessLayer         The database access layer
       /// \param [in]   location                The location
       /// \param [in]   taskScheduler           The task scheduler
+      /// \param [in]   developperMode          Developper mode
       //--------------------------------------------------------------
       CManager(boost::shared_ptr<const IPathProvider> pathProvider,
                const shared::versioning::CSemVer& yadomsVersion,
                const boost::shared_ptr<database::IDataProvider>& dataProvider,
                const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
                boost::shared_ptr<shared::ILocation> location,
-               boost::shared_ptr<task::CScheduler> taskScheduler);
+               boost::shared_ptr<task::CScheduler> taskScheduler,
+               bool developperMode);
 
       //--------------------------------------------------------------
       /// \brief			Destructor
@@ -309,7 +311,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Shortcut to plugins in database
       //--------------------------------------------------------------
-      boost::shared_ptr<database::IPluginRequester> m_pluginDBTable;
+      boost::shared_ptr<database::IPluginRequester> m_pluginDbTable;
 
       //--------------------------------------------------------------
       /// \brief			Plugin qualifier

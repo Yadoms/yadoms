@@ -609,7 +609,7 @@ namespace shared
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] pathChar         The path separator to use (default is '.')
       //--------------------------------------------------------------
-      bool isArray(const std::string& parameterName, char pathChar = '.');
+      bool isArray(const std::string& parameterName, char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief		Equality operator

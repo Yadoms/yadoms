@@ -10,16 +10,12 @@ namespace pluginSystem
            m_version("1.0.0"),
            m_author("Yadoms team"),
            m_url("http://www.yadoms.com"),
-           m_package(shared::CDataContainer::make())
+           m_package(createPackage())
       {
          m_package->set("type", m_type);
          m_package->set("version", m_version.toString());
          m_package->set("author", m_author);
          m_package->set("url", m_url);
-      }
-
-      CInformation::~CInformation()
-      {
       }
 
       const std::string& CInformation::getType() const
@@ -85,8 +81,27 @@ namespace pluginSystem
 
       const boost::filesystem::path& CInformation::getPath() const
       {
-         static const boost::filesystem::path dummy;
-         return dummy;
+         static const boost::filesystem::path Dummy;
+         return Dummy;
+      }
+
+      boost::shared_ptr<shared::CDataContainer> CInformation::createPackage() const
+      {
+         auto package = shared::CDataContainer::make(std::string(
+            R"({
+                 "recipientFields": {
+                   "email": {
+                     "type": "string",
+                     "regex" : "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$"
+                   },
+                   "mobile" : {
+                     "type": "string",
+                     "regex" : "^\\+(?:[0-9]?){6,14}[0-9]$"
+                   }
+                 }
+               })"));
+
+         return package;
       }
    }
 } // namespace pluginSystem::internalPlugin

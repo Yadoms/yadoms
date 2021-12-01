@@ -134,6 +134,17 @@ namespace database
       virtual std::vector<boost::shared_ptr<entities::CRecipientField>> getFields() = 0;
 
       //--------------------------------------------------------------
+      ///\brief                           Get all existing fields
+      ///\param [in] userId               Filter by user ID
+      ///\param [in] pluginType           Filter by plugin type
+      ///\param [in] fieldName            Filter by field name
+      ///\return                          The fields list
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CRecipientField>> getFields(const boost::optional<int>& userId,
+                                                                                  const boost::optional<std::string>& pluginType,
+                                                                                  const boost::optional<std::string>& fieldName) = 0;
+
+      //--------------------------------------------------------------
       ///\brief                           Get all the fields with specific name
       ///\param [in] fieldName            The field name ("mobile", "email", etc...)
       ///\return                          A fields list

@@ -15,8 +15,10 @@ namespace web
          std::string CRecipient::m_restKeyword = std::string("recipient");
          std::string CRecipient::m_restFieldKeyword = std::string("field");
 
-         CRecipient::CRecipient(boost::shared_ptr<database::IDataProvider> dataProvider)
-            : m_dataProvider(std::move(dataProvider))
+         CRecipient::CRecipient(boost::shared_ptr<database::IDataProvider> dataProvider,
+                                boost::shared_ptr<pluginSystem::CManager> pluginManager)
+            : m_dataProvider(std::move(dataProvider)),
+              m_pluginManager(std::move(pluginManager))
          {
          }
 

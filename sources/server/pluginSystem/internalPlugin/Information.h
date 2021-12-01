@@ -9,11 +9,11 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief		Container class for information about internal plugins
       //--------------------------------------------------------------
-      class CInformation : public shared::plugin::information::IInformation
+      class CInformation final : public shared::plugin::information::IInformation
       {
       public:
          CInformation();
-         virtual ~CInformation();
+         ~CInformation() override = default;
 
          // shared::plugin::IInformation implementation
          const std::string& getType() const override;
@@ -30,6 +30,8 @@ namespace pluginSystem
          // [END] shared::plugin::IInformation implementation
 
       private:
+         boost::shared_ptr<shared::CDataContainer> createPackage() const;
+
          std::string m_type;
          shared::versioning::CSemVer m_version;
          std::string m_author;
@@ -38,5 +40,3 @@ namespace pluginSystem
       };
    }
 } // namespace pluginSystem::internalPlugin
-
-

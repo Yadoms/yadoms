@@ -21,6 +21,7 @@ namespace web
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "users", getUsersV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "users/fields", getFieldsV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "users/{id}", getUsersV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "users", createUserV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "users/{id}", updateUserV2));
@@ -31,6 +32,8 @@ namespace web
 
          boost::shared_ptr<IAnswer> CRecipient::getUsersV2(const boost::shared_ptr<IRequest>& request) const
          {
+            //TODO ajouter les fields (ainsi que dans les autres requêtes)
+            //TODO si field : faire une transaction ?
             try
             {
                // ID
@@ -71,7 +74,7 @@ namespace web
                }
 
                shared::CDataContainer container;
-               container.set("keywords", userEntries);
+               container.set("users", userEntries);
                return boost::make_shared<CSuccessAnswer>(container);
             }
 
@@ -114,6 +117,8 @@ namespace web
 
          boost::shared_ptr<IAnswer> CRecipient::updateUserV2(const boost::shared_ptr<IRequest>& request) const
          {
+            //TODO ajouter les fields (ainsi que dans les autres requêtes)
+            //TODO si field : faire une transaction ?
             try
             {
                // ID
@@ -177,6 +182,68 @@ namespace web
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to delete user");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CRecipient::getFieldsV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               // List concerned plugins (plugins which have instances)
+               const auto allPlugins = m_pluginManager->getPluginList();
+               std::map<std::string, boost::shared_ptr<const shared::plugin::information::IInformation>> plugins;
+               for (const auto& pluginInstance : m_pluginManager->getInstanceList())
+               {
+                  if (pluginInstance->Category() == database::entities::EPluginCategory::kSystem)
+                  {
+                     plugins[pluginInstance->Type()] = m_pluginManager->getRunningInstance(pluginInstance->Id())->aboutPlugin();
+                  }
+                  else
+                  {
+                     if (plugins.find(pluginInstance->Type()) != plugins.end())
+                        continue;
+                     if (allPlugins.find(pluginInstance->Type()) == allPlugins.end())
+                        continue;
+
+                     plugins[pluginInstance->Type()] = allPlugins.at(pluginInstance->Type());
+                  }
+               }
+
+               // Extract recipient fields
+               shared::CDataContainer fields;
+               for (const auto& plugin : plugins)
+               {
+                  const auto package = plugin.second->getPackage();
+
+                  if (!package->containsChild("recipientFields"))
+                     continue;
+
+                  const auto pluginRecipientFields = package->getAsMap<boost::shared_ptr<shared::CDataContainer>>("recipientFields");
+                  for (const auto& recipientField : pluginRecipientFields)
+                  {
+                     auto fieldContent = boost::make_shared<shared::CDataContainer>();
+                     fieldContent = recipientField.second;
+                     fieldContent->set("pluginType", plugin.second->getType());
+                     fieldContent->set("i18nPath", (plugin.second->getPath() / "locales").string());
+                     fields.set(recipientField.first, fieldContent);
+                  }
+               }
+
+               shared::CDataContainer container;
+               container.set("fields", fields);
+               return boost::make_shared<CSuccessAnswer>(container);
+            }
+
+            catch (const shared::exception::COutOfRange& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getFields request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getFields request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get users fields");
             }
          }
       } //namespace service
