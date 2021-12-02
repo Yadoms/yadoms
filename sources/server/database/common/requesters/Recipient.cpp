@@ -439,37 +439,25 @@ namespace database
             return count != 0;
          }
 
-         boost::shared_ptr<entities::CRecipientField> CRecipient::createField(const entities::CRecipientField& field)
+         void CRecipient::createField(const entities::CRecipientField& field)
          {
-            if (!field.FieldName.isDefined() || !field.PluginType.isDefined())
-               throw shared::exception::CEmptyResult("Cannot add recipient field without name and plugin name");
-
-            //check field do not already exists
-            if (fieldExists(field.FieldName(), field.PluginType()))
-               throw shared::exception::CInvalidParameter(
-                  (boost::format("Fail to insert recipient field %1% (already exists)") % field.FieldName()).str());
+            if (!field.IdRecipient.isDefined() || !field.FieldName.isDefined() || !field.PluginType.isDefined())
+               throw shared::exception::CEmptyResult("Cannot add recipient, missing data");
 
             //insert field
             const auto qInsert = m_databaseRequester->newQuery();
-            qInsert->InsertInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getFieldNameColumnName(),
-                                CRecipientFieldTable::getPluginTypeColumnName()).
-                     Values(field.FieldName(), field.PluginType());
+            qInsert->InsertInto(CRecipientFieldTable::getTableName(),
+                                CRecipientFieldTable::getIdRecipientColumnName(),
+                                CRecipientFieldTable::getFieldNameColumnName(),
+                                CRecipientFieldTable::getPluginTypeColumnName(),
+                                CRecipientFieldTable::getValueColumnName()).
+                     Values(field.IdRecipient(),
+                            field.FieldName(),
+                            field.PluginType(),
+                            field.Value.isDefined() ? field.Value() : std::string());
+
             if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                throw shared::exception::CEmptyResult("Fail to insert recipient field");
-
-            //retrieve inserted field
-            const auto qSelect = m_databaseRequester->newQuery();
-            qSelect->Select().
-                     From(CRecipientFieldTable::getTableName()).
-                     Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, field.FieldName()).
-                     And(CRecipientFieldTable::getPluginTypeColumnName(), CQUERY_OP_EQUAL, field.PluginType());
-
-            adapters::CRecipientFieldAdapter adapter;
-            m_databaseRequester->queryEntities(&adapter, *qSelect);
-            if (adapter.getResults().size() != 1)
-               throw shared::exception::CEmptyResult("Fail to insert recipient field : cannot retrieve inserted field");
-
-            return adapter.getResults()[0];
          }
       } //namespace requesters
    } //namespace common

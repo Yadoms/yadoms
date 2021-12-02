@@ -36,7 +36,7 @@ namespace database
             void removeUser(int userId) override;
             void removeAllRecipients() override;
             bool fieldExists(const std::string& fieldName, const std::string& pluginName) const override;
-            boost::shared_ptr<entities::CRecipientField> createField(const entities::CRecipientField& field) override;
+            void createField(const entities::CRecipientField& field) override;
             std::vector<boost::shared_ptr<entities::CRecipient>> findRecipientsFromField(const std::string& fieldName,
                                                                                          const std::string& expectedFieldValue) override;
             std::vector<boost::shared_ptr<entities::CRecipientField>> getFields() override;

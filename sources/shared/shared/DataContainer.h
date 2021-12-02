@@ -174,13 +174,14 @@ namespace shared
    ///			This is done be serializing/deserializing a string,
    ///			or a file
    //--------------------------------------------------------------
-   class CDataContainer : public serialization::IDataSerializable, public serialization::IDataFileSerializable /*, public IDataContainable*/
+   class CDataContainer final : public serialization::IDataSerializable, public serialization::IDataFileSerializable /*, public IDataContainable*/
    {
    public:
       //--------------------------------------------------------------
       /// \brief		Constructor
       //--------------------------------------------------------------
       static boost::shared_ptr<CDataContainer> make();
+      static std::unique_ptr<CDataContainer> makeUnique();
 
       //--------------------------------------------------------------
       /// \brief		Constructor (optimized for huge data)
@@ -193,36 +194,42 @@ namespace shared
       ///   (heap is generally of 4Gb on computer, so around 61000 items it will fault)
       //--------------------------------------------------------------
       static boost::shared_ptr<CDataContainer> make(unsigned int estimatedDataSize, unsigned int estimatedItemCount);
+      static std::unique_ptr<CDataContainer> makeUnique(unsigned int estimatedDataSize, unsigned int estimatedItemCount);
 
       //--------------------------------------------------------------
       /// \brief		Constructor
-      /// \param [in] d    Initial data for this container (json data)
+      /// \param [in] initialData    Initial data for this container (json data)
       //--------------------------------------------------------------
       static boost::shared_ptr<CDataContainer> make(const std::string& initialData);
+      static std::unique_ptr<CDataContainer> makeUnique(const std::string& initialData);
 
       //--------------------------------------------------------------
       /// \brief		Constructor
-      /// \param [in] d    Initial data for this container (key,value)
+      /// \param [in] initialData    Initial data for this container (key,value)
       //--------------------------------------------------------------
       static boost::shared_ptr<CDataContainer> make(const std::map<std::string, std::string>& initialData);
+      static std::unique_ptr<CDataContainer> makeUnique(const std::map<std::string, std::string>& initialData);
 
       //--------------------------------------------------------------
       /// \brief		Constructor
       /// \param [in] d    Initial data for this container (rapidjson::Value&)
       //--------------------------------------------------------------
       static boost::shared_ptr<CDataContainer> make(rapidjson::Value& d);
+      static std::unique_ptr<CDataContainer> makeUnique(rapidjson::Value& d);
       
       //--------------------------------------------------------------
       /// \brief		Constructor
       /// \param [in] d    Initial data for this container (rapidjson::Value*)
       //--------------------------------------------------------------
       static boost::shared_ptr<CDataContainer> make(rapidjson::Value* d);
+      static std::unique_ptr<CDataContainer> makeUnique(rapidjson::Value* d);
 
       //--------------------------------------------------------------
       /// \brief		Constructor
       /// \param [in] d    Initial data for this container (rapidjson::Document&)
       //--------------------------------------------------------------
       static boost::shared_ptr<CDataContainer> make(rapidjson::Document& d);
+      static std::unique_ptr<CDataContainer> makeUnique(rapidjson::Document& d);
 
       //--------------------------------------------------------------
       //
@@ -286,7 +293,7 @@ namespace shared
      // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
      // ************************************************************************************
 	  //--------------------------------------------------------------
-      explicit CDataContainer(rapidjson::Value & d);
+      explicit CDataContainer(const rapidjson::Value & d);
 
 	  //--------------------------------------------------------------
 	  /// \brief		Constructor
@@ -295,7 +302,7 @@ namespace shared
      // *********** internal use ONLY prefer use shared::CDataContainer::make(...) *********
      // ************************************************************************************
      //--------------------------------------------------------------
-	  explicit CDataContainer(rapidjson::Value * d);
+	  explicit CDataContainer(const rapidjson::Value * d);
       
 	  //--------------------------------------------------------------
 	  /// \brief		Constructor
@@ -306,12 +313,10 @@ namespace shared
      //--------------------------------------------------------------
 	  explicit CDataContainer(rapidjson::Document & d);
 
-   public:
       //--------------------------------------------------------------
       /// \brief			Destructor
-      /// \return    	void
       //--------------------------------------------------------------
-      virtual ~CDataContainer();
+      ~CDataContainer() override;
 
       //--------------------------------------------------------------
       //
@@ -468,13 +473,13 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Find a sub-parameter with criteria
       /// \param [in] parameterName    Name of the parameter
-      /// \param [in] where_fct         Criteria : lambda must returns true if item is found
+      /// \param [in] whereFct         Criteria : lambda must returns true if item is found
       /// \param [in] pathChar         The path separator to use (default is '.')
       /// \return     The found parameter
       /// \throw      shared::exception::CEmptyResutl if no parameter matching criteria was found
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      CDataContainer find(const std::string& parameterName, boost::function<bool(const CDataContainer&)> where_fct, char pathChar = '.') const;
+      CDataContainer find(const std::string& parameterName, const boost::function<bool(const CDataContainer&)>& whereFct, char pathChar = '.') const;
 
 
       //--------------------------------------------------------------
@@ -703,7 +708,7 @@ namespace shared
       /// \desc       Add non-existing (or replace existing) values of "from" container into this container
       ///             Values of this container not present in "from" container will be kept
       //--------------------------------------------------------------
-      void mergeFrom(boost::shared_ptr<CDataContainer> & from);
+      void mergeFrom(const boost::shared_ptr<CDataContainer>& from);
 
       //--------------------------------------------------------------
       //
@@ -748,6 +753,7 @@ namespace shared
       //--------------------------------------------------------------
       const static CDataContainer EmptyContainer;
       const static boost::shared_ptr<CDataContainer> EmptyContainerSharedPtr;
+      const static std::unique_ptr<CDataContainer> EmptyContainerUniquePtr;
 
    protected:
       //--------------------------------------------------------------
@@ -1144,7 +1150,7 @@ namespace shared
       struct helper < boost::optional< T > >
       {
          //--------------------------------------------------------------
-         /// \brief	    GET Method for boost::shared_ptr<T>
+         /// \brief	    GET Method for boost::optional<T>
          //--------------------------------------------------------------
          static boost::optional< T > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
@@ -1154,7 +1160,7 @@ namespace shared
          }
 
          //--------------------------------------------------------------
-         /// \brief	    SET Method for boost::shared_ptr<T>
+         /// \brief	    SET Method for boost::optional<T>
          //--------------------------------------------------------------
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const boost::optional< T > & value, const char pathChar)
          {
@@ -1165,7 +1171,7 @@ namespace shared
          }
 
          //--------------------------------------------------------------
-         /// \brief	    appendArray Method for boost::shared_ptr<T>
+         /// \brief	    appendArray Method for boost::optional<T>
          //--------------------------------------------------------------
          static void appendArrayInternal(CDataContainer * tree, const std::string& parameterName, const boost::optional< T > & value, const char pathChar)
          {
@@ -1493,7 +1499,6 @@ namespace shared
       //--------------------------------------------------------------
       static std::string generatePath(const std::string & parameterName, char pathChar);
 
-   private:
       //--------------------------------------------------------------
       /// \brief	   The rapidjson tree allocator initial buffer
       //--------------------------------------------------------------
@@ -1605,8 +1610,8 @@ namespace shared
       //by default this is not the case
       //that's why template specialization is needed
       if (sizeof(unsigned long) == 8)
-         return (unsigned long)helper<uint64_t>::getInternal(this, parameterName, pathChar);
-      return (unsigned int)helper<unsigned int>::getInternal(this, parameterName, pathChar);
+         return static_cast<unsigned long>(helper<uint64_t>::getInternal(this, parameterName, pathChar));
+      return static_cast<unsigned>(helper<unsigned int>::getInternal(this, parameterName, pathChar));
    }
 
    template<>
@@ -1618,8 +1623,8 @@ namespace shared
       //by default this is not the case
       //that's why template specialization is needed
       if (sizeof(long) == 8)
-         return (unsigned long)helper<int64_t>::getInternal(this, parameterName, pathChar);
-      return (unsigned int)helper<int>::getInternal(this, parameterName, pathChar);
+         return static_cast<unsigned long>(helper<int64_t>::getInternal(this, parameterName, pathChar));
+      return static_cast<unsigned>(helper<int>::getInternal(this, parameterName, pathChar));
    }
 
    template<class T>

@@ -52,6 +52,8 @@ namespace web
             boost::shared_ptr<IAnswer> createUserV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> updateUserV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> deleteUserV2(const boost::shared_ptr<IRequest>& request) const;
+            std::unique_ptr<shared::CDataContainer> getAvailableFields() const;
+            std::pair<std::string, std::string> fromFieldName(const std::string& fieldName) const;
             boost::shared_ptr<IAnswer> getFieldsV2(const boost::shared_ptr<IRequest>& request) const;
 
             static std::string m_restKeyword;

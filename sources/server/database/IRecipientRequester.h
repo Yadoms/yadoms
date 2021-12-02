@@ -7,6 +7,8 @@ namespace database
    class IRecipientRequester //TODO renommer partout "Recipient" en "User"
    {
    public:
+      virtual ~IRecipientRequester() = default;
+
       //--------------------------------------------------------------
       /// \brief                    Add a new recipient
       /// \param [in] recipient     Recipient data
@@ -31,7 +33,6 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                    Update a user
       /// \param [in] user          User data
-      /// \return                   The updated recipient
       //--------------------------------------------------------------
       virtual void updateUser(const entities::CRecipient& user) = 0;
 
@@ -113,10 +114,9 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                    Create a new field
       /// \param [in] field         The field data
-      /// \return                   The created field
       /// \throw                    shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CRecipientField> createField(const entities::CRecipientField& field) = 0;
+      virtual void createField(const entities::CRecipientField& field) = 0;
 
       //--------------------------------------------------------------
       ///\brief                           Find a recipient from a specific field value
@@ -150,12 +150,5 @@ namespace database
       ///\return                          A fields list
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CRecipientField>> getFieldsByName(const std::string& fieldName) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~IRecipientRequester()
-      {
-      }
    };
 } //namespace database 
