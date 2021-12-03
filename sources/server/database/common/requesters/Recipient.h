@@ -20,20 +20,19 @@ namespace database
 
             // IRecipientRequester implementation
             boost::shared_ptr<entities::CRecipient> addRecipient(const entities::CRecipient& recipient) override;
-            int createUser(const entities::CRecipient& user) override;
+            int createRecipient(const entities::CRecipient& recipient) override;
             boost::shared_ptr<entities::CRecipient> updateRecipient(const entities::CRecipient& recipient) override;
-            void updateUser(const entities::CRecipient& user) override;
+            void updateRecipientV2(const entities::CRecipient& recipient) override;
             std::vector<boost::shared_ptr<entities::CRecipient>> getRecipients() override;
-            std::vector<boost::shared_ptr<entities::CRecipient>> getUsers(const boost::optional<int>& userId,
-                                                                          const boost::optional<std::string>& firstName,
-                                                                          const boost::optional<std::string>& lastName) override;
+            std::vector<boost::shared_ptr<entities::CRecipient>> getRecipients(const boost::optional<int>& recipientId,
+                                                                               const boost::optional<std::string>& firstName,
+                                                                               const boost::optional<std::string>& lastName) override;
             boost::shared_ptr<entities::CRecipient> getRecipient(int recipientId) override;
             boost::shared_ptr<entities::CRecipient> getRecipient(const std::string& firstName,
                                                                  const std::string& lastName) override;
             bool exists(const std::string& firstName, const std::string& lastName) override;
             bool exists(const int id) override;
             void removeRecipient(int recipientId) override;
-            void removeUser(int userId) override;
             void removeAllRecipients() override;
             bool fieldExists(const std::string& fieldName, const std::string& pluginName) const override;
             void createField(const entities::CRecipientField& field) override;
@@ -41,7 +40,7 @@ namespace database
             std::vector<boost::shared_ptr<entities::CRecipient>> findRecipientsFromField(const std::string& fieldName,
                                                                                          const std::string& expectedFieldValue) override;
             std::vector<boost::shared_ptr<entities::CRecipientField>> getFields() override;
-            std::vector<boost::shared_ptr<entities::CRecipientField>> getFields(const boost::optional<int>& userId,
+            std::vector<boost::shared_ptr<entities::CRecipientField>> getFields(const boost::optional<int>& recipientId,
                                                                                 const boost::optional<std::string>& pluginType,
                                                                                 const boost::optional<std::string>& fieldName) override;
             std::vector<boost::shared_ptr<entities::CRecipientField>> getFieldsByName(const std::string& fieldName) override;

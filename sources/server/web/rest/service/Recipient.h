@@ -45,13 +45,13 @@ namespace web
                const std::vector<std::string>& parameters, const std::string& requestContent);
 
             boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethodV1(poco::CRestDispatcher::CRestMethodHandler realMethod,
-               const std::vector<std::string>& parameters,
-               const std::string& requestContent);
+                                                                                              const std::vector<std::string>& parameters,
+                                                                                              const std::string& requestContent);
 
-            boost::shared_ptr<IAnswer> getUsersV2(const boost::shared_ptr<IRequest>& request) const;
-            boost::shared_ptr<IAnswer> createUserV2(const boost::shared_ptr<IRequest>& request) const;
-            boost::shared_ptr<IAnswer> updateUserV2(const boost::shared_ptr<IRequest>& request) const;
-            boost::shared_ptr<IAnswer> deleteUserV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getRecipientsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> createRecipientV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updateRecipientV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deleteRecipientV2(const boost::shared_ptr<IRequest>& request) const;
             std::unique_ptr<shared::CDataContainer> getAvailableFields() const;
             std::pair<std::string, std::string> fromFieldName(const std::string& fieldName) const;
             boost::shared_ptr<IAnswer> getFieldsV2(const boost::shared_ptr<IRequest>& request) const;

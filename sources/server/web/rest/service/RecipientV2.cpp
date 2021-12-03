@@ -15,24 +15,24 @@ namespace web
    {
       namespace service
       {
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CRecipient::endPoints() //TODO renommer la classe en CUser ?
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CRecipient::endPoints()
          {
             if (m_endPoints != nullptr)
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "users", getUsersV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "users/fields", getFieldsV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "users/{id}", getUsersV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "users", createUserV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "users/{id}", updateUserV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "users/{id}", deleteUserV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "recipients", getRecipientsV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "recipients/fields", getFieldsV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "recipients/{id}", getRecipientsV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "recipients", createRecipientV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "recipients/{id}", updateRecipientV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "recipients/{id}", deleteRecipientV2));
 
             return m_endPoints;
          }
 
-         boost::shared_ptr<IAnswer> CRecipient::getUsersV2(const boost::shared_ptr<IRequest>& request) const
+         boost::shared_ptr<IAnswer> CRecipient::getRecipientsV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -42,9 +42,9 @@ namespace web
                   [this](const auto& req)-> boost::shared_ptr<IAnswer>
                   {
                      // ID
-                     const auto userId = req->pathVariableExists("id")
-                                            ? boost::make_optional(static_cast<int>(std::stol(req->pathVariable("id"))))
-                                            : boost::optional<int>();
+                     const auto recipientId = req->pathVariableExists("id")
+                                                 ? boost::make_optional(static_cast<int>(std::stol(req->pathVariable("id"))))
+                                                 : boost::optional<int>();
 
                      // Filtering
                      const auto fromFirstName = req->queryParamExists("from-firstname")
@@ -55,70 +55,70 @@ namespace web
                                                   : boost::optional<std::string>();
 
                      // Process the request
-                     const auto users = m_dataProvider->getRecipientRequester()->getUsers(userId,
-                                                                                          fromFirstName,
-                                                                                          fromLastName);
+                     const auto recipients = m_dataProvider->getRecipientRequester()->getRecipients(recipientId,
+                        fromFirstName,
+                        fromLastName);
 
-                     if (users.empty())
+                     if (recipients.empty())
                         return boost::make_shared<CNoContentAnswer>();
 
                      // Get requested props
                      const auto props = req->queryParamAsList("prop");
-                     std::vector<boost::shared_ptr<shared::CDataContainer>> userEntries;
-                     for (const auto& user : users)
+                     std::vector<boost::shared_ptr<shared::CDataContainer>> recipientEntries;
+                     for (const auto& recipient : recipients)
                      {
                         auto keywordEntry = boost::make_shared<shared::CDataContainer>();
                         if (props->empty() || props->find("id") != props->end())
-                           keywordEntry->set("id", user->Id());
+                           keywordEntry->set("id", recipient->Id());
                         if (props->empty() || props->find("firstname") != props->end())
-                           keywordEntry->set("firstname", user->FirstName());
+                           keywordEntry->set("firstname", recipient->FirstName());
                         if (props->empty() || props->find("lastname") != props->end())
-                           keywordEntry->set("lastname", user->LastName());
+                           keywordEntry->set("lastname", recipient->LastName());
                         if (props->empty() || props->find("fields") != props->end())
                         {
                            shared::CDataContainer fields;
-                           for (const auto& availableField : getAvailableFields()->getAsMap<boost::shared_ptr<shared::CDataContainer>>())
+                           for (const auto& availableField : this.getAvailableFields()->getAsMap<boost::shared_ptr<shared::CDataContainer>>())
                            {
                               const auto fieldNamePair = fromFieldName(availableField.first);
 
-                              const auto userFields = m_dataProvider->getRecipientRequester()->getFields(user->Id(),
+                              const auto recipientFields = m_dataProvider->getRecipientRequester()->getFields(recipient->Id(),
                                  fieldNamePair.first,
                                  fieldNamePair.second);
 
-                              if (userFields.empty())
+                              if (recipientFields.empty())
                                  continue;
 
-                              const auto userField = userFields[0];
+                              const auto recipientField = recipientFields[0];
                               shared::CDataContainer value;
-                              value.set("value", userField->Value());
+                              value.set("value", recipientField->Value());
                               fields.set(availableField.first, value);
                            }
                            keywordEntry->set("fields", fields);
                         }
 
-                        userEntries.push_back(keywordEntry);
+                        recipientEntries.push_back(keywordEntry);
                      }
 
                      shared::CDataContainer container;
-                     container.set("users", userEntries);
+                     container.set("recipients", recipientEntries);
                      return boost::make_shared<CSuccessAnswer>(container);
                   });
             }
 
             catch (const shared::exception::COutOfRange& exception)
             {
-               YADOMS_LOG(error) << "Error processing getUsers request : " << exception.what();
+               YADOMS_LOG(error) << "Error processing getRecipients request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
             }
             catch (const std::exception& exception)
             {
-               YADOMS_LOG(error) << "Error processing getUsers request : " << exception.what();
+               YADOMS_LOG(error) << "Error processing getRecipients request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get users");
+                                                       "Fail to get recipients");
             }
          }
 
-         boost::shared_ptr<IAnswer> CRecipient::createUserV2(const boost::shared_ptr<IRequest>& request) const
+         boost::shared_ptr<IAnswer> CRecipient::createRecipientV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -129,20 +129,20 @@ namespace web
                   {
                      if (req->body().empty())
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                           "body was not provided");
+                                                                "body was not provided");
 
                      const shared::CDataContainer body(req->body());
 
                      if (!body.exists("firstName")
                         || !body.exists("lastName"))
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                                "invalid user creation request. Need at least firstname and lastname");
+                                                                "invalid recipient creation request. Need at least firstname and lastname");
 
-                     // Create user
-                     database::entities::CRecipient user;
-                     user.FirstName = body.get<std::string>("firstName");
-                     user.LastName = body.get<std::string>("lastName");
-                     const auto newUserId = m_dataProvider->getRecipientRequester()->createUser(user);
+                     // Create recipient
+                     database::entities::CRecipient recipient;
+                     recipient.FirstName = body.get<std::string>("firstName");
+                     recipient.LastName = body.get<std::string>("lastName");
+                     const auto newRecipientId = m_dataProvider->getRecipientRequester()->createRecipient(recipient);
 
                      // Add fields
                      if (body.exists("fields"))
@@ -150,7 +150,7 @@ namespace web
                         for (const auto& field : body.getAsMap<boost::shared_ptr<shared::CDataContainer>>("fields"))
                         {
                            database::entities::CRecipientField fieldEntry;
-                           fieldEntry.IdRecipient = newUserId;
+                           fieldEntry.IdRecipient = newRecipientId;
                            const auto fieldNamePair = fromFieldName(field.first);
                            fieldEntry.PluginType = fieldNamePair.first;
                            fieldEntry.FieldName = fieldNamePair.second;
@@ -160,17 +160,17 @@ namespace web
                         }
                      }
 
-                     return boost::make_shared<CCreatedAnswer>("users/" + std::to_string(newUserId));
+                     return boost::make_shared<CCreatedAnswer>("recipients/" + std::to_string(newRecipientId));
                   });
             }
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to create user");
+                                                       "Fail to create recipient");
             }
          }
 
-         boost::shared_ptr<IAnswer> CRecipient::updateUserV2(const boost::shared_ptr<IRequest>& request) const
+         boost::shared_ptr<IAnswer> CRecipient::updateRecipientV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -183,27 +183,27 @@ namespace web
                      const auto id = req->pathVariable("id", std::string());
                      if (id.empty())
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                                "user id was not provided");
-                     const auto userId = static_cast<int>(std::stol(id));
+                                                                "recipient id was not provided");
+                     const auto recipientId = static_cast<int>(std::stol(id));
 
                      if (req->body().empty())
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                           "body was not provided");
+                                                                "body was not provided");
 
                      const shared::CDataContainer body(req->body());
 
                      if (body.empty())
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                           "body was not provided");
+                                                                "body was not provided");
 
-                     // Update user
-                     database::entities::CRecipient user;
-                     user.Id = userId;
+                     // Update recipient
+                     database::entities::CRecipient recipient;
+                     recipient.Id = recipientId;
                      if (body.exists("firstName"))
-                        user.FirstName = body.get<std::string>("firstName");
+                        recipient.FirstName = body.get<std::string>("firstName");
                      if (body.exists("lastName"))
-                        user.LastName = body.get<std::string>("lastName");
-                     m_dataProvider->getRecipientRequester()->updateUser(user);
+                        recipient.LastName = body.get<std::string>("lastName");
+                     m_dataProvider->getRecipientRequester()->updateRecipientV2(recipient);
 
                      // Update fields
                      if (body.exists("fields"))
@@ -211,7 +211,7 @@ namespace web
                         for (const auto& field : body.getAsMap<boost::shared_ptr<shared::CDataContainer>>("fields"))
                         {
                            database::entities::CRecipientField fieldEntry;
-                           fieldEntry.IdRecipient = userId;
+                           fieldEntry.IdRecipient = recipientId;
                            const auto fieldNamePair = fromFieldName(field.first);
                            fieldEntry.PluginType = fieldNamePair.first;
                            fieldEntry.FieldName = fieldNamePair.second;
@@ -219,7 +219,7 @@ namespace web
                            fieldEntry.Value = field.second->get<std::string>("value");
                            m_dataProvider->getRecipientRequester()->updateField(fieldEntry);
                         }
-                     }                     
+                     }
 
                      return boost::make_shared<CNoContentAnswer>();
                   });
@@ -227,11 +227,11 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to update user");
+                                                       "Fail to update recipient");
             }
          }
 
-         boost::shared_ptr<IAnswer> CRecipient::deleteUserV2(const boost::shared_ptr<IRequest>& request) const
+         boost::shared_ptr<IAnswer> CRecipient::deleteRecipientV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
@@ -244,10 +244,10 @@ namespace web
                      const auto id = req->pathVariable("id", std::string());
                      if (id.empty())
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                                "user id was not provided");
-                     const auto userId = static_cast<int>(std::stol(id));
+                                                                "recipient id was not provided");
+                     const auto recipientId = static_cast<int>(std::stol(id));
 
-                     m_dataProvider->getRecipientRequester()->removeRecipient(userId);
+                     m_dataProvider->getRecipientRequester()->removeRecipient(recipientId);
 
                      return boost::make_shared<CNoContentAnswer>();
                   });
@@ -255,7 +255,7 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to delete user");
+                                                       "Fail to delete recipient");
             }
          }
 
@@ -330,7 +330,7 @@ namespace web
             {
                YADOMS_LOG(error) << "Error processing getFields request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get users fields");
+                                                       "Fail to get recipients fields");
             }
          }
       } //namespace service
