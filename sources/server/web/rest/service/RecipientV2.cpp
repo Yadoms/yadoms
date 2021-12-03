@@ -79,7 +79,7 @@ namespace web
                            shared::CDataContainer fields;
                            for (const auto& availableField : this->getAvailableFields()->getAsMap<boost::shared_ptr<shared::CDataContainer>>())
                            {
-                              const auto fieldNamePair = fromFieldName(availableField.first);
+                              const auto fieldNamePair = this->fromFieldName(availableField.first);
 
                               const auto recipientFields = m_dataProvider->getRecipientRequester()->getFields(recipient->Id(),
                                  fieldNamePair.first,
@@ -151,7 +151,7 @@ namespace web
                         {
                            database::entities::CRecipientField fieldEntry;
                            fieldEntry.IdRecipient = newRecipientId;
-                           const auto fieldNamePair = fromFieldName(field.first);
+                           const auto fieldNamePair = this->fromFieldName(field.first);
                            fieldEntry.PluginType = fieldNamePair.first;
                            fieldEntry.FieldName = fieldNamePair.second;
 
@@ -212,7 +212,7 @@ namespace web
                         {
                            database::entities::CRecipientField fieldEntry;
                            fieldEntry.IdRecipient = recipientId;
-                           const auto fieldNamePair = fromFieldName(field.first);
+                           const auto fieldNamePair = this->fromFieldName(field.first);
                            fieldEntry.PluginType = fieldNamePair.first;
                            fieldEntry.FieldName = fieldNamePair.second;
 
