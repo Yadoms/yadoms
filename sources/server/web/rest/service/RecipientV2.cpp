@@ -77,7 +77,7 @@ namespace web
                         if (props->empty() || props->find("fields") != props->end())
                         {
                            shared::CDataContainer fields;
-                           for (const auto& availableField : this.getAvailableFields()->getAsMap<boost::shared_ptr<shared::CDataContainer>>())
+                           for (const auto& availableField : this->getAvailableFields()->getAsMap<boost::shared_ptr<shared::CDataContainer>>())
                            {
                               const auto fieldNamePair = fromFieldName(availableField.first);
 
