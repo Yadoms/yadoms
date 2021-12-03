@@ -702,7 +702,7 @@ inline CQuery& CQuery::GroupBy(const T1& field1,
 }
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery& CQuery::InsertInto(const database::common::CDatabaseTable& table,
+inline CQuery& CQuery::InsertInto(const CDatabaseTable& table,
                                   const T1& field1,
                                   const T2& field2,
                                   const T3& field3,
@@ -740,7 +740,7 @@ inline CQuery& CQuery::InsertInto(const database::common::CDatabaseTable& table,
 }
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery& CQuery::InsertOrReplaceInto(const database::common::CDatabaseTable& table,
+inline CQuery& CQuery::InsertOrReplaceInto(const CDatabaseTable& table,
                                            const T1& field1,
                                            const T2& field2,
                                            const T3& field3,

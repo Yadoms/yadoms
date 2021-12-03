@@ -127,6 +127,10 @@ namespace web
                   m_dataProvider,
                   [this](const auto& req)-> boost::shared_ptr<IAnswer>
                   {
+                     if (req->body().empty())
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                           "body was not provided");
+
                      const shared::CDataContainer body(req->body());
 
                      if (!body.exists("firstName")
@@ -168,38 +172,57 @@ namespace web
 
          boost::shared_ptr<IAnswer> CRecipient::updateUserV2(const boost::shared_ptr<IRequest>& request) const
          {
-            //TODO ajouter les fields (ainsi que dans les autres requêtes)
-            //TODO si field : faire une transaction ?
             try
             {
-               // ID
-               const auto id = request->pathVariable("id", std::string());
-               if (id.empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "user id was not provided");
-               const auto userId = static_cast<int>(std::stol(id));
+               return CHelpers::transactionalMethodV2(
+                  request,
+                  m_dataProvider,
+                  [this](const auto& req)-> boost::shared_ptr<IAnswer>
+                  {
+                     // ID
+                     const auto id = req->pathVariable("id", std::string());
+                     if (id.empty())
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                                "user id was not provided");
+                     const auto userId = static_cast<int>(std::stol(id));
 
-               if (request->body().empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "body was not provided");
+                     if (req->body().empty())
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                           "body was not provided");
 
-               const auto body = shared::CDataContainer::make(request->body());
+                     const shared::CDataContainer body(req->body());
 
-               if (body->empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "body was not provided");
+                     if (body.empty())
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                           "body was not provided");
 
-               // Filter only client-modifiable fields
-               database::entities::CRecipient userToUpdate;
-               userToUpdate.Id = userId;
-               if (body->exists("firstName"))
-                  userToUpdate.FirstName = body->get<std::string>("firstName");
-               if (body->exists("lastName"))
-                  userToUpdate.LastName = body->get<std::string>("lastName");
+                     // Update user
+                     database::entities::CRecipient user;
+                     user.Id = userId;
+                     if (body.exists("firstName"))
+                        user.FirstName = body.get<std::string>("firstName");
+                     if (body.exists("lastName"))
+                        user.LastName = body.get<std::string>("lastName");
+                     m_dataProvider->getRecipientRequester()->updateUser(user);
 
-               m_dataProvider->getRecipientRequester()->updateUser(userToUpdate);
+                     // Update fields
+                     if (body.exists("fields"))
+                     {
+                        for (const auto& field : body.getAsMap<boost::shared_ptr<shared::CDataContainer>>("fields"))
+                        {
+                           database::entities::CRecipientField fieldEntry;
+                           fieldEntry.IdRecipient = userId;
+                           const auto fieldNamePair = fromFieldName(field.first);
+                           fieldEntry.PluginType = fieldNamePair.first;
+                           fieldEntry.FieldName = fieldNamePair.second;
 
-               return boost::make_shared<CNoContentAnswer>();
+                           fieldEntry.Value = field.second->get<std::string>("value");
+                           m_dataProvider->getRecipientRequester()->updateField(fieldEntry);
+                        }
+                     }                     
+
+                     return boost::make_shared<CNoContentAnswer>();
+                  });
             }
             catch (const std::exception&)
             {

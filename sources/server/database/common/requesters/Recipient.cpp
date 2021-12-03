@@ -459,6 +459,58 @@ namespace database
             if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                throw shared::exception::CEmptyResult("Fail to insert recipient field");
          }
+
+         void CRecipient::updateField(const entities::CRecipientField& field)
+         {
+            if (!field.IdRecipient.isDefined()
+               || !field.PluginType.isDefined()
+               || !field.FieldName.isDefined()
+               || !field.Value.isDefined())
+               throw std::invalid_argument("Update field");
+
+            const auto query = m_databaseRequester->newQuery();
+
+            if (m_databaseRequester->supportInsertOrUpdateStatement())
+            {
+               query->InsertOrReplaceInto(CRecipientFieldTable::getTableName(),
+                                          CRecipientFieldTable::getIdRecipientColumnName(),
+                                          CRecipientFieldTable::getPluginTypeColumnName(),
+                                          CRecipientFieldTable::getFieldNameColumnName(),
+                                          CRecipientFieldTable::getValueColumnName()).
+                      Values(field.IdRecipient(),
+                             field.PluginType(),
+                             field.FieldName(),
+                             field.Value());
+
+               if (m_databaseRequester->queryStatement(*query) <= 0)
+                  throw shared::exception::CEmptyResult("No lines affected");
+            }
+            else
+            {
+               query->Update(CRecipientFieldTable::getTableName())
+                    .Set(CRecipientFieldTable::getIdRecipientColumnName(), field.IdRecipient(),
+                         CRecipientFieldTable::getPluginTypeColumnName(), field.PluginType(),
+                         CRecipientFieldTable::getFieldNameColumnName(), field.FieldName(),
+                         CRecipientFieldTable::getValueColumnName(), field.Value());
+               if (m_databaseRequester->queryStatement(*query) <= 0)
+               {
+                  //fail to update, then insert
+                  query->Clear();
+                  query->InsertInto(CRecipientFieldTable::getTableName(),
+                                    CRecipientFieldTable::getIdRecipientColumnName(),
+                                    CRecipientFieldTable::getPluginTypeColumnName(),
+                                    CRecipientFieldTable::getFieldNameColumnName(),
+                                    CRecipientFieldTable::getValueColumnName()).
+                         Values(field.IdRecipient(),
+                                field.PluginType(),
+                                field.FieldName(),
+                                field.Value());
+
+                  if (m_databaseRequester->queryStatement(*query) <= 0)
+                     throw shared::exception::CEmptyResult("No lines affected");
+               }
+            }
+         }
       } //namespace requesters
    } //namespace common
 } //namespace database 

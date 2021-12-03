@@ -119,6 +119,13 @@ namespace database
       virtual void createField(const entities::CRecipientField& field) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                    Update field
+      /// \param [in] field         The field data
+      /// \throw                    shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateField(const entities::CRecipientField& field) = 0;
+
+      //--------------------------------------------------------------
       ///\brief                           Find a recipient from a specific field value
       ///\param [in] fieldName            The field name ("mobile", "email", etc...) where searching
       ///\param [in] expectedFieldValue   The expected field value
