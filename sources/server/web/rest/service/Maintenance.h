@@ -62,6 +62,7 @@ namespace web
                                                                                             const std::string& requestContent) const;
 
             boost::shared_ptr<IAnswer> getBackupsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> createBackupsV2(const boost::shared_ptr<IRequest>& request) const;
 
             boost::shared_ptr<std::string> fileUploadChunkRead(const std::string& requestContent) const;
             std::string fileUploadChunkReadGuid(const std::string& requestContent) const;

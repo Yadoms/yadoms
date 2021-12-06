@@ -3,6 +3,8 @@
 #include "stdafx.h"
 #include "Maintenance.h"
 #include "RestEndPoint.h"
+#include "task/backup/Backup.h"
+#include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
@@ -22,10 +24,10 @@ namespace web
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "maintenance/backups", getBackupsV2));
-            //TODO
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "maintenance/backups", createBackupsV2));
 
-            
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("backup"), CMaintenance::startBackup)
+
+            //TODO            
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup")("*"), CMaintenance::deleteBackup)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("restore")("*"), CMaintenance::restoreBackup)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup"), CMaintenance::deleteAllBackups)
@@ -79,18 +81,46 @@ namespace web
                   result.appendArray("backups", file);
                }
 
+               //TODO se démerder pour remonter également les tâches de création de backup en cours
+
                return boost::make_shared<CSuccessAnswer>(result);
             }
             catch (const shared::exception::COutOfRange& exception)
             {
-               YADOMS_LOG(error) << "Error processing getKeywords request : " << exception.what();
+               YADOMS_LOG(error) << "Error processing getBackups request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
             } catch (const std::exception& exception
             )
             {
-               YADOMS_LOG(error) << "Error processing getKeywords request : " << exception.what();
+               YADOMS_LOG(error) << "Error processing getBackups request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get keywords");
+                                                       "Fail to get backups");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::createBackupsV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               if (!m_databaseRequester->backupSupported())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "backup not supported");
+
+               const boost::shared_ptr<task::ITask> task(boost::make_shared<task::backup::CBackup>(m_pathProvider, m_databaseRequester));
+
+               std::string taskUid;
+               if (!m_taskScheduler->runTask(task, taskUid))
+                  throw std::runtime_error("Task : " + task->getName() + " fail to start");
+
+               YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+
+               return boost::make_shared<CCreatedAnswer>("backups-taskId/" + taskUid);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Fail to create backup : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to create backup");
             }
          }
       } //namespace service
