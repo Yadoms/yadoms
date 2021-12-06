@@ -46,7 +46,7 @@ public:
    void requestToStop();
 
 private:
-   boost::shared_ptr<web::IWebServer> createPocoBasedWebServer(
+   std::unique_ptr<web::IWebServer> createPocoBasedWebServer(
       const std::string& address,
       unsigned short port,
       bool useSsl,
@@ -59,7 +59,7 @@ private:
       const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
       bool skipPasswordCheck) const;
 
-   boost::shared_ptr<web::IWebServer> createOatppBasedWebServer(
+   std::unique_ptr<web::IWebServer> createOatppBasedWebServer(
       const std::string& address,
       unsigned short port,
       bool useSsl,

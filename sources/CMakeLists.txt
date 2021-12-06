@@ -668,7 +668,8 @@ set(YADOMS_SRC
    server/web/rest/service/IRestService.h
    server/web/rest/service/IRestEndPoint.h
    server/web/rest/service/Maintenance.h
-   server/web/rest/service/Maintenance.cpp
+   server/web/rest/service/MaintenanceV1.cpp
+   server/web/rest/service/MaintenanceV2.cpp
    server/web/rest/service/Page.h
    server/web/rest/service/Page.cpp
    server/web/rest/service/Plugin.h

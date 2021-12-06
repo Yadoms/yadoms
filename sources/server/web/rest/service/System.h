@@ -5,6 +5,7 @@
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
 
 #include "dataAccessLayer/IConfigurationManager.h"
+#include "database/IDatabaseRequester.h"
 #include "dateTime/TimeZoneDatabase.h"
 #include "shared/plugin/yPluginApi/MeasureType.h"
 
@@ -19,6 +20,7 @@ namespace web
          public:
             explicit CSystem(boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
                              boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
+                             boost::shared_ptr<database::IDatabaseRequester> databaseRequester,
                              boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
             ~CSystem() override = default;
 
@@ -65,6 +67,7 @@ namespace web
 
             static std::string m_restKeyword;
 
+            boost::shared_ptr<database::IDatabaseRequester> m_databaseRequester;
             boost::shared_ptr<IRunningInformation> m_runningInformation;
             boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;

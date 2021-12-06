@@ -33,36 +33,25 @@ namespace web
               m_keywordRequester(dataProvider->getKeywordRequester()),
               m_acquisitionRequester(dataProvider->getAcquisitionRequester()),
               m_taskScheduler(std::move(taskScheduler)),
-              m_uploadFileManager(uploadFileManager)
+              m_uploadFileManager(std::move(uploadFileManager))
          {
          }
 
 
          void CMaintenance::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CMaintenance::getDatabaseInformation);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("backup"), CMaintenance::getBackups);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("backup"), CMaintenance::startBackup);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup")("*"), CMaintenance::deleteBackup);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("restore")("*"), CMaintenance::restoreBackup);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup"), CMaintenance::deleteAllBackups);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("uploadBackup"), CMaintenance::uploadBackup);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("packlogs"), CMaintenance::startPackLogs);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("logs"), CMaintenance::getLogs);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("logs"), CMaintenance::deleteAllLogs);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("startExportData")("*"), CMaintenance::startExportData);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("exportData"), CMaintenance::getExportData);
-         }
-
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CMaintenance::endPoints()
-         {
-            if (m_endPoints != nullptr)
-               return m_endPoints;
-
-            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            //TODO
-
-            return m_endPoints;
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CMaintenance::getDatabaseInformation)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("backup"), CMaintenance::getBackups)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("backup"), CMaintenance::startBackup)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup")("*"), CMaintenance::deleteBackup)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("restore")("*"), CMaintenance::restoreBackup)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup"), CMaintenance::deleteAllBackups)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("uploadBackup"), CMaintenance::uploadBackup)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("packlogs"), CMaintenance::startPackLogs)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("logs"), CMaintenance::getLogs)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("logs"), CMaintenance::deleteAllLogs)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("startExportData")("*"), CMaintenance::startExportData)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("exportData"), CMaintenance::getExportData)
          }
 
 
@@ -75,7 +64,7 @@ namespace web
                                                                                                        const std::vector<std::string>& parameters,
                                                                                                        const std::string& requestContent) const
          {
-            auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+            const auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             boost::shared_ptr<shared::serialization::IDataSerializable> result;
             try
             {
@@ -107,7 +96,7 @@ namespace web
          {
             try
             {
-               auto result = m_databaseRequester->getInformation();
+               const auto result = m_databaseRequester->getInformation();
                result->set("backupSupport", m_databaseRequester->backupSupported());
                return poco::CRestResult::GenerateSuccess(result);
             }
@@ -323,18 +312,18 @@ namespace web
 
          boost::shared_ptr<std::string> CMaintenance::fileUploadChunkRead(const std::string& requestContent) const
          {
-            static const std::string Base64Key(";base64,");
+            const std::string base64Key(";base64,");
             const auto position = std::search(requestContent.begin(),
                                               requestContent.end(),
-                                              Base64Key.begin(),
-                                              Base64Key.end(),
+                                              base64Key.begin(),
+                                              base64Key.end(),
                                               [](const auto c1, const auto c2)
                                               {
                                                  return std::tolower(c1) == std::tolower(c2);
                                               });
             if (position == requestContent.end())
                throw std::runtime_error("Invalid file");
-            const auto dataStart = position + Base64Key.size();
+            const auto dataStart = position + base64Key.size();
 
             return boost::make_shared<std::string>(shared::encryption::CBase64::decode(std::string(dataStart, requestContent.end())));
          }
