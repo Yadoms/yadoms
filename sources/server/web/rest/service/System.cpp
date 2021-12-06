@@ -530,10 +530,17 @@ namespace web
                   result.set("executable-path", m_runningInformation->getExecutablePath());
                if (fields->empty() || fields->find("server-ready") != fields->end())
                   result.set("server-ready", m_runningInformation->isServerFullyLoaded());
-               if (fields->empty() || fields->find("database-version") != fields->end())
-                  result.set("database-version", m_configurationManager->getDatabaseVersion());
+               if (fields->empty() || fields->find("database") != fields->end())
+               {
+                  result.set("database.version", m_configurationManager->getDatabaseVersion());
+                  result.set("database.size", m_databaseRequester->getInformation()->get<unsigned int>("size"));
+               }
                if (fields->empty() || fields->find("database-engine") != fields->end())
-                  result.set("database-engine", m_databaseRequester->getInformation());
+               {
+                  const auto databaseEngine = m_databaseRequester->getInformation();
+                  databaseEngine->remove("size"); // Size is about database, not database-engine
+                  result.set("database-engine", databaseEngine);
+               }
                if (fields->empty() || fields->find("backup-supported") != fields->end())
                   result.set("backup-supported", m_databaseRequester->backupSupported());
                if (fields->empty() || fields->find("developer-mode") != fields->end())
