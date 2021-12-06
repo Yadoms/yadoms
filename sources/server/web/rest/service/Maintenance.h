@@ -28,6 +28,7 @@ namespace web
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
+         private:
             static const std::string& getRestKeyword();
 
             boost::shared_ptr<shared::serialization::IDataSerializable> getDatabaseInformation(const std::vector<std::string>& parameters,
@@ -59,6 +60,8 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
                                                                                             const std::vector<std::string>& parameters,
                                                                                             const std::string& requestContent) const;
+
+            boost::shared_ptr<IAnswer> getBackupsV2(const boost::shared_ptr<IRequest>& request) const;
 
             boost::shared_ptr<std::string> fileUploadChunkRead(const std::string& requestContent) const;
             std::string fileUploadChunkReadGuid(const std::string& requestContent) const;
