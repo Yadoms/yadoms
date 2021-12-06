@@ -319,7 +319,7 @@ std::unique_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
 
    webServer->start();
 
-   return webServer;
+   return std::move(webServer);
 }
 
 std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
