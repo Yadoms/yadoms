@@ -61,6 +61,7 @@ namespace web
                                                                                             const std::string& requestContent) const;
 
             boost::shared_ptr<IAnswer> getInterpretersV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getCodeTemplateV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> getRulesV2(const boost::shared_ptr<IRequest>& request) const;
 
 

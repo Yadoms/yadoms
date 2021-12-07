@@ -22,20 +22,15 @@ namespace web
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters", getInterpretersV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters/{interpreter}/code-template", getCodeTemplateV2));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules", getRulesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules/{id}", getRulesV2));
             //TODO
 
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordInterpreter), CAutomationRule::getAllInterpretersV1);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordInterpreter)("available"), CAutomationRule::getAvailableInterpretersV1);
-
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("codeTemplate"), CAutomationRule::getRuleCodeTemplateV1);
-
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule), CAutomationRule::getAllRulesV1);
             //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (RestKeyword)(RestSubKeywordRule), CAutomationRule::createRuleV1, CAutomationRule::transactionalMethod);
             //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (RestKeyword)(RestSubKeywordRule)("*"), CAutomationRule::deleteRuleV1, CAutomationRule::transactionalMethod);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*"), CAutomationRule::getRuleV1);
+
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("code"), CAutomationRule::getRuleCodeV1);
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("log"), CAutomationRule::getRuleLogV1);
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (RestKeyword)(RestSubKeywordRule)("*")("log"), CAutomationRule::deleteRuleLogV1);
@@ -79,6 +74,32 @@ namespace web
                YADOMS_LOG(error) << "Error processing getInterpreters request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get interpreters");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CAutomationRule::getCodeTemplateV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               if (!request->pathVariableExists("interpreter"))
+                  throw std::invalid_argument("interpreter name");
+               const auto interpreter = request->pathVariable("interpreter");
+
+               shared::CDataContainer result;
+               result.set("code-template", m_rulesManager->getRuleTemplateCode(interpreter));
+               return boost::make_shared<CSuccessAnswer>(result);
+            }
+
+            catch (const shared::exception::COutOfRange& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getCodeTemplate request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getCodeTemplate request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get code template");
             }
          }
 
