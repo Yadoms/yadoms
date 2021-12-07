@@ -654,7 +654,8 @@ set(YADOMS_SRC
    server/web/rest/service/Acquisition.h
    server/web/rest/service/Acquisition.cpp
    server/web/rest/service/AutomationRule.h
-   server/web/rest/service/AutomationRule.cpp
+   server/web/rest/service/AutomationRuleV1.cpp
+   server/web/rest/service/AutomationRuleV2.cpp
    server/web/rest/service/Configuration.h
    server/web/rest/service/Configuration.cpp
    server/web/rest/service/Device.h

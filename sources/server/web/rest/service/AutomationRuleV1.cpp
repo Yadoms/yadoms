@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "stdafx.h"
 #include "AutomationRule.h"
 #include "web/poco/RestResult.h"
@@ -16,8 +18,8 @@ namespace web
 
          CAutomationRule::CAutomationRule(boost::shared_ptr<database::IDataProvider> dataProvider,
                                           boost::shared_ptr<automation::IRuleManager> rulesManager)
-            : m_dataProvider(dataProvider),
-              m_rulesManager(rulesManager)
+            : m_dataProvider(std::move(dataProvider)),
+              m_rulesManager(std::move(rulesManager))
          {
          }
 
@@ -28,39 +30,36 @@ namespace web
 
          void CAutomationRule::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordInterpreter), CAutomationRule::getAllInterpreters);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordInterpreter)("available"), CAutomationRule::getAvailableInterpreters);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordInterpreter), CAutomationRule::getAllInterpretersV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordInterpreter)("available"),
+                                        CAutomationRule::getAvailableInterpretersV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("codeTemplate"), CAutomationRule::getRuleCodeTemplate);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("codeTemplate"),
+                                        CAutomationRule::getRuleCodeTemplateV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule), CAutomationRule::getAllRules);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (RestKeyword)(RestSubKeywordRule), CAutomationRule::createRule, CAutomationRule::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (RestKeyword)(RestSubKeywordRule)("*"), CAutomationRule::deleteRule, CAutomationRule::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*"), CAutomationRule::getRule);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("code"), CAutomationRule::getRuleCode);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("log"), CAutomationRule::getRuleLog);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (RestKeyword)(RestSubKeywordRule)("*")("log"), CAutomationRule::deleteRuleLog);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("start"), CAutomationRule::startRule);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("stop"), CAutomationRule::stopRule);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (RestKeyword)(RestSubKeywordRule)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (RestKeyword)(RestSubKeywordRule)("*")("duplicate"), CAutomationRule::duplicateRule, CAutomationRule::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (RestKeyword)(RestSubKeywordRule)("*")("code"), CAutomationRule::updateRuleCode, CAutomationRule::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule), CAutomationRule::getAllRulesV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (RestKeyword)(RestSubKeywordRule), CAutomationRule::createRuleV1,
+                                                        CAutomationRule::transactionalMethod)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (RestKeyword)(RestSubKeywordRule)("*"), CAutomationRule::deleteRuleV1,
+                                                        CAutomationRule::transactionalMethod)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*"), CAutomationRule::getRuleV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("code"), CAutomationRule::getRuleCodeV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("log"), CAutomationRule::getRuleLogV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (RestKeyword)(RestSubKeywordRule)("*")("log"), CAutomationRule::deleteRuleLogV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("start"), CAutomationRule::startRuleV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("stop"), CAutomationRule::stopRuleV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (RestKeyword)(RestSubKeywordRule)("*"), CAutomationRule::updateRuleV1,
+                                                        CAutomationRule::transactionalMethod)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (RestKeyword)(RestSubKeywordRule)("*")("duplicate"),
+                                                        CAutomationRule::duplicateRuleV1, CAutomationRule::transactionalMethod)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (RestKeyword)(RestSubKeywordRule)("*")("code"),
+                                                        CAutomationRule::updateRuleCodeV1, CAutomationRule::transactionalMethod)
          }
 
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CAutomationRule::endPoints()
-         {
-            if (m_endPoints != nullptr)
-               return m_endPoints;
-
-            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            //TODO
-
-            return m_endPoints;
-         }
-
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
-                                                                                                          const std::vector<std::string>& parameters,
-                                                                                                          const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::transactionalMethod(
+            poco::CRestDispatcher::CRestMethodHandler realMethod,
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             boost::shared_ptr<shared::serialization::IDataSerializable> result;
@@ -90,24 +89,25 @@ namespace web
             return result;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getAllInterpreters(const std::vector<std::string>& parameters,
-                                                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getAllInterpretersV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             shared::CDataContainer t;
             t.set("interpreters", m_rulesManager->getLoadedInterpreters());
             return poco::CRestResult::GenerateSuccess(t);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getAvailableInterpreters(const std::vector<std::string>& parameters,
-                                                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getAvailableInterpretersV1(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             shared::CDataContainer t;
             t.set("interpreters", m_rulesManager->getAvailableInterpreters());
             return poco::CRestResult::GenerateSuccess(t);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getAllRules(const std::vector<std::string>& parameters,
-                                                                                                  const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getAllRulesV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             const auto rules = m_rulesManager->getRules();
 
@@ -116,8 +116,8 @@ namespace web
             return poco::CRestResult::GenerateSuccess(t);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getRule(const std::vector<std::string>& parameters,
-                                                                                              const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getRuleV1(const std::vector<std::string>& parameters,
+                                                                                                const std::string& requestContent) const
          {
             try
             {
@@ -140,8 +140,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getRuleCode(const std::vector<std::string>& parameters,
-                                                                                                  const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getRuleCodeV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -166,8 +166,9 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getRuleCodeTemplate(const std::vector<std::string>& parameters,
-                                                                                                          const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getRuleCodeTemplateV1(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -192,8 +193,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getRuleLog(const std::vector<std::string>& parameters,
-                                                                                                 const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::getRuleLogV1(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent) const
          {
             try
             {
@@ -218,8 +219,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::deleteRuleLog(const std::vector<std::string>& parameters,
-                                                                                                    const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::deleteRuleLogV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -243,8 +244,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::startRule(const std::vector<std::string>& parameters,
-                                                                                                const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::startRuleV1(const std::vector<std::string>& parameters,
+                                                                                                  const std::string& requestContent) const
          {
             try
             {
@@ -273,8 +274,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::stopRule(const std::vector<std::string>& parameters,
-                                                                                               const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::stopRuleV1(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const
          {
             try
             {
@@ -304,8 +305,8 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::createRule(const std::vector<std::string>& parameters,
-                                                                                                 const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::createRuleV1(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent) const
          {
             try
             {
@@ -332,8 +333,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::updateRule(const std::vector<std::string>& parameters,
-                                                                                                 const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::updateRuleV1(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent) const
          {
             try
             {
@@ -368,8 +369,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::updateRuleCode(const std::vector<std::string>& parameters,
-                                                                                                     const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::updateRuleCodeV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -410,7 +411,8 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::duplicateRule(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::duplicateRuleV1(
+            const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -418,7 +420,7 @@ namespace web
                   throw CRuleException("invalid parameter in URL");
 
                const shared::CDataContainer content(requestContent);
-               if(!content.containsValue("name"))
+               if (!content.containsValue("name"))
                   throw CRuleException("No name provided for the rule copy");
 
                const auto name = content.get<std::string>("name");
@@ -447,8 +449,8 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::deleteRule(const std::vector<std::string>& parameters,
-                                                                                                 const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::deleteRuleV1(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent) const
          {
             try
             {
@@ -475,5 +477,3 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-

@@ -1,5 +1,6 @@
 #pragma once
 #include "../database/entities/Entities.h"
+#include "shared/plugin/yPluginApi/historization/PluginState.h"
 
 namespace automation
 {
@@ -34,10 +35,35 @@ namespace automation
       virtual std::vector<std::string> getAvailableInterpreters() = 0;
 
       //-----------------------------------------------------
+      ///\brief               Get all available interpreters (re-scan interpreters)
+      ///\param[in] includeNotAvailable   Include not available interpreters (interpreter marking itself as not runnable)
+      ///\return              The interpreter list (interpreter name as key, available status as value)
+      //-----------------------------------------------------
+      virtual std::map<std::string, bool> getInterpreters(bool includeNotAvailable) = 0;
+
+      //-----------------------------------------------------
       ///\brief               Get all rules
       ///\return              The rule list
       //-----------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CRule>> getRules() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                                             Get rules
+      /// \param [in] ruleId                                 Search rule matching this ID
+      /// \param [in] fromName                               Search rules for this name
+      /// \param [in] fromInterpreter                        Search rules for this interpreters
+      /// \param [in] fromEditor                             Search rules for this editor
+      /// \param [in] fromAutostart                          Search auto-starting rules
+      /// \param [in] fromState                              Search rules matching one of these states
+      /// \return                                            The rules list
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<database::entities::CRule>> getRules(
+         const boost::optional<int>& ruleId,
+         const boost::optional<std::string>& fromName,
+         const std::set<std::string>& fromInterpreter,
+         const boost::optional<std::string>& fromEditor,
+         bool fromAutostart,
+         const std::set<database::entities::ERuleState>& fromState) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create a new rule
@@ -108,14 +134,14 @@ namespace automation
       //--------------------------------------------------------------
       virtual void deleteRule(int id) = 0;
 
-            //--------------------------------------------------------------
+      //--------------------------------------------------------------
       /// \brief                          Duplicate a rule
       /// \param[in] idToDuplicate        Rule Id to duplicate
       /// \param[in] newName              The new rule name
       /// \return                         The new rule id
       /// \throw                          CInvalidParameter if rule id is unknown
       //--------------------------------------------------------------
-      virtual int duplicateRule(int idToDuplicate, const std::string & newName) = 0;
+      virtual int duplicateRule(int idToDuplicate, const std::string& newName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Start all rules using a script interpreter
@@ -159,5 +185,3 @@ namespace automation
                                              const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(20)) = 0;
    };
 } // namespace automation	
-
-
