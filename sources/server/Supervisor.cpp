@@ -151,6 +151,7 @@ void CSupervisor::run()
       restServices->push_back(boost::make_shared<web::rest::service::CEventLogger>(dataAccessLayer->getEventLogger()));
       restServices->push_back(boost::make_shared<web::rest::service::CSystem>(timezoneDatabase,
                                                                               hardware::usb::CDevicesListerFactory::createDeviceLister(),
+                                                                              dataProvider->getDatabaseRequester(),
                                                                               dataAccessLayer->getConfigurationManager()));
       restServices->push_back(boost::make_shared<web::rest::service::CAcquisition>(dataProvider));
       restServices->push_back(boost::make_shared<web::rest::service::CAutomationRule>(dataProvider,
@@ -284,7 +285,7 @@ void CSupervisor::requestToStop()
    m_eventHandler.postEvent(kStopRequested);
 }
 
-boost::shared_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
+std::unique_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
    const std::string& address,
    unsigned short port,
    bool useSsl,
@@ -297,14 +298,14 @@ boost::shared_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
    const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
    bool skipPasswordCheck) const
 {
-   auto webServer(boost::make_shared<web::poco::CWebServer>(address,
-                                                            port,
-                                                            useSsl,
-                                                            securedPort,
-                                                            webServerPath.string(),
-                                                            "/rest/",
-                                                            "/ws",
-                                                            allowExternalAccess));
+   auto webServer(std::make_unique<web::poco::CWebServer>(address,
+                                                          port,
+                                                          useSsl,
+                                                          securedPort,
+                                                          webServerPath.string(),
+                                                          "/rest/",
+                                                          "/ws",
+                                                          allowExternalAccess));
 
    for (const auto& alias : *aliases)
       webServer->websiteHandlerAddAlias(alias.first,
@@ -318,10 +319,10 @@ boost::shared_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
 
    webServer->start();
 
-   return webServer;
+   return std::move(webServer);
 }
 
-boost::shared_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
+std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
    const std::string& address,
    unsigned short port,
    bool useSsl,
@@ -334,19 +335,17 @@ boost::shared_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
    const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
    bool skipPasswordCheck) const
 {
-   boost::shared_ptr<web::IWebServer> webServer(
-      boost::make_shared<web::oatppServer::CWebServer>(address,
-                                                       port + 1, //TODO virer le +1 (pour test...)
-                                                       useSsl,
-                                                       securedPort + 1, //TODO virer le +1 (pour test...)
-                                                       webServerPath,
-                                                       "rest",
-                                                       restServices,
-                                                       "ws",
-                                                       allowExternalAccess,
-                                                       aliases,
-                                                       boost::make_shared<web::oatppServer::CAuthentication>(configurationManager,
-                                                          skipPasswordCheck)));
-
-   return webServer;
+   return std::make_unique<web::oatppServer::CWebServer>(address,
+                                                         port + 1, //TODO virer le +1 (pour test...)
+                                                         useSsl,
+                                                         securedPort + 1, //TODO virer le +1 (pour test...)
+                                                         webServerPath,
+                                                         "rest",
+                                                         restServices,
+                                                         "ws",
+                                                         allowExternalAccess,
+                                                         aliases,
+                                                         boost::make_shared<web::oatppServer::CAuthentication>(
+                                                            configurationManager,
+                                                            skipPasswordCheck));
 }

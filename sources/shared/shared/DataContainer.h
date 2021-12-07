@@ -483,6 +483,18 @@ namespace shared
 
 
       //--------------------------------------------------------------
+      /// \brief	    Find a sub-parameter with criteria
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] throwIfInvalid   Raise shared::exception::CInvalidParameter if parameter does not exist (else ignore)
+      /// \param [in] pathChar         The path separator to use (default is '.')
+      /// \throw      shared::exception::CInvalidParameter if parameter not found and throwIfInvalid set
+      //--------------------------------------------------------------
+      void remove(const std::string& parameterName,
+                  bool throwIfInvalid = false,
+                  char pathChar = '.');
+
+
+      //--------------------------------------------------------------
       /// \brief	    Make a full copy of current container
       /// \return     The newly created container
       //--------------------------------------------------------------

@@ -465,7 +465,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       DeviceCache deviceCache;
 
       {
-         boost::shared_ptr<shared::CDataContainer> info = GetDeviceInfo();
+         const boost::shared_ptr<shared::CDataContainer> info = GetDeviceInfo();
          const std::string l("test3");
 
          //directly access with []
@@ -788,7 +788,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    private:
       int m_aIntValue;
       double m_dValue;
-      std::string m_sValue = "";
+      std::string m_sValue;
    };
 
    BOOST_AUTO_TEST_CASE(DataContainable)
@@ -1073,14 +1073,69 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       to.mergeFrom(from);
 
       // Override from memory
-      from = std::string("{ \"anotherdata\" : \"skdjflsjdfhgkdjhgxjkmflsdjfglsdjfmlklsmjdf\"}");
+      from = std::string(R"({ "anotherdata" : "skdjflsjdfhgkdjhgxjkmflsdjfglsdjfmlklsmjdf"})");
 
       BOOST_CHECK_EQUAL(to.serialize(), expected.serialize());
    }
 
+   BOOST_AUTO_TEST_CASE(Remove)
+   {
+      shared::CDataContainer start("{"
+         "\"BoolParameter\": true,"
+         "\"DecimalParameter\": 18.4,"
+         "\"EnumParameter\": 12,"
+         "\"EnumAsStringParameter\": \"EnumValue1\","
+         "\"IntParameter\": 42,"
+         "\"Serial port\": \"tty0\","
+         "\"StringParameter\": \"Yadoms is so powerful !\","
+         "\"DateTimeParameter\": \"20140702T113500\","
+         "\"MySection\": {"
+            "\"SubIntParameter\": 123,"
+            "\"SubStringParameter\": \"Just a string parameter in the sub-section\","
+            "\"MySubSection\": {"
+               "\"SubFirstParameter\": \"Just a string parameter in the sub-section\","
+               "\"SubSecondParameter\": \"Just a string parameter in the sub-section\""
+            "},"
+            "\"MySecondSubSection\": {"
+               "\"SubFirstParameter\": \"Just a string parameter in the sub-section\","
+               "\"SubSecondParameter\": \"Just a string parameter in the sub-section\""
+            "}"
+         "}"
+         "}");
+
+      const shared::CDataContainer expected("{"
+         "\"DecimalParameter\": 18.4,"
+         "\"EnumAsStringParameter\": \"EnumValue1\","
+         "\"IntParameter\": 42,"
+         "\"Serial port\": \"tty0\","
+         "\"DateTimeParameter\": \"20140702T113500\","
+         "\"MySection\": {"
+            "\"SubIntParameter\": 123,"
+            "\"MySubSection\": {"
+               "\"SubSecondParameter\": \"Just a string parameter in the sub-section\""
+            "}"
+         "}"
+         "}");
+
+      start.remove("BoolParameter");
+      start.remove("EnumParameter");
+      start.remove("StringParameter");
+      start.remove("MySection.SubStringParameter");
+      start.remove("MySection.MySubSection.SubFirstParameter");
+      start.remove("MySection.MySecondSubSection");
+
+      BOOST_CHECK_NO_THROW(start.remove("InexistingParam", false));
+      BOOST_CHECK_NO_THROW(start.remove("Inexisting.Section.Param", false));
+
+      BOOST_CHECK_THROW(start.remove("InexistingParam", true), shared::exception::CInvalidParameter);
+      BOOST_CHECK_THROW(start.remove("Inexisting.Section.Param", true), shared::exception::CInvalidParameter);
+
+      BOOST_CHECK_EQUAL(start.serialize(), expected.serialize());
+   }
+
    BOOST_AUTO_TEST_CASE(CheckDataLimits)
    {
-      shared::CDataContainer c(
+      const shared::CDataContainer c(
          "{"
          "   \"char_min\": -128,"
          "   \"char_max\": 127,"

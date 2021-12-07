@@ -463,6 +463,22 @@ namespace shared
       throw exception::CEmptyResult("No parameter matches criteria");
    }
 
+   void CDataContainer::remove(const std::string& parameterName,
+                               bool throwIfInvalid,
+                               char pathChar)
+   {
+      if (parameterName.empty() && throwIfInvalid)
+         throw exception::CInvalidParameter(parameterName + " : is not found");
+
+      const auto path = generatePath(parameterName, pathChar);
+      const auto value = rapidjson::Pointer(path.c_str()).Get(m_tree);
+      
+      if (value == nullptr && throwIfInvalid)
+         throw exception::CInvalidParameter(parameterName + " : is not found");
+
+      rapidjson::Pointer(path.c_str()).Erase(m_tree);
+   }
+
 
    boost::shared_ptr<CDataContainer> CDataContainer::copy() const
    {

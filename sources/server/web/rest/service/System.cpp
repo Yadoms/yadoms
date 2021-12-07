@@ -32,8 +32,10 @@ namespace web
 
          CSystem::CSystem(boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
                           boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
+                          boost::shared_ptr<database::IDatabaseRequester> databaseRequester,
                           boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
-            : m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>()),
+            : m_databaseRequester(std::move(databaseRequester)),
+              m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>()),
               m_configurationManager(std::move(configurationManager)),
               m_timezoneDatabase(std::move(timezoneDatabase)),
               m_usbDevicesLister(std::move(usbDevicesLister))
@@ -258,6 +260,7 @@ namespace web
                result.set("startupTime", m_runningInformation->getStartupDateTime());
                result.set("executablePath", m_runningInformation->getExecutablePath());
                result.set("serverReady", m_runningInformation->isServerFullyLoaded());
+
 
                if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
                   result.set("developerMode", "true");
@@ -527,9 +530,19 @@ namespace web
                   result.set("executable-path", m_runningInformation->getExecutablePath());
                if (fields->empty() || fields->find("server-ready") != fields->end())
                   result.set("server-ready", m_runningInformation->isServerFullyLoaded());
-               if (fields->empty() || fields->find("database-version") != fields->end())
-                  result.set("database-version", m_configurationManager->getDatabaseVersion());
-
+               if (fields->empty() || fields->find("database") != fields->end())
+               {
+                  result.set("database.version", m_configurationManager->getDatabaseVersion());
+                  result.set("database.size", m_databaseRequester->getInformation()->get<unsigned int>("size"));
+               }
+               if (fields->empty() || fields->find("database-engine") != fields->end())
+               {
+                  const auto databaseEngine = m_databaseRequester->getInformation();
+                  databaseEngine->remove("size"); // Size is about database, not database-engine
+                  result.set("database-engine", databaseEngine);
+               }
+               if (fields->empty() || fields->find("backup-supported") != fields->end())
+                  result.set("backup-supported", m_databaseRequester->backupSupported());
                if (fields->empty() || fields->find("developer-mode") != fields->end())
                   result.set("developer-mode", shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode());
 

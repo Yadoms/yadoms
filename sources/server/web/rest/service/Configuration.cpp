@@ -199,7 +199,14 @@ namespace web
                   [this](const auto& req) -> boost::shared_ptr<IAnswer>
                   {
                      const auto currentConfiguration = m_configurationManager->getServerConfiguration();
-                     currentConfiguration->mergeFrom(shared::CDataContainer(req->body()));
+
+                     shared::CDataContainer newConfiguration(req->body());
+
+                     // Protect on overwriting read-only data (removing all read-only data)
+                     newConfiguration.remove("firstStart");
+                     newConfiguration.remove("location.status");
+
+                     currentConfiguration->mergeFrom(newConfiguration);
 
                      m_configurationManager->saveServerConfiguration(*currentConfiguration);
                      return boost::make_shared<CNoContentAnswer>();
