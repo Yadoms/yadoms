@@ -26,6 +26,8 @@ namespace web
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules", getRulesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules/{id}", getRulesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules/{id}/code", getRuleCodeV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules/{id}/log", getRuleLogV2));
             //TODO
 
             //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (RestKeyword)(RestSubKeywordRule), CAutomationRule::createRuleV1, CAutomationRule::transactionalMethod);
@@ -85,9 +87,8 @@ namespace web
                   throw std::invalid_argument("interpreter name");
                const auto interpreter = request->pathVariable("interpreter");
 
-               shared::CDataContainer result;
-               result.set("code-template", m_rulesManager->getRuleTemplateCode(interpreter));
-               return boost::make_shared<CSuccessAnswer>(result);
+               return boost::make_shared<CSuccessAnswer>(m_rulesManager->getRuleTemplateCode(interpreter),
+                                                         EContentType::kPlainText);
             }
 
             catch (const shared::exception::COutOfRange& exception)
@@ -188,6 +189,68 @@ namespace web
                YADOMS_LOG(error) << "Error processing getRules request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get rules");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CAutomationRule::getRuleCodeV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               // ID
+               if (!request->pathVariableExists("id"))
+                  throw std::invalid_argument("rule id");
+               const auto ruleId = static_cast<int>(std::stol(request->pathVariable("id")));
+
+               const auto code = m_rulesManager->getRuleCode(ruleId);
+
+               if (code.empty())
+                  return boost::make_shared<CNoContentAnswer>();
+
+               return boost::make_shared<CSuccessAnswer>(code,
+                                                         EContentType::kPlainText);
+            }
+
+            catch (const shared::exception::COutOfRange& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getRuleCode request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getRuleCode request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get rule code");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CAutomationRule::getRuleLogV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               // ID
+               if (!request->pathVariableExists("id"))
+                  throw std::invalid_argument("rule id");
+               const auto ruleId = static_cast<int>(std::stol(request->pathVariable("id")));
+
+               const auto log = m_rulesManager->getRuleLog(ruleId);
+
+               if (log.empty())
+                  return boost::make_shared<CNoContentAnswer>();
+
+               return boost::make_shared<CSuccessAnswer>(log,
+                                                         EContentType::kPlainText);
+            }
+
+            catch (const shared::exception::COutOfRange& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getRuleLog request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getRuleLog request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get rule log");
             }
          }
       } //namespace service
