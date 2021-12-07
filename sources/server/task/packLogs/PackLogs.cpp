@@ -7,22 +7,24 @@
 #include "i18n/ClientStrings.h"
 #include <shared/Log.h>
 
+#include <utility>
+
 #include "shared/tools/Filesystem.h"
 
 namespace task
 {
    namespace packLogs
    {
-      std::string CPackLogs::m_taskName = "packLogs";
+      std::string const CPackLogs::TaskName = "packLogs";
 
       CPackLogs::CPackLogs(boost::shared_ptr<const IPathProvider> pathProvider)
-         : m_pathProvider(pathProvider)
+         : m_pathProvider(std::move(pathProvider))
       {
       }
 
       const std::string& CPackLogs::getName() const
       {
-         return m_taskName;
+         return TaskName;
       }
 
       void CPackLogs::onProgressionUpdatedInternal(float progression,
@@ -38,11 +40,20 @@ namespace task
          doWork(0);
       }
 
+      void CPackLogs::onSetTaskId(const std::string& taskId)
+      {
+      }
+
+      bool CPackLogs::isCancellable() const
+      {
+         return false;
+      }
+
       void CPackLogs::doWork(int currentTry)
       {
          try
          {
-            auto logsTempFolder = prepare();
+            const auto logsTempFolder = prepare();
             if (copyLogsFiles(logsTempFolder))
             {
                auto zipFile = makeZipArchive(logsTempFolder);
@@ -101,7 +112,7 @@ namespace task
          return logsTempFolder;
       }
 
-      bool CPackLogs::copyLogsFiles(boost::filesystem::path& logsTempFolder) const
+      bool CPackLogs::copyLogsFiles(const boost::filesystem::path& logsTempFolder) const
       {
          if (shared::tools::CFilesystem::copyDirectoryRecursivelyTo(m_pathProvider->logsPath(), logsTempFolder / "logs"))
          {
@@ -123,7 +134,7 @@ namespace task
          return false;
       }
 
-      boost::filesystem::path CPackLogs::makeZipArchive(boost::filesystem::path& logsTempFolder)
+      boost::filesystem::path CPackLogs::makeZipArchive(const boost::filesystem::path& logsTempFolder)
       {
          //zip folder content (51 -> 98)
          auto zipFilenameFinal = m_pathProvider->backupPath() / "logs.zip";
@@ -182,7 +193,7 @@ namespace task
          }
       }
 
-      void CPackLogs::cleanup(boost::filesystem::path& logsTempFolder) const
+      void CPackLogs::cleanup(const boost::filesystem::path& logsTempFolder) const
       {
          onProgressionUpdatedInternal(98.0f, i18n::CClientStrings::PackLogsClean);
          boost::filesystem::remove_all(logsTempFolder);

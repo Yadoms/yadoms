@@ -11,31 +11,28 @@ namespace task
       //------------------------------------------
       ///\brief   Backup task (db, scripts, data)
       //-----------------------------------------
-      class CBackup : public ITask
+      class CBackup final : public ITask
       {
       public:
-         //------------------------------------------
-         ///\brief   Constructor
-         //------------------------------------------
-         explicit CBackup(boost::shared_ptr<const IPathProvider> pathProvider, boost::shared_ptr<database::IDataBackup> dataBackupInterface);
+         explicit CBackup(boost::shared_ptr<const IPathProvider> pathProvider,
+                          boost::shared_ptr<database::IDataBackup> dataBackupInterface);
 
-         //------------------------------------------
-         ///\brief   Destructor
-         //------------------------------------------
-         virtual ~CBackup() = default;
+         ~CBackup() override = default;
 
          // ITask implementation
          const std::string& getName() const override;
+         void onSetTaskId(const std::string& taskId) override;
          void doWork(TaskProgressFunc pFunctor) override;
+         bool isCancellable() const override;
          // [END] ITask implementation
 
       private:
          void doWork(int currentTry = 0);
          bool checkEnoughSpace(const boost::filesystem::path& where) const;
          boost::filesystem::path prepareBackup() const;
-         bool backupFiles(boost::filesystem::path & tempPath);
-         boost::filesystem::path makeZipArchive(boost::filesystem::path & tempPath);
-         void cleanup(boost::filesystem::path & tempPath) const;
+         bool backupFiles(const boost::filesystem::path& backupTempFolder);
+         boost::filesystem::path makeZipArchive(const boost::filesystem::path& backupTempFolder);
+         void cleanup(const boost::filesystem::path& backupTempFolder) const;
 
          //------------------------------------------
          ///\brief   Internal progress handler 
@@ -45,14 +42,19 @@ namespace task
          ///\param [in] totalPart   The final progression when current operation ends
          ///\param [in] message     Optional message to display
          //------------------------------------------
-         void onProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message = std::string()) const;
+         void onProgressionUpdatedInternal(int remaining,
+                                           int total,
+                                           float currentPart,
+                                           float totalPart,
+                                           const std::string& message = std::string()) const;
 
          //------------------------------------------
          ///\brief   Report event
          ///\param [in] pSender     The sender
          ///\param [in] hdr         The event (Zip local file)
          //------------------------------------------
-         void onZipEDone(const void* pSender, const Poco::Zip::ZipLocalFileHeader& hdr);
+         void onZipEDone(const void* pSender,
+                         const Poco::Zip::ZipLocalFileHeader& hdr);
 
          //------------------------------------------
          ///\brief   The path provider instance
@@ -62,7 +64,7 @@ namespace task
          //------------------------------------------
          ///\brief   The task name
          //------------------------------------------
-         static std::string m_taskName;
+         static const std::string TaskName;
 
          //------------------------------------------
          ///\brief   The backup data interface
@@ -86,5 +88,3 @@ namespace task
       };
    } //namespace backup
 } //namespace task
-
-

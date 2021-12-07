@@ -84,7 +84,23 @@ namespace task
       return m_creationDate;
    }
 
-   void CInstance::onTaskProgressUpdated(bool isRunning, boost::optional<float> progression, const std::string& message, const std::string& exception,
+   bool CInstance::cancel(int waitForStopSeconds)
+   {
+      if (!m_task->isCancellable())
+         throw std::runtime_error("Try to cancel non-cancellable task");
+
+      CThreadBase::requestToStop();
+
+      if (waitForStopSeconds == NoWait)
+         return true;
+
+      return CThreadBase::waitForStop(waitForStopSeconds);
+   }
+
+   void CInstance::onTaskProgressUpdated(bool isRunning,
+                                         boost::optional<float> progression,
+                                         const std::string& message,
+                                         const std::string& exception,
                                          boost::shared_ptr<shared::CDataContainer> taskData)
    {
       if (!isRunning)

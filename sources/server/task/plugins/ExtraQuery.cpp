@@ -42,5 +42,10 @@ namespace task
 
          queryReal->waitForExtraQueryProcess();
       }
+
+      bool CExtraQuery::isCancellable() const
+      {
+         return false;
+      }
    } //namespace plugins
 } //namespace task

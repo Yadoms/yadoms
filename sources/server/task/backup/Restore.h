@@ -10,16 +10,18 @@ namespace task
       //------------------------------------------
       ///\brief   Restore backup task
       //-----------------------------------------
-      class CRestore : public ITask
+      class CRestore final : public ITask
       {
       public:
          explicit CRestore(std::string backupFileName,
                            boost::shared_ptr<const IPathProvider> pathProvider);
-         virtual ~CRestore() = default;
+         ~CRestore() override = default;
 
          // ITask implementation
          const std::string& getName() const override;
+         void onSetTaskId(const std::string& taskId) override;
          void doWork(TaskProgressFunc pFunctor) override;
+         bool isCancellable() const  override;
          // [END] ITask implementation
 
       private:

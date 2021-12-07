@@ -65,7 +65,7 @@ namespace task
                }
             case kCleanFinishedTasks:
                {
-                  boost::lock_guard<boost::mutex> lock(m_mapsMutex);
+                  boost::lock_guard<boost::mutex> lock(m_tasksMutex);
                   if (m_tasks.empty())
                      break;
 
@@ -139,7 +139,7 @@ namespace task
    {
       BOOST_ASSERT(taskToRun.get() != NULL);
 
-      boost::lock_guard<boost::mutex> lock(m_mapsMutex);
+      boost::lock_guard<boost::mutex> lock(m_tasksMutex);
 
       std::string existingUid;
       //we check if the task is IUnique
@@ -176,9 +176,27 @@ namespace task
       return true;
    }
 
+   bool CScheduler::cancelTask(const std::string& taskUuid,
+                               int waitForStopSeconds)
+   {
+      const auto task = m_tasks.at(taskUuid);
+      return task->cancel(waitForStopSeconds);
+   }
+
+   void CScheduler::deleteTask(const std::string& taskUuid)
+   {
+      boost::lock_guard<boost::mutex> lock(m_tasksMutex);
+
+      const auto task = m_tasks.at(taskUuid);
+      if (task->getStatus() == ETaskStatus::kStarted)
+         throw std::invalid_argument("Task is running");
+      
+      m_tasks.erase(m_tasks.find(taskUuid));
+   }
+
    boost::shared_ptr<IInstance> CScheduler::getTask(const std::string& uniqueId)
    {
-      boost::lock_guard<boost::mutex> lock(m_mapsMutex);
+      boost::lock_guard<boost::mutex> lock(m_tasksMutex);
 
       if (m_tasks.find(uniqueId) != m_tasks.end())
          return m_tasks[uniqueId];
@@ -188,7 +206,7 @@ namespace task
 
    std::vector<boost::shared_ptr<IInstance>> CScheduler::getTasks(const std::set<std::string>& ids)
    {
-      boost::lock_guard<boost::mutex> lock(m_mapsMutex);
+      boost::lock_guard<boost::mutex> lock(m_tasksMutex);
 
       std::vector<boost::shared_ptr<IInstance>> list;
 
@@ -203,7 +221,7 @@ namespace task
 
    std::vector<boost::shared_ptr<IInstance>> CScheduler::getAllTasks()
    {
-      boost::lock_guard<boost::mutex> lock(m_mapsMutex);
+      boost::lock_guard<boost::mutex> lock(m_tasksMutex);
 
       std::vector<boost::shared_ptr<IInstance>> list;
 
