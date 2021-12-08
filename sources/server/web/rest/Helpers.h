@@ -2,6 +2,8 @@
 #include "IAnswer.h"
 #include "IRequest.h"
 #include "database/IDataProvider.h"
+#include "shared/http/ssdp/Client.h"
+#include "task/IInstance.h"
 
 namespace web
 {
@@ -68,11 +70,26 @@ namespace web
          /// \param[in] hasOnlyOneItem     Flag indicating that only one item was asked
          /// \param[in] outputDataEntries  List of data to out in answer (only first data will be used if hasOnlyOneItem is true)
          /// \param[in] rootTag            The root tag to write if several data
-         /// \return The formated answer
+         /// \return The formatted answer
          //-----------------------------------------
          static boost::shared_ptr<IAnswer> formatGetMultiItemsAnswer(bool hasOnlyOneItem,
                                                                      const std::vector<boost::shared_ptr<shared::CDataContainer>>& outputDataEntries,
                                                                      const std::string& rootTag);
+         //-----------------------------------------
+         ///\brief         Build long running operation creation answer for the "Long running Operation" pattern (see http://restalk-patterns.org/long-running-operation-polling.html)
+         /// \param[in] taskUid            The created task Uid
+         /// \return The formatted answer
+         //-----------------------------------------
+         static boost::shared_ptr<IAnswer> createLongRunningOperationAnswer(const std::string& taskUid);
+
+         //-----------------------------------------
+         ///\brief         Build long running operation getting answer for the "Long running Operation" pattern (see http://restalk-patterns.org/long-running-operation-polling.html)
+         /// \param[in] task               The operation task
+         /// \param[in] taskEntry          The task entry (send only UUID if not provided)
+         /// \return The formatted answer
+         //-----------------------------------------
+         static boost::shared_ptr<IAnswer> getLongRunningOperationAnswer(boost::shared_ptr<task::IInstance> task,
+                                                                         boost::shared_ptr<shared::CDataContainer> taskEntry = nullptr);
       };
    } //namespace rest
 } //namespace web 

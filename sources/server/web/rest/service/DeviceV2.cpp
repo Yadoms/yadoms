@@ -30,7 +30,7 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/dynamic-configuration-schema", getDeviceDynamicConfigurationSchemaV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/extra-query/{query}", sendExtraQueryToDeviceV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "devices/{id}/extra-query/{query}", sendExtraQueryToDeviceV2));
             //TODO RAF REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevicesV1, transactionalMethodV1)
 
@@ -237,10 +237,7 @@ namespace web
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                                 "Fail to get extra query task");
 
-                     //TODO faire comme pour le service tasks (utiliser le "Long Running Operation with Polling" pattern)
-                     shared::CDataContainer result;
-                     result.set("taskId", taskId);
-                     return boost::make_shared<CSuccessAnswer>(result);
+                     return CHelpers::createLongRunningOperationAnswer(taskId);
                   });
             }
 

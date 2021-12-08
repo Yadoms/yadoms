@@ -132,6 +132,7 @@ void CSupervisor::run()
       restServices->push_back(boost::make_shared<web::rest::service::CPlugin>(dataProvider,
                                                                               pluginManager,
                                                                               dataAccessLayer->getDeviceManager(),
+                                                                              taskManager,
                                                                               *pluginGateway,
                                                                               startupOptions->getDeveloperMode()));
       restServices->push_back(boost::make_shared<web::rest::service::CDevice>(dataProvider,

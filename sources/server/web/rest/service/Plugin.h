@@ -17,6 +17,7 @@ namespace web
             CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
                     boost::shared_ptr<pluginSystem::CManager> pluginManager,
                     boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                    boost::shared_ptr<task::CScheduler> taskScheduler,
                     communication::ISendMessageAsync& messageSender,
                     bool developerMode);
             ~CPlugin() override = default;
@@ -92,12 +93,12 @@ namespace web
             boost::shared_ptr<IAnswer> stopPluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
 
 
-            std::string generateUniqueDeviceName(const int pluginId) const;
+            std::string generateUniqueDeviceName(int pluginId) const;
 
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
-
             boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
+            boost::shared_ptr<task::CScheduler> m_taskScheduler;
 
             std::string m_restKeyword;
 

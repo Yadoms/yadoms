@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #include "Helpers.h"
 
+#include "AcceptedAnswer.h"
 #include "ErrorAnswer.h"
 #include "NoContentAnswer.h"
+#include "SeeOtherLocationAnswer.h"
 #include "SuccessAnswer.h"
+#include "task/IInstance.h"
 
 namespace web
 {
@@ -60,6 +63,25 @@ namespace web
          shared::CDataContainer container;
          container.set(rootTag, outputDataEntries);
          return boost::make_shared<CSuccessAnswer>(container);
+      }
+
+      boost::shared_ptr<IAnswer> CHelpers::createLongRunningOperationAnswer(const std::string& taskUid)
+      {
+         return boost::make_shared<CAcceptedAnswer>("tasks/" + taskUid);
+      }
+
+      boost::shared_ptr<IAnswer> CHelpers::getLongRunningOperationAnswer(boost::shared_ptr<task::IInstance> task,
+                                                                         boost::shared_ptr<shared::CDataContainer> taskEntry)
+      {
+         if (task->getStatus() != task::ETaskStatus::kStarted)
+            return boost::make_shared<CSeeOtherLocationAnswer>(task->getGuid() + "/result");
+
+         if (taskEntry)
+            return boost::make_shared<CSuccessAnswer>(*taskEntry);
+
+         shared::CDataContainer result;
+         result.set("taskId", task->getGuid());
+         return boost::make_shared<CSuccessAnswer>(result);
       }
    } //namespace rest
 } //namespace web 

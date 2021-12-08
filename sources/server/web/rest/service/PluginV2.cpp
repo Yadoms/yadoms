@@ -358,25 +358,17 @@ namespace web
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "query to plugin-instance was not provided");
 
-               return CHelpers::transactionalMethodV2(
-                  request,
-                  m_dataProvider,
-                  [this, &instanceId, &query](const auto& req) -> boost::shared_ptr<IAnswer>
-                  {
-                     const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId,
-                                                                             boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                req->body().empty()
-                                                                                   ? shared::CDataContainer::make()
-                                                                                   : shared::CDataContainer::make(req->body())));
+               const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId,
+                                                                       boost::make_shared<pluginSystem::CExtraQueryData>(query,
+                                                                          request->body().empty()
+                                                                             ? shared::CDataContainer::make()
+                                                                             : shared::CDataContainer::make(request->body())));
 
-                     if (taskId.empty())
-                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                                "Fail to get extra query task");
+               if (taskId.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                          "Fail to get extra query task");
 
-                     shared::CDataContainer result;
-                     result.set("taskId", taskId);
-                     return boost::make_shared<CSuccessAnswer>(result);
-                  });
+               return CHelpers::createLongRunningOperationAnswer(taskId);
             }
 
             catch (const std::exception&)

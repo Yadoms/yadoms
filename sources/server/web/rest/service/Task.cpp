@@ -9,7 +9,6 @@
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
-#include "web/rest/SeeOtherLocationAnswer.h"
 #include "web/rest/SuccessAnswer.h"
 
 namespace web
@@ -149,19 +148,15 @@ namespace web
                   taskEntries.push_back(taskEntry);
                }
 
-               shared::CDataContainer container;
-               container.set("tasks", taskEntries);
+               if (taskEntries.empty())
+                  return boost::make_shared<CNoContentAnswer>();
 
                if (taskIds && taskIds->size() == 1)
-               {
-                  // One specific task was asked. Apply the "Long running Operation" pattern (see http://restalk-patterns.org/long-running-operation-polling.html)
-                  const auto task = *tasks.begin();
+                  return CHelpers::getLongRunningOperationAnswer(*tasks.begin(),
+                                                                 taskEntries.at(0));
 
-                  if (task->getStatus() == task::ETaskStatus::kStarted)
-                     return boost::make_shared<CSuccessAnswer>(*taskEntries.at(0));
-                  return boost::make_shared<CSeeOtherLocationAnswer>(task->getGuid() + "/result");
-               }
-
+               shared::CDataContainer container;
+               container.set("tasks", taskEntries);
                return boost::make_shared<CSuccessAnswer>(container);
             }
 
@@ -256,9 +251,9 @@ namespace web
                   taskEntries.push_back(taskEntry);
                }
 
-               shared::CDataContainer container;
-               container.set("tasks", taskEntries);
-               return boost::make_shared<CSuccessAnswer>(container);
+               return CHelpers::formatGetMultiItemsAnswer(taskIds->size() == 1,
+                                                          taskEntries,
+                                                          "tasks");
             }
 
             catch (const shared::exception::COutOfRange& exception)

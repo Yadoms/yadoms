@@ -6,6 +6,7 @@
 #include "task/backup/Backup.h"
 #include "web/rest/AcceptedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
+#include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
 
@@ -114,7 +115,7 @@ namespace web
 
                YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
 
-               return boost::make_shared<CAcceptedAnswer>("tasks/" + taskUid);
+               return CHelpers::createLongRunningOperationAnswer(taskUid);
             }
             catch (const std::exception& exception)
             {

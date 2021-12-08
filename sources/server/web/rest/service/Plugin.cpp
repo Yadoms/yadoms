@@ -20,11 +20,13 @@ namespace web
          CPlugin::CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
                           boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                          boost::shared_ptr<task::CScheduler> taskScheduler,
                           communication::ISendMessageAsync& messageSender,
                           bool developerMode)
             : m_dataProvider(std::move(dataProvider)),
               m_pluginManager(std::move(pluginManager)),
               m_deviceManager(std::move(deviceManager)),
+              m_taskScheduler(taskScheduler),
               m_restKeyword("plugin"),
               m_messageSender(messageSender),
               m_developerMode(developerMode)
@@ -635,7 +637,7 @@ namespace web
             }
          }
 
-         std::string CPlugin::generateUniqueDeviceName(const int pluginId) const
+         std::string CPlugin::generateUniqueDeviceName(int pluginId) const
          {
             static const boost::regex DeviceNamePattern("^manuallyCreatedDevice_([[:digit:]]*)$");
             const auto& devices = m_dataProvider->getDeviceRequester()->getDevices(pluginId,
