@@ -608,6 +608,16 @@ namespace shared
       return false;
    }
 
+   unsigned int CDataContainer::arraySize(const std::string& parameterName, char pathChar) const
+   {
+      const auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
+      if (ptr != nullptr && ptr->IsArray())
+      {
+         return ptr->Size();
+      }
+      return false;
+   }
+
    void CDataContainer::appendArray(const char* parameterName, const char* value, const char pathChar)
    {
       const std::string strParamName(parameterName);

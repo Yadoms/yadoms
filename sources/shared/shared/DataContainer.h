@@ -629,6 +629,13 @@ namespace shared
       bool isArray(const std::string& parameterName, char pathChar = '.') const;
 
       //--------------------------------------------------------------
+      /// \brief	  Get array size
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The path separator to use (default is '.')
+      //--------------------------------------------------------------
+      unsigned int arraySize(const std::string& parameterName, char pathChar = '.') const;
+
+      //--------------------------------------------------------------
       /// \brief		Equality operator
       /// \param [in] rhs  The container to compare with
       /// \return   true if the container equals to this instance

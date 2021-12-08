@@ -56,13 +56,15 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getExportData(const std::vector<std::string>& parameters,
                                                                                       const std::string& requestContent) const;
 
-         private:
             boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
                                                                                             const std::vector<std::string>& parameters,
                                                                                             const std::string& requestContent) const;
 
-            boost::shared_ptr<IAnswer> getBackupsV2(const boost::shared_ptr<IRequest>& request) const;
-            boost::shared_ptr<IAnswer> createBackupsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getBackupsV2(const boost::shared_ptr<IRequest>& request);
+            std::string backupInProgress();
+            void setBackupInProgress(const std::string& taskUid);
+            boost::shared_ptr<IAnswer> createBackupsV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> deleteBackupV2(const boost::shared_ptr<IRequest>& request) const;
 
             boost::shared_ptr<std::string> fileUploadChunkRead(const std::string& requestContent) const;
             std::string fileUploadChunkReadGuid(const std::string& requestContent) const;
@@ -78,6 +80,9 @@ namespace web
             boost::shared_ptr<task::CScheduler> m_taskScheduler;
             boost::shared_ptr<IUploadFileManager> m_uploadFileManager;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
+
+            mutable boost::recursive_mutex m_backupInProgressTaskUidMutex;
+            std::string m_backupInProgressTaskUid;
          };
       } //namespace service
    } //namespace rest
