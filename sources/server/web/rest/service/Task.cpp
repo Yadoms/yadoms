@@ -158,7 +158,7 @@ namespace web
                   const auto task = *tasks.begin();
 
                   if (task->getStatus() == task::ETaskStatus::kStarted)
-                     return boost::make_shared<CSuccessAnswer>(container);
+                     return boost::make_shared<CSuccessAnswer>(*taskEntries.at(0));
                   return boost::make_shared<CSeeOtherLocationAnswer>(task->getGuid() + "/result");
                }
 

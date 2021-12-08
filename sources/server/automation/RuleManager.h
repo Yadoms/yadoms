@@ -46,7 +46,7 @@ namespace automation
          const boost::optional<std::string>& fromEditor,
          bool fromAutostart,
          const std::set<database::entities::ERuleState>& fromState) override;
-      int createRule(boost::shared_ptr<const database::entities::CRule> ruleData,
+      int createRule(const database::entities::CRule& ruleData,
                      const std::string& code,
                      bool startNow = true) override;
       boost::shared_ptr<database::entities::CRule> getRule(int id) const override;
@@ -54,7 +54,7 @@ namespace automation
       std::string getRuleLog(int id) const override;
       void deleteRuleLog(int id) const override;
       std::string getRuleTemplateCode(const std::string& interpreterName) const override;
-      void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData) override;
+      void updateRule(const database::entities::CRule& ruleData) override;
       void updateRuleCode(int id, const std::string& code) override;
       void deleteRule(int id) override;
       int duplicateRule(int idToDuplicate, const std::string& newName) override;

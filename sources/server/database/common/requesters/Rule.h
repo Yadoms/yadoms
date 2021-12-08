@@ -32,8 +32,8 @@ namespace database
                                                                      const std::set<entities::ERuleState>& fromState) const override;
             std::vector<boost::shared_ptr<entities::CRule>> getRules(const std::string& interpreterName) const override;
             boost::shared_ptr<entities::CRule> getRule(int ruleId) const override;
-            int addRule(boost::shared_ptr<const entities::CRule> ruleData) override;
-            void updateRule(boost::shared_ptr<const entities::CRule> ruleData) override;
+            int addRule(const entities::CRule& ruleData) override;
+            void updateRule(const entities::CRule& ruleData) override;
             void deleteRule(int ruleId) override;
             // [END] IRuleRequester implementation
 

@@ -78,9 +78,9 @@ namespace web
                if (pluginEntries.empty())
                   return boost::make_shared<CNoContentAnswer>();
 
-               shared::CDataContainer container;
-               container.set("plugins", pluginEntries);
-               return boost::make_shared<CSuccessAnswer>(container);
+               return CHelpers::formatGetMultiItemsAnswer(types->size() == 1,
+                                                          pluginEntries,
+                                                          "plugins");
             }
 
             catch (const std::exception&)
@@ -150,9 +150,9 @@ namespace web
                if (instancesEntries.empty())
                   return boost::make_shared<CNoContentAnswer>();
 
-               shared::CDataContainer container;
-               container.set("instances", instancesEntries);
-               return boost::make_shared<CSuccessAnswer>(container);
+               return CHelpers::formatGetMultiItemsAnswer(!id.empty(),
+                                                          instancesEntries,
+                                                          "instances");
             }
 
             catch (const std::exception&)

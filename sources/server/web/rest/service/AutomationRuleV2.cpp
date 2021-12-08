@@ -3,6 +3,7 @@
 #include "RestEndPoint.h"
 #include "notification/Helpers.hpp"
 #include "shared/plugin/yPluginApi/historization/PluginState.h"
+#include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
@@ -25,22 +26,16 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters/{interpreter}/code-template", getCodeTemplateV2));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules", getRulesV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules/{id}", getRulesV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules/{id}/code", getRuleCodeV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules/{id}/log", getRuleLogV2));
-            //TODO
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules/{id}", getRulesV2));
 
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (RestKeyword)(RestSubKeywordRule), CAutomationRule::createRuleV1, CAutomationRule::transactionalMethod);
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (RestKeyword)(RestSubKeywordRule)("*"), CAutomationRule::deleteRuleV1, CAutomationRule::transactionalMethod);
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "automation/rules", createRuleV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "automation/rules/{id}", updateRuleV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "automation/rules/{id}/log", deleteRuleLogV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "automation/rules/{id}", deleteRuleV2));
 
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("code"), CAutomationRule::getRuleCodeV1);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("log"), CAutomationRule::getRuleLogV1);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (RestKeyword)(RestSubKeywordRule)("*")("log"), CAutomationRule::deleteRuleLogV1);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("start"), CAutomationRule::startRuleV1);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (RestKeyword)(RestSubKeywordRule)("*")("stop"), CAutomationRule::stopRuleV1);
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (RestKeyword)(RestSubKeywordRule)("*"), CAutomationRule::updateRuleV1, CAutomationRule::transactionalMethod);
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (RestKeyword)(RestSubKeywordRule)("*")("duplicate"), CAutomationRule::duplicateRuleV1, CAutomationRule::transactionalMethod);
-            //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (RestKeyword)(RestSubKeywordRule)("*")("code"), CAutomationRule::updateRuleCodeV1, CAutomationRule::transactionalMethod);
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "automation/rules/{id}/start", startRuleV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "automation/rules/{id}/stop", stopRuleV2));
 
             return m_endPoints;
          }
@@ -145,38 +140,53 @@ namespace web
                std::vector<boost::shared_ptr<shared::CDataContainer>> ruleEntries;
                for (const auto& rule : rules)
                {
-                  auto deviceEntry = boost::make_shared<shared::CDataContainer>();
+                  auto ruleEntry = boost::make_shared<shared::CDataContainer>();
                   if (props->empty() || props->find("id") != props->end())
-                     deviceEntry->set("id", rule->Id());
+                     ruleEntry->set("id", rule->Id());
                   if (props->empty() || props->find("name") != props->end())
-                     deviceEntry->set("name", rule->Name());
+                     ruleEntry->set("name", rule->Name());
                   if (props->empty() || props->find("description") != props->end())
-                     deviceEntry->set("description", rule->Description());
+                     ruleEntry->set("description", rule->Description());
                   if (props->empty() || props->find("interpreter") != props->end())
-                     deviceEntry->set("interpreter", rule->Interpreter());
+                     ruleEntry->set("interpreter", rule->Interpreter());
                   if (props->empty() || props->find("editor") != props->end())
-                     deviceEntry->set("editor", rule->Editor());
+                     ruleEntry->set("editor", rule->Editor());
                   if (props->empty() || props->find("model") != props->end())
-                     deviceEntry->set("model", rule->Model());
+                     ruleEntry->set("model", rule->Model());
                   if (props->empty() || props->find("content") != props->end())
-                     deviceEntry->set("content", rule->Content());
-                  if (props->empty() || props->find("autostart") != props->end())
-                     deviceEntry->set("autostart", rule->AutoStart());
+                     ruleEntry->set("content", rule->Content());
+                  if (props->empty() || props->find("configuration") != props->end())
+                     ruleEntry->set("configuration", rule->Configuration());
                   if (props->empty() || props->find("state") != props->end())
-                     deviceEntry->set("state", rule->State());
+                     ruleEntry->set("autostart", rule->AutoStart());
+                  if (props->empty() || props->find("state") != props->end())
+                     ruleEntry->set("state", rule->State());
                   if (props->empty() || props->find("errorMessage") != props->end())
-                     deviceEntry->set("errorMessage", rule->ErrorMessage());
+                     ruleEntry->set("errorMessage", rule->ErrorMessage());
                   if (props->empty() || props->find("startDate") != props->end())
-                     deviceEntry->set("startDate", rule->StartDate());
+                     ruleEntry->set("startDate", rule->StartDate());
                   if (props->empty() || props->find("stopDate") != props->end())
-                     deviceEntry->set("stopDate", rule->StopDate());
+                     ruleEntry->set("stopDate", rule->StopDate());
+                  if (props->empty() || props->find("code") != props->end())
+                  {
+                     try
+                     {
+                        ruleEntry->set("code", m_rulesManager->getRuleCode(rule->Id()));
+                     }
+                     catch (const std::runtime_error&)
+                     {
+                        // Unable to get code (interpreter not running ?)
+                        // Ignore rule entry
+                        continue;
+                     }
+                  }
 
-                  ruleEntries.push_back(deviceEntry);
+                  ruleEntries.push_back(ruleEntry);
                }
 
-               shared::CDataContainer container;
-               container.set("rules", ruleEntries);
-               return boost::make_shared<CSuccessAnswer>(container);
+               return CHelpers::formatGetMultiItemsAnswer(ruleId.has_value(),
+                  ruleEntries,
+                  "rules");
             }
 
             catch (const shared::exception::COutOfRange& exception)
@@ -189,37 +199,6 @@ namespace web
                YADOMS_LOG(error) << "Error processing getRules request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get rules");
-            }
-         }
-
-         boost::shared_ptr<IAnswer> CAutomationRule::getRuleCodeV2(const boost::shared_ptr<IRequest>& request) const
-         {
-            try
-            {
-               // ID
-               if (!request->pathVariableExists("id"))
-                  throw std::invalid_argument("rule id");
-               const auto ruleId = static_cast<int>(std::stol(request->pathVariable("id")));
-
-               const auto code = m_rulesManager->getRuleCode(ruleId);
-
-               if (code.empty())
-                  return boost::make_shared<CNoContentAnswer>();
-
-               return boost::make_shared<CSuccessAnswer>(code,
-                                                         EContentType::kPlainText);
-            }
-
-            catch (const shared::exception::COutOfRange& exception)
-            {
-               YADOMS_LOG(error) << "Error processing getRuleCode request : " << exception.what();
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
-            }
-            catch (const std::exception& exception)
-            {
-               YADOMS_LOG(error) << "Error processing getRuleCode request : " << exception.what();
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get rule code");
             }
          }
 
@@ -251,6 +230,195 @@ namespace web
                YADOMS_LOG(error) << "Error processing getRuleLog request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get rule log");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CAutomationRule::createRuleV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               shared::CDataContainer content(request->body());
+
+               // Remove server-controlled (read-only) fields
+               content.remove("id");
+               content.remove("state");
+               content.remove("errorMessage");
+               content.remove("startDate");
+               content.remove("stopDate");
+
+               database::entities::CRule rule;
+               rule.fillFromContent(content);
+
+               if (!rule.Name.isDefined()
+                  || !rule.Interpreter.isDefined()
+                  || !rule.Editor.isDefined()
+                  || !content.exists("code"))
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "invalid rule creation request. Need at least name, interpreter, editor and code");
+
+               const auto idCreated = m_rulesManager->createRule(rule,
+                                                                 content.get<std::string>("code"));
+
+               return boost::make_shared<CCreatedAnswer>("automation/rules/" + std::to_string(idCreated));
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to create rule");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CAutomationRule::updateRuleV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "rule id was not provided");
+               const auto ruleId = static_cast<int>(std::stol(id));
+
+               if (request->body().empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "body was not provided");
+               
+               shared::CDataContainer content(request->body());
+
+               if (content.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "body was not provided");
+
+               // Remove server-controlled (read-only) fields
+               content.remove("id");
+               content.remove("state");
+               content.remove("errorMessage");
+               content.remove("startDate");
+               content.remove("stopDate");
+
+               // Remove non-update-able (set-able at creation only) fields
+               content.remove("interpreter");
+               content.remove("editor");
+               content.remove("model");
+               
+               database::entities::CRule ruleToUpdate;
+               ruleToUpdate.fillFromContent(content);
+               ruleToUpdate.Id = ruleId;
+
+               m_rulesManager->updateRule(ruleToUpdate);
+
+               if (content.exists("code"))
+                  m_rulesManager->updateRuleCode(ruleId,
+                                                 content.get<std::string>("code"));
+
+               return boost::make_shared<CNoContentAnswer>();
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to update device");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CAutomationRule::deleteRuleV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               return CHelpers::transactionalMethodV2(
+                  request,
+                  m_dataProvider,
+                  [this](const auto& req) -> boost::shared_ptr<IAnswer>
+                  {
+                     // ID
+                     const auto id = req->pathVariable("id", std::string());
+                     if (id.empty())
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                                "rule id was not provided");
+                     const auto ruleId = static_cast<int>(std::stol(id));
+
+                     m_rulesManager->deleteRule(ruleId);
+
+                     return boost::make_shared<CNoContentAnswer>();
+                  });
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to delete device");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CAutomationRule::deleteRuleLogV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               return CHelpers::transactionalMethodV2(
+                  request,
+                  m_dataProvider,
+                  [this](const auto& req) -> boost::shared_ptr<IAnswer>
+                  {
+                     // ID
+                     const auto id = req->pathVariable("id", std::string());
+                     if (id.empty())
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                                "rule id was not provided");
+                     const auto ruleId = static_cast<int>(std::stol(id));
+
+                     m_rulesManager->deleteRuleLog(ruleId);
+
+                     return boost::make_shared<CNoContentAnswer>();
+                  });
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to delete device");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CAutomationRule::startRuleV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                     "rule id was not provided");
+               const auto ruleId = static_cast<int>(std::stol(id));
+
+               m_rulesManager->startRule(ruleId);
+
+               return boost::make_shared<CNoContentAnswer>();
+            }
+
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                  "Failed to start rule");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CAutomationRule::stopRuleV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               // ID
+               const auto id = request->pathVariable("id", std::string());
+               if (id.empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                     "rule id was not provided");
+               const auto ruleId = static_cast<int>(std::stol(id));
+
+               m_rulesManager->stopRule(ruleId);
+
+               return boost::make_shared<CNoContentAnswer>();
+            }
+
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                  "Failed to stop rule");
             }
          }
       } //namespace service
