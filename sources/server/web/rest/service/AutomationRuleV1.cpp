@@ -310,9 +310,9 @@ namespace web
          {
             try
             {
-               auto ruleData(boost::make_shared<database::entities::CRule>());
                const shared::CDataContainer content(requestContent);
-               ruleData->fillFromContent(content);
+               database::entities::CRule ruleData;
+               ruleData.fillFromContent(content);
 
                const auto idCreated = m_rulesManager->createRule(ruleData, content.get<std::string>("code"));
 
@@ -342,14 +342,14 @@ namespace web
                   throw CRuleException("invalid parameter in URL");
 
                const auto ruleId = boost::lexical_cast<int>(parameters[2]);
-               auto ruleData(boost::make_shared<database::entities::CRule>());
-               ruleData->fillFromSerializedString(requestContent);
+               database::entities::CRule ruleData;
+               ruleData.fillFromSerializedString(requestContent);
 
                // Check for supported modifications
-               if (ruleData->Id.isDefined() && ruleData->Id != ruleId)
+               if (ruleData.Id.isDefined() && ruleData.Id != ruleId)
                   throw CRuleException("Rule Id is not modifiable");
 
-               ruleData->Id = ruleId;
+               ruleData.Id = ruleId;
                m_rulesManager->updateRule(ruleData);
 
                const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);

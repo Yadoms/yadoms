@@ -72,7 +72,9 @@ namespace automation
       /// \param[in] startNow Indicate if the rule must be started after creation
       ///\return              The new rule id
       //-----------------------------------------------------
-      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code, bool startNow = true) = 0;
+      virtual int createRule(const database::entities::CRule& ruleData,
+                             const std::string& code,
+                             bool startNow = true) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Get the rule informations
@@ -118,7 +120,7 @@ namespace automation
       /// \throw           CNotSupported if request to apply unsupported modifications
       /// \throw           CDatabaseException if fails
       //--------------------------------------------------------------
-      virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
+      virtual void updateRule(const database::entities::CRule& ruleData) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Update rule informations

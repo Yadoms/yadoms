@@ -65,6 +65,12 @@ namespace web
             boost::shared_ptr<IAnswer> getRulesV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> getRuleCodeV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> getRuleLogV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> createRuleV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updateRuleV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deleteRuleV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deleteRuleLogV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> startRuleV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> stopRuleV2(const boost::shared_ptr<IRequest>& request) const;
 
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<automation::IRuleManager> m_rulesManager;

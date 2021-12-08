@@ -24,13 +24,13 @@ namespace web
          //-----------------------------------------
          ///\brief   Convert set of strings into set of int
          //-----------------------------------------
-         static std::unique_ptr<std::set<int>> convertToIntSet(const std::unique_ptr<std::set<std::string>> in);
+         static std::unique_ptr<std::set<int>> convertToIntSet(const std::unique_ptr<std::set<std::string>>& in);
 
          //-----------------------------------------
          ///\brief   Convert set of strings into set of ExtendedEnum
          //-----------------------------------------
          template <typename T>
-         static std::unique_ptr<std::set<T>> convertToEnumSet(const std::unique_ptr<std::set<std::string>> in)
+         static std::unique_ptr<std::set<T>> convertToEnumSet(const std::unique_ptr<std::set<std::string>>& in)
          {
             // ReSharper disable once CppUseTypeTraitAlias
             static_assert(std::is_base_of<shared::enumeration::IExtendedEnum, T>::value, "T must be derived from shared::enumeration::IExtendedEnum");
@@ -39,6 +39,40 @@ namespace web
                out->insert(T(inItem));
             return out;
          }
+
+         //-----------------------------------------
+         ///\brief         Format answer of a GET request with one or more items asked
+         ///\description   A GET request can be called for one or several items.
+         ///               When several items are requested, result will be expressed as an array
+         ///               If just one item was asked, result should be expressed as item values (no more "decoration")
+         ///               Example :
+         ///               - Result for several items :
+         ///               { "items" : [
+         ///                     {
+         ///                        "key1" : "value1",
+         ///                        "key2" : "value2"
+         ///                     },
+         ///                     {
+         ///                        "key1" : "value3",
+         ///                        "key2" : "value4"
+         ///                     }
+         ///                  ]
+         ///               }
+         ///
+         ///               - Result for one item :
+         ///               {
+         ///                  "key1" : "value1",
+         ///                  "key2" : "value2"
+         ///               }
+         ///
+         /// \param[in] hasOnlyOneItem     Flag indicating that only one item was asked
+         /// \param[in] outputDataEntries  List of data to out in answer (only first data will be used if hasOnlyOneItem is true)
+         /// \param[in] rootTag            The root tag to write if several data
+         /// \return The formated answer
+         //-----------------------------------------
+         static boost::shared_ptr<IAnswer> formatGetMultiItemsAnswer(bool hasOnlyOneItem,
+                                                                     const std::vector<boost::shared_ptr<shared::CDataContainer>>& outputDataEntries,
+                                                                     const std::string& rootTag);
       };
    } //namespace rest
 } //namespace web 

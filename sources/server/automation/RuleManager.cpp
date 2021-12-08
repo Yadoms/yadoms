@@ -275,8 +275,9 @@ namespace automation
                                        fromState);
    }
 
-   int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-                                const std::string& code, bool startNow)
+   int CRuleManager::createRule(const database::entities::CRule& ruleData,
+                                const std::string& code,
+                                bool startNow)
    {
       // Add rule in database
       const auto ruleId = m_ruleRequester->addRule(ruleData);
@@ -355,10 +356,10 @@ namespace automation
       }
    }
 
-   void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule> ruleData)
+   void CRuleManager::updateRule(const database::entities::CRule& ruleData)
    {
       // Check for supported modifications
-      if (!ruleData->Id.isDefined())
+      if (!ruleData.Id.isDefined())
          throw shared::exception::CException("Update rule : rule ID was not provided");
 
       m_ruleRequester->updateRule(ruleData);
@@ -424,7 +425,7 @@ namespace automation
          rule->State = database::entities::ERuleState::kStopped;
 
          //5. create rule
-         return createRule(rule, ruleCode, false); //don't start the rule
+         return createRule(*rule, ruleCode, false); //don't start the rule
       }
       catch (shared::exception::CException& e)
       {
@@ -491,11 +492,11 @@ namespace automation
 
    void CRuleManager::recordRuleStarted(int ruleId) const
    {
-      const auto ruleData(boost::make_shared<database::entities::CRule>());
-      ruleData->Id = ruleId;
-      ruleData->State = database::entities::ERuleState::kRunning;
-      ruleData->StartDate = shared::currentTime::Provider().now();
-      ruleData->ErrorMessage = std::string();
+      database::entities::CRule ruleData;
+      ruleData.Id = ruleId;
+      ruleData.State = database::entities::ERuleState::kRunning;
+      ruleData.StartDate = shared::currentTime::Provider().now();
+      ruleData.ErrorMessage = std::string();
       m_ruleRequester->updateRule(ruleData);
    }
 
@@ -505,12 +506,12 @@ namespace automation
       if (!error.empty())
          YADOMS_LOG(error) << error;
 
-      const auto ruleData(boost::make_shared<database::entities::CRule>());
-      ruleData->Id = ruleId;
-      ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
-      ruleData->StopDate = shared::currentTime::Provider().now();
+      database::entities::CRule ruleData;
+      ruleData.Id = ruleId;
+      ruleData.State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
+      ruleData.StopDate = shared::currentTime::Provider().now();
       if (!error.empty())
-         ruleData->ErrorMessage = error;
+         ruleData.ErrorMessage = error;
       m_ruleRequester->updateRule(ruleData);
 
       if (!error.empty())

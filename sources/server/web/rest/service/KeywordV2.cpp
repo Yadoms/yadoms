@@ -136,9 +136,9 @@ namespace web
                   keywordEntries.push_back(keywordEntry);
                }
 
-               shared::CDataContainer container;
-               container.set("keywords", keywordEntries);
-               return boost::make_shared<CSuccessAnswer>(container);
+               return CHelpers::formatGetMultiItemsAnswer(keywordIds->size() == 1,
+                                                          keywordEntries,
+                                                          "keywords");
             }
 
             catch (const shared::exception::COutOfRange& exception)

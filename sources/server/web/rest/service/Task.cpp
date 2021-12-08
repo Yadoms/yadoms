@@ -143,9 +143,9 @@ namespace web
                   taskEntries.push_back(taskEntry);
                }
 
-               shared::CDataContainer container;
-               container.set("tasks", taskEntries);
-               return boost::make_shared<CSuccessAnswer>(container);
+               return CHelpers::formatGetMultiItemsAnswer(taskIds && taskIds->size() == 1,
+                                                          taskEntries,
+                                                          "tasks");
             }
 
             catch (const shared::exception::COutOfRange& exception)

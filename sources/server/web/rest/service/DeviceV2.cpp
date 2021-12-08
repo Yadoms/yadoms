@@ -26,7 +26,7 @@ namespace web
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            
+
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/dynamic-configuration-schema", getDeviceDynamicConfigurationSchemaV2));
@@ -67,10 +67,10 @@ namespace web
                                                                ? request->queryParamAsList("containing-keyword-with-capacity-name")
                                                                : std::make_unique<std::set<std::string>>();
                const auto containsKeywordWithAccessMode = request->queryParamExists("containing-keyword-with-access-mode")
-                                                                     ? boost::make_optional(
-                                                                        shared::plugin::yPluginApi::EKeywordAccessMode(
-                                                                           request->queryParam("containing-keyword-with-access-mode")))
-                                                                     : boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>();
+                                                             ? boost::make_optional(
+                                                                shared::plugin::yPluginApi::EKeywordAccessMode(
+                                                                   request->queryParam("containing-keyword-with-access-mode")))
+                                                             : boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>();
                const auto containsKeywordWithDataType = request->queryParamExists("containing-keyword-with-capacity-type")
                                                            ? CHelpers::convertToEnumSet<shared::plugin::yPluginApi::EKeywordDataType>(
                                                               request->queryParamAsList("containing-keyword-with-capacity-type"))
@@ -124,9 +124,9 @@ namespace web
                   deviceEntries.push_back(deviceEntry);
                }
 
-               shared::CDataContainer container;
-               container.set("devices", deviceEntries);
-               return boost::make_shared<CSuccessAnswer>(container);
+               return CHelpers::formatGetMultiItemsAnswer(deviceId.has_value(),
+                                                          deviceEntries,
+                                                          "devices");
             }
 
             catch (const shared::exception::COutOfRange& exception)
@@ -237,6 +237,7 @@ namespace web
                         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                                 "Fail to get extra query task");
 
+                     //TODO faire comme pour le service tasks (utiliser le "Long Running Operation with Polling" pattern)
                      shared::CDataContainer result;
                      result.set("taskId", taskId);
                      return boost::make_shared<CSuccessAnswer>(result);

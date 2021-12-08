@@ -2,6 +2,8 @@
 #include "Helpers.h"
 
 #include "ErrorAnswer.h"
+#include "NoContentAnswer.h"
+#include "SuccessAnswer.h"
 
 namespace web
 {
@@ -37,12 +39,27 @@ namespace web
          return answer;
       }
 
-      std::unique_ptr<std::set<int>> CHelpers::convertToIntSet(const std::unique_ptr<std::set<std::string>> in)
+      std::unique_ptr<std::set<int>> CHelpers::convertToIntSet(const std::unique_ptr<std::set<std::string>>& in)
       {
          auto out = std::make_unique<std::set<int>>();
          for (const auto& inItem : *in)
             out->insert(std::stol(inItem));
          return out;
+      }
+
+      boost::shared_ptr<IAnswer> CHelpers::formatGetMultiItemsAnswer(bool hasOnlyOneItem,
+                                                                     const std::vector<boost::shared_ptr<shared::CDataContainer>>& outputDataEntries,
+                                                                     const std::string& rootTag)
+      {
+         if (outputDataEntries.empty())
+            return boost::make_shared<CNoContentAnswer>();
+
+         if (hasOnlyOneItem)
+            return boost::make_shared<CSuccessAnswer>(*outputDataEntries.at(0));
+
+         shared::CDataContainer container;
+         container.set(rootTag, outputDataEntries);
+         return boost::make_shared<CSuccessAnswer>(container);
       }
    } //namespace rest
 } //namespace web 

@@ -99,9 +99,9 @@ namespace web
                         recipientEntries.push_back(keywordEntry);
                      }
 
-                     shared::CDataContainer container;
-                     container.set("recipients", recipientEntries);
-                     return boost::make_shared<CSuccessAnswer>(container);
+                     return CHelpers::formatGetMultiItemsAnswer(recipientId.has_value(),
+                                                                recipientEntries,
+                                                                "recipients");
                   });
             }
 

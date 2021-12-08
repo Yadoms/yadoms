@@ -51,13 +51,13 @@ namespace database
       /// \param[in] ruleData  Rule data
       /// \return          Rule ID
       //--------------------------------------------------------------
-      virtual int addRule(boost::shared_ptr<const entities::CRule> ruleData) = 0;
+      virtual int addRule(const entities::CRule& ruleData) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Update rule data
       /// \param[in] ruleData  New rule data
       //--------------------------------------------------------------
-      virtual void updateRule(boost::shared_ptr<const entities::CRule> ruleData) = 0;
+      virtual void updateRule(const entities::CRule& ruleData) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Delete rule
