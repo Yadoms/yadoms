@@ -3,7 +3,6 @@
 #include "RestEndPoint.h"
 #include "stdafx.h"
 #include "task/IInstance.h"
-#include "task/ITask.h"
 #include "task/Scheduler.h"
 #include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
