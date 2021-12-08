@@ -1,6 +1,5 @@
 #pragma once
 #include "Instance.h"
-#include "FinishedInstance.h"
 #include "ITask.h"
 #include "dataAccessLayer/IEventLogger.h"
 
@@ -26,6 +25,21 @@ namespace task
       ///\return     true if the task has been created and false if the task has not be created. The uniqueId has the id of the previous task if the expected task was unique
       //--------------------------------------------------------------
       bool runTask(const boost::shared_ptr<ITask>& taskToRun, std::string& uniqueId);
+
+      //--------------------------------------------------------------
+      ///\brief	   Cancel a running task
+      ///\param [in] taskUuid : the task to stop
+      ///\param [in] waitForStopSeconds : wait for task stopped (or NoWait, or InfiniteWait)
+      ///\return     true if the task has been successfully stopped
+      //--------------------------------------------------------------
+      bool cancelTask(const std::string& taskUuid, int waitForStopSeconds);
+
+      //--------------------------------------------------------------
+      ///\brief	   Delete a stopped task
+      ///\param [in] taskUuid : the task to stop
+      ///\throw std::invalid_argument if task currently running (not deletable)
+      //--------------------------------------------------------------
+      void deleteTask(const std::string& taskUuid);
 
       //--------------------------------------------------------------
       /// \brief			Ask a task by its guid
@@ -62,7 +76,7 @@ namespace task
       /// \brief			Map of all tasks (key are task uuid as string)
       //--------------------------------------------------------------
       std::map<std::string, boost::shared_ptr<CInstance>> m_tasks;
-      mutable boost::mutex m_mapsMutex;
+      mutable boost::mutex m_tasksMutex;
 
       //------------------------------------------
       ///\brief   A reference to the main event logger (to report start and stop status)

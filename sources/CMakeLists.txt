@@ -582,8 +582,6 @@ set(YADOMS_SRC
    server/startupOptions/MustExistPathValidator.h
    server/startupOptions/MustExistPathValidator.cpp
    
-   server/task/FinishedInstance.h
-   server/task/FinishedInstance.cpp
    server/task/GenericTask.h
    server/task/GenericTask.cpp
    server/task/IInstance.h
@@ -635,6 +633,8 @@ set(YADOMS_SRC
    server/web/IRestHandler.h
    server/web/IWebServer.h
  
+   server/web/rest/AcceptedAnswer.h
+   server/web/rest/AcceptedAnswer.cpp
    server/web/rest/ContentType.h
    server/web/rest/IRequest.h
    server/web/rest/IAnswer.h
@@ -646,6 +646,8 @@ set(YADOMS_SRC
    server/web/rest/Helpers.cpp
    server/web/rest/NoContentAnswer.h
    server/web/rest/NoContentAnswer.cpp
+   server/web/rest/SeeOtherLocationAnswer.h
+   server/web/rest/SeeOtherLocationAnswer.cpp
    server/web/rest/SuccessAnswer.h
    server/web/rest/SuccessAnswer.cpp
    server/web/rest/StringContainer.h

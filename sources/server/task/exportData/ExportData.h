@@ -12,25 +12,27 @@ namespace task
       //------------------------------------------
       ///\brief   Export data task
       //-----------------------------------------
-      class CExportData : public ITask
+      class CExportData final : public ITask
       {
       public:
          explicit CExportData(boost::shared_ptr<const IPathProvider> pathProvider,
                               boost::shared_ptr<database::IKeywordRequester> keywordRequester,
                               boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                               int keywordId);
-         virtual ~CExportData() = default;
+         ~CExportData() override = default;
 
          // ITask implementation
          const std::string& getName() const override;
          void doWork(TaskProgressFunc functor) override;
+         void onSetTaskId(const std::string& taskId) override;
+         bool isCancellable() const override;
          // [END] ITask implementation
 
       private:
          boost::filesystem::path prepare() const;
-         void collectDataTo(const boost::filesystem::path& logsTempFolder) const;
-         boost::filesystem::path makeZipArchive(boost::filesystem::path& logsTempFolder);
-         void cleanup(boost::filesystem::path& logsTempFolder) const;
+         void collectDataTo(const boost::filesystem::path& exportDataTempFolder) const;
+         boost::filesystem::path makeZipArchive(const boost::filesystem::path& exportDataTempFolder);
+         void cleanup(const boost::filesystem::path& exportDataTempFolder) const;
 
          //------------------------------------------
          ///\brief   Internal progress handler 

@@ -37,6 +37,10 @@ namespace task
          return TaskName;
       }
 
+      void CRestore::onSetTaskId(const std::string& taskId)
+      {
+      }
+
       void CRestore::doWork(TaskProgressFunc pFunctor)
       {
          boost::filesystem::path tempDirectory;
@@ -79,11 +83,16 @@ namespace task
          }
       }
 
+      bool CRestore::isCancellable() const
+      {
+         return false;
+      }
+
       void CRestore::notifyProgress(const TaskProgressFunc& pFunctor,
                                     int progressPercentage,
                                     const std::string& message) const
       {
-         pFunctor(true, progressPercentage / 100.0, message, std::string(), shared::CDataContainer::make());
+         pFunctor(true, static_cast<float>(progressPercentage / 100.0), message, std::string(), shared::CDataContainer::make());
       }
 
       void CRestore::runRestoreScript(const boost::filesystem::path& tempDirectory) const

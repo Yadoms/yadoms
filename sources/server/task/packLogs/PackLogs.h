@@ -1,6 +1,5 @@
 #pragma once
 #include "task/ITask.h"
-#include "database/IDataBackup.h"
 #include "IPathProvider.h"
 #include <Poco/Zip/ZipLocalFileHeader.h>
 
@@ -11,23 +10,25 @@ namespace task
       //------------------------------------------
       ///\brief   Logs packing task
       //-----------------------------------------
-      class CPackLogs : public ITask
+      class CPackLogs final : public ITask
       {
       public:
          explicit CPackLogs(boost::shared_ptr<const IPathProvider> pathProvider);
-         virtual ~CPackLogs() = default;
+         ~CPackLogs() override = default;
 
          // ITask implementation
          const std::string& getName() const override;
          void doWork(TaskProgressFunc functor) override;
+         void onSetTaskId(const std::string& taskId) override;
+         bool isCancellable() const override;
          // [END] ITask implementation
 
       private:
          void doWork(int currentTry = 0);
          boost::filesystem::path prepare() const;
-         bool copyLogsFiles(boost::filesystem::path& logsTempFolder) const;
-         boost::filesystem::path makeZipArchive(boost::filesystem::path& logsTempFolder);
-         void cleanup(boost::filesystem::path& logsTempFolder) const;
+         bool copyLogsFiles(const boost::filesystem::path& logsTempFolder) const;
+         boost::filesystem::path makeZipArchive(const boost::filesystem::path& logsTempFolder);
+         void cleanup(const boost::filesystem::path& logsTempFolder) const;
 
          //------------------------------------------
          ///\brief   Internal progress handler 
@@ -53,7 +54,7 @@ namespace task
          //------------------------------------------
          ///\brief   The task name
          //------------------------------------------
-         static std::string m_taskName;
+         static const std::string TaskName;
 
          //------------------------------------------
          ///\brief   The function pointer for reporting progression

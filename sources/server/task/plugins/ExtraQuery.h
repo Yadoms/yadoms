@@ -23,6 +23,7 @@ namespace task
          const std::string& getName() const override;
          void onSetTaskId(const std::string& taskId) override;
          void doWork(TaskProgressFunc pFunctor) override;
+         bool isCancellable() const override;
          // [END] ITask implementation
 
       private:

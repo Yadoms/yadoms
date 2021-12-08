@@ -34,6 +34,7 @@ namespace task
       boost::shared_ptr<shared::CDataContainer> getTaskData() const override;
       std::string getName() const override;
       boost::posix_time::ptime getCreationDate() const override;
+      bool cancel(int waitForStopSeconds) override;
       // [END] - IInstance implementation
 
    private:

@@ -4,7 +4,7 @@
 #include "Maintenance.h"
 #include "RestEndPoint.h"
 #include "task/backup/Backup.h"
-#include "web/rest/CreatedAnswer.h"
+#include "web/rest/AcceptedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
@@ -106,7 +106,7 @@ namespace web
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "backup not supported");
 
-               const boost::shared_ptr<task::ITask> task(boost::make_shared<task::backup::CBackup>(m_pathProvider, m_databaseRequester));
+               const auto task(boost::make_shared<task::backup::CBackup>(m_pathProvider, m_databaseRequester));
 
                std::string taskUid;
                if (!m_taskScheduler->runTask(task, taskUid))
@@ -114,7 +114,7 @@ namespace web
 
                YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
 
-               return boost::make_shared<CCreatedAnswer>("backups-taskId/" + taskUid);
+               return boost::make_shared<CAcceptedAnswer>("tasks/" + taskUid);
             }
             catch (const std::exception& exception)
             {

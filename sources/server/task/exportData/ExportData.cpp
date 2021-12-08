@@ -1,9 +1,10 @@
 #include "stdafx.h"
-#include "task/ITask.h"
 #include "ExportData.h"
 #include <Poco/Zip/Compress.h>
 #include <Poco/Zip/ZipException.h>
 #include <Poco/Delegate.h>
+
+#include <utility>
 #include "i18n/ClientStrings.h"
 #include "shared/Log.h"
 #include "database/IAcquisitionRequester.h"
@@ -18,9 +19,9 @@ namespace task
                                boost::shared_ptr<database::IKeywordRequester> keywordRequester,
                                boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                                int keywordId)
-         : m_pathProvider(pathProvider),
-           m_keywordRequester(keywordRequester),
-           m_acquisitionRequester(acquisitionRequester),
+         : m_pathProvider(std::move(pathProvider)),
+           m_keywordRequester(std::move(keywordRequester)),
+           m_acquisitionRequester(std::move(acquisitionRequester)),
            m_keywordId(keywordId)
       {
       }
@@ -60,6 +61,15 @@ namespace task
          }
       }
 
+      void CExportData::onSetTaskId(const std::string& taskId)
+      {
+      }
+
+      bool CExportData::isCancellable() const
+      {
+         return false;
+      }
+
       boost::filesystem::path CExportData::prepare() const
       {
          //create "export data temp" folder
@@ -90,13 +100,12 @@ namespace task
       void CExportData::collectDataTo(const boost::filesystem::path& exportDataTempFolder) const
       {
          std::ofstream outfile((exportDataTempFolder / "exportData.csv").string());
-         auto nbLinesDone = 0;
 
          // Header line
          outfile << "keyword,date,value";
 
          // Data lines
-         static const auto TotalPercentToExportAcquisition = 70.0;
+         static constexpr auto TotalPercentToExportAcquisition = 70.0;
          const auto keywords = m_keywordRequester->getKeyword(m_keywordId);
          if (keywords->HistoryDepth() == shared::plugin::yPluginApi::EHistoryDepth::kNoHistory)
          {
@@ -107,6 +116,7 @@ namespace task
          }
          else
          {
+            auto nbLinesDone = 0;
             m_acquisitionRequester->exportAcquisitions(m_keywordId,
                                                        [this, &outfile, &nbLinesDone](const boost::posix_time::ptime& date,
                                                                                       const std::string& value,
@@ -128,7 +138,7 @@ namespace task
          }
       }
 
-      boost::filesystem::path CExportData::makeZipArchive(boost::filesystem::path& exportDataTempFolder)
+      boost::filesystem::path CExportData::makeZipArchive(const boost::filesystem::path& exportDataTempFolder)
       {
          // Create if needed the backup folder
          if (!boost::filesystem::exists(m_pathProvider->backupPath()))
@@ -197,7 +207,7 @@ namespace task
          }
       }
 
-      void CExportData::cleanup(boost::filesystem::path& exportDataTempFolder) const
+      void CExportData::cleanup(const boost::filesystem::path& exportDataTempFolder) const
       {
          onProgressionUpdatedInternal(98.0f, i18n::CClientStrings::ExportDataClean);
          boost::filesystem::remove_all(exportDataTempFolder);

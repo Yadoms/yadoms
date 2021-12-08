@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include <utility>
 #include "database/IDataBackup.h"
 #include "task/ITask.h"
 #include "Backup.h"
@@ -15,10 +16,14 @@ namespace task
 {
    namespace backup
    {
-      std::string CBackup::m_taskName = "backup";
+      const std::string CBackup::TaskName = "backup";
 
-      CBackup::CBackup(boost::shared_ptr<const IPathProvider> pathProvider, boost::shared_ptr<database::IDataBackup> dataBackupInterface)
-         : m_pathProvider(pathProvider), m_dataBackupInterface(dataBackupInterface), m_fileCountToZip(0), m_currentFileCount(0)
+      CBackup::CBackup(boost::shared_ptr<const IPathProvider> pathProvider,
+                       boost::shared_ptr<database::IDataBackup> dataBackupInterface)
+         : m_pathProvider(std::move(pathProvider)),
+           m_dataBackupInterface(std::move(dataBackupInterface)),
+           m_fileCountToZip(0),
+           m_currentFileCount(0)
       {
          if (!m_dataBackupInterface)
             throw shared::exception::CInvalidParameter("dataBackupInterface");
@@ -26,16 +31,26 @@ namespace task
 
       const std::string& CBackup::getName() const
       {
-         return m_taskName;
+         return TaskName;
       }
 
-      void CBackup::onProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message) const
+      void CBackup::onSetTaskId(const std::string& taskId)
       {
-		  if (m_reportRealProgress)
-		  {
-			  const auto progression = currentPart + (total != 0 ? static_cast<float>(total - remaining) * static_cast<float>(totalPart - currentPart) / static_cast<float>(total) : 0);
-			  m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::make());
-		  }
+      }
+
+      void CBackup::onProgressionUpdatedInternal(int remaining,
+                                                 int total,
+                                                 float currentPart,
+                                                 float totalPart,
+                                                 const std::string& message) const
+      {
+         if (m_reportRealProgress)
+         {
+            const auto progression = currentPart + (total != 0
+                                                       ? static_cast<float>(total - remaining) * (totalPart - currentPart) / static_cast<float>(total)
+                                                       : 0);
+            m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::make());
+         }
       }
 
       void CBackup::doWork(TaskProgressFunc pFunctor)
@@ -44,11 +59,17 @@ namespace task
          doWork(0);
       }
 
+      bool CBackup::isCancellable() const
+      {
+         return true;
+      }
+
       void CBackup::doWork(int currentTry)
       {
+         boost::filesystem::path backupTempFolder;
          try
          {
-            auto backupTempFolder = prepareBackup();
+            backupTempFolder = prepareBackup();
             if (backupFiles(backupTempFolder))
             {
                const auto zipFile = makeZipArchive(backupTempFolder);
@@ -64,18 +85,25 @@ namespace task
                throw shared::exception::CException(errorMessage);
             }
          }
-         catch (std::exception &ex)
+         catch (boost::thread_interrupted&)
+         {
+            YADOMS_LOG(information) << "Cancel backup asked...";
+            if (!backupTempFolder.empty())
+               cleanup(backupTempFolder);
+            throw shared::exception::CException("Backup cancelled");
+         }
+         catch (std::exception& ex)
          {
             std::string innerMessage = "Fail to backup after 3 tries : ";
             innerMessage += ex.what();
-            
+
 
             if (currentTry == 3)
             {
                YADOMS_LOG(error) << "Fail to realize backup 3 times. Abort...";
                throw shared::exception::CException(innerMessage);
             }
-            
+
             YADOMS_LOG(warning) << "Fail to realize backup. Retry...";
             doWork(currentTry + 1);
          }
@@ -108,7 +136,7 @@ namespace task
             YADOMS_LOG(information) << "  - Plugins data : " << needed;
             neededSpace += needed;
          }
-         
+
          YADOMS_LOG(information) << "  Total : " << neededSpace;
 
          // Apply 5% margin
@@ -151,7 +179,7 @@ namespace task
          return backupTempFolder;
       }
 
-      bool CBackup::backupFiles(boost::filesystem::path & backupTempFolder)
+      bool CBackup::backupFiles(const boost::filesystem::path& backupTempFolder)
       {
          //backup database (1 -> 40%)
          if (m_dataBackupInterface->backupSupported())
@@ -195,16 +223,15 @@ namespace task
                YADOMS_LOG(error) << "Fail to copy plugins data to temp folder";
             }
          }
-         else 
+         else
          {
             YADOMS_LOG(error) << "Fail to copy scripts to temp folder";
          }
          return false;
       }
 
-      boost::filesystem::path CBackup::makeZipArchive(boost::filesystem::path & backupTempFolder)
+      boost::filesystem::path CBackup::makeZipArchive(const boost::filesystem::path& backupTempFolder)
       {
-
          //zip folder content (60 -> 99)
          auto dateAsIsoString = boost::posix_time::to_iso_string(shared::currentTime::Provider().now());
          boost::replace_all(dateAsIsoString, ",", "_");
@@ -214,7 +241,9 @@ namespace task
          try
          {
             //count files
-            m_fileCountToZip = std::count_if(boost::filesystem::recursive_directory_iterator(backupTempFolder), boost::filesystem::recursive_directory_iterator(), static_cast<bool(*)(const boost::filesystem::path&)>(boost::filesystem::is_regular_file));
+            m_fileCountToZip = std::count_if(boost::filesystem::recursive_directory_iterator(backupTempFolder),
+                                             boost::filesystem::recursive_directory_iterator(),
+                                             static_cast<bool(*)(const boost::filesystem::path&)>(boost::filesystem::is_regular_file));
             m_currentFileCount = 0;
 
             std::ofstream out(zipFilename.string(), std::ios::binary);
@@ -232,7 +261,7 @@ namespace task
             //validate the file
             return zipFilenameFinal;
          }
-         catch (Poco::Exception & zex)
+         catch (Poco::Exception& zex)
          {
             YADOMS_LOG(error) << "Fail to create zip archive (Poco::Exception)";
             YADOMS_LOG(error) << " class : " << zex.className();
@@ -243,7 +272,7 @@ namespace task
             boost::filesystem::remove(zipFilename);
             throw;
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             YADOMS_LOG(error) << "Fail to create zip archive (unknown exception)";
             YADOMS_LOG(error) << " message : " << ex.what();
@@ -252,7 +281,6 @@ namespace task
             boost::filesystem::remove(zipFilename);
             throw;
          }
-        
       }
 
       void CBackup::onZipEDone(const void* pSender, const Poco::Zip::ZipLocalFileHeader& hdr)
@@ -266,16 +294,12 @@ namespace task
          }
       }
 
-
-      void CBackup::cleanup(boost::filesystem::path & backupTempFolder) const
+      void CBackup::cleanup(const boost::filesystem::path& backupTempFolder) const
       {
          onProgressionUpdatedInternal(0, 100, 98.0f, 99.0f, i18n::CClientStrings::BackupClean);
          //remove "backup temp" folder
          boost::filesystem::remove_all(backupTempFolder);
          boost::filesystem::remove(backupTempFolder);
       }
-
    } //namespace backup
 } //namespace task
-
-

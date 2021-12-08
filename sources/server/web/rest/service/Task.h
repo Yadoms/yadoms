@@ -33,6 +33,9 @@ namespace web
 
             boost::shared_ptr<shared::CDataContainer> serialize(const boost::shared_ptr<const task::IInstance>& instance) const;
             boost::shared_ptr<IAnswer> getTasksV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deleteTaskV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getTasksResultsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deleteTaskResultV2(const boost::shared_ptr<IRequest>& request) const;
          };
       } //namespace service
    } //namespace rest

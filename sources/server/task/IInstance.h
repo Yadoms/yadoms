@@ -1,19 +1,16 @@
 #pragma once
-#include "ITask.h"
 #include "TaskStatus.h"
+#include <shared/DataContainer.h>
 
-namespace task {
-
+namespace task
+{
    //------------------------------
    ///\brief Class which handle one task
    //------------------------------
    class IInstance
    {
    public:
-      //------------------------------
-      ///\brief public destructor
-      //------------------------------
-      virtual ~IInstance(){}
+      virtual ~IInstance() = default;
 
       //---------------------------------
       ///\brief Get the unique identifier of the instance
@@ -28,8 +25,8 @@ namespace task {
       //---------------------------------
       ///\brief Get the current message
       //---------------------------------
-      virtual std::string getMessage() const = 0;   
-      
+      virtual std::string getMessage() const = 0;
+
       //---------------------------------
       ///\brief Get the current exception message
       //---------------------------------
@@ -54,6 +51,12 @@ namespace task {
       ///\brief Get the creation date of the task
       //---------------------------------
       virtual boost::posix_time::ptime getCreationDate() const = 0;
-   };
 
+      //---------------------------------
+      ///\brief Cancel task
+      //---------------------------------
+      static constexpr int NoWait = -1;
+      static constexpr int InfiniteWait = 0;
+      virtual bool cancel(int waitForStopSeconds) = 0;
+   };
 } //namespace task
