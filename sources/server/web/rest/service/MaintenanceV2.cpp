@@ -1,10 +1,11 @@
-#include <boost/date_time/c_local_time_adjustor.hpp>
-
 #include "stdafx.h"
+#include <boost/date_time/c_local_time_adjustor.hpp>
 #include "Maintenance.h"
 #include "RestEndPoint.h"
-#include "task/backup/Backup.h"
-#include "task/packLogs/PackLogs.h"
+#include "task/backup/ExportBackupHandler.h"
+#include "task/exportAcquisitions/ExportAcquisitionsHandler.h"
+#include "task/exportData/ExportData.h"
+#include "task/exportLogs/ExportLogsHandler.h"
 #include "web/rest/AcceptedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
@@ -37,17 +38,16 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/logs", deleteLogsPackageV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/logs/{url}", deleteLogsPackageV2));
 
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "maintenance/acquisitions", getAcquisitionsExportV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "maintenance/acquisitions/{url}", getAcquisitionsExportV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "maintenance/acquisitions", createAcquisitionsExportV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/acquisitions", deleteAcquisitionsExportV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/acquisitions/{url}", deleteAcquisitionsExportV2));
+
 
             //TODO            
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("restore")("*"), CMaintenance::restoreBackup)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("uploadBackup"), CMaintenance::uploadBackup)
-            //
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("packlogs"), CMaintenance::startPackLogs)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("logs"), CMaintenance::getLogs)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("logs"), CMaintenance::deleteAllLogs)
-            //
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("startExportData")("*"), CMaintenance::startExportData)
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("exportData"), CMaintenance::getExportData)
 
             return m_endPoints;
          }
@@ -88,6 +88,25 @@ namespace web
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_packLogsInProgressTaskUidMutex);
             m_packLogsInProgressTaskUid = taskUid;
+         }
+
+         std::string CMaintenance::exportAcquisitionsInProgress()
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_exportAcquisitionsInProgressTaskUidMutex);
+
+            if (m_exportAcquisitionsInProgressTaskUid.empty())
+               return std::string();
+
+            if (m_taskScheduler->getTask(m_exportAcquisitionsInProgressTaskUid)->getStatus() != task::ETaskStatus::kStarted)
+               m_exportAcquisitionsInProgressTaskUid.clear();
+
+            return m_exportAcquisitionsInProgressTaskUid;
+         }
+
+         void CMaintenance::setExportAcquisitionsInProgressInProgress(const std::string& taskUid)
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_exportAcquisitionsInProgressTaskUidMutex);
+            m_exportAcquisitionsInProgressTaskUid = taskUid;
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::getFilesPackage(const std::string& inputUrl,
@@ -247,8 +266,10 @@ namespace web
                                       [this](const auto& taskUid) { this->setBackupInProgress(taskUid); },
                                       [this]()
                                       {
-                                         return boost::make_shared<task::backup::CBackup>(m_pathProvider,
-                                                                                          m_databaseRequester);
+                                         return boost::make_shared<task::exportData::CExportData>(
+                                            m_pathProvider,
+                                            std::make_unique<task::backup::CExportBackupHandler>(m_pathProvider,
+                                                                                                 m_databaseRequester));
                                       });
          }
 
@@ -273,7 +294,9 @@ namespace web
                                       [this](const auto& taskUid) { this->setPackLogsInProgress(taskUid); },
                                       [this]()
                                       {
-                                         return boost::make_shared<task::packLogs::CPackLogs>(m_pathProvider); //TODO mettre en commun des trucs de CPackLogs et de CBackup
+                                         return boost::make_shared<task::exportData::CExportData>(
+                                            m_pathProvider,
+                                            std::make_unique<task::exportLogs::CExportLogsHandler>(m_pathProvider));
                                       });
          }
 
@@ -281,6 +304,37 @@ namespace web
          {
             return deleteFilesPackage(request->pathVariable("url", std::string()),
                                       "logs_");
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::getAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request)
+         {
+            return getFilesPackage(request->pathVariable("url", std::string()),
+                                   "acquisitions_",
+                                   [this]() { return exportAcquisitionsInProgress(); },
+                                   "acquisitions");
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::createAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request)
+         {
+            return nullptr;
+            //TODO
+            //boost::lock_guard<boost::recursive_mutex> lock(m_exportAcquisitionsInProgressTaskUidMutex);
+            //return createFilesPackage([this]() { return exportAcquisitionsInProgress(); },
+            //                          [this](const auto& taskUid) { this->setExportAcquisitionsInProgressInProgress(taskUid); },
+            //                          [this]()
+            //                          {
+            //                             return boost::make_shared<task::exportData::CExportData>(
+            //                                m_pathProvider,
+            //                                std::make_unique<task::exportAcquisitions::CExportAcquisitionsHandler>(m_keywordRequester,
+            //                                   m_acquisitionRequester,
+            //                                   keywordId));
+            //                          });
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::deleteAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            return deleteFilesPackage(request->pathVariable("url", std::string()),
+                                      "acquisitions_");
          }
       } //namespace service
    } //namespace rest

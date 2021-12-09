@@ -23,7 +23,7 @@ namespace task
             throw shared::exception::CInvalidParameter("pluginInstance");
       }
 
-      const std::string& CExtraQuery::getName() const
+      std::string CExtraQuery::getName()
       {
          return m_taskName;
       }

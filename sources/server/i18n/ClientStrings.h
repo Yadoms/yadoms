@@ -60,25 +60,13 @@ namespace i18n
       static std::string DatabaseBackupSuccess;
       static std::string DatabaseBackupFail;
 
-      static std::string BackupPrepare;
-      static std::string BackupCopyFile;
-      static std::string BackupCompress;
-      static std::string BackupClean;
-      static std::string BackupSuccess;
-
       static std::string RestorePrepare;
       static std::string RestoreDecompress;
       static std::string RestoreSuccess;
       static std::string RestoreRestarting;
 
-      static std::string PackLogsPrepare;
-      static std::string PackLogsCopyFile;
-      static std::string PackLogsCompress;
-      static std::string PackLogsClean;
-      static std::string PackLogsSuccess;
-
       static std::string ExportDataPrepare;
-      static std::string ExportDataCreateFile;
+      static std::string ExportDataCopyFiles;
       static std::string ExportDataCompress;
       static std::string ExportDataClean;
       static std::string ExportDataSuccess;

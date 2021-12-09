@@ -1,10 +1,7 @@
 #include "stdafx.h"
 #include "Maintenance.h"
 #include "web/poco/RestResult.h"
-#include "task/backup/Backup.h"
 #include "task/backup/Restore.h"
-#include "task/exportData/ExportData.h"
-#include "task/packLogs/PackLogs.h"
 #include <shared/Log.h>
 #include <shared/encryption/Base64.h>
 #include <shared/http/HttpHelpers.h>
@@ -12,6 +9,9 @@
 #include <regex>
 #include <utility>
 
+#include "task/backup/ExportBackupHandler.h"
+#include "task/exportAcquisitions/ExportAcquisitionsHandler.h"
+#include "task/exportLogs/ExportLogsHandler.h"
 #include "web/poco/RestDispatcherHelpers.hpp"
 
 
@@ -60,9 +60,10 @@ namespace web
             return m_restKeyword;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
-                                                                                                       const std::vector<std::string>& parameters,
-                                                                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::transactionalMethod(
+            poco::CRestDispatcher::CRestMethodHandler realMethod,
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             const auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             boost::shared_ptr<shared::serialization::IDataSerializable> result;
@@ -92,7 +93,7 @@ namespace web
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getDatabaseInformation(const std::vector<std::string>& parameters,
-                                                                                                          const std::string& requestContent) const
+            const std::string& requestContent) const
          {
             try
             {
@@ -117,8 +118,10 @@ namespace web
             {
                if (m_databaseRequester->backupSupported())
                {
-                  const boost::shared_ptr<task::ITask> task(
-                     boost::make_shared<task::backup::CBackup>(m_pathProvider, m_databaseRequester));
+                  const boost::shared_ptr<task::ITask> task(boost::make_shared<task::exportData::CExportData>(
+                     m_pathProvider,
+                     std::make_unique<task::backup::CExportBackupHandler>(m_pathProvider,
+                                                                          m_databaseRequester)));
 
                   std::string taskUid;
                   if (m_taskScheduler->runTask(task, taskUid))
@@ -243,7 +246,7 @@ namespace web
                   const auto backupFileName = parameters[2];
 
                   const boost::shared_ptr<task::ITask> task(boost::make_shared<task::backup::CRestore>(backupFileName,
-                                                                                                       m_pathProvider));
+                     m_pathProvider));
 
                   std::string taskUid;
                   if (!m_taskScheduler->runTask(task, taskUid))
@@ -273,7 +276,7 @@ namespace web
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::deleteAllBackups(const std::vector<std::string>& parameters,
-                                                                                                    const std::string& requestContent) const
+            const std::string& requestContent) const
          {
             try
             {
@@ -399,7 +402,9 @@ namespace web
          {
             try
             {
-               const boost::shared_ptr<task::ITask> task(boost::make_shared<task::packLogs::CPackLogs>(m_pathProvider));
+               const boost::shared_ptr<task::ITask> task(boost::make_shared<task::exportData::CExportData>(
+                  m_pathProvider,
+                  std::make_unique<task::exportLogs::CExportLogsHandler>(m_pathProvider)));
 
                std::string taskUid;
                if (m_taskScheduler->runTask(task, taskUid))
@@ -517,10 +522,11 @@ namespace web
                {
                   const auto keywordId = std::stoi(parameters[2]);
 
-                  const boost::shared_ptr<task::ITask> task(boost::make_shared<task::exportData::CExportData>(m_pathProvider,
-                                                                                                              m_keywordRequester,
-                                                                                                              m_acquisitionRequester,
-                                                                                                              keywordId));
+                  const boost::shared_ptr<task::ITask> task(boost::make_shared<task::exportData::CExportData>(
+                     m_pathProvider,
+                     std::make_unique<task::exportAcquisitions::CExportAcquisitionsHandler>(m_keywordRequester,
+                                                                                            m_acquisitionRequester,
+                                                                                            keywordId)));
 
                   std::string taskUid;
                   if (m_taskScheduler->runTask(task, taskUid))

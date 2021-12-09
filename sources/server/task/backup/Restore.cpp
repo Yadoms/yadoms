@@ -32,7 +32,7 @@ namespace task
       {
       }
 
-      const std::string& CRestore::getName() const
+      std::string CRestore::getName()
       {
          return TaskName;
       }

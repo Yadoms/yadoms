@@ -1,9 +1,9 @@
 #pragma once
-#include "task/ITask.h"
-#include "IPathProvider.h"
 #include <Poco/Zip/ZipLocalFileHeader.h>
-#include "database/IAcquisitionRequester.h"
+#include "IExportDataHandler.h"
+#include "IPathProvider.h"
 #include "database/IKeywordRequester.h"
+#include "task/ITask.h"
 
 namespace task
 {
@@ -16,25 +16,21 @@ namespace task
       {
       public:
          explicit CExportData(boost::shared_ptr<const IPathProvider> pathProvider,
-                              boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-                              boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
-                              int keywordId);
+                              std::unique_ptr<IExportDataHandler> exportDataHandler);
          ~CExportData() override = default;
 
          // ITask implementation
-         const std::string& getName() const override;
+         std::string getName() override;
          void onSetTaskId(const std::string& taskId) override;
-         void doWork(TaskProgressFunc functor) override;
+         void doWork(TaskProgressFunc reportProgressFct) override;
          bool isCancellable() const override;
          // [END] ITask implementation
 
       private:
          void doWork(int currentTry = 0);
-         bool checkEnoughSpace(const boost::filesystem::path& where) const;
-         boost::filesystem::path prepare();
-         void collectDataTo(const boost::filesystem::path& tempFolder);
+         boost::filesystem::path prepare() const;
          boost::filesystem::path makeZipArchive(const boost::filesystem::path& tempFolder);
-         void cleanup(const boost::filesystem::path& tempFolder);
+         void cleanup(const boost::filesystem::path& tempFolder) const;
 
          //------------------------------------------
          ///\brief   Internal progress handler 
@@ -57,35 +53,16 @@ namespace task
          //------------------------------------------
          void onZipEDone(const void* pSender,
                          const Poco::Zip::ZipLocalFileHeader& hdr);
-
-         //------------------------------------------
-         ///\brief   The input data for the task
-         //------------------------------------------
+         
          boost::shared_ptr<const IPathProvider> m_pathProvider;
-         boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
-         boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
-         int m_keywordId;
+         std::unique_ptr<IExportDataHandler> m_exportDataHandler;
 
          //------------------------------------------
-         ///\brief   The task name
+         ///\brief   Manage progress report
          //------------------------------------------
-         static const std::string TaskName;
-
-         //------------------------------------------
-         ///\brief   The function pointer for reporting progression
-         //------------------------------------------
-         TaskProgressFunc m_reportRealProgress;
-
-         //------------------------------------------
-         ///\brief   The file count to zip
-         //------------------------------------------
+         TaskProgressFunc m_reportProgressFct;
          int m_fileCountToZip;
-
-         //------------------------------------------
-         ///\brief   The current count of zipped file
-         //------------------------------------------
          int m_currentFileCount;
-
          float m_lastProgressSent;
       };
    } //namespace exportData
