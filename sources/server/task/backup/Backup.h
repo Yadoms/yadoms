@@ -22,17 +22,17 @@ namespace task
          // ITask implementation
          const std::string& getName() const override;
          void onSetTaskId(const std::string& taskId) override;
-         void doWork(TaskProgressFunc pFunctor) override;
+         void doWork(TaskProgressFunc functor) override;
          bool isCancellable() const override;
          // [END] ITask implementation
 
       private:
          void doWork(int currentTry = 0);
          bool checkEnoughSpace(const boost::filesystem::path& where) const;
-         boost::filesystem::path prepareBackup() const;
-         bool backupFiles(const boost::filesystem::path& backupTempFolder);
-         boost::filesystem::path makeZipArchive(const boost::filesystem::path& backupTempFolder);
-         void cleanup(const boost::filesystem::path& backupTempFolder) const;
+         boost::filesystem::path prepare() const;
+         bool backupFiles(const boost::filesystem::path& tempFolder);
+         boost::filesystem::path makeZipArchive(const boost::filesystem::path& tempFolder);
+         void cleanup(const boost::filesystem::path& tempFolder) const;
 
          //------------------------------------------
          ///\brief   Internal progress handler 

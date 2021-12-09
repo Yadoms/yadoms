@@ -4,6 +4,7 @@
 #include "Maintenance.h"
 #include "RestEndPoint.h"
 #include "task/backup/Backup.h"
+#include "task/packLogs/PackLogs.h"
 #include "web/rest/AcceptedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
@@ -30,6 +31,12 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/backups", deleteBackupV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/backups/{url}", deleteBackupV2));
 
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "maintenance/logs", getLogsPackageV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "maintenance/logs/{url}", getLogsPackageV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "maintenance/logs", createLogsPackageV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/logs", deleteLogsPackageV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/logs/{url}", deleteLogsPackageV2));
+
 
             //TODO            
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("restore")("*"), CMaintenance::restoreBackup)
@@ -43,71 +50,6 @@ namespace web
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("exportData"), CMaintenance::getExportData)
 
             return m_endPoints;
-         }
-
-         boost::shared_ptr<IAnswer> CMaintenance::getBackupsV2(const boost::shared_ptr<IRequest>& request)
-         {
-            try
-            {
-               if (!m_databaseRequester->backupSupported())
-                  return boost::make_shared<CNoContentAnswer>();
-
-               const auto url = request->pathVariable("url", std::string());
-
-               const auto backupPath = m_pathProvider->backupPath();
-
-               if (backupPath.empty() || !exists(backupPath) || !is_directory(backupPath))
-                  return boost::make_shared<CNoContentAnswer>();
-
-               shared::CDataContainer result;
-               result.createArray("backups");
-               for (boost::filesystem::directory_iterator backupDir(backupPath); backupDir != boost::filesystem::directory_iterator(); ++backupDir)
-               {
-                  if (!is_regular_file(backupDir->path()))
-                     continue;
-
-                  if (!boost::starts_with(backupDir->path().filename().string(), "backup_"))
-                     continue;
-
-                  auto fileSize = file_size(backupDir->path());
-
-                  const auto lastWriteTimeT = last_write_time(backupDir->path());
-                  const auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
-                     boost::posix_time::from_time_t(lastWriteTimeT));
-
-                  shared::CDataContainer file;
-                  file.set("size", fileSize);
-                  file.set("modificationDate", lastWriteTimePosix);
-                  file.set("path", backupDir->path().string());
-                  file.set("url", backupDir->path().filename().string());
-                  file.set("inprogress", boost::iends_with(backupDir->path().filename().string(), ".inprogress"));
-
-                  if (!url.empty() && url == backupDir->path().filename().string())
-                     return boost::make_shared<CSuccessAnswer>(file); // Get only one backup
-
-                  result.appendArray("backups", file);
-               }
-
-               const auto backupInProgressTaskUid = backupInProgress();
-               if (!backupInProgressTaskUid.empty())
-                  result.set("inProgress", "tasks/" + backupInProgressTaskUid);
-
-               if (result.arraySize("backups") == 0 && backupInProgressTaskUid.empty())
-                  return boost::make_shared<CNoContentAnswer>();
-
-               return boost::make_shared<CSuccessAnswer>(result);
-            }
-            catch (const shared::exception::COutOfRange& exception)
-            {
-               YADOMS_LOG(error) << "Error processing getBackups request : " << exception.what();
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
-            }
-            catch (const std::exception& exception)
-            {
-               YADOMS_LOG(error) << "Error processing getBackups request : " << exception.what();
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get backups");
-            }
          }
 
          std::string CMaintenance::backupInProgress()
@@ -129,25 +71,104 @@ namespace web
             m_backupInProgressTaskUid = taskUid;
          }
 
-         boost::shared_ptr<IAnswer> CMaintenance::createBackupsV2(const boost::shared_ptr<IRequest>& request)
+         std::string CMaintenance::packLogsInProgress()
          {
-            boost::lock_guard<boost::recursive_mutex> lock(m_backupInProgressTaskUidMutex);
+            boost::lock_guard<boost::recursive_mutex> lock(m_packLogsInProgressTaskUidMutex);
+
+            if (m_packLogsInProgressTaskUid.empty())
+               return std::string();
+
+            if (m_taskScheduler->getTask(m_packLogsInProgressTaskUid)->getStatus() != task::ETaskStatus::kStarted)
+               m_packLogsInProgressTaskUid.clear();
+
+            return m_packLogsInProgressTaskUid;
+         }
+
+         void CMaintenance::setPackLogsInProgress(const std::string& taskUid)
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_packLogsInProgressTaskUidMutex);
+            m_backupInProgressTaskUid = taskUid;
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::getFilesPackage(const std::string& inputUrl,
+                                                                  const std::string& packageFilePrefix,
+                                                                  const std::function<std::string()>& checkInProgressFct,
+                                                                  const std::string& resultArrayTag) const
+         {
             try
             {
-               if (!m_databaseRequester->backupSupported())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "backup not supported");
+               const auto packagePath = m_pathProvider->backupPath();
+               if (packagePath.empty() || !exists(packagePath) || !is_directory(packagePath))
+                  return boost::make_shared<CNoContentAnswer>();
 
-               if (!backupInProgress().empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "backup already in progress");
+               shared::CDataContainer result;
+               result.createArray(resultArrayTag);
+               for (boost::filesystem::directory_iterator packageDir(packagePath); packageDir != boost::filesystem::directory_iterator(); ++
+                    packageDir)
+               {
+                  if (!is_regular_file(packageDir->path()))
+                     continue;
 
-               const auto task(boost::make_shared<task::backup::CBackup>(m_pathProvider, m_databaseRequester));
+                  if (!boost::starts_with(packageDir->path().filename().string(), packageFilePrefix))
+                     continue;
+
+                  auto fileSize = file_size(packageDir->path());
+
+                  const auto lastWriteTimeT = last_write_time(packageDir->path());
+                  const auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
+                     boost::posix_time::from_time_t(lastWriteTimeT));
+
+                  shared::CDataContainer file;
+                  file.set("size", fileSize);
+                  file.set("modificationDate", lastWriteTimePosix);
+                  file.set("path", packageDir->path().string());
+                  file.set("url", packageDir->path().filename().string());
+                  file.set("inprogress", boost::iends_with(packageDir->path().filename().string(), ".inprogress"));
+
+                  if (!inputUrl.empty() && inputUrl == packageDir->path().filename().string())
+                     return boost::make_shared<CSuccessAnswer>(file); // Get only one package
+
+                  result.appendArray(resultArrayTag, file);
+               }
+
+               const auto packageInProgressTaskUid = checkInProgressFct();
+               if (!packageInProgressTaskUid.empty())
+                  result.set("inProgress", "tasks/" + packageInProgressTaskUid);
+
+               if (result.arraySize(resultArrayTag) == 0 && packageInProgressTaskUid.empty())
+                  return boost::make_shared<CNoContentAnswer>();
+
+               return boost::make_shared<CSuccessAnswer>(result);
+            }
+            catch (const shared::exception::COutOfRange& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getFilesPackage request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getFilesPackage request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get file package " + resultArrayTag);
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::createFilesPackage(const std::function<std::string()>& checkInProgressFct,
+                                                                     const std::function<void(std::string)>& setInProgressFct,
+                                                                     const std::function<boost::shared_ptr<task::ITask>()>& createTaskFct) const
+         {
+            try
+            {
+               if (!checkInProgressFct().empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "package already in progress");
+
+               const auto task = createTaskFct();
 
                std::string taskUid;
                if (!m_taskScheduler->runTask(task, taskUid))
                   throw std::runtime_error("Task : " + task->getName() + " fail to start");
-               setBackupInProgress(taskUid);
+               setInProgressFct(taskUid);
 
                YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
 
@@ -155,42 +176,41 @@ namespace web
             }
             catch (const std::exception& exception)
             {
-               YADOMS_LOG(error) << "Fail to create backup : " << exception.what();
+               YADOMS_LOG(error) << "Fail to create package : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to create backup");
+                                                       "Fail to create package");
             }
          }
 
-         boost::shared_ptr<IAnswer> CMaintenance::deleteBackupV2(const boost::shared_ptr<IRequest>& request) const
+         boost::shared_ptr<IAnswer> CMaintenance::deleteFilesPackage(const std::string& inputUrl,
+                                                                     const std::string& packageFilePrefix) const
          {
             try
             {
-               const auto url = request->pathVariable("url", std::string());
-
-               if (!url.empty())
+               if (!inputUrl.empty())
                {
-                  // Delete one backup
-                  const auto backup = m_pathProvider->backupPath() / url;
-                  if (!exists(backup))
+                  // Delete one package
+                  const auto package = m_pathProvider->backupPath() / inputUrl;
+                  if (!exists(package))
                      return boost::make_shared<CNoContentAnswer>();
 
-                  boost::filesystem::remove(backup);
+                  boost::filesystem::remove(package);
                }
                else
                {
-                  // Delete all backups
-                  for (boost::filesystem::directory_iterator backupDir(m_pathProvider->backupPath());
-                       backupDir != boost::filesystem::directory_iterator();
-                       ++backupDir)
+                  // Delete all packages
+                  for (boost::filesystem::directory_iterator packageDir(m_pathProvider->backupPath());
+                       packageDir != boost::filesystem::directory_iterator();
+                       ++packageDir)
                   {
-                     if (!is_regular_file(backupDir->path()))
+                     if (!is_regular_file(packageDir->path()))
                         continue;
 
-                     if (!boost::starts_with(backupDir->path().filename().string(), "backup_"))
+                     if (!boost::starts_with(packageDir->path().filename().string(), packageFilePrefix))
                         continue;
 
                      boost::system::error_code ec;
-                     boost::filesystem::remove(backupDir->path(), ec);
+                     boost::filesystem::remove(packageDir->path(), ec);
                   }
                }
 
@@ -199,8 +219,66 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to delete backup");
+                                                       "Fail to delete package");
             }
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::getBackupsV2(const boost::shared_ptr<IRequest>& request)
+         {
+            if (!m_databaseRequester->backupSupported())
+               return boost::make_shared<CNoContentAnswer>();
+
+            return getFilesPackage(request->pathVariable("url", std::string()),
+                                   "backup_",
+                                   [this]() { return backupInProgress(); },
+                                   "backups");
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::createBackupsV2(const boost::shared_ptr<IRequest>& request)
+         {
+            if (!m_databaseRequester->backupSupported())
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                       "backup not supported");
+
+            boost::lock_guard<boost::recursive_mutex> lock(m_backupInProgressTaskUidMutex);
+            return createFilesPackage([this]() { return backupInProgress(); },
+                                      [this](const auto& taskUid) { setBackupInProgress(taskUid); },
+                                      [this]()
+                                      {
+                                         return boost::make_shared<task::backup::CBackup>(m_pathProvider,
+                                                                                          m_databaseRequester);
+                                      });
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::deleteBackupV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            return deleteFilesPackage(request->pathVariable("url", std::string()),
+                                      "backup_");
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::getLogsPackageV2(const boost::shared_ptr<IRequest>& request)
+         {
+            return getFilesPackage(request->pathVariable("url", std::string()),
+                                   "logs_",
+                                   [this]() { return packLogsInProgress(); },
+                                   "logs");
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::createLogsPackageV2(const boost::shared_ptr<IRequest>& request)
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_packLogsInProgressTaskUidMutex);
+            return createFilesPackage([this]() { return packLogsInProgress(); },
+                                      [this](const auto& taskUid) { setPackLogsInProgress(taskUid); },
+                                      [this]()
+                                      {
+                                         return boost::make_shared<task::packLogs::CPackLogs>(m_pathProvider); //TODO mettre en commun des trucs de CPackLogs et de CBackup
+                                      });
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::deleteLogsPackageV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            return deleteFilesPackage(request->pathVariable("url", std::string()),
+                                      "logs_");
          }
       } //namespace service
    } //namespace rest

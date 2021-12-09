@@ -18,24 +18,31 @@ namespace task
 
          // ITask implementation
          const std::string& getName() const override;
-         void doWork(TaskProgressFunc functor) override;
          void onSetTaskId(const std::string& taskId) override;
+         void doWork(TaskProgressFunc functor) override;
          bool isCancellable() const override;
          // [END] ITask implementation
 
       private:
          void doWork(int currentTry = 0);
+         bool checkEnoughSpace(const boost::filesystem::path& where) const;
          boost::filesystem::path prepare() const;
-         bool copyLogsFiles(const boost::filesystem::path& logsTempFolder) const;
-         boost::filesystem::path makeZipArchive(const boost::filesystem::path& logsTempFolder);
-         void cleanup(const boost::filesystem::path& logsTempFolder) const;
+         bool copyLogsFiles(const boost::filesystem::path& tempFolder) const;
+         boost::filesystem::path makeZipArchive(const boost::filesystem::path& tempFolder);
+         void cleanup(const boost::filesystem::path& tempFolder) const;
 
          //------------------------------------------
          ///\brief   Internal progress handler 
-         ///\param [in] progression The operation progression percentage
-         ///\param [in] message     Message to display
+         ///\param [in] remaining   The remaining count (between 0 and total) for current operation
+         ///\param [in] total       The total count for current operation
+         ///\param [in] currentPart The current total progression
+         ///\param [in] totalPart   The final progression when current operation ends
+         ///\param [in] message     Optional message to display
          //------------------------------------------
-         void onProgressionUpdatedInternal(float progression,
+         void onProgressionUpdatedInternal(int remaining,
+                                           int total,
+                                           float currentPart,
+                                           float totalPart,
                                            const std::string& message = std::string()) const;
 
          //------------------------------------------
@@ -60,6 +67,16 @@ namespace task
          ///\brief   The function pointer for reporting progression
          //------------------------------------------
          TaskProgressFunc m_reportRealProgress;
+
+         //------------------------------------------
+         ///\brief   The file count to zip
+         //------------------------------------------
+         int m_fileCountToZip;
+
+         //------------------------------------------
+         ///\brief   The current count of zipped file
+         //------------------------------------------
+         int m_currentFileCount;
       };
    } //namespace packLogs
 } //namespace task
