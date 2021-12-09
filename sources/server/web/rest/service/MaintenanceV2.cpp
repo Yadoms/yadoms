@@ -268,7 +268,7 @@ namespace web
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_packLogsInProgressTaskUidMutex);
             return createFilesPackage([this]() { return packLogsInProgress(); },
-                                      [this](const auto& taskUid) { setPackLogsInProgress(taskUid); },
+                                      [this](const auto& taskUid) { this->setPackLogsInProgress(taskUid); },
                                       [this]()
                                       {
                                          return boost::make_shared<task::packLogs::CPackLogs>(m_pathProvider); //TODO mettre en commun des trucs de CPackLogs et de CBackup
