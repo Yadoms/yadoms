@@ -26,10 +26,10 @@ namespace task
       private:
          void doWork(int currentTry = 0);
          bool checkEnoughSpace(const boost::filesystem::path& where) const;
-         boost::filesystem::path prepare() const;
-         bool copyLogsFiles(const boost::filesystem::path& tempFolder) const;
+         boost::filesystem::path prepare();
+         bool copyLogsFiles(const boost::filesystem::path& tempFolder);
          boost::filesystem::path makeZipArchive(const boost::filesystem::path& tempFolder);
-         void cleanup(const boost::filesystem::path& tempFolder) const;
+         void cleanup(const boost::filesystem::path& tempFolder);
 
          //------------------------------------------
          ///\brief   Internal progress handler 
@@ -43,7 +43,7 @@ namespace task
                                            int total,
                                            float currentPart,
                                            float totalPart,
-                                           const std::string& message = std::string()) const;
+                                           const std::string& message = std::string());
 
          //------------------------------------------
          ///\brief   Report event

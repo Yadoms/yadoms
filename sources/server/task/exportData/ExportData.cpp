@@ -13,7 +13,7 @@ namespace task
 {
    namespace exportData
    {
-      std::string CExportData::m_taskName = "exportData";
+      const std::string CExportData::TaskName = "exportData";
 
       CExportData::CExportData(boost::shared_ptr<const IPathProvider> pathProvider,
                                boost::shared_ptr<database::IKeywordRequester> keywordRequester,
@@ -22,96 +22,129 @@ namespace task
          : m_pathProvider(std::move(pathProvider)),
            m_keywordRequester(std::move(keywordRequester)),
            m_acquisitionRequester(std::move(acquisitionRequester)),
-           m_keywordId(keywordId)
+           m_keywordId(keywordId),
+           m_fileCountToZip(0),
+           m_currentFileCount(0),
+           m_lastProgressSent(-1.0f)
       {
       }
 
       const std::string& CExportData::getName() const
       {
-         return m_taskName;
-      }
-
-      void CExportData::onProgressionUpdatedInternal(float progression,
-                                                     const std::string& message) const
-      {
-         if (m_reportRealProgress)
-            m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::make());
-      }
-
-      void CExportData::doWork(TaskProgressFunc functor)
-      {
-         m_reportRealProgress = functor;
-
-         boost::filesystem::path exportDataTempFolder;
-
-         try
-         {
-            exportDataTempFolder = prepare();
-            collectDataTo(exportDataTempFolder);
-            auto zipFile = makeZipArchive(exportDataTempFolder);
-            cleanup(exportDataTempFolder);
-            onProgressionUpdatedInternal(100.0f, i18n::CClientStrings::ExportDataSuccess);
-         }
-         catch (std::exception& ex)
-         {
-            YADOMS_LOG(error) << "Fail to export data. Abort...";
-            if (!exportDataTempFolder.empty())
-               cleanup(exportDataTempFolder);
-            throw shared::exception::CException(ex.what());
-         }
+         return TaskName;
       }
 
       void CExportData::onSetTaskId(const std::string& taskId)
       {
       }
 
-      bool CExportData::isCancellable() const
+      void CExportData::onProgressionUpdatedInternal(int remaining,
+                                                     int total,
+                                                     float currentPart,
+                                                     float totalPart,
+                                                     const std::string& message)
       {
-         return false;
+         if (!m_reportRealProgress)
+            return;
+
+         const auto progression = currentPart + (total != 0
+                                                    ? static_cast<float>(total - remaining) * (totalPart - currentPart) / static_cast<float>(total)
+                                                    : 0);
+
+         if (static_cast<int>(std::floor(progression)) == static_cast<int>(std::floor(m_lastProgressSent + 1.0f)))
+            return;
+
+         m_lastProgressSent = progression;
+         m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::make());
       }
 
-      boost::filesystem::path CExportData::prepare() const
+      void CExportData::doWork(TaskProgressFunc functor)
       {
-         //create "export data temp" folder
-         auto exportDataTempFolder = boost::filesystem::temp_directory_path() / "exportData";
+         m_reportRealProgress = functor;
+         doWork(0);
+      }
+
+      bool CExportData::isCancellable() const
+      {
+         return true;
+      }
+
+      void CExportData::doWork(int currentTry)
+      {
+         boost::filesystem::path tempFolder;
+         try
+         {
+            tempFolder = prepare();
+            collectDataTo(tempFolder);
+            const auto zipFile = makeZipArchive(tempFolder);
+            cleanup(tempFolder);
+            onProgressionUpdatedInternal(0, 100, 0.0f, 100.0f, i18n::CClientStrings::ExportDataSuccess);
+         }
+         catch (std::exception& ex)
+         {
+            YADOMS_LOG(error) << "Fail to export data. Abort...";
+            if (!tempFolder.empty())
+               cleanup(tempFolder);
+            throw shared::exception::CException(ex.what());
+         }
+      }
+
+      bool CExportData::checkEnoughSpace(const boost::filesystem::path& where) const
+      {
+         return true;
+      }
+
+      boost::filesystem::path CExportData::prepare()
+      {
+         auto tempFolder = boost::filesystem::temp_directory_path() / "exportData";
+
+         if (!checkEnoughSpace(tempFolder.parent_path()))
+         {
+            YADOMS_LOG(warning) << "No enough space to extract data into " << tempFolder;
+
+            tempFolder = m_pathProvider->backupPath() / "exportData";
+            YADOMS_LOG(warning) << "Retry in " << tempFolder << "...";
+            if (!checkEnoughSpace(tempFolder.parent_path()))
+               throw shared::exception::CException("No enough space in " + tempFolder.string() + " to process extract data");
+         }
 
          //if folder exist, cleanup, else create if
-         if (boost::filesystem::exists(exportDataTempFolder))
+         if (boost::filesystem::exists(tempFolder))
          {
-            YADOMS_LOG(debug) << "Deleting " << exportDataTempFolder << " and its content";
-            boost::filesystem::remove_all(exportDataTempFolder);
-            boost::filesystem::remove(exportDataTempFolder);
+            YADOMS_LOG(debug) << "Deleting " << tempFolder << " and its content";
+            boost::filesystem::remove_all(tempFolder);
+            boost::filesystem::remove(tempFolder);
          }
          else
          {
-            YADOMS_LOG(debug) << "Folder " << exportDataTempFolder << " does not exist";
+            YADOMS_LOG(debug) << "Folder " << tempFolder << " does not exist";
          }
 
-         YADOMS_LOG(debug) << "Create " << exportDataTempFolder;
-         if (!boost::filesystem::create_directory(exportDataTempFolder))
+         YADOMS_LOG(debug) << "Create " << tempFolder;
+         if (!boost::filesystem::create_directory(tempFolder))
          {
-            YADOMS_LOG(error) << "Fail to create folder " << exportDataTempFolder;
+            YADOMS_LOG(error) << "Fail to create folder " << tempFolder;
             throw shared::exception::CException("fail to create export data folder");
          }
-         onProgressionUpdatedInternal(1.0f, i18n::CClientStrings::ExportDataPrepare);
-         return exportDataTempFolder;
+         onProgressionUpdatedInternal(0, 100, 0.0f, 1.0f, i18n::CClientStrings::ExportDataPrepare);
+         return tempFolder;
       }
 
-      void CExportData::collectDataTo(const boost::filesystem::path& exportDataTempFolder) const
+      void CExportData::collectDataTo(const boost::filesystem::path& tempFolder)
       {
-         std::ofstream outfile((exportDataTempFolder / "exportData.csv").string());
+         std::ofstream outfile((tempFolder / "exportData.csv").string());
 
          // Header line
          outfile << "keyword,date,value";
 
          // Data lines
-         static constexpr auto TotalPercentToExportAcquisition = 70.0;
+         static constexpr auto TotalPercentToExportAcquisition = 70.0f;
          const auto keywords = m_keywordRequester->getKeyword(m_keywordId);
          if (keywords->HistoryDepth() == shared::plugin::yPluginApi::EHistoryDepth::kNoHistory)
          {
             outfile << std::endl << m_keywordId << "," << keywords->LastAcquisitionDate() << "," << keywords->LastAcquisitionValue();
 
-            onProgressionUpdatedInternal(TotalPercentToExportAcquisition,
+            onProgressionUpdatedInternal(0, 100, 0.0f, TotalPercentToExportAcquisition,
                                          i18n::CClientStrings::ExportDataCreateFile);
          }
          else
@@ -126,29 +159,22 @@ namespace task
 
                                                           // Progress from 0 to 70 for this step
                                                           ++nbLinesDone;
-                                                          const auto progress = nbLinesDone * TotalPercentToExportAcquisition / nbTotalLines;
-                                                          static auto lastProgressSent = -1.0;
-                                                          if (progress != lastProgressSent)
-                                                          {
-                                                             lastProgressSent = progress;
-                                                             onProgressionUpdatedInternal(static_cast<float>(progress),
-                                                                                          i18n::CClientStrings::ExportDataCreateFile);
-                                                          }
+                                                          onProgressionUpdatedInternal(nbTotalLines - nbLinesDone,
+                                                                                       nbTotalLines,
+                                                                                       0.0f,
+                                                                                       TotalPercentToExportAcquisition,
+                                                                                       i18n::CClientStrings::ExportDataCreateFile);
                                                        });
          }
       }
 
-      boost::filesystem::path CExportData::makeZipArchive(const boost::filesystem::path& exportDataTempFolder)
+      boost::filesystem::path CExportData::makeZipArchive(const boost::filesystem::path& tempFolder)
       {
          // Create if needed the backup folder
          if (!boost::filesystem::exists(m_pathProvider->backupPath()))
-         {
             boost::filesystem::create_directory(m_pathProvider->backupPath());
-         }
          else
-         {
             YADOMS_LOG(debug) << "Folder " << m_pathProvider->backupPath().string() << " already exists. Do not create it";
-         }
 
          //zip folder content (51 -> 98)
          auto zipFilenameFinal = m_pathProvider->backupPath() / "exportData.zip";
@@ -159,13 +185,19 @@ namespace task
 
          try
          {
+            //count files
+            m_fileCountToZip = std::count_if(boost::filesystem::recursive_directory_iterator(tempFolder),
+                                             boost::filesystem::recursive_directory_iterator(),
+                                             static_cast<bool(*)(const boost::filesystem::path&)>(boost::filesystem::is_regular_file));
+            m_currentFileCount = 0;
+
             std::ofstream out(zipFilename.string(), std::ios::binary);
             Poco::Zip::Compress c(out, true);
             c.EDone += Poco::Delegate<CExportData, const Poco::Zip::ZipLocalFileHeader>(this, &CExportData::onZipEDone);
-            c.addRecursive(exportDataTempFolder.string());
+            c.addRecursive(tempFolder.string());
             c.EDone -= Poco::Delegate<CExportData, const Poco::Zip::ZipLocalFileHeader>(this, &CExportData::onZipEDone);
             c.close(); // MUST be done to finalize the Zip file
-            onProgressionUpdatedInternal(98.0f, i18n::CClientStrings::ExportDataCompress);
+            onProgressionUpdatedInternal(0, 100, 60.0f, 98.0f, i18n::CClientStrings::ExportDataCompress);
             out.close();
 
             //rename file from "logs_date.zip.inprogress" to "logs_date.zip"
@@ -196,21 +228,32 @@ namespace task
          }
       }
 
-      // ReSharper disable once CppMemberFunctionMayBeConst
       void CExportData::onZipEDone(const void* pSender,
                                    const Poco::Zip::ZipLocalFileHeader& hdr)
       {
          if (hdr.isFile())
          {
-            onProgressionUpdatedInternal(80.0f, i18n::CClientStrings::ExportDataCompress);
+            //going from 60 to 98
+            m_currentFileCount++;
+            onProgressionUpdatedInternal(m_fileCountToZip - m_currentFileCount,
+                                         m_fileCountToZip,
+                                         60.0f,
+                                         98.0f,
+                                         i18n::CClientStrings::ExportDataCompress);
             YADOMS_LOG(debug) << " ZIP : " << hdr.getFileName();
          }
       }
 
-      void CExportData::cleanup(const boost::filesystem::path& exportDataTempFolder) const
+      void CExportData::cleanup(const boost::filesystem::path& tempFolder)
       {
-         onProgressionUpdatedInternal(98.0f, i18n::CClientStrings::ExportDataClean);
-         boost::filesystem::remove_all(exportDataTempFolder);
+         onProgressionUpdatedInternal(0,
+                                      100,
+                                      98.0f,
+                                      99.0f,
+                                      i18n::CClientStrings::ExportDataClean);
+
+         boost::filesystem::remove_all(tempFolder);
+         boost::filesystem::remove(tempFolder);
       }
    } //namespace exportData
 } //namespace task

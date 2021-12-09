@@ -38,7 +38,7 @@ namespace task
                                                    int total,
                                                    float currentPart,
                                                    float totalPart,
-                                                   const std::string& message) const
+                                                   const std::string& message)
       {
          if (!m_reportRealProgress)
             return;
@@ -123,7 +123,7 @@ namespace task
          return boost::filesystem::space(where).available > (neededSpace * 105 / 100);
       }
 
-      boost::filesystem::path CPackLogs::prepare() const
+      boost::filesystem::path CPackLogs::prepare()
       {
          auto tempFolder = boost::filesystem::temp_directory_path() / "yadomsLogs";
 
@@ -159,7 +159,7 @@ namespace task
          return tempFolder;
       }
 
-      bool CPackLogs::copyLogsFiles(const boost::filesystem::path& tempFolder) const
+      bool CPackLogs::copyLogsFiles(const boost::filesystem::path& tempFolder)
       {
          //backup database (1 -> 60%)
          if (shared::tools::CFilesystem::copyDirectoryRecursivelyTo(m_pathProvider->logsPath(), tempFolder / "logs"))
@@ -249,7 +249,7 @@ namespace task
          }
       }
 
-      void CPackLogs::cleanup(const boost::filesystem::path& tempFolder) const
+      void CPackLogs::cleanup(const boost::filesystem::path& tempFolder)
       {
          onProgressionUpdatedInternal(0,
                                       100,
