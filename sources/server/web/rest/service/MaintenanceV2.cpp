@@ -87,7 +87,7 @@ namespace web
          void CMaintenance::setPackLogsInProgress(const std::string& taskUid)
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_packLogsInProgressTaskUidMutex);
-            m_backupInProgressTaskUid = taskUid;
+            m_packLogsInProgressTaskUid = taskUid;
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::getFilesPackage(const std::string& inputUrl,
@@ -112,6 +112,9 @@ namespace web
                   if (!boost::starts_with(packageDir->path().filename().string(), packageFilePrefix))
                      continue;
 
+                  if (boost::iends_with(packageDir->path().filename().string(), ".inprogress"))
+                     continue;
+
                   auto fileSize = file_size(packageDir->path());
 
                   const auto lastWriteTimeT = last_write_time(packageDir->path());
@@ -123,7 +126,6 @@ namespace web
                   file.set("modificationDate", lastWriteTimePosix);
                   file.set("path", packageDir->path().string());
                   file.set("url", packageDir->path().filename().string());
-                  file.set("inprogress", boost::iends_with(packageDir->path().filename().string(), ".inprogress"));
 
                   if (!inputUrl.empty() && inputUrl == packageDir->path().filename().string())
                      return boost::make_shared<CSuccessAnswer>(file); // Get only one package
@@ -242,7 +244,7 @@ namespace web
 
             boost::lock_guard<boost::recursive_mutex> lock(m_backupInProgressTaskUidMutex);
             return createFilesPackage([this]() { return backupInProgress(); },
-                                      [this](const auto& taskUid) { setBackupInProgress(taskUid); },
+                                      [this](const auto& taskUid) { this->setBackupInProgress(taskUid); },
                                       [this]()
                                       {
                                          return boost::make_shared<task::backup::CBackup>(m_pathProvider,
