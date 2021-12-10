@@ -16,11 +16,6 @@ namespace startupOptions
 
    }
 
-   CStartupOptions::~CStartupOptions()
-   {
-
-   }
-
    void CStartupOptions::defineOptions(Poco::Util::OptionSet& options) const
    {
       options.addOption(
@@ -36,7 +31,8 @@ namespace startupOptions
          .required(false)
          .repeatable(false)
          .argument("ip")
-         .validator(new Poco::Util::RegExpValidator("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"))
+         .validator(new Poco::Util::RegExpValidator(
+            R"(^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$)"))
          .binding("server.ip", &m_configContainer));
 
       options.addOption(
@@ -77,8 +73,8 @@ namespace startupOptions
          .binding("server.logPath", &m_configContainer));
 
       //use separator as variable, because toAllString expect a reference
-      std::string separator = ", ";
-      std::string allDbEngines = EDatabaseEngine::toAllString(separator);
+      const std::string separator = ", ";
+      const std::string allDbEngines = EDatabaseEngine::toAllString(separator);
 
       options.addOption(
          Poco::Util::Option("databaseEngine", "E", "Choose database engine, accepted values are : " + allDbEngines)
@@ -320,7 +316,8 @@ namespace startupOptions
          .binding("server.proxy.password", &m_configContainer));
 
       options.addOption(
-         Poco::Util::Option("proxyBypass", "pxb", "A regular expression defining hosts for which the proxy should be bypassed, e.g. \"localhost|127\\.0\\.0\\.1|192\\.168\\.0\\.\\d+\". Can also be an empty string to disable proxy bypassing.")
+         Poco::Util::Option("proxyBypass", "pxb",
+                            R"(A regular expression defining hosts for which the proxy should be bypassed, e.g. "localhost|127\.0\.0\.1|192\.168\.0\.\d+". Can also be an empty string to disable proxy bypassing.)")
          .required(false)
          .repeatable(false)
          .argument("proxyBypass")
