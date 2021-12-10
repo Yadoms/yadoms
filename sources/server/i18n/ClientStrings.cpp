@@ -56,25 +56,13 @@ namespace i18n
    std::string CClientStrings::DatabaseBackupSuccess                        = "database.backup.success";
    std::string CClientStrings::DatabaseBackupFail                           = "database.backup.fail";
 
-   std::string CClientStrings::BackupPrepare                                = "task.backup.prepare";
-   std::string CClientStrings::BackupCopyFile                               = "task.backup.copyfiles";
-   std::string CClientStrings::BackupCompress                               = "task.backup.compress";
-   std::string CClientStrings::BackupClean                                  = "task.backup.clean";
-   std::string CClientStrings::BackupSuccess                                = "task.backup.success";
-
    std::string CClientStrings::RestorePrepare                               = "task.restore.prepare";
    std::string CClientStrings::RestoreDecompress                            = "task.restore.decompress";
    std::string CClientStrings::RestoreSuccess                               = "task.restore.success";
    std::string CClientStrings::RestoreRestarting                            = "task.restore.restarting";
 
-   std::string CClientStrings::PackLogsPrepare                              = "task.packLogs.prepare";
-   std::string CClientStrings::PackLogsCopyFile                             = "task.packLogs.copyfiles";
-   std::string CClientStrings::PackLogsCompress                             = "task.packLogs.compress";
-   std::string CClientStrings::PackLogsClean                                = "task.packLogs.clean";
-   std::string CClientStrings::PackLogsSuccess                              = "task.packLogs.success";
-
    std::string CClientStrings::ExportDataPrepare                            = "task.exportData.prepare";
-   std::string CClientStrings::ExportDataCreateFile                         = "task.exportData.createfile";
+   std::string CClientStrings::ExportDataCopyFiles                          = "task.exportData.copyfiles";
    std::string CClientStrings::ExportDataCompress                           = "task.exportData.compress";
    std::string CClientStrings::ExportDataClean                              = "task.exportData.clean";
    std::string CClientStrings::ExportDataSuccess                            = "task.exportData.success";

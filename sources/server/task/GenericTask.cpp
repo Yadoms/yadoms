@@ -12,7 +12,7 @@ namespace task
    {
    }
 
-   const std::string& CGenericTask::getName() const
+   std::string CGenericTask::getName()
    {
       return m_taskName;
    }

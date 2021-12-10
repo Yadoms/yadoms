@@ -597,14 +597,17 @@ set(YADOMS_SRC
    server/task/TaskEvent.cpp
    server/task/TaskStatus.h
    server/task/TaskStatus.cpp
-   server/task/backup/Backup.h
-   server/task/backup/Backup.cpp
+   server/task/backup/ExportBackupHandler.h
+   server/task/backup/ExportBackupHandler.cpp
    server/task/backup/Restore.h
    server/task/backup/Restore.cpp
+   server/task/exportAcquisitions/ExportAcquisitionsHandler.h
+   server/task/exportAcquisitions/ExportAcquisitionsHandler.cpp
    server/task/exportData/ExportData.h
    server/task/exportData/ExportData.cpp
-   server/task/packLogs/PackLogs.h
-   server/task/packLogs/PackLogs.cpp
+   server/task/exportData/IExportDataHandler.h
+   server/task/exportLogs/ExportLogsHandler.h
+   server/task/exportLogs/ExportLogsHandler.cpp
    server/task/plugins/ExtraQuery.h
    server/task/plugins/ExtraQuery.cpp
    
@@ -758,7 +761,9 @@ source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPl
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
-source_group(server\\task\\packLogs  server/task/packLogs/*.*)
+source_group(server\\task\\exportAcquisitions  server/task/exportAcquisitions/*.*)
+source_group(server\\task\\exportData  server/task/exportData/*.*)
+source_group(server\\task\\exportLogs  server/task/exportLogs/*.*)
 source_group(server\\task\\plugins  server/task/plugins/*.*)
 source_group(server\\update  server/update/*.*)
 source_group(server\\update\\info  server/update/info/*.*)

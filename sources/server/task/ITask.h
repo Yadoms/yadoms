@@ -30,7 +30,7 @@ namespace task
       ///\brief Get the task name
       ///\return the task name
       //------------------------------
-      virtual const std::string& getName() const = 0;
+      virtual std::string getName() = 0;
 
       //------------------------------
       ///\brief Method called when task instance is ready to start
@@ -40,9 +40,9 @@ namespace task
 
       //------------------------------
       ///\brief The task core working method
-      ///\param [in] pFunctor : a function pointer to call on task update
+      ///\param [in] reportProgressFct : a function pointer to call on task update
       //------------------------------
-      virtual void doWork(TaskProgressFunc pFunctor) = 0;
+      virtual void doWork(TaskProgressFunc reportProgressFct) = 0;
 
       //------------------------------
       ///\brief Check if task manages cancellation

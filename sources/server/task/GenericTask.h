@@ -25,7 +25,7 @@ namespace task
       ~CGenericTask() override = default;
 
       // ITask implementation
-      const std::string& getName() const override;
+      std::string getName() override;
       void doWork(TaskProgressFunc pFunctor) override;
       void onSetTaskId(const std::string& taskId) override;
       bool isCancellable() const override;
