@@ -266,12 +266,12 @@ namespace pluginSystem
 
       const auto pluginDirectories = findPluginDirectories();
 
-      for (auto& pluginDirectorie : pluginDirectories)
+      for (auto& pluginDirectory : pluginDirectories)
       {
          try
          {
             // Get information for current found plugin
-            const auto pluginName = pluginDirectorie.filename().string();
+            const auto pluginName = pluginDirectory.filename().string();
 
             const auto pluginInformation = createInformation(pluginName);
             if (!pluginInformation->isSupportedOnThisPlatform())

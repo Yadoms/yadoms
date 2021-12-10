@@ -91,7 +91,7 @@ jobs:
       shell: cmd
       run: |
         cd tests/unit/builds/RELEASE
-        yadomsTests.exe -r detailed -e results.txt || true
+        yadomsTests.exe -r detailed -e results.txt
     - name: Archive unittests report artifacts
       uses: actions/upload-artifact@v2
       with:

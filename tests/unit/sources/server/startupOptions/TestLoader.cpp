@@ -559,15 +559,15 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(All_Loggerlevels)
    {
-      static const std::set<std::string> levels = boost::assign::
+      static const std::set<std::string> Levels = boost::assign::
          list_of("none")("fatal")("critical")("error")("warning")("notice")("information")("debug")("trace");
-      for (std::set<std::string>::const_iterator it = levels.begin(); it != levels.end(); ++it)
+      for (const auto& level : Levels)
       {
          std::string opt("-l");
-         opt += *it;
+         opt += level;
          const char* argv[] = {"./TestLoader", const_cast<char*>(opt.c_str())};
          CStartupOptionMockup loader(2, argv, true);
-         BOOST_CHECK_EQUAL(loader.options().getLogLevel(), *it) ;
+         BOOST_CHECK_EQUAL(loader.options().getLogLevel(), level) ;
       }
    }
 
