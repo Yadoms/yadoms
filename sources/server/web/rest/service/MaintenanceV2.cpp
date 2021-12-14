@@ -1,7 +1,10 @@
+#include <regex>
+
 #include "stdafx.h"
 #include <boost/date_time/c_local_time_adjustor.hpp>
 #include "Maintenance.h"
 #include "RestEndPoint.h"
+#include "shared/http/HttpHelpers.h"
 #include "task/backup/ExportBackupHandler.h"
 #include "task/exportAcquisitions/ExportAcquisitionsHandler.h"
 #include "task/exportData/ExportData.h"
@@ -316,19 +319,26 @@ namespace web
 
          boost::shared_ptr<IAnswer> CMaintenance::createAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request)
          {
-            return nullptr;
-            //TODO
-            //boost::lock_guard<boost::recursive_mutex> lock(m_exportAcquisitionsInProgressTaskUidMutex);
-            //return createFilesPackage([this]() { return exportAcquisitionsInProgress(); },
-            //                          [this](const auto& taskUid) { this->setExportAcquisitionsInProgressInProgress(taskUid); },
-            //                          [this]()
-            //                          {
-            //                             return boost::make_shared<task::exportData::CExportData>(
-            //                                m_pathProvider,
-            //                                std::make_unique<task::exportAcquisitions::CExportAcquisitionsHandler>(m_keywordRequester,
-            //                                   m_acquisitionRequester,
-            //                                   keywordId));
-            //                          });
+            if (request->contentType() != EContentType::kFormUrlEncoded)
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnsupportedMediaType);
+
+            std::smatch result;
+            const auto body = request->body();
+            if (!std::regex_search(body, result, std::regex("^id=(\\d*)$")) || result.size() != 2)
+               throw std::runtime_error("Invalid keyword ID");
+            const auto keywordId = static_cast<int>(std::stol(shared::http::CHttpHelpers::urlDecode(result[1])));
+
+            boost::lock_guard<boost::recursive_mutex> lock(m_exportAcquisitionsInProgressTaskUidMutex);
+            return createFilesPackage([this]() { return exportAcquisitionsInProgress(); },
+                                      [this](const auto& taskUid) { this->setExportAcquisitionsInProgressInProgress(taskUid); },
+                                      [this, &keywordId]()
+                                      {
+                                         return boost::make_shared<task::exportData::CExportData>(
+                                            m_pathProvider,
+                                            std::make_unique<task::exportAcquisitions::CExportAcquisitionsHandler>(m_keywordRequester,
+                                               m_acquisitionRequester,
+                                               keywordId));
+                                      });
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::deleteAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request) const
