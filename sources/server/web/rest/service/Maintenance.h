@@ -62,6 +62,8 @@ namespace web
 
             std::string backupInProgress();
             void setBackupInProgress(const std::string& taskUid);
+            std::string restoreBackupInProgress();
+            void setRestoreBackupInProgress(const std::string& taskUid);
             std::string packLogsInProgress();
             void setPackLogsInProgress(const std::string& taskUid);
             std::string exportAcquisitionsInProgress();
@@ -70,14 +72,15 @@ namespace web
                                                        const std::string& packageFilePrefix,
                                                        const std::function<std::string()>& checkInProgressFct,
                                                        const std::string& resultArrayTag) const;
-            boost::shared_ptr<IAnswer> createFilesPackage(const std::function<std::string()>& checkInProgressFct,
-                                                          const std::function<void(std::string)>& setInProgressFct,
-                                                          const std::function<boost::shared_ptr<task::ITask>()>& createTaskFct) const;
+            boost::shared_ptr<IAnswer> startNotReenteringTask(const std::function<std::string()>& checkInProgressFct,
+                                                              const std::function<void(std::string)>& setInProgressFct,
+                                                              const std::function<boost::shared_ptr<task::ITask>()>& taskFct) const;
             boost::shared_ptr<IAnswer> deleteFilesPackage(const std::string& inputUrl,
                                                           const std::string& packageFilePrefix) const;
             boost::shared_ptr<IAnswer> getBackupsV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> createBackupsV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> deleteBackupV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> restoreBackupV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> getLogsPackageV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> createLogsPackageV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> deleteLogsPackageV2(const boost::shared_ptr<IRequest>& request) const;
@@ -102,6 +105,8 @@ namespace web
 
             mutable boost::recursive_mutex m_backupInProgressTaskUidMutex;
             std::string m_backupInProgressTaskUid;
+            mutable boost::recursive_mutex m_restoreBackupInProgressTaskUidMutex;
+            std::string m_restoreBackupInProgressTaskUid;
             mutable boost::recursive_mutex m_packLogsInProgressTaskUidMutex;
             std::string m_packLogsInProgressTaskUid;
             mutable boost::recursive_mutex m_exportAcquisitionsInProgressTaskUidMutex;

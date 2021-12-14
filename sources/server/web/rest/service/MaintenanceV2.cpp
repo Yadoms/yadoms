@@ -6,6 +6,7 @@
 #include "RestEndPoint.h"
 #include "shared/http/HttpHelpers.h"
 #include "task/backup/ExportBackupHandler.h"
+#include "task/backup/Restore.h"
 #include "task/exportAcquisitions/ExportAcquisitionsHandler.h"
 #include "task/exportData/ExportData.h"
 #include "task/exportLogs/ExportLogsHandler.h"
@@ -34,6 +35,7 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "maintenance/backups", createBackupsV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/backups", deleteBackupV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/backups/{url}", deleteBackupV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kPut, "maintenance/backups/{url}/restore", restoreBackupV2)); //TODO à tester
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "maintenance/logs", getLogsPackageV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "maintenance/logs/{url}", getLogsPackageV2));
@@ -49,7 +51,6 @@ namespace web
 
 
             //TODO            
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("restore")("*"), CMaintenance::restoreBackup)
             //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("uploadBackup"), CMaintenance::uploadBackup)
 
             return m_endPoints;
@@ -72,6 +73,25 @@ namespace web
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_backupInProgressTaskUidMutex);
             m_backupInProgressTaskUid = taskUid;
+         }
+
+         std::string CMaintenance::restoreBackupInProgress()
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_restoreBackupInProgressTaskUidMutex);
+
+            if (m_restoreBackupInProgressTaskUid.empty())
+               return std::string();
+
+            if (m_taskScheduler->getTask(m_restoreBackupInProgressTaskUid)->getStatus() != task::ETaskStatus::kStarted)
+               m_restoreBackupInProgressTaskUid.clear();
+
+            return m_restoreBackupInProgressTaskUid;
+         }
+
+         void CMaintenance::setRestoreBackupInProgress(const std::string& taskUid)
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_restoreBackupInProgressTaskUidMutex);
+            m_restoreBackupInProgressTaskUid = taskUid;
          }
 
          std::string CMaintenance::packLogsInProgress()
@@ -177,17 +197,17 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CMaintenance::createFilesPackage(const std::function<std::string()>& checkInProgressFct,
-                                                                     const std::function<void(std::string)>& setInProgressFct,
-                                                                     const std::function<boost::shared_ptr<task::ITask>()>& createTaskFct) const
+         boost::shared_ptr<IAnswer> CMaintenance::startNotReenteringTask(const std::function<std::string()>& checkInProgressFct,
+                                                                         const std::function<void(std::string)>& setInProgressFct,
+                                                                         const std::function<boost::shared_ptr<task::ITask>()>& taskFct) const
          {
             try
             {
                if (!checkInProgressFct().empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "package already in progress");
+                                                          "task already in progress");
 
-               const auto task = createTaskFct();
+               const auto task = taskFct();
 
                std::string taskUid;
                if (!m_taskScheduler->runTask(task, taskUid))
@@ -200,9 +220,9 @@ namespace web
             }
             catch (const std::exception& exception)
             {
-               YADOMS_LOG(error) << "Fail to create package : " << exception.what();
+               YADOMS_LOG(error) << "Fail to start task : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to create package");
+                                                       "Fail to start task");
             }
          }
 
@@ -265,21 +285,39 @@ namespace web
                                                        "backup not supported");
 
             boost::lock_guard<boost::recursive_mutex> lock(m_backupInProgressTaskUidMutex);
-            return createFilesPackage([this]() { return backupInProgress(); },
-                                      [this](const auto& taskUid) { this->setBackupInProgress(taskUid); },
-                                      [this]()
-                                      {
-                                         return boost::make_shared<task::exportData::CExportData>(
-                                            m_pathProvider,
-                                            std::make_unique<task::backup::CExportBackupHandler>(m_pathProvider,
-                                                                                                 m_databaseRequester));
-                                      });
+            return startNotReenteringTask([this]() { return backupInProgress(); },
+                                          [this](const auto& taskUid) { this->setBackupInProgress(taskUid); },
+                                          [this]()
+                                          {
+                                             return boost::make_shared<task::exportData::CExportData>(
+                                                m_pathProvider,
+                                                std::make_unique<task::backup::CExportBackupHandler>(m_pathProvider,
+                                                   m_databaseRequester));
+                                          });
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::deleteBackupV2(const boost::shared_ptr<IRequest>& request) const
          {
             return deleteFilesPackage(request->pathVariable("url", std::string()),
                                       "backup_");
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::restoreBackupV2(const boost::shared_ptr<IRequest>& request)
+         {
+            if (!m_databaseRequester->backupSupported())
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                       "backup not supported");
+
+            const auto url = request->pathVariable("url", std::string());
+
+            boost::lock_guard<boost::recursive_mutex> lock(m_restoreBackupInProgressTaskUidMutex);
+            return startNotReenteringTask([this]() { return restoreBackupInProgress(); },
+                                          [this](const auto& taskUid) { this->setRestoreBackupInProgress(taskUid); },
+                                          [this, url]()
+                                          {
+                                             return boost::make_shared<task::backup::CRestore>(url,
+                                                                                               m_pathProvider);
+                                          });
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::getLogsPackageV2(const boost::shared_ptr<IRequest>& request)
@@ -293,14 +331,14 @@ namespace web
          boost::shared_ptr<IAnswer> CMaintenance::createLogsPackageV2(const boost::shared_ptr<IRequest>& request)
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_packLogsInProgressTaskUidMutex);
-            return createFilesPackage([this]() { return packLogsInProgress(); },
-                                      [this](const auto& taskUid) { this->setPackLogsInProgress(taskUid); },
-                                      [this]()
-                                      {
-                                         return boost::make_shared<task::exportData::CExportData>(
-                                            m_pathProvider,
-                                            std::make_unique<task::exportLogs::CExportLogsHandler>(m_pathProvider));
-                                      });
+            return startNotReenteringTask([this]() { return packLogsInProgress(); },
+                                          [this](const auto& taskUid) { this->setPackLogsInProgress(taskUid); },
+                                          [this]()
+                                          {
+                                             return boost::make_shared<task::exportData::CExportData>(
+                                                m_pathProvider,
+                                                std::make_unique<task::exportLogs::CExportLogsHandler>(m_pathProvider));
+                                          });
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::deleteLogsPackageV2(const boost::shared_ptr<IRequest>& request) const
@@ -329,16 +367,16 @@ namespace web
             const auto keywordId = static_cast<int>(std::stol(shared::http::CHttpHelpers::urlDecode(result[1])));
 
             boost::lock_guard<boost::recursive_mutex> lock(m_exportAcquisitionsInProgressTaskUidMutex);
-            return createFilesPackage([this]() { return exportAcquisitionsInProgress(); },
-                                      [this](const auto& taskUid) { this->setExportAcquisitionsInProgressInProgress(taskUid); },
-                                      [this, &keywordId]()
-                                      {
-                                         return boost::make_shared<task::exportData::CExportData>(
-                                            m_pathProvider,
-                                            std::make_unique<task::exportAcquisitions::CExportAcquisitionsHandler>(m_keywordRequester,
-                                               m_acquisitionRequester,
-                                               keywordId));
-                                      });
+            return startNotReenteringTask([this]() { return exportAcquisitionsInProgress(); },
+                                          [this](const auto& taskUid) { this->setExportAcquisitionsInProgressInProgress(taskUid); },
+                                          [this, &keywordId]()
+                                          {
+                                             return boost::make_shared<task::exportData::CExportData>(
+                                                m_pathProvider,
+                                                std::make_unique<task::exportAcquisitions::CExportAcquisitionsHandler>(m_keywordRequester,
+                                                   m_acquisitionRequester,
+                                                   keywordId));
+                                          });
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::deleteAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request) const
