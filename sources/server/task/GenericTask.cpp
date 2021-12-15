@@ -6,9 +6,9 @@
 namespace task
 {
    CGenericTask::CGenericTask(std::string name,
-                              TaskFunc pFunctor)
+                              std::function<void(TaskProgressFunc)> taskFct)
       : m_taskName(std::move(name)),
-        m_pFunctor(std::move(pFunctor))
+        m_taskFct(std::move(taskFct))
    {
    }
 
@@ -17,9 +17,9 @@ namespace task
       return m_taskName;
    }
 
-   void CGenericTask::doWork(TaskProgressFunc pFunctor)
+   void CGenericTask::doWork(TaskProgressFunc reportProgressFct)
    {
-      m_pFunctor(pFunctor);
+      m_taskFct(reportProgressFct);
    }
 
    void CGenericTask::onSetTaskId(const std::string& taskId)

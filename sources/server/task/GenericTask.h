@@ -10,23 +10,18 @@ namespace task
    {
    public:
       //------------------------------
-      ///\brief The function pointer for task worker
-      //------------------------------
-      typedef std::function<void (TaskProgressFunc)> TaskFunc;
-
-      //------------------------------
       ///\brief                  Constructor
       ///\param [in] name        The task name (ie: yadoms.update)
-      ///\param [in] pFunctor    The function pointer to use (task real content)
+      ///\param [in] taskFct     The function to use (task real content)
       //------------------------------      
       CGenericTask(std::string name,
-                   TaskFunc pFunctor);
+                   std::function<void(TaskProgressFunc)> taskFct);
 
       ~CGenericTask() override = default;
 
       // ITask implementation
       std::string getName() override;
-      void doWork(TaskProgressFunc pFunctor) override;
+      void doWork(TaskProgressFunc reportProgressFct) override;
       void onSetTaskId(const std::string& taskId) override;
       bool isCancellable() const override;
       // ITask implementation
@@ -40,6 +35,6 @@ namespace task
       //------------------------------
       ///\brief The function pointer to use (task real content)
       //------------------------------         
-      TaskFunc m_pFunctor;
+      std::function<void(TaskProgressFunc)> m_taskFct;
    };
 } //namespace task

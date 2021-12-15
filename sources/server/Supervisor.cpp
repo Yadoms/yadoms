@@ -160,7 +160,8 @@ void CSupervisor::run()
       restServices->push_back(boost::make_shared<web::rest::service::CTask>(taskManager));
       restServices->push_back(boost::make_shared<web::rest::service::CRecipient>(dataProvider,
                                                                                  pluginManager));
-      restServices->push_back(boost::make_shared<web::rest::service::CUpdate>(updateManager));
+      restServices->push_back(boost::make_shared<web::rest::service::CUpdate>(updateManager,
+                                                                              taskManager));
       restServices->push_back(boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider,
                                                                                    dataProvider,
                                                                                    taskManager,

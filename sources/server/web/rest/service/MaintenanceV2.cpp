@@ -56,86 +56,10 @@ namespace web
             return m_endPoints;
          }
 
-         std::string CMaintenance::backupInProgress()
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_backupInProgressTaskUidMutex);
-
-            if (m_backupInProgressTaskUid.empty())
-               return std::string();
-
-            if (m_taskScheduler->getTask(m_backupInProgressTaskUid)->getStatus() != task::ETaskStatus::kStarted)
-               m_backupInProgressTaskUid.clear();
-
-            return m_backupInProgressTaskUid;
-         }
-
-         void CMaintenance::setBackupInProgress(const std::string& taskUid)
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_backupInProgressTaskUidMutex);
-            m_backupInProgressTaskUid = taskUid;
-         }
-
-         std::string CMaintenance::restoreBackupInProgress()
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_restoreBackupInProgressTaskUidMutex);
-
-            if (m_restoreBackupInProgressTaskUid.empty())
-               return std::string();
-
-            if (m_taskScheduler->getTask(m_restoreBackupInProgressTaskUid)->getStatus() != task::ETaskStatus::kStarted)
-               m_restoreBackupInProgressTaskUid.clear();
-
-            return m_restoreBackupInProgressTaskUid;
-         }
-
-         void CMaintenance::setRestoreBackupInProgress(const std::string& taskUid)
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_restoreBackupInProgressTaskUidMutex);
-            m_restoreBackupInProgressTaskUid = taskUid;
-         }
-
-         std::string CMaintenance::packLogsInProgress()
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_packLogsInProgressTaskUidMutex);
-
-            if (m_packLogsInProgressTaskUid.empty())
-               return std::string();
-
-            if (m_taskScheduler->getTask(m_packLogsInProgressTaskUid)->getStatus() != task::ETaskStatus::kStarted)
-               m_packLogsInProgressTaskUid.clear();
-
-            return m_packLogsInProgressTaskUid;
-         }
-
-         void CMaintenance::setPackLogsInProgress(const std::string& taskUid)
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_packLogsInProgressTaskUidMutex);
-            m_packLogsInProgressTaskUid = taskUid;
-         }
-
-         std::string CMaintenance::exportAcquisitionsInProgress()
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_exportAcquisitionsInProgressTaskUidMutex);
-
-            if (m_exportAcquisitionsInProgressTaskUid.empty())
-               return std::string();
-
-            if (m_taskScheduler->getTask(m_exportAcquisitionsInProgressTaskUid)->getStatus() != task::ETaskStatus::kStarted)
-               m_exportAcquisitionsInProgressTaskUid.clear();
-
-            return m_exportAcquisitionsInProgressTaskUid;
-         }
-
-         void CMaintenance::setExportAcquisitionsInProgressInProgress(const std::string& taskUid)
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_exportAcquisitionsInProgressTaskUidMutex);
-            m_exportAcquisitionsInProgressTaskUid = taskUid;
-         }
-
          boost::shared_ptr<IAnswer> CMaintenance::getFilesPackage(const std::string& inputUrl,
                                                                   const std::string& packageFilePrefix,
-                                                                  const std::function<std::string()>& checkInProgressFct,
-                                                                  const std::string& resultArrayTag) const
+                                                                  const std::string& resultArrayTag,
+                                                                  const boost::shared_ptr<ITaskInProgressHandler>& taskInProgressHandler) const
          {
             try
             {
@@ -175,7 +99,7 @@ namespace web
                   result.appendArray(resultArrayTag, file);
                }
 
-               const auto packageInProgressTaskUid = checkInProgressFct();
+               const auto packageInProgressTaskUid = taskInProgressHandler->inProgressTaskUid();
                if (!packageInProgressTaskUid.empty())
                   result.set("inProgress", "tasks/" + packageInProgressTaskUid);
 
@@ -197,13 +121,12 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CMaintenance::startNotReenteringTask(const std::function<std::string()>& checkInProgressFct,
-                                                                         const std::function<void(std::string)>& setInProgressFct,
+         boost::shared_ptr<IAnswer> CMaintenance::startNotReenteringTask(const boost::shared_ptr<ITaskInProgressHandler>& taskInProgressHandler,
                                                                          const std::function<boost::shared_ptr<task::ITask>()>& taskFct) const
          {
             try
             {
-               if (!checkInProgressFct().empty())
+               if (!taskInProgressHandler->inProgressTaskUid().empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "task already in progress");
 
@@ -212,7 +135,7 @@ namespace web
                std::string taskUid;
                if (!m_taskScheduler->runTask(task, taskUid))
                   throw std::runtime_error("Task : " + task->getName() + " fail to start");
-               setInProgressFct(taskUid);
+               taskInProgressHandler->setInProgressTaskUid(taskUid);
 
                YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
 
@@ -267,15 +190,15 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CMaintenance::getBackupsV2(const boost::shared_ptr<IRequest>& request)
+         boost::shared_ptr<IAnswer> CMaintenance::getBackupsV2(const boost::shared_ptr<IRequest>& request) const
          {
             if (!m_databaseRequester->backupSupported())
                return boost::make_shared<CNoContentAnswer>();
 
             return getFilesPackage(request->pathVariable("url", std::string()),
                                    "backup_",
-                                   [this]() { return backupInProgress(); },
-                                   "backups");
+                                   "backups",
+                                   m_backupInProgressTaskUidHandler);
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::createBackupsV2(const boost::shared_ptr<IRequest>& request)
@@ -284,9 +207,7 @@ namespace web
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                        "backup not supported");
 
-            boost::lock_guard<boost::recursive_mutex> lock(m_backupInProgressTaskUidMutex);
-            return startNotReenteringTask([this]() { return backupInProgress(); },
-                                          [this](const auto& taskUid) { this->setBackupInProgress(taskUid); },
+            return startNotReenteringTask(m_backupInProgressTaskUidHandler,
                                           [this]()
                                           {
                                              return boost::make_shared<task::exportData::CExportData>(
@@ -310,9 +231,7 @@ namespace web
 
             const auto url = request->pathVariable("url", std::string());
 
-            boost::lock_guard<boost::recursive_mutex> lock(m_restoreBackupInProgressTaskUidMutex);
-            return startNotReenteringTask([this]() { return restoreBackupInProgress(); },
-                                          [this](const auto& taskUid) { this->setRestoreBackupInProgress(taskUid); },
+            return startNotReenteringTask(m_restoreBackupInProgressTaskUidHandler,
                                           [this, url]()
                                           {
                                              return boost::make_shared<task::backup::CRestore>(url,
@@ -320,19 +239,17 @@ namespace web
                                           });
          }
 
-         boost::shared_ptr<IAnswer> CMaintenance::getLogsPackageV2(const boost::shared_ptr<IRequest>& request)
+         boost::shared_ptr<IAnswer> CMaintenance::getLogsPackageV2(const boost::shared_ptr<IRequest>& request) const
          {
             return getFilesPackage(request->pathVariable("url", std::string()),
                                    "logs_",
-                                   [this]() { return packLogsInProgress(); },
-                                   "logs");
+                                   "logs",
+                                   m_packLogsInProgressTaskUidHandler);
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::createLogsPackageV2(const boost::shared_ptr<IRequest>& request)
          {
-            boost::lock_guard<boost::recursive_mutex> lock(m_packLogsInProgressTaskUidMutex);
-            return startNotReenteringTask([this]() { return packLogsInProgress(); },
-                                          [this](const auto& taskUid) { this->setPackLogsInProgress(taskUid); },
+            return startNotReenteringTask(m_packLogsInProgressTaskUidHandler,
                                           [this]()
                                           {
                                              return boost::make_shared<task::exportData::CExportData>(
@@ -347,12 +264,12 @@ namespace web
                                       "logs_");
          }
 
-         boost::shared_ptr<IAnswer> CMaintenance::getAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request)
+         boost::shared_ptr<IAnswer> CMaintenance::getAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request) const
          {
             return getFilesPackage(request->pathVariable("url", std::string()),
                                    "acquisitions_",
-                                   [this]() { return exportAcquisitionsInProgress(); },
-                                   "acquisitions");
+                                   "acquisitions",
+                                   m_exportAcquisitionsInProgressTaskUidHandler);
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::createAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request)
@@ -366,9 +283,7 @@ namespace web
                throw std::runtime_error("Invalid keyword ID");
             const auto keywordId = static_cast<int>(std::stol(shared::http::CHttpHelpers::urlDecode(result[1])));
 
-            boost::lock_guard<boost::recursive_mutex> lock(m_exportAcquisitionsInProgressTaskUidMutex);
-            return startNotReenteringTask([this]() { return exportAcquisitionsInProgress(); },
-                                          [this](const auto& taskUid) { this->setExportAcquisitionsInProgressInProgress(taskUid); },
+            return startNotReenteringTask(m_exportAcquisitionsInProgressTaskUidHandler,
                                           [this, &keywordId]()
                                           {
                                              return boost::make_shared<task::exportData::CExportData>(

@@ -3,6 +3,7 @@
 
 #include <utility>
 
+#include "TaskInProgressHandler.h"
 #include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 
@@ -15,8 +16,10 @@ namespace web
       {
          std::string CUpdate::m_restKeyword = std::string("update");
 
-         CUpdate::CUpdate(boost::shared_ptr<update::IUpdateManager> updateManager)
-            : m_updateManager(std::move(updateManager))
+         CUpdate::CUpdate(boost::shared_ptr<update::IUpdateManager> updateManager,
+                          const boost::shared_ptr<task::CScheduler>& taskScheduler)
+            : m_updateManager(std::move(updateManager)),
+              m_scanForUpdatesInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(taskScheduler))
          {
          }
 
@@ -27,37 +30,26 @@ namespace web
 
          void CUpdate::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scan"), CUpdate::scanForUpdates);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("list")("*"), CUpdate::availableUpdates);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scan"), CUpdate::scanForUpdatesV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("list")("*"), CUpdate::availableUpdatesV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update"), CUpdate::updateYadoms);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update"), CUpdate::updateYadomsV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("update")("*"), CUpdate::updateWidget);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("install"), CUpdate::installWidget);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("remove")("*"), CUpdate::removeWidget);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("update")("*"), CUpdate::updateWidgetV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("install"), CUpdate::installWidgetV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("remove")("*"), CUpdate::removeWidgetV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("update")("*"), CUpdate::updatePlugin);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("install"), CUpdate::installPlugin);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("remove")("*"), CUpdate::removePlugin);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("update")("*"), CUpdate::updatePluginV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("install"), CUpdate::installPluginV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("remove")("*"), CUpdate::removePluginV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("update")("*"), CUpdate::updateScriptInterpreter);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("install"), CUpdate::installScriptInterpreter);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate::removeScriptInterpreter);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("update")("*"), CUpdate::updateScriptInterpreterV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("install"), CUpdate::installScriptInterpreterV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate::removeScriptInterpreterV1)
          }
 
-         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CUpdate::endPoints()
-         {
-            if (m_endPoints != nullptr)
-               return m_endPoints;
-
-            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            //TODO
-
-            return m_endPoints;
-         }
-
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::scanForUpdates(const std::vector<std::string>& parameters,
-                                                                                             const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::scanForUpdatesV1(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent) const
          {
             const auto taskId = m_updateManager->scanForUpdatesAsync();
             shared::CDataContainer result;
@@ -65,8 +57,8 @@ namespace web
             return poco::CRestResult::GenerateSuccess(result);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::availableUpdates(const std::vector<std::string>& parameters,
-                                                                                               const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::availableUpdatesV1(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const
          {
             if (parameters.size() != 3)
                return poco::CRestResult::GenerateError("Invalid parameters in url /rest/update/list");
@@ -76,8 +68,8 @@ namespace web
             return poco::CRestResult::GenerateSuccess(m_updateManager->getUpdates(includePrereleases));
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updateYadoms(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updateYadomsV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -102,8 +94,8 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updatePlugin(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updatePluginV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             //the request url should contain the pluginName
             //the request content should contain the downloadURL
@@ -124,8 +116,8 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::installPlugin(const std::vector<std::string>& parameters,
-                                                                                            const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::installPluginV1(const std::vector<std::string>& parameters,
+                                                                                              const std::string& requestContent) const
          {
             //the request content should contain the downloadURL
             shared::CDataContainer content(requestContent);
@@ -139,8 +131,8 @@ namespace web
             return poco::CRestResult::GenerateSuccess(result);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::removePlugin(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::removePluginV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             //the request url should contain the pluginName
             if (parameters.size() <= 3)
@@ -154,8 +146,8 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updateWidget(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updateWidgetV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             //the request url should contain the widgetName
             //the request content should contain the downloadURL
@@ -176,8 +168,8 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::installWidget(const std::vector<std::string>& parameters,
-                                                                                            const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::installWidgetV1(const std::vector<std::string>& parameters,
+                                                                                              const std::string& requestContent) const
          {
             //the request content should contain the downloadURL
             shared::CDataContainer content(requestContent);
@@ -191,8 +183,8 @@ namespace web
             return poco::CRestResult::GenerateSuccess(result);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::removeWidget(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::removeWidgetV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             //the request url should contain the pluginName
             if (parameters.size() <= 3)
@@ -206,8 +198,8 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updateScriptInterpreter(const std::vector<std::string>& parameters,
-                                                                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updateScriptInterpreterV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             //the request url should contain the scriptInterpreterName
             //the request content should contain the downloadURL
@@ -229,8 +221,8 @@ namespace web
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::installScriptInterpreter(const std::vector<std::string>& parameters,
-                                                                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::installScriptInterpreterV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             //the request content should contain the downloadURL
             shared::CDataContainer content(requestContent);
@@ -244,8 +236,8 @@ namespace web
             return poco::CRestResult::GenerateSuccess(result);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::removeScriptInterpreter(const std::vector<std::string>& parameters,
-                                                                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::removeScriptInterpreterV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             //the request url should contain the scriptInterpreterName
             if (parameters.size() <= 3)

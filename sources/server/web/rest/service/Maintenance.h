@@ -2,6 +2,7 @@
 #include "IRestService.h"
 #include "task/Scheduler.h"
 #include "IPathProvider.h"
+#include "ITaskInProgressHandler.h"
 #include "database/IAcquisitionRequester.h"
 #include "database/IDatabaseRequester.h"
 #include "database/IDataProvider.h"
@@ -60,31 +61,22 @@ namespace web
                                                                                             const std::vector<std::string>& parameters,
                                                                                             const std::string& requestContent) const;
 
-            std::string backupInProgress();
-            void setBackupInProgress(const std::string& taskUid);
-            std::string restoreBackupInProgress();
-            void setRestoreBackupInProgress(const std::string& taskUid);
-            std::string packLogsInProgress();
-            void setPackLogsInProgress(const std::string& taskUid);
-            std::string exportAcquisitionsInProgress();
-            void setExportAcquisitionsInProgressInProgress(const std::string& taskUid);
             boost::shared_ptr<IAnswer> getFilesPackage(const std::string& inputUrl,
                                                        const std::string& packageFilePrefix,
-                                                       const std::function<std::string()>& checkInProgressFct,
-                                                       const std::string& resultArrayTag) const;
-            boost::shared_ptr<IAnswer> startNotReenteringTask(const std::function<std::string()>& checkInProgressFct,
-                                                              const std::function<void(std::string)>& setInProgressFct,
+                                                       const std::string& resultArrayTag,
+                                                       const boost::shared_ptr<ITaskInProgressHandler>& taskInProgressHandler) const;
+            boost::shared_ptr<IAnswer> startNotReenteringTask(const boost::shared_ptr<ITaskInProgressHandler>& taskInProgressHandler,
                                                               const std::function<boost::shared_ptr<task::ITask>()>& taskFct) const;
             boost::shared_ptr<IAnswer> deleteFilesPackage(const std::string& inputUrl,
                                                           const std::string& packageFilePrefix) const;
-            boost::shared_ptr<IAnswer> getBackupsV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> getBackupsV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> createBackupsV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> deleteBackupV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> restoreBackupV2(const boost::shared_ptr<IRequest>& request);
-            boost::shared_ptr<IAnswer> getLogsPackageV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> getLogsPackageV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> createLogsPackageV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> deleteLogsPackageV2(const boost::shared_ptr<IRequest>& request) const;
-            boost::shared_ptr<IAnswer> getAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> getAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> createAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> deleteAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request) const;
 
@@ -103,14 +95,10 @@ namespace web
             boost::shared_ptr<IUploadFileManager> m_uploadFileManager;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
-            mutable boost::recursive_mutex m_backupInProgressTaskUidMutex;
-            std::string m_backupInProgressTaskUid;
-            mutable boost::recursive_mutex m_restoreBackupInProgressTaskUidMutex;
-            std::string m_restoreBackupInProgressTaskUid;
-            mutable boost::recursive_mutex m_packLogsInProgressTaskUidMutex;
-            std::string m_packLogsInProgressTaskUid;
-            mutable boost::recursive_mutex m_exportAcquisitionsInProgressTaskUidMutex;
-            std::string m_exportAcquisitionsInProgressTaskUid;
+            boost::shared_ptr<ITaskInProgressHandler> m_backupInProgressTaskUidHandler;
+            boost::shared_ptr<ITaskInProgressHandler> m_restoreBackupInProgressTaskUidHandler;
+            boost::shared_ptr<ITaskInProgressHandler> m_packLogsInProgressTaskUidHandler;
+            boost::shared_ptr<ITaskInProgressHandler> m_exportAcquisitionsInProgressTaskUidHandler;
          };
       } //namespace service
    } //namespace rest
