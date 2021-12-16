@@ -19,7 +19,8 @@ namespace web
          CUpdate::CUpdate(boost::shared_ptr<update::IUpdateManager> updateManager,
                           const boost::shared_ptr<task::CScheduler>& taskScheduler)
             : m_updateManager(std::move(updateManager)),
-              m_scanForUpdatesInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(taskScheduler))
+              m_scanForUpdatesInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(taskScheduler)),
+              m_updateYadomsInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(taskScheduler))
          {
          }
 

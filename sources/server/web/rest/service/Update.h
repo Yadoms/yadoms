@@ -59,14 +59,36 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> removeScriptInterpreterV1(const std::vector<std::string>& parameters,
                                                                                                   const std::string& requestContent) const;
 
+            enum class UpdatePackage
+            {
+               kYadoms,
+               kPlugin,
+
+               //TODO à virer ?
+               kWidget,
+
+               kScriptInterpreter
+            };
+
+            std::string findPackageUrl(UpdatePackage updatePackage,
+                                       const std::string& version) const;
+
+            static void extractVersions(const boost::shared_ptr<shared::CDataContainer>& updates,
+                                        const std::string& path);
+            static void extractComponentVersions(const boost::shared_ptr<shared::CDataContainer>& updates,
+                                                 const std::string& componentTag);
+            static boost::shared_ptr<shared::CDataContainer> formatUpdates(const boost::shared_ptr<shared::CDataContainer>& availableUpdates);
+
             boost::shared_ptr<IAnswer> getAvailableUpdatesV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> scanForUpdatesV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updateYadomsV2(const boost::shared_ptr<IRequest>& request) const;
 
             boost::shared_ptr<update::IUpdateManager> m_updateManager;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
             static std::string m_restKeyword;
             boost::shared_ptr<ITaskInProgressHandler> m_scanForUpdatesInProgressTaskUidHandler;
+            boost::shared_ptr<ITaskInProgressHandler> m_updateYadomsInProgressTaskUidHandler;
          };
       } //namespace service
    } //namespace rest

@@ -615,8 +615,6 @@ set(YADOMS_SRC
    server/update/IUpdateManager.h
    server/update/UpdateManager.h
    server/update/UpdateManager.cpp
-   server/update/UpdateType.h
-   server/update/UpdateType.cpp
    server/update/info/UpdateSite.h
    server/update/info/UpdateSite.cpp
    server/update/worker/IWidgetInformation.h
