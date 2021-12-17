@@ -24,50 +24,66 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates", scanForUpdatesV2));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/yadoms/{version}", updateYadomsV2)); //TODO à tester
-            //TODO
 
-            //TODO les mises à jour des composants sont parallélisables (on peur en faire plusieurs en même temps)
-            //TODO Mais pas pendant une mise à jour de Yadoms
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/plugins/{pluginName}/{version}", updatePluginV2)); //TODO à tester
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "updates/plugins/{pluginName}", removePluginV2)); //TODO à tester
 
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update"), CUpdate::updateYadoms);
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/widgets/{widgetName}/{version}", updateWidgetV2)); //TODO à tester
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "updates/widgets/{widgetName}", removeWidgetV2)); //TODO à tester
 
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("update")("*"), CUpdate::updateWidget);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("install"), CUpdate::installWidget);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("remove")("*"), CUpdate::removeWidget);
-
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("update")("*"), CUpdate::updatePlugin);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("install"), CUpdate::installPlugin);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("remove")("*"), CUpdate::removePlugin);
-
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("update")("*"), CUpdate::updateScriptInterpreter);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("install"), CUpdate::installScriptInterpreter);
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate::removeScriptInterpreter);
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/scriptInterpreters/{scriptInterpreterName}/{version}", updateScriptInterpreterV2));
+            //TODO à tester
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "updates/scriptInterpreters/{scriptInterpreterName}", removeScriptInterpreterV2));
+            //TODO à tester
 
             return m_endPoints;
          }
 
-         std::string CUpdate::findPackageUrl(UpdatePackage updatePackage,
-                                             const std::string& version) const
+         std::string CUpdate::findYadomsPackageUrl(const std::string& version) const
          {
             const auto updates = m_updateManager->getUpdates(true);
 
-            switch (updatePackage)
-            {
-            case UpdatePackage::kYadoms:
-               {
-                  // Use '|' separator instead of '.' because version contains '.'
-                  if (updates->exists("yadoms|versions|newest|" + version + "|downloadUrl", '|'))
-                     return updates->get("yadoms|versions|newest|" + version + "|downloadUrl", '|');
-                  if (updates->exists("yadoms|versions|newer|" + version + "|downloadUrl", '|'))
-                     return updates->get("yadoms|versions|newer|" + version + "|downloadUrl", '|');
-                  if (updates->exists("yadoms|versions|older|" + version + "|downloadUrl", '|'))
-                     return updates->get("yadoms|versions|older|" + version + "|downloadUrl", '|');
-                  throw std::invalid_argument("Version not found");
-               }
-               //TODO
-            default:
-               throw std::invalid_argument("UpdatePackage");
-            }
+            // Use '|' separator instead of '.' because version contains '.'
+            if (updates->exists("yadoms|versions|newest|" + version + "|downloadUrl", '|'))
+               return updates->get("yadoms|versions|newest|" + version + "|downloadUrl", '|');
+            if (updates->exists("yadoms|versions|newer|" + version + "|downloadUrl", '|'))
+               return updates->get("yadoms|versions|newer|" + version + "|downloadUrl", '|');
+            if (updates->exists("yadoms|versions|older|" + version + "|downloadUrl", '|'))
+               return updates->get("yadoms|versions|older|" + version + "|downloadUrl", '|');
+            throw std::invalid_argument("Version not found");
+         }
+
+         std::pair<bool, std::string> CUpdate::findComponentPackageUrl(const std::string& componentTag,
+                                                                       const std::string& componentName,
+                                                                       const std::string& version) const
+         {
+            const auto updates = m_updateManager->getUpdates(true);
+
+            // Use '|' separator instead of '.' because version contains '.'
+
+            // Updateable component
+            if (updates->exists(componentTag + "|updateable|" + componentName + "|versions|newest|" + version + "|downloadUrl", '|'))
+               return std::make_pair(false,
+                                     updates->get(componentTag + "|updateable|" + componentName + "|versions|newest|" + version + "|downloadUrl",
+                                                  '|'));
+            if (updates->exists(componentTag + "|updateable|" + componentName + "|versions|newer|" + version + "|downloadUrl", '|'))
+               return std::make_pair(false,
+                                     updates->get(componentTag + "|updateable|" + componentName + "|versions|newer|" + version + "|downloadUrl",
+                                                  '|'));
+            if (updates->exists(componentTag + "|updateable|" + componentName + "|versions|older|" + version + "|downloadUrl", '|'))
+               return std::make_pair(false,
+                                     updates->get(componentTag + "|updateable|" + componentName + "|versions|older|" + version + "|downloadUrl",
+                                                  '|'));
+
+            // New component
+            if (updates->exists(componentTag + "|new|" + componentName + "|versions|newest|" + version + "|downloadUrl", '|'))
+               return std::make_pair(true,
+                                     updates->get(componentTag + "|new|" + componentName + "|versions|newest|" + version + "|downloadUrl", '|'));
+            if (updates->exists(componentTag + "|new|" + componentName + "|versions|versions|" + version + "|downloadUrl", '|'))
+               return std::make_pair(true,
+                                     updates->get(componentTag + "|new|" + componentName + "|versions|versions|" + version + "|downloadUrl",
+                                                  '|'));
+            throw std::invalid_argument("Version not found");
          }
 
          void CUpdate::extractVersions(const boost::shared_ptr<shared::CDataContainer>& updates,
@@ -177,8 +193,7 @@ namespace web
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "task already in progress");
 
-               const auto taskUid = m_updateManager->updateYadomsAsync(findPackageUrl(UpdatePackage::kYadoms,
-                                                                                      version));
+               const auto taskUid = m_updateManager->updateYadomsAsync(findYadomsPackageUrl(version));
                m_updateYadomsInProgressTaskUidHandler->setInProgressTaskUid(taskUid);
 
                YADOMS_LOG(information) << "Task : " << taskUid << " successfully started";
@@ -190,6 +205,222 @@ namespace web
                YADOMS_LOG(error) << "Fail to update Yadoms : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to update Yadoms");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CUpdate::updateComponentV2(
+            const std::string& componentName,
+            std::map<std::string, boost::shared_ptr<ITaskInProgressHandler>>& updateComponentsInProgressTaskUidHandler,
+            const std::function<std::string()>& updateTask) const
+         {
+            try
+            {
+               if (!m_updateYadomsInProgressTaskUidHandler->inProgressTaskUid().empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "Yadoms update is in progress");
+
+               const auto inProgressTaskHandler = updateComponentsInProgressTaskUidHandler.find(componentName);
+               if (inProgressTaskHandler != updateComponentsInProgressTaskUidHandler.end()
+                  && !inProgressTaskHandler->second->inProgressTaskUid().empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "task already in progress");
+
+               const auto taskUid = updateTask();
+
+               updateComponentsInProgressTaskUidHandler[componentName]->setInProgressTaskUid(taskUid);
+
+               YADOMS_LOG(information) << "Task : " << taskUid << " successfully started";
+
+               return CHelpers::createLongRunningOperationAnswer(taskUid);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Fail to update component " << componentName << " : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to update component");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CUpdate::removeComponentV2(
+            const std::string& componentName,
+            std::map<std::string, boost::shared_ptr<ITaskInProgressHandler>>& updateComponentsInProgressTaskUidHandler,
+            const std::function<std::string()>& removeTask) const
+         {
+            try
+            {
+               if (!m_updateYadomsInProgressTaskUidHandler->inProgressTaskUid().empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "Yadoms update is in progress");
+
+               const auto inProgressTaskHandler = updateComponentsInProgressTaskUidHandler.find(componentName);
+               if (inProgressTaskHandler != updateComponentsInProgressTaskUidHandler.end()
+                  && !inProgressTaskHandler->second->inProgressTaskUid().empty())
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                          "task already in progress");
+
+               const auto taskUid = removeTask();
+
+               updateComponentsInProgressTaskUidHandler[componentName]->setInProgressTaskUid(taskUid);
+
+               YADOMS_LOG(information) << "Task : " << taskUid << " successfully started";
+
+               return CHelpers::createLongRunningOperationAnswer(taskUid);
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Fail to remove component : " << componentName << " : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to remove component");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CUpdate::updatePluginV2(const boost::shared_ptr<IRequest>& request)
+         {
+            try
+            {
+               const auto pluginName = request->pathVariable("pluginName");
+               const auto version = request->pathVariable("version");
+
+               return updateComponentV2(pluginName,
+                                        m_updatePluginsInProgressTaskUidHandler,
+                                        [&pluginName, &version, this]()
+                                        {
+                                           const auto componentUrl = findComponentPackageUrl("plugins",
+                                                                                             pluginName,
+                                                                                             version);
+
+                                           return componentUrl.first
+                                                     ? m_updateManager->installPluginAsync(componentUrl.second)
+                                                     : m_updateManager->updatePluginAsync(pluginName,
+                                                                                          componentUrl.second);
+                                        });
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Fail to update plugin : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to update plugin");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CUpdate::removePluginV2(const boost::shared_ptr<IRequest>& request)
+         {
+            try
+            {
+               const auto pluginName = request->pathVariable("pluginName");
+
+               return removeComponentV2(pluginName,
+                                        m_updatePluginsInProgressTaskUidHandler,
+                                        [&pluginName, this]()
+                                        {
+                                           return m_updateManager->removePluginAsync(pluginName);
+                                        });
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Fail to remove plugin : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to remove plugin");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CUpdate::updateWidgetV2(const boost::shared_ptr<IRequest>& request)
+         {
+            try
+            {
+               const auto widgetName = request->pathVariable("widgetName");
+               const auto version = request->pathVariable("version");
+
+               return updateComponentV2(widgetName,
+                                        m_updateWidgetsInProgressTaskUidHandler,
+                                        [&widgetName, &version, this]()
+                                        {
+                                           const auto componentUrl = findComponentPackageUrl("widgets",
+                                                                                             widgetName,
+                                                                                             version);
+
+                                           return componentUrl.first
+                                                     ? m_updateManager->installWidgetAsync(componentUrl.second)
+                                                     : m_updateManager->updateWidgetAsync(widgetName,
+                                                                                          componentUrl.second);
+                                        });
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Fail to update widget : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to update widget");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CUpdate::removeWidgetV2(const boost::shared_ptr<IRequest>& request)
+         {
+            try
+            {
+               const auto widgetName = request->pathVariable("widgetName");
+
+               return removeComponentV2(widgetName,
+                                        m_updateWidgetsInProgressTaskUidHandler,
+                                        [&widgetName, this]()
+                                        {
+                                           return m_updateManager->removeWidgetAsync(widgetName);
+                                        });
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Fail to remove widget : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to remove widget");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CUpdate::updateScriptInterpreterV2(const boost::shared_ptr<IRequest>& request)
+         {
+            try
+            {
+               const auto scriptInterpreterName = request->pathVariable("scriptInterpreterName");
+               const auto version = request->pathVariable("version");
+
+               return updateComponentV2(scriptInterpreterName,
+                                        m_updateScriptInterpretersInProgressTaskUidHandler,
+                                        [&scriptInterpreterName, &version, this]()
+                                        {
+                                           const auto componentUrl = findComponentPackageUrl("scriptInterpreters",
+                                                                                             scriptInterpreterName,
+                                                                                             version);
+
+                                           return componentUrl.first
+                                                     ? m_updateManager->installScriptInterpreterAsync(componentUrl.second)
+                                                     : m_updateManager->updateScriptInterpreterAsync(scriptInterpreterName,
+                                                        componentUrl.second);
+                                        });
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Fail to update script interpreter : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to update script interpreter");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CUpdate::removeScriptInterpreterV2(const boost::shared_ptr<IRequest>& request)
+         {
+            try
+            {
+               const auto scriptInterpreterName = request->pathVariable("scriptInterpreterName");
+
+               return removeComponentV2(scriptInterpreterName,
+                                        m_updateScriptInterpretersInProgressTaskUidHandler,
+                                        [&scriptInterpreterName, this]()
+                                        {
+                                           return m_updateManager->removeScriptInterpreterAsync(scriptInterpreterName);
+                                        });
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Fail to remove script interpreter : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to remove script interpreter");
             }
          }
       } //namespace service
