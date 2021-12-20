@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "WebServer.h"
+
 #include <utility>
 #include <oatpp/core/macro/component.hpp>
 #include <oatpp/network/Server.hpp>
@@ -10,6 +11,7 @@
 #include <oatpp-websocket/Handshaker.hpp>
 #include <oatpp-swagger/Controller.hpp>
 #include "ConnectionProvider.h"
+#include "ErrorHandler.h"
 #include "RestRequestHandler.h"
 #include "WebSocketConnection.h"
 
@@ -67,6 +69,8 @@ namespace web
 
          m_httpConnectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(httpRouter);
 
+         m_httpConnectionHandler->setErrorHandler(std::make_shared<CErrorHandler>());
+
          m_tcpConnectionProvider = CConnectionProvider::createShared(
             {
                (address.empty() ? "0.0.0.0" : address).c_str(),
@@ -96,7 +100,6 @@ namespace web
          // - aliases
          // - websockets
          // - allowExternalAccess
-         // - ajout headers avec infos serveur (nom, version, etc... Voir Poco webserver) ?
 
          start();
       }

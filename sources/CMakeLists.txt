@@ -1077,6 +1077,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/oatppServer/Authentication.cpp
    server/web/oatppServer/ConnectionProvider.h
    server/web/oatppServer/ConnectionProvider.cpp  
+   server/web/oatppServer/ErrorHandler.h
+   server/web/oatppServer/ErrorHandler.cpp
    server/web/oatppServer/HttpPages.h
    server/web/oatppServer/HttpPages.cpp
    server/web/oatppServer/IAuthentication.h
