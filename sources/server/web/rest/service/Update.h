@@ -22,7 +22,7 @@ namespace web
             /// \param [in] taskScheduler   The task scheduler
             //-----------------------------------------------------------------------------      
             explicit CUpdate(boost::shared_ptr<update::IUpdateManager> updateManager,
-                             const boost::shared_ptr<task::CScheduler>& taskScheduler);
+                             boost::shared_ptr<task::CScheduler> taskScheduler);
             ~CUpdate() override = default;
 
 
@@ -89,6 +89,7 @@ namespace web
             boost::shared_ptr<IAnswer> removeScriptInterpreterV2(const boost::shared_ptr<IRequest>& request);
 
             boost::shared_ptr<update::IUpdateManager> m_updateManager;
+            boost::shared_ptr<task::CScheduler> m_taskScheduler;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
             static std::string m_restKeyword;

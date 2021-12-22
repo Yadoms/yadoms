@@ -17,10 +17,11 @@ namespace web
          std::string CUpdate::m_restKeyword = std::string("update");
 
          CUpdate::CUpdate(boost::shared_ptr<update::IUpdateManager> updateManager,
-                          const boost::shared_ptr<task::CScheduler>& taskScheduler)
+                          boost::shared_ptr<task::CScheduler> taskScheduler)
             : m_updateManager(std::move(updateManager)),
-              m_scanForUpdatesInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(taskScheduler)),
-              m_updateYadomsInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(taskScheduler))
+              m_taskScheduler(taskScheduler),
+              m_scanForUpdatesInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(m_taskScheduler)),
+              m_updateYadomsInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(m_taskScheduler))
          {
          }
 

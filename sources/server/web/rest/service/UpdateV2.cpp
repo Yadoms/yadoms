@@ -1,5 +1,6 @@
 ﻿#include "RestEndPoint.h"
 #include "stdafx.h"
+#include "TaskInProgressHandler.h"
 #include "Update.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
@@ -20,21 +21,24 @@ namespace web
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
+            //TODO revoir la gestion du scan. Lancer le scan si :
+            // - au démarrage (avec petit délai pour ne pas allourdir le démarrage ?)
+            // - après chaque update/install/remove de Yadoms ou composant
+            // - une fois par jour
+
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "updates", getAvailableUpdatesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates", scanForUpdatesV2));
 
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/yadoms/{version}", updateYadomsV2)); //TODO à tester
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/yadoms/{version}", updateYadomsV2));
 
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/plugins/{pluginName}/{version}", updatePluginV2)); //TODO à tester
-            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "updates/plugins/{pluginName}", removePluginV2)); //TODO à tester
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/plugins/{pluginName}/{version}", updatePluginV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "updates/plugins/{pluginName}", removePluginV2));
 
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/widgets/{widgetName}/{version}", updateWidgetV2)); //TODO à tester
-            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "updates/widgets/{widgetName}", removeWidgetV2)); //TODO à tester
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/widgets/{widgetName}/{version}", updateWidgetV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "updates/widgets/{widgetName}", removeWidgetV2));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/scriptInterpreters/{scriptInterpreterName}/{version}", updateScriptInterpreterV2));
-            //TODO à tester
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "updates/scriptInterpreters/{scriptInterpreterName}", removeScriptInterpreterV2));
-            //TODO à tester
 
             return m_endPoints;
          }
@@ -58,6 +62,8 @@ namespace web
                                                                        const std::string& version) const
          {
             const auto updates = m_updateManager->getUpdates(true);
+
+            YADOMS_LOG(debug) << updates->serialize(); //TODO virer
 
             // Use '|' separator instead of '.' because version contains '.'
 
@@ -220,8 +226,9 @@ namespace web
                                                           "Yadoms update is in progress");
 
                const auto inProgressTaskHandler = updateComponentsInProgressTaskUidHandler.find(componentName);
-               if (inProgressTaskHandler != updateComponentsInProgressTaskUidHandler.end()
-                  && !inProgressTaskHandler->second->inProgressTaskUid().empty())
+               if (inProgressTaskHandler == updateComponentsInProgressTaskUidHandler.end())
+                  updateComponentsInProgressTaskUidHandler[componentName] = boost::make_shared<CTaskInProgressHandler>(m_taskScheduler);
+               else if (!inProgressTaskHandler->second->inProgressTaskUid().empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "task already in progress");
 
@@ -253,10 +260,11 @@ namespace web
                                                           "Yadoms update is in progress");
 
                const auto inProgressTaskHandler = updateComponentsInProgressTaskUidHandler.find(componentName);
-               if (inProgressTaskHandler != updateComponentsInProgressTaskUidHandler.end()
-                  && !inProgressTaskHandler->second->inProgressTaskUid().empty())
+               if (inProgressTaskHandler == updateComponentsInProgressTaskUidHandler.end())
+                  updateComponentsInProgressTaskUidHandler[componentName] = boost::make_shared<CTaskInProgressHandler>(m_taskScheduler);
+               else if (!inProgressTaskHandler->second->inProgressTaskUid().empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "task already in progress");
+                     "task already in progress");
 
                const auto taskUid = removeTask();
 
@@ -281,7 +289,7 @@ namespace web
                const auto pluginName = request->pathVariable("pluginName");
                const auto version = request->pathVariable("version");
 
-               return updateComponentV2(pluginName,
+               return updateComponentV2("plugin/" + pluginName,
                                         m_updatePluginsInProgressTaskUidHandler,
                                         [&pluginName, &version, this]()
                                         {
@@ -331,7 +339,7 @@ namespace web
                const auto widgetName = request->pathVariable("widgetName");
                const auto version = request->pathVariable("version");
 
-               return updateComponentV2(widgetName,
+               return updateComponentV2("widget/" + widgetName,
                                         m_updateWidgetsInProgressTaskUidHandler,
                                         [&widgetName, &version, this]()
                                         {
@@ -381,7 +389,7 @@ namespace web
                const auto scriptInterpreterName = request->pathVariable("scriptInterpreterName");
                const auto version = request->pathVariable("version");
 
-               return updateComponentV2(scriptInterpreterName,
+               return updateComponentV2("scriptInterpreter/" + scriptInterpreterName,
                                         m_updateScriptInterpretersInProgressTaskUidHandler,
                                         [&scriptInterpreterName, &version, this]()
                                         {
