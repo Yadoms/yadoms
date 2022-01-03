@@ -615,8 +615,6 @@ set(YADOMS_SRC
    server/update/IUpdateManager.h
    server/update/UpdateManager.h
    server/update/UpdateManager.cpp
-   server/update/UpdateType.h
-   server/update/UpdateType.cpp
    server/update/info/UpdateSite.h
    server/update/info/UpdateSite.cpp
    server/update/worker/IWidgetInformation.h
@@ -1079,6 +1077,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/oatppServer/Authentication.cpp
    server/web/oatppServer/ConnectionProvider.h
    server/web/oatppServer/ConnectionProvider.cpp  
+   server/web/oatppServer/ErrorHandler.h
+   server/web/oatppServer/ErrorHandler.cpp
    server/web/oatppServer/HttpPages.h
    server/web/oatppServer/HttpPages.cpp
    server/web/oatppServer/IAuthentication.h
