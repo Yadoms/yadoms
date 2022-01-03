@@ -1,6 +1,8 @@
 #include "stdafx.h"
-#include "RestRequest.h"
 
+#include "RestRequest.h"
+#include <regex>
+#include <oatpp/web/mime/multipart/PartList.hpp>
 #include "shared/http/HttpHelpers.h"
 
 namespace web
@@ -9,9 +11,16 @@ namespace web
    {
       CRestRequest::CRestRequest(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request)
          : m_request(std::move(request)),
-           m_method(shared::http::ToRestVerb(m_request->getStartingLine().method.std_str())),
-           m_body(readBody(m_request)) // Need to consume body for each request (or next request will be malformed and oatpp will answer 404)
+           m_method(shared::http::ToRestVerb(m_request->getStartingLine().method.std_str()))
       {
+      }
+
+      CRestRequest::~CRestRequest()
+      {
+         // Need to consume body for each request (or next request will be malformed and oatpp will answer 404)
+         if (!m_body)
+            // ReSharper disable once CppExpressionWithoutSideEffects
+            readBody(m_request);
       }
 
       shared::http::ERestVerb CRestRequest::method() const
@@ -101,7 +110,9 @@ namespace web
             || m_method == shared::http::ERestVerb::kDelete)
             return std::string();
 
-         return m_body;
+         if (!m_body)
+            m_body = std::make_unique<const std::string>(readBody(m_request));
+         return *m_body;
       }
 
       float CRestRequest::acceptContentType(rest::EContentType contentType) const
@@ -114,6 +125,43 @@ namespace web
             return 0.0;
 
          return it->second;
+      }
+
+      boost::shared_ptr<rest::IFormDataPartStringHandler> CRestRequest::createFormDataPartStringHandler()
+      {
+         return boost::make_shared<CFormDataPartStringHandler>();
+      }
+
+      boost::shared_ptr<rest::IFormDataPartFileHandler> CRestRequest::createFormDataPartFileHandler(const boost::filesystem::path& path)
+      {
+         return boost::make_shared<CFormDataPartFileHandler>(path);
+      }
+
+      void CRestRequest::readParts(const std::map<std::string, boost::shared_ptr<rest::IFormDataPartHandler>>& partsHandlers)
+      {
+         const auto multipart = std::make_shared<oatpp::web::mime::multipart::PartList>(m_request->getHeaders());
+         oatpp::web::mime::multipart::Reader multipartReader(multipart.get());
+
+         // Set part handlers
+         for (const auto& partHandler : partsHandlers)
+         {
+            const auto oatppFormDataPartHandler = boost::dynamic_pointer_cast<IOatppFormDataPartHandler>(partHandler.second);
+            multipartReader.setPartReader(partHandler.first.c_str(),
+                                          oatppFormDataPartHandler->partReader());
+         }
+
+         // Mark body as read (it will be read by transferBody, even if it fails with exception)
+         m_body = std::make_unique<const std::string>();
+
+         // Read body and populate part handlers
+         m_request->transferBody(&multipartReader);
+
+         // Extract parts
+         for (const auto& partHandler : partsHandlers)
+         {
+            const auto oatppFormDataPartHandler = boost::dynamic_pointer_cast<IOatppFormDataPartHandler>(partHandler.second);
+            oatppFormDataPartHandler->setPart(multipart->getNamedPart(partHandler.first.c_str()));
+         }
       }
 
       std::map<std::string, std::string> CRestRequest::toMap(const oatpp::web::url::mapping::Pattern::MatchMap& in)
