@@ -51,10 +51,6 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/acquisitions", deleteAcquisitionsExportV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/acquisitions/{url}", deleteAcquisitionsExportV2));
 
-
-            //TODO            
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("uploadBackup"), CMaintenance::uploadBackup)
-
             return m_endPoints;
          }
 
@@ -243,7 +239,6 @@ namespace web
 
          boost::shared_ptr<IAnswer> CMaintenance::uploadBackupV2(const boost::shared_ptr<IRequest>& request) const
          {
-            //TODO protéger contre la réentrance (juste sur le rename ?)
             //TODO gérer en temps que tâche longue ?
             try
             {

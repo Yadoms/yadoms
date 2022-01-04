@@ -1,36 +1,13 @@
 #pragma once
 #include "ContentType.h"
+#include "IFormDataPartStringHandler.h"
+#include "IFormDataPartFileHandler.h"
 #include "shared/http/HttpRestVerb.h"
 
 namespace web
 {
    namespace rest
    {
-      class IFormDataPartHandler // TODO déplcer
-      {
-      public:
-         virtual ~IFormDataPartHandler() = default;
-         
-         virtual EContentType contentType() const = 0;
-      };
-
-      class IFormDataPartStringHandler : public IFormDataPartHandler // TODO déplcer
-      {
-      public:
-         ~IFormDataPartStringHandler() override = default;
-         
-         virtual std::string string() const = 0;
-      };
-
-      class IFormDataPartFileHandler : public IFormDataPartHandler // TODO déplcer
-      {
-      public:
-         ~IFormDataPartFileHandler() override = default;
-         
-         virtual long long fileSize() const = 0; // Returns -1 if unknown
-         virtual std::string fileName() const = 0;
-      };
-
       class IRequest
       {
       public:

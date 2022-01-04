@@ -3,6 +3,8 @@
 #include "RestRequest.h"
 #include <regex>
 #include <oatpp/web/mime/multipart/PartList.hpp>
+#include "FormDataPartFileHandler.h"
+#include "FormDataPartStringHandler.h"
 #include "shared/http/HttpHelpers.h"
 
 namespace web
