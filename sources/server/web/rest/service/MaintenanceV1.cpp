@@ -9,7 +9,7 @@
 #include <regex>
 #include <utility>
 
-#include "TaskInProgressHandler.h"
+#include "task/RunningTaskMutex.h"
 #include "task/backup/ExportBackupHandler.h"
 #include "task/exportAcquisitions/ExportAcquisitionsHandler.h"
 #include "task/exportLogs/ExportLogsHandler.h"
@@ -35,10 +35,10 @@ namespace web
               m_acquisitionRequester(dataProvider->getAcquisitionRequester()),
               m_taskScheduler(std::move(taskScheduler)),
               m_uploadFileManager(std::move(uploadFileManager)),
-              m_backupInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(m_taskScheduler)),
-              m_restoreBackupInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(m_taskScheduler)),
-              m_packLogsInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(m_taskScheduler)),
-              m_exportAcquisitionsInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(m_taskScheduler))
+              m_backupInProgressTaskUidHandler(boost::make_shared<task::CRunningTaskMutex>(m_taskScheduler)),
+              m_restoreBackupInProgressTaskUidHandler(boost::make_shared<task::CRunningTaskMutex>(m_taskScheduler)),
+              m_packLogsInProgressTaskUidHandler(boost::make_shared<task::CRunningTaskMutex>(m_taskScheduler)),
+              m_exportAcquisitionsInProgressTaskUidHandler(boost::make_shared<task::CRunningTaskMutex>(m_taskScheduler))
          {
          }
 

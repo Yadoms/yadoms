@@ -23,7 +23,6 @@ namespace update
       ~CUpdateManager() override;
 
       // IUpdateManager implementation
-      std::string scanForUpdatesAsync() override;
       boost::shared_ptr<shared::CDataContainer> getUpdates(bool includePrereleases) const override;
       std::string updatePluginAsync(const std::string& pluginName, const std::string& downloadUrl) const override;
       std::string installPluginAsync(const std::string& downloadUrl) const override;
@@ -39,9 +38,12 @@ namespace update
 
 
    protected:
-      void doWork(const boost::posix_time::time_duration& scanPeriod);
-      bool scan(const boost::shared_ptr<const IPathProvider>& pathProvider);
-      void scanForUpdates(const worker::CWorkerHelpers::WorkerProgressFunc& progressCallback);
+      void doWork();
+      void getAvailableVersionsFromServer();
+      static bool updateAvailable(const boost::shared_ptr<shared::CDataContainer>& updates,
+                                  const std::string& componentTag);
+      bool updateAvailable(bool includePrereleases) const;
+      void scanForUpdates();
       boost::shared_ptr<shared::CDataContainer> buildUpdates(
          bool includePrereleases,
          const shared::versioning::CSemVer& yadomsLocalVersion,
@@ -101,26 +103,10 @@ namespace update
                                           const std::string& allUpdatesNode) const;
 
    private:
-      //-----------------------------------------------------------------------------
-      /// \brief  Start a task
-      /// \param [in]   task        The task to start
-      /// \param [out]  taskUid     The task identifier created if successfully started
-      /// \return result (true/false)
-      //-----------------------------------------------------------------------------   
       bool startTask(const boost::shared_ptr<task::ITask>& task, std::string& taskUid) const;
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Start a task
-      /// \param [in]   task        The task to start
-      /// \return The task identifier created if successfully started
-      /// \throw shared::exception::CException if task launch fails
-      //-----------------------------------------------------------------------------   
       std::string startTask(const boost::shared_ptr<task::ITask>& task) const;
 
 
-      //-----------------------------------------------------------------------------
-      /// \brief  Task scheduler
-      //-----------------------------------------------------------------------------
       const boost::shared_ptr<task::CScheduler> m_taskScheduler;
 
 
@@ -135,7 +121,9 @@ namespace update
       shared::event::CEventHandler m_evtHandler;
 
       mutable boost::recursive_mutex m_updateMutex;
-      boost::shared_ptr<shared::CDataContainer> m_allUpdates;
-      boost::shared_ptr<shared::CDataContainer> m_releasesOnlyUpdates;
+      boost::shared_ptr<shared::CDataContainer> m_yadomsAvailableVersions;
+      boost::shared_ptr<shared::CDataContainer> m_pluginsAvailableVersions;
+      boost::shared_ptr<shared::CDataContainer> m_widgetsAvailableVersions;
+      boost::shared_ptr<shared::CDataContainer> m_scriptInterpretersAvailableVersions;
    };
 } // namespace update

@@ -209,7 +209,7 @@ void CSupervisor::run()
       // Register to event logger started event
       dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", std::string());
 
-      //update the server state
+      // Update the server state
       shared::CServiceLocator::instance().get<IRunningInformation>()->setServerFullyLoaded();
 
       // Main loop

@@ -8,21 +8,14 @@
 #include "worker/ScriptInterpreter.h"
 #include "info/UpdateSite.h"
 #include <shared/tools/Filesystem.h>
-#include "i18n/ClientStrings.h"
 #include <shared/ServiceLocator.h>
+#include "database/entities/Entities.h"
 
 #include <utility>
 
 
 namespace update
 {
-   enum
-   {
-      kNextScanTimerId = shared::event::kUserFirstId,
-      kStopNextScanTimerId,
-      kStartNextScanTimerId
-   };
-
    CUpdateManager::CUpdateManager(boost::shared_ptr<task::CScheduler> taskScheduler,
                                   boost::shared_ptr<pluginSystem::CManager> pluginManager,
                                   boost::shared_ptr<automation::interpreter::IManager> interpreterManager,
@@ -35,9 +28,7 @@ namespace update
         m_eventLogger(std::move(eventLogger)),
         m_developerMode(developerMode),
         m_pathProvider(std::move(pathProvider)),
-        m_thread(boost::thread(&CUpdateManager::doWork, this, boost::posix_time::hours(12))),
-        m_allUpdates(shared::CDataContainer::make()),
-        m_releasesOnlyUpdates(shared::CDataContainer::make())
+        m_thread(boost::thread(&CUpdateManager::doWork, this))
    {
    }
 
@@ -47,46 +38,37 @@ namespace update
       m_thread.timed_join(boost::posix_time::seconds(30));
    }
 
-   void CUpdateManager::doWork(const boost::posix_time::time_duration& scanPeriod)
+   void CUpdateManager::doWork()
    {
       YADOMS_LOG_CONFIGURE("CUpdateManager")
       YADOMS_LOG(debug) << "Start";
       try
       {
-         const auto nexScanTimer = m_evtHandler.createTimer(kNextScanTimerId,
+         static const boost::posix_time::time_duration FirstScanDelay = boost::posix_time::seconds(20);
+         static const boost::posix_time::time_duration ScanPeriod = boost::posix_time::hours(24);
+         static constexpr auto NextScanTimerEventId = shared::event::kUserFirstId;
+
+         const auto nexScanTimer = m_evtHandler.createTimer(NextScanTimerEventId,
                                                             shared::event::CEventTimer::kOneShot,
-                                                            scanPeriod);
+                                                            FirstScanDelay);
+
          while (true)
          {
             switch (m_evtHandler.waitForEvents())
             {
-            case kStopNextScanTimerId:
+            case NextScanTimerEventId:
                {
-                  nexScanTimer->stop();
+                  YADOMS_LOG(information) << "Scan for available updates...";
+                  scanForUpdates();
+                  nexScanTimer->start(ScanPeriod);
                   break;
                }
-            case kStartNextScanTimerId:
-               {
-                  nexScanTimer->start();
-                  break;
-               }
-            case kNextScanTimerId:
-               YADOMS_LOG(debug) << "Start scan...";
-               try
-               {
-                  if (scan(m_pathProvider))
-                     notifyNewUpdateAvailable();
-               }
-               catch (std::exception& exception)
-               {
-                  YADOMS_LOG(warning) << "Unable to check for Update, " << exception.what();
-               }
-               nexScanTimer->start();
-               break;
 
             default:
-               YADOMS_LOG(error) << "Unsupported event " << m_evtHandler.getEventId() << ", ignored";
-               break;
+               {
+                  YADOMS_LOG(error) << "Unsupported event " << m_evtHandler.getEventId() << ", ignored";
+                  break;
+               }
             }
          }
       }
@@ -96,98 +78,118 @@ namespace update
       }
    }
 
-   bool CUpdateManager::scan(const boost::shared_ptr<const IPathProvider>& pathProvider)
+   void CUpdateManager::getAvailableVersionsFromServer()
    {
-      auto updateAvailable = false;
       try
       {
-         // Read inputs
-         YADOMS_LOG(debug) << "Read Yadoms versions...";
-         const auto yadomsLocalVersion = shared::CServiceLocator::instance()
-                                         .get<IRunningInformation>()->getSoftwareVersion().getVersion();
+         YADOMS_LOG(debug) << "Get available updates...";
+
          const auto yadomsAvailableVersions = info::CUpdateSite::getAllYadomsVersions();
 
          YADOMS_LOG(debug) << "Read Plugins versions...";
-         const auto pluginsLocalVersions = m_pluginManager->getPluginList();
          const auto pluginsAvailableVersions = info::CUpdateSite::getAllPluginVersions();
 
          YADOMS_LOG(debug) << "Read Widgets versions...";
-         const auto widgetsLocalVersions = worker::CWidget::getWidgetList(pathProvider->widgetsPath());
          const auto widgetsAvailableVersions = info::CUpdateSite::getAllWidgetVersions();
 
          YADOMS_LOG(debug) << "Read ScriptInterpreters versions...";
-         const auto scriptInterpretersLocalVersions = m_interpreterManager->getLoadedInterpretersInformation();
          const auto scriptInterpretersAvailableVersions = info::CUpdateSite::getAllScriptInterpreterVersions();
 
-         YADOMS_LOG(debug) << "Build updates data (with prereleases)...";
-         const auto updates = buildUpdates(true,
-                                           yadomsLocalVersion,
-                                           yadomsAvailableVersions,
-                                           pluginsLocalVersions,
-                                           pluginsAvailableVersions,
-                                           widgetsLocalVersions,
-                                           widgetsAvailableVersions,
-                                           scriptInterpretersLocalVersions,
-                                           scriptInterpretersAvailableVersions);
-
-         YADOMS_LOG(debug) << "Build updates data (releases only)...";
-         const auto releasesOnlyUpdates = buildUpdates(false,
-                                                       yadomsLocalVersion,
-                                                       yadomsAvailableVersions,
-                                                       pluginsLocalVersions,
-                                                       pluginsAvailableVersions,
-                                                       widgetsLocalVersions,
-                                                       widgetsAvailableVersions,
-                                                       scriptInterpretersLocalVersions,
-                                                       scriptInterpretersAvailableVersions);
-
-         // Notify only for new releases (not for prereleases)
-         if (releasesOnlyUpdates != m_releasesOnlyUpdates)
-            updateAvailable = true;
+         YADOMS_LOG(debug) << "Get available updates OK";
 
          boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
-         m_allUpdates = updates;
-         m_releasesOnlyUpdates = releasesOnlyUpdates;
+         m_yadomsAvailableVersions = yadomsAvailableVersions;
+         m_pluginsAvailableVersions = pluginsAvailableVersions;
+         m_widgetsAvailableVersions = widgetsAvailableVersions;
+         m_scriptInterpretersAvailableVersions = scriptInterpretersAvailableVersions;
       }
       catch (std::exception& e)
       {
-         YADOMS_LOG(error) << " Error scanning available versions (do you have a working Internet connection ?), " << e
-            .what();
+         YADOMS_LOG(error) << "Error getting available updates (do you have a working Internet connection ?), " << e.what();
          throw;
       }
-      return updateAvailable;
    }
 
-   void CUpdateManager::scanForUpdates(const worker::CWorkerHelpers::WorkerProgressFunc& progressCallback)
+   bool CUpdateManager::updateAvailable(const boost::shared_ptr<shared::CDataContainer>& updates,
+                                        const std::string& componentTag)
    {
-      YADOMS_LOG(information) << "Scan for updates...";
+      const auto nodePath = componentTag + ".updateable";
+      if (!updates->exists(nodePath))
+         return false;
 
-      progressCallback(true, 0.0f, i18n::CClientStrings::ScanForUpdates, std::string(),
-                       shared::CDataContainer::make());
-
-      // Suspend periodic updates scan
-      m_evtHandler.postEvent(kStopNextScanTimerId);
-
-      try
+      for (const auto& component : updates->getKeys(nodePath))
       {
-         scan(m_pathProvider);
-         progressCallback(true, 100.0f, i18n::CClientStrings::ScanForUpdatesSuccess, std::string(),
-                          shared::CDataContainer::make());
-      }
-      catch (std::exception&)
-      {
-         progressCallback(false, 100.0f, i18n::CClientStrings::ScanForUpdatesFailed, std::string(),
-                          shared::CDataContainer::make());
+         auto versionPath = nodePath;
+         auto key = versionPath.append(".").append(component).append(".versions.newer");
+         if (updates->exists(key) && !updates->getKeys(key).empty())
+            return true;
       }
 
-      // Restart periodic updates scan
-      m_evtHandler.postEvent(kStartNextScanTimerId);
+      return false;
+   }
+
+   bool CUpdateManager::updateAvailable(bool includePrereleases) const
+   {
+      const auto updates = getUpdates(includePrereleases);
+
+      if (!updates->getKeys("yadoms.versions.newer").empty())
+         return true;
+
+      if (updateAvailable(updates, "plugins")
+         || updateAvailable(updates, "widgets")
+         || updateAvailable(updates, "scriptInterpreters"))
+         return true;
+
+      return false;
    }
 
    boost::shared_ptr<shared::CDataContainer> CUpdateManager::getUpdates(bool includePrereleases) const
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
-      return includePrereleases ? m_allUpdates : m_releasesOnlyUpdates;
+      if (!m_yadomsAvailableVersions || m_yadomsAvailableVersions->empty()
+         || !m_pluginsAvailableVersions || m_pluginsAvailableVersions->empty()
+         || !m_widgetsAvailableVersions || m_widgetsAvailableVersions->empty()
+         || !m_scriptInterpretersAvailableVersions || m_scriptInterpretersAvailableVersions->empty())
+      {
+         YADOMS_LOG(debug) << "Available versions was not provided";
+         return shared::CDataContainer::make();
+      }
+
+      // Read inputs
+      const auto yadomsLocalVersion = shared::CServiceLocator::instance()
+                                      .get<IRunningInformation>()->getSoftwareVersion().getVersion();
+      const auto pluginsLocalVersions = m_pluginManager->getPluginList();
+      const auto widgetsLocalVersions = worker::CWidget::getWidgetList(m_pathProvider->widgetsPath());
+      const auto scriptInterpretersLocalVersions = m_interpreterManager->getLoadedInterpretersInformation();
+
+      return buildUpdates(includePrereleases,
+                          yadomsLocalVersion,
+                          m_yadomsAvailableVersions,
+                          pluginsLocalVersions,
+                          m_pluginsAvailableVersions,
+                          widgetsLocalVersions,
+                          m_widgetsAvailableVersions,
+                          scriptInterpretersLocalVersions,
+                          m_scriptInterpretersAvailableVersions);
+   }
+
+   void CUpdateManager::scanForUpdates()
+   {
+      YADOMS_LOG(information) << "Scan for updates...";
+
+      try
+      {
+         getAvailableVersionsFromServer();
+
+         // Notify only for new releases (not for prereleases)
+         if (updateAvailable(false))
+            notifyNewUpdateAvailable();
+
+         YADOMS_LOG(information) << "Scan for updates success";
+      }
+      catch (std::exception&)
+      {
+         YADOMS_LOG(warning) << "Scan for updates failed";
+      }
    }
 
    boost::shared_ptr<shared::CDataContainer> CUpdateManager::buildUpdates(
@@ -940,6 +942,7 @@ namespace update
 
    void CUpdateManager::notifyNewUpdateAvailable() const
    {
+      YADOMS_LOG(information) << "Some updates are available";
       m_eventLogger->addEvent(database::entities::ESystemEventCode::kUpdateAvailable, "yadoms", std::string());
    }
 
@@ -968,19 +971,6 @@ namespace update
       if (startTask(task, taskId))
          return taskId;
       throw shared::exception::CException("Fail to start task");
-   }
-
-
-   std::string CUpdateManager::scanForUpdatesAsync()
-   {
-      //force to copy parameters because references cannot be used in async task
-      const auto task(boost::make_shared<task::CGenericTask>(
-         "scanForUpdates",
-         [this](auto taskProgressFunc)
-         {
-            this->scanForUpdates(taskProgressFunc);
-         }));
-      return startTask(task);
    }
 
    std::string CUpdateManager::updatePluginAsync(const std::string& pluginName,
@@ -1122,9 +1112,10 @@ namespace update
    std::string CUpdateManager::findMd5HashAssociatedTo(const std::string& downloadUrl,
                                                        const std::string& allUpdatesNode) const
    {
-      if (m_allUpdates->exists(allUpdatesNode, '|'))
+      //TODO retester (ça ne doit plus marcher...), puis nettoyer
+      if (/*m_allUpdates*/m_yadomsAvailableVersions->exists(allUpdatesNode, '|'))
       {
-         auto versions = m_allUpdates->getAsMap<boost::shared_ptr<shared::CDataContainer>>(allUpdatesNode, '|');
+         auto versions = /*m_allUpdates*/m_yadomsAvailableVersions->getAsMap<boost::shared_ptr<shared::CDataContainer>>(allUpdatesNode, '|');
          // Don't use default pathChar('.') because also contained in version name (like '2.3.0')
          const auto versionInfo = std::find_if(versions.begin(),
                                                versions.end(),

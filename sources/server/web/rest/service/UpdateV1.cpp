@@ -1,9 +1,8 @@
 ﻿#include "stdafx.h"
-#include "Update.h"
 
 #include <utility>
-
-#include "TaskInProgressHandler.h"
+#include "Update.h"
+#include "task/RunningTaskMutex.h"
 #include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 
@@ -19,9 +18,8 @@ namespace web
          CUpdate::CUpdate(boost::shared_ptr<update::IUpdateManager> updateManager,
                           boost::shared_ptr<task::CScheduler> taskScheduler)
             : m_updateManager(std::move(updateManager)),
-              m_taskScheduler(taskScheduler),
-              m_scanForUpdatesInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(m_taskScheduler)),
-              m_updateYadomsInProgressTaskUidHandler(boost::make_shared<CTaskInProgressHandler>(m_taskScheduler))
+              m_taskScheduler(std::move(taskScheduler)),
+              m_updateYadomsInProgressTaskUidHandler(boost::make_shared<task::CRunningTaskMutex>(m_taskScheduler))
          {
          }
 
@@ -32,7 +30,6 @@ namespace web
 
          void CUpdate::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scan"), CUpdate::scanForUpdatesV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("list")("*"), CUpdate::availableUpdatesV1)
 
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update"), CUpdate::updateYadomsV1)
@@ -48,15 +45,6 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("update")("*"), CUpdate::updateScriptInterpreterV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("install"), CUpdate::installScriptInterpreterV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate::removeScriptInterpreterV1)
-         }
-
-         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::scanForUpdatesV1(const std::vector<std::string>& parameters,
-                                                                                               const std::string& requestContent) const
-         {
-            const auto taskId = m_updateManager->scanForUpdatesAsync();
-            shared::CDataContainer result;
-            result.set("taskId", taskId);
-            return poco::CRestResult::GenerateSuccess(result);
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::availableUpdatesV1(const std::vector<std::string>& parameters,

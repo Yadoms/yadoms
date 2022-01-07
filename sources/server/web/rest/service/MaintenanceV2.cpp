@@ -5,6 +5,7 @@
 #include "Maintenance.h"
 #include "RestEndPoint.h"
 #include "shared/http/HttpHelpers.h"
+#include "task/IRunningTaskMutex.h"
 #include "task/backup/ExportBackupHandler.h"
 #include "task/backup/Restore.h"
 #include "task/exportAcquisitions/ExportAcquisitionsHandler.h"
@@ -59,7 +60,7 @@ namespace web
          boost::shared_ptr<IAnswer> CMaintenance::getFilesPackage(const std::string& inputUrl,
                                                                   const std::string& packageFilePrefix,
                                                                   const std::string& resultArrayTag,
-                                                                  const boost::shared_ptr<ITaskInProgressHandler>& taskInProgressHandler) const
+                                                                  const boost::shared_ptr<task::IRunningTaskMutex>& taskInProgressHandler) const
          {
             try
             {
@@ -121,7 +122,7 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CMaintenance::startNotReenteringTask(const boost::shared_ptr<ITaskInProgressHandler>& taskInProgressHandler,
+         boost::shared_ptr<IAnswer> CMaintenance::startNotReenteringTask(const boost::shared_ptr<task::IRunningTaskMutex>& taskInProgressHandler,
                                                                          const std::function<boost::shared_ptr<task::ITask>()>& taskFct) const
          {
             try

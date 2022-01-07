@@ -1,7 +1,7 @@
 ﻿#include "RestEndPoint.h"
 #include "stdafx.h"
-#include "TaskInProgressHandler.h"
 #include "Update.h"
+#include "task/RunningTaskMutex.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
@@ -27,7 +27,6 @@ namespace web
             // - une fois par jour
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "updates", getAvailableUpdatesV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates", scanForUpdatesV2));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/yadoms/{version}", updateYadomsV2));
 
@@ -62,8 +61,6 @@ namespace web
                                                                        const std::string& version) const
          {
             const auto updates = m_updateManager->getUpdates(true);
-
-            YADOMS_LOG(debug) << updates->serialize(); //TODO virer
 
             // Use '|' separator instead of '.' because version contains '.'
 
@@ -109,10 +106,10 @@ namespace web
             auto nodePath = componentTag + ".updateable";
             if (updates->exists(nodePath))
             {
-               for (const auto& plugin : updates->getKeys(nodePath))
+               for (const auto& component : updates->getKeys(nodePath))
                {
                   auto versionPath = nodePath;
-                  versionPath.append(".").append(plugin).append(".versions.");
+                  versionPath.append(".").append(component).append(".versions.");
                   extractVersions(updates, versionPath + "newest");
                   extractVersions(updates, versionPath + "newer");
                   extractVersions(updates, versionPath + "older");
@@ -166,29 +163,6 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CUpdate::scanForUpdatesV2(const boost::shared_ptr<IRequest>& request) const
-         {
-            try
-            {
-               if (!m_scanForUpdatesInProgressTaskUidHandler->inProgressTaskUid().empty())
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "task already in progress");
-
-               const auto taskUid = m_updateManager->scanForUpdatesAsync();
-               m_scanForUpdatesInProgressTaskUidHandler->setInProgressTaskUid(taskUid);
-
-               YADOMS_LOG(information) << "Task : " << taskUid << " successfully started";
-
-               return CHelpers::createLongRunningOperationAnswer(taskUid);
-            }
-            catch (const std::exception& exception)
-            {
-               YADOMS_LOG(error) << "Fail to start task : " << exception.what();
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to start task");
-            }
-         }
-
          boost::shared_ptr<IAnswer> CUpdate::updateYadomsV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
@@ -216,7 +190,7 @@ namespace web
 
          boost::shared_ptr<IAnswer> CUpdate::updateComponentV2(
             const std::string& componentName,
-            std::map<std::string, boost::shared_ptr<ITaskInProgressHandler>>& updateComponentsInProgressTaskUidHandler,
+            std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>>& updateComponentsInProgressTaskUidHandler,
             const std::function<std::string()>& updateTask) const
          {
             try
@@ -227,7 +201,7 @@ namespace web
 
                const auto inProgressTaskHandler = updateComponentsInProgressTaskUidHandler.find(componentName);
                if (inProgressTaskHandler == updateComponentsInProgressTaskUidHandler.end())
-                  updateComponentsInProgressTaskUidHandler[componentName] = boost::make_shared<CTaskInProgressHandler>(m_taskScheduler);
+                  updateComponentsInProgressTaskUidHandler[componentName] = boost::make_shared<task::CRunningTaskMutex>(m_taskScheduler);
                else if (!inProgressTaskHandler->second->inProgressTaskUid().empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "task already in progress");
@@ -250,7 +224,7 @@ namespace web
 
          boost::shared_ptr<IAnswer> CUpdate::removeComponentV2(
             const std::string& componentName,
-            std::map<std::string, boost::shared_ptr<ITaskInProgressHandler>>& updateComponentsInProgressTaskUidHandler,
+            std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>>& updateComponentsInProgressTaskUidHandler,
             const std::function<std::string()>& removeTask) const
          {
             try
@@ -261,10 +235,10 @@ namespace web
 
                const auto inProgressTaskHandler = updateComponentsInProgressTaskUidHandler.find(componentName);
                if (inProgressTaskHandler == updateComponentsInProgressTaskUidHandler.end())
-                  updateComponentsInProgressTaskUidHandler[componentName] = boost::make_shared<CTaskInProgressHandler>(m_taskScheduler);
+                  updateComponentsInProgressTaskUidHandler[componentName] = boost::make_shared<task::CRunningTaskMutex>(m_taskScheduler);
                else if (!inProgressTaskHandler->second->inProgressTaskUid().empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                     "task already in progress");
+                                                          "task already in progress");
 
                const auto taskUid = removeTask();
 

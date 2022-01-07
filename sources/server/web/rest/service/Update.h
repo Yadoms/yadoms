@@ -2,7 +2,7 @@
 #include "IRestService.h"
 #include "update/IUpdateManager.h"
 #include "task/Scheduler.h"
-#include "ITaskInProgressHandler.h"
+#include "task/IRunningTaskMutex.h"
 
 namespace web
 {
@@ -33,9 +33,7 @@ namespace web
 
          private:
             static const std::string& getRestKeyword();
-
-            boost::shared_ptr<shared::serialization::IDataSerializable> scanForUpdatesV1(const std::vector<std::string>& parameters,
-                                                                                         const std::string& requestContent) const;
+            
             boost::shared_ptr<shared::serialization::IDataSerializable> availableUpdatesV1(const std::vector<std::string>& parameters,
                                                                                            const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> updateYadomsV1(const std::vector<std::string>& parameters,
@@ -71,15 +69,14 @@ namespace web
             static boost::shared_ptr<shared::CDataContainer> formatUpdates(const boost::shared_ptr<shared::CDataContainer>& availableUpdates);
 
             boost::shared_ptr<IAnswer> getAvailableUpdatesV2(const boost::shared_ptr<IRequest>& request) const;
-            boost::shared_ptr<IAnswer> scanForUpdatesV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> updateYadomsV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> updateComponentV2(
                const std::string& componentName,
-               std::map<std::string, boost::shared_ptr<ITaskInProgressHandler>>& updateComponentsInProgressTaskUidHandler,
+               std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>>& updateComponentsInProgressTaskUidHandler,
                const std::function<std::string()>& updateTask) const;
             boost::shared_ptr<IAnswer> removeComponentV2(
                const std::string& componentName,
-               std::map<std::string, boost::shared_ptr<ITaskInProgressHandler>>& updateComponentsInProgressTaskUidHandler,
+               std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>>& updateComponentsInProgressTaskUidHandler,
                const std::function<std::string()>& removeTask) const;
             boost::shared_ptr<IAnswer> updatePluginV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> removePluginV2(const boost::shared_ptr<IRequest>& request);
@@ -93,11 +90,10 @@ namespace web
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
             static std::string m_restKeyword;
-            boost::shared_ptr<ITaskInProgressHandler> m_scanForUpdatesInProgressTaskUidHandler;
-            boost::shared_ptr<ITaskInProgressHandler> m_updateYadomsInProgressTaskUidHandler;
-            std::map<std::string, boost::shared_ptr<ITaskInProgressHandler>> m_updatePluginsInProgressTaskUidHandler;
-            std::map<std::string, boost::shared_ptr<ITaskInProgressHandler>> m_updateWidgetsInProgressTaskUidHandler;
-            std::map<std::string, boost::shared_ptr<ITaskInProgressHandler>> m_updateScriptInterpretersInProgressTaskUidHandler;
+            boost::shared_ptr<task::IRunningTaskMutex> m_updateYadomsInProgressTaskUidHandler;
+            std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>> m_updatePluginsInProgressTaskUidHandler;
+            std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>> m_updateWidgetsInProgressTaskUidHandler;
+            std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>> m_updateScriptInterpretersInProgressTaskUidHandler;
          };
       } //namespace service
    } //namespace rest

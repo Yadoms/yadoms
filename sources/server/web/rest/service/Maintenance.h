@@ -1,8 +1,8 @@
 #pragma once
 #include "IRestService.h"
 #include "task/Scheduler.h"
+#include "task/IRunningTaskMutex.h"
 #include "IPathProvider.h"
-#include "ITaskInProgressHandler.h"
 #include "database/IAcquisitionRequester.h"
 #include "database/IDatabaseRequester.h"
 #include "database/IDataProvider.h"
@@ -64,8 +64,8 @@ namespace web
             boost::shared_ptr<IAnswer> getFilesPackage(const std::string& inputUrl,
                                                        const std::string& packageFilePrefix,
                                                        const std::string& resultArrayTag,
-                                                       const boost::shared_ptr<ITaskInProgressHandler>& taskInProgressHandler) const;
-            boost::shared_ptr<IAnswer> startNotReenteringTask(const boost::shared_ptr<ITaskInProgressHandler>& taskInProgressHandler,
+                                                       const boost::shared_ptr<task::IRunningTaskMutex>& taskInProgressHandler) const;
+            boost::shared_ptr<IAnswer> startNotReenteringTask(const boost::shared_ptr<task::IRunningTaskMutex>& taskInProgressHandler,
                                                               const std::function<boost::shared_ptr<task::ITask>()>& taskFct) const;
             boost::shared_ptr<IAnswer> deleteFilesPackage(const std::string& inputUrl,
                                                           const std::string& packageFilePrefix) const;
@@ -95,10 +95,10 @@ namespace web
             boost::shared_ptr<IUploadFileManager> m_uploadFileManager;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
-            boost::shared_ptr<ITaskInProgressHandler> m_backupInProgressTaskUidHandler;
-            boost::shared_ptr<ITaskInProgressHandler> m_restoreBackupInProgressTaskUidHandler;
-            boost::shared_ptr<ITaskInProgressHandler> m_packLogsInProgressTaskUidHandler;
-            boost::shared_ptr<ITaskInProgressHandler> m_exportAcquisitionsInProgressTaskUidHandler;
+            boost::shared_ptr<task::IRunningTaskMutex> m_backupInProgressTaskUidHandler;
+            boost::shared_ptr<task::IRunningTaskMutex> m_restoreBackupInProgressTaskUidHandler;
+            boost::shared_ptr<task::IRunningTaskMutex> m_packLogsInProgressTaskUidHandler;
+            boost::shared_ptr<task::IRunningTaskMutex> m_exportAcquisitionsInProgressTaskUidHandler;
          };
       } //namespace service
    } //namespace rest

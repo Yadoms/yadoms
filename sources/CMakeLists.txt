@@ -589,8 +589,11 @@ set(YADOMS_SRC
    server/task/Instance.cpp
    server/task/InstanceNotificationData.h
    server/task/InstanceNotificationData.cpp
+   server/task/IRunningTaskMutex.h
    server/task/ITask.h
    server/task/IUnique.h
+   server/task/RunningTaskMutex.h
+   server/task/RunningTaskMutex.cpp
    server/task/Scheduler.h
    server/task/Scheduler.cpp
    server/task/TaskEvent.h
@@ -671,7 +674,6 @@ set(YADOMS_SRC
    server/web/rest/service/IUploadFileManager.h
    server/web/rest/service/IRestService.h
    server/web/rest/service/IRestEndPoint.h
-   server/web/rest/service/ITaskInProgressHandler.h
    server/web/rest/service/Maintenance.h
    server/web/rest/service/MaintenanceV1.cpp
    server/web/rest/service/MaintenanceV2.cpp
@@ -693,8 +695,6 @@ set(YADOMS_SRC
    server/web/rest/service/System.cpp
    server/web/rest/service/Task.h
    server/web/rest/service/Task.cpp
-   server/web/rest/service/TaskInProgressHandler.h
-   server/web/rest/service/TaskInProgressHandler.cpp
    server/web/rest/service/Update.h
    server/web/rest/service/UpdateV1.cpp
    server/web/rest/service/UpdateV2.cpp

@@ -9,11 +9,8 @@ namespace update
    class IUpdateManager
    {
    public:
-      virtual ~IUpdateManager()
-      {
-      }
+      virtual ~IUpdateManager() = default;
       
-      virtual std::string scanForUpdatesAsync() = 0;
       virtual boost::shared_ptr<shared::CDataContainer> getUpdates(bool includePreleases) const = 0;
 
       virtual std::string updatePluginAsync(const std::string& pluginName, const std::string& downloadUrl) const = 0;
