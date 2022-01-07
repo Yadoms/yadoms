@@ -73,6 +73,7 @@ namespace web
             boost::shared_ptr<IAnswer> createBackupsV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> deleteBackupV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> restoreBackupV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> uploadBackupV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> getLogsPackageV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> createLogsPackageV2(const boost::shared_ptr<IRequest>& request);
             boost::shared_ptr<IAnswer> deleteLogsPackageV2(const boost::shared_ptr<IRequest>& request) const;

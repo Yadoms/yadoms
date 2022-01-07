@@ -12,8 +12,9 @@ namespace web
       {
       public:
          explicit CRestRequest(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request);
-         ~CRestRequest() override = default;
+         ~CRestRequest() override;
 
+         // rest::IRequest Implementation
          shared::http::ERestVerb method() const override;
          bool pathVariableExists(const std::string& key) const override;
          std::string pathVariable(const std::string& key) const override;
@@ -31,19 +32,25 @@ namespace web
          rest::EContentType contentType() const override;
          std::string body() const override;
          float acceptContentType(rest::EContentType contentType) const override;
+         boost::shared_ptr<rest::IFormDataPartStringHandler> createFormDataPartStringHandler() override;
+         boost::shared_ptr<rest::IFormDataPartFileHandler> createFormDataPartFileHandler(const boost::filesystem::path& path) override;
+         void readParts(const std::map<std::string, boost::shared_ptr<rest::IFormDataPartHandler>>& partsHandlers) override;
+         // [END] rest::IRequest Implementation
 
       private:
          static std::map<std::string, std::string> toMap(const oatpp::web::url::mapping::Pattern::MatchMap& in);
          static std::map<std::string, std::string> toMap(const oatpp::web::protocol::http::QueryParams& in);
          static std::unique_ptr<std::set<std::string>> toSet(const std::string& flagsString,
                                                              char separator);
+
          boost::shared_ptr<std::map<rest::EContentType, float>> parseAcceptContentType() const;
          std::string readBody(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request) const;
+
          std::shared_ptr<oatpp::web::protocol::http::incoming::Request> m_request;
          shared::http::ERestVerb m_method;
          mutable boost::shared_ptr<std::map<std::string, std::string>> m_queryParams;
          mutable boost::shared_ptr<std::map<rest::EContentType, float>> m_parsedAcceptContentType;
-         const std::string m_body;
+         mutable std::unique_ptr<const std::string> m_body;
       };
    } //namespace oatppServer
 } //namespace web

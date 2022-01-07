@@ -640,6 +640,9 @@ set(YADOMS_SRC
    server/web/rest/AcceptedAnswer.h
    server/web/rest/AcceptedAnswer.cpp
    server/web/rest/ContentType.h
+   server/web/rest/IFormDataPartFileHandler.h
+   server/web/rest/IFormDataPartHandler.h
+   server/web/rest/IFormDataPartStringHandler.h
    server/web/rest/IRequest.h
    server/web/rest/IAnswer.h
    server/web/rest/CreatedAnswer.h
@@ -1079,9 +1082,14 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/oatppServer/ConnectionProvider.cpp  
    server/web/oatppServer/ErrorHandler.h
    server/web/oatppServer/ErrorHandler.cpp
+   server/web/oatppServer/FormDataPartFileHandler.h
+   server/web/oatppServer/FormDataPartFileHandler.cpp
+   server/web/oatppServer/FormDataPartStringHandler.h
+   server/web/oatppServer/FormDataPartStringHandler.cpp
    server/web/oatppServer/HttpPages.h
    server/web/oatppServer/HttpPages.cpp
    server/web/oatppServer/IAuthentication.h
+   server/web/oatppServer/IOatppFormDataPartHandler.h
    server/web/oatppServer/RestRequest.h
    server/web/oatppServer/RestRequest.cpp   
    server/web/oatppServer/RestRequestHandler.h

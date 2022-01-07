@@ -1,10 +1,11 @@
 #include <regex>
 
-#include "stdafx.h"
 #include <boost/date_time/c_local_time_adjustor.hpp>
+#include <shared/http/HttpHelpers.h>
+#include <shared/tools/Filesystem.h>
 #include "Maintenance.h"
 #include "RestEndPoint.h"
-#include "shared/http/HttpHelpers.h"
+#include "stdafx.h"
 #include "task/IRunningTaskMutex.h"
 #include "task/backup/ExportBackupHandler.h"
 #include "task/backup/Restore.h"
@@ -37,6 +38,7 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/backups", deleteBackupV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/backups/{url}", deleteBackupV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPut, "maintenance/backups/{url}/restore", restoreBackupV2)); //TODO à tester
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "maintenance/backups/upload", uploadBackupV2));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "maintenance/logs", getLogsPackageV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "maintenance/logs/{url}", getLogsPackageV2));
@@ -49,10 +51,6 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "maintenance/acquisitions", createAcquisitionsExportV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/acquisitions", deleteAcquisitionsExportV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/acquisitions/{url}", deleteAcquisitionsExportV2));
-
-
-            //TODO            
-            //REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("uploadBackup"), CMaintenance::uploadBackup)
 
             return m_endPoints;
          }
@@ -238,6 +236,38 @@ namespace web
                                              return boost::make_shared<task::backup::CRestore>(url,
                                                                                                m_pathProvider);
                                           });
+         }
+
+         boost::shared_ptr<IAnswer> CMaintenance::uploadBackupV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            //TODO gérer en temps que tâche longue ?
+            try
+            {
+               if (request->contentType() != EContentType::kMultipartFormData)
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kUnsupportedMediaType);
+
+               const auto tempFile = shared::tools::CFilesystem::createTemporaryFilename();
+
+               auto backupFilePartHandler = request->createFormDataPartFileHandler(tempFile);
+               request->readParts({{"backup-file", backupFilePartHandler}});
+
+               // Need to release backupFilePartHandler to move file
+               const auto fileName = backupFilePartHandler->fileName();
+               const auto fileSize = backupFilePartHandler->fileSize();
+               backupFilePartHandler.reset();
+
+               shared::tools::CFilesystem::rename(tempFile, m_pathProvider->backupPath() / fileName);
+
+               YADOMS_LOG(information) << "Backup uploaded " << fileName << ", " << fileSize << "bytes";
+
+               return boost::make_shared<CNoContentAnswer>();
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Error upload backup request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       std::string("Fail to upload backup file ") + exception.what());
+            }
          }
 
          boost::shared_ptr<IAnswer> CMaintenance::getLogsPackageV2(const boost::shared_ptr<IRequest>& request) const
