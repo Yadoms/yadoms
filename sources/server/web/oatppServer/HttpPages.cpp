@@ -50,8 +50,7 @@ namespace web
          if (buffer == nullptr)
          {
             YADOMS_LOG(error) << "The resource \' " << page << "\' was not found";
-            return ResponseFactory::createResponse(Status::CODE_404,
-                                                   getDefinedPage("The requested resource was not found!").c_str());
+            return ResponseFactory::createResponse(Status::CODE_404, oatpp::String(page.c_str()));
          }
 
          auto response = ResponseFactory::createResponse(Status::CODE_200,
@@ -70,23 +69,6 @@ namespace web
             return DefaultMimetype;
          }
          return find->second.c_str();
-      }
-
-      std::string CHttpPages::getDefinedPage(const std::string& text)
-      //TODO la page 404 (ou autre codes d'erreur) ne devrait-elle pas être gérée par le front ?
-      {
-         std::stringstream ss;
-         ss << "<html>";
-         ss << "<head>";
-         ss << "<title>TVM</title>";
-         ss << "</head>";
-         ss << "<body>";
-         ss << "<h1>";
-         ss << text;
-         ss << "</h1>";
-         ss << "</body>";
-         ss << "</html>";
-         return ss.str();
       }
    } //namespace oatppServer
 } //namespace web

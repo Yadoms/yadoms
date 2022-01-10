@@ -23,7 +23,6 @@ namespace web
 
       private:
          const char* getMimeTypeFromPath(const std::string& path) const;
-         static std::string getDefinedPage(const std::string& text);
 
 
          //TODO : voir code DAT
