@@ -1120,7 +1120,7 @@ namespace update
                                             versions.end(),
                                             [&downloadUrl](const auto& version)
                                             {
-                                               return version->get<std::string>("downloadUrl") == downloadUrl;
+                                               return version->get("downloadUrl") == downloadUrl;
                                             });
 
       if (versionInfo == versions.end())
