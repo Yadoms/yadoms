@@ -37,7 +37,7 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "maintenance/backups", createBackupsV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/backups", deleteBackupV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "maintenance/backups/{url}", deleteBackupV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kPut, "maintenance/backups/{url}/restore", restoreBackupV2)); //TODO à tester
+            m_endPoints->push_back(MAKE_ENDPOINT(kPut, "maintenance/backups/{url}/restore", restoreBackupV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "maintenance/backups/upload", uploadBackupV2));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "maintenance/logs", getLogsPackageV2));
