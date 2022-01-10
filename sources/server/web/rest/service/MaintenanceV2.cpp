@@ -241,6 +241,7 @@ namespace web
          boost::shared_ptr<IAnswer> CMaintenance::uploadBackupV2(const boost::shared_ptr<IRequest>& request) const
          {
             //TODO gérer en temps que tâche longue ?
+            //TODO à retester et stresser (test lorsque le fichier existe déjà, test d'interruption de l'upload...)
             try
             {
                if (request->contentType() != EContentType::kMultipartFormData)
@@ -253,7 +254,7 @@ namespace web
 
                // Need to release backupFilePartHandler to move file
                const auto fileName = backupFilePartHandler->fileName();
-               const auto fileSize = backupFilePartHandler->fileSize();
+               const auto fileSize = backupFilePartHandler->fileSize(); //TODO retourn -1 avec oatpp v2.5, à restester avec oatpp v3.0
                backupFilePartHandler.reset();
 
                shared::tools::CFilesystem::rename(tempFile, m_pathProvider->backupPath() / fileName);
