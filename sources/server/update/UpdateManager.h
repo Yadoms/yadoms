@@ -99,8 +99,7 @@ namespace update
          const std::map<std::string, boost::shared_ptr<shared::CDataContainer>>& newItemAvailableVersions);
       void notifyNewUpdateAvailable() const;
       static bool checkDependencies(const boost::shared_ptr<shared::CDataContainer>& itemVersionNode);
-      std::string findMd5HashAssociatedTo(const std::string& downloadUrl,
-                                          const std::string& allUpdatesNode) const;
+      std::string findMd5HashAssociatedTo(const std::string& downloadUrl) const;
 
    private:
       bool startTask(const boost::shared_ptr<task::ITask>& task, std::string& taskUid) const;

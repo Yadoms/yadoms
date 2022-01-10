@@ -73,7 +73,7 @@ namespace update
          ///\return The package local path
          //---------------------------------------------
          static boost::filesystem::path downloadPackage(const std::string& downloadUrl,
-                                                        shared::http::CFileDownloader::onProgressFunc progressReporter);
+                                                        shared::http::CFileDownloader::OnProgressFunc progressReporter);
 
          //---------------------------------------------
          ///\brief   Download a package
@@ -84,7 +84,7 @@ namespace update
          //---------------------------------------------
          static boost::filesystem::path downloadPackageAndVerify(const std::string& downloadUrl,
                                                                  const std::string& md5Hash,
-                                                                 shared::http::CFileDownloader::onProgressFunc
+                                                                 shared::http::CFileDownloader::OnProgressFunc
                                                                  progressReporter);
 
          //---------------------------------------------

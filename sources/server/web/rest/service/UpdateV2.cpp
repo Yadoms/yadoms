@@ -22,9 +22,10 @@ namespace web
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
             //TODO revoir la gestion du scan. Lancer le scan si :
-            // - au démarrage (avec petit délai pour ne pas allourdir le démarrage ?)
-            // - après chaque update/install/remove de Yadoms ou composant
-            // - une fois par jour
+            // - [OK] au démarrage (avec petit délai pour ne pas allourdir le démarrage ?)
+            // - [TODO] après chaque update/install/remove de Yadoms ou composant (ne pas rescanner)
+            // - [OK] une fois par jour
+            // - [TODO] Sur demande du client
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "updates", getAvailableUpdatesV2));
 

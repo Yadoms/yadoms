@@ -11,7 +11,6 @@
 #include <curlpp/Options.hpp>
 #include <curlpp/Infos.hpp>
 #include <utility>
-#include "Proxy.h"
 #include "curlppHelpers.h"
 #include "shared/exception/HttpException.hpp"
 
@@ -21,7 +20,7 @@ namespace shared
    {
       boost::filesystem::path CFileDownloader::downloadFile(const std::string& url,
                                                             const boost::filesystem::path& location,
-                                                            onProgressFunc reporter)
+                                                            OnProgressFunc reporter)
       {
          curlpp::Easy request;
 
@@ -63,14 +62,14 @@ namespace shared
             [&location, &reporter](const double totalDownloaded, const double currentlyDownloaded, double, double)-> int
             {
                if (totalDownloaded != 0.0)
-                  reporter(location.string(), static_cast<float>(currentlyDownloaded * 100.0f / totalDownloaded));
+                  reporter(location.string(), static_cast<float>(currentlyDownloaded * 100.0l / totalDownloaded));
                return CURL_PROGRESSFUNC_CONTINUE;
             }));
 
          // Downloaded file
          std::ofstream localFileStream(location.string(), std::ios::binary);
          request.setOpt(curlpp::options::WriteFunction(
-            [&localFileStream](char* ptr, size_t size, size_t nbItems)
+            [&localFileStream](const char* ptr, size_t size, size_t nbItems)
             {
                const auto incomingSize = size * nbItems;
                localFileStream.write(ptr, incomingSize);
@@ -109,9 +108,9 @@ namespace shared
       boost::filesystem::path CFileDownloader::downloadFileAndVerify(const std::string& url,
                                                                      const boost::filesystem::path& location,
                                                                      const std::string& md5HashExpected,
-                                                                     onProgressFunc reporter)
+                                                                     OnProgressFunc reporter)
       {
-         const auto result = downloadFile(url,
+         auto result = downloadFile(url,
                                           location,
                                           std::move(reporter));
 

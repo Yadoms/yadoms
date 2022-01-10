@@ -1109,28 +1109,24 @@ namespace update
       return startTask(task);
    }
 
-   std::string CUpdateManager::findMd5HashAssociatedTo(const std::string& downloadUrl,
-                                                       const std::string& allUpdatesNode) const
+   std::string CUpdateManager::findMd5HashAssociatedTo(const std::string& downloadUrl) const
    {
-      //TODO retester (ça ne doit plus marcher...), puis nettoyer
-      if (/*m_allUpdates*/m_yadomsAvailableVersions->exists(allUpdatesNode, '|'))
-      {
-         auto versions = /*m_allUpdates*/m_yadomsAvailableVersions->getAsMap<boost::shared_ptr<shared::CDataContainer>>(allUpdatesNode, '|');
-         // Don't use default pathChar('.') because also contained in version name (like '2.3.0')
-         const auto versionInfo = std::find_if(versions.begin(),
-                                               versions.end(),
-                                               [&downloadUrl](const auto& version)
-                                               {
-                                                  const boost::shared_ptr<shared::CDataContainer> l = version.second;
-                                                  return l->get<std::string>("downloadUrl") == downloadUrl;
-                                               });
+      if (!m_yadomsAvailableVersions->exists("versions")
+         || !m_yadomsAvailableVersions->isArray("versions"))
+         return std::string();
 
-         if (versionInfo == versions.end())
-            return std::string();
+      const auto versions = m_yadomsAvailableVersions->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("versions");
+      const auto versionInfo = std::find_if(versions.begin(),
+                                            versions.end(),
+                                            [&downloadUrl](const auto& version)
+                                            {
+                                               return version->get<std::string>("downloadUrl") == downloadUrl;
+                                            });
 
-         return versionInfo->second->get<std::string>("md5Hash");
-      }
-      return std::string();
+      if (versionInfo == versions.end())
+         return std::string();
+
+      return (*versionInfo)->get<std::string>("md5Hash");
    }
 
    std::string CUpdateManager::updateYadomsAsync(const std::string& downloadUrl) const
@@ -1138,9 +1134,7 @@ namespace update
       boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
 
       // Find expected MD5Hash corresponding to the download URL
-      auto expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms|versions|newer");
-      if (expectedMd5Hash.empty())
-         expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms|versions|older");
+      auto expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl);
       if (expectedMd5Hash.empty())
          throw std::runtime_error("Version not found");
 

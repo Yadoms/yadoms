@@ -69,7 +69,7 @@ namespace update
       }
 
       boost::filesystem::path CWorkerHelpers::downloadPackage(const std::string& downloadUrl,
-                                                              shared::http::CFileDownloader::onProgressFunc
+                                                              shared::http::CFileDownloader::OnProgressFunc
                                                               progressReporter)
       {
          auto packageName = shared::http::CUrlHelpers::getFileName(downloadUrl);
@@ -88,7 +88,7 @@ namespace update
 
       boost::filesystem::path CWorkerHelpers::downloadPackageAndVerify(const std::string& downloadUrl,
                                                                        const std::string& md5Hash,
-                                                                       shared::http::CFileDownloader::onProgressFunc
+                                                                       shared::http::CFileDownloader::OnProgressFunc
                                                                        progressReporter)
       {
          auto packageName = shared::http::CUrlHelpers::getFileName(downloadUrl);
