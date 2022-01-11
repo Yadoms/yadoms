@@ -33,7 +33,7 @@ namespace web
 
          private:
             static const std::string& getRestKeyword();
-            
+
             boost::shared_ptr<shared::serialization::IDataSerializable> availableUpdatesV1(const std::vector<std::string>& parameters,
                                                                                            const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> updateYadomsV1(const std::vector<std::string>& parameters,
@@ -67,6 +67,7 @@ namespace web
             static void extractComponentVersions(const boost::shared_ptr<shared::CDataContainer>& updates,
                                                  const std::string& componentTag);
             static boost::shared_ptr<shared::CDataContainer> formatUpdates(const boost::shared_ptr<shared::CDataContainer>& availableUpdates);
+            boost::shared_ptr<IAnswer> forceCheckForUpdatesV2(const boost::shared_ptr<IRequest>& request) const;
 
             boost::shared_ptr<IAnswer> getAvailableUpdatesV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> updateYadomsV2(const boost::shared_ptr<IRequest>& request) const;

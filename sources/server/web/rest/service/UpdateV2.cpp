@@ -21,12 +21,7 @@ namespace web
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
-            //TODO revoir la gestion du scan. Lancer le scan si :
-            // - [OK] au démarrage (avec petit délai pour ne pas allourdir le démarrage ?)
-            // - [TODO] après chaque update/install/remove de Yadoms ou composant (ne pas rescanner)
-            // - [OK] une fois par jour
-            // - [TODO] Sur demande du client
-
+            m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/forcecheck", forceCheckForUpdatesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "updates", getAvailableUpdatesV2));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "updates/yadoms/{version}", updateYadomsV2));
@@ -143,6 +138,21 @@ namespace web
             extractComponentVersions(updates, "scriptInterpreters");
 
             return updates;
+         }
+
+         boost::shared_ptr<IAnswer> CUpdate::forceCheckForUpdatesV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               m_updateManager->asyncScanForUpdates();
+
+               return boost::make_shared<CNoContentAnswer>();
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to scan for available updates");
+            }
          }
 
          boost::shared_ptr<IAnswer> CUpdate::getAvailableUpdatesV2(const boost::shared_ptr<IRequest>& request) const

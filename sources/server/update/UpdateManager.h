@@ -24,6 +24,7 @@ namespace update
 
       // IUpdateManager implementation
       boost::shared_ptr<shared::CDataContainer> getUpdates(bool includePrereleases) const override;
+      void asyncScanForUpdates() override;
       std::string updatePluginAsync(const std::string& pluginName, const std::string& downloadUrl) const override;
       std::string installPluginAsync(const std::string& downloadUrl) const override;
       std::string removePluginAsync(const std::string& pluginName) const override;

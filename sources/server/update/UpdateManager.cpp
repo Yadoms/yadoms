@@ -16,6 +16,8 @@
 
 namespace update
 {
+   static constexpr auto NextScanTimerEventId = shared::event::kUserFirstId;
+
    CUpdateManager::CUpdateManager(boost::shared_ptr<task::CScheduler> taskScheduler,
                                   boost::shared_ptr<pluginSystem::CManager> pluginManager,
                                   boost::shared_ptr<automation::interpreter::IManager> interpreterManager,
@@ -46,7 +48,6 @@ namespace update
       {
          static const boost::posix_time::time_duration FirstScanDelay = boost::posix_time::seconds(20);
          static const boost::posix_time::time_duration ScanPeriod = boost::posix_time::hours(24);
-         static constexpr auto NextScanTimerEventId = shared::event::kUserFirstId;
 
          const auto nexScanTimer = m_evtHandler.createTimer(NextScanTimerEventId,
                                                             shared::event::CEventTimer::kOneShot,
@@ -170,6 +171,11 @@ namespace update
                           m_widgetsAvailableVersions,
                           scriptInterpretersLocalVersions,
                           m_scriptInterpretersAvailableVersions);
+   }
+
+   void CUpdateManager::asyncScanForUpdates()
+   {
+      m_evtHandler.postEvent(NextScanTimerEventId);
    }
 
    void CUpdateManager::scanForUpdates()
