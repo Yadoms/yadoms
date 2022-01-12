@@ -240,8 +240,6 @@ namespace web
 
          boost::shared_ptr<IAnswer> CMaintenance::uploadBackupV2(const boost::shared_ptr<IRequest>& request) const
          {
-            //TODO gérer en temps que tâche longue ?
-            //TODO à retester et stresser (test lorsque le fichier existe déjà, test d'interruption de l'upload...)
             try
             {
                if (request->contentType() != EContentType::kMultipartFormData)
@@ -254,12 +252,17 @@ namespace web
 
                // Need to release backupFilePartHandler to move file
                const auto fileName = backupFilePartHandler->fileName();
-               const auto fileSize = backupFilePartHandler->fileSize(); //TODO retourn -1 avec oatpp v2.5, à restester avec oatpp v3.0
                backupFilePartHandler.reset();
+
+               if (fileName.empty())
+                  throw std::runtime_error("upload aborted");
+
+               if (shared::tools::CFilesystem::exists(m_pathProvider->backupPath() / fileName))
+                  throw std::runtime_error("file already exists");
 
                shared::tools::CFilesystem::rename(tempFile, m_pathProvider->backupPath() / fileName);
 
-               YADOMS_LOG(information) << "Backup uploaded " << fileName << ", " << fileSize << "bytes";
+               YADOMS_LOG(information) << "Backup uploaded " << fileName;
 
                return boost::make_shared<CNoContentAnswer>();
             }
@@ -267,7 +270,7 @@ namespace web
             {
                YADOMS_LOG(error) << "Error upload backup request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       std::string("Fail to upload backup file ") + exception.what());
+                                                       std::string("Fail to upload backup file, ") + exception.what());
             }
          }
 
