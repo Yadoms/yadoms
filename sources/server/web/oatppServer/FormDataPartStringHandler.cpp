@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FormDataPartStringHandler.h"
-#include <oatpp/web/mime/multipart/InMemoryPartReader.hpp>
+#include <oatpp/web/mime/multipart/InMemoryDataProvider.hpp>
 #include <oatpp/web/server/handler/ErrorHandler.hpp>
 
 namespace web
@@ -8,7 +8,7 @@ namespace web
    namespace oatppServer
    {
       CFormDataPartStringHandler::CFormDataPartStringHandler()
-         : m_reader(oatpp::web::mime::multipart::createInMemoryPartReader())
+         : m_reader(oatpp::web::mime::multipart::createInMemoryPartReader(-1))
       {
       }
 
@@ -16,14 +16,14 @@ namespace web
       {
          if (!m_part)
             return std::string();
-         return m_part->getInMemoryData()->c_str();
+         return m_part->getPayload()->getInMemoryData();
       }
 
       rest::EContentType CFormDataPartStringHandler::contentType() const
       {
          if (!m_part)
             return rest::EContentType::kNone;
-         return rest::ToContentType(m_part->getHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE)->std_str());
+         return rest::ToContentType(m_part->getHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE));
       }
 
       std::shared_ptr<oatpp::web::mime::multipart::PartReader> CFormDataPartStringHandler::partReader()

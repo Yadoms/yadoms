@@ -40,7 +40,7 @@ namespace web
          const auto value = m_request->getPathVariable(key.c_str());
          if (!value)
             throw std::invalid_argument(key + "not found in request");
-         return shared::http::CHttpHelpers::urlDecode(value->std_str());
+         return shared::http::CHttpHelpers::urlDecode(value);
       }
 
       std::string CRestRequest::pathVariable(const std::string& key,
@@ -49,7 +49,7 @@ namespace web
          const auto value = m_request->getPathVariable(key.c_str());
          if (!value)
             return defaultValue;
-         return shared::http::CHttpHelpers::urlDecode(value->std_str());
+         return shared::http::CHttpHelpers::urlDecode(value);
       }
 
       std::unique_ptr<std::set<std::string>> CRestRequest::pathVariableAsList(const std::string& key,
@@ -102,7 +102,7 @@ namespace web
 
       rest::EContentType CRestRequest::contentType() const
       {
-         return rest::ToContentType(m_request->getHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE)->std_str());
+         return rest::ToContentType(m_request->getHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE));
       }
 
       std::string CRestRequest::body() const
@@ -201,11 +201,9 @@ namespace web
          auto map = boost::make_shared<std::map<rest::EContentType, float>>();
          static constexpr float DefaultQuality = 1.0;
 
-         const auto acceptString = m_request->getHeader(oatpp::web::protocol::http::Header::ACCEPT);
-         if (!acceptString)
+         const std::string accept = m_request->getHeader(oatpp::web::protocol::http::Header::ACCEPT);
+         if (accept.empty())
             return map;
-
-         const auto accept = acceptString->std_str();
 
          // Quality value is not parsed, and all content type are considered to have the same weight (1.0)
 
@@ -236,7 +234,7 @@ namespace web
             || m_method == shared::http::ERestVerb::kDelete)
             return std::string();
 
-         return request->readBodyToString()->c_str();
+         return request->readBodyToString();
       }
    } //namespace oatppServer
 } //namespace web 

@@ -1078,14 +1078,14 @@ source_group(server\\web\\poco  server/web/poco/*.*)
 set(YADOMS_SRC ${YADOMS_SRC}
    server/web/oatppServer/Authentication.h
    server/web/oatppServer/Authentication.cpp
-   server/web/oatppServer/ConnectionProvider.h
-   server/web/oatppServer/ConnectionProvider.cpp  
    server/web/oatppServer/ErrorHandler.h
    server/web/oatppServer/ErrorHandler.cpp
    server/web/oatppServer/FormDataPartFileHandler.h
    server/web/oatppServer/FormDataPartFileHandler.cpp
    server/web/oatppServer/FormDataPartStringHandler.h
    server/web/oatppServer/FormDataPartStringHandler.cpp
+   server/web/oatppServer/WebsocketRequestHandler.h
+   server/web/oatppServer/WebsocketRequestHandler.cpp  
    server/web/oatppServer/HttpPages.h
    server/web/oatppServer/HttpPages.cpp
    server/web/oatppServer/IAuthentication.h

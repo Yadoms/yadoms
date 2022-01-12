@@ -51,8 +51,8 @@ namespace web
                const auto authorizationObject = std::static_pointer_cast<oatpp::web::server::handler::DefaultBasicAuthorizationObject>(
                   basicAuthorizationHandler->handleAuthorization(authorizationHeader));
 
-               if (!basicAuthenticate(authorizationObject->userId->c_str(),
-                                      authorizationObject->password->c_str()))
+               if (!basicAuthenticate(authorizationObject->userId,
+                                      authorizationObject->password))
                {
                   oatpp::web::protocol::http::Headers responseHeaders;
                   basicAuthorizationHandler->addErrorResponseHeaders(responseHeaders);

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FormDataPartFileHandler.h"
-#include <oatpp/web/mime/multipart/FileStreamProvider.hpp>
+#include <oatpp/web/mime/multipart/FileProvider.hpp>
 #include <oatpp/web/server/handler/ErrorHandler.hpp>
 
 namespace web
@@ -16,21 +16,21 @@ namespace web
       {
          if (!m_part)
             return -1;
-         return m_part->getKnownSize();
+         return m_part->getPayload()->getKnownSize();
       }
 
       std::string CFormDataPartFileHandler::fileName() const
       {
          if (!m_part)
             return std::string();
-         return m_part->getFilename()->c_str();
+         return m_part->getFilename();
       }
 
       rest::EContentType CFormDataPartFileHandler::contentType() const
       {
          if (!m_part)
             return rest::EContentType::kNone;
-         return rest::ToContentType(m_part->getHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE)->std_str());
+         return rest::ToContentType(m_part->getHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE));
       }
 
       std::shared_ptr<oatpp::web::mime::multipart::PartReader> CFormDataPartFileHandler::partReader()

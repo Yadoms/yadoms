@@ -46,8 +46,8 @@ namespace web
             page = "/index.html";
          const auto fullPath = m_siteLocation / page;
 
-         const auto buffer = oatpp::base::StrBuffer::loadFromFile(fullPath.string().c_str());
-         if (buffer == nullptr)
+         const auto buffer = loadFile(fullPath);
+         if (buffer.empty())
          {
             YADOMS_LOG(error) << "The resource \' " << page << "\' was not found";
             return ResponseFactory::createResponse(Status::CODE_404, oatpp::String(page.c_str()));
@@ -58,6 +58,22 @@ namespace web
          response->putHeader(HeaderContentType,
                              getMimeTypeFromPath(page));
          return response;
+      }
+
+      std::string CHttpPages::loadFile(const boost::filesystem::path& file)
+      {
+         std::ifstream stream(file.string());
+         std::string str;
+
+         stream.seekg(0, std::ios::end);
+         // ReSharper disable once CppRedundantCastExpression
+         str.reserve(static_cast<size_t>(stream.tellg()));
+         stream.seekg(0, std::ios::beg);
+
+         str.assign((std::istreambuf_iterator<char>(stream)),
+                    std::istreambuf_iterator<char>());
+
+         return str;
       }
 
       const char* CHttpPages::getMimeTypeFromPath(const std::string& path) const

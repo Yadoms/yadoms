@@ -64,7 +64,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 ExternalProject_Add (oatpp-websocket_build
    DEPENDS           oatpp_build
    GIT_REPOSITORY    https://github.com/oatpp/oatpp-websocket.git
-   GIT_TAG           04612ed9b972a19472ce7b39cfbfea76d1041d7c
+   GIT_TAG           62cc5df6b761699ced70f9a719ce701db1bb0a07
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_WEBSOCKET_PATCH_CMD}   
    PREFIX            ${OATPP_WEBSOCKET_ROOT}

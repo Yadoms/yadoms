@@ -23,7 +23,7 @@ namespace web
                           oatpp::v_io_size size) override;
 
       private:
-         oatpp::data::stream::ChunkedBuffer m_buffer;
+         oatpp::data::stream::BufferOutputStream m_messageBuffer;;
       };
    } //namespace oatppServer
 } //namespace web

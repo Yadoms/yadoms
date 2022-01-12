@@ -22,6 +22,7 @@ namespace web
          // [END] oatpp::web::server::HttpRequestHandler Implementation
 
       private:
+         static std::string loadFile(const boost::filesystem::path& file);
          const char* getMimeTypeFromPath(const std::string& path) const;
 
 

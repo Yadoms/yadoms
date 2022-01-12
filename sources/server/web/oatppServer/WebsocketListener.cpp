@@ -9,23 +9,27 @@ namespace web
    {
       CWebsocketListener::CWebsocketListener()
       {
-         YADOMS_LOG_CONFIGURE("Websocket");
+         YADOMS_LOG_CONFIGURE("Websocket")
       }
 
-      void CWebsocketListener::onPing(const WebSocket& socket, const oatpp::String& message)
+      void CWebsocketListener::onPing(const WebSocket& socket,
+                                      const oatpp::String& message)
       {
          YADOMS_LOG(debug) << "onPing";
          socket.sendPong(message);
       }
 
-      void CWebsocketListener::onPong(const WebSocket& socket, const oatpp::String& message)
+      void CWebsocketListener::onPong(const WebSocket& socket,
+                                      const oatpp::String& message)
       {
          YADOMS_LOG(debug) << "onPong";
       }
 
-      void CWebsocketListener::onClose(const WebSocket& socket, v_uint16 code, const oatpp::String& message)
+      void CWebsocketListener::onClose(const WebSocket& socket,
+                                       v_uint16 code,
+                                       const oatpp::String& message)
       {
-         YADOMS_LOG(debug) << "onClose, code=" << code;
+         YADOMS_LOG(debug) << "onClose, code = " << code;
       }
 
       void CWebsocketListener::readMessage(const WebSocket& socket,
@@ -37,7 +41,7 @@ namespace web
          {
             // message frame received
 
-            m_buffer.writeSimple(data, static_cast<v_buff_size>(size));
+            m_messageBuffer.writeSimple(data, static_cast<v_buff_size>(size));
             return;
          }
 
@@ -45,13 +49,14 @@ namespace web
          {
             // message transfer finished
 
-            const auto wholeMessage = m_buffer.toString();
-            m_buffer.clear();
+            const auto wholeMessage = m_messageBuffer.toString();
+            m_messageBuffer.setCurrentPosition(0);
 
             YADOMS_LOG(trace) << "onMessage " << wholeMessage->c_str();
 
             /* Send message in reply */
-            socket.sendOneFrameText("Hello from oatpp!: " + wholeMessage);
+//TODO à conserver (voir https://github.com/oatpp/example-websocket) ?            std::lock_guard<std::mutex> lock(m_writeMutex);
+            socket.sendOneFrameText("Hello from Yadoms ! : " + wholeMessage);
          }
       }
    } //namespace oatppServer
