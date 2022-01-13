@@ -8,6 +8,8 @@ namespace web
       class CWebSocketConnection : public oatpp::websocket::ConnectionHandler::SocketInstanceListener
       {
       public:
+         virtual ~CWebSocketConnection() = default;
+
          void onAfterCreate(const oatpp::websocket::WebSocket& socket,
                             const std::shared_ptr<const ParameterMap>& params) override;
          void onBeforeDestroy(const oatpp::websocket::WebSocket& socket) override;

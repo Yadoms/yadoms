@@ -29,6 +29,7 @@ namespace web
             }
 
             YADOMS_LOG(debug) << "Cannot find frame type : " << frameAsString;
+            return boost::shared_ptr<CFrameBase>();
          }
          catch (shared::exception::CInvalidParameter&)
          {
@@ -45,9 +46,6 @@ namespace web
             YADOMS_LOG(debug) << "Fail to parse frame. Unknown error : " << frameAsString;
             throw;
          }
-
-         //if something fail return null
-         return boost::shared_ptr<CFrameBase>();
       }
    } //namespace ws
 } //namespace web

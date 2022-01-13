@@ -23,6 +23,8 @@ namespace web
                           oatpp::v_io_size size) override;
 
       private:
+         std::string processReceivedMessage(const std::string receivedMessage);
+
          oatpp::data::stream::BufferOutputStream m_messageBuffer;;
       };
    } //namespace oatppServer

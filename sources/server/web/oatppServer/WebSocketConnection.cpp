@@ -11,7 +11,7 @@ namespace web
       std::atomic<v_int32> CWebSocketConnection::m_clientsCount(0);
 
       void CWebSocketConnection::onAfterCreate(const oatpp::websocket::WebSocket& socket,
-                                                     const std::shared_ptr<const ParameterMap>& params)
+                                               const std::shared_ptr<const ParameterMap>& params)
       {
          ++m_clientsCount;
          YADOMS_LOG(information) << "New websocket connection (Client count=" << m_clientsCount.load() << ")";

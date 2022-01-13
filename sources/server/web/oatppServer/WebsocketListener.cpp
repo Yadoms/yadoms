@@ -2,6 +2,7 @@
 #include "WebsocketListener.h"
 
 #include "shared/Log.h"
+#include "web/ws/FrameFactory.h"
 
 namespace web
 {
@@ -52,12 +53,36 @@ namespace web
             const auto wholeMessage = m_messageBuffer.toString();
             m_messageBuffer.setCurrentPosition(0);
 
-            YADOMS_LOG(trace) << "onMessage " << wholeMessage->c_str();
-
-            /* Send message in reply */
-//TODO à conserver (voir https://github.com/oatpp/example-websocket) ?            std::lock_guard<std::mutex> lock(m_writeMutex);
-            socket.sendOneFrameText("Hello from Yadoms ! : " + wholeMessage);
+            try
+            {
+               socket.sendOneFrameText(processReceivedMessage(wholeMessage));
+            }
+            catch (const std::exception& e)
+            {
+               YADOMS_LOG(error) << "Error processing received message " << wholeMessage->c_str();
+            }
          }
+      }
+
+      std::string CWebsocketListener::processReceivedMessage(const std::string receivedMessage)
+      {
+         const shared::CDataContainer frame(receivedMessage);
+         const auto frameType = frame.get<std::string>("type");
+
+         if (frameType == "isAlive")
+         {
+            shared::CDataContainer reply; //TODO mettre en static pour ne pas regénérer à chaque fois
+            reply.set("type", "isAlive");
+            return reply.serialize();
+         }
+
+         if (frameType == "acquisitionFilter")
+         {
+            const auto content = frame.get<boost::shared_ptr<shared::CDataContainer>>("content");
+            //TODO
+         }
+
+         throw std::runtime_error("Invalid received message " + receivedMessage);
       }
    } //namespace oatppServer
 } //namespace web

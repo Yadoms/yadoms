@@ -62,7 +62,7 @@ namespace web
          m_websocketConnectionHandler = oatpp::websocket::ConnectionHandler::createShared();
          m_websocketConnectionHandler->setSocketInstanceListener(std::make_shared<CWebSocketConnection>());
          httpRouter->route("GET",
-                           std::string("/" + webSocketKeywordBase).c_str(), //TODO besoin préfix "/" ? TODO besoin versionner API ws ?
+                           std::string("/" + webSocketKeywordBase + "/v2").c_str(),
                            std::make_shared<CWebsocketRequestHandler>(m_websocketConnectionHandler));
 
 
