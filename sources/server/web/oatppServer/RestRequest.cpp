@@ -93,10 +93,10 @@ namespace web
                       separator);
       }
 
-      boost::shared_ptr<const std::map<std::string, std::string>> CRestRequest::queryParams() const
+      boost::shared_ptr<const std::unordered_multimap<std::string, std::string>> CRestRequest::queryParams() const
       {
          if (!m_queryParams)
-            m_queryParams = boost::make_shared<std::map<std::string, std::string>>(toMap(m_request->getQueryParameters()));
+            m_queryParams = boost::make_shared<std::unordered_multimap<std::string, std::string>>(toMap(m_request->getQueryParameters()));
          return m_queryParams;
       }
 
@@ -166,17 +166,17 @@ namespace web
          }
       }
 
-      std::map<std::string, std::string> CRestRequest::toMap(const oatpp::web::url::mapping::Pattern::MatchMap& in)
+      std::unordered_multimap<std::string, std::string> CRestRequest::toMap(const oatpp::web::url::mapping::Pattern::MatchMap& in)
       {
-         std::map<std::string, std::string> out;
+         std::unordered_multimap<std::string, std::string> out;
          for (const auto& variable : in.getVariables())
             out.emplace(variable.first.std_str(), variable.second.std_str());
          return out;
       }
 
-      std::map<std::string, std::string> CRestRequest::toMap(const oatpp::web::protocol::http::QueryParams& in)
+      std::unordered_multimap<std::string, std::string> CRestRequest::toMap(const oatpp::web::protocol::http::QueryParams& in)
       {
-         std::map<std::string, std::string> out;
+         std::unordered_multimap<std::string, std::string> out;
          for (const auto& variable : in.getAll())
             out.emplace(variable.first.std_str(), shared::http::CHttpHelpers::urlDecode(variable.second.std_str()));
          return out;

@@ -28,7 +28,6 @@ namespace web
                                 const std::string& defaultValue) const override;
          std::unique_ptr<std::set<std::string>> queryParamAsList(const std::string& key,
                                                                  char separator) const override;
-         boost::shared_ptr<const std::map<std::string, std::string>> queryParams() const override;
          rest::EContentType contentType() const override;
          std::string body() const override;
          float acceptContentType(rest::EContentType contentType) const override;
@@ -38,17 +37,19 @@ namespace web
          // [END] rest::IRequest Implementation
 
       private:
-         static std::map<std::string, std::string> toMap(const oatpp::web::url::mapping::Pattern::MatchMap& in);
-         static std::map<std::string, std::string> toMap(const oatpp::web::protocol::http::QueryParams& in);
+         static std::unordered_multimap<std::string, std::string> toMap(const oatpp::web::url::mapping::Pattern::MatchMap& in);
+         static std::unordered_multimap<std::string, std::string> toMap(const oatpp::web::protocol::http::QueryParams& in);
          static std::unique_ptr<std::set<std::string>> toSet(const std::string& flagsString,
                                                              char separator);
+
+         boost::shared_ptr<const std::unordered_multimap<std::string, std::string>> queryParams() const;
 
          boost::shared_ptr<std::map<rest::EContentType, float>> parseAcceptContentType() const;
          std::string readBody(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request) const;
 
          std::shared_ptr<oatpp::web::protocol::http::incoming::Request> m_request;
          shared::http::ERestVerb m_method;
-         mutable boost::shared_ptr<std::map<std::string, std::string>> m_queryParams;
+         mutable boost::shared_ptr<std::unordered_multimap<std::string, std::string>> m_queryParams;
          mutable boost::shared_ptr<std::map<rest::EContentType, float>> m_parsedAcceptContentType;
          mutable std::unique_ptr<const std::string> m_body;
       };

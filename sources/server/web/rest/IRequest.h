@@ -28,7 +28,6 @@ namespace web
                                         const std::string& defaultValue) const = 0;
          virtual std::unique_ptr<std::set<std::string>> queryParamAsList(const std::string& key,
                                                                          char separator = '|') const = 0;
-         virtual boost::shared_ptr<const std::map<std::string, std::string>> queryParams() const = 0;
 
          virtual EContentType contentType() const = 0;
          virtual std::string body() const = 0;
