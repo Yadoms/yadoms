@@ -8,7 +8,7 @@ namespace notification {
    //-----------------------------
    ///\brief Notification center
    //-----------------------------
-   class CNotificationCenter
+   class CNotificationCenter //TODO virer ?
    {
    public:
       //-----------------------------

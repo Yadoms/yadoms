@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "WebsocketListener.h"
 
+#include <utility>
+
 #include "shared/Log.h"
 #include "web/ws/FrameFactory.h"
 
@@ -8,7 +10,8 @@ namespace web
 {
    namespace oatppServer
    {
-      CWebsocketListener::CWebsocketListener()
+      CWebsocketListener::CWebsocketListener(boost::shared_ptr<CWebsocketOnNewAcquisitionHandler> acquisitionObserver)
+         : m_acquisitionObserver(std::move(acquisitionObserver))
       {
          YADOMS_LOG_CONFIGURE("Websocket")
       }
@@ -55,31 +58,57 @@ namespace web
 
             try
             {
-               socket.sendOneFrameText(processReceivedMessage(wholeMessage));
+               processReceivedMessage(wholeMessage,
+                                      socket);
             }
-            catch (const std::exception& e)
+            catch (const std::exception&)
             {
                YADOMS_LOG(error) << "Error processing received message " << wholeMessage->c_str();
             }
          }
       }
 
-      std::string CWebsocketListener::processReceivedMessage(const std::string receivedMessage)
+      void CWebsocketListener::sendMessage(const std::string& message,
+                                           const WebSocket& socket)
+      {
+         //TODO gérer tous les send :
+         // - acquisition summary
+         // - IsAlive périodique
+         // - timeNotification
+         // - newDevice ==> à supprimer ?
+         // - deviceDeleted ==> à supprimer ?
+         // - newKeyword ==> à supprimer ?
+         // - keywordDeleted ==> à supprimer ?
+         // - eventLog
+         // - taskUpdate ==> à supprimer ?
+         socket.sendOneFrameText(message);
+      }
+
+      std::string CWebsocketListener::makeIsAliveReply()
+      {
+         shared::CDataContainer reply;
+         reply.set("type", "isAlive");
+         return reply.serialize();
+      }
+
+      void CWebsocketListener::processReceivedMessage(const std::string& receivedMessage,
+                                                      const WebSocket& socket) const
       {
          const shared::CDataContainer frame(receivedMessage);
          const auto frameType = frame.get<std::string>("type");
 
          if (frameType == "isAlive")
          {
-            shared::CDataContainer reply; //TODO mettre en static pour ne pas regénérer à chaque fois
-            reply.set("type", "isAlive");
-            return reply.serialize();
+            static const auto IsAliveReply = makeIsAliveReply();
+            sendMessage(IsAliveReply, socket);
+            return;
          }
 
          if (frameType == "acquisitionFilter")
          {
-            const auto content = frame.get<boost::shared_ptr<shared::CDataContainer>>("content");
-            //TODO
+            YADOMS_LOG(debug) << "Receive new acquisition filter : " << frame.getChild("keywords")->serialize();
+            m_acquisitionObserver->setFilter(frame.get<std::vector<int>>("keywords"));
+            return;
          }
 
          throw std::runtime_error("Invalid received message " + receivedMessage);

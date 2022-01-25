@@ -19,15 +19,11 @@ namespace notification {
       {
          //make the observers list copy, and release mutex
          boost::mutex::scoped_lock lock(m_mutex);
-         std::vector< boost::shared_ptr< IObserver > > localList(m_observers);
+         const std::vector<boost::shared_ptr<IObserver>> localList(m_observers);
          lock.unlock();
 
-         //do post notification (may be long)
-         std::vector< boost::shared_ptr< IObserver > >::iterator i;
-         for (i = localList.begin(); i != localList.end(); ++i)
-         {
-            (*i)->observe(notification);
-         }
+         for (const auto& i : localList)
+            i->observe(notification);
       }
       else
       {
