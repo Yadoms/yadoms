@@ -3,6 +3,7 @@ include(ExternalProject)
 set(OATPP_ROOT ${CMAKE_BINARY_DIR}/external-libs/oatpp)
 
 list(APPEND OATPP_BUILD_ARGS "-DOATPP_BUILD_TESTS=OFF")
+list(APPEND OATPP_BUILD_ARGS "-DOATPP_LINK_TEST_LIBRARY=OFF")
 list(APPEND OATPP_BUILD_ARGS "-DOATPP_INSTALL=OFF")
 list(APPEND OATPP_BUILD_ARGS "-DOATPP_MSVC_LINK_STATIC_RUNTIME=ON")
 if(NOT WIN32)
@@ -57,7 +58,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp_build
    GIT_REPOSITORY    https://github.com/oatpp/oatpp.git
-   GIT_TAG           349d96114ae03ae6fd44dd2a398e5cdd9529fb48
+   GIT_TAG           061e38ef11635a20c069438a6ca80b73f616b67d
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_PATCH_CMD}   
    PREFIX            ${OATPP_ROOT}
