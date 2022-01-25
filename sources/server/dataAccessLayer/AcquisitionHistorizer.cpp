@@ -6,13 +6,11 @@
 #include "notification/acquisition/Notification.hpp"
 #include "notification/summary/Notification.hpp"
 #include "notification/Helpers.hpp"
-#include "observers/AcquisitionObservers.h"
 
 namespace dataAccessLayer
 {
    CAcquisitionHistorizer::CAcquisitionHistorizer(boost::shared_ptr<database::IDataProvider> dataProvider)
-      : m_dataProvider(dataProvider),
-        m_acquisitionObservers(boost::make_shared<observers::CAcquisitionObservers>())
+      : m_dataProvider(dataProvider)
    {
    }
 
@@ -105,51 +103,27 @@ namespace dataAccessLayer
 
             if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime))
                acquisitionSummary.push_back(
-                  m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kHour,
-                                                                             dataTime));
+                  m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime));
             if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime))
                acquisitionSummary.push_back(
                   m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime));
-            if (m_dataProvider->getAcquisitionRequester()->
-                                summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kMonth, dataTime))
+            if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kMonth, dataTime))
                acquisitionSummary.push_back(
-                  m_dataProvider->getAcquisitionRequester()->
-                                  saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kMonth, dataTime));
+                  m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kMonth, dataTime));
             if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kYear, dataTime))
                acquisitionSummary.push_back(
-                  m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kYear,
-                                                                             dataTime));
+                  m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kYear, dataTime));
          }
 
-         // Post notifications
-         postNotification(acq);
+         //post notification
+         const auto notificationData = boost::make_shared<notification::acquisition::CNotification>(acq);
+         notification::CHelpers::postNotification(notificationData);
+
          if (!acquisitionSummary.empty())
-            postNotification(acquisitionSummary);
+         {
+            const auto notificationDataSummary = boost::make_shared<notification::summary::CNotification>(acquisitionSummary);
+            notification::CHelpers::postNotification(notificationDataSummary);
+         }
       }
-   }
-
-   boost::shared_ptr<observers::IAcquisitionObservers> CAcquisitionHistorizer::acquisitionObservers()
-   {
-      return m_acquisitionObservers;
-   }
-
-   void CAcquisitionHistorizer::postNotification(boost::shared_ptr<database::entities::CAcquisition> acquisition) const
-   {
-      m_acquisitionObservers->onNewAcquisition(acquisition);
-
-      // TODO virer (utilise l'obsolète CNotificationCenter)
-      const auto notificationData = boost::make_shared<notification::acquisition::CNotification>(acquisition);
-      notification::CHelpers::postNotification(notificationData);
-   }
-
-   void CAcquisitionHistorizer::postNotification(const std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>>& acquisitionSummary)
-   {
-      //TODO faire pareil que pour m_acquisitionObservers
-      //for (auto& acquisitionObserver : m_acquisitionSummaryObservers)
-      //   acquisitionObserver->onNewAcquisition(acquisition);
-
-      // TODO virer (utilise l'obsolète CNotificationCenter)
-      const auto notificationDataSummary = boost::make_shared<notification::summary::CNotification>(acquisitionSummary);
-      notification::CHelpers::postNotification(notificationDataSummary);
    }
 } //namespace dataAccessLayer 

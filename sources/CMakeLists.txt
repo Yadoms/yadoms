@@ -431,11 +431,6 @@ set(YADOMS_SRC
    server/dataAccessLayer/IDeviceManager.h
    server/dataAccessLayer/IEventLogger.h
    server/dataAccessLayer/IKeywordManager.h
-
-   server/dataAccessLayer/observers/INewAcquisitionObserver.h
-   server/dataAccessLayer/observers/IAcquisitionObservers.h
-   server/dataAccessLayer/observers/AcquisitionObservers.h
-   server/dataAccessLayer/observers/AcquisitionObservers.cpp
    
    server/database/DatabaseException.hpp
    server/database/IConfigurationRequester.h
@@ -1105,9 +1100,6 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/oatppServer/WebSocketConnection.cpp    
    server/web/oatppServer/WebsocketListener.h
    server/web/oatppServer/WebsocketListener.cpp    
-   server/web/oatppServer/WebsocketListener.h
-   server/web/oatppServer/WebsocketOnNewAcquisitionHandler.cpp  
-   server/web/oatppServer/WebsocketOnNewAcquisitionHandler.h   
 )
 source_group(server\\web\\oatppServer  server/web/oatppServer/*.*)
 

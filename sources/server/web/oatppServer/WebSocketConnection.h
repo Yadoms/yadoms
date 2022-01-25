@@ -1,9 +1,8 @@
 #pragma once
 #include <oatpp-websocket/ConnectionHandler.hpp>
 
-#include "WebsocketOnNewAcquisitionHandler.h"
-#include "dataAccessLayer/IDataAccessLayer.h"
-#include "shared/http/ssdp/Client.h"
+#include "shared/DataContainer.h"
+#include "shared/event/EventHandler.hpp"
 
 namespace web
 {
@@ -12,18 +11,21 @@ namespace web
       class CWebSocketConnection : public oatpp::websocket::ConnectionHandler::SocketInstanceListener
       {
       public:
-         explicit CWebSocketConnection(boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer);
-
          virtual ~CWebSocketConnection() = default;
 
          void onAfterCreate(const oatpp::websocket::WebSocket& socket,
                             const std::shared_ptr<const ParameterMap>& params) override;
          void onBeforeDestroy(const oatpp::websocket::WebSocket& socket) override;
+         static void sendMessage(const std::string& message, const WebSocket& socket);
 
       private:
+         std::unique_ptr<shared::CDataContainer> makeNewAcquisitionContainer() const;
+         static std::string makeIsAliveReply();
+         void handleConnectionThread(const oatpp::websocket::WebSocket& socket);
+
          static std::atomic<v_int32> m_clientsCount;
-         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> m_dataAccessLayer;
-         boost::shared_ptr<CWebsocketOnNewAcquisitionHandler> m_acquisitionObserver;
+         boost::thread m_connectionThread;
+         shared::event::CEventHandler m_eventHandler;
       };
    } //namespace oatppServer
 } //namespace web

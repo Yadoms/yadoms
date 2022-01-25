@@ -10,7 +10,7 @@ namespace web
       //-----------------------------
       ///\brief A base class for frames
       //-----------------------------
-      class CFrameBase//TODO utile ?
+      class CFrameBase
       {
       public:
          virtual ~CFrameBase() = default;
@@ -18,7 +18,7 @@ namespace web
          //-----------------------------
          ///\brief Enumeration for all frame type
          //-----------------------------
-         DECLARE_ENUM_HEADER(EFrameType,//TODO utile ?
+         DECLARE_ENUM_HEADER(EFrameType,
                              ((AcquisitionFilter))
                              ((AcquisitionUpdate))
                              ((AcquisitionSummaryUpdate))

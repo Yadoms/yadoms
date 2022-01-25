@@ -3,11 +3,11 @@
 #include <oatpp/network/Server.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
+#include <oatpp/web/server/api/Endpoint.hpp>
 #include <oatpp-websocket/ConnectionHandler.hpp>
 
 #include "IAuthentication.h"
 #include "HttpPages.h"
-#include "dataAccessLayer/IDataAccessLayer.h"
 #include "web/IWebServer.h"
 #include "web/rest/service/IRestService.h"
 
@@ -35,7 +35,6 @@ namespace web
          //                   Example configureAlias("/test/", "c:\\path\\to\\alias\\files\\")
          //                   -> then http://server:port/test/index.html will take c:\\path\\to\\alias\\files\\index.html
          //\param[in] authentication      Authentication handling
-         //\param[in] dataProvider        Data provider
          CWebServer(const std::string& address,
                     unsigned short port,
                     bool useSsl,
@@ -46,8 +45,7 @@ namespace web
                     const std::string& webSocketKeywordBase,
                     bool allowExternalAccess,
                     boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
-                    const boost::shared_ptr<IAuthentication>& authentication,
-                    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer);
+                    const boost::shared_ptr<IAuthentication>& authentication);
          ~CWebServer() override;
 
       private:

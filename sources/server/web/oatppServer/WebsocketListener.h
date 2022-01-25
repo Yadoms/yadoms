@@ -1,7 +1,7 @@
 #pragma once
 #include <oatpp-websocket/ConnectionHandler.hpp>
 
-#include "WebsocketOnNewAcquisitionHandler.h"
+#include "shared/event/EventHandler.hpp"
 
 namespace web
 {
@@ -10,7 +10,8 @@ namespace web
       class CWebsocketListener final : public oatpp::websocket::WebSocket::Listener
       {
       public:
-         CWebsocketListener(boost::shared_ptr<CWebsocketOnNewAcquisitionHandler> acquisitionObserver);
+         CWebsocketListener(shared::event::CEventHandler& eventHandler,
+                            int onReceiveEventId);
          ~CWebsocketListener() override = default;
 
          void onPing(const WebSocket& socket,
@@ -26,14 +27,9 @@ namespace web
                           oatpp::v_io_size size) override;
 
       private:
-         static void sendMessage(const std::string& message,
-                                 const WebSocket& socket);
-         static std::string makeIsAliveReply();
-         void processReceivedMessage(const std::string& receivedMessage,
-                                     const WebSocket& socket) const;
-
          oatpp::data::stream::BufferOutputStream m_messageBuffer;
-         boost::shared_ptr<CWebsocketOnNewAcquisitionHandler> m_acquisitionObserver;
+         shared::event::CEventHandler& m_eventHandler;
+         int m_onReceiveEventId;
       };
    } //namespace oatppServer
 } //namespace web

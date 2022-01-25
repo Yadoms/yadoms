@@ -332,8 +332,8 @@ std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
    bool allowExternalAccess,
    const boost::filesystem::path& webServerPath,
    const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
-   const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
-   const boost::shared_ptr<std::map<std::string, boost::filesystem::path>>& aliases,
+   boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>> restServices,
+   boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
    const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
    bool skipPasswordCheck) const
 {
@@ -349,6 +349,5 @@ std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
                                                          aliases,
                                                          boost::make_shared<web::oatppServer::CAuthentication>(
                                                             configurationManager,
-                                                            skipPasswordCheck),
-                                                         dataAccessLayer);
+                                                            skipPasswordCheck));
 }

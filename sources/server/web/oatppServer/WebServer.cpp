@@ -7,7 +7,9 @@
 #include <oatpp/network/tcp/server/ConnectionProvider.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
+#include <oatpp/web/server/api/Endpoint.hpp>
 #include <oatpp-websocket/Handshaker.hpp>
+#include <oatpp-swagger/Controller.hpp>
 #include "ErrorHandler.h"
 #include "RestRequestHandler.h"
 #include "WebSocketConnection.h"
@@ -27,8 +29,7 @@ namespace web
                              const std::string& webSocketKeywordBase,
                              bool allowExternalAccess,
                              boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
-                             const boost::shared_ptr<IAuthentication>& authentication,
-                             boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer)
+                             const boost::shared_ptr<IAuthentication>& authentication)
          : m_aliases(std::move(aliases)),
            m_restServices(std::move(restServices))
       {
@@ -59,7 +60,7 @@ namespace web
 
          // Websocket
          m_websocketConnectionHandler = oatpp::websocket::ConnectionHandler::createShared();
-         m_websocketConnectionHandler->setSocketInstanceListener(std::make_shared<CWebSocketConnection>(dataAccessLayer));
+         m_websocketConnectionHandler->setSocketInstanceListener(std::make_shared<CWebSocketConnection>());
          httpRouter->route("GET",
                            std::string("/" + webSocketKeywordBase + "/v2").c_str(),
                            std::make_shared<CWebsocketRequestHandler>(m_websocketConnectionHandler));

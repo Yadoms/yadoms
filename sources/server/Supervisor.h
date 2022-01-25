@@ -4,7 +4,6 @@
 #include <shared/versioning/SemVer.h>
 #include "IPathProvider.h"
 #include "dataAccessLayer/IDataAccessLayer.h"
-#include "database/IDataProvider.h"
 #include "dateTime/TimeZoneDatabase.h"
 #include "dateTime/TimeZoneProvider.h"
 #include "web/IWebServer.h"
@@ -68,8 +67,8 @@ private:
       bool allowExternalAccess,
       const boost::filesystem::path& webServerPath,
       const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
-      const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
-      const boost::shared_ptr<std::map<std::string, boost::filesystem::path>>& aliases,
+      boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>> restServices,
+      boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
       const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
       bool skipPasswordCheck) const;
 

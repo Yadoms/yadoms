@@ -1,8 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 
-#include "observers/IAcquisitionObservers.h"
-
 namespace dataAccessLayer
 {
    class IAcquisitionHistorizer
@@ -20,10 +18,10 @@ namespace dataAccessLayer
 
       //--------------------------------------------------------------
       /// \brief           Save a new list of data into base
-      /// \param [in]      keywordIdVect   The list of keyword id
+      /// \param [in]      KeywordIdVect   The list of keyword id
       /// \param [in]      dataVect        The list of data
       //--------------------------------------------------------------
-      virtual void saveData(std::vector<int> keywordIdVect,
+      virtual void saveData(std::vector<int> KeywordIdVect,
                             const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect) = 0;
 
       //--------------------------------------------------------------
@@ -35,11 +33,5 @@ namespace dataAccessLayer
       virtual void saveData(int keywordId,
                             const shared::plugin::yPluginApi::historization::IHistorizable& data,
                             boost::posix_time::ptime& dataTime) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief           Get the new acquisition observer
-      /// \return The observer
-      //--------------------------------------------------------------
-      virtual boost::shared_ptr<observers::IAcquisitionObservers> acquisitionObservers() = 0;
    };
 } //namespace dataAccessLayer 

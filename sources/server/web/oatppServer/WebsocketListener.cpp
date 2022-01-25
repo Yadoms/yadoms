@@ -1,19 +1,18 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "WebsocketListener.h"
 
-#include <utility>
-
-#include "shared/Log.h"
 #include "web/ws/FrameFactory.h"
 
 namespace web
 {
    namespace oatppServer
    {
-      CWebsocketListener::CWebsocketListener(boost::shared_ptr<CWebsocketOnNewAcquisitionHandler> acquisitionObserver)
-         : m_acquisitionObserver(std::move(acquisitionObserver))
+      CWebsocketListener::CWebsocketListener(shared::event::CEventHandler& eventHandler,
+                                             int onReceiveEventId)
+         : m_eventHandler(eventHandler),
+           m_onReceiveEventId(onReceiveEventId)
       {
-         YADOMS_LOG_CONFIGURE("Websocket")
+         YADOMS_LOG_CONFIGURE("Websocket listener")
       }
 
       void CWebsocketListener::onPing(const WebSocket& socket,
@@ -53,65 +52,19 @@ namespace web
          {
             // message transfer finished
 
-            const auto wholeMessage = m_messageBuffer.toString();
+            const auto wholeMessage(*m_messageBuffer.toString());
             m_messageBuffer.setCurrentPosition(0);
 
             try
             {
-               processReceivedMessage(wholeMessage,
-                                      socket);
+               m_eventHandler.postEvent<const std::string>(m_onReceiveEventId,
+                                                           wholeMessage);
             }
             catch (const std::exception&)
             {
-               YADOMS_LOG(error) << "Error processing received message " << wholeMessage->c_str();
+               YADOMS_LOG(error) << "Error processing received message " << wholeMessage;
             }
          }
-      }
-
-      void CWebsocketListener::sendMessage(const std::string& message,
-                                           const WebSocket& socket)
-      {
-         //TODO gérer tous les send :
-         // - acquisition summary
-         // - IsAlive périodique
-         // - timeNotification
-         // - newDevice ==> à supprimer ?
-         // - deviceDeleted ==> à supprimer ?
-         // - newKeyword ==> à supprimer ?
-         // - keywordDeleted ==> à supprimer ?
-         // - eventLog
-         // - taskUpdate ==> à supprimer ?
-         socket.sendOneFrameText(message);
-      }
-
-      std::string CWebsocketListener::makeIsAliveReply()
-      {
-         shared::CDataContainer reply;
-         reply.set("type", "isAlive");
-         return reply.serialize();
-      }
-
-      void CWebsocketListener::processReceivedMessage(const std::string& receivedMessage,
-                                                      const WebSocket& socket) const
-      {
-         const shared::CDataContainer frame(receivedMessage);
-         const auto frameType = frame.get<std::string>("type");
-
-         if (frameType == "isAlive")
-         {
-            static const auto IsAliveReply = makeIsAliveReply();
-            sendMessage(IsAliveReply, socket);
-            return;
-         }
-
-         if (frameType == "acquisitionFilter")
-         {
-            YADOMS_LOG(debug) << "Receive new acquisition filter : " << frame.getChild("keywords")->serialize();
-            m_acquisitionObserver->setFilter(frame.get<std::vector<int>>("keywords"));
-            return;
-         }
-
-         throw std::runtime_error("Invalid received message " + receivedMessage);
       }
    } //namespace oatppServer
 } //namespace web

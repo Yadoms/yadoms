@@ -8,7 +8,7 @@ namespace web
       //-----------------------------
       ///\brief Frame which can be received from GUI to filter the notifications
       //-----------------------------
-      class CAcquisitionFilterFrame : public CFrameBase //TODO virer ?
+      class CAcquisitionFilterFrame : public CFrameBase
       {
       public:
          //-----------------------------
