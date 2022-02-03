@@ -8,8 +8,12 @@ namespace web
    namespace oatppServer
    {
       CWebsocketListener::CWebsocketListener(shared::event::CEventHandler& eventHandler,
+                                             int onPongEventId,
+                                             int onPingEventId,
                                              int onReceiveEventId)
          : m_eventHandler(eventHandler),
+           m_onPongEventId(onPongEventId),
+           m_onPingEventId(onPingEventId),
            m_onReceiveEventId(onReceiveEventId)
       {
          YADOMS_LOG_CONFIGURE("Websocket listener")
@@ -18,14 +22,13 @@ namespace web
       void CWebsocketListener::onPing(const WebSocket& socket,
                                       const oatpp::String& message)
       {
-         YADOMS_LOG(debug) << "onPing";
-         socket.sendPong(message);
+         m_eventHandler.postEvent(m_onPingEventId);
       }
 
       void CWebsocketListener::onPong(const WebSocket& socket,
                                       const oatpp::String& message)
       {
-         YADOMS_LOG(debug) << "onPong";
+         m_eventHandler.postEvent(m_onPongEventId);
       }
 
       void CWebsocketListener::onClose(const WebSocket& socket,

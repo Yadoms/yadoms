@@ -11,6 +11,8 @@ namespace web
       {
       public:
          CWebsocketListener(shared::event::CEventHandler& eventHandler,
+                            int onPongEventId,
+                            int onPingEventId,
                             int onReceiveEventId);
          ~CWebsocketListener() override = default;
 
@@ -29,6 +31,8 @@ namespace web
       private:
          oatpp::data::stream::BufferOutputStream m_messageBuffer;
          shared::event::CEventHandler& m_eventHandler;
+         int m_onPongEventId;
+         int m_onPingEventId;
          int m_onReceiveEventId;
       };
    } //namespace oatppServer

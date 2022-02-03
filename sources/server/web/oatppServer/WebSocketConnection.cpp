@@ -15,7 +15,11 @@ namespace web
 
       enum WebSocketEvent
       {
-         kNewAcquisition = shared::event::kUserFirstId,
+         kPingTimer = shared::event::kUserFirstId,
+         kOnPong,
+         kPongTimeout,
+         kOnPing,
+         kNewAcquisition,
          kReceived
       };
 
@@ -28,6 +32,8 @@ namespace web
          /* In this particular case we create one CWebsocketListener per each connection */
          /* Which may be redundant in many cases */
          socket.setListener(std::make_shared<CWebsocketListener>(m_eventHandler,
+                                                                 kOnPong,
+                                                                 kOnPing,
                                                                  kReceived));
 
          m_connectionThread = boost::thread([this, &socket]
@@ -84,64 +90,90 @@ namespace web
 
          std::vector<boost::shared_ptr<notification::IObserver>> observers;
 
-         try
-         {
-            auto acquisitionAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(
-               m_eventHandler,
-               kNewAcquisition));
-            const auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(acquisitionAction));
-            notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
-            observers.emplace_back(newAcquisitionObserver);
+         auto acquisitionAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(
+            m_eventHandler,
+            kNewAcquisition));
+         const auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(acquisitionAction));
+         notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
+         observers.emplace_back(newAcquisitionObserver);
 
-            while (true)
+         // Ping timer
+         const auto pingTimer = m_eventHandler.createTimer(kPingTimer,
+                                                           shared::event::CEventTimer::EPeriodicity::kOneShot,
+                                                           boost::posix_time::seconds(2));
+         // Wait for pong timer
+         const auto pongTimeoutTimer = m_eventHandler.createTimer(kPongTimeout,
+                                                                  shared::event::CEventTimer::EPeriodicity::kOneShot);
+
+         while (true)
+         {
+            try
             {
                switch (m_eventHandler.waitForEvents())
                {
+               case kPingTimer:
+                  {
+                     socket.sendPing(std::string());
+                     pongTimeoutTimer->start(boost::posix_time::seconds(2));
+
+                     break;
+                  }
+               case kOnPong:
+                  {
+                     pongTimeoutTimer->stop();
+                     pingTimer->start();
+
+                     break;
+                  }
+               case kPongTimeout:
+                  {
+                     YADOMS_LOG(error) << "No answer to ping";
+                     throw boost::thread_interrupted();
+                  }
+               case kOnPing:
+                  {
+                     socket.sendPong(std::string());
+                     break;
+                  }
                case kNewAcquisition:
                   {
                      auto newAcquisition = m_eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>()->
                                                           getAcquisition();
 
-                     static auto newAcquisitionContainer = makeNewAcquisitionContainer();
-                     newAcquisitionContainer->set("data", *newAcquisition);
-                     sendMessage(newAcquisitionContainer->serialize(),
+                     shared::CDataContainer newAcquisitionContainer;
+                     newAcquisitionContainer.set("newAcquisition", *newAcquisition);
+                     sendMessage(newAcquisitionContainer.serialize(),
                                  socket);
                      break;
                   }
 
                case kReceived:
                   {
-                     const auto receivedMessage = m_eventHandler.getEventData<const std::string>();
+                     const shared::CDataContainer frame(m_eventHandler.getEventData<const std::string>());
 
-                     const shared::CDataContainer frame(receivedMessage);
-                     const auto frameType = frame.get<std::string>("type");
-
-                     if (frameType == "isAlive")
+                     if (frame.exists("acquisitionFilter"))
                      {
-                        static const auto IsAliveReply = makeIsAliveReply();
-                        sendMessage(IsAliveReply, socket);
-                     }
-                     else if (frameType == "acquisitionFilter")
-                     {
-                        YADOMS_LOG(debug) << "Receive new acquisition filter : " << frame.getChild("keywords")->serialize();
-                        newAcquisitionObserver->resetKeywordIdFilter(frame.get<std::vector<int>>("keywords"));
+                        YADOMS_LOG(debug) << "Receive new acquisition filter : " << frame.getChild("acquisitionFilter.keywords")->serialize();
+                        newAcquisitionObserver->resetKeywordIdFilter(frame.get<std::vector<int>>("acquisitionFilter.keywords"));
                      }
                      else
                      {
-                        YADOMS_LOG(warning) << "Invalid received message : " << receivedMessage;
+                        YADOMS_LOG(warning) << "Invalid received message : " << m_eventHandler.getEventData<const std::string>();
                      }
                      break;
                   }
                   //TODO tous les autres case, et un default !
                }
             }
-         }
-         catch (const boost::thread_interrupted&)
-         {
-         }
-         catch (const std::exception& e)
-         {
-            YADOMS_LOG(error) << "Error in socket connection handling, " << e.what();
+            catch (const boost::thread_interrupted&)
+            {
+               socket.sendClose();
+               break;
+            }
+            catch (const std::exception& e)
+            {
+               YADOMS_LOG(error) << "Error in socket connection handling, " << e.what();
+            }
          }
 
          for (const auto& observer : observers)
