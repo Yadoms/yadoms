@@ -1,42 +1,42 @@
 #include "stdafx.h"
-#include "Profile_D2_04_08.h"
+#include "Profile_D2_04_1E.h"
 
 #include "profiles/eep.h"
 
 
-CProfile_D2_04_08::CProfile_D2_04_08(std::string deviceId,
+CProfile_D2_04_1E::CProfile_D2_04_1E(std::string deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_common(5000.0),
      m_historizers({
-        m_common.m_temperature, m_common.m_humidity, m_common.m_co2, m_common.m_day, m_common.m_battery
+        m_common.m_co2, m_common.m_day, m_common.m_battery
      })
 {
 }
 
-const std::string& CProfile_D2_04_08::profile() const
+const std::string& CProfile_D2_04_1E::profile() const
 {
-   static const std::string Profile("D2-04-08");
+   static const std::string Profile("D2-04-1E");
    return Profile;
 }
 
-const std::string& CProfile_D2_04_08::title() const
+const std::string& CProfile_D2_04_1E::title() const
 {
-   static const std::string Title(R"(CO2, Humidity, Temperature, Day/Night and Autonomy)");
+   static const std::string Title(R"(CO2, Day/Night and Autonomy)");
    return Title;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_04_08::allHistorizers() const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_04_1E::allHistorizers() const
 {
    return m_historizers;
 }
 
-void CProfile_D2_04_08::readInitialState(const std::string& senderId,
+void CProfile_D2_04_1E::readInitialState(const std::string& senderId,
                                          boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // Read-only device
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_04_08::states(
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_04_1E::states(
    unsigned char rorg,
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
@@ -49,7 +49,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
-void CProfile_D2_04_08::sendCommand(const std::string& keyword,
+void CProfile_D2_04_1E::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
@@ -57,7 +57,7 @@ void CProfile_D2_04_08::sendCommand(const std::string& keyword,
    throw std::logic_error("device supports no command sending");
 }
 
-void CProfile_D2_04_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+void CProfile_D2_04_1E::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
                                           boost::shared_ptr<IMessageHandler> messageHandler) const
 {

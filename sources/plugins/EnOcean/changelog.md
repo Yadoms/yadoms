@@ -1,5 +1,5 @@
 ### 2.1.0
-* Add D2_04_08 profile support
+* Add D2_04_XX profiles support
 
 ### 2.0.5
 * D2_01_0F, D2_01_12 profiles : fix configuration

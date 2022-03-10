@@ -6,12 +6,12 @@
 #include "Profile_D2_04_Common.h"
 
 
-class CProfile_D2_04_08 : public IType
+class CProfile_D2_04_07 : public IType
 {
 public:
-   CProfile_D2_04_08(std::string deviceId,
+   CProfile_D2_04_07(std::string deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   ~CProfile_D2_04_08() override = default;
+   ~CProfile_D2_04_07() override = default;
 
    // IType implementation
    const std::string& profile() const override;
