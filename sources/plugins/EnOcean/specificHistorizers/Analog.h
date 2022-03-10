@@ -5,13 +5,13 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
-   class CAnalog : public yApi::historization::CSingleHistorizableData<unsigned int>
+   class CAnalog final : public yApi::historization::CSingleHistorizableData<unsigned int>
    {
    public:
       explicit CAnalog(const std::string& keywordName,
                        unsigned int min,
                        unsigned int max,
                        yApi::EKeywordAccessMode accessMode = yApi::EKeywordAccessMode::kGetSet);
-      virtual ~CAnalog() = default;
+      ~CAnalog() override = default;
    };
 } // namespace specificHistorizers

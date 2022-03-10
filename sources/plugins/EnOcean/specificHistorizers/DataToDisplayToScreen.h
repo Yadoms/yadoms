@@ -21,10 +21,10 @@ namespace specificHistorizers
                        ((RelativeHumidity)(11))
    ) ;
 
-   class CDataToDisplayToScreen : public yApi::historization::CSingleHistorizableData<EDataToDisplayToScreen>
+   class CDataToDisplayToScreen final : public yApi::historization::CSingleHistorizableData<EDataToDisplayToScreen>
    {
    public:
       explicit CDataToDisplayToScreen(const std::string& keywordName);
-      virtual ~CDataToDisplayToScreen() = default;
+      ~CDataToDisplayToScreen() override = default;
    };
 } // namespace specificHistorizers

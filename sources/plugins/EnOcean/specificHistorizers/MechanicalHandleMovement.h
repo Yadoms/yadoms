@@ -12,11 +12,11 @@ namespace specificHistorizers
                        ((ToHorizontal)(2))
    ) ;
 
-   class CMechanicalHandleMovement : public yApi::historization::CSingleHistorizableData<
+   class CMechanicalHandleMovement final : public yApi::historization::CSingleHistorizableData<
          EMechanicalHandleMovement>
    {
    public:
       explicit CMechanicalHandleMovement(const std::string& keywordName);
-      virtual ~CMechanicalHandleMovement() = default;
+      ~CMechanicalHandleMovement() override = default;
    };
 } // namespace specificHistorizers

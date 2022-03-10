@@ -16,10 +16,10 @@ namespace specificHistorizers
                        ((Sunday)(7))
    ) ;
 
-   class CDayOfWeek : public yApi::historization::CSingleHistorizableData<EDayOfWeek>
+   class CDayOfWeek final : public yApi::historization::CSingleHistorizableData<EDayOfWeek>
    {
    public:
       explicit CDayOfWeek(const std::string& keywordName);
-      virtual ~CDayOfWeek() = default;
+      ~CDayOfWeek() override = default;
    };
 } // namespace specificHistorizers

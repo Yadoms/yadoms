@@ -5,10 +5,10 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
-   class CConcentrationGramPerMeterCube : public yApi::historization::CSingleHistorizableData<double>
+   class CConcentrationGramPerMeterCube final : public yApi::historization::CSingleHistorizableData<double>
    {
    public:
       explicit CConcentrationGramPerMeterCube(const std::string& keywordName);
-      virtual ~CConcentrationGramPerMeterCube() = default;
+      ~CConcentrationGramPerMeterCube() override = default;
    };
 } // namespace specificHistorizers
