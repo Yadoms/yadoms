@@ -5,10 +5,10 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
-   class CVolumicRadioActivity : public yApi::historization::CSingleHistorizableData<double>
+   class CVolumicRadioActivity final : public yApi::historization::CSingleHistorizableData<double>
    {
    public:
       explicit CVolumicRadioActivity(const std::string& keywordName);
-      virtual ~CVolumicRadioActivity() = default;
+      ~CVolumicRadioActivity() override = default;
    };
 } // namespace specificHistorizers

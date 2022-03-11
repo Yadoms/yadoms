@@ -16,7 +16,7 @@ CHueBridgeDiscovery::CHueBridgeDiscovery()
 std::vector<CHueInformations> CHueBridgeDiscovery::FindBridges()
 {
    auto foundBridges = shared::http::ssdp::
-      CDiscoverService::discover("service:hue", std::chrono::seconds(30));
+      CDiscoverService::discover("service:hue", std::chrono::seconds(60));
 
    if (foundBridges.empty())
    {

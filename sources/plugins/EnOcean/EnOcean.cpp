@@ -8,6 +8,7 @@
 #include "4BSTeachinVariant2.h"
 #include "profiles/bitsetHelpers.hpp"
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 #include "ProfileHelper.h"
 #include "message/CommonCommandSendMessage.h"
 #include "message/UTE_AnswerSendMessage.h"
@@ -131,7 +132,8 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          case kEvtPortConnection:
             {
-               const auto notification = m_api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+               const auto notification = m_api->getEventHandler().getEventData<boost::shared_ptr<
+                  shared::communication::CAsyncPortConnectionNotification>>();
 
                if (notification && notification->isConnected())
                   processConnectionEvent();
@@ -214,7 +216,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CEnOcean::loadAllDevices()
 {
-   auto devices = m_api->getAllDevices();
+   const auto devices = m_api->getAllDevices();
    for (const auto& deviceId : devices)
    {
       try
@@ -291,8 +293,8 @@ boost::shared_ptr<IType> CEnOcean::createDevice(const std::string& deviceId,
                                                 const CProfileHelper& profileHelper) const
 {
    auto device = CRorgs::createRorg(profileHelper.rorg())->createFunc(profileHelper.func())->createType(profileHelper.type(),
-                                                                                                        deviceId,
-                                                                                                        m_api);
+      deviceId,
+      m_api);
 
    return device;
 }
@@ -314,7 +316,7 @@ std::string CEnOcean::generateModel(const std::string& model,
    return generatedModel;
 }
 
-void CEnOcean::processDeviceCommand(const boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
+void CEnOcean::processDeviceCommand(const boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand>& command)
 {
    if (!m_port)
    {
@@ -381,7 +383,7 @@ void CEnOcean::protocolErrorProcess()
                                         boost::posix_time::seconds(10));
 }
 
-void CEnOcean::processUnConnectionEvent(boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
+void CEnOcean::processUnConnectionEvent(const boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>& notification)
 {
    YADOMS_LOG(information) << "EnOcean connection was lost";
    if (notification)
@@ -452,11 +454,11 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
    }
 }
 
-void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> message)
+void CEnOcean::processDataReceived(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& message)
 {
    try
    {
-      switch (message->header().packetType())
+      switch (message->header().packetType()) // NOLINT(clang-diagnostic-switch-enum)
       {
       case message::RADIO_ERP1:
          processRadioErp1(message);
@@ -489,7 +491,7 @@ void CEnOcean::addSignalPower(std::vector<boost::shared_ptr<const yApi::historiz
       m_api->declareKeyword(deviceId, m_signalPowerKeyword);
 
    m_signalPowerKeyword->set(signalPower);
-   keywords.push_back(m_signalPowerKeyword);
+   keywords.emplace_back(m_signalPowerKeyword);
 }
 
 int CEnOcean::dbmToSignalPower(int dBm)
@@ -514,7 +516,7 @@ int CEnOcean::dbmToSignalPower(int dBm)
 
 void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
 {
-   message::CRadioErp1ReceivedMessage erp1Message(esp3Packet);
+   message::CRadioErp1ReceivedMessage erp1Message(std::move(esp3Packet));
 
    if (erp1Message.rorg() == CRorgs::kUTE_Telegram)
    {
@@ -558,7 +560,7 @@ void CEnOcean::declareDeviceWithoutProfile(const std::string& deviceId) const
                         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>());
 }
 
-void CEnOcean::processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket>)
+void CEnOcean::processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>&)
 {
    YADOMS_LOG(error) << "Unexpected response received";
 }
@@ -583,7 +585,9 @@ void CEnOcean::processDongleVersionResponse(message::CResponseReceivedMessage::E
    YADOMS_LOG(information) << dongleVersionResponse.fullVersion();
 }
 
-void CEnOcean::processEepTeachInMessage(boost::dynamic_bitset<> erp1UserData, boost::shared_ptr<IRorg> rorg, std::string deviceId)
+void CEnOcean::processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserData,
+                                        const boost::shared_ptr<IRorg>& rorg,
+                                        const std::string& deviceId)
 {
    if (rorg->id() != CRorgs::k4BS_Telegram)
       throw std::domain_error("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team.");
@@ -633,8 +637,8 @@ void CEnOcean::processEepTeachInMessage(boost::dynamic_bitset<> erp1UserData, bo
    }
 }
 
-void CEnOcean::processNoEepTeachInMessage(boost::shared_ptr<IRorg> rorg,
-                                          std::string deviceId)
+void CEnOcean::processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
+                                          const std::string& deviceId)
 {
    // Special case for the 1BS RORG : only one func and type exist, so profile can be known
    if (rorg->id() == CRorgs::k1BS_Telegram)
@@ -703,10 +707,10 @@ void CEnOcean::processNoEepTeachInMessage(boost::shared_ptr<IRorg> rorg,
    declareDeviceWithoutProfile(deviceId);
 }
 
-void CEnOcean::processDataTelegram(message::CRadioErp1ReceivedMessage erp1Message,
-                                   boost::dynamic_bitset<> erp1UserData,
-                                   const boost::dynamic_bitset<> erp1Status,
-                                   std::string deviceId)
+void CEnOcean::processDataTelegram(const message::CRadioErp1ReceivedMessage& erp1Message,
+                                   const boost::dynamic_bitset<>& erp1UserData,
+                                   const boost::dynamic_bitset<>& erp1Status,
+                                   const std::string& deviceId)
 {
    if (m_devices.find(deviceId) == m_devices.end())
    {
@@ -755,7 +759,7 @@ void CEnOcean::processDataTelegram(message::CRadioErp1ReceivedMessage erp1Messag
    m_api->historizeData(deviceId, keywordsToHistorize);
 }
 
-void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+void CEnOcean::processEvent(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
 {
    if (esp3Packet->header().dataLength() < 1)
       throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % esp3Packet->header().dataLength()).str());
@@ -783,10 +787,10 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
                               ? boost::make_shared<message::CUTE_GigaConceptReversedReceivedMessage>(erp1Message)
                               : boost::make_shared<message::CUTE_ReceivedMessage>(erp1Message);
 
-   switch (uteMessage->teachInRequest())
+   switch (uteMessage->teachInRequest()) // NOLINT(clang-diagnostic-switch-enum)
    {
-   case message::CUTE_ReceivedMessage::kTeachInRequest:
-   case message::CUTE_ReceivedMessage::kNotSpecified:
+   case message::CUTE_ReceivedMessage::ETeachInRequest::kTeachInRequest:
+   case message::CUTE_ReceivedMessage::ETeachInRequest::kNotSpecified:
       {
          if (uteMessage->command() != message::CUTE_ReceivedMessage::kTeachInQuery)
          {
@@ -837,7 +841,7 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
 
          break;
       }
-   case message::CUTE_ReceivedMessage::kTeachInDeletionRequest:
+   case message::CUTE_ReceivedMessage::ETeachInRequest::kTeachInDeletionRequest:
       {
          removeDevice(uteMessage->senderId());
 
@@ -849,14 +853,15 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
       }
    default:
       {
-         YADOMS_LOG(information) << "UTE message : teach-in request type " << uteMessage->teachInRequest() << " not supported, message ignored";
+         YADOMS_LOG(information) << "UTE message : teach-in request type " << static_cast<int>(uteMessage->teachInRequest()) <<
+            " not supported, message ignored";
          break;
       }
    }
 }
 
 bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
-                             boost::shared_ptr<const message::CUTE_ReceivedMessage> uteMessage,
+                             const boost::shared_ptr<const message::CUTE_ReceivedMessage>& uteMessage,
                              bool isReversed,
                              const std::string& deviceId)
 {
@@ -865,15 +870,15 @@ bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response
 
    const auto sendMessage = isReversed
                                ? boost::make_shared<message::CUTE_GigaConceptReversedAnswerSendMessage>(m_senderId,
-                                                                                                        deviceId,
-                                                                                                        static_cast<unsigned char>(0),
-                                                                                                        uteMessage->bidirectionalCommunication(),
-                                                                                                        response,
-                                                                                                        uteMessage->channelNumber(),
-                                                                                                        uteMessage->manufacturerId(),
-                                                                                                        uteMessage->type(),
-                                                                                                        uteMessage->func(),
-                                                                                                        uteMessage->rorg())
+                                  deviceId,
+                                  static_cast<unsigned char>(0),
+                                  uteMessage->bidirectionalCommunication(),
+                                  response,
+                                  uteMessage->channelNumber(),
+                                  uteMessage->manufacturerId(),
+                                  uteMessage->type(),
+                                  uteMessage->func(),
+                                  uteMessage->rorg())
                                : boost::make_shared<message::CUTE_AnswerSendMessage>(m_senderId,
                                                                                      deviceId,
                                                                                      static_cast<unsigned char>(0),
@@ -887,14 +892,14 @@ bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response
 
    message::CResponseReceivedMessage::EReturnCode returnCode;
    if (!m_messageHandler->send(*sendMessage,
-                               [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                            {
-                               return esp3Packet->header().packetType() == message::RESPONSE;
-                            },
+                               [](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
+                               {
+                                  return esp3Packet->header().packetType() == message::RESPONSE;
+                               },
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                            {
-                               returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
-                            }))
+                               {
+                                  returnCode = message::CResponseReceivedMessage(std::move(esp3Packet)).returnCode();
+                               }))
       throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
    if (returnCode != message::CResponseReceivedMessage::RET_OK)
@@ -966,17 +971,17 @@ void CEnOcean::requestDongleVersion()
 
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!m_messageHandler->send(sendMessage,
-                               [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                            {
-                               if (esp3Packet->header().packetType() == message::RESPONSE)
-                                  return true;
-                               YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
-                               return false;
-                            },
+                               [](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
+                               {
+                                  if (esp3Packet->header().packetType() == message::RESPONSE)
+                                     return true;
+                                  YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
+                                  return false;
+                               },
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                            {
-                               answer = esp3Packet;
-                            }))
+                               {
+                                  answer = std::move(esp3Packet);
+                               }))
       throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
 
    if (answer->header().dataLength() != message::RESPONSE_DONGLE_VERSION_SIZE)
@@ -988,14 +993,13 @@ void CEnOcean::requestDongleVersion()
                                 message::CDongleVersionResponseReceivedMessage(response));
 }
 
-void CEnOcean::startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
+void CEnOcean::startManualPairing(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                   boost::shared_ptr<yApi::IExtraQuery> extraQuery)
 {
-   if (m_pairingHelper->startStopPairing(extraQuery))
+   if (m_pairingHelper->startStopPairing(std::move(extraQuery)))
       m_progressPairingTimer = api->getEventHandler().createTimer(kProgressPairingTimer,
-         shared::event::CEventTimer::kOneShot,
-         boost::posix_time::seconds(m_pairingHelper->getPairingPeriodTimeSeconds()));
-   else
-      if (m_progressPairingTimer)
-         m_progressPairingTimer.reset();
+                                                                  shared::event::CEventTimer::kOneShot,
+                                                                  boost::posix_time::seconds(m_pairingHelper->getPairingPeriodTimeSeconds()));
+   else if (m_progressPairingTimer)
+      m_progressPairingTimer.reset();
 }

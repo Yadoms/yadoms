@@ -41,5 +41,17 @@
       "searchForBridge": {
          "name": "Rechercher Philips Hue bridge"
       }
+   },
+   "deviceConfiguration": {
+      "dynamicConfigurationSchema": {
+         "schemas": {
+            "HueLight": {
+               "Hue": {
+                  "name": "Le nom du hue",
+                  "description": "Changer le nom du hue au niveau du pont hue"
+               }
+            }
+         }
+      }
    }
 }

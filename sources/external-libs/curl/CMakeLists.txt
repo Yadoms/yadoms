@@ -89,13 +89,13 @@ if(CMAKE_TOOLCHAIN_FILE)
 endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add(curl_build
-   URL               https://curl.se/download/curl-7.76.1.zip
-   URL_HASH          SHA256=70258d07ac9958fbe228c2f38703061a77a172527114e4efc6aa6501c475d63c
+   GIT_REPOSITORY    https://github.com/curl/curl.git
+   GIT_TAG           curl-7_80_0
+   GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${CURL_PATHCMD}
    PREFIX            ${CURL_ROOT}
    CMAKE_ARGS        ${CURL_BUILD_ARGS}
    INSTALL_COMMAND   ""
-   BUILD_ALWAYS      OFF
 )
 
 SET_PROPERTY(TARGET curl_build PROPERTY FOLDER "External Libs")

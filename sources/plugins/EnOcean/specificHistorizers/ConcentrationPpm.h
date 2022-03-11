@@ -5,11 +5,11 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
-   class CConcentrationPpm : public yApi::historization::CSingleHistorizableData<double>
+   class CConcentrationPpm final : public yApi::historization::CSingleHistorizableData<double>
    {
    public:
       explicit CConcentrationPpm(const std::string& keywordName,
                                  yApi::EKeywordAccessMode accessMode = yApi::EKeywordAccessMode::kGet);
-      virtual ~CConcentrationPpm() = default;
+      ~CConcentrationPpm() override = default;
    };
 } // namespace specificHistorizers

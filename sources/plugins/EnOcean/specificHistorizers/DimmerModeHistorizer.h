@@ -14,10 +14,10 @@ namespace specificHistorizers
                        ((StopDimming)(4))
    ) ;
 
-   class CDimmerModeHistorizer : public yApi::historization::CSingleHistorizableData<EDimmerMode>
+   class CDimmerModeHistorizer final : public yApi::historization::CSingleHistorizableData<EDimmerMode>
    {
    public:
       explicit CDimmerModeHistorizer(const std::string& keywordName);
-      virtual ~CDimmerModeHistorizer() = default;
+      ~CDimmerModeHistorizer() override = default;
    };
 } // namespace specificHistorizers

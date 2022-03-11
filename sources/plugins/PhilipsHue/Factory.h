@@ -3,7 +3,8 @@
 #include "shared/event/EventHandler.hpp"
 #include "UrlManager.h"
 #include "IHueBridgeDiscovery.h"
-#include "ILightManager.h"
+#include "Devices/Interfaces/ILightsService.h"
+#include "Devices/Interfaces/ILight.h"
 
 class CFactory
 {
@@ -18,5 +19,7 @@ public:
 
    static boost::shared_ptr<IHueBridgeDiscovery> createHueBridgeDiscovery(boost::shared_ptr<CUrlManager>& urlManager);
    static boost::shared_ptr<IHueBridgeDiscovery> createHueBridgeDiscovery();
-   static boost::shared_ptr<ILightManager> createLightManager(boost::shared_ptr<CUrlManager>& urlManager);
+   static boost::shared_ptr<ILightsService> createLightsService(boost::shared_ptr<CUrlManager>& urlManager);
+   static boost::shared_ptr<ILight> createLight(boost::shared_ptr<CUrlManager>& urlManager,
+                                                std::pair<int, CHueLightInformations>& lightInformations);
 };

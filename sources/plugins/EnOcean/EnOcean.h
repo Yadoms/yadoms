@@ -11,6 +11,7 @@
 #include "IMessageHandler.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
 #include "message/UTE_AnswerSendMessage.h"
+#include "profiles/IRorg.h"
 
 
 // Shortcut to yPluginApi namespace
@@ -19,11 +20,11 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	This plugin supports EnOcean
 //--------------------------------------------------------------
-class CEnOcean : public plugin_cpp_api::IPlugin
+class CEnOcean final : public plugin_cpp_api::IPlugin
 {
 public:
    CEnOcean();
-   virtual ~CEnOcean() = default;
+   ~CEnOcean() override = default;
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
@@ -40,13 +41,13 @@ protected:
    /// \note                        Useful in case of first run of a new plugin version
    //--------------------------------------------------------------
    void createNewKeywords(const std::string& deviceName,
-                       const boost::shared_ptr<IType>& loadedDevice) const;
+                          const boost::shared_ptr<IType>& loadedDevice) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void processDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command);
+   void processDeviceCommand(const boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand>& command);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when dongle becomes connected
@@ -57,7 +58,9 @@ protected:
    /// \brief	                     Called when dongle becomes unconnected
    /// \param[in] notification      The connection notification
    //--------------------------------------------------------------
-   void processUnConnectionEvent(boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
+   void processUnConnectionEvent(
+      const boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>& notification = boost::shared_ptr<
+         shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
    /// \brief	                     Called when device was removed
@@ -77,11 +80,11 @@ protected:
    /// \brief	                     Called when the data are received from the UPS
    /// \param [in] message          Message received
    //--------------------------------------------------------------
-   void processDataReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> message);
+   void processDataReceived(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Add signal power to historizable keyword list
-   /// \param [in/out] keywords     Keyword list
+   /// \param [in,out] keywords     Keyword list
    /// \param [in] deviceId         Device ID
    /// \param [in] signalPower      The current signal strength value (%)
    //--------------------------------------------------------------
@@ -101,22 +104,22 @@ protected:
    /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
    void processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
-   static void processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+   static void processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
    void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
                                      const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse);
-   void processEepTeachInMessage(boost::dynamic_bitset<> erp1UserData,
-                                 boost::shared_ptr<IRorg> rorg,
-                                 std::string deviceId);
-   void processNoEepTeachInMessage(boost::shared_ptr<IRorg> rorg,
-                                   std::string deviceId);
-   void processDataTelegram(message::CRadioErp1ReceivedMessage erp1Message,
-                            boost::dynamic_bitset<> erp1UserData,
-                            const boost::dynamic_bitset<> erp1Status,
-                            std::string deviceId);
-   static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+   void processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserData,
+                                 const boost::shared_ptr<IRorg>& rorg,
+                                 const std::string& deviceId);
+   void processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
+                                   const std::string& deviceId);
+   void processDataTelegram(const message::CRadioErp1ReceivedMessage& erp1Message,
+                            const boost::dynamic_bitset<>& erp1UserData,
+                            const boost::dynamic_bitset<>& erp1Status,
+                            const std::string& deviceId);
+   static void processEvent(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
    void processUTE(message::CRadioErp1ReceivedMessage& erp1Message);
    bool sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
-                      boost::shared_ptr<const message::CUTE_ReceivedMessage> uteMessage,
+                      const boost::shared_ptr<const message::CUTE_ReceivedMessage>& uteMessage,
                       bool isReversed,
                       const std::string& deviceId);
 
@@ -199,7 +202,7 @@ protected:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] extraQuery       Extra query
    //--------------------------------------------------------------
-   void startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
+   void startManualPairing(const boost::shared_ptr<yApi::IYPluginApi>& api,
                            boost::shared_ptr<yApi::IExtraQuery> extraQuery);
 
 private:
