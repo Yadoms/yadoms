@@ -12,10 +12,10 @@ namespace specificHistorizers
                        ((AutomaticControl)(2))
    ) ;
 
-   class CSpecialHeatingStates : public yApi::historization::CSingleHistorizableData<ESpecialHeatingStates>
+   class CSpecialHeatingStates final : public yApi::historization::CSingleHistorizableData<ESpecialHeatingStates>
    {
    public:
       explicit CSpecialHeatingStates(const std::string& keywordName);
-      virtual ~CSpecialHeatingStates() = default;
+      ~CSpecialHeatingStates() override = default;
    };
 } // namespace specificHistorizers

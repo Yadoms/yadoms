@@ -5,11 +5,11 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
-   class CSetPoint : public yApi::historization::CSingleHistorizableData<unsigned int>
+   class CSetPoint final : public yApi::historization::CSingleHistorizableData<unsigned int>
    {
    public:
       explicit CSetPoint(const std::string& keywordName,
                          const yApi::EKeywordAccessMode& accessMode = yApi::EKeywordAccessMode::kGetSet);
-      virtual ~CSetPoint() = default;
+      ~CSetPoint() override = default;
    };
 } // namespace specificHistorizers

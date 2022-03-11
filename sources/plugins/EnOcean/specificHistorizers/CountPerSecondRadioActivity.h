@@ -5,10 +5,10 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
 {
-   class CCountPerSecondRadioActivity : public yApi::historization::CSingleHistorizableData<double>
+   class CCountPerSecondRadioActivity final : public yApi::historization::CSingleHistorizableData<double>
    {
    public:
       explicit CCountPerSecondRadioActivity(const std::string& keywordName);
-      virtual ~CCountPerSecondRadioActivity() = default;
+      ~CCountPerSecondRadioActivity() override = default;
    };
 } // namespace specificHistorizers

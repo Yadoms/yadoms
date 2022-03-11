@@ -342,7 +342,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const auto unit = static_cast<E_D2_01_MeasurementUnit>(bitset_extract(data, 8, 3));
    const auto rawValue = bitset_extract(data, 16, 32);
 
-   switch (ioChannel)  // NOLINT(hicpp-multiway-paths-covered)
+   switch (ioChannel) // NOLINT(hicpp-multiway-paths-covered)
    {
    case 0: // Output channel
       {
@@ -367,7 +367,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                historizers.emplace_back(loadPower);
             }
             break;
-         default:  // NOLINT(clang-diagnostic-covered-switch-default)
+         default: // NOLINT(clang-diagnostic-covered-switch-default)
             YADOMS_LOG(warning) << "ActuatorMeasurementResponse : received unsupported channel value " << ioChannel;
             break;
          }
@@ -474,7 +474,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       pilotWire->set(specificHistorizers::EPilotWire::kComfort3);
       historizers.emplace_back(pilotWire);
       break;
-   default:  // NOLINT(clang-diagnostic-covered-switch-default)
+   default: // NOLINT(clang-diagnostic-covered-switch-default)
       YADOMS_LOG(warning) << "ActuatorPilotWireModeResponse : received unsupported pilotWireMode value " << static_cast<unsigned int>(pilotWireMode);
       break;
    }
@@ -525,7 +525,7 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
 Poco::Int64 CProfile_D2_01_Common::extractEnergyWh(E_D2_01_MeasurementUnit unit,
                                                    unsigned int rawValue)
 {
-   switch (unit)  // NOLINT(clang-diagnostic-switch-enum)
+   switch (unit) // NOLINT(clang-diagnostic-switch-enum)
    {
    case E_D2_01_MeasurementUnit::kEnergyWs:
       return static_cast<Poco::Int64>(rawValue) * 3600;
@@ -543,7 +543,7 @@ Poco::Int64 CProfile_D2_01_Common::extractEnergyWh(E_D2_01_MeasurementUnit unit,
 double CProfile_D2_01_Common::extractPowerValueW(E_D2_01_MeasurementUnit unit,
                                                  unsigned int rawValue)
 {
-   switch (unit)  // NOLINT(clang-diagnostic-switch-enum)
+   switch (unit) // NOLINT(clang-diagnostic-switch-enum)
    {
    case E_D2_01_MeasurementUnit::kPowerW:
       return rawValue;

@@ -59,5 +59,3 @@ namespace message
       return m_erp1.senderId();
    }
 } // namespace message
-
-
