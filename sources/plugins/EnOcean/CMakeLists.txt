@@ -357,6 +357,41 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
 
    profiles/hardCoded/Profile_D2_03_0A.cpp
    profiles/hardCoded/Profile_D2_03_0A.h
+   
+   profiles/hardCoded/Profile_D2_04_Common.cpp
+   profiles/hardCoded/Profile_D2_04_Common.h
+   profiles/hardCoded/Profile_D2_04_00.cpp
+   profiles/hardCoded/Profile_D2_04_00.h
+   profiles/hardCoded/Profile_D2_04_01.cpp
+   profiles/hardCoded/Profile_D2_04_01.h
+   profiles/hardCoded/Profile_D2_04_02.cpp
+   profiles/hardCoded/Profile_D2_04_02.h
+   profiles/hardCoded/Profile_D2_04_03.cpp
+   profiles/hardCoded/Profile_D2_04_03.h
+   profiles/hardCoded/Profile_D2_04_04.cpp
+   profiles/hardCoded/Profile_D2_04_04.h
+   profiles/hardCoded/Profile_D2_04_05.cpp
+   profiles/hardCoded/Profile_D2_04_05.h
+   profiles/hardCoded/Profile_D2_04_06.cpp
+   profiles/hardCoded/Profile_D2_04_06.h
+   profiles/hardCoded/Profile_D2_04_07.cpp
+   profiles/hardCoded/Profile_D2_04_07.h
+   profiles/hardCoded/Profile_D2_04_08.cpp
+   profiles/hardCoded/Profile_D2_04_08.h
+   profiles/hardCoded/Profile_D2_04_09.cpp
+   profiles/hardCoded/Profile_D2_04_09.h
+   profiles/hardCoded/Profile_D2_04_10.cpp
+   profiles/hardCoded/Profile_D2_04_10.h
+   profiles/hardCoded/Profile_D2_04_1A.cpp
+   profiles/hardCoded/Profile_D2_04_1A.h
+   profiles/hardCoded/Profile_D2_04_1B.cpp
+   profiles/hardCoded/Profile_D2_04_1B.h
+   profiles/hardCoded/Profile_D2_04_1C.cpp
+   profiles/hardCoded/Profile_D2_04_1C.h
+   profiles/hardCoded/Profile_D2_04_1D.cpp
+   profiles/hardCoded/Profile_D2_04_1D.h
+   profiles/hardCoded/Profile_D2_04_1E.cpp
+   profiles/hardCoded/Profile_D2_04_1E.h
 
    profiles/hardCoded/Profile_D2_05_Common.cpp
    profiles/hardCoded/Profile_D2_05_Common.h

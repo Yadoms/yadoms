@@ -14,7 +14,7 @@ namespace message
       virtual ~CMessageHelpers() = default;
 
       static void sendMessage(CRorgs::ERorgIds rorgId,
-                              boost::shared_ptr<IMessageHandler> messageHandler,
+                              const boost::shared_ptr<IMessageHandler>& messageHandler,
                               const std::string& senderId,
                               const std::string& targetId,
                               const boost::dynamic_bitset<>& userData,

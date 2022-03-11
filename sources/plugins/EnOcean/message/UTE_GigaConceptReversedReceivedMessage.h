@@ -11,7 +11,7 @@ namespace message
    /// This device send the userData (and only this part of the message) in reversed byte order.
    /// If we recognize this message, we have to reorder bytes
    //--------------------------------------------------------------
-   class CUTE_GigaConceptReversedReceivedMessage : public CUTE_ReceivedMessage
+   class CUTE_GigaConceptReversedReceivedMessage final : public CUTE_ReceivedMessage
    {
    public:
       static bool isCGigaConceptReversedUteMessage(const message::CRadioErp1ReceivedMessage& message);
@@ -21,11 +21,7 @@ namespace message
       /// \param[in] message                 The ERP1 radio message
       //--------------------------------------------------------------
       explicit CUTE_GigaConceptReversedReceivedMessage(const message::CRadioErp1ReceivedMessage& message);
-
-      //--------------------------------------------------------------
-      /// \brief	                           Destructor
-      //--------------------------------------------------------------
-      virtual ~CUTE_GigaConceptReversedReceivedMessage();
+      ~CUTE_GigaConceptReversedReceivedMessage() override = default;
 
       bool bidirectionalCommunication() const override;
       bool teachInResponseExpected() const override;
@@ -38,5 +34,3 @@ namespace message
       unsigned char rorg() const override;
    };
 } // namespace message
-
-

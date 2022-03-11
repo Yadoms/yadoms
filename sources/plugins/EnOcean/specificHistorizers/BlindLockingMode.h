@@ -13,10 +13,10 @@ namespace specificHistorizers
                        ((Deblockage)(7))
    ) ;
 
-   class CBlindLockingMode : public yApi::historization::CSingleHistorizableData<EBlindLockingMode>
+   class CBlindLockingMode final : public yApi::historization::CSingleHistorizableData<EBlindLockingMode>
    {
    public:
       explicit CBlindLockingMode(const std::string& keywordName);
-      virtual ~CBlindLockingMode() = default;
+      ~CBlindLockingMode() override = default;
    };
 } // namespace specificHistorizers

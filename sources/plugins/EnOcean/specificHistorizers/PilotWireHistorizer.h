@@ -15,11 +15,11 @@ namespace specificHistorizers
       ((AntiFreeze)(5))
    ) ;
 
-   class CPilotWireHistorizer : public yApi::historization::CSingleHistorizableData<EPilotWire>
+   class CPilotWireHistorizer final : public yApi::historization::CSingleHistorizableData<EPilotWire>
    {
    public:
       explicit CPilotWireHistorizer(const std::string& keywordName);
-      virtual ~CPilotWireHistorizer() = default;
+      ~CPilotWireHistorizer() override = default;
    };
 } // namespace specificHistorizers
 

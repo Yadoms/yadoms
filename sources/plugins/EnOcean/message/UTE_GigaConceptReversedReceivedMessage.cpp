@@ -4,10 +4,10 @@
 
 namespace message
 {
-   bool CUTE_GigaConceptReversedReceivedMessage::isCGigaConceptReversedUteMessage(const message::CRadioErp1ReceivedMessage& message)
+   bool CUTE_GigaConceptReversedReceivedMessage::isCGigaConceptReversedUteMessage(const CRadioErp1ReceivedMessage& message)
    {
       // Try to recognize if userData is in revert order, only for device known as bugged.
-      auto userData = message.userData();
+      const auto userData = message.userData();
       if (userData.size() == 7
          && userData[0] == 0xD2 // Profile - Rorg
          && userData[1] == 0x01 // Profile - Func
@@ -21,12 +21,8 @@ namespace message
       return false;
    }
 
-   CUTE_GigaConceptReversedReceivedMessage::CUTE_GigaConceptReversedReceivedMessage(const message::CRadioErp1ReceivedMessage& message)
+   CUTE_GigaConceptReversedReceivedMessage::CUTE_GigaConceptReversedReceivedMessage(const CRadioErp1ReceivedMessage& message)
       : CUTE_ReceivedMessage(message)
-   {
-   }
-
-   CUTE_GigaConceptReversedReceivedMessage::~CUTE_GigaConceptReversedReceivedMessage()
    {
    }
 

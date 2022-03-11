@@ -17,10 +17,10 @@ namespace specificHistorizers
                        ((Speed5)(7))
    ) ;
 
-   class CFan6Speeds : public yApi::historization::CSingleHistorizableData<EFan6Speeds>
+   class CFan6Speeds final : public yApi::historization::CSingleHistorizableData<EFan6Speeds>
    {
    public:
       explicit CFan6Speeds(const std::string& keywordName);
-      virtual ~CFan6Speeds() = default;
+      ~CFan6Speeds() override = default;
    };
 } // namespace specificHistorizers

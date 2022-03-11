@@ -9,10 +9,6 @@ namespace message
    {
    }
 
-   CUTE_ReceivedMessage::~CUTE_ReceivedMessage()
-   {
-   }
-
    bool CUTE_ReceivedMessage::bidirectionalCommunication() const
    {
       return (m_erp1.userData()[0] & 0x80) ? true : false;
@@ -63,5 +59,3 @@ namespace message
       return m_erp1.senderId();
    }
 } // namespace message
-
-
