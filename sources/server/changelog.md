@@ -1,29 +1,12 @@
-### 2.5.1-beta.5
+### 2.5.1
 
 #### Yadoms
 * Fix #741 : SQL request syntax with PostgreSQL
-
-### 2.5.1-beta.4
-
-#### Yadoms
-* Fix HTTP SCREEN plugin for TFT screens (see local changelog)
-
-### 2.5.1-beta.3
-
-#### Yadoms
-* Fix EnOcean plugin profile (see local changelog)
-
-
-### 2.5.1-beta.2
-
-#### Yadoms
-* Fix some profiles management for EnOcean plugin (see local changelog)
-
-
-### 2.5.1-beta.1
-
-#### Yadoms
 * Fix #738 : Fix merging devices
+
+#### Plugins and widgets
+* Fix HTTP SCREEN plugin for TFT screens (see local changelog)
+* Fix some profiles management for EnOcean plugin (see local changelog)
 
 
 ### 2.5.0
