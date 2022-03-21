@@ -28,7 +28,7 @@ list(APPEND CURL_BUILD_ARGS "-DCURL_DISABLE_SMB=ON")
 list(APPEND CURL_BUILD_ARGS "-DCURL_DISABLE_SMTP=ON")
 list(APPEND CURL_BUILD_ARGS "-DCURL_DISABLE_GOPHER=ON")
 list(APPEND CURL_BUILD_ARGS "-DCURL_DISABLE_MQTT=ON")
-list(APPEND CURL_BUILD_ARGS "-DCMAKE_USE_OPENSSL=ON")
+list(APPEND CURL_BUILD_ARGS "-DCURL_USE_OPENSSL=ON")
 
 if(CMAKE_TOOLCHAIN_FILE)
    message("CURL : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC_RPI_GCC} and ${CC_RPI_GXX})")
@@ -90,7 +90,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add(curl_build
    GIT_REPOSITORY    https://github.com/curl/curl.git
-   GIT_TAG           curl-7_80_0
+   GIT_TAG           curl-7_82_0
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${CURL_PATHCMD}
    PREFIX            ${CURL_ROOT}
