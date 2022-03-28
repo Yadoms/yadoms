@@ -45,11 +45,11 @@ namespace specificHistorizers
                        ((kOzone)(255))
    ) ;
 
-   class CVolatileOrganicCompound : public yApi::historization::CSingleHistorizableData<
+   class CVolatileOrganicCompound final : public yApi::historization::CSingleHistorizableData<
          EVolatileOrganicCompound>
    {
    public:
       explicit CVolatileOrganicCompound(const std::string& keywordName);
-      virtual ~CVolatileOrganicCompound() = default;
+      ~CVolatileOrganicCompound() override = default;
    };
 } // namespace specificHistorizers

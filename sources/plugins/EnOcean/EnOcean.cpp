@@ -787,7 +787,7 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
                               ? boost::make_shared<message::CUTE_GigaConceptReversedReceivedMessage>(erp1Message)
                               : boost::make_shared<message::CUTE_ReceivedMessage>(erp1Message);
 
-   switch (uteMessage->teachInRequest())  // NOLINT(clang-diagnostic-switch-enum)
+   switch (uteMessage->teachInRequest()) // NOLINT(clang-diagnostic-switch-enum)
    {
    case message::CUTE_ReceivedMessage::ETeachInRequest::kTeachInRequest:
    case message::CUTE_ReceivedMessage::ETeachInRequest::kNotSpecified:
@@ -853,7 +853,8 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
       }
    default:
       {
-         YADOMS_LOG(information) << "UTE message : teach-in request type " << static_cast<int>(uteMessage->teachInRequest()) << " not supported, message ignored";
+         YADOMS_LOG(information) << "UTE message : teach-in request type " << static_cast<int>(uteMessage->teachInRequest()) <<
+            " not supported, message ignored";
          break;
       }
    }

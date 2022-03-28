@@ -69,7 +69,7 @@ jobs:
 
   Windows:
     name : Run Unit tests for Windows
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
