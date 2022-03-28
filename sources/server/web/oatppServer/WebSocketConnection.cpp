@@ -5,6 +5,7 @@
 #include "notification/acquisition/Observer.hpp"
 
 #include "shared/Log.h"
+#include "shared/dateTime/Helper.h"
 #include "shared/tools/Random.h"
 
 namespace web
@@ -20,7 +21,8 @@ namespace web
          kPongTimeout,
          kOnPing,
          kNewAcquisition,
-         kReceived
+         kReceived,
+         kTimeSynchronization
       };
 
       void CWebSocketConnection::onAfterCreate(const oatpp::websocket::WebSocket& socket,
@@ -84,6 +86,15 @@ namespace web
          return reply.serialize();
       }
 
+      void CWebSocketConnection::sendTimeSynchronization(const boost::posix_time::ptime& time,
+                                                         const WebSocket& socket)
+      {
+         shared::CDataContainer container;
+         container.set("serverCurrentTime", time);
+         sendMessage(container.serialize(),
+                     socket);
+      }
+
       void CWebSocketConnection::handleConnectionThread(const oatpp::websocket::WebSocket& socket)
       {
          YADOMS_LOG_CONFIGURE("New Websocket connection " + shared::tools::CRandom::generateUUID())
@@ -104,6 +115,17 @@ namespace web
          // Wait for pong timer
          const auto pongTimeoutTimer = m_eventHandler.createTimer(kPongTimeout,
                                                                   shared::event::CEventTimer::EPeriodicity::kOneShot);
+
+         // Time synchronization timer
+         {
+            const auto now = shared::currentTime::Provider().now();
+            if (shared::dateTime::CHelper::nextMinuteOf(now) - now > boost::posix_time::seconds(2))
+               sendTimeSynchronization(now,
+                                       socket);
+            m_eventHandler.createTimePoint(kTimeSynchronization,
+                                           shared::dateTime::CHelper::nextMinuteOf(now));
+         }
+
 
          while (true)
          {
@@ -162,7 +184,20 @@ namespace web
                      }
                      break;
                   }
-                  //TODO tous les autres case, et un default !
+               case kTimeSynchronization:
+                  {
+                     const auto now = shared::currentTime::Provider().now();
+                     sendTimeSynchronization(now,
+                                             socket);
+                     m_eventHandler.createTimePoint(kTimeSynchronization,
+                                                    shared::dateTime::CHelper::nextMinuteOf(now));
+                     break;
+                  }
+               default:
+                  {
+                     YADOMS_LOG(error) << "Invalid received event : " << m_eventHandler.getEventId() << ", ignored";
+                     break;
+                  }
                }
             }
             catch (const boost::thread_interrupted&)
