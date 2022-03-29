@@ -61,7 +61,6 @@ namespace web
          //TODO gérer tous les send :
          // - acquisition summary
          // - IsAlive périodique
-         // - timeNotification
          // - newDevice ==> à conserver (pour maj async de la liste des devices lors de la création d'un plugin par exemple)
          // - deviceDeleted ==> à conserver (pour maj des widgets après suppression device)
          // - newKeyword ==> à conserver (pour maj async de la liste des devices lors de la création d'un plugin par exemple)
