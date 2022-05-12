@@ -21,6 +21,8 @@ namespace web
       private:
          std::unique_ptr<shared::CDataContainer> makeNewAcquisitionContainer() const;
          static std::string makeIsAliveReply();
+         static void sendTimeSynchronization(const boost::posix_time::ptime& time,
+                                             const WebSocket& socket);
          void handleConnectionThread(const oatpp::websocket::WebSocket& socket);
 
          static std::atomic<v_int32> m_clientsCount;
