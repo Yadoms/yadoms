@@ -25,7 +25,7 @@ namespace shared
          curlpp::Easy request;
 
          // URL
-         request.setOpt(new curlpp::options::Url(url));
+         request.setOpt<curlpp::options::Url>(url);
 
          // Headers
          CCurlppHelpers::setHeaders(request, std::map<std::string, std::string>
@@ -39,8 +39,8 @@ namespace shared
                                   url);
 
          // Follow redirections
-         request.setOpt(new curlpp::options::FollowLocation(true));
-         request.setOpt(new curlpp::options::MaxRedirs(3));
+         request.setOpt<curlpp::options::FollowLocation>(true);
+         request.setOpt<curlpp::options::MaxRedirs>(3);
 
          // HTTPS support : skip peer and host verification
          static const std::string HttpsHeader("https://");
@@ -52,29 +52,29 @@ namespace shared
                          })
             != url.end())
          {
-            request.setOpt(new curlpp::options::SslVerifyPeer(false));
-            request.setOpt(new curlpp::options::SslVerifyHost(false));
+            request.setOpt<curlpp::options::SslVerifyPeer>(false);
+            request.setOpt<curlpp::options::SslVerifyHost>(false);
          }
 
          // Progress
-         request.setOpt(new curlpp::options::NoProgress(false));
-         request.setOpt(new curlpp::options::ProgressFunction(
+         request.setOpt<curlpp::options::NoProgress>(false);
+         request.setOpt<curlpp::options::ProgressFunction>(
             [&location, &reporter](const double totalDownloaded, const double currentlyDownloaded, double, double)-> int
             {
                if (totalDownloaded != 0.0)
                   reporter(location.string(), static_cast<float>(currentlyDownloaded * 100.0l / totalDownloaded));
                return CURL_PROGRESSFUNC_CONTINUE;
-            }));
+            });
 
          // Downloaded file
          std::ofstream localFileStream(location.string(), std::ios::binary);
-         request.setOpt(curlpp::options::WriteFunction(
+         request.setOpt<curlpp::options::WriteFunction>(
             [&localFileStream](const char* ptr, size_t size, size_t nbItems)
             {
                const auto incomingSize = size * nbItems;
                localFileStream.write(ptr, incomingSize);
                return incomingSize;
-            }));
+            });
 
          try
          {
