@@ -49,10 +49,15 @@ namespace web
          --m_clientsCount;
          YADOMS_LOG(information) << "Connection closed (Client count=" << m_clientsCount.load() << ")";
 
+         close();
+      }
+
+      void CWebSocketConnection::close()
+      {
+         if (!m_connectionThread.joinable())
+            return;
          m_connectionThread.interrupt();
          m_connectionThread.try_join_for(boost::chrono::seconds(2));
-
-         //TODO voir pourquoi �a crashe quand une socket est connect�e � la fermeture de Yadoms
       }
 
       void CWebSocketConnection::sendMessage(const std::string& message,
@@ -60,7 +65,7 @@ namespace web
       {
          //TODO gérer tous les send :
          // - acquisition summary
-         // - IsAlive périodique
+         // - IsAlive périodique ==> à conserver ? (redondance avec les ping/pong ?)
          // - timeNotification
          // - newDevice ==> à conserver (pour maj async de la liste des devices lors de la création d'un plugin par exemple)
          // - deviceDeleted ==> à conserver (pour maj des widgets après suppression device)
@@ -203,6 +208,7 @@ namespace web
             catch (const boost::thread_interrupted&)
             {
                socket.sendClose();
+               socket.stopListening();
                break;
             }
             catch (const std::exception& e)

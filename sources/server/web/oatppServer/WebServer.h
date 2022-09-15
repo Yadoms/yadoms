@@ -8,6 +8,7 @@
 
 #include "IAuthentication.h"
 #include "HttpPages.h"
+#include "WebSocketConnection.h"
 #include "web/IWebServer.h"
 #include "web/rest/service/IRestService.h"
 
@@ -68,6 +69,7 @@ namespace web
 
          std::shared_ptr<oatpp::web::server::HttpConnectionHandler> m_httpConnectionHandler;
          std::shared_ptr<oatpp::network::ServerConnectionProvider> m_tcpConnectionProvider;
+         std::shared_ptr<CWebSocketConnection> m_websocketConnection;
          std::shared_ptr<oatpp::websocket::ConnectionHandler> m_websocketConnectionHandler;
          std::shared_ptr<oatpp::network::Server> m_server;
          std::thread m_serverThread;
