@@ -21,6 +21,10 @@ namespace web
          kPongTimeout,
          kOnPing,
          kNewAcquisition,
+         kDeviceCreated,
+         kDeviceDeleted,
+         kKeywordCreated,
+         kKeywordDeleted,
          kReceived,
          kTimeSynchronization
       };
@@ -68,7 +72,6 @@ namespace web
          // - deviceDeleted ==> à conserver (pour maj des widgets après suppression device)
          // - newKeyword ==> à conserver (pour maj async de la liste des devices lors de la création d'un plugin par exemple)
          // - keywordDeleted ==> à conserver (pour maj des widgets après suppression keyword)
-         // - deviceblacklisted ==> à supprimer ? Cette opération devrait être synchrone
          // - eventLog ==> A remettre en place lorsque l'EventLogger aura été refactoré
          // - taskUpdate ==> à supprimer ?
          socket.sendOneFrameText(message);
@@ -100,9 +103,45 @@ namespace web
       void CWebSocketConnection::sendNewAcquisition(const boost::shared_ptr<database::entities::CAcquisition>& newAcquisition,
                                                     const WebSocket& socket)
       {
-         shared::CDataContainer newAcquisitionContainer;
-         newAcquisitionContainer.set("newAcquisition", *newAcquisition);
-         sendMessage(newAcquisitionContainer.serialize(),
+         shared::CDataContainer container;
+         container.set("newAcquisition", *newAcquisition);
+         sendMessage(container.serialize(),
+                     socket);
+      }
+
+      void CWebSocketConnection::sendDeviceCreated(const boost::shared_ptr<database::entities::CDevice>& device,
+                                                   const WebSocket& socket)
+      {
+         shared::CDataContainer container;
+         container.set("deviceCreated", device);
+         sendMessage(container.serialize(),
+                     socket);
+      }
+
+      void CWebSocketConnection::sendDeviceDeleted(const boost::shared_ptr<database::entities::CDevice>& device,
+                                                   const WebSocket& socket)
+      {
+         shared::CDataContainer container;
+         container.set("deviceDeleted", device);
+         sendMessage(container.serialize(),
+                     socket);
+      }
+
+      void CWebSocketConnection::sendKeywordCreated(const boost::shared_ptr<database::entities::CKeyword>& keyword,
+                                                    const WebSocket& socket)
+      {
+         shared::CDataContainer container;
+         container.set("keywordCreated", keyword);
+         sendMessage(container.serialize(),
+                     socket);
+      }
+
+      void CWebSocketConnection::sendKeywordDeleted(const boost::shared_ptr<database::entities::CKeyword>& keyword,
+                                                    const WebSocket& socket)
+      {
+         shared::CDataContainer container;
+         container.set("keywordDeleted", keyword);
+         sendMessage(container.serialize(),
                      socket);
       }
 
@@ -112,12 +151,29 @@ namespace web
 
          std::vector<boost::shared_ptr<notification::IObserver>> observers;
 
+         // Subscriptions
+         // - new acquisitions
          auto acquisitionAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(
             m_eventHandler,
             kNewAcquisition));
          const auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(acquisitionAction));
          notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
          observers.emplace_back(newAcquisitionObserver);
+         // - devices
+         observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kCreate,
+            m_eventHandler,
+            kDeviceCreated));
+         observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kDelete,
+            m_eventHandler,
+            kDeviceDeleted));
+         // - keywords
+         observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kCreate,
+            m_eventHandler,
+            kKeywordCreated));
+         observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kDelete,
+            m_eventHandler,
+            kKeywordDeleted));
+
 
          // Ping timer
          const auto pingTimer = m_eventHandler.createTimer(kPingTimer,
@@ -161,7 +217,7 @@ namespace web
                case kPongTimeout:
                   {
                      YADOMS_LOG(error) << "No answer to ping";
-                     throw boost::thread_interrupted();  // NOLINT(hicpp-exception-baseclass)
+                     throw boost::thread_interrupted(); // NOLINT(hicpp-exception-baseclass)
                   }
                case kOnPing:
                   {
@@ -173,6 +229,34 @@ namespace web
                      auto newAcquisition = m_eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>()->
                                                           getAcquisition();
                      sendNewAcquisition(newAcquisition,
+                                        socket);
+                     break;
+                  }
+               case kDeviceCreated:
+                  {
+                     auto device = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                     sendDeviceCreated(device,
+                                       socket);
+                     break;
+                  }
+               case kDeviceDeleted:
+                  {
+                     auto device = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                     sendDeviceDeleted(device,
+                                       socket);
+                     break;
+                  }
+               case kKeywordCreated:
+                  {
+                     auto keyword = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
+                     sendKeywordCreated(keyword,
+                                        socket);
+                     break;
+                  }
+               case kKeywordDeleted:
+                  {
+                     auto keyword = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
+                     sendKeywordDeleted(keyword,
                                         socket);
                      break;
                   }
