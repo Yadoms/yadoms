@@ -707,35 +707,6 @@ set(YADOMS_SRC
    server/web/rest/service/UploadFileThread.cpp
    server/web/rest/service/Widget.h
    server/web/rest/service/Widget.cpp
-   
-   server/web/ws/AcquisitionFilterFrame.h
-   server/web/ws/AcquisitionFilterFrame.cpp
-   server/web/ws/AcquisitionUpdateFrame.h
-   server/web/ws/AcquisitionUpdateFrame.cpp
-   server/web/ws/AcquisitionSummaryUpdateFrame.h
-   server/web/ws/AcquisitionSummaryUpdateFrame.cpp
-   server/web/ws/DeviceBlackListedFrame.h
-   server/web/ws/DeviceBlackListedFrame.cpp
-   server/web/ws/DeviceDeletedFrame.h
-   server/web/ws/DeviceDeletedFrame.cpp
-   server/web/ws/KeywordDeletedFrame.h
-   server/web/ws/KeywordDeletedFrame.cpp
-   server/web/ws/KeywordNewFrame.h
-   server/web/ws/KeywordNewFrame.cpp
-   server/web/ws/FrameBase.h
-   server/web/ws/FrameBase.cpp
-   server/web/ws/FrameFactory.h
-   server/web/ws/FrameFactory.cpp
-   server/web/ws/IsAliveFrame.h
-   server/web/ws/IsAliveFrame.cpp
-   server/web/ws/LogEventFrame.h
-   server/web/ws/LogEventFrame.cpp
-   server/web/ws/NewDeviceFrame.h
-   server/web/ws/NewDeviceFrame.cpp
-   server/web/ws/TaskUpdateNotificationFrame.h
-   server/web/ws/TaskUpdateNotificationFrame.cpp
-   server/web/ws/TimeNotificationFrame.h
-   server/web/ws/TimeNotificationFrame.cpp
 )
 
 # Project folders
@@ -777,7 +748,6 @@ source_group(server\\web  server/web/*.*)
 source_group(server\\web\\rest  server/web/rest/*.*)
 source_group(server\\web\\rest\\json  server/web/rest/json/*.*)
 source_group(server\\web\\rest\\service  server/web/rest/service/*.*)
-source_group(server\\web\\ws  server/web/ws/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
@@ -1071,8 +1041,38 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/poco/WebSocketRequestHandler.cpp   
    server/web/poco/MimeType.h
    server/web/poco/MimeType.cpp   
+   
+   server/web/poco/ws/AcquisitionFilterFrame.h
+   server/web/poco/ws/AcquisitionFilterFrame.cpp
+   server/web/poco/ws/AcquisitionUpdateFrame.h
+   server/web/poco/ws/AcquisitionUpdateFrame.cpp
+   server/web/poco/ws/AcquisitionSummaryUpdateFrame.h
+   server/web/poco/ws/AcquisitionSummaryUpdateFrame.cpp
+   server/web/poco/ws/DeviceBlackListedFrame.h
+   server/web/poco/ws/DeviceBlackListedFrame.cpp
+   server/web/poco/ws/DeviceDeletedFrame.h
+   server/web/poco/ws/DeviceDeletedFrame.cpp
+   server/web/poco/ws/KeywordDeletedFrame.h
+   server/web/poco/ws/KeywordDeletedFrame.cpp
+   server/web/poco/ws/KeywordNewFrame.h
+   server/web/poco/ws/KeywordNewFrame.cpp
+   server/web/poco/ws/FrameBase.h
+   server/web/poco/ws/FrameBase.cpp
+   server/web/poco/ws/FrameFactory.h
+   server/web/poco/ws/FrameFactory.cpp
+   server/web/poco/ws/IsAliveFrame.h
+   server/web/poco/ws/IsAliveFrame.cpp
+   server/web/poco/ws/LogEventFrame.h
+   server/web/poco/ws/LogEventFrame.cpp
+   server/web/poco/ws/NewDeviceFrame.h
+   server/web/poco/ws/NewDeviceFrame.cpp
+   server/web/poco/ws/TaskUpdateNotificationFrame.h
+   server/web/poco/ws/TaskUpdateNotificationFrame.cpp
+   server/web/poco/ws/TimeNotificationFrame.h
+   server/web/poco/ws/TimeNotificationFrame.cpp
 )
 source_group(server\\web\\poco  server/web/poco/*.*)
+source_group(server\\web\\poco\\ws  server/web/poco/ws/*.*)
 
 # Oatpp-based Web server
 set(YADOMS_SRC ${YADOMS_SRC}
