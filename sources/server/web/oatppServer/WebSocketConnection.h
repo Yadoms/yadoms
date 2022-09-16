@@ -1,8 +1,10 @@
 #pragma once
 #include <oatpp-websocket/ConnectionHandler.hpp>
 
+#include "database/entities/Entities.h"
 #include "shared/DataContainer.h"
 #include "shared/event/EventHandler.hpp"
+#include "shared/http/ssdp/Client.h"
 
 namespace web
 {
@@ -23,6 +25,8 @@ namespace web
          static std::string makeIsAliveReply();
          static void sendTimeSynchronization(const boost::posix_time::ptime& time,
                                              const WebSocket& socket);
+         static void sendNewAcquisition(const boost::shared_ptr<database::entities::CAcquisition>& newAcquisition,
+                                        const WebSocket& socket);
          void handleConnectionThread(const oatpp::websocket::WebSocket& socket);
 
          static std::atomic<v_int32> m_clientsCount;

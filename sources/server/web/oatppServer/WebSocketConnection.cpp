@@ -64,14 +64,13 @@ namespace web
                                              const WebSocket& socket)
       {
          //TODO gérer tous les send :
-         // - acquisition summary
          // - IsAlive périodique ==> à conserver ? (redondance avec les ping/pong ?)
          // - newDevice ==> à conserver (pour maj async de la liste des devices lors de la création d'un plugin par exemple)
          // - deviceDeleted ==> à conserver (pour maj des widgets après suppression device)
          // - newKeyword ==> à conserver (pour maj async de la liste des devices lors de la création d'un plugin par exemple)
          // - keywordDeleted ==> à conserver (pour maj des widgets après suppression keyword)
          // - deviceblacklisted ==> à supprimer ? Cette opération devrait être synchrone
-         // - eventLog
+         // - eventLog ==> A remettre en place lorsque l'EventLogger aura été refactoré
          // - taskUpdate ==> à supprimer ?
          socket.sendOneFrameText(message);
       }
@@ -96,6 +95,15 @@ namespace web
          shared::CDataContainer container;
          container.set("serverCurrentTime", time);
          sendMessage(container.serialize(),
+                     socket);
+      }
+
+      void CWebSocketConnection::sendNewAcquisition(const boost::shared_ptr<database::entities::CAcquisition>& newAcquisition,
+                                                    const WebSocket& socket)
+      {
+         shared::CDataContainer newAcquisitionContainer;
+         newAcquisitionContainer.set("newAcquisition", *newAcquisition);
+         sendMessage(newAcquisitionContainer.serialize(),
                      socket);
       }
 
@@ -154,7 +162,7 @@ namespace web
                case kPongTimeout:
                   {
                      YADOMS_LOG(error) << "No answer to ping";
-                     throw boost::thread_interrupted();
+                     throw boost::thread_interrupted();  // NOLINT(hicpp-exception-baseclass)
                   }
                case kOnPing:
                   {
@@ -165,11 +173,8 @@ namespace web
                   {
                      auto newAcquisition = m_eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>()->
                                                           getAcquisition();
-
-                     shared::CDataContainer newAcquisitionContainer;
-                     newAcquisitionContainer.set("newAcquisition", *newAcquisition);
-                     sendMessage(newAcquisitionContainer.serialize(),
-                                 socket);
+                     sendNewAcquisition(newAcquisition,
+                                        socket);
                      break;
                   }
 
