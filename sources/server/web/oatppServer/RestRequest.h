@@ -45,7 +45,7 @@ namespace web
          boost::shared_ptr<const std::unordered_multimap<std::string, std::string>> queryParams() const;
 
          boost::shared_ptr<std::map<rest::EContentType, float>> parseAcceptContentType() const;
-         std::string readBody(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request) const;
+         std::string readBody(const std::shared_ptr<oatpp::web::protocol::http::incoming::Request>& request) const;
 
          std::shared_ptr<oatpp::web::protocol::http::incoming::Request> m_request;
          shared::http::ERestVerb m_method;

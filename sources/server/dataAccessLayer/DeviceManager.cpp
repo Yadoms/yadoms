@@ -212,6 +212,9 @@ namespace dataAccessLayer
 
    void CDeviceManager::removeDevice(int deviceId)
    {
+      if (!m_deviceRequester->deviceExists(deviceId))
+         return;
+
       const auto device = m_deviceRequester->getDevice(deviceId, true);
 
       cleanupDevice(deviceId);
