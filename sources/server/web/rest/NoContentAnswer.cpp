@@ -12,7 +12,7 @@ namespace web
 
       std::string CNoContentAnswer::body() const
       {
-         return std::string();
+         return {};
       }
 
       EContentType CNoContentAnswer::contentType() const

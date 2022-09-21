@@ -10,8 +10,8 @@ namespace web
       {
       public:
          explicit CSuccessAnswer(const shared::CDataContainer& result);
-         CSuccessAnswer(std::string result,
-                        const EContentType& contentType = EContentType::kPlainText);
+         explicit CSuccessAnswer(std::string result,
+                                 const EContentType& contentType = EContentType::kPlainText);
          ~CSuccessAnswer() override = default;
 
          shared::http::ECodes code() const override;

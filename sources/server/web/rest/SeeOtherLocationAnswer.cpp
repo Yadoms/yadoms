@@ -18,7 +18,7 @@ namespace web
 
       std::string CSeeOtherLocationAnswer::body() const
       {
-         return std::string();
+         return {};
       }
 
       EContentType CSeeOtherLocationAnswer::contentType() const

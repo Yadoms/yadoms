@@ -18,7 +18,7 @@ namespace web
 
       std::string CCreatedAnswer::body() const
       {
-         return std::string();
+         return {};
       }
 
       EContentType CCreatedAnswer::contentType() const

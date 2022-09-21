@@ -19,7 +19,7 @@ namespace web
 
       std::string CAcceptedAnswer::body() const
       {
-         return std::string();
+         return {};
       }
 
       EContentType CAcceptedAnswer::contentType() const

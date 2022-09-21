@@ -74,8 +74,6 @@ namespace web
          //TODO RAF :
          // - HTTPS
          // - aliases
-         // - websockets
-         // - allowExternalAccess
 
          start();
       }

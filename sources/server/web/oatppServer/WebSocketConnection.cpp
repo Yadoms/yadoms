@@ -67,8 +67,9 @@ namespace web
       void CWebSocketConnection::sendMessage(const std::string& message,
                                              const WebSocket& socket)
       {
+         //TODO gérer tous les send :
          // - eventLog ==> A remettre en place lorsque l'EventLogger aura été refactoré
-         // - taskUpdate ==> à supprimer ?
+         // - taskUpdate ==> à supprimer ? Ou à refactorer pour que le reload d'une page permette de réafficher l'état d'une tâche
          socket.sendOneFrameText(message);
       }
 
