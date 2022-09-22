@@ -53,9 +53,7 @@ private:
       unsigned short securedPort,
       bool allowExternalAccess,
       const boost::filesystem::path& webServerPath,
-      const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
       const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
-      const boost::shared_ptr<std::map<std::string, boost::filesystem::path>>& aliases,
       const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
       bool skipPasswordCheck) const;
 
@@ -64,11 +62,8 @@ private:
       unsigned short port,
       bool useSsl,
       unsigned short securedPort,
-      bool allowExternalAccess,
       const boost::filesystem::path& webServerPath,
-      const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
-      boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>> restServices,
-      boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
+      const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
       const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
       bool skipPasswordCheck) const;
 

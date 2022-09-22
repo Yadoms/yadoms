@@ -2,6 +2,9 @@
 #include "RestRequestHandler.h"
 
 #include <utility>
+#include <oatpp/web/protocol/http/outgoing/StreamingBody.hpp>
+#include <oatpp/core/data/stream/FileStream.hpp>
+#include <oatpp/web/protocol/http/outgoing/BufferBody.hpp>
 
 #include "RestRequest.h"
 
@@ -12,7 +15,7 @@ namespace web
       CRestRequestHandler::CRestRequestHandler(std::function<boost::shared_ptr<rest::IAnswer>(boost::shared_ptr<rest::IRequest>)> handler,
                                                boost::shared_ptr<IAuthentication> authentication)
          : m_handler(std::move(handler)),
-           m_authentication(std::move(authentication))      
+           m_authentication(std::move(authentication))
       {
       }
 
@@ -26,8 +29,17 @@ namespace web
          {
             const auto answer = m_handler(boost::make_shared<CRestRequest>(request));
 
-            auto response = oatpp::web::protocol::http::outgoing::ResponseFactory::createResponse(toStatusCode(answer->code()),
-                                                                                                  oatpp::String(answer->body().c_str()));
+            const auto body =
+               answer->bodyIsFile()
+                  ? static_cast<std::shared_ptr<oatpp::web::protocol::http::outgoing::Body>>(std::make_shared<
+                     oatpp::web::protocol::http::outgoing::StreamingBody>(
+                     std::make_shared<oatpp::data::stream::FileInputStream>(answer->body().c_str())))
+                  : static_cast<std::shared_ptr<oatpp::web::protocol::http::outgoing::Body>>(
+                     oatpp::web::protocol::http::outgoing::BufferBody::createShared(oatpp::String(answer->body())));
+
+            auto response = OutgoingResponse::createShared(
+               toStatusCode(answer->code()),
+               body);
 
             static oatpp::String serverHeader(("yadoms/" + std::string(YADOMS_VERSION)).c_str());
             response->putHeader(oatpp::web::protocol::http::Header::SERVER,

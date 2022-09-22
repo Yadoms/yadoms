@@ -21,6 +21,11 @@ namespace web
          return {};
       }
 
+      bool CCreatedAnswer::bodyIsFile() const
+      {
+         return false;
+      }
+
       EContentType CCreatedAnswer::contentType() const
       {
          return EContentType::kNone;

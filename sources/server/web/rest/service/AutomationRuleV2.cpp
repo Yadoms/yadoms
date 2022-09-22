@@ -22,6 +22,8 @@ namespace web
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
+            //TODO remonter les locales + l'icon de l'interpréteur
+
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters", getInterpretersV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters/{interpreter}/code-template", getCodeTemplateV2));
 

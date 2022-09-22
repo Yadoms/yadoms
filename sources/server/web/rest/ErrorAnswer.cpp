@@ -25,6 +25,11 @@ namespace web
          return m_body;
       }
 
+      bool CErrorAnswer::bodyIsFile() const
+      {
+         return false;
+      }
+
       EContentType CErrorAnswer::contentType() const
       {
          return m_body.empty() ? EContentType::kNone : EContentType::kPlainText;

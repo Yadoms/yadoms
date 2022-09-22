@@ -15,6 +15,11 @@ namespace web
          return {};
       }
 
+      bool CNoContentAnswer::bodyIsFile() const
+      {
+         return false;
+      }
+
       EContentType CNoContentAnswer::contentType() const
       {
          return EContentType::kNone;

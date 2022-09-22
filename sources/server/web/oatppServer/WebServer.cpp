@@ -25,11 +25,8 @@ namespace web
                              const std::string& restKeywordBase,
                              boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>> restServices,
                              const std::string& webSocketKeywordBase,
-                             bool allowExternalAccess,
-                             boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
                              const boost::shared_ptr<IAuthentication>& authentication)
-         : m_aliases(std::move(aliases)),
-           m_restServices(std::move(restServices))
+         : m_restServices(std::move(restServices))
       {
          oatpp::base::Environment::init();
 
@@ -73,7 +70,6 @@ namespace web
          // Configure the factory
          //TODO RAF :
          // - HTTPS
-         // - aliases
 
          start();
       }

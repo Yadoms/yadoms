@@ -192,9 +192,9 @@ int CYadomsServer::main(const ArgVec&)
          YADOMS_LOG(information) << "\tLog level = " << m_startupOptions->getLogLevel();
          YADOMS_LOG(information) << "\tLog path = " << m_startupOptions->getLogPath();
          YADOMS_LOG(information) << "\tWeb server port number = " << m_startupOptions->getWebServerPortNumber();
-         YADOMS_LOG(information) << "\tSSL activated = " << m_startupOptions->getIsWebServerUseSSL();
-         YADOMS_LOG(information) << "\tSSL Web server port number = " << m_startupOptions->getSSLWebServerPortNumber();
-         YADOMS_LOG(information) << "\tWeb server ip = " << m_startupOptions->getWebServerIPAddress();
+         YADOMS_LOG(information) << "\tSSL activated = " << m_startupOptions->getIsWebServerUseSsl();
+         YADOMS_LOG(information) << "\tSSL Web server port number = " << m_startupOptions->getSslWebServerPortNumber();
+         YADOMS_LOG(information) << "\tWeb server ip = " << m_startupOptions->getWebServerIpAddress();
          YADOMS_LOG(information) << "\tWeb server path = " << m_startupOptions->getWebServerInitialPath();
          YADOMS_LOG(information) << "\tDatabase engine = " << m_startupOptions->getDatabaseEngine();
 

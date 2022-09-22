@@ -21,6 +21,11 @@ namespace web
          return {};
       }
 
+      bool CSeeOtherLocationAnswer::bodyIsFile() const
+      {
+         return false;
+      }
+
       EContentType CSeeOtherLocationAnswer::contentType() const
       {
          return EContentType::kNone;
