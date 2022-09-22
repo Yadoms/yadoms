@@ -144,6 +144,13 @@ namespace web
          const auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(acquisitionAction));
          notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
          observers.emplace_back(newAcquisitionObserver);
+         // - new acquisition summaries
+         const auto newAcquisitionSummaryObserver(boost::make_shared<notification::summary::CObserver>(
+            boost::make_shared<notification::action::CEventAction<notification::summary::CNotification>>(
+               m_eventHandler,
+               kNewAcquisitionSummary)));
+         notification::CHelpers::subscribeCustomObserver(newAcquisitionSummaryObserver);
+         observers.emplace_back(newAcquisitionSummaryObserver);
          // - devices
          observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kCreate,
             m_eventHandler,
@@ -158,14 +165,6 @@ namespace web
          observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kDelete,
             m_eventHandler,
             kKeywordDeleted));
-
-
-         const auto newAcquisitionSummaryObserver(boost::make_shared<notification::summary::CObserver>(
-            boost::make_shared<notification::action::CEventAction<notification::summary::CNotification>>(
-               m_eventHandler,
-               kNewAcquisitionSummary)));
-         notification::CHelpers::subscribeCustomObserver(newAcquisitionSummaryObserver);
-         observers.emplace_back(newAcquisitionSummaryObserver);
 
          // Ping timer
          const auto pingTimer = m_eventHandler.createTimer(kPingTimer,

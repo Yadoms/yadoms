@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -207,7 +207,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -232,7 +232,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -257,7 +257,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -307,7 +307,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "toto.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -332,7 +332,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "toto.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -357,7 +357,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "trace") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -382,7 +382,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "debug") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -407,7 +407,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -432,7 +432,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -457,7 +457,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "error") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -482,7 +482,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "fatal") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -508,7 +508,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "notice") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -533,7 +533,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "critical") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -599,7 +599,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.1") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "192.168.1.1") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -624,7 +624,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.1") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "192.168.1.1") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -677,7 +677,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), TestNewWebServerPath) ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -705,7 +705,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "0.0.0.0") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), TestNewWebServerPath) ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -757,7 +757,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.3") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "192.168.1.3") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), TestNewWebServerPath) ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "test.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
@@ -795,7 +795,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085)) ;
-      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.3") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIpAddress(), "192.168.1.3") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), TestNewWebServerPath) ;
       BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "test.db3") ;
       BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
