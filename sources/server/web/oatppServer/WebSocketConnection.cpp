@@ -24,6 +24,10 @@ namespace web
          kOnPing,
          kNewAcquisition,
          kNewAcquisitionSummary,
+         kDeviceCreated,
+         kDeviceDeleted,
+         kKeywordCreated,
+         kKeywordDeleted,
          kReceived,
          kTimeSynchronization
       };
@@ -52,23 +56,23 @@ namespace web
          --m_clientsCount;
          YADOMS_LOG(information) << "Connection closed (Client count=" << m_clientsCount.load() << ")";
 
+         close();
+      }
+
+      void CWebSocketConnection::close()
+      {
+         if (!m_connectionThread.joinable())
+            return;
          m_connectionThread.interrupt();
          m_connectionThread.try_join_for(boost::chrono::seconds(2));
-
-         //TODO voir pourquoi �a crashe quand une socket est connect�e � la fermeture de Yadoms
       }
 
       void CWebSocketConnection::sendMessage(const std::string& message,
                                              const WebSocket& socket)
       {
          //TODO gérer tous les send :
-         // - newDevice ==> à conserver (pour maj async de la liste des devices lors de la création d'un plugin par exemple)
-         // - deviceDeleted ==> à conserver (pour maj des widgets après suppression device)
-         // - newKeyword ==> à conserver (pour maj async de la liste des devices lors de la création d'un plugin par exemple)
-         // - keywordDeleted ==> à conserver (pour maj des widgets après suppression keyword)
-         // - deviceblacklisted ==> à supprimer ? Cette opération devrait être synchrone
-         // - eventLog
-         // - taskUpdate ==> à supprimer ?
+         // - eventLog ==> A remettre en place lorsque l'EventLogger aura été refactoré
+         // - taskUpdate ==> à supprimer ? Ou à refactorer pour que le reload d'une page permette de réafficher l'état d'une tâche
          socket.sendOneFrameText(message);
       }
 
@@ -81,18 +85,80 @@ namespace web
                      socket);
       }
 
+      void CWebSocketConnection::sendNewAcquisition(const boost::shared_ptr<database::entities::CAcquisition>& newAcquisition,
+                                                    const WebSocket& socket)
+      {
+         shared::CDataContainer container;
+         container.set("newAcquisition", *newAcquisition);
+         sendMessage(container.serialize(),
+                     socket);
+      }
+
+      void CWebSocketConnection::sendDeviceCreated(const boost::shared_ptr<database::entities::CDevice>& device,
+                                                   const WebSocket& socket)
+      {
+         shared::CDataContainer container;
+         container.set("deviceCreated", device);
+         sendMessage(container.serialize(),
+                     socket);
+      }
+
+      void CWebSocketConnection::sendDeviceDeleted(const boost::shared_ptr<database::entities::CDevice>& device,
+                                                   const WebSocket& socket)
+      {
+         shared::CDataContainer container;
+         container.set("deviceDeleted", device);
+         sendMessage(container.serialize(),
+                     socket);
+      }
+
+      void CWebSocketConnection::sendKeywordCreated(const boost::shared_ptr<database::entities::CKeyword>& keyword,
+                                                    const WebSocket& socket)
+      {
+         shared::CDataContainer container;
+         container.set("keywordCreated", keyword);
+         sendMessage(container.serialize(),
+                     socket);
+      }
+
+      void CWebSocketConnection::sendKeywordDeleted(const boost::shared_ptr<database::entities::CKeyword>& keyword,
+                                                    const WebSocket& socket)
+      {
+         shared::CDataContainer container;
+         container.set("keywordDeleted", keyword);
+         sendMessage(container.serialize(),
+                     socket);
+      }
+
       void CWebSocketConnection::handleConnectionThread(const oatpp::websocket::WebSocket& socket)
       {
          YADOMS_LOG_CONFIGURE("New Websocket connection " + shared::tools::CRandom::generateUUID())
 
          std::vector<boost::shared_ptr<notification::IObserver>> observers;
 
-         const auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(
-            boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(
-               m_eventHandler,
-               kNewAcquisition)));
+         // Subscriptions
+         // - new acquisitions
+         auto acquisitionAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(
+            m_eventHandler,
+            kNewAcquisition));
+         const auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(acquisitionAction));
          notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
          observers.emplace_back(newAcquisitionObserver);
+         // - devices
+         observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kCreate,
+            m_eventHandler,
+            kDeviceCreated));
+         observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kDelete,
+            m_eventHandler,
+            kDeviceDeleted));
+         // - keywords
+         observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kCreate,
+            m_eventHandler,
+            kKeywordCreated));
+         observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kDelete,
+            m_eventHandler,
+            kKeywordDeleted));
+
 
          const auto newAcquisitionSummaryObserver(boost::make_shared<notification::summary::CObserver>(
             boost::make_shared<notification::action::CEventAction<notification::summary::CNotification>>(
@@ -143,7 +209,7 @@ namespace web
                case kPongTimeout:
                   {
                      YADOMS_LOG(error) << "No answer to ping";
-                     throw boost::thread_interrupted();  // NOLINT(hicpp-exception-baseclass)
+                     throw boost::thread_interrupted(); // NOLINT(hicpp-exception-baseclass)
                   }
                case kOnPing:
                   {
@@ -155,11 +221,36 @@ namespace web
                   {
                      auto newAcquisition = m_eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>()->
                                                           getAcquisition();
-
-                     shared::CDataContainer newAcquisitionContainer;
-                     newAcquisitionContainer.set("newAcquisition", *newAcquisition);
-                     sendMessage(newAcquisitionContainer.serialize(),
-                                 socket);
+                     sendNewAcquisition(newAcquisition,
+                                        socket);
+                     break;
+                  }
+               case kDeviceCreated:
+                  {
+                     auto device = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                     sendDeviceCreated(device,
+                                       socket);
+                     break;
+                  }
+               case kDeviceDeleted:
+                  {
+                     auto device = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                     sendDeviceDeleted(device,
+                                       socket);
+                     break;
+                  }
+               case kKeywordCreated:
+                  {
+                     auto keyword = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
+                     sendKeywordCreated(keyword,
+                                        socket);
+                     break;
+                  }
+               case kKeywordDeleted:
+                  {
+                     auto keyword = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
+                     sendKeywordDeleted(keyword,
+                                        socket);
                      break;
                   }
                case kNewAcquisitionSummary:
@@ -209,6 +300,7 @@ namespace web
             catch (const boost::thread_interrupted&)
             {
                socket.sendClose();
+               socket.stopListening();
                break;
             }
             catch (const std::exception& e)

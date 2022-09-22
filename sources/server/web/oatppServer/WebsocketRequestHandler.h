@@ -1,7 +1,6 @@
 #pragma once
 #include <oatpp/web/server/HttpRequestHandler.hpp>
 #include <oatpp-websocket/ConnectionHandler.hpp>
-#include <oatpp-websocket/Handshaker.hpp>
 
 namespace web
 {

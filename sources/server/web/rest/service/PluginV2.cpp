@@ -25,6 +25,7 @@ namespace web
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins", getAvailablePluginsV2));
+
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances", getPluginsInstancesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "plugins-instances/{id}", getPluginsInstancesV2));
 
@@ -51,8 +52,23 @@ namespace web
                   if (types->empty() || types->find(plugin.second->getType()) != types->end())
                      foundPlugins.push_back(plugin.second);
 
+               if (foundPlugins.empty())
+                  return boost::make_shared<CNoContentAnswer>();
+
                // Get requested props
                const auto props = request->queryParamAsList("prop");
+
+               // Specific case for icon : icon can only be asked alone, and for only one plugin type
+               if (!props->empty() && props->find("icon") != props->end())
+               {
+                  if (props->size() != 1 || types->size() != 1 || foundPlugins.size() != 1)
+                     return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                             "icon can only be asked alone, and for only one plugin type");
+
+                  return boost::make_shared<CSuccessAnswer>(foundPlugins.at(0)->getPath() / "icon.png",
+                                                            EContentType::kImagePng);
+               }
+
                std::vector<boost::shared_ptr<shared::CDataContainer>> pluginEntries;
                for (const auto& plugin : foundPlugins)
                {
@@ -71,8 +87,10 @@ namespace web
                      pluginEntry->set("support-device-removed-notification", plugin->getSupportDeviceRemovedNotification());
                   if (props->empty() || props->find("package") != props->end())
                      pluginEntry->set("package", *plugin->getPackage());
+                  //TODO remonter les locales
 
-                  pluginEntries.push_back(pluginEntry);
+                  if (!pluginEntry->empty())
+                     pluginEntries.push_back(pluginEntry);
                }
 
                if (pluginEntries.empty())

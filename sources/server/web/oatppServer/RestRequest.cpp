@@ -110,7 +110,7 @@ namespace web
          if (m_method == shared::http::ERestVerb::kGet
             || m_method == shared::http::ERestVerb::kHead
             || m_method == shared::http::ERestVerb::kDelete)
-            return std::string();
+            return {};
 
          if (!m_body)
             m_body = std::make_unique<const std::string>(readBody(m_request));
@@ -225,14 +225,14 @@ namespace web
          return map;
       }
 
-      std::string CRestRequest::readBody(std::shared_ptr<oatpp::web::protocol::http::incoming::Request> request) const
+      std::string CRestRequest::readBody(const std::shared_ptr<oatpp::web::protocol::http::incoming::Request>& request) const
       {
          // Need to consume body for each body-containing request (if not next request will be malformed and oatpp will answer 404)
 
          if (m_method == shared::http::ERestVerb::kGet
             || m_method == shared::http::ERestVerb::kHead
             || m_method == shared::http::ERestVerb::kDelete)
-            return std::string();
+            return {};
 
          return request->readBodyToString();
       }

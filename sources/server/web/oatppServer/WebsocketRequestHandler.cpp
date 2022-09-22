@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "WebsocketRequestHandler.h"
+#include <oatpp-websocket/Handshaker.hpp>
 
 namespace web
 {

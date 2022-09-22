@@ -6,28 +6,42 @@ namespace web
    namespace rest
    {
       CSuccessAnswer::CSuccessAnswer(const shared::CDataContainer& result)
-         : m_code(shared::http::ECodes::kOK),
-           m_body(result.serialize()),
+         : m_body(result.serialize()),
            m_contentType(EContentType::kJson)
       {
       }
 
       CSuccessAnswer::CSuccessAnswer(std::string result,
                                      const EContentType& contentType)
-         : m_code(shared::http::ECodes::kOK),
-           m_body(std::move(result)),
+         : m_body(std::move(result)),
+           m_contentType(contentType)
+      {
+         if (contentType == EContentType::kOctetStream
+            || contentType == EContentType::kImagePng)
+            throw std::invalid_argument("Binary types can not be used with string value");
+      }
+
+      CSuccessAnswer::CSuccessAnswer(const boost::filesystem::path& file,
+                                     const EContentType& contentType)
+         : m_bodyIsFile(true),
+           m_body(file.string()),
            m_contentType(contentType)
       {
       }
 
       shared::http::ECodes CSuccessAnswer::code() const
       {
-         return m_code;
+         return shared::http::ECodes::kOK;
       }
 
       std::string CSuccessAnswer::body() const
       {
          return m_body;
+      }
+
+      bool CSuccessAnswer::bodyIsFile() const
+      {
+         return m_bodyIsFile;
       }
 
       EContentType CSuccessAnswer::contentType() const

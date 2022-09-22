@@ -362,17 +362,17 @@ namespace startupOptions
       return static_cast<unsigned short>(m_configContainer.getUInt("server.port", 8080));
    }
 
-   unsigned short CStartupOptions::getSSLWebServerPortNumber() const
+   unsigned short CStartupOptions::getSslWebServerPortNumber() const
    {
       return static_cast<unsigned short>(m_configContainer.getUInt("server.SSLport", 443));
    }
    
-   bool CStartupOptions::getIsWebServerUseSSL() const
+   bool CStartupOptions::getIsWebServerUseSsl() const
    {
       return m_configContainer.getBool("server.useSSL", false);
    }
 
-   std::string CStartupOptions::getWebServerIPAddress() const
+   std::string CStartupOptions::getWebServerIpAddress() const
    {
       return m_configContainer.getString("server.ip", "0.0.0.0");
    }
@@ -380,11 +380,6 @@ namespace startupOptions
    std::string CStartupOptions::getWebServerInitialPath() const
    {
       return m_configContainer.getString("server.www", "www");
-   }
-
-   bool CStartupOptions::getWebServerAllowExternalAccess() const
-   {
-      return m_configContainer.getBool("server.allowExternalAccess", false);
    }
 
    EDatabaseEngine CStartupOptions::getDatabaseEngine() const

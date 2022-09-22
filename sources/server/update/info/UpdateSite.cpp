@@ -5,6 +5,8 @@
 #include <shared/http/HttpRestHelpers.h>
 #include <shared/ServiceLocator.h>
 
+#include <utility>
+
 namespace update
 {
    namespace info
@@ -88,7 +90,7 @@ namespace update
                .withParameters(parameters)
                .send([&lastVersionInformation](boost::shared_ptr<shared::CDataContainer> data)
                {
-                  lastVersionInformation = data;
+                  lastVersionInformation = std::move(data);
                });
 
             if (!lastVersionInformation->containsValue(DistantScriptResult))

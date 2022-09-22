@@ -18,7 +18,12 @@ namespace web
 
       std::string CCreatedAnswer::body() const
       {
-         return std::string();
+         return {};
+      }
+
+      bool CCreatedAnswer::bodyIsFile() const
+      {
+         return false;
       }
 
       EContentType CCreatedAnswer::contentType() const

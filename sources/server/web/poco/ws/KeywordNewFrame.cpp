@@ -1,0 +1,25 @@
+#include "stdafx.h"
+#include "KeywordNewFrame.h"
+
+namespace web
+{
+   namespace poco
+   {
+      namespace ws
+      {
+         const std::string CKeywordNewFrame::m_keyword = "keyword";
+
+         CKeywordNewFrame::CKeywordNewFrame(boost::shared_ptr<const database::entities::CKeyword> content)
+            : CFrameBase(EFrameType::kKeywordNew)
+         {
+            shared::CDataContainer local;
+            local.set(m_keyword, content);
+            m_internalContainer.set(DataFieldName, local);
+         }
+
+         CKeywordNewFrame::~CKeywordNewFrame()
+         {
+         }
+      } //namespace ws
+   } //namespace poco
+} //namespace web

@@ -12,7 +12,12 @@ namespace web
 
       std::string CNoContentAnswer::body() const
       {
-         return std::string();
+         return {};
+      }
+
+      bool CNoContentAnswer::bodyIsFile() const
+      {
+         return false;
       }
 
       EContentType CNoContentAnswer::contentType() const

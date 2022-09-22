@@ -18,7 +18,12 @@ namespace web
 
       std::string CSeeOtherLocationAnswer::body() const
       {
-         return std::string();
+         return {};
+      }
+
+      bool CSeeOtherLocationAnswer::bodyIsFile() const
+      {
+         return false;
       }
 
       EContentType CSeeOtherLocationAnswer::contentType() const

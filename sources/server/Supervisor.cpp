@@ -167,32 +167,22 @@ void CSupervisor::run()
                                                                                    taskManager,
                                                                                    boost::make_shared<web::rest::service::CUploadFileManager>()));
 
-      const auto aliases = boost::make_shared<std::map<std::string, boost::filesystem::path>>();
-      (*aliases)["plugins"] = m_pathProvider->pluginsPath();
-      (*aliases)["scriptInterpreters"] = m_pathProvider->scriptInterpretersPath();
-      (*aliases)["backups"] = m_pathProvider->backupPath();
-
-      auto pocoBasedWebServer = createPocoBasedWebServer(startupOptions->getWebServerIPAddress(),
+      auto pocoBasedWebServer = createPocoBasedWebServer(startupOptions->getWebServerIpAddress(),
                                                          startupOptions->getWebServerPortNumber(),
-                                                         startupOptions->getIsWebServerUseSSL(),
-                                                         startupOptions->getSSLWebServerPortNumber(),
-                                                         startupOptions->getWebServerAllowExternalAccess(),
+                                                         startupOptions->getIsWebServerUseSsl(),
+                                                         startupOptions->getSslWebServerPortNumber(),
+                                                         true,
                                                          m_pathProvider->webServerPath(),
-                                                         dataAccessLayer,
                                                          restServices,
-                                                         aliases,
                                                          dataAccessLayer->getConfigurationManager(),
                                                          startupOptions->getNoPasswordFlag());
 
-      auto oatppBasedWebServer = createOatppBasedWebServer(startupOptions->getWebServerIPAddress(),
+      auto oatppBasedWebServer = createOatppBasedWebServer(startupOptions->getWebServerIpAddress(),
                                                            startupOptions->getWebServerPortNumber(),
-                                                           startupOptions->getIsWebServerUseSSL(),
-                                                           startupOptions->getSSLWebServerPortNumber(),
-                                                           startupOptions->getWebServerAllowExternalAccess(),
+                                                           startupOptions->getIsWebServerUseSsl(),
+                                                           startupOptions->getSslWebServerPortNumber(),
                                                            m_pathProvider->webServerPath(),
-                                                           dataAccessLayer,
                                                            restServices,
-                                                           aliases,
                                                            dataAccessLayer->getConfigurationManager(),
                                                            startupOptions->getNoPasswordFlag());
 
@@ -294,12 +284,15 @@ std::unique_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
    unsigned short securedPort,
    bool allowExternalAccess,
    const boost::filesystem::path& webServerPath,
-   const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
    const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
-   const boost::shared_ptr<std::map<std::string, boost::filesystem::path>>& aliases,
    const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
    bool skipPasswordCheck) const
 {
+   const auto aliases = boost::make_shared<std::map<std::string, boost::filesystem::path>>();
+   (*aliases)["plugins"] = m_pathProvider->pluginsPath();
+   (*aliases)["scriptInterpreters"] = m_pathProvider->scriptInterpretersPath();
+   (*aliases)["backups"] = m_pathProvider->backupPath();
+
    auto webServer(std::make_unique<web::poco::CWebServer>(address,
                                                           port,
                                                           useSsl,
@@ -329,11 +322,8 @@ std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
    unsigned short port,
    bool useSsl,
    unsigned short securedPort,
-   bool allowExternalAccess,
    const boost::filesystem::path& webServerPath,
-   const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
-   boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>> restServices,
-   boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
+   const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
    const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
    bool skipPasswordCheck) const
 {
@@ -345,8 +335,6 @@ std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
                                                          "rest",
                                                          restServices,
                                                          "ws",
-                                                         allowExternalAccess,
-                                                         aliases,
                                                          boost::make_shared<web::oatppServer::CAuthentication>(
                                                             configurationManager,
                                                             skipPasswordCheck));

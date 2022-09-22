@@ -7,9 +7,7 @@
 #include <oatpp/network/tcp/server/ConnectionProvider.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
-#include <oatpp/web/server/api/Endpoint.hpp>
 #include <oatpp-websocket/Handshaker.hpp>
-#include <oatpp-swagger/Controller.hpp>
 #include "ErrorHandler.h"
 #include "RestRequestHandler.h"
 #include "WebSocketConnection.h"
@@ -27,11 +25,8 @@ namespace web
                              const std::string& restKeywordBase,
                              boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>> restServices,
                              const std::string& webSocketKeywordBase,
-                             bool allowExternalAccess,
-                             boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
                              const boost::shared_ptr<IAuthentication>& authentication)
-         : m_aliases(std::move(aliases)),
-           m_restServices(std::move(restServices))
+         : m_restServices(std::move(restServices))
       {
          oatpp::base::Environment::init();
 
@@ -59,8 +54,9 @@ namespace web
                                                              m_httpConnectionHandler);
 
          // Websocket
+         m_websocketConnection = std::make_shared<CWebSocketConnection>();
          m_websocketConnectionHandler = oatpp::websocket::ConnectionHandler::createShared();
-         m_websocketConnectionHandler->setSocketInstanceListener(std::make_shared<CWebSocketConnection>());
+         m_websocketConnectionHandler->setSocketInstanceListener(m_websocketConnection);
          httpRouter->route("GET",
                            std::string("/" + webSocketKeywordBase + "/v2").c_str(),
                            std::make_shared<CWebsocketRequestHandler>(m_websocketConnectionHandler));
@@ -74,9 +70,6 @@ namespace web
          // Configure the factory
          //TODO RAF :
          // - HTTPS
-         // - aliases
-         // - websockets
-         // - allowExternalAccess
 
          start();
       }
@@ -101,6 +94,10 @@ namespace web
       {
          if (!m_serverThread.joinable())
             return;
+
+         // Close websocket
+         m_websocketConnection->close();
+         m_websocketConnectionHandler->stop();
 
          // First, stop the ServerConnectionProvider so we don't accept any new connections
          m_tcpConnectionProvider->stop();

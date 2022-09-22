@@ -8,6 +8,7 @@
 
 #include "IAuthentication.h"
 #include "HttpPages.h"
+#include "WebSocketConnection.h"
 #include "web/IWebServer.h"
 #include "web/rest/service/IRestService.h"
 
@@ -30,10 +31,6 @@ namespace web
          //\param[in] docRoot             Path to folder containing html e.g. "./"
          //\param[in] restKeywordBase     The string which identifies a rest url ex: /rest/
          //\param[in] restServices        Vector of rest services
-         //\param[in] allowExternalAccess Indicate if external access are allowed (in fact it add CORS headers to answer requests)
-         //\param[in] aliases             Aliases from specific paths
-         //                   Example configureAlias("/test/", "c:\\path\\to\\alias\\files\\")
-         //                   -> then http://server:port/test/index.html will take c:\\path\\to\\alias\\files\\index.html
          //\param[in] authentication      Authentication handling
          CWebServer(const std::string& address,
                     unsigned short port,
@@ -43,8 +40,6 @@ namespace web
                     const std::string& restKeywordBase,
                     boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>> restServices,
                     const std::string& webSocketKeywordBase,
-                    bool allowExternalAccess,
-                    boost::shared_ptr<std::map<std::string, boost::filesystem::path>> aliases,
                     const boost::shared_ptr<IAuthentication>& authentication);
          ~CWebServer() override;
 
@@ -68,11 +63,11 @@ namespace web
 
          std::shared_ptr<oatpp::web::server::HttpConnectionHandler> m_httpConnectionHandler;
          std::shared_ptr<oatpp::network::ServerConnectionProvider> m_tcpConnectionProvider;
+         std::shared_ptr<CWebSocketConnection> m_websocketConnection;
          std::shared_ptr<oatpp::websocket::ConnectionHandler> m_websocketConnectionHandler;
          std::shared_ptr<oatpp::network::Server> m_server;
          std::thread m_serverThread;
-
-         boost::shared_ptr<std::map<std::string, boost::filesystem::path>> m_aliases;
+         
          boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>> m_restServices;
       };
    } //namespace oatppServer
