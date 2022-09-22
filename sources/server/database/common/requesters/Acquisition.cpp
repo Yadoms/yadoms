@@ -82,7 +82,7 @@ namespace database
                }
 
                //blacklisted keyword
-               return boost::shared_ptr<entities::CAcquisition>();
+               return nullptr;
             }
             throw shared::exception::CEmptyResult("The keyword do not exists, cannot add data");
          }
@@ -100,7 +100,7 @@ namespace database
                throw shared::exception::CEmptyResult("The keyword is not numeric, cannot increment data");
 
             if (keywordEntity->Blacklist())
-               return boost::shared_ptr<entities::CAcquisition>(); //return null instead of exception for performances
+               return nullptr; //return null instead of exception for performances
 
             const auto qLastKeywordValue = m_databaseRequester->newQuery();
             qLastKeywordValue->Select(
@@ -897,7 +897,7 @@ namespace database
                      return all[0];
                }
                //keyword is not numeric, no data to avg, min and max !
-               return boost::shared_ptr<entities::CAcquisitionSummary>();
+               return nullptr;
             }
             throw shared::exception::CEmptyResult("The keyword do not exists, cannot add summary data");
          }

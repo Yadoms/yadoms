@@ -1,14 +1,13 @@
 #pragma once
 #include <oatpp-websocket/ConnectionHandler.hpp>
 
-#include "shared/DataContainer.h"
 #include "shared/event/EventHandler.hpp"
 
 namespace web
 {
    namespace oatppServer
    {
-      class CWebSocketConnection : public oatpp::websocket::ConnectionHandler::SocketInstanceListener
+      class CWebSocketConnection final : public oatpp::websocket::ConnectionHandler::SocketInstanceListener
       {
       public:
          virtual ~CWebSocketConnection() = default;
@@ -19,8 +18,6 @@ namespace web
          static void sendMessage(const std::string& message, const WebSocket& socket);
 
       private:
-         std::unique_ptr<shared::CDataContainer> makeNewAcquisitionContainer() const;
-         static std::string makeIsAliveReply();
          static void sendTimeSynchronization(const boost::posix_time::ptime& time,
                                              const WebSocket& socket);
          void handleConnectionThread(const oatpp::websocket::WebSocket& socket);

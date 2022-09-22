@@ -3,6 +3,8 @@
 #include "WebsocketListener.h"
 #include "notification/Helpers.hpp"
 #include "notification/acquisition/Observer.hpp"
+#include "notification/summary/Notification.hpp"
+#include "notification/summary/Observer.hpp"
 
 #include "shared/Log.h"
 #include "shared/dateTime/Helper.h"
@@ -21,6 +23,7 @@ namespace web
          kPongTimeout,
          kOnPing,
          kNewAcquisition,
+         kNewAcquisitionSummary,
          kReceived,
          kTimeSynchronization
       };
@@ -59,8 +62,6 @@ namespace web
                                              const WebSocket& socket)
       {
          //TODO gérer tous les send :
-         // - acquisition summary
-         // - IsAlive périodique
          // - newDevice ==> à conserver (pour maj async de la liste des devices lors de la création d'un plugin par exemple)
          // - deviceDeleted ==> à conserver (pour maj des widgets après suppression device)
          // - newKeyword ==> à conserver (pour maj async de la liste des devices lors de la création d'un plugin par exemple)
@@ -69,20 +70,6 @@ namespace web
          // - eventLog
          // - taskUpdate ==> à supprimer ?
          socket.sendOneFrameText(message);
-      }
-
-      std::unique_ptr<shared::CDataContainer> CWebSocketConnection::makeNewAcquisitionContainer() const
-      {
-         auto container = std::make_unique<shared::CDataContainer>();
-         container->set("type", "newAcquisition");
-         return container;
-      }
-
-      std::string CWebSocketConnection::makeIsAliveReply()
-      {
-         shared::CDataContainer reply;
-         reply.set("type", "isAlive");
-         return reply.serialize();
       }
 
       void CWebSocketConnection::sendTimeSynchronization(const boost::posix_time::ptime& time,
@@ -100,12 +87,19 @@ namespace web
 
          std::vector<boost::shared_ptr<notification::IObserver>> observers;
 
-         auto acquisitionAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(
-            m_eventHandler,
-            kNewAcquisition));
-         const auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(acquisitionAction));
+         const auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(
+            boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(
+               m_eventHandler,
+               kNewAcquisition)));
          notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
          observers.emplace_back(newAcquisitionObserver);
+
+         const auto newAcquisitionSummaryObserver(boost::make_shared<notification::summary::CObserver>(
+            boost::make_shared<notification::action::CEventAction<notification::summary::CNotification>>(
+               m_eventHandler,
+               kNewAcquisitionSummary)));
+         notification::CHelpers::subscribeCustomObserver(newAcquisitionSummaryObserver);
+         observers.emplace_back(newAcquisitionSummaryObserver);
 
          // Ping timer
          const auto pingTimer = m_eventHandler.createTimer(kPingTimer,
@@ -149,13 +143,14 @@ namespace web
                case kPongTimeout:
                   {
                      YADOMS_LOG(error) << "No answer to ping";
-                     throw boost::thread_interrupted();
+                     throw boost::thread_interrupted();  // NOLINT(hicpp-exception-baseclass)
                   }
                case kOnPing:
                   {
                      socket.sendPong(std::string());
                      break;
                   }
+
                case kNewAcquisition:
                   {
                      auto newAcquisition = m_eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>()->
@@ -164,6 +159,17 @@ namespace web
                      shared::CDataContainer newAcquisitionContainer;
                      newAcquisitionContainer.set("newAcquisition", *newAcquisition);
                      sendMessage(newAcquisitionContainer.serialize(),
+                                 socket);
+                     break;
+                  }
+               case kNewAcquisitionSummary:
+                  {
+                     auto newSummary = m_eventHandler.getEventData<boost::shared_ptr<notification::summary::CNotification>>()->
+                                                      getAcquisitionSummaries();
+
+                     shared::CDataContainer newAcquisitionSummaryContainer;
+                     newAcquisitionSummaryContainer.set("newAcquisitionSummary", newSummary);
+                     sendMessage(newAcquisitionSummaryContainer.serialize(),
                                  socket);
                      break;
                   }
@@ -176,6 +182,7 @@ namespace web
                      {
                         YADOMS_LOG(debug) << "Receive new acquisition filter : " << frame.getChild("acquisitionFilter.keywords")->serialize();
                         newAcquisitionObserver->resetKeywordIdFilter(frame.get<std::vector<int>>("acquisitionFilter.keywords"));
+                        newAcquisitionSummaryObserver->resetKeywordIdFilter(frame.get<std::vector<int>>("acquisitionFilter.keywords"));
                      }
                      else
                      {

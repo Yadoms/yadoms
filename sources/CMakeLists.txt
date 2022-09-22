@@ -570,6 +570,7 @@ set(YADOMS_SRC
    server/notification/acquisition/Observer.hpp
    server/notification/acquisition/Notification.hpp
    
+   server/notification/summary/Observer.hpp
    server/notification/summary/Notification.hpp
    
    server/startupOptions/DatabaseEngine.h

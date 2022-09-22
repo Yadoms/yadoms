@@ -7,10 +7,10 @@
 
 namespace notification
 {
-   namespace acquisition
+   namespace summary
    {
       //-----------------------------
-      ///\brief Observer for acquisition
+      ///\brief Observer for summary
       //-----------------------------
       class CObserver final : public change::CObserver<CNotification>
       {
@@ -89,7 +89,7 @@ namespace notification
                //empty allowedKeywordId => all keywords are allowed
                if (m_allowedKeywordId.empty() || std::find(m_allowedKeywordId.begin(),
                                                            m_allowedKeywordId.end(),
-                                                           notif->getAcquisition()->KeywordId()) != m_allowedKeywordId.end())
+                                                           notif->getAcquisitionSummaries().begin()->get()->KeywordId()) != m_allowedKeywordId.end())
                {
                   //do notification
                   m_action->sendNotification(notif);
@@ -102,5 +102,5 @@ namespace notification
       private:
          std::vector<int> m_allowedKeywordId;
       };
-   } // namespace acquisition
+   } // namespace summary
 } // namespace notification
