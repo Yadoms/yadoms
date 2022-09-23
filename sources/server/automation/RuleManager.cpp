@@ -111,6 +111,17 @@ namespace automation
       return m_interpreterManager->getInterpreters(includeNotAvailable);
    }
 
+   boost::filesystem::path CRuleManager::getInterpreterPath(const std::string& interpreterName)
+   {
+      for (const auto& interpreterInformation : m_interpreterManager->getAvailableInterpretersInformation())
+      {
+         if (interpreterInformation.first == interpreterName)
+            return interpreterInformation.second->getPath();
+      }
+
+      throw std::out_of_range("Interpreter " + interpreterName + "not found");
+   }
+
    void CRuleManager::startRule(int ruleId)
    {
       auto ruleLabel = std::to_string(ruleId);

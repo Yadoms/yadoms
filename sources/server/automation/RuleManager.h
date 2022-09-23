@@ -38,6 +38,7 @@ namespace automation
       std::vector<std::string> getLoadedInterpreters() override;
       std::vector<std::string> getAvailableInterpreters() override;
       std::map<std::string, bool> getInterpreters(bool includeNotAvailable) override;
+      boost::filesystem::path getInterpreterPath(const std::string& interpreterName) override;
       std::vector<boost::shared_ptr<database::entities::CRule>> getRules() const override;
       std::vector<boost::shared_ptr<database::entities::CRule>> getRules(
          const boost::optional<int>& ruleId,

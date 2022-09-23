@@ -1,6 +1,5 @@
 #pragma once
 #include "../database/entities/Entities.h"
-#include "shared/plugin/yPluginApi/historization/PluginState.h"
 
 namespace automation
 {
@@ -40,6 +39,13 @@ namespace automation
       ///\return              The interpreter list (interpreter name as key, available status as value)
       //-----------------------------------------------------
       virtual std::map<std::string, bool> getInterpreters(bool includeNotAvailable) = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Get interpreter path
+      ///\param[in] interpreterName   Interpreter name
+      ///\return              The interpreter path
+      //-----------------------------------------------------
+      virtual boost::filesystem::path getInterpreterPath(const std::string& interpreterName) = 0;
 
       //-----------------------------------------------------
       ///\brief               Get all rules

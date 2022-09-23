@@ -22,9 +22,10 @@ namespace web
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
-            //TODO remonter les locales + l'icon de l'interpréteur
+            //TODO remonter les locales de l'interpréteur
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters", getInterpretersV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters/{interpreter}/icon", getInterpreterIcon));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters/{interpreter}/code-template", getCodeTemplateV2));
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/rules", getRulesV2));
@@ -98,6 +99,34 @@ namespace web
                YADOMS_LOG(error) << "Error processing getCodeTemplate request : " << exception.what();
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get code template");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CAutomationRule::getInterpreterIcon(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               if (!request->pathVariableExists("interpreter"))
+                  throw std::invalid_argument("interpreter name");
+               const auto interpreter = request->pathVariable("interpreter");
+
+               const auto interpreterPath = m_rulesManager->getInterpreterPath(interpreter);
+
+               return boost::make_shared<CSuccessAnswer>(interpreterPath / "icon.png",
+                                                         EContentType::kImagePng);
+            }
+
+            catch (const std::out_of_range& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getInterpreterIcon request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                       "Interpreter not found");
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Error processing getInterpreterIcon request : " << exception.what();
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get interpreter icon");
             }
          }
 
@@ -187,8 +216,8 @@ namespace web
                }
 
                return CHelpers::formatGetMultiItemsAnswer(ruleId.has_value(),
-                  ruleEntries,
-                  "rules");
+                                                          ruleEntries,
+                                                          "rules");
             }
 
             catch (const shared::exception::COutOfRange& exception)
@@ -284,7 +313,7 @@ namespace web
                if (request->body().empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "body was not provided");
-               
+
                shared::CDataContainer content(request->body());
 
                if (content.empty())
@@ -302,7 +331,7 @@ namespace web
                content.remove("interpreter");
                content.remove("editor");
                content.remove("model");
-               
+
                database::entities::CRule ruleToUpdate;
                ruleToUpdate.fillFromContent(content);
                ruleToUpdate.Id = ruleId;
@@ -386,7 +415,7 @@ namespace web
                const auto id = request->pathVariable("id", std::string());
                if (id.empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                     "rule id was not provided");
+                                                          "rule id was not provided");
                const auto ruleId = static_cast<int>(std::stol(id));
 
                m_rulesManager->startRule(ruleId);
@@ -397,7 +426,7 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                  "Failed to start rule");
+                                                       "Failed to start rule");
             }
          }
 
@@ -409,7 +438,7 @@ namespace web
                const auto id = request->pathVariable("id", std::string());
                if (id.empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                     "rule id was not provided");
+                                                          "rule id was not provided");
                const auto ruleId = static_cast<int>(std::stol(id));
 
                m_rulesManager->stopRule(ruleId);
@@ -420,7 +449,7 @@ namespace web
             catch (const std::exception&)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                  "Failed to stop rule");
+                                                       "Failed to stop rule");
             }
          }
       } //namespace service
