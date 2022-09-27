@@ -38,10 +38,10 @@ namespace startupOptions
       virtual unsigned short getSslWebServerPortNumber() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Determine if the SSL port is activated
-      /// \return     true if SSL is activated 
+      /// \brief	    Use HTTPS for the web-server
+      /// \return     true if HTTPS is enabled
       //--------------------------------------------------------------
-      virtual bool getIsWebServerUseSsl() const = 0;
+      virtual bool getIsWebServerUseHttps() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the web server ip address
@@ -60,6 +60,18 @@ namespace startupOptions
       /// \return     The database engine (sqlite|postgresql)
       //--------------------------------------------------------------
       virtual EDatabaseEngine getDatabaseEngine() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the certificate local file for the web-server in HTTPS
+      /// \return     The certificate local file
+      //--------------------------------------------------------------
+      virtual boost::filesystem::path getWebServerHttpsCertificateFile() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the private key local file for the web-server in HTTPS
+      /// \return     The private key local file
+      //--------------------------------------------------------------
+      virtual boost::filesystem::path getWebServerHttpsPrivateKeyFile() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the path of the database file (sqlite only)

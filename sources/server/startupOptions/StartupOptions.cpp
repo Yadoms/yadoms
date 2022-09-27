@@ -367,7 +367,7 @@ namespace startupOptions
       return static_cast<unsigned short>(m_configContainer.getUInt("server.SSLport", 443));
    }
    
-   bool CStartupOptions::getIsWebServerUseSsl() const
+   bool CStartupOptions::getIsWebServerUseHttps() const
    {
       return m_configContainer.getBool("server.useSSL", false);
    }
@@ -380,6 +380,16 @@ namespace startupOptions
    std::string CStartupOptions::getWebServerInitialPath() const
    {
       return m_configContainer.getString("server.www", "www");
+   }
+
+   boost::filesystem::path CStartupOptions::getWebServerHttpsCertificateFile() const
+   {
+      return m_configContainer.getString("openSSL.server.certificateFile", {});
+   }
+
+   boost::filesystem::path CStartupOptions::getWebServerHttpsPrivateKeyFile() const
+   {
+      return m_configContainer.getString("openSSL.server.privateKeyFile", {});
    }
 
    EDatabaseEngine CStartupOptions::getDatabaseEngine() const

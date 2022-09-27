@@ -36,9 +36,11 @@ namespace startupOptions
       boost::filesystem::path getLogPath() const override;
       unsigned short getWebServerPortNumber() const override;
       unsigned short getSslWebServerPortNumber() const override;
-      bool getIsWebServerUseSsl() const override;
+      bool getIsWebServerUseHttps() const override;
       std::string getWebServerIpAddress() const override;
       std::string getWebServerInitialPath() const override;
+      boost::filesystem::path getWebServerHttpsCertificateFile() const override;
+      boost::filesystem::path getWebServerHttpsPrivateKeyFile() const override;
       EDatabaseEngine getDatabaseEngine() const override;
       std::string getDatabaseSqliteFile() const override;
       std::string getDatabaseSqliteBackupFile() const override;

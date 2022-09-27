@@ -8,6 +8,8 @@
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
 #include <oatpp-websocket/Handshaker.hpp>
+#include <oatpp-openssl/server/ConnectionProvider.hpp>
+#include <oatpp-openssl/Config.hpp>
 #include "ErrorHandler.h"
 #include "RestRequestHandler.h"
 #include "WebSocketConnection.h"
@@ -19,9 +21,11 @@ namespace web
    {
       CWebServer::CWebServer(const std::string& address,
                              unsigned short port,
-                             bool useSsl,
-                             unsigned short securedPort,
+                             bool useHttps,
+                             unsigned short httpsPort,
                              const boost::filesystem::path& docRoot,
+                             const boost::filesystem::path& httpsLocalCertificateFile,
+                             const boost::filesystem::path& httpsPrivateKeyFile,
                              const std::string& restKeywordBase,
                              boost::shared_ptr<std::vector<boost::shared_ptr<rest::service::IRestService>>> restServices,
                              const std::string& webSocketKeywordBase,
@@ -43,12 +47,27 @@ namespace web
 
          m_httpConnectionHandler->setErrorHandler(std::make_shared<CErrorHandler>());
 
-         m_tcpConnectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared(
-            {
-               (address.empty() ? "0.0.0.0" : address).c_str(),
-               port,
-               oatpp::network::Address::IP_4
-            });
+         if (useHttps)
+         {
+            // HTTPS
+            const auto config = oatpp::openssl::Config::createDefaultServerConfigShared(httpsLocalCertificateFile.string(),
+                                                                                        httpsPrivateKeyFile.string());
+            m_tcpConnectionProvider = oatpp::openssl::server::ConnectionProvider::createShared(
+               config,
+               {
+                  (address.empty() ? "0.0.0.0" : address).c_str(),
+                  httpsPort
+               });
+         }
+         else
+         {
+            // HTTP
+            m_tcpConnectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared(
+               {
+                  (address.empty() ? "0.0.0.0" : address).c_str(),
+                  port
+               });
+         }
 
          m_server = std::make_shared<oatpp::network::Server>(m_tcpConnectionProvider,
                                                              m_httpConnectionHandler);

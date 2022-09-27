@@ -60,9 +60,11 @@ private:
    std::unique_ptr<web::IWebServer> createOatppBasedWebServer(
       const std::string& address,
       unsigned short port,
-      bool useSsl,
-      unsigned short securedPort,
+      bool useHttps,
+      unsigned short httpsPort,
       const boost::filesystem::path& webServerPath,
+      const boost::filesystem::path& httpsLocalCertificateFile,
+      const boost::filesystem::path& httpsPrivateKeyFile,
       const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
       const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
       bool skipPasswordCheck) const;

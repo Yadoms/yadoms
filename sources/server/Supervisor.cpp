@@ -169,7 +169,7 @@ void CSupervisor::run()
 
       auto pocoBasedWebServer = createPocoBasedWebServer(startupOptions->getWebServerIpAddress(),
                                                          startupOptions->getWebServerPortNumber(),
-                                                         startupOptions->getIsWebServerUseSsl(),
+                                                         startupOptions->getIsWebServerUseHttps(),
                                                          startupOptions->getSslWebServerPortNumber(),
                                                          true,
                                                          m_pathProvider->webServerPath(),
@@ -179,9 +179,11 @@ void CSupervisor::run()
 
       auto oatppBasedWebServer = createOatppBasedWebServer(startupOptions->getWebServerIpAddress(),
                                                            startupOptions->getWebServerPortNumber(),
-                                                           startupOptions->getIsWebServerUseSsl(),
+                                                           startupOptions->getIsWebServerUseHttps(),
                                                            startupOptions->getSslWebServerPortNumber(),
                                                            m_pathProvider->webServerPath(),
+                                                           startupOptions->getWebServerHttpsCertificateFile(),
+                                                           startupOptions->getWebServerHttpsPrivateKeyFile(),
                                                            restServices,
                                                            dataAccessLayer->getConfigurationManager(),
                                                            startupOptions->getNoPasswordFlag());
@@ -320,18 +322,22 @@ std::unique_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
 std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
    const std::string& address,
    unsigned short port,
-   bool useSsl,
-   unsigned short securedPort,
+   bool useHttps,
+   unsigned short httpsPort,
    const boost::filesystem::path& webServerPath,
+   const boost::filesystem::path& httpsLocalCertificateFile,
+   const boost::filesystem::path& httpsPrivateKeyFile,
    const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
    const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
    bool skipPasswordCheck) const
 {
    return std::make_unique<web::oatppServer::CWebServer>(address,
                                                          port + 1, //TODO virer le +1 (pour test...)
-                                                         useSsl,
-                                                         securedPort + 1, //TODO virer le +1 (pour test...)
+                                                         useHttps,
+                                                         httpsPort + 1, //TODO virer le +1 (pour test...)
                                                          webServerPath,
+                                                         httpsLocalCertificateFile,
+                                                         httpsPrivateKeyFile,
                                                          "rest",
                                                          restServices,
                                                          "ws",
