@@ -95,6 +95,7 @@ ExternalProject_Add(curl_build
    PATCH_COMMAND     ${CURL_PATHCMD}
    PREFIX            ${CURL_ROOT}
    CMAKE_ARGS        ${CURL_BUILD_ARGS}
+   UPDATE_COMMAND    ""
    INSTALL_COMMAND   ""
 )
 

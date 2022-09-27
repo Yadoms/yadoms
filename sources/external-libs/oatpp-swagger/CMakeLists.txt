@@ -70,6 +70,7 @@ ExternalProject_Add (oatpp-swagger_build
    PATCH_COMMAND     ${OATPP_SWAGGER_PATCH_CMD}   
    PREFIX            ${OATPP_SWAGGER_ROOT}
    CMAKE_ARGS        ${OATPP_SWAGGER_BUILD_ARGS}
+   UPDATE_COMMAND    ""
    INSTALL_COMMAND   ""
 )
 

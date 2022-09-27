@@ -78,6 +78,7 @@ ExternalProject_Add (curlpp_build
    PATCH_COMMAND     ${CURLPP_PATHCMD}   
    PREFIX            ${CURLPP_ROOT}
    CMAKE_ARGS        ${CURLPP_BUILD_ARGS}
+   UPDATE_COMMAND    ""
    INSTALL_COMMAND   ""
 )
 

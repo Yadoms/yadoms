@@ -70,6 +70,7 @@ ExternalProject_Add (oatpp-websocket_build
    PATCH_COMMAND     ${OATPP_WEBSOCKET_PATCH_CMD}   
    PREFIX            ${OATPP_WEBSOCKET_ROOT}
    CMAKE_ARGS        ${OATPP_WEBSOCKET_BUILD_ARGS}
+   UPDATE_COMMAND    ""
    INSTALL_COMMAND   ""
 )
 

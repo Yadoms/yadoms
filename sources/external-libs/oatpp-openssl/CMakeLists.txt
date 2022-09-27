@@ -69,6 +69,7 @@ ExternalProject_Add (oatpp-openssl_build
    PATCH_COMMAND     ${OATPP_OPENSSL_PATCH_CMD}   
    PREFIX            ${OATPP_OPENSSL_ROOT}
    CMAKE_ARGS        ${OATPP_OPENSSL_BUILD_ARGS}
+   UPDATE_COMMAND    ""
    INSTALL_COMMAND   ""
 )
 

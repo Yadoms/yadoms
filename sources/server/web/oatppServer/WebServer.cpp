@@ -85,11 +85,6 @@ namespace web
          // TODO conditionner l'activation par une option dans le .ini
          //TODO remettre refreshSwaggerDoc(httpRouter);
 
-
-         // Configure the factory
-         //TODO RAF :
-         // - HTTPS
-
          start();
       }
 
