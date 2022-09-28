@@ -11,16 +11,14 @@ namespace tools
    {
       sync();
       auto rc = system(andRestart ? "shutdown --reboot now" : "shutdown --poweroff now");
-      if (retValue == -1 || WEXITSTATUS(retValue) != 0)
+      if (rc == -1 || WEXITSTATUS(rc) != 0)
       {
-         auto errorMsg = strerror(rc);
-         YADOMS_LOG(warning) << "Error when try to shutdown/reboot : " << errorMsg << ", try with sudo...";
+         YADOMS_LOG(warning) << "Error when try to shutdown/reboot : " << strerror(rc) << ", try with sudo...";
 
          rc = system(andRestart ? "sudo shutdown --reboot now" : "sudo shutdown --poweroff now");
-         if (retValue == -1 || WEXITSTATUS(retValue) != 0)
+         if (rc == -1 || WEXITSTATUS(rc) != 0)
          {
-            auto errorMsg = strerror(rc);
-            YADOMS_LOG(error) << "Error when try to shutdown/reboot (with sudo) : " << errorMsg;
+            YADOMS_LOG(error) << "Error when try to shutdown/reboot (with sudo) : " << strerror(rc);
             return false;
          }
 
