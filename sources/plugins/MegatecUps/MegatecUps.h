@@ -12,18 +12,15 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	This plugin supports Megatec UPS (see http://www.networkupstools.org/protocols/megatec.html)
 //--------------------------------------------------------------
-class CMegatecUps : public plugin_cpp_api::IPlugin
+class CMegatecUps final : public plugin_cpp_api::IPlugin
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
    CMegatecUps();
-
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~CMegatecUps();
+   ~CMegatecUps() override;
+   CMegatecUps(const CMegatecUps&) = delete;
+   CMegatecUps operator = (const CMegatecUps&) = delete;
+   CMegatecUps(const CMegatecUps&&) = delete;
+   CMegatecUps operator = (const CMegatecUps&&) = delete;
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
@@ -70,7 +67,8 @@ protected:
    /// \param [in] notification     The connection notification data
    //--------------------------------------------------------------
    void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-                                 boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
+                                 boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<
+                                    shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS
@@ -239,11 +237,6 @@ private:
    static const boost::posix_time::time_duration AutoTestUpsStatusPeriod;
 
    //--------------------------------------------------------------
-   /// \brief	AC power status
-   //--------------------------------------------------------------
-   bool m_acPowerActive;
-
-   //--------------------------------------------------------------
    /// \brief	The battery nominal voltage (V)
    //--------------------------------------------------------------
    double m_batteryNominalVoltage;
@@ -316,4 +309,3 @@ private:
    bool m_lastTestInProgress;
    boost::posix_time::ptime m_autotestStartDateTime;
 };
-

@@ -14,7 +14,7 @@ IMPLEMENT_PLUGIN(CMegatecUps)
 // Event IDs
 enum
 {
-   kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
+   kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId,
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
    kStartAutoTestTimePoint,
@@ -47,7 +47,6 @@ CMegatecUps::CMegatecUps()
      m_protocolErrorCounter(0),
      m_lastSentBuffer(1),
      m_answerIsRequired(true),
-     m_acPowerActive(true),
      m_batteryNominalVoltage(0.0),
      m_inputVoltage(boost::make_shared<yApi::historization::CVoltage>("inputVoltage")),
      m_inputfaultVoltage(boost::make_shared<yApi::historization::CVoltage>("inputfaultVoltage")),
@@ -60,31 +59,33 @@ CMegatecUps::CMegatecUps()
      m_batteryLowHistorizer(boost::make_shared<yApi::historization::CSwitch>("batteryLow", yApi::EKeywordAccessMode::kGet)),
      m_upsShutdown(boost::make_shared<yApi::historization::CEvent>("UpsShutdown")),
      m_batteryDeadHistorizer(boost::make_shared<yApi::historization::CSwitch>("batteryDead", yApi::EKeywordAccessMode::kGet)),
-     m_keywordsToHistorizeStaticList({m_inputVoltage ,
-        m_inputfaultVoltage ,
-        m_outputVoltage ,
-        m_outputLoad ,
-        m_inputFrequency ,
-        m_batteryVoltage ,
-        m_temperature}),
-     m_keywordsToDeclare({m_inputVoltage,
-        m_inputfaultVoltage ,
-        m_outputVoltage ,
-        m_outputLoad ,
-        m_inputFrequency ,
-        m_batteryVoltage ,
+     m_keywordsToHistorizeStaticList({
+        m_inputVoltage,
+        m_inputfaultVoltage,
+        m_outputVoltage,
+        m_outputLoad,
+        m_inputFrequency,
+        m_batteryVoltage,
+        m_temperature
+     }),
+     m_keywordsToDeclare({
+        m_inputVoltage,
+        m_inputfaultVoltage,
+        m_outputVoltage,
+        m_outputLoad,
+        m_inputFrequency,
+        m_batteryVoltage,
         m_temperature,
         m_acPowerHistorizer,
         m_batteryLowHistorizer,
         m_upsShutdown,
-        m_batteryDeadHistorizer}),
+        m_batteryDeadHistorizer
+     }),
      m_lastTestInProgress(false)
 {
 }
 
-CMegatecUps::~CMegatecUps()
-{
-}
+CMegatecUps::~CMegatecUps() = default;
 
 void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
@@ -126,13 +127,13 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // Command received from Yadoms
-            auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+            const auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
             YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command);
 
             if (boost::iequals(command->getKeyword(), m_upsShutdown->getKeyword()))
                onCommandShutdown(api, command->getBody());
             else
-            YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command);
+               YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
             break;
          }
@@ -142,14 +143,15 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             auto newConfigurationData = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
             YADOMS_LOG(information) << "Update configuration...";
-            BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+            // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+            BOOST_ASSERT(!newConfigurationData->empty());
 
             // Close connection
             CMegatecUpsConfiguration newConfiguration;
             newConfiguration.initializeWith(newConfigurationData);
 
             // If port has changed, destroy and recreate connection (if any)
-            auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
+            const auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
 
             if (needToReconnect)
                destroyConnection();
@@ -176,7 +178,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtPortConnection:
          {
-            auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+            const auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
 
             if (notif && notif->isConnected())
                processConnectionEvent(api);
@@ -210,8 +212,11 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kStartAutoTestTimePoint:
          {
             YADOMS_LOG(information) << "Start AutoTest...";
+            boost::this_thread::sleep(boost::posix_time::seconds(3)); // To let enough time for log to be written on drive
+
             m_upsStatusRequestTimer->start(AutoTestUpsStatusPeriod);
             m_autotestStartDateTime = shared::currentTime::Provider().now();
+
             sendAutotestCmd();
             setNextAutotestTimePoint(api);
             break;
@@ -299,7 +304,7 @@ void CMegatecUps::onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const std::string& command)
 {
    if (!m_port)
-   YADOMS_LOG(information) << "Command not send (UPS is not ready) : " << command;
+      YADOMS_LOG(information) << "Command not send (UPS is not ready) : " << command;
 
    sendShtudownCmd();
 }
@@ -424,7 +429,8 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                // End of initialization, plugin is now running
                api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-               setNextAutotestTimePoint(api);
+               if (m_configuration.autotestEnable())
+                  setNextAutotestTimePoint(api);
 
                // Now ask for status
                sendGetStatusCmd();
@@ -511,11 +517,11 @@ void CMegatecUps::sendShtudownCmd()
       // No easy solution to format a decimal number without the '0' before the '.'
       std::ostringstream value;
       value << std::setw(2) << std::setprecision(1) << std::fixed << m_configuration.outputShutdownDelay();
-      auto sValue = value.str();
+      const auto sValue = value.str();
       cmd << sValue.substr(1, sValue.size() - 1);
    }
    else
-      cmd << std::setw(2) << std::setfill('0') << m_configuration.outputShutdownDelay();// Number >=1 should be at format "01", "02", "10"
+      cmd << std::setw(2) << std::setfill('0') << m_configuration.outputShutdownDelay(); // Number >=1 should be at format "01", "02", "10"
 
    cmd << 'R' << std::setw(4) << std::setprecision(0) << std::setfill('0') << m_configuration.outputRestoreDelay();
 
@@ -563,7 +569,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
    {
       m_lastBatteryLowState = batteryLow;
       m_batteryLowHistorizer->set(batteryLow);
-      keywordsToHistorize.push_back(m_batteryLowHistorizer);
+      keywordsToHistorize.emplace_back(m_batteryLowHistorizer);
    }
 
    auto acPower = !utilityFail;
@@ -571,7 +577,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
    {
       m_acPowerState = acPower;
       m_acPowerHistorizer->set(acPower);
-      keywordsToHistorize.push_back(m_acPowerHistorizer);
+      keywordsToHistorize.emplace_back(m_acPowerHistorizer);
    }
 
    if ((testInProgress || m_lastTestInProgress) && (batteryLow || m_outputVoltage->get() == 0.0 || shutdownActive))
@@ -596,7 +602,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
          m_batteryDeadHistorizer->set(false);
          YADOMS_LOG(information) << "  ==> AutoTest result : battery good";
       }
-      keywordsToHistorize.push_back(m_batteryDeadHistorizer);
+      keywordsToHistorize.emplace_back(m_batteryDeadHistorizer);
 
       m_upsStatusRequestTimer->start(DefaultUpsStatusPeriod);
    }
@@ -658,7 +664,8 @@ void CMegatecUps::processReceivedRatingInformation(const boost::tokenizer<boost:
    ++itToken;
    auto frequency = upsStr2Double(*itToken);
 
-   YADOMS_LOG(information) << "UPS rating informations : voltage=" << ratingVoltage << ", current=" << ratingCurrent << ", batteryVoltage=" << m_batteryNominalVoltage << ", frequency=" << frequency;
+   YADOMS_LOG(information) << "UPS rating informations : voltage=" << ratingVoltage << ", current=" << ratingCurrent << ", batteryVoltage=" <<
+      m_batteryNominalVoltage << ", frequency=" << frequency;
 }
 
 double CMegatecUps::upsStr2Double(const std::string& str)
