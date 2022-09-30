@@ -63,8 +63,8 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp-openssl_build
    DEPENDS           oatpp_build
-   GIT_REPOSITORY    https://github.com/sgallou/oatpp-openssl.git
-   GIT_TAG           7fc5d1ca42d7aa655912c9e7c27d1a2d2492444f
+   GIT_REPOSITORY    https://github.com/oatpp/oatpp-openssl.git
+   GIT_TAG           c689acb84624911ddff3e547dfb4a0d37df78599
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_OPENSSL_PATCH_CMD}   
    PREFIX            ${OATPP_OPENSSL_ROOT}
