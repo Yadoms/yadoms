@@ -59,6 +59,7 @@ CMegatecUps::CMegatecUps()
      m_batteryLowHistorizer(boost::make_shared<yApi::historization::CSwitch>("batteryLow", yApi::EKeywordAccessMode::kGet)),
      m_upsShutdown(boost::make_shared<yApi::historization::CEvent>("UpsShutdown")),
      m_batteryDeadHistorizer(boost::make_shared<yApi::historization::CSwitch>("batteryDead", yApi::EKeywordAccessMode::kGet)),
+     m_batteryDeadResetFlagHistorizer(boost::make_shared<yApi::historization::CEvent>("batteryDeadReset", yApi::EKeywordAccessMode::kGetSet)),
      m_keywordsToHistorizeStaticList({
         m_inputVoltage,
         m_inputfaultVoltage,
@@ -79,7 +80,8 @@ CMegatecUps::CMegatecUps()
         m_acPowerHistorizer,
         m_batteryLowHistorizer,
         m_upsShutdown,
-        m_batteryDeadHistorizer
+        m_batteryDeadHistorizer,
+        m_batteryDeadResetFlagHistorizer
      }),
      m_lastTestInProgress(false)
 {
@@ -105,6 +107,15 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                                                 shared::event::CEventTimer::kOneShot,
                                                                 DefaultUpsStatusPeriod);
    m_upsStatusRequestTimer->stop();
+
+   m_autoTestRunningFlagFilename = api->getDataPath() / "autotestrunning.flag";
+   if (autoTestRunningFlagIsPresent())
+   {
+      YADOMS_LOG(information) << "  ==> System has rebooted while autotest : BATTERY IS DEAD, PLAN TO CHANGE IT RAPIDLY ! ! !";
+      clearAutoTestRunningFlag();
+      m_batteryDeadHistorizer->set(true);
+      api->historizeData(DeviceName, m_batteryDeadHistorizer);
+   }
 
    if (m_configuration.autotestEnable())
       setNextAutotestTimePoint(api);
@@ -132,6 +143,8 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             if (boost::iequals(command->getKeyword(), m_upsShutdown->getKeyword()))
                onCommandShutdown(api, command->getBody());
+            if (boost::iequals(command->getKeyword(), m_batteryDeadResetFlagHistorizer->getKeyword()))
+               onResetBatteryDead(api);
             else
                YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
@@ -211,8 +224,11 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kStartAutoTestTimePoint:
          {
+            // In case of battery really dead, UPS may cut power to system
+            // We have to detect this
             YADOMS_LOG(information) << "Start AutoTest...";
-            boost::this_thread::sleep(boost::posix_time::seconds(3)); // To let enough time for log to be written on drive
+            setAutoTestRunningFlag();
+            boost::this_thread::sleep(boost::posix_time::seconds(3)); // To let enough time for log and auto-test flag to be written on drive
 
             m_upsStatusRequestTimer->start(AutoTestUpsStatusPeriod);
             m_autotestStartDateTime = shared::currentTime::Provider().now();
@@ -264,7 +280,13 @@ bool CMegatecUps::connectionsAreEqual(const CMegatecUpsConfiguration& conf1,
 
 void CMegatecUps::setNextAutotestTimePoint(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   const boost::posix_time::ptime upsAutoTestTimePoint(shared::currentTime::Provider().now().date() + boost::gregorian::date_duration(1));
+   const auto now = shared::currentTime::Provider().now();
+   const auto startDayTime = m_configuration.autotestStartTime();
+
+   boost::posix_time::ptime upsAutoTestTimePoint(now.date(), startDayTime);
+   if (upsAutoTestTimePoint <= now + boost::posix_time::minutes(1))
+      upsAutoTestTimePoint += boost::posix_time::hours(24);
+
    YADOMS_LOG(information) << "Next AutoTest at : " << upsAutoTestTimePoint;
 
    if (!m_upsAutoTestTimePoint)
@@ -307,6 +329,13 @@ void CMegatecUps::onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> api,
       YADOMS_LOG(information) << "Command not send (UPS is not ready) : " << command;
 
    sendShtudownCmd();
+}
+
+void CMegatecUps::onResetBatteryDead(boost::shared_ptr<yApi::IYPluginApi> api) const
+{
+   YADOMS_LOG(information) << "Reset battery dead indicator";
+   m_batteryDeadHistorizer->set(false);
+   api->historizeData(DeviceName, m_batteryDeadHistorizer);
 }
 
 void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -587,6 +616,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
    if (m_lastTestInProgress && !testInProgress)
    {
       // End of autotest
+      clearAutoTestRunningFlag();
 
       // Battery is dead for reasons above or if autotest was shorted (should take 10 seconds. Apply margin)
       if (shared::currentTime::Provider().now() < m_autotestStartDateTime + boost::posix_time::seconds(9))
@@ -594,15 +624,15 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
 
       if (m_lastBatteryDeadState)
       {
+         YADOMS_LOG(information) << "  ==> AutoTest result : BATTERY IS DEAD, PLAN TO CHANGE IT SOON ! ! !";
          m_batteryDeadHistorizer->set(true);
-         YADOMS_LOG(information) << "  ==> AutoTest result : BATTERY IS DEAD, PLAN TO CHANGE IT RAPIDLY ! ! !";
+         keywordsToHistorize.emplace_back(m_batteryDeadHistorizer);
       }
       else
       {
-         m_batteryDeadHistorizer->set(false);
+         // Reset of battery dead state is only manually done (to address the case where battery is so dead that system has rebooted)
          YADOMS_LOG(information) << "  ==> AutoTest result : battery good";
       }
-      keywordsToHistorize.emplace_back(m_batteryDeadHistorizer);
 
       m_upsStatusRequestTimer->start(DefaultUpsStatusPeriod);
    }
@@ -699,4 +729,34 @@ void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
       m_batteryDeadHistorizer->set(false);
       api->historizeData(DeviceName, m_batteryDeadHistorizer);
    }
+}
+
+void CMegatecUps::setAutoTestRunningFlag() const
+{
+   try
+   {
+      std::ofstream output(m_autoTestRunningFlagFilename.c_str());
+   }
+   catch (const std::exception&)
+   {
+      YADOMS_LOG(error) << "Fail to set auto-test running flag, function will be unavailable";
+   }
+}
+
+void CMegatecUps::clearAutoTestRunningFlag() const
+{
+   try
+   {
+      boost::filesystem::remove(m_autoTestRunningFlagFilename);
+   }
+   catch (const std::exception& e)
+   {
+      YADOMS_LOG(error) << "Fail to clear auto-test running flag : " << e.what();
+   }
+}
+
+bool CMegatecUps::autoTestRunningFlagIsPresent() const
+{
+   // ReSharper disable once CppRedundantQualifier
+   return boost::filesystem::exists(m_autoTestRunningFlagFilename);
 }

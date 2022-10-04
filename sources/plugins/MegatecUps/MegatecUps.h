@@ -18,15 +18,15 @@ public:
    CMegatecUps();
    ~CMegatecUps() override;
    CMegatecUps(const CMegatecUps&) = delete;
-   CMegatecUps operator = (const CMegatecUps&) = delete;
+   CMegatecUps operator =(const CMegatecUps&) = delete;
    CMegatecUps(const CMegatecUps&&) = delete;
-   CMegatecUps operator = (const CMegatecUps&&) = delete;
+   CMegatecUps operator =(const CMegatecUps&&) = delete;
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
-protected:
+private:
    //--------------------------------------------------------------
    /// \brief	                     Send a ASCII message to the UPS
    /// \param [in] message          message to send
@@ -54,6 +54,12 @@ protected:
    //--------------------------------------------------------------
    void onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& command);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Reset the battery dead indicator
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   //--------------------------------------------------------------
+   void onResetBatteryDead(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected
@@ -178,7 +184,11 @@ protected:
    void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string& model) const;
 
-private:
+   boost::filesystem::path m_autoTestRunningFlagFilename;
+   void setAutoTestRunningFlag() const;
+   void clearAutoTestRunningFlag() const;
+   bool autoTestRunningFlagIsPresent() const;
+
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
@@ -297,6 +307,11 @@ private:
    boost::shared_ptr<yApi::historization::CSwitch> m_batteryDeadHistorizer;
 
    //--------------------------------------------------------------
+   /// \brief	The battery dead state reset flag event
+   //--------------------------------------------------------------
+   boost::shared_ptr<yApi::historization::CEvent> m_batteryDeadResetFlagHistorizer;
+
+   //--------------------------------------------------------------
    /// \brief	The keywords list to historize in one step for better performances
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywordsToHistorizeStaticList;
@@ -309,3 +324,4 @@ private:
    bool m_lastTestInProgress;
    boost::posix_time::ptime m_autotestStartDateTime;
 };
+
