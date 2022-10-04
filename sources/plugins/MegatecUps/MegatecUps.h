@@ -12,24 +12,21 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	This plugin supports Megatec UPS (see http://www.networkupstools.org/protocols/megatec.html)
 //--------------------------------------------------------------
-class CMegatecUps : public plugin_cpp_api::IPlugin
+class CMegatecUps final : public plugin_cpp_api::IPlugin
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
    CMegatecUps();
-
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~CMegatecUps();
+   ~CMegatecUps() override;
+   CMegatecUps(const CMegatecUps&) = delete;
+   CMegatecUps operator =(const CMegatecUps&) = delete;
+   CMegatecUps(const CMegatecUps&&) = delete;
+   CMegatecUps operator =(const CMegatecUps&&) = delete;
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
-protected:
+private:
    //--------------------------------------------------------------
    /// \brief	                     Send a ASCII message to the UPS
    /// \param [in] message          message to send
@@ -59,6 +56,12 @@ protected:
                           const std::string& command);
 
    //--------------------------------------------------------------
+   /// \brief	                     Reset the battery dead indicator
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   //--------------------------------------------------------------
+   void onResetBatteryDead(boost::shared_ptr<yApi::IYPluginApi> api) const;
+
+   //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected
    /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
@@ -70,7 +73,8 @@ protected:
    /// \param [in] notification     The connection notification data
    //--------------------------------------------------------------
    void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-                                 boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
+                                 boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<
+                                    shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS
@@ -180,7 +184,11 @@ protected:
    void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string& model) const;
 
-private:
+   boost::filesystem::path m_autoTestRunningFlagFilename;
+   void setAutoTestRunningFlag() const;
+   void clearAutoTestRunningFlag() const;
+   bool autoTestRunningFlagIsPresent() const;
+
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
@@ -237,11 +245,6 @@ private:
    //--------------------------------------------------------------   
    static const boost::posix_time::time_duration DefaultUpsStatusPeriod;
    static const boost::posix_time::time_duration AutoTestUpsStatusPeriod;
-
-   //--------------------------------------------------------------
-   /// \brief	AC power status
-   //--------------------------------------------------------------
-   bool m_acPowerActive;
 
    //--------------------------------------------------------------
    /// \brief	The battery nominal voltage (V)
@@ -302,6 +305,11 @@ private:
    /// \brief	The battery dead state
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CSwitch> m_batteryDeadHistorizer;
+
+   //--------------------------------------------------------------
+   /// \brief	The battery dead state reset flag event
+   //--------------------------------------------------------------
+   boost::shared_ptr<yApi::historization::CEvent> m_batteryDeadResetFlagHistorizer;
 
    //--------------------------------------------------------------
    /// \brief	The keywords list to historize in one step for better performances

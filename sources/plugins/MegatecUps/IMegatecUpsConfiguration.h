@@ -7,9 +7,7 @@
 class IMegatecUpsConfiguration
 {
 public:
-   virtual ~IMegatecUpsConfiguration()
-   {
-   }
+   virtual ~IMegatecUpsConfiguration() = default;
 
    //--------------------------------------------------------------
    /// \brief		 Load configuration data
@@ -34,6 +32,12 @@ public:
    /// \return     true if autotest enable
    //--------------------------------------------------------------
    virtual bool autotestEnable() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Autotest start time
+   /// \return     Duration (only hours and minutes)
+   //--------------------------------------------------------------
+   virtual boost::posix_time::time_duration autotestStartTime() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get the output shutdown delay
