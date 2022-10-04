@@ -12,8 +12,14 @@
     },
     "Autotest": {
       "name": "Autotest",
-      "description":
-        "Réalisation d'un auto-test de l'onduleur (si fonction supportée par l'onduleur) toutes les nuits à minuit"
+      "description": "Réalisation d'un auto-test quotidien de l'onduleur (si fonction supportée par l'onduleur)",
+      "content": {
+        "AutotestStartTime": {
+          "name": "Heure de lancement",
+          "description": "Heure de lancement de l'auto-test (format hh:mm)",
+          "regexErrorMessage": "Le format attendu est hh:mm"
+        }
+      }
     },
     "UpsShutdownTimers": {
       "name": "Délais d'arrêt/redémarrage",

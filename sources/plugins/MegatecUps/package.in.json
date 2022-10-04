@@ -25,8 +25,17 @@
       "defaultValue": "true"
     },
     "Autotest": {
-      "type": "bool",
-      "defaultValue": "false"
+      "type": "section",
+      "enableWithCheckBox": true,
+      "enableWithCheckBoxDefaultValue": false,
+      "content": {
+        "AutotestStartTime": {
+          "type": "string",
+          "required": "true",
+          "regex": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$",
+          "defaultValue": "00:00"
+        }
+      }
     },
     "UpsShutdownTimers": {
       "type": "section",
