@@ -2,6 +2,7 @@
 * Fix disabling auto-test
 * Add detection of system shutdown caused by battery dead
 * Add daily auto-test time in configuration
+* Disable auto-test if battery declared dead
 
 ### 1.3.0
 * Fix #562  : update usage of CDataContainer for better memory optimizations

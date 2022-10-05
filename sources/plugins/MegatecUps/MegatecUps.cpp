@@ -117,8 +117,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       api->historizeData(DeviceName, m_batteryDeadHistorizer);
    }
 
-   if (m_configuration.autotestEnable())
-      setNextAutotestTimePoint(api);
+   setNextAutotestTimePoint(api);
 
    // Create the connection
    createConnection(api);
@@ -177,15 +176,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             else
                api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-            if (m_configuration.autotestEnable())
-            {
-               setNextAutotestTimePoint(api);
-            }
-            else
-            {
-               m_upsAutoTestTimePoint->cancel();
-               m_upsAutoTestTimePoint.reset();
-            }
+            setNextAutotestTimePoint(api);
 
             break;
          }
@@ -280,6 +271,16 @@ bool CMegatecUps::connectionsAreEqual(const CMegatecUpsConfiguration& conf1,
 
 void CMegatecUps::setNextAutotestTimePoint(boost::shared_ptr<yApi::IYPluginApi> api)
 {
+   if (!m_configuration.autotestEnable() || m_batteryDeadHistorizer->get())
+   {
+      if (m_upsAutoTestTimePoint)
+      {
+         m_upsAutoTestTimePoint->cancel();
+         m_upsAutoTestTimePoint.reset();
+      }
+      return;
+   }
+
    const auto now = shared::currentTime::Provider().now();
    const auto startDayTime = m_configuration.autotestStartTime();
 
@@ -458,8 +459,7 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                // End of initialization, plugin is now running
                api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-               if (m_configuration.autotestEnable())
-                  setNextAutotestTimePoint(api);
+               setNextAutotestTimePoint(api);
 
                // Now ask for status
                sendGetStatusCmd();
