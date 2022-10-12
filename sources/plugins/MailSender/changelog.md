@@ -1,3 +1,7 @@
+### 1.2.3-beta.1
+* Use Curlpp to send emails (Remove Poco)
+* Make email subject customizable
+
 ### 1.2.0
 * Fix #562  : update usage of CDataContainer for better memory optimizations
 

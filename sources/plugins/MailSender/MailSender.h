@@ -1,88 +1,68 @@
 #pragma once
+#include <curlpp/Easy.hpp>
 #include <plugin_cpp_api/IPlugin.h>
 #include "IMSConfiguration.h"
-#include <Poco/Net/PrivateKeyPassphraseHandler.h>
-#include <Poco/SharedPtr.h>
 
-// Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-//--------------------------------------------------------------
-/// \brief	This class is the MailSender plugin
-/// \note   This plugin send a mail when receive a notification
-//--------------------------------------------------------------
-class CMailSender : public plugin_cpp_api::IPlugin
+/// @brief	This class is the MailSender plugin
+/// @note   This plugin send a mail when receive a notification
+class CMailSender final : public plugin_cpp_api::IPlugin
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
    CMailSender();
-
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~CMailSender();
+   CMailSender(const CMailSender&) = delete;
+   CMailSender(const CMailSender&&) = delete;
+   CMailSender operator=(const CMailSender&) = delete;
+   CMailSender operator=(const CMailSender&&) = delete;
+   ~CMailSender() override = default;
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
-protected:
-   //--------------------------------------------------------------
-   /// \brief Get the e-mail of the received recipient
-   /// \param[in] api                   pointer to the API
-   /// \param[in] recipientId           recipientId
-   //--------------------------------------------------------------
-   std::string getRecipientMail(boost::shared_ptr<yApi::IYPluginApi> api,
-                                int recipientId) const;
-
-   //--------------------------------------------------------------
-   /// \brief Send a mail
-   /// \param[in] api                   pointer to the API
-   /// \param[in] sendMailRequest       Struture of the sending mail
-   //--------------------------------------------------------------
+private:
+   /// @brief Send a mail
+   /// @param[in] api                   pointer to the API
+   /// @param[in] sendMailRequest       Struture of the sending mail
    void onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
-                          const std::string& sendMailRequest);
+                          const std::string& sendMailRequest) const;
 
-   //--------------------------------------------------------------
-   /// \brief Declare the device and all keywords associated
-   /// \param[in] api                  pointer to the API
-   //--------------------------------------------------------------
+   /// @brief Declare the device and all keywords associated
+   /// @param[in] api                  pointer to the API
    void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
-   //--------------------------------------------------------------
-   /// \brief Update the configuration of the plugin after a change
-   /// \param[in] api                   pointer to the API
-   /// \param[in] newConfigurationData  The new configuration of the module
-   //--------------------------------------------------------------
+   /// @brief Update the configuration of the plugin after a change
+   /// @param[in] api                   pointer to the API
+   /// @param[in] newConfigurationData  The new configuration of the module
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                               const boost::shared_ptr<shared::CDataContainer>& newConfigurationData) const;
 
-private:
-   //--------------------------------------------------------------
-   /// \brief The device name
-   //--------------------------------------------------------------
+   /// @brief Set security to request
+   /// @param mailSendRequest request to which set security
+   void setSecurity(curlpp::Easy& mailSendRequest) const;
+
+   /// @brief Set authentication to SMTP server
+   /// @param mailSendRequest request to which set authentication
+   void setAuthentication(curlpp::Easy& mailSendRequest) const;
+
+   /// @brief Format the email subject
+   /// @param text The text to send (first line can be used to build subject)
+   /// @return The formatted subject
+   std::string formatSubject(const std::string& text) const;
+
+   /// @brief The device name
    std::string m_deviceName;
 
-   //--------------------------------------------------------------
-   /// \brief	The plugin configuration
-   //--------------------------------------------------------------
+   /// @briefThe plugin configuration
    boost::shared_ptr<IMSConfiguration> m_configuration;
 
-   //--------------------------------------------------------------
-   /// \brief	    Recipient field used to retrieve e-mail from a recipient
-   //--------------------------------------------------------------
-   std::string m_mailId;
 
-   //--------------------------------------------------------------
-   /// \brief	    Message historization object
-   //--------------------------------------------------------------
+   /// @brief Message historization object
    boost::shared_ptr<yApi::historization::CMessage> m_messageKeyword;
 
-   //--------------------------------------------------------------
-   /// \brief	    The ceertificate passphrase provider
-   //--------------------------------------------------------------
-   Poco::SharedPtr<Poco::Net::PrivateKeyPassphraseHandler> m_certificatePassphraseProvider;
+   /// @brief The ceertificate passphrase provider
+   ////TODO ménage
+   //Poco::SharedPtr<Poco::Net::PrivateKeyPassphraseHandler> m_certificatePassphraseProvider;
 };
 

@@ -1,6 +1,6 @@
 ﻿{
-	"name": "Envoi d'email",
-	"description": "Ce plugin fourni les informations nécessaires pour envoyer un email",
+  "name": "Envoi d'email",
+  "description": "Ce plugin fourni les informations nécessaires pour envoyer un email",
   "configurationSchema": {
     "Sender": {
       "name": "Adresse email expéditeur",
@@ -84,9 +84,14 @@
         }
       }
     },
-    "CerticiatePassphrase": {
-      "name": "Mot de passe du certificat (optionnel)",
-      "description": "Mot de passe (passphrase) du certificat SSL"
+    "mailSubject": {
+      "name": "Objet du message",
+      "description": "L'objet du message à envoyer, utiliser {m} pour insérer la première ligne du corps du texte envoyé par Yadoms"
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "updateConfiguration": "Mise à jour de la configuration..."
     }
   }
 }

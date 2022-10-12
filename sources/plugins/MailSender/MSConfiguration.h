@@ -1,24 +1,15 @@
 #pragma once
-
 #include "IMSConfiguration.h"
 #include <shared/DataContainer.h>
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the plugin
 //--------------------------------------------------------------
-class CMSConfiguration : public IMSConfiguration
+class CMSConfiguration final : public IMSConfiguration
 {
 public:
-
-   //--------------------------------------------------------------
-   /// \brief	    Constructor
-   //--------------------------------------------------------------
    CMSConfiguration();
-
-   //--------------------------------------------------------------
-   /// \brief	    Destructor
-   //--------------------------------------------------------------
-   virtual ~CMSConfiguration();
+   ~CMSConfiguration() override = default;
 
    // IMSConfiguration implementation
    void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data) override;
@@ -29,7 +20,7 @@ public:
    bool getAuthenticationRequired() const override;
    std::string getLogin() const override;
    std::string getPassword() const override;
-   std::string getCertificatePassphrase() const override;
+   std::string getMailSubject() const override;
    // [END] ISIConfiguration implementation
 
 private:
@@ -74,8 +65,7 @@ private:
    std::string m_password;
 
    //--------------------------------------------------------------
-   /// \brief	    Certificate Passphrase
+   /// \brief	    Email subject
    //--------------------------------------------------------------
-   std::string m_certificatePassphrase;
+   std::string m_mailSubject;
 };
-

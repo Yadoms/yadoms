@@ -1,6 +1,6 @@
 {
-	"name": "Mail Sender",
-	"description": "This plugin provide information about the server to send a e-mail",
+  "name": "Mail Sender",
+  "description": "This plugin provide information about the server to send a e-mail",
   "configurationSchema": {
     "Sender": {
       "name": "Sender Mail",
@@ -84,9 +84,14 @@
         }
       }
     },
-    "CerticiatePassphrase": {
-      "name": "Certificate passphrase (optionnal)",
-      "description": "SSL certificate passphrase, may be required in some particular cases"
+    "mailSubject": {
+      "name": "Mail subject",
+      "description": "The subject of the mail to send, use {m} to insert the first line of the text sent by Yadoms"
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "updateConfiguration": "Update configuration..."
     }
   }
 }
