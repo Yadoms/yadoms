@@ -2,6 +2,7 @@
 #include <curlpp/Easy.hpp>
 #include <plugin_cpp_api/IPlugin.h>
 #include "IMSConfiguration.h"
+#include "PendingMail.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -10,6 +11,13 @@ namespace yApi = shared::plugin::yPluginApi;
 class CMailSender final : public plugin_cpp_api::IPlugin
 {
 public:
+   enum class ESendResult
+   {
+      kOk,
+      kTemporaryError,
+      kFatalError
+   };
+
    CMailSender();
    CMailSender(const CMailSender&) = delete;
    CMailSender(const CMailSender&&) = delete;
@@ -22,11 +30,13 @@ public:
    // [END] IPlugin implementation
 
 private:
-   /// @brief Send a mail
-   /// @param[in] api                   pointer to the API
-   /// @param[in] sendMailRequest       Struture of the sending mail
    void onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
-                          const std::string& sendMailRequest) const;
+                          const std::string& sendMailRequest);
+
+   void sendPendingMails(boost::shared_ptr<yApi::IYPluginApi> api);
+
+   ESendResult sendMail(boost::shared_ptr<yApi::IYPluginApi> api,
+                        const boost::shared_ptr<CPendingMail> mail) const;
 
    /// @brief Declare the device and all keywords associated
    /// @param[in] api                  pointer to the API
@@ -51,6 +61,8 @@ private:
    /// @return The formatted subject
    std::string formatSubject(const std::string& text) const;
 
+   static bool isTemporaryError(CURLcode curlCode);
+
    /// @brief The device name
    std::string m_deviceName;
 
@@ -61,8 +73,6 @@ private:
    /// @brief Message historization object
    boost::shared_ptr<yApi::historization::CMessage> m_messageKeyword;
 
-   /// @brief The ceertificate passphrase provider
-   ////TODO ménage
-   //Poco::SharedPtr<Poco::Net::PrivateKeyPassphraseHandler> m_certificatePassphraseProvider;
+   boost::shared_ptr<shared::event::CEventTimer> m_retryTimer;
+   std::queue<boost::shared_ptr<CPendingMail>> m_pendingMailsQueue;
 };
-

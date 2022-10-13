@@ -7,6 +7,7 @@ include("../YadomsPluginsCommon.cmake")
 
 set(MAILSENDER_SOURCES
    IMailBodyBuilder.h
+   IPendingMail.h
    IMSConfiguration.h
    MSConfiguration.h
    MSConfiguration.cpp
@@ -14,6 +15,8 @@ set(MAILSENDER_SOURCES
    MailSender.cpp
    MailBodyBuilder.h
    MailBodyBuilder.cpp
+   PendingMail.h
+   PendingMail.cpp
    SecurityMode.h
    SecurityMode.cpp
 )

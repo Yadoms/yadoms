@@ -1,6 +1,8 @@
 ### 1.2.3-beta.1
 * Use Curlpp to send emails (Remove Poco)
 * Make email subject customizable
+* Manage an emails stack in case of connection temporary lost (retry every 2 minutes)
+* Supports proxy
 
 ### 1.2.0
 * Fix #562  : update usage of CDataContainer for better memory optimizations

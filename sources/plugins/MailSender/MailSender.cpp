@@ -34,6 +34,10 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Declaration of the device and Associated keywords
    declareDevice(api);
 
+   enum { kRetryTimer = yApi::IYPluginApi::kPluginFirstEventId };
+   m_retryTimer = api->getEventHandler().createTimer(kRetryTimer,
+                                                     shared::event::CEventTimer::kOneShot);
+
    // the main loop
    YADOMS_LOG(information) << "MailSender plugin is running...";
    api->setPluginState(yApi::historization::EPluginState::kRunning);
@@ -49,10 +53,13 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
+
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
+            m_retryTimer->stop();
+            m_pendingMailsQueue = {};
             api->setPluginState(yApi::historization::EPluginState::kRunning);
             break;
          }
@@ -65,10 +72,13 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             try
             {
-               if (boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
-                  onSendMailRequest(api, command->getBody());
-               else
+               if (!boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
+               {
                   YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command);
+                  break;
+               }
+
+               onSendMailRequest(api, command->getBody());
             }
             catch (std::exception& e)
             {
@@ -76,6 +86,12 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          }
          break;
+
+      case kRetryTimer:
+         {
+            sendPendingMails(api);
+            break;
+         }
 
       default:
          {
@@ -98,7 +114,7 @@ void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api
                                         const boost::shared_ptr<shared::CDataContainer>& newConfigurationData) const
 {
    // Configuration was updated
-   YADOMS_LOG(information) << "Configuration was updated...";
+   YADOMS_LOG(information) << "Configuration was updated";
    BOOST_ASSERT(!newConfigurationData->empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
@@ -106,14 +122,62 @@ void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api
 }
 
 void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const std::string& sendMailRequest) const
+                                    const std::string& sendMailRequest)
 {
+   m_messageKeyword->setCommand(sendMailRequest);
+
+   m_pendingMailsQueue.push(boost::make_shared<CPendingMail>(m_messageKeyword->to(),
+                                                             m_messageKeyword->body()));
+
+   m_retryTimer->stop();
+
+   sendPendingMails(api);
+}
+
+void CMailSender::sendPendingMails(boost::shared_ptr<yApi::IYPluginApi> api)
+{
+   YADOMS_LOG(debug) << "Send pending emails (" << m_pendingMailsQueue.size() << ")";
+
+   while (!m_pendingMailsQueue.empty())
+   {
+      const auto mail = m_pendingMailsQueue.front();
+      switch (sendMail(api, mail))
+      {
+      case ESendResult::kOk:
+         m_pendingMailsQueue.pop();
+         break;
+
+      case ESendResult::kTemporaryError:
+         if (!mail->retry())
+         {
+            YADOMS_LOG(warning) << "Email has permanent errors, skip it";
+            m_pendingMailsQueue.pop();
+         }
+         else
+         {
+            YADOMS_LOG(warning) << "Unable to send email, will retry later...";
+            m_retryTimer->start(boost::posix_time::minutes(2));
+            return;
+         }
+         break;
+
+      case ESendResult::kFatalError:
+         YADOMS_LOG(error) << "Fatal error sending email, skip it";
+         m_pendingMailsQueue.pop();
+         break;
+      }
+   }
+}
+
+CMailSender::ESendResult CMailSender::sendMail(boost::shared_ptr<yApi::IYPluginApi> api,
+                                               const boost::shared_ptr<CPendingMail> mail) const
+{
+   YADOMS_LOG(debug) << "Sending email...";
+
    try
    {
-      m_messageKeyword->setCommand(sendMailRequest);
-
       const auto from = m_configuration->getSenderEmail();
-      const auto to = api->getRecipientValue(m_messageKeyword->to(), MailRecipientField);
+      const auto to = api->getRecipientValue(mail->recipientId(), MailRecipientField);
 
       curlpp::Easy mailSendRequest;
       mailSendRequest.setOpt(new curlpp::options::Url(m_configuration->getHost()));
@@ -123,8 +187,8 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
 
       const auto bodyString = CMailBodyBuilder(from,
                                                {to})
-                              .setSubject(formatSubject(m_messageKeyword->body()))
-                              .setAsciiBody(m_messageKeyword->body())
+                              .setSubject(formatSubject(mail->body()))
+                              .setAsciiBody(mail->body())
                               .build();
 
       size_t bytesRead = 0;
@@ -144,32 +208,36 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
       setSecurity(mailSendRequest);
       setAuthentication(mailSendRequest);
 
+      shared::http::CCurlppHelpers::setProxy(mailSendRequest,
+                                             {});
+
       try
       {
          mailSendRequest.perform();
+         YADOMS_LOG(information) << "Email successfully sent to " << to;
+         return ESendResult::kOk;
       }
       catch (const curlpp::LibcurlRuntimeError& error)
       {
-         const auto message = (boost::format("Fail to send email : %1%, code %2%") % error.what() % error.whatCode()).str();
-         throw std::runtime_error(message);
+         YADOMS_LOG(warning) << "Fail to send email : " << error.what() << ", code " << error.whatCode();
+
+         return isTemporaryError(error.whatCode()) ? ESendResult::kTemporaryError : ESendResult::kFatalError;
       }
-
-      YADOMS_LOG(information) << "Email successfully sent to " << to;
-
-      //TODO gérer le proxy
    }
    catch (shared::exception::CInvalidParameter& e)
    {
-      YADOMS_LOG(error) << "Invalid Mail sending request \"" << sendMailRequest << "\" : " << e.what();
+      YADOMS_LOG(error) << "Invalid Mail sending request : " << e.what();
    }
    catch (std::exception& e)
    {
-      YADOMS_LOG(error) << "Error sending Mail : " << e.what();
+      YADOMS_LOG(error) << "Error sending email : " << e.what();
    }
    catch (...)
    {
       YADOMS_LOG(error) << "Error sending Mail";
    }
+
+   return ESendResult::kFatalError;
 }
 
 
@@ -230,4 +298,24 @@ std::string CMailSender::formatSubject(const std::string& text) const
    return std::regex_replace(m_configuration->getMailSubject(),
                              std::regex("{m}", std::regex_constants::ECMAScript | std::regex_constants::extended),
                              firstTextLine);
+}
+
+bool CMailSender::isTemporaryError(CURLcode curlCode)
+{
+   switch (curlCode) // NOLINT(clang-diagnostic-switch-enum)
+   {
+   case CURLE_COULDNT_RESOLVE_PROXY:
+   case CURLE_COULDNT_RESOLVE_HOST:
+   case CURLE_COULDNT_CONNECT:
+   case CURLE_WEIRD_SERVER_REPLY:
+   case CURLE_REMOTE_ACCESS_DENIED:
+   case CURLE_OPERATION_TIMEDOUT:
+   case CURLE_SEND_ERROR:
+   case CURLE_RECV_ERROR:
+   case CURLE_AGAIN:
+   case CURLE_NO_CONNECTION_AVAILABLE:
+      return true;
+   default:
+      return false;
+   }
 }
