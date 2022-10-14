@@ -95,9 +95,9 @@
         }
       }
     },
-    "CerticiatePassphrase": {
+    "mailSubject": {
       "type": "string",
-      "required": "false"
+      "defaultValue": "Yadoms notification : {m}"
     }
   }
 }
