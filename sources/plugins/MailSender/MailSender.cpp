@@ -66,9 +66,8 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
-            // Command received
             const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-            YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command);
+            YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command);
 
             try
             {
@@ -207,9 +206,6 @@ CMailSender::ESendResult CMailSender::sendMail(boost::shared_ptr<yApi::IYPluginA
 
       setSecurity(mailSendRequest);
       setAuthentication(mailSendRequest);
-
-      shared::http::CCurlppHelpers::setProxy(mailSendRequest,
-                                             {});
 
       try
       {
