@@ -59,7 +59,7 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
             m_retryTimer->stop();
-            m_pendingMailsQueue = {};
+            m_pendingMailsQueue = std::queue<boost::shared_ptr<CPendingMail>>();
             api->setPluginState(yApi::historization::EPluginState::kRunning);
             break;
          }
