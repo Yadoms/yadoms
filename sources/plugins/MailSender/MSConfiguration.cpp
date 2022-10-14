@@ -4,17 +4,9 @@
 #include <shared/Log.h>
 
 CMSConfiguration::CMSConfiguration()
-   : m_senderMail(""),
-   m_serverName(""),
-   m_serverPort(587),
-   m_kSecurityMode(ESecurityMode::kTLS),
-   m_bRequireAuthentication(false),
-   m_userAccount(""),
-   m_password("")
-{
-}
-
-CMSConfiguration::~CMSConfiguration()
+   : m_serverPort(587),
+     m_kSecurityMode(ESecurityMode::kTLS),
+     m_bRequireAuthentication(false)
 {
 }
 
@@ -25,7 +17,7 @@ void CMSConfiguration::initializeWith(const boost::shared_ptr<shared::CDataConta
       m_data.initializeWith(data);
 
       m_senderMail = m_data.get<std::string>("Sender");
-      m_certificatePassphrase = m_data.getWithDefault<std::string>("CerticiatePassphrase", "");
+      m_mailSubject = m_data.getWithDefault<std::string>("mailSubject", "");
 
       if (m_data.exists("account.content.gmail.radio") && m_data.get<bool>("account.content.gmail.radio"))
       {
@@ -70,16 +62,17 @@ void CMSConfiguration::initializeWith(const boost::shared_ptr<shared::CDataConta
          m_kSecurityMode = m_data.get<ESecurityMode>("account.content.other.content.Security");
          m_bRequireAuthentication = m_data.get<bool>("account.content.other.content.authentication.checkbox");
          m_userAccount = m_data.get<std::string>("account.content.other.content.authentication.content.user");
-         m_password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.other.content.authentication.content.password"));
+         m_password = shared::encryption::CXor::decryptBase64(
+            m_data.get<std::string>("account.content.other.content.authentication.content.password"));
       }
    }
    catch (shared::exception::CInvalidParameter& ip)
    {
-      YADOMS_LOG(error) << "Invalid configuration : " << ip.what() ;
+      YADOMS_LOG(error) << "Invalid configuration : " << ip.what();
    }
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(error) << "ERROR : Plugin Mail Sender could not be loaded" ;
+      YADOMS_LOG(error) << "ERROR : Plugin Mail Sender could not be loaded";
    }
 }
 
@@ -118,7 +111,7 @@ bool CMSConfiguration::getAuthenticationRequired() const
    return m_bRequireAuthentication;
 }
 
-std::string CMSConfiguration::getCertificatePassphrase() const
+std::string CMSConfiguration::getMailSubject() const
 {
-   return m_certificatePassphrase;
+   return m_mailSubject;
 }

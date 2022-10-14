@@ -6,25 +6,19 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 
 set(MAILSENDER_SOURCES
+   IMailBodyBuilder.h
+   IPendingMail.h
    IMSConfiguration.h
    MSConfiguration.h
    MSConfiguration.cpp
    MailSender.h
    MailSender.cpp
+   MailBodyBuilder.h
+   MailBodyBuilder.cpp
+   PendingMail.h
+   PendingMail.cpp
    SecurityMode.h
    SecurityMode.cpp
-   
-   ISmtpServiceProvider.h
-   CertificatePassphraseProvider.h
-   CertificatePassphraseProvider.cpp
-   SmtpServiceProviderFactory.h
-   SmtpServiceProviderFactory.cpp
-   SmtpUnsecureServiceProvider.h
-   SmtpUnsecureServiceProvider.cpp
-   SmtpSslServiceProvider.h
-   SmtpSslServiceProvider.cpp
-   SmtpTlsServiceProvider.h
-   SmtpTlsServiceProvider.cpp
 )
 
 
@@ -38,6 +32,8 @@ source_group(sources ./*.*)
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(MAILSENDER_ADDITIONAL_INC_DIR
+   ${CURL_INCLUDE_DIR}
+   ${CURLPP_INCLUDE_DIR}
 )
 
 #########################################
@@ -45,6 +41,8 @@ set(MAILSENDER_ADDITIONAL_INC_DIR
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(MAILSENDER_ADDITIONAL_LIB
+   ${CURL_LIBRARY}
+   ${CURLPP_LIBRARY}
 )
 
 #########################################
