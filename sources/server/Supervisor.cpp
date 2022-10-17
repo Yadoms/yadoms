@@ -168,9 +168,9 @@ void CSupervisor::run()
                                                                                    boost::make_shared<web::rest::service::CUploadFileManager>()));
 
       auto pocoBasedWebServer = createPocoBasedWebServer(startupOptions->getWebServerIpAddress(),
-                                                         startupOptions->getWebServerPortNumber(),
+                                                         startupOptions->getWebServerPortNumber() + 1, //TODO virer le +1 (pour test...)
                                                          startupOptions->getIsWebServerUseHttps(),
-                                                         startupOptions->getSslWebServerPortNumber(),
+                                                         startupOptions->getSslWebServerPortNumber() + 1, //TODO virer le +1 (pour test...)
                                                          true,
                                                          m_pathProvider->webServerPath(),
                                                          restServices,
@@ -332,9 +332,9 @@ std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
    bool skipPasswordCheck) const
 {
    return std::make_unique<web::oatppServer::CWebServer>(address,
-                                                         port + 1, //TODO virer le +1 (pour test...)
+                                                         port,
                                                          useHttps,
-                                                         httpsPort + 1, //TODO virer le +1 (pour test...)
+                                                         httpsPort,
                                                          webServerPath,
                                                          httpsLocalCertificateFile,
                                                          httpsPrivateKeyFile,
