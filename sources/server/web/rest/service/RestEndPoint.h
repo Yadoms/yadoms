@@ -19,7 +19,6 @@ namespace web
             // IRestEndPoint implementation
             shared::http::ERestVerb verb() const override;
             std::string path() const override;
-            boost::shared_ptr<RestEndPointDoc> doc() const override;
             std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)> handler() const override;
             // [END] IRestEndPoint implementation
 
@@ -27,7 +26,6 @@ namespace web
             const shared::http::ERestVerb m_method;
             const std::string m_path;
             std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)> m_handler;
-            boost::shared_ptr<RestEndPointDoc> m_doc;
          };
 
          /// Macro to simplify adding a new endpoint

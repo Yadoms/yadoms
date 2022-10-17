@@ -57,9 +57,6 @@ namespace web
          void refreshRestRoutes(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter,
                                 const std::string& restKeywordBase,
                                 const boost::shared_ptr<IAuthentication>& authentication) const;
-         //TODO virer ? void refreshSwaggerDoc(const std::shared_ptr<oatpp::web::server::HttpRouter>& httpRouter) const;
-
-         //TODO virer ? std::shared_ptr<oatpp::web::server::api::Endpoint> toDocumentedEndPoint(boost::shared_ptr<rest::service::IRestEndPoint> restEndPoint) const;
 
 
          std::shared_ptr<oatpp::web::server::HttpConnectionHandler> m_httpConnectionHandler;

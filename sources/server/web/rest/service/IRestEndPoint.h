@@ -3,7 +3,6 @@
 #include <string>
 #include <shared/http/HttpRestVerb.h>
 
-#include "RestEndPointDoc.h"
 #include "web/rest/IRequest.h"
 #include "web/rest/IAnswer.h"
 
@@ -30,11 +29,6 @@ namespace web
             ///\brief   Path (url part after "/rest/")
             //-------------------------------------- 
             virtual std::string path() const = 0;
-
-            //--------------------------------------   
-            ///\brief   Documentation
-            //-------------------------------------- 
-            virtual boost::shared_ptr<RestEndPointDoc> doc() const = 0;
 
             //--------------------------------------   
             ///\brief   Endpoint to call

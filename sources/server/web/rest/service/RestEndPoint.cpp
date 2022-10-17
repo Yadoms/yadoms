@@ -26,11 +26,6 @@ namespace web
             return m_path;
          }
 
-         boost::shared_ptr<RestEndPointDoc> CRestEndPoint::doc() const
-         {
-            return m_doc;
-         }
-
          std::function<boost::shared_ptr<IAnswer>(boost::shared_ptr<IRequest>)> CRestEndPoint::handler() const
          {
             return m_handler;
