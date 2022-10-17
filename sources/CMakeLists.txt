@@ -1141,7 +1141,7 @@ set(YADOMS_SRC ${YADOMS_SRC}
 #define YADOMS output
 add_executable(yadoms ${YADOMS_SRC})
 
-add_dependencies(yadoms oatpp_build oatpp-websocket_build oatpp-openssl_build oatpp-swagger_build)
+add_dependencies(yadoms oatpp_build oatpp-websocket_build oatpp-openssl_build)
 
 if(COTIRE_USE)
    #nothing to do
@@ -1225,7 +1225,6 @@ set(YADOMS_ALL_INCL_DIR
    ${OATPP_INCLUDE_DIR}
    ${OATPP_WEBSOCKET_INCLUDE_DIR}
    ${OATPP_OPENSSL_INCLUDE_DIR}
-   ${OATPP_SWAGGER_INCLUDE_DIR}
 )
 
 set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
@@ -1242,7 +1241,6 @@ target_link_libraries(yadoms
    ${CMAKE_DL_LIBS}
    ${OATPP_WEBSOCKET_LIBRARY}
    ${OATPP_OPENSSL_LIBRARY}
-   ${OATPP_SWAGGER_LIBRARY}
    ${OATPP_LIBRARY}
 )
 
