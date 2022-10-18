@@ -97,7 +97,7 @@
     },
     "mailSubject": {
       "type": "string",
-      "defaultValue": "Yadoms notification : {m}"
+      "defaultValue": "Yadoms notification : %FIRST_LINE%"
     }
   }
 }

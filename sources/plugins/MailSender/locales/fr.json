@@ -86,7 +86,7 @@
     },
     "mailSubject": {
       "name": "Objet du message",
-      "description": "L'objet du message à envoyer, utiliser {m} pour insérer la première ligne du corps du texte envoyé par Yadoms"
+      "description": "L'objet du message à envoyer, utiliser %FIRST_LINE% pour insérer la première ligne du corps du texte envoyé par Yadoms"
     }
   },
   "customLabels": {

@@ -1,3 +1,6 @@
+### 1.2.3-beta.2
+* Fix customizable email subject under Linux
+
 ### 1.2.3-beta.1
 * Use Curlpp to send emails (Remove Poco)
 * Make email subject customizable
