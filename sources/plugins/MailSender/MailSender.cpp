@@ -292,7 +292,7 @@ std::string CMailSender::formatSubject(const std::string& text) const
 {
    const auto firstTextLine = text.substr(0, text.find_first_of("\r\n"));
    return std::regex_replace(m_configuration->getMailSubject(),
-                             std::regex("{m}", std::regex_constants::ECMAScript | std::regex_constants::extended),
+                             std::regex("%FIRST_LINE%"),
                              firstTextLine);
 }
 
