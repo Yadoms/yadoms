@@ -86,7 +86,7 @@
     },
     "mailSubject": {
       "name": "Mail subject",
-      "description": "The subject of the mail to send, use {m} to insert the first line of the text sent by Yadoms"
+      "description": "The subject of the mail to send, use %FIRST_LINE% to insert the first line of the text sent by Yadoms"
     }
   },
   "customLabels": {
