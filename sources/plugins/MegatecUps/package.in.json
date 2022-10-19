@@ -55,5 +55,10 @@
         }
       }
     }
+  },
+  "extraQueries": {
+    "resetBatteryDeadCommand": {
+      "iconClass": "fa fa-bolt"
+    }
   }
 }

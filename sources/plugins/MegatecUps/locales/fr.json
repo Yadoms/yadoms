@@ -23,20 +23,23 @@
     },
     "UpsShutdownTimers": {
       "name": "Délais d'arrêt/redémarrage",
-      "description":
-        "Lorsque Yadoms envoi la commande d'arrêt, le plugin indique à l'onduleur ces délais de façon à retarder la coupure de l'alimentation de la sortie de l'onduleur, et sa restauration.",
+      "description": "Lorsque Yadoms envoi la commande d'arrêt, le plugin indique à l'onduleur ces délais de façon à retarder la coupure de l'alimentation de la sortie de l'onduleur, et sa restauration.",
       "content": {
         "ShutdownDelay": {
           "name": "Délai de coupure (minutes)",
-          "description":
-            "Lorque le plugin commandera la coupure d'alimentation de la sortie de l'onduleur, celui-ci respectera ce délai avant la coupure effective, afin de permettre au système alimenté de s'arrêter correctement"
+          "description": "Lorque le plugin commandera la coupure d'alimentation de la sortie de l'onduleur, celui-ci respectera ce délai avant la coupure effective, afin de permettre au système alimenté de s'arrêter correctement"
         },
         "RestoreDelay": {
           "name": "Délai de restauration (minutes)",
-          "description":
-            "Lors du retour de la tension secteur, l'onduleur attendra ce délai avant d'alimenter sa sortie"
+          "description": "Lors du retour de la tension secteur, l'onduleur attendra ce délai avant d'alimenter sa sortie"
         }
       }
+    }
+  },
+  "extraQueries": {
+    "resetBatteryDeadCommand": {
+      "name": "Réinitialisation batterie en fin de vie",
+      "description": "Réinitialise l'état de la batterie lorsque celle-ci a été déclarée en fin de vie "
     }
   },
   "customLabels": {

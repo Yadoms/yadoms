@@ -1,3 +1,6 @@
+### 1.4.1-beta.1
+* Add extra-query to reset battery dead flag
+
 ### 1.4.0
 * Fix disabling auto-test
 * Add detection of system shutdown caused by battery dead
