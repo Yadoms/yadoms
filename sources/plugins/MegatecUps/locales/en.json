@@ -36,6 +36,12 @@
       }
     }
   },
+  "extraQueries": {
+    "resetBatteryDeadCommand": {
+      "name": "Reset battery flag indicator",
+      "description": "Reset indicator when the UPS battery was declared dead"
+    }
+  },
   "customLabels": {
     "pluginState": {
       "connecting": "Connecting...",
