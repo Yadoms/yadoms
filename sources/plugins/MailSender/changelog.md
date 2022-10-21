@@ -1,3 +1,6 @@
+### 1.2.3-beta.3
+* Security patch on configuration
+
 ### 1.2.3-beta.2
 * Fix customizable email subject under Linux
 

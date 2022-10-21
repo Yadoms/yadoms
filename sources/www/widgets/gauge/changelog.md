@@ -1,3 +1,6 @@
+### 1.1.3
+* Security patch on configuration
+
 ### 1.1.2
 * Fix unit display
 

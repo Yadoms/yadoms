@@ -7,7 +7,7 @@
   "supportedPlatforms": "all",
   "dependencies": {
     "yadoms": {
-      "minimumVersion": "2.3.0-beta.1"
+      "minimumVersion": "2.5.3-beta.1"
     }
   },
   "configurationSchema": {
@@ -27,7 +27,9 @@
     "Autotest": {
       "type": "section",
       "enableWithCheckBox": true,
-      "enableWithCheckBoxDefaultValue": false,
+      "checkbox": {
+        "defaultValue": false
+      },
       "content": {
         "AutotestStartTime": {
           "type": "string",

@@ -1,4 +1,5 @@
-### 1.3.0-beta.1
+### 1.3.0
+* Security patch on configuration
 * Fix #562  : update usage of CDataContainer for better memory optimizations
 
 ### 1.2.0-beta.3

@@ -1,3 +1,6 @@
+### 1.2.1
+* Security patch on configuration
+
 ### 1.2.0
 * Fix #562  : update usage of CDataContainer for better memory optimizations
 

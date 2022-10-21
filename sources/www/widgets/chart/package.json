@@ -1,12 +1,12 @@
 {
    "type": "chart",
-   "version": "1.4.0-beta.1",
+   "version": "1.4.0",
    "author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
    "url": "https://github.com/Yadoms/yadoms/wiki/chart",
    "credits": "[Highstocks](http://www.highcharts.com/)",
    "dependencies": {
       "yadoms": {
-         "minimumVersion": "2.4.0-beta.1"
+         "minimumVersion": "2.5.3-beta.1"
       }
    },
    "dimensions": {
@@ -56,7 +56,9 @@
          "type": "section",
          "defaultValue": "true",
          "enableWithCheckBox": "true",
-         "enableWithCheckBoxDefaultValue": "true",
+         "checkbox": {
+           "defaultValue": true
+         },
          "content": {
             "legendLabels": {
                "type": "enum",
@@ -73,12 +75,16 @@
          "type": "section",
          "defaultValue": "false",
          "enableWithCheckBox": "true",
-         "enableWithCheckBoxDefaultValue": "false",
+         "checkbox": {
+           "defaultValue": false
+         },
          "content": {
             "customYAxisMinMax": {
                "type": "section",
                "enableWithCheckBox": "true",
-               "enableWithCheckBoxDefaultValue": "false",
+               "checkbox": {
+                 "defaultValue": false
+               },
                "content": {
                   "minimumValue": {
                      "type": "decimal",
@@ -118,7 +124,9 @@
                "advancedConfiguration": {
                   "type": "section",
                   "enableWithCheckBox": "true",
-                  "enableWithCheckBoxDefaultValue": "false",
+                  "checkbox": {
+                    "defaultValue": false
+                  },
                   "content": {
                      "precision": {
                         "type": "int",
