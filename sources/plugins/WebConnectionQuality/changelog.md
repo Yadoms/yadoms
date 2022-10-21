@@ -1,3 +1,7 @@
+### 2.2.0-beta.2
+* Run speedtest.py script in secure mode
+* Update speedtest.py to [this commit (7 Jul 2021)](https://github.com/sivel/speedtest-cli/commit/22210ca35228f0bbcef75a7c14587c4ecb875ab4)
+
 ### 2.2.0-beta.1
 * Use Python3 to run speedtest script
 * Update speedtest.py to v2.1.3
