@@ -1,3 +1,6 @@
+### 1.2.1
+* Security patch on configuration
+
 ### 1.2.0
 * Fix keywords managment (no more compatible with WeatherUnderground plugin data)
 

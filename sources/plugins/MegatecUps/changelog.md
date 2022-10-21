@@ -1,3 +1,6 @@
+### 1.4.1-beta.2
+* Fix crash after update
+
 ### 1.4.1-beta.1
 * Add extra-query to reset battery dead flag
 
