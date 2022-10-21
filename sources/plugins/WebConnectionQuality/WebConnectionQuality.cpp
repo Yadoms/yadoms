@@ -132,7 +132,7 @@ void CWebConnectionQuality::startMeasure(const boost::shared_ptr<yApi::IYPluginA
    args.emplace_back("--json");
 
    const auto commandLine = boost::make_shared<shared::process::CNativeExecutableCommandLine>(
-      shared::CExecutable::ToFileName("python"),
+      shared::CExecutable::ToFileName("python3"),
       ".",
       args);
 

@@ -1,3 +1,7 @@
+### 2.2.0
+* Use Python3 to run speedtest script
+* Update speedtest.py to v2.1.3
+
 ### 2.1.1
 * Fix speedtest fail from March 8, 2021 (speedtest.net server response changed)
 * Fix ping delay
