@@ -1,13 +1,13 @@
 {
   "type": "wind",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "author": "Jean-Michel BERHAULT",
   "url": "https://github.com/Yadoms/yadoms/wiki/wind",
   "credits": "",
   "dependencies": {
-     "yadoms": {
-        "minimumVersion": "2.4.0-beta.1"
-     }
+    "yadoms": {
+      "minimumVersion": "2.5.3-beta.1"
+    }
   },
   "dimensions": {
     "min": {
@@ -33,7 +33,9 @@
       "type": "section",
       "defaultValue": "true",
       "enableWithCheckBox": "true",
-      "enableWithCheckBoxDefaultValue": "false",
+      "checkbox": {
+        "defaultValue": false
+      },
       "content": {
         "windSpeed": {
           "type": "keyword",
@@ -45,7 +47,9 @@
       "type": "section",
       "defaultValue": "true",
       "enableWithCheckBox": "true",
-      "enableWithCheckBoxDefaultValue": "false",
+      "checkbox": {
+        "defaultValue": false
+      },
       "content": {
         "speedUnit": {
           "type": "enum",

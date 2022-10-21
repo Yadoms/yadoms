@@ -1,3 +1,9 @@
+### 2.5.3-beta.1
+* Fix default value of optional section in modules configuration
+
+#### Yadoms
+* Fix Reboot under Linux
+
 ### 2.5.2
 
 #### Yadoms

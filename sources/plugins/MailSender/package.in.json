@@ -7,7 +7,7 @@
   "supportedPlatforms": "all",
   "dependencies": {
     "yadoms": {
-      "minimumVersion": "2.4.0-beta.1"
+      "minimumVersion": "2.5.3-beta.1"
     }
   },
   "supportManuallyDeviceCreation": "false",
@@ -80,7 +80,9 @@
               "name": "Authentication required by server",
               "description": "Only if SMTP server requires an authentication",
               "enableWithCheckBox": "true",
-              "enableWithCheckBoxDefaultValue": "false",
+              "checkbox": {
+                "defaultValue": false
+              },
               "content": {
                 "user": {
                   "type": "string"

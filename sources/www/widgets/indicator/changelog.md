@@ -1,3 +1,6 @@
+### 1.1.2
+* Security patch on configuration
+
 ### 1.1.1
 * Better keyword selection filtering
 

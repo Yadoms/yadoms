@@ -1,12 +1,12 @@
 {
   "type": "indicator",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "Nicolas HILAIRE",
   "url": "https://github.com/Yadoms/yadoms/wiki/indicator",
   "credits": "",
   "dependencies": {
     "yadoms": {
-      "minimumVersion": "2.4.0-beta.1"
+      "minimumVersion": "2.5.3-beta.1"
     }
   },
   "dimensions": {
@@ -39,7 +39,9 @@
     "customColors": {
       "type": "section",
       "enableWithCheckBox": "true",
-      "enableWithCheckBoxDefaultValue": "false",
+      "checkbox": {
+        "defaultValue": false
+      },
       "content": {
         "activated": {
           "type": "color",

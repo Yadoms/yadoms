@@ -1,3 +1,6 @@
+### 2.1.1
+* Security patch on configuration
+
 ### 2.1.0
 * Add D2_04_XX profiles support
 
