@@ -1,4 +1,4 @@
-### 2.2.0
+### 2.2.0-beta.1
 * Use Python3 to run speedtest script
 * Update speedtest.py to v2.1.3
 
