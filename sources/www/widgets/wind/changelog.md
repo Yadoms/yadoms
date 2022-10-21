@@ -1,3 +1,7 @@
+### 1.3.2
+* Better keyword selection filtering
+* Security patch on configuration
+
 ### 1.3.1
 * Better keyword selection filtering
 

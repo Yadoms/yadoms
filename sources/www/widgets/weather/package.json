@@ -1,14 +1,14 @@
 {
 	"type": "weather",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"author": "Nicolas HILAIRE",
 	"url": "http://www.yadoms.com/wiki/widgets/weather.html",
 	"credits": "[Weather icons](https://github.com/erikflowers/weather-icons)",
-   "dependencies": {
-      "yadoms": {
-         "minimumVersion": "2.4.0-beta.1"
-      }
-   },
+	"dependencies": {
+		"yadoms": {
+			"minimumVersion": "2.5.3-beta.1"
+		}
+	},
 	"dimensions": {
 		"min": {
 			"x": 2,
@@ -23,22 +23,24 @@
 			"y": 1
 		}
 	},
-   "hasTitle": true,
+	"hasTitle": true,
 	"configurationSchema": {
 		"conditionKeyword": {
 			"type": "keyword",
 			"expectedCapacity": ["weathercondition"]
-      },
-      "temperatureSection": {
-         "type": "section",
-         "enableWithCheckBox": "true",
-         "enableWithCheckBoxDefaultValue": "false",
-         "content": {
-            "temperatureKeyword": {
-               "type": "keyword",
-               "expectedCapacity": ["temperature"]
-            }
-         }
-      }
+		},
+		"temperatureSection": {
+			"type": "section",
+			"enableWithCheckBox": "true",
+			"checkbox": {
+				"defaultValue": false
+			},
+			"content": {
+				"temperatureKeyword": {
+					"type": "keyword",
+					"expectedCapacity": ["temperature"]
+				}
+			}
+		}
 	}
 }

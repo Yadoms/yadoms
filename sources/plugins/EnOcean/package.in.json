@@ -7,7 +7,7 @@
   "supportedPlatforms": "all",
   "dependencies": {
     "yadoms": {
-      "minimumVersion": "2.3.0-beta.1"
+      "minimumVersion": "2.5.3-beta.1"
     }
   },
   "configurationSchema": {
@@ -59,7 +59,9 @@
           "name": "Enable set point",
           "type": "section",
           "enableWithCheckBox": "true",
-          "enableWithCheckBoxDefaultValue": "false",
+          "checkbox": {
+            "defaultValue": false
+          },
           "content": {
             "setPointRangeLimit": {
               "name": "Set point range limit",
@@ -82,7 +84,9 @@
           "name": "Enable temperature measurement",
           "type": "section",
           "enableWithCheckBox": "true",
-          "enableWithCheckBoxDefaultValue": "true",
+          "checkbox": {
+            "defaultValue": true
+          },
           "content": {
             "measureInterval": {
               "name": "Measure interval (s)",
@@ -628,7 +632,9 @@
           "name": "Auto off timer",
           "type": "section",
           "enableWithCheckBox": "true",
-          "enableWithCheckBoxDefaultValue": "false",
+          "checkbox": {
+            "defaultValue": false
+          },
           "content": {
             "value": {
               "name": "value",
@@ -643,7 +649,9 @@
           "name": "Delay off timer",
           "type": "section",
           "enableWithCheckBox": "true",
-          "enableWithCheckBoxDefaultValue": "false",
+          "checkbox": {
+            "defaultValue": false
+          },
           "content": {
             "value": {
               "name": "value",

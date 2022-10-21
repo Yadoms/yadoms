@@ -1,3 +1,6 @@
+### 1.3.3
+* Security patch on configuration
+
 ### 1.3.2
   * Fix [Y2038 failure](https://en.wikipedia.org/wiki/Year_2038_problem)
   * Fix #730 : invalid date format recorded (make "invalid date" displayed on Safari)

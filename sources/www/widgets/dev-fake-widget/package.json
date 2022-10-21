@@ -4,6 +4,11 @@
     "author": "Nicolas HILAIRE",
     "url": "https://github.com/Yadoms/yadoms/wiki/dev-fake-widget",
     "credits": "",
+    "dependencies": {
+       "yadoms": {
+          "minimumVersion": "2.5.3-beta.1"
+       }
+    },
     "dimensions": {
         "min": {
             "x": 1,
@@ -233,7 +238,9 @@
                             "name": "Example section",
                             "description": "This section can be activated / deactivated",
                             "enableWithCheckBox" : "true",
-                            "enableWithCheckBoxDefaultValue" : "false",
+                            "checkbox": {
+                              "defaultValue": false
+                            },
                             "content": {
                                 "enum" : {
                                     "type" : "enum",
