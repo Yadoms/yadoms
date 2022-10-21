@@ -129,6 +129,7 @@ void CWebConnectionQuality::startMeasure(const boost::shared_ptr<yApi::IYPluginA
 
    std::vector<std::string> args;
    args.push_back((api->getInformation()->getPath() / "speedtest.py").string());
+   args.emplace_back("--secure");
    args.emplace_back("--json");
 
    const auto commandLine = boost::make_shared<shared::process::CNativeExecutableCommandLine>(
