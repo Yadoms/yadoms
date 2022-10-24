@@ -33,7 +33,7 @@ namespace web
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
-            //TODO
+            //TODO (lorsque l'EventLogger sera refactoré)
 
             return m_endPoints;
          }

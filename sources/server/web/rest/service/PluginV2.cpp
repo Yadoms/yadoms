@@ -87,7 +87,7 @@ namespace web
                      pluginEntry->set("support-device-removed-notification", plugin->getSupportDeviceRemovedNotification());
                   if (props->empty() || props->find("package") != props->end())
                      pluginEntry->set("package", *plugin->getPackage());
-                  //TODO remonter les locales
+                  //TODO remonter les locales (suivant la gestion par le client Angular)
 
                   if (!pluginEntry->empty())
                      pluginEntries.push_back(pluginEntry);

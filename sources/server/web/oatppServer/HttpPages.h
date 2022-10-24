@@ -26,7 +26,7 @@ namespace web
          const char* getMimeTypeFromPath(const std::string& path) const;
 
 
-         //TODO : voir code DAT
+         //TODO : voir code DAT (si utile. A voir selon les perfs du client Angular)
          //void AddFileToCache(const std::string& filePath);
          //void ClearCache();
          //void AddVirtualPage(const std::string& page, const std::string& destination);
