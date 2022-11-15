@@ -55,6 +55,9 @@ namespace web
                   response->putHeader(header.first.c_str(),
                                       header.second.c_str());
 
+            response->putHeader(oatpp::web::protocol::http::Header::CORS_ORIGIN,
+                                "*");
+
             return response;
          }
          catch (const std::exception& exception)
