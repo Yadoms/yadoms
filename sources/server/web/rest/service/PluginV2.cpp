@@ -46,7 +46,7 @@ namespace web
             try
             {
                // Filter by type
-               const auto types = request->queryParamAsList("by-type");
+               const auto types = request->queryParamAsList("byType");
                std::vector<boost::shared_ptr<const shared::plugin::information::IInformation>> foundPlugins;
                for (const auto& plugin : m_pluginManager->getPluginList())
                   if (types->empty() || types->find(plugin.second->getType()) != types->end())
@@ -81,10 +81,10 @@ namespace web
                      pluginEntry->set("author", plugin->getAuthor());
                   if (props->empty() || props->find("url") != props->end())
                      pluginEntry->set("url", plugin->getUrl());
-                  if (props->empty() || props->find("support-manually-created-device") != props->end())
-                     pluginEntry->set("support-manually-created-device", plugin->getSupportManuallyCreatedDevice());
-                  if (props->empty() || props->find("support-device-removed-notification") != props->end())
-                     pluginEntry->set("support-device-removed-notification", plugin->getSupportDeviceRemovedNotification());
+                  if (props->empty() || props->find("supportManuallyCreatedDevice") != props->end())
+                     pluginEntry->set("supportManuallyCreatedDevice", plugin->getSupportManuallyCreatedDevice());
+                  if (props->empty() || props->find("supportDeviceRemovedNotification") != props->end())
+                     pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
                   if (props->empty() || props->find("package") != props->end())
                      pluginEntry->set("package", *plugin->getPackage());
                   //TODO remonter les locales (suivant la gestion par le client Angular)
@@ -121,7 +121,7 @@ namespace web
                   instances.push_back(m_pluginManager->getInstance(static_cast<int>(std::stol(id))));
 
                // Filtering
-               if (request->queryParamExists("for-manual-device-creation"))
+               if (request->queryParamExists("forManualDeviceCreation"))
                {
                   auto pluginList = m_pluginManager->getPluginList();
                   instances.erase(std::remove_if(instances.begin(),
@@ -147,20 +147,20 @@ namespace web
                   auto instanceEntry = boost::make_shared<shared::CDataContainer>();
                   if (props->empty() || props->find("id") != props->end())
                      instanceEntry->set("id", instance->Id());
-                  if (props->empty() || props->find("display-name") != props->end())
-                     instanceEntry->set("display-name", instance->DisplayName());
+                  if (props->empty() || props->find("displayName") != props->end())
+                     instanceEntry->set("displayName", instance->DisplayName());
                   if (props->empty() || props->find("type") != props->end())
                      instanceEntry->set("type", instance->Type());
                   if (props->empty() || props->find("configuration") != props->end())
                      instanceEntry->set("configuration", instance->Configuration());
-                  if (props->empty() || props->find("auto-start") != props->end())
-                     instanceEntry->set("auto-start", instance->AutoStart());
+                  if (props->empty() || props->find("autoStart") != props->end())
+                     instanceEntry->set("autoStart", instance->AutoStart());
                   if (props->empty() || props->find("category") != props->end())
                      instanceEntry->set("category", instance->Category());
                   if (props->empty() || props->find("state") != props->end())
                      instanceEntry->set("state", m_pluginManager->getInstanceState(instance->Id()));
-                  if (props->empty() || props->find("full-state") != props->end())
-                     instanceEntry->set("full-state", m_pluginManager->getInstanceFullState(instance->Id()));
+                  if (props->empty() || props->find("fullState") != props->end())
+                     instanceEntry->set("fullState", m_pluginManager->getInstanceFullState(instance->Id()));
 
                   instancesEntries.push_back(instanceEntry);
                }
