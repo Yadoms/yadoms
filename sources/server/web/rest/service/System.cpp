@@ -520,31 +520,31 @@ namespace web
                shared::CDataContainer result;
                if (fields->empty() || fields->find("platform") != fields->end())
                   result.set("platform", m_runningInformation->getOperatingSystemName());
-               if (fields->empty() || fields->find("platform-family") != fields->end())
-                  result.set("platform-family", tools::COperatingSystem::getName());
-               if (fields->empty() || fields->find("yadoms-version") != fields->end())
-                  result.set("yadoms-version", m_runningInformation->getSoftwareVersion().getVersion().toString());
-               if (fields->empty() || fields->find("startup-time") != fields->end())
-                  result.set("startup-time", m_runningInformation->getStartupDateTime());
-               if (fields->empty() || fields->find("executable-path") != fields->end())
-                  result.set("executable-path", m_runningInformation->getExecutablePath());
-               if (fields->empty() || fields->find("server-ready") != fields->end())
-                  result.set("server-ready", m_runningInformation->isServerFullyLoaded());
+               if (fields->empty() || fields->find("platformFamily") != fields->end())
+                  result.set("platformFamily", tools::COperatingSystem::getName());
+               if (fields->empty() || fields->find("yadomsVersion") != fields->end())
+                  result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().getVersion().toString());
+               if (fields->empty() || fields->find("startupTime") != fields->end())
+                  result.set("startupTime", m_runningInformation->getStartupDateTime());
+               if (fields->empty() || fields->find("executablePath") != fields->end())
+                  result.set("executablePath", m_runningInformation->getExecutablePath());
+               if (fields->empty() || fields->find("serverReady") != fields->end())
+                  result.set("serverReady", m_runningInformation->isServerFullyLoaded());
                if (fields->empty() || fields->find("database") != fields->end())
                {
                   result.set("database.version", m_configurationManager->getDatabaseVersion());
                   result.set("database.size", m_databaseRequester->getInformation()->get<unsigned int>("size"));
                }
-               if (fields->empty() || fields->find("database-engine") != fields->end())
+               if (fields->empty() || fields->find("databaseEngine") != fields->end())
                {
                   const auto databaseEngine = m_databaseRequester->getInformation();
                   databaseEngine->remove("size"); // Size is about database, not database-engine
-                  result.set("database-engine", databaseEngine);
+                  result.set("databaseEngine", databaseEngine);
                }
-               if (fields->empty() || fields->find("backup-supported") != fields->end())
-                  result.set("backup-supported", m_databaseRequester->backupSupported());
-               if (fields->empty() || fields->find("developer-mode") != fields->end())
-                  result.set("developer-mode", shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode());
+               if (fields->empty() || fields->find("backupSupported") != fields->end())
+                  result.set("backupSupported", m_databaseRequester->backupSupported());
+               if (fields->empty() || fields->find("developerMode") != fields->end())
+                  result.set("developerMode", shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode());
 
                if (result.empty())
                   return boost::make_shared<CNoContentAnswer>();
