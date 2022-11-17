@@ -744,7 +744,7 @@ namespace web
          {
             try
             {
-               const auto includeLoopback = request->queryParamExists("with-loopback");
+               const auto includeLoopback = request->queryParamExists("withLoopback");
 
                shared::CDataContainer result;
                const auto networkInterfaces = Poco::Net::NetworkInterface::list();
