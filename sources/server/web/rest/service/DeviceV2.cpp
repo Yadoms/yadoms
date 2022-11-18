@@ -51,82 +51,108 @@ namespace web
                                         : boost::optional<int>();
 
                // Filtering
-               const auto fromPluginInstanceId = request->queryParamExists("from-plugin-instance")
-                                                    ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("from-plugin-instance"))))
+               const auto fromPluginInstanceId = request->queryParamExists("fromPluginInstance")
+                                                    ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("fromPluginInstance"))))
                                                     : boost::optional<int>();
-               const auto fromFriendlyName = request->queryParamExists("from-friendly-name")
-                                                ? boost::make_optional(request->queryParam("from-friendly-name"))
+               const auto fromFriendlyName = request->queryParamExists("fromFriendlyName")
+                                                ? boost::make_optional(request->queryParam("fromFriendlyName"))
                                                 : boost::optional<std::string>();
-               const auto fromType = request->queryParamExists("from-type")
-                                        ? boost::make_optional(request->queryParam("from-type"))
+               const auto fromType = request->queryParamExists("fromType")
+                                        ? boost::make_optional(request->queryParam("fromType"))
                                         : boost::optional<std::string>();
-               const auto fromModel = request->queryParamExists("from-model")
-                                         ? boost::make_optional(request->queryParam("from-model"))
+               const auto fromModel = request->queryParamExists("fromModel")
+                                         ? boost::make_optional(request->queryParam("fromModel"))
                                          : boost::optional<std::string>();
-               const auto containsKeywordWithCapacityName = request->queryParamExists("containing-keyword-with-capacity-name")
-                                                               ? request->queryParamAsList("containing-keyword-with-capacity-name")
+               const auto containsKeywordWithCapacityName = request->queryParamExists("containingKeywordWithCapacityName")
+                                                               ? request->queryParamAsList("containingKeywordWithCapacityName")
                                                                : std::make_unique<std::set<std::string>>();
-               const auto containsKeywordWithAccessMode = request->queryParamExists("containing-keyword-with-access-mode")
+               const auto containsKeywordWithAccessMode = request->queryParamExists("containingKeywordWithAccessMode")
                                                              ? boost::make_optional(
                                                                 shared::plugin::yPluginApi::EKeywordAccessMode(
-                                                                   request->queryParam("containing-keyword-with-access-mode")))
+                                                                   request->queryParam("containingKeywordWithAccessMode")))
                                                              : boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>();
-               const auto containsKeywordWithDataType = request->queryParamExists("containing-keyword-with-capacity-type")
+               const auto containsKeywordWithDataType = request->queryParamExists("containingKeywordWithCapacityType")
                                                            ? CHelpers::convertToEnumSet<shared::plugin::yPluginApi::EKeywordDataType>(
-                                                              request->queryParamAsList("containing-keyword-with-capacity-type"))
+                                                              request->queryParamAsList("containingKeywordWithCapacityType"))
                                                            : std::make_unique<std::set<shared::plugin::yPluginApi::EKeywordDataType>>();
-               const auto containsKeywordWithHistoryDepth = request->queryParamExists("containing-keyword-with-history-depth")
+               const auto containsKeywordWithHistoryDepth = request->queryParamExists("containingKeywordWithHistoryDepth")
                                                                ? boost::make_optional(
                                                                   shared::plugin::yPluginApi::EHistoryDepth(
-                                                                     request->queryParam("containing-keyword-with-history-depth")))
+                                                                     request->queryParam("containingKeywordWithHistoryDepth")))
                                                                : boost::optional<shared::plugin::yPluginApi::EHistoryDepth>();
-               const auto withBlacklisted = request->queryParamExists("with-blacklisted");
+               const auto withBlacklisted = request->queryParamExists("withBlacklisted");
+
+               // Pagination
+               const auto page = request->queryParamExists("page")
+                                    ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("page"))))
+                                    : boost::optional<int>();
+               const auto pageSize = request->queryParamExists("perPage")
+                                        ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("perPage"))))
+                                        : boost::optional<int>();
+
+               boost::shared_ptr<IAnswer> answer;
 
                // Process the request
-               const auto devices = m_deviceRequester->getDevices(deviceId,
-                                                                  fromPluginInstanceId,
-                                                                  fromFriendlyName,
-                                                                  fromType,
-                                                                  fromModel,
-                                                                  *containsKeywordWithCapacityName,
-                                                                  containsKeywordWithAccessMode,
-                                                                  *containsKeywordWithDataType,
-                                                                  containsKeywordWithHistoryDepth,
-                                                                  withBlacklisted);
+               m_deviceRequester->getDevices(
+                  deviceId,
+                  fromPluginInstanceId,
+                  fromFriendlyName,
+                  fromType,
+                  fromModel,
+                  *containsKeywordWithCapacityName,
+                  containsKeywordWithAccessMode,
+                  *containsKeywordWithDataType,
+                  containsKeywordWithHistoryDepth,
+                  withBlacklisted,
+                  page,
+                  pageSize,
+                  [&deviceId, &request, &answer, &page, &pageSize](const auto& devices,
+                                                                   int pagesCount)
+                  {
+                     if (devices.empty())
+                     {
+                        answer = boost::make_shared<CNoContentAnswer>();
+                        return;
+                     }
+
+                     // Get requested props
+                     const auto props = request->queryParamAsList("prop");
+                     std::vector<boost::shared_ptr<shared::CDataContainer>> deviceEntries;
+                     for (const auto& device : devices)
+                     {
+                        auto deviceEntry = boost::make_shared<shared::CDataContainer>();
+                        if (props->empty() || props->find("id") != props->end())
+                           deviceEntry->set("id", device->Id());
+                        if (props->empty() || props->find("pluginInstance") != props->end())
+                           deviceEntry->set("pluginInstance", device->PluginId());
+                        if (props->empty() || props->find("friendlyName") != props->end())
+                           deviceEntry->set("friendlyName", device->FriendlyName());
+                        if (props->empty() || props->find("model") != props->end())
+                           deviceEntry->set("model", device->Model());
+                        if (props->empty() || props->find("details") != props->end())
+                           deviceEntry->set("details", device->Details());
+                        if (props->empty() || props->find("configuration") != props->end())
+                           deviceEntry->set("configuration", device->Configuration());
+                        if (props->empty() || props->find("type") != props->end())
+                           deviceEntry->set("type", device->Type());
+                        if (props->empty() || props->find("blacklisted") != props->end())
+                           deviceEntry->set("blacklisted", device->Blacklist());
+
+                        deviceEntries.push_back(deviceEntry);
+                     }
+
+                     boost::optional<CHelpers::CPaging> paging;
+                     if (page && pageSize)
+                        paging = CHelpers::CPaging(*page, pagesCount, *pageSize);
 
 
-               if (devices.empty())
-                  return boost::make_shared<CNoContentAnswer>();
+                     answer = CHelpers::formatGetMultiItemsAnswer(deviceId.has_value(),
+                                                                  deviceEntries,
+                                                                  "devices",
+                                                                  paging);
+                  });
 
-               // Get requested props
-               const auto props = request->queryParamAsList("prop");
-               std::vector<boost::shared_ptr<shared::CDataContainer>> deviceEntries;
-               for (const auto& device : devices)
-               {
-                  auto deviceEntry = boost::make_shared<shared::CDataContainer>();
-                  if (props->empty() || props->find("id") != props->end())
-                     deviceEntry->set("id", device->Id());
-                  if (props->empty() || props->find("plugin-instance") != props->end())
-                     deviceEntry->set("plugin-instance", device->PluginId());
-                  if (props->empty() || props->find("friendly-name") != props->end())
-                     deviceEntry->set("friendly-name", device->FriendlyName());
-                  if (props->empty() || props->find("model") != props->end())
-                     deviceEntry->set("model", device->Model());
-                  if (props->empty() || props->find("details") != props->end())
-                     deviceEntry->set("details", device->Details());
-                  if (props->empty() || props->find("configuration") != props->end())
-                     deviceEntry->set("configuration", device->Configuration());
-                  if (props->empty() || props->find("type") != props->end())
-                     deviceEntry->set("type", device->Type());
-                  if (props->empty() || props->find("blacklisted") != props->end())
-                     deviceEntry->set("blacklisted", device->Blacklist());
-
-                  deviceEntries.push_back(deviceEntry);
-               }
-
-               return CHelpers::formatGetMultiItemsAnswer(deviceId.has_value(),
-                                                          deviceEntries,
-                                                          "devices");
+               return answer;
             }
 
             catch (const shared::exception::COutOfRange& exception)
@@ -369,8 +395,8 @@ namespace web
                // Filter only client-modifiable fields
                database::entities::CDevice deviceToUpdate;
                deviceToUpdate.Id = deviceId;
-               if (body->exists("friendly-name"))
-                  deviceToUpdate.FriendlyName = body->get<std::string>("friendly-name");
+               if (body->exists("friendlyName"))
+                  deviceToUpdate.FriendlyName = body->get<std::string>("friendlyName");
                if (body->exists("model"))
                   deviceToUpdate.Model = body->get<std::string>("model");
                if (body->exists("configuration"))

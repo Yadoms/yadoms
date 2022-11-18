@@ -121,7 +121,39 @@ namespace database
          const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
          const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
          const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
-         bool blacklistedIncluded = false) const = 0;
+         bool blacklistedIncluded) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                                             General search function for devices
+      /// \param [in] deviceId                               Search device matching this ID
+      /// \param [in] pluginInstanceId                       Search devices for this plugin instance ID
+      /// \param [in] friendlyName                           Search devices matching this friendly name
+      /// \param [in] type                                   Search devices matching this type
+      /// \param [in] model                                  Search devices matching this model
+      /// \param [in] containsKeywordWithCapacityName        Search devices matching one of these capacity names
+      /// \param [in] containsKeywordWithAccessMode          Search devices matching this access mode
+      /// \param [in] containsKeywordWithDataType            Search devices matching one of these capacity type
+      /// \param [in] containsKeywordWithHistoryDepth        Search devices matching this history depth
+      /// \param [in] blacklistedIncluded                    Include blacklisted devices
+      /// \param [in] page                                   Pagination management, number of required page
+      /// \param [in] pageSize                               Pagination management, size of a page
+      /// \param [in] onDone                                 On done callback. Pass selected devices and pages count.
+      //--------------------------------------------------------------
+      virtual void getDevices(
+         const boost::optional<int>& deviceId,
+         const boost::optional<int>& pluginInstanceId,
+         const boost::optional<std::string>& friendlyName,
+         const boost::optional<std::string>& type,
+         const boost::optional<std::string>& model,
+         const std::set<std::string>& containsKeywordWithCapacityName,
+         const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
+         const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
+         const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
+         bool blacklistedIncluded,
+         const boost::optional<int>& page,
+         const boost::optional<int>& pageSize,
+         std::function<void(std::vector<boost::shared_ptr<entities::CDevice>>,
+                            int)> onDone) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get the compatible device list which is compatible to a given device

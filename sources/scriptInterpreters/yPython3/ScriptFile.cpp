@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ScriptFile.h"
+#include <fstream>
 #include <shared/exception/InvalidParameter.hpp>
 
 

@@ -42,10 +42,27 @@ namespace web
             return out;
          }
 
+         class CPaging
+         {
+         public:
+            CPaging(int page, int pagesCount, int pageSize)
+               : m_page(page), m_pagesCount(pagesCount), m_pageSize(pageSize)
+            {
+            }
+            explicit CPaging(const CPaging& other)
+               : m_page(other.m_page), m_pagesCount(other.m_pagesCount), m_pageSize(other.m_pageSize)
+            {
+            }
+
+            const int m_page;
+            const int m_pagesCount;
+            const int m_pageSize;
+         };
+
          //-----------------------------------------
          ///\brief         Format answer of a GET request with one or more items asked
          ///\description   A GET request can be called for one or several items.
-         ///               When several items are requested, result will be expressed as an array
+         ///               When several items are requested, result will be expressed as an array. Paging data can be added (optional).
          ///               If just one item was asked, result should be expressed as item values (no more "decoration")
          ///               Example :
          ///               - Result for several items :
@@ -58,7 +75,12 @@ namespace web
          ///                        "key1" : "value3",
          ///                        "key2" : "value4"
          ///                     }
-         ///                  ]
+         ///                  ],
+         ///                  "paging" : {
+         ///                     "currentPage" : 3,
+         ///                     "totalPage" : 8,
+         ///                     "pageSize" : 10
+         ///                  }
          ///               }
          ///
          ///               - Result for one item :
@@ -70,11 +92,13 @@ namespace web
          /// \param[in] hasOnlyOneItem     Flag indicating that only one item was asked
          /// \param[in] outputDataEntries  List of data to out in answer (only first data will be used if hasOnlyOneItem is true)
          /// \param[in] rootTag            The root tag to write if several data
+         /// \param[in] paging             The paging data (optional)
          /// \return The formatted answer
          //-----------------------------------------
          static boost::shared_ptr<IAnswer> formatGetMultiItemsAnswer(bool hasOnlyOneItem,
                                                                      const std::vector<boost::shared_ptr<shared::CDataContainer>>& outputDataEntries,
-                                                                     const std::string& rootTag);
+                                                                     const std::string& rootTag,
+                                                                     const boost::optional<CPaging>& paging = boost::optional<CPaging>());
          //-----------------------------------------
          ///\brief         Build long running operation creation answer for the "Long running Operation" pattern (see http://restalk-patterns.org/long-running-operation-polling.html)
          /// \param[in] taskUid            The created task Uid

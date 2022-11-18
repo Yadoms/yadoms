@@ -67,7 +67,22 @@ namespace database
                const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
                const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
                const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
-               bool blacklistedIncluded = false) const override;
+               bool blacklistedIncluded) const override;
+            void getDevices(
+               const boost::optional<int>& deviceId,
+               const boost::optional<int>& pluginInstanceId,
+               const boost::optional<std::string>& friendlyName,
+               const boost::optional<std::string>& type,
+               const boost::optional<std::string>& model,
+               const std::set<std::string>& containsKeywordWithCapacityName,
+               const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
+               const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
+               const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
+               bool blacklistedIncluded,
+               const boost::optional<int>& page,
+               const boost::optional<int>& pageSize,
+               std::function<void(std::vector<boost::shared_ptr<entities::CDevice>>,
+                                  int)> onDone) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getCompatibleForMergeDevice(int refDevice) const override;
             void updateDeviceFriendlyName(int deviceId,
                                           const std::string& newFriendlyName) override;
@@ -90,9 +105,23 @@ namespace database
             void removeDevice(int pluginId,
                               const std::string& deviceName) override;
             void removeAllDeviceForPlugin(int pluginId) override;
-            // [END] IDeviceRequester implementation
 
          private:
+            boost::shared_ptr<CQuery> getDevicesQuery(
+               const boost::optional<int>& deviceId,
+               const boost::optional<int>& pluginInstanceId,
+               const boost::optional<std::string>& friendlyName,
+               const boost::optional<std::string>& type,
+               const boost::optional<std::string>& model,
+               const std::set<std::string>& containsKeywordWithCapacityName,
+               const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>&
+               containsKeywordWithAccessMode,
+               const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
+               const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>&
+               containsKeywordWithHistoryDepth,
+               bool blacklistedIncluded) const;
+            // [END] IDeviceRequester implementation
+            
             boost::shared_ptr<IDatabaseRequester> m_databaseRequester;
          };
       } //namespace requesters
