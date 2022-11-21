@@ -53,7 +53,7 @@ namespace web
       boost::shared_ptr<IAnswer> CHelpers::formatGetMultiItemsAnswer(bool hasOnlyOneItem,
                                                                      const std::vector<boost::shared_ptr<shared::CDataContainer>>& outputDataEntries,
                                                                      const std::string& rootTag,
-                                                                     const boost::optional<CPaging>& paging)
+                                                                     boost::optional<CPaging> paging)
       {
          if (outputDataEntries.empty())
             return boost::make_shared<CNoContentAnswer>();
@@ -67,9 +67,9 @@ namespace web
          if (paging)
          {
             shared::CDataContainer pagingData;
-            pagingData.set("currentPage", paging->m_page);
-            pagingData.set("totalPage", paging->m_pagesCount);
-            pagingData.set("pageSize", paging->m_pageSize);
+            pagingData.set("currentPage", paging->page());
+            pagingData.set("totalPage", paging->pagesCount());
+            pagingData.set("pageSize", paging->pageSize());
             container.set("paging", pagingData);
          }
 

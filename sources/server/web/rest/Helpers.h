@@ -1,6 +1,7 @@
 #pragma once
 #include "IAnswer.h"
 #include "IRequest.h"
+#include "Paging.h"
 #include "database/IDataProvider.h"
 #include "shared/http/ssdp/Client.h"
 #include "task/IInstance.h"
@@ -42,23 +43,6 @@ namespace web
             return out;
          }
 
-         class CPaging
-         {
-         public:
-            CPaging(int page, int pagesCount, int pageSize)
-               : m_page(page), m_pagesCount(pagesCount), m_pageSize(pageSize)
-            {
-            }
-            explicit CPaging(const CPaging& other)
-               : m_page(other.m_page), m_pagesCount(other.m_pagesCount), m_pageSize(other.m_pageSize)
-            {
-            }
-
-            const int m_page;
-            const int m_pagesCount;
-            const int m_pageSize;
-         };
-
          //-----------------------------------------
          ///\brief         Format answer of a GET request with one or more items asked
          ///\description   A GET request can be called for one or several items.
@@ -98,7 +82,7 @@ namespace web
          static boost::shared_ptr<IAnswer> formatGetMultiItemsAnswer(bool hasOnlyOneItem,
                                                                      const std::vector<boost::shared_ptr<shared::CDataContainer>>& outputDataEntries,
                                                                      const std::string& rootTag,
-                                                                     const boost::optional<CPaging>& paging = boost::optional<CPaging>());
+                                                                     boost::optional<CPaging> paging = boost::none);
          //-----------------------------------------
          ///\brief         Build long running operation creation answer for the "Long running Operation" pattern (see http://restalk-patterns.org/long-running-operation-polling.html)
          /// \param[in] taskUid            The created task Uid

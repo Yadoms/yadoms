@@ -210,38 +210,33 @@ namespace database
             return adapter.getResults();
          }
 
-         boost::shared_ptr<CQuery> CDevice::getDevicesQuery(const boost::optional<int>& deviceId,
-                                                            const boost::optional<int>& pluginInstanceId,
-                                                            const boost::optional<std::string>& friendlyName,
-                                                            const boost::optional<std::string>& type,
-                                                            const boost::optional<std::string>& model,
-                                                            const std::set<std::string>& containsKeywordWithCapacityName,
-                                                            const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>&
-                                                            containsKeywordWithAccessMode,
-                                                            const std::set<shared::plugin::yPluginApi::EKeywordDataType>&
-                                                            containsKeywordWithDataType,
-                                                            const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>&
-                                                            containsKeywordWithHistoryDepth,
-                                                            bool blacklistedIncluded) const
+         CQuery& CDevice::addDevicesQueryFilters(CQuery& query,
+                                                 const boost::optional<int>& deviceId,
+                                                 const boost::optional<int>& pluginInstanceId,
+                                                 const boost::optional<std::string>& friendlyName,
+                                                 const boost::optional<std::string>& type,
+                                                 const boost::optional<std::string>& model,
+                                                 const std::set<std::string>& containsKeywordWithCapacityName,
+                                                 const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>&
+                                                 containsKeywordWithAccessMode,
+                                                 const std::set<shared::plugin::yPluginApi::EKeywordDataType>&
+                                                 containsKeywordWithDataType,
+                                                 const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>&
+                                                 containsKeywordWithHistoryDepth,
+                                                 bool blacklistedIncluded) const
          {
-            const auto query = m_databaseRequester->newQuery();
-
-            query->Select().
-                   From(CDeviceTable::getTableName()).
-                   WhereTrue();
-
             if (deviceId)
-               query->And(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, *deviceId);
+               query.And(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, *deviceId);
             if (pluginInstanceId)
-               query->And(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, *pluginInstanceId);
+               query.And(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, *pluginInstanceId);
             if (friendlyName)
-               query->And(CDeviceTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, *friendlyName);
+               query.And(CDeviceTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, *friendlyName);
             if (type)
-               query->And(CDeviceTable::getTypeColumnName(), CQUERY_OP_EQUAL, *type);
+               query.And(CDeviceTable::getTypeColumnName(), CQUERY_OP_EQUAL, *type);
             if (model)
-               query->And(CDeviceTable::getModelColumnName(), CQUERY_OP_EQUAL, *model);
+               query.And(CDeviceTable::getModelColumnName(), CQUERY_OP_EQUAL, *model);
             if (blacklistedIncluded)
-               query->And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklistedIncluded ? 1 : 0);
+               query.And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklistedIncluded ? 1 : 0);
 
             if (!containsKeywordWithCapacityName.empty()
                || containsKeywordWithAccessMode
@@ -264,7 +259,7 @@ namespace database
                if (containsKeywordWithHistoryDepth)
                   subQuery->And(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_EQUAL, *containsKeywordWithHistoryDepth);
 
-               query->And(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, *subQuery);
+               query.And(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, *subQuery);
             }
 
             return query;
@@ -282,16 +277,23 @@ namespace database
             const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
             bool blacklistedIncluded) const
          {
-            const auto query = getDevicesQuery(deviceId,
-                                               pluginInstanceId,
-                                               friendlyName,
-                                               type,
-                                               model,
-                                               containsKeywordWithCapacityName,
-                                               containsKeywordWithAccessMode,
-                                               containsKeywordWithDataType,
-                                               containsKeywordWithHistoryDepth,
-                                               blacklistedIncluded);
+            const auto query = m_databaseRequester->newQuery();
+
+            query->Select().
+                   From(CDeviceTable::getTableName()).
+                   WhereTrue();
+
+            addDevicesQueryFilters(*query,
+                                   deviceId,
+                                   pluginInstanceId,
+                                   friendlyName,
+                                   type,
+                                   model,
+                                   containsKeywordWithCapacityName,
+                                   containsKeywordWithAccessMode,
+                                   containsKeywordWithDataType,
+                                   containsKeywordWithHistoryDepth,
+                                   blacklistedIncluded);
 
             adapters::CDeviceAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *query);
@@ -313,29 +315,53 @@ namespace database
                                   const boost::optional<int>& pageSize,
                                   std::function<void(std::vector<boost::shared_ptr<entities::CDevice>>, int)> onDone) const
          {
-            const auto baseQuery = getDevicesQuery(deviceId,
-                                                   pluginInstanceId,
-                                                   friendlyName,
-                                                   type,
-                                                   model,
-                                                   containsKeywordWithCapacityName,
-                                                   containsKeywordWithAccessMode,
-                                                   containsKeywordWithDataType,
-                                                   containsKeywordWithHistoryDepth,
-                                                   blacklistedIncluded);
-
             auto pagesCount = 0;
             if (page && pageSize)
             {
-               auto countQuery = *baseQuery;
-               countQuery.count();
-               pagesCount = m_databaseRequester->queryStatement(countQuery) / *pageSize;
+               const auto countQuery = m_databaseRequester->newQuery();
 
-               baseQuery->Limit(*pageSize, *page * *pageSize);
+               countQuery->SelectCount().
+                           From(CDeviceTable::getTableName()).
+                           WhereTrue();
+
+               addDevicesQueryFilters(*countQuery,
+                                      deviceId,
+                                      pluginInstanceId,
+                                      friendlyName,
+                                      type,
+                                      model,
+                                      containsKeywordWithCapacityName,
+                                      containsKeywordWithAccessMode,
+                                      containsKeywordWithDataType,
+                                      containsKeywordWithHistoryDepth,
+                                      blacklistedIncluded);
+
+               pagesCount = m_databaseRequester->queryCount(*countQuery) / *pageSize + 1;
             }
 
+            const auto query = m_databaseRequester->newQuery();
+
+            query->Select().
+                   From(CDeviceTable::getTableName()).
+                   WhereTrue();
+
+            addDevicesQueryFilters(*query,
+                                   deviceId,
+                                   pluginInstanceId,
+                                   friendlyName,
+                                   type,
+                                   model,
+                                   containsKeywordWithCapacityName,
+                                   containsKeywordWithAccessMode,
+                                   containsKeywordWithDataType,
+                                   containsKeywordWithHistoryDepth,
+                                   blacklistedIncluded);
+
+            if (page && pageSize)
+               query->Limit(*pageSize, *page * *pageSize);
+
             adapters::CDeviceAdapter adapter;
-            m_databaseRequester->queryEntities(&adapter, *baseQuery);
+            m_databaseRequester->queryEntities(&adapter, *query);
 
             const auto devices = adapter.getResults();
 

@@ -107,7 +107,8 @@ namespace database
             void removeAllDeviceForPlugin(int pluginId) override;
 
          private:
-            boost::shared_ptr<CQuery> getDevicesQuery(
+            CQuery& addDevicesQueryFilters(
+               CQuery& query,
                const boost::optional<int>& deviceId,
                const boost::optional<int>& pluginInstanceId,
                const boost::optional<std::string>& friendlyName,
@@ -121,7 +122,7 @@ namespace database
                containsKeywordWithHistoryDepth,
                bool blacklistedIncluded) const;
             // [END] IDeviceRequester implementation
-            
+
             boost::shared_ptr<IDatabaseRequester> m_databaseRequester;
          };
       } //namespace requesters

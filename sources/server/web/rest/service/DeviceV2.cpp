@@ -141,9 +141,9 @@ namespace web
                         deviceEntries.push_back(deviceEntry);
                      }
 
-                     boost::optional<CHelpers::CPaging> paging;
+                     boost::optional<CPaging> paging;
                      if (page && pageSize)
-                        paging = CHelpers::CPaging(*page, pagesCount, *pageSize);
+                        paging = CPaging(*page, pagesCount, *pageSize);
 
 
                      answer = CHelpers::formatGetMultiItemsAnswer(deviceId.has_value(),

@@ -654,6 +654,8 @@ set(YADOMS_SRC
    server/web/rest/Helpers.cpp
    server/web/rest/NoContentAnswer.h
    server/web/rest/NoContentAnswer.cpp
+   server/web/rest/Paging.h
+   server/web/rest/Paging.cpp
    server/web/rest/SeeOtherLocationAnswer.h
    server/web/rest/SeeOtherLocationAnswer.cpp
    server/web/rest/SuccessAnswer.h
