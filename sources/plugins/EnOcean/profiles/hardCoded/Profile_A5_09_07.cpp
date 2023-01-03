@@ -6,9 +6,9 @@
 
 CProfile_A5_09_07::CProfile_A5_09_07(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_concentration10um(boost::make_shared<specificHistorizers::CConcentrationGramPerMeterCube>("lessThan10µM")),
-     m_concentration2_5um(boost::make_shared<specificHistorizers::CConcentrationGramPerMeterCube>("lessThan2.5µM")),
-     m_concentration1um(boost::make_shared<specificHistorizers::CConcentrationGramPerMeterCube>("lessThan1µM")),
+   : m_concentration10um(boost::make_shared<specificHistorizers::CConcentrationGramPerMeterCube>("lessThan10ÂµM")),
+     m_concentration2_5um(boost::make_shared<specificHistorizers::CConcentrationGramPerMeterCube>("lessThan2.5ÂµM")),
+     m_concentration1um(boost::make_shared<specificHistorizers::CConcentrationGramPerMeterCube>("lessThan1ÂµM")),
      m_historizers({m_concentration10um, m_concentration2_5um, m_concentration1um})
 {
 }

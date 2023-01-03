@@ -20,7 +20,7 @@ const std::string& CProfile_A5_04_01::profile() const
 
 const std::string& CProfile_A5_04_01::title() const
 {
-   static const std::string Title(R"(Temperature (0 to 40°C) and humidity sensor (0 to 100%))");
+   static const std::string Title(R"(Temperature (0 to 40Â°C) and humidity sensor (0 to 100%))");
    return Title;
 }
 
