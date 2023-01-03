@@ -132,8 +132,8 @@ void CProfile_D2_02_01::sendConfiguration(const shared::CDataContainer& deviceCo
    bitset_insert(userData, 8, 1, 1);
 
    // Delta temperature report is expressed as binary value as 0..4095.
-   // Temperature is expressed as 0..65535 covers -40..+120°.
-   // So delta temperature report is 0..10 °C
+   // Temperature is expressed as 0..65535 covers -40..+120Â°.
+   // So delta temperature report is 0..10 Â°C
    const auto binaryDeltaTemperatureToReport = static_cast<unsigned int>(deltaTemperatureToReport * 4095.0 / 10.0);
 
    bitset_insert(userData, 16, 4, binaryDeltaTemperatureToReport & 0x0F);
