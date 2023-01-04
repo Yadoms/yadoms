@@ -1,4 +1,4 @@
-### 2.1.2-beta.1
+### 2.1.2
 * Fix A5-04-xx, A5-09-xx and D2-02-xx devices pairing
 
 ### 2.1.1
