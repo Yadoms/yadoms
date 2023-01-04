@@ -118,7 +118,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    switch (unit)
    {
    case E_A5_09_0B_Unit::kA5_09_0B_uSvh:
-      // radiationLevel is given in µSv/h, expected in Sv/s
+      // radiationLevel is given in ÂµSv/h, expected in Sv/s
       m_sieverPerSecondRadioActivity->set(radiationLevel / 1000000.0 / 3600.0);
       historizers.emplace_back(m_sieverPerSecondRadioActivity);
       break;
