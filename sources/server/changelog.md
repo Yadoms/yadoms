@@ -1,4 +1,4 @@
-### 2.5.3-beta.1
+### 2.5.3
 * Fix default value of optional section in modules configuration
 
 #### Yadoms
