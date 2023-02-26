@@ -139,6 +139,16 @@ namespace web
                                                  }), instances.end());
                }
 
+               // Pagination
+               const auto page = request->queryParamExists("page")
+                                    ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("page"))))
+                                    : boost::optional<int>();
+               const auto pageSize = request->queryParamExists("perPage")
+                                        ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("perPage"))))
+                                        : boost::optional<int>();
+               const auto firstItem = (page && pageSize) ? *page * *pageSize : 0u;
+               auto lastItem = 0u;
+
                // Get requested props
                const auto props = request->queryParamAsList("prop");
                std::vector<boost::shared_ptr<shared::CDataContainer>> instancesEntries;
@@ -162,15 +172,30 @@ namespace web
                   if (props->empty() || props->find("fullState") != props->end())
                      instanceEntry->set("fullState", m_pluginManager->getInstanceFullState(instance->Id()));
 
-                  instancesEntries.push_back(instanceEntry);
+                  if (page && pageSize)
+                  {
+                     if (lastItem >= firstItem && lastItem < (firstItem + *pageSize))
+                        instancesEntries.push_back(instanceEntry);
+                     ++lastItem;
+                  }
+                  else
+                  {
+                     instancesEntries.push_back(instanceEntry);
+                  }
                }
 
                if (instancesEntries.empty())
                   return boost::make_shared<CNoContentAnswer>();
+               
+               boost::optional<CPaging> paging;
+               if (page && pageSize)
+                  paging = CPaging(*page, (lastItem / *pageSize) + 1, *pageSize);
+
 
                return CHelpers::formatGetMultiItemsAnswer(!id.empty(),
                                                           instancesEntries,
-                                                          "instances");
+                                                          "instances",
+                                                          paging);
             }
 
             catch (const std::exception&)
