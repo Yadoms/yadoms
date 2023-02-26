@@ -55,6 +55,16 @@ namespace web
                if (foundPlugins.empty())
                   return boost::make_shared<CNoContentAnswer>();
 
+               // Pagination
+               const auto page = request->queryParamExists("page")
+                                    ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("page"))))
+                                    : boost::optional<int>();
+               const auto pageSize = request->queryParamExists("perPage")
+                                        ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("perPage"))))
+                                        : boost::optional<int>();
+               const auto firstItem = (page && pageSize) ? *page * *pageSize : 0u;
+               auto lastItem = 0u;
+
                // Get requested props
                const auto props = request->queryParamAsList("prop");
 
@@ -90,15 +100,32 @@ namespace web
                   //TODO remonter les locales (suivant la gestion par le client Angular)
 
                   if (!pluginEntry->empty())
-                     pluginEntries.push_back(pluginEntry);
+                  {
+                     if (page && pageSize)
+                     {
+                        if (lastItem >= firstItem && lastItem < (firstItem + *pageSize))
+                           pluginEntries.push_back(pluginEntry);
+                        ++lastItem;
+                     }
+                     else
+                     {
+                        pluginEntries.push_back(pluginEntry);
+                     }
+                  }
                }
 
                if (pluginEntries.empty())
                   return boost::make_shared<CNoContentAnswer>();
+               
+               boost::optional<CPaging> paging;
+               if (page && pageSize)
+                  paging = CPaging(*page, (lastItem / *pageSize) + 1, *pageSize);
+
 
                return CHelpers::formatGetMultiItemsAnswer(types->size() == 1,
                                                           pluginEntries,
-                                                          "plugins");
+                                                          "plugins",
+                                                          paging);
             }
 
             catch (const std::exception&)
