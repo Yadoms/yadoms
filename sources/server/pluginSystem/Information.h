@@ -8,7 +8,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief		Container class for plugin information
    //--------------------------------------------------------------
-   class CInformation : public shared::plugin::information::IInformation
+   class CInformation final : public shared::plugin::information::IInformation
    {
    public:
       //--------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       explicit CInformation(const boost::filesystem::path& pluginPath);
 
-      virtual ~CInformation();
+      ~CInformation() override = default;
 
       // shared::plugin::IInformation implementation
       const std::string& getType() const override;

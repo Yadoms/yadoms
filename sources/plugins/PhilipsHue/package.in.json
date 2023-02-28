@@ -43,6 +43,6 @@
       }
    },
    "deviceConfiguration": {
-      "dynamicConfigurationSchema": "true"
+    "dynamicConfigurationSchema": {}
    }
 }

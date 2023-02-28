@@ -1,5 +1,6 @@
 #pragma once
 #define RAPIDJSON_VALUE_DEFAULT_OBJECT_CAPACITY 1
+#include <boost/filesystem.hpp>
 #include <shared/exception/OutOfRange.hpp>
 #include <shared/exception/InvalidParameter.hpp>
 #include "serialization/IDataSerializable.h"
@@ -202,6 +203,13 @@ namespace shared
       //--------------------------------------------------------------
       static boost::shared_ptr<CDataContainer> make(const std::string& initialData);
       static std::unique_ptr<CDataContainer> makeUnique(const std::string& initialData);
+
+      //--------------------------------------------------------------
+      /// \brief		Constructor
+      /// \param [in] inputFile    Initial data for this container (json file)
+      //--------------------------------------------------------------
+      static boost::shared_ptr<CDataContainer> make(const boost::filesystem::path& inputFile);
+      static std::unique_ptr<CDataContainer> makeUnique(const boost::filesystem::path& inputFile);
 
       //--------------------------------------------------------------
       /// \brief		Constructor
@@ -750,8 +758,8 @@ namespace shared
       // [END] IDataFileSerializable implementation
 
       // IDataContainable implementation
-      virtual void extractContent(CDataContainer &) const;
-      virtual void fillFromContent(const CDataContainer & initialData);
+      void extractContent(CDataContainer &) const;
+      void fillFromContent(const CDataContainer & initialData);
       // [END] IDataContainable implementation
 
 
@@ -1024,7 +1032,6 @@ namespace shared
       /// \param [in] parameterName    Name of the parameter
       /// \param [out] values          The resulting vector
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
-      /// \return     The parameter values (IDataContainable)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
@@ -1057,19 +1064,17 @@ namespace shared
       /// \param [in] parameterName    Name of the parameter
       /// \param [out] values          The resulting vector
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
-      /// \return     The parameter values (std::vector< boost::shared_ptr<T> >)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<typename T>
-      inline void setValuesSPInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<T> > & values, char pathChar);
+      void setValuesSPInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<T> > & values, char pathChar);
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (std::vector< boost::shared_ptr<IDataContainable> >)
       /// \param [in] parameterName    Name of the parameter
       /// \param [out] values          The resulting vector
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
-      /// \return     The parameter values (std::vector< boost::shared_ptr<IDataContainable> >)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
@@ -1562,7 +1567,7 @@ namespace shared
       //--------------------------------------------------------------
       static void setInternal(CDataContainer* tree, const std::string& parameterName, const boost::shared_ptr<CDataContainer>& value, const char pathChar)
       {
-         auto& a = *value.get();
+         const auto& a = *value.get();
          tree->set(parameterName, a, pathChar);
       }
 
@@ -1571,7 +1576,7 @@ namespace shared
       //--------------------------------------------------------------
       static void appendArrayInternal(CDataContainer* tree, const std::string& parameterName, const boost::shared_ptr<CDataContainer>& value, const char pathChar)
       {
-         auto& a = *value.get();
+         const auto& a = *value.get();
          tree->appendArray(parameterName, a, pathChar);
       }
    };
@@ -1629,7 +1634,9 @@ namespace shared
       //by default this is not the case
       //that's why template specialization is needed
       if (sizeof(unsigned long) == 8)
+         // ReSharper disable once CppUnreachableCode
          return static_cast<unsigned long>(helper<uint64_t>::getInternal(this, parameterName, pathChar));
+      // ReSharper disable once CppRedundantCastExpression
       return static_cast<unsigned>(helper<unsigned int>::getInternal(this, parameterName, pathChar));
    }
 
@@ -1642,8 +1649,9 @@ namespace shared
       //by default this is not the case
       //that's why template specialization is needed
       if (sizeof(long) == 8)
-         return static_cast<unsigned long>(helper<int64_t>::getInternal(this, parameterName, pathChar));
-      return static_cast<unsigned>(helper<int>::getInternal(this, parameterName, pathChar));
+         // ReSharper disable once CppUnreachableCode
+         return static_cast<unsigned long>(helper<int64_t>::getInternal(this, parameterName, pathChar));  // NOLINT(bugprone-narrowing-conversions, cppcoreguidelines-narrowing-conversions, bugprone-narrowing-conversions)
+      return static_cast<unsigned>(helper<int>::getInternal(this, parameterName, pathChar));  // NOLINT(bugprone-narrowing-conversions, cppcoreguidelines-narrowing-conversions)
    }
 
    template<class T>
@@ -1690,6 +1698,7 @@ namespace shared
    inline void CDataContainer::set(const std::string& parameterName, const unsigned long& value, const char pathChar)
    {
       if(sizeof(unsigned long) == 8)
+         // ReSharper disable once CppUnreachableCode
          helper<uint64_t>::setInternal(this, parameterName, value, pathChar);
       else
          helper<unsigned int>::setInternal(this, parameterName, value, pathChar);
@@ -1700,6 +1709,7 @@ namespace shared
    inline void CDataContainer::set(const std::string& parameterName, const long& value, const char pathChar)
    {
       if (sizeof(long) == 8)
+         // ReSharper disable once CppUnreachableCode
          helper<int64_t>::setInternal(this, parameterName, value, pathChar);
       else
          helper<int>::setInternal(this, parameterName, value, pathChar);
@@ -1749,7 +1759,7 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const rapidjson::Value* found = findValue(parameterName, pathChar);
       if (found)
       {
          if (found->IsString())
@@ -1766,7 +1776,7 @@ namespace shared
    template<class T>
    T CDataContainer::getInternalIDataContainable(const std::string& parameterName, const char pathChar) const
    {
-      CDataContainer t2 = getInternal<CDataContainer>(parameterName, pathChar);
+      auto t2 = getInternal<CDataContainer>(parameterName, pathChar);
       T obj;
       obj.fillFromContent(t2);
       return obj;
@@ -2088,7 +2098,7 @@ namespace shared
       if (!isArray(parameterName, pathChar))
          createArray(parameterName, pathChar);
 
-      for (typename std::vector<boost::shared_ptr<T>>::const_iterator i = values.begin(); i != values.end(); ++i)
+      for (auto i = values.begin(); i != values.end(); ++i)
       {
          appendArray(parameterName, *i, pathChar);
       }
@@ -2101,7 +2111,7 @@ namespace shared
          m_tree.SetObject();
 
       auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
-      if(ptr != NULL && ptr->IsArray())
+      if(ptr != nullptr && ptr->IsArray())
       {
          ptr->PushBack(value, m_tree.GetAllocator());
       }
@@ -2114,8 +2124,8 @@ namespace shared
          m_tree.SetObject();
 
       rapidjson::Value v(value, m_tree.GetAllocator());
-      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
-      if (ptr != NULL && ptr->IsArray())
+      const auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
+      if (ptr != nullptr && ptr->IsArray())
       {
          ptr->PushBack(v, m_tree.GetAllocator());
       }
@@ -2128,8 +2138,8 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Get(m_tree);
-      if (ptr != NULL && ptr->IsArray())
+      const auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Get(m_tree);
+      if (ptr != nullptr && ptr->IsArray())
       {
          rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
          rapidjson::Value a;
@@ -2143,8 +2153,8 @@ namespace shared
    inline void CDataContainer::appendArrayInternal(const std::string& parameterName, const boost::posix_time::ptime& value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
-      auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Get(m_tree);
-      if (ptr != NULL && ptr->IsArray())
+      const auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Get(m_tree);
+      if (ptr != nullptr && ptr->IsArray())
       {
          const std::string s = boost::posix_time::to_iso_string(value);
          rapidjson::Value v(s, m_tree.GetAllocator());
@@ -2299,11 +2309,10 @@ namespace shared
 
       rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      std::vector< boost::shared_ptr<IDataContainable> >::const_iterator i;
-      for (i = values.begin(); i != values.end(); ++i)
+      for (const auto& value : values)
       {
          CDataContainer t;
-         (*i)->extractContent(t);
+         value->extractContent(t);
          rapidjson::Value a;
          a.CopyFrom(t.m_tree, allocator);
          v.PushBack(a, allocator);
@@ -2332,7 +2341,7 @@ namespace shared
    EnumType CDataContainer::getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames, const char pathChar) const
    {
       const auto stringValue = get<std::string>(parameterName, pathChar);
-      auto it = valuesNames.find(stringValue);
+      const auto it = valuesNames.find(stringValue);
       if (it != valuesNames.end())
          return static_cast<EnumType>(it->second);
 

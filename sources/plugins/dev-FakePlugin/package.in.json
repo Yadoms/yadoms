@@ -270,6 +270,6 @@
         }
       }
     },
-    "dynamicConfigurationSchema": "true"
+    "dynamicConfigurationSchema": {}
   }
 }

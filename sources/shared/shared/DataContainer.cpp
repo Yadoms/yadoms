@@ -46,6 +46,20 @@ namespace shared
       return std::make_unique<CDataContainer>(initialData);
    }
 
+   boost::shared_ptr<CDataContainer> CDataContainer::make(const boost::filesystem::path& inputFile)
+   {
+      auto container = boost::make_shared<CDataContainer>();
+      container->deserializeFromFile(inputFile.string());
+      return container;
+   }
+
+   std::unique_ptr<CDataContainer> CDataContainer::makeUnique(const boost::filesystem::path& inputFile)
+   {
+      auto container = std::make_unique<CDataContainer>();
+      container->deserializeFromFile(inputFile.string());
+      return container;
+   }
+
    boost::shared_ptr<CDataContainer> CDataContainer::make(const std::map<std::string, std::string>& initialData)
    {
       return boost::make_shared<CDataContainer>(initialData);
@@ -303,7 +317,7 @@ namespace shared
       m_tree.RemoveAllMembers();
       const rapidjson::ParseResult parseError = m_tree.Parse(data.c_str());
       if (!parseError)
-         throw exception::CJSONParse(rapidjson::GetParseError_En(parseError.Code()), parseError.Offset());
+         throw exception::CJSONParse(GetParseError_En(parseError.Code()), parseError.Offset());
    }
 
    void CDataContainer::serializeToFile(const std::string& filename) const
@@ -564,10 +578,10 @@ namespace shared
       }
    }
 
-   void CDataContainer::mergeFrom(const CDataContainer& source)
+   void CDataContainer::mergeFrom(const CDataContainer& from)
    {
       auto& allocator = m_tree.GetAllocator();
-      mergeObjects(m_tree, source.m_tree, allocator);
+      mergeObjects(m_tree, from.m_tree, allocator);
    }
 
    void CDataContainer::mergeFrom(const boost::shared_ptr<CDataContainer>& from)

@@ -14,6 +14,9 @@ namespace pluginSystem
       {
          const auto packageFile = m_path / "package.json";
          m_package->deserializeFromFile(packageFile.string());
+
+         const auto fr = shared::CDataContainer::makeUnique(m_path / "locales/fr.json");
+         m_package->mergeFrom(*fr);
       }
       catch (shared::exception::CException& e)
       {
@@ -75,10 +78,6 @@ namespace pluginSystem
          m_isSupportedOnThisPlatform = false;
          throw CInvalidPluginException(m_type, (boost::format("The plugin folder '%1%' does not match plugin type '%2%'") % pluginFolder % m_type).str());
       }
-   }
-
-   CInformation::~CInformation()
-   {
    }
 
    const std::string& CInformation::getType() const
