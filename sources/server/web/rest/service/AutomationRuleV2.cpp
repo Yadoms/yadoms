@@ -22,8 +22,6 @@ namespace web
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
-            //TODO remonter les locales de l'interpréteur (suivant la gestion par le client Angular)
-
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters", getInterpretersV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters/{interpreter}/icon", getInterpreterIcon));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "automation/interpreters/{interpreter}/code-template", getCodeTemplateV2));
