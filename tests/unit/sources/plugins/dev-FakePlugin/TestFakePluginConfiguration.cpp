@@ -7,15 +7,16 @@
 
 BOOST_AUTO_TEST_SUITE(TestFakePluginConfiguration)
 
-const boost::shared_ptr<shared::CDataContainer> Conf = shared::CDataContainer::make("{"
+const boost::shared_ptr<shared::CDataContainer> Conf = shared::CDataContainer::make(std::string(
+    "{"
 	"\"EnumParameter\": \"EnumValue1\""
-	"}");
+	"}"));
 
 
 const std::string DefaultPackageInJson = "{\n"
 "  \"type\": \"dev-fakePlugin\",\n"
 "  \"version\": \"@PLUGIN_VERSION@\",\n"
-"  \"author\": \"Sébastien GALLOU\",\n"
+"  \"author\": \"SÃ©bastien GALLOU\",\n"
 "  \"url\": \"https://github.com/Yadoms/yadoms/wiki/FakePlugin\",\n"
 "  \"credits\": \"\",\n"
 "  \"supportedPlatforms\": \"all\",\n"
