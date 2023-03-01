@@ -97,6 +97,7 @@ namespace web
                      pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
                   if (props->empty() || props->find("package") != props->end())
                      pluginEntry->set("package", *plugin->getPackage());
+                  pluginEntry->set("locales/FR", shared::CDataContainer::make(plugin->getPath() / "locales/fr.json"));
                   //TODO remonter les locales (suivant la gestion par le client Angular)
 
                   if (!pluginEntry->empty())
