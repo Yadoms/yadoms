@@ -56,8 +56,38 @@ namespace web
 
                shared::CDataContainer interpreterEntities;
                for (const auto& interpreter : interpreters)
-                  interpreterEntities.set(interpreter.first,
-                                          interpreter.second ? "available" : "not-available");
+               {
+                  shared::CDataContainer interpreterEntity;
+                  interpreterEntity.set("available", interpreter.second);
+
+                  const auto requestedLocale = request->acceptLanguage();
+                  if (!requestedLocale.empty())
+                  {
+                     try
+                     {
+                        interpreterEntity.set(
+                           "locales", shared::CDataContainer::make(
+                              m_rulesManager->getInterpreterPath(interpreter.first) / std::string("locales/" + requestedLocale + ".json")));
+                     }
+                     catch (const std::exception&)
+                     {
+                        try
+                        {
+                           interpreterEntity.set(
+                              "locales", shared::CDataContainer::make(
+                                 m_rulesManager->getInterpreterPath(interpreter.first) / std::string("locales/en.json")));
+                        }
+                        catch (const std::exception&)
+                        {
+                           return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                                   "Unable to find valid locale file for interpreter " + interpreter.first +
+                                                                   ". Tried requested '" + requestedLocale + "', and 'en' as default");
+                        }
+                     }
+                  }
+
+                  interpreterEntities.set(interpreter.first, interpreterEntity);
+               }
 
                shared::CDataContainer container;
                container.set("interpreters", interpreterEntities);

@@ -105,6 +105,14 @@ namespace web
          return rest::ToContentType(m_request->getHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE));
       }
 
+      std::string CRestRequest::acceptLanguage() const
+      {
+         const auto acceptLanguageHeader = m_request->getHeader("Accept-Language");
+         if (!acceptLanguageHeader)
+            return {};
+         return boost::to_lower_copy(*acceptLanguageHeader);
+      }
+
       std::string CRestRequest::body() const
       {
          if (m_method == shared::http::ERestVerb::kGet

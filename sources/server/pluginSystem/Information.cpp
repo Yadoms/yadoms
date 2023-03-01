@@ -14,9 +14,6 @@ namespace pluginSystem
       {
          const auto packageFile = m_path / "package.json";
          m_package->deserializeFromFile(packageFile.string());
-
-         //const auto fr = shared::CDataContainer::makeUnique(m_path / "locales/fr.json");
-         //m_package->mergeFrom(*fr);
       }
       catch (shared::exception::CException& e)
       {

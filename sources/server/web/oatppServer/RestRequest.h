@@ -29,6 +29,7 @@ namespace web
          std::unique_ptr<std::set<std::string>> queryParamAsList(const std::string& key,
                                                                  char separator) const override;
          rest::EContentType contentType() const override;
+         std::string acceptLanguage() const override;
          std::string body() const override;
          float acceptContentType(rest::EContentType contentType) const override;
          boost::shared_ptr<rest::IFormDataPartStringHandler> createFormDataPartStringHandler() override;

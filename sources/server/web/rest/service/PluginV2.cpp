@@ -97,8 +97,29 @@ namespace web
                      pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
                   if (props->empty() || props->find("package") != props->end())
                      pluginEntry->set("package", *plugin->getPackage());
-                  pluginEntry->set("locales/FR", shared::CDataContainer::make(plugin->getPath() / "locales/fr.json"));
-                  //TODO remonter les locales (suivant la gestion par le client Angular)
+
+                  const auto requestedLocale = request->acceptLanguage();
+                  if (!requestedLocale.empty())
+                  {
+                     try
+                     {
+                        pluginEntry->set(
+                           "locales", shared::CDataContainer::make(plugin->getPath() / std::string("locales/" + requestedLocale + ".json")));
+                     }
+                     catch (const std::exception&)
+                     {
+                        try
+                        {
+                           pluginEntry->set("locales", shared::CDataContainer::make(plugin->getPath() / std::string("locales/en.json")));
+                        }
+                        catch (const std::exception&)
+                        {
+                           return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                                   "Unable to find valid locale file for plugin " + plugin->getType() +
+                                                                   ". Tried requested '" + requestedLocale + "', and 'en' as default");
+                        }
+                     }
+                  }
 
                   if (!pluginEntry->empty())
                   {
@@ -117,7 +138,7 @@ namespace web
 
                if (pluginEntries.empty())
                   return boost::make_shared<CNoContentAnswer>();
-               
+
                boost::optional<CPaging> paging;
                if (page && pageSize)
                   paging = CPaging(*page, (lastItem / *pageSize) + 1, *pageSize);
@@ -214,7 +235,7 @@ namespace web
 
                if (instancesEntries.empty())
                   return boost::make_shared<CNoContentAnswer>();
-               
+
                boost::optional<CPaging> paging;
                if (page && pageSize)
                   paging = CPaging(*page, (lastItem / *pageSize) + 1, *pageSize);
