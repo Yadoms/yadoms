@@ -22,7 +22,7 @@
     },
     "UpsBeep": {
       "type": "bool",
-      "defaultValue": "true"
+      "defaultValue": true
     },
     "Autotest": {
       "type": "section",
@@ -33,7 +33,7 @@
       "content": {
         "AutotestStartTime": {
           "type": "string",
-          "required": "true",
+          "required": true,
           "regex": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$",
           "defaultValue": "00:00"
         }
@@ -44,16 +44,16 @@
       "content": {
         "ShutdownDelay": {
           "type": "decimal",
-          "defaultValue": ".3",
-          "minimumValue": ".2",
-          "maximumValue": "9",
-          "precision": "1"
+          "defaultValue": 0.3,
+          "minimumValue": 0.2,
+          "maximumValue": 9,
+          "precision": 1
         },
         "RestoreDelay": {
           "type": "int",
-          "defaultValue": "1",
-          "minimumValue": "1",
-          "maximumValue": "9999"
+          "defaultValue": 1,
+          "minimumValue": 1,
+          "maximumValue": 9999
         }
       }
     }

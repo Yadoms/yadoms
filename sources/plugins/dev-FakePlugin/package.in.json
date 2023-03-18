@@ -16,15 +16,15 @@
     },
     "BoolParameter": {
       "type": "bool",
-      "defaultValue": "false"
+      "defaultValue": false
     },
     "IntParameter": {
       "type": "int",
-      "defaultValue": "258"
+      "defaultValue": 258
     },
     "DecimalParameter": {
       "type": "decimal",
-      "defaultValue": "25.3"
+      "defaultValue": 25.3
     },
     "EnumParameter": {
       "type": "enum",
@@ -40,7 +40,7 @@
       "content": {
         "SubIntParameter": {
           "type": "int",
-          "defaultValue": "65535"
+          "defaultValue": 65535
         },
         "SubStringParameter": {
           "type": "string"
@@ -127,8 +127,8 @@
       }
     }
   },
-  "supportManuallyDeviceCreation": "true",
-  "supportDeviceRemovedNotification": "true",
+  "supportManuallyDeviceCreation": true,
+  "supportDeviceRemovedNotification": true,
   "enumerations": {
     "EFakeControllerValues": {
       "name": "",
@@ -152,7 +152,7 @@
     },
     "mms": {
       "type": "bool",
-      "defaultValue": "true"
+      "defaultValue": true
     }
   },
   "extraQueries": {
@@ -227,25 +227,25 @@
         "fakeConfigurableDevice": {
           "types": {
             "fakeConfigurableDeviceType": {
-              "canBeCreatedManually": "false"
+              "canBeCreatedManually": false
             },
             "anotherFakeConfigurableDeviceType": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "CounterDivider2": {
               "type": "int",
-              "defaultValue": "2",
-              "minimumValue": "1",
-              "maximumValue": "10"
+              "defaultValue": 2,
+              "minimumValue": 1,
+              "maximumValue": 10
             },
             "MySection": {
               "type": "section",
               "content": {
                 "SubIntParameter": {
                   "type": "int",
-                  "defaultValue": "65535"
+                  "defaultValue": 65535
                 },
                 "SubStringParameter": {
                   "type": "string"

@@ -62,13 +62,13 @@
     },
     "PINCode": {
       "type": "section",
-      "enableWithCheckBox": "true",
-      "enableWithCheckBoxDefaultValue": "false",
+      "enableWithCheckBox": true,
+      "enableWithCheckBoxDefaultValue": false,
       "content": {
         "PIN": {
           "type": "string",
           "regex": "[0-9]{4}",
-          "encrypted": "true"
+          "encrypted": true
         }
       }
     }

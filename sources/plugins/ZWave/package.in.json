@@ -22,11 +22,11 @@
     },
     "IncludeSystemKeywords": {
       "type": "bool",
-      "defaultValue": "false"
+      "defaultValue": false
     },
     "initTimeout": {
       "type": "numeric",
-      "defaultValue": "0"
+      "defaultValue": 0
     }
   },
   "extraQueries": {

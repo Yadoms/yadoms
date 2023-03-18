@@ -27,8 +27,8 @@
    "configurationSchema": {
       "LivetemperatureSection": {
          "type": "section",
-         "defaultValue": "true",
-         "enableWithCheckBox": "true",
+         "defaultValue": true,
+         "enableWithCheckBox": true,
          "checkbox": {
            "defaultValue": true
          },
@@ -55,8 +55,8 @@
       },
       "thermostatStateSection": {
          "type": "section",
-         "defaultValue": "true",
-         "enableWithCheckBox": "true",
+         "defaultValue": true,
+         "enableWithCheckBox": true,
          "checkbox": {
            "defaultValue": true
          },

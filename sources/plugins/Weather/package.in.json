@@ -12,22 +12,22 @@
   "configurationSchema": {
     "apiKey": {
       "type": "string",
-      "required": "true"
+      "required": true
     },
     "useSpecificLocation": {
       "type": "section",
-      "enableWithCheckBox": "true",
+      "enableWithCheckBox": true,
       "checkbox": {
         "defaultValue": false
       },
       "content": {
         "longitude": {
           "type": "decimal",
-          "defaultValue": "0"
+          "defaultValue": 0
         },
         "latitude": {
           "type": "decimal",
-          "defaultValue": "0"
+          "defaultValue": 0
         }
       }
     }

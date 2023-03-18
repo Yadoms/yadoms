@@ -16,15 +16,15 @@
     },
     "specificOledSize": {
       "type": "section",
-      "enableWithCheckBox": "true",
+      "enableWithCheckBox": true,
       "checkbox": {
         "defaultValue": false
       },
       "content": {
         "LineCount": {
           "type": "int",
-          "defaultValue": "8",
-          "minimumValue": "1"
+          "defaultValue": 8,
+          "minimumValue": 1
         }
       }
     }

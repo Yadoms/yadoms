@@ -13,30 +13,30 @@
   "configurationSchema": {
     "port": {
       "type": "int",
-      "defaultValue": "8090"
+      "defaultValue": 8090
     },
     "advancedConfiguration": {
       "type": "section",
       "content": {
         "rssiMin": {
           "type": "decimal",
-          "defaultValue": "-150"
+          "defaultValue": -150
         },
         "rssiMax": {
           "type": "decimal",
-          "defaultValue": "-100"
+          "defaultValue": -100
         },
         "tensionMin": {
           "type": "decimal",
-          "defaultValue": "2.4"
+          "defaultValue": 2.4
         },
         "tensionMax": {
           "type": "decimal",
-          "defaultValue": "3.6"
+          "defaultValue": 3.6
         }
       }
     }
   },
-  "supportManuallyDeviceCreation": "false",
-  "supportDeviceRemovedNotification": "false"
+  "supportManuallyDeviceCreation": false,
+  "supportDeviceRemovedNotification": false
 }

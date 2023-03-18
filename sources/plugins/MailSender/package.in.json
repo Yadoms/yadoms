@@ -10,12 +10,12 @@
       "minimumVersion": "2.5.3-beta.1"
     }
   },
-  "supportManuallyDeviceCreation": "false",
+  "supportManuallyDeviceCreation": false,
   "configurationSchema": {
     "Sender": {
       "type": "string",
       "regex": "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$",
-      "required": "true"
+      "required": true
     },
     "account": {
       "type": "radioSection",
@@ -25,7 +25,7 @@
           "content": {
             "password": {
               "type": "string",
-              "encrypted": "true"
+              "encrypted": true
             }
           }
         },
@@ -34,7 +34,7 @@
           "content": {
             "password": {
               "type": "string",
-              "encrypted": "true"
+              "encrypted": true
             }
           }
         },
@@ -43,7 +43,7 @@
           "content": {
             "password": {
               "type": "string",
-              "encrypted": "true"
+              "encrypted": true
             }
           }
         },
@@ -52,7 +52,7 @@
           "content": {
             "password": {
               "type": "string",
-              "encrypted": "true"
+              "encrypted": true
             }
           }
         },
@@ -64,7 +64,7 @@
             },
             "SMTPPort": {
               "type": "int",
-              "defaultValue": "587"
+              "defaultValue": 587
             },
             "Security": {
               "type": "enum",
@@ -79,7 +79,7 @@
               "type": "section",
               "name": "Authentication required by server",
               "description": "Only if SMTP server requires an authentication",
-              "enableWithCheckBox": "true",
+              "enableWithCheckBox": true,
               "checkbox": {
                 "defaultValue": false
               },
@@ -89,7 +89,7 @@
                 },
                 "password": {
                   "type": "string",
-                  "encrypted": "true"
+                  "encrypted": true
                 }
               }
             }

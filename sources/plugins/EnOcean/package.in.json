@@ -28,14 +28,14 @@
       }
     }
   },
-  "supportDeviceRemovedNotification": "true",
+  "supportDeviceRemovedNotification": true,
   "deviceConfiguration": {
     "staticConfigurationSchema": {
       "schemas": {
         "all": {
           "types": {
             "*": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -58,7 +58,7 @@
         "setPointEnable": {
           "name": "Enable set point",
           "type": "section",
-          "enableWithCheckBox": "true",
+          "enableWithCheckBox": true,
           "checkbox": {
             "defaultValue": false
           },
@@ -66,24 +66,24 @@
             "setPointRangeLimit": {
               "name": "Set point range limit",
               "type": "decimal",
-              "minimumValue": "0.1",
-              "maximumValue": "12.7",
-              "precision": "1",
-              "defaultValue": "12.7"
+              "minimumValue": 0.1,
+              "maximumValue": 12.7,
+              "precision": 1,
+              "defaultValue": 12.7
             },
             "setPointSteps": {
               "name": "Number of set point steps",
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "127",
-              "defaultValue": "127"
+              "minimumValue": 1,
+              "maximumValue": 127,
+              "defaultValue": 127
             }
           }
         },
         "temperatureMeasurementEnable": {
           "name": "Enable temperature measurement",
           "type": "section",
-          "enableWithCheckBox": "true",
+          "enableWithCheckBox": true,
           "checkbox": {
             "defaultValue": true
           },
@@ -91,24 +91,24 @@
             "measureInterval": {
               "name": "Measure interval (s)",
               "type": "int",
-              "minimumValue": "10",
-              "maximumValue": "600",
-              "defaultValue": "600"
+              "minimumValue": 10,
+              "maximumValue": 600,
+              "defaultValue": 600
             },
             "significantDelta": {
               "name": "Significant delta (°)",
               "type": "decimal",
-              "minimumValue": "0.0",
-              "maximumValue": "3.0",
-              "defaultValue": "0.2",
-              "precision": "1"
+              "minimumValue": 0.0,
+              "maximumValue": 3.0,
+              "defaultValue": 0.2,
+              "precision": 1
             },
             "keepAliveTiming": {
               "name": "Number of measurements between 2 keep alive messages",
               "type": "int",
-              "minimumValue": "10",
-              "maximumValue": "70",
-              "defaultValue": "30"
+              "minimumValue": 10,
+              "maximumValue": 70,
+              "defaultValue": 30
             }
           }
         }
@@ -138,26 +138,26 @@
         "dimTimer1": {
           "name": "Dim timer 1",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "7.5",
-          "precision": "1",
-          "defaultValue": "1.5"
+          "minimumValue": 0.0,
+          "maximumValue": 7.5,
+          "precision": 1,
+          "defaultValue": 1.5
         },
         "dimTimer2": {
           "name": "Dim timer 2",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "7.5",
-          "precision": "1",
-          "defaultValue": "3"
+          "minimumValue": 0.0,
+          "maximumValue": 7.5,
+          "precision": 1,
+          "defaultValue": 3
         },
         "dimTimer3": {
           "name": "Dim timer 3",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "7.5",
-          "precision": "1",
-          "defaultValue": "6"
+          "minimumValue": 0.0,
+          "maximumValue": 7.5,
+          "precision": 1,
+          "defaultValue": 6
         }
       }
     },
@@ -205,26 +205,26 @@
         "dimTimer1": {
           "name": "Dim timer 1",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "7.5",
-          "precision": "1",
-          "defaultValue": "1.5"
+          "minimumValue": 0.0,
+          "maximumValue": 7.5,
+          "precision": 1,
+          "defaultValue": 1.5
         },
         "dimTimer2": {
           "name": "Dim timer 2",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "7.5",
-          "precision": "1",
-          "defaultValue": "3"
+          "minimumValue": 0.0,
+          "maximumValue": 7.5,
+          "precision": 1,
+          "defaultValue": 3
         },
         "dimTimer3": {
           "name": "Dim timer 3",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "7.5",
-          "precision": "1",
-          "defaultValue": "6"
+          "minimumValue": 0.0,
+          "maximumValue": 7.5,
+          "precision": 1,
+          "defaultValue": 6
         }
       }
     },
@@ -272,16 +272,16 @@
         "minEnergyMeasureRefreshTime": {
           "name": "Minimum refresh time",
           "type": "int",
-          "minimumValue": "0",
-          "maximumValue": "255",
-          "defaultValue": "30"
+          "minimumValue": 0,
+          "maximumValue": 255,
+          "defaultValue": 30
         },
         "maxEnergyMeasureRefreshTime": {
           "name": "Maximum refresh time",
           "type": "int",
-          "minimumValue": "10",
-          "maximumValue": "2550",
-          "defaultValue": "600"
+          "minimumValue": 10,
+          "maximumValue": 2550,
+          "defaultValue": 600
         }
       }
     },
@@ -311,40 +311,40 @@
         "dimTimer1": {
           "name": "Dim timer 1",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "7.5",
-          "precision": "1",
-          "defaultValue": "1.5"
+          "minimumValue": 0.0,
+          "maximumValue": 7.5,
+          "precision": 1,
+          "defaultValue": 1.5
         },
         "dimTimer2": {
           "name": "Dim timer 2",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "7.5",
-          "precision": "1",
-          "defaultValue": "3"
+          "minimumValue": 0.0,
+          "maximumValue": 7.5,
+          "precision": 1,
+          "defaultValue": 3
         },
         "dimTimer3": {
           "name": "Dim timer 3",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "7.5",
-          "precision": "1",
-          "defaultValue": "6"
+          "minimumValue": 0.0,
+          "maximumValue": 7.5,
+          "precision": 1,
+          "defaultValue": 6
         },
         "minEnergyMeasureRefreshTime": {
           "name": "Minimum refresh time",
           "type": "int",
-          "minimumValue": "0",
-          "maximumValue": "255",
-          "defaultValue": "30"
+          "minimumValue": 0,
+          "maximumValue": 255,
+          "defaultValue": 30
         },
         "maxEnergyMeasureRefreshTime": {
           "name": "Maximum refresh time",
           "type": "int",
-          "minimumValue": "10",
-          "maximumValue": "2550",
-          "defaultValue": "600"
+          "minimumValue": 10,
+          "maximumValue": 2550,
+          "defaultValue": 600
         }
       }
     },
@@ -453,16 +453,16 @@
         "minEnergyMeasureRefreshTime": {
           "name": "Minimum refresh time",
           "type": "int",
-          "minimumValue": "1",
-          "maximumValue": "255",
-          "defaultValue": "30"
+          "minimumValue": 1,
+          "maximumValue": 255,
+          "defaultValue": 30
         },
         "maxEnergyMeasureRefreshTime": {
           "name": "Maximum refresh time",
           "type": "int",
-          "minimumValue": "10",
-          "maximumValue": "2550",
-          "defaultValue": "600"
+          "minimumValue": 10,
+          "maximumValue": 2550,
+          "defaultValue": 600
         }
       }
     },
@@ -556,16 +556,16 @@
         "minEnergyMeasureRefreshTime": {
           "name": "Minimum refresh time",
           "type": "int",
-          "minimumValue": "0",
-          "maximumValue": "255",
-          "defaultValue": "30"
+          "minimumValue": 0,
+          "maximumValue": 255,
+          "defaultValue": 30
         },
         "maxEnergyMeasureRefreshTime": {
           "name": "Maximum refresh time",
           "type": "int",
-          "minimumValue": "10",
-          "maximumValue": "2550",
-          "defaultValue": "600"
+          "minimumValue": 10,
+          "maximumValue": 2550,
+          "defaultValue": 600
         }
       }
     },
@@ -631,7 +631,7 @@
         "autoOffTimer": {
           "name": "Auto off timer",
           "type": "section",
-          "enableWithCheckBox": "true",
+          "enableWithCheckBox": true,
           "checkbox": {
             "defaultValue": false
           },
@@ -639,16 +639,16 @@
             "value": {
               "name": "value",
               "type": "decimal",
-              "minimumValue": "0.1",
-              "maximumValue": "6553.4",
-              "defaultValue": "60"
+              "minimumValue": 0.1,
+              "maximumValue": 6553.4,
+              "defaultValue": 60
             }
           }
         },
         "delayOffTimer": {
           "name": "Delay off timer",
           "type": "section",
-          "enableWithCheckBox": "true",
+          "enableWithCheckBox": true,
           "checkbox": {
             "defaultValue": false
           },
@@ -656,9 +656,9 @@
             "value": {
               "name": "value",
               "type": "decimal",
-              "minimumValue": "0.1",
-              "maximumValue": "6553.4",
-              "defaultValue": "60"
+              "minimumValue": 0.1,
+              "maximumValue": 6553.4,
+              "defaultValue": 60
             }
           }
         }
@@ -673,32 +673,32 @@
         "deltaTemperatureToReport": {
           "name": "Delta temperature to report",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "10.0",
-          "precision": "1",
-          "defaultValue": "0.5"
+          "minimumValue": 0.0,
+          "maximumValue": 10.0,
+          "precision": 1,
+          "defaultValue": 0.5
         },
         "deltaIlluminationToReport": {
           "name": "Delta illumination to report",
           "type": "int",
-          "minimumValue": "0.0",
-          "maximumValue": "100.0",
-          "defaultValue": "20"
+          "minimumValue": 0.0,
+          "maximumValue": 100.0,
+          "defaultValue": 20
         },
         "maxMessagesInterval": {
           "name": "Max interval between 2 messages (s)",
           "type": "int",
-          "minimumValue": "10",
-          "maximumValue": "2550",
-          "precision": "10",
-          "defaultValue": "10"
+          "minimumValue": 10,
+          "maximumValue": 2550,
+          "precision": 10,
+          "defaultValue": 10
         },
         "minMessagesInterval": {
           "name": "Min interval between 2 messages (s)",
           "type": "int",
-          "minimumValue": "0",
-          "maximumValue": "255",
-          "defaultValue": "10"
+          "minimumValue": 0,
+          "maximumValue": 255,
+          "defaultValue": 10
         }
       }
     },
@@ -711,25 +711,25 @@
         "deltaTemperatureToReport": {
           "name": "Delta temperature to report",
           "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "10.0",
-          "precision": "1",
-          "defaultValue": "0.5"
+          "minimumValue": 0.0,
+          "maximumValue": 10.0,
+          "precision": 1,
+          "defaultValue": 0.5
         },
         "maxMessagesInterval": {
           "name": "Max interval between 2 messages (s)",
           "type": "int",
-          "minimumValue": "10",
-          "maximumValue": "2550",
-          "precision": "10",
-          "defaultValue": "10"
+          "minimumValue": 10,
+          "maximumValue": 2550,
+          "precision": 10,
+          "defaultValue": 10
         },
         "minMessagesInterval": {
           "name": "Min interval between 2 messages (s)",
           "type": "int",
-          "minimumValue": "0",
-          "maximumValue": "255",
-          "defaultValue": "10"
+          "minimumValue": 0,
+          "maximumValue": 255,
+          "defaultValue": 10
         }
       }
     },
@@ -739,18 +739,18 @@
         "measuredDurationOfVerticalRunMs": {
           "name": "Mesured duration of a vertical run (ms)",
           "type": "int",
-          "minimumValue": "5000",
-          "maximumValue": "300000",
-          "precision": "10",
-          "defaultValue": "15000"
+          "minimumValue": 5000,
+          "maximumValue": 300000,
+          "precision": 10,
+          "defaultValue": 15000
         },
         "measuredDurationOfRotationMs": {
           "name": "Mesured duration of a rotation (ms)",
           "type": "int",
-          "minimumValue": "10",
-          "maximumValue": "2540",
-          "precision": "10",
-          "defaultValue": "1500"
+          "minimumValue": 10,
+          "maximumValue": 2540,
+          "precision": 10,
+          "defaultValue": 1500
         },
         "alarmAction": {
           "name": "Alarm action",

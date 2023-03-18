@@ -25,117 +25,117 @@
       "content": {
         "X10": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "RTS": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "VISONIC": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "BLYSS": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "CHACON": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "OREGONV1": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "OREGONV2": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "OREGONV3/OWL": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "DOMIA": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "X2D": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "KD101": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "PARROT": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         }
       }
     },
     "repeater": {
       "type": "section",
-      "enableWithCheckBox": "true",
+      "enableWithCheckBox": true,
       "checkbox": {
         "defaultValue": false
       },
       "content": {
         "X10": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "RTS": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "VISONIC": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "BLYSS": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "CHACON": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "OREGONV1": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "OREGONV2": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "OREGONV3/OWL": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "DOMIA": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "X2D": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "KD101": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         }
       }
     },
     "ledactiviy": {
       "type": "bool",
-      "defaultValue": "true"
+      "defaultValue": true
     },
     "advanced": {
       "type": "section",
       "content": {
         "433": {
           "type": "section",
-          "enableWithCheckBox": "true",
+          "enableWithCheckBox": true,
           "checkbox": {
             "defaultValue": true
           },
@@ -160,21 +160,21 @@
             },
             "dsptrigger": {
               "type": "int",
-              "defaultValue": "8",
-              "minimumValue": "4",
-              "maximumValue": "20"
+              "defaultValue": 8,
+              "minimumValue": 4,
+              "maximumValue": 20
             },
             "rflinktrigger": {
               "type": "int",
-              "defaultValue": "12",
-              "minimumValue": "4",
-              "maximumValue": "20"
+              "defaultValue": 12,
+              "minimumValue": 4,
+              "maximumValue": 20
             }
           }
         },
         "868": {
           "type": "section",
-          "enableWithCheckBox": "true",
+          "enableWithCheckBox": true,
           "checkbox": {
             "defaultValue": true
           },
@@ -199,44 +199,44 @@
             },
             "dsptrigger": {
               "type": "int",
-              "defaultValue": "6",
-              "minimumValue": "4",
-              "maximumValue": "20"
+              "defaultValue": 6,
+              "minimumValue": 4,
+              "maximumValue": 20
             },
             "rflinktrigger": {
               "type": "int",
-              "defaultValue": "10",
-              "minimumValue": "4",
-              "maximumValue": "20"
+              "defaultValue": 10,
+              "minimumValue": 4,
+              "maximumValue": 20
             }
           }
         },
         "lbt": {
           "type": "section",
-          "enableWithCheckBox": "true",
+          "enableWithCheckBox": true,
           "checkbox": {
             "defaultValue": true
           },
           "content": {
             "lbtvalue": {
               "type": "int",
-              "defaultValue": "16",
-              "minimumValue": "6",
-              "maximumValue": "30"
+              "defaultValue": 16,
+              "minimumValue": 6,
+              "maximumValue": 30
             }
           }
         }
       }
     }
   },
-  "supportManuallyDeviceCreation": "true",
+  "supportManuallyDeviceCreation": true,
   "deviceConfiguration": {
     "staticConfigurationSchema": {
       "schemas": {
         "blyssDevice": {
           "types": {
             "blyss": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -247,8 +247,8 @@
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "5"
+              "minimumValue": 1,
+              "maximumValue": 5
             },
             "burst": {
               "type": "int"
@@ -258,19 +258,19 @@
         "simpleDevice": {
           "types": {
             "x10": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "chacon": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "domia": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "kd101": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "parrot": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -285,7 +285,7 @@
         "visonicDevice": {
           "types": {
             "visonic": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -311,19 +311,19 @@
         "x2dDevice": {
           "types": {
             "x2dAlarm433": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "x2dAlarm868": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "x2dShutter": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "x2dElec": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "x2dGas": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -341,7 +341,7 @@
         "genericDevice": {
           "types": {
             "rts": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -366,8 +366,8 @@
                     },
                     "unitCode": {
                       "type": "int",
-                      "minimumValue": "1",
-                      "maximumValue": "15"
+                      "minimumValue": 1,
+                      "maximumValue": 15
                     }
                   }
                 }

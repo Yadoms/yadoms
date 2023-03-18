@@ -27,7 +27,7 @@
          "type": "list",
          "nbItemsMin": "1",
          "nbItemsMax": "3",
-         "allowDuplication": "false",
+         "allowDuplication": false,
          "item": {
             "type": "section",
             "content": {
