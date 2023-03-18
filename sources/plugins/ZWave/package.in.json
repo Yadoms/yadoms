@@ -25,7 +25,7 @@
       "defaultValue": false
     },
     "initTimeout": {
-      "type": "numeric",
+      "type": "int",
       "defaultValue": 0
     }
   },
@@ -40,7 +40,7 @@
       "iconClass": "fa fa-check",
       "commandData": {
         "frameCount": {
-          "type": "numeric"
+          "type": "int"
         }
       }
 
