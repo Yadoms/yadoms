@@ -507,6 +507,7 @@ namespace web
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/serial-ports", getSerialPortsV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/usb-devices", getUsbDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/network-interfaces", getNetworkInterfacesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, m_restKeyword + "/binding", getBindingV2));
 
             return m_endPoints;
          }
@@ -573,39 +574,43 @@ namespace web
             }
          }
 
+         std::vector<std::string> CSystem::getSupportedTimezonesV2(std::unique_ptr<std::set<std::string>> filters) const
+         {
+            const auto& supportedTimezones = m_timezoneDatabase->allIds();
+
+            if (supportedTimezones.empty())
+               return {};
+
+            if (filters->empty())
+               return supportedTimezones;
+
+            std::vector<std::string> result;
+            for (const auto& timezone : supportedTimezones)
+            {
+               for (const auto& filterValue : *filters)
+               {
+                  if (timezone.find(filterValue) == std::string::npos)
+                     continue;
+
+                  result.push_back(timezone);
+                  break; // Don't add twice
+               }
+            }
+
+            return result;
+         }
+
          boost::shared_ptr<IAnswer> CSystem::getSupportedTimezonesV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
-               const auto& supportedTimezones = m_timezoneDatabase->allIds();
+               const auto supportedTimezones = getSupportedTimezonesV2(request->queryParamAsList("filter"));
 
                if (supportedTimezones.empty())
                   return boost::make_shared<CNoContentAnswer>();
 
-               const auto filters = request->queryParamAsList("filter");
-
-               if (filters->empty())
-               {
-                  shared::CDataContainer container;
-                  container.set("supportedTimezones", supportedTimezones);
-                  return boost::make_shared<CSuccessAnswer>(container);
-               }
-
-               std::vector<std::string> result;
-               for (const auto& timezone : supportedTimezones)
-               {
-                  for (const auto& filterValue : *filters)
-                  {
-                     if (timezone.find(filterValue) == std::string::npos)
-                        continue;
-
-                     result.push_back(timezone);
-                     break; // Don't add twice
-                  }
-               }
-
                shared::CDataContainer container;
-               container.set("supportedTimezones", result);
+               container.set("supportedTimezones", supportedTimezones);
                return boost::make_shared<CSuccessAnswer>(container);
             }
             catch (const std::exception&)
@@ -670,19 +675,27 @@ namespace web
             }
          }
 
+         boost::shared_ptr<shared::CDataContainer> CSystem::getSerialPortsV2() const
+         {
+            const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
+
+            auto result = shared::CDataContainer::make();
+            for (const auto& serialPort : *serialPorts)
+               //in case of key contains a dot, just ensure the full key is taken into account
+               result->set(serialPort.first, serialPort.second, 0x00);
+
+            return result;
+         }
+
          boost::shared_ptr<IAnswer> CSystem::getSerialPortsV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
                YADOMS_LOG(debug) << "List serial ports...";
-               const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
 
-               shared::CDataContainer result;
-               for (const auto& serialPort : *serialPorts)
-                  //in case of key contains a dot, just ensure the full key is taken into account
-                  result.set(serialPort.first, serialPort.second, 0x00);
+               const auto result = getSerialPorts();
 
-               if (result.empty())
+               if (result->empty())
                   return boost::make_shared<CNoContentAnswer>();
 
                shared::CDataContainer container;
@@ -740,26 +753,34 @@ namespace web
             }
          }
 
+         boost::shared_ptr<shared::CDataContainer> CSystem::getNetworkInterfacesV2(bool includeLoopback) const
+         {
+            const auto networkInterfaces = Poco::Net::NetworkInterface::list();
+
+            auto result = shared::CDataContainer::make();
+            for (const auto& nit : networkInterfaces)
+            {
+               if (nit.address().isLoopback() && !includeLoopback)
+                  continue;
+
+               //in case of key contains a dot, just ensure the full key is taken into account
+               result->set(nit.name(),
+                           (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
+                           0x00);
+            }
+
+            return result;
+         }
+
          boost::shared_ptr<IAnswer> CSystem::getNetworkInterfacesV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
                const auto includeLoopback = request->queryParamExists("withLoopback");
 
-               shared::CDataContainer result;
-               const auto networkInterfaces = Poco::Net::NetworkInterface::list();
-               for (const auto& nit : networkInterfaces)
-               {
-                  if (nit.address().isLoopback() && !includeLoopback)
-                     continue;
+               const auto result = getNetworkInterfacesV2(includeLoopback);
 
-                  //in case of key contains a dot, just ensure the full key is taken into account
-                  result.set(nit.name(),
-                             (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
-                             0x00);
-               }
-
-               if (result.empty())
+               if (result->empty())
                   return boost::make_shared<CNoContentAnswer>();
 
                shared::CDataContainer container;
@@ -770,6 +791,41 @@ namespace web
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get network interfaces");
+            }
+         }
+
+         boost::shared_ptr<IAnswer> CSystem::getBindingV2(const boost::shared_ptr<IRequest>& request) const
+         {
+            try
+            {
+               // Get requested props
+               const auto queries = request->queryParamAsList("queries");
+
+               shared::CDataContainer result;
+
+               if (queries->empty() || queries->find("serialPorts") != queries->end())
+                  result.set("serialPorts", getSerialPortsV2());
+               if (queries->empty() || queries->find("usbDevices") != queries->end())
+                  result.set("usbDevices", getUsbDevicesV2(std::vector<std::pair<int, int>>()));
+               if (queries->empty() || queries->find("NetworkInterfaces") != queries->end())
+                  result.set("NetworkInterfaces", getNetworkInterfacesV2(false));
+               if (queries->empty() || queries->find("NetworkInterfacesWithoutLoopback") != queries->end())
+                  result.set("NetworkInterfacesWithoutLoopback", getNetworkInterfacesV2(true));
+               if (queries->empty() || queries->find("platformIsWindows") != queries->end())
+                  result.set("platformIsWindows", tools::COperatingSystem::getName() == "windows");
+               if (queries->empty() || queries->find("platformIsLinux") != queries->end())
+                  result.set("platformIsLinux", tools::COperatingSystem::getName() == "linux");
+               if (queries->empty() || queries->find("platformIsMac") != queries->end())
+                  result.set("platformIsMac", tools::COperatingSystem::getName() == "mac");
+               if (queries->empty() || queries->find("supportedTimezones") != queries->end())
+                  result.set("supportedTimezones", getSupportedTimezonesV2(std::make_unique<std::set<std::string>>()));
+
+               return boost::make_shared<CSuccessAnswer>(result);
+            }
+            catch (const std::exception&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                       "Fail to get binding queries");
             }
          }
       } //namespace service

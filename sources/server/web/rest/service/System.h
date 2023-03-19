@@ -46,13 +46,17 @@ namespace web
          private:
             boost::shared_ptr<IAnswer> getSystemInformationV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> getCurrentTimeV2(const boost::shared_ptr<IRequest>& request) const;
+            std::vector<std::string> getSupportedTimezonesV2(std::unique_ptr<std::set<std::string>> filters) const;
             boost::shared_ptr<IAnswer> getSupportedTimezonesV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> getVirtualDevicesSupportedCapacitiesV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<shared::CDataContainer> getSerialPorts() const;
             boost::shared_ptr<IAnswer> getSerialPortsV2(const boost::shared_ptr<IRequest>& request) const;
             boost::shared_ptr<IAnswer> getUsbDevicesV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<shared::CDataContainer> getNetworkInterfacesV2(bool includeLoopback) const;
             boost::shared_ptr<IAnswer> getNetworkInterfacesV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getBindingV2(const boost::shared_ptr<IRequest>& request) const;
 
-            boost::shared_ptr<shared::CDataContainer> getSerialPorts() const;
+            boost::shared_ptr<shared::CDataContainer> getSerialPortsV2() const;
             static std::vector<std::pair<int, int>> toPairsVector(const std::unique_ptr<std::set<std::string>>& vidPidList);
             boost::shared_ptr<shared::serialization::IDataSerializable> getUsbDevices(const std::string& requestContent) const;
             boost::shared_ptr<shared::CDataContainer> getUsbDevicesV2(const std::vector<std::pair<int, int>>& requestedUsbDevices) const;
