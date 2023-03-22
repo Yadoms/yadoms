@@ -273,10 +273,10 @@ namespace pluginSystem
       }
    }
 
-   std::vector<boost::shared_ptr<database::entities::CPlugin>> CManager::getInstanceList() const
+   std::vector<boost::shared_ptr<database::entities::CPlugin>> CManager::getInstanceList(bool systemPluginIncluded) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-      return m_pluginDbTable->getInstances();
+      return m_pluginDbTable->getInstances(systemPluginIncluded);
    }
 
    boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int id) const

@@ -28,7 +28,7 @@ namespace database
             void removeInstance(int pluginId) override;
             boost::shared_ptr<entities::CPlugin> getInstance(int pluginId) override;
             boost::shared_ptr<entities::CPlugin> getSystemInstance() override;
-            std::vector<boost::shared_ptr<entities::CPlugin>> getInstances() override;
+            std::vector<boost::shared_ptr<entities::CPlugin>> getInstances(bool systemPluginIncluded) override;
             void updateInstance(const entities::CPlugin& newPlugin) override;
             void disableAutoStartForAllPluginInstances(const std::string& pluginName) override;
             // [END] IPluginRequester implementation

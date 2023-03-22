@@ -165,7 +165,7 @@ namespace web
                const auto id = request->pathVariable("id", std::string());
                std::vector<boost::shared_ptr<database::entities::CPlugin>> instances;
                if (id.empty())
-                  instances = m_pluginManager->getInstanceList();
+                  instances = m_pluginManager->getInstanceList(false);
                else
                   instances.push_back(m_pluginManager->getInstance(static_cast<int>(std::stol(id))));
 

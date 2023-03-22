@@ -104,9 +104,10 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief           Get the plugin instances list
+      /// \param [in] systemPluginIncluded Include system internal plugin in answer
       /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<database::entities::CPlugin>> getInstanceList() const;
+      std::vector<boost::shared_ptr<database::entities::CPlugin>> getInstanceList(bool systemPluginIncluded = false) const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration

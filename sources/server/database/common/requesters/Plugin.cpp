@@ -24,11 +24,12 @@ namespace database
          {
             const auto qInsert = m_databaseRequester->newQuery();
 
-            qInsert->InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getConfigurationColumnName(), CPluginTable::getAutoStartColumnName()).
-               Values(newPlugin.DisplayName(),
-                      newPlugin.Type(),
-                      newPlugin.Configuration(),
-                      newPlugin.AutoStart());
+            qInsert->InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(),
+                                CPluginTable::getConfigurationColumnName(), CPluginTable::getAutoStartColumnName()).
+                     Values(newPlugin.DisplayName(),
+                            newPlugin.Type(),
+                            newPlugin.Configuration(),
+                            newPlugin.AutoStart());
 
             if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                throw shared::exception::CEmptyResult("No lines affected");
@@ -36,10 +37,10 @@ namespace database
 
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CPluginTable::getIdColumnName()).
-               From(CPluginTable::getTableName()).
-               Where(CPluginTable::getDisplayNameColumnName(), CQUERY_OP_EQUAL, newPlugin.DisplayName()).
-               And(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, newPlugin.Type()).
-               OrderBy(CPluginTable::getIdColumnName(), CQuery::kDesc);
+                     From(CPluginTable::getTableName()).
+                     Where(CPluginTable::getDisplayNameColumnName(), CQUERY_OP_EQUAL, newPlugin.DisplayName()).
+                     And(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, newPlugin.Type()).
+                     OrderBy(CPluginTable::getIdColumnName(), CQuery::kDesc);
 
             adapters::CSingleValueAdapter<int> adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -56,8 +57,8 @@ namespace database
             const auto qSelect = m_databaseRequester->newQuery();
 
             qSelect->Select().
-               From(CPluginTable::getTableName()).
-               Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
+                     From(CPluginTable::getTableName()).
+                     Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
 
             m_databaseRequester->queryEntities(&adapter, *qSelect);
             if (adapter.getResults().empty())
@@ -73,8 +74,8 @@ namespace database
             const auto qSelect = m_databaseRequester->newQuery();
 
             qSelect->Select().
-               From(CPluginTable::getTableName()).
-               Where(CPluginTable::getCategoryColumnName(), CQUERY_OP_EQUAL, entities::EPluginCategory::kSystem);
+                     From(CPluginTable::getTableName()).
+                     Where(CPluginTable::getCategoryColumnName(), CQUERY_OP_EQUAL, entities::EPluginCategory::kSystem);
 
             m_databaseRequester->queryEntities(&adapter, *qSelect);
             if (adapter.getResults().empty())
@@ -86,12 +87,14 @@ namespace database
          }
 
 
-         std::vector<boost::shared_ptr<entities::CPlugin>> CPlugin::getInstances()
+         std::vector<boost::shared_ptr<entities::CPlugin>> CPlugin::getInstances(bool systemPluginIncluded)
          {
             adapters::CPluginAdapter adapter;
 
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().From(CPluginTable::getTableName());
+            if (!systemPluginIncluded)
+               qSelect->Where(CPluginTable::getCategoryColumnName(), CQUERY_OP_NOT_EQUAL, entities::EPluginCategory::kSystem);
 
             m_databaseRequester->queryEntities(&adapter, *qSelect);
             return adapter.getResults();
@@ -108,8 +111,8 @@ namespace database
             if (updatedPluginData.DisplayName.isDefined())
             {
                qUpdate->Clear().Update(CPluginTable::getTableName()).
-                  Set(CPluginTable::getDisplayNameColumnName(), updatedPluginData.DisplayName()).
-                  Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
+                        Set(CPluginTable::getDisplayNameColumnName(), updatedPluginData.DisplayName()).
+                        Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
                if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update name");
@@ -119,8 +122,8 @@ namespace database
             if (updatedPluginData.Configuration.isDefined())
             {
                qUpdate->Clear().Update(CPluginTable::getTableName()).
-                  Set(CPluginTable::getConfigurationColumnName(), updatedPluginData.Configuration()).
-                  Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
+                        Set(CPluginTable::getConfigurationColumnName(), updatedPluginData.Configuration()).
+                        Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
                if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update configuration");
@@ -130,8 +133,8 @@ namespace database
             if (updatedPluginData.AutoStart.isDefined())
             {
                qUpdate->Clear().Update(CPluginTable::getTableName()).
-                  Set(CPluginTable::getAutoStartColumnName(), updatedPluginData.AutoStart()).
-                  Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
+                        Set(CPluginTable::getAutoStartColumnName(), updatedPluginData.AutoStart()).
+                        Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
                if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update enabled field");
@@ -142,7 +145,7 @@ namespace database
          {
             const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->DeleteFrom(CPluginTable::getTableName()).
-               Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
+                     Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
 
             if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                throw shared::exception::CEmptyResult("No lines affected");
@@ -152,8 +155,8 @@ namespace database
          {
             const auto qUpdate = m_databaseRequester->newQuery();
             qUpdate->Update(CPluginTable::getTableName()).
-               Set(CPluginTable::getAutoStartColumnName(), false).
-               Where(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, pluginName);
+                     Set(CPluginTable::getAutoStartColumnName(), false).
+                     Where(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, pluginName);
 
             m_databaseRequester->queryStatement(*qUpdate);
          }
@@ -162,5 +165,3 @@ namespace database
       } //namespace requesters
    } //namespace common
 } //namespace database 
-
-
