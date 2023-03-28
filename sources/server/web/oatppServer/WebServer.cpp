@@ -5,6 +5,7 @@
 #include <oatpp/core/macro/component.hpp>
 #include <oatpp/network/Server.hpp>
 #include <oatpp/network/tcp/server/ConnectionProvider.hpp>
+#include <oatpp/web/server/interceptor/AllowCorsGlobal.hpp>
 #include <oatpp/web/server/HttpConnectionHandler.hpp>
 #include <oatpp/web/server/HttpRouter.hpp>
 #include <oatpp-websocket/Handshaker.hpp>
@@ -46,6 +47,14 @@ namespace web
          m_httpConnectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(httpRouter);
 
          m_httpConnectionHandler->setErrorHandler(std::make_shared<CErrorHandler>());
+
+         // Add CORS-enabling interceptors
+         m_httpConnectionHandler->addRequestInterceptor(std::make_shared<oatpp::web::server::interceptor::AllowOptionsGlobal>());
+         m_httpConnectionHandler->addResponseInterceptor(std::make_shared<oatpp::web::server::interceptor::AllowCorsGlobal>(
+            "*",
+            "GET, POST, OPTIONS, PATCH",
+            "DNT, User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Type, Range, Authorization",
+            "1728000"));
 
          if (useHttps)
          {

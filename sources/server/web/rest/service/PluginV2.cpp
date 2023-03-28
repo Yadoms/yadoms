@@ -6,6 +6,7 @@
 #include "communication/callback/SynchronousCallback.h"
 #include "pluginSystem/BindingQueryData.h"
 #include "pluginSystem/ExtraQueryData.h"
+#include "shared/exception/EmptyResult.hpp"
 #include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
@@ -294,6 +295,11 @@ namespace web
                m_pluginManager->updateInstance(instanceToUpdate);
 
                return boost::make_shared<CNoContentAnswer>();
+            }
+            catch (const shared::exception::CEmptyResult&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                       "Fail to update plugin instance : instance not found");
             }
             catch (const std::exception&)
             {
