@@ -450,57 +450,10 @@ namespace shared
       return result;
    }
 
-   void CDataContainer::replaceAllKeysInternal(
+   void CDataContainer::replaceAllNodesByNameInternal(
       rapidjson::Value& root,
       const std::string& subkeyName,
       std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction,
-      rapidjson::Document::AllocatorType& allocator)
-   {
-      for (auto node = root.MemberBegin(); node != root.MemberEnd(); ++node)
-      {
-         if (node->name == subkeyName)
-         {
-            const auto newValue = onReplaceFunction(make(node->value));
-
-            if (newValue == nullptr)
-               continue;
-
-            //make local Values (which are copies of key and value)
-            //-> ensure data is correctly copied (AddMember takes key and value ownership to dstObject)
-            rapidjson::Value key;
-            key.CopyFrom(node->name, allocator);
-
-            rapidjson::Value val;
-            val.CopyFrom(newValue->m_tree, allocator);
-
-            root.RemoveMember(node->name);
-            root.AddMember(key, val, allocator);
-         }
-         else if (node->value.IsArray())
-         {
-            for (auto arrayIt = node->value.Begin(); arrayIt != node->value.End(); ++arrayIt)
-            {
-               replaceAllKeysInternal(*arrayIt, subkeyName, onReplaceFunction, allocator);
-            }
-         }
-         else if (node->value.IsObject())
-         {
-            replaceAllKeysInternal(node->value, subkeyName, onReplaceFunction, allocator);
-         }
-      }
-   }
-
-   void CDataContainer::replaceAllKeys(const std::string& subkeyName,
-                                       std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction)
-   {
-      auto& allocator = m_tree.GetAllocator();
-      replaceAllKeysInternal(m_tree, subkeyName, onReplaceFunction, allocator);
-   }
-
-   void CDataContainer::replaceAllKeysInternal(
-      rapidjson::Value& root,
-      const std::string& subkeyName,
-      std::function<boost::shared_ptr<const std::map<std::string, std::string>>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction,
       rapidjson::Document::AllocatorType& allocator)
    {
       const auto memberIterator = root.FindMember(subkeyName);
@@ -511,13 +464,7 @@ namespace shared
             return;
 
          root.RemoveMember(memberIterator);
-         for (const auto& item : *newValues)
-         {
-            rapidjson::Value key, value;
-            key.SetString(item.first, allocator);
-            value.SetString(item.second, allocator);
-            root.AddMember(key, value, allocator);
-         }
+         mergeObjects(root, newValues->m_tree, allocator);
       }
       else
       {
@@ -526,55 +473,22 @@ namespace shared
             if (node->value.IsArray())
             {
                for (auto arrayIt = node->value.Begin(); arrayIt != node->value.End(); ++arrayIt)
-                  replaceAllKeysInternal(*arrayIt, subkeyName, onReplaceFunction, allocator);
+                  replaceAllNodesByNameInternal(*arrayIt, subkeyName, onReplaceFunction, allocator);
             }
             else if (node->value.IsObject())
             {
-               replaceAllKeysInternal(node->value, subkeyName, onReplaceFunction, allocator);
+               replaceAllNodesByNameInternal(node->value, subkeyName, onReplaceFunction, allocator);
             }
          }
       }
-      //for (auto node = root.MemberBegin(); node != root.MemberEnd(); ++node)
-      //{
-      //   if (node->name == subkeyName)
-      //   {
-      //      root.RemoveMember(node->name);
-
-      //      const auto newValues = onReplaceFunction(make(node->value));
-
-      //      if (newValues == nullptr)
-      //         continue;
-
-      //      for (const auto& item : *newValues)
-      //      {
-      //         rapidjson::Value key, value;
-      //         key.SetString(item.first, allocator);
-      //         value.SetString(item.second, allocator);
-      //         root.AddMember(key, value, allocator);
-      //      }
-
-      //      return;
-      //   }
-
-      //   if (node->value.IsArray())
-      //   {
-      //      for (auto arrayIt = node->value.Begin(); arrayIt != node->value.End(); ++arrayIt)
-      //         replaceAllKeysInternal(*arrayIt, subkeyName, onReplaceFunction, allocator);
-      //   }
-      //   else if (node->value.IsObject())
-      //   {
-      //      replaceAllKeysInternal(node->value, subkeyName, onReplaceFunction, allocator);
-      //   }
-      //}
    }
 
-   void CDataContainer::replaceAllKeys(const std::string& subkeyName,
-                                       std::function<boost::shared_ptr<const std::map<std::string, std::string>>(
-                                          boost::shared_ptr<const CDataContainer>)>
-                                       onReplaceFunction)
+   void CDataContainer::replaceAllNodesByName(
+      const std::string& subkeyName,
+      std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction)
    {
       auto& allocator = m_tree.GetAllocator();
-      replaceAllKeysInternal(m_tree, subkeyName, onReplaceFunction, allocator);
+      replaceAllNodesByNameInternal(m_tree, subkeyName, onReplaceFunction, allocator);
    }
 
    rapidjson::Value* CDataContainer::findValue(const std::string& parameterName, const char pathChar) const

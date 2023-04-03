@@ -101,12 +101,25 @@ namespace web
          static boost::shared_ptr<IAnswer> getLongRunningOperationAnswer(boost::shared_ptr<task::IInstance> task,
                                                                          boost::shared_ptr<shared::CDataContainer> taskEntry = nullptr);
 
-         static boost::shared_ptr<shared::CDataContainer> getSerialPortsV2();
-         static boost::shared_ptr<shared::CDataContainer> getUsbDevicesV2(const std::vector<std::pair<int, int>>& requestedUsbDevices,
-                                                                          boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister);
-         static boost::shared_ptr<shared::CDataContainer> getNetworkInterfacesV2(bool includeLoopback);
-         static std::vector<std::string> getSupportedTimezonesV2(std::unique_ptr<std::set<std::string>> filters,
-                                                                 boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase);
+         //-----------------------------------------
+         ///\brief         List serial ports
+         /// \return The serial ports as map<portSystemPath, portName>
+         //-----------------------------------------
+         [[nodiscard]] static boost::shared_ptr<shared::CDataContainer> getSerialPortsV2();
+
+         //-----------------------------------------
+         ///\brief         List USB devices
+         /// \param[in] requestedUsbDevices Filter on USB devices (vector<vendorId, productId>). Return all devices if empty.
+         /// \param[in] usbDevicesLister Lister of USB devices connected to system
+         /// \return The USB devices as map<deviceSystemPath, deviceName>
+         //-----------------------------------------
+         [[nodiscard]] static boost::shared_ptr<shared::CDataContainer> getUsbDevicesV2(
+            const std::vector<std::pair<int, int>>& requestedUsbDevices,
+            boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister);
+
+         [[nodiscard]] static boost::shared_ptr<shared::CDataContainer> getNetworkInterfacesV2(bool includeLoopback);
+         [[nodiscard]] static std::vector<std::string> getSupportedTimezonesV2(std::unique_ptr<std::set<std::string>> filters,
+                                                                               boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase);
       };
    } //namespace rest
 } //namespace web 

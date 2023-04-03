@@ -483,11 +483,8 @@ namespace shared
       /// \param [in] subkeyName       Name of the subkey
       /// \param [in] onReplaceFunction   Function called for each subkey found (return null if no change needs to be done)
       //--------------------------------------------------------------
-      void replaceAllKeys(const std::string& subkeyName,
-                          std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction);
-      void replaceAllKeys(const std::string& subkeyName, //TODO sortir de cette classe ?
-                          std::function<boost::shared_ptr<const std::map<std::string, std::string>>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction);
-
+      void replaceAllNodesByName(const std::string& subkeyName,
+                                 std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction);
 
       //--------------------------------------------------------------
       /// \brief	    Find a sub-parameter with criteria
@@ -1526,15 +1523,10 @@ namespace shared
       //--------------------------------------------------------------
       static std::string generatePath(const std::string& parameterName, char pathChar);
 
-      void replaceAllKeysInternal(
+      void replaceAllNodesByNameInternal(
          rapidjson::Value& root,
          const std::string& subkeyName,
          std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction,
-         rapidjson::Document::AllocatorType& allocator);
-      void replaceAllKeysInternal( //TODO sortir de la classe ?
-         rapidjson::Value& root,
-         const std::string& subkeyName,
-         std::function<boost::shared_ptr<const std::map<std::string, std::string>>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction,
          rapidjson::Document::AllocatorType& allocator);
 
       //--------------------------------------------------------------

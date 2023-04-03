@@ -505,25 +505,30 @@ namespace web
             auto schema = pluginInformation->getConfigurationSchema()->copy();
 
             // Manage binding
-            schema->replaceAllKeys(
+            schema->replaceAllNodesByName(
                "__Binding__",
-               [this](boost::shared_ptr<const shared::CDataContainer> bindingNode)-> boost::shared_ptr<const std::map<std::string, std::string>>
+               [this](boost::shared_ptr<const shared::CDataContainer> bindingNode)-> boost::shared_ptr<shared::CDataContainer>
                {
                   if (bindingNode->get<std::string>("type") != "system")
                      return nullptr;
 
                   const auto query = bindingNode->get<std::string>("query");
 
-                  const auto s = CHelpers::getSerialPortsV2()->serialize();
-
                   if (query == "serialPorts")
-                     return hardware::serial::CSerialPortsLister::listSerialPorts();
+                     return CHelpers::getSerialPortsV2();
                   if (query == "usbDevices")
-                     return boost::make_shared<std::map<std::string, std::string>>(
-                        CHelpers::getUsbDevicesV2(std::vector<std::pair<int, int>>(), m_usbDevicesLister)->getAsMap<std::string>());
-                  //if (queries->empty() || queries->find("usbDevices") != queries->end())
-                  //   result.set("usbDevices", CHelpers::getUsbDevicesV2(std::vector<std::pair<int, int>>(),
-                  //                                                      m_usbDevicesLister));
+                  {
+                     std::vector<std::pair<int, int>> requestedUsbDevices;
+                     for (const auto& requestedDevice : bindingNode->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("content.oneOf"))
+                        requestedUsbDevices.emplace_back(std::make_pair(requestedDevice->get<int>("vendorId"),
+                                                                        requestedDevice->get<int>("productId")));
+
+                     const auto result = CHelpers::getUsbDevicesV2(requestedUsbDevices,
+                                                                   m_usbDevicesLister);
+
+                     return CHelpers::getUsbDevicesV2(requestedUsbDevices,
+                                                      m_usbDevicesLister);
+                  }
                   //if (queries->empty() || queries->find("NetworkInterfaces") != queries->end())
                   //   result.set("NetworkInterfaces", CHelpers::getNetworkInterfacesV2(false));
                   //if (queries->empty() || queries->find("NetworkInterfacesWithoutLoopback") != queries->end())

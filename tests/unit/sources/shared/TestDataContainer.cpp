@@ -1929,100 +1929,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
 		//dc.printToLog(std::cout);
 	}
 
-	BOOST_AUTO_TEST_CASE(replaceAllKeysWithContainer)
-	{
-		const shared::CDataContainer initial(
-			"{"
-			"   \"developerMode\": true,"
-			"   \"location\":"
-			"   {"
-			"      \"latitude\": 52.5,"
-			"      \"longitude\": 2.35,"
-			"      \"timezone\": \"Europe/Paris\""
-			"   },"
-			"   \"language\": \"fr\","
-			"   \"newBloc\":"
-			"   {"
-			"      \"valueLevel1\": 1,"
-			"      \"level2\":"
-			"      {"
-			"         \"valueLevel2\": 2,"
-			"         \"level3\": "
-			"         {"
-			"            \"valueLevel3\": \"abc\","
-			"            \"timezone\": \"Europe/Paris\""
-			"         },"
-			"         \"array\": "
-			"         ["
-			"            {\"valueLevel3\": \"abc\"},"
-			"            {\"timezone\": \"Europe/Paris\"},"
-			"            {\"level4\": "
-			"               {"
-			"                  \"valueLevel4\": \"efg\","
-			"                  \"timezone\": \"Europe/Paris\""
-			"               }"
-			"            }"
-			"         ]"
-			"      }"
-			"   }"
-			"}");
-		const shared::CDataContainer expected(
-			"{"
-			"   \"developerMode\": true,"
-			"   \"location\":"
-			"   {"
-			"      \"latitude\": 52.5,"
-			"      \"longitude\": 2.35,"
-			"      \"timezone\": {\"first\": 1, \"second\": 2}"
-			"   },"
-			"   \"language\": \"fr\","
-			"   \"newBloc\":"
-			"   {"
-			"      \"valueLevel1\": 1,"
-			"      \"level2\":"
-			"      {"
-			"         \"valueLevel2\": 2,"
-			"         \"level3\": "
-			"         {"
-			"            \"valueLevel3\": \"abc\","
-			"            \"timezone\": {\"first\": 1, \"second\": 2}"
-			"         },"
-			"         \"array\": "
-			"         ["
-			"            {\"valueLevel3\": \"abc\"},"
-			"            {\"timezone\": {\"first\": 1, \"second\": 2}},"
-			"            {\"level4\": "
-			"               {"
-			"                  \"valueLevel4\": \"efg\","
-			"                  \"timezone\": {\"first\": 1, \"second\": 2}"
-			"               }"
-			"            }"
-			"         ]"
-			"      }"
-			"   }"
-			"}");
-
-		auto json = initial.copy();
-		json->replaceAllKeys("timezone", [](const auto nodeToReplace)
-		{
-			BOOST_CHECK_EQUAL(nodeToReplace->template get<std::string>(), "Europe/Paris");
-			return shared::CDataContainer::make(std::string("{\"first\":1, \"second\":2}"));
-		});
-
-		BOOST_CHECK_EQUAL(expected, *json);
-
-		// No replacement
-
-		json = initial.copy();
-		json->replaceAllKeys("timezone", [](const auto nodeToReplace)-> boost::shared_ptr<shared::CDataContainer>
-		{
-			return nullptr;
-		});
-
-		BOOST_CHECK_EQUAL(initial, *json);
-	}
-
-	BOOST_AUTO_TEST_CASE(replaceAllKeysWithMap)
+	BOOST_AUTO_TEST_CASE(ReplaceAllNodesByName)
 	{
 		const shared::CDataContainer initial(
 			"{"
@@ -2068,8 +1975,8 @@ BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
 			"   {"
 			"      \"latitude\": 52.5,"
 			"      \"longitude\": 2.35,"
-			"      \"first\": \"1\","
-			"      \"second\": \"2\""
+			"      \"first\": 1,"
+			"      \"second\": 2"
 			"   },"
 			"   \"language\": \"fr\","
 			"   \"newBloc\":"
@@ -2084,8 +1991,8 @@ BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
 			"            \"valueLevel3\": \"abc\","
 			"            \"valueLevel3.1\": \"abc\","
 			"            \"valueLevel3.2\": \"abc\","
-			"            \"first\": \"1\","
-			"            \"second\": \"2\""
+			"            \"first\": 1,"
+			"            \"second\": 2"
 			"         },"
 			"         \"array\": "
 			"         ["
@@ -2093,8 +2000,8 @@ BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
 			"            {\"level4\": "
 			"               {"
 			"                  \"valueLevel4\": \"efg\","
-			"                  \"first\": \"1\","
-			"                  \"second\": \"2\""
+			"                  \"first\": 1,"
+			"                  \"second\": 2"
 			"               }"
 			"            }"
 			"         ]"
@@ -2103,13 +2010,23 @@ BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
 			"}");
 
 		auto json = initial.copy();
-		json->replaceAllKeys("timezone", [](const auto nodeToReplace)-> boost::shared_ptr<std::map<std::string, std::string>>
+		json->replaceAllNodesByName("timezone", [](const auto nodeToReplace)
 		{
 			BOOST_CHECK_EQUAL(nodeToReplace->template get<std::string>(), "Europe/Paris");
-			return boost::make_shared<std::map<std::string, std::string>>(std::map<std::string, std::string>{{"first", "1"}, {"second", "2"}});
+			return shared::CDataContainer::make(std::string("{\"first\":1, \"second\":2}"));
 		});
 
 		BOOST_CHECK_EQUAL(expected, *json);
+
+		// No replacement
+
+		json = initial.copy();
+		json->replaceAllNodesByName("timezone", [](const auto nodeToReplace)-> boost::shared_ptr<shared::CDataContainer>
+		{
+			return nullptr;
+		});
+
+		BOOST_CHECK_EQUAL(initial, *json);
 	}
 
 BOOST_AUTO_TEST_SUITE_END()
