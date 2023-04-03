@@ -60,6 +60,9 @@ namespace pluginSystem
             m_supportDeviceRemovedNotification = m_package->get<bool>("supportDeviceRemovedNotification");
          else
             m_supportDeviceRemovedNotification = false;
+
+         if (m_package->containsChild("configurationSchema"))
+            m_configurationSchema = m_package->getChild("configurationSchema");
       }
       catch (shared::exception::CException& e)
       {
@@ -132,6 +135,11 @@ namespace pluginSystem
    bool CInformation::getSupportDeviceRemovedNotification() const
    {
       return m_supportDeviceRemovedNotification;
+   }
+
+   boost::shared_ptr<const shared::CDataContainer> CInformation::getConfigurationSchema() const
+   {
+      return m_configurationSchema;
    }
 
    boost::shared_ptr<const shared::CDataContainer> CInformation::getPackage() const

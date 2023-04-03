@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "Plugin.h"
 #include "RestEndPoint.h"
+#include "SerialPortsLister.h"
 #include "communication/callback/SynchronousCallback.h"
 #include "pluginSystem/BindingQueryData.h"
 #include "pluginSystem/ExtraQueryData.h"
@@ -64,7 +65,7 @@ namespace web
                                         ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("perPage"))))
                                         : boost::optional<int>();
                const auto firstItem = (page && pageSize) ? *page * *pageSize : 0u;
-               auto lastItem = 0u;
+               auto lastItem = 0;
 
                // Get requested props
                const auto props = request->queryParamAsList("prop");
@@ -96,8 +97,8 @@ namespace web
                      pluginEntry->set("supportManuallyCreatedDevice", plugin->getSupportManuallyCreatedDevice());
                   if (props->empty() || props->find("supportDeviceRemovedNotification") != props->end())
                      pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
-                  if (props->empty() || props->find("package") != props->end())
-                     pluginEntry->set("package", *plugin->getPackage());
+                  if (props->empty() || props->find("configurationSchema") != props->end())
+                     pluginEntry->set("configurationSchema", getPluginConfigurationSchema(plugin));
 
                   const auto requestedLocale = request->acceptLanguage();
                   if (!requestedLocale.empty())
@@ -142,7 +143,7 @@ namespace web
 
                boost::optional<CPaging> paging;
                if (page && pageSize)
-                  paging = CPaging(*page, (lastItem / *pageSize) + 1, *pageSize);
+                  paging = CPaging(*page, lastItem / *pageSize + 1, *pageSize);
 
 
                return CHelpers::formatGetMultiItemsAnswer(types->size() == 1,
@@ -197,7 +198,7 @@ namespace web
                                         ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("perPage"))))
                                         : boost::optional<int>();
                const auto firstItem = (page && pageSize) ? *page * *pageSize : 0u;
-               auto lastItem = 0u;
+               auto lastItem = 0;
 
                // Get requested props
                const auto props = request->queryParamAsList("prop");
@@ -239,7 +240,7 @@ namespace web
 
                boost::optional<CPaging> paging;
                if (page && pageSize)
-                  paging = CPaging(*page, (lastItem / *pageSize) + 1, *pageSize);
+                  paging = CPaging(*page, lastItem / *pageSize + 1, *pageSize);
 
 
                return CHelpers::formatGetMultiItemsAnswer(!id.empty(),
@@ -496,6 +497,51 @@ namespace web
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get available instances");
             }
+         }
+
+         boost::shared_ptr<shared::CDataContainer> CPlugin::getPluginConfigurationSchema(
+            const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation) const
+         {
+            auto schema = pluginInformation->getConfigurationSchema()->copy();
+
+            // Manage binding
+            schema->replaceAllKeys(
+               "__Binding__",
+               [this](boost::shared_ptr<const shared::CDataContainer> bindingNode)-> boost::shared_ptr<const std::map<std::string, std::string>>
+               {
+                  if (bindingNode->get<std::string>("type") != "system")
+                     return nullptr;
+
+                  const auto query = bindingNode->get<std::string>("query");
+
+                  const auto s = CHelpers::getSerialPortsV2()->serialize();
+
+                  if (query == "serialPorts")
+                     return hardware::serial::CSerialPortsLister::listSerialPorts();
+                  if (query == "usbDevices")
+                     return boost::make_shared<std::map<std::string, std::string>>(
+                        CHelpers::getUsbDevicesV2(std::vector<std::pair<int, int>>(), m_usbDevicesLister)->getAsMap<std::string>());
+                  //if (queries->empty() || queries->find("usbDevices") != queries->end())
+                  //   result.set("usbDevices", CHelpers::getUsbDevicesV2(std::vector<std::pair<int, int>>(),
+                  //                                                      m_usbDevicesLister));
+                  //if (queries->empty() || queries->find("NetworkInterfaces") != queries->end())
+                  //   result.set("NetworkInterfaces", CHelpers::getNetworkInterfacesV2(false));
+                  //if (queries->empty() || queries->find("NetworkInterfacesWithoutLoopback") != queries->end())
+                  //   result.set("NetworkInterfacesWithoutLoopback", CHelpers::getNetworkInterfacesV2(true));
+                  //if (queries->empty() || queries->find("platformIsWindows") != queries->end())
+                  //   result.set("platformIsWindows", tools::COperatingSystem::getName() == "windows");
+                  //if (queries->empty() || queries->find("platformIsLinux") != queries->end())
+                  //   result.set("platformIsLinux", tools::COperatingSystem::getName() == "linux");
+                  //if (queries->empty() || queries->find("platformIsMac") != queries->end())
+                  //   result.set("platformIsMac", tools::COperatingSystem::getName() == "mac");
+                  //if (queries->empty() || queries->find("supportedTimezones") != queries->end())
+                  //   result.set("supportedTimezones", CHelpers::getSupportedTimezonesV2(std::make_unique<std::set<std::string>>(),
+                  //                                                                      m_timezoneDatabase));
+                  return nullptr;
+               });
+
+
+            return schema;
          }
       } //namespace service
    } //namespace rest

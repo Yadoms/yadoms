@@ -83,6 +83,8 @@ void CSupervisor::run()
                                                                                     timezoneDatabase,
                                                                                     "Europe/Paris");
 
+      const auto usbDeviceListener = hardware::usb::CDevicesListerFactory::createDeviceLister();
+
       // Create Task manager
       auto taskManager(boost::make_shared<task::CScheduler>(dataAccessLayer->getEventLogger()));
 
@@ -132,6 +134,7 @@ void CSupervisor::run()
       restServices->push_back(boost::make_shared<web::rest::service::CPlugin>(dataProvider,
                                                                               pluginManager,
                                                                               dataAccessLayer->getDeviceManager(),
+                                                                              usbDeviceListener,
                                                                               taskManager,
                                                                               *pluginGateway,
                                                                               startupOptions->getDeveloperMode()));
@@ -151,7 +154,7 @@ void CSupervisor::run()
       restServices->push_back(boost::make_shared<web::rest::service::CPluginEventLogger>(dataProvider));
       restServices->push_back(boost::make_shared<web::rest::service::CEventLogger>(dataAccessLayer->getEventLogger()));
       restServices->push_back(boost::make_shared<web::rest::service::CSystem>(timezoneDatabase,
-                                                                              hardware::usb::CDevicesListerFactory::createDeviceLister(),
+                                                                              usbDeviceListener,
                                                                               dataProvider->getDatabaseRequester(),
                                                                               dataAccessLayer->getConfigurationManager()));
       restServices->push_back(boost::make_shared<web::rest::service::CAcquisition>(dataProvider));

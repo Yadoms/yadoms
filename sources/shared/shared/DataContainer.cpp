@@ -244,7 +244,7 @@ namespace shared
       return is;
    }
 
-   std::istream& operator>>(std::istream& is, boost::shared_ptr<CDataContainer>& dc)
+   std::istream& operator>>(std::istream& is, const boost::shared_ptr<CDataContainer>& dc)
    {
       boost::lock_guard<boost::mutex> lock(dc->m_treeMutex);
 
@@ -261,7 +261,7 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const rapidjson::Value* found = findValue(parameterName, pathChar);
       return (found != nullptr);
    }
 
@@ -269,7 +269,7 @@ namespace shared
    bool CDataContainer::containsChild(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const rapidjson::Value* found = findValue(parameterName, pathChar);
       if (found)
          return !found->IsNull() && found->IsObject();
       return false;
@@ -278,7 +278,7 @@ namespace shared
    bool CDataContainer::containsChildArray(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const rapidjson::Value* found = findValue(parameterName, pathChar);
       if (found)
          return !found->IsNull() && found->IsArray();
       return false;
@@ -288,7 +288,7 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const rapidjson::Value* found = findValue(parameterName, pathChar);
 
       if (found != nullptr && !found->IsNull())
       {
@@ -439,7 +439,7 @@ namespace shared
       return get<std::string>(parameterName, pathChar);
    }
 
-   std::vector<std::string> CDataContainer::getKeys(const std::string& parameterName, const char pathChar) const
+   std::vector<std::string> CDataContainer::getKeys(const std::string& parameterName, char pathChar) const
    {
       std::vector<std::string> result;
       rapidjson::Value* found = findValue(parameterName, pathChar);
@@ -448,6 +448,133 @@ namespace shared
             result.emplace_back(i->name.GetString());
 
       return result;
+   }
+
+   void CDataContainer::replaceAllKeysInternal(
+      rapidjson::Value& root,
+      const std::string& subkeyName,
+      std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction,
+      rapidjson::Document::AllocatorType& allocator)
+   {
+      for (auto node = root.MemberBegin(); node != root.MemberEnd(); ++node)
+      {
+         if (node->name == subkeyName)
+         {
+            const auto newValue = onReplaceFunction(make(node->value));
+
+            if (newValue == nullptr)
+               continue;
+
+            //make local Values (which are copies of key and value)
+            //-> ensure data is correctly copied (AddMember takes key and value ownership to dstObject)
+            rapidjson::Value key;
+            key.CopyFrom(node->name, allocator);
+
+            rapidjson::Value val;
+            val.CopyFrom(newValue->m_tree, allocator);
+
+            root.RemoveMember(node->name);
+            root.AddMember(key, val, allocator);
+         }
+         else if (node->value.IsArray())
+         {
+            for (auto arrayIt = node->value.Begin(); arrayIt != node->value.End(); ++arrayIt)
+            {
+               replaceAllKeysInternal(*arrayIt, subkeyName, onReplaceFunction, allocator);
+            }
+         }
+         else if (node->value.IsObject())
+         {
+            replaceAllKeysInternal(node->value, subkeyName, onReplaceFunction, allocator);
+         }
+      }
+   }
+
+   void CDataContainer::replaceAllKeys(const std::string& subkeyName,
+                                       std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction)
+   {
+      auto& allocator = m_tree.GetAllocator();
+      replaceAllKeysInternal(m_tree, subkeyName, onReplaceFunction, allocator);
+   }
+
+   void CDataContainer::replaceAllKeysInternal(
+      rapidjson::Value& root,
+      const std::string& subkeyName,
+      std::function<boost::shared_ptr<const std::map<std::string, std::string>>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction,
+      rapidjson::Document::AllocatorType& allocator)
+   {
+      const auto memberIterator = root.FindMember(subkeyName);
+      if (memberIterator != root.MemberEnd())
+      {
+         const auto newValues = onReplaceFunction(make(memberIterator->value));
+         if (newValues == nullptr)
+            return;
+
+         root.RemoveMember(memberIterator);
+         for (const auto& item : *newValues)
+         {
+            rapidjson::Value key, value;
+            key.SetString(item.first, allocator);
+            value.SetString(item.second, allocator);
+            root.AddMember(key, value, allocator);
+         }
+      }
+      else
+      {
+         for (auto node = root.MemberBegin(); node != root.MemberEnd(); ++node)
+         {
+            if (node->value.IsArray())
+            {
+               for (auto arrayIt = node->value.Begin(); arrayIt != node->value.End(); ++arrayIt)
+                  replaceAllKeysInternal(*arrayIt, subkeyName, onReplaceFunction, allocator);
+            }
+            else if (node->value.IsObject())
+            {
+               replaceAllKeysInternal(node->value, subkeyName, onReplaceFunction, allocator);
+            }
+         }
+      }
+      //for (auto node = root.MemberBegin(); node != root.MemberEnd(); ++node)
+      //{
+      //   if (node->name == subkeyName)
+      //   {
+      //      root.RemoveMember(node->name);
+
+      //      const auto newValues = onReplaceFunction(make(node->value));
+
+      //      if (newValues == nullptr)
+      //         continue;
+
+      //      for (const auto& item : *newValues)
+      //      {
+      //         rapidjson::Value key, value;
+      //         key.SetString(item.first, allocator);
+      //         value.SetString(item.second, allocator);
+      //         root.AddMember(key, value, allocator);
+      //      }
+
+      //      return;
+      //   }
+
+      //   if (node->value.IsArray())
+      //   {
+      //      for (auto arrayIt = node->value.Begin(); arrayIt != node->value.End(); ++arrayIt)
+      //         replaceAllKeysInternal(*arrayIt, subkeyName, onReplaceFunction, allocator);
+      //   }
+      //   else if (node->value.IsObject())
+      //   {
+      //      replaceAllKeysInternal(node->value, subkeyName, onReplaceFunction, allocator);
+      //   }
+      //}
+   }
+
+   void CDataContainer::replaceAllKeys(const std::string& subkeyName,
+                                       std::function<boost::shared_ptr<const std::map<std::string, std::string>>(
+                                          boost::shared_ptr<const CDataContainer>)>
+                                       onReplaceFunction)
+   {
+      auto& allocator = m_tree.GetAllocator();
+      replaceAllKeysInternal(m_tree, subkeyName, onReplaceFunction, allocator);
    }
 
    rapidjson::Value* CDataContainer::findValue(const std::string& parameterName, const char pathChar) const
@@ -465,7 +592,9 @@ namespace shared
    {
       for (const auto& key : getKeys(parameterName, pathChar))
       {
-         const auto path = parameterName + pathChar + key;
+         auto path = parameterName;
+         path += pathChar;
+         path += key;
          const auto container = get<CDataContainer>(path);
          if (whereFct(container))
          {
@@ -486,7 +615,7 @@ namespace shared
 
       const auto path = generatePath(parameterName, pathChar);
       const auto value = rapidjson::Pointer(path.c_str()).Get(m_tree);
-      
+
       if (value == nullptr && throwIfInvalid)
          throw exception::CInvalidParameter(parameterName + " : is not found");
 
@@ -532,7 +661,7 @@ namespace shared
                else
                {
                   //types don't match, try to make concordance
-                  switch (dstIt->value.GetType())
+                  switch (dstIt->value.GetType()) // NOLINT(clang-diagnostic-switch-enum)
                   {
                   case rapidjson::kFalseType:
                   case rapidjson::kTrueType:
@@ -654,7 +783,7 @@ namespace shared
    std::string CDataContainer::convertToString(const rapidjson::Value& v)
    {
       if (v.IsString())
-         return std::string(v.GetString());
+         return v.GetString();
 
       if (v.IsBool())
          return v.GetBool() ? "true" : "false";
@@ -666,15 +795,15 @@ namespace shared
       if (v.IsFloat())
          return boost::lexical_cast<std::string>(v.GetFloat());
       if (v.IsInt())
-         return boost::lexical_cast<std::string>(v.GetInt());
+         return std::to_string(v.GetInt());
       if (v.IsInt64())
-         return boost::lexical_cast<std::string>(v.GetInt64());
+         return std::to_string(v.GetInt64());
       if (v.IsTrue())
          return "true";
       if (v.IsUint())
-         return boost::lexical_cast<std::string>(v.GetUint());
+         return std::to_string(v.GetUint());
       if (v.IsUint64())
-         return boost::lexical_cast<std::string>(v.GetUint64());
+         return std::to_string(v.GetUint64());
 
       throw exception::CInvalidParameter("Value is not a valid type");
    }
@@ -689,7 +818,7 @@ namespace shared
       if (v.IsBool())
          return v.GetBool();
       if (v.IsDouble())
-         return v.GetDouble() != 0.0f;
+         return v.GetDouble() != 0.0l;
       if (v.IsFalse())
          return false;
       if (v.IsFloat())
@@ -887,7 +1016,7 @@ namespace shared
 
       if (v.IsString())
       {
-         std::string s = v.GetString();
+         const std::string s = v.GetString();
          return s[0];
       }
 
@@ -1332,13 +1461,13 @@ namespace shared
          return boost::lexical_cast<double>(s);
       }
       if (v.IsBool())
-         return v.GetBool() ? 1.0f : 0.0f;
+         return v.GetBool() ? 1.0 : 0.0;
 
       if (v.IsFalse())
-         return 0.0f;
+         return 0.0l;
 
       if (v.IsTrue())
-         return 1.0f;
+         return 1.0l;
 
       throw exception::CInvalidParameter("Value is not a valid type");
    }

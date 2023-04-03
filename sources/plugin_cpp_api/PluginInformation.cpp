@@ -5,13 +5,9 @@
 namespace plugin_cpp_api
 {
    CPluginInformation::CPluginInformation(boost::shared_ptr<const plugin_IPC::toPlugin::Information> buffer)
-      : m_buffer(buffer),
+      : m_buffer(std::move(buffer)),
         m_path(m_buffer->path()),
         m_version(m_buffer->version())
-   {
-   }
-
-   CPluginInformation::~CPluginInformation()
    {
    }
 
@@ -60,6 +56,14 @@ namespace plugin_cpp_api
       return m_buffer->supportdeviceremovednotification();
    }
 
+   boost::shared_ptr<const shared::CDataContainer> CPluginInformation::getConfigurationSchema() const
+   {
+      const auto package = getPackage();
+      if (package->containsChild("configurationSchema"))
+         return getPackage()->getChild("configurationSchema");
+      return shared::CDataContainer::EmptyContainerSharedPtr;
+   }
+
    boost::shared_ptr<const shared::CDataContainer> CPluginInformation::getPackage() const
    {
       return boost::make_shared<const shared::CDataContainer>(m_buffer->packagefilecontent());
@@ -70,5 +74,3 @@ namespace plugin_cpp_api
       return m_path;
    }
 } // namespace plugin_cpp_api	
-
-

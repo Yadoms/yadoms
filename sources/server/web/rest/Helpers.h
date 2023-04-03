@@ -3,6 +3,8 @@
 #include "IRequest.h"
 #include "Paging.h"
 #include "database/IDataProvider.h"
+#include "dateTime/TimeZoneDatabase.h"
+#include "hardware/usb/IDevicesLister.h"
 #include "shared/http/ssdp/Client.h"
 #include "task/IInstance.h"
 
@@ -98,6 +100,13 @@ namespace web
          //-----------------------------------------
          static boost::shared_ptr<IAnswer> getLongRunningOperationAnswer(boost::shared_ptr<task::IInstance> task,
                                                                          boost::shared_ptr<shared::CDataContainer> taskEntry = nullptr);
+
+         static boost::shared_ptr<shared::CDataContainer> getSerialPortsV2();
+         static boost::shared_ptr<shared::CDataContainer> getUsbDevicesV2(const std::vector<std::pair<int, int>>& requestedUsbDevices,
+                                                                          boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister);
+         static boost::shared_ptr<shared::CDataContainer> getNetworkInterfacesV2(bool includeLoopback);
+         static std::vector<std::string> getSupportedTimezonesV2(std::unique_ptr<std::set<std::string>> filters,
+                                                                 boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase);
       };
    } //namespace rest
 } //namespace web 

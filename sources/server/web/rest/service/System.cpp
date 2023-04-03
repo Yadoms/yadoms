@@ -18,6 +18,7 @@
 #include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/poco/RestResult.h"
 #include "web/rest/ErrorAnswer.h"
+#include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
 
@@ -59,7 +60,7 @@ namespace web
          {
             if (parameters.size() > 2)
             {
-               const auto query = parameters[2];
+               const auto& query = parameters[2];
 
                if (boost::iequals(query, "serialPorts"))
                   return getSerialPorts();
@@ -170,54 +171,6 @@ namespace web
             {
                return poco::CRestResult::GenerateError("unknown exception in retrieving filtered USB devices");
             }
-         }
-
-         boost::shared_ptr<shared::CDataContainer> CSystem::getUsbDevicesV2(const std::vector<std::pair<int, int>>& requestedUsbDevices) const
-         {
-            const auto existingDevices = m_usbDevicesLister->listUsbDevices();
-            YADOMS_LOG(debug) << "USB existing devices :";
-            for (const auto& device : existingDevices)
-            {
-               YADOMS_LOG(debug) << "  - "
-                  << "vid=" << device->vendorId()
-                  << ", pid=" << device->productId()
-                  << ", name=" << device->yadomsFriendlyName()
-                  << ", connectionId=" << device->nativeConnectionString()
-                  << ", serial=" << device->serialNumber();
-            }
-
-            // If request content is empty, return all existing USB devices
-            if (requestedUsbDevices.empty())
-            {
-               auto result = boost::make_shared<shared::CDataContainer>();
-               for (const auto& device : existingDevices)
-                  //in case of key contains a dot, just ensure the full key is taken into account
-                  result->set(device->nativeConnectionString(), device->yadomsFriendlyName(), 0x00);
-               return result;
-            }
-
-            // Filter USB devices by request content
-            auto result = boost::make_shared<shared::CDataContainer>();
-            YADOMS_LOG(debug) << "USB requested devices :";
-            for (const auto& usbDevice : requestedUsbDevices)
-            {
-               YADOMS_LOG(debug) << "  - "
-                  << "vid=" << usbDevice.first
-                  << ", pid=" << usbDevice.second;
-
-               for (const auto& existingDevice : existingDevices)
-               {
-                  if (existingDevice->vendorId() == usbDevice.first
-                     && existingDevice->productId() == usbDevice.second)
-                  {
-                     //in case of key contains a dot, just ensure the full key is taken into account
-                     result->set(existingDevice->nativeConnectionString(), existingDevice->yadomsFriendlyName(),
-                                 0x00);
-                  }
-               }
-            }
-
-            return result;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(
@@ -574,37 +527,12 @@ namespace web
             }
          }
 
-         std::vector<std::string> CSystem::getSupportedTimezonesV2(std::unique_ptr<std::set<std::string>> filters) const
-         {
-            const auto& supportedTimezones = m_timezoneDatabase->allIds();
-
-            if (supportedTimezones.empty())
-               return {};
-
-            if (filters->empty())
-               return supportedTimezones;
-
-            std::vector<std::string> result;
-            for (const auto& timezone : supportedTimezones)
-            {
-               for (const auto& filterValue : *filters)
-               {
-                  if (timezone.find(filterValue) == std::string::npos)
-                     continue;
-
-                  result.push_back(timezone);
-                  break; // Don't add twice
-               }
-            }
-
-            return result;
-         }
-
          boost::shared_ptr<IAnswer> CSystem::getSupportedTimezonesV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
-               const auto supportedTimezones = getSupportedTimezonesV2(request->queryParamAsList("filter"));
+               const auto supportedTimezones = CHelpers::getSupportedTimezonesV2(request->queryParamAsList("filter"),
+                                                                                 m_timezoneDatabase);
 
                if (supportedTimezones.empty())
                   return boost::make_shared<CNoContentAnswer>();
@@ -675,18 +603,6 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::CDataContainer> CSystem::getSerialPortsV2() const
-         {
-            const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
-
-            auto result = shared::CDataContainer::make();
-            for (const auto& serialPort : *serialPorts)
-               //in case of key contains a dot, just ensure the full key is taken into account
-               result->set(serialPort.first, serialPort.second, 0x00);
-
-            return result;
-         }
-
          boost::shared_ptr<IAnswer> CSystem::getSerialPortsV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
@@ -737,7 +653,9 @@ namespace web
             {
                const auto vidPidFilter = request->queryParamAsList("vid-pid");
 
-               const auto foundDevices = getUsbDevicesV2(vidPidFilter->empty() ? std::vector<std::pair<int, int>>() : toPairsVector(vidPidFilter));
+               const auto foundDevices = CHelpers::getUsbDevicesV2(
+                  vidPidFilter->empty() ? std::vector<std::pair<int, int>>() : toPairsVector(vidPidFilter),
+                  m_usbDevicesLister);
 
                if (foundDevices->empty())
                   return boost::make_shared<CNoContentAnswer>();
@@ -753,32 +671,13 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::CDataContainer> CSystem::getNetworkInterfacesV2(bool includeLoopback) const
-         {
-            const auto networkInterfaces = Poco::Net::NetworkInterface::list();
-
-            auto result = shared::CDataContainer::make();
-            for (const auto& nit : networkInterfaces)
-            {
-               if (nit.address().isLoopback() && !includeLoopback)
-                  continue;
-
-               //in case of key contains a dot, just ensure the full key is taken into account
-               result->set(nit.name(),
-                           (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
-                           0x00);
-            }
-
-            return result;
-         }
-
          boost::shared_ptr<IAnswer> CSystem::getNetworkInterfacesV2(const boost::shared_ptr<IRequest>& request) const
          {
             try
             {
                const auto includeLoopback = request->queryParamExists("withLoopback");
 
-               const auto result = getNetworkInterfacesV2(includeLoopback);
+               const auto result = CHelpers::getNetworkInterfacesV2(includeLoopback);
 
                if (result->empty())
                   return boost::make_shared<CNoContentAnswer>();
@@ -804,13 +703,14 @@ namespace web
                shared::CDataContainer result;
 
                if (queries->empty() || queries->find("serialPorts") != queries->end())
-                  result.set("serialPorts", getSerialPortsV2());
+                  result.set("serialPorts", CHelpers::getSerialPortsV2());
                if (queries->empty() || queries->find("usbDevices") != queries->end())
-                  result.set("usbDevices", getUsbDevicesV2(std::vector<std::pair<int, int>>()));
+                  result.set("usbDevices", CHelpers::getUsbDevicesV2(std::vector<std::pair<int, int>>(),
+                                                                     m_usbDevicesLister));
                if (queries->empty() || queries->find("NetworkInterfaces") != queries->end())
-                  result.set("NetworkInterfaces", getNetworkInterfacesV2(false));
+                  result.set("NetworkInterfaces", CHelpers::getNetworkInterfacesV2(false));
                if (queries->empty() || queries->find("NetworkInterfacesWithoutLoopback") != queries->end())
-                  result.set("NetworkInterfacesWithoutLoopback", getNetworkInterfacesV2(true));
+                  result.set("NetworkInterfacesWithoutLoopback", CHelpers::getNetworkInterfacesV2(true));
                if (queries->empty() || queries->find("platformIsWindows") != queries->end())
                   result.set("platformIsWindows", tools::COperatingSystem::getName() == "windows");
                if (queries->empty() || queries->find("platformIsLinux") != queries->end())
@@ -818,7 +718,8 @@ namespace web
                if (queries->empty() || queries->find("platformIsMac") != queries->end())
                   result.set("platformIsMac", tools::COperatingSystem::getName() == "mac");
                if (queries->empty() || queries->find("supportedTimezones") != queries->end())
-                  result.set("supportedTimezones", getSupportedTimezonesV2(std::make_unique<std::set<std::string>>()));
+                  result.set("supportedTimezones", CHelpers::getSupportedTimezonesV2(std::make_unique<std::set<std::string>>(),
+                                                                                     m_timezoneDatabase));
 
                return boost::make_shared<CSuccessAnswer>(result);
             }

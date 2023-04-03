@@ -75,6 +75,11 @@ namespace shared
             //--------------------------------------------------------------
             virtual bool getSupportDeviceRemovedNotification() const = 0;
 
+            //--------------------------------------------------------------
+            /// \brief	    Returns the plugin configuration schema
+            /// \return     The configuration schema
+            //--------------------------------------------------------------
+            virtual boost::shared_ptr<const CDataContainer> getConfigurationSchema() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    Provide the package.json content

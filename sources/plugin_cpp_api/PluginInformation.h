@@ -5,7 +5,7 @@
 
 namespace plugin_cpp_api
 {
-   class CPluginInformation :public shared::plugin::information::IInformation
+   class CPluginInformation final : public shared::plugin::information::IInformation
    {
    public:
       //--------------------------------------------------------------
@@ -14,7 +14,7 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       explicit CPluginInformation(boost::shared_ptr<const plugin_IPC::toPlugin::Information> buffer);
 
-      virtual ~CPluginInformation();
+      ~CPluginInformation() override = default;
 
       // shared::plugin::information::IInformation implementation
       const std::string& getType() const override;
@@ -26,6 +26,7 @@ namespace plugin_cpp_api
       bool isSupportedOnThisPlatform() const override;
       bool getSupportManuallyCreatedDevice() const override;
       bool getSupportDeviceRemovedNotification() const override;
+      boost::shared_ptr<const shared::CDataContainer> getConfigurationSchema() const override;
       boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
       const boost::filesystem::path& getPath() const override;
       // [END] shared::plugin::information::IInformation implementation
@@ -36,5 +37,3 @@ namespace plugin_cpp_api
       shared::versioning::CSemVer m_version;
    };
 } // namespace plugin_cpp_api	
-
-

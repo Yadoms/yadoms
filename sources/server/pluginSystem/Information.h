@@ -30,6 +30,7 @@ namespace pluginSystem
       bool isSupportedOnThisPlatform() const override;
       bool getSupportManuallyCreatedDevice() const override;
       bool getSupportDeviceRemovedNotification() const override;
+      boost::shared_ptr<const shared::CDataContainer> getConfigurationSchema() const override;
       boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
       const boost::filesystem::path& getPath() const override;
       // [END] shared::plugin::IInformation implementation
@@ -74,16 +75,20 @@ namespace pluginSystem
       /// \brief	    true if the plugin supports device removed notification
       //--------------------------------------------------------------
       bool m_supportDeviceRemovedNotification;
-      
+
       //--------------------------------------------------------------
       /// \brief	    Flag indicating if plugin is supported on this platform
       //--------------------------------------------------------------
       bool m_isSupportedOnThisPlatform;
 
       //--------------------------------------------------------------
+      /// \brief	    Configuration schema
+      //--------------------------------------------------------------
+      boost::shared_ptr<shared::CDataContainer> m_configurationSchema;
+
+      //--------------------------------------------------------------
       /// \brief	    Package.json content
       //--------------------------------------------------------------
       boost::shared_ptr<shared::CDataContainer> m_package;
    };
-
 } // namespace pluginSystem
