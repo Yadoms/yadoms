@@ -135,6 +135,7 @@ void CSupervisor::run()
                                                                               pluginManager,
                                                                               dataAccessLayer->getDeviceManager(),
                                                                               usbDeviceListener,
+                                                                              timezoneDatabase,
                                                                               taskManager,
                                                                               *pluginGateway,
                                                                               startupOptions->getDeveloperMode()));

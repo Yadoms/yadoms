@@ -3,11 +3,11 @@
 #include "stdafx.h"
 #include "Plugin.h"
 #include "RestEndPoint.h"
-#include "SerialPortsLister.h"
 #include "communication/callback/SynchronousCallback.h"
 #include "pluginSystem/BindingQueryData.h"
 #include "pluginSystem/ExtraQueryData.h"
 #include "shared/exception/EmptyResult.hpp"
+#include "tools/OperatingSystem.h"
 #include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
@@ -529,19 +529,46 @@ namespace web
                      return CHelpers::getUsbDevicesV2(requestedUsbDevices,
                                                       m_usbDevicesLister);
                   }
-                  //if (queries->empty() || queries->find("NetworkInterfaces") != queries->end())
-                  //   result.set("NetworkInterfaces", CHelpers::getNetworkInterfacesV2(false));
-                  //if (queries->empty() || queries->find("NetworkInterfacesWithoutLoopback") != queries->end())
-                  //   result.set("NetworkInterfacesWithoutLoopback", CHelpers::getNetworkInterfacesV2(true));
-                  //if (queries->empty() || queries->find("platformIsWindows") != queries->end())
-                  //   result.set("platformIsWindows", tools::COperatingSystem::getName() == "windows");
-                  //if (queries->empty() || queries->find("platformIsLinux") != queries->end())
-                  //   result.set("platformIsLinux", tools::COperatingSystem::getName() == "linux");
-                  //if (queries->empty() || queries->find("platformIsMac") != queries->end())
-                  //   result.set("platformIsMac", tools::COperatingSystem::getName() == "mac");
-                  //if (queries->empty() || queries->find("supportedTimezones") != queries->end())
-                  //   result.set("supportedTimezones", CHelpers::getSupportedTimezonesV2(std::make_unique<std::set<std::string>>(),
-                  //                                                                      m_timezoneDatabase));
+                  if (query == "NetworkInterfaces")
+                     return CHelpers::getNetworkInterfacesV2(false);
+                  if (query == "NetworkInterfacesWithoutLoopback")
+                     return CHelpers::getNetworkInterfacesV2(true);
+                  if (query == "platformIsWindows")
+                  {
+                     auto result = shared::CDataContainer::make();
+                     result->set(bindingNode->get<std::string>("key"),
+                                 tools::COperatingSystem::getName() == "windows");
+                     return result;
+                  }
+                  if (query == "platformIsLinux")
+                  {
+                     auto result = shared::CDataContainer::make();
+                     result->set(bindingNode->get<std::string>("key"),
+                                 tools::COperatingSystem::getName() == "linux");
+                     return result;
+                  }
+                  if (query == "platformIsMac")
+                  {
+                     auto result = shared::CDataContainer::make();
+                     result->set(bindingNode->get<std::string>("key"),
+                                 tools::COperatingSystem::getName() == "mac");
+                     return result;
+                  }
+                  if (query == "supportedTimezones")
+                  {
+                     std::set<std::string> filter;
+                     if (bindingNode->exists("filter"))
+                     {
+                        const auto requestedFilter = bindingNode->get<std::string>("filter");
+                        char separator = '|';
+                        for (const auto& t : boost::tokenizer<boost::char_separator<char>>(requestedFilter,
+                                                                                           boost::char_separator<char>(&separator)))
+                           filter.insert(t);
+                     }
+                     return CHelpers::getSupportedTimezonesV2(filter,
+                                                              m_timezoneDatabase);
+                  }
+
                   return nullptr;
                });
 

@@ -178,26 +178,30 @@ namespace web
          return result;
       }
 
-      std::vector<std::string> CHelpers::getSupportedTimezonesV2(std::unique_ptr<std::set<std::string>> filters,
-                                                                 boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase)
+      boost::shared_ptr<shared::CDataContainer> CHelpers::getSupportedTimezonesV2(const std::set<std::string>& filters,
+                                                                                  boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase)
       {
          const auto& supportedTimezones = timezoneDatabase->allIds();
 
          if (supportedTimezones.empty())
             return {};
 
-         if (filters->empty())
-            return supportedTimezones;
+         auto result = shared::CDataContainer::make();
+         if (filters.empty())
+         {
+            for (const auto& timezone : supportedTimezones)
+               result->set(timezone, timezone);
+            return result;
+         }
 
-         std::vector<std::string> result;
          for (const auto& timezone : supportedTimezones)
          {
-            for (const auto& filterValue : *filters)
+            for (const auto& filterValue : filters)
             {
                if (timezone.find(filterValue) == std::string::npos)
                   continue;
 
-               result.push_back(timezone);
+               result->set(timezone, timezone);
                break; // Don't add twice
             }
          }

@@ -21,6 +21,7 @@ namespace web
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
                           boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                           boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
+                          boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
                           boost::shared_ptr<task::CScheduler> taskScheduler,
                           communication::ISendMessageAsync& messageSender,
                           bool developerMode)
@@ -28,6 +29,7 @@ namespace web
               m_pluginManager(std::move(pluginManager)),
               m_deviceManager(std::move(deviceManager)),
               m_usbDevicesLister(std::move(usbDevicesLister)),
+              m_timezoneDatabase(std::move(timezoneDatabase)),
               m_taskScheduler(taskScheduler),
               m_restKeyword("plugin"),
               m_messageSender(messageSender),

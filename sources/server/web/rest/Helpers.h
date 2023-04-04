@@ -118,8 +118,9 @@ namespace web
             boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister);
 
          [[nodiscard]] static boost::shared_ptr<shared::CDataContainer> getNetworkInterfacesV2(bool includeLoopback);
-         [[nodiscard]] static std::vector<std::string> getSupportedTimezonesV2(std::unique_ptr<std::set<std::string>> filters,
-                                                                               boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase);
+         [[nodiscard]] static boost::shared_ptr<shared::CDataContainer> getSupportedTimezonesV2(
+            const std::set<std::string>& filters,
+            boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase);
       };
    } //namespace rest
 } //namespace web 

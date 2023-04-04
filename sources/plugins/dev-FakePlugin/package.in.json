@@ -49,11 +49,10 @@
     },
     "ConditionalParameter": {
       "type": "string",
-      "show": {
-        "__Binding__": {
-          "type": "system",
-          "query": "platformIsWindows"
-        }
+      "__Binding__": {
+        "type": "system",
+        "query": "platformIsWindows",
+        "key":  "show"  
       }
     },
     "SystemData": {
@@ -120,7 +119,8 @@
           "values": {
             "__Binding__": {
               "type": "system",
-              "query": "supportedTimezones"
+              "query": "supportedTimezones",
+              "filter": "Europe|Antarctica|Accra|Paris"
             }
           }
         }

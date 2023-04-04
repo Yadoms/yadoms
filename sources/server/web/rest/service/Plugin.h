@@ -4,6 +4,7 @@
 #include "database/IDataProvider.h"
 #include "pluginSystem/Manager.h"
 #include "communication/ISendMessageAsync.h"
+#include "dateTime/TimeZoneDatabase.h"
 #include "hardware/usb/IDevicesLister.h"
 
 namespace web
@@ -19,6 +20,7 @@ namespace web
                     boost::shared_ptr<pluginSystem::CManager> pluginManager,
                     boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                     boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
+                    boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
                     boost::shared_ptr<task::CScheduler> taskScheduler,
                     communication::ISendMessageAsync& messageSender,
                     bool developerMode);
@@ -103,6 +105,7 @@ namespace web
             boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
             boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
             boost::shared_ptr<hardware::usb::IDevicesLister> m_usbDevicesLister;
+            boost::shared_ptr<dateTime::CTimeZoneDatabase> m_timezoneDatabase;
             boost::shared_ptr<task::CScheduler> m_taskScheduler;
 
             std::string m_restKeyword;

@@ -485,10 +485,10 @@ namespace web
          {
             try
             {
-               const auto supportedTimezones = CHelpers::getSupportedTimezonesV2(request->queryParamAsList("filter"),
+               const auto supportedTimezones = CHelpers::getSupportedTimezonesV2(*request->queryParamAsList("filter"),
                                                                                  m_timezoneDatabase);
 
-               if (supportedTimezones.empty())
+               if (supportedTimezones->empty())
                   return boost::make_shared<CNoContentAnswer>();
 
                shared::CDataContainer container;
@@ -672,7 +672,7 @@ namespace web
                if (queries->empty() || queries->find("platformIsMac") != queries->end())
                   result.set("platformIsMac", tools::COperatingSystem::getName() == "mac");
                if (queries->empty() || queries->find("supportedTimezones") != queries->end())
-                  result.set("supportedTimezones", CHelpers::getSupportedTimezonesV2(std::make_unique<std::set<std::string>>(),
+                  result.set("supportedTimezones", CHelpers::getSupportedTimezonesV2(std::set<std::string>(),
                                                                                      m_timezoneDatabase));
 
                return boost::make_shared<CSuccessAnswer>(result);
