@@ -85,6 +85,14 @@ namespace web
                for (const auto& plugin : foundPlugins)
                {
                   auto pluginEntry = boost::make_shared<shared::CDataContainer>();
+
+                  const auto locales = getLocales(request->acceptLanguage(),
+                                                  plugin);
+                  if (locales && (props->empty() || props->find("name") != props->end()))
+                     pluginEntry->set("name", locales->get<std::string>("name"));
+                  if (locales && (props->empty() || props->find("description") != props->end()))
+                     pluginEntry->set("description", locales->get<std::string>("description"));
+
                   if (props->empty() || props->find("type") != props->end())
                      pluginEntry->set("type", plugin->getType());
                   if (props->empty() || props->find("version") != props->end())
@@ -98,30 +106,8 @@ namespace web
                   if (props->empty() || props->find("supportDeviceRemovedNotification") != props->end())
                      pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
                   if (props->empty() || props->find("configurationSchema") != props->end())
-                     pluginEntry->set("configurationSchema", getPluginConfigurationSchema(plugin));
-
-                  const auto requestedLocale = request->acceptLanguage();
-                  if (!requestedLocale.empty())
-                  {
-                     try
-                     {
-                        pluginEntry->set(
-                           "locales", shared::CDataContainer::make(plugin->getPath() / std::string("locales/" + requestedLocale + ".json")));
-                     }
-                     catch (const std::exception&)
-                     {
-                        try
-                        {
-                           pluginEntry->set("locales", shared::CDataContainer::make(plugin->getPath() / std::string("locales/en.json")));
-                        }
-                        catch (const std::exception&)
-                        {
-                           return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
-                                                                   "Unable to find valid locale file for plugin " + plugin->getType() +
-                                                                   ". Tried requested '" + requestedLocale + "', and 'en' as default");
-                        }
-                     }
-                  }
+                     pluginEntry->set("configurationSchema", getPluginConfigurationSchema(plugin,
+                                                                                          locales));
 
                   if (!pluginEntry->empty())
                   {
@@ -500,9 +486,13 @@ namespace web
          }
 
          boost::shared_ptr<shared::CDataContainer> CPlugin::getPluginConfigurationSchema(
-            const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation) const
+            const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
+            boost::shared_ptr<shared::CDataContainer> locales) const
          {
             auto schema = pluginInformation->getConfigurationSchema()->copy();
+
+            if (locales)
+               schema->mergeFrom(locales->getChild("configurationSchema"));
 
             // Manage binding
             schema->replaceAllNodesByName(
@@ -574,6 +564,32 @@ namespace web
 
 
             return schema;
+         }
+
+         boost::shared_ptr<shared::CDataContainer> CPlugin::getLocales(
+            const std::string& requestedLocale,
+            const boost::shared_ptr<const shared::plugin::information::IInformation>& plugin) const
+         {
+            if (requestedLocale.empty())
+               return shared::CDataContainer::make();
+
+            try
+            {
+               return shared::CDataContainer::make(plugin->getPath() / std::string("locales/" + requestedLocale + ".json"));
+            }
+            catch (const std::exception&)
+            {
+               try
+               {
+                  return shared::CDataContainer::make(plugin->getPath() / std::string("locales/en.json"));
+               }
+               catch (const std::exception&)
+               {
+                  throw std::invalid_argument(
+                     "Unable to find valid locale file for plugin " + plugin->getType() +
+                     ". Tried requested '" + requestedLocale + "', and 'en' as default");
+               }
+            }
          }
       } //namespace service
    } //namespace rest
