@@ -88,9 +88,9 @@ namespace web
 
                   const auto locales = getLocales(request->acceptLanguage(),
                                                   plugin);
-                  if (locales && (props->empty() || props->find("name") != props->end()))
+                  if (!locales->empty() && (props->empty() || props->find("name") != props->end()))
                      pluginEntry->set("name", locales->get<std::string>("name"));
-                  if (locales && (props->empty() || props->find("description") != props->end()))
+                  if (!locales->empty() && (props->empty() || props->find("description") != props->end()))
                      pluginEntry->set("description", locales->get<std::string>("description"));
 
                   if (props->empty() || props->find("type") != props->end())
@@ -491,7 +491,7 @@ namespace web
          {
             auto schema = pluginInformation->getConfigurationSchema()->copy();
 
-            if (locales)
+            if (!locales->empty())
                schema->mergeFrom(locales->getChild("configurationSchema"));
 
             // Manage binding
