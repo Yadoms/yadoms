@@ -494,7 +494,7 @@ namespace web
 
             auto schema = pluginInformation->getConfigurationSchema()->copy();
 
-            if (!locales->empty())
+            if (!locales->empty() && locales->exists("configurationSchema"))
                schema->mergeFrom(locales->getChild("configurationSchema"));
 
             // Manage binding

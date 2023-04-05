@@ -63,6 +63,8 @@ namespace pluginSystem
 
          if (m_package->containsChild("configurationSchema"))
             m_configurationSchema = m_package->getChild("configurationSchema");
+         else
+            m_configurationSchema = shared::CDataContainer::make();
       }
       catch (shared::exception::CException& e)
       {
