@@ -489,6 +489,9 @@ namespace web
             const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
             boost::shared_ptr<shared::CDataContainer> locales) const
          {
+            if (pluginInformation->getConfigurationSchema()->empty())
+               return shared::CDataContainer::make();
+
             auto schema = pluginInformation->getConfigurationSchema()->copy();
 
             if (!locales->empty())
