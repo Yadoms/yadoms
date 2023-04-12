@@ -20,19 +20,23 @@
       "content": {
         "rssiMin": {
           "type": "decimal",
-          "defaultValue": -150
+          "defaultValue": -150,
+          "step": 1
         },
         "rssiMax": {
           "type": "decimal",
-          "defaultValue": -100
+          "defaultValue": -100,
+          "step": 1
         },
         "tensionMin": {
           "type": "decimal",
-          "defaultValue": 2.4
+          "defaultValue": 2.4,
+          "precision" : 1 
         },
         "tensionMax": {
           "type": "decimal",
-          "defaultValue": 3.6
+          "defaultValue": 3.6,
+          "precision": 1
         }
       }
     }
