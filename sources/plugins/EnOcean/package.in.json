@@ -690,7 +690,7 @@
           "type": "int",
           "minimumValue": 10,
           "maximumValue": 2550,
-          "precision": 10,
+          "step": 10,
           "defaultValue": 10
         },
         "minMessagesInterval": {
@@ -721,7 +721,7 @@
           "type": "int",
           "minimumValue": 10,
           "maximumValue": 2550,
-          "precision": 10,
+          "step": 10,
           "defaultValue": 10
         },
         "minMessagesInterval": {
@@ -741,7 +741,7 @@
           "type": "int",
           "minimumValue": 5000,
           "maximumValue": 300000,
-          "precision": 10,
+          "step": 10,
           "defaultValue": 15000
         },
         "measuredDurationOfRotationMs": {
@@ -749,7 +749,7 @@
           "type": "int",
           "minimumValue": 10,
           "maximumValue": 2540,
-          "precision": 10,
+          "step": 10,
           "defaultValue": 1500
         },
         "alarmAction": {
