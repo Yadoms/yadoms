@@ -734,7 +734,7 @@
               "values": {
                 "energyWh": "Energy (Wh)",
                 "waterLiter": "Water (one pulse per Liter)",
-                "waterQuarterLiter": "Water (one pulse per ¼ liter)",
+                "waterQuarterLiter": "Water (one pulse per Â¼ liter)",
                 "gasDeciM3": "Gas (one pulse per 1/10 m3)",
                 "gasCentiM3": "Gas (one pulse per 1/100 m3)",
                 "raw": "Other (Raw counter only)"
@@ -746,7 +746,7 @@
               "values": {
                 "energyWh": "Energy (Wh)",
                 "waterLiter": "Water (one pulse per Liter)",
-                "waterQuarterLiter": "Water (one pulse per ¼ liter)",
+                "waterQuarterLiter": "Water (one pulse per Â¼ liter)",
                 "gasDeciM3": "Gas (one pulse per 1/10 m3)",
                 "gasCentiM3": "Gas (one pulse per 1/100 m3)",
                 "raw": "Other (Raw counter only)"
