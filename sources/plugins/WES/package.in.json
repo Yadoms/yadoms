@@ -39,12 +39,8 @@
 							"defaultValue": 80
 						},
 						"authentication": {
-							"type": "section",
+							"type": "checkboxSection",
 							"defaultValue": true,
-							"enableWithCheckBox": true,
-							"checkbox": {
-								"defaultValue": true
-							},
 							"content": {
 								"User": {
 									"type": "string",
@@ -59,11 +55,8 @@
 							}
 						},
 						"analog": {
-							"type": "section",
-							"enableWithCheckBox": true,
-							"checkbox": {
-								"defaultValue": false
-							},
+							"type": "checkboxSection",
+						  "defaultValue": false,
 							"content": {
 								"ana1": {
 									"type": "enum",

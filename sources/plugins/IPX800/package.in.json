@@ -22,11 +22,8 @@
       "defaultValue": 80
     },
     "authentication": {
-      "type": "section",
-      "enableWithCheckBox": true,
-      "checkbox": {
-        "defaultValue": true
-      },
+      "type": "checkboxSection",
+      "defaultValue": true,
       "content": {
         "Password": {
           "type": "string",

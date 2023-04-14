@@ -61,9 +61,8 @@
       }
     },
     "PINCode": {
-      "type": "section",
-      "enableWithCheckBox": true,
-      "enableWithCheckBoxDefaultValue": false,
+      "type": "checkboxSection",
+      "defaultValue": false,
       "content": {
         "PIN": {
           "type": "string",

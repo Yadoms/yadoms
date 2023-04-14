@@ -25,11 +25,8 @@
       "defaultValue": true
     },
     "Autotest": {
-      "type": "section",
-      "enableWithCheckBox": true,
-      "checkbox": {
-        "defaultValue": false
-      },
+      "type": "checkboxSection",
+      "defaultValue": false,
       "content": {
         "AutotestStartTime": {
           "type": "string",

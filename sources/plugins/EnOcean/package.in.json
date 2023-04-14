@@ -57,11 +57,8 @@
       "content": {
         "setPointEnable": {
           "name": "Enable set point",
-          "type": "section",
-          "enableWithCheckBox": true,
-          "checkbox": {
-            "defaultValue": false
-          },
+          "type": "checkboxSection",
+          "defaultValue": false,
           "content": {
             "setPointRangeLimit": {
               "name": "Set point range limit",
@@ -82,11 +79,8 @@
         },
         "temperatureMeasurementEnable": {
           "name": "Enable temperature measurement",
-          "type": "section",
-          "enableWithCheckBox": true,
-          "checkbox": {
-            "defaultValue": true
-          },
+          "type": "checkboxSection",
+          "defaultValue": true,
           "content": {
             "measureInterval": {
               "name": "Measure interval (s)",
@@ -630,11 +624,8 @@
         },
         "autoOffTimer": {
           "name": "Auto off timer",
-          "type": "section",
-          "enableWithCheckBox": true,
-          "checkbox": {
-            "defaultValue": false
-          },
+          "type": "checkboxSection",
+          "defaultValue": false,
           "content": {
             "value": {
               "name": "value",
@@ -647,11 +638,8 @@
         },
         "delayOffTimer": {
           "name": "Delay off timer",
-          "type": "section",
-          "enableWithCheckBox": true,
-          "checkbox": {
-            "defaultValue": false
-          },
+          "type": "checkboxSection",
+          "defaultValue": false,
           "content": {
             "value": {
               "name": "value",

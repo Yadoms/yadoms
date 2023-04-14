@@ -15,11 +15,8 @@
       "required": true
     },
     "useSpecificLocation": {
-      "type": "section",
-      "enableWithCheckBox": true,
-      "checkbox": {
-        "defaultValue": false
-      },
+      "type": "checkboxSection",
+      "defaultValue": false,
       "content": {
         "longitude": {
           "type": "decimal",

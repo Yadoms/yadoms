@@ -74,11 +74,8 @@
       }
     },
     "repeater": {
-      "type": "section",
-      "enableWithCheckBox": true,
-      "checkbox": {
-        "defaultValue": false
-      },
+      "type": "checkboxSection",
+      "defaultValue": false,
       "content": {
         "X10": {
           "type": "bool",
@@ -134,11 +131,8 @@
       "type": "section",
       "content": {
         "433": {
-          "type": "section",
-          "enableWithCheckBox": true,
-          "checkbox": {
-            "defaultValue": true
-          },
+          "type": "checkboxSection",
+          "defaultValue": true,
           "content": {
             "freq": {
               "type": "enum",
@@ -173,11 +167,8 @@
           }
         },
         "868": {
-          "type": "section",
-          "enableWithCheckBox": true,
-          "checkbox": {
-            "defaultValue": true
-          },
+          "type": "checkboxSection",
+          "defaultValue": true,
           "content": {
             "freq": {
               "type": "enum",
@@ -212,11 +203,8 @@
           }
         },
         "lbt": {
-          "type": "section",
-          "enableWithCheckBox": true,
-          "checkbox": {
-            "defaultValue": true
-          },
+          "type": "checkboxSection",
+          "defaultValue": true,
           "content": {
             "lbtvalue": {
               "type": "int",

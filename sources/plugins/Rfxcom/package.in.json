@@ -29,10 +29,6 @@
     },
     "Protocols": {
       "type": "section",
-      "enableWithCheckBox": false,
-      "checkbox": {
-        "defaultValue": false
-      },
       "content": {
         "AE Blyss": {
           "type": "bool",

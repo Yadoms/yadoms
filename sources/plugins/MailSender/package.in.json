@@ -76,13 +76,8 @@
               }
             },
             "authentication": {
-              "type": "section",
-              "name": "Authentication required by server",
-              "description": "Only if SMTP server requires an authentication",
-              "enableWithCheckBox": true,
-              "checkbox": {
-                "defaultValue": false
-              },
+              "type": "checkboxSection",
+              "defaultValue": false,
               "content": {
                 "user": {
                   "type": "string"
