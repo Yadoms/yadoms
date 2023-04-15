@@ -19,6 +19,7 @@ set(SHARED_LIB_SRC
    shared/ThreadBase.cpp
    shared/ThreadBase.h
 
+   shared/StringExtension.cpp
    shared/StringExtension.h
 	
    shared/Field.hpp

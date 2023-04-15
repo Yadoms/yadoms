@@ -1,7 +1,8 @@
 #pragma once
 #include "exception/Exception.hpp"
-#include <stdarg.h>
+#include <cstdarg>
 #include <Poco/Types.h>
+#include <ostream>
 
 namespace shared
 {
@@ -121,6 +122,20 @@ namespace shared
       /// @brief Trim string at beginning and end (in place)
       /// @param s string to trim
       static void trim(std::string& s);
+
+      /// @brief Trim string at beginning and end (in place)
+      /// @param input Input string containing keys to replace
+      /// @param replacements Map containing replacement strings
+      /// @param keyEncapsulationStartToken Token starting the key in input string
+      /// @param keyEncapsulationendToken Token ending the key in input string
+      /// @example :
+      /// input = "Replace {{first}} and {{second}} in my string"
+      /// replacement = { { "first": "value1" }, { "second": "value2" } }
+      /// ==> returns "Replace value1 and value2 in my string"
+      static std::string replaceValues(const std::string& input,
+                                       const std::map<std::string, std::string>& replacements,
+                                       const std::string& keyEncapsulationStartToken = "{{",
+                                       const std::string& keyEncapsulationendToken = "}}");
    };
 
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,23 +207,5 @@ namespace shared
       ss.imbue(std::locale::classic()); // Use the C locale 
       ss << static_cast<int>(value);
       return ss.str();
-   }
-
-   inline void CStringExtension::leftTrim(std::string& s)
-   {
-      s.erase(s.begin(), std::find_if(s.begin(), s.end(),
-         std::not1(std::ptr_fun<int, int>(std::isspace))));
-   }
-
-   inline void CStringExtension::rightTrim(std::string& s)
-   {
-      s.erase(std::find_if(s.rbegin(), s.rend(),
-         std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
-   }
-
-   inline void CStringExtension::trim(std::string& s)
-   {
-      leftTrim(s);
-      rightTrim(s);
    }
 } // namespace shared

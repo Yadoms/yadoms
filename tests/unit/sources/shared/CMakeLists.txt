@@ -22,6 +22,16 @@ IF(NOT DISABLE_TEST_SEMVER)
    
 ENDIF()
 
+#dd current directory tests
+IF(NOT DISABLE_TEST_STRINGEXTENSION)
+   ADD_YADOMS_SOURCES(
+      shared/shared/StringExtension.h
+      shared/shared/StringExtension.cpp
+   )
+   ADD_SOURCES(TestStringExtension.cpp)
+   
+ENDIF()
+
 # List subdirectories here
 add_subdirectory(communication)
 add_subdirectory(dateTime)
