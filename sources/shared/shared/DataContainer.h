@@ -2341,15 +2341,14 @@ namespace shared
       std::map<std::string, Type> result;
 
       const auto found = findValue(parameterName, pathChar);
-      if (found)
-      {
-         const auto path = !parameterName.empty() ? (parameterName + pathChar) : "";
-         for (rapidjson::Value::ConstMemberIterator i = found->MemberBegin(); i != found->MemberEnd(); ++i)
-         {
-            result[i->name.GetString()] = get<Type>(path + i->name.GetString(), pathChar);
-         }
-      }
+      if (!found || !found->IsObject())
+         return result;
 
-      return result;
+      const auto path = !parameterName.empty() ? (parameterName + pathChar) : "";
+
+      for (rapidjson::Value::ConstMemberIterator i = found->MemberBegin(); i != found->MemberEnd(); ++i)
+      {
+         result[i->name.GetString()] = get<Type>(path + i->name.GetString(), pathChar);
+      }
    }
 } // namespace shared

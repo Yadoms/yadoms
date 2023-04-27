@@ -31,6 +31,7 @@ namespace pluginSystem
       bool getSupportManuallyCreatedDevice() const override;
       bool getSupportDeviceRemovedNotification() const override;
       boost::shared_ptr<const shared::CDataContainer> getConfigurationSchema() const override;
+      boost::shared_ptr<const shared::CDataContainer> getLabels(const std::string& locale) const override;
       boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
       const boost::filesystem::path& getPath() const override;
       // [END] shared::plugin::IInformation implementation
@@ -85,6 +86,11 @@ namespace pluginSystem
       /// \brief	    Configuration schema
       //--------------------------------------------------------------
       boost::shared_ptr<shared::CDataContainer> m_configurationSchema;
+
+      //--------------------------------------------------------------
+      /// \brief	    Cache of labels (key is 2-cars locale ISO code : 'fr', 'en'...)
+      //--------------------------------------------------------------
+      mutable std::map<std::string, boost::shared_ptr<const shared::CDataContainer>> m_labels;
 
       //--------------------------------------------------------------
       /// \brief	    Package.json content

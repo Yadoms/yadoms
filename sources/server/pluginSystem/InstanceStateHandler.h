@@ -15,7 +15,7 @@ namespace pluginSystem
    //-----------------------------------------------------
    ///\brief The instance error handler
    //-----------------------------------------------------
-   class CInstanceStateHandler : public IInstanceStartErrorObserver, public IInstanceStateHandler, public shared::process::IProcessObserver
+   class CInstanceStateHandler final : public IInstanceStartErrorObserver, public IInstanceStateHandler, public shared::process::IProcessObserver
    {
    public:
       //-----------------------------------------------------
@@ -40,10 +40,12 @@ namespace pluginSystem
                             boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                             boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager);
 
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~CInstanceStateHandler();
+      CInstanceStateHandler(const CInstanceStateHandler&) = delete;
+      CInstanceStateHandler(const CInstanceStateHandler&&) = delete;
+      CInstanceStateHandler operator=(const CInstanceStateHandler&) = delete;
+      CInstanceStateHandler operator=(const CInstanceStateHandler&&) = delete;
+
+      ~CInstanceStateHandler() override = default;
 
 
       // IInstanceStartErrorObserver Implementation
@@ -57,7 +59,6 @@ namespace pluginSystem
 
 
    protected:
-
       // IInstanceStateHandler Implementation
       void setState(const shared::plugin::yPluginApi::historization::EPluginState& state,
                     const std::string& customMessageId = std::string(),
@@ -74,18 +75,18 @@ namespace pluginSystem
       int pluginStateKeywordId();
       int pluginStateMessageIdKeywordId();
 
-      //-----------------------------------------------------
-      ///\brief Record a plugin major event (recorded in Yadoms database)
-      ///\param    [in]    severity           The message severity
-      ///\param    [in]    message            The message
-      //-----------------------------------------------------      
       enum PluginEventSeverity
       {
          kInfo,
          kError
       };
 
-      virtual void recordPluginEvent(PluginEventSeverity severity, const std::string& message);
+      //-----------------------------------------------------
+      ///\brief Record a plugin major event (recorded in Yadoms database)
+      ///\param    [in]    severity           The message severity
+      ///\param    [in]    message            The message
+      //-----------------------------------------------------
+      void recordPluginEvent(PluginEventSeverity severity, const std::string& message);
 
    private:
       //-----------------------------------------------------

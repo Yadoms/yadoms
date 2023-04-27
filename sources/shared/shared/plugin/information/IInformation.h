@@ -82,6 +82,13 @@ namespace shared
             virtual boost::shared_ptr<const CDataContainer> getConfigurationSchema() const = 0;
 
             //--------------------------------------------------------------
+            /// \brief	    Provide the labels content for specified locale
+            /// \param locale The locale 2 digits iso code ('fr', 'en', ...)
+            /// \return     the package.json content
+            //--------------------------------------------------------------
+            virtual boost::shared_ptr<const CDataContainer> getLabels(const std::string& locale) const = 0;
+
+            //--------------------------------------------------------------
             /// \brief	    Provide the package.json content
             /// \return     the package.json content
             //--------------------------------------------------------------

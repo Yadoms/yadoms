@@ -47,7 +47,8 @@ namespace pluginSystem
             m_url = std::string();
 
          if (m_package->containsValue("supportedPlatforms") || m_package->containsChild("supportedPlatforms"))
-            m_isSupportedOnThisPlatform = tools::CSupportedPlatformsChecker::isSupported(m_package->get<shared::CDataContainer>("supportedPlatforms"));
+            m_isSupportedOnThisPlatform =
+               tools::CSupportedPlatformsChecker::isSupported(m_package->get<shared::CDataContainer>("supportedPlatforms"));
          else
             m_isSupportedOnThisPlatform = true;
 
@@ -70,7 +71,8 @@ namespace pluginSystem
       {
          // Set plugin as not supported
          m_isSupportedOnThisPlatform = false;
-         throw shared::exception::CInvalidParameter(pluginPath.stem().string() + std::string(" : Error reading package.json : data not found : ") + e.what());
+         throw shared::exception::CInvalidParameter(
+            pluginPath.stem().string() + std::string(" : Error reading package.json : data not found : ") + e.what());
       }
 
       const auto pluginFolder = m_path.filename().string();
@@ -78,7 +80,8 @@ namespace pluginSystem
       {
          // Set plugin as not supported
          m_isSupportedOnThisPlatform = false;
-         throw CInvalidPluginException(m_type, (boost::format("The plugin folder '%1%' does not match plugin type '%2%'") % pluginFolder % m_type).str());
+         throw CInvalidPluginException(
+            m_type, (boost::format("The plugin folder '%1%' does not match plugin type '%2%'") % pluginFolder % m_type).str());
       }
    }
 
@@ -142,6 +145,36 @@ namespace pluginSystem
    boost::shared_ptr<const shared::CDataContainer> CInformation::getConfigurationSchema() const
    {
       return m_configurationSchema;
+   }
+
+   boost::shared_ptr<const shared::CDataContainer> CInformation::getLabels(const std::string& locale) const
+   {
+      if (locale.empty())
+         return shared::CDataContainer::make();
+
+      const auto labels = m_labels.find(locale);
+      if (labels != m_labels.end())
+         return labels->second;
+
+      try
+      {
+         m_labels[locale] = shared::CDataContainer::make(getPath() / std::string("locales/" + locale + ".json"));
+         return m_labels[locale];
+      }
+      catch (const std::exception&)
+      {
+         try
+         {
+            m_labels[locale] = shared::CDataContainer::make(getPath() / std::string("locales/en.json"));
+            return m_labels[locale];
+         }
+         catch (const std::exception&)
+         {
+            throw std::invalid_argument(
+               "Unable to find valid locale file for plugin " + getType() +
+               ". Tried requested '" + locale + "', and 'en' as default");
+         }
+      }
    }
 
    boost::shared_ptr<const shared::CDataContainer> CInformation::getPackage() const

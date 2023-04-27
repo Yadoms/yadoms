@@ -86,8 +86,7 @@ namespace web
                {
                   auto pluginEntry = boost::make_shared<shared::CDataContainer>();
 
-                  const auto locales = getLocales(request->acceptLanguage(),
-                                                  plugin);
+                  const auto locales = plugin->getLabels(request->acceptLanguage());
                   if (!locales->empty() && (props->empty() || props->find("name") != props->end()))
                      pluginEntry->set("name", locales->get<std::string>("name"));
                   if (!locales->empty() && (props->empty() || props->find("description") != props->end()))
@@ -191,6 +190,8 @@ namespace web
                std::vector<boost::shared_ptr<shared::CDataContainer>> instancesEntries;
                for (const auto& instance : instances)
                {
+                  const auto locales = m_pluginManager->getPluginList().at(instance->Type())->getLabels(request->acceptLanguage());
+
                   auto instanceEntry = boost::make_shared<shared::CDataContainer>();
                   if (props->empty() || props->find("id") != props->end())
                      instanceEntry->set("id", instance->Id());
@@ -207,7 +208,8 @@ namespace web
                   if (props->empty() || props->find("state") != props->end())
                      instanceEntry->set("state", m_pluginManager->getInstanceState(instance->Id()));
                   if (props->empty() || props->find("fullState") != props->end())
-                     instanceEntry->set("fullState", m_pluginManager->getInstanceFullState(instance->Id()));
+                     instanceEntry->set("fullState", translatePluginFullState(locales,
+                                                                              m_pluginManager->getInstanceFullState(instance->Id())));
 
                   if (page && pageSize)
                   {
@@ -487,7 +489,7 @@ namespace web
 
          boost::shared_ptr<shared::CDataContainer> CPlugin::getPluginConfigurationSchema(
             const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
-            boost::shared_ptr<shared::CDataContainer> locales) const
+            boost::shared_ptr<const shared::CDataContainer> locales) const
          {
             if (pluginInformation->getConfigurationSchema()->empty())
                return shared::CDataContainer::make();
@@ -569,29 +571,36 @@ namespace web
             return schema;
          }
 
-         boost::shared_ptr<shared::CDataContainer> CPlugin::getLocales(
-            const std::string& requestedLocale,
-            const boost::shared_ptr<const shared::plugin::information::IInformation>& plugin) const
+         std::string CPlugin::translatePluginFullState(boost::shared_ptr<const shared::CDataContainer> locales,
+                                                       boost::shared_ptr<const shared::CDataContainer> fullState)
          {
-            if (requestedLocale.empty())
-               return shared::CDataContainer::make();
+            if (locales->empty() || fullState->empty())
+               return {};
+
+            auto messageId = fullState->get<std::string>("messageId");
+
+            if (messageId.empty())
+               return {};
 
             try
             {
-               return shared::CDataContainer::make(plugin->getPath() / std::string("locales/" + requestedLocale + ".json"));
+               auto message = locales->get<std::string>("customLabels.pluginState." + messageId);
+               
+               const auto s = fullState->serialize(); //TODO virer
+               if (!fullState->exists("messageData"))
+                  return message;
+
+               const auto messageData = fullState->get<std::map<std::string, std::string>>("messageData");
+               if (messageData.empty())
+                  return message;
+
+               return shared::CStringExtension::replaceValues(message,
+                                                              messageData);
             }
-            catch (const std::exception&)
+            catch (const std::exception& e)
             {
-               try
-               {
-                  return shared::CDataContainer::make(plugin->getPath() / std::string("locales/en.json"));
-               }
-               catch (const std::exception&)
-               {
-                  throw std::invalid_argument(
-                     "Unable to find valid locale file for plugin " + plugin->getType() +
-                     ". Tried requested '" + requestedLocale + "', and 'en' as default");
-               }
+               YADOMS_LOG(warning) << "Fail to translate plugin full state, message " << messageId << " : " << e.what();
+               return messageId;
             }
          }
       } //namespace service

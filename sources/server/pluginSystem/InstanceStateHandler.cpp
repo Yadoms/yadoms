@@ -13,21 +13,17 @@ namespace pluginSystem
                                                 boost::function1<void, int> onPluginsStoppedFct,
                                                 boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                                                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager)
-      : m_instanceData(instanceData),
-        m_pluginInformation(pluginInformation),
-        m_pluginRequester(pluginRequester),
-        m_qualifier(qualifier),
-        m_pluginEventLoggerRequester(pluginEventLoggerRequester),
-        m_acquisitionHistorizer(acquisitionHistorizer),
-        m_onPluginsStoppedFct(onPluginsStoppedFct),
-        m_deviceManager(deviceManager),
-        m_keywordDataAccessLayer(keywordManager),
+      : m_instanceData(std::move(instanceData)),
+        m_pluginInformation(std::move(pluginInformation)),
+        m_pluginRequester(std::move(pluginRequester)),
+        m_qualifier(std::move(qualifier)),
+        m_pluginEventLoggerRequester(std::move(pluginEventLoggerRequester)),
+        m_acquisitionHistorizer(std::move(acquisitionHistorizer)),
+        m_onPluginsStoppedFct(std::move(onPluginsStoppedFct)),
+        m_deviceManager(std::move(deviceManager)),
+        m_keywordDataAccessLayer(std::move(keywordManager)),
         m_pluginStateKeywordId(pluginStateKeywordId()),
         m_pluginStateMessageIdKeywordId(pluginStateMessageIdKeywordId())
-   {
-   }
-
-   CInstanceStateHandler::~CInstanceStateHandler()
    {
    }
 
@@ -154,7 +150,7 @@ namespace pluginSystem
          break;
       case kInfo: evenType = database::entities::EEventType::kInfo;
          break;
-      default:
+      default:  // NOLINT(clang-diagnostic-covered-switch-default)
          {
             YADOMS_LOG(warning) << "Unknown plugin event severity type " << severity;
             evenType = database::entities::EEventType::kInfo; // Set a default value

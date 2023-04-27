@@ -100,10 +100,9 @@ namespace web
             std::string generateUniqueDeviceName(int pluginId) const;
             boost::shared_ptr<shared::CDataContainer> getPluginConfigurationSchema(
                const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
-               boost::shared_ptr<shared::CDataContainer> locales) const;
-            boost::shared_ptr<shared::CDataContainer> getLocales(
-               const std::string& requestedLocale,
-               const boost::shared_ptr<const shared::plugin::information::IInformation>& plugin) const;
+               boost::shared_ptr<const shared::CDataContainer> locales) const;
+            static std::string translatePluginFullState(boost::shared_ptr<const shared::CDataContainer> locales,
+                                                        boost::shared_ptr<const shared::CDataContainer> fullState);
 
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<pluginSystem::CManager> m_pluginManager;

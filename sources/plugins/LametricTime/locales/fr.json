@@ -40,9 +40,10 @@
       }
    },
    "customLabels": {
-      "pluginState": {
-         "failedToConnect": "La connexion a échoué...",
-         "initializationError": "Erreur d'initialisation"
-      }
+    "pluginState": {
+      "failedToConnect": "La connexion a échoué...",
+      "updateConfiguration": "Mise à jour de la configuration...",
+      "initializationError": "Erreur d'initialisation"
+    }
    }
 }
