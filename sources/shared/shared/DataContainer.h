@@ -2350,5 +2350,7 @@ namespace shared
       {
          result[i->name.GetString()] = get<Type>(path + i->name.GetString(), pathChar);
       }
+
+      return result;
    }
 } // namespace shared
