@@ -21,28 +21,28 @@ public:
 
 	const std::string& getAuthor() const override
 	{
-		static const std::string str("YadomsTeam");
-		return str;
+		static const std::string Str("YadomsTeam");
+		return Str;
 	}
 
 	const std::string& getUrl() const override
 	{
-		static const std::string str("www.yadoms.com");
-		return str;
+		static const std::string Str("www.yadoms.com");
+		return Str;
 	}
 
 	std::string getIdentity() const override
 	{
-		std::ostringstream formatedInformations;
-		formatedInformations << getType() << " v" << getVersion();
-		return formatedInformations.str();
+		std::ostringstream formattedInformation;
+		formattedInformation << getType() << " v" << getVersion();
+		return formattedInformation.str();
 	}
 
 	std::string toString() const override
 	{
-		std::ostringstream formatedInformations;
-		formatedInformations << getIdentity() << " by " << getAuthor() << " (" << getUrl() << ")";
-		return formatedInformations.str();
+		std::ostringstream formattedInformation;
+		formattedInformation << getIdentity() << " by " << getAuthor() << " (" << getUrl() << ")";
+		return formattedInformation.str();
 	}
 
 	bool isSupportedOnThisPlatform() const override
@@ -72,6 +72,11 @@ public:
 	}
 
 	boost::shared_ptr<const shared::CDataContainer> getConfigurationSchema() const override
+	{
+		return {};
+	}
+
+	boost::shared_ptr<const shared::CDataContainer> getLabels(const std::string& locale) const override
 	{
 		return {};
 	}
