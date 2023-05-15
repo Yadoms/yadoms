@@ -30,7 +30,7 @@ namespace web
                                                                          char separator = '|') const = 0;
 
          virtual EContentType contentType() const = 0;
-         virtual std::string acceptLanguage() const = 0;
+         virtual std::vector<std::string> acceptLanguages() const = 0;
          virtual std::string body() const = 0;
 
          /// @brief Check if content type is accepted for answer

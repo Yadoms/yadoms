@@ -64,7 +64,7 @@ namespace plugin_cpp_api
       return shared::CDataContainer::EmptyContainerSharedPtr;
    }
 
-   boost::shared_ptr<const shared::CDataContainer> CPluginInformation::getLabels(const std::string& locale) const
+   boost::shared_ptr<const shared::CDataContainer> CPluginInformation::getLabels(const std::vector<std::string>& locales) const
    {
       throw std::runtime_error("Should not be used");
    }

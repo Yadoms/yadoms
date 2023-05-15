@@ -105,12 +105,26 @@ namespace web
          return rest::ToContentType(m_request->getHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE));
       }
 
-      std::string CRestRequest::acceptLanguage() const
+      std::vector<std::string> CRestRequest::acceptLanguages() const
       {
          const auto acceptLanguageHeader = m_request->getHeader("Accept-Language");
          if (!acceptLanguageHeader)
             return {};
-         return boost::to_lower_copy(*acceptLanguageHeader);
+
+         std::vector<std::string> languages;
+         std::vector<std::string> weightedLanguages;
+         boost::split(weightedLanguages, *acceptLanguageHeader, boost::is_any_of(";"), boost::token_compress_on);
+         for (const auto& weightedLanguage:weightedLanguages)
+         {
+            const auto token = weightedLanguage.find(',');
+            if (token == std::string::npos)
+               continue;
+            if(token >= weightedLanguage.size())
+               continue;
+            languages.emplace_back(weightedLanguage.substr(token+1));            
+         }
+
+         return languages;
       }
 
       std::string CRestRequest::body() const

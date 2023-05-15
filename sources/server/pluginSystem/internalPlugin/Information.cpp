@@ -79,15 +79,16 @@ namespace pluginSystem
          return shared::CDataContainer::EmptyContainerSharedPtr;
       }
 
-      boost::shared_ptr<const shared::CDataContainer> CInformation::getLabels(const std::string& locale) const
+      boost::shared_ptr<const shared::CDataContainer> CInformation::getLabels(const std::vector<std::string>& locales) const
       {
-         if (locale.empty())
+         if (locales.empty())
             return shared::CDataContainer::make();
 
-         if (locale == "fr")
+         for (const auto& locale : locales)
          {
-            return shared::CDataContainer::make(std::string(
-               R"({
+            if (locale.find("fr") != std::string::npos)
+               return shared::CDataContainer::make(std::string(
+                  R"({
                  "recipientFields": {
                    "email": {
                      "name": "Email",
@@ -101,12 +102,9 @@ namespace pluginSystem
                    }
                  }
                })"));
-         }
-
-         if (locale == "en")
-         {
-            return shared::CDataContainer::make(std::string(
-               R"({
+            if (locale.find("en") != std::string::npos)
+               return shared::CDataContainer::make(std::string(
+                  R"({
                  "recipientFields": {
                    "email": {
                "name": "Email (system) ",

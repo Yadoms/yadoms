@@ -147,33 +147,40 @@ namespace pluginSystem
       return m_configurationSchema;
    }
 
-   boost::shared_ptr<const shared::CDataContainer> CInformation::getLabels(const std::string& locale) const
+   boost::shared_ptr<const shared::CDataContainer> CInformation::getLabels(const std::vector<std::string>& locales) const
    {
-      if (locale.empty())
+      if (locales.empty())
          return shared::CDataContainer::make();
 
-      const auto labels = m_labels.find(locale);
-      if (labels != m_labels.end())
-         return labels->second;
+      for (const auto& locale : locales)
+      {
+         const auto labels = m_labels.find(locale);
+         if (labels != m_labels.end())
+            return labels->second;
 
-      try
-      {
-         m_labels[locale] = shared::CDataContainer::make(getPath() / std::string("locales/" + locale + ".json"));
-         return m_labels[locale];
-      }
-      catch (const std::exception&)
-      {
          try
          {
-            m_labels[locale] = shared::CDataContainer::make(getPath() / std::string("locales/en.json"));
+            const auto labelFilePath = getPath() / std::string("locales/" + locale + ".json");
+            if (!boost::filesystem::exists(labelFilePath))
+               continue;
+
+            m_labels[locale] = shared::CDataContainer::make(labelFilePath);
             return m_labels[locale];
          }
          catch (const std::exception&)
          {
-            throw std::invalid_argument(
-               "Unable to find valid locale file for plugin " + getType() +
-               ". Tried requested '" + locale + "', and 'en' as default");
          }
+      }
+
+      try
+      {
+         return shared::CDataContainer::make(getPath() / std::string("locales/en.json"));
+      }
+      catch (const std::exception&)
+      {
+         throw std::invalid_argument(
+            "Unable to find valid locale file for plugin " + getType() +
+            ". Tried requested locales, and 'en' as default");
       }
    }
 

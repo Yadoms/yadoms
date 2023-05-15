@@ -27,7 +27,7 @@ namespace plugin_cpp_api
       bool getSupportManuallyCreatedDevice() const override;
       bool getSupportDeviceRemovedNotification() const override;
       boost::shared_ptr<const shared::CDataContainer> getConfigurationSchema() const override;
-      boost::shared_ptr<const shared::CDataContainer> getLabels(const std::string& locale) const override;
+      boost::shared_ptr<const shared::CDataContainer> getLabels(const std::vector<std::string>& locales) const override;
       boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
       const boost::filesystem::path& getPath() const override;
       // [END] shared::plugin::information::IInformation implementation

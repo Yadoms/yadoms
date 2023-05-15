@@ -58,14 +58,21 @@ namespace web
                   shared::CDataContainer interpreterEntity;
                   interpreterEntity.set("available", interpreter.second);
 
-                  const auto requestedLocale = request->acceptLanguage();
-                  if (!requestedLocale.empty())
+                  const auto requestedLocales = request->acceptLanguages();
+                  if (!requestedLocales.empty())
                   {
                      try
                      {
-                        interpreterEntity.set(
-                           "locales", shared::CDataContainer::make(
-                              m_rulesManager->getInterpreterPath(interpreter.first) / std::string("locales/" + requestedLocale + ".json")));
+                        for (const auto& requestedLocale : requestedLocales)
+                        {
+                           const auto localFilePath = m_rulesManager->getInterpreterPath(interpreter.first) / std::string(
+                              "locales/" + requestedLocale + ".json");
+                           if (boost::filesystem::exists(localFilePath))
+                           {
+                              interpreterEntity.set("locales", shared::CDataContainer::make(localFilePath));
+                              break;
+                           }
+                        }
                      }
                      catch (const std::exception&)
                      {
@@ -79,7 +86,7 @@ namespace web
                         {
                            return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
                                                                    "Unable to find valid locale file for interpreter " + interpreter.first +
-                                                                   ". Tried requested '" + requestedLocale + "', and 'en' as default");
+                                                                   ". Tried requested locales, and 'en' as default");
                         }
                      }
                   }

@@ -86,11 +86,11 @@ namespace web
                {
                   auto pluginEntry = boost::make_shared<shared::CDataContainer>();
 
-                  const auto locales = plugin->getLabels(request->acceptLanguage());
-                  if (!locales->empty() && (props->empty() || props->find("name") != props->end()))
-                     pluginEntry->set("name", locales->get<std::string>("name"));
-                  if (!locales->empty() && (props->empty() || props->find("description") != props->end()))
-                     pluginEntry->set("description", locales->get<std::string>("description"));
+                  const auto labels = plugin->getLabels(request->acceptLanguages());
+                  if (!labels->empty() && (props->empty() || props->find("name") != props->end()))
+                     pluginEntry->set("name", labels->get<std::string>("name"));
+                  if (!labels->empty() && (props->empty() || props->find("description") != props->end()))
+                     pluginEntry->set("description", labels->get<std::string>("description"));
 
                   if (props->empty() || props->find("type") != props->end())
                      pluginEntry->set("type", plugin->getType());
@@ -106,7 +106,7 @@ namespace web
                      pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
                   if (props->empty() || props->find("configurationSchema") != props->end())
                      pluginEntry->set("configurationSchema", getPluginConfigurationSchema(plugin,
-                                                                                          locales));
+                                                                                          labels));
 
                   if (!pluginEntry->empty())
                   {
@@ -190,7 +190,7 @@ namespace web
                std::vector<boost::shared_ptr<shared::CDataContainer>> instancesEntries;
                for (const auto& instance : instances)
                {
-                  const auto locales = m_pluginManager->getPluginList().at(instance->Type())->getLabels(request->acceptLanguage());
+                  const auto labels = m_pluginManager->getPluginList().at(instance->Type())->getLabels(request->acceptLanguages());
 
                   auto instanceEntry = boost::make_shared<shared::CDataContainer>();
                   if (props->empty() || props->find("id") != props->end())
@@ -208,7 +208,7 @@ namespace web
                   if (props->empty() || props->find("state") != props->end())
                      instanceEntry->set("state", m_pluginManager->getInstanceState(instance->Id()));
                   if (props->empty() || props->find("fullState") != props->end())
-                     instanceEntry->set("fullState", translatePluginFullState(locales,
+                     instanceEntry->set("fullState", translatePluginFullState(labels,
                                                                               m_pluginManager->getInstanceFullState(instance->Id())));
 
                   if (page && pageSize)
@@ -489,7 +489,7 @@ namespace web
 
          boost::shared_ptr<shared::CDataContainer> CPlugin::getPluginConfigurationSchema(
             const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
-            boost::shared_ptr<const shared::CDataContainer> locales) const
+            const boost::shared_ptr<const shared::CDataContainer>& locales) const
          {
             if (pluginInformation->getConfigurationSchema()->empty())
                return shared::CDataContainer::make();
@@ -502,7 +502,7 @@ namespace web
             // Manage binding
             schema->replaceAllNodesByName(
                "__Binding__",
-               [this](boost::shared_ptr<const shared::CDataContainer> bindingNode)-> boost::shared_ptr<shared::CDataContainer>
+               [this](const boost::shared_ptr<const shared::CDataContainer>& bindingNode)-> boost::shared_ptr<shared::CDataContainer>
                {
                   if (bindingNode->get<std::string>("type") != "system")
                      return nullptr;
@@ -515,8 +515,8 @@ namespace web
                   {
                      std::vector<std::pair<int, int>> requestedUsbDevices;
                      for (const auto& requestedDevice : bindingNode->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("content.oneOf"))
-                        requestedUsbDevices.emplace_back(std::make_pair(requestedDevice->get<int>("vendorId"),
-                                                                        requestedDevice->get<int>("productId")));
+                        requestedUsbDevices.emplace_back(requestedDevice->get<int>("vendorId"),
+                                                         requestedDevice->get<int>("productId"));
 
                      const auto result = CHelpers::getUsbDevicesV2(requestedUsbDevices,
                                                                    m_usbDevicesLister);
@@ -571,8 +571,8 @@ namespace web
             return schema;
          }
 
-         std::string CPlugin::translatePluginFullState(boost::shared_ptr<const shared::CDataContainer> locales,
-                                                       boost::shared_ptr<const shared::CDataContainer> fullState)
+         std::string CPlugin::translatePluginFullState(const boost::shared_ptr<const shared::CDataContainer>& locales,
+                                                       const boost::shared_ptr<const shared::CDataContainer>& fullState)
          {
             if (locales->empty() || fullState->empty())
                return {};
@@ -585,17 +585,16 @@ namespace web
             try
             {
                auto message = locales->get<std::string>("customLabels.pluginState." + messageId);
-               
-               const auto s = fullState->serialize(); //TODO virer
+
                if (!fullState->exists("messageData"))
                   return message;
 
-               const auto messageData = fullState->get<std::map<std::string, std::string>>("messageData");
+               const auto messageData = fullState->get<std::string>("messageData");
                if (messageData.empty())
                   return message;
 
                return shared::CStringExtension::replaceValues(message,
-                                                              messageData);
+                                                              shared::CDataContainer(messageData).getAsMap<std::string>({}));
             }
             catch (const std::exception& e)
             {

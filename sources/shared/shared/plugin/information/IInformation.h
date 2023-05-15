@@ -83,10 +83,10 @@ namespace shared
 
             //--------------------------------------------------------------
             /// \brief	    Provide the labels content for specified locale
-            /// \param locale The locale 2 digits iso code ('fr', 'en', ...)
+            /// \param locales The list of requested locales (preferred first)
             /// \return     the package.json content
             //--------------------------------------------------------------
-            virtual boost::shared_ptr<const CDataContainer> getLabels(const std::string& locale) const = 0;
+            virtual boost::shared_ptr<const CDataContainer> getLabels(const std::vector<std::string>& locales) const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    Provide the package.json content
