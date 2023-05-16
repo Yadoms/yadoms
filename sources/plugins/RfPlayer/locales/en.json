@@ -9,6 +9,8 @@
 		"receiver": {
 			"name": "Received protocols",
 			"description": "Specify the list of enabled received protocols",
+			"placeholder ": "Choose one or more protocols",
+			"nothingFound ": "No protocol was found",
 			"content": {
 				"X10": {
 					"name": "X10",

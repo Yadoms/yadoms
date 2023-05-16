@@ -17,6 +17,8 @@
     "Protocols": {
       "name": "Protocols to listen",
       "description": "Supported protocols to listen, see RFXCom manual to configure. Be careful, some protocols are incompatible and must not be selected together.",
+      "placeholder ": "Choose one or more protocols",
+      "nothingFound ": "No protocol was found",
       "content": {
         "AE Blyss": { "name": "AE Blyss" },
         "Rubicson": { "name": "Rubicson" },
