@@ -21,7 +21,7 @@
       }
     },
     "receiver": {
-      "type": "multiselectSection",
+      "type": "multiSelectSection",
       "content": {
         "X10": {
           "defaultValue": true

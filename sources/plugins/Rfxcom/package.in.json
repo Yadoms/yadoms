@@ -28,7 +28,7 @@
       }
     },
     "Protocols": {
-      "type": "multiselectSection",
+      "type": "multiSelectSection",
       "content": {
         "AE Blyss": {
           "defaultValue": false
