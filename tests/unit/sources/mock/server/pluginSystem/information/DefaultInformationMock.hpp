@@ -9,14 +9,14 @@ public:
 	// shared::plugin::IInformation implementation
 	const std::string& getType() const override
 	{
-		static const std::string str("mock");
-		return str;
+		static const std::string Str("mock");
+		return Str;
 	}
 
 	const shared::versioning::CSemVer& getVersion() const override
 	{
-		static const shared::versioning::CSemVer version("1.2.3-beta");
-		return version;
+		static const shared::versioning::CSemVer Version("1.2.3-beta");
+		return Version;
 	}
 
 	const std::string& getAuthor() const override
@@ -76,7 +76,7 @@ public:
 		return {};
 	}
 
-	boost::shared_ptr<const shared::CDataContainer> getLabels(const std::string& locale) const override
+	boost::shared_ptr<const shared::CDataContainer> getLabels(const std::vector<std::string>& locales) const override
 	{
 		return {};
 	}
