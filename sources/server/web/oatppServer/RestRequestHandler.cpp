@@ -64,6 +64,7 @@ namespace web
          }
          catch (const std::exception& exception)
          {
+            YADOMS_LOG(error) << "Answer 500 : Internal server error : " << exception.what();
             throw HttpError(Status::CODE_500,
                             (std::string("Internal server error : ") + exception.what()).c_str());
          }
