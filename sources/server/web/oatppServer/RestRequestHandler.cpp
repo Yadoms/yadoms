@@ -58,6 +58,8 @@ namespace web
             response->putHeader(oatpp::web::protocol::http::Header::CORS_ORIGIN,
                                 "*");
 
+            YADOMS_LOG(debug) << "Answer " << answer->code() << " : " << (answer->bodyIsFile() ? " {FILE} " : answer->body());
+
             return response;
          }
          catch (const std::exception& exception)
