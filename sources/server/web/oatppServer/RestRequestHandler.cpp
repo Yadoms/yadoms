@@ -22,9 +22,6 @@ namespace web
       std::shared_ptr<oatpp::web::server::HttpRequestHandler::OutgoingResponse> CRestRequestHandler::handle(
          const std::shared_ptr<IncomingRequest>& request)
       {
-         YADOMS_LOG(debug) << "<< Request " << request->getStartingLine();
-         YADOMS_LOG(debug) << "           " << request->readBodyToString();
-
          if (m_authentication)
             m_authentication->authenticate(request);
 
@@ -60,8 +57,6 @@ namespace web
 
             response->putHeader(oatpp::web::protocol::http::Header::CORS_ORIGIN,
                                 "*");
-
-            YADOMS_LOG(debug) << ">> Answer " << answer->code() << " : " << (answer->bodyIsFile() ? " {FILE} " : answer->body());
 
             return response;
          }
