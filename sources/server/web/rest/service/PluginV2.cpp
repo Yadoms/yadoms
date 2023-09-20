@@ -137,8 +137,10 @@ namespace web
                                                           paging);
             }
 
-            catch (const std::exception&)
+            catch (const std::exception& exception)
             {
+               YADOMS_LOG(error) << "Fail to get available plugins : " << exception.what();
+
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get available plugins");
             }
