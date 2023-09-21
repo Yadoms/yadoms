@@ -53,3 +53,15 @@ http://www.yadoms.com/forum
 ## Downloads
 
 [Go to download page](https://github.com/Yadoms/yadoms/releases/)
+
+## Docker
+
+# build the image with the current source code
+```bash
+docker build . -t yadoms
+```
+
+# Run it
+```bash
+docker run -it -p 8080:8080 yadoms
+```
