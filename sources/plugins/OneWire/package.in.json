@@ -19,7 +19,8 @@
       "show": {
         "__Binding__": {
           "type": "system",
-          "query": "platformIsLinux"
+          "query": "platformIsLinux",
+          "key":  "show"  
         }
       },
       "content": {

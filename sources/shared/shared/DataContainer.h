@@ -484,7 +484,7 @@ namespace shared
       /// \param [in] onReplaceFunction   Function called for each subkey found (return null if no change needs to be done)
       //--------------------------------------------------------------
       void replaceAllNodesByName(const std::string& subkeyName,
-                                 std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction);
+                                 const std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)>& onReplaceFunction);
 
       //--------------------------------------------------------------
       /// \brief	    Find a sub-parameter with criteria
@@ -1526,7 +1526,7 @@ namespace shared
       void replaceAllNodesByNameInternal(
          rapidjson::Value& root,
          const std::string& subkeyName,
-         std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction,
+         const std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)>& onReplaceFunction,
          rapidjson::Document::AllocatorType& allocator);
 
       //--------------------------------------------------------------
