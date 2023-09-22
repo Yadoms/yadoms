@@ -84,42 +84,49 @@ namespace web
                std::vector<boost::shared_ptr<shared::CDataContainer>> pluginEntries;
                for (const auto& plugin : foundPlugins)
                {
-                  auto pluginEntry = boost::make_shared<shared::CDataContainer>();
-
-                  const auto labels = plugin->getLabels(request->acceptLanguages());
-                  if (!labels->empty() && (props->empty() || props->find("name") != props->end()))
-                     pluginEntry->set("name", labels->get<std::string>("name"));
-                  if (!labels->empty() && (props->empty() || props->find("description") != props->end()))
-                     pluginEntry->set("description", labels->get<std::string>("description"));
-
-                  if (props->empty() || props->find("type") != props->end())
-                     pluginEntry->set("type", plugin->getType());
-                  if (props->empty() || props->find("version") != props->end())
-                     pluginEntry->set("version", plugin->getVersion().toString());
-                  if (props->empty() || props->find("author") != props->end())
-                     pluginEntry->set("author", plugin->getAuthor());
-                  if (props->empty() || props->find("url") != props->end())
-                     pluginEntry->set("url", plugin->getUrl());
-                  if (props->empty() || props->find("supportManuallyCreatedDevice") != props->end())
-                     pluginEntry->set("supportManuallyCreatedDevice", plugin->getSupportManuallyCreatedDevice());
-                  if (props->empty() || props->find("supportDeviceRemovedNotification") != props->end())
-                     pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
-                  if (props->empty() || props->find("configurationSchema") != props->end())
-                     pluginEntry->set("configurationSchema", getPluginConfigurationSchema(plugin,
-                                                                                          labels));
-
-                  if (!pluginEntry->empty())
+                  try
                   {
-                     if (page && pageSize)
+                     auto pluginEntry = boost::make_shared<shared::CDataContainer>();
+
+                     const auto labels = plugin->getLabels(request->acceptLanguages());
+                     if (!labels->empty() && (props->empty() || props->find("name") != props->end()))
+                        pluginEntry->set("name", labels->get<std::string>("name"));
+                     if (!labels->empty() && (props->empty() || props->find("description") != props->end()))
+                        pluginEntry->set("description", labels->get<std::string>("description"));
+
+                     if (props->empty() || props->find("type") != props->end())
+                        pluginEntry->set("type", plugin->getType());
+                     if (props->empty() || props->find("version") != props->end())
+                        pluginEntry->set("version", plugin->getVersion().toString());
+                     if (props->empty() || props->find("author") != props->end())
+                        pluginEntry->set("author", plugin->getAuthor());
+                     if (props->empty() || props->find("url") != props->end())
+                        pluginEntry->set("url", plugin->getUrl());
+                     if (props->empty() || props->find("supportManuallyCreatedDevice") != props->end())
+                        pluginEntry->set("supportManuallyCreatedDevice", plugin->getSupportManuallyCreatedDevice());
+                     if (props->empty() || props->find("supportDeviceRemovedNotification") != props->end())
+                        pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
+                     if (props->empty() || props->find("configurationSchema") != props->end())
+                        pluginEntry->set("configurationSchema", getPluginConfigurationSchema(plugin,
+                           labels));
+
+                     if (!pluginEntry->empty())
                      {
-                        if (lastItem >= firstItem && lastItem < (firstItem + *pageSize))
+                        if (page && pageSize)
+                        {
+                           if (lastItem >= firstItem && lastItem < (firstItem + *pageSize))
+                              pluginEntries.push_back(pluginEntry);
+                           ++lastItem;
+                        }
+                        else
+                        {
                            pluginEntries.push_back(pluginEntry);
-                        ++lastItem;
+                        }
                      }
-                     else
-                     {
-                        pluginEntries.push_back(pluginEntry);
-                     }
+                  }
+                  catch (const std::exception& exception)
+                  {
+                     YADOMS_LOG(error) << "Fail to add plugin to available plugins list : " << exception.what();
                   }
                }
 
@@ -504,66 +511,73 @@ namespace web
             // Manage binding
             schema->replaceAllNodesByName(
                "__Binding__",
-               [this](const boost::shared_ptr<const shared::CDataContainer>& bindingNode)-> boost::shared_ptr<shared::CDataContainer>
+               [this, &pluginInformation](const boost::shared_ptr<const shared::CDataContainer>& bindingNode)-> boost::shared_ptr<shared::CDataContainer>
                {
-                  if (bindingNode->get<std::string>("type") != "system")
-                     return nullptr;
+                  try
+                  {
+                     if (bindingNode->get<std::string>("type") != "system")
+                        return nullptr;
 
-                  const auto query = bindingNode->get<std::string>("query");
+                     const auto query = bindingNode->get<std::string>("query");
 
-                  if (query == "serialPorts")
-                     return CHelpers::getSerialPortsV2();
-                  if (query == "usbDevices")
-                  {
-                     std::vector<std::pair<int, int>> requestedUsbDevices;
-                     for (const auto& requestedDevice : bindingNode->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("content.oneOf"))
-                        requestedUsbDevices.emplace_back(requestedDevice->get<int>("vendorId"),
-                                                         requestedDevice->get<int>("productId"));
-
-                     const auto result = CHelpers::getUsbDevicesV2(requestedUsbDevices,
-                                                                   m_usbDevicesLister);
-
-                     return CHelpers::getUsbDevicesV2(requestedUsbDevices,
-                                                      m_usbDevicesLister);
-                  }
-                  if (query == "NetworkInterfaces")
-                     return CHelpers::getNetworkInterfacesV2(false);
-                  if (query == "NetworkInterfacesWithoutLoopback")
-                     return CHelpers::getNetworkInterfacesV2(true);
-                  if (query == "platformIsWindows")
-                  {
-                     auto result = shared::CDataContainer::make();
-                     result->set(bindingNode->get<std::string>("key"),
-                                 tools::COperatingSystem::getName() == "windows");
-                     return result;
-                  }
-                  if (query == "platformIsLinux")
-                  {
-                     auto result = shared::CDataContainer::make();
-                     result->set(bindingNode->get<std::string>("key"),
-                                 tools::COperatingSystem::getName() == "linux");
-                     return result;
-                  }
-                  if (query == "platformIsMac")
-                  {
-                     auto result = shared::CDataContainer::make();
-                     result->set(bindingNode->get<std::string>("key"),
-                                 tools::COperatingSystem::getName() == "mac");
-                     return result;
-                  }
-                  if (query == "supportedTimezones")
-                  {
-                     std::set<std::string> filter;
-                     if (bindingNode->exists("filter"))
+                     if (query == "serialPorts")
+                        return CHelpers::getSerialPortsV2();
+                     if (query == "usbDevices")
                      {
-                        const auto requestedFilter = bindingNode->get<std::string>("filter");
-                        char separator = '|';
-                        for (const auto& t : boost::tokenizer<boost::char_separator<char>>(requestedFilter,
-                                                                                           boost::char_separator<char>(&separator)))
-                           filter.insert(t);
+                        std::vector<std::pair<int, int>> requestedUsbDevices;
+                        for (const auto& requestedDevice : bindingNode->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("content.oneOf"))
+                           requestedUsbDevices.emplace_back(requestedDevice->get<int>("vendorId"),
+                              requestedDevice->get<int>("productId"));
+
+                        const auto result = CHelpers::getUsbDevicesV2(requestedUsbDevices,
+                           m_usbDevicesLister);
+
+                        return CHelpers::getUsbDevicesV2(requestedUsbDevices,
+                           m_usbDevicesLister);
                      }
-                     return CHelpers::getSupportedTimezonesV2(filter,
-                                                              m_timezoneDatabase);
+                     if (query == "NetworkInterfaces")
+                        return CHelpers::getNetworkInterfacesV2(false);
+                     if (query == "NetworkInterfacesWithoutLoopback")
+                        return CHelpers::getNetworkInterfacesV2(true);
+                     if (query == "platformIsWindows")
+                     {
+                        auto result = shared::CDataContainer::make();
+                        result->set(bindingNode->get<std::string>("key"),
+                           tools::COperatingSystem::getName() == "windows");
+                        return result;
+                     }
+                     if (query == "platformIsLinux")
+                     {
+                        auto result = shared::CDataContainer::make();
+                        result->set(bindingNode->get<std::string>("key"),
+                           tools::COperatingSystem::getName() == "linux");
+                        return result;
+                     }
+                     if (query == "platformIsMac")
+                     {
+                        auto result = shared::CDataContainer::make();
+                        result->set(bindingNode->get<std::string>("key"),
+                           tools::COperatingSystem::getName() == "mac");
+                        return result;
+                     }
+                     if (query == "supportedTimezones")
+                     {
+                        std::set<std::string> filter;
+                        if (bindingNode->exists("filter"))
+                        {
+                           const auto requestedFilter = bindingNode->get<std::string>("filter");
+                           char separator = '|';
+                           for (const auto& t : boost::tokenizer<boost::char_separator<char>>(requestedFilter,
+                              boost::char_separator<char>(&separator)))
+                              filter.insert(t);
+                        }
+                        return CHelpers::getSupportedTimezonesV2(filter,
+                           m_timezoneDatabase);
+                     }
+                  }
+                  catch(const shared::exception::CInvalidParameter& exception)
+                  {
+                     throw std::runtime_error("Fail to parse __Binding__ section of plugin " + pluginInformation->getType() + " : " + exception.what());
                   }
 
                   return nullptr;
