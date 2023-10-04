@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "NotificationCenter.h"
-#include "basic/Notification.hpp"
 #include <shared/exception/NullReference.hpp>
 
-namespace notification {
-
+namespace notification
+{
    CNotificationCenter::CNotificationCenter()
    {
    }
@@ -13,7 +12,7 @@ namespace notification {
    {
    }
 
-   void CNotificationCenter::postNotification(const boost::shared_ptr<INotification> notification)
+   void CNotificationCenter::postNotification(const boost::shared_ptr<INotification>& notification) const
    {
       if (notification)
       {
@@ -32,8 +31,7 @@ namespace notification {
    }
 
 
-
-   void CNotificationCenter::subscribeObserver(boost::shared_ptr< IObserver > observer)
+   void CNotificationCenter::subscribeObserver(const boost::shared_ptr<IObserver>& observer)
    {
       boost::mutex::scoped_lock lock(m_mutex);
 
@@ -44,18 +42,17 @@ namespace notification {
    }
 
 
-   void CNotificationCenter::unsubscribeObserver(boost::shared_ptr< IObserver > observer)
+   void CNotificationCenter::unsubscribeObserver(const boost::shared_ptr<IObserver>& observer)
    {
       boost::mutex::scoped_lock lock(m_mutex);
 
       if (observer)
       {
-         std::vector< boost::shared_ptr< IObserver > >::iterator i;
-         for (i = m_observers.begin(); i != m_observers.end(); ++i)
+         for (auto observerIterator = m_observers.begin(); observerIterator != m_observers.end(); ++observerIterator)
          {
-            if (*i == observer)
+            if (*observerIterator == observer)
             {
-               m_observers.erase(i);
+               m_observers.erase(observerIterator);
                return;
             }
          }
@@ -65,7 +62,4 @@ namespace notification {
          throw shared::exception::CNullReference("Observer can not be null");
       }
    }
-
-
-
 } // namespace notification

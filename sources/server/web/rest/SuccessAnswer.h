@@ -15,7 +15,7 @@ namespace web
                                  const EContentType& contentType = EContentType::kPlainText);
          explicit CSuccessAnswer(const boost::filesystem::path& file,
                                  const EContentType& contentType = EContentType::kOctetStream);
-         explicit CSuccessAnswer(boost::shared_ptr<shared::event::CEventHandler> streamingEventHandler,
+         explicit CSuccessAnswer(boost::shared_ptr<shared::event::CEventHandler> ingEventHandler,
                                  int streamingOnNewEventId);
          ~CSuccessAnswer() override = default;
 

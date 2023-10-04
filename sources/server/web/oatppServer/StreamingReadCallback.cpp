@@ -5,10 +5,10 @@
 
 using namespace web::oatppServer;
 
-unsigned int CStreamingReadCallback::m_connectionsCount = 0;
+unsigned int CSseClientConnection::m_connectionsCount = 0;
 
-CStreamingReadCallback::CStreamingReadCallback(boost::shared_ptr<shared::event::CEventHandler> eventHandler,
-                                               int streamingEventId)
+CSseClientConnection::CSseClientConnection(boost::shared_ptr<shared::event::CEventHandler> eventHandler,
+                                           int streamingEventId)
    : m_eventHandler(std::move(eventHandler)),
      m_streamingEventId(streamingEventId)
 {
@@ -16,13 +16,13 @@ CStreamingReadCallback::CStreamingReadCallback(boost::shared_ptr<shared::event::
    YADOMS_LOG(information) << "SSE connections count = " << m_connectionsCount;
 }
 
-CStreamingReadCallback::~CStreamingReadCallback()
+CSseClientConnection::~CSseClientConnection()
 {
    --m_connectionsCount;
    YADOMS_LOG(information) << "SSE connections count = " << m_connectionsCount;
 }
 
-oatpp::String CStreamingReadCallback::waitEvent() const
+oatpp::String CSseClientConnection::handle() const
 {
    if (m_eventHandler->waitForEvents() == m_streamingEventId)
       return "event: hello !\n"
@@ -30,12 +30,21 @@ oatpp::String CStreamingReadCallback::waitEvent() const
    return {};
 }
 
-oatpp::v_io_size CStreamingReadCallback::read(void* buffer, v_buff_size count, oatpp::async::Action& action)
+CStreamingReadCallback::CStreamingReadCallback(boost::shared_ptr<shared::event::CEventHandler> eventHandler,
+                                               int streamingEventId)
+   : m_clientConnection(boost::make_shared<CSseClientConnection>(eventHandler,
+                                                                 streamingEventId))
+{
+}
+
+oatpp::v_io_size CStreamingReadCallback::read(void* buffer, v_buff_size count,
+                                              oatpp::async::Action& action)
 {
    if (m_inlineData.bytesLeft == 0)
    {
-      m_currentMessage = waitEvent();
-      if (m_currentMessage) m_inlineData.set(m_currentMessage->data(), m_currentMessage->size());
+      m_currentMessage = m_clientConnection->handle();
+      if (m_currentMessage)
+         m_inlineData.set(m_currentMessage->data(), m_currentMessage->size());
    }
 
    v_buff_size desiredToRead = m_inlineData.bytesLeft;

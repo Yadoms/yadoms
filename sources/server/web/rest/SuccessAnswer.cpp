@@ -33,7 +33,7 @@ namespace web
                                      int streamingOnNewEventId)
          : m_bodyType(EBodyType::kStream),
            m_contentType(EContentType::kTextEventStream),
-           m_streamingEventHandler(streamingEventHandler),
+           m_streamingEventHandler(std::move(streamingEventHandler)),
            m_streamingOnNewEventId(streamingOnNewEventId)
       {
       }

@@ -322,7 +322,7 @@ namespace notification
       ///\param [in] notificationCenter   The notification center (if not specified, it tries to get the service located NotificationCenter)
       //-----------------------------
       static void subscribeCustomObserver(const boost::shared_ptr<IObserver>& observer,
-                                          boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+                                          boost::shared_ptr<CNotificationCenter> notificationCenter = nullptr)
       {
          //if notification center is not provided, get the global scope service locator instance
          if (!notificationCenter)
