@@ -13,7 +13,7 @@ namespace notification
       class CNotification final : public change::CNotification<database::entities::CAcquisition>
       {
       public:
-         explicit CNotification(boost::shared_ptr<database::entities::CAcquisition> acquisition)
+         explicit CNotification(const boost::shared_ptr<database::entities::CAcquisition>& acquisition)
             : change::CNotification<database::entities::CAcquisition>(acquisition,
                                                                       change::EChangeType::kCreate)
          {

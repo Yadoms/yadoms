@@ -12,12 +12,7 @@ namespace notification
       class IAction
       {
       public:
-         //-----------------------------
-         ///\brief Destructor
-         //-----------------------------
-         virtual ~IAction()
-         {
-         }
+         virtual ~IAction() = default;
 
          //-----------------------------
          ///\brief Send notification

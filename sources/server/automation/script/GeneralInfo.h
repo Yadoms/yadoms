@@ -11,19 +11,12 @@ namespace automation
       //-----------------------------------------------------
       ///\brief The script properties
       //-----------------------------------------------------
-      class CGeneralInfo : public IGeneralInfo
+      class CGeneralInfo final : public IGeneralInfo
       {
       public:
-         //-----------------------------------------------------
-         ///\brief               Constructor
-         //-----------------------------------------------------
          CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider,
                       boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider);
-
-         //-----------------------------------------------------
-         ///\brief               Destructor
-         //-----------------------------------------------------
-         virtual ~CGeneralInfo();
+         ~CGeneralInfo() override = default;
 
       protected:
          // IGeneralInfo Implementation

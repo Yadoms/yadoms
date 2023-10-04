@@ -83,7 +83,7 @@ namespace web
                                                              m_httpConnectionHandler);
 
          // Websocket
-         m_websocketConnection = std::make_shared<CWebSocketConnection>();
+         m_websocketConnection = std::make_shared<CWebSocketConnection>();  //TODO virer ? (remplacé par SSE) (virer aussi les dépendances oatpp-websocket, etc...)
          m_websocketConnectionHandler = oatpp::websocket::ConnectionHandler::createShared();
          m_websocketConnectionHandler->setSocketInstanceListener(m_websocketConnection);
          httpRouter->route("GET",

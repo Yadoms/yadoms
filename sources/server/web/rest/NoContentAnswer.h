@@ -12,7 +12,9 @@ namespace web
 
          shared::http::ECodes code() const override;
          std::string body() const override;
-         bool bodyIsFile() const override;
+         EBodyType bodyType() const override;
+         boost::shared_ptr<shared::event::CEventHandler> streamingEventHandler() const override;
+         int streamingOnNewEventId() const override;
          EContentType contentType() const override;
          std::shared_ptr<std::map<std::string, std::string>> customHeaders() const override;
       };

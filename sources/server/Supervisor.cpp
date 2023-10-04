@@ -40,6 +40,7 @@
 #include "web/oatppServer/Authentication.h"
 #include "web/poco/BasicAuthentication.h"
 #include "web/rest/service/Keyword.h"
+#include "web/rest/service/ServerSentEvents.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
                          const shared::versioning::CSemVer& yadomsVersion)
@@ -170,6 +171,7 @@ void CSupervisor::run()
                                                                                    dataProvider,
                                                                                    taskManager,
                                                                                    boost::make_shared<web::rest::service::CUploadFileManager>()));
+      restServices->push_back(boost::make_shared<web::rest::service::CServerSentEvents>(dataProvider));
 
       auto pocoBasedWebServer = createPocoBasedWebServer(startupOptions->getWebServerIpAddress(),
                                                          startupOptions->getWebServerPortNumber() + 1, //TODO virer le +1 (pour test...)

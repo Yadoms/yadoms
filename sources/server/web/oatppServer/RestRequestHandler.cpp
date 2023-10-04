@@ -29,17 +29,27 @@ namespace web
          {
             const auto answer = m_handler(boost::make_shared<CRestRequest>(request));
 
-            const auto body =
-               answer->bodyIsFile()
-                  ? static_cast<std::shared_ptr<oatpp::web::protocol::http::outgoing::Body>>(std::make_shared<
-                     oatpp::web::protocol::http::outgoing::StreamingBody>(
-                     std::make_shared<oatpp::data::stream::FileInputStream>(answer->body().c_str())))
-                  : static_cast<std::shared_ptr<oatpp::web::protocol::http::outgoing::Body>>(
-                     oatpp::web::protocol::http::outgoing::BufferBody::createShared(oatpp::String(answer->body())));
+            std::shared_ptr<oatpp::web::protocol::http::outgoing::Body> body;
+            switch (answer->bodyType())
+            {
+            case rest::IAnswer::EBodyType::kString:
+               body = oatpp::web::protocol::http::outgoing::BufferBody::createShared(oatpp::String(answer->body()));
+               break;
+            case rest::IAnswer::EBodyType::kFile:
+               body = std::make_shared<oatpp::web::protocol::http::outgoing::StreamingBody>(
+                  std::make_shared<oatpp::data::stream::FileInputStream>(answer->body().c_str()));
+               break;
+            case rest::IAnswer::EBodyType::kStream:
+               body = std::make_shared<oatpp::web::protocol::http::outgoing::StreamingBody>(
+                  std::make_shared<CStreamingReadCallback>(answer->streamingEventHandler(),
+                                                           answer->streamingOnNewEventId()));
+               break;
+            default: // NOLINT(clang-diagnostic-covered-switch-default)
+               throw std::invalid_argument("Answer body type is invalid");
+            }
 
-            auto response = OutgoingResponse::createShared(
-               toStatusCode(answer->code()),
-               body);
+            auto response = OutgoingResponse::createShared(toStatusCode(answer->code()),
+                                                           body);
 
             static oatpp::String serverHeader(("yadoms/" + std::string(YADOMS_VERSION)).c_str());
             response->putHeader(oatpp::web::protocol::http::Header::SERVER,
@@ -48,6 +58,10 @@ namespace web
             if (answer->contentType() != rest::EContentType::kNone)
                response->putHeader(oatpp::web::protocol::http::Header::CONTENT_TYPE,
                                    ToString(answer->contentType()).c_str());
+
+            if (answer->bodyType() == rest::IAnswer::EBodyType::kStream)
+               response->putHeader("Cache-Control",
+                                   "no-store");
 
             const auto customHeaders = answer->customHeaders();
             if (customHeaders)

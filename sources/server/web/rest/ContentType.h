@@ -13,6 +13,7 @@ namespace web
          kMultipartFormData,
          kOctetStream,
          kImagePng,
+         kTextEventStream,
          kNone
       };
 
@@ -22,6 +23,7 @@ namespace web
       static const std::string ContentTypeMultipartFormData("multipart/form-data");
       static const std::string ContentTypeOctetStreamString("application/octet-stream");
       static const std::string ContentTypeImagePngString("image/png");
+      static const std::string ContentTypeTextEventStreamString("text/event-stream");
 
       static const std::string& ToString(const EContentType& contentType)
       {
@@ -33,6 +35,7 @@ namespace web
          case EContentType::kMultipartFormData: return ContentTypeMultipartFormData;
          case EContentType::kOctetStream: return ContentTypeOctetStreamString;
          case EContentType::kImagePng: return ContentTypeImagePngString;
+         case EContentType::kTextEventStream: return ContentTypeTextEventStreamString;
          default: // NOLINT(clang-diagnostic-covered-switch-default)
             throw std::out_of_range(
                "Can not convert HTTP REST content type into string, invalid content type : " + std::to_string(
@@ -54,6 +57,8 @@ namespace web
             return EContentType::kOctetStream;
          if (contentType == ContentTypeImagePngString)
             return EContentType::kImagePng;
+         if (contentType == ContentTypeTextEventStreamString)
+            return EContentType::kTextEventStream;
 
          throw std::out_of_range("Can not convert HTTP REST content type from string, invalid content type : " + contentType);
       }

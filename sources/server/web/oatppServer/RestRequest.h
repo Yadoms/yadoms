@@ -1,6 +1,5 @@
 #pragma once
 #include <oatpp/web/server/HttpRequestHandler.hpp>
-#include <shared/http/Codes.h>
 #include "shared/http/HttpRestVerb.h"
 #include "web/rest/IRequest.h"
 

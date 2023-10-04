@@ -11,7 +11,7 @@ namespace notification { namespace basic {
    ///\template T The notification content type
    //-----------------------------
    template<class T>
-   class CObserver : public IObserver
+   class CObserver final : public IObserver
    {
    public:
       //-----------------------------
@@ -26,11 +26,12 @@ namespace notification { namespace basic {
       //-----------------------------
       ///\brief Destructor
       //-----------------------------
-      virtual ~CObserver() {
+      ~CObserver() override
+      {
       }
 
       //IObserver implementation
-      void observe(const boost::shared_ptr< INotification > n)
+      void observe(const boost::shared_ptr< INotification > n) override
       {
          //check notification is good type
          boost::shared_ptr< CNotification<T> > notif = boost::dynamic_pointer_cast< CNotification<T> >(n);

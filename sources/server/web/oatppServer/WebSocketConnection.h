@@ -9,7 +9,7 @@ namespace web
 {
    namespace oatppServer
    {
-      class CWebSocketConnection final : public oatpp::websocket::ConnectionHandler::SocketInstanceListener
+      class CWebSocketConnection final : public oatpp::websocket::ConnectionHandler::SocketInstanceListener //TODO virer ? (remplacé par SSE)
       {
       public:
          void onAfterCreate(const oatpp::websocket::WebSocket& socket,

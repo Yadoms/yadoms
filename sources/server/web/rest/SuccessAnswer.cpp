@@ -23,9 +23,18 @@ namespace web
 
       CSuccessAnswer::CSuccessAnswer(const boost::filesystem::path& file,
                                      const EContentType& contentType)
-         : m_bodyIsFile(true),
+         : m_bodyType(EBodyType::kFile),
            m_body(file.string()),
            m_contentType(contentType)
+      {
+      }
+
+      CSuccessAnswer::CSuccessAnswer(boost::shared_ptr<shared::event::CEventHandler> streamingEventHandler,
+                                     int streamingOnNewEventId)
+         : m_bodyType(EBodyType::kStream),
+           m_contentType(EContentType::kTextEventStream),
+           m_streamingEventHandler(streamingEventHandler),
+           m_streamingOnNewEventId(streamingOnNewEventId)
       {
       }
 
@@ -39,9 +48,19 @@ namespace web
          return m_body;
       }
 
-      bool CSuccessAnswer::bodyIsFile() const
+      IAnswer::EBodyType CSuccessAnswer::bodyType() const
       {
-         return m_bodyIsFile;
+         return m_bodyType;
+      }
+
+      boost::shared_ptr<shared::event::CEventHandler> CSuccessAnswer::streamingEventHandler() const
+      {
+         return m_streamingEventHandler;
+      }
+
+      int CSuccessAnswer::streamingOnNewEventId() const
+      {
+         return m_streamingOnNewEventId;
       }
 
       EContentType CSuccessAnswer::contentType() const

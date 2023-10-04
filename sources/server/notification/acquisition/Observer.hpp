@@ -25,7 +25,15 @@ namespace notification
          {
          }
 
-         ~CObserver() override = default;
+         CObserver(const CObserver&) = delete;
+         CObserver(const CObserver&&) = delete;
+         CObserver operator=(CObserver&) = delete;
+         CObserver operator=(CObserver&&) = delete;
+
+         ~CObserver() override //TODO à default ?
+         {
+            m_allowedKeywordId.clear(); //TODO code qui sert à rien, juste pour le debugger
+         }
 
          //-----------------------------
          ///\brief Add a keyword id to filter

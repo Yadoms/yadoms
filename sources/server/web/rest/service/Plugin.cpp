@@ -22,7 +22,7 @@ namespace web
                           boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                           boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
                           boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
-                          boost::shared_ptr<task::CScheduler> taskScheduler,
+                          const boost::shared_ptr<task::CScheduler>& taskScheduler,
                           communication::ISendMessageAsync& messageSender,
                           bool developerMode)
             : m_dataProvider(std::move(dataProvider)),

@@ -2,24 +2,20 @@
 
 #include "INotification.h"
 
-namespace notification { 
-   
+namespace notification
+{
    //-----------------------------
    ///\brief Interface for observer
    //-----------------------------
    class IObserver
    {
    public:
-      //-----------------------------
-      ///\brief Destructor
-      //-----------------------------
-      virtual ~IObserver() {}
+      virtual ~IObserver() = default;
 
       //-----------------------------
       ///\brief Observe the notification
       ///\param [in] notification   The notification to observe
       //-----------------------------
-      virtual void observe(const boost::shared_ptr< INotification > notification) = 0;
+      virtual void observe(boost::shared_ptr<INotification> notification) = 0;
    };
-
 } // namespace notification

@@ -21,9 +21,19 @@ namespace web
          return {};
       }
 
-      bool CSeeOtherLocationAnswer::bodyIsFile() const
+      IAnswer::EBodyType CSeeOtherLocationAnswer::bodyType() const
       {
-         return false;
+         return EBodyType::kString;
+      }
+
+      boost::shared_ptr<shared::event::CEventHandler> CSeeOtherLocationAnswer::streamingEventHandler() const
+      {
+         return nullptr;
+      }
+
+      int CSeeOtherLocationAnswer::streamingOnNewEventId() const
+      {
+         return 0;
       }
 
       EContentType CSeeOtherLocationAnswer::contentType() const

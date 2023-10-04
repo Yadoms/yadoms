@@ -25,9 +25,19 @@ namespace web
          return m_body;
       }
 
-      bool CErrorAnswer::bodyIsFile() const
+      IAnswer::EBodyType CErrorAnswer::bodyType() const
       {
-         return false;
+         return EBodyType::kString;
+      }
+
+      boost::shared_ptr<shared::event::CEventHandler> CErrorAnswer::streamingEventHandler() const
+      {
+         return nullptr;
+      }
+
+      int CErrorAnswer::streamingOnNewEventId() const
+      {
+         return 0;
       }
 
       EContentType CErrorAnswer::contentType() const

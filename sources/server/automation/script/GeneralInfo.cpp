@@ -18,10 +18,6 @@ namespace automation
       {
       }
 
-      CGeneralInfo::~CGeneralInfo()
-      {
-      }
-
       std::string CGeneralInfo::get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const
       {
          try
@@ -37,7 +33,7 @@ namespace automation
                   catch (shared::exception::CEmptyResult&)
                   {
                      YADOMS_LOG(error) << "General info, get sunrise : daylight is not available (do you set your location ?)";
-                     return std::string();
+                     return {};
                   }
                }
             case shared::script::yScriptApi::IYScriptApi::kSunset:
@@ -49,25 +45,28 @@ namespace automation
                   catch (shared::exception::CEmptyResult&)
                   {
                      YADOMS_LOG(error) << "General info, get sunset : daylight is not available (do you set your location ?)";
-                     return std::string();
+                     return {};
                   }
                }
-            case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->latitude());
-            case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->longitude());
-            case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->altitude());
-            case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS: return shared::CServiceLocator::instance().get<IRunningInformation>()->getOperatingSystemName();
-            case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().serialize();
-            default:
+            case shared::script::yScriptApi::IYScriptApi::kLatitude:
+               return shared::CStringExtension::cultureInvariantToString(m_locationProvider->latitude());
+            case shared::script::yScriptApi::IYScriptApi::kLongitude:
+               return shared::CStringExtension::cultureInvariantToString(m_locationProvider->longitude());
+            case shared::script::yScriptApi::IYScriptApi::kAltitude:
+               return shared::CStringExtension::cultureInvariantToString(m_locationProvider->altitude());
+            case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS:
+               return shared::CServiceLocator::instance().get<IRunningInformation>()->getOperatingSystemName();
+            case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion:
+               return shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().serialize();
+            default: // NOLINT(clang-diagnostic-covered-switch-default)
                throw shared::exception::COutOfRange((boost::format("Key %1% doesn't exist") % key).str());
             }
          }
          catch (shared::exception::CException& e)
          {
             YADOMS_LOG(error) << "General info, get " << key << " returning error : " << e.what();
-            return std::string();
+            return {};
          }
       }
    }
 } // namespace automation::script
-
-

@@ -81,7 +81,8 @@ namespace notification
       ///\template N  The notification data type
       //-----------------------------
       template <class N>
-      static void postNotification(const boost::shared_ptr<N> n, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static void postNotification(const boost::shared_ptr<N> n,
+                                   boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
       {
          if (n)
          {
@@ -132,7 +133,8 @@ namespace notification
       ///\return The created observer
       //-----------------------------
       template <class N>
-      static void postChangeNotification(const boost::shared_ptr<N> n, change::EChangeType changeType, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static void postChangeNotification(const boost::shared_ptr<N> n, change::EChangeType changeType,
+                                         boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
       {
          if (n)
          {
@@ -146,7 +148,7 @@ namespace notification
                   throw shared::exception::CNullReference("Notification center not found");
             }
 
-            boost::shared_ptr<INotification> compatibleNotification(boost::make_shared<change::CNotification<N>>(n, changeType));
+            const boost::shared_ptr<INotification> compatibleNotification(boost::make_shared<change::CNotification<N>>(n, changeType));
             notificationCenter->postNotification(compatibleNotification);
          }
          else
@@ -164,7 +166,9 @@ namespace notification
       ///\return The created observer
       //-----------------------------
       template <class N>
-      static boost::shared_ptr<IObserver> subscribeBasicObserver(typename action::CFunctionPointerNotifier<N>::FunctionPtr functor, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static boost::shared_ptr<IObserver> subscribeBasicObserver(typename action::CFunctionPointerNotifier<N>::FunctionPtr functor,
+                                                                 boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<
+                                                                    CNotificationCenter>())
       {
          if (functor)
          {
@@ -187,7 +191,9 @@ namespace notification
       ///\return The created observer
       //-----------------------------
       template <class N>
-      static boost::shared_ptr<IObserver> subscribeBasicObserver(shared::event::CEventHandler& eventHandler, const int notificationEventCode, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static boost::shared_ptr<IObserver> subscribeBasicObserver(shared::event::CEventHandler& eventHandler, const int notificationEventCode,
+                                                                 boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<
+                                                                    CNotificationCenter>())
       {
          //create the action
          boost::shared_ptr<action::IAction<N>> observerAction(boost::make_shared<action::CEventAction<N>>(eventHandler, notificationEventCode));
@@ -203,7 +209,10 @@ namespace notification
       ///\return The created observer
       //-----------------------------
       template <class N>
-      static boost::shared_ptr<IObserver> subscribeBasicObserver(boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int notificationEventCode, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static boost::shared_ptr<IObserver> subscribeBasicObserver(boost::shared_ptr<shared::event::CEventHandler> eventHandler,
+                                                                 const int notificationEventCode,
+                                                                 boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<
+                                                                    CNotificationCenter>())
       {
          //create the action
          boost::shared_ptr<action::IAction<N>> observerAction(boost::make_shared<action::CEventPtrAction<N>>(eventHandler, notificationEventCode));
@@ -220,7 +229,10 @@ namespace notification
       ///\return The created observer
       //-----------------------------
       template <class N>
-      static boost::shared_ptr<IObserver> subscribeChangeObserver(change::EChangeType changeType, typename action::CFunctionPointerNotifier<N>::FunctionPtr functor, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static boost::shared_ptr<IObserver> subscribeChangeObserver(change::EChangeType changeType,
+                                                                  typename action::CFunctionPointerNotifier<N>::FunctionPtr functor,
+                                                                  boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<
+                                                                     CNotificationCenter>())
       {
          if (functor)
          {
@@ -243,7 +255,10 @@ namespace notification
       ///\return  The created observer
       //-----------------------------
       template <class N>
-      static boost::shared_ptr<IObserver> subscribeChangeObserver(change::EChangeType changeType, shared::event::CEventHandler& eventHandler, const int notificationEventCode, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static boost::shared_ptr<IObserver> subscribeChangeObserver(change::EChangeType changeType, shared::event::CEventHandler& eventHandler,
+                                                                  const int notificationEventCode,
+                                                                  boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<
+                                                                     CNotificationCenter>())
       {
          //create the action
          boost::shared_ptr<action::IAction<N>> observerAction(boost::make_shared<action::CEventAction<N>>(eventHandler, notificationEventCode));
@@ -260,7 +275,11 @@ namespace notification
       ///\return  The created observer
       //-----------------------------
       template <class N>
-      static boost::shared_ptr<IObserver> subscribeChangeObserver(change::EChangeType changeType, boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int notificationEventCode, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static boost::shared_ptr<IObserver> subscribeChangeObserver(change::EChangeType changeType,
+                                                                  boost::shared_ptr<shared::event::CEventHandler> eventHandler,
+                                                                  const int notificationEventCode,
+                                                                  boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<
+                                                                     CNotificationCenter>())
       {
          //create the action
          boost::shared_ptr<action::IAction<N>> observerAction(boost::make_shared<action::CEventPtrAction<N>>(eventHandler, notificationEventCode));
@@ -270,10 +289,11 @@ namespace notification
 
       //-----------------------------
       ///\brief unsubscribe an observer
-      ///\param [in] obs                  The observer to unregister
+      ///\param [in] observer             The observer to unregister
       ///\param [in] notificationCenter   The notification center (if not specified, it tries to get the service located NotificationCenter)
       //-----------------------------
-      static void unsubscribeObserver(boost::shared_ptr<IObserver> observer, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static void unsubscribeObserver(const boost::shared_ptr<IObserver>& observer,
+                                      boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
       {
          if (observer)
          {
@@ -298,12 +318,11 @@ namespace notification
 
       //-----------------------------
       ///\brief Subscribe a custom observer, which will call a function pointer callback
-      ///\param [in] functor              The function pointer to callback when a basic notification matching N is posted
+      ///\param [in] observer             The observer
       ///\param [in] notificationCenter   The notification center (if not specified, it tries to get the service located NotificationCenter)
-      ///\template N                      The notification type to observe
-      ///\return The created observer
       //-----------------------------
-      static void subscribeCustomObserver(boost::shared_ptr<IObserver> observer, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static void subscribeCustomObserver(const boost::shared_ptr<IObserver>& observer,
+                                          boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
       {
          //if notification center is not provided, get the global scope service locator instance
          if (!notificationCenter)
@@ -329,7 +348,8 @@ namespace notification
          ///\param [in] observer             The observer to subscribe
          ///\param [in] notificationCenter   The notification center (if not specified, it tries to get the service located NotificationCenter)
          //-----------------------------
-         CCustomSubscriber(boost::shared_ptr<IObserver> observer, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+         CCustomSubscriber(const boost::shared_ptr<IObserver>& observer,
+                           const boost::shared_ptr<CNotificationCenter>& notificationCenter = boost::shared_ptr<CNotificationCenter>())
             : m_observer(observer), m_notificationCenter(notificationCenter)
          {
             subscribeCustomObserver(m_observer, m_notificationCenter);
@@ -357,7 +377,9 @@ namespace notification
       ///\return The created observer
       //-----------------------------
       template <class N>
-      static boost::shared_ptr<IObserver> subscribeBasicObserver(boost::shared_ptr<action::IAction<N>> action, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static boost::shared_ptr<IObserver> subscribeBasicObserver(boost::shared_ptr<action::IAction<N>> action,
+                                                                 boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<
+                                                                    CNotificationCenter>())
       {
          //if notification center is not provided, get the global scope service locator instance
          if (!notificationCenter)
@@ -386,7 +408,9 @@ namespace notification
       ///\return The created observer
       //-----------------------------
       template <class N>
-      static boost::shared_ptr<IObserver> subscribeChangeObserver(change::EChangeType changeType, boost::shared_ptr<action::IAction<N>> action, boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<CNotificationCenter>())
+      static boost::shared_ptr<IObserver> subscribeChangeObserver(change::EChangeType changeType, boost::shared_ptr<action::IAction<N>> action,
+                                                                  boost::shared_ptr<CNotificationCenter> notificationCenter = boost::shared_ptr<
+                                                                     CNotificationCenter>())
       {
          //if notification center is not provided, get the global scope service locator instance
          if (!notificationCenter)
@@ -405,5 +429,3 @@ namespace notification
       }
    };
 } // namespace notification
-
-
