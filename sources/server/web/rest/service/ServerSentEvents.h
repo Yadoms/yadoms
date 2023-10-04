@@ -18,6 +18,7 @@ namespace web
             explicit CServerSentEvents(boost::shared_ptr<database::IDataProvider> dataProvider);
             ~CServerSentEvents() override = default;
 
+
             // IRestService implementation
             void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
@@ -30,8 +31,7 @@ namespace web
 
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
-               //std::vector<boost::shared_ptr<notification::IObserver>> observers; //TODO utile ?
-
+            //std::vector<boost::shared_ptr<notification::IObserver>> observers; //TODO utile ?
          };
       } //namespace service
    } //namespace rest

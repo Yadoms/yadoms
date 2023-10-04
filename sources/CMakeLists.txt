@@ -1097,6 +1097,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/web/oatppServer/RestRequest.cpp   
    server/web/oatppServer/RestRequestHandler.h
    server/web/oatppServer/RestRequestHandler.cpp
+   server/web/oatppServer/StreamingReadCallback.h
+   server/web/oatppServer/StreamingReadCallback.cpp
    server/web/oatppServer/WebServer.h
    server/web/oatppServer/WebServer.cpp    
    server/web/oatppServer/WebSocketConnection.h

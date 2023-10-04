@@ -7,6 +7,7 @@
 #include <oatpp/web/protocol/http/outgoing/BufferBody.hpp>
 
 #include "RestRequest.h"
+#include "StreamingReadCallback.h"
 
 namespace web
 {
