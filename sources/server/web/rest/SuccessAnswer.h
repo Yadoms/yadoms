@@ -32,7 +32,7 @@ namespace web
 
          const std::string m_body;
          const EContentType m_contentType;
-         const boost::shared_ptr<shared::event::CEventHandler>& m_streamingEventHandler = nullptr;
+         const boost::shared_ptr<shared::event::CEventHandler> m_streamingEventHandler = nullptr;
          int m_streamingOnNewEventId = 0;
       };
    } //namespace rest
