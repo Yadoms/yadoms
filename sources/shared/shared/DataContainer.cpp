@@ -453,7 +453,7 @@ namespace shared
    void CDataContainer::replaceAllNodesByNameInternal(
       rapidjson::Value& root,
       const std::string& subkeyName,
-      std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction,
+      const std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)>& onReplaceFunction,
       rapidjson::Document::AllocatorType& allocator)
    {
       const auto memberIterator = root.FindMember(subkeyName);
@@ -485,7 +485,7 @@ namespace shared
 
    void CDataContainer::replaceAllNodesByName(
       const std::string& subkeyName,
-      std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)> onReplaceFunction)
+      const std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)>& onReplaceFunction)
    {
       auto& allocator = m_tree.GetAllocator();
       replaceAllNodesByNameInternal(m_tree, subkeyName, onReplaceFunction, allocator);
