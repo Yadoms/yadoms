@@ -29,12 +29,10 @@ namespace web
       {
       }
 
-      CSuccessAnswer::CSuccessAnswer(boost::shared_ptr<shared::event::CEventHandler> streamingEventHandler,
-                                     int streamingOnNewEventId)
+      CSuccessAnswer::CSuccessAnswer(std::shared_ptr<service::ISseConnectionHandler> connectionHandler)
          : m_bodyType(EBodyType::kStream),
            m_contentType(EContentType::kTextEventStream),
-           m_streamingEventHandler(std::move(streamingEventHandler)),
-           m_streamingOnNewEventId(streamingOnNewEventId)
+           m_connectionHandler(std::move(connectionHandler))
       {
       }
 
@@ -53,16 +51,6 @@ namespace web
          return m_bodyType;
       }
 
-      boost::shared_ptr<shared::event::CEventHandler> CSuccessAnswer::streamingEventHandler() const
-      {
-         return m_streamingEventHandler;
-      }
-
-      int CSuccessAnswer::streamingOnNewEventId() const
-      {
-         return m_streamingOnNewEventId;
-      }
-
       EContentType CSuccessAnswer::contentType() const
       {
          return m_contentType;
@@ -71,6 +59,11 @@ namespace web
       std::shared_ptr<std::map<std::string, std::string>> CSuccessAnswer::customHeaders() const
       {
          return nullptr;
+      }
+
+      std::shared_ptr<service::ISseConnectionHandler> CSuccessAnswer::connectionHandler() const
+      {
+         return m_connectionHandler;
       }
    } //namespace rest
 } //namespace web 

@@ -60,6 +60,16 @@ namespace notification
             for (const int it : keywordsToListen)
                addKeywordIdFilter(it);
          }
+         //-----------------------------
+         ///\brief Reset the filter with a new filter list
+         ///\param [in] keywordsToListen The list of all keyword id to filter (if empty, all keywords are filtered)
+         //-----------------------------
+         void resetKeywordIdFilter(const std::set<int>& keywordsToListen)
+         {
+            clearKeywordIdFilter();
+            for (const int it : keywordsToListen)
+               addKeywordIdFilter(it);
+         }
 
          //-----------------------------
          ///\brief Delete a keyword id to filter

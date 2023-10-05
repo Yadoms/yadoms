@@ -26,16 +26,6 @@ namespace web
          return EBodyType::kString;
       }
 
-      boost::shared_ptr<shared::event::CEventHandler> CCreatedAnswer::streamingEventHandler() const
-      {
-         return nullptr;
-      }
-
-      int CCreatedAnswer::streamingOnNewEventId() const
-      {
-         return 0;
-      }
-
       EContentType CCreatedAnswer::contentType() const
       {
          return EContentType::kNone;
@@ -44,6 +34,11 @@ namespace web
       std::shared_ptr<std::map<std::string, std::string>> CCreatedAnswer::customHeaders() const
       {
          return m_customHeaders;
+      }
+
+      std::shared_ptr<service::ISseConnectionHandler> CCreatedAnswer::connectionHandler() const
+      {
+         return nullptr;
       }
    } //namespace rest
 } //namespace web 

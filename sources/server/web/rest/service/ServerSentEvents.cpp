@@ -1,17 +1,16 @@
 #include "ServerSentEvents.h"
 
 #include "RestEndPoint.h"
+#include "SseConnectionHandler.h"
 #include "stdafx.h"
 #include "notification/Helpers.hpp"
-#include "notification/IObserver.h"
 #include "notification/acquisition/Notification.hpp"
 #include "notification/acquisition/Observer.hpp"
 #include "notification/action/EventAction.hpp"
 #include "shared/exception/EmptyResult.hpp"
-#include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
-#include "web/rest/Helpers.h"
 #include "web/rest/SuccessAnswer.h"
+#include "web/rest/Helpers.h"
 
 namespace web
 {
@@ -35,6 +34,7 @@ namespace web
                return m_endPoints;
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "sse/acquisitions", requestSseAcquisitions));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "sse/acquisitions/{keywords}", requestSseAcquisitions));
 
             return m_endPoints;
@@ -47,9 +47,6 @@ namespace web
                const auto keywordIds = request->pathVariableExists("keywords")
                                           ? CHelpers::convertToIntSet(request->pathVariableAsList("keywords"))
                                           : std::make_unique<std::set<int>>();
-               if (keywordIds->empty())
-                  throw std::invalid_argument("No keyword provided");
-
 
                // Subscriptions
                // - new acquisitions
@@ -59,11 +56,14 @@ namespace web
                   eventHandler,
                   SseEventId);
                const auto newAcquisitionObserver = boost::make_shared<notification::acquisition::CObserver>(acquisitionAction);
+               if (!keywordIds->empty())
+                  newAcquisitionObserver->resetKeywordIdFilter(*keywordIds);
                notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver); //TODO unsubscribe quelque part ?
                //observers.emplace_back(newAcquisitionObserver);
 
-               return boost::make_shared<CSuccessAnswer>(eventHandler,
-                                                         SseEventId);
+               return boost::make_shared<CSuccessAnswer>(
+                  std::make_shared<oatppServer::CSseConnectionHandler>(eventHandler,
+                                                                       SseEventId));
             }
 
             catch (const std::invalid_argument& arg)

@@ -26,16 +26,6 @@ namespace web
          return EBodyType::kString;
       }
 
-      boost::shared_ptr<shared::event::CEventHandler> CSeeOtherLocationAnswer::streamingEventHandler() const
-      {
-         return nullptr;
-      }
-
-      int CSeeOtherLocationAnswer::streamingOnNewEventId() const
-      {
-         return 0;
-      }
-
       EContentType CSeeOtherLocationAnswer::contentType() const
       {
          return EContentType::kNone;
@@ -44,6 +34,11 @@ namespace web
       std::shared_ptr<std::map<std::string, std::string>> CSeeOtherLocationAnswer::customHeaders() const
       {
          return m_customHeaders;
+      }
+
+      std::shared_ptr<service::ISseConnectionHandler> CSeeOtherLocationAnswer::connectionHandler() const
+      {
+         return nullptr;
       }
    } //namespace rest
 } //namespace web 

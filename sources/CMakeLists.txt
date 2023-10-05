@@ -678,6 +678,7 @@ set(YADOMS_SRC
    server/web/rest/service/Keyword.h
    server/web/rest/service/KeywordV2.cpp
    server/web/rest/service/IUploadFileManager.h
+   server/web/rest/service/ISseConnectionHandler.h
    server/web/rest/service/IRestService.h
    server/web/rest/service/IRestEndPoint.h
    server/web/rest/service/Maintenance.h
@@ -697,6 +698,8 @@ set(YADOMS_SRC
    server/web/rest/service/RestEndPoint.cpp
    server/web/rest/service/ServerSentEvents.h
    server/web/rest/service/ServerSentEvents.cpp
+   server/web/rest/service/SseConnectionHandler.h
+   server/web/rest/service/SseConnectionHandler.cpp
    server/web/rest/service/System.h
    server/web/rest/service/System.cpp
    server/web/rest/service/Task.h

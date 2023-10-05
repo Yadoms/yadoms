@@ -30,22 +30,17 @@ namespace web
          return EBodyType::kString;
       }
 
-      boost::shared_ptr<shared::event::CEventHandler> CErrorAnswer::streamingEventHandler() const
-      {
-         return nullptr;
-      }
-
-      int CErrorAnswer::streamingOnNewEventId() const
-      {
-         return 0;
-      }
-
       EContentType CErrorAnswer::contentType() const
       {
          return m_body.empty() ? EContentType::kNone : EContentType::kPlainText;
       }
 
       std::shared_ptr<std::map<std::string, std::string>> CErrorAnswer::customHeaders() const
+      {
+         return nullptr;
+      }
+
+      std::shared_ptr<service::ISseConnectionHandler> CErrorAnswer::connectionHandler() const
       {
          return nullptr;
       }

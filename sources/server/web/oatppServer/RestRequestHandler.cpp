@@ -42,8 +42,7 @@ namespace web
                break;
             case rest::IAnswer::EBodyType::kStream:
                body = std::make_shared<oatpp::web::protocol::http::outgoing::StreamingBody>(
-                  std::make_shared<CStreamingReadCallback>(answer->streamingEventHandler(),
-                                                           answer->streamingOnNewEventId()));
+                  std::make_shared<CStreamingReadCallback>(answer->connectionHandler()));
                break;
             default: // NOLINT(clang-diagnostic-covered-switch-default)
                throw std::invalid_argument("Answer body type is invalid");

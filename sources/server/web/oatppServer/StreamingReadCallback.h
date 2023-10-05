@@ -1,44 +1,31 @@
 #pragma once
 #include <oatpp/web/server/HttpRequestHandler.hpp>
 
-#include <shared/event/EventHandler.hpp>
+#include "shared/http/ssdp/Client.h"
+#include "web/rest/service/ISseConnectionHandler.h"
 
 namespace web
 {
    namespace oatppServer
    {
-      class CSseClientConnection final //TODO dépalcer
+      class CStreamingReadCallback final : public oatpp::data::stream::ReadCallback
       {
       public:
-         CSseClientConnection(boost::shared_ptr<shared::event::CEventHandler> eventHandler,
-                              int streamingEventId);
+         explicit CStreamingReadCallback(std::shared_ptr<rest::service::ISseConnectionHandler> connectionHandler);
 
-         ~CSseClientConnection();
+         ~CStreamingReadCallback() override;
 
-         oatpp::String handle() const;
+         oatpp::v_io_size read(void* buffer,
+                               v_buff_size count,
+                               oatpp::async::Action& action) override;
 
       private:
          static unsigned int m_connectionsCount;
 
-         boost::shared_ptr<shared::event::CEventHandler> m_eventHandler;
-         const int m_streamingEventId;
-      };
-
-      class CStreamingReadCallback final : public oatpp::data::stream::ReadCallback
-      {
-      public:
-         CStreamingReadCallback(boost::shared_ptr<shared::event::CEventHandler> eventHandler,
-                                int streamingEventId);
-
-         ~CStreamingReadCallback() override = default;
-
-         oatpp::v_io_size read(void* buffer, v_buff_size count, oatpp::async::Action& action) override;
-
-      private:
          oatpp::String m_currentMessage;
          oatpp::data::buffer::InlineWriteData m_inlineData;
 
-         boost::shared_ptr<CSseClientConnection> m_clientConnection;
+         std::shared_ptr<rest::service::ISseConnectionHandler> m_connectionHandler;
       };
    } //namespace oatppServer
 } //namespace web
