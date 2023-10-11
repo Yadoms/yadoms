@@ -308,7 +308,7 @@ namespace automation
 
       boost::posix_time::ptime CDayLightProvider::sunEventTime(const bool sunrise)
       {
-         auto now = shared::currentTime::Provider().now();
+         const auto now = shared::currentTime::Provider().now();
          if (m_lastCalculationDate.date() != now.date())
          {
             m_lastCalculationDate = now;

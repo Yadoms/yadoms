@@ -48,22 +48,8 @@ namespace web
                                           ? CHelpers::convertToIntSet(request->pathVariableAsList("keywords"))
                                           : std::make_unique<std::set<int>>();
 
-               // Subscriptions
-               // - new acquisitions
-               const auto eventHandler = boost::make_shared<shared::event::CEventHandler>();
-               enum { SseEventId = shared::event::kUserFirstId };
-               auto acquisitionAction = boost::make_shared<notification::action::CEventPtrAction<notification::acquisition::CNotification>>(
-                  eventHandler,
-                  SseEventId);
-               const auto newAcquisitionObserver = boost::make_shared<notification::acquisition::CObserver>(acquisitionAction);
-               if (!keywordIds->empty())
-                  newAcquisitionObserver->resetKeywordIdFilter(*keywordIds);
-               notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver); //TODO unsubscribe quelque part ?
-               //observers.emplace_back(newAcquisitionObserver);
-
                return boost::make_shared<CSuccessAnswer>(
-                  std::make_shared<oatppServer::CSseConnectionHandler>(eventHandler,
-                                                                       SseEventId));
+                  std::make_shared<oatppServer::CSseConnectionHandler>(keywordIds));
             }
 
             catch (const std::invalid_argument& arg)
