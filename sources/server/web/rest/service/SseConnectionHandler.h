@@ -9,7 +9,7 @@ namespace web
 {
    namespace oatppServer
    {
-      class CSseConnectionHandler final : public rest::service::ISseConnectionHandler //TODO renommer en CSseNewAcquisitionsHandler
+      class CSseConnectionHandler final : public rest::service::ISseConnectionHandler
       {
       public:
          explicit CSseConnectionHandler(const std::unique_ptr<std::set<int>>& keywordIds);
