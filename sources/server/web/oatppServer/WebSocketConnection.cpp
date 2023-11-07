@@ -73,7 +73,14 @@ namespace web
          //TODO gérer tous les send :
          // - eventLog ==> A remettre en place lorsque l'EventLogger aura été refactoré
          // - taskUpdate ==> à supprimer ? Ou à refactorer pour que le reload d'une page permette de réafficher l'état d'une tâche
-         socket.sendOneFrameText(message);
+         try
+         {
+            socket.sendOneFrameText(message);
+         }
+         catch (const std::runtime_error& exception)
+         {
+            YADOMS_LOG(error) << "Error posting on websocket : " << exception.what();
+         }
       }
 
       void CWebSocketConnection::sendTimeSynchronization(const boost::posix_time::ptime& time,
