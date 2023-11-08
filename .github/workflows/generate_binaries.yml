@@ -148,6 +148,12 @@ jobs:
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           privileged: '--privileged'
           entrypoint: 'sh /entrypoint_docker.sh'
+    - name: Upload logs on failure
+      uses: actions/upload-artifact@v2
+      if: failure()          
+      with:
+        name: RapsberryPI-build_logs
+        path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
