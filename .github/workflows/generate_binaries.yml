@@ -18,6 +18,12 @@ jobs:
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /entrypoint_docker.sh'
+    - name: Upload logs on failure
+      uses: actions/upload-artifact@v2
+      if: failure()          
+      with:
+        name: linux-build_logs
+        path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
@@ -61,6 +67,12 @@ jobs:
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /entrypoint_docker.sh'
+    - name: Upload logs on failure
+      uses: actions/upload-artifact@v2
+      if: failure()          
+      with:
+        name: MacOSX-build_logs
+        path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
@@ -104,6 +116,12 @@ jobs:
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /entrypoint_docker.sh'
+    - name: Upload logs on failure
+      uses: actions/upload-artifact@v2
+      if: failure()          
+      with:
+        name: Synology218p-build_logs
+        path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
     - name: Get tag/branch name
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
@@ -197,6 +215,12 @@ jobs:
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
+    - name: Upload logs on failure
+      uses: actions/upload-artifact@v2
+      if: failure()          
+      with:
+        name: Windows-build_logs
+        path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
     - name: Get tag/branch name
       id: vars
       run: Write-Host "::set-output name=tag::$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')"
