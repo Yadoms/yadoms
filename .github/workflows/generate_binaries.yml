@@ -52,55 +52,6 @@ jobs:
         artifacts: "./builds/package/*"
         token: ${{ secrets.GITHUB_TOKEN }}
     
-  MacOSX:
-    name : Generate for MacOSX
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v4.0.0
-      id: yadoms_build_step
-      with:
-          buildImage: ghcr.io/yadoms/build_for_macos:latest
-          registry: ghcr.io
-          username: ${{ secrets.CONTAINER_GH_LOGIN }}
-          password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          entrypoint: 'sh /entrypoint_docker.sh'
-    - name: Upload logs on failure
-      uses: actions/upload-artifact@v2
-      if: failure()          
-      with:
-        name: MacOSX-build_logs
-        path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
-    - name: Get tag/branch name
-      id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-    - name: Archive MacOSX-Binaries artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: MacOSX-Binaries
-        path: ./builds/package/Yadoms*
-    - name: Archive MacOSX-Update artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: MacOSX-Update
-        path: ./builds/package/update*    
-    - name: Create Release (on Tag only)
-      id: create_release
-      uses: ncipollo/release-action@v1
-      if: contains(github.ref, 'refs/tags/')
-      with:
-        tag: ${{ github.ref }}
-        name: ${{ steps.vars.outputs.tag }}
-        draft: true
-        prerelease: true
-        allowUpdates: true
-        omitNameDuringUpdate: true
-        replacesArtifacts: true
-        artifacts: "./builds/package/*"
-        token: ${{ secrets.GITHUB_TOKEN }}
-        
   Synology218p:
     name : Generate for Synology 218+
     runs-on: ubuntu-latest

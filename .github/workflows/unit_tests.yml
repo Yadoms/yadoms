@@ -29,44 +29,6 @@ jobs:
         cd tests/unit/builds
         ./yadomsTests
 
- 
-  macos_build:
-    name : Build Unit tests for MacOS
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Generate unittests binary
-      uses: Yadoms/build-yadoms-action@v4.beta1
-      id: yadoms_build_step
-      with:
-          buildImage: ghcr.io/yadoms/build_for_macos:latest
-          registry: ghcr.io
-          username: ${{ secrets.CONTAINER_GH_LOGIN }}
-          password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          entrypoint: 'sh /work/build-scripts/macos/entrypoint_docker_unittests.sh'
-    - name: Archive unittests artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: Macos-UnitTests
-        path: ./tests/unit/builds
-        
-  macos_run:
-    name : Run Unit tests for MacOS
-    runs-on: macos-latest
-    needs: macos_build
-    steps:
-    - name: Download unittests artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: Macos-UnitTests
-    - name: Run unit tests
-      shell: bash
-      run: |
-        echo "Running unittests for yadoms"
-        chmod +x yadomsTests
-        ./yadomsTests
-
   Windows:
     name : Run Unit tests for Windows
     runs-on: windows-2019
