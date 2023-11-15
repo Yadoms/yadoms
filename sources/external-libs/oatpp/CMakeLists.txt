@@ -57,8 +57,8 @@ message("OATPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC
 endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp_build
-   GIT_REPOSITORY    https://github.com/yadoms/oatpp.git
-   GIT_TAG           5ccad57d7822c2239e8aeca9175dc943230601a8
+   GIT_REPOSITORY    https://github.com/oatpp/oatpp.git
+   GIT_TAG           c1d37c189e3f07db3bd28d1ee98845692e094a06
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_PATCH_CMD}   
    PREFIX            ${OATPP_ROOT}
