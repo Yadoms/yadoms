@@ -24,6 +24,8 @@ namespace web
                                              const WebSocket& socket);
          static void sendNewAcquisition(const boost::shared_ptr<database::entities::CAcquisition>& newAcquisition,
                                         const WebSocket& socket);
+         static void sendNewAcquisitionSummary(const std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>>& newAcquisitionSummary,
+                                               const WebSocket& socket);
          static void sendDeviceCreated(const boost::shared_ptr<database::entities::CDevice>& device,
                                        const WebSocket& socket);
          static void sendDeviceDeleted(const boost::shared_ptr<database::entities::CDevice>& device,

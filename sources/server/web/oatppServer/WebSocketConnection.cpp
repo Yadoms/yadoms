@@ -101,6 +101,16 @@ namespace web
                      socket);
       }
 
+      void CWebSocketConnection::sendNewAcquisitionSummary(
+         const std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>>& newAcquisitionSummary,
+         const WebSocket& socket)
+      {
+         shared::CDataContainer newAcquisitionSummaryContainer;
+         newAcquisitionSummaryContainer.set("newAcquisitionSummary", newAcquisitionSummary);
+         sendMessage(newAcquisitionSummaryContainer.serialize(),
+                     socket);
+      }
+
       void CWebSocketConnection::sendDeviceCreated(const boost::shared_ptr<database::entities::CDevice>& device,
                                                    const WebSocket& socket)
       {
@@ -225,49 +235,46 @@ namespace web
 
                case kNewAcquisition:
                   {
-                     auto newAcquisition = m_eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>()->
-                                                          getAcquisition();
+                     const auto newAcquisition = m_eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>()->
+                                                                getAcquisition();
                      sendNewAcquisition(newAcquisition,
                                         socket);
                      break;
                   }
                case kDeviceCreated:
                   {
-                     auto device = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                     const auto device = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
                      sendDeviceCreated(device,
                                        socket);
                      break;
                   }
                case kDeviceDeleted:
                   {
-                     auto device = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                     const auto device = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
                      sendDeviceDeleted(device,
                                        socket);
                      break;
                   }
                case kKeywordCreated:
                   {
-                     auto keyword = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
+                     const auto keyword = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
                      sendKeywordCreated(keyword,
                                         socket);
                      break;
                   }
                case kKeywordDeleted:
                   {
-                     auto keyword = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
+                     const auto keyword = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
                      sendKeywordDeleted(keyword,
                                         socket);
                      break;
                   }
                case kNewAcquisitionSummary:
                   {
-                     auto newSummary = m_eventHandler.getEventData<boost::shared_ptr<notification::summary::CNotification>>()->
-                                                      getAcquisitionSummaries();
-
-                     shared::CDataContainer newAcquisitionSummaryContainer;
-                     newAcquisitionSummaryContainer.set("newAcquisitionSummary", newSummary);
-                     sendMessage(newAcquisitionSummaryContainer.serialize(),
-                                 socket);
+                     const auto newSummary = m_eventHandler.getEventData<boost::shared_ptr<notification::summary::CNotification>>()->
+                                                            getAcquisitionSummaries();
+                     sendNewAcquisitionSummary(newSummary,
+                                               socket);
                      break;
                   }
 
