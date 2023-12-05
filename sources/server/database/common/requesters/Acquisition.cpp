@@ -42,6 +42,8 @@ namespace database
                                                       dataTime,
                                                       data);
 
+                  YADOMS_LOG(information) << "Keyword #" << keywordId << " = " << data;
+
                   // Add value in acquisition table
                   if (keywordEntity->HistoryDepth() != shared::plugin::yPluginApi::EHistoryDepth::kNoHistory)
                   {
@@ -121,6 +123,8 @@ namespace database
                throw shared::exception::CEmptyResult("No lines affected");
 
             auto newAcquisition = m_keywordRequester->getKeywordLastAcquisition(keywordId);
+
+            YADOMS_LOG(information) << "Keyword #" << newAcquisition->KeywordId() << " = " << newAcquisition->Value();
 
             // Add value in acquisition table
             if (keywordEntity->HistoryDepth() != shared::plugin::yPluginApi::EHistoryDepth::kNoHistory)
@@ -457,9 +461,9 @@ namespace database
                                                                     withCount);
 
                adapters::CHugeDataVectorForKeywordSummaryDataAdapterV2 adapter(withAverage,
-                  withMin,
-                  withMax,
-                  withCount);
+                                                                               withMin,
+                                                                               withMax,
+                                                                               withCount);
                m_databaseRequester->queryEntities(&adapter, *query);
                str += "\"" + std::to_string(keywordId) + "\":" + adapter.getRawResults() + "}";
             }
