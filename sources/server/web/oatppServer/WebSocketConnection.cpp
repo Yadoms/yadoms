@@ -14,7 +14,7 @@ namespace web
 {
    namespace oatppServer
    {
-      std::atomic<v_int32> CWebSocketConnection::m_clientsCount(0);
+      std::atomic_uint CWebSocketConnection::m_clientsCount(0);
 
       enum WebSocketEvent
       {
@@ -36,16 +36,9 @@ namespace web
                                                const std::shared_ptr<const ParameterMap>& params)
       {
          ++m_clientsCount;
-         YADOMS_LOG(information) << "New websocket connection (Client count=" << m_clientsCount.load() << ")";
+         YADOMS_LOG(information) << "New websocket connection (Client count=" << m_clientsCount << ")";
 
-         /* In this particular case we create one CWebsocketListener per each connection */
-         /* Which may be redundant in many cases */
-         socket.setListener(std::make_shared<CWebsocketListener>(m_eventHandler,
-                                                                 kOnPong,
-                                                                 kOnPing,
-                                                                 kReceived));
-
-         m_connectionThread = boost::thread([this, &socket]
+         m_connectionThreads[&socket] = boost::thread([this, &socket]
          {
             handleConnectionThread(socket);
          });
@@ -54,17 +47,44 @@ namespace web
       void CWebSocketConnection::onBeforeDestroy(const oatpp::websocket::WebSocket& socket)
       {
          --m_clientsCount;
-         YADOMS_LOG(information) << "Connection closed (Client count=" << m_clientsCount.load() << ")";
+         YADOMS_LOG(information) << "Connection closed (Client count=" << m_clientsCount << ")";
 
-         close();
+         std::lock_guard<std::recursive_mutex> lock(m_connectionThreadsMutex);
+         if (m_connectionThreads.empty())
+            return;
+         auto& threadToStop = m_connectionThreads.at(&socket);
+         if (threadToStop.joinable())
+         {
+            threadToStop.interrupt();
+            if (!threadToStop.try_join_for(boost::chrono::seconds(20)))
+               YADOMS_LOG(warning) << "Was unable to stop Websocket connection thread properly";
+         }
+         m_connectionThreads.erase(&socket);
       }
 
       void CWebSocketConnection::close()
       {
-         if (!m_connectionThread.joinable())
-            return;
-         m_connectionThread.interrupt();
-         m_connectionThread.try_join_for(boost::chrono::seconds(2));
+         YADOMS_LOG(debug) << "Close all websocket connections...";
+
+         std::lock_guard<std::recursive_mutex> lock(m_connectionThreadsMutex);
+         for (auto& threadToStopIt : m_connectionThreads)
+         {
+            auto& threadToStop = threadToStopIt.second;
+            if (threadToStop.joinable())
+               threadToStop.interrupt();
+            else
+               m_connectionThreads.erase(threadToStopIt.first);
+         }
+
+         for (auto& threadToStopIt : m_connectionThreads)
+         {
+            auto& threadToStop = threadToStopIt.second;
+            if (!threadToStop.joinable())
+               continue;
+            if (!threadToStop.try_join_for(boost::chrono::seconds(20)))
+               YADOMS_LOG(warning) << "Was unable to stop Websocket connection thread properly";
+         }
+         m_connectionThreads.clear();
       }
 
       void CWebSocketConnection::sendMessage(const std::string& message,
@@ -151,12 +171,18 @@ namespace web
       {
          YADOMS_LOG_CONFIGURE("New Websocket connection " + shared::tools::CRandom::generateUUID())
 
+         shared::event::CEventHandler eventHandler;
+         socket.setListener(std::make_shared<CWebsocketListener>(eventHandler,
+                                                                 kOnPong,
+                                                                 kOnPing,
+                                                                 kReceived));
+
          std::vector<boost::shared_ptr<notification::IObserver>> observers;
 
          // Subscriptions
          // - new acquisitions
          auto acquisitionAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(
-            m_eventHandler,
+            eventHandler,
             kNewAcquisition));
          const auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(acquisitionAction));
          notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
@@ -164,32 +190,32 @@ namespace web
          // - new acquisition summaries
          const auto newAcquisitionSummaryObserver(boost::make_shared<notification::summary::CObserver>(
             boost::make_shared<notification::action::CEventAction<notification::summary::CNotification>>(
-               m_eventHandler,
+               eventHandler,
                kNewAcquisitionSummary)));
          notification::CHelpers::subscribeCustomObserver(newAcquisitionSummaryObserver);
          observers.emplace_back(newAcquisitionSummaryObserver);
          // - devices
          observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kCreate,
-            m_eventHandler,
+            eventHandler,
             kDeviceCreated));
          observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kDelete,
-            m_eventHandler,
+            eventHandler,
             kDeviceDeleted));
          // - keywords
          observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kCreate,
-            m_eventHandler,
+            eventHandler,
             kKeywordCreated));
          observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kDelete,
-            m_eventHandler,
+            eventHandler,
             kKeywordDeleted));
 
          // Ping timer
-         const auto pingTimer = m_eventHandler.createTimer(kPingTimer,
-                                                           shared::event::CEventTimer::EPeriodicity::kOneShot,
-                                                           boost::posix_time::seconds(2));
+         const auto pingTimer = eventHandler.createTimer(kPingTimer,
+                                                         shared::event::CEventTimer::EPeriodicity::kOneShot,
+                                                         boost::posix_time::seconds(2));
          // Wait for pong timer
-         const auto pongTimeoutTimer = m_eventHandler.createTimer(kPongTimeout,
-                                                                  shared::event::CEventTimer::EPeriodicity::kOneShot);
+         const auto pongTimeoutTimer = eventHandler.createTimer(kPongTimeout,
+                                                                shared::event::CEventTimer::EPeriodicity::kOneShot);
 
          // Time synchronization timer
          {
@@ -197,8 +223,8 @@ namespace web
             if (shared::dateTime::CHelper::nextMinuteOf(now) - now > boost::posix_time::seconds(2))
                sendTimeSynchronization(now,
                                        socket);
-            m_eventHandler.createTimePoint(kTimeSynchronization,
-                                           shared::dateTime::CHelper::nextMinuteOf(now));
+            eventHandler.createTimePoint(kTimeSynchronization,
+                                         shared::dateTime::CHelper::nextMinuteOf(now));
          }
 
 
@@ -206,12 +232,12 @@ namespace web
          {
             try
             {
-               switch (m_eventHandler.waitForEvents())
+               switch (eventHandler.waitForEvents())
                {
                case kPingTimer:
                   {
                      socket.sendPing(std::string());
-                     pongTimeoutTimer->start(boost::posix_time::seconds(2));
+                     pongTimeoutTimer->start(boost::posix_time::seconds(200));
 
                      break;
                   }
@@ -235,44 +261,44 @@ namespace web
 
                case kNewAcquisition:
                   {
-                     const auto newAcquisition = m_eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>()->
-                                                                getAcquisition();
+                     const auto newAcquisition = eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>()->
+                                                              getAcquisition();
                      sendNewAcquisition(newAcquisition,
                                         socket);
                      break;
                   }
                case kDeviceCreated:
                   {
-                     const auto device = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                     const auto device = eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
                      sendDeviceCreated(device,
                                        socket);
                      break;
                   }
                case kDeviceDeleted:
                   {
-                     const auto device = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                     const auto device = eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
                      sendDeviceDeleted(device,
                                        socket);
                      break;
                   }
                case kKeywordCreated:
                   {
-                     const auto keyword = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
+                     const auto keyword = eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
                      sendKeywordCreated(keyword,
                                         socket);
                      break;
                   }
                case kKeywordDeleted:
                   {
-                     const auto keyword = m_eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
+                     const auto keyword = eventHandler.getEventData<boost::shared_ptr<database::entities::CKeyword>>();
                      sendKeywordDeleted(keyword,
                                         socket);
                      break;
                   }
                case kNewAcquisitionSummary:
                   {
-                     const auto newSummary = m_eventHandler.getEventData<boost::shared_ptr<notification::summary::CNotification>>()->
-                                                            getAcquisitionSummaries();
+                     const auto newSummary = eventHandler.getEventData<boost::shared_ptr<notification::summary::CNotification>>()->
+                                                          getAcquisitionSummaries();
                      sendNewAcquisitionSummary(newSummary,
                                                socket);
                      break;
@@ -280,7 +306,7 @@ namespace web
 
                case kReceived:
                   {
-                     const shared::CDataContainer frame(m_eventHandler.getEventData<const std::string>());
+                     const shared::CDataContainer frame(eventHandler.getEventData<const std::string>());
 
                      if (frame.exists("acquisitionFilter"))
                      {
@@ -290,7 +316,7 @@ namespace web
                      }
                      else
                      {
-                        YADOMS_LOG(warning) << "Invalid received message : " << m_eventHandler.getEventData<const std::string>();
+                        YADOMS_LOG(warning) << "Invalid received message : " << eventHandler.getEventData<const std::string>();
                      }
                      break;
                   }
@@ -299,13 +325,13 @@ namespace web
                      const auto now = shared::currentTime::Provider().now();
                      sendTimeSynchronization(now,
                                              socket);
-                     m_eventHandler.createTimePoint(kTimeSynchronization,
-                                                    shared::dateTime::CHelper::nextMinuteOf(now));
+                     eventHandler.createTimePoint(kTimeSynchronization,
+                                                  shared::dateTime::CHelper::nextMinuteOf(now));
                      break;
                   }
                default:
                   {
-                     YADOMS_LOG(error) << "Invalid received event : " << m_eventHandler.getEventId() << ", ignored";
+                     YADOMS_LOG(error) << "Invalid received event : " << eventHandler.getEventId() << ", ignored";
                      break;
                   }
                }
@@ -325,7 +351,7 @@ namespace web
          for (const auto& observer : observers)
             notification::CHelpers::unsubscribeObserver(observer);
 
-         YADOMS_LOG(information) << "Websocket client lost";
+         YADOMS_LOG(debug) << "Websocket client lost";
       }
    } //namespace oatppServer
 } //namespace web

@@ -333,7 +333,7 @@ std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
    const boost::filesystem::path& httpsPrivateKeyFile,
    const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
    const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
-   bool skipPasswordCheck) const
+   bool skipPasswordCheck)
 {
    return std::make_unique<web::oatppServer::CWebServer>(address,
                                                          port,

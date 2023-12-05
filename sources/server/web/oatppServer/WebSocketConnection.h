@@ -2,7 +2,6 @@
 #include <oatpp-websocket/ConnectionHandler.hpp>
 
 #include "database/entities/Entities.h"
-#include "shared/event/EventHandler.hpp"
 #include "shared/http/ssdp/Client.h"
 
 namespace web
@@ -34,11 +33,16 @@ namespace web
                                         const WebSocket& socket);
          static void sendKeywordDeleted(const boost::shared_ptr<database::entities::CKeyword>& keyword,
                                         const WebSocket& socket);
-         void handleConnectionThread(const oatpp::websocket::WebSocket& socket);
+         static void handleConnectionThread(const oatpp::websocket::WebSocket& socket);
 
-         static std::atomic<v_int32> m_clientsCount;
-         boost::thread m_connectionThread;
-         shared::event::CEventHandler m_eventHandler;
+         static std::atomic_uint m_clientsCount;
+
+         // Because oatpp::websocket::WebSocket and CWebSocketConnection have both their thread,
+         // keep track of association to be able to stop both threads when a connection is lost or
+         // Yadoms stops.
+         std::recursive_mutex m_connectionThreadsMutex;
+         std::map<const oatpp::websocket::WebSocket*, boost::thread> m_connectionThreads;
+
       };
    } //namespace oatppServer
 } //namespace web

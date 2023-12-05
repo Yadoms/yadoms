@@ -16,6 +16,11 @@ namespace web
                             int onReceiveEventId);
          ~CWebsocketListener() override = default;
 
+         CWebsocketListener(const CWebsocketListener&) = delete;
+         CWebsocketListener(CWebsocketListener&&) = delete;
+         CWebsocketListener operator=(const CWebsocketListener&) = delete;
+         CWebsocketListener operator=(CWebsocketListener&&) = delete;
+
          void onPing(const WebSocket& socket,
                      const oatpp::String& message) override;
          void onPong(const WebSocket& socket,
@@ -30,7 +35,7 @@ namespace web
 
       private:
          oatpp::data::stream::BufferOutputStream m_messageBuffer;
-         shared::event::CEventHandler& m_eventHandler;
+         shared::event::CEventHandler& m_eventHandler; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
          int m_onPongEventId;
          int m_onPingEventId;
          int m_onReceiveEventId;

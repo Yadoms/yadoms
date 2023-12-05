@@ -41,7 +41,7 @@ namespace shared
          //--------------------------------------------------------------
          void postEvent(int id)
          {
-            auto evt = boost::make_shared<CEventBase>(id);
+            const auto evt = boost::make_shared<CEventBase>(id);
             postEvent(evt);
          }
 
@@ -54,7 +54,7 @@ namespace shared
          template <typename DataType>
          void postEvent(int id, const DataType& data)
          {
-            boost::shared_ptr<CEventBase> evt = boost::make_shared<CEvent<DataType>>(id, data);
+            const boost::shared_ptr<CEventBase> evt = boost::make_shared<CEvent<DataType>>(id, data);
             postEvent(evt);
          }
 
@@ -210,7 +210,7 @@ namespace shared
          /// \param [in] rhs The event handler to transfer the event
          /// \note       Must be called after waitForEvents
          //--------------------------------------------------------------
-         void transferLastEvent(CEventHandler& rhs)
+         void transferLastEvent(CEventHandler& rhs) const
          {
             if (m_lastEvent)
                rhs.postEvent(m_lastEvent);
@@ -276,7 +276,7 @@ namespace shared
          /// \brief	    Send an event
          /// \param[in] event event to send
          //--------------------------------------------------------------
-         void postEvent(boost::shared_ptr<CEventBase>& event)
+         void postEvent(const boost::shared_ptr<CEventBase>& event)
          {
             boost::recursive_mutex::scoped_lock lock(m_eventsQueueMutex);
             pushEvent(event);
@@ -287,7 +287,7 @@ namespace shared
          /// \brief	    Push an event to the queue
          /// \param[in] event event to push
          //--------------------------------------------------------------
-         void pushEvent(boost::shared_ptr<CEventBase>& event)
+         void pushEvent(const boost::shared_ptr<CEventBase>& event)
          {
             if (event->getId() < kUserFirstId)
                throw std::invalid_argument("CEventHandler::pushEvent : invalid ID " + std::to_string(event->getId()));
@@ -324,7 +324,7 @@ namespace shared
          boost::shared_ptr<ITimeEvent> getNextTimeEventStopPoint() const
          {
             if (m_timeEvents.empty())
-               return boost::shared_ptr<ITimeEvent>();
+               return {};
 
             // Find the closer time event
             boost::posix_time::ptime lower = boost::posix_time::max_date_time;
@@ -386,7 +386,7 @@ namespace shared
             if (!timeEvent)
                throw std::invalid_argument("CEventHandler::signalTimeEvent : timeEvent is null");
 
-            auto evt(boost::make_shared<CEventBase>(timeEvent->getId()));
+            const auto evt(boost::make_shared<CEventBase>(timeEvent->getId()));
             pushEvent(evt);
             timeEvent->reset();
          }
@@ -402,7 +402,7 @@ namespace shared
             for (auto it = m_timeEvents.begin();
                  it != m_timeEvents.end();)
             {
-               if ((*it).unique() && (*it)->canBeRemoved())
+               if (it->unique() && (*it)->canBeRemoved())
                {
                   // Time event no more makes sense, and is not referenced by user, so erase it from the list
                   it = m_timeEvents.erase(it);

@@ -99,8 +99,6 @@ namespace web
          oatpp::base::Environment::destroy();
       }
 
-
-      // IWebServer implementation
       void CWebServer::start()
       {
          m_serverThread = std::thread([this]

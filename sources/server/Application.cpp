@@ -19,6 +19,8 @@
 #include <Poco/Environment.h>
 #include <Poco/Format.h>
 #include <google/protobuf/stubs/common.h>
+#include <Poco/Debugger.h>
+
 #include "shared/http/Proxy.h"
 
 //define the main entry point
@@ -139,7 +141,7 @@ void CYadomsServer::handleVersion(const std::string& name, const std::string& va
    stopOptionsProcessing();
 }
 
-void CYadomsServer::displayVersion() const
+void CYadomsServer::displayVersion()
 {
    //output string on standard output
    //because log is not defined (and will not => after calling "yadoms --version", it show version and exit)
@@ -240,8 +242,10 @@ int CYadomsServer::main(const ArgVec&)
             // Ask for application stop and wait for application full stop
             YADOMS_LOG(debug) << "Receive termination request";
             stopRequestEventHandler->postEvent(kTerminationRequested);
-            const auto stopSuccess = stoppedEventHandler->waitForEvents(boost::posix_time::seconds(30)) ==
-               kApplicationFullyStopped;
+            const auto stopSuccess = stoppedEventHandler->waitForEvents(
+               Poco::Debugger::isAvailable()
+                  ? boost::posix_time::time_duration(boost::date_time::pos_infin)
+                  : boost::posix_time::seconds(30)) == kApplicationFullyStopped;
             if (!stopSuccess)
                YADOMS_LOG(error) << "Fail to wait the app end event";
             return stopSuccess;
