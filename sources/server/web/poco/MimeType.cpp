@@ -687,7 +687,7 @@ mappings[] =
    { 0, 0 } // Marks end of list.
 };
 
-   std::string CMimeType::extension_to_type(const std::string& extension)
+   std::string CMimeType::extensionToType(const std::string& extension)
    {
      for (mapping* m = mappings; m->extension; ++m)
      {

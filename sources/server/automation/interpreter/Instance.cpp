@@ -9,6 +9,8 @@
 #include "StopScript.h"
 #include "PurgeScriptLog.h"
 #include <shared/ServiceLocator.h>
+
+#include <utility>
 #include "startupOptions/IStartupOptions.h"
 #include "automation/RuleException.hpp"
 
@@ -16,13 +18,13 @@ namespace automation
 {
    namespace interpreter
    {
-      CInstance::CInstance(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+      CInstance::CInstance(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                            const boost::filesystem::path& logPath,
                            boost::shared_ptr<shared::process::IProcess> process,
                            boost::shared_ptr<IIpcAdapter> ipcAdapter)
-         : m_interpreterInformation(interpreterInformation),
-           m_process(process),
-           m_ipcAdapter(ipcAdapter),
+         : m_interpreterInformation(std::move(interpreterInformation)),
+           m_process(std::move(process)),
+           m_ipcAdapter(std::move(ipcAdapter)),
            m_available(false)
       {
          m_ipcAdapter->postInit(m_interpreterInformation,
@@ -83,9 +85,9 @@ namespace automation
                                         const std::string& scriptContent) const
       {
          communication::callback::CSynchronousCallback<bool> callback;
-         auto request(boost::make_shared<CSaveScriptContentRequest>(scriptPath,
-                                                                    scriptContent,
-                                                                    callback));
+         const auto request(boost::make_shared<CSaveScriptContentRequest>(scriptPath,
+                                                                          scriptContent,
+                                                                          callback));
 
          try
          {
@@ -169,7 +171,7 @@ namespace automation
       bool CInstance::getAvailability() const
       {
          communication::callback::CSynchronousCallback<bool> callback;
-         auto request(boost::make_shared<CAvalaibleRequest>(callback));
+         const auto request(boost::make_shared<CAvalaibleRequest>(callback));
 
          try
          {

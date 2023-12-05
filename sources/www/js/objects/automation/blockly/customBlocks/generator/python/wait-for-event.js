@@ -178,7 +178,7 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
     code = Blockly.Python.prefixLines(code, Blockly.Python.INDENT) || Blockly.Python.PASS;
     loop += "while " + endOfLoopVar + " != True :\n" + code + "\n";
 
-    loop += "# Manage break/continue inside waitForEvents\n";
+    loop += "# Manage break/continue inside waitForEvent\n";
     loop += "if " + block.getBreakVariableName() + ":\n";
     loop += Blockly.Python.INDENT + 'break\n';
     loop += "if " + block.getContinueVariableName() + ":\n";

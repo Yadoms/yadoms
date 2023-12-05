@@ -33,9 +33,10 @@ namespace database {
 
       //--------------------------------------------------------------
       /// \brief           List all plugin instances
+      /// \param [in] systemPluginIncluded Include system internal plugin in answer
       /// \return          List of registered plugin instances
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CPlugin> > getInstances() = 0;
+      virtual std::vector<boost::shared_ptr<entities::CPlugin> > getInstances(bool systemPluginIncluded = false) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Update plugin instance informations

@@ -8,7 +8,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief		Container class for plugin information
    //--------------------------------------------------------------
-   class CInformation : public shared::plugin::information::IInformation
+   class CInformation final : public shared::plugin::information::IInformation
    {
    public:
       //--------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       explicit CInformation(const boost::filesystem::path& pluginPath);
 
-      virtual ~CInformation();
+      ~CInformation() override = default;
 
       // shared::plugin::IInformation implementation
       const std::string& getType() const override;
@@ -30,6 +30,8 @@ namespace pluginSystem
       bool isSupportedOnThisPlatform() const override;
       bool getSupportManuallyCreatedDevice() const override;
       bool getSupportDeviceRemovedNotification() const override;
+      boost::shared_ptr<const shared::CDataContainer> getConfigurationSchema() const override;
+      boost::shared_ptr<const shared::CDataContainer> getLabels(const std::vector<std::string>& locales) const override;
       boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
       const boost::filesystem::path& getPath() const override;
       // [END] shared::plugin::IInformation implementation
@@ -74,16 +76,25 @@ namespace pluginSystem
       /// \brief	    true if the plugin supports device removed notification
       //--------------------------------------------------------------
       bool m_supportDeviceRemovedNotification;
-      
+
       //--------------------------------------------------------------
       /// \brief	    Flag indicating if plugin is supported on this platform
       //--------------------------------------------------------------
       bool m_isSupportedOnThisPlatform;
 
       //--------------------------------------------------------------
+      /// \brief	    Configuration schema
+      //--------------------------------------------------------------
+      boost::shared_ptr<shared::CDataContainer> m_configurationSchema;
+
+      //--------------------------------------------------------------
+      /// \brief	    Cache of labels (key is 2-cars locale ISO code : 'fr', 'en'...)
+      //--------------------------------------------------------------
+      mutable std::map<std::string, boost::shared_ptr<const shared::CDataContainer>> m_labels;
+
+      //--------------------------------------------------------------
       /// \brief	    Package.json content
       //--------------------------------------------------------------
       boost::shared_ptr<shared::CDataContainer> m_package;
    };
-
 } // namespace pluginSystem

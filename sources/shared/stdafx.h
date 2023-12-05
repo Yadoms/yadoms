@@ -4,6 +4,7 @@
 #include <list>
 #include <map>
 #include <queue>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
