@@ -130,8 +130,8 @@
           "type": "bool",
           "defaultValue": false
         },
-        "type": "bool",
         "MCZ": {
+          "type": "bool",
           "defaultValue": false
         },
         "Funkbus": {
