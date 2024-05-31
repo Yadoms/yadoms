@@ -130,7 +130,6 @@
           "type": "bool",
           "defaultValue": false
         },
-        "type": "bool",
         "MCZ": {
           "defaultValue": false
         },
