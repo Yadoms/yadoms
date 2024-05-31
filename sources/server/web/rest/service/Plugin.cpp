@@ -35,7 +35,7 @@ namespace web
               m_restKeyword("plugin"),
               m_messageSender(messageSender),
               m_developerMode(developerMode),
-              m_PluginConfigurationMerger(boost::make_shared<CPluginConfigurationMerger>(m_pluginManager))
+              m_PluginConfigurationMerger(boost::make_shared<CPluginConfigurationMerger>())
          {
          }
 
