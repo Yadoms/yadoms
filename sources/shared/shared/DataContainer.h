@@ -285,7 +285,6 @@ namespace shared
       //--------------------------------------------------------------
       explicit CDataContainer(const std::map<std::string, std::string>& initialData);
 
-
    private:
       //--------------------------------------------------------------
       /// \brief		Constructor. 
@@ -479,7 +478,7 @@ namespace shared
 
 
       //--------------------------------------------------------------
-      /// \brief	    Get parameter sub-keys as vector<string>
+      /// \brief	    Replace a node content
       /// \param [in] subkeyName       Name of the subkey
       /// \param [in] onReplaceFunction   Function called for each subkey found (return null if no change needs to be done)
       //--------------------------------------------------------------
@@ -495,7 +494,8 @@ namespace shared
       /// \throw      shared::exception::CEmptyResutl if no parameter matching criteria was found
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      CDataContainer find(const std::string& parameterName, const boost::function<bool(const CDataContainer&)>& whereFct, char pathChar = '.') const;
+      CDataContainer find(const std::string& parameterName,
+                          const boost::function<bool(const CDataContainer&)>& whereFct, char pathChar = '.') const;
 
 
       //--------------------------------------------------------------
@@ -1512,7 +1512,6 @@ namespace shared
             vhelper<T>::setInternal(tree, parameterName, value, pathChar);
          }
       };
-
 
    private:
       //--------------------------------------------------------------

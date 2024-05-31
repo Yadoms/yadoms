@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IPluginConfigurationMerger.h"
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "pluginSystem/Manager.h"
@@ -21,7 +22,7 @@ namespace web
                     boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                     boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
                     boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
-                    boost::shared_ptr<task::CScheduler> taskScheduler,
+                    const boost::shared_ptr<task::CScheduler>& taskScheduler,
                     communication::ISendMessageAsync& messageSender,
                     bool developerMode);
             ~CPlugin() override = default;
@@ -104,6 +105,8 @@ namespace web
             static std::string translatePluginFullState(const boost::shared_ptr<const shared::CDataContainer>& locales,
                                                         const boost::shared_ptr<const shared::CDataContainer>& fullState);
 
+            boost::shared_ptr<const shared::plugin::information::IInformation> findPlugin(const std::string& pluginType) const;
+
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
             boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
@@ -116,6 +119,9 @@ namespace web
             communication::ISendMessageAsync& m_messageSender;
 
             bool m_developerMode;
+
+            boost::shared_ptr<IPluginConfigurationMerger> m_PluginConfigurationMerger;
+
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
          };
       } //namespace service

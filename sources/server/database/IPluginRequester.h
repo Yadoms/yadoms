@@ -3,11 +3,13 @@
 #include "entities/Entities.h"
 
 
-namespace database { 
-
+namespace database
+{
    class IPluginRequester
    {
    public:
+      virtual ~IPluginRequester() = default;
+
       //--------------------------------------------------------------
       /// \brief           Add new plugin plugin instance
       /// \param [in] newPlugin   New plugin informations
@@ -22,8 +24,8 @@ namespace database {
       /// \return          Plugin instance informations
       /// \throw           shared::exception::CEmptyResult if pluginId is unknown
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CPlugin> getInstance(int pluginId) = 0;    
-      
+      virtual boost::shared_ptr<entities::CPlugin> getInstance(int pluginId) = 0;
+
       //--------------------------------------------------------------
       /// \brief           Get SYSTEM plugin instance informations
       /// \return          Plugin instance informations
@@ -36,7 +38,7 @@ namespace database {
       /// \param [in] systemPluginIncluded Include system internal plugin in answer
       /// \return          List of registered plugin instances
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CPlugin> > getInstances(bool systemPluginIncluded = false) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CPlugin>> getInstances(bool systemPluginIncluded = false) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Update plugin instance informations
@@ -57,13 +59,5 @@ namespace database {
       /// \param [in] pluginName    plugin to disable
       //--------------------------------------------------------------
       virtual void disableAutoStartForAllPluginInstances(const std::string& pluginName) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~IPluginRequester()
-      {
-      }
    };
- 
 } //namespace database 

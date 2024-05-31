@@ -108,7 +108,7 @@ namespace web
                         pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
                      if (props->empty() || props->find("configurationSchema") != props->end())
                         pluginEntry->set("configurationSchema", getPluginConfigurationSchema(plugin,
-                           labels));
+                                                                                             labels));
 
                      if (!pluginEntry->empty())
                      {
@@ -209,6 +209,11 @@ namespace web
                   if (props->empty() || props->find("type") != props->end())
                      instanceEntry->set("type", instance->Type());
                   if (props->empty() || props->find("configuration") != props->end())
+                     instanceEntry->set("configurationWithSchema",
+                                        m_PluginConfigurationMerger->mergeConfigurationAndSchema(
+                                           *findPlugin(instance->Type)->getConfigurationSchema(),
+                                           *instance->Configuration()));
+                  if (props->empty() || props->find("configurationWithSchema") != props->end())
                      instanceEntry->set("configuration", instance->Configuration());
                   if (props->empty() || props->find("autoStart") != props->end())
                      instanceEntry->set("autoStart", instance->AutoStart());
@@ -511,7 +516,8 @@ namespace web
             // Manage binding
             schema->replaceAllNodesByName(
                "__Binding__",
-               [this, &pluginInformation](const boost::shared_ptr<const shared::CDataContainer>& bindingNode)-> boost::shared_ptr<shared::CDataContainer>
+               [this, &pluginInformation](
+               const boost::shared_ptr<const shared::CDataContainer>& bindingNode)-> boost::shared_ptr<shared::CDataContainer>
                {
                   try
                   {
@@ -527,13 +533,13 @@ namespace web
                         std::vector<std::pair<int, int>> requestedUsbDevices;
                         for (const auto& requestedDevice : bindingNode->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("content.oneOf"))
                            requestedUsbDevices.emplace_back(requestedDevice->get<int>("vendorId"),
-                              requestedDevice->get<int>("productId"));
+                                                            requestedDevice->get<int>("productId"));
 
                         const auto result = CHelpers::getUsbDevicesV2(requestedUsbDevices,
-                           m_usbDevicesLister);
+                                                                      m_usbDevicesLister);
 
                         return CHelpers::getUsbDevicesV2(requestedUsbDevices,
-                           m_usbDevicesLister);
+                                                         m_usbDevicesLister);
                      }
                      if (query == "NetworkInterfaces")
                         return CHelpers::getNetworkInterfacesV2(false);
@@ -543,21 +549,21 @@ namespace web
                      {
                         auto result = shared::CDataContainer::make();
                         result->set(bindingNode->get<std::string>("key"),
-                           tools::COperatingSystem::getName() == "windows");
+                                    tools::COperatingSystem::getName() == "windows");
                         return result;
                      }
                      if (query == "platformIsLinux")
                      {
                         auto result = shared::CDataContainer::make();
                         result->set(bindingNode->get<std::string>("key"),
-                           tools::COperatingSystem::getName() == "linux");
+                                    tools::COperatingSystem::getName() == "linux");
                         return result;
                      }
                      if (query == "platformIsMac")
                      {
                         auto result = shared::CDataContainer::make();
                         result->set(bindingNode->get<std::string>("key"),
-                           tools::COperatingSystem::getName() == "mac");
+                                    tools::COperatingSystem::getName() == "mac");
                         return result;
                      }
                      if (query == "supportedTimezones")
@@ -568,16 +574,17 @@ namespace web
                            const auto requestedFilter = bindingNode->get<std::string>("filter");
                            char separator = '|';
                            for (const auto& t : boost::tokenizer<boost::char_separator<char>>(requestedFilter,
-                              boost::char_separator<char>(&separator)))
+                                                                                              boost::char_separator<char>(&separator)))
                               filter.insert(t);
                         }
                         return CHelpers::getSupportedTimezonesV2(filter,
-                           m_timezoneDatabase);
+                                                                 m_timezoneDatabase);
                      }
                   }
-                  catch(const shared::exception::CInvalidParameter& exception)
+                  catch (const shared::exception::CInvalidParameter& exception)
                   {
-                     throw std::runtime_error("Fail to parse __Binding__ section of plugin " + pluginInformation->getType() + " : " + exception.what());
+                     throw std::runtime_error(
+                        "Fail to parse __Binding__ section of plugin " + pluginInformation->getType() + " : " + exception.what());
                   }
 
                   return nullptr;
@@ -617,6 +624,23 @@ namespace web
                YADOMS_LOG(warning) << "Fail to translate plugin full state, message " << messageId << " : " << e.what();
                return messageId;
             }
+         }
+
+         boost::shared_ptr<const shared::plugin::information::IInformation> CPlugin::findPlugin(const std::string& pluginType) const
+         {
+            const auto plugins = m_pluginManager->getPluginList();
+            const auto plugin = std::find_if(
+               plugins.begin(),
+               plugins.end(),
+               [&pluginType](const auto& pluginItem)
+               {
+                  return pluginItem.second->getType() == pluginType;
+               });
+
+            if (plugin == plugins.end())
+               throw std::runtime_error("Plugin configuration and schema merge : unable to find plugin");
+
+            return plugin->second;
          }
       } //namespace service
    } //namespace rest

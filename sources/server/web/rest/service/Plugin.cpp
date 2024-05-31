@@ -9,6 +9,7 @@
 
 #include <utility>
 
+#include "PluginConfigurationMerger.h"
 #include "web/poco/RestDispatcherHelpers.hpp"
 
 namespace web
@@ -22,7 +23,7 @@ namespace web
                           boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                           boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
                           boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
-                          boost::shared_ptr<task::CScheduler> taskScheduler,
+                          const boost::shared_ptr<task::CScheduler>& taskScheduler,
                           communication::ISendMessageAsync& messageSender,
                           bool developerMode)
             : m_dataProvider(std::move(dataProvider)),
@@ -33,7 +34,8 @@ namespace web
               m_taskScheduler(taskScheduler),
               m_restKeyword("plugin"),
               m_messageSender(messageSender),
-              m_developerMode(developerMode)
+              m_developerMode(developerMode),
+              m_PluginConfigurationMerger(boost::make_shared<CPluginConfigurationMerger>(m_pluginManager))
          {
          }
 
