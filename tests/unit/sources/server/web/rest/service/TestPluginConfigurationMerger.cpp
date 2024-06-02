@@ -6,17 +6,18 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/server/web/rest/service/PluginConfigurationMerger.h"
 
-const shared::CDataContainer RefSchema(R"({
-    "StringParameter": {
-      "type": "string"
-    },
+static const shared::CDataContainer Schema(R"({
     "BoolParameter": {
       "type": "bool",
       "defaultValue": false
     },
-    "IntParameter": {
-      "type": "int",
-      "defaultValue": 258
+    "ConditionalParameter": {
+      "type": "string",
+      "__Binding__": {
+        "type": "system",
+        "query": "platformIsWindows",
+        "key":  "show"  
+      }
     },
     "DecimalParameter": {
       "type": "decimal",
@@ -31,6 +32,10 @@ const shared::CDataContainer RefSchema(R"({
       },
       "defaultValue": "EnumValue2"
     },
+    "IntParameter": {
+      "type": "int",
+      "defaultValue": 258
+    },
     "MySection": {
       "type": "section",
       "content": {
@@ -43,23 +48,46 @@ const shared::CDataContainer RefSchema(R"({
         }
       }
     },
-    "ConditionalParameter": {
-      "type": "string",
-      "__Binding__": {
-        "type": "system",
-        "query": "platformIsWindows",
-        "key":  "show"  
-      }
+    "StringParameter": {
+      "type": "string"
     },
     "SystemData": {
       "type": "section",
       "content": {
+        "NetworkInterfaces": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "NetworkInterfaces"
+            }
+          }
+        },
+        "NetworkInterfacesWithoutLoopback": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "NetworkInterfacesWithoutLoopback"
+            }
+          }
+        },
         "SerialPort": {
           "type": "enum",
           "values": {
             "__Binding__": {
               "type": "system",
               "query": "serialPorts"
+            }
+          }
+        },
+        "SupportedTimezones": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "supportedTimezones",
+              "filter": "Europe|Antarctica|Accra|Paris"
             }
           }
         },
@@ -91,52 +119,24 @@ const shared::CDataContainer RefSchema(R"({
               }
             }
           }
-        },
-        "NetworkInterfaces": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "NetworkInterfaces"
-            }
-          }
-        },
-        "NetworkInterfacesWithoutLoopback": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "NetworkInterfacesWithoutLoopback"
-            }
-          }
-        },
-        "SupportedTimezones": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "supportedTimezones",
-              "filter": "Europe|Antarctica|Accra|Paris"
-            }
-          }
         }
       }
     }
   })");
 
-const shared::CDataContainer Values(R"({
-    "StringParameter": "abc",
+static const shared::CDataContainer Configuration(R"({
     "BoolParameter": true,
-    "IntParameter": 259,
+    "ConditionalParameter": "ouaip",
     "DecimalParameter": 13.7,
     "EnumParameter": "EnumValue3",
+    "IntParameter": 259,
     "MySection": {
         "content": {
             "SubIntParameter": 456123,
             "SubStringParameter": "houhou"
         }
     },
-    "ConditionalParameter": "ouaip",
+    "StringParameter": "abc",
     "SystemData": {
         "content": {
             "NetworkInterfaces": "Loopback Pseudo-Interface 1",
@@ -148,20 +148,20 @@ const shared::CDataContainer Values(R"({
     }
 })");
 
-const shared::CDataContainer Expected(R"({
-    "StringParameter": {
-      "type": "string",
-      "value":"abc"
-    },
+static const shared::CDataContainer Merged(R"({
     "BoolParameter": {
       "type": "bool",
       "defaultValue": false,
       "value":true
     },
-    "IntParameter": {
-      "type": "int",
-      "defaultValue": 258,
-      "value":259
+    "ConditionalParameter": {
+      "type": "string",
+      "__Binding__": {
+        "type": "system",
+        "query": "platformIsWindows",
+        "key":  "show"  
+      },
+      "value": "ouaip"
     },
     "DecimalParameter": {
       "type": "decimal",
@@ -178,6 +178,11 @@ const shared::CDataContainer Expected(R"({
       "defaultValue": "EnumValue2",
       "value":"EnumValue3"
     },
+    "IntParameter": {
+      "type": "int",
+      "defaultValue": 258,
+      "value":259
+    },
     "MySection": {
       "type": "section",
       "content": {
@@ -192,18 +197,33 @@ const shared::CDataContainer Expected(R"({
         }
       }
     },
-    "ConditionalParameter": {
+    "StringParameter": {
       "type": "string",
-      "__Binding__": {
-        "type": "system",
-        "query": "platformIsWindows",
-        "key":  "show"  
-      },
-      "value": "ouaip"
+      "value":"abc"
     },
     "SystemData": {
       "type": "section",
       "content": {
+        "NetworkInterfaces": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "NetworkInterfaces"
+            }
+          },
+          "value": "Loopback Pseudo-Interface 1"
+        },
+        "NetworkInterfacesWithoutLoopback": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "NetworkInterfacesWithoutLoopback"
+            }
+          },
+          "value": "Ethernet"
+        },
         "SerialPort": {
           "type": "enum",
           "values": {
@@ -213,6 +233,17 @@ const shared::CDataContainer Expected(R"({
             }
           },
           "value": "\\\\.\\COM3"
+        },
+        "SupportedTimezones": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "supportedTimezones",
+              "filter": "Europe|Antarctica|Accra|Paris"
+            }
+          },
+          "value": "Africa/Abidjan"
         },
         "UsbDevices": {
           "type": "enum",
@@ -243,37 +274,6 @@ const shared::CDataContainer Expected(R"({
             }
           },
           "value": "\\\\?\\usb#vid_045e&pid_0040#6&af0ffb3&3&3#{a5dcbf10-6530-11d2-901f-00c04fb951ed}"
-        },
-        "NetworkInterfaces": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "NetworkInterfaces"
-            }
-          },
-          "value": "Loopback Pseudo-Interface 1"
-        },
-        "NetworkInterfacesWithoutLoopback": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "NetworkInterfacesWithoutLoopback"
-            }
-          },
-          "value": "Ethernet"
-        },
-        "SupportedTimezones": {
-          "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "supportedTimezones",
-              "filter": "Europe|Antarctica|Accra|Paris"
-            }
-          },
-          "value": "Africa/Abidjan"
         }
       }
     }
@@ -281,11 +281,18 @@ const shared::CDataContainer Expected(R"({
 
 BOOST_AUTO_TEST_SUITE(TestPluginConfigurationMerger)
 
-	BOOST_AUTO_TEST_CASE(Initialisation_Test)
+	BOOST_AUTO_TEST_CASE(Merge)
 	{
-		web::rest::service::CPluginConfigurationMerger merger;
+		const web::rest::service::CPluginConfigurationMerger merger;
 
-		BOOST_CHECK_EQUAL(merger.mergeConfigurationAndSchema(RefSchema, Values)->serialize(), Expected.serialize());
+		BOOST_CHECK_EQUAL(merger.mergeConfigurationAndSchema(Schema, Configuration)->serialize(), Merged.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(Extract)
+	{
+		const web::rest::service::CPluginConfigurationMerger merger;
+
+		BOOST_CHECK_EQUAL(merger.extractConfiguration(Merged)->serialize(), Configuration.serialize());
 	}
 
 BOOST_AUTO_TEST_SUITE_END()

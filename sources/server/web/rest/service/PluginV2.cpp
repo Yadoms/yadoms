@@ -209,12 +209,12 @@ namespace web
                   if (props->empty() || props->find("type") != props->end())
                      instanceEntry->set("type", instance->Type());
                   if (props->empty() || props->find("configuration") != props->end())
+                     instanceEntry->set("configuration", instance->Configuration());
+                  if (props->empty() || props->find("configurationWithSchema") != props->end())
                      instanceEntry->set("configurationWithSchema",
                                         m_PluginConfigurationMerger->mergeConfigurationAndSchema(
                                            *findPlugin(instance->Type)->getConfigurationSchema(),
                                            *instance->Configuration()));
-                  if (props->empty() || props->find("configurationWithSchema") != props->end())
-                     instanceEntry->set("configuration", instance->Configuration());
                   if (props->empty() || props->find("autoStart") != props->end())
                      instanceEntry->set("autoStart", instance->AutoStart());
                   if (props->empty() || props->find("category") != props->end())
@@ -267,8 +267,18 @@ namespace web
                   m_dataProvider,
                   [this](const auto& req) -> boost::shared_ptr<IAnswer>
                   {
+                     // Extract only configuration if configurationWithSchema provided
+                     shared::CDataContainer pluginToCreate(req->body());
+                     if (pluginToCreate.exists("configurationWithSchema"))
+                     {
+                        pluginToCreate.set("Configuration",
+                                           m_PluginConfigurationMerger->extractConfiguration(
+                                              pluginToCreate.get<shared::CDataContainer>("configurationWithSchema")));
+                        pluginToCreate.remove("configurationWithSchema");
+                     }
+
                      database::entities::CPlugin plugin;
-                     plugin.fillFromSerializedString(req->body());
+                     plugin.fillFromContent(pluginToCreate);
                      const auto idCreated = m_pluginManager->createInstance(plugin);
                      return boost::make_shared<CCreatedAnswer>("plugins-instances/" + std::to_string(idCreated));
                   });
@@ -291,8 +301,18 @@ namespace web
                                                           "plugin-instance id was not provided");
                const auto instanceId = static_cast<int>(std::stol(id));
 
+               // Extract only configuration if configurationWithSchema provided
+               shared::CDataContainer pluginToUpdate(request->body());
+               if (pluginToUpdate.exists("configurationWithSchema"))
+               {
+                  pluginToUpdate.set("Configuration",
+                                     m_PluginConfigurationMerger->extractConfiguration(
+                                        pluginToUpdate.get<shared::CDataContainer>("configurationWithSchema")));
+                  pluginToUpdate.remove("configurationWithSchema");
+               }
+
                database::entities::CPlugin instanceToUpdate;
-               instanceToUpdate.fillFromSerializedString(request->body());
+               instanceToUpdate.fillFromContent(pluginToUpdate);
                instanceToUpdate.Id = instanceId;
 
                m_pluginManager->updateInstance(instanceToUpdate);
