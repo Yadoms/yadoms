@@ -24,35 +24,43 @@ namespace web
                   || parameterType == "comboSection"
                   || parameterType == "checkboxSection")
                {
-                  out->set(item.first + ".content", mergeConfigurationAndSchema(
-                              item.second->get<shared::CDataContainer>("content"),
-                              instanceConfiguration.get<shared::CDataContainer>(item.first + ".content")));
+                  if (instanceConfiguration.exists(item.first + ".content"))
+                     out->set(item.first + ".content", mergeConfigurationAndSchema(
+                                 item.second->get<shared::CDataContainer>("content"),
+                                 instanceConfiguration.get<shared::CDataContainer>(item.first + ".content")));
                   if (instanceConfiguration.exists(item.first + ".activeSection"))
                      out->set(item.first + ".activeSection", instanceConfiguration.get<std::string>(item.first + ".activeSection"));
                   if (instanceConfiguration.exists(item.first + ".checkbox"))
                      out->set(item.first + ".checkbox", instanceConfiguration.get<bool>(item.first + ".checkbox"));
                }
-               else if (parameterType == "string"
-                  || parameterType == "enum"
-                  || parameterType == "time")
-               {
-                  out->set(item.first + ".value", instanceConfiguration.get<std::string>(item.first));
-               }
-               else if (parameterType == "bool")
-               {
-                  out->set(item.first + ".value", instanceConfiguration.get<bool>(item.first));
-               }
-               else if (parameterType == "int")
-               {
-                  out->set(item.first + ".value", instanceConfiguration.get<int>(item.first));
-               }
-               else if (parameterType == "decimal")
-               {
-                  out->set(item.first + ".value", instanceConfiguration.get<double>(item.first));
-               }
                else
                {
-                  YADOMS_LOG(error) << "CPluginConfigurationMerger::mergeConfigurationAndSchema : Invalid item type " << parameterType << ", ignored";
+                  if (!instanceConfiguration.exists(item.first))
+                     continue;
+
+                  if (parameterType == "string"
+                     || parameterType == "enum"
+                     || parameterType == "time")
+                  {
+                     out->set(item.first + ".value", instanceConfiguration.get<std::string>(item.first));
+                  }
+                  else if (parameterType == "bool")
+                  {
+                     out->set(item.first + ".value", instanceConfiguration.get<bool>(item.first));
+                  }
+                  else if (parameterType == "int")
+                  {
+                     out->set(item.first + ".value", instanceConfiguration.get<int>(item.first));
+                  }
+                  else if (parameterType == "decimal")
+                  {
+                     out->set(item.first + ".value", instanceConfiguration.get<double>(item.first));
+                  }
+                  else
+                  {
+                     YADOMS_LOG(error) << "CPluginConfigurationMerger::mergeConfigurationAndSchema : Invalid item type " << parameterType <<
+                        ", ignored";
+                  }
                }
             }
 

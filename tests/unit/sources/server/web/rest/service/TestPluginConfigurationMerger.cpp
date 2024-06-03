@@ -1,3 +1,4 @@
+// ReSharper disable CppClangTidyReadabilitySuspiciousCallArgument
 #include "stdafx.h"
 
 
@@ -286,6 +287,138 @@ BOOST_AUTO_TEST_SUITE(TestPluginConfigurationMerger)
 
 		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
 		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(FirstStartupNoConf)
+	{
+		const shared::CDataContainer schema(R"({
+    "BoolParameter": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "ConditionalParameter": {
+      "type": "string",
+      "__Binding__": {
+        "type": "system",
+        "query": "platformIsWindows",
+        "key":  "show"  
+      }
+    },
+    "DecimalParameter": {
+      "type": "decimal",
+      "defaultValue": 25.3
+    },
+    "EnumParameter": {
+      "type": "enum",
+      "values": {
+        "EnumValue1": "",
+        "EnumValue2": "",
+        "EnumValue3": ""
+      },
+      "defaultValue": "EnumValue2"
+    },
+    "IntParameter": {
+      "type": "int",
+      "defaultValue": 258
+    },
+    "MySection": {
+      "type": "section",
+      "content": {
+        "SubIntParameter": {
+          "type": "int",
+          "defaultValue": 65535
+        },
+        "SubStringParameter": {
+          "type": "string"
+        }
+      }
+    },
+    "StringParameter": {
+      "type": "string"
+    },
+    "SystemData": {
+      "type": "section",
+      "content": {
+        "NetworkInterfaces": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "NetworkInterfaces"
+            }
+          }
+        },
+        "NetworkInterfacesWithoutLoopback": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "NetworkInterfacesWithoutLoopback"
+            }
+          }
+        },
+        "SerialPort": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "serialPorts"
+            }
+          }
+        },
+        "SupportedTimezones": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "supportedTimezones",
+              "filter": "Europe|Antarctica|Accra|Paris"
+            }
+          }
+        },
+        "UsbDevices": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "usbDevices",
+              "content": {
+                "oneOf": [
+                  {
+                    "vendorId": 16700,
+                    "productId": 33159
+                  },
+                  {
+                    "vendorId": 1133,
+                    "productId": 50475
+                  },
+                  {
+                    "vendorId": 1118,
+                    "productId": 64
+                  },
+                  {
+                    "vendorId": 16700,
+                    "productId": 8208
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, shared::CDataContainer())->serialize(),
+		                  schema.serialize());
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, shared::CDataContainer(R"({})"))->serialize(),
+		                  schema.serialize());
+
+		BOOST_CHECK_THROW(web::rest::service::CPluginConfigurationMerger::extractConfiguration(schema)->serialize(),
+		                  shared::exception::CInvalidParameter);
 	}
 
 	BOOST_AUTO_TEST_CASE(Section)
