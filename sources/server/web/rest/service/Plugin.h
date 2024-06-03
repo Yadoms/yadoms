@@ -1,6 +1,5 @@
 #pragma once
 
-#include "IPluginConfigurationMerger.h"
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "pluginSystem/Manager.h"
@@ -119,8 +118,6 @@ namespace web
             communication::ISendMessageAsync& m_messageSender;
 
             bool m_developerMode;
-
-            boost::shared_ptr<IPluginConfigurationMerger> m_PluginConfigurationMerger;
 
             boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
          };

@@ -677,7 +677,6 @@ set(YADOMS_SRC
    server/web/rest/service/EventLogger.cpp
    server/web/rest/service/Keyword.h
    server/web/rest/service/KeywordV2.cpp
-   server/web/rest/service/IPluginConfigurationMerger.h
    server/web/rest/service/IUploadFileManager.h
    server/web/rest/service/IRestService.h
    server/web/rest/service/IRestEndPoint.h

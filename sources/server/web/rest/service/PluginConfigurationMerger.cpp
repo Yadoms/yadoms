@@ -10,7 +10,7 @@ namespace web
       {
          boost::shared_ptr<shared::CDataContainer> CPluginConfigurationMerger::mergeConfigurationAndSchema(
             const shared::CDataContainer& configurationSchema,
-            const shared::CDataContainer& instanceConfiguration) const
+            const shared::CDataContainer& instanceConfiguration)
          {
             boost::shared_ptr<shared::CDataContainer> out = configurationSchema.copy();
 
@@ -18,23 +18,41 @@ namespace web
             {
                const auto parameterType = item.second->get("type");
 
-               if (parameterType == "section")
+               if (parameterType == "section"
+                  || parameterType == "multiSelectSection"
+                  || parameterType == "radioSection"
+                  || parameterType == "comboSection"
+                  || parameterType == "checkboxSection")
+               {
                   out->set(item.first + ".content", mergeConfigurationAndSchema(
                               item.second->get<shared::CDataContainer>("content"),
                               instanceConfiguration.get<shared::CDataContainer>(item.first + ".content")));
-               else if (parameterType == "string")
+                  if (instanceConfiguration.exists(item.first + ".activeSection"))
+                     out->set(item.first + ".activeSection", instanceConfiguration.get<std::string>(item.first + ".activeSection"));
+                  if (instanceConfiguration.exists(item.first + ".checkbox"))
+                     out->set(item.first + ".checkbox", instanceConfiguration.get<bool>(item.first + ".checkbox"));
+               }
+               else if (parameterType == "string"
+                  || parameterType == "enum"
+                  || parameterType == "time")
+               {
                   out->set(item.first + ".value", instanceConfiguration.get<std::string>(item.first));
+               }
                else if (parameterType == "bool")
+               {
                   out->set(item.first + ".value", instanceConfiguration.get<bool>(item.first));
+               }
                else if (parameterType == "int")
+               {
                   out->set(item.first + ".value", instanceConfiguration.get<int>(item.first));
+               }
                else if (parameterType == "decimal")
+               {
                   out->set(item.first + ".value", instanceConfiguration.get<double>(item.first));
-               else if (parameterType == "enum")
-                  out->set(item.first + ".value", instanceConfiguration.get<std::string>(item.first));
+               }
                else
                {
-                  //TODO vérifier que tous les types soient gérés
+                  YADOMS_LOG(error) << "CPluginConfigurationMerger::mergeConfigurationAndSchema : Invalid item type " << parameterType << ", ignored";
                }
             }
 
@@ -42,7 +60,7 @@ namespace web
          }
 
          boost::shared_ptr<shared::CDataContainer> CPluginConfigurationMerger::extractConfiguration(
-            const shared::CDataContainer& instanceConfigurationAndSchema) const
+            const shared::CDataContainer& instanceConfigurationAndSchema)
          {
             auto out = shared::CDataContainer::make();
 
@@ -50,22 +68,40 @@ namespace web
             {
                const auto parameterType = item.second->get("type");
 
-               if (parameterType == "section")
+               if (parameterType == "section"
+                  || parameterType == "multiSelectSection"
+                  || parameterType == "radioSection"
+                  || parameterType == "comboSection"
+                  || parameterType == "checkboxSection")
+               {
                   out->set(item.first + ".content",
                            extractConfiguration(instanceConfigurationAndSchema.get<shared::CDataContainer>(item.first + ".content")));
-               else if (parameterType == "string")
+                  if (instanceConfigurationAndSchema.exists(item.first + ".activeSection"))
+                     out->set(item.first + ".activeSection", instanceConfigurationAndSchema.get<std::string>(item.first + ".activeSection"));
+                  if (instanceConfigurationAndSchema.exists(item.first + ".checkbox"))
+                     out->set(item.first + ".checkbox", instanceConfigurationAndSchema.get<bool>(item.first + ".checkbox"));
+               }
+               else if (parameterType == "string"
+                  || parameterType == "enum"
+                  || parameterType == "time")
+               {
                   out->set(item.first, instanceConfigurationAndSchema.get<std::string>(item.first + ".value"));
+               }
                else if (parameterType == "bool")
+               {
                   out->set(item.first, instanceConfigurationAndSchema.get<bool>(item.first + ".value"));
+               }
                else if (parameterType == "int")
+               {
                   out->set(item.first, instanceConfigurationAndSchema.get<int>(item.first + ".value"));
+               }
                else if (parameterType == "decimal")
+               {
                   out->set(item.first, instanceConfigurationAndSchema.get<double>(item.first + ".value"));
-               else if (parameterType == "enum")
-                  out->set(item.first, instanceConfigurationAndSchema.get<std::string>(item.first + ".value"));
+               }
                else
                {
-                  //TODO vérifier que tous les types soient gérés
+                  YADOMS_LOG(error) << "CPluginConfigurationMerger::extractConfiguration : Invalid item type " << parameterType << ", ignored";
                }
             }
 

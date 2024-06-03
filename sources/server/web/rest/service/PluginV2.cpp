@@ -13,6 +13,8 @@
 #include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
+#include "PluginConfigurationMerger.h"
+
 
 namespace web
 {
@@ -212,7 +214,7 @@ namespace web
                      instanceEntry->set("configuration", instance->Configuration());
                   if (props->empty() || props->find("configurationWithSchema") != props->end())
                      instanceEntry->set("configurationWithSchema",
-                                        m_PluginConfigurationMerger->mergeConfigurationAndSchema(
+                                        CPluginConfigurationMerger::mergeConfigurationAndSchema(
                                            *findPlugin(instance->Type)->getConfigurationSchema(),
                                            *instance->Configuration()));
                   if (props->empty() || props->find("autoStart") != props->end())
@@ -272,7 +274,7 @@ namespace web
                      if (pluginToCreate.exists("configurationWithSchema"))
                      {
                         pluginToCreate.set("Configuration",
-                                           m_PluginConfigurationMerger->extractConfiguration(
+                                           CPluginConfigurationMerger::extractConfiguration(
                                               pluginToCreate.get<shared::CDataContainer>("configurationWithSchema")));
                         pluginToCreate.remove("configurationWithSchema");
                      }
@@ -306,7 +308,7 @@ namespace web
                if (pluginToUpdate.exists("configurationWithSchema"))
                {
                   pluginToUpdate.set("Configuration",
-                                     m_PluginConfigurationMerger->extractConfiguration(
+                                     CPluginConfigurationMerger::extractConfiguration(
                                         pluginToUpdate.get<shared::CDataContainer>("configurationWithSchema")));
                   pluginToUpdate.remove("configurationWithSchema");
                }

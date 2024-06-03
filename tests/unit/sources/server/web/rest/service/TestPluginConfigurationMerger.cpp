@@ -6,7 +6,12 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/server/web/rest/service/PluginConfigurationMerger.h"
 
-static const shared::CDataContainer Schema(R"({
+
+BOOST_AUTO_TEST_SUITE(TestPluginConfigurationMerger)
+
+	BOOST_AUTO_TEST_CASE(Nominal)
+	{
+		const shared::CDataContainer schema(R"({
     "BoolParameter": {
       "type": "bool",
       "defaultValue": false
@@ -124,7 +129,7 @@ static const shared::CDataContainer Schema(R"({
     }
   })");
 
-static const shared::CDataContainer Configuration(R"({
+		const shared::CDataContainer configuration(R"({
     "BoolParameter": true,
     "ConditionalParameter": "ouaip",
     "DecimalParameter": 13.7,
@@ -148,7 +153,7 @@ static const shared::CDataContainer Configuration(R"({
     }
 })");
 
-static const shared::CDataContainer Merged(R"({
+		const shared::CDataContainer merged(R"({
     "BoolParameter": {
       "type": "bool",
       "defaultValue": false,
@@ -279,20 +284,454 @@ static const shared::CDataContainer Merged(R"({
     }
   })");
 
-BOOST_AUTO_TEST_SUITE(TestPluginConfigurationMerger)
-
-	BOOST_AUTO_TEST_CASE(Merge)
-	{
-		const web::rest::service::CPluginConfigurationMerger merger;
-
-		BOOST_CHECK_EQUAL(merger.mergeConfigurationAndSchema(Schema, Configuration)->serialize(), Merged.serialize());
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
 	}
 
-	BOOST_AUTO_TEST_CASE(Extract)
+	BOOST_AUTO_TEST_CASE(Section)
 	{
-		const web::rest::service::CPluginConfigurationMerger merger;
+		const shared::CDataContainer schema(R"({
+    "MySection": {
+      "type": "section",
+      "content": {
+        "SubIntParameter": {
+          "type": "int",
+          "defaultValue": 65535
+        },
+        "SubStringParameter": {
+          "type": "string"
+        }
+      }
+    }
+  })");
 
-		BOOST_CHECK_EQUAL(merger.extractConfiguration(Merged)->serialize(), Configuration.serialize());
+		const shared::CDataContainer configuration(R"({
+    "MySection": {
+        "content": {
+            "SubIntParameter": 456123,
+            "SubStringParameter": "houhou"
+        }
+    }
+})");
+
+		const shared::CDataContainer merged(R"({
+    "MySection": {
+      "type": "section",
+      "content": {
+        "SubIntParameter": {
+          "type": "int",
+          "defaultValue": 65535,
+          "value": 456123
+        },
+        "SubStringParameter": {
+          "type": "string",
+          "value": "houhou"
+        }
+      }
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(RadioSection)
+	{
+		const shared::CDataContainer schema(R"({
+    "MySection": {
+      "type": "radioSection",
+      "content": {
+        "SubIntParameter": {
+          "type": "int",
+          "defaultValue": 65535
+        },
+        "SubStringParameter": {
+          "type": "string"
+        }
+      }
+    }
+  })");
+
+		const shared::CDataContainer configuration(R"({
+    "MySection": {
+        "content": {
+            "SubIntParameter": 456123,
+            "SubStringParameter": "houhou"
+        },
+        "activeSection": "SubStringParameter"
+    }
+})");
+
+		const shared::CDataContainer merged(R"({
+    "MySection": {
+      "type": "radioSection",
+      "content": {
+        "SubIntParameter": {
+          "type": "int",
+          "defaultValue": 65535,
+          "value": 456123
+        },
+        "SubStringParameter": {
+          "type": "string",
+          "value": "houhou"
+        }
+      },
+      "activeSection": "SubStringParameter"
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(ComboSection)
+	{
+		const shared::CDataContainer schema(R"({
+    "MySection": {
+      "type": "comboSection",
+      "content": {
+        "SubIntParameter": {
+          "type": "int",
+          "defaultValue": 65535
+        },
+        "SubStringParameter": {
+          "type": "string"
+        }
+      }
+    }
+  })");
+
+		const shared::CDataContainer configuration(R"({
+    "MySection": {
+        "content": {
+            "SubIntParameter": 456123,
+            "SubStringParameter": "houhou"
+        },
+        "activeSection": "SubStringParameter"
+    }
+})");
+
+		const shared::CDataContainer merged(R"({
+    "MySection": {
+      "type": "comboSection",
+      "content": {
+        "SubIntParameter": {
+          "type": "int",
+          "defaultValue": 65535,
+          "value": 456123
+        },
+        "SubStringParameter": {
+          "type": "string",
+          "value": "houhou"
+        }
+      },
+      "activeSection": "SubStringParameter"
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(MultiSelectSection)
+	{
+		const shared::CDataContainer schema(R"({
+    "MySection": {
+      "type": "multiSelectSection",
+      "content": {
+        "AE Blyss": {
+          "type": "bool",
+          "defaultValue": false
+        },
+        "Rubicson": {
+          "type": "bool",
+          "defaultValue": false
+        },
+        "FineOffset/Viking": {
+          "type": "bool",
+          "defaultValue": false
+        }
+      }
+    }
+})");
+
+		const shared::CDataContainer configuration(R"({
+    "MySection": {
+        "content": {
+            "AE Blyss": true,
+            "FineOffset/Viking": false,
+            "Rubicson": false
+        }
+    }
+})");
+
+		const shared::CDataContainer merged(R"({
+    "MySection": {
+      "type": "multiSelectSection",
+      "content": {
+        "AE Blyss": {
+          "type": "bool",
+          "defaultValue": false,
+          "value": true
+        },
+        "Rubicson": {
+          "type": "bool",
+          "defaultValue": false,
+          "value": false
+        },
+        "FineOffset/Viking": {
+          "type": "bool",
+          "defaultValue": false,
+          "value": false
+        }
+      }
+    }
+})");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(CheckboxSection)
+	{
+		const shared::CDataContainer schema(R"({
+    "MySection": {
+      "type": "checkboxSection",
+      "content": {
+        "SubIntParameter": {
+          "type": "int",
+          "defaultValue": 65535
+        },
+        "SubStringParameter": {
+          "type": "string"
+        }
+      }
+    }
+  })");
+
+		const shared::CDataContainer configuration(R"({
+    "MySection": {
+        "content": {
+            "SubIntParameter": 456123,
+            "SubStringParameter": "houhou"
+        },
+        "checkbox": true
+    }
+})");
+
+		const shared::CDataContainer merged(R"({
+    "MySection": {
+      "type": "checkboxSection",
+      "content": {
+        "SubIntParameter": {
+          "type": "int",
+          "defaultValue": 65535,
+          "value": 456123
+        },
+        "SubStringParameter": {
+          "type": "string",
+          "value": "houhou"
+        }
+      },
+      "checkbox": true
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(String)
+	{
+		const shared::CDataContainer schema(R"({
+    "StringParameter": {
+      "type": "string"
+    }
+  })");
+
+		const shared::CDataContainer configuration(R"({
+    "StringParameter": "abc"
+})");
+
+		const shared::CDataContainer merged(R"({
+    "StringParameter": {
+      "type": "string",
+      "value":"abc"
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(Enum)
+	{
+		const shared::CDataContainer schema(R"({
+    "EnumParameter": {
+      "type": "enum",
+      "values": {
+        "EnumValue1": "",
+        "EnumValue2": "",
+        "EnumValue3": ""
+      },
+      "defaultValue": "EnumValue2"
+    }
+  })");
+
+		const shared::CDataContainer configuration(R"({
+    "EnumParameter": "EnumValue3"
+})");
+
+		const shared::CDataContainer merged(R"({
+    "EnumParameter": {
+      "type": "enum",
+      "values": {
+        "EnumValue1": "",
+        "EnumValue2": "",
+        "EnumValue3": ""
+      },
+      "defaultValue": "EnumValue2",
+      "value":"EnumValue3"
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(Int)
+	{
+		const shared::CDataContainer schema(R"({
+    "IntParameter": {
+      "type": "int",
+      "defaultValue": 258
+    }
+  })");
+
+		const shared::CDataContainer configuration(R"({
+    "IntParameter": 259
+})");
+
+		const shared::CDataContainer merged(R"({
+    "IntParameter": {
+      "type": "int",
+      "defaultValue": 258,
+      "value":259
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(Time)
+	{
+		const shared::CDataContainer schema(R"({
+    "TimeParameter": {
+      "type": "time"
+    }
+  })");
+
+		const shared::CDataContainer configuration(R"({
+    "TimeParameter": "06:38"
+})");
+
+		const shared::CDataContainer merged(R"({
+    "TimeParameter": {
+      "type": "time",
+      "value":"06:38"
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(Bool)
+	{
+		const shared::CDataContainer schema(R"({
+    "BoolParameter": {
+      "type": "bool",
+      "defaultValue": false
+    }
+  })");
+
+		const shared::CDataContainer configuration(R"({
+    "BoolParameter": true
+})");
+
+		const shared::CDataContainer merged(R"({
+    "BoolParameter": {
+      "type": "bool",
+      "defaultValue": false,
+      "value":true
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
+	}
+
+	BOOST_AUTO_TEST_CASE(Decimal)
+	{
+		const shared::CDataContainer schema(R"({
+    "DecimalParameter": {
+      "type": "decimal",
+      "defaultValue": 25.3
+    }
+  })");
+
+		const shared::CDataContainer configuration(R"({
+    "DecimalParameter": 13.7
+})");
+
+		const shared::CDataContainer merged(R"({
+    "DecimalParameter": {
+      "type": "decimal",
+      "defaultValue": 25.3,
+      "value":13.7
+    }
+  })");
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::mergeConfigurationAndSchema(schema, configuration)->serialize(),
+		                  merged.serialize());
+
+		BOOST_CHECK_EQUAL(web::rest::service::CPluginConfigurationMerger::extractConfiguration(merged)->serialize(),
+		                  configuration.serialize());
 	}
 
 BOOST_AUTO_TEST_SUITE_END()
+
+
+//TODO gérer/tester lorsqu'il n'y a pas encore de conf
+//TODO gérer binding
