@@ -865,6 +865,3 @@ BOOST_AUTO_TEST_SUITE(TestPluginConfigurationMerger)
 
 BOOST_AUTO_TEST_SUITE_END()
 
-
-//TODO gérer/tester lorsqu'il n'y a pas encore de conf
-//TODO gérer binding

@@ -110,21 +110,61 @@ namespace web
          const auto acceptLanguageHeader = m_request->getHeader("Accept-Language");
          if (!acceptLanguageHeader)
             return {};
+         if (acceptLanguageHeader == "*")
+            return {"en"};
 
-         std::vector<std::string> languages;
-         std::vector<std::string> weightedLanguages;
-         boost::split(weightedLanguages, *acceptLanguageHeader, boost::is_any_of(";"), boost::token_compress_on);
-         for (const auto& weightedLanguage:weightedLanguages)
+         struct LanguagePreference
          {
-            const auto token = weightedLanguage.find(',');
-            if (token == std::string::npos)
-               continue;
-            if(token >= weightedLanguage.size())
-               continue;
-            languages.emplace_back(weightedLanguage.substr(token+1));            
+            std::string m_language;
+            float m_quality;
+         };
+
+         std::vector<LanguagePreference> weightedLanguages;
+
+         std::istringstream stream(acceptLanguageHeader);
+         std::string languageQualityPair;
+
+         while (std::getline(stream, languageQualityPair, ','))
+         {
+            std::istringstream pairStream(languageQualityPair);
+            std::string language;
+            std::getline(pairStream, language, ';');
+
+            std::string qualityStr;
+            float quality = 1.0f; // Default quality value
+            if (std::getline(pairStream, qualityStr, ','))
+            {
+               try
+               {
+                  quality = std::stof(qualityStr.substr(qualityStr.find('=') + 1));
+               }
+               catch (const std::invalid_argument&)
+               {
+                  quality = 1.0f;
+               }
+            }
+
+            // Remove any leading or trailing spaces from the language string
+            language.erase(0, language.find_first_not_of(' '));
+            language.erase(language.find_last_not_of(' ') + 1);
+
+            weightedLanguages.push_back({language, quality});
          }
 
-         return languages;
+         // Sort languages by quality in descending order
+         std::sort(weightedLanguages.begin(),
+                   weightedLanguages.end(),
+                   [](const LanguagePreference& a, const LanguagePreference& b)
+                   {
+                      return b.m_quality < a.m_quality;
+                   });
+
+         std::vector<std::string> sortedLanguages;
+         sortedLanguages.reserve(weightedLanguages.size());
+         for (const auto& weightedLanguage : weightedLanguages)
+            sortedLanguages.emplace_back(weightedLanguage.m_language);
+
+         return sortedLanguages;
       }
 
       std::string CRestRequest::body() const

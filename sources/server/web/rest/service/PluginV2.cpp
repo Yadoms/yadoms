@@ -215,7 +215,7 @@ namespace web
                   if (props->empty() || props->find("configurationWithSchema") != props->end())
                      instanceEntry->set("configurationWithSchema",
                                         CPluginConfigurationMerger::mergeConfigurationAndSchema(
-                                           *findPlugin(instance->Type)->getConfigurationSchema(),
+                                           *getPluginConfigurationSchema(findPlugin(instance->Type), labels),
                                            *instance->Configuration()));
                   if (props->empty() || props->find("autoStart") != props->end())
                      instanceEntry->set("autoStart", instance->AutoStart());
