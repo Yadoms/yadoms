@@ -21,40 +21,70 @@ namespace web
                if (parameterType == "section"
                   || parameterType == "multiSelectSection"
                   || parameterType == "radioSection"
-                  || parameterType == "comboSection"
-                  || parameterType == "checkboxSection")
+                  || parameterType == "comboSection")
                {
-                  if (instanceConfiguration.exists(item.first + ".content"))
-                     out->set(item.first + ".content", mergeConfigurationAndSchema(
-                                 item.second->get<shared::CDataContainer>("content"),
-                                 instanceConfiguration.get<shared::CDataContainer>(item.first + ".content")));
+                  if (item.second->exists("content"))
+                     out->set(item.first + ".content",
+                              mergeConfigurationAndSchema(item.second->get<shared::CDataContainer>("content"),
+                                                          instanceConfiguration.getWithDefault<shared::CDataContainer>(
+                                                             item.first + ".content", {})));
                   if (instanceConfiguration.exists(item.first + ".activeSection"))
                      out->set(item.first + ".activeSection", instanceConfiguration.get<std::string>(item.first + ".activeSection"));
-                  if (instanceConfiguration.exists(item.first + ".checkbox"))
-                     out->set(item.first + ".checkbox", instanceConfiguration.get<bool>(item.first + ".checkbox"));
+               }
+               else if (parameterType == "checkboxSection")
+               {
+                  if (item.second->exists("content"))
+                     out->set(item.first + ".content",
+                              mergeConfigurationAndSchema(item.second->get<shared::CDataContainer>("content"),
+                                                          instanceConfiguration.getWithDefault<shared::CDataContainer>(
+                                                             item.first + ".content", {})));
+
+                  out->set(item.first + ".checkbox",
+                           instanceConfiguration.exists(item.first + ".checkbox")
+                              ? instanceConfiguration.get<bool>(item.first + ".checkbox")
+                              : out->exists(item.first + ".defaultValue")
+                              ? out->get<bool>(item.first + ".defaultValue")
+                              : false);
                }
                else
                {
-                  if (!instanceConfiguration.exists(item.first))
-                     continue;
-
                   if (parameterType == "string"
                      || parameterType == "enum"
                      || parameterType == "time")
                   {
-                     out->set(item.first + ".value", instanceConfiguration.get<std::string>(item.first));
+                     out->set(item.first + ".value",
+                              instanceConfiguration.exists(item.first)
+                                 ? instanceConfiguration.get<std::string>(item.first)
+                                 : out->exists(item.first + ".defaultValue")
+                                 ? out->get<std::string>(item.first + ".defaultValue")
+                                 : "");
                   }
                   else if (parameterType == "bool")
                   {
-                     out->set(item.first + ".value", instanceConfiguration.get<bool>(item.first));
+                     out->set(item.first + ".value",
+                              instanceConfiguration.exists(item.first)
+                                 ? instanceConfiguration.get<bool>(item.first)
+                                 : out->exists(item.first + ".defaultValue")
+                                 ? out->get<bool>(item.first + ".defaultValue")
+                                 : false);
                   }
                   else if (parameterType == "int")
                   {
-                     out->set(item.first + ".value", instanceConfiguration.get<int>(item.first));
+                     out->set(item.first + ".value",
+                              instanceConfiguration.exists(item.first)
+                                 ? instanceConfiguration.get<int>(item.first)
+                                 : out->exists(item.first + ".defaultValue")
+                                 ? out->get<int>(item.first + ".defaultValue")
+                                 : 0);
                   }
                   else if (parameterType == "decimal")
                   {
-                     out->set(item.first + ".value", instanceConfiguration.get<double>(item.first));
+                     out->set(item.first + ".value",
+                              instanceConfiguration.exists(item.first)
+                                 ? instanceConfiguration.get<double>(item.first)
+                                 : out->exists(item.first + ".defaultValue")
+                                 ? out->get<double>(item.first + ".defaultValue")
+                                 : 0.0);
                   }
                   else
                   {
