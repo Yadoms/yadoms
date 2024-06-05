@@ -179,7 +179,7 @@ namespace web
       }
 
       boost::shared_ptr<shared::CDataContainer> CHelpers::getSupportedTimezonesV2(const std::set<std::string>& filters,
-                                                                                  boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase)
+                                                                                  const boost::shared_ptr<dateTime::CTimeZoneDatabase>& timezoneDatabase)
       {
          const auto& supportedTimezones = timezoneDatabase->allIds();
 
