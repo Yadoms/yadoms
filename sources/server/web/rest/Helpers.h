@@ -120,7 +120,7 @@ namespace web
          [[nodiscard]] static boost::shared_ptr<shared::CDataContainer> getNetworkInterfacesV2(bool includeLoopback);
          [[nodiscard]] static boost::shared_ptr<shared::CDataContainer> getSupportedTimezonesV2(
             const std::set<std::string>& filters,
-            boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase);
+            const boost::shared_ptr<dateTime::CTimeZoneDatabase>& timezoneDatabase);
       };
    } //namespace rest
 } //namespace web 

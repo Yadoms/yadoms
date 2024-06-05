@@ -109,8 +109,9 @@ namespace web
                      if (props->empty() || props->find("supportDeviceRemovedNotification") != props->end())
                         pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
                      if (props->empty() || props->find("configurationSchema") != props->end())
-                        pluginEntry->set("configurationSchema", getPluginConfigurationSchema(plugin,
-                                                                                             labels));
+                        pluginEntry->set("configurationSchema", CPluginConfigurationMerger::mergeConfigurationAndSchema(
+                                            *getPluginConfigurationSchema(plugin, labels),
+                                            {}));
 
                      if (!pluginEntry->empty())
                      {

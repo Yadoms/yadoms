@@ -301,11 +301,7 @@ BOOST_AUTO_TEST_SUITE(TestPluginConfigurationMerger)
     },
     "ConditionalParameter": {
       "type": "string",
-      "__Binding__": {
-        "type": "system",
-        "query": "platformIsWindows",
-        "key":  "show"  
-      }
+      "show": true
     },
     "DecimalParameter": {
       "type": "decimal",
@@ -357,67 +353,34 @@ BOOST_AUTO_TEST_SUITE(TestPluginConfigurationMerger)
         "NetworkInterfaces": {
           "type": "enum",
           "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "NetworkInterfaces"
-            }
+            "Ethernet 1": "Intel(R) Ethernet Connection (2) I218-V",
+            "Ethernet 4": "VirtualBox Host-Only Ethernet Adapter"
           }
         },
         "NetworkInterfacesWithoutLoopback": {
           "type": "enum",
           "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "NetworkInterfacesWithoutLoopback"
-            }
+            "Ethernet 1": "Intel(R) Ethernet Connection (2) I218-V",
+            "Ethernet 4": "VirtualBox Host-Only Ethernet Adapter"
           }
         },
         "SerialPort": {
           "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "serialPorts"
-            }
-          }
+          "values": {}
         },
         "SupportedTimezones": {
           "type": "enum",
           "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "supportedTimezones",
-              "filter": "Europe|Antarctica|Accra|Paris"
-            }
+            "Africa/Accra": "Africa/Accra",
+            "Europe/Riga": "Europe/Riga",
+            "Europe/Simferopol": "Europe/Simferopol"
           }
         },
         "UsbDevices": {
           "type": "enum",
           "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "usbDevices",
-              "content": {
-                "oneOf": [
-                  {
-                    "vendorId": 16700,
-                    "productId": 33159
-                  },
-                  {
-                    "vendorId": 1133,
-                    "productId": 50475
-                  },
-                  {
-                    "vendorId": 1118,
-                    "productId": 64
-                  },
-                  {
-                    "vendorId": 16700,
-                    "productId": 8208
-                  }
-                ]
-              }
-            }
+              "\\\\?\\usb#vid_045e&pid_0040#6&af0ffb3&3&3#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Souris Microsoft USB Wheel Mouse Optical",
+              "\\\\?\\usb#vid_413c&pid_2010#6&af0ffb3&3&1#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Périphérique USB composite"
           }
         }
       }
@@ -432,11 +395,7 @@ BOOST_AUTO_TEST_SUITE(TestPluginConfigurationMerger)
     },
     "ConditionalParameter": {
       "type": "string",
-      "__Binding__": {
-        "type": "system",
-        "query": "platformIsWindows",
-        "key":  "show"  
-      },
+      "show": true,
       "value": ""
     },
     "DecimalParameter": {
@@ -498,73 +457,40 @@ BOOST_AUTO_TEST_SUITE(TestPluginConfigurationMerger)
         "NetworkInterfaces": {
           "type": "enum",
           "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "NetworkInterfaces"
-            }
+            "Ethernet 1": "Intel(R) Ethernet Connection (2) I218-V",
+            "Ethernet 4": "VirtualBox Host-Only Ethernet Adapter"
           },
-          "value": ""
+          "value": "Ethernet 1"
         },
         "NetworkInterfacesWithoutLoopback": {
           "type": "enum",
           "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "NetworkInterfacesWithoutLoopback"
-            }
+            "Ethernet 1": "Intel(R) Ethernet Connection (2) I218-V",
+            "Ethernet 4": "VirtualBox Host-Only Ethernet Adapter"
           },
-          "value": ""
+          "value": "Ethernet 1"
         },
         "SerialPort": {
           "type": "enum",
-          "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "serialPorts"
-            }
-          },
+          "values": {},
           "value": ""
         },
         "SupportedTimezones": {
           "type": "enum",
           "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "supportedTimezones",
-              "filter": "Europe|Antarctica|Accra|Paris"
-            }
+            "Africa/Accra": "Africa/Accra",
+            "Europe/Riga": "Europe/Riga",
+            "Europe/Simferopol": "Europe/Simferopol"
           },
-          "value": ""
+          "value": "Africa/Accra"
         },
         "UsbDevices": {
-          "type": "enum",
+          "type": "enum",          
           "values": {
-            "__Binding__": {
-              "type": "system",
-              "query": "usbDevices",
-              "content": {
-                "oneOf": [
-                  {
-                    "vendorId": 16700,
-                    "productId": 33159
-                  },
-                  {
-                    "vendorId": 1133,
-                    "productId": 50475
-                  },
-                  {
-                    "vendorId": 1118,
-                    "productId": 64
-                  },
-                  {
-                    "vendorId": 16700,
-                    "productId": 8208
-                  }
-                ]
-              }
-            }
+              "\\\\?\\usb#vid_045e&pid_0040#6&af0ffb3&3&3#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Souris Microsoft USB Wheel Mouse Optical",
+              "\\\\?\\usb#vid_413c&pid_2010#6&af0ffb3&3&1#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Périphérique USB composite"
           },
-          "value": ""
+          "value": "\\\\?\\usb#vid_045e&pid_0040#6&af0ffb3&3&3#{a5dcbf10-6530-11d2-901f-00c04fb951ed}"
         }
       }
     }

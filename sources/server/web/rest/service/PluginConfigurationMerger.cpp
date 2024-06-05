@@ -49,7 +49,6 @@ namespace web
                else
                {
                   if (parameterType == "string"
-                     || parameterType == "enum"
                      || parameterType == "time")
                   {
                      out->set(item.first + ".value",
@@ -57,6 +56,17 @@ namespace web
                                  ? instanceConfiguration.get<std::string>(item.first)
                                  : out->exists(item.first + ".defaultValue")
                                  ? out->get<std::string>(item.first + ".defaultValue")
+                                 : "");
+                  }
+                  else if (parameterType == "enum")
+                  {
+                     out->set(item.first + ".value",
+                              instanceConfiguration.exists(item.first)
+                                 ? instanceConfiguration.get<std::string>(item.first)
+                                 : out->exists(item.first + ".defaultValue")
+                                 ? out->get<std::string>(item.first + ".defaultValue")
+                                 : out->exists(item.first + ".values") && !out->getKeys(item.first + ".values").empty()
+                                 ? out->getKeys(item.first + ".values").at(0)
                                  : "");
                   }
                   else if (parameterType == "bool")
