@@ -16,6 +16,12 @@ namespace web
 
             for (const auto& item : out->getAsMap<boost::shared_ptr<shared::CDataContainer>>())
             {
+               if (!item.second->getWithDefault<bool>("show", true))
+               {
+                  out->remove(item.first);
+                  continue;
+               }
+
                const auto parameterType = item.second->get("type");
 
                if (parameterType == "section"
