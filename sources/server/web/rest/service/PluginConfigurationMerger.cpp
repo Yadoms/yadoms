@@ -34,8 +34,17 @@ namespace web
                               mergeConfigurationAndSchema(item.second->get<shared::CDataContainer>("content"),
                                                           instanceConfiguration.getWithDefault<shared::CDataContainer>(
                                                              item.first + ".content", {})));
-                  if (instanceConfiguration.exists(item.first + ".activeSection"))
-                     out->set(item.first + ".activeSection", instanceConfiguration.get<std::string>(item.first + ".activeSection"));
+
+                  if (parameterType == "radioSection"
+                     || parameterType == "comboSection")
+                  {
+                     out->set(item.first + ".activeSection",
+                              instanceConfiguration.exists(item.first + ".activeSection")
+                                 ? instanceConfiguration.get<std::string>(item.first + ".activeSection")
+                                 : "");
+                  }
+
+                  //TODO ne pas oublier de modifier les plugins concernés pour la section active des radio et combo, et faire les migrations des configs
                }
                else if (parameterType == "checkboxSection")
                {
