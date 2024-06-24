@@ -47,6 +47,9 @@ namespace rfxcomMessages
       case sTypeRAIN8:
          m_rain->set(rbuf.RAIN.raintotal3 * 0.2); // 2 cartridge can be installed : 0.2 mm or 0.01 inch. We support only 0.2 mm cartridge.
          break;
+      case sTypeRAIN9:
+         m_rain->set(float((rbuf.RAIN.raintotal2 << 8) + rbuf.RAIN.raintotal3)*0.254);
+         break;
       default:
          YADOMS_LOG(information) << "Rain subtype is not supported : " << m_subType;
          break;
