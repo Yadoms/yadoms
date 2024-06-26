@@ -66,7 +66,7 @@ if(CMAKE_TOOLCHAIN_FILE)
       list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GXX=${CC_RPI_GXX}")
    endif()
    
-   #append all potentials dependecnies that exteranl project may need (openssl mostly)
+   #append all potentials dependencies that external project may need (openssl mostly)
    if(OPENSSL_ROOT)
       list(APPEND CURL_BUILD_ARGS "-DOPENSSL_ROOT_DIR=${OPENSSL_ROOT}")
    endif()
@@ -90,7 +90,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add(curl_build
    GIT_REPOSITORY    https://github.com/curl/curl.git
-   GIT_TAG           curl-8_4_0
+   GIT_TAG           curl-8_8_0
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${CURL_PATHCMD}
    PREFIX            ${CURL_ROOT}
