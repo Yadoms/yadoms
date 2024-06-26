@@ -158,7 +158,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-windows-action@v2.0.0
+      uses: Yadoms/build-yadoms-windows-action@v2.0.1
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_windows:latest
