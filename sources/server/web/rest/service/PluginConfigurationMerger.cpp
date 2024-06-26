@@ -43,8 +43,6 @@ namespace web
                                  ? instanceConfiguration.get<std::string>(item.first + ".activeSection")
                                  : "");
                   }
-
-                  //TODO ne pas oublier de modifier les plugins concernés pour la section active des radio et combo, et faire les migrations des configs
                }
                else if (parameterType == "checkboxSection")
                {
