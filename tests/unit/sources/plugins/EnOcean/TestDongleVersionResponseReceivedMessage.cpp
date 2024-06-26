@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_SUITE(TestDongleVersionResponseReceivedMessage)
 
    BOOST_AUTO_TEST_CASE(TestNominal)
    {
-      std::vector<unsigned char> message{
+      const std::vector<unsigned char> message {
          0x55, 0x00, 0x21, 0x00, 0x02, 0x26, 0x00, 0x02, 0x0b, 0x01, 0x00, 0x02, 0x06, 0x03, 0x00, 0x01,
          0x9f, 0x7a, 0x59, 0x45, 0x4f, 0x01, 0x03, 0x47, 0x41, 0x54, 0x45, 0x57, 0x41, 0x59, 0x43, 0x54,
          0x52, 0x4c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3c
@@ -39,8 +39,8 @@ BOOST_AUTO_TEST_SUITE(TestDongleVersionResponseReceivedMessage)
 
       const auto& dongleVersionMessage = message::CDongleVersionResponseReceivedMessage(response);
       BOOST_CHECK_EQUAL(dongleVersionMessage.chipId(), "019F7A59");
-      BOOST_CHECK_EQUAL(dongleVersionMessage.fullVersion(), "EnOcean dongle Version 2.11.1.0 GATEWAYCTRL, api 2.6.3.0, chipId 019F7A59, chipVersion 454f0103");
-}
+      BOOST_CHECK_EQUAL(dongleVersionMessage.fullVersion(),
+                        "EnOcean dongle Version 2.11.1.0 GATEWAYCTRL, api 2.6.3.0, chipId 019F7A59, chipVersion 454f0103");
+   }
 
 BOOST_AUTO_TEST_SUITE_END()
-

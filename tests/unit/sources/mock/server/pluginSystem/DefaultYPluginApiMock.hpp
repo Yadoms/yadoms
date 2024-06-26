@@ -6,7 +6,7 @@
 // Moke IYPluginApi
 namespace yApi = shared::plugin::yPluginApi;
 
-class CDefaultYPluginApiMock : public yApi::IYPluginApi
+class CDefaultYPluginApiMock final : public yApi::IYPluginApi
 {
 public:
    struct Device
@@ -37,9 +37,7 @@ public:
    {
    }
 
-   virtual ~CDefaultYPluginApiMock()
-   {
-   }
+   ~CDefaultYPluginApiMock() override = default;
 
    // IYPluginApi implementation
    shared::event::CEventHandler& getEventHandler() override

@@ -75,6 +75,18 @@ namespace shared
             //--------------------------------------------------------------
             virtual bool getSupportDeviceRemovedNotification() const = 0;
 
+            //--------------------------------------------------------------
+            /// \brief	    Returns the plugin configuration schema
+            /// \return     The configuration schema
+            //--------------------------------------------------------------
+            virtual boost::shared_ptr<const CDataContainer> getConfigurationSchema() const = 0;
+
+            //--------------------------------------------------------------
+            /// \brief	    Provide the labels content for specified locale
+            /// \param locales The list of requested locales (preferred first)
+            /// \return     the package.json content
+            //--------------------------------------------------------------
+            virtual boost::shared_ptr<const CDataContainer> getLabels(const std::vector<std::string>& locales) const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    Provide the package.json content

@@ -1,6 +1,3 @@
-//
-// Yadoms startup options loader by command line and file
-//
 #pragma once
 
 #include "IStartupOptions.h"
@@ -11,25 +8,22 @@
 namespace startupOptions
 {
    //--------------------------------------------------------------
-   /// \class Default application options loader
+   /// \brief CStartupOptions Default application options loader (by command line and file)
    /// This loader get each option from :
    /// - the command line first, if not provided
    /// - in config file, if not provided
    /// - the default value
    //--------------------------------------------------------------
-   class CStartupOptions : public IStartupOptions
+   class CStartupOptions final : public IStartupOptions
    {
    public:
       //--------------------------------------------------------------
       /// \brief                          Constructor
       /// \param [in]   configContainer   The configuration container
       //--------------------------------------------------------------
-      explicit CStartupOptions(Poco::Util::AbstractConfiguration & configContainer);
+      explicit CStartupOptions(Poco::Util::AbstractConfiguration& configContainer);
 
-      //--------------------------------------------------------------
-      /// \brief	   Destructor
-      //--------------------------------------------------------------
-      virtual ~CStartupOptions();
+      ~CStartupOptions() override = default;
 
       //--------------------------------------------------------------
       /// \brief	   Define StartupOptions
@@ -41,11 +35,12 @@ namespace startupOptions
       std::string getLogLevel() const override;
       boost::filesystem::path getLogPath() const override;
       unsigned short getWebServerPortNumber() const override;
-      unsigned short getSSLWebServerPortNumber() const override;
-      bool getIsWebServerUseSSL() const override;
-      std::string getWebServerIPAddress() const override;
+      unsigned short getSslWebServerPortNumber() const override;
+      bool getIsWebServerUseHttps() const override;
+      std::string getWebServerIpAddress() const override;
       std::string getWebServerInitialPath() const override;
-      bool getWebServerAllowExternalAccess() const override;
+      boost::filesystem::path getWebServerHttpsCertificateFile() const override;
+      boost::filesystem::path getWebServerHttpsPrivateKeyFile() const override;
       EDatabaseEngine getDatabaseEngine() const override;
       std::string getDatabaseSqliteFile() const override;
       std::string getDatabaseSqliteBackupFile() const override;
@@ -96,8 +91,6 @@ namespace startupOptions
       //--------------------------------------------------------------
       /// \brief	   Reference for the configuration container
       //--------------------------------------------------------------
-      Poco::Util::AbstractConfiguration & m_configContainer;
+      Poco::Util::AbstractConfiguration& m_configContainer;
    };
-
-
 } // namespace startupOptions

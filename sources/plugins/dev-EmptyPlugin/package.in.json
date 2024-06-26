@@ -15,15 +15,15 @@
     },
     "BoolParameter": {
       "type": "bool",
-      "defaultValue": "false"
+      "defaultValue": false
     },
     "IntParameter": {
       "type": "int",
-      "defaultValue": "258"
+      "defaultValue": 258
     },
     "DecimalParameter": {
       "type": "decimal",
-      "defaultValue": "25.3"
+      "defaultValue": 25.3
     },
     "EnumParameter": {
       "type": "enum",

@@ -39,10 +39,6 @@ CDefaultCurrentTimeMock::CDefaultCurrentTimeMock(const std::string& refTime)
 {
 }
 
-CDefaultCurrentTimeMock::~CDefaultCurrentTimeMock()
-{
-}
-
 // shared::currentTime::ICurrentTime implementation
 boost::posix_time::ptime CDefaultCurrentTimeMock::now() const
 {
@@ -72,9 +68,9 @@ void CDefaultCurrentTimeMock::move(const boost::posix_time::time_duration& durat
 }
 
 
-boost::shared_ptr<CDefaultCurrentTimeMock> useTimeMock()
+boost::shared_ptr<CDefaultCurrentTimeMock> useTimeMock(const std::string& refTime)
 {
-   auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
+   auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>(refTime);
    shared::currentTime::Provider().setProvider(timeProviderMock);
    return timeProviderMock;
 }

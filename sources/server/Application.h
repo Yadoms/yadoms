@@ -8,15 +8,15 @@
 //-----------------------------
 ///\brief Yadoms application
 //-----------------------------
-class CYadomsServer : public Poco::Util::ServerApplication
+class CYadomsServer final : public Poco::Util::ServerApplication
 {
 public:
    CYadomsServer();
-   virtual ~CYadomsServer() = default;
+   ~CYadomsServer() override = default;
 
 protected:
    // Poco::Util::ServerApplication implementation
-   void initialize(Poco::Util::Application& self) override;
+   void initialize(Application& self) override;
    void uninitialize() override;
    void defineOptions(Poco::Util::OptionSet& options) override;
    int main(const ArgVec&) override;
@@ -26,7 +26,7 @@ protected:
    void displayHelp() const;
 
    void handleVersion(const std::string& name, const std::string& value);
-   void displayVersion() const;
+   static void displayVersion();
 private:
    //-----------------------------
    ///\brief Setup global proxy settings

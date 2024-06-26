@@ -18,7 +18,7 @@ namespace pluginSystem
       /// \brief	Constructor
       /// \param[in] yPluginApi yPluginApi context instance
       //--------------------------------------------------------------
-      explicit CIpcAdapter(boost::shared_ptr<CYPluginApiImplementation> yPluginApi);
+      explicit CIpcAdapter(const boost::shared_ptr<CYPluginApiImplementation>& yPluginApi);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -73,7 +73,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       void send(const plugin_IPC::toPlugin::msg& pbMsg,
                 boost::function1<bool, const plugin_IPC::toYadoms::msg&> checkExpectedMessageFunction,
-                boost::function1<void, const plugin_IPC::toYadoms::msg&> onReceiveFunction,
+                const boost::function1<void, const plugin_IPC::toYadoms::msg&>& onReceiveFunction,
                 const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(10));
 
       //--------------------------------------------------------------
@@ -81,7 +81,7 @@ namespace pluginSystem
       /// \param[in] message The message data
       /// \param[in] messageSize The message size
       //--------------------------------------------------------------
-      void processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
+      void processMessage(const boost::shared_ptr<const unsigned char[]>& message, size_t messageSize);
 
       //--------------------------------------------------------------
       /// \brief	Process messages
@@ -118,8 +118,8 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Message queue max message size & number
       //--------------------------------------------------------------
-      static const size_t m_maxMessages;
-      static const size_t m_maxMessageSize;
+      static const size_t MaxMessages;
+      static const size_t MaxMessageSize;
 
       //--------------------------------------------------------------
       /// \brief	IYPluginApi context instance
