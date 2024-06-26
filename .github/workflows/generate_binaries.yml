@@ -26,7 +26,7 @@ jobs:
         path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
     - name: Get tag/branch name
       id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
     - name: Archive Linux-Binaries artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -75,7 +75,7 @@ jobs:
         path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
     - name: Get tag/branch name
       id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
     - name: Archive Synology218p-Binaries artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -125,7 +125,7 @@ jobs:
         path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
     - name: Get tag/branch name
       id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
     - name: Archive RapsberryPI-Binaries artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -174,7 +174,7 @@ jobs:
         path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
     - name: Get tag/branch name
       id: vars
-      run: Write-Host "::set-output name=tag::$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')"
+      run: Write-Host "tag=$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')" >> $GITHUB_OUTPUT
       shell: powershell
     - name: Archive Windows-Binaries artifacts
       uses: actions/upload-artifact@v2
@@ -213,7 +213,7 @@ jobs:
         path: ./
     - name: Get tag/branch name
       id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
     - name: Yadoms build raspberryPI image FR script
       uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
       with:
@@ -252,7 +252,7 @@ jobs:
         path: ./
     - name: Get tag/branch name
       id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
     - name: Yadoms build raspberryPI image EN script
       uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
       with:
