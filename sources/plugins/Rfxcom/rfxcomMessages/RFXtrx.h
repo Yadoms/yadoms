@@ -27,6 +27,9 @@ portions of this file.
 */
 
 /*
+SDK version 9.25
+    TFA 30.3233
+	
 SDK version 9.24
 	Chime Alfawise, dBell added
 	SelectPlus3 changed to ByronBY
@@ -1086,6 +1089,8 @@ SDK version 4.9
 #define sTypeRAIN6 0x6   //TX5
 #define sTypeRAIN7 0x7   //Alecto
 #define sTypeRAIN8 0x8   //Davis
+#define sTypeRAIN9 0x9   //TFA 30.3233
+
 
 //types for wind
 #define pTypeWIND 0x56

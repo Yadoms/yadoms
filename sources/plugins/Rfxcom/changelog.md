@@ -1,3 +1,6 @@
+### 1.3.3
+* Update to RFXCom SDK v9.25 (2019-03-16) : add support for weather stations (Alecto ACH2010, WS5500, WH2900), solar sensors (Davis)
+
 ### 1.3.2
 * Security patch on configuration
 
