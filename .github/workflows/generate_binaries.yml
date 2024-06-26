@@ -10,7 +10,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v4.0.0
+      uses: Yadoms/build-yadoms-action@v4.0.1
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_linux:latest
@@ -59,7 +59,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v4.0.0
+      uses: Yadoms/build-yadoms-action@v4.0.1
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_synology218p:latest
@@ -108,7 +108,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v4.0.0
+      uses: Yadoms/build-yadoms-action@v4.0.1
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_raspberrypi:latest

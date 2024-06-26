@@ -10,7 +10,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Generate unittests binary
-      uses: Yadoms/build-yadoms-action@v4.beta1
+      uses: Yadoms/build-yadoms-action@v4.0.1
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_linux:latest
@@ -36,7 +36,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Yadoms build script
-      uses: Yadoms/build-yadoms-windows-action@v2.beta2
+      uses: Yadoms/build-yadoms-windows-action@v2.0.1
       id: yadoms_build_step
       with:
           buildImage: ghcr.io/yadoms/build_for_windows:latest
