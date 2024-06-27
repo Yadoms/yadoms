@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /work/build-scripts/linux/entrypoint_docker_unittests.sh'
     - name: Archive unittests artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.3.3
       with:
         name: Linux-UnitTests
         path: ./tests/unit/builds       
@@ -45,7 +45,7 @@ jobs:
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker_unittests.ps1'
     - name: Archive unittests artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.3.3
       with:
         name: Windows-UnitTests
         path: ./tests/unit/builds 
@@ -55,7 +55,7 @@ jobs:
         cd tests/unit/builds/RELEASE
         yadomsTests.exe -r detailed -e results.txt
     - name: Archive unittests report artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.3.3
       with:
         name: Windows-UnitTests-Report
         path: ./tests/unit/builds/RELEASE/results.txt
