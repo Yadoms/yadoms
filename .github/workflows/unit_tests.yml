@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4.1.7
     - name: Generate unittests binary
       uses: Yadoms/build-yadoms-action@v4.0.1
       id: yadoms_build_step
@@ -34,7 +34,7 @@ jobs:
     runs-on: windows-2019
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4.1.7
     - name: Yadoms build script
       uses: Yadoms/build-yadoms-windows-action@v2.0.1
       id: yadoms_build_step
