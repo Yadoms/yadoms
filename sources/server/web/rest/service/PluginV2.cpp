@@ -254,10 +254,10 @@ namespace web
                                                           paging);
             }
 
-            catch (const std::exception&)
+            catch (const std::exception& exception)
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get available instances");
+                                                       std::string("Fail to get available instances (") + exception.what() + ")");
             }
          }
 
