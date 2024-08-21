@@ -9,16 +9,17 @@
 ##   Raspberry Raspbian Wheezy, g++ 4.7
 ##   MacOSx Snow Leopard 10.8, Lion 10.9, yosemite 10.10 and ElCaptain 10.11 , g++ 4.8 and more
 ##################################################################################################
-project (Yadoms)
-
-# Check the minimum CMake version
 cmake_minimum_required (VERSION 3.14.0)
+
+project (Yadoms)
 
 # Global CMake policies
 cmake_policy(SET CMP0074 NEW)
 cmake_policy(SET CMP0077 NEW)
 cmake_policy(SET CMP0078 NEW)
 cmake_policy(SET CMP0086 NEW)
+cmake_policy(SET CMP0144 NEW)
+cmake_policy(SET CMP0167 OLD)
 
 ##################################################################################################
 ## Extract Yadoms version from changelog.md file
