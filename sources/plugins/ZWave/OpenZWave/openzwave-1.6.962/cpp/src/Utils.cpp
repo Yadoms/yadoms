@@ -164,10 +164,13 @@ namespace OpenZWave
 
 		string intToString(int x)
 		{
+#define STRING2(x) #x  
+#define STRING(x) STRING2(x)  
+#pragma message ("CPP=" STRING(__cplusplus))
 #if __cplusplus==201103L || __APPLE__
 			return to_string(x);
 #else
-			return static_cast< std::ostringstream & >( ( std::ostringstream() << std::dec << x ) ).str();
+			return ( std::ostringstream() << std::dec << x ).str();
 #endif
 		}
 
