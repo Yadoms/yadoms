@@ -119,7 +119,7 @@ namespace shared
                else
                {
                   // Found file: Copy
-                  copy_file(current, destination / current.filename(), boost::filesystem::copy_option::overwrite_if_exists);
+                  copy_file(current, destination / current.filename(), boost::filesystem::copy_options::overwrite_existing);
                }
             }
             catch (boost::filesystem::filesystem_error const& e)
@@ -177,7 +177,7 @@ namespace shared
                else
                {
                   // Found file: Copy
-                  copy_file(current, destination / current.filename(), boost::filesystem::copy_option::overwrite_if_exists);
+                  copy_file(current, destination / current.filename(), boost::filesystem::copy_options::overwrite_existing);
                }
             }
             catch (boost::filesystem::filesystem_error const& e)
