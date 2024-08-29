@@ -23,7 +23,7 @@ namespace web
 
       private:
          static std::string loadFile(const boost::filesystem::path& file);
-         const char* getMimeTypeFromPath(const std::string& path) const;
+         static const char* getMimeTypeFromPath(const std::string& path);
 
 
          //TODO : voir code DAT (si utile. A voir selon les perfs du client Angular)

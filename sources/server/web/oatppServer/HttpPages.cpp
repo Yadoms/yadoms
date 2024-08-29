@@ -76,9 +76,9 @@ namespace web
          return str;
       }
 
-      const char* CHttpPages::getMimeTypeFromPath(const std::string& path) const
+      const char* CHttpPages::getMimeTypeFromPath(const std::string& path)
       {
-         const auto find = MimeTypes.find(extension(boost::filesystem::path(path)));
+         const auto find = MimeTypes.find(boost::filesystem::path(path).extension().string());
          if (find == MimeTypes.end())
          {
             YADOMS_LOG(error) << "Mimetype not supported for page \'" << path << "\'";
