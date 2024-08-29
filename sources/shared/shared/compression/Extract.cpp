@@ -27,7 +27,7 @@ namespace shared
       {
          //verification of the extension
          const auto extension = compressedFile.extension();
-         if ((!boost::iends_with(extension, "zip")) && (!boost::iends_with(extension, "tar.gz")))
+         if ((!boost::iends_with(extension.string(), "zip")) && (!boost::iends_with(extension.string(), "tar.gz")))
             throw exception::CNotSupported(
                "Invalid extension package : " + compressedFile.string() + ". Only zip or tar.gz supported. " +
                extension.string());
