@@ -4,8 +4,10 @@ CHueInformations::CHueInformations()
 {
 }
 
-CHueInformations::CHueInformations(std::string& ip, std::string& friendlyName, std::string& modelName,
-                                   std::string& modelNumber)
+CHueInformations::CHueInformations(const std::string& ip,
+                                   const std::string& friendlyName,
+                                   const std::string& modelName,
+                                   const std::string& modelNumber)
    : m_ip(ip),
      m_friendlyName(friendlyName),
      m_modelName(modelName),

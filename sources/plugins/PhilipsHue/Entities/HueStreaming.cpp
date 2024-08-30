@@ -1,6 +1,6 @@
 ﻿#include "HueStreaming.h"
 
-CHueStreaming::CHueStreaming(bool& renderer, bool& proxy)
+CHueStreaming::CHueStreaming(const bool& renderer, const bool& proxy)
    : m_renderer(renderer),
      m_proxy(proxy)
 {

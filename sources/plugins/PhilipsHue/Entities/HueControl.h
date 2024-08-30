@@ -5,10 +5,12 @@
 class CHueControl
 {
 public:
-
    CHueControl() = default;
 
-   CHueControl(int minDimLevel, int maxLumen, const std::string& colorGamutType, const CHueColorGamut& colorGamut,
+   CHueControl(int minDimLevel,
+               int maxLumen,
+               const std::string& colorGamutType,
+               const CHueColorGamut& colorGamut,
                const CHueCt& ct);
    virtual ~CHueControl() = default;
 
@@ -17,16 +19,15 @@ public:
    const int& getMaxLumen() const;
    void setMaxLumen(int maxLumen);
    const std::string& getColorGamutType() const;
-   void setColorGamutType(std::string colorGamutType);
+   void setColorGamutType(const std::string& colorGamutType);
    const CHueColorGamut& getColorGamut() const;
-   void setColorGamut(CHueColorGamut& colorGamut);
+   void setColorGamut(const CHueColorGamut& colorGamut);
    const CHueCt& getCt() const;
-   void setCt(CHueCt& ct);
+   void setCt(const CHueCt& ct);
 
 private:
-
-   int m_minDimLevel;
-   int m_maxLumen;
+   int m_minDimLevel = 0;
+   int m_maxLumen = 0;
    std::string m_colorGamutType;
    CHueColorGamut m_colorGamut;
    CHueCt m_ct;

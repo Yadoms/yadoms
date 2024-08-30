@@ -1,6 +1,8 @@
 ﻿#include "HueCapabilities.h"
 
-CHueCapabilities::CHueCapabilities(bool& certified, const CHueControl& control, const CHueStreaming& streaming)
+CHueCapabilities::CHueCapabilities(const bool& certified,
+                                   const CHueControl& control,
+                                   const CHueStreaming& streaming)
    : m_certified(certified),
      m_control(control),
      m_streaming(streaming)
@@ -22,7 +24,7 @@ const CHueControl& CHueCapabilities::getControl() const
    return m_control;
 }
 
-void CHueCapabilities::setControl(CHueControl control)
+void CHueCapabilities::setControl(const CHueControl& control)
 {
    m_control = control;
 }
@@ -32,7 +34,7 @@ const CHueStreaming& CHueCapabilities::getStreaming() const
    return m_streaming;
 }
 
-void CHueCapabilities::setStreaming(CHueStreaming& streaming)
+void CHueCapabilities::setStreaming(const CHueStreaming& streaming)
 {
    m_streaming = streaming;
 }

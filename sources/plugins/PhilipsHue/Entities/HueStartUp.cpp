@@ -1,7 +1,7 @@
 ﻿#include "HueStartUp.h"
 
-CHueStartUp::CHueStartUp(const std::string& mode, bool& configured)
-   : m_mode(mode),
+CHueStartUp::CHueStartUp(std::string mode, const bool& configured)
+   : m_mode(std::move(mode)),
      m_configured(configured)
 {
 }
