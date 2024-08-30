@@ -1,4 +1,4 @@
-FROM ghcr.io/yadoms/build_for_linux:latest
+FROM --platform=linux/amd64 ghcr.io/yadoms/build_for_linux:latest
 LABEL authors="oussama DAHMAZ"
 
 WORKDIR yadoms
