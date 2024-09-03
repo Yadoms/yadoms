@@ -54,7 +54,8 @@ void CYadomsServer::initialize(Application& self)
    current_path(workingDir.parent_path());
 
    m_pathProvider = boost::make_shared<CPathProvider>(m_startupOptions);
-   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel(), m_pathProvider->logsPath());
+   m_logConfiguration = boost::make_shared<logging::CLogConfiguration>(m_startupOptions->getLogLevel(),
+                                                                       m_pathProvider->logsPath());
 
    //define proxy settings as earlier possible
    setupProxy();

@@ -3,6 +3,7 @@
 #include "startupOptions/StartupOptions.h"
 #include "IRunningInformation.h"
 #include "IPathProvider.h"
+#include "logging/LogConfiguration.h"
 
 
 //-----------------------------
@@ -52,4 +53,9 @@ private:
    ///\brief Running information
    //-----------------------------
    boost::shared_ptr<IRunningInformation> m_runningInformation;
+
+   //-----------------------------
+   ///\brief Log configuration
+   //-----------------------------
+   boost::shared_ptr<logging::CLogConfiguration> m_logConfiguration;
 };
