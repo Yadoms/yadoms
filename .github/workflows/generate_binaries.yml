@@ -207,7 +207,7 @@ jobs:
     needs: RapsberryPI
     steps:
     - name: Get RapsberryPI-Binaries
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4.1.7
       with:
         name: RapsberryPI-Binaries
         path: ./
@@ -246,7 +246,7 @@ jobs:
     needs: RapsberryPI
     steps:
     - name: Get RapsberryPI-Binaries
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4.1.7
       with:
         name: RapsberryPI-Binaries
         path: ./
