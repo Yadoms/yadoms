@@ -212,9 +212,7 @@ namespace web
                   if (props->empty() || props->find("type") != props->end())
                      instanceEntry->set("type", instance->Type());
                   if (props->empty() || props->find("configuration") != props->end())
-                     instanceEntry->set("configuration", instance->Configuration());
-                  if (props->empty() || props->find("configurationWithSchema") != props->end())
-                     instanceEntry->set("configurationWithSchema",
+                     instanceEntry->set("configuration",
                                         CPluginConfigurationMerger::mergeConfigurationAndSchema(
                                            *getPluginConfigurationSchema(findPlugin(instance->Type), labels),
                                            *instance->Configuration()));
@@ -270,14 +268,21 @@ namespace web
                   m_dataProvider,
                   [this](const auto& req) -> boost::shared_ptr<IAnswer>
                   {
-                     // Extract only configuration if configurationWithSchema provided
                      shared::CDataContainer pluginToCreate(req->body());
-                     if (pluginToCreate.exists("configurationWithSchema"))
+                     if (pluginToCreate.exists("configuration"))
                      {
-                        pluginToCreate.set("Configuration",
-                                           CPluginConfigurationMerger::extractConfiguration(
-                                              pluginToCreate.get<shared::CDataContainer>("configurationWithSchema")));
-                        pluginToCreate.remove("configurationWithSchema");
+                        try
+                        {
+                           const auto extractedConfiguration = CPluginConfigurationMerger::extractConfiguration(
+                              pluginToCreate.get<shared::CDataContainer>("configuration"));
+                           pluginToCreate.remove("configuration");
+                           pluginToCreate.set("configuration",
+                                              extractedConfiguration);
+                        }
+                        catch (const std::exception&)
+                        {
+                           // Fail to extract configuration ==> Consider that configuration is provided without schema and record as is
+                        }
                      }
 
                      database::entities::CPlugin plugin;
@@ -304,14 +309,21 @@ namespace web
                                                           "plugin-instance id was not provided");
                const auto instanceId = static_cast<int>(std::stol(id));
 
-               // Extract only configuration if configurationWithSchema provided
                shared::CDataContainer pluginToUpdate(request->body());
-               if (pluginToUpdate.exists("configurationWithSchema"))
+               if (pluginToUpdate.exists("configuration"))
                {
-                  pluginToUpdate.set("Configuration",
-                                     CPluginConfigurationMerger::extractConfiguration(
-                                        pluginToUpdate.get<shared::CDataContainer>("configurationWithSchema")));
-                  pluginToUpdate.remove("configurationWithSchema");
+                  try
+                  {
+                     const auto extractedConfiguration = CPluginConfigurationMerger::extractConfiguration(
+                        pluginToUpdate.get<shared::CDataContainer>("configuration"));
+                     pluginToUpdate.remove("configuration");
+                     pluginToUpdate.set("configuration",
+                                        extractedConfiguration);
+                  }
+                  catch (const std::exception&)
+                  {
+                     // Fail to extract configuration ==> Consider that configuration is provided without schema and record as is
+                  }
                }
 
                database::entities::CPlugin instanceToUpdate;
