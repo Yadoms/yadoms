@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #include "PluginConfigurationMerger.h"
 
@@ -39,9 +39,7 @@ namespace web
                      || parameterType == "comboSection")
                   {
                      out->set(item.first + ".activeSection",
-                              instanceConfiguration.exists(item.first + ".activeSection")
-                                 ? instanceConfiguration.get<std::string>(item.first + ".activeSection")
-                                 : "");
+                              instanceConfiguration.getWithDefault<std::string>(item.first + ".activeSection", ""));
                   }
                }
                else if (parameterType == "checkboxSection")
@@ -53,11 +51,9 @@ namespace web
                                                              item.first + ".content", {})));
 
                   out->set(item.first + ".checkbox",
-                           instanceConfiguration.exists(item.first + ".checkbox")
-                              ? instanceConfiguration.get<bool>(item.first + ".checkbox")
-                              : out->exists(item.first + ".defaultValue")
-                              ? out->get<bool>(item.first + ".defaultValue")
-                              : false);
+                           instanceConfiguration.getWithDefault<bool>(
+                              item.first + ".checkbox",
+                              out->getWithDefault<bool>(item.first + ".defaultValue", false)));
                }
                else
                {
@@ -65,49 +61,41 @@ namespace web
                      || parameterType == "time")
                   {
                      out->set(item.first + ".value",
-                              instanceConfiguration.exists(item.first)
-                                 ? instanceConfiguration.get<std::string>(item.first)
-                                 : out->exists(item.first + ".defaultValue")
-                                 ? out->get<std::string>(item.first + ".defaultValue")
-                                 : "");
+                              instanceConfiguration.getWithDefault<std::string>(
+                                 item.first,
+                                 out->getWithDefault<std::string>(item.first + ".defaultValue", "")));
                   }
                   else if (parameterType == "enum")
                   {
                      out->set(item.first + ".value",
-                              instanceConfiguration.exists(item.first)
-                                 ? instanceConfiguration.get<std::string>(item.first)
-                                 : out->exists(item.first + ".defaultValue")
-                                 ? out->get<std::string>(item.first + ".defaultValue")
-                                 : out->exists(item.first + ".values") && !out->getKeys(item.first + ".values").empty()
-                                 ? out->getKeys(item.first + ".values").at(0)
-                                 : "");
+                              instanceConfiguration.getWithDefault<std::string>(
+                                 item.first,
+                                 out->getWithDefault<std::string>(
+                                    item.first + ".defaultValue",
+                                    out->exists(item.first + ".values") && !out->getKeys(item.first + ".values").empty()
+                                       ? out->getKeys(item.first + ".values").at(0)
+                                       : "")));
                   }
                   else if (parameterType == "bool")
                   {
                      out->set(item.first + ".value",
-                              instanceConfiguration.exists(item.first)
-                                 ? instanceConfiguration.get<bool>(item.first)
-                                 : out->exists(item.first + ".defaultValue")
-                                 ? out->get<bool>(item.first + ".defaultValue")
-                                 : false);
+                              instanceConfiguration.getWithDefault<bool>(
+                                 item.first,
+                                 out->getWithDefault<bool>(item.first + ".defaultValue", false)));
                   }
                   else if (parameterType == "int")
                   {
                      out->set(item.first + ".value",
-                              instanceConfiguration.exists(item.first)
-                                 ? instanceConfiguration.get<int>(item.first)
-                                 : out->exists(item.first + ".defaultValue")
-                                 ? out->get<int>(item.first + ".defaultValue")
-                                 : 0);
+                              instanceConfiguration.getWithDefault<int>(
+                                 item.first,
+                                 out->getWithDefault<int>(item.first + ".defaultValue", 0)));
                   }
                   else if (parameterType == "decimal")
                   {
                      out->set(item.first + ".value",
-                              instanceConfiguration.exists(item.first)
-                                 ? instanceConfiguration.get<double>(item.first)
-                                 : out->exists(item.first + ".defaultValue")
-                                 ? out->get<double>(item.first + ".defaultValue")
-                                 : 0.0);
+                              instanceConfiguration.getWithDefault<double>(
+                                 item.first,
+                                 out->getWithDefault<double>(item.first + ".defaultValue", 0.0)));
                   }
                   else
                   {
