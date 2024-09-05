@@ -623,6 +623,12 @@ namespace web
             if (locales->empty() || fullState->empty())
                return {};
 
+            if (fullState->get<shared::plugin::yPluginApi::historization::EPluginState>("state") ==
+               shared::plugin::yPluginApi::historization::EPluginState::kStopped
+               || fullState->get<shared::plugin::yPluginApi::historization::EPluginState>("state") ==
+               shared::plugin::yPluginApi::historization::EPluginState::kCustom)
+               return {};
+
             auto messageId = fullState->get<std::string>("messageId");
 
             if (messageId.empty())

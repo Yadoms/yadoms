@@ -313,7 +313,7 @@ namespace pluginSystem
       // Last, apply modifications
       if (newData.Configuration.isDefined()
          && previousData->Configuration() != newData.Configuration())
-         // No need to notify configuration if instance was just enabled/disabled
+      // No need to notify configuration if instance was just enabled/disabled
       {
          // Configuration was updated, notify the instance if running
          if (m_runningInstances.find(newData.Id()) != m_runningInstances.end())
@@ -633,7 +633,8 @@ namespace pluginSystem
             const auto stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
             const shared::plugin::yPluginApi::historization::EPluginState state(
                m_dataProvider->getKeywordRequester()->getKeywordLastData(stateKw->Id));
-            if (state == shared::plugin::yPluginApi::historization::EPluginState::kError)
+            if (state == shared::plugin::yPluginApi::historization::EPluginState::kCustom
+               || state == shared::plugin::yPluginApi::historization::EPluginState::kError)
             {
                // In error state
                const auto customMessageIdKw = m_dataProvider
