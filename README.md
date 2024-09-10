@@ -58,10 +58,10 @@ http://www.yadoms.com/forum
 
 # build the image with the current source code
 ```bash
-docker build . -t yadoms
+docker build -t yadoms .
 ```
 
 # Run it
 ```bash
-docker run -it -p 8080:8080 yadoms
+docker run --name yadoms -it -p 8080:8080 yadoms
 ```
