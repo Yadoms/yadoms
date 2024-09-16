@@ -189,7 +189,7 @@ void CLametricTime::declareKeyword() const
       m_api->declareKeyword(m_deviceInformation->m_deviceName, m_iconType);
 }
 
-void CLametricTime::fillDeviceInformationManually() const
+void CLametricTime::fillDeviceInformationManually()
 {
    if (!m_deviceInformation)
       m_deviceInformation = boost::make_shared<DeviceInformation>();
@@ -319,7 +319,7 @@ void CLametricTime::retryInitManually()
    }
 }
 
-void CLametricTime::createDevice() const
+void CLametricTime::createDevice()
 {
    m_deviceManager->getDeviceState();
 
