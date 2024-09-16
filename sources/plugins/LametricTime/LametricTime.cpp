@@ -191,6 +191,9 @@ void CLametricTime::declareKeyword() const
 
 void CLametricTime::fillDeviceInformationManually() const
 {
+   if (!m_deviceInformation)
+      m_deviceInformation = boost::make_shared<DeviceInformation>();
+
    m_deviceInformation->m_deviceName = DeviceName;
    m_deviceInformation->m_deviceModel = m_deviceManager->getDeviceInformations()->get<std::string>("model");
    m_deviceInformation->m_deviceType = m_deviceManager->getDeviceInformations()->get<std::string>("name");
