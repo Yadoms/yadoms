@@ -90,7 +90,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add(curl_build
    GIT_REPOSITORY    https://github.com/curl/curl.git
-   GIT_TAG           curl-8_9_1
+   GIT_TAG           curl-8_10_0
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${CURL_PATHCMD}
    PREFIX            ${CURL_ROOT}
