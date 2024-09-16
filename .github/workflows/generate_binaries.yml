@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /entrypoint_docker.sh'
     - name: Upload logs on failure
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       if: failure()          
       with:
         name: linux-build_logs
@@ -28,12 +28,12 @@ jobs:
       id: vars
       run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
     - name: Archive Linux-Binaries artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Linux-Binaries
         path: ./builds/package/Yadoms*
     - name: Archive Linux-Update artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Linux-Update
         path: ./builds/package/update*
@@ -68,7 +68,7 @@ jobs:
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'sh /entrypoint_docker.sh'
     - name: Upload logs on failure
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       if: failure()          
       with:
         name: Synology218p-build_logs
@@ -77,12 +77,12 @@ jobs:
       id: vars
       run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
     - name: Archive Synology218p-Binaries artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Synology218p-Binaries
         path: ./builds/package/Yadoms*  
     - name: Archive Synology218p-Update artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Synology218p-Update
         path: ./builds/package/update*  
@@ -118,7 +118,7 @@ jobs:
           privileged: '--privileged'
           entrypoint: 'sh /entrypoint_docker.sh'
     - name: Upload logs on failure
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       if: failure()          
       with:
         name: RapsberryPI-build_logs
@@ -127,12 +127,12 @@ jobs:
       id: vars
       run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
     - name: Archive RapsberryPI-Binaries artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: RapsberryPI-Binaries
         path: ./builds/package/Yadoms*
     - name: Archive  RapsberryPI-Update artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: RapsberryPI-Update
         path: ./builds/package/update*   
@@ -167,7 +167,7 @@ jobs:
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
           entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
     - name: Upload logs on failure
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       if: failure()          
       with:
         name: Windows-build_logs
@@ -177,12 +177,12 @@ jobs:
       run: Write-Host "tag=$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')" >> $GITHUB_OUTPUT
       shell: powershell
     - name: Archive Windows-Binaries artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Windows-Binaries
         path: ./builds/package/Yadoms*    
     - name: Archive Windows-Update package artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Windows-Update
         path: ./builds/package/update*    
@@ -221,7 +221,7 @@ jobs:
         language: fr
         branch_or_tag_name: 2020-12-02-raspbian-buster
     - name: Archive Raspbian-Lite-FR-Yadoms-Image artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Raspbian-Lite-FR-Yadoms-Image
         path: ./builds/pi_image/*.zip
@@ -260,7 +260,7 @@ jobs:
         language: en
         branch_or_tag_name: 2020-12-02-raspbian-buster
     - name: Archive Raspbian-Lite-EN-Yadoms-Image artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: Raspbian-Lite-EN-Yadoms-Image
         path: ./builds/pi_image/*.zip
