@@ -47,7 +47,7 @@ private:
     * \brief Fill device information manually
     * \return     deviceInformation     Structure with device information
     */
-   void fillDeviceInformationManually() const;
+   void fillDeviceInformationManually();
    /**
     * \brief Fill devices information automatically
     * \param[in]  foundDevices                       Class containing device information
@@ -89,7 +89,7 @@ private:
    /**
    * \brief sending echo to device & fill and declare device(s) and keyword(s)
    */
-   void createDevice() const;
+   void createDevice();
 
    /**
    * \brief Retry connection to device in N seconds
