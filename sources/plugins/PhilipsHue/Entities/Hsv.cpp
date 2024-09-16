@@ -1,6 +1,8 @@
 #include "Hsv.h"
 
-CHsv::CHsv(unsigned long& hue, unsigned long& saturation, unsigned long& value)
+CHsv::CHsv(const unsigned long& hue,
+           const unsigned long& saturation,
+           const unsigned long& value)
    : m_hue(hue),
      m_saturation(saturation),
      m_value(value)

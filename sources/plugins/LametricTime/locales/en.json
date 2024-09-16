@@ -40,9 +40,10 @@
       }
    },
    "customLabels": {
-      "pluginState": {
-         "failedToConnect": "The connexion failed...",
-         "initializationError": "Initialization error"
-      }
+    "pluginState": {
+      "failedToConnect": "The connexion failed...",
+      "updateConfiguration": "Configuration updating...",
+      "initializationError": "Initialization error"
+    }
    }
 }

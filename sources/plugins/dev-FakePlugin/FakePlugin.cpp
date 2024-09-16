@@ -295,6 +295,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   YADOMS_LOG(information) << "CFakeConfigurableDevice config : CounterDivider2 : " << creation->getData().getConfiguration()->get<std::string>("CounterDivider2");
                   YADOMS_LOG(information) << "CFakeConfigurableDevice config : MySection/SubIntParameter : " << creation->getData().getConfiguration()->get<int>("MySection.content.SubIntParameter");
                   YADOMS_LOG(information) << "CFakeConfigurableDevice config : MySection/SubStringParameter : " << creation->getData().getConfiguration()->get<std::string>("MySection.content.SubStringParameter");
+                  YADOMS_LOG(information) << "CFakeConfigurableDevice config : MySection/SubComboParameter/activeSection : " << creation->getData().getConfiguration()->get<std::string>("MySection.content.SubComboParameter.activeSection");
 
                   const auto createdDevice = boost::make_shared<CFakeAnotherConfigurableDevice>(creation->getData().getDeviceName(),
                                                                                           creation->getData().getConfiguration());
