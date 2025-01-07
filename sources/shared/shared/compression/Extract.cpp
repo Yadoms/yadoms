@@ -26,11 +26,11 @@ namespace shared
                                            const boost::filesystem::path& extractPath)
       {
          //verification of the extension
-         const auto extension = boost::filesystem::extension(compressedFile);
-         if ((!boost::iends_with(extension, "zip")) && (!boost::iends_with(extension, "tar.gz")))
+         const auto extension = compressedFile.extension();
+         if ((!boost::iends_with(extension.string(), "zip")) && (!boost::iends_with(extension.string(), "tar.gz")))
             throw exception::CNotSupported(
                "Invalid extension package : " + compressedFile.string() + ". Only zip or tar.gz supported. " +
-               extension);
+               extension.string());
 
          Poco::FileStream inp(compressedFile.string(), std::ios::binary);
 
