@@ -37,7 +37,7 @@ namespace hardware
             {
                if (boost::filesystem::is_directory(*dirIter) && boost::filesystem::exists(*dirIter / "device"))
                {
-                  std::string friendlyName((*dirIter).path().leaf().string());            // friendlyName is something like "tty0"
+                  std::string friendlyName((*dirIter).path().filename().string());            // friendlyName is something like "tty0"
                   std::string portName((boost::format("/dev/%1%") % friendlyName).str()); // portName is "/dev/tty0"
                   (*serialPorts)[portName]=friendlyName;
                }
@@ -60,7 +60,7 @@ namespace hardware
             {
                if (boost::filesystem::is_symlink(*dirIter) && linkTargetIsPhysicalPort(*dirIter, physicalPorts))
                {
-                  std::string friendlyName(dirIter->path().leaf().string()); // friendlyName comes from udev rules (ex : "ttyUSB_EnOcean")
+                  std::string friendlyName(dirIter->path().filename().string()); // friendlyName comes from udev rules (ex : "ttyUSB_EnOcean")
                   std::string portName(dirIter->path().string());            // portName is "/dev/ttyUSB_EnOcean"
                   (*serialPorts)[portName]=friendlyName;
                }
@@ -77,7 +77,7 @@ namespace hardware
          return std::find_if(physicalPorts->begin(),
                              physicalPorts->end(),
                              [&linkTarget](const auto& pp) {
-                                return boost::filesystem::path(pp.first).leaf() == linkTarget.leaf();
+                                return boost::filesystem::path(pp.first).filename() == linkTarget.filename();
                              }) != physicalPorts->end();
       }
 
