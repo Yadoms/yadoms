@@ -30,7 +30,7 @@ public:
       testCommon::filesystem::createDirectory(m_testDirectory);
    }
 
-   virtual ~CTestPath()
+   ~CTestPath()
    {
       // Clean-up TestDirectory
       try
@@ -60,7 +60,7 @@ public:
       testCommon::filesystem::removeFile(m_configFile, false);
    }
 
-   virtual ~CTestConfigFile()
+   ~CTestConfigFile()
    {
       // Clean-up
       testCommon::filesystem::removeFile(m_configFile, false);
@@ -89,7 +89,6 @@ static const std::string testFalsePath("FalsePath");
 #include <Poco/Util/Validator.h>
 #include <Poco/Util/LayeredConfiguration.h>
 #include <Poco/Util/AbstractConfiguration.h>
-#include <Poco/Util/MapConfiguration.h>
 #include <Poco/Util/OptionException.h>
 
 BOOST_AUTO_TEST_SUITE(TestLoader)
@@ -98,15 +97,59 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    class CStartupOptionMockup final
    {
    public:
-      class CMyConf final: public Poco::Util::MapConfiguration
+      class CMyConf final: public Poco::Util::AbstractConfiguration
       {
       public:
          CMyConf() = default;
-         virtual ~CMyConf() = default;
+         ~CMyConf() override = default;
+
+     protected:
+         bool getRaw(const std::string& key, std::string& value) const override
+         {
+             if (m_values.find(key) == m_values.end())
+                 return false;
+
+             value = m_values.at(key);
+             return true;
+         }
+
+         void setRaw(const std::string& key, const std::string& value) override
+         {
+             m_values[key] = value;
+         }
+
+         void enumerate(const std::string& key, Keys& range) const override
+         {
+             std::set<std::string> keys;
+             auto prefix = key;
+             if (!prefix.empty())
+                 prefix += '.';
+             const auto psize = prefix.size();
+             for (const auto& p : m_values)
+             {
+                 if (p.first.compare(0, psize, prefix) == 0)
+                 {
+                     std::string subKey;
+                     const auto end = p.first.find('.', psize);
+                     if (end == std::string::npos)
+                         subKey = p.first.substr(psize);
+                     else
+                         subKey = p.first.substr(psize, end - psize);
+                     if (keys.find(subKey) == keys.end())
+                     {
+                         range.push_back(subKey);
+                         keys.insert(subKey);
+                     }
+                 }
+             }
+         }
+
+      private:
+          std::map<std::string, std::string> m_values;
       };
 
       CStartupOptionMockup(int argc, const char* argv[], bool unixStyle)
-         : m_config(new CMyConf), m_options(*(m_config.get()))
+          : m_options(m_config)
       {
          m_options.defineOptions(m_os);
          Poco::Util::OptionProcessor processor(m_os);
@@ -131,11 +174,6 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
          return m_options;
       }
 
-      Poco::AutoPtr<Poco::Util::AbstractConfiguration>& config()
-      {
-         return m_config;
-      }
-
    private:
       void handleOption(Poco::Util::OptionSet& os, const std::string& name, const std::string& value)
       {
@@ -146,7 +184,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
          }
          if (!option.binding().empty())
          {
-            m_config->setString(std::string(option.binding()), std::string(value));
+            m_config.setString(std::string(option.binding()), std::string(value));
          }
          if (option.callback())
          {
@@ -155,7 +193,8 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       }
 
       Poco::Util::OptionSet m_os;
-      Poco::AutoPtr<Poco::Util::AbstractConfiguration> m_config;
+      CMyConf m_config;
+      //Poco::AutoPtr<Poco::Util::AbstractConfiguration> m_config;
       startupOptions::CStartupOptions m_options;
    };
 
