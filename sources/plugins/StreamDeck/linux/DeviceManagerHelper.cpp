@@ -1,6 +1,5 @@
 #include "DeviceManagerHelper.h"
 #include <boost/convert.hpp>
-#include <boost/convert/stream.hpp>
 #include <regex>
 
 const uint16_t CDeviceManagerHelper::StreamDeckVendorId = 0x0fd9;
