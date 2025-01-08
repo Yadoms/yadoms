@@ -18,10 +18,21 @@ std::vector<std::string> CDeviceManagerHelper::splitStringToVectorOfString(const
 	return split(words, wordToSplit, boost::is_any_of(separator), boost::token_compress_on);
 }
 
-uint16_t CDeviceManagerHelper::decimalToHex(std::string decimalValue)
+uint16_t CDeviceManagerHelper::decimalToHex(const std::string& decimalValue)
 {
-	boost::cnv::cstream converter;
-	return boost::convert<uint16_t>(decimalValue, converter(std::showbase)(std::uppercase)(std::dec), 0);
+	uint16_t result;
+	std::stringstream ss;
+
+	// Configure le stream pour lire un nombre décimal
+	ss << std::dec << decimalValue;
+
+	// Convertir la chaîne en uint16_t
+	if (!(ss >> result))
+	{
+		throw std::invalid_argument("Invalid decimal value: " + decimalValue);
+	}
+
+	return result;
 }
 
 uint16_t CDeviceManagerHelper::stringToUnsignedShort(std::string& value)
