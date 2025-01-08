@@ -167,7 +167,9 @@ namespace OpenZWave
 #if __cplusplus==201103L || __APPLE__
 			return to_string(x);
 #else
-			return (std::ostringstream() << std::dec << x).str();
+			std::ostringstream oss;
+			oss << std::dec << x;
+			return oss.str();
 #endif
 		}
 
