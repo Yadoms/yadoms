@@ -27,7 +27,7 @@ jobs:
       run: |
         echo "Running unittests for yadoms ${{ steps.yadoms_build_step.outputs.yadomsVersion }}"
         cd tests/unit/builds
-        ./yadomsTests
+        ./yadomsTests -l test_suite
 
   Windows:
     name : Run Unit tests for Windows
@@ -53,5 +53,5 @@ jobs:
       shell: cmd
       run: |
         cd tests/unit/builds/RELEASE
-        yadomsTests.exe -t !TestLoader -l test_suite
+        yadomsTests.exe -l test_suite -t !TestLoader       # Disable TestLoader tests because of bad memory handling using Poco (random crashes). Need to rewrite startupOptions::CStartupOptions
         

@@ -30,7 +30,7 @@ public:
       testCommon::filesystem::createDirectory(m_testDirectory);
    }
 
-   ~CTestPath()
+   virtual ~CTestPath()
    {
       // Clean-up TestDirectory
       try
@@ -60,7 +60,7 @@ public:
       testCommon::filesystem::removeFile(m_configFile, false);
    }
 
-   ~CTestConfigFile()
+   virtual ~CTestConfigFile()
    {
       // Clean-up
       testCommon::filesystem::removeFile(m_configFile, false);
@@ -89,6 +89,7 @@ static const std::string testFalsePath("FalsePath");
 #include <Poco/Util/Validator.h>
 #include <Poco/Util/LayeredConfiguration.h>
 #include <Poco/Util/AbstractConfiguration.h>
+#include <Poco/Util/MapConfiguration.h>
 #include <Poco/Util/OptionException.h>
 
 BOOST_AUTO_TEST_SUITE(TestLoader)
@@ -97,64 +98,19 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    class CStartupOptionMockup final
    {
    public:
-      class CMyConf final: public Poco::Util::AbstractConfiguration
+      class CMyConf final: public Poco::Util::MapConfiguration
       {
       public:
          CMyConf() = default;
-         ~CMyConf() override = default;
-
-     protected:
-         bool getRaw(const std::string& key, std::string& value) const override
-         {
-             if (m_values.find(key) == m_values.end())
-                 return false;
-
-             value = m_values.at(key);
-             return true;
-         }
-
-         void setRaw(const std::string& key, const std::string& value) override
-         {
-             m_values[key] = value;
-         }
-
-         void enumerate(const std::string& key, Keys& range) const override
-         {
-             std::set<std::string> keys;
-             auto prefix = key;
-             if (!prefix.empty())
-                 prefix += '.';
-             const auto psize = prefix.size();
-             for (const auto& p : m_values)
-             {
-                 if (p.first.compare(0, psize, prefix) == 0)
-                 {
-                     std::string subKey;
-                     const auto end = p.first.find('.', psize);
-                     if (end == std::string::npos)
-                         subKey = p.first.substr(psize);
-                     else
-                         subKey = p.first.substr(psize, end - psize);
-                     if (keys.find(subKey) == keys.end())
-                     {
-                         range.push_back(subKey);
-                         keys.insert(subKey);
-                     }
-                 }
-             }
-         }
-
-      private:
-          std::map<std::string, std::string> m_values;
+         virtual ~CMyConf() = default;
       };
 
-      CStartupOptionMockup(int argc, const char* argv[])
-          : m_config(Poco::makeAuto<CMyConf>()),
-            m_options(*(m_config.get()))
+      CStartupOptionMockup(int argc, const char* argv[], bool unixStyle)
+         : m_config(new CMyConf), m_options(*(m_config.get()))
       {
-         m_options.defineOptions(m_optionSet);
-         Poco::Util::OptionProcessor processor(m_optionSet);
-         processor.setUnixStyle(true);
+         m_options.defineOptions(m_os);
+         Poco::Util::OptionProcessor processor(m_os);
+         processor.setUnixStyle(unixStyle);
          for (auto i = 0; i < argc; ++i)
          {
             std::string name;
@@ -163,7 +119,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
             {
                if (!name.empty()) // "--" option to end options processing or deferred argument
                {
-                  handleOption(m_optionSet, name, value);
+                  handleOption(m_os, name, value);
                }
             }
          }
@@ -173,6 +129,11 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       startupOptions::CStartupOptions& options()
       {
          return m_options;
+      }
+
+      Poco::AutoPtr<Poco::Util::AbstractConfiguration>& config()
+      {
+         return m_config;
       }
 
    private:
@@ -193,7 +154,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
          }
       }
 
-      Poco::Util::OptionSet m_optionSet;
+      Poco::Util::OptionSet m_os;
       Poco::AutoPtr<Poco::Util::AbstractConfiguration> m_config;
       startupOptions::CStartupOptions m_options;
    };
@@ -206,20 +167,20 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
    BOOST_AUTO_TEST_CASE(Initialisation_Test)
    {
-      CStartupOptionMockup loader(0, nullptr);
+      CStartupOptionMockup loader(0, nullptr, true);
 
-      //BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
-      //BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
-      //BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
-      //BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
-      //BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
-      //BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
-      //BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters") ;
-      //BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false) ;
-      //BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false) ;
-      //BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/") ;
-      //BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30) ;
-      //BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false) ;
+      BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
+      BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), "www") ;
+      BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
+      BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
+      BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters") ;
+      BOOST_CHECK_EQUAL(loader.options().getNoPasswordFlag(), false) ;
+      BOOST_CHECK_EQUAL(loader.options().getIsRunningAsService(), false) ;
+      BOOST_CHECK_EQUAL(loader.options().getUpdateSiteUri(), "http://www.yadoms.com/downloads/update/") ;
+      BOOST_CHECK_EQUAL(loader.options().getDatabaseAcquisitionLifetime(), 30) ;
+      BOOST_CHECK_EQUAL(loader.options().getDeveloperMode(), false) ;
    }
 
    //--------------------------------------------------------------
@@ -230,7 +191,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    BOOST_AUTO_TEST_CASE(helpRequest)
    {
       const char* argv[] = {"./TestLoader", "-help"};
-      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv), std::exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), std::exception) ;
    }
 
    //--------------------------------------------------------------
@@ -241,7 +202,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    BOOST_AUTO_TEST_CASE(helpRequestShort)
    {
       const char* argv[] = {"./TestLoader", "-h"};
-      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv), std::exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), std::exception) ;
    }
 
 
@@ -249,7 +210,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "--port:2000"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000)) ;
@@ -274,7 +235,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "--port", "2000"};
 
-      CStartupOptionMockup loader(3, argv);
+      CStartupOptionMockup loader(3, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000)) ;
@@ -299,7 +260,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "--por", "2000"};
 
-      CStartupOptionMockup loader(3, argv);
+      CStartupOptionMockup loader(3, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000)) ;
@@ -324,7 +285,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "--webServer", "192.168.1.1"};
 
-      BOOST_CHECK_THROW(CStartupOptionMockup loader(3, argv), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(3, argv, true), Poco::Exception) ;
    }
 
    //--------------------------------------------------------------
@@ -337,7 +298,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       const char* argv[] = {"./TestLoader", "-port", "2000"};
 
       //Test the exception, and if this one is the correct one !
-      BOOST_CHECK_THROW(CStartupOptionMockup loader(3, argv), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(3, argv, true), Poco::Exception) ;
    }
 
    //--------------------------------------------------------------
@@ -349,7 +310,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "--databaseSqliteFile:toto.db3"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -374,7 +335,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-Dtoto.db3"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -399,7 +360,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-ltrace"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "trace") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -424,7 +385,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-ldebug"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "debug") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -449,7 +410,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-linformation"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -474,7 +435,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-lwarning"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -499,7 +460,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-lerror"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "error") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -524,7 +485,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-lfatal"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "fatal") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -550,7 +511,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-lnotice"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "notice") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -575,7 +536,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-lcritical"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "critical") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -605,7 +566,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
          std::string opt("-l");
          opt += *it;
          const char* argv[] = {"./TestLoader", const_cast<char*>(opt.c_str())};
-         CStartupOptionMockup loader(2, argv);
+         CStartupOptionMockup loader(2, argv, true);
          BOOST_CHECK_EQUAL(loader.options().getLogLevel(), *it) ;
       }
    }
@@ -618,7 +579,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
    {
       const char* argv[] = {"./TestLoader", "-ltoto"};
-      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv), Poco::Util::InvalidArgumentException) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Util::InvalidArgumentException) ;
    }
 
    //--------------------------------------------------------------
@@ -629,7 +590,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    BOOST_AUTO_TEST_CASE(Unknow_option_NoError)
    {
       const char* argv[] = {"./TestLoader", "-binfo"};
-      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv), Poco::Util::UnknownOptionException) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Util::UnknownOptionException) ;
    }
 
    //--------------------------------------------------------------
@@ -641,7 +602,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-i192.168.1.1"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -666,7 +627,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "--webServerIp:192.168.1.1"};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -691,7 +652,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "--webServe:192.168.1.1"};
 
-      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Exception) ;
    }
 
    //--------------------------------------------------------------
@@ -703,7 +664,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-i:192.168.1."};
 
-      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Exception) ;
    }
 
    //--------------------------------------------------------------
@@ -719,7 +680,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       const char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -747,7 +708,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       arg += testNewWebServerPath;
       const char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
-      CStartupOptionMockup loader(2, argv);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -777,7 +738,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       const char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
-      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Exception) ;
    }
 
    //--------------------------------------------------------------
@@ -799,7 +760,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
          "--logLevel", "warning"
       };
 
-      CStartupOptionMockup loader(11, argv);
+      CStartupOptionMockup loader(11, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085)) ;
@@ -837,7 +798,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
          const_cast<char*>(arg.c_str())
       };
 
-      CStartupOptionMockup loader(6, argv);
+      CStartupOptionMockup loader(6, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085)) ;
@@ -862,7 +823,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       const char* argv[] = {"./TestLoader", "-p"};
 
-      BOOST_CHECK_THROW(CStartupOptionMockup app(2, argv), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup app(2, argv, true), Poco::Exception) ;
    }
 
 BOOST_AUTO_TEST_SUITE_END()
