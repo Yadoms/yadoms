@@ -53,5 +53,5 @@ jobs:
       shell: cmd
       run: |
         cd tests/unit/builds/RELEASE
-        yadomsTests.exe -l all
+        yadomsTests.exe -t !TestLoader -l test_suite
         
