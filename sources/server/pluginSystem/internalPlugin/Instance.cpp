@@ -4,6 +4,8 @@
 #include <shared/Log.h>
 #include <tools/OperatingSystem.h>
 
+#include <utility>
+
 namespace pluginSystem
 {
    namespace internalPlugin
@@ -12,10 +14,14 @@ namespace pluginSystem
                            boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                            boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api,
                            boost::shared_ptr<CInstanceStateHandler> instanceStateHandler)
-         : m_instanceInformation(instanceInformation),
-           m_pluginInformation(pluginInformation),
+         : m_instanceInformation(std::move(instanceInformation)),
+           m_pluginInformation(std::move(pluginInformation)),
            m_eventHandler(boost::make_shared<shared::event::CEventHandler>()), //TODO utile ? Ne peut-on pas utiliser api->GetEventHandler() ?
-           m_thread(&CInstance::doWorkThread, this, api, m_eventHandler, instanceStateHandler)
+           m_thread(&CInstance::doWorkThread,
+                    this,
+                    std::move(api),
+                    m_eventHandler,
+                    std::move(instanceStateHandler))
       {
       }
 
@@ -88,16 +94,16 @@ namespace pluginSystem
                                    event);
       }
 
-      void CInstance::doWorkThread(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api,
-                                   boost::shared_ptr<shared::event::CEventHandler> eventHandler,
-                                   boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
+      void CInstance::doWorkThread(const boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi>& api,
+                                   const boost::shared_ptr<shared::event::CEventHandler>& eventHandler,
+                                   const boost::shared_ptr<CInstanceStateHandler>& instanceStateHandler) const
       {
          instanceStateHandler->onStart();
          doWork(api, *eventHandler);
          instanceStateHandler->onFinish(0, std::string());
       }
 
-      void CInstance::doWork(boost::shared_ptr<yApi::IYPluginApi> api,
+      void CInstance::doWork(const boost::shared_ptr<yApi::IYPluginApi>& api,
                              shared::event::CEventHandler& eventHandler) const
       {
          try
@@ -111,7 +117,9 @@ namespace pluginSystem
             static const std::string& SystemDevice("system");
             const auto keywordShutdown(boost::make_shared<yApi::historization::CEvent>("shutdown"));
             const auto keywordRestart(boost::make_shared<yApi::historization::CEvent>("restart"));
-            const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywords({keywordShutdown, keywordRestart});
+            const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywords({
+               keywordShutdown, keywordRestart
+            });
 
             // Device creation if needed
             if (!api->deviceExists(SystemDevice))
@@ -132,13 +140,13 @@ namespace pluginSystem
                      {
                         YADOMS_LOG(information) << "Shutdown the system";
                         if (!tools::COperatingSystem::shutdown())
-                        YADOMS_LOG(error) << "Fail to shutdown";
+                           YADOMS_LOG(error) << "Fail to shutdown";
                      }
                      else if (boost::iequals(command->getKeyword(), keywordRestart->getKeyword()))
                      {
                         YADOMS_LOG(information) << "Reboot the system";
                         if (!tools::COperatingSystem::shutdown(true))
-                        YADOMS_LOG(error) << "Fail to reboot";
+                           YADOMS_LOG(error) << "Fail to reboot";
                      }
                      else
                      {
@@ -150,7 +158,7 @@ namespace pluginSystem
 
                case yApi::IYPluginApi::kEventManuallyDeviceCreation:
                   {
-                     auto request = eventHandler.getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+                     const auto request = eventHandler.getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
                      YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
                      try
                      {
@@ -182,7 +190,7 @@ namespace pluginSystem
          }
       }
 
-      void CInstance::createVirtualDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+      void CInstance::createVirtualDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                           const yApi::IManuallyDeviceCreationData& data) const
       {
          if (data.getDeviceType() != "virtualDeviceType")
@@ -206,7 +214,7 @@ namespace pluginSystem
          }
       }
 
-      void CInstance::createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+      void CInstance::createStandardCapacityDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                                    const std::string& deviceName,
                                                    const boost::shared_ptr<shared::CDataContainer>& standardCapacity) const
       {
@@ -228,8 +236,10 @@ namespace pluginSystem
             keyword = boost::make_shared<yApi::historization::CColorRGBW>("ColorRGBW", yApi::EKeywordAccessMode::kGetSet);
          else if (selectedCapacity == yApi::CStandardCapacities::Counter().getName())
             keyword = boost::make_shared<yApi::historization::CCounter>("counter",
-               yApi::EKeywordAccessMode::kGetSet,
-               yApi::EMeasureType(standardCapacity->get<std::string>("content." + yApi::CStandardCapacities::Counter().getName() + ".content.measureType")));
+                                                                        yApi::EKeywordAccessMode::kGetSet,
+                                                                        yApi::EMeasureType(standardCapacity->get<std::string>(
+                                                                           "content." + yApi::CStandardCapacities::Counter().getName() +
+                                                                           ".content.measureType")));
          else if (selectedCapacity == yApi::CStandardCapacities::Current().getName())
             keyword = boost::make_shared<yApi::historization::CCurrent>("current", yApi::EKeywordAccessMode::kGetSet);
          else if (selectedCapacity == yApi::CStandardCapacities::Curtain().getName())
@@ -244,8 +254,10 @@ namespace pluginSystem
             keyword = boost::make_shared<yApi::historization::CDuration>("duration", yApi::EKeywordAccessMode::kGetSet);
          else if (selectedCapacity == yApi::CStandardCapacities::Energy().getName())
             keyword = boost::make_shared<yApi::historization::CEnergy>("energy",
-               yApi::EKeywordAccessMode::kGetSet,
-               yApi::EMeasureType(standardCapacity->get<std::string>("content." + yApi::CStandardCapacities::Energy().getName() + ".content.measureType")));
+                                                                       yApi::EKeywordAccessMode::kGetSet,
+                                                                       yApi::EMeasureType(standardCapacity->get<std::string>(
+                                                                          "content." + yApi::CStandardCapacities::Energy().getName() +
+                                                                          ".content.measureType")));
          else if (selectedCapacity == yApi::CStandardCapacities::Event().getName())
             keyword = boost::make_shared<yApi::historization::CEvent>("event", yApi::EKeywordAccessMode::kGetSet);
          else if (selectedCapacity == yApi::CStandardCapacities::Frequency().getName())
@@ -264,8 +276,10 @@ namespace pluginSystem
             keyword = boost::make_shared<yApi::historization::CPressure>("pressure", yApi::EKeywordAccessMode::kGetSet);
          else if (selectedCapacity == yApi::CStandardCapacities::Rain().getName())
             keyword = boost::make_shared<yApi::historization::CRain>("rain",
-               yApi::EKeywordAccessMode::kGetSet,
-               yApi::EMeasureType(standardCapacity->get<std::string>("content." + yApi::CStandardCapacities::Rain().getName() + ".content.measureType")));
+                                                                     yApi::EKeywordAccessMode::kGetSet,
+                                                                     yApi::EMeasureType(standardCapacity->get<std::string>(
+                                                                        "content." + yApi::CStandardCapacities::Rain().getName() +
+                                                                        ".content.measureType")));
          else if (selectedCapacity == yApi::CStandardCapacities::RainRate().getName())
             keyword = boost::make_shared<yApi::historization::CRainRate>("rainRate", yApi::EKeywordAccessMode::kGetSet);
          else if (selectedCapacity == yApi::CStandardCapacities::Rssi().getName())
@@ -305,7 +319,7 @@ namespace pluginSystem
          }
       }
 
-      void CInstance::createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+      void CInstance::createCustomEnumCapacityDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                                      const std::string& deviceName,
                                                      const std::string& commaSeparatedValues) const
       {
@@ -315,8 +329,8 @@ namespace pluginSystem
             boost::trim(enumValue);
 
          const auto keyword = boost::make_shared<CCustomEnumHistorizer>("state",
-                                                                  yApi::EKeywordAccessMode::kGetSet,
-                                                                  enumValues);
+                                                                        yApi::EKeywordAccessMode::kGetSet,
+                                                                        enumValues);
 
          api->declareKeyword(deviceName,
                              keyword);
@@ -327,5 +341,3 @@ namespace pluginSystem
       }
    }
 } // namespace pluginSystem::internalPlugin
-
-

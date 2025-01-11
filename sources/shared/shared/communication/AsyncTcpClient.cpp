@@ -1,31 +1,29 @@
 #include "stdafx.h"
 #include "AsyncTcpClient.h"
 #include <shared/Log.h>
-#include <shared/exception/InvalidParameter.hpp>
 #include "PortException.hpp"
 #include "Buffer.hpp"
 #include "AsyncPortConnectionNotification.h"
 
-namespace shared { namespace communication {
+using namespace shared::communication;
 
-CAsyncTcpClient::CAsyncTcpClient(
-   const std::string& serverAddress,
-   const std::string& serverPort,
-   boost::posix_time::time_duration connectRetryDelay)
-   :m_boostSocket(m_ioService),
-   m_serverAdressResolver(m_ioService),
-   m_serverAdressResolverQuery(serverAddress, serverPort),
-   m_asyncReadBuffer(512),
-   m_connectStateEventHandler(NULL),
-   m_connectStateEventId(event::kNoEvent),
-   m_connectRetryDelay(connectRetryDelay),
-   m_connectRetryTimer(m_ioService)
+CAsyncTcpClient::CAsyncTcpClient(const std::string& serverAddress,
+                                 const std::string& serverPort,
+                                 boost::posix_time::time_duration connectRetryDelay)
+   : m_boostSocket(m_ioService),
+     m_serverAdressResolver(m_ioService),
+     m_serverAdressResolverQuery(serverAddress, serverPort),
+     m_asyncReadBuffer(512),
+     m_connectStateEventHandler(nullptr),
+     m_connectStateEventId(event::kNoEvent),
+     m_connectRetryDelay(connectRetryDelay),
+     m_connectRetryTimer(m_ioService)
 {
 }
 
 CAsyncTcpClient::~CAsyncTcpClient()
 {
-   stop();
+   CAsyncTcpClient::stop();
 }
 
 void CAsyncTcpClient::setReceiveBufferMaxSize(std::size_t size)
@@ -36,7 +34,7 @@ void CAsyncTcpClient::setReceiveBufferMaxSize(std::size_t size)
 void CAsyncTcpClient::start()
 {
    if (!!m_asyncThread)
-      return;  // Already started
+      return; // Already started
 
    // Try to connect
    tryConnect();
@@ -46,7 +44,7 @@ void CAsyncTcpClient::start()
 void CAsyncTcpClient::stop()
 {
    if (!m_asyncThread)
-      return;  // Already stopped
+      return; // Already stopped
 
    disconnect();
 
@@ -108,7 +106,8 @@ void CAsyncTcpClient::tryConnect()
       YADOMS_LOG(warning) << "Already connected";
 
    m_serverAdressResolver.async_resolve(m_serverAdressResolverQuery,
-      boost::bind(&CAsyncTcpClient::handleEndPointResolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator));
+                                        boost::bind(&CAsyncTcpClient::handleEndPointResolve, this, boost::asio::placeholders::error,
+                                                    boost::asio::placeholders::iterator));
 }
 
 void CAsyncTcpClient::handleEndPointResolve(const boost::system::error_code& error, boost::asio::ip::tcp::resolver::iterator iterator)
@@ -123,7 +122,7 @@ void CAsyncTcpClient::handleEndPointResolve(const boost::system::error_code& err
 
    // End point is solved, try to connect now
    boost::asio::async_connect(m_boostSocket, iterator,
-      boost::bind(&CAsyncTcpClient::handleTryConnect, this, boost::asio::placeholders::error));
+                              boost::bind(&CAsyncTcpClient::handleTryConnect, this, boost::asio::placeholders::error));
 }
 
 void CAsyncTcpClient::handleTryConnect(const boost::system::error_code& error)
@@ -147,7 +146,8 @@ void CAsyncTcpClient::startRead()
 {
    // Start an asynchronous read and call readCompleted when it completes or fails 
    m_boostSocket.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(), m_asyncReadBuffer.size()),
-      boost::bind(&CAsyncTcpClient::readCompleted, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+                                 boost::bind(&CAsyncTcpClient::readCompleted, this, boost::asio::placeholders::error,
+                                             boost::asio::placeholders::bytes_transferred));
 }
 
 void CAsyncTcpClient::readCompleted(const boost::system::error_code& error, std::size_t bytesTransferred)
@@ -156,7 +156,7 @@ void CAsyncTcpClient::readCompleted(const boost::system::error_code& error, std:
    {
       // boost::asio::error::operation_aborted is fired when stop is required
       if (error == boost::asio::error::operation_aborted)
-         return;     // Normal stop
+         return; // Normal stop
 
       // Error ==> disconnecting
       YADOMS_LOG(error) << "Socket read error : " << error.message();
@@ -182,13 +182,13 @@ void CAsyncTcpClient::send(const CByteBuffer& buffer)
    sendBuffer(toSend);
 }
 
-void CAsyncTcpClient::sendText(const std::string & content)
+void CAsyncTcpClient::sendText(const std::string& content)
 {
    boost::asio::const_buffers_1 toSend = boost::asio::buffer(content);
    sendBuffer(toSend);
 }
 
-void CAsyncTcpClient::sendBuffer(boost::asio::const_buffers_1 & buffer)
+void CAsyncTcpClient::sendBuffer(boost::asio::const_buffers_1& buffer)
 {
    try
    {
@@ -203,12 +203,13 @@ void CAsyncTcpClient::sendBuffer(boost::asio::const_buffers_1 & buffer)
          disconnect();
       }
 
-      if(e.code() == boost::asio::error::eof)
+      if (e.code() == boost::asio::error::eof)
          notifyEventHandler("asyncPort.tcp.connectionClosed");
       else
          notifyEventHandler("asyncPort.tcp.connectionError");
 
-      throw CPortException((e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError, e.what());
+      throw CPortException((e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError,
+                           e.what());
    }
 }
 
@@ -221,7 +222,7 @@ void CAsyncTcpClient::notifyEventHandler()
    }
 }
 
-void CAsyncTcpClient::notifyEventHandler(const std::string & i18nErrorMessage)
+void CAsyncTcpClient::notifyEventHandler(const std::string& i18nErrorMessage)
 {
    if (m_connectStateEventHandler)
    {
@@ -229,5 +230,3 @@ void CAsyncTcpClient::notifyEventHandler(const std::string & i18nErrorMessage)
       m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
    }
 }
-
-} } // namespace shared::communication

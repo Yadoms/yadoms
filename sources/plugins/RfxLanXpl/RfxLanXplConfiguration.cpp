@@ -2,22 +2,22 @@
 #include "RfxLanXplConfiguration.h"
 #include <shared/Log.h>
 
-CRfxLanXplConfiguration::~CRfxLanXplConfiguration()
+
+void CRfxLanXplConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& configuration)
 {
+   m_contener.initializeWith(configuration);
 }
-
-
 
 bool CRfxLanXplConfiguration::getStartXplhub() const
 {
-   return get<bool>("XplHub");
+   return m_contener.get<bool>("XplHub");
 }
 
 Poco::Net::NetworkInterface CRfxLanXplConfiguration::getXplNetworkInterface() const
 {
    try
    {
-      std::string interfaceName = get<std::string>("networkInterface");
+      const auto interfaceName = m_contener.get<std::string>("networkInterface");
       return Poco::Net::NetworkInterface::forName(interfaceName);
    }
    catch (std::exception & ex)
@@ -28,11 +28,11 @@ Poco::Net::NetworkInterface CRfxLanXplConfiguration::getXplNetworkInterface() co
    //in case of exception, or bad network interface
    //initialize result with the first non loopback iface
    Poco::Net::NetworkInterface::NetworkInterfaceList netlist = Poco::Net::NetworkInterface::list();
-   for (Poco::Net::NetworkInterface::NetworkInterfaceList::iterator i = netlist.begin(); i != netlist.end(); ++i)
+   for (const auto& i : netlist)
    {
-      if (!i->address().isLoopback())
+      if (!i.address().isLoopback())
       {
-         return *i;
+         return i;
       }
    }
    

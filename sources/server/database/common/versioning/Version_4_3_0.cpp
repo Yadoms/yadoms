@@ -7,7 +7,6 @@
 #include <shared/Log.h>
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "shared/plugin/yPluginApi/historization/Duration.h"
-#include "database/common/adapters/MultipleValueAdapter.hpp"
 #include "database/common/adapters/DatabaseAdapters.h"
 
 namespace database
@@ -18,14 +17,6 @@ namespace database
       {
          // Modify this version to a greater value, to force update of current version
          const shared::versioning::CSemVer CVersion_4_3_0::Version(4, 3, 0);
-
-         CVersion_4_3_0::CVersion_4_3_0()
-         {
-         }
-
-         CVersion_4_3_0::~CVersion_4_3_0()
-         {
-         }
 
          void CVersion_4_3_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& requester,
                                               const shared::versioning::CSemVer& currentVersion)
@@ -44,6 +35,7 @@ namespace database
             }
          }
 
+         // ReSharper disable once CppInconsistentNaming
          void CVersion_4_3_0::updateFrom4_2_0(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             try
@@ -56,7 +48,7 @@ namespace database
                if (requester->transactionSupport())
                   requester->transactionBegin();
 
-               auto findDurationKeywordsRequest = requester->newQuery();
+               const auto findDurationKeywordsRequest = requester->newQuery();
                findDurationKeywordsRequest->Select().
                                             From(CKeywordTable::getTableName()).
                                             Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL,
@@ -65,9 +57,9 @@ namespace database
                requester->queryEntities(&kwAdapter, *findDurationKeywordsRequest);
 
                const auto results = kwAdapter.getResults();
-               for (auto keyword = results.begin(); keyword != results.end(); ++keyword)
+               for (const auto& result : results)
                {
-                  YADOMS_LOG(debug) << "  Convert duration keyword #" << (*keyword)->Id() << " into double...";
+                  YADOMS_LOG(debug) << "  Convert duration keyword #" << result->Id() << " into double...";
 
                   // Update keyword entry in Keywords table (only unit and last acquisition columns impacted)
                   auto updateDurationKeywordRequest = requester->newQuery();
@@ -75,25 +67,25 @@ namespace database
                                                 Set(CKeywordTable::getUnitsColumnName(),
                                                     shared::plugin::yPluginApi::CStandardCapacities::Duration().getUnit(),
                                                     CKeywordTable::getLastAcquisitionValueColumnName(),
-                                                    convertDuration((*keyword)->LastAcquisitionValue())).
-                                                Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, (*keyword)->Id());
+                                                    convertDuration(result->LastAcquisitionValue())).
+                                                Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, result->Id());
                   requester->queryStatement(*updateDurationKeywordRequest);
 
                   // Update acquisitions (provided in "hh:mm:ss")
                   auto findDurationAcquisitionsRequest = requester->newQuery();
                   findDurationAcquisitionsRequest->Select().
                                                    From(CAcquisitionTable::getTableName()).
-                                                   Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, (*keyword)->Id());
+                                                   Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, result->Id());
                   adapters::CAcquisitionAdapter acqAdapter;
                   requester->queryEntities(&acqAdapter, *findDurationAcquisitionsRequest);
 
                   const auto acquisitions = acqAdapter.getResults();
-                  for (auto acquisition = acquisitions.begin(); acquisition != acquisitions.end(); ++acquisition)
+                  for (const auto& acquisition : acquisitions)
                   {
                      auto updateAcquisitionRequest = requester->newQuery();
                      updateAcquisitionRequest->Update(CAcquisitionTable::getTableName()).
-                                               Set(CAcquisitionTable::getValueColumnName(), convertDuration((*acquisition)->Value())).
-                                               Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, (*acquisition)->Date());
+                                               Set(CAcquisitionTable::getValueColumnName(), convertDuration(acquisition->Value())).
+                                               Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, acquisition->Date());
                      requester->queryStatement(*updateAcquisitionRequest);
                   }
 
@@ -102,10 +94,11 @@ namespace database
                   // Use custom set for better performance (let do operation by the SQL engine)
                   updateAcquisitionSummaryRequest->Update(CAcquisitionSummaryTable::getTableName()).
                                                    Custom("SET  avgValue=avgValue*3600, minValue=minValue*3600, maxValue=maxValue*3600").
-                                                   Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, (*keyword)->Id());
+                                                   Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, result->Id());
                   requester->queryStatement(*updateAcquisitionSummaryRequest);
                }
 
+               // ReSharper disable once CppRedundantQualifier
                CVersion_4_2_0::updateDatabaseVersion(requester, Version);
 
                // Commit transaction
@@ -127,6 +120,7 @@ namespace database
             try
             {
                return std::to_string(boost::posix_time::duration_from_string(duration).total_microseconds() / 1000000.0);
+               // NOLINT(bugprone-narrowing-conversions, clang-diagnostic-implicit-int-float-conversion, cppcoreguidelines-narrowing-conversions)
             }
             catch (...)
             {
