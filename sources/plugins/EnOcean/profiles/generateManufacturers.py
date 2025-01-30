@@ -43,7 +43,7 @@ manufacturersClass.addMethod(cppClass.CppMethod('name', 'const std::string&', 'u
    '   try {\n' \
    '      return ManufacturersMap.at(id);\n' \
    '   } catch(std::out_of_range&) {\n' \
-   '      static const std::string UnknownManufacturer("Unknown manufacturer");\n' \
+   '      static const std::string UnknownManufacturer("Unknown manufacturer (" + std::to_string(id) + ")");\n' \
    '      return UnknownManufacturer;\n' \
    '   }'))
 manufacturersClass.addMethod(cppClass.CppMethod('name', 'const std::string&', 'EManufacturerIds id', cppClass.PUBLIC, cppClass.STATIC, \
