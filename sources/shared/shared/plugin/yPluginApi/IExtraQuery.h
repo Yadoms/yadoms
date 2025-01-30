@@ -14,12 +14,7 @@ namespace shared
          class IExtraQuery
          {
          public:
-            //-----------------------------------------------------
-            ///\brief               Destructor
-            //-----------------------------------------------------
-            virtual ~IExtraQuery()
-            {
-            }
+            virtual ~IExtraQuery() = default;
 
             //-----------------------------------------------------
             ///\brief               Get the extra query data
@@ -44,10 +39,9 @@ namespace shared
             ///\param [in] progression  The progression (0->100)
             ///\param [in] message The associated message (can be i18n string)
             //-----------------------------------------------------
-            virtual void reportProgress(const float progression, const std::string& message) = 0;
+            virtual void reportProgress(float progression,
+                                        const std::string& message) = 0;
          };
       }
    }
 } // namespace shared::plugin::yPluginApi	
-
-

@@ -1,6 +1,7 @@
 #include "DeviceManagerHelper.h"
-#include <boost/convert.hpp>
-#include <boost/convert/stream.hpp>
+#include <sstream>
+#include <string>
+#include <iomanip>
 #include <regex>
 
 const uint16_t CDeviceManagerHelper::StreamDeckVendorId = 0x0fd9;
@@ -20,8 +21,15 @@ std::vector<std::string> CDeviceManagerHelper::splitStringToVectorOfString(const
 
 uint16_t CDeviceManagerHelper::decimalToHex(std::string decimalValue)
 {
-	boost::cnv::cstream converter;
-	return boost::convert<uint16_t>(decimalValue, converter(std::showbase)(std::uppercase)(std::dec), 0);
+	uint16_t result;
+	std::stringstream ss;
+
+	ss << std::dec << decimalValue;
+
+	if (!(ss >> result))
+		throw std::invalid_argument("Invalid decimal value: " + decimalValue);
+
+	return result;
 }
 
 uint16_t CDeviceManagerHelper::stringToUnsignedShort(std::string& value)
@@ -130,8 +138,14 @@ boost::shared_ptr<CUsbDeviceInformation> CDeviceManagerHelper::getDeviceInformat
 
 unsigned char CDeviceManagerHelper::integerToHex(int& value)
 {
-	boost::cnv::cstream converter;
-	return boost::convert<uint16_t>(std::to_string(value), converter(std::showbase)(std::uppercase)(std::dec), 0);
+	std::stringstream ss;
+	ss << std::uppercase << std::showbase << std::hex << value;
+	std::string hexStr = ss.str();
+
+	if (hexStr.size() > 1)
+		return static_cast<unsigned char>(std::stoi(hexStr.substr(2), nullptr, 16)); // ignore "0x"
+	
+	return static_cast<unsigned char>(value);
 }
 
 int CDeviceManagerHelper::getKeyIndex(std::string& key)

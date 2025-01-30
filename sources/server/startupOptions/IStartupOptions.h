@@ -11,12 +11,7 @@ namespace startupOptions
    class IStartupOptions
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief	    Destructor
-      //--------------------------------------------------------------
-      virtual ~IStartupOptions()
-      {
-      }
+      virtual ~IStartupOptions() = default;
 
       //--------------------------------------------------------------
       /// \brief	    Get the log level
@@ -40,19 +35,19 @@ namespace startupOptions
       /// \brief	    Get the SSL port number
       /// \return     Configured SSL port number
       //--------------------------------------------------------------
-      virtual unsigned short getSSLWebServerPortNumber() const = 0;
+      virtual unsigned short getSslWebServerPortNumber() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Determine if the SSL port is activated
-      /// \return     true if SSL is activated 
+      /// \brief	    Use HTTPS for the web-server
+      /// \return     true if HTTPS is enabled
       //--------------------------------------------------------------
-      virtual bool getIsWebServerUseSSL() const = 0;
+      virtual bool getIsWebServerUseHttps() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the web server ip address
       /// \return     Configured web server ip address
       //--------------------------------------------------------------
-      virtual std::string getWebServerIPAddress() const = 0;
+      virtual std::string getWebServerIpAddress() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the web server initial path
@@ -61,16 +56,22 @@ namespace startupOptions
       virtual std::string getWebServerInitialPath() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Determine if external access of webserver is allowed (only if mobile apps are querying this server)
-      /// \return     true if external access are allowed
-      //--------------------------------------------------------------
-      virtual bool getWebServerAllowExternalAccess() const = 0;
-
-      //--------------------------------------------------------------
       /// \brief	    Get the database engine to use
       /// \return     The database engine (sqlite|postgresql)
       //--------------------------------------------------------------
       virtual EDatabaseEngine getDatabaseEngine() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the certificate local file for the web-server in HTTPS
+      /// \return     The certificate local file
+      //--------------------------------------------------------------
+      virtual boost::filesystem::path getWebServerHttpsCertificateFile() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the private key local file for the web-server in HTTPS
+      /// \return     The private key local file
+      //--------------------------------------------------------------
+      virtual boost::filesystem::path getWebServerHttpsPrivateKeyFile() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the path of the database file (sqlite only)
@@ -284,8 +285,8 @@ namespace startupOptions
       /// \brief	    Get the proxy password
       /// \return     The proxy password
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getProxyPassword() const = 0;     
-      
+      virtual Poco::Nullable<std::string> getProxyPassword() const = 0;
+
       //--------------------------------------------------------------
       /// \brief	    Get the proxy bypass filter
       /// A regular expression defining hosts for which the proxy should be bypassed,
@@ -333,5 +334,3 @@ namespace startupOptions
       virtual std::string getPython3Path() const = 0;
    };
 } // namespace startupOptions
-
-

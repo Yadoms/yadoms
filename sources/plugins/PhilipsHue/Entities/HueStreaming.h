@@ -3,9 +3,8 @@
 class CHueStreaming
 {
 public:
-
    CHueStreaming() = default;
-   CHueStreaming(bool& renderer, bool& proxy);
+   CHueStreaming(const bool& renderer, const bool& proxy);
    virtual ~CHueStreaming() = default;
 
    bool isRenderer() const;
@@ -14,7 +13,6 @@ public:
    void setProxy(bool proxy);
 
 private:
-
-   bool m_renderer;
-   bool m_proxy;
+   bool m_renderer = false;
+   bool m_proxy = false;
 };

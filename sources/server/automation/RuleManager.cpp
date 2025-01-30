@@ -12,7 +12,7 @@
 namespace automation
 {
    CRuleManager::CRuleManager(boost::shared_ptr<interpreter::IManager> interpreterManager,
-                              boost::shared_ptr<database::IDataProvider> dataProvider,
+                              const boost::shared_ptr<database::IDataProvider>& dataProvider,
                               boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                               boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                               boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
@@ -106,6 +106,22 @@ namespace automation
       return m_interpreterManager->getAvailablenterpreters();
    }
 
+   std::map<std::string, bool> CRuleManager::getInterpreters(bool includeNotAvailable)
+   {
+      return m_interpreterManager->getInterpreters(includeNotAvailable);
+   }
+
+   boost::filesystem::path CRuleManager::getInterpreterPath(const std::string& interpreterName)
+   {
+      for (const auto& interpreterInformation : m_interpreterManager->getAvailableInterpretersInformation())
+      {
+         if (interpreterInformation.first == interpreterName)
+            return interpreterInformation.second->getPath();
+      }
+
+      throw std::out_of_range("Interpreter " + interpreterName + "not found");
+   }
+
    void CRuleManager::startRule(int ruleId)
    {
       auto ruleLabel = std::to_string(ruleId);
@@ -183,7 +199,7 @@ namespace automation
    bool CRuleManager::stopRule(int ruleId)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-      auto rule = m_startedRules.find(ruleId);
+      const auto rule = m_startedRules.find(ruleId);
 
       if (rule == m_startedRules.end())
          return false;
@@ -195,7 +211,7 @@ namespace automation
    void CRuleManager::stopRuleAndWaitForStopped(int ruleId,
                                                 const boost::posix_time::time_duration& timeout)
    {
-      auto waitForStoppedRuleHandler(boost::make_shared<shared::event::CEventHandler>());
+      const auto waitForStoppedRuleHandler(boost::make_shared<shared::event::CEventHandler>());
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
          m_ruleStopNotifiers[ruleId].insert(waitForStoppedRuleHandler);
@@ -237,7 +253,7 @@ namespace automation
 
       // Notify all handlers for this rule
       boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
-      auto itEventHandlerSetToNotify = m_ruleStopNotifiers.find(ruleId);
+      const auto itEventHandlerSetToNotify = m_ruleStopNotifiers.find(ruleId);
       if (itEventHandlerSetToNotify != m_ruleStopNotifiers.end())
          for (const auto& itHandler : itEventHandlerSetToNotify->second)
             itHandler->postEvent(shared::event::kUserFirstId);
@@ -254,8 +270,25 @@ namespace automation
       return m_ruleRequester->getRules();
    }
 
-   int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-                                const std::string& code, bool startNow)
+   std::vector<boost::shared_ptr<database::entities::CRule>> CRuleManager::getRules(
+      const boost::optional<int>& ruleId,
+      const boost::optional<std::string>& fromName,
+      const std::set<std::string>& fromInterpreter,
+      const boost::optional<std::string>& fromEditor,
+      bool fromAutostart,
+      const std::set<database::entities::ERuleState>& fromState)
+   {
+      return m_ruleRequester->getRules(ruleId,
+                                       fromName,
+                                       fromInterpreter,
+                                       fromEditor,
+                                       fromAutostart,
+                                       fromState);
+   }
+
+   int CRuleManager::createRule(const database::entities::CRule& ruleData,
+                                const std::string& code,
+                                bool startNow)
    {
       // Add rule in database
       const auto ruleId = m_ruleRequester->addRule(ruleData);
@@ -334,10 +367,10 @@ namespace automation
       }
    }
 
-   void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule> ruleData)
+   void CRuleManager::updateRule(const database::entities::CRule& ruleData)
    {
       // Check for supported modifications
-      if (!ruleData->Id.isDefined())
+      if (!ruleData.Id.isDefined())
          throw shared::exception::CException("Update rule : rule ID was not provided");
 
       m_ruleRequester->updateRule(ruleData);
@@ -391,7 +424,7 @@ namespace automation
       try
       {
          //1. get rule
-         auto rule = getRule(idToDuplicate);
+         const auto rule = getRule(idToDuplicate);
 
          //2. get code
          const auto ruleCode = getRuleCode(idToDuplicate);
@@ -403,7 +436,7 @@ namespace automation
          rule->State = database::entities::ERuleState::kStopped;
 
          //5. create rule
-         return createRule(rule, ruleCode, false); //don't start the rule
+         return createRule(*rule, ruleCode, false); //don't start the rule
       }
       catch (shared::exception::CException& e)
       {
@@ -422,7 +455,7 @@ namespace automation
    void CRuleManager::stopAllRulesMatchingInterpreter(const std::string& interpreterName)
    {
       // First, stop all running rules associated with this interpreter
-      auto interpreterRules = m_ruleRequester->getRules(interpreterName);
+      const auto interpreterRules = m_ruleRequester->getRules(interpreterName);
       for (auto& interpreterRule : interpreterRules)
       {
          if (isRuleStarted(interpreterRule->Id()))
@@ -438,7 +471,7 @@ namespace automation
 
    void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string& interpreterName)
    {
-      auto interpreterRules = m_ruleRequester->getRules(interpreterName);
+      const auto interpreterRules = m_ruleRequester->getRules(interpreterName);
       for (auto& interpreterRule : interpreterRules)
          deleteRule(interpreterRule->Id());
 
@@ -470,11 +503,11 @@ namespace automation
 
    void CRuleManager::recordRuleStarted(int ruleId) const
    {
-      auto ruleData(boost::make_shared<database::entities::CRule>());
-      ruleData->Id = ruleId;
-      ruleData->State = database::entities::ERuleState::kRunning;
-      ruleData->StartDate = shared::currentTime::Provider().now();
-      ruleData->ErrorMessage = std::string();
+      database::entities::CRule ruleData;
+      ruleData.Id = ruleId;
+      ruleData.State = database::entities::ERuleState::kRunning;
+      ruleData.StartDate = shared::currentTime::Provider().now();
+      ruleData.ErrorMessage = std::string();
       m_ruleRequester->updateRule(ruleData);
    }
 
@@ -484,12 +517,12 @@ namespace automation
       if (!error.empty())
          YADOMS_LOG(error) << error;
 
-      auto ruleData(boost::make_shared<database::entities::CRule>());
-      ruleData->Id = ruleId;
-      ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
-      ruleData->StopDate = shared::currentTime::Provider().now();
+      database::entities::CRule ruleData;
+      ruleData.Id = ruleId;
+      ruleData.State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
+      ruleData.StopDate = shared::currentTime::Provider().now();
       if (!error.empty())
-         ruleData->ErrorMessage = error;
+         ruleData.ErrorMessage = error;
       m_ruleRequester->updateRule(ruleData);
 
       if (!error.empty())

@@ -16,7 +16,7 @@ namespace xplcore
    
    CXplHub::CXplHub(const std::string& localIPOfTheInterfaceToUse)
       : CThreadBase("XplHub"),
-        m_socket(Poco::Net::SocketAddress(Poco::Net::IPAddress(), CXplHelper::XplProtocolPort)),
+        m_socket(Poco::Net::SocketAddress(Poco::Net::IPAddress(), CXplHelper::XplProtocolPort), false),
         m_stopHubRequested(false)
    {
       m_socket.setBroadcast(true);

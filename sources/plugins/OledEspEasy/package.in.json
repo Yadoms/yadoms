@@ -15,16 +15,13 @@
       "regex": "([0-9]{1,3}\\.){3}[0-9]{1,3}"
     },
     "specificOledSize": {
-      "type": "section",
-      "enableWithCheckBox": "true",
-      "checkbox": {
-        "defaultValue": false
-      },
+      "type": "checkboxSection",
+      "defaultValue": false,
       "content": {
         "LineCount": {
           "type": "int",
-          "defaultValue": "8",
-          "minimumValue": "1"
+          "defaultValue": 8,
+          "minimumValue": 1
         }
       }
     }

@@ -32,6 +32,7 @@ namespace database
             }
          }
 
+         // ReSharper disable once CppInconsistentNaming
          void CVersion_5_2_0::updateFrom5_1_0(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             try
@@ -49,31 +50,31 @@ namespace database
                   requester->transactionBegin();
 
                // update Keyword set capacityName == "pluginState" where capacityName == "pluginState_capacity"
-               auto q1 = requester->newQuery();
+               const auto q1 = requester->newQuery();
                q1->Update(CKeywordTable::getTableName())
-                .Set(CKeywordTable::getCapacityNameColumnName(), "pluginState")
-                .Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, "pluginState_capacity");
+                 .Set(CKeywordTable::getCapacityNameColumnName(), "pluginState")
+                 .Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, "pluginState_capacity");
                requester->queryStatement(*q1, false);
 
                // update Keyword set capacityName == "pluginStateMessage" where capacityName == "pluginStateMessage_capacity"
-               auto q2 = requester->newQuery();
+               const auto q2 = requester->newQuery();
                q2->Update(CKeywordTable::getTableName())
-                  .Set(CKeywordTable::getCapacityNameColumnName(), "pluginStateMessage")
-                  .Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, "pluginStateMessage_capacity");
+                 .Set(CKeywordTable::getCapacityNameColumnName(), "pluginStateMessage")
+                 .Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, "pluginStateMessage_capacity");
                requester->queryStatement(*q2, false);
 
                // update Keyword set capacityName == "deviceState" where capacityName == "deviceState_capacity"
-               auto q3 = requester->newQuery();
+               const auto q3 = requester->newQuery();
                q3->Update(CKeywordTable::getTableName())
-                  .Set(CKeywordTable::getCapacityNameColumnName(), "deviceState")
-                  .Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, "deviceState_capacity");
+                 .Set(CKeywordTable::getCapacityNameColumnName(), "deviceState")
+                 .Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, "deviceState_capacity");
                requester->queryStatement(*q3, false);
 
                // update Keyword set capacityName == "deviceStateMessage" where capacityName == "deviceStateMessage_capacity"
-               auto q4 = requester->newQuery();
+               const auto q4 = requester->newQuery();
                q4->Update(CKeywordTable::getTableName())
-                  .Set(CKeywordTable::getCapacityNameColumnName(), "deviceStateMessage")
-                  .Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, "deviceStateMessage_capacity");
+                 .Set(CKeywordTable::getCapacityNameColumnName(), "deviceStateMessage")
+                 .Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, "deviceStateMessage_capacity");
                requester->queryStatement(*q4, false);
 
                updateDatabaseVersion(requester, Version);

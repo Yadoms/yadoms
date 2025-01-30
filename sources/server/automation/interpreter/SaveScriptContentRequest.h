@@ -7,13 +7,13 @@ namespace automation
 {
    namespace interpreter
    {
-      class CSaveScriptContentRequest : public shared::script::yInterpreterApi::ISaveScriptContentRequest
+      class CSaveScriptContentRequest final : public shared::script::yInterpreterApi::ISaveScriptContentRequest
       {
       public:
-         CSaveScriptContentRequest(const std::string& scriptPath,
-                                   const std::string& scriptContent,
+         CSaveScriptContentRequest(std::string scriptPath,
+                                   std::string scriptContent,
                                    communication::callback::ISynchronousCallback<bool>& callback);
-         virtual ~CSaveScriptContentRequest();
+         ~CSaveScriptContentRequest() override = default;
 
          // ILoadScriptContentRequest implementation
          const std::string& getScriptPath() override;
