@@ -1,3 +1,6 @@
+### 2.1.3
+* Update manufacturers list
+
 ### 2.1.2
 * Fix A5-04-xx, A5-09-xx and D2-02-xx devices pairing
 
