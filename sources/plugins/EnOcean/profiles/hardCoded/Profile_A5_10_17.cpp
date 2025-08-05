@@ -42,7 +42,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 {
    m_temperature->set(static_cast<double>(1023 - bitset_extract(data, 14, 10)) * 51.2 / 1023.0 - 10.0);
 
-   m_occupancy->set(bitset_extract(status, 31, 1) ? true : false);
+   m_occupancy->set(bitset_extract(data, 31, 1) ? true : false);
 
    return m_historizers;
 }

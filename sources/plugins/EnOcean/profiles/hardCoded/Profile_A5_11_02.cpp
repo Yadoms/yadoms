@@ -95,14 +95,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       break;
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
-         " : Fan stage = " << bitset_extract(status, 8, 8);
+         " : Fan stage = " << bitset_extract(data, 8, 8);
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
-   m_setPoint->set(bitset_extract(status, 16, 8) * 51.2 / 255);
+   m_setPoint->set(bitset_extract(data, 16, 8) * 51.2 / 255);
    historizers.emplace_back(m_setPoint);
 
-   m_alarm->set(bitset_extract(status, 24, 1) ? true : false);
+   m_alarm->set(bitset_extract(data, 24, 1) ? true : false);
    historizers.emplace_back(m_alarm);
 
    switch (bitset_extract(data, 25, 2))
@@ -123,14 +123,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       break;
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
-         " : Controller mode = " << bitset_extract(status, 25, 2);
+         " : Controller mode = " << bitset_extract(data, 25, 2);
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
-   m_controllerStateOverriden->set(bitset_extract(status, 27, 1) ? true : false);
+   m_controllerStateOverriden->set(bitset_extract(data, 27, 1) ? true : false);
    historizers.emplace_back(m_controllerStateOverriden);
 
-   m_energyHoldOff->set(bitset_extract(status, 29, 1) ? true : false);
+   m_energyHoldOff->set(bitset_extract(data, 29, 1) ? true : false);
    historizers.emplace_back(m_energyHoldOff);
 
    switch (bitset_extract(data, 30, 2))

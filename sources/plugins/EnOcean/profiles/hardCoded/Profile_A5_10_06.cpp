@@ -42,11 +42,11 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const std::string& senderId,
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   m_setPoint->set(bitset_extract(status, 8, 8));
+   m_setPoint->set(bitset_extract(data, 8, 8));
 
    m_temperature->set(static_cast<double>(255 - bitset_extract(data, 16, 8)) * 40.0 / 255.0);
 
-   m_dayNight->set(bitset_extract(status, 31, 1) ? true : false);
+   m_dayNight->set(bitset_extract(data, 31, 1) ? true : false);
 
    return m_historizers;
 }

@@ -40,7 +40,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const std::string& senderId,
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   const auto fan = bitset_extract(status, 0, 8);
+   const auto fan = bitset_extract(data, 0, 8);
    if (fan <= 144)
       m_fan->set(specificHistorizers::EFan4Speeds::kSpeed3);
    else if (fan <= 164)
