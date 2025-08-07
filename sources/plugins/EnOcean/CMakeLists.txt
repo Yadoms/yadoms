@@ -5,7 +5,7 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 ## Plugin needs Python to generate code
 #########################################
-set (PYTHON_REQUIRED_VERSION 2.7)
+set (PYTHON_REQUIRED_VERSION 3.5)
 find_package(PythonInterp ${PYTHON_REQUIRED_VERSION} REQUIRED)
 
 
