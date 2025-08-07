@@ -42,7 +42,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const std::string& senderId,
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   const auto fan = bitset_extract(status, 0, 8);
+   const auto fan = bitset_extract(data, 0, 8);
    if (fan <= 144)
       m_fan->set(specificHistorizers::EFan4Speeds::kSpeed3);
    else if (fan <= 164)
@@ -54,7 +54,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    else
       m_fan->set(specificHistorizers::EFan4Speeds::kAuto);
 
-   m_setPoint->set(bitset_extract(status, 8, 8));
+   m_setPoint->set(bitset_extract(data, 8, 8));
 
    m_temperature->set(static_cast<double>(255 - bitset_extract(data, 16, 8)) * 40.0 / 255.0);
 

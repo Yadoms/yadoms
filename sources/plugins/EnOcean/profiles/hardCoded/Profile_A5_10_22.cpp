@@ -44,7 +44,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 {
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   m_setPoint->set(bitset_extract(status, 0, 8));
+   m_setPoint->set(bitset_extract(data, 0, 8));
    historizers.emplace_back(m_setPoint);
 
    m_humidity->set(static_cast<double>(bitset_extract(data, 8, 8)) * 100.0 / 250.0);
@@ -53,7 +53,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    m_temperature->set(static_cast<double>(bitset_extract(data, 16, 8)) * 40.0 / 250.0);
    historizers.emplace_back(m_temperature);
 
-   switch (bitset_extract(status, 24, 3))
+   switch (bitset_extract(data, 24, 3))
    {
    case 0:
       m_fan->set(specificHistorizers::EFan4Speeds::kAuto);
@@ -77,7 +77,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       break;
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
-         " : Fan speed = " << bitset_extract(status, 24, 3);
+         " : Fan speed = " << bitset_extract(data, 24, 3);
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 

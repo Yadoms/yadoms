@@ -5,8 +5,8 @@
 
 CProfile_F6_04_01::CProfile_F6_04_01(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_cardAction(boost::make_shared<yApi::historization::CSwitch>("Button A", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_cardAction})
+   : m_cardInserted(boost::make_shared<yApi::historization::CSwitch>("Card", yApi::EKeywordAccessMode::kGet)),
+     m_historizers({m_cardInserted})
 {
 }
 
@@ -42,18 +42,18 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 {
    const auto T21 = bitset_extract(status, 2, 1) ? true : false;
    const auto NU = bitset_extract(status, 3, 1) ? true : false;
-   const auto keyCardAction = bitset_extract(status, 0, 8);
+   const auto keyCardInserted = bitset_extract(data, 0, 8) == 0x70;
 
-   if (T21 && NU && keyCardAction == 0x70)
-      m_cardAction->set(true);
-   else if (T21 && !NU && keyCardAction == 0)
-      m_cardAction->set(false);
+   if (T21 && NU && keyCardInserted)
+      m_cardInserted->set(true);
+   else if (T21 && !NU && !keyCardInserted)
+      m_cardInserted->set(false);
    else
    {
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
          " : T21=" << (T21 ? "1" : "0") <<
          ", NU=" << (NU ? "1" : "0") <<
-         ", keyCardAction=" << keyCardAction;
+         ", keyCardAction=" << keyCardInserted;
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 

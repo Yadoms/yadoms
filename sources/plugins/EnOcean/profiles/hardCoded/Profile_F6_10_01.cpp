@@ -40,7 +40,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const std::string& senderId,
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   const auto movement = bitset_extract(status, 4, 4);
+   const auto movement = bitset_extract(data, 4, 4);
 
    if ((movement & BOOST_BINARY(00001101)) == BOOST_BINARY(00001100))
       m_movement->set(specificHistorizers::EMechanicalHandleMovement::kToHorizontal);

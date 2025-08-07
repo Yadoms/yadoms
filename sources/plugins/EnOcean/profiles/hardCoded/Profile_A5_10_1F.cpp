@@ -45,9 +45,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 {
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   if (bitset_extract(status, 27, 1))
+   if (bitset_extract(data, 27, 1))
    {
-      const auto fan = bitset_extract(status, 0, 8);
+      const auto fan = bitset_extract(data, 0, 8);
       if (fan <= 144)
          m_fan->set(specificHistorizers::EFan4Speeds::kSpeed3);
       else if (fan <= 164)
@@ -61,24 +61,24 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.emplace_back(m_fan);
    }
 
-   if (bitset_extract(status, 27, 1))
+   if (bitset_extract(data, 27, 1))
    {
       m_temperature->set(static_cast<double>(250 - bitset_extract(data, 16, 8)) * 40.0 / 250.0);
       historizers.emplace_back(m_temperature);
    }
 
-   if (bitset_extract(status, 26, 1))
+   if (bitset_extract(data, 26, 1))
    {
-      m_setPoint->set(bitset_extract(status, 8, 8));
+      m_setPoint->set(bitset_extract(data, 8, 8));
       historizers.emplace_back(m_setPoint);
    }
 
-   if (bitset_extract(status, 31, 1))
+   if (bitset_extract(data, 31, 1))
    {
       m_occupancy->set(true);
       historizers.emplace_back(m_occupancy);
    }
-   else if (bitset_extract(status, 30, 1))
+   else if (bitset_extract(data, 30, 1))
    {
       m_occupancy->set(false);
       historizers.emplace_back(m_occupancy);

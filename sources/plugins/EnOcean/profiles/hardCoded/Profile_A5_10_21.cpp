@@ -46,7 +46,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 {
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   m_setPoint->set(bitset_extract(status, 0, 8));
+   m_setPoint->set(bitset_extract(data, 0, 8));
    historizers.emplace_back(m_setPoint);
 
    m_humidity->set(static_cast<double>(bitset_extract(data, 8, 8)) * 100.0 / 250.0);
@@ -55,7 +55,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    m_temperature->set(static_cast<double>(bitset_extract(data, 16, 8)) * 40.0 / 250.0);
    historizers.emplace_back(m_temperature);
 
-   switch (bitset_extract(status, 25, 2))
+   switch (bitset_extract(data, 25, 2))
    {
    case 0: m_heatingStates->set(specificHistorizers::ESpecialHeatingStates::kDefinedBySetPoint);
       historizers.emplace_back(m_heatingStates);
@@ -68,14 +68,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       break;
    default:
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
-         " : Special heating state = " << bitset_extract(status, 25, 2);
+         " : Special heating state = " << bitset_extract(data, 25, 2);
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
-   m_batteryLevel->set(bitset_extract(status, 27, 1) ? 0 : 100);
+   m_batteryLevel->set(bitset_extract(data, 27, 1) ? 0 : 100);
    historizers.emplace_back(m_batteryLevel);
 
-   m_userInteraction->set(bitset_extract(status, 31, 1) ? true : false);
+   m_userInteraction->set(bitset_extract(data, 31, 1) ? true : false);
    historizers.emplace_back(m_userInteraction);
 
    return historizers;

@@ -42,7 +42,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 {
    const auto T21 = bitset_extract(status, 2, 1) ? true : false;
    const auto NU = bitset_extract(status, 3, 1) ? true : false;
-   const auto movement = bitset_extract(status, 0, 8);
+   const auto movement = bitset_extract(data, 0, 8);
 
    if (!T21)
    {

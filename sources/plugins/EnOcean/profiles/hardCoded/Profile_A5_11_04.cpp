@@ -166,7 +166,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       break;
    }
 
-   m_serviceMode->set(bitset_extract(status, 24, 1) ? true : false);
+   m_serviceMode->set(bitset_extract(data, 24, 1) ? true : false);
    historizers.emplace_back(m_serviceMode);
 
    m_lighting->set(bitset_extract(data, 31, 1) ? true : false);
