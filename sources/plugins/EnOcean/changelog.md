@@ -1,4 +1,4 @@
-### 2.1.4-beta.1
+### 2.1.4
 * Fix read data for A5-10-xx, A5-11-xx, D2-04-xx, F6-04-xx and F6-10-xx profiles
 
 ### 2.1.3
