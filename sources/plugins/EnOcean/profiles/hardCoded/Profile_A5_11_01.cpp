@@ -57,19 +57,19 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    m_dimOutLevel->set(static_cast<int>(bitset_extract(data, 16, 8) * 100 / 255));
 
-   m_repeater->set(bitset_extract(status, 24, 1) ? true : false);
+   m_repeater->set(bitset_extract(data, 24, 1) ? true : false);
 
-   m_powerRelayTimer->set(bitset_extract(status, 25, 1) ? true : false);
+   m_powerRelayTimer->set(bitset_extract(data, 25, 1) ? true : false);
 
-   m_daylightHarvesting->set(bitset_extract(status, 26, 1) ? true : false);
+   m_daylightHarvesting->set(bitset_extract(data, 26, 1) ? true : false);
 
-   m_dimming->set(bitset_extract(status, 27, 1) ? true : false);
+   m_dimming->set(bitset_extract(data, 27, 1) ? true : false);
 
-   m_magnetContact->set(bitset_extract(status, 29, 1) ? true : false);
+   m_magnetContact->set(bitset_extract(data, 29, 1) ? true : false);
 
-   m_occupancy->set(bitset_extract(status, 30, 1) ? true : false);
+   m_occupancy->set(bitset_extract(data, 30, 1) ? true : false);
 
-   m_powerRelay->set(bitset_extract(status, 31, 1) ? true : false);
+   m_powerRelay->set(bitset_extract(data, 31, 1) ? true : false);
 
    return m_historizers;
 }

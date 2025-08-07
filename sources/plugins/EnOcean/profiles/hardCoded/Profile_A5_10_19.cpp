@@ -55,7 +55,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    m_temperature->set(static_cast<double>(250 - bitset_extract(data, 16, 8)) * 40.0 / 250.0);
    historizers.emplace_back(m_temperature);
 
-   switch (bitset_extract(status, 25, 3))
+   switch (bitset_extract(data, 25, 3))
    {
    case 0:
       m_fan->set(specificHistorizers::EFan6Speeds::kAuto);
@@ -84,10 +84,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    }
    historizers.emplace_back(m_fan);
 
-   if (bitset_extract(status, 30, 1))
+   if (bitset_extract(data, 30, 1))
    {
       // Occupancy sensor available
-      m_occupancy->set(bitset_extract(status, 31, 1) ? true : false);
+      m_occupancy->set(bitset_extract(data, 31, 1) ? true : false);
       historizers.emplace_back(m_occupancy);
    }
 

@@ -4,8 +4,8 @@
 
 CProfile_F6_04_02::CProfile_F6_04_02(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_cardAction(boost::make_shared<yApi::historization::CSwitch>("Button A", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_cardAction})
+   : m_cardInserted(boost::make_shared<yApi::historization::CSwitch>("Card", yApi::EKeywordAccessMode::kGet)),
+     m_historizers({m_cardInserted})
 {
 }
 
@@ -39,7 +39,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const std::string& senderId,
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   m_cardAction->set(bitset_extract(status, 5, 1) ? true : false);
+   m_cardInserted->set(bitset_extract(data, 5, 1) ? true : false);
    return m_historizers;
 }
 

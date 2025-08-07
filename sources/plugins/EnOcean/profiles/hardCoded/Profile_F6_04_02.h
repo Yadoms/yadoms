@@ -31,6 +31,6 @@ public:
    // [END] IType implementation
 
 private:
-   boost::shared_ptr<yApi::historization::CSwitch> m_cardAction;
+   boost::shared_ptr<yApi::historization::CSwitch> m_cardInserted;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };

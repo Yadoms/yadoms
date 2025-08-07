@@ -41,7 +41,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const std::string& senderId,
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   m_setPoint->set(bitset_extract(status, 0, 8));
+   m_setPoint->set(bitset_extract(data, 0, 8));
 
    m_humidity->set(static_cast<double>(bitset_extract(data, 8, 8)) * 100.0 / 250.0);
 
