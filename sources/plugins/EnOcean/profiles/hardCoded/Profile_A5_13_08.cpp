@@ -47,7 +47,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    m_rain->set(rainFallCount * 0.6875 * (1.0 + rainFallAdjustSign * rainFallAdjust));
 
-   m_battery->set(bitset_extract(data, 31, 1) ? 0 : 100);
+   m_battery->set(bitset_extract(data, 31, 1) ? 10 : 100);
 
    return m_historizers;
 }

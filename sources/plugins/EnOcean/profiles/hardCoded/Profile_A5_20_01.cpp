@@ -23,8 +23,8 @@ CProfile_A5_20_01::CProfile_A5_20_01(const std::string& deviceId,
      m_currentTemperatureFromExternalSensor(boost::make_shared<yApi::historization::CTemperature>("External Sensor Temperature", yApi::EKeywordAccessMode::kGetSet)),
      m_runInitSequence(boost::make_shared<yApi::historization::CEvent>("Run init sequence", yApi::EKeywordAccessMode::kGetSet)),
      m_liftSet(boost::make_shared<yApi::historization::CEvent>("Lift set", yApi::EKeywordAccessMode::kGetSet)),
-     m_summerMode(boost::make_shared<yApi::historization::CSwitch>("Summer mode", yApi::EKeywordAccessMode::kGet)),
-     m_setPointInverse(boost::make_shared<yApi::historization::CSwitch>("Set point inverse", yApi::EKeywordAccessMode::kGet)),
+     m_summerMode(boost::make_shared<yApi::historization::CSwitch>("Summer mode", yApi::EKeywordAccessMode::kGetSet)),
+     m_setPointInverse(boost::make_shared<yApi::historization::CSwitch>("Set point inverse", yApi::EKeywordAccessMode::kGetSet)),
      m_historizers({
         m_currentValue, m_serviceOn, m_energyInputEnable, m_energyStorageCharged, m_battery, m_coverOpen,
         m_temperatureFailure, m_windowOpen, m_actuatorObstructed, m_temperature, m_valvePosition, m_temperatureSetPoint,
@@ -66,7 +66,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    m_serviceOn->set(bitset_extract(data, 8, 1) ? true : false);
    m_energyInputEnable->set(bitset_extract(data, 9, 1) ? true : false);
    m_energyStorageCharged->set(bitset_extract(data, 10, 1) ? true : false);
-   m_battery->set(bitset_extract(data, 11, 1) ? 0 : 100);
+   m_battery->set(bitset_extract(data, 11, 1) ? 10 : 100);
    m_coverOpen->set(bitset_extract(data, 12, 1) ? true : false);
    m_temperatureFailure->set(bitset_extract(data, 13, 1) ? true : false);
    m_windowOpen->set(bitset_extract(data, 14, 1) ? true : false);

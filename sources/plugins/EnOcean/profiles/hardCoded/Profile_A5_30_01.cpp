@@ -42,7 +42,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    m_contact->set(bitset_extract(data, 16, 8) >= 196);
-   m_battery->set(bitset_extract(data, 8, 8) >= 121 ? 100 : 0);
+   m_battery->set(bitset_extract(data, 8, 8) >= 121 ? 100 : 10);
 
    return m_historizers;
 }

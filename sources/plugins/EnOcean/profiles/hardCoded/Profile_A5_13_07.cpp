@@ -100,7 +100,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    m_averageSpeed->set((static_cast<double>(bitset_extract(data, 8, 8)) * 198.9 / 255.0 + 1.0) / 2.237);
    m_maximumSpeed->set((static_cast<double>(bitset_extract(data, 16, 8)) * 198.9 / 255.0 + 1.0) / 2.237);
 
-   m_battery->set(bitset_extract(data, 31, 1) ? 0 : 100);
+   m_battery->set(bitset_extract(data, 31, 1) ? 10 : 100);
 
    return m_historizers;
 }
