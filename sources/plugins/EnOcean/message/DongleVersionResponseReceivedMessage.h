@@ -12,7 +12,7 @@ namespace message
    class CDongleVersionResponseReceivedMessage
    {
    public:
-      class Version
+      class Version final
       {
       public:
          Version(unsigned int main,
@@ -34,7 +34,7 @@ namespace message
       /// \brief	                           Constructor
       /// \param[in] response                The response message
       //--------------------------------------------------------------
-      explicit CDongleVersionResponseReceivedMessage(boost::shared_ptr<const CResponseReceivedMessage> response);
+      explicit CDongleVersionResponseReceivedMessage(const CResponseReceivedMessage& response);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor
