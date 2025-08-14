@@ -10,7 +10,6 @@
 #include "message/Esp3ReceivedPacket.h"
 #include "message/SmartAckClientMailboxStatusResponseReceivedMessage.h"
 #include "message/SmartAckLearnedClientsResponseReceivedMessage.h"
-#include "message/SmartAckLearnModeResponseReceivedMessage.h"
 #include "message/UTE_AnswerSendMessage.h"
 #include "message/UTE_ReceivedMessage.h"
 #include "profiles/IRorg.h"
@@ -110,9 +109,6 @@ protected:
     static void processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
     void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
                                       const message::CDongleVersionResponseReceivedMessage& response);
-    static void processEnableSmartAckPostMasterResponse(const message::CResponseReceivedMessage& response);
-    static void processReadSmartAckLearnModeResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
-                                                     const message::CSmartAckLearnModeResponseReceivedMessage& response);
     static std::vector<boost::shared_ptr<message::CSmartAckClient>> processReadSmartAckLearnedClientsResponse(
         message::CResponseReceivedMessage::EReturnCode returnCode,
         const message::CSmartAckLearnedClientsResponseReceivedMessage& response);
@@ -220,7 +216,7 @@ protected:
     /// \param [in] extraQuery       Extra query
     //--------------------------------------------------------------
     void startManualPairing(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                            boost::shared_ptr<yApi::IExtraQuery> extraQuery);
+                            const boost::shared_ptr<yApi::IExtraQuery>& extraQuery);
 
 private:
     //--------------------------------------------------------------

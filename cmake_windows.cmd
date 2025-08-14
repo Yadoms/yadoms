@@ -14,6 +14,8 @@ setlocal & pushd .
 @echo v120_xp : platform toolset "Visual Studio 2013 - WindowsXP"
 @echo v140_xp : platform toolset "Visual Studio 2015 - WindowsXP"
 @echo v141_xp : platform toolset "Visual Studio 2017 - WindowsXP"
+@echo v142 : platform toolset "Visual Studio 2019"
+@echo v143 : platform toolset "Visual Studio 2022"
 @echo Leave empty to disable Windows XP compatibility
 @echo.
 @echo.
@@ -44,6 +46,16 @@ if "%xp_compatibility%" == "v140_xp" (
 if "%xp_compatibility%" == "v141_xp" (
    @echo Generating using "Visual Studio 2017" with WindowsXP support
 	"%cmake_executable%" %~dp0/sources -T %xp_compatibility% -A Win32
+   goto:eof
+)
+if "%xp_compatibility%" == "v142" (
+   @echo Generating using "Visual Studio 2019"
+	"%cmake_executable%" %~dp0/sources -A Win32
+   goto:eof
+)
+if "%xp_compatibility%" == "v143" (
+   @echo Generating using "Visual Studio 2022"
+	"%cmake_executable%" %~dp0/sources -A Win32
    goto:eof
 )
 echo Error: invalid toolset selected

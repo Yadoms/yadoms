@@ -50,6 +50,7 @@ set(ENOCEAN_SOURCES
    message/Esp3SendPacket.cpp
    message/Header.h
    message/Header.cpp
+   message/LearnMode.h
    message/MessageHelpers.h
    message/MessageHelpers.cpp
    message/RadioErp1ReceivedMessage.h
@@ -58,16 +59,22 @@ set(ENOCEAN_SOURCES
    message/RadioErp1SendMessage.cpp
    message/ResponseReceivedMessage.h
    message/ResponseReceivedMessage.cpp
-   message/SmartAckCommandSendMessage.h
-   message/SmartAckCommandSendMessage.cpp
-   message/SmartAckLearnedClientsResponseReceivedMessage.h
-   message/SmartAckLearnedClientsResponseReceivedMessage.cpp
-   message/SmartAckLearnModeResponseReceivedMessage.h
-   message/SmartAckLearnModeResponseReceivedMessage.cpp
    message/SmartAckClientMailboxStatusResponseReceivedMessage.h
    message/SmartAckClientMailboxStatusResponseReceivedMessage.cpp
    message/SmartAckClient.h
    message/SmartAckClient.cpp
+   message/SmartAckCommandSendMessage.h
+   message/SmartAckCommandSendMessage.cpp
+   message/SmartAckEnablePostMasterCommand.h
+   message/SmartAckEnablePostMasterCommand.cpp
+   message/SmartAckLearnedClientsResponseReceivedMessage.h
+   message/SmartAckLearnedClientsResponseReceivedMessage.cpp
+   message/SmartAckPairingCommand.h
+   message/SmartAckPairingCommand.cpp
+   message/SmartAckReadLearnedClientsCommand.h
+   message/SmartAckReadLearnedClientsCommand.cpp
+   message/SmartAckReadLearnModeCommand.h
+   message/SmartAckReadLearnModeCommand.cpp
    message/types.h
    message/types.cpp
    message/UTE_AnswerSendMessage.h

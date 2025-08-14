@@ -10,7 +10,7 @@ namespace message
     ///
     /// This class manages a Smart Ack learned clients RESPONSE EnOcean message.
     //--------------------------------------------------------------
-    class CSmartAckLearnedClientsResponseReceivedMessage final
+    class CSmartAckLearnedClientsResponseReceivedMessage final //TODO virer
     {
     public:
         //--------------------------------------------------------------

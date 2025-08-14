@@ -15,8 +15,10 @@
 #include "message/ResponseReceivedMessage.h"
 #include "message/SmartAckClientMailboxStatusResponseReceivedMessage.h"
 #include "message/SmartAckCommandSendMessage.h"
+#include "message/SmartAckEnablePostMasterCommand.h"
 #include "message/SmartAckLearnedClientsResponseReceivedMessage.h"
-#include "message/SmartAckLearnModeResponseReceivedMessage.h"
+#include "message/SmartAckReadLearnedClientsCommand.h"
+#include "message/SmartAckReadLearnModeCommand.h"
 #include "message/UTE_AnswerSendMessage.h"
 #include "message/UTE_GigaConceptReversedAnswerSendMessage.h"
 #include "message/UTE_GigaConceptReversedReceivedMessage.h"
@@ -238,7 +240,7 @@ void CEnOcean::loadAllDevices()
 
             m_devices[deviceId] = device;
         }
-        catch (shared::exception::CEmptyResult&)  // NOLINT(bugprone-empty-catch)
+        catch (shared::exception::CEmptyResult&) // NOLINT(bugprone-empty-catch)
         {
             // Don't add a not configured device to the m_devices list
         }
@@ -286,6 +288,7 @@ void CEnOcean::destroyConnection()
         return;
     m_port->setReceiveBufferHandler(boost::shared_ptr<shared::communication::IReceiveBufferHandler>());
     m_port.reset();
+    m_messageHandler.reset();
 }
 
 bool CEnOcean::connectionsAreEqual(const CConfiguration& conf1,
@@ -592,58 +595,6 @@ void CEnOcean::processDongleVersionResponse(message::CResponseReceivedMessage::E
     m_senderId = response.chipId();
 
     YADOMS_LOG(information) << response.fullVersion();
-}
-
-void CEnOcean::processEnableSmartAckPostMasterResponse(const message::CResponseReceivedMessage& response)
-{
-    if (response.returnCode() == message::CResponseReceivedMessage::RET_NOT_SUPPORTED)
-        throw CProtocolException("SA_WR_POSTMASTER request returned not supported");
-
-    if (response.returnCode() == message::CResponseReceivedMessage::RET_WRONG_PARAM)
-        throw CProtocolException("SA_WR_POSTMASTER request returned wrong param (Mailbox count exceeds number of available mailboxes)");
-
-    if (response.returnCode() != message::CResponseReceivedMessage::RET_OK)
-        throw CProtocolException((boost::format("Unexpected return code %1%. Request was SA_WR_POSTMASTER.") % response.returnCode()).str());
-
-    YADOMS_LOG(information) << "Enable/disable Smart Ack mailboxes";
-}
-
-void CEnOcean::processReadSmartAckLearnModeResponse(const message::CResponseReceivedMessage::EReturnCode returnCode,
-                                                    const message::CSmartAckLearnModeResponseReceivedMessage& response)
-{
-    if (returnCode == message::CResponseReceivedMessage::RET_NOT_SUPPORTED)
-        throw CProtocolException("SA_RD_LEARNMODE request returned not supported");
-
-    if (returnCode != message::CResponseReceivedMessage::RET_OK)
-        throw CProtocolException((boost::format("Unexpected return code %1%. Request was SA_RD_LEARNMODE.") % returnCode).str());
-
-    YADOMS_LOG(information) << "Smart Ack learn mode : " << (response.learnModeEnable() ? "enable" : "disable")
-        << "(" << message::CSmartAckLearnModeResponseReceivedMessage::toString(response.learnModeExtended()) << ")";
-}
-
-std::vector<boost::shared_ptr<message::CSmartAckClient>> CEnOcean::processReadSmartAckLearnedClientsResponse(
-    const message::CResponseReceivedMessage::EReturnCode returnCode,
-    const message::CSmartAckLearnedClientsResponseReceivedMessage& response)
-{
-    if (returnCode == message::CResponseReceivedMessage::RET_NOT_SUPPORTED)
-        throw CProtocolException("SA_RD_LEARNEDCLIENTS request returned not supported");
-
-    if (returnCode != message::CResponseReceivedMessage::RET_OK)
-        throw CProtocolException((boost::format("Unexpected return code %1%. Request was SA_RD_LEARNEDCLIENTS.") % returnCode).str());
-
-    if (response.clients().empty())
-    {
-        YADOMS_LOG(information) << "No Smart Ack learned clients";
-        return {};
-    }
-
-    YADOMS_LOG(information) << "Smart Ack learned clients : ";
-    for (const auto& client : response.clients())
-        YADOMS_LOG(information) << " - ID " << client->id()
-            << " : controller ID " << client->controllerId()
-            << ", mailbox Index " << client->mailboxIndex();
-
-    return response.clients();
 }
 
 void CEnOcean::processReadSmartAckClientMailboxStatusResponse(
@@ -1043,6 +994,7 @@ void CEnOcean::removeDevice(const std::string& deviceId)
 
 void CEnOcean::requestDongleVersion()
 {
+    //TODO faire pareil que CSmartAckReadLearnedClientsCommand
     message::CCommonCommandSendMessage sendMessage(message::CCommonCommandSendMessage::CO_RD_VERSION);
 
     boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
@@ -1073,89 +1025,28 @@ void CEnOcean::requestDongleVersion()
 
 void CEnOcean::enableSmartAckPostMaster(const bool enable) const
 {
-    message::CSmartAckCommandSendMessage sendMessage(message::CSmartAckCommandSendMessage::SA_WR_POSTMASTER,
-                                                     {static_cast<unsigned char>(enable ? 20 : 0)}); // 20 mailboxes max
-
-    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-    if (!m_messageHandler->send(sendMessage,
-                                [](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
-                                {
-                                    if (esp3Packet->header().packetType() == message::RESPONSE)
-                                        return true;
-                                    YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
-                                    return false;
-                                },
-                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                                {
-                                    answer = std::move(esp3Packet);
-                                }))
-        throw CProtocolException("Unable to read Smart Ack learn mode, timeout waiting answer");
-
-    if (answer->header().dataLength() != message::RESPONSE_SMART_ACK_ENABLE_POSTMASTER_SIZE)
-        throw CProtocolException(
-            (boost::format("Invalid data length %1%, expected %2%. Request was SA_WR_POSTMASTER.")
-                % answer->header().dataLength()
-                % message::RESPONSE_SMART_ACK_ENABLE_POSTMASTER_SIZE).str());
-
-    processEnableSmartAckPostMasterResponse(message::CResponseReceivedMessage(answer));
+    const message::CSmartAckEnablePostMasterCommand cmd(m_messageHandler);
+    cmd.sendAndReceive(enable ? 20 : 0);
 }
 
 void CEnOcean::readSmartAckLearnMode() const
 {
-    message::CSmartAckCommandSendMessage sendMessage(message::CSmartAckCommandSendMessage::SA_RD_LEARNMODE);
-
-    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-    if (!m_messageHandler->send(sendMessage,
-                                [](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
-                                {
-                                    if (esp3Packet->header().packetType() == message::RESPONSE)
-                                        return true;
-                                    YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
-                                    return false;
-                                },
-                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                                {
-                                    answer = std::move(esp3Packet);
-                                }))
-        throw CProtocolException("Unable to read Smart Ack learn mode, timeout waiting answer");
-
-    if (answer->header().dataLength() != message::RESPONSE_SMART_ACK_LEARN_MODE_SIZE)
-        throw CProtocolException(
-            (boost::format("Invalid data length %1%, expected %2%. Request was SA_RD_LEARNMODE.")
-                % answer->header().dataLength()
-                % message::RESPONSE_SMART_ACK_LEARN_MODE_SIZE).str());
-
-    const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-    processReadSmartAckLearnModeResponse(response->returnCode(),
-                                         message::CSmartAckLearnModeResponseReceivedMessage(response));
+    message::CSmartAckReadLearnModeCommand cmd(m_messageHandler);
+    cmd.sendAndReceive();
 }
 
 std::vector<boost::shared_ptr<message::CSmartAckClient>> CEnOcean::readSmartAckLearnedClients() const
 {
-    message::CSmartAckCommandSendMessage sendMessage(message::CSmartAckCommandSendMessage::SA_RD_LEARNEDCLIENTS);
-
-    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-    if (!m_messageHandler->send(sendMessage,
-                                [](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
-                                {
-                                    if (esp3Packet->header().packetType() == message::RESPONSE)
-                                        return true;
-                                    YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
-                                    return false;
-                                },
-                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                                {
-                                    answer = std::move(esp3Packet);
-                                }))
-        throw CProtocolException("Unable to read Smart Ack learned clients, timeout waiting answer");
-
-    const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-    return processReadSmartAckLearnedClientsResponse(response->returnCode(),
-                                                     message::CSmartAckLearnedClientsResponseReceivedMessage(response));
+    message::CSmartAckReadLearnedClientsCommand cmd(m_messageHandler);
+    cmd.sendAndReceive();
+    return cmd.clients();
 }
 
 void CEnOcean::readSmartAckClientMailboxStatus(const boost::shared_ptr<message::CSmartAckClient>& smartAckClient) const
 {
+    //TODO faire pareil que CSmartAckReadLearnedClientsCommand
+
+
     message::CSmartAckCommandSendMessage sendMessage(
         message::CSmartAckCommandSendMessage::SA_RD_MAILBOX,
         {
@@ -1182,7 +1073,7 @@ void CEnOcean::readSmartAckClientMailboxStatus(const boost::shared_ptr<message::
                                 {
                                     answer = std::move(esp3Packet);
                                 }))
-        throw CProtocolException("Unable to read Smart Ack learned clients, timeout waiting answer");
+        throw CProtocolException("Timeout waiting answer");
 
     if (answer->header().dataLength() != message::RESPONSE_SMART_ACK_MAILBOX_STATUS_SIZE)
         throw CProtocolException(
@@ -1197,9 +1088,10 @@ void CEnOcean::readSmartAckClientMailboxStatus(const boost::shared_ptr<message::
 }
 
 void CEnOcean::startManualPairing(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                                  boost::shared_ptr<yApi::IExtraQuery> extraQuery)
+                                  const boost::shared_ptr<yApi::IExtraQuery>& extraQuery)
 {
-    if (m_pairingHelper->startStopPairing(std::move(extraQuery)))
+    if (m_pairingHelper->startStopPairing(extraQuery,
+                                          m_messageHandler))
         m_progressPairingTimer = api->getEventHandler().createTimer(kProgressPairingTimer,
                                                                     shared::event::CEventTimer::kOneShot,
                                                                     boost::posix_time::seconds(CPairingHelper::getPairingPeriodTimeSeconds()));

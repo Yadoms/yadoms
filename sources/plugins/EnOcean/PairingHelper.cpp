@@ -1,115 +1,148 @@
 #include "stdafx.h"
 #include "PairingHelper.h"
 
+#include <ProtocolException.hpp>
+
+#include "message/SmartAckPairingCommand.h"
+
 // Global pairing duration is PairingTimeoutSeconds seconds.
 // And RFXCom main thread must call onProgressPairing every PairingPeriodTimeSeconds seconds.
-static const unsigned int PairingTimeoutSeconds = 60;
-static const unsigned int PairingPeriodTimeSeconds = 5;
+static constexpr unsigned int PairingTimeoutSeconds = 60;
+static constexpr unsigned int PairingPeriodTimeSeconds = 5;
 
 // Deduced periods number to reach timeout
-static const unsigned int PairingProgressNbMaxPeriods = PairingTimeoutSeconds / PairingPeriodTimeSeconds;
+static constexpr unsigned int PairingProgressNbMaxPeriods = PairingTimeoutSeconds / PairingPeriodTimeSeconds;
 
 
-CPairingHelper::CPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
-                               EPairingMode configuredMode)
-   : m_api(api),
-     m_progressPairingCount(0)
+CPairingHelper::CPairingHelper(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                               const EPairingMode configuredMode)
+    : m_api(api),
+      m_progressPairingCount(0)
 {
-   setMode(configuredMode);
+    setMode(configuredMode);
 }
 
-CPairingHelper::~CPairingHelper()
+void CPairingHelper::setMode(const EPairingMode mode)
 {
-}
-
-void CPairingHelper::setMode(EPairingMode mode)
-{
-   m_mode = mode;
-   m_pairingEnable = mode == kAuto;
+    m_mode = mode;
+    m_pairingEnable = mode == kAuto;
 }
 
 CPairingHelper::EPairingMode CPairingHelper::getMode() const
 {
-   return m_mode;
+    return m_mode;
 }
 
-bool CPairingHelper::startStopPairing(boost::shared_ptr<yApi::IExtraQuery> manualPairingExtraQuery)
+bool CPairingHelper::startStopPairing(const boost::shared_ptr<yApi::IExtraQuery>& manualPairingExtraQuery,
+                                      const boost::shared_ptr<IMessageHandler>& messageHandler)
 {
-   if (m_mode == kAuto)
-   {
-      YADOMS_LOG(warning) << "Try to start/stop pairing with auto mode : not compatible, ignored";
-      manualPairingExtraQuery->sendError("customLabels.pairing.invalidCommandAutoMode");
-      m_manualPairingExtraQuery.reset();
-      return false;
-   }
+    m_messageHandler = messageHandler;
 
-   if (m_pairingEnable)
-   {
-      YADOMS_LOG(warning) << "Pairing already started, stop it";
-      stopPairing();
-      return false;
-   }
+    if (m_mode == kAuto)
+    {
+        YADOMS_LOG(warning) << "Try to start/stop pairing with auto mode : not compatible, ignored";
+        manualPairingExtraQuery->sendError("customLabels.pairing.invalidCommandAutoMode");
+        m_manualPairingExtraQuery.reset();
+        return false;
+    }
 
-   m_pairingEnable = true;
-   m_manualPairingExtraQuery = manualPairingExtraQuery;
-   m_progressPairingCount = PairingProgressNbMaxPeriods;
-   m_manualPairingExtraQuery->reportProgress(1.0f, "customLabels.pairing.pairing");
+    if (m_pairingEnable)
+    {
+        YADOMS_LOG(warning) << "Pairing already started, stop it";
+        stopPairing();
+        return false;
+    }
 
-   YADOMS_LOG(information) << "Start pairing";
+    startPairing(manualPairingExtraQuery);
 
-   return true;
+    return true;
 }
 
 bool CPairingHelper::onProgressPairing()
 {
-   if (m_mode == kAuto || !m_pairingEnable)
-      return true;
+    if (m_mode == kAuto || !m_pairingEnable)
+        return true;
 
-   --m_progressPairingCount;
+    --m_progressPairingCount;
 
-   if (m_progressPairingCount == 0)
-   {
-      stopPairing();
-      return true;
-   }
+    if (m_progressPairingCount == 0)
+    {
+        stopPairing();
+        return true;
+    }
 
-   if (m_manualPairingExtraQuery)
-      m_manualPairingExtraQuery->reportProgress((PairingProgressNbMaxPeriods - m_progressPairingCount) * 100.0f / PairingProgressNbMaxPeriods, "customLabels.pairing.pairing");
-   return false;
+    if (m_manualPairingExtraQuery)
+        m_manualPairingExtraQuery->reportProgress(
+            static_cast<float>(PairingProgressNbMaxPeriods - m_progressPairingCount) * 100.0f / PairingProgressNbMaxPeriods,
+            "customLabels.pairing.pairing");
+    return false;
 }
 
 unsigned CPairingHelper::getPairingPeriodTimeSeconds()
 {
-   return PairingPeriodTimeSeconds;
+    return PairingPeriodTimeSeconds;
+}
+
+void CPairingHelper::startPairing(const boost::shared_ptr<yApi::IExtraQuery>& manualPairingExtraQuery)
+{
+    m_pairingEnable = true;
+    m_manualPairingExtraQuery = manualPairingExtraQuery;
+    m_progressPairingCount = PairingProgressNbMaxPeriods;
+    m_manualPairingExtraQuery->reportProgress(1.0f, "customLabels.pairing.pairing");
+
+    startSmartAckPairing();
+
+    YADOMS_LOG(information) << "Start pairing";
 }
 
 void CPairingHelper::stopPairing(const std::string& devicePaired)
 {
-   if (m_mode == kAuto)
-   {
-      YADOMS_LOG(warning) << "Try to stop pairing with auto mode : not compatible, ignored";
-      return;
-   }
+    if (m_mode == kAuto)
+    {
+        YADOMS_LOG(warning) << "Try to stop pairing with auto mode : not compatible, ignored";
+        return;
+    }
 
-   m_pairingEnable = false;
-   if (m_manualPairingExtraQuery)
-   {
-      m_manualPairingExtraQuery->reportProgress(99.0f, devicePaired.empty() ? "customLabels.pairing.noDevicePaired" : "customLabels.pairing.devicePaired");
+    stopSmartAckPairing();
 
-      m_manualPairingExtraQuery->sendSuccess(shared::CDataContainer::make());
-   }
-   m_manualPairingExtraQuery.reset();
+    m_messageHandler.reset();
+    m_pairingEnable = false;
+    if (m_manualPairingExtraQuery)
+    {
+        m_manualPairingExtraQuery->reportProgress(99.0f, devicePaired.empty()
+                                                             ? "customLabels.pairing.noDevicePaired"
+                                                             : "customLabels.pairing.devicePaired");
 
-   YADOMS_LOG(information) << "Stop pairing";
+        m_manualPairingExtraQuery->sendSuccess(shared::CDataContainer::make());
+    }
+    m_manualPairingExtraQuery.reset();
+
+    YADOMS_LOG(information) << "Stop pairing";
+}
+
+void CPairingHelper::startSmartAckPairing() const
+{
+    const message::CSmartAckPairingCommand cmd(m_messageHandler);
+    cmd.sendAndReceive(true,
+                       message::LearnMode::SimpleLearnMode,
+                       0);
+}
+
+void CPairingHelper::stopSmartAckPairing() const
+{
+    const message::CSmartAckPairingCommand cmd(m_messageHandler);
+    cmd.sendAndReceive(false,
+                       message::LearnMode::SimpleLearnMode,
+                       0);
 }
 
 bool CPairingHelper::needPairing(const std::string& deviceName)
 {
-   if (!m_pairingEnable)
-      return false;
+    if (!m_pairingEnable)
+        return false;
 
-   if (m_mode == kManual)
-      stopPairing(deviceName);
+    if (m_mode == kManual)
+        stopPairing(deviceName);
 
-   return true;
+    return true;
 }
