@@ -49,12 +49,6 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        if (answer->header().dataLength() != RESPONSE_SMART_ACK_MAILBOX_STATUS_SIZE)
-            throw CProtocolException(
-                (boost::format("Invalid data length %1%, expected %2%")
-                    % answer->header().dataLength()
-                    % RESPONSE_SMART_ACK_MAILBOX_STATUS_SIZE).str());
-
         processAnswer(CResponseReceivedMessage(answer).returnCode(),
                       "SA_WR_LEARNMODE");
     }

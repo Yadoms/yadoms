@@ -1,0 +1,39 @@
+#pragma once
+#include "IMessageHandler.h"
+#include "LearnMode.h"
+#include "ResponseReceivedMessage.h"
+
+namespace message
+{
+    //--------------------------------------------------------------
+    /// \brief	EnOcean Smart Ack read client mailbox status command
+    //--------------------------------------------------------------
+    class CSmartAckReadClientMailboxStatusCommand final
+    {
+    public:
+        enum MailboxStatus
+        {
+            EMPTY,
+            FULL,
+            DOESNT_EXIST
+        };
+
+        explicit CSmartAckReadClientMailboxStatusCommand(const boost::shared_ptr<IMessageHandler>& messageHandler);
+        ~CSmartAckReadClientMailboxStatusCommand() = default;
+
+        void sendAndReceive(const std::string& clientId,
+                            const std::string& controllerId);
+
+        [[nodiscard]] MailboxStatus status() const;
+        [[nodiscard]] static std::string toString(MailboxStatus mailboxStatus);
+
+    private:
+        void processAnswer(const CResponseReceivedMessage& response,
+                           const std::string& requestName);
+        [[nodiscard]] static MailboxStatus toMailboxStatus(unsigned char byte);
+
+        const boost::shared_ptr<IMessageHandler> m_messageHandler;
+
+        MailboxStatus m_status = DOESNT_EXIST;
+    };
+} // namespace message

@@ -36,11 +36,12 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        if (answer->header().dataLength() != RESPONSE_SMART_ACK_ENABLE_POSTMASTER_SIZE)
+        static constexpr auto ResponseSmartAckEnablePostmasterSize = 1u;
+        if (answer->header().dataLength() != ResponseSmartAckEnablePostmasterSize)
             throw CProtocolException(
                 (boost::format("Invalid data length %1%, expected %2%")
                     % answer->header().dataLength()
-                    % RESPONSE_SMART_ACK_ENABLE_POSTMASTER_SIZE).str());
+                    % ResponseSmartAckEnablePostmasterSize).str());
 
         processAnswer(CResponseReceivedMessage(answer).returnCode(),
                       "SA_WR_POSTMASTER");

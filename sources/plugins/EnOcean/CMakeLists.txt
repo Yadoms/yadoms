@@ -59,18 +59,16 @@ set(ENOCEAN_SOURCES
    message/RadioErp1SendMessage.cpp
    message/ResponseReceivedMessage.h
    message/ResponseReceivedMessage.cpp
-   message/SmartAckClientMailboxStatusResponseReceivedMessage.h
-   message/SmartAckClientMailboxStatusResponseReceivedMessage.cpp
    message/SmartAckClient.h
    message/SmartAckClient.cpp
    message/SmartAckCommandSendMessage.h
    message/SmartAckCommandSendMessage.cpp
    message/SmartAckEnablePostMasterCommand.h
    message/SmartAckEnablePostMasterCommand.cpp
-   message/SmartAckLearnedClientsResponseReceivedMessage.h
-   message/SmartAckLearnedClientsResponseReceivedMessage.cpp
    message/SmartAckPairingCommand.h
    message/SmartAckPairingCommand.cpp
+   message/SmartAckReadClientMailboxStatusCommand.h
+   message/SmartAckReadClientMailboxStatusCommand.cpp
    message/SmartAckReadLearnedClientsCommand.h
    message/SmartAckReadLearnedClientsCommand.cpp
    message/SmartAckReadLearnModeCommand.h

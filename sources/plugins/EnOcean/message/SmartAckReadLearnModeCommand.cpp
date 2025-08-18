@@ -35,11 +35,12 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        if (answer->header().dataLength() != RESPONSE_SMART_ACK_LEARN_MODE_SIZE)
+        static constexpr auto ResponseSmartAckLearnModeSize = 3u;
+        if (answer->header().dataLength() != ResponseSmartAckLearnModeSize)
             throw CProtocolException(
                 (boost::format("Invalid data length %1%, expected %2%. Request was SA_RD_LEARNMODE.")
                     % answer->header().dataLength()
-                    % RESPONSE_SMART_ACK_LEARN_MODE_SIZE).str());
+                    % ResponseSmartAckLearnModeSize).str());
 
         processAnswer(CResponseReceivedMessage(answer),
                       "SA_RD_LEARNMODE");

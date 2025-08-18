@@ -38,16 +38,5 @@ namespace message
         MESSAGES_OFFSET = 0x80
     };
 
-
-    // Sizef of messages
-    enum { RESPONSE_DONGLE_VERSION_SIZE = 33 };
-
-    enum { RESPONSE_SMART_ACK_LEARN_MODE_SIZE = 3 };
-
-    enum { RESPONSE_SMART_ACK_ENABLE_POSTMASTER_SIZE = 1 };
-
-    enum { RESPONSE_SMART_ACK_MAILBOX_STATUS_SIZE = 1 };
-
-
     std::string deviceIdToString(unsigned int deviceId);
 } // namespace message

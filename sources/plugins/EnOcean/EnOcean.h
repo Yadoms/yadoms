@@ -8,8 +8,8 @@
 #include "ProfileHelper.h"
 #include "message/DongleVersionResponseReceivedMessage.h"
 #include "message/Esp3ReceivedPacket.h"
-#include "message/SmartAckClientMailboxStatusResponseReceivedMessage.h"
-#include "message/SmartAckLearnedClientsResponseReceivedMessage.h"
+#include "message/SmartAckClient.h"
+#include "message/SmartAckReadClientMailboxStatusCommand.h"
 #include "message/UTE_AnswerSendMessage.h"
 #include "message/UTE_ReceivedMessage.h"
 #include "profiles/IRorg.h"
@@ -109,12 +109,6 @@ protected:
     static void processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
     void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
                                       const message::CDongleVersionResponseReceivedMessage& response);
-    static std::vector<boost::shared_ptr<message::CSmartAckClient>> processReadSmartAckLearnedClientsResponse(
-        message::CResponseReceivedMessage::EReturnCode returnCode,
-        const message::CSmartAckLearnedClientsResponseReceivedMessage& response);
-    static void processReadSmartAckClientMailboxStatusResponse(const std::string& clientId,
-                                                               message::CResponseReceivedMessage::EReturnCode returnCode,
-                                                               const message::CSmartAckClientMailboxStatusResponseReceivedMessage& response);
     void processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserData,
                                   const boost::shared_ptr<IRorg>& rorg,
                                   const std::string& deviceId);
@@ -163,7 +157,7 @@ protected:
     void enableSmartAckPostMaster(bool enable) const;
     void readSmartAckLearnMode() const;
     std::vector<boost::shared_ptr<message::CSmartAckClient>> readSmartAckLearnedClients() const;
-    auto readSmartAckClientMailboxStatus(const boost::shared_ptr<message::CSmartAckClient>& smartAckClient) const -> void;
+    message::CSmartAckReadClientMailboxStatusCommand::MailboxStatus readSmartAckClientMailboxStatus(const boost::shared_ptr<message::CSmartAckClient>& smartAckClient) const;
 
 
     //--------------------------------------------------------------
