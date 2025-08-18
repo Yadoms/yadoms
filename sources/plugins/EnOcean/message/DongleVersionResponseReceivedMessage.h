@@ -9,7 +9,7 @@ namespace message
    ///
    /// This class manages a dongle version RESPONSE EnOcean message.
    //--------------------------------------------------------------
-   class CDongleVersionResponseReceivedMessage
+   class CDongleVersionResponseReceivedMessage //TODO vireer
    {
    public:
       class Version final

@@ -1,6 +1,5 @@
 #pragma once
 #include "IMessageHandler.h"
-#include "LearnMode.h"
 #include "ResponseReceivedMessage.h"
 
 namespace message

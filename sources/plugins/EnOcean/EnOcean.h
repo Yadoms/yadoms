@@ -107,8 +107,6 @@ protected:
     //--------------------------------------------------------------
     void processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
     static void processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
-    void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
-                                      const message::CDongleVersionResponseReceivedMessage& response);
     void processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserData,
                                   const boost::shared_ptr<IRorg>& rorg,
                                   const std::string& deviceId);
@@ -157,7 +155,7 @@ protected:
     void enableSmartAckPostMaster(bool enable) const;
     void readSmartAckLearnMode() const;
     std::vector<boost::shared_ptr<message::CSmartAckClient>> readSmartAckLearnedClients() const;
-    message::CSmartAckReadClientMailboxStatusCommand::MailboxStatus readSmartAckClientMailboxStatus(const boost::shared_ptr<message::CSmartAckClient>& smartAckClient) const;
+    void readSmartAckClientMailboxStatus(const boost::shared_ptr<message::CSmartAckClient>& smartAckClient) const;
 
 
     //--------------------------------------------------------------

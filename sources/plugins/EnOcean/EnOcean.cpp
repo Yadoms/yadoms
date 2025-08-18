@@ -12,6 +12,7 @@
 #include "ProtocolException.hpp"
 #include "stdafx.h"
 #include "message/CommonCommandSendMessage.h"
+#include "message/RequestDongleVersionCommand.h"
 #include "message/ResponseReceivedMessage.h"
 #include "message/SmartAckEnablePostMasterCommand.h"
 #include "message/SmartAckReadClientMailboxStatusCommand.h"
@@ -362,7 +363,6 @@ void CEnOcean::processConnectionEvent()
         readSmartAckLearnMode();
         const auto smartAckClients = readSmartAckLearnedClients();
         for (const auto& smartAckClient : smartAckClients)
-            // ReSharper disable once CppExpressionWithoutSideEffects
             readSmartAckClientMailboxStatus(smartAckClient);
 
         m_api->setPluginState(yApi::historization::EPluginState::kRunning);
@@ -580,20 +580,6 @@ void CEnOcean::declareDeviceWithoutProfile(const std::string& deviceId) const
 void CEnOcean::processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>&)
 {
     YADOMS_LOG(error) << "Unexpected response received";
-}
-
-void CEnOcean::processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
-                                            const message::CDongleVersionResponseReceivedMessage& response)
-{
-    if (returnCode == message::CResponseReceivedMessage::RET_NOT_SUPPORTED)
-        throw CProtocolException("CO_RD_VERSION request returned not supported");
-
-    if (returnCode != message::CResponseReceivedMessage::RET_OK)
-        throw CProtocolException((boost::format("Unexpected return code %1%. Request was CO_RD_VERSION.") % returnCode).str());
-
-    m_senderId = response.chipId();
-
-    YADOMS_LOG(information) << response.fullVersion();
 }
 
 void CEnOcean::processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserData,
@@ -978,34 +964,10 @@ void CEnOcean::removeDevice(const std::string& deviceId)
 
 void CEnOcean::requestDongleVersion()
 {
-    //TODO faire pareil que CSmartAckReadLearnedClientsCommand
-    message::CCommonCommandSendMessage sendMessage(message::CCommonCommandSendMessage::CO_RD_VERSION);
+    message::CRequestDongleVersionCommand cmd(m_messageHandler);
+    cmd.sendAndReceive();
 
-    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-    if (!m_messageHandler->send(sendMessage,
-                                [](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
-                                {
-                                    if (esp3Packet->header().packetType() == message::RESPONSE)
-                                        return true;
-                                    YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
-                                    return false;
-                                },
-                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                                {
-                                    answer = std::move(esp3Packet);
-                                }))
-        throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
-
-    static constexpr auto ResponseDongleVersionSize = 33u;
-    if (answer->header().dataLength() != ResponseDongleVersionSize)
-        throw CProtocolException(
-            (boost::format("Invalid data length %1%, expected %2%. Request was CO_RD_VERSION.")
-                % answer->header().dataLength() % ResponseDongleVersionSize
-            ).str());
-
-    const auto response = message::CResponseReceivedMessage(answer);
-    processDongleVersionResponse(response.returnCode(),
-                                 message::CDongleVersionResponseReceivedMessage(response));
+    m_senderId = cmd.chipId();
 }
 
 void CEnOcean::enableSmartAckPostMaster(const bool enable) const
@@ -1027,13 +989,11 @@ std::vector<boost::shared_ptr<message::CSmartAckClient>> CEnOcean::readSmartAckL
     return cmd.clients();
 }
 
-message::CSmartAckReadClientMailboxStatusCommand::MailboxStatus CEnOcean::readSmartAckClientMailboxStatus(
-    const boost::shared_ptr<message::CSmartAckClient>& smartAckClient) const
+void CEnOcean::readSmartAckClientMailboxStatus(const boost::shared_ptr<message::CSmartAckClient>& smartAckClient) const
 {
     message::CSmartAckReadClientMailboxStatusCommand cmd(m_messageHandler);
     cmd.sendAndReceive(smartAckClient->id(),
                        smartAckClient->controllerId());
-    return cmd.status();
 }
 
 void CEnOcean::startManualPairing(const boost::shared_ptr<yApi::IYPluginApi>& api,
