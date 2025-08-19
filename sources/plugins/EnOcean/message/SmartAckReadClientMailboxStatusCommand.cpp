@@ -47,12 +47,12 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        static constexpr auto ResponseSmartAckMailboxStatusSize = 1u;
-        if (answer->header().dataLength() != ResponseSmartAckMailboxStatusSize)
+        static constexpr auto ExpectedResponseSize = 1u;
+        if (answer->header().dataLength() != ExpectedResponseSize)
             throw CProtocolException(
                 (boost::format("Invalid data length %1%, expected %2%")
                     % answer->header().dataLength()
-                    % ResponseSmartAckMailboxStatusSize).str());
+                    % ExpectedResponseSize).str());
 
         processAnswer(CResponseReceivedMessage(answer),
                       "SA_RD_MAILBOX");

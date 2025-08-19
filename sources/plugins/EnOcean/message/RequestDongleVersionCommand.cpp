@@ -53,12 +53,12 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        static constexpr auto ResponseDongleVersionSize = 33u;
-        if (answer->header().dataLength() != ResponseDongleVersionSize)
+        static constexpr auto ExpectedDataSize = 33u;
+        if (answer->header().dataLength() != ExpectedDataSize)
             throw CProtocolException(
-                (boost::format("Invalid data length %1%, expected %2%. Request was CO_RD_VERSION.")
-                    % answer->header().dataLength() % ResponseDongleVersionSize
-                    ).str());
+                (boost::format("Invalid data length %1%, expected %2%")
+                    % answer->header().dataLength()
+                    % ExpectedDataSize).str());
 
         processAnswer(CResponseReceivedMessage(answer),
                       "CO_RD_VERSION");

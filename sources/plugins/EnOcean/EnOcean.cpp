@@ -359,8 +359,11 @@ void CEnOcean::processConnectionEvent()
         // USB dongle init
         requestDongleVersion();
 
-        enableSmartAckPostMaster(true);
+        readLearnMode();
+
+        // Smart ack configuration
         readSmartAckLearnMode();
+        enableSmartAckPostMaster(true);
         const auto smartAckClients = readSmartAckLearnedClients();
         for (const auto& smartAckClient : smartAckClients)
             readSmartAckClientMailboxStatus(smartAckClient);
@@ -968,6 +971,12 @@ void CEnOcean::requestDongleVersion()
     cmd.sendAndReceive();
 
     m_senderId = cmd.chipId();
+}
+
+void CEnOcean::readLearnMode() const
+{
+    message::CReadLearnModeCommand cmd(m_messageHandler);
+    cmd.sendAndReceive();
 }
 
 void CEnOcean::enableSmartAckPostMaster(const bool enable) const

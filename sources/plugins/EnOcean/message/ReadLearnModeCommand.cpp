@@ -1,23 +1,23 @@
 #include "stdafx.h"
-#include "SmartAckReadLearnModeCommand.h"
+#include "ReadLearnModeCommand.h"
 
 #include <ProtocolException.hpp>
 
-#include "SmartAckCommandSendMessage.h"
+#include "CommonCommandSendMessage.h"
 #include "shared/Log.h"
 
 namespace message
 {
-    CSmartAckReadLearnModeCommand::CSmartAckReadLearnModeCommand(const boost::shared_ptr<IMessageHandler>& messageHandler)
+    CReadLearnModeCommand::CReadLearnModeCommand(const boost::shared_ptr<IMessageHandler>& messageHandler)
         : m_messageHandler(messageHandler)
     {
     }
 
-    void CSmartAckReadLearnModeCommand::sendAndReceive()
+    void CReadLearnModeCommand::sendAndReceive()
     {
-        YADOMS_LOG(information) << "Read Smart Ack learn mode...";
+        YADOMS_LOG(information) << "Read learn mode...";
 
-        CSmartAckCommandSendMessage sendMessage(CSmartAckCommandSendMessage::SA_RD_LEARNMODE);
+        CCommonCommandSendMessage sendMessage(CCommonCommandSendMessage::CO_RD_LEARNMODE);
 
         boost::shared_ptr<const CEsp3ReceivedPacket> answer;
         if (!m_messageHandler->send(sendMessage,
@@ -35,38 +35,47 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        static constexpr auto ExpectedDataSize = 3u;
+        static constexpr auto ExpectedDataSize = 2u;
         if (answer->header().dataLength() != ExpectedDataSize)
             throw CProtocolException(
                 (boost::format("Invalid data length %1%, expected %2%")
                     % answer->header().dataLength()
                     % ExpectedDataSize).str());
 
+        static constexpr auto ExpectedOptionalDataSize = 1u;
+        if (answer->header().dataLength() != ExpectedOptionalDataSize)
+            throw CProtocolException(
+                (boost::format("Invalid optional data length %1%, expected %2%")
+                    % answer->header().dataLength()
+                    % ExpectedOptionalDataSize).str());
+
         processAnswer(CResponseReceivedMessage(answer),
-                      "SA_RD_LEARNMODE");
+                      "CO_RD_LEARNMODE");
     }
 
-    bool CSmartAckReadLearnModeCommand::learnModeEnable() const
+    bool CReadLearnModeCommand::learnModeEnable() const
     {
         return m_learnModeEnable;
     }
 
-    LearnMode CSmartAckReadLearnModeCommand::learnMode() const
+    std::optional<unsigned int> CReadLearnModeCommand::channel() const
     {
-        return m_learnMode;
+        return m_channel;
     }
 
-    void CSmartAckReadLearnModeCommand::processAnswer(const CResponseReceivedMessage& response,
-                                                      const std::string& requestName)
+    void CReadLearnModeCommand::processAnswer(const CResponseReceivedMessage& response,
+                                              const std::string& requestName)
     {
         if (response.returnCode() != CResponseReceivedMessage::RET_OK)
             throw CProtocolException("  ==> " + requestName + " request returned " + CResponseReceivedMessage::toString(response.returnCode()));
 
         m_learnModeEnable = response.responseData()[1] != 0;
-        m_learnMode = ToLearnMode(response.responseData()[1]);
+
+        if (response.responseOptionalData()[0] >= 0 && response.responseOptionalData()[0] <= 0xFD)
+            m_channel = response.responseOptionalData()[0];
 
         YADOMS_LOG(information) << "  ==> "
             << (m_learnModeEnable ? "enable" : "disable")
-            << ", mode=" << ToString(m_learnMode);
+            << (m_channel ? ", channel=" << ToString(m_channel) : ", no channel specified");
     }
 } // namespace message

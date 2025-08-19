@@ -15,7 +15,7 @@ namespace message
 
     void CSmartAckEnablePostMasterCommand::sendAndReceive(unsigned char mailboxesNumber) const
     {
-        YADOMS_LOG(information) << "Enable/disable Smart Ack mailboxes (" << mailboxesNumber << " mailboxes)...";
+        YADOMS_LOG(information) << "Enable/disable Smart Ack mailboxes (" << static_cast<int>(mailboxesNumber) << " mailboxes)...";
 
         CSmartAckCommandSendMessage sendMessage(CSmartAckCommandSendMessage::SA_WR_POSTMASTER,
                                                 {mailboxesNumber});
@@ -36,12 +36,12 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        static constexpr auto ResponseSmartAckEnablePostmasterSize = 1u;
-        if (answer->header().dataLength() != ResponseSmartAckEnablePostmasterSize)
+        static constexpr auto ExpectedDataSize = 1u;
+        if (answer->header().dataLength() != ExpectedDataSize)
             throw CProtocolException(
                 (boost::format("Invalid data length %1%, expected %2%")
                     % answer->header().dataLength()
-                    % ResponseSmartAckEnablePostmasterSize).str());
+                    % ExpectedDataSize).str());
 
         processAnswer(CResponseReceivedMessage(answer).returnCode(),
                       "SA_WR_POSTMASTER");

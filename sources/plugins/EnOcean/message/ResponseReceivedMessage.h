@@ -36,11 +36,13 @@ namespace message
 
         EReturnCode returnCode() const;
         const std::vector<unsigned char>& responseData() const;
+        const std::vector<unsigned char>& responseOptionalData() const;
 
         static std::string toString(EReturnCode returnCode);
 
     private:
         EReturnCode m_returnCode;
         const std::vector<unsigned char> m_responseData;
+        const std::vector<unsigned char> m_responseOtionalData;
     };
 } // namespace message

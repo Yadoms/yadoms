@@ -5,7 +5,8 @@ namespace message
 {
     CResponseReceivedMessage::CResponseReceivedMessage(const boost::shared_ptr<const CEsp3ReceivedPacket>& esp3Packet)
         : m_returnCode(static_cast<EReturnCode>(esp3Packet->data()[0])),
-          m_responseData(esp3Packet->data().begin() + 1, esp3Packet->data().end())
+          m_responseData(esp3Packet->data().begin() + 1, esp3Packet->data().end()),
+          m_responseOtionalData(esp3Packet->optional().begin(), esp3Packet->optional().end())
     {
     }
 
@@ -17,6 +18,11 @@ namespace message
     const std::vector<unsigned char>& CResponseReceivedMessage::responseData() const
     {
         return m_responseData;
+    }
+
+    const std::vector<unsigned char>& CResponseReceivedMessage::responseOptionalData() const
+    {
+        return m_responseOtionalData;
     }
 
     std::string CResponseReceivedMessage::toString(const EReturnCode returnCode)
