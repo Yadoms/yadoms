@@ -3,7 +3,7 @@
 message(STATUS "System Name = ${CMAKE_SYSTEM_NAME}")
 
 #activate c++14 (now managed directly with those three lines
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
