@@ -9,8 +9,6 @@ IF(NOT DISABLE_TEST_PLUGIN_ENOCEAN)
    SET(YADOMS_SOURCES
       plugins/EnOcean/message/types.h
       plugins/EnOcean/message/types.cpp
-      plugins/EnOcean/message/DongleVersionResponseReceivedMessage.h
-      plugins/EnOcean/message/DongleVersionResponseReceivedMessage.cpp
       plugins/EnOcean/message/ResponseReceivedMessage.h
       plugins/EnOcean/message/ResponseReceivedMessage.cpp
       plugins/EnOcean/message/Esp3ReceivedPacket.h
@@ -40,7 +38,6 @@ IF(NOT DISABLE_TEST_PLUGIN_ENOCEAN)
       TestBitsetHelpers.cpp
       TestCrc8.cpp
       TestReceiveBufferHandler.cpp
-      TestDongleVersionResponseReceivedMessage.cpp
       TestMessageHandler.cpp
    )
    
