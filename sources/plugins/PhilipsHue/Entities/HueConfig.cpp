@@ -1,4 +1,5 @@
-﻿#include "HueConfig.h"
+﻿#include "stdafx.h"
+#include "HueConfig.h"
 
 CHueConfig::CHueConfig(const std::string& archetype, const std::string& function, const std::string& direction,
                        const CHueStartUp& startUp)

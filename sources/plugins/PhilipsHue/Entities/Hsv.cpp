@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Hsv.h"
 
 CHsv::CHsv(unsigned long& hue, unsigned long& saturation, unsigned long& value)

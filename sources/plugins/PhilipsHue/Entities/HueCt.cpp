@@ -1,4 +1,5 @@
-﻿#include "HueCt.h"
+﻿#include "stdafx.h"
+#include "HueCt.h"
 
 CHueCt::CHueCt(int& min, int& max)
    : m_min(min),

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Factory.h"
 #include "HueService.h"
 #include "HueBridgeDiscovery.h"

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "EnOcean.h"
 #include <utility>
 #include <plugin_cpp_api/ImplementationHelper.h>
@@ -10,8 +11,7 @@
 #include "manufacturers.h"
 #include "ProfileHelper.h"
 #include "ProtocolException.hpp"
-#include "stdafx.h"
-#include "message/CommonCommandSendMessage.h"
+#include "message/ReadLearnModeCommand.h"
 #include "message/RequestDongleVersionCommand.h"
 #include "message/ResponseReceivedMessage.h"
 #include "message/SmartAckEnablePostMasterCommand.h"

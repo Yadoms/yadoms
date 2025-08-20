@@ -1,4 +1,5 @@
-﻿#include "HueCapabilities.h"
+﻿#include "stdafx.h"
+#include "HueCapabilities.h"
 
 CHueCapabilities::CHueCapabilities(bool& certified, const CHueControl& control, const CHueStreaming& streaming)
    : m_certified(certified),

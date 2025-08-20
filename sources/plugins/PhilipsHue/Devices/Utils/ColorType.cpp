@@ -1,4 +1,5 @@
-﻿#include "ColorType.h"
+﻿#include "stdafx.h"
+#include "ColorType.h"
 
 DECLARE_ENUM_IMPLEMENTATION(EColorType,
                             ((GAMUT_A))

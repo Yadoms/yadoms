@@ -20,6 +20,9 @@ if(MSVC)
 	## Activate warning level4, and disable useless ones ##
 	#######################################################
 	add_definitions("/W4")
+
+	#Multiprocessors compilation
+	add_definitions("/MP")
 	
 	# A lot of level 4 warnings are involved by boost.
 	# Use the next link to see how to remove warning 

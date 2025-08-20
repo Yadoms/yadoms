@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "UrlManagerHelper.h"
 #include "shared/encryption/Base64.h"
 

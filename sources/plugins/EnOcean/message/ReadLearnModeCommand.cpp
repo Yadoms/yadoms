@@ -76,6 +76,6 @@ namespace message
 
         YADOMS_LOG(information) << "  ==> "
             << (m_learnModeEnable ? "enable" : "disable")
-            << (m_channel ? ", channel=" << ToString(m_channel) : ", no channel specified");
+            << ", channel=" << (m_channel ? std::to_string(*m_channel) : ", not specified");
     }
 } // namespace message
