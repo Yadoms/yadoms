@@ -150,7 +150,6 @@ protected:
     /// \brief	                     Requests to EnOcean
     //--------------------------------------------------------------
     void requestDongleVersion();
-    void readLearnMode() const;
     void enableSmartAckPostMaster(bool enable) const;
     void readSmartAckLearnMode() const;
     std::vector<boost::shared_ptr<message::CSmartAckClient>> readSmartAckLearnedClients() const;

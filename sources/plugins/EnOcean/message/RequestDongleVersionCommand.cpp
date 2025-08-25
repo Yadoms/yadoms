@@ -8,10 +8,10 @@
 
 namespace message
 {
-    CRequestDongleVersionCommand::Version::Version(unsigned int main,
-                                                   unsigned int beta,
-                                                   unsigned int alpha,
-                                                   unsigned int build)
+    CRequestDongleVersionCommand::Version::Version(const unsigned int main,
+                                                   const unsigned int beta,
+                                                   const unsigned int alpha,
+                                                   const unsigned int build)
         : m_main(main),
           m_beta(beta),
           m_alpha(alpha),

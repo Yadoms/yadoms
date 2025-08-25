@@ -87,13 +87,6 @@ void CProfile_A5_20_01::sendCommand(const std::string& keyword,
    if (keyword == m_temperatureSetPoint->getKeyword())
       m_setPointModeIsTemperature = true;
 
-   if (!m_setPointModeIsTemperature.has_value())
-   {
-      YADOMS_LOG(error) << "Set point mode still not defined, can not send message or wrong data will be sent to " <<
-         senderId;
-      return;
-   }
-
    if (keyword == m_valvePosition->getKeyword())
       m_valvePosition->setCommand(commandBody);
    if (keyword == m_temperatureSetPoint->getKeyword())
@@ -109,10 +102,10 @@ void CProfile_A5_20_01::sendCommand(const std::string& keyword,
    // Send message
    boost::dynamic_bitset<> userData(4 * 8);
 
-   bitset_insert(userData, 0, 8, *m_setPointModeIsTemperature
+   bitset_insert(userData, 0, 8, m_setPointModeIsTemperature
                                     ? static_cast<unsigned int>(m_temperatureSetPoint->get() * 255.0 / 40.0)
                                     : m_valvePosition->get());
-   bitset_insert(userData, 21, 1, *m_setPointModeIsTemperature);
+   bitset_insert(userData, 21, 1, m_setPointModeIsTemperature);
    bitset_insert(userData, 8, 8,
                  static_cast<unsigned int>(m_currentTemperatureFromExternalSensor->get() * 255.0 / 40.0));
    bitset_insert(userData, 23, 1, false);

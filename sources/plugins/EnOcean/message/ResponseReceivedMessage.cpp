@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ResponseReceivedMessage.h"
 
+#include <ProtocolException.hpp>
+
 namespace message
 {
     CResponseReceivedMessage::CResponseReceivedMessage(const boost::shared_ptr<const CEsp3ReceivedPacket>& esp3Packet)
@@ -8,6 +10,20 @@ namespace message
           m_responseData(esp3Packet->data().begin() + 1, esp3Packet->data().end()),
           m_responseOtionalData(esp3Packet->optional().begin(), esp3Packet->optional().end())
     {
+        if (m_returnCode != RET_OK)
+            return;
+
+        if (esp3Packet->header().dataLength() != m_responseData.size() + 1)
+            throw CProtocolException(
+                (boost::format("Invalid data length %1%, %2% in header")
+                    % (m_responseData.size() + 1)
+                    % esp3Packet->header().dataLength()).str());
+
+        if (esp3Packet->header().optionalLength() != m_responseOtionalData.size())
+            throw CProtocolException(
+                (boost::format("Invalid optional data length %1%, %2% in header")
+                    % m_responseOtionalData.size()
+                    % esp3Packet->header().optionalLength()).str());
     }
 
     CResponseReceivedMessage::EReturnCode CResponseReceivedMessage::returnCode() const

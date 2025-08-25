@@ -35,22 +35,12 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        static constexpr auto ExpectedDataSize = 2u;
-        if (answer->header().dataLength() != ExpectedDataSize)
-            throw CProtocolException(
-                (boost::format("Invalid data length %1%, expected %2%")
-                    % answer->header().dataLength()
-                    % ExpectedDataSize).str());
+        return processAnswer(CResponseReceivedMessage(answer));
+    }
 
-        static constexpr auto ExpectedOptionalDataSize = 1u;
-        if (answer->header().dataLength() != ExpectedOptionalDataSize)
-            throw CProtocolException(
-                (boost::format("Invalid optional data length %1%, expected %2%")
-                    % answer->header().dataLength()
-                    % ExpectedOptionalDataSize).str());
-
-        processAnswer(CResponseReceivedMessage(answer),
-                      "CO_RD_LEARNMODE");
+    bool CReadLearnModeCommand::learnModeSupported() const
+    {
+        return m_learnModeSupported;
     }
 
     bool CReadLearnModeCommand::learnModeEnable() const
@@ -63,16 +53,27 @@ namespace message
         return m_channel;
     }
 
-    void CReadLearnModeCommand::processAnswer(const CResponseReceivedMessage& response,
-                                              const std::string& requestName)
+    void CReadLearnModeCommand::processAnswer(const CResponseReceivedMessage& response)
     {
+        if (response.returnCode() == CResponseReceivedMessage::RET_NOT_SUPPORTED)
+        {
+            m_learnModeSupported = false;
+            YADOMS_LOG(warning) << "  ==> " << CResponseReceivedMessage::toString(response.returnCode());
+            return;
+        }
+
+        m_learnModeSupported = true;
+
         if (response.returnCode() != CResponseReceivedMessage::RET_OK)
-            throw CProtocolException("  ==> " + requestName + " request returned " + CResponseReceivedMessage::toString(response.returnCode()));
+        {
+            YADOMS_LOG(warning) << "  ==> " << CResponseReceivedMessage::toString(response.returnCode());
+            throw CProtocolException("  ==> " + CResponseReceivedMessage::toString(response.returnCode()));
+        }
 
         m_learnModeEnable = response.responseData()[1] != 0;
 
-        if (response.responseOptionalData()[0] >= 0 && response.responseOptionalData()[0] <= 0xFD)
-            m_channel = response.responseOptionalData()[0];
+        if (const auto channelValue = static_cast<unsigned int>(response.responseOptionalData()[0]); channelValue <= 0xFD)
+            m_channel = channelValue;
 
         YADOMS_LOG(information) << "  ==> "
             << (m_learnModeEnable ? "enable" : "disable")

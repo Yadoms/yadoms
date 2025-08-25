@@ -3,9 +3,11 @@
 
 namespace message
 {
-    CCommonCommandSendMessage::CCommonCommandSendMessage(const ECommonCommand command)
+    CCommonCommandSendMessage::CCommonCommandSendMessage(const ECommonCommand command,
+                                                         const std::vector<unsigned char>& data)
         : CEsp3SendPacket(COMMON_COMMAND),
-          m_command(command)
+          m_command(command),
+          _data(data)
     {
     }
 
@@ -14,6 +16,8 @@ namespace message
         std::vector<unsigned char> data;
 
         data.push_back(static_cast<unsigned char>(m_command));
+        if (!m_data.empty())
+            data.insert(data.end(), m_data.begin(), m_data.end());
 
         CEsp3SendPacket::data(data);
 

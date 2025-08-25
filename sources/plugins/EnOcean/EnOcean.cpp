@@ -11,7 +11,6 @@
 #include "manufacturers.h"
 #include "ProfileHelper.h"
 #include "ProtocolException.hpp"
-#include "message/ReadLearnModeCommand.h"
 #include "message/RequestDongleVersionCommand.h"
 #include "message/ResponseReceivedMessage.h"
 #include "message/SmartAckEnablePostMasterCommand.h"
@@ -168,8 +167,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             case yApi::IYPluginApi::kEventExtraQuery:
                 {
                     // Command was received from Yadoms
-                    auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
-                    if (extraQuery)
+                    if (auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>())
                     {
                         if (extraQuery->getData()->query() == "pairing")
                             startManualPairing(api, extraQuery);
@@ -358,8 +356,6 @@ void CEnOcean::processConnectionEvent()
     {
         // USB dongle init
         requestDongleVersion();
-
-        readLearnMode();
 
         // Smart ack configuration
         readSmartAckLearnMode();
@@ -896,9 +892,9 @@ bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response
                                 {
                                     return esp3Packet->header().packetType() == message::RESPONSE;
                                 },
-                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                                [&](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
                                 {
-                                    returnCode = message::CResponseReceivedMessage(std::move(esp3Packet)).returnCode();
+                                    returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
                                 }))
         throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
@@ -971,12 +967,6 @@ void CEnOcean::requestDongleVersion()
     cmd.sendAndReceive();
 
     m_senderId = cmd.chipId();
-}
-
-void CEnOcean::readLearnMode() const
-{
-    message::CReadLearnModeCommand cmd(m_messageHandler);
-    cmd.sendAndReceive();
 }
 
 void CEnOcean::enableSmartAckPostMaster(const bool enable) const

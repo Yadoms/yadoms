@@ -85,6 +85,8 @@ set(ENOCEAN_SOURCES
    message/UTE_GigaConceptReversedReceivedMessage.cpp
    message/UTE_ReceivedMessage.h
    message/UTE_ReceivedMessage.cpp
+   message/WriteLearnModeCommand.h
+   message/WriteLearnModeCommand.cpp
    
    specificHistorizers/Analog.h
    specificHistorizers/Analog.cpp

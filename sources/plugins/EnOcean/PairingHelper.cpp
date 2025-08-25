@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "PairingHelper.h"
 
-#include <ProtocolException.hpp>
-
+#include "message/ReadLearnModeCommand.h"
 #include "message/SmartAckPairingCommand.h"
+#include "message/WriteLearnModeCommand.h"
 
 // Global pairing duration is PairingTimeoutSeconds seconds.
 // And RFXCom main thread must call onProgressPairing every PairingPeriodTimeSeconds seconds.
@@ -90,9 +90,12 @@ void CPairingHelper::startPairing(const boost::shared_ptr<yApi::IExtraQuery>& ma
     m_progressPairingCount = PairingProgressNbMaxPeriods;
     m_manualPairingExtraQuery->reportProgress(1.0f, "customLabels.pairing.pairing");
 
+    YADOMS_LOG(information) << "Start pairing...";
+
+    startLearnMode();
     startSmartAckPairing();
 
-    YADOMS_LOG(information) << "Start pairing";
+    YADOMS_LOG(information) << "Pairing started";
 }
 
 void CPairingHelper::stopPairing(const std::string& devicePaired)
@@ -103,7 +106,10 @@ void CPairingHelper::stopPairing(const std::string& devicePaired)
         return;
     }
 
+    YADOMS_LOG(information) << "Stop pairing...";
+
     stopSmartAckPairing();
+    stopLearnMode();
 
     m_messageHandler.reset();
     m_pairingEnable = false;
@@ -117,23 +123,43 @@ void CPairingHelper::stopPairing(const std::string& devicePaired)
     }
     m_manualPairingExtraQuery.reset();
 
-    YADOMS_LOG(information) << "Stop pairing";
+    YADOMS_LOG(information) << "Pairing stopped";
+}
+
+void CPairingHelper::startLearnMode()
+{
+    message::CReadLearnModeCommand readLearnModeCmd(m_messageHandler);
+    readLearnModeCmd.sendAndReceive();
+    m_learnByDongleSupported = readLearnModeCmd.learnModeSupported();
+
+    if (!m_learnByDongleSupported || !readLearnModeCmd.learnModeEnable())
+        return;
+
+    const message::CWriteLearnModeCommand writeLearnModeCmd(m_messageHandler);
+    writeLearnModeCmd.sendAndReceive(true);
+}
+
+void CPairingHelper::stopLearnMode() const
+{
+    if (!m_learnByDongleSupported)
+        return;
+
+    const message::CWriteLearnModeCommand cmd(m_messageHandler);
+    cmd.sendAndReceive(false);
 }
 
 void CPairingHelper::startSmartAckPairing() const
 {
     const message::CSmartAckPairingCommand cmd(m_messageHandler);
     cmd.sendAndReceive(true,
-                       message::LearnMode::SimpleLearnMode,
-                       0);
+                       message::LearnMode::SimpleLearnMode);
 }
 
 void CPairingHelper::stopSmartAckPairing() const
 {
     const message::CSmartAckPairingCommand cmd(m_messageHandler);
     cmd.sendAndReceive(false,
-                       message::LearnMode::SimpleLearnMode,
-                       0);
+                       message::LearnMode::SimpleLearnMode);
 }
 
 bool CPairingHelper::needPairing(const std::string& deviceName)
