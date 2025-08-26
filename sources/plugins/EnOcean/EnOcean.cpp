@@ -20,6 +20,7 @@
 #include "message/UTE_AnswerSendMessage.h"
 #include "message/UTE_GigaConceptReversedAnswerSendMessage.h"
 #include "message/UTE_GigaConceptReversedReceivedMessage.h"
+#include "message/radioErp1/ReceivedMessage.h"
 #include "profiles/bitsetHelpers.hpp"
 #include "profiles/eep.h"
 
@@ -532,7 +533,7 @@ int CEnOcean::dbmToSignalPower(int dBm)
 
 void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
 {
-    message::CRadioErp1ReceivedMessage erp1Message(std::move(esp3Packet));
+    message::radioErp1::CReceivedMessage erp1Message(std::move(esp3Packet));
 
     if (erp1Message.rorg() == CRorgs::kUTE_Telegram)
     {
@@ -703,7 +704,7 @@ void CEnOcean::processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
     declareDeviceWithoutProfile(deviceId);
 }
 
-void CEnOcean::processDataTelegram(const message::CRadioErp1ReceivedMessage& erp1Message,
+void CEnOcean::processDataTelegram(const message::radioErp1::CReceivedMessage& erp1Message,
                                    const boost::dynamic_bitset<>& erp1UserData,
                                    const boost::dynamic_bitset<>& erp1Status,
                                    const std::string& deviceId)
@@ -775,7 +776,7 @@ void CEnOcean::processEvent(const boost::shared_ptr<const message::CEsp3Received
     YADOMS_LOG(information) << "Event " << eventCode << " received";
 }
 
-void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
+void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 {
     const auto isReversed = message::CUTE_GigaConceptReversedReceivedMessage::isCGigaConceptReversedUteMessage(erp1Message);
 

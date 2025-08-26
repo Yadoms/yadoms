@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "UTE_GigaConceptReversedAnswerSendMessage.h"
 #include <profiles/bitsetHelpers.hpp>
-#include <profiles/eep.h>
 
 namespace message
 {
@@ -48,8 +47,8 @@ namespace message
       userData[1] = m_func;
       userData[0] = m_rorg;
 
-      CRadioErp1SendMessage::userData(userData);
+      radioErp1::CSendMessage::userData(userData);
 
-      return CRadioErp1SendMessage::buffer();
+      return radioErp1::CSendMessage::buffer();
    }
 } // namespace message

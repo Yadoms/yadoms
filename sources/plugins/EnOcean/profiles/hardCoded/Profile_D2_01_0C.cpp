@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Profile_D2_01_0C.h"
 #include "../bitsetHelpers.hpp"
-#include "../../message/RadioErp1SendMessage.h"
+#include "../../message/radioErp1/SendMessage.h"
 #include "Profile_D2_01_Common.h"
 #include <shared/Log.h>
 

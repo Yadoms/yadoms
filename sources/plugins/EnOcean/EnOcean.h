@@ -10,6 +10,7 @@
 #include "message/SmartAckClient.h"
 #include "message/UTE_AnswerSendMessage.h"
 #include "message/UTE_ReceivedMessage.h"
+#include "message/radioErp1/ReceivedMessage.h"
 #include "profiles/IRorg.h"
 #include "profiles/IType.h"
 
@@ -110,12 +111,12 @@ protected:
                                   const std::string& deviceId);
     void processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
                                     const std::string& deviceId);
-    void processDataTelegram(const message::CRadioErp1ReceivedMessage& erp1Message,
+    void processDataTelegram(const message::radioErp1::CReceivedMessage& erp1Message,
                              const boost::dynamic_bitset<>& erp1UserData,
                              const boost::dynamic_bitset<>& erp1Status,
                              const std::string& deviceId);
     static void processEvent(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
-    void processUTE(message::CRadioErp1ReceivedMessage& erp1Message);
+    void processUTE(message::radioErp1::CReceivedMessage& erp1Message);
     bool sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
                        const boost::shared_ptr<const message::CUTE_ReceivedMessage>& uteMessage,
                        bool isReversed,

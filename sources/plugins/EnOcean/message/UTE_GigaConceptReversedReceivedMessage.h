@@ -14,13 +14,13 @@ namespace message
    class CUTE_GigaConceptReversedReceivedMessage final : public CUTE_ReceivedMessage
    {
    public:
-      static bool isCGigaConceptReversedUteMessage(const message::CRadioErp1ReceivedMessage& message);
+      static bool isCGigaConceptReversedUteMessage(const radioErp1::CReceivedMessage& message);
 
       //--------------------------------------------------------------
       /// \brief	                           Constructor
       /// \param[in] message                 The ERP1 radio message
       //--------------------------------------------------------------
-      explicit CUTE_GigaConceptReversedReceivedMessage(const message::CRadioErp1ReceivedMessage& message);
+      explicit CUTE_GigaConceptReversedReceivedMessage(const radioErp1::CReceivedMessage& message);
       ~CUTE_GigaConceptReversedReceivedMessage() override = default;
 
       bool bidirectionalCommunication() const override;

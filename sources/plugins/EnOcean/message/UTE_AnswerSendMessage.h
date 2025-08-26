@@ -1,5 +1,5 @@
 #pragma once
-#include "RadioErp1SendMessage.h"
+#include "radioErp1/SendMessage.h"
 
 
 namespace message
@@ -9,7 +9,7 @@ namespace message
    ///
    /// This class manages a UTE EnOcean answer message.
    //--------------------------------------------------------------
-   class CUTE_AnswerSendMessage : public CRadioErp1SendMessage
+   class CUTE_AnswerSendMessage : public radioErp1::CSendMessage
    {
    public:
       enum
@@ -39,10 +39,7 @@ namespace message
                              unsigned char func,
                              unsigned char rorg);
 
-      //--------------------------------------------------------------
-      /// \brief	                           Destructor
-      //--------------------------------------------------------------
-      virtual ~CUTE_AnswerSendMessage();
+      ~CUTE_AnswerSendMessage() override = default;
 
       boost::shared_ptr<const std::vector<unsigned char>> buffer() override;
 

@@ -51,10 +51,6 @@ set(ENOCEAN_SOURCES
    message/LearnMode.h
    message/MessageHelpers.h
    message/MessageHelpers.cpp
-   message/RadioErp1ReceivedMessage.h
-   message/RadioErp1ReceivedMessage.cpp
-   message/RadioErp1SendMessage.h
-   message/RadioErp1SendMessage.cpp
    message/ReadLearnModeCommand.h
    message/ReadLearnModeCommand.cpp
    message/RequestDongleVersionCommand.h
@@ -87,6 +83,10 @@ set(ENOCEAN_SOURCES
    message/UTE_ReceivedMessage.cpp
    message/WriteLearnModeCommand.h
    message/WriteLearnModeCommand.cpp
+   message/radioErp1/ReceivedMessage.h
+   message/radioErp1/ReceivedMessage.cpp
+   message/radioErp1/SendMessage.h
+   message/radioErp1/SendMessage.cpp
    
    specificHistorizers/Analog.h
    specificHistorizers/Analog.cpp
@@ -131,6 +131,7 @@ set(ENOCEAN_SOURCES
 #########################################
 source_group(sources ./*.*)
 source_group(sources\\message message/*.*)
+source_group(sources\\message\\radioErp1 message/radioErp1/*.*)
 source_group(sources\\specificHistorizers specificHistorizers/*.*)
 
 
