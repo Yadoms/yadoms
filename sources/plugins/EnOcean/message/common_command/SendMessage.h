@@ -1,12 +1,12 @@
 #pragma once
-#include "Esp3SendPacket.h"
+#include "../Esp3SendPacket.h"
 
-namespace message
+namespace message::common_command
 {
     //--------------------------------------------------------------
     /// \brief	EnOcean send command message
     //--------------------------------------------------------------
-    class CCommonCommandSendMessage final : public CEsp3SendPacket
+    class CSendMessage final : public CEsp3SendPacket
     {
     public:
         enum ECommonCommand
@@ -48,9 +48,9 @@ namespace message
             CO_RD_DUTYCYCLE_LIMIT = 35,
         };
 
-        explicit CCommonCommandSendMessage(ECommonCommand command,
-                                           const std::vector<unsigned char>& data = {});
-        ~CCommonCommandSendMessage() override = default;
+        explicit CSendMessage(ECommonCommand command,
+                              const std::vector<unsigned char>& data = {});
+        ~CSendMessage() override = default;
 
         boost::shared_ptr<const std::vector<unsigned char>> buffer() override;
 
@@ -58,4 +58,4 @@ namespace message
         ECommonCommand m_command;
         const std::vector<unsigned char>& _data;
     };
-} // namespace message
+}

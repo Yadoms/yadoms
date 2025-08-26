@@ -37,9 +37,7 @@ set(ENOCEAN_SOURCES
    ProfileHelper.cpp
    ReceiveBufferHandler.h
    ReceiveBufferHandler.cpp
-   
-   message/CommonCommandSendMessage.h
-   message/CommonCommandSendMessage.cpp
+
    message/Crc8.h
    message/Crc8.cpp
    message/Esp3ReceivedPacket.h
@@ -81,6 +79,9 @@ set(ENOCEAN_SOURCES
    message/UTE_ReceivedMessage.cpp
    message/WriteLearnModeCommand.h
    message/WriteLearnModeCommand.cpp
+   
+   message/common_command/SendMessage.h
+   message/common_command/SendMessage.cpp
    message/radioErp1/ReceivedMessage.h
    message/radioErp1/ReceivedMessage.cpp
    message/radioErp1/SendMessage.h
@@ -131,6 +132,7 @@ set(ENOCEAN_SOURCES
 #########################################
 source_group(sources ./*.*)
 source_group(sources\\message message/*.*)
+source_group(sources\\message\\common_command message/common_command/*.*)
 source_group(sources\\message\\radioErp1 message/radioErp1/*.*)
 source_group(sources\\message\\response message/response/*.*)
 source_group(sources\\specificHistorizers specificHistorizers/*.*)

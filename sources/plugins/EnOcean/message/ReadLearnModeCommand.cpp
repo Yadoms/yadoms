@@ -3,7 +3,7 @@
 
 #include <ProtocolException.hpp>
 
-#include "CommonCommandSendMessage.h"
+#include "common_command/SendMessage.h"
 #include "shared/Log.h"
 
 namespace message
@@ -17,7 +17,7 @@ namespace message
     {
         YADOMS_LOG(information) << "Read learn mode...";
 
-        CCommonCommandSendMessage sendMessage(CCommonCommandSendMessage::CO_RD_LEARNMODE);
+        common_command::CSendMessage sendMessage(common_command::CSendMessage::CO_RD_LEARNMODE);
 
         boost::shared_ptr<const CEsp3ReceivedPacket> answer;
         if (!m_messageHandler->send(sendMessage,

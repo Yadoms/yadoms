@@ -3,7 +3,7 @@
 
 #include <ProtocolException.hpp>
 
-#include "CommonCommandSendMessage.h"
+#include "common_command/SendMessage.h"
 #include "shared/Log.h"
 
 namespace message
@@ -20,14 +20,14 @@ namespace message
             << (enable ? "enable" : "disable")
             << ", " << timeoutMs << "ms)... ";
 
-        CCommonCommandSendMessage sendMessage(CCommonCommandSendMessage::CO_WR_LEARNMODE,
-                                              {
-                                                  static_cast<unsigned char>(enable ? 1 : 0),
-                                                  static_cast<unsigned char>(timeoutMs >> 24 & 0xff),
-                                                  static_cast<unsigned char>(timeoutMs >> 16 & 0xff),
-                                                  static_cast<unsigned char>(timeoutMs >> 8 & 0xff),
-                                                  static_cast<unsigned char>(timeoutMs & 0xff)
-                                              });
+        common_command::CSendMessage sendMessage(common_command::CSendMessage::CO_WR_LEARNMODE,
+                                                 {
+                                                     static_cast<unsigned char>(enable ? 1 : 0),
+                                                     static_cast<unsigned char>(timeoutMs >> 24 & 0xff),
+                                                     static_cast<unsigned char>(timeoutMs >> 16 & 0xff),
+                                                     static_cast<unsigned char>(timeoutMs >> 8 & 0xff),
+                                                     static_cast<unsigned char>(timeoutMs & 0xff)
+                                                 });
 
         boost::shared_ptr<const CEsp3ReceivedPacket> answer;
         if (!m_messageHandler->send(sendMessage,

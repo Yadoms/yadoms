@@ -3,7 +3,7 @@
 
 #include <ProtocolException.hpp>
 
-#include "CommonCommandSendMessage.h"
+#include "common_command/SendMessage.h"
 #include "shared/Log.h"
 
 namespace message
@@ -35,7 +35,7 @@ namespace message
     {
         YADOMS_LOG(information) << "Read dongle version...";
 
-        CCommonCommandSendMessage sendMessage(CCommonCommandSendMessage::CO_RD_VERSION);
+        common_command::CSendMessage sendMessage(common_command::CSendMessage::CO_RD_VERSION);
 
         boost::shared_ptr<const CEsp3ReceivedPacket> answer;
         if (!m_messageHandler->send(sendMessage,
