@@ -1,17 +1,17 @@
 #pragma once
 #include <string>
 
-namespace message
+namespace message::smart_ack
 {
     //--------------------------------------------------------------
     /// \brief	Smart ack client
     //--------------------------------------------------------------
-    class CSmartAckClient final
+    class CClient final
     {
     public:
-        CSmartAckClient(const std::string& id,
-                        const std::string& controllerId,
-                        const unsigned int mailboxIndex);
+        CClient(const std::string& id,
+                const std::string& controllerId,
+                const unsigned int mailboxIndex);
 
         std::string id() const;
         std::string controllerId() const;

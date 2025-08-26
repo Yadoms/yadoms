@@ -1,13 +1,13 @@
 #pragma once
 #include "IMessageHandler.h"
-#include "response/ReceivedMessage.h"
+#include "../response/ReceivedMessage.h"
 
-namespace message
+namespace message::smart_ack
 {
     //--------------------------------------------------------------
     /// \brief	EnOcean Smart Ack read client mailbox status command
     //--------------------------------------------------------------
-    class CSmartAckReadClientMailboxStatusCommand final
+    class CReadClientMailboxStatusCommand final
     {
     public:
         enum MailboxStatus
@@ -17,8 +17,8 @@ namespace message
             DOESNT_EXIST
         };
 
-        explicit CSmartAckReadClientMailboxStatusCommand(const boost::shared_ptr<IMessageHandler>& messageHandler);
-        ~CSmartAckReadClientMailboxStatusCommand() = default;
+        explicit CReadClientMailboxStatusCommand(const boost::shared_ptr<IMessageHandler>& messageHandler);
+        ~CReadClientMailboxStatusCommand() = default;
 
         void sendAndReceive(const std::string& clientId,
                             const std::string& controllerId);

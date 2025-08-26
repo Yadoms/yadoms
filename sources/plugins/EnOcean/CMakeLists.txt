@@ -53,20 +53,6 @@ set(ENOCEAN_SOURCES
    message/ReadLearnModeCommand.cpp
    message/RequestDongleVersionCommand.h
    message/RequestDongleVersionCommand.cpp
-   message/SmartAckClient.h
-   message/SmartAckClient.cpp
-   message/SmartAckCommandSendMessage.h
-   message/SmartAckCommandSendMessage.cpp
-   message/SmartAckEnablePostMasterCommand.h
-   message/SmartAckEnablePostMasterCommand.cpp
-   message/SmartAckPairingCommand.h
-   message/SmartAckPairingCommand.cpp
-   message/SmartAckReadClientMailboxStatusCommand.h
-   message/SmartAckReadClientMailboxStatusCommand.cpp
-   message/SmartAckReadLearnedClientsCommand.h
-   message/SmartAckReadLearnedClientsCommand.cpp
-   message/SmartAckReadLearnModeCommand.h
-   message/SmartAckReadLearnModeCommand.cpp
    message/types.h
    message/types.cpp
    message/UTE_AnswerSendMessage.h
@@ -82,12 +68,29 @@ set(ENOCEAN_SOURCES
    
    message/common_command/SendMessage.h
    message/common_command/SendMessage.cpp
+
    message/radioErp1/ReceivedMessage.h
    message/radioErp1/ReceivedMessage.cpp
    message/radioErp1/SendMessage.h
    message/radioErp1/SendMessage.cpp
+
    message/response/ReceivedMessage.h
    message/response/ReceivedMessage.cpp
+
+   message/smart_ack/Client.h
+   message/smart_ack/Client.cpp
+   message/smart_ack/CommandSendMessage.h
+   message/smart_ack/CommandSendMessage.cpp
+   message/smart_ack/EnablePostMasterCommand.h
+   message/smart_ack/EnablePostMasterCommand.cpp
+   message/smart_ack/PairingCommand.h
+   message/smart_ack/PairingCommand.cpp
+   message/smart_ack/ReadClientMailboxStatusCommand.h
+   message/smart_ack/ReadClientMailboxStatusCommand.cpp
+   message/smart_ack/ReadLearnedClientsCommand.h
+   message/smart_ack/ReadLearnedClientsCommand.cpp
+   message/smart_ack/ReadLearnModeCommand.h
+   message/smart_ack/ReadLearnModeCommand.cpp
    
    specificHistorizers/Analog.h
    specificHistorizers/Analog.cpp
@@ -135,6 +138,7 @@ source_group(sources\\message message/*.*)
 source_group(sources\\message\\common_command message/common_command/*.*)
 source_group(sources\\message\\radioErp1 message/radioErp1/*.*)
 source_group(sources\\message\\response message/response/*.*)
+source_group(sources\\message\\smart_ack message/smart_ack/*.*)
 source_group(sources\\specificHistorizers specificHistorizers/*.*)
 
 

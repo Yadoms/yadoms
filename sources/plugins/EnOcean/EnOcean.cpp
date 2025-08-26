@@ -13,15 +13,14 @@
 #include "ProtocolException.hpp"
 #include "message/RequestDongleVersionCommand.h"
 #include "message/response/ReceivedMessage.h"
-#include "message/SmartAckEnablePostMasterCommand.h"
-#include "message/SmartAckReadClientMailboxStatusCommand.h"
-#include "message/SmartAckReadLearnedClientsCommand.h"
-#include "message/SmartAckReadLearnModeCommand.h"
+#include "message/smart_ack/EnablePostMasterCommand.h"
+#include "message/smart_ack/ReadClientMailboxStatusCommand.h"
+#include "message/smart_ack/ReadLearnedClientsCommand.h"
+#include "message/smart_ack/ReadLearnModeCommand.h"
 #include "message/UTE_AnswerSendMessage.h"
 #include "message/UTE_GigaConceptReversedAnswerSendMessage.h"
 #include "message/UTE_GigaConceptReversedReceivedMessage.h"
 #include "message/radioErp1/ReceivedMessage.h"
-#include "message/response/ReceivedMessage.h"
 #include "profiles/bitsetHelpers.hpp"
 #include "profiles/eep.h"
 
@@ -973,26 +972,26 @@ void CEnOcean::requestDongleVersion()
 
 void CEnOcean::enableSmartAckPostMaster(const bool enable) const
 {
-    const message::CSmartAckEnablePostMasterCommand cmd(m_messageHandler);
+    const message::smart_ack::CEnablePostMasterCommand cmd(m_messageHandler);
     cmd.sendAndReceive(enable ? 20 : 0);
 }
 
 void CEnOcean::readSmartAckLearnMode() const
 {
-    message::CSmartAckReadLearnModeCommand cmd(m_messageHandler);
+    message::smart_ack::CReadLearnModeCommand cmd(m_messageHandler);
     cmd.sendAndReceive();
 }
 
-std::vector<boost::shared_ptr<message::CSmartAckClient>> CEnOcean::readSmartAckLearnedClients() const
+std::vector<boost::shared_ptr<message::smart_ack::CClient>> CEnOcean::readSmartAckLearnedClients() const
 {
-    message::CSmartAckReadLearnedClientsCommand cmd(m_messageHandler);
+    message::smart_ack::CReadLearnedClientsCommand cmd(m_messageHandler);
     cmd.sendAndReceive();
     return cmd.clients();
 }
 
-void CEnOcean::readSmartAckClientMailboxStatus(const boost::shared_ptr<message::CSmartAckClient>& smartAckClient) const
+void CEnOcean::readSmartAckClientMailboxStatus(const boost::shared_ptr<message::smart_ack::CClient>& smartAckClient) const
 {
-    message::CSmartAckReadClientMailboxStatusCommand cmd(m_messageHandler);
+    message::smart_ack::CReadClientMailboxStatusCommand cmd(m_messageHandler);
     cmd.sendAndReceive(smartAckClient->id(),
                        smartAckClient->controllerId());
 }

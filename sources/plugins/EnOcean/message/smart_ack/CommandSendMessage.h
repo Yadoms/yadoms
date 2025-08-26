@@ -1,12 +1,12 @@
 #pragma once
-#include "Esp3SendPacket.h"
+#include "../Esp3SendPacket.h"
 
-namespace message
+namespace message::smart_ack
 {
     //--------------------------------------------------------------
     /// \brief	EnOcean send smart ack command message
     //--------------------------------------------------------------
-    class CSmartAckCommandSendMessage final : public CEsp3SendPacket
+    class CCommandSendMessage final : public CEsp3SendPacket
     {
     public:
         enum ESmartAckCommand
@@ -23,9 +23,9 @@ namespace message
             SA_DEL_MAILBOX = 10, //Delete mailbox for a SmartAck client
         };
 
-        explicit CSmartAckCommandSendMessage(ESmartAckCommand command,
-                                             const std::vector<unsigned char>& data = {});
-        ~CSmartAckCommandSendMessage() override = default;
+        explicit CCommandSendMessage(ESmartAckCommand command,
+                                     const std::vector<unsigned char>& data = {});
+        ~CCommandSendMessage() override = default;
 
         boost::shared_ptr<const std::vector<unsigned char>> buffer() override;
 

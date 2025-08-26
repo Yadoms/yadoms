@@ -1,18 +1,18 @@
 #pragma once
 #include "IMessageHandler.h"
-#include "LearnMode.h"
-#include "response/ReceivedMessage.h"
+#include "../LearnMode.h"
+#include "../response/ReceivedMessage.h"
 
-namespace message
+namespace message::smart_ack
 {
     //--------------------------------------------------------------
     /// \brief	EnOcean Smart Ack read learn mode command
     //--------------------------------------------------------------
-    class CSmartAckReadLearnModeCommand final
+    class CReadLearnModeCommand final
     {
     public:
-        explicit CSmartAckReadLearnModeCommand(const boost::shared_ptr<IMessageHandler>& messageHandler);
-        ~CSmartAckReadLearnModeCommand() = default;
+        explicit CReadLearnModeCommand(const boost::shared_ptr<IMessageHandler>& messageHandler);
+        ~CReadLearnModeCommand() = default;
 
         void sendAndReceive();
 

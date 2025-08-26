@@ -2,7 +2,7 @@
 #include "PairingHelper.h"
 
 #include "message/ReadLearnModeCommand.h"
-#include "message/SmartAckPairingCommand.h"
+#include "message/smart_ack/PairingCommand.h"
 #include "message/WriteLearnModeCommand.h"
 
 // Global pairing duration is PairingTimeoutSeconds seconds.
@@ -150,14 +150,14 @@ void CPairingHelper::stopLearnMode() const
 
 void CPairingHelper::startSmartAckPairing() const
 {
-    const message::CSmartAckPairingCommand cmd(m_messageHandler);
+    const message::smart_ack::CPairingCommand cmd(m_messageHandler);
     cmd.sendAndReceive(true,
                        message::LearnMode::SimpleLearnMode);
 }
 
 void CPairingHelper::stopSmartAckPairing() const
 {
-    const message::CSmartAckPairingCommand cmd(m_messageHandler);
+    const message::smart_ack::CPairingCommand cmd(m_messageHandler);
     cmd.sendAndReceive(false,
                        message::LearnMode::SimpleLearnMode);
 }

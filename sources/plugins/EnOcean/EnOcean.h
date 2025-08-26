@@ -7,7 +7,7 @@
 #include "PairingHelper.h"
 #include "ProfileHelper.h"
 #include "message/Esp3ReceivedPacket.h"
-#include "message/SmartAckClient.h"
+#include "message/smart_ack/Client.h"
 #include "message/UTE_AnswerSendMessage.h"
 #include "message/UTE_ReceivedMessage.h"
 #include "message/radioErp1/ReceivedMessage.h"
@@ -153,8 +153,8 @@ protected:
     void requestDongleVersion();
     void enableSmartAckPostMaster(bool enable) const;
     void readSmartAckLearnMode() const;
-    std::vector<boost::shared_ptr<message::CSmartAckClient>> readSmartAckLearnedClients() const;
-    void readSmartAckClientMailboxStatus(const boost::shared_ptr<message::CSmartAckClient>& smartAckClient) const;
+    std::vector<boost::shared_ptr<message::smart_ack::CClient>> readSmartAckLearnedClients() const;
+    void readSmartAckClientMailboxStatus(const boost::shared_ptr<message::smart_ack::CClient>& smartAckClient) const;
 
 
     //--------------------------------------------------------------
