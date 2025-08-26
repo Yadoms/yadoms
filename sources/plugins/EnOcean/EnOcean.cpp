@@ -12,7 +12,7 @@
 #include "ProfileHelper.h"
 #include "ProtocolException.hpp"
 #include "message/RequestDongleVersionCommand.h"
-#include "message/ResponseReceivedMessage.h"
+#include "message/response/ReceivedMessage.h"
 #include "message/SmartAckEnablePostMasterCommand.h"
 #include "message/SmartAckReadClientMailboxStatusCommand.h"
 #include "message/SmartAckReadLearnedClientsCommand.h"
@@ -21,6 +21,7 @@
 #include "message/UTE_GigaConceptReversedAnswerSendMessage.h"
 #include "message/UTE_GigaConceptReversedReceivedMessage.h"
 #include "message/radioErp1/ReceivedMessage.h"
+#include "message/response/ReceivedMessage.h"
 #include "profiles/bitsetHelpers.hpp"
 #include "profiles/eep.h"
 
@@ -531,9 +532,9 @@ int CEnOcean::dbmToSignalPower(int dBm)
     return 20;
 }
 
-void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+void CEnOcean::processRadioErp1(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
 {
-    message::radioErp1::CReceivedMessage erp1Message(std::move(esp3Packet));
+    message::radioErp1::CReceivedMessage erp1Message(esp3Packet);
 
     if (erp1Message.rorg() == CRorgs::kUTE_Telegram)
     {
@@ -887,7 +888,7 @@ bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response
                                                                                        uteMessage->func(),
                                                                                        uteMessage->rorg());
 
-    message::CResponseReceivedMessage::EReturnCode returnCode;
+    message::response::CReceivedMessage::EReturnCode returnCode;
     if (!m_messageHandler->send(*sendMessage,
                                 [](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
                                 {
@@ -895,11 +896,11 @@ bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response
                                 },
                                 [&](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
                                 {
-                                    returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
+                                    returnCode = message::response::CReceivedMessage(esp3Packet).returnCode();
                                 }))
         throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
-    if (returnCode != message::CResponseReceivedMessage::RET_OK)
+    if (returnCode != message::response::CReceivedMessage::RET_OK)
     {
         YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode;
         return false;

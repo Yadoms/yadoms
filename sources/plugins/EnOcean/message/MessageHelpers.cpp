@@ -4,7 +4,7 @@
 #include <utility>
 #include "radioErp1/SendMessage.h"
 #include "profiles/bitsetHelpers.hpp"
-#include "ResponseReceivedMessage.h"
+#include "response/ReceivedMessage.h"
 
 namespace message
 {
@@ -35,9 +35,8 @@ namespace message
             throw std::runtime_error(
                 (boost::format("Fail to send message to %1% : no answer to \"%2%\"") % targetId % messageName).str());
 
-        const auto response = boost::make_shared<CResponseReceivedMessage>(answer);
-
-        if (response->returnCode() != CResponseReceivedMessage::RET_OK)
+        if (const auto response = boost::make_shared<response::CReceivedMessage>(answer);
+            response->returnCode() != response::CReceivedMessage::RET_OK)
             YADOMS_LOG(error) << "Fail to send message to " << targetId << " : \"" << messageName << "\" returns " <<
                 response->returnCode();
     }

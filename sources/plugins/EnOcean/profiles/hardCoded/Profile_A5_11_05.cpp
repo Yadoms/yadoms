@@ -3,7 +3,7 @@
 #include "../bitsetHelpers.hpp"
 #include "profiles/eep.h"
 #include "message/radioErp1/SendMessage.h"
-#include "message/ResponseReceivedMessage.h"
+#include "message/response/ReceivedMessage.h"
 
 CProfile_A5_11_05::CProfile_A5_11_05(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
@@ -49,20 +49,19 @@ void CProfile_A5_11_05::readInitialState(const std::string& senderId,
     static const auto CommandName("Gateway request telegram");
     boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
     if (!messageHandler->send(command,
-                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                              [](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
                               {
                                   return esp3Packet->header().packetType() == message::RESPONSE;
                               },
-                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                              [&](const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
                               {
                                   answer = esp3Packet;
                               }))
         throw std::runtime_error(
             (boost::format("Fail to send message to %1% : no answer to \"%2%\"") % m_deviceId % CommandName).str());
 
-    const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
+    if (const auto response = boost::make_shared<message::response::CReceivedMessage>(answer);
+        response->returnCode() != message::response::CReceivedMessage::RET_OK)
         YADOMS_LOG(error) << "Fail to send message to " << m_deviceId << " : \"" << CommandName << "\" returns " <<
             response->returnCode();
 }

@@ -55,8 +55,6 @@ set(ENOCEAN_SOURCES
    message/ReadLearnModeCommand.cpp
    message/RequestDongleVersionCommand.h
    message/RequestDongleVersionCommand.cpp
-   message/ResponseReceivedMessage.h
-   message/ResponseReceivedMessage.cpp
    message/SmartAckClient.h
    message/SmartAckClient.cpp
    message/SmartAckCommandSendMessage.h
@@ -87,6 +85,8 @@ set(ENOCEAN_SOURCES
    message/radioErp1/ReceivedMessage.cpp
    message/radioErp1/SendMessage.h
    message/radioErp1/SendMessage.cpp
+   message/response/ReceivedMessage.h
+   message/response/ReceivedMessage.cpp
    
    specificHistorizers/Analog.h
    specificHistorizers/Analog.cpp
@@ -132,6 +132,7 @@ set(ENOCEAN_SOURCES
 source_group(sources ./*.*)
 source_group(sources\\message message/*.*)
 source_group(sources\\message\\radioErp1 message/radioErp1/*.*)
+source_group(sources\\message\\response message/response/*.*)
 source_group(sources\\specificHistorizers specificHistorizers/*.*)
 
 

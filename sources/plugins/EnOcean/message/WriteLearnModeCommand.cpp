@@ -52,14 +52,14 @@ namespace message
                     % answer->header().dataLength()
                     % ExpectedDataSize).str());
 
-        processAnswer(CResponseReceivedMessage(answer),
+        processAnswer(response::CReceivedMessage(answer),
                       "CO_WR_LEARNMODE");
     }
 
-    void CWriteLearnModeCommand::processAnswer(const CResponseReceivedMessage& response,
+    void CWriteLearnModeCommand::processAnswer(const response::CReceivedMessage& response,
                                                const std::string& requestName)
     {
-        if (response.returnCode() != CResponseReceivedMessage::RET_OK)
-            throw CProtocolException("  ==> " + requestName + " request returned " + CResponseReceivedMessage::toString(response.returnCode()));
+        if (response.returnCode() != response::CReceivedMessage::RET_OK)
+            throw CProtocolException("  ==> " + requestName + " request returned " + response::CReceivedMessage::toString(response.returnCode()));
     }
 } // namespace message

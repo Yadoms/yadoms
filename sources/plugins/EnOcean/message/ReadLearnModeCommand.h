@@ -1,6 +1,6 @@
 #pragma once
 #include "IMessageHandler.h"
-#include "ResponseReceivedMessage.h"
+#include "response/ReceivedMessage.h"
 #include <optional>
 
 namespace message
@@ -21,7 +21,7 @@ namespace message
         [[nodiscard]] std::optional<unsigned int> channel() const;
 
     private:
-        void processAnswer(const CResponseReceivedMessage& response);
+        void processAnswer(const response::CReceivedMessage& response);
 
         const boost::shared_ptr<IMessageHandler> m_messageHandler;
 

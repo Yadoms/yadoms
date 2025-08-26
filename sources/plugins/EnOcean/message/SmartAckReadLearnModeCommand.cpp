@@ -42,7 +42,7 @@ namespace message
                     % answer->header().dataLength()
                     % ExpectedDataSize).str());
 
-        processAnswer(CResponseReceivedMessage(answer),
+        processAnswer(response::CReceivedMessage(answer),
                       "SA_RD_LEARNMODE");
     }
 
@@ -56,11 +56,11 @@ namespace message
         return m_learnMode;
     }
 
-    void CSmartAckReadLearnModeCommand::processAnswer(const CResponseReceivedMessage& response,
+    void CSmartAckReadLearnModeCommand::processAnswer(const response::CReceivedMessage& response,
                                                       const std::string& requestName)
     {
-        if (response.returnCode() != CResponseReceivedMessage::RET_OK)
-            throw CProtocolException("  ==> " + requestName + " request returned " + CResponseReceivedMessage::toString(response.returnCode()));
+        if (response.returnCode() != response::CReceivedMessage::RET_OK)
+            throw CProtocolException("  ==> " + requestName + " request returned " + response::CReceivedMessage::toString(response.returnCode()));
 
         m_learnModeEnable = response.responseData()[1] != 0;
         m_learnMode = ToLearnMode(response.responseData()[1]);

@@ -54,7 +54,7 @@ namespace message
                     % answer->header().dataLength()
                     % ExpectedResponseSize).str());
 
-        processAnswer(CResponseReceivedMessage(answer),
+        processAnswer(response::CReceivedMessage(answer),
                       "SA_RD_MAILBOX");
     }
 
@@ -78,11 +78,11 @@ namespace message
         }
     }
 
-    void CSmartAckReadClientMailboxStatusCommand::processAnswer(const CResponseReceivedMessage& response,
+    void CSmartAckReadClientMailboxStatusCommand::processAnswer(const response::CReceivedMessage& response,
                                                                 const std::string& requestName)
     {
-        if (response.returnCode() != CResponseReceivedMessage::RET_OK)
-            throw CProtocolException("  ==> " + requestName + " request returned " + CResponseReceivedMessage::toString(response.returnCode()));
+        if (response.returnCode() != response::CReceivedMessage::RET_OK)
+            throw CProtocolException("  ==> " + requestName + " request returned " + response::CReceivedMessage::toString(response.returnCode()));
 
         m_status = toMailboxStatus(response.responseData()[0]);
 

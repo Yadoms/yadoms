@@ -104,7 +104,7 @@ protected:
     /// \brief	                     Process received messages
     /// \param [in] esp3Packet       Message received
     //--------------------------------------------------------------
-    void processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+    void processRadioErp1(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
     static void processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
     void processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserData,
                                   const boost::shared_ptr<IRorg>& rorg,

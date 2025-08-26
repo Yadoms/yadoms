@@ -43,15 +43,15 @@ namespace message
                     % answer->header().dataLength()
                     % ExpectedDataSize).str());
 
-        processAnswer(CResponseReceivedMessage(answer).returnCode(),
+        processAnswer(response::CReceivedMessage(answer).returnCode(),
                       "SA_WR_POSTMASTER");
     }
 
-    void CSmartAckEnablePostMasterCommand::processAnswer(const CResponseReceivedMessage::EReturnCode returnCode,
+    void CSmartAckEnablePostMasterCommand::processAnswer(const response::CReceivedMessage::EReturnCode returnCode,
                                                          const std::string& requestName)
     {
-        if (returnCode != CResponseReceivedMessage::RET_OK)
-            throw CProtocolException("  ==> " + requestName + " request returned " + CResponseReceivedMessage::toString(returnCode));
+        if (returnCode != response::CReceivedMessage::RET_OK)
+            throw CProtocolException("  ==> " + requestName + " request returned " + response::CReceivedMessage::toString(returnCode));
 
         YADOMS_LOG(information) << "  ==> OK";
     }

@@ -1,6 +1,6 @@
 #pragma once
 #include "IMessageHandler.h"
-#include "ResponseReceivedMessage.h"
+#include "response/ReceivedMessage.h"
 
 namespace message
 {
@@ -27,7 +27,7 @@ namespace message
         [[nodiscard]] static std::string toString(MailboxStatus mailboxStatus);
 
     private:
-        void processAnswer(const CResponseReceivedMessage& response,
+        void processAnswer(const response::CReceivedMessage& response,
                            const std::string& requestName);
         [[nodiscard]] static MailboxStatus toMailboxStatus(unsigned char byte);
 

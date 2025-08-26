@@ -49,15 +49,15 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        processAnswer(CResponseReceivedMessage(answer).returnCode(),
+        processAnswer(response::CReceivedMessage(answer).returnCode(),
                       "SA_WR_LEARNMODE");
     }
 
-    void CSmartAckPairingCommand::processAnswer(const CResponseReceivedMessage::EReturnCode returnCode,
+    void CSmartAckPairingCommand::processAnswer(const response::CReceivedMessage::EReturnCode returnCode,
                                                 const std::string& requestName)
     {
-        if (returnCode != CResponseReceivedMessage::RET_OK)
-            throw CProtocolException("  ==> " + requestName + " request returned " + CResponseReceivedMessage::toString(returnCode));
+        if (returnCode != response::CReceivedMessage::RET_OK)
+            throw CProtocolException("  ==> " + requestName + " request returned " + response::CReceivedMessage::toString(returnCode));
 
         YADOMS_LOG(information) << "  ==> OK";
     }

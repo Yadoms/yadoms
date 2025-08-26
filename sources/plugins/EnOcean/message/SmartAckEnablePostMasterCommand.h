@@ -1,6 +1,6 @@
 #pragma once
 #include "IMessageHandler.h"
-#include "ResponseReceivedMessage.h"
+#include "response/ReceivedMessage.h"
 
 namespace message
 {
@@ -18,7 +18,7 @@ namespace message
         void sendAndReceive(unsigned char mailboxesNumber) const;
 
     private:
-        static void processAnswer(CResponseReceivedMessage::EReturnCode returnCode,
+        static void processAnswer(response::CReceivedMessage::EReturnCode returnCode,
                                   const std::string& requestName);
 
         const boost::shared_ptr<IMessageHandler> m_messageHandler;

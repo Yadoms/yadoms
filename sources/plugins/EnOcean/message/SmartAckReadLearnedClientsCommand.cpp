@@ -35,7 +35,7 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        processAnswer(CResponseReceivedMessage(answer),
+        processAnswer(response::CReceivedMessage(answer),
                       "SA_RD_LEARNEDCLIENTS");
     }
 
@@ -44,11 +44,11 @@ namespace message
         return m_clients;
     }
 
-    void CSmartAckReadLearnedClientsCommand::processAnswer(const CResponseReceivedMessage& response,
+    void CSmartAckReadLearnedClientsCommand::processAnswer(const response::CReceivedMessage& response,
                                                            const std::string& requestName)
     {
-        if (response.returnCode() != CResponseReceivedMessage::RET_OK)
-            throw CProtocolException("  ==> " + requestName + " request returned " + CResponseReceivedMessage::toString(response.returnCode()));
+        if (response.returnCode() != response::CReceivedMessage::RET_OK)
+            throw CProtocolException("  ==> " + requestName + " request returned " + response::CReceivedMessage::toString(response.returnCode()));
 
         m_clients = unSerializeClients(response.responseData());
 

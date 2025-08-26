@@ -60,7 +60,7 @@ namespace message
                     % answer->header().dataLength()
                     % ExpectedDataSize).str());
 
-        processAnswer(CResponseReceivedMessage(answer),
+        processAnswer(response::CReceivedMessage(answer),
                       "CO_RD_VERSION");
     }
 
@@ -100,11 +100,11 @@ namespace message
         return ss.str();
     }
 
-    void CRequestDongleVersionCommand::processAnswer(const CResponseReceivedMessage& response,
+    void CRequestDongleVersionCommand::processAnswer(const response::CReceivedMessage& response,
                                                      const std::string& requestName)
     {
-        if (response.returnCode() != CResponseReceivedMessage::RET_OK)
-            throw CProtocolException("  ==> " + requestName + " request returned " + CResponseReceivedMessage::toString(response.returnCode()));
+        if (response.returnCode() != response::CReceivedMessage::RET_OK)
+            throw CProtocolException("  ==> " + requestName + " request returned " + response::CReceivedMessage::toString(response.returnCode()));
 
         m_appVersion = Version(response.responseData()[0],
                                response.responseData()[1],

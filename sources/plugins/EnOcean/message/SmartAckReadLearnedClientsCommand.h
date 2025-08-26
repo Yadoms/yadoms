@@ -1,6 +1,6 @@
 #pragma once
 #include "IMessageHandler.h"
-#include "ResponseReceivedMessage.h"
+#include "response/ReceivedMessage.h"
 #include "SmartAckClient.h"
 
 namespace message
@@ -19,7 +19,7 @@ namespace message
         [[nodiscard]] std::vector<boost::shared_ptr<CSmartAckClient>> clients() const;
 
     private:
-        void processAnswer(const CResponseReceivedMessage& response,
+        void processAnswer(const response::CReceivedMessage& response,
                            const std::string& requestName);
         std::vector<boost::shared_ptr<CSmartAckClient>> unSerializeClients(const std::vector<unsigned char>& responseData);
 

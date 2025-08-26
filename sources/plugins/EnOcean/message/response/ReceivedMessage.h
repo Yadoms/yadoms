@@ -1,15 +1,15 @@
 #pragma once
-#include "Esp3ReceivedPacket.h"
+#include "../Esp3ReceivedPacket.h"
 
 
-namespace message
+namespace message::response
 {
     //--------------------------------------------------------------
     /// \brief	EnOcean RESPONSE message
     ///
     /// This class manages a RESPONSE EnOcean message.
     //--------------------------------------------------------------
-    class CResponseReceivedMessage final
+    class CReceivedMessage final
     {
     public:
         enum EReturnCode
@@ -30,13 +30,13 @@ namespace message
         /// \brief	                           Constructor
         /// \param[in] esp3Packet              The esp3 message
         //--------------------------------------------------------------
-        explicit CResponseReceivedMessage(const boost::shared_ptr<const CEsp3ReceivedPacket>& esp3Packet);
+        explicit CReceivedMessage(const boost::shared_ptr<const CEsp3ReceivedPacket>& esp3Packet);
 
-        ~CResponseReceivedMessage() = default;
+        ~CReceivedMessage() = default;
 
-        EReturnCode returnCode() const;
-        const std::vector<unsigned char>& responseData() const;
-        const std::vector<unsigned char>& responseOptionalData() const;
+        [[nodiscard]] EReturnCode returnCode() const;
+        [[nodiscard]] const std::vector<unsigned char>& responseData() const;
+        [[nodiscard]] const std::vector<unsigned char>& responseOptionalData() const;
 
         static std::string toString(EReturnCode returnCode);
 

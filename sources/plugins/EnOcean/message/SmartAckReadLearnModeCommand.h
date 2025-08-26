@@ -1,7 +1,7 @@
 #pragma once
 #include "IMessageHandler.h"
 #include "LearnMode.h"
-#include "ResponseReceivedMessage.h"
+#include "response/ReceivedMessage.h"
 
 namespace message
 {
@@ -20,7 +20,7 @@ namespace message
         [[nodiscard]] LearnMode learnMode() const;
 
     private:
-        void processAnswer(const CResponseReceivedMessage& response,
+        void processAnswer(const response::CReceivedMessage& response,
                            const std::string& requestName);
 
         const boost::shared_ptr<IMessageHandler> m_messageHandler;

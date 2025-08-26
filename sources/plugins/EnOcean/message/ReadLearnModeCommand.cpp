@@ -35,7 +35,7 @@ namespace message
                                     }))
             throw CProtocolException("Timeout waiting answer");
 
-        return processAnswer(CResponseReceivedMessage(answer));
+        return processAnswer(response::CReceivedMessage(answer));
     }
 
     bool CReadLearnModeCommand::learnModeSupported() const
@@ -53,21 +53,21 @@ namespace message
         return m_channel;
     }
 
-    void CReadLearnModeCommand::processAnswer(const CResponseReceivedMessage& response)
+    void CReadLearnModeCommand::processAnswer(const response::CReceivedMessage& response)
     {
-        if (response.returnCode() == CResponseReceivedMessage::RET_NOT_SUPPORTED)
+        if (response.returnCode() == response::CReceivedMessage::RET_NOT_SUPPORTED)
         {
             m_learnModeSupported = false;
-            YADOMS_LOG(warning) << "  ==> " << CResponseReceivedMessage::toString(response.returnCode());
+            YADOMS_LOG(warning) << "  ==> " << response::CReceivedMessage::toString(response.returnCode());
             return;
         }
 
         m_learnModeSupported = true;
 
-        if (response.returnCode() != CResponseReceivedMessage::RET_OK)
+        if (response.returnCode() != response::CReceivedMessage::RET_OK)
         {
-            YADOMS_LOG(warning) << "  ==> " << CResponseReceivedMessage::toString(response.returnCode());
-            throw CProtocolException("  ==> " + CResponseReceivedMessage::toString(response.returnCode()));
+            YADOMS_LOG(warning) << "  ==> " << response::CReceivedMessage::toString(response.returnCode());
+            throw CProtocolException("  ==> " + response::CReceivedMessage::toString(response.returnCode()));
         }
 
         m_learnModeEnable = response.responseData()[1] != 0;
