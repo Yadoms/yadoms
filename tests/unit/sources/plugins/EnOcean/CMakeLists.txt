@@ -9,8 +9,8 @@ IF(NOT DISABLE_TEST_PLUGIN_ENOCEAN)
    SET(YADOMS_SOURCES
       plugins/EnOcean/message/types.h
       plugins/EnOcean/message/types.cpp
-      plugins/EnOcean/message/ResponseReceivedMessage.h
-      plugins/EnOcean/message/ResponseReceivedMessage.cpp
+      plugins/EnOcean/message/response/ReceivedMessage.h
+      plugins/EnOcean/message/response/ReceivedMessage.cpp
       plugins/EnOcean/message/Esp3ReceivedPacket.h
       plugins/EnOcean/message/Esp3ReceivedPacket.cpp
       plugins/EnOcean/message/Esp3SendPacket.h

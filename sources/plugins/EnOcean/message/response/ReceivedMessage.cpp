@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ReceivedMessage.h"
 
-#include <ProtocolException.hpp>
+#include "../../ProtocolException.hpp"
 
 using namespace message::response;
 
