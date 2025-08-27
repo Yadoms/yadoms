@@ -132,6 +132,8 @@ void CPairingHelper::startLearnMode()
     readLearnModeCmd.sendAndReceive();
     m_learnByDongleSupported = readLearnModeCmd.learnModeSupported();
 
+    YADOMS_LOG(information) << "Learn mode " << (m_learnByDongleSupported ? "" : "not ") << "supported";
+
     if (!m_learnByDongleSupported || !readLearnModeCmd.learnModeEnable())
         return;
 

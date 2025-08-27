@@ -365,6 +365,8 @@ void CEnOcean::processConnectionEvent()
         for (const auto& smartAckClient : smartAckClients)
             readSmartAckClientMailboxStatus(smartAckClient);
 
+        YADOMS_LOG(information) << "Ready";
+
         m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 
         // Devices init
