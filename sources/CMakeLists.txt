@@ -1,3 +1,4 @@
+cmake_minimum_required (VERSION 3.14.0)
 ##################################################################################################
 ## CMakeList.txt for YADOMS
 ##
@@ -11,14 +12,13 @@
 ##################################################################################################
 project (Yadoms)
 
-# Check the minimum CMake version
-cmake_minimum_required (VERSION 3.14.0)
-
 # Global CMake policies
 cmake_policy(SET CMP0074 NEW)
 cmake_policy(SET CMP0077 NEW)
 cmake_policy(SET CMP0078 NEW)
 cmake_policy(SET CMP0086 NEW)
+cmake_policy(SET CMP0144 NEW)
+cmake_policy(SET CMP0167 NEW)
 
 ##################################################################################################
 ## Extract Yadoms version from changelog.md file
@@ -110,7 +110,8 @@ set(BOOST_LIBS
 )
 
 # search boost libs
-find_package(Boost 1.60.0 REQUIRED COMPONENTS ${BOOST_LIBS})
+file(GLOB Boost_DIR "${BOOST_ROOT}/stage/lib/cmake/Boost-*" DIRECTORY)
+find_package(Boost 1.80.0 REQUIRED COMPONENTS ${BOOST_LIBS})
 set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 
@@ -311,7 +312,9 @@ set(USE_POCO_WEBSERVER TRUE)
 #include libs (have their own CMakeList.txt)
 add_subdirectory(external-libs)
 
-message("CMAKE_TOOLCHAIN_FILE 1 : ${CMAKE_TOOLCHAIN_FILE}")
+if(CMAKE_TOOLCHAIN_FILE)
+    message(STATUS "CMAKE_TOOLCHAIN_FILE 1 : ${CMAKE_TOOLCHAIN_FILE}")
+endif(CMAKE_TOOLCHAIN_FILE)
 
 ##################################################################################################
 ## Yadoms
