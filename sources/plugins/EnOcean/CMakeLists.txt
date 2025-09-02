@@ -15,8 +15,6 @@ set(ENOCEAN_SOURCES
    stdafx.h
    stdafx.cpp
 
-   4BSTeachinVariant2.h
-   4BSTeachinVariant2.cpp
    Configuration.h
    Configuration.cpp
    DeviceConfigurationHelper.h
@@ -72,6 +70,10 @@ set(ENOCEAN_SOURCES
    message/radioErp1/ReceivedMessage.cpp
    message/radioErp1/SendMessage.h
    message/radioErp1/SendMessage.cpp
+   message/radioErp1/4BSTeachinRequest.h
+   message/radioErp1/4BSTeachinRequest.cpp
+   message/radioErp1/4BSTeachinResponse.h
+   message/radioErp1/4BSTeachinResponse.cpp
 
    message/response/ReceivedMessage.h
    message/response/ReceivedMessage.cpp

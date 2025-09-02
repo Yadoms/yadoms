@@ -5,7 +5,6 @@
 #include <shared/Log.h>
 #include <shared/communication/PortException.hpp>
 #include <shared/exception/EmptyResult.hpp>
-#include "4BSTeachinVariant2.h"
 #include "DeviceConfigurationHelper.h"
 #include "Factory.h"
 #include "manufacturers.h"
@@ -17,13 +16,14 @@
 #include "message/smart_ack/ReadClientMailboxStatusCommand.h"
 #include "message/smart_ack/ReadLearnedClientsCommand.h"
 #include "message/smart_ack/ReadLearnModeCommand.h"
-#include "message/UTE_AnswerSendMessage.h"
-#include "message/UTE_GigaConceptReversedAnswerSendMessage.h"
-#include "message/UTE_GigaConceptReversedReceivedMessage.h"
+#include "message/UTE_AnswerSendMessage.h" //TODO déplacer dans radioErp1
+#include "message/UTE_GigaConceptReversedAnswerSendMessage.h"//TODO déplacer dans radioErp1
+#include "message/UTE_GigaConceptReversedReceivedMessage.h"//TODO déplacer dans radioErp1
 #include "message/radioErp1/ReceivedMessage.h"
+#include "message/radioErp1/4BSTeachinResponse.h"
+#include "message/MessageHelpers.h"
 #include "profiles/bitsetHelpers.hpp"
 #include "profiles/eep.h"
-#include <message\MessageHelpers.h> //TODO virer
 
 
 IMPLEMENT_PLUGIN(CEnOcean)
@@ -577,9 +577,19 @@ void CEnOcean::processRadioErp1(const boost::shared_ptr<const message::CEsp3Rece
 		}
 
 		if (rorg->isEepProvided(erp1UserData))
-			processEepTeachInMessage(erp1UserData, rorg, deviceId);
+		{
+			if (rorg->id() != CRorgs::k4BS_Telegram)
+				throw std::domain_error("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team.");
+
+			processEepTeachInMessage(message::radioErp1::C4BSTeachinRequest(erp1UserData),
+									 rorg,
+									 deviceId);
+		}
 		else
-			processNoEepTeachInMessage(rorg, deviceId);
+		{
+			processNoEepTeachInMessage(rorg,
+									   deviceId);
+		}
 
 		m_pairingHelper->stop();
 
@@ -609,25 +619,20 @@ void CEnOcean::processResponse(const boost::shared_ptr<const message::CEsp3Recei
 	YADOMS_LOG(error) << "Unexpected response received";
 }
 
-void CEnOcean::processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserData,
+void CEnOcean::processEepTeachInMessage(const message::radioErp1::C4BSTeachinRequest& teachInRequest,
 										const boost::shared_ptr<IRorg>& rorg,
 										const std::string& deviceId)
 {
-	if (rorg->id() != CRorgs::k4BS_Telegram)
-		throw std::domain_error("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team.");
 
 	//TODO traiter les 3 variantes
 	//TODO traiter le cas "For FUNC > 3F or TYPE > 7F UTE has to be used instead of 4BS Teach-In" page 20 de https://www.enocean-alliance.org/wp-content/uploads/2020/07/EnOcean-Equipment-Profiles-3-1.pdf
 
-	// Special-case of 4BS teachin mode Variant 2 (profile is provided in the telegram)
-	const C4BSTeachinVariant2 teachInData(erp1UserData);
-
 	try
 	{
 		const auto profile = CProfileHelper(rorg->id(),
-											teachInData.funcId(),
-											teachInData.typeId());
-		const auto manufacturerName = CManufacturers::name(teachInData.manufacturerId());
+											teachInRequest.funcId(),
+											teachInRequest.typeId());
+		const auto& manufacturerName = CManufacturers::name(teachInRequest.manufacturerId());
 
 		const CDeviceConfigurationHelper deviceConfiguration(profile,
 															 manufacturerName);
@@ -652,48 +657,21 @@ void CEnOcean::processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserD
 										   profile,
 										   manufacturerName);
 
+		if (!device)
+			return;
+
 		m_api->updateDeviceConfiguration(deviceId,
 										 deviceConfiguration.configuration());
 
-
-
-		//TODO voir https://www.enocean-alliance.org/wp-content/uploads/2020/07/EnOcean-Equipment-Profiles-3-1.pdf § 3.2.3 pour la réponse (marche pas encore)
-		boost::dynamic_bitset<> userData(4 * 8);
-
-		bitset_insert(userData, 0, 6, teachInData.funcId()); // FUNC
-		bitset_insert(userData, 6, 7, teachInData.typeId()); // TYPE
-		bitset_insert(userData, 13, 11, teachInData.manufacturerId()); // MANUFACTURER
-
-		//TODO recopier de la requête ?
-		bitset_insert(userData, 24, 1, true); // LRN Type : telegram with EEP number and Manufacturer ID
-		bitset_insert(userData, 25, 1, true); // EEP : EEP supported
-		bitset_insert(userData, 26, 1, true); // LRN Result : Sender ID stored
-		bitset_insert(userData, 27, 1, true); // LRN Status : Response
-		bitset_insert(userData, 28, 1, false); // LRN Bit : Teach-in telegram
-
-		message::CMessageHelpers::sendMessage(CRorgs::k4BS_Telegram,
+		message::radioErp1::C4BSTeachinResponse teachinResponse(m_senderId,
+																deviceId,
+																0,
+																teachInRequest.funcId(),
+																teachInRequest.typeId(),
+																teachInRequest.manufacturerId());
+		message::CMessageHelpers::sendMessage(teachinResponse,
 											  m_messageHandler,
-											  m_senderId,
-											  deviceId,
-											  userData,
-											  "send command");
-
-
-
-		//device->sendCommand({},
-		//                    {},
-		//                    m_senderId,
-		//                    m_messageHandler);
-	//    ###
-
-	//// TODO faut-il acquitter ce message (Teach-in Response)
-	//// Voir https://chatgpt.com/share/68b469dc-3b20-8013-8616-ed8c51e49072
-
-	//        // Need to wait a bit before ask initial state (while EnOcean chip record his new association ?)
-	//        boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-	//        m_devices[deviceId]->readInitialState(m_senderId,
-	//                                              m_messageHandler);
-	//        ###
+											  "Teach-In response");
 	}
 	catch (std::exception& e)
 	{

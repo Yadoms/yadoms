@@ -22,8 +22,18 @@ namespace message
 
         command.userData(bitset_to_bytes(userData));
 
+        sendMessage(command,
+                    messageHandler,
+                    messageName);
+    }
+
+    void CMessageHelpers::sendMessage(radioErp1::CSendMessage& message, 
+                                      const boost::shared_ptr<IMessageHandler>& messageHandler,
+                                      const std::string& messageName)
+    {
         boost::shared_ptr<const CEsp3ReceivedPacket> answer;
-        if (!messageHandler->send(command,
+
+        if (!messageHandler->send(message,
                                   [](const boost::shared_ptr<const CEsp3ReceivedPacket>& esp3Packet)
                                   {
                                       return esp3Packet->header().packetType() == RESPONSE;
@@ -33,11 +43,10 @@ namespace message
                                       answer = std::move(esp3Packet);
                                   }))
             throw std::runtime_error(
-                (boost::format("Fail to send message to %1% : no answer to \"%2%\"") % targetId % messageName).str());
+                (boost::format("Fail to send message to %1% : no answer to \"%2%\"") % message.destinationId() % messageName).str());
 
         if (const auto response = boost::make_shared<response::CReceivedMessage>(answer);
             response->returnCode() != response::CReceivedMessage::RET_OK)
-            YADOMS_LOG(error) << "Fail to send message to " << targetId << " : \"" << messageName << "\" returns " <<
-                response->returnCode();
+            YADOMS_LOG(error) << "Fail to send message to " << message.destinationId() << " : \"" << messageName << "\" returns " << response->returnCode();
     }
 } // namespace message

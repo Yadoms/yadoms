@@ -59,3 +59,8 @@ boost::shared_ptr<const std::vector<unsigned char>> CSendMessage::buffer()
 
     return CEsp3SendPacket::buffer();
 }
+
+std::string CSendMessage::destinationId() const
+{
+    return m_destinationId;
+}

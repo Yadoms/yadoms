@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/date_time.hpp>
 
 namespace message
 {

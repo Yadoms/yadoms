@@ -11,6 +11,7 @@
 #include "message/UTE_AnswerSendMessage.h"
 #include "message/UTE_ReceivedMessage.h"
 #include "message/radioErp1/ReceivedMessage.h"
+#include "message/radioErp1/4BSTeachinRequest.h"
 #include "profiles/IRorg.h"
 #include "profiles/IType.h"
 
@@ -106,7 +107,7 @@ protected:
     //--------------------------------------------------------------
     void processRadioErp1(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
     static void processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
-    void processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserData,
+    void processEepTeachInMessage(const message::radioErp1::C4BSTeachinRequest& teachInRequest,
                                   const boost::shared_ptr<IRorg>& rorg,
                                   const std::string& deviceId);
     void processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
