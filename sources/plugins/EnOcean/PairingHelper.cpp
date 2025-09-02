@@ -49,7 +49,7 @@ bool CPairingHelper::startStopPairing(const boost::shared_ptr<yApi::IExtraQuery>
     if (m_pairingEnable)
     {
         YADOMS_LOG(warning) << "Pairing already started, stop it";
-        stopPairing();
+        stop();
         return false;
     }
 
@@ -67,7 +67,7 @@ bool CPairingHelper::onProgressPairing()
 
     if (m_progressPairingCount == 0)
     {
-        stopPairing();
+        stop();
         return true;
     }
 
@@ -98,8 +98,11 @@ void CPairingHelper::startPairing(const boost::shared_ptr<yApi::IExtraQuery>& ma
     YADOMS_LOG(information) << "Pairing started";
 }
 
-void CPairingHelper::stopPairing(const std::string& devicePaired)
+void CPairingHelper::stop(const std::string& devicePaired)
 {
+    if (!m_pairingEnable)
+        return;
+
     if (m_mode == kAuto)
     {
         YADOMS_LOG(warning) << "Try to stop pairing with auto mode : not compatible, ignored";
@@ -164,13 +167,7 @@ void CPairingHelper::stopSmartAckPairing() const
                        message::LearnMode::SimpleLearnMode);
 }
 
-bool CPairingHelper::needPairing(const std::string& deviceName)
+bool CPairingHelper::isPairing()
 {
-    if (!m_pairingEnable)
-        return false;
-
-    if (m_mode == kManual)
-        stopPairing(deviceName);
-
-    return true;
+    return m_pairingEnable;
 }

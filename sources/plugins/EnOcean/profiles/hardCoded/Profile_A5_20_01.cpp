@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <cmath>
 #include "Profile_A5_20_01.h"
 #include "../bitsetHelpers.hpp"
 #include "profiles/eep.h"
@@ -10,7 +11,7 @@ CProfile_A5_20_01::CProfile_A5_20_01(const std::string& deviceId,
    : m_deviceId(deviceId),
      m_currentValue(boost::make_shared<yApi::historization::CDimmable>("Current Value", yApi::EKeywordAccessMode::kGet)),
      m_serviceOn(boost::make_shared<yApi::historization::CSwitch>("Service On", yApi::EKeywordAccessMode::kGet)),
-     m_energyInputEnable(boost::make_shared<yApi::historization::CSwitch>("Energy Input Enable", yApi::EKeywordAccessMode::kGet)),
+     m_energyInputEnable(boost::make_shared<yApi::historization::CSwitch>("Energy Input Active", yApi::EKeywordAccessMode::kGet)),
      m_energyStorageCharged(boost::make_shared<yApi::historization::CSwitch>("Energy Storage Charged", yApi::EKeywordAccessMode::kGet)),
      m_battery(boost::make_shared<yApi::historization::CBatteryLevel>("Battery", yApi::EKeywordAccessMode::kGet)),
      m_coverOpen(boost::make_shared<yApi::historization::CSwitch>("Cover Open", yApi::EKeywordAccessMode::kGet)),
@@ -71,7 +72,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    m_temperatureFailure->set(bitset_extract(data, 13, 1) ? true : false);
    m_windowOpen->set(bitset_extract(data, 14, 1) ? true : false);
    m_actuatorObstructed->set(bitset_extract(data, 15, 1) ? true : false);
-   m_temperature->set(static_cast<double>(bitset_extract(data, 16, 8)) * 40.0 / 255.0);
+   m_temperature->set(static_cast<double>(std::round(bitset_extract(data, 16, 8)) * 40.0 / 255.0));
 
    return m_historizers;
 }
@@ -103,16 +104,18 @@ void CProfile_A5_20_01::sendCommand(const std::string& keyword,
    boost::dynamic_bitset<> userData(4 * 8);
 
    bitset_insert(userData, 0, 8, m_setPointModeIsTemperature
-                                    ? static_cast<unsigned int>(m_temperatureSetPoint->get() * 255.0 / 40.0)
+                                    ? static_cast<unsigned int>(std::round(m_temperatureSetPoint->get() * 255.0 / 40.0))
                                     : m_valvePosition->get());
    bitset_insert(userData, 21, 1, m_setPointModeIsTemperature);
    bitset_insert(userData, 8, 8,
-                 static_cast<unsigned int>(m_currentTemperatureFromExternalSensor->get() * 255.0 / 40.0));
+                 255 - static_cast<unsigned int>(std::round(m_currentTemperatureFromExternalSensor->get() * 255.0 / 40.0)));
    bitset_insert(userData, 23, 1, false);
    bitset_insert(userData, 16, 1, keyword == m_runInitSequence->getKeyword());
    bitset_insert(userData, 17, 1, keyword == m_liftSet->getKeyword());
    bitset_insert(userData, 20, 1, m_summerMode->get());
    bitset_insert(userData, 22, 1, m_setPointInverse->get());
+   
+   bitset_insert(userData, 28, 1, true); // Data telegram
 
    message::CMessageHelpers::sendMessage(CRorgs::k4BS_Telegram,
                                          messageHandler,

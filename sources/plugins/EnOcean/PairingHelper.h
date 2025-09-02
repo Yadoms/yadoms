@@ -23,13 +23,13 @@ public:
     static unsigned int getPairingPeriodTimeSeconds();
 
     // IPairingHelper implementation
-    bool needPairing(const std::string& deviceName) override;
+    bool isPairing() override;
+    void stop(const std::string& deviceName = std::string()) override;
     [[nodiscard]] EPairingMode getMode() const override;
     // [END] IPairingHelper implementation
 
 protected:
     void startPairing(const boost::shared_ptr<yApi::IExtraQuery>& manualPairingExtraQuery);
-    void stopPairing(const std::string& devicePaired = std::string());
 
     void startLearnMode();
     void stopLearnMode() const;

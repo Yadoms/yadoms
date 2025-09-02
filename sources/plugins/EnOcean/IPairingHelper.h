@@ -15,11 +15,16 @@ public:
     virtual ~IPairingHelper() = default;
 
     //--------------------------------------------------------------
-    /// \brief     Check if device need to be paired
-    /// \param[in] deviceName  Device to check for pairing
-    /// \return    true if device need to be paired and pairing is enable
+    /// \brief     Check if pairing is currently active
+    /// \return    true if pairing is active
     //--------------------------------------------------------------
-    virtual bool needPairing(const std::string& deviceName) = 0;
+    virtual bool isPairing() = 0;
+
+    //--------------------------------------------------------------
+    /// \brief     Stop the paring mode
+    /// \param[in] deviceName  Name of the device paired (empty if nothing paired)
+    //--------------------------------------------------------------
+    virtual void stop(const std::string& deviceName) = 0;
 
     //--------------------------------------------------------------
     /// \brief     Get the pairing mode
