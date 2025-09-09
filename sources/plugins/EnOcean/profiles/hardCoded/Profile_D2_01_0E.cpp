@@ -106,8 +106,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 void CProfile_D2_01_0E::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
-                                    boost::shared_ptr<IMessageHandler> messageHandler) const
-{
+                                    boost::shared_ptr<IMessageHandler> messageHandler) {
    if (keyword != m_channel->getKeyword())
    {
       m_channel->setCommand(commandBody);

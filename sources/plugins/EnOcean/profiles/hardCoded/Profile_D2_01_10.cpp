@@ -59,8 +59,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 void CProfile_D2_01_10::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
-                                    boost::shared_ptr<IMessageHandler> messageHandler) const
-{
+                                    boost::shared_ptr<IMessageHandler> messageHandler) {
    bool value;
    CProfile_D2_01_Common::EOutputChannel channel;
    if (keyword == m_channel1->getKeyword())

@@ -366,7 +366,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          typeClass.addMethod(cppClass.CppMethod("allHistorizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return m_historizers;"))
          typeClass.addMethod(cppClass.CppMethod("readInitialState", "void", "const std::string& senderId, boost::shared_ptr<IMessageHandler> messageHandler", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   // No initial state read for generated profile"))
          typeClass.addMethod(cppClass.CppMethod("sendConfiguration", "void", "const shared::CDataContainer& deviceConfiguration, const std::string& senderId, boost::shared_ptr<IMessageHandler> messageHandler", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   // Device supports no configuration"))
-         typeClass.addMethod(cppClass.CppMethod("sendCommand", "void", "const std::string& keyword, const std::string& commandBody, const std::string& senderId, boost::shared_ptr<IMessageHandler> messageHandler", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   throw std::logic_error(\"device supports no command sending\");"))
+         typeClass.addMethod(cppClass.CppMethod("sendCommand", "void", "const std::string& keyword, const std::string& commandBody, const std::string& senderId, boost::shared_ptr<IMessageHandler> messageHandler", cppClass.PUBLIC, cppClass.OVERRIDE, "   throw std::logic_error(\"device supports no command sending\");"))
 
          if not historizersCppName:
             util.warning(profileName + ", No historizer can be created for this profile. Profile will be not supported.")

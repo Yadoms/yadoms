@@ -25,7 +25,7 @@ public:
    void sendCommand(const std::string& keyword,
       const std::string& commandBody,
       const std::string& senderId,
-      boost::shared_ptr<IMessageHandler> messageHandler) const override;
+      boost::shared_ptr<IMessageHandler> messageHandler) override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration,
       const std::string& senderId,
       boost::shared_ptr<IMessageHandler> messageHandler) const override;
