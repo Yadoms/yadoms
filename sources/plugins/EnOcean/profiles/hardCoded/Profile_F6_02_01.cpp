@@ -39,7 +39,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
    const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+   boost::shared_ptr<IMessageHandler> messageHandler)
 {
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;

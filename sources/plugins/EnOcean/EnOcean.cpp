@@ -775,7 +775,7 @@ void CEnOcean::processDataTelegram(const message::radioErp1::CReceivedMessage& e
 		return;
 	}
 
-	const auto device = m_devices[deviceId];
+	const auto& device = m_devices[deviceId];
 
 	auto keywordsToHistorize = device->states(static_cast<unsigned char>(erp1Message.rorg()),
 											  erp1UserData,

@@ -39,7 +39,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
    const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+   boost::shared_ptr<IMessageHandler> messageHandler)
 {
    m_contact->set(bitset_extract(data, 16, 8) >= 196);
    m_battery->set(bitset_extract(data, 8, 8) >= 121 ? 100 : 10);

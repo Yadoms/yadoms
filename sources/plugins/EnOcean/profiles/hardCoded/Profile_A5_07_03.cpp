@@ -40,7 +40,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
    const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+   boost::shared_ptr<IMessageHandler> messageHandler)
 {
    m_supplyVoltage->set(static_cast<double>(CProfile_A5_12_Common::clamp(bitset_extract(data, 0, 8),
                                                                          static_cast<unsigned>(0),

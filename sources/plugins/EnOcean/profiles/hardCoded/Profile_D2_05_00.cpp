@@ -45,7 +45,6 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                    const boost::dynamic_bitset<>& status,
                                                                                                    const std::string& senderId,
                                                                                                    boost::shared_ptr<IMessageHandler> messageHandler)
-const
 {
    return CProfile_D2_05_Common::extractReplyPositionAndAngleResponse(rorg,
                                                                       data,

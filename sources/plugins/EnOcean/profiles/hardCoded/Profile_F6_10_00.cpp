@@ -38,7 +38,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
    const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+   boost::shared_ptr<IMessageHandler> messageHandler)
 {
    const auto T21 = bitset_extract(status, 2, 1) ? true : false;
    const auto NU = bitset_extract(status, 3, 1) ? true : false;

@@ -38,7 +38,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
    const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+   boost::shared_ptr<IMessageHandler> messageHandler)
 {
    m_latitude->set(static_cast<double>(bitset_extract(data, 0, 4) << 8 || bitset_extract(data, 8, 8)) * 180.0 / 4096.0 - 90.0);
    m_longitude->set(static_cast<double>(bitset_extract(data, 4, 4) << 8 || bitset_extract(data, 16, 8)) * 180.0 / 4096.0 - 90.0);

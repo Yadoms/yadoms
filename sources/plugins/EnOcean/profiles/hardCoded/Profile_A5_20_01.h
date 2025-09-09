@@ -19,11 +19,9 @@ public:
                           boost::shared_ptr<IMessageHandler> messageHandler) const override;
     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(unsigned char rorg,
                                                                                     const boost::dynamic_bitset<>& data,
-                                                                                    const boost::dynamic_bitset<>&
-                                                                                    status,
+                                                                                    const boost::dynamic_bitset<>& status,
                                                                                     const std::string& senderId,
-                                                                                    boost::shared_ptr<IMessageHandler>
-                                                                                    messageHandler) const override;
+                                                                                    boost::shared_ptr<IMessageHandler> messageHandler) override;
     void sendCommand(const std::string& keyword,
                      const std::string& commandBody,
                      const std::string& senderId,
@@ -54,4 +52,6 @@ private:
     boost::shared_ptr<yApi::historization::CSwitch> m_setPointInverse;
     mutable bool m_setPointModeIsTemperature = true;
     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
+
+    boost::dynamic_bitset<> m_pendingCommand;
 };

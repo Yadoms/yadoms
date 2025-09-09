@@ -18,7 +18,7 @@ public:
                                                                                            const boost::dynamic_bitset<>& data,
                                                                                            const boost::dynamic_bitset<>& status,
                                                                                            const std::string& senderId,
-                                                                                           boost::shared_ptr<IMessageHandler> messageHandler) const = 0;
+                                                                                           boost::shared_ptr<IMessageHandler> messageHandler) = 0;
    virtual void sendCommand(const std::string& keyword,
                             const std::string& commandBody,
                             const std::string& senderId,
