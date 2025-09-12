@@ -63,6 +63,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 	const std::string& senderId,
 	boost::shared_ptr<IMessageHandler> messageHandler)
 {
+	if (rorg != CRorgs::k4BS_Telegram)
+		return {}; // Some valves send extra messages, ignore them
+
 	m_currentValue->set(static_cast<int>(bitset_extract(data, 0, 8)));
 	m_serviceOn->set(bitset_extract(data, 8, 1) ? true : false);
 	m_energyInputEnable->set(bitset_extract(data, 9, 1) ? true : false);
@@ -74,16 +77,29 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 	m_actuatorObstructed->set(bitset_extract(data, 15, 1) ? true : false);
 	m_temperature->set(static_cast<double>(std::round(bitset_extract(data, 16, 8)) * 40.0 / 255.0));
 
-	if (!m_pendingCommand.empty())
+	if (m_pendingCommand.empty())
 	{
-		message::CMessageHelpers::sendMessage(CRorgs::k4BS_Telegram,
-											  messageHandler,
-											  senderId,
-											  m_deviceId,
-											  m_pendingCommand,
-											  "send command");
-		m_pendingCommand.clear();
+		// We always must send a command as answer. Init first command from received message.
+		m_pendingCommand.resize(4 * 8);
+
+		bitset_insert(m_pendingCommand, 0, 8, m_currentValue->get());
+		bitset_insert(m_pendingCommand, 21, 1, false);
+		bitset_insert(m_pendingCommand, 8, 8, 255 - static_cast<unsigned int>(std::round(m_temperature->get() * 255.0 / 40.0)));
+		bitset_insert(m_pendingCommand, 23, 1, false);
+		bitset_insert(m_pendingCommand, 16, 1, false);
+		bitset_insert(m_pendingCommand, 17, 1, false);
+		bitset_insert(m_pendingCommand, 20, 1, false);
+		bitset_insert(m_pendingCommand, 22, 1, false);
+
+		bitset_insert(m_pendingCommand, 28, 1, true); // Data telegram
 	}
+
+	message::CMessageHelpers::sendMessage(CRorgs::k4BS_Telegram,
+										  messageHandler,
+										  senderId,
+										  m_deviceId,
+										  m_pendingCommand,
+										  "send command");
 
 	return m_historizers;
 }
@@ -110,16 +126,17 @@ void CProfile_A5_20_01::sendCommand(const std::string& keyword,
 	if (keyword == m_setPointInverse->getKeyword())
 		m_setPointInverse->setCommand(commandBody);
 
+	bool m_useInternalSensor = true; //TODO : en configuration ?
+
 
 	// Create message to send at next device wakeup
 	m_pendingCommand.resize(4 * 8);
 
 	bitset_insert(m_pendingCommand, 0, 8, m_setPointModeIsTemperature
-				  ? static_cast<unsigned int>(std::round(m_temperatureSetPoint->get() * 255.0 / 40.0))
+				  ? (m_useInternalSensor ? 0 : static_cast<unsigned int>(std::round(m_temperatureSetPoint->get() * 255.0 / 40.0)))
 				  : m_valvePosition->get());
 	bitset_insert(m_pendingCommand, 21, 1, m_setPointModeIsTemperature);
-	bitset_insert(m_pendingCommand, 8, 8,
-				  255 - static_cast<unsigned int>(std::round(m_currentTemperatureFromExternalSensor->get() * 255.0 / 40.0)));
+	bitset_insert(m_pendingCommand, 8, 8, 255 - static_cast<unsigned int>(std::round(m_currentTemperatureFromExternalSensor->get() * 255.0 / 40.0)));
 	bitset_insert(m_pendingCommand, 23, 1, false);
 	bitset_insert(m_pendingCommand, 16, 1, keyword == m_runInitSequence->getKeyword());
 	bitset_insert(m_pendingCommand, 17, 1, keyword == m_liftSet->getKeyword());

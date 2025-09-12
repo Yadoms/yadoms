@@ -576,22 +576,24 @@ void CEnOcean::processRadioErp1(const boost::shared_ptr<const message::CEsp3Rece
 			return;
 		}
 
+		std::string pairedDeviceTitle;
+
 		if (rorg->isEepProvided(erp1UserData))
 		{
 			if (rorg->id() != CRorgs::k4BS_Telegram)
 				throw std::domain_error("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team.");
 
-			processEepTeachInMessage(message::radioErp1::C4BSTeachinRequest(erp1UserData),
-									 rorg,
-									 deviceId);
+			pairedDeviceTitle = processEepTeachInMessage(message::radioErp1::C4BSTeachinRequest(erp1UserData),
+														 rorg,
+														 deviceId);
 		}
 		else
 		{
-			processNoEepTeachInMessage(rorg,
-									   deviceId);
+			pairedDeviceTitle = processNoEepTeachInMessage(rorg,
+														   deviceId);
 		}
 
-		m_pairingHelper->stop();
+		m_pairingHelper->stop(pairedDeviceTitle);
 
 		return;
 	}
@@ -619,9 +621,9 @@ void CEnOcean::processResponse(const boost::shared_ptr<const message::CEsp3Recei
 	YADOMS_LOG(error) << "Unexpected response received";
 }
 
-void CEnOcean::processEepTeachInMessage(const message::radioErp1::C4BSTeachinRequest& teachInRequest,
-										const boost::shared_ptr<IRorg>& rorg,
-										const std::string& deviceId)
+std::string CEnOcean::processEepTeachInMessage(const message::radioErp1::C4BSTeachinRequest& teachInRequest,
+											   const boost::shared_ptr<IRorg>& rorg,
+											   const std::string& deviceId)
 {
 
 	//TODO traiter les 3 variantes
@@ -649,7 +651,7 @@ void CEnOcean::processEepTeachInMessage(const message::radioErp1::C4BSTeachinReq
 			m_devices[deviceId]->readInitialState(m_senderId,
 												  m_messageHandler);
 
-			return;
+			return {};
 		}
 
 		// Device not exist, declare it
@@ -658,7 +660,7 @@ void CEnOcean::processEepTeachInMessage(const message::radioErp1::C4BSTeachinReq
 										   manufacturerName);
 
 		if (!device)
-			return;
+			return {};
 
 		m_api->updateDeviceConfiguration(deviceId,
 										 deviceConfiguration.configuration());
@@ -672,15 +674,18 @@ void CEnOcean::processEepTeachInMessage(const message::radioErp1::C4BSTeachinReq
 		message::CMessageHelpers::sendMessage(teachinResponse,
 											  m_messageHandler,
 											  "Teach-In response");
+
+		return device->title();
 	}
 	catch (std::exception& e)
 	{
 		YADOMS_LOG(error) << "Unable to declare device : " << e.what();
+		return {};
 	}
 }
 
-void CEnOcean::processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
-										  const std::string& deviceId)
+std::string CEnOcean::processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
+												 const std::string& deviceId)
 {
 	// Special case for the 1BS RORG : only one func and type exist, so profile can be known
 	if (rorg->id() == CRorgs::k1BS_Telegram)
@@ -693,6 +698,7 @@ void CEnOcean::processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
 		const CDeviceConfigurationHelper deviceConfiguration(profile,
 															 ManufacturerName);
 
+		std::string pairedDeviceTitle;
 		if (m_api->deviceExists(deviceId))
 		{
 			if (m_devices.find(deviceId) == m_devices.end())
@@ -706,7 +712,7 @@ void CEnOcean::processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
 												   ManufacturerName);
 
 				if (!device)
-					return;
+					return {};
 
 				device->readInitialState(m_senderId,
 										 m_messageHandler);
@@ -727,15 +733,17 @@ void CEnOcean::processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
 											   ManufacturerName);
 
 			if (!device)
-				return;
+				return {};
 
 			device->readInitialState(m_senderId,
 									 m_messageHandler);
+
+			pairedDeviceTitle = device->title();
 		}
 
 		m_api->updateDeviceConfiguration(deviceId,
 										 deviceConfiguration.configuration());
-		return;
+		return pairedDeviceTitle;
 	}
 
 	if (m_api->deviceExists(deviceId))
@@ -743,10 +751,12 @@ void CEnOcean::processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
 		// Device exist.
 		// It is ether configured or not, but this teachin message give us nothing new (no EEP is provided), so ignore it
 		YADOMS_LOG(information) << "Device " << deviceId << " already declared, teachin message ignored";
-		return;
+		return {};
 	}
 
 	declareDeviceWithoutProfile(deviceId);
+
+	return deviceId;
 }
 
 void CEnOcean::processDataTelegram(const message::radioErp1::CReceivedMessage& erp1Message,
