@@ -116,7 +116,7 @@ protected:
 							 const boost::dynamic_bitset<>& erp1Status,
 							 const std::string& deviceId);
 	static void processEvent(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
-	void processUTE(message::radioErp1::CReceivedMessage& erp1Message);
+	std::string processUTE(message::radioErp1::CReceivedMessage& erp1Message);
 	bool sendUTEAnswer(message::radioErp1::CUTEResponse::EResponse response,
 					   const boost::shared_ptr<const message::radioErp1::CUTERequest>& uteMessage,
 					   bool isReversed,
@@ -202,12 +202,16 @@ protected:
 							  const CProfileHelper& profile) const;
 
 	//--------------------------------------------------------------
-	/// \brief	                     Process pairing devices
+	/// \brief	                     Start pairing devices
 	/// \param [in] api              Plugin execution context (Yadoms API)
-	/// \param [in] extraQuery       Extra query
 	//--------------------------------------------------------------
-	void startManualPairing(const boost::shared_ptr<yApi::IYPluginApi>& api,
-							const boost::shared_ptr<yApi::IExtraQuery>& extraQuery);
+	void startPairing(const boost::shared_ptr<yApi::IYPluginApi>& api);
+
+	//--------------------------------------------------------------
+	/// \brief	                     Stop pairing devices
+	/// \param [in] pairedDeviceTitle Paired device (empty if no device paired)
+	//--------------------------------------------------------------
+	void stopPairing(const std::string& pairedDeviceTitle = {});
 
 private:
 	//--------------------------------------------------------------
@@ -248,6 +252,8 @@ private:
 	//--------------------------------------------------------------
 	/// \brief  The pairing helper
 	//--------------------------------------------------------------
-	boost::shared_ptr<CPairingHelper> m_pairingHelper; //TODO devrait être l'interface
+	boost::shared_ptr<yApi::IExtraQuery> m_pairingQuery;
+	unsigned int m_progressPairingCount = 0;
+	boost::shared_ptr<IPairingHelper> m_pairingHelper;
 	boost::shared_ptr<shared::event::CEventTimer> m_progressPairingTimer;
 };

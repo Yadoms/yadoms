@@ -12,11 +12,15 @@ public:
     /// \brief     Check if pairing is currently active
     /// \return    true if pairing is active
     //--------------------------------------------------------------
-    virtual bool isPairing() = 0;
+    virtual bool isPairing() = 0;    
 
     //--------------------------------------------------------------
-    /// \brief     Stop the paring mode
-    /// \param[in] deviceName  Name of the device paired (empty if nothing paired)
+    /// \brief     Start the pairing
     //--------------------------------------------------------------
-    virtual void stop(const std::string& deviceName) = 0;
+	virtual bool start() = 0;
+
+    //--------------------------------------------------------------
+    /// \brief     Stop the pairing
+    //--------------------------------------------------------------
+    virtual void stop() = 0;
 };

@@ -38,6 +38,10 @@ enum
 	kAnswerTimeout,
 };
 
+static constexpr unsigned int PairingTimeoutSeconds = 60;
+static constexpr unsigned int PairingPeriodTimeSeconds = 5;
+static constexpr unsigned int PairingProgressNbMaxPeriods = PairingTimeoutSeconds / PairingPeriodTimeSeconds;
+
 
 CEnOcean::CEnOcean()
 	: m_signalPowerKeyword(boost::make_shared<shared::plugin::yPluginApi::historization::CSignalPower>("signal power"))
@@ -54,8 +58,6 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 	// Load configuration values (provided by database)
 	m_configuration.initializeWith(m_api->getConfiguration());
-
-	m_pairingHelper = CFactory::constructPairingHelper(api);
 
 	// Load known devices
 	loadAllDevices();
@@ -176,7 +178,17 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				if (auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>())
 				{
 					if (extraQuery->getData()->query() == "pairing")
-						startManualPairing(api, extraQuery);
+					{
+						if (m_pairingHelper->isPairing())
+						{
+							stopPairing();
+						}
+						else
+						{
+							m_pairingQuery = extraQuery;
+							startPairing(api);
+						}
+					}
 					else
 					{
 						YADOMS_LOG(error) << "Unsupported query : " << extraQuery->getData()->query();
@@ -192,16 +204,22 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 			}
 			case kProgressPairingTimer:
 			{
-				if (m_pairingHelper->onProgressPairing())
-				{
-					// Finished
+				if (!m_pairingHelper->isPairing())
 					m_progressPairingTimer.reset();
+
+				--m_progressPairingCount;
+				if (m_progressPairingCount == 0)
+				{
+					stopPairing();
 				}
 				else
 				{
-					// Next loop
-					if (m_progressPairingTimer)
-						m_progressPairingTimer->start();
+					if (m_pairingQuery)
+						m_pairingQuery->reportProgress(
+							static_cast<float>(PairingProgressNbMaxPeriods - m_progressPairingCount) * 100.0f / PairingProgressNbMaxPeriods,
+							"customLabels.pairing.pairing");
+
+					m_progressPairingTimer->start();
 				}
 				break;
 			}
@@ -276,6 +294,8 @@ void CEnOcean::createConnection()
 														 m_api->getEventHandler(),
 														 kEvtPortDataReceived,
 														 bufferLogger);
+
+	m_pairingHelper = CFactory::constructPairingHelper(m_messageHandler);
 
 	m_port->subscribeForConnectionEvents(m_api->getEventHandler(),
 										 kEvtPortConnection);
@@ -550,9 +570,9 @@ void CEnOcean::processRadioErp1(const boost::shared_ptr<const message::CEsp3Rece
 			return;
 		}
 
-		processUTE(erp1Message);
+		const auto deviceTitle = processUTE(erp1Message);
 
-		m_pairingHelper->stop();
+		stopPairing(deviceTitle);
 
 		return;
 	}
@@ -590,7 +610,7 @@ void CEnOcean::processRadioErp1(const boost::shared_ptr<const message::CEsp3Rece
 														   deviceId);
 		}
 
-		m_pairingHelper->stop(pairedDeviceTitle);
+		stopPairing(pairedDeviceTitle);
 
 		return;
 	}
@@ -773,8 +793,12 @@ void CEnOcean::processDataTelegram(const message::radioErp1::CReceivedMessage& e
 			return;
 		}
 
+		if (!m_pairingHelper->isPairing())
+			return;
+
 		// Declare only RPS devices on data telegram (other devices have pairing procedure)
 		declareDeviceWithoutProfile(deviceId);
+		stopPairing(deviceId + "(set profile before use)");
 		return;
 	}
 
@@ -824,7 +848,7 @@ void CEnOcean::processEvent(const boost::shared_ptr<const message::CEsp3Received
 	YADOMS_LOG(information) << "Event " << eventCode << " received";
 }
 
-void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
+std::string CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 {
 	const auto isReversed = message::radioErp1::CUTEGigaConceptReversedRequest::isCGigaConceptReversedUteMessage(erp1Message);
 
@@ -841,7 +865,7 @@ void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 		{
 			YADOMS_LOG(information) << "UTE message : command type " << static_cast<unsigned int>(uteMessage->command()) <<
 				" not supported, message ignored";
-			return;
+			return {};
 		}
 
 		const auto deviceId = uteMessage->senderId();
@@ -858,7 +882,7 @@ void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 												   generateModel(std::string(), manufacturerName, profile));
 
 				if (!device)
-					return;
+					return {};
 
 				m_api->updateDeviceConfiguration(deviceId,
 												 CDeviceConfigurationHelper(profile, manufacturerName).configuration());
@@ -870,7 +894,7 @@ void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 							  uteMessage,
 							  isReversed,
 							  deviceId);
-				return;
+				return {};
 			}
 		}
 
@@ -879,12 +903,12 @@ void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 					  isReversed,
 					  deviceId);
 
-		// Need to wait a bit before ask initial state (while EnOcean chip record his new association ?)
+		// Need to wait a bit before ask initial state (while EnOcean chip record its new association ?)
 		boost::this_thread::sleep(boost::posix_time::milliseconds(500));
 		m_devices[deviceId]->readInitialState(m_senderId,
 											  m_messageHandler);
 
-		break;
+		return m_devices.at(deviceId)->title();
 	}
 	case message::radioErp1::CUTERequest::ETeachInRequest::kTeachInDeletionRequest:
 	{
@@ -894,13 +918,13 @@ void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 					  uteMessage,
 					  isReversed,
 					  uteMessage->senderId());
-		return;
+		return {};
 	}
 	default:
 	{
 		YADOMS_LOG(information) << "UTE message : teach-in request type " << static_cast<int>(uteMessage->teachInRequest()) <<
 			" not supported, message ignored";
-		break;
+		return {};
 	}
 	}
 }
@@ -1041,14 +1065,35 @@ void CEnOcean::readSmartAckClientMailboxStatus(const boost::shared_ptr<message::
 					   smartAckClient->controllerId());
 }
 
-void CEnOcean::startManualPairing(const boost::shared_ptr<yApi::IYPluginApi>& api,
-								  const boost::shared_ptr<yApi::IExtraQuery>& extraQuery)
+void CEnOcean::startPairing(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
-	if (m_pairingHelper->startStopPairing(extraQuery,
-										  m_messageHandler))
+	if (m_pairingHelper->start())
+	{
+		m_progressPairingCount = PairingProgressNbMaxPeriods;
+		m_pairingQuery->reportProgress(1.0f, "customLabels.pairing.pairing");
 		m_progressPairingTimer = api->getEventHandler().createTimer(kProgressPairingTimer,
 																	shared::event::CEventTimer::kOneShot,
-																	boost::posix_time::seconds(CPairingHelper::getPairingPeriodTimeSeconds()));
+																	boost::posix_time::seconds(PairingPeriodTimeSeconds));
+	}
 	else if (m_progressPairingTimer)
+	{
 		m_progressPairingTimer.reset();
+	}
 }
+
+void CEnOcean::stopPairing(const std::string& pairedDeviceTitle)
+{
+	m_pairingHelper->stop();
+	m_progressPairingTimer->stop();
+
+	if (m_pairingQuery)
+	{
+		m_pairingQuery->reportProgress(99.0f, pairedDeviceTitle.empty()
+									   ? "customLabels.pairing.noDevicePaired"
+									   : "customLabels.pairing.devicePaired");
+
+		m_pairingQuery->sendSuccess(shared::CDataContainer::make());
+	}
+	m_pairingQuery.reset();
+}
+

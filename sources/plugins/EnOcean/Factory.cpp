@@ -45,7 +45,7 @@ boost::shared_ptr<IMessageHandler> CFactory::constructMessageHandler(boost::shar
                                               bufferLogger);
 }
 
-boost::shared_ptr<CPairingHelper> CFactory::constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api)
+boost::shared_ptr<CPairingHelper> CFactory::constructPairingHelper(const boost::shared_ptr<IMessageHandler>& messageHandler)
 {
-   return boost::make_shared<CPairingHelper>(api);
+   return boost::make_shared<CPairingHelper>(messageHandler);
 }

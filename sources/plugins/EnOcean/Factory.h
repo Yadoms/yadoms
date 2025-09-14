@@ -54,9 +54,8 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                           Create the pairing helper
-   /// \param[in] api                     The Yadoms plugin API
-   /// \param[in] pairingMode             Pairing mode
+   /// \param[in] messageHandler          The message handler to redirect a received message
    /// \return                            The pairing helper
    //--------------------------------------------------------------
-   static boost::shared_ptr<CPairingHelper> constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api);
+   static boost::shared_ptr<CPairingHelper> constructPairingHelper(const boost::shared_ptr<IMessageHandler>& messageHandler);
 };
