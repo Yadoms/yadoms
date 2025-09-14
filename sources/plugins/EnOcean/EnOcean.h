@@ -8,12 +8,10 @@
 #include "ProfileHelper.h"
 #include "message/Esp3ReceivedPacket.h"
 #include "message/smart_ack/Client.h"
-#include "message/UTE_AnswerSendMessage.h"
-#include "message/UTE_ReceivedMessage.h"
-#include "message/radioErp1/ReceivedMessage.h"
 #include "message/radioErp1/4BSTeachinRequest.h"
-#include "profiles/IRorg.h"
-#include "profiles/IType.h"
+#include "message/radioErp1/ReceivedMessage.h"
+#include "message/radioErp1/UTERequest.h"
+#include "message/radioErp1/UTEResponse.h"
 
 
 // Shortcut to yPluginApi namespace
@@ -118,8 +116,8 @@ protected:
 							 const std::string& deviceId);
 	static void processEvent(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
 	void processUTE(message::radioErp1::CReceivedMessage& erp1Message);
-	bool sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
-					   const boost::shared_ptr<const message::CUTE_ReceivedMessage>& uteMessage,
+	bool sendUTEAnswer(message::radioErp1::CUTEResponse::EResponse response,
+					   const boost::shared_ptr<const message::radioErp1::CUTERequest>& uteMessage,
 					   bool isReversed,
 					   const std::string& deviceId);
 

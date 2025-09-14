@@ -1,15 +1,15 @@
 #pragma once
-#include "radioErp1/ReceivedMessage.h"
+#include "ReceivedMessage.h"
 
 
-namespace message
+namespace message::radioErp1
 {
     //--------------------------------------------------------------
     /// \brief	EnOcean UTE message (Universal Teach-in)
     ///
     /// This class manages a UTE EnOcean message.
     //--------------------------------------------------------------
-    class CUTE_ReceivedMessage
+    class CUTERequest
     {
     public:
         enum class ETeachInRequest
@@ -29,8 +29,8 @@ namespace message
         /// \brief	                           Constructor
         /// \param[in] message                 The ERP1 radio message
         //--------------------------------------------------------------
-        explicit CUTE_ReceivedMessage(const radioErp1::CReceivedMessage& message);
-        virtual ~CUTE_ReceivedMessage() = default;
+        explicit CUTERequest(const CReceivedMessage& message);
+        virtual ~CUTERequest() = default;
 
         virtual bool bidirectionalCommunication() const;
         virtual bool teachInResponseExpected() const;
@@ -44,6 +44,6 @@ namespace message
         virtual std::string senderId() const;
 
     protected:
-        const radioErp1::CReceivedMessage& m_erp1;
+        const CReceivedMessage& m_erp1;
     };
-} // namespace message
+}

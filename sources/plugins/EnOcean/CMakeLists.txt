@@ -52,14 +52,6 @@ set(ENOCEAN_SOURCES
    message/RequestDongleVersionCommand.cpp
    message/types.h
    message/types.cpp
-   message/UTE_AnswerSendMessage.h
-   message/UTE_AnswerSendMessage.cpp
-   message/UTE_GigaConceptReversedAnswerSendMessage.h
-   message/UTE_GigaConceptReversedAnswerSendMessage.cpp
-   message/UTE_GigaConceptReversedReceivedMessage.h
-   message/UTE_GigaConceptReversedReceivedMessage.cpp
-   message/UTE_ReceivedMessage.h
-   message/UTE_ReceivedMessage.cpp
    message/WriteLearnModeCommand.h
    message/WriteLearnModeCommand.cpp
    
@@ -74,6 +66,14 @@ set(ENOCEAN_SOURCES
    message/radioErp1/4BSTeachinRequest.cpp
    message/radioErp1/4BSTeachinResponse.h
    message/radioErp1/4BSTeachinResponse.cpp
+   message/radioErp1/UTEGigaConceptReversedAnswer.h
+   message/radioErp1/UTEGigaConceptReversedAnswer.cpp
+   message/radioErp1/UTEGigaConceptReversedRequest.h
+   message/radioErp1/UTEGigaConceptReversedRequest.cpp
+   message/radioErp1/UTERequest.h
+   message/radioErp1/UTERequest.cpp
+   message/radioErp1/UTEResponse.h
+   message/radioErp1/UTEResponse.cpp
 
    message/response/ReceivedMessage.h
    message/response/ReceivedMessage.cpp

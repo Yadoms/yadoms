@@ -16,11 +16,10 @@
 #include "message/smart_ack/ReadClientMailboxStatusCommand.h"
 #include "message/smart_ack/ReadLearnedClientsCommand.h"
 #include "message/smart_ack/ReadLearnModeCommand.h"
-#include "message/UTE_AnswerSendMessage.h" //TODO déplacer dans radioErp1
-#include "message/UTE_GigaConceptReversedAnswerSendMessage.h"//TODO déplacer dans radioErp1
-#include "message/UTE_GigaConceptReversedReceivedMessage.h"//TODO déplacer dans radioErp1
-#include "message/radioErp1/ReceivedMessage.h"
 #include "message/radioErp1/4BSTeachinResponse.h"
+#include "message/radioErp1/ReceivedMessage.h"
+#include "message/radioErp1/UTEGigaConceptReversedAnswer.h"
+#include "message/radioErp1/UTEGigaConceptReversedRequest.h"
 #include "message/MessageHelpers.h"
 #include "profiles/bitsetHelpers.hpp"
 #include "profiles/eep.h"
@@ -833,18 +832,18 @@ void CEnOcean::processEvent(const boost::shared_ptr<const message::CEsp3Received
 
 void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 {
-	const auto isReversed = message::CUTE_GigaConceptReversedReceivedMessage::isCGigaConceptReversedUteMessage(erp1Message);
+	const auto isReversed = message::radioErp1::CUTEGigaConceptReversedRequest::isCGigaConceptReversedUteMessage(erp1Message);
 
 	const auto uteMessage = isReversed
-		? boost::make_shared<message::CUTE_GigaConceptReversedReceivedMessage>(erp1Message)
-		: boost::make_shared<message::CUTE_ReceivedMessage>(erp1Message);
+		? boost::make_shared<message::radioErp1::CUTEGigaConceptReversedRequest>(erp1Message)
+		: boost::make_shared<message::radioErp1::CUTERequest>(erp1Message);
 
 	switch (uteMessage->teachInRequest()) // NOLINT(clang-diagnostic-switch-enum)
 	{
-	case message::CUTE_ReceivedMessage::ETeachInRequest::kTeachInRequest:
-	case message::CUTE_ReceivedMessage::ETeachInRequest::kNotSpecified:
+	case message::radioErp1::CUTERequest::ETeachInRequest::kTeachInRequest:
+	case message::radioErp1::CUTERequest::ETeachInRequest::kNotSpecified:
 	{
-		if (uteMessage->command() != message::CUTE_ReceivedMessage::kTeachInQuery)
+		if (uteMessage->command() != message::radioErp1::CUTERequest::kTeachInQuery)
 		{
 			YADOMS_LOG(information) << "UTE message : command type " << static_cast<unsigned int>(uteMessage->command()) <<
 				" not supported, message ignored";
@@ -873,7 +872,7 @@ void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 			catch (std::exception& e)
 			{
 				YADOMS_LOG(error) << "Fail to declare device (Universal teachin) : " << e.what();
-				sendUTEAnswer(message::CUTE_AnswerSendMessage::kRequestNotAccepted,
+				sendUTEAnswer(message::radioErp1::CUTEResponse::kRequestNotAccepted,
 							  uteMessage,
 							  isReversed,
 							  deviceId);
@@ -881,7 +880,7 @@ void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 			}
 		}
 
-		sendUTEAnswer(message::CUTE_AnswerSendMessage::kRequestAccepted,
+		sendUTEAnswer(message::radioErp1::CUTEResponse::kRequestAccepted,
 					  uteMessage,
 					  isReversed,
 					  deviceId);
@@ -893,11 +892,11 @@ void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 
 		break;
 	}
-	case message::CUTE_ReceivedMessage::ETeachInRequest::kTeachInDeletionRequest:
+	case message::radioErp1::CUTERequest::ETeachInRequest::kTeachInDeletionRequest:
 	{
 		removeDevice(uteMessage->senderId());
 
-		sendUTEAnswer(message::CUTE_AnswerSendMessage::kRequestAccepted,
+		sendUTEAnswer(message::radioErp1::CUTEResponse::kRequestAccepted,
 					  uteMessage,
 					  isReversed,
 					  uteMessage->senderId());
@@ -912,8 +911,8 @@ void CEnOcean::processUTE(message::radioErp1::CReceivedMessage& erp1Message)
 	}
 }
 
-bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
-							 const boost::shared_ptr<const message::CUTE_ReceivedMessage>& uteMessage,
+bool CEnOcean::sendUTEAnswer(message::radioErp1::CUTEResponse::EResponse response,
+							 const boost::shared_ptr<const message::radioErp1::CUTERequest>& uteMessage,
 							 bool isReversed,
 							 const std::string& deviceId)
 {
@@ -921,26 +920,26 @@ bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response
 		return true;
 
 	const auto sendMessage = isReversed
-		? boost::make_shared<message::CUTE_GigaConceptReversedAnswerSendMessage>(m_senderId,
-																				 deviceId,
-																				 static_cast<unsigned char>(0),
-																				 uteMessage->bidirectionalCommunication(),
-																				 response,
-																				 uteMessage->channelNumber(),
-																				 uteMessage->manufacturerId(),
-																				 uteMessage->type(),
-																				 uteMessage->func(),
-																				 uteMessage->rorg())
-		: boost::make_shared<message::CUTE_AnswerSendMessage>(m_senderId,
-															  deviceId,
-															  static_cast<unsigned char>(0),
-															  uteMessage->bidirectionalCommunication(),
-															  response,
-															  uteMessage->channelNumber(),
-															  uteMessage->manufacturerId(),
-															  uteMessage->type(),
-															  uteMessage->func(),
-															  uteMessage->rorg());
+		? boost::make_shared<message::radioErp1::CUTEGigaConceptReversedAnswer>(m_senderId,
+																				deviceId,
+																				static_cast<unsigned char>(0),
+																				uteMessage->bidirectionalCommunication(),
+																				response,
+																				uteMessage->channelNumber(),
+																				uteMessage->manufacturerId(),
+																				uteMessage->type(),
+																				uteMessage->func(),
+																				uteMessage->rorg())
+		: boost::make_shared<message::radioErp1::CUTEResponse>(m_senderId,
+															   deviceId,
+															   static_cast<unsigned char>(0),
+															   uteMessage->bidirectionalCommunication(),
+															   response,
+															   uteMessage->channelNumber(),
+															   uteMessage->manufacturerId(),
+															   uteMessage->type(),
+															   uteMessage->func(),
+															   uteMessage->rorg());
 
 	message::response::CReceivedMessage::EReturnCode returnCode;
 	if (!m_messageHandler->send(*sendMessage,
