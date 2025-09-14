@@ -5,14 +5,6 @@
     "SerialPort": {
       "name": "Port série",
       "description": "Le port série (virtuel) connecté au stick USB EnOcean"
-    },
-    "PairingMode": {
-      "name": "Mode d'appairage",
-      "description": "Le mode d'apparairage peut être automatique (chaque nouvel équipement détecté est enregistré automatiquement), ou manuel via une commande sur le plugin (bouton vert)",
-      "values": {
-        "auto": "Mode automatique, chaque équipement détecté est enregistré",
-        "manual": "Mode manuel, le plugin doit être mis en mode appairage via le bouton vert"
-      }
     }
   },
   "deviceConfiguration": {
@@ -52,7 +44,6 @@
       "ErrorInternal": "Execution de commande, erreur interne"
     },
     "pairing": {
-      "invalidCommandAutoMode": "Commande invalide, l'apparaige est configuré en automatique",
       "pairing": "Appairage en cours...",
       "devicePaired": "Nouvel équipement appairé !",
       "noDevicePaired": "Aucun équipement trouvé"

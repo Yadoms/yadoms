@@ -6,12 +6,6 @@
 class IPairingHelper
 {
 public:
-    enum EPairingMode
-    {
-        kAuto = 0, //TODO Supprimer le mode auto
-        kManual
-    };
-
     virtual ~IPairingHelper() = default;
 
     //--------------------------------------------------------------
@@ -25,10 +19,4 @@ public:
     /// \param[in] deviceName  Name of the device paired (empty if nothing paired)
     //--------------------------------------------------------------
     virtual void stop(const std::string& deviceName) = 0;
-
-    //--------------------------------------------------------------
-    /// \brief     Get the pairing mode
-    /// \return    The pairing mode
-    //--------------------------------------------------------------
-    virtual EPairingMode getMode() const = 0;
 };

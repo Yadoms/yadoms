@@ -26,11 +26,5 @@ public:
    /// \return     The serial port name (system-dependent)
    //--------------------------------------------------------------
    virtual std::string getSerialPort() const = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	    Pairing mode
-   /// \return     The pairing mode
-   //--------------------------------------------------------------
-   virtual CPairingHelper::EPairingMode getPairingMode() const = 0;
 };
 

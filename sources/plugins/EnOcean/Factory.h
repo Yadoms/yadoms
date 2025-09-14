@@ -58,6 +58,5 @@ public:
    /// \param[in] pairingMode             Pairing mode
    /// \return                            The pairing helper
    //--------------------------------------------------------------
-   static boost::shared_ptr<CPairingHelper> constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                                   IPairingHelper::EPairingMode pairingMode);
+   static boost::shared_ptr<CPairingHelper> constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api);
 };

@@ -19,13 +19,6 @@
           "query": "serialPorts"
         }
       }
-    },
-    "PairingMode": {
-      "type": "enum",
-      "values": {
-        "auto": "Automatic pairing mode",
-        "manual": "Manual pairing mode"
-      }
     }
   },
   "supportDeviceRemovedNotification": "true",

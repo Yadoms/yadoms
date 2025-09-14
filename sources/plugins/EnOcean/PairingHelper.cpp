@@ -14,37 +14,15 @@ static constexpr unsigned int PairingPeriodTimeSeconds = 5;
 static constexpr unsigned int PairingProgressNbMaxPeriods = PairingTimeoutSeconds / PairingPeriodTimeSeconds;
 
 
-CPairingHelper::CPairingHelper(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                               const EPairingMode configuredMode)
-    : m_api(api),
-      m_progressPairingCount(0)
+CPairingHelper::CPairingHelper(const boost::shared_ptr<yApi::IYPluginApi>& api)
+    : m_api(api)
 {
-    setMode(configuredMode);
-}
-
-void CPairingHelper::setMode(const EPairingMode mode)
-{
-    m_mode = mode;
-    m_pairingEnable = mode == kAuto;
-}
-
-CPairingHelper::EPairingMode CPairingHelper::getMode() const
-{
-    return m_mode;
 }
 
 bool CPairingHelper::startStopPairing(const boost::shared_ptr<yApi::IExtraQuery>& manualPairingExtraQuery,
                                       const boost::shared_ptr<IMessageHandler>& messageHandler)
 {
     m_messageHandler = messageHandler;
-
-    if (m_mode == kAuto)
-    {
-        YADOMS_LOG(warning) << "Try to start/stop pairing with auto mode : not compatible, ignored";
-        manualPairingExtraQuery->sendError("customLabels.pairing.invalidCommandAutoMode");
-        m_manualPairingExtraQuery.reset();
-        return false;
-    }
 
     if (m_pairingEnable)
     {
@@ -60,7 +38,7 @@ bool CPairingHelper::startStopPairing(const boost::shared_ptr<yApi::IExtraQuery>
 
 bool CPairingHelper::onProgressPairing()
 {
-    if (m_mode == kAuto || !m_pairingEnable)
+    if (!m_pairingEnable)
         return true;
 
     --m_progressPairingCount;
@@ -75,6 +53,7 @@ bool CPairingHelper::onProgressPairing()
         m_manualPairingExtraQuery->reportProgress(
             static_cast<float>(PairingProgressNbMaxPeriods - m_progressPairingCount) * 100.0f / PairingProgressNbMaxPeriods,
             "customLabels.pairing.pairing");
+
     return false;
 }
 
@@ -102,12 +81,6 @@ void CPairingHelper::stop(const std::string& devicePaired)
 {
     if (!m_pairingEnable)
         return;
-
-    if (m_mode == kAuto)
-    {
-        YADOMS_LOG(warning) << "Try to stop pairing with auto mode : not compatible, ignored";
-        return;
-    }
 
     YADOMS_LOG(information) << "Stop pairing...";
 

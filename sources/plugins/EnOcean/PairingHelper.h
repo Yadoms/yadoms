@@ -12,11 +12,9 @@ namespace yApi = shared::plugin::yPluginApi;
 class CPairingHelper final : public IPairingHelper
 {
 public:
-    explicit CPairingHelper(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                            EPairingMode configuredMode);
+    explicit CPairingHelper(const boost::shared_ptr<yApi::IYPluginApi>& api);
     ~CPairingHelper() override = default;
 
-    void setMode(EPairingMode mode);
     bool startStopPairing(const boost::shared_ptr<yApi::IExtraQuery>& manualPairingExtraQuery,
                           const boost::shared_ptr<IMessageHandler>& messageHandler);
     bool onProgressPairing();
@@ -25,7 +23,6 @@ public:
     // IPairingHelper implementation
     bool isPairing() override;
     void stop(const std::string& deviceName = std::string()) override;
-    [[nodiscard]] EPairingMode getMode() const override;
     // [END] IPairingHelper implementation
 
 protected:
@@ -39,9 +36,8 @@ protected:
 
 private:
     boost::shared_ptr<yApi::IYPluginApi> m_api;
-    EPairingMode m_mode;
-    bool m_pairingEnable;
-    unsigned int m_progressPairingCount;
+    bool m_pairingEnable = false;
+    unsigned int m_progressPairingCount = 0;
     boost::shared_ptr<yApi::IExtraQuery> m_manualPairingExtraQuery;
     boost::shared_ptr<IMessageHandler> m_messageHandler;
     bool m_learnByDongleSupported = false;

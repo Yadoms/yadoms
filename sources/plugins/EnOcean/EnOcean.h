@@ -19,6 +19,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	This plugin supports EnOcean
+/// \doc See https://www.enocean-alliance.org/wp-content/uploads/2020/07/EnOcean-Equipment-Profiles-3-1.pdf
 //--------------------------------------------------------------
 class CEnOcean final : public plugin_cpp_api::IPlugin
 {
@@ -247,6 +248,6 @@ private:
 	//--------------------------------------------------------------
 	/// \brief  The pairing helper
 	//--------------------------------------------------------------
-	boost::shared_ptr<CPairingHelper> m_pairingHelper;
+	boost::shared_ptr<CPairingHelper> m_pairingHelper; //TODO devrait être l'interface
 	boost::shared_ptr<shared::event::CEventTimer> m_progressPairingTimer;
 };

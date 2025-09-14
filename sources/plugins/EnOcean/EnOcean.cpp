@@ -55,8 +55,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	// Load configuration values (provided by database)
 	m_configuration.initializeWith(m_api->getConfiguration());
 
-	m_pairingHelper = CFactory::constructPairingHelper(api,
-													   m_configuration.getPairingMode());
+	m_pairingHelper = CFactory::constructPairingHelper(api);
 
 	// Load known devices
 	loadAllDevices();
@@ -100,7 +99,6 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 				// Update configuration
 				m_configuration.initializeWith(newConfigurationData);
-				m_pairingHelper->setMode(m_configuration.getPairingMode());
 
 				if (needToReconnect)
 					createConnection();
