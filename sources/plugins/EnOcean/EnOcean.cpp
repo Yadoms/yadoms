@@ -624,10 +624,6 @@ std::string CEnOcean::processEepTeachInMessage(const message::radioErp1::C4BSTea
 											   const boost::shared_ptr<IRorg>& rorg,
 											   const std::string& deviceId)
 {
-
-	//TODO traiter les 3 variantes
-	//TODO traiter le cas "For FUNC > 3F or TYPE > 7F UTE has to be used instead of 4BS Teach-In" page 20 de https://www.enocean-alliance.org/wp-content/uploads/2020/07/EnOcean-Equipment-Profiles-3-1.pdf
-
 	try
 	{
 		const auto profile = CProfileHelper(rorg->id(),
