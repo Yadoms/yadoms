@@ -33,25 +33,23 @@ public:
 
 private:
     const std::string m_deviceId;
-    boost::shared_ptr<yApi::historization::CDimmable> m_currentValue;
-    boost::shared_ptr<yApi::historization::CSwitch> m_serviceOn;
     boost::shared_ptr<yApi::historization::CSwitch> m_energyInputEnable;
-    boost::shared_ptr<yApi::historization::CSwitch> m_energyStorageCharged;
     boost::shared_ptr<yApi::historization::CBatteryLevel> m_battery;
     boost::shared_ptr<yApi::historization::CSwitch> m_coverOpen;
     boost::shared_ptr<yApi::historization::CSwitch> m_temperatureFailure;
     boost::shared_ptr<yApi::historization::CSwitch> m_windowOpen;
     boost::shared_ptr<yApi::historization::CSwitch> m_actuatorObstructed;
-    boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
+    boost::shared_ptr<yApi::historization::CTemperature> m_internalSensorTemperature;
     boost::shared_ptr<yApi::historization::CDimmable> m_valvePosition;
     boost::shared_ptr<yApi::historization::CTemperature> m_temperatureSetPoint;
-    boost::shared_ptr<yApi::historization::CTemperature> m_currentTemperatureFromExternalSensor;
-    boost::shared_ptr<yApi::historization::CEvent> m_runInitSequence;
-    boost::shared_ptr<yApi::historization::CEvent> m_liftSet;
+    boost::shared_ptr<yApi::historization::CTemperature> m_externalSensorTemperature;
     boost::shared_ptr<yApi::historization::CSwitch> m_summerMode;
-    boost::shared_ptr<yApi::historization::CSwitch> m_setPointInverse;
     mutable bool m_setPointModeIsTemperature = true;
     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
+
+	bool m_useInternalSensor = true;
+	bool m_setPointInverse = false;
+
 
     boost::dynamic_bitset<> m_pendingCommand;
 };

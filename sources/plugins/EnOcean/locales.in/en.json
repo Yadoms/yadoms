@@ -8,8 +8,7 @@
     },
     "PairingMode": {
       "name": "Pairing mode",
-      "description":
-        "Pairing mode can be automatic (each newly detected device is automaticaly registered), or manual with a command on the plugin (green button)",
+      "description": "Pairing mode can be automatic (each newly detected device is automaticaly registered), or manual with a command on the plugin (green button)",
       "values": {
         "auto": "Automatic mode, each newly detected device will registered",
         "manual": "Manual mode, plugin must be set to pairing mode with the green button"
@@ -60,6 +59,20 @@
     }
   },
   "specificProfilesConfigurations": {
+    "A5-20-01": {
+      "content": {
+        "useInternalSensor": {
+          "name": "Sensor-based control",
+          "values": {
+            "internal": "internal",
+            "external": "external"
+          }
+        },
+        "setPointInverse": {
+          "name": "Set point is inversed"
+        }
+      }
+    },
     "D2-00-01": {
       "content": {
         "setPointEnable": {
