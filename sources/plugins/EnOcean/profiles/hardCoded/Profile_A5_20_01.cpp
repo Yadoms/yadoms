@@ -45,7 +45,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_A5_20_01::readInitialState(const std::string& senderId,
-										 boost::shared_ptr<IMessageHandler> messageHandler) const
+										 boost::shared_ptr<IMessageHandler> messageHandler)
 {
 }
 
@@ -148,9 +148,8 @@ void CProfile_A5_20_01::sendCommand(const std::string& keyword,
 
 void CProfile_A5_20_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
 										  const std::string& senderId,
-										  boost::shared_ptr<IMessageHandler> messageHandler) const
+										  boost::shared_ptr<IMessageHandler> messageHandler)
 {
-	//TODO
-   //m_useInternalSensor = deviceConfiguration.get<std::string>("useInternalSensor") == "internal";
-   //m_setPointInverse = deviceConfiguration.get<bool>("setPointInverse");
+   m_useInternalSensor = deviceConfiguration.get<std::string>("useInternalSensor") == "internal";
+   m_setPointInverse = deviceConfiguration.get<bool>("setPointInverse");
 }

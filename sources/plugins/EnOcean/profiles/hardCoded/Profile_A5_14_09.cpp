@@ -31,7 +31,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_A5_14_09::readInitialState(const std::string& senderId,
-                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+                                         boost::shared_ptr<IMessageHandler> messageHandler)
 {
 }
 
@@ -78,7 +78,7 @@ void CProfile_A5_14_09::sendCommand(const std::string& keyword,
 
 void CProfile_A5_14_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
-                                          boost::shared_ptr<IMessageHandler> messageHandler) const
+                                          boost::shared_ptr<IMessageHandler> messageHandler)
 {
    // Device supports no configuration
 }

@@ -37,7 +37,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_D2_01_08::readInitialState(const std::string& senderId,
-                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+                                         boost::shared_ptr<IMessageHandler> messageHandler)
 {
    // Be careful : manufacturers implementations of EnOcean EEP specifications differ :
    // some support only kAllOutputChannels (0x1E) to drive output (like Nodon alias ID_RF), some other support only
@@ -163,7 +163,7 @@ void CProfile_D2_01_08::sendCommand(const std::string& keyword,
 
 void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
-                                          boost::shared_ptr<IMessageHandler> messageHandler) const
+                                          boost::shared_ptr<IMessageHandler> messageHandler)
 {
    const auto localControl = deviceConfiguration.get<std::string>("localControl") == "enable";
    const auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";

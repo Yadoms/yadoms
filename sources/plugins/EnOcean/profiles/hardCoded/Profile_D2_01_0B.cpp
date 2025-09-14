@@ -37,7 +37,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_D2_01_0B::readInitialState(const std::string& senderId,
-                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+                                         boost::shared_ptr<IMessageHandler> messageHandler)
 {
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
@@ -144,7 +144,7 @@ void CProfile_D2_01_0B::sendCommand(const std::string& keyword,
 
 void CProfile_D2_01_0B::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
-                                          boost::shared_ptr<IMessageHandler> messageHandler) const
+                                          boost::shared_ptr<IMessageHandler> messageHandler)
 {
    const auto localControl = deviceConfiguration.get<std::string>("localControl") == "enable";
    const auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
