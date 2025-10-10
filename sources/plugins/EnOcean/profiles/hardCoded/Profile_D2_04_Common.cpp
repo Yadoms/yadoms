@@ -29,7 +29,7 @@ void CProfile_D2_04_Common::states(const boost::dynamic_bitset<>& data,
 
    m_co2->set(static_cast<double>(bitset_extract(data, 0, 8)) * m_co2SensorRange / 255.0);
 
-   m_day->set(bitset_extract(status, 24, 1) ? false : true);
+   m_day->set(bitset_extract(data, 24, 1) ? false : true);
 
    switch (bitset_extract(data, 25, 3))
    {

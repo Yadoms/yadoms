@@ -1,271 +1,459 @@
-  <manufacturers>
-    <manufacturer>
-      <id>0x001</id>
-      <name>Peha</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x002</id>
-      <name>Thermokon</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x003</id>
-      <name>Servodan</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x004</id>
-      <name>EchoFlex Solutions</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x005</id>
-      <name>Omnio AG</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x006</id>
-      <name>Hardmeier electronics</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x007</id>
-      <name>Regulvar Inc</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x008</id>
-      <name>Ad Hoc Electronics</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x009</id>
-      <name>Distech Controls</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x00A</id>
-      <name>Kieback + Peter</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x00B</id>
-      <name>EnOcean GmbH</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x00C</id>
-      <name>Probare, ViCOS GmbH</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x00D</id>
-      <name>Eltako</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x00E</id>
-      <name>Leviton</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x00F</id>
-      <name>Honeywell</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x010</id>
-      <name>Spartan Peripheral Devices</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x011</id>
-      <name>Siemens</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x012</id>
-      <name>T-Mac</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x013</id>
-      <name>Reliable Controls Corporation</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x014</id>
-      <name>Elsner Elektronik GmbH</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x015</id>
-      <name>Diehl Controls</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x016</id>
-      <name>BSC Computer</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x017</id>
-      <name>S+S Regeltechnik GmbH</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x018</id>
-      <name>ZENO Controls, LLC </name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x019</id>
-      <name>Intesis Software SL</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x01A</id>
-      <name>Viessmann</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x01B</id>
-      <name>Lutuo Technology</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x01C</id>
-      <name>Schneider Electric</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x01D</id>
-      <name>Sauter</name>
-    </manufacturer>
-        <manufacturer>
-      <id>0x01E</id>
-      <name>Boot-Up</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x01F</id>
-      <name>Osram Sylvania</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x020</id>
-      <name>Unotech</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x021</id>
-      <name>Delta Controls Inc. </name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x022</id>
-      <name>Unitronic AG</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x023</id>
-      <name>NanoSense</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x024</id>
-      <name>The S4 Group</name>
-    </manufacturer>
-	<manufacturer>
-      <id>0x025</id>
-      <name>MSR Solutions GmbH</name>
-    </manufacturer>
+<manufacturers>
   <manufacturer>
-      <id>0x026</id>
-      <name>GE</name>
-    </manufacturer>
+    <id>0x001</id>
+    <name>Peha</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x027</id>
-      <name>Maico </name>
-    </manufacturer>
+    <id>0x002</id>
+    <name>Thermokon</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x028</id>
-      <name>Ruskin Company</name>
-    </manufacturer>
+    <id>0x003</id>
+    <name>Servodan</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x029</id>
-      <name>Magnum Energy Solutions</name>
-    </manufacturer>
+    <id>0x004</id>
+    <name>EchoFlex Solutions</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x02A</id>
-      <name>KMC Controls</name>
-    </manufacturer>
+    <id>0x005</id>
+    <name>Omnio AG</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x02B</id>
-      <name>Ecologix Controls</name>
-    </manufacturer>
+    <id>0x006</id>
+    <name>Hardmeier electronics</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x02C</id>
-      <name>Trio2Sys</name>
-    </manufacturer>
+    <id>0x007</id>
+    <name>Regulvar Inc</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x02D</id>
-      <name>Afriso-Euro-Index</name>
-    </manufacturer>
+    <id>0x008</id>
+    <name>Ad Hoc Electronics</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x030</id>
-      <name>NEC Access Technica Ltd.</name>
-    </manufacturer>
+    <id>0x009</id>
+    <name>Distech Controls</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x031</id>
-      <name>ITEC Corporation</name>
-    </manufacturer>
+    <id>0x00A</id>
+    <name>Kieback + Peter</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x032</id>
-      <name>SIMICX Co. Ltd.</name>
-    </manufacturer>
+    <id>0x00B</id>
+    <name>EnOcean GmbH</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x034</id>
-      <name>EUROtronic Technology GmbH</name>
-    </manufacturer>
+    <id>0x00C</id>
+    <name>Probare, ViCOS GmbH</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x035</id>
-      <name>ART Japan Co. Ltd.</name>
-    </manufacturer>
+    <id>0x00D</id>
+    <name>Eltako</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x036</id>
-      <name>TIANSU Automation Control System Co. Ltd.</name>
-    </manufacturer>
+    <id>0x00E</id>
+    <name>Leviton</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x038</id>
-      <name>Gruppo Giordano, Idea s.p.a.</name>
-    </manufacturer>
+    <id>0x00F</id>
+    <name>Honeywell</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x039</id>
-      <name>alphaEOS AG</name>
-    </manufacturer>
+    <id>0x010</id>
+    <name>Spartan Peripheral Devices</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x03A</id>
-      <name>TAG technologies, France</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x03B</id>
-      <name>Wattstopper</name>
-    </manufacturer>
+    <id>0x011</id>
+    <name>Siemens</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x03C</id>
-      <name>Pressac Communications Ltd.</name>
-    </manufacturer>
+    <id>0x012</id>
+    <name>T-Mac</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x03E</id>
-      <name>GIGA-concept, France</name>
-    </manufacturer>
+    <id>0x013</id>
+    <name>Reliable Controls Corporation</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x03F</id>
-      <name>Sensortec AG, Switzerland</name>
-    </manufacturer>
+    <id>0x014</id>
+    <name>Elsner Elektronik GmbH</name>
+  </manufacturer>
   <manufacturer>
-      <id>0x040</id>
-      <name>Jaeger Direkt, Germany</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x041</id>
-      <name>Air System Components Inc., USA</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x042</id>
-      <name>ERMINE Corp. </name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x043</id>
-      <name>SODA GmbH </name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x044</id>
-      <name>EKE-Automation Oy </name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x045</id>
-      <name> Holter  Regelarmaturen  GmbH CO. KG
-      </name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x046</id>
-      <name>ID-RF</name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x047</id>
-      <name>DEUTA Controls GmbH </name>
-    </manufacturer>
-    <manufacturer>
-      <id>0x7FF</id>
-      <name>Multi user Manufacturer ID</name>
-    </manufacturer>
+    <id>0x015</id>
+    <name>Diehl Controls</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x016</id>
+    <name>BSC Computer</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x017</id>
+    <name>S+S Regeltechnik GmbH</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x018</id>
+    <name>ZENO Controls, LLC </name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x019</id>
+    <name>Intesis Software SL</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x01A</id>
+    <name>Viessmann</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x01B</id>
+    <name>Lutuo Technology</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x01C</id>
+    <name>Schneider Electric</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x01D</id>
+    <name>Sauter</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x01E</id>
+    <name>Boot-Up</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x01F</id>
+    <name>Osram Sylvania</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x020</id>
+    <name>Unotech</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x021</id>
+    <name>Delta Controls Inc. </name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x022</id>
+    <name>Unitronic AG</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x023</id>
+    <name>NanoSense</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x024</id>
+    <name>The S4 Group</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x025</id>
+    <name>MSR Solutions GmbH</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x026</id>
+    <name>GE</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x027</id>
+    <name>Maico </name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x028</id>
+    <name>Ruskin Company</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x029</id>
+    <name>Magnum Energy Solutions</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x02A</id>
+    <name>KMC Controls</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x02B</id>
+    <name>Ecologix Controls</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x02C</id>
+    <name>Trio2Sys</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x02D</id>
+    <name>Afriso-Euro-Index</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x030</id>
+    <name>NEC Access Technica Ltd.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x031</id>
+    <name>ITEC Corporation</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x032</id>
+    <name>SIMICX Co. Ltd.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x034</id>
+    <name>EUROtronic Technology GmbH</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x035</id>
+    <name>ART Japan Co. Ltd.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x036</id>
+    <name>TIANSU Automation Control System Co. Ltd.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x038</id>
+    <name>Gruppo Giordano, Idea s.p.a.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x039</id>
+    <name>alphaEOS AG</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x03A</id>
+    <name>TAG technologies, France</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x03B</id>
+    <name>Wattstopper</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x03C</id>
+    <name>Pressac Communications Ltd.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x03E</id>
+    <name>GIGA-concept, France</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x03F</id>
+    <name>Sensortec AG, Switzerland</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x040</id>
+    <name>Jaeger Direkt, Germany</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x041</id>
+    <name>Air System Components Inc., USA</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x042</id>
+    <name>ERMINE Corp. </name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x043</id>
+    <name>SODA GmbH </name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x044</id>
+    <name>EKE-Automation Oy </name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x045</id>
+    <name> Holter  Regelarmaturen  GmbH CO. KG
+    </name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x046</id>
+    <name>ID-RF</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x047</id>
+    <name>DEUTA Controls GmbH </name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x048</id>
+    <name>Ewattch</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x049</id>
+    <name>Micropelt</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x04A</id>
+    <name>Caleffi S.p.a.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x04B</id>
+    <name>Digital Concepts</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x04C</id>
+    <name>Emerson Climate Technologies Inc.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x04D</id>
+    <name>Adee electronic</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x04E</id>
+    <name>Altecon</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x04F</id>
+    <name>Nanjing Putian Telecommunications Co.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x050</id>
+    <name>Terralux</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x051</id>
+    <name>Menred Group</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x052</id>
+    <name>exergy.gmbh</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x053</id>
+    <name>Oventrop GmbH</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x054</id>
+    <name>Building Automation Products, Inc.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x055</id>
+    <name>Functional Devices, Inc.</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x056</id>
+    <name>OGGA</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x057</id>
+    <name>Itho Daalderop</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x058</id>
+    <name>Resol</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x059</id>
+    <name>Advanced Devices</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x05A</id>
+    <name>Autano Lcc</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x05B</id>
+    <name>Dr. Riedel Gmbh</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x05C</id>
+    <name>HOPPE holding AG</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x05D</id>
+    <name>Siegenia Aubi KG</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x05E</id>
+    <name>ADEO Services</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x05F</id>
+    <name>Eimsig EFP Gmbh</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x060</id>
+    <name>Vimar</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x061</id>
+    <name>Glen Dimplex Gmbh</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x062</id>
+    <name>PMDM Gmbh</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x063</id>
+    <name>Hubbell Incorporated</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x64</id>
+    <name>Debflex</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x65</id>
+    <name>Perfactory Sensorsystems</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x66</id>
+    <name>Watty Corp</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x67</id>
+    <name>WAGO Kontakttechnik</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x68</id>
+    <name>KESSEL</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x69</id>
+    <name>Winkhaus</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x6A</id>
+    <name>Decelect</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x6B</id>
+    <name>MST Industries</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x6C</id>
+    <name>Becker-Antriebe</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x6D</id>
+    <name>Nexelec</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x6E</id>
+    <name>Wieland Electric</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x6F</id>
+    <name>Avidsen</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x70</id>
+    <name>CWS - boco International GmbH Germany</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x71</id>
+    <name>Roto Frank AG Germany</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x072</id>
+    <name>ALM Controls e.K.Germany</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x073</id>
+    <name>Tommaso Technologies</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x074</id>
+    <name>Rehau AG + Co Germany</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x75</id>
+    <name>Inaba Denki Sangyo </name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x76</id>
+    <name>Hager Controls SAS//</name>
+  </manufacturer>
+  <manufacturer>
+    <id>0x7FF</id>
+    <name>Multi user Manufacturer ID</name>
+  </manufacturer>
 </manufacturers>

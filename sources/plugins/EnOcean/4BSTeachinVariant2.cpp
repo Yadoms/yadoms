@@ -12,9 +12,9 @@ C4BSTeachinVariant2::~C4BSTeachinVariant2()
 {
 }
 
-CManufacturers::EManufacturerIds C4BSTeachinVariant2::manufacturerId() const
+unsigned int C4BSTeachinVariant2::manufacturerId() const
 {
-   return CManufacturers::toManufacturerId(bitset_extract(m_data, 13, 11));
+   return bitset_extract(m_data, 13, 11);
 }
 
 C4BSTelegram::EFuncIds C4BSTeachinVariant2::funcId() const
