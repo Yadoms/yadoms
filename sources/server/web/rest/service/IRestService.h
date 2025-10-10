@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "IRestEndPoint.h"
 #include "web/poco/RestDispatcher.h"
 

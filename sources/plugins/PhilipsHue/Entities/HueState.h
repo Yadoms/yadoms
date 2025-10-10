@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <string>
 #include "Xy.h"
 
 class CHueState

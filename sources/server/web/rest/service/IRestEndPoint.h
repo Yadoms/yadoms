@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/shared_ptr.hpp>
 #include <functional>
 #include <string>
 #include <shared/http/HttpRestVerb.h>

@@ -1,9 +1,11 @@
+#include <boost/format.hpp>
 #include "LightsService.h"
 #include "shared/Log.h"
 #include "shared/http/HttpRestHelpers.h"
 #include "../../Utils/ColorConverter.h"
 #include "../../../Entities/HueStreaming.h"
 #include "../../Utils/ColorTypeHelper.h"
+#include "../../Utils/HueLightsResponseType.h"
 
 CLightsService::CLightsService(boost::shared_ptr<CUrlManager>& urlManager)
    : m_urlManager(urlManager)

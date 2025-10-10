@@ -689,8 +689,8 @@ set(YADOMS_SRC
    server/web/rest/service/Plugin.h
    server/web/rest/service/Plugin.cpp
    server/web/rest/service/PluginV2.cpp
-   server/web/rest/service/PluginConfigurationMerger.h
-   server/web/rest/service/PluginConfigurationMerger.cpp
+   server/web/rest/service/ConfigurationMerger.h
+   server/web/rest/service/ConfigurationMerger.cpp
    server/web/rest/service/PluginEventLogger.h
    server/web/rest/service/PluginEventLogger.cpp
    server/web/rest/service/Recipient.h

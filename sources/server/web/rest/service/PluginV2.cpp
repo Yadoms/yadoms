@@ -1,8 +1,10 @@
+#include "stdafx.h"
 #include <utility>
 
-#include "stdafx.h"
+#include "ConfigurationMerger.h"
 #include "Plugin.h"
 #include "RestEndPoint.h"
+#include "stdafx.h"
 #include "communication/callback/SynchronousCallback.h"
 #include "pluginSystem/BindingQueryData.h"
 #include "pluginSystem/ExtraQueryData.h"
@@ -13,7 +15,6 @@
 #include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
 #include "web/rest/SuccessAnswer.h"
-#include "PluginConfigurationMerger.h"
 
 
 namespace web
@@ -108,10 +109,10 @@ namespace web
                         pluginEntry->set("supportManuallyCreatedDevice", plugin->getSupportManuallyCreatedDevice());
                      if (props->empty() || props->find("supportDeviceRemovedNotification") != props->end())
                         pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
-                     if (props->empty() || props->find("configurationSchema") != props->end())
-                        pluginEntry->set("configurationSchema", CPluginConfigurationMerger::mergeConfigurationAndSchema(
+                     if (props->empty() || props->find("configurationSchema") != props->end()) //TODO revoir le mot clé (préférer "configuration") ?
+                        pluginEntry->set("configurationSchema", CConfigurationMerger::mergeConfigurationAndSchema(
                                             *getPluginConfigurationSchema(plugin, labels),
-                                            {}));
+                                            {})); //TODO ne faudrait-il pas injecter la config existante en base ?
 
                      if (!pluginEntry->empty())
                      {
@@ -213,7 +214,7 @@ namespace web
                      instanceEntry->set("type", instance->Type());
                   if (props->empty() || props->find("configuration") != props->end())
                      instanceEntry->set("configuration",
-                                        CPluginConfigurationMerger::mergeConfigurationAndSchema(
+                                        CConfigurationMerger::mergeConfigurationAndSchema(
                                            *getPluginConfigurationSchema(findPlugin(instance->Type), labels),
                                            *instance->Configuration()));
                   if (props->empty() || props->find("autoStart") != props->end())
@@ -273,7 +274,7 @@ namespace web
                      {
                         try
                         {
-                           const auto extractedConfiguration = CPluginConfigurationMerger::extractConfiguration(
+                           const auto extractedConfiguration = CConfigurationMerger::extractConfiguration(
                               pluginToCreate.get<shared::CDataContainer>("configuration"));
                            pluginToCreate.remove("configuration");
                            pluginToCreate.set("configuration",
@@ -314,7 +315,7 @@ namespace web
                {
                   try
                   {
-                     const auto extractedConfiguration = CPluginConfigurationMerger::extractConfiguration(
+                     const auto extractedConfiguration = CConfigurationMerger::extractConfiguration(
                         pluginToUpdate.get<shared::CDataContainer>("configuration"));
                      pluginToUpdate.remove("configuration");
                      pluginToUpdate.set("configuration",

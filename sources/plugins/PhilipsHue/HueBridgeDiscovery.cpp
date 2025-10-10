@@ -1,3 +1,5 @@
+#include <boost/format.hpp>
+#include <boost/regex.hpp>
 #include "HueBridgeDiscovery.h"
 #include "shared/http/ssdp/DiscoverService.h"
 #include "shared/http/HttpRestHelpers.h"

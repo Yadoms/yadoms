@@ -66,6 +66,11 @@ namespace pluginSystem
             m_configurationSchema = m_package->getChild("configurationSchema");
          else
             m_configurationSchema = shared::CDataContainer::make();
+
+         if (m_package->containsChild("deviceConfiguration.staticConfigurationSchema"))
+            m_deviceStaticConfigurationSchema = m_package->getChild("deviceConfiguration.staticConfigurationSchema");
+         else
+            m_deviceStaticConfigurationSchema = shared::CDataContainer::make();
       }
       catch (shared::exception::CException& e)
       {
@@ -117,14 +122,14 @@ namespace pluginSystem
 
    std::string CInformation::toString() const
    {
-      // Full informations = identity + author name + url
-      std::ostringstream formatedInformations;
+      // Full information = identity + author name + url
+      std::ostringstream formatedInformation;
 
-      formatedInformations << getIdentity();
-      formatedInformations << " by " << m_author;
-      formatedInformations << " (" << m_url << ")";
+      formatedInformation << getIdentity();
+      formatedInformation << " by " << m_author;
+      formatedInformation << " (" << m_url << ")";
 
-      return formatedInformations.str();
+      return formatedInformation.str();
    }
 
    bool CInformation::isSupportedOnThisPlatform() const
@@ -145,6 +150,11 @@ namespace pluginSystem
    boost::shared_ptr<const shared::CDataContainer> CInformation::getConfigurationSchema() const
    {
       return m_configurationSchema;
+   }
+
+   boost::shared_ptr<const shared::CDataContainer> CInformation::getDeviceStaticConfigurationSchema() const
+   {
+      return m_deviceStaticConfigurationSchema;
    }
 
    boost::shared_ptr<const shared::CDataContainer> CInformation::getLabels(const std::vector<std::string>& locales) const

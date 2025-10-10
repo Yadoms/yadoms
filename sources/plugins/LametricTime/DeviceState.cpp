@@ -1,3 +1,4 @@
+#include <boost/format.hpp>
 #include "DeviceState.h"
 #include "shared/http/HttpRestHelpers.h"
 #include "shared/Log.h"

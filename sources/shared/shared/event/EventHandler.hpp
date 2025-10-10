@@ -1,8 +1,12 @@
 #pragma once
-#include "Event.hpp"
-#include "EventTimer.h"
-#include "EventTimePoint.h"
+#include <queue>
+#include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
 #include <shared/currentTime/Provider.h>
+
+#include "Event.hpp"
+#include "EventTimePoint.h"
+#include "EventTimer.h"
 
 namespace shared
 {

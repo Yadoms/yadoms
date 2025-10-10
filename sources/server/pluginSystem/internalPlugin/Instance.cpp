@@ -108,7 +108,7 @@ namespace pluginSystem
       {
          try
          {
-            YADOMS_LOG_CONFIGURE("InternalPlugin");
+            YADOMS_LOG_CONFIGURE("InternalPlugin")
 
             // the main loop
             YADOMS_LOG(debug) << "InternalPlugin is running...";

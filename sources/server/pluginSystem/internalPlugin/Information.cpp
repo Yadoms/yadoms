@@ -40,11 +40,11 @@ namespace pluginSystem
 
       std::string CInformation::getIdentity() const
       {
-         std::ostringstream formatedInformations;
+         std::ostringstream formatedInformation;
 
-         formatedInformations << getType();
-         formatedInformations << " v" << getVersion().toString();
-         return formatedInformations.str();
+         formatedInformation << getType();
+         formatedInformation << " v" << getVersion().toString();
+         return formatedInformation.str();
       }
 
       bool CInformation::isSupportedOnThisPlatform() const
@@ -54,14 +54,14 @@ namespace pluginSystem
 
       std::string CInformation::toString() const
       {
-         // Full informations = identity + author name + url
-         std::ostringstream formatedInformations;
+         // Full information = identity + author name + url
+         std::ostringstream formatedInformation;
 
-         formatedInformations << getIdentity();
-         formatedInformations << " by " << getAuthor();
-         formatedInformations << " (" << getUrl() << ")";
+         formatedInformation << getIdentity();
+         formatedInformation << " by " << getAuthor();
+         formatedInformation << " (" << getUrl() << ")";
 
-         return formatedInformations.str();
+         return formatedInformation.str();
       }
 
       bool CInformation::getSupportManuallyCreatedDevice() const
@@ -75,6 +75,11 @@ namespace pluginSystem
       }
 
       boost::shared_ptr<const shared::CDataContainer> CInformation::getConfigurationSchema() const
+      {
+         return shared::CDataContainer::EmptyContainerSharedPtr;
+      }
+
+      boost::shared_ptr<const shared::CDataContainer> CInformation::getDeviceStaticConfigurationSchema() const
       {
          return shared::CDataContainer::EmptyContainerSharedPtr;
       }
@@ -134,7 +139,7 @@ namespace pluginSystem
          return Dummy;
       }
 
-      boost::shared_ptr<shared::CDataContainer> CInformation::createPackage() const
+      boost::shared_ptr<shared::CDataContainer> CInformation::createPackage()
       {
          auto package = shared::CDataContainer::make(std::string(
             R"({

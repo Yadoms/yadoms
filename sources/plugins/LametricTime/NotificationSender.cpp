@@ -1,3 +1,4 @@
+#include <boost/format.hpp>
 #include "NotificationSender.h"
 #include "shared/http/HttpRestHelpers.h"
 #include "shared/Log.h"

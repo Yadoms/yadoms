@@ -26,14 +26,16 @@ namespace pluginSystem
          bool getSupportManuallyCreatedDevice() const override;
          bool getSupportDeviceRemovedNotification() const override;
          boost::shared_ptr<const shared::CDataContainer> getConfigurationSchema() const override;
+         boost::shared_ptr<const shared::CDataContainer> getDeviceStaticConfigurationSchema() const override;
          boost::shared_ptr<const shared::CDataContainer> getLabels(const std::vector<std::string>& locales) const override;
          boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
          const boost::filesystem::path& getPath() const override;
          // [END] shared::plugin::IInformation implementation
 
       private:
-         boost::shared_ptr<shared::CDataContainer> createPackage() const;
+         static boost::shared_ptr<shared::CDataContainer> createPackage();
 
+      private:
          std::string m_type;
          shared::versioning::CSemVer m_version;
          std::string m_author;

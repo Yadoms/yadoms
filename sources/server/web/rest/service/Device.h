@@ -13,11 +13,15 @@ namespace web
          class CDevice final : public IRestService
          {
          public:
-            CDevice(const boost::shared_ptr<database::IDataProvider>& dataProvider,
-                    boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                    boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
-                    communication::ISendMessageAsync& messageSender);
+            explicit CDevice(const boost::shared_ptr<database::IDataProvider>& dataProvider,
+                             boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                             boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                             boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
+                             communication::ISendMessageAsync& messageSender);
+            CDevice(const CDevice&) = delete;
+            CDevice(CDevice&&) = delete;
+            CDevice& operator=(const CDevice&) = delete;
+            CDevice& operator=(CDevice&&) = delete;
             ~CDevice() override = default;
 
             // IRestService implementation
@@ -190,7 +194,20 @@ namespace web
                const std::string& requestContent) const;
 
             boost::shared_ptr<IAnswer> getDevicesV2(const boost::shared_ptr<IRequest>& request) const;
-            boost::shared_ptr<IAnswer> getDeviceDynamicConfigurationSchemaV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<shared::CDataContainer> getDeviceConfiguration(const boost::shared_ptr<database::entities::CDevice>& device,
+                                                                             const std::vector<std::string>& locales) const;
+            boost::shared_ptr<shared::CDataContainer> getDeviceConfigurationSchema(
+               const boost::shared_ptr<database::entities::CDevice>& device,
+               const boost::shared_ptr<const shared::CDataContainer>& locales) const;
+            boost::shared_ptr<shared::CDataContainer> getDeviceStaticConfigurationSchema(
+               const boost::shared_ptr<database::entities::CDevice>& device,
+               const boost::shared_ptr<const shared::CDataContainer>& locales) const;
+            boost::shared_ptr<shared::CDataContainer> getDeviceDynamicConfigurationSchema(
+               const boost::shared_ptr<database::entities::CDevice>& device,
+               const boost::shared_ptr<const shared::CDataContainer>& locales) const;
+            boost::shared_ptr<shared::CDataContainer> getDeviceConfigurationLabels(
+               boost::shared_ptr<database::entities::CDevice> device,
+               const std::vector<std::string>& locales) const;
             boost::shared_ptr<IAnswer> sendExtraQueryToDeviceV2(const boost::shared_ptr<IRequest>& request) const;
             std::string generateUniqueDeviceName(int pluginId) const;
             boost::shared_ptr<IAnswer> createDeviceV2(const boost::shared_ptr<IRequest>& request) const;

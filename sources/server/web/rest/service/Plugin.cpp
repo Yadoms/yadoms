@@ -9,7 +9,6 @@
 
 #include <utility>
 
-#include "PluginConfigurationMerger.h"
 #include "web/poco/RestDispatcherHelpers.hpp"
 
 namespace web

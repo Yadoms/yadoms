@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <string>
 #include "HueColorGamut.h"
 #include "HueCt.h"
 

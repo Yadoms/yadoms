@@ -1,5 +1,5 @@
-﻿#include "RestEndPoint.h"
-#include "stdafx.h"
+﻿#include "stdafx.h"
+#include "RestEndPoint.h"
 #include "Update.h"
 #include "task/RunningTaskMutex.h"
 #include "web/rest/ErrorAnswer.h"

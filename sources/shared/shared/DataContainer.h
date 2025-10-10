@@ -1,19 +1,22 @@
 #pragma once
 #define RAPIDJSON_VALUE_DEFAULT_OBJECT_CAPACITY 1
+#include <boost/date_time.hpp>
 #include <boost/filesystem.hpp>
-#include <shared/exception/OutOfRange.hpp>
+#include <boost/function.hpp>
+#include <boost/optional.hpp>
+#include <boost/thread.hpp>
 #include <shared/exception/InvalidParameter.hpp>
-#include "serialization/IDataSerializable.h"
-#include "serialization/IDataFileSerializable.h"
+#include <shared/exception/OutOfRange.hpp>
+#include "Field.hpp"
 #include "IDataContainable.h"
 #include "enumeration/IExtendedEnum.h"
-#include "Field.hpp"
+#include "serialization/IDataFileSerializable.h"
+#include "serialization/IDataSerializable.h"
 
 #define RAPIDJSON_HAS_STDSTRING 1
 #include "rapidjson/document.h"
 #include "rapidjson/pointer.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/writer.h"
+#include "rapidjson/rapidjson.h"
 
 namespace shared
 {

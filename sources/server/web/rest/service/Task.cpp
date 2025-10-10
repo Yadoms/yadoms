@@ -1,7 +1,7 @@
-﻿#include "Task.h"
+﻿#include "stdafx.h"
+#include "Task.h"
 #include <utility>
 #include "RestEndPoint.h"
-#include "stdafx.h"
 #include "task/IInstance.h"
 #include "task/Scheduler.h"
 #include "web/poco/RestDispatcherHelpers.hpp"

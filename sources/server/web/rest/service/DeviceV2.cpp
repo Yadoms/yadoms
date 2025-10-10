@@ -1,18 +1,19 @@
-#include <regex>
-
 #include "stdafx.h"
+
+#include <map>
+#include <regex>
+#include <string>
+
+#include "ConfigurationMerger.h"
 #include "Device.h"
 #include "RestEndPoint.h"
 #include "communication/callback/SynchronousCallback.h"
-#include <shared/exception/EmptyResult.hpp>
-
 #include "pluginSystem/ExtraQueryData.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
-#include "web/rest/SuccessAnswer.h"
 
 namespace web
 {
@@ -29,7 +30,6 @@ namespace web
 
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}", getDevicesV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/dynamic-configuration-schema", getDeviceDynamicConfigurationSchemaV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "devices/{id}/extra-query/{query}", sendExtraQueryToDeviceV2));
             //TODO RAF REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevicesV1, transactionalMethodV1)
@@ -106,8 +106,8 @@ namespace web
                   withBlacklisted,
                   page,
                   pageSize,
-                  [&deviceId, &request, &answer, &page, &pageSize](const auto& devices,
-                                                                   int pagesCount)
+                  [this, &deviceId, &request, &answer, &page, &pageSize](const auto& devices,
+                                                                         int pagesCount)
                   {
                      if (devices.empty())
                      {
@@ -132,7 +132,8 @@ namespace web
                         if (props->empty() || props->find("details") != props->end())
                            deviceEntry->set("details", device->Details());
                         if (props->empty() || props->find("configuration") != props->end())
-                           deviceEntry->set("configuration", device->Configuration());
+                           deviceEntry->set("configuration", getDeviceConfiguration(device,
+                                                                                    request->acceptLanguages()));
                         if (props->empty() || props->find("type") != props->end())
                            deviceEntry->set("type", device->Type());
                         if (props->empty() || props->find("blacklisted") != props->end())
@@ -168,64 +169,129 @@ namespace web
             }
          }
 
-         boost::shared_ptr<IAnswer> CDevice::getDeviceDynamicConfigurationSchemaV2(const boost::shared_ptr<IRequest>& request) const
+         boost::shared_ptr<shared::CDataContainer> CDevice::getDeviceConfiguration(const boost::shared_ptr<database::entities::CDevice>& device,
+                                                                                   const std::vector<std::string>& locales) const
+         {
+            auto schema = getDeviceConfigurationSchema(device,
+                                                       getDeviceConfigurationLabels(device, locales));
+
+            if (schema->containsChild("error")) //TODO c'est pas plutôt schema->empty() ?
+               return schema;
+
+            if (!device->Configuration()->empty())
+               return schema;
+
+            return CConfigurationMerger::mergeConfigurationAndSchema(*schema,
+                                                                     *device->Configuration());
+         }
+
+         boost::shared_ptr<shared::CDataContainer> CDevice::getDeviceConfigurationSchema(
+            const boost::shared_ptr<database::entities::CDevice>& device,
+            const boost::shared_ptr<const shared::CDataContainer>& locales) const
          {
             try
             {
-               // ID               
-               if (!request->pathVariableExists("id"))
-                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                          "Device ID was not provided");
-               const auto deviceId = static_cast<int>(std::stol(request->pathVariable("id")));
+               auto schema = getDeviceStaticConfigurationSchema(device,
+                                                                locales);
+               YADOMS_LOG(debug) << "device " + device->FriendlyName(); //TODO virer
+               YADOMS_LOG(debug) << schema->serialize(); //TODO virer
+               if (!schema->empty())
+                  return schema;
 
-               //create a callback (allow waiting for result)              
-               communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>> cb;
+               schema = getDeviceDynamicConfigurationSchema(device,
+                                                            locales);
+               if (!schema->empty())
+                  return schema;
 
-               //send request to plugin
-               m_messageSender.sendDeviceConfigurationSchemaRequest(deviceId, cb);
-
-               //wait for result
-               switch (cb.waitForResult())
-               {
-               case communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>>::kResult:
-                  {
-                     const auto res = cb.getCallbackResult();
-                     if (!res.success)
-                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                                "Fail to get device configuration schema (plugin error)");
-                     if (res.result()->empty())
-                        return boost::make_shared<CNoContentAnswer>();
-                     return boost::make_shared<CSuccessAnswer>(*res.result());
-                  }
-               case shared::event::kTimeout:
-                  {
-                     return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                             "Fail to get device configuration schema (timeout waiting plugin answer)");
-                  }
-               default:
-                  {
-                     return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                             "Fail to get device configuration schema (unknown error)");
-                  }
-               }
+               return shared::CDataContainer::make();
             }
 
-            catch (const shared::exception::CEmptyResult& exception)
-            {
-               YADOMS_LOG(error) << "Error processing getDevices request : " << exception.what();
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
-            }
-            catch (const shared::exception::COutOfRange& exception)
-            {
-               YADOMS_LOG(error) << "Error processing getDevices request : " << exception.what();
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest);
-            }
             catch (const std::exception& exception)
             {
                YADOMS_LOG(error) << "Error processing getDevices request : " << exception.what();
-               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                       "Fail to get device configuration schema");
+               throw std::runtime_error("Fail to get device configuration schema");
             }
+         }
+
+         boost::shared_ptr<shared::CDataContainer> CDevice::getDeviceStaticConfigurationSchema(
+            const boost::shared_ptr<database::entities::CDevice>& device,
+            const boost::shared_ptr<const shared::CDataContainer>& locales) const
+         {
+            const auto pluginType = m_dataProvider->getPluginRequester()->getInstance(device->PluginId)->Type();
+            const auto plugins = m_pluginManager->getPluginList();
+            const auto pluginInformation = std::find_if(
+               plugins.begin(),
+               plugins.end(),
+               [this, &pluginType](const auto& plugin)
+               {
+                  return plugin.second->getType() == pluginType;
+               });
+            if (pluginInformation == plugins.end())
+               throw std::invalid_argument("No plugin associated with device " + device->FriendlyName() + " was found");
+
+            const auto staticConfigurationSchemaNode = pluginInformation->second->getDeviceStaticConfigurationSchema();
+            if (staticConfigurationSchemaNode->empty())
+               return shared::CDataContainer::EmptyContainerSharedPtr;
+            for (const auto& node : staticConfigurationSchemaNode->getAsMap<boost::shared_ptr<shared::CDataContainer>>("schemas"))
+            {
+               if (node.second->containsChild("types." + device->Type()))
+                  return node.second->getChild("content");
+            }
+
+            return shared::CDataContainer::EmptyContainerSharedPtr;
+         }
+
+         boost::shared_ptr<shared::CDataContainer> CDevice::getDeviceDynamicConfigurationSchema(
+            const boost::shared_ptr<database::entities::CDevice>& device,
+            const boost::shared_ptr<const shared::CDataContainer>& locales) const
+         {
+            //TODO tout retester
+            if (!m_pluginManager->isInstanceRunning(device->PluginId()))
+               return shared::CDataContainer::make(std::map<std::string, std::string>(
+                  {{"error", "Fail to get device configuration schema, plugin is not running"}}));
+
+            communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>> cb;
+            m_messageSender.sendDeviceConfigurationSchemaRequest(device->Id(), cb);
+
+            switch (cb.waitForResult())
+            {
+            case communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>>::kResult:
+               {
+                  const auto res = cb.getCallbackResult();
+                  if (!res.success)
+                     return shared::CDataContainer::make(std::map<std::string, std::string>(
+                        {{"error", "Fail to get device configuration schema, plugin returned error : " + res.errorMessage()}}));
+
+                  YADOMS_LOG(trace) << res.result(); //TODO virer
+
+                  const auto schema = res.result()->copy();
+
+                  if (schema->empty())
+                     return shared::CDataContainer::make();
+
+                  if (!locales->empty() && locales->exists("configurationSchema"))
+                     schema->mergeFrom(locales->getChild("configurationSchema"));
+
+                  return schema;
+               }
+            case shared::event::kTimeout:
+               {
+                  return shared::CDataContainer::make(std::map<std::string, std::string>(
+                     {{"error", "Fail to get device configuration schema, timeout waiting plugin answer"}}));
+               }
+            default:
+               {
+                  return shared::CDataContainer::make(std::map<std::string, std::string>(
+                     {{"error", "Fail to get device configuration schema, unknown error"}}));
+               }
+            }
+         }
+
+         boost::shared_ptr<shared::CDataContainer> CDevice::getDeviceConfigurationLabels(boost::shared_ptr<database::entities::CDevice> device,
+                                                                                         const std::vector<std::string>& locales) const
+         {
+            //TODO
+            return shared::CDataContainer::make();
          }
 
          boost::shared_ptr<IAnswer> CDevice::sendExtraQueryToDeviceV2(const boost::shared_ptr<IRequest>& request) const
@@ -316,6 +382,7 @@ namespace web
 
                      try
                      {
+                        // TODO extract config (voir plugins)
                         // Declare device
                         device = m_deviceManager->createDevice(device);
 
@@ -400,6 +467,7 @@ namespace web
                if (body->exists("model"))
                   deviceToUpdate.Model = body->get<std::string>("model");
                if (body->exists("configuration"))
+                  // TODO extract config(voir plugins)
                   deviceToUpdate.Configuration = body->get<boost::shared_ptr<shared::CDataContainer>>("configuration");
                if (body->exists("blacklist"))
                   deviceToUpdate.Blacklist = body->get<bool>("blacklist");
