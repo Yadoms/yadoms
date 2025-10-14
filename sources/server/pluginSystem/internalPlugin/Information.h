@@ -27,6 +27,7 @@ namespace pluginSystem
          bool getSupportDeviceRemovedNotification() const override;
          boost::shared_ptr<const shared::CDataContainer> getConfigurationSchema() const override;
          boost::shared_ptr<const shared::CDataContainer> getDeviceStaticConfigurationSchema() const override;
+         boost::shared_ptr<const shared::CDataContainer> getDeviceDynamicConfigurationSchema() const override;
          boost::shared_ptr<const shared::CDataContainer> getLabels(const std::vector<std::string>& locales) const override;
          boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
          const boost::filesystem::path& getPath() const override;

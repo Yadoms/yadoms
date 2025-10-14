@@ -84,6 +84,11 @@ namespace pluginSystem
          return shared::CDataContainer::EmptyContainerSharedPtr;
       }
 
+      boost::shared_ptr<const shared::CDataContainer> CInformation::getDeviceDynamicConfigurationSchema() const
+      {
+         return shared::CDataContainer::EmptyContainerSharedPtr;
+      }
+
       boost::shared_ptr<const shared::CDataContainer> CInformation::getLabels(const std::vector<std::string>& locales) const
       {
          if (locales.empty())

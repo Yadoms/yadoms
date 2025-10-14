@@ -82,10 +82,16 @@ namespace shared
             virtual boost::shared_ptr<const CDataContainer> getConfigurationSchema() const = 0;
 
             //--------------------------------------------------------------
-            /// \brief	    Returns the plugin configuration schema
+            /// \brief	    Returns the device static configuration schema
             /// \return     The configuration schema
             //--------------------------------------------------------------
             virtual boost::shared_ptr<const CDataContainer> getDeviceStaticConfigurationSchema() const = 0;
+
+            //--------------------------------------------------------------
+            /// \brief	    Returns the device dynamic configuration schema
+            /// \return     The configuration schema
+            //--------------------------------------------------------------
+            virtual boost::shared_ptr<const CDataContainer> getDeviceDynamicConfigurationSchema() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    Provide the labels content for specified locale

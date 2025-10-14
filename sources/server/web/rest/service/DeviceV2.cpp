@@ -28,8 +28,8 @@ namespace web
 
             m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
 
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices", getDevicesV2));
-            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}", getDevicesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/", getDevicesV2));
+            m_endPoints->push_back(MAKE_ENDPOINT(kGet, "devices/{id}/", getDevicesV2));
             m_endPoints->push_back(MAKE_ENDPOINT(kPost, "devices/{id}/extra-query/{query}", sendExtraQueryToDeviceV2));
             //TODO RAF REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), getCompatibleForMergeDeviceV1)
             //TODO RAF REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), mergeDevicesV1, transactionalMethodV1)
@@ -46,9 +46,10 @@ namespace web
             try
             {
                // ID
-               const auto deviceId = request->pathVariableExists("id")
-                                        ? boost::make_optional(static_cast<int>(std::stol(request->pathVariable("id"))))
-                                        : boost::optional<int>();
+               const auto id = request->pathVariable("id", std::string());
+               boost::optional<int> deviceId = id.empty()
+                                                  ? boost::optional<int>()
+                                                  : boost::make_optional(static_cast<int>(std::stol(request->pathVariable("id"))));
 
                // Filtering
                const auto fromPluginInstanceId = request->queryParamExists("fromPluginInstance")
@@ -107,7 +108,7 @@ namespace web
                   page,
                   pageSize,
                   [this, &deviceId, &request, &answer, &page, &pageSize](const auto& devices,
-                                                                         int pagesCount)
+                                                                         const int pagesCount)
                   {
                      if (devices.empty())
                      {
@@ -172,17 +173,25 @@ namespace web
          boost::shared_ptr<shared::CDataContainer> CDevice::getDeviceConfiguration(const boost::shared_ptr<database::entities::CDevice>& device,
                                                                                    const std::vector<std::string>& locales) const
          {
-            auto schema = getDeviceConfigurationSchema(device,
-                                                       getDeviceConfigurationLabels(device, locales));
+            try
+            {
+               auto schema = getDeviceConfigurationSchema(device,
+                                                          getDeviceConfigurationLabels(device, locales));
 
-            if (schema->containsChild("error")) //TODO c'est pas plutôt schema->empty() ?
-               return schema;
+               if (schema->containsChild("error")) //TODO c'est pas plutôt schema->empty() ?
+                  return schema;
 
-            if (!device->Configuration()->empty())
-               return schema;
+               if (device->Configuration()->empty())
+                  return schema;
 
-            return CConfigurationMerger::mergeConfigurationAndSchema(*schema,
-                                                                     *device->Configuration());
+               return CConfigurationMerger::mergeConfigurationAndSchema(*schema,
+                                                                        *device->Configuration());
+            }
+            catch (const std::exception& exception)
+            {
+               YADOMS_LOG(error) << "Fail to get device configuration : " << exception.what();
+               return shared::CDataContainer::EmptyContainerSharedPtr;
+            }
          }
 
          boost::shared_ptr<shared::CDataContainer> CDevice::getDeviceConfigurationSchema(
@@ -213,11 +222,10 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::CDataContainer> CDevice::getDeviceStaticConfigurationSchema(
-            const boost::shared_ptr<database::entities::CDevice>& device,
-            const boost::shared_ptr<const shared::CDataContainer>& locales) const
+         boost::shared_ptr<const shared::plugin::information::IInformation> CDevice::findPluginInformation(
+            const boost::shared_ptr<database::entities::CDevice>& device) const
          {
-            const auto pluginType = m_dataProvider->getPluginRequester()->getInstance(device->PluginId)->Type();
+            const auto pluginType = m_dataProvider->getPluginRequester()->getInstance(device->PluginId())->Type();
             const auto plugins = m_pluginManager->getPluginList();
             const auto pluginInformation = std::find_if(
                plugins.begin(),
@@ -226,16 +234,30 @@ namespace web
                {
                   return plugin.second->getType() == pluginType;
                });
+
             if (pluginInformation == plugins.end())
                throw std::invalid_argument("No plugin associated with device " + device->FriendlyName() + " was found");
 
-            const auto staticConfigurationSchemaNode = pluginInformation->second->getDeviceStaticConfigurationSchema();
+            return pluginInformation->second;
+         }
+
+         boost::shared_ptr<shared::CDataContainer> CDevice::getDeviceStaticConfigurationSchema(
+            const boost::shared_ptr<database::entities::CDevice>& device,
+            const boost::shared_ptr<const shared::CDataContainer>& locales) const //TODO locales à supprimer ?
+         {
+            const auto staticConfigurationSchemaNode = findPluginInformation(device)->getDeviceStaticConfigurationSchema();
             if (staticConfigurationSchemaNode->empty())
                return shared::CDataContainer::EmptyContainerSharedPtr;
+
             for (const auto& node : staticConfigurationSchemaNode->getAsMap<boost::shared_ptr<shared::CDataContainer>>("schemas"))
             {
                if (node.second->containsChild("types." + device->Type()))
-                  return node.second->getChild("content");
+               {
+                  auto schema = shared::CDataContainer::make();
+                  schema->set("canBeCreatedManually", node.second->getWithDefault<bool>("types." + device->Type() + ".canBeCreatedManually", false));
+                  schema->set("content", node.second->getChild("content"));
+                  return schema;
+               }
             }
 
             return shared::CDataContainer::EmptyContainerSharedPtr;
@@ -245,6 +267,10 @@ namespace web
             const boost::shared_ptr<database::entities::CDevice>& device,
             const boost::shared_ptr<const shared::CDataContainer>& locales) const
          {
+            const auto dynamicConfigurationSchemaNode = findPluginInformation(device)->getDeviceDynamicConfigurationSchema();
+            if (dynamicConfigurationSchemaNode->empty())
+               return shared::CDataContainer::EmptyContainerSharedPtr;
+
             //TODO tout retester
             if (!m_pluginManager->isInstanceRunning(device->PluginId()))
                return shared::CDataContainer::make(std::map<std::string, std::string>(

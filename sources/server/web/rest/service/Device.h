@@ -199,6 +199,8 @@ namespace web
             boost::shared_ptr<shared::CDataContainer> getDeviceConfigurationSchema(
                const boost::shared_ptr<database::entities::CDevice>& device,
                const boost::shared_ptr<const shared::CDataContainer>& locales) const;
+            boost::shared_ptr<const shared::plugin::information::IInformation> findPluginInformation(
+               const boost::shared_ptr<database::entities::CDevice>& device) const;
             boost::shared_ptr<shared::CDataContainer> getDeviceStaticConfigurationSchema(
                const boost::shared_ptr<database::entities::CDevice>& device,
                const boost::shared_ptr<const shared::CDataContainer>& locales) const;

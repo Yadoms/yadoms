@@ -32,6 +32,7 @@ namespace pluginSystem
       bool getSupportDeviceRemovedNotification() const override;
       boost::shared_ptr<const shared::CDataContainer> getConfigurationSchema() const override;
       boost::shared_ptr<const shared::CDataContainer> getDeviceStaticConfigurationSchema() const override;
+      boost::shared_ptr<const shared::CDataContainer> getDeviceDynamicConfigurationSchema() const override;
       boost::shared_ptr<const shared::CDataContainer> getLabels(const std::vector<std::string>& locales) const override;
       boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
       const boost::filesystem::path& getPath() const override;
@@ -89,9 +90,10 @@ namespace pluginSystem
       boost::shared_ptr<shared::CDataContainer> m_configurationSchema;
 
       //--------------------------------------------------------------
-      /// \brief	    Device static configuration schema
+      /// \brief	    Device configuration schema
       //--------------------------------------------------------------
       boost::shared_ptr<shared::CDataContainer> m_deviceStaticConfigurationSchema;
+      boost::shared_ptr<shared::CDataContainer> m_deviceDynamicConfigurationSchema;
 
       //--------------------------------------------------------------
       /// \brief	    Cache of labels (key is 2-cars locale ISO code : 'fr', 'en'...)

@@ -65,12 +65,17 @@ namespace pluginSystem
          if (m_package->containsChild("configurationSchema"))
             m_configurationSchema = m_package->getChild("configurationSchema");
          else
-            m_configurationSchema = shared::CDataContainer::make();
+            m_configurationSchema = shared::CDataContainer::EmptyContainerSharedPtr;
 
          if (m_package->containsChild("deviceConfiguration.staticConfigurationSchema"))
             m_deviceStaticConfigurationSchema = m_package->getChild("deviceConfiguration.staticConfigurationSchema");
          else
-            m_deviceStaticConfigurationSchema = shared::CDataContainer::make();
+            m_deviceStaticConfigurationSchema = shared::CDataContainer::EmptyContainerSharedPtr;
+
+         if (m_package->containsChild("deviceConfiguration.dynamicConfigurationSchema"))
+            m_deviceDynamicConfigurationSchema = m_package->getChild("deviceConfiguration.dynamicConfigurationSchema");
+         else
+            m_deviceDynamicConfigurationSchema = shared::CDataContainer::EmptyContainerSharedPtr;
       }
       catch (shared::exception::CException& e)
       {
@@ -155,6 +160,11 @@ namespace pluginSystem
    boost::shared_ptr<const shared::CDataContainer> CInformation::getDeviceStaticConfigurationSchema() const
    {
       return m_deviceStaticConfigurationSchema;
+   }
+
+   boost::shared_ptr<const shared::CDataContainer> CInformation::getDeviceDynamicConfigurationSchema() const
+   {
+      return m_deviceDynamicConfigurationSchema;
    }
 
    boost::shared_ptr<const shared::CDataContainer> CInformation::getLabels(const std::vector<std::string>& locales) const
