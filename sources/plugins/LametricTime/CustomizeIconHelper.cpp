@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "CustomizeIconHelper.h"
 
 const std::string CCustomizeIconHelper::YadomsIcon("i31581");

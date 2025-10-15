@@ -19,13 +19,6 @@
           "query": "serialPorts"
         }
       }
-    },
-    "PairingMode": {
-      "type": "enum",
-      "values": {
-        "auto": "Automatic pairing mode",
-        "manual": "Manual pairing mode"
-      }
     }
   },
   "supportDeviceRemovedNotification": "true",
@@ -52,6 +45,25 @@
     }
   },
   "specificProfilesConfigurations": {
+    "A5-20-01": {
+      "type": "section",
+      "content": {
+        "useInternalSensor": {
+          "name": "Use internal sensor",
+          "type": "enum",
+          "values": {
+            "internal": "internal",
+            "external": "external"
+          },
+          "defaultValue": "internal"
+        },
+        "setPointInverse": {
+          "name": "Set point inverse",
+          "type": "bool",
+          "defaultValue": "false"
+        }
+      }
+    },
     "D2-00-01": {
       "type": "section",
       "content": {

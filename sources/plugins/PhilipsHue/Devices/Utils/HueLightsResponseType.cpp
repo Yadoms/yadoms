@@ -1,4 +1,5 @@
-﻿#include "HueLightsResponseType.h"
+﻿#include "stdafx.h"
+#include "HueLightsResponseType.h"
 
 DECLARE_ENUM_IMPLEMENTATION(EHueLightResponseType,
                             ((StateOn)("state.on"))

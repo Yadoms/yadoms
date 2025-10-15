@@ -21,7 +21,6 @@ public:
    // IConfiguration implementation
    void initializeWith(const boost::shared_ptr<shared::CDataContainer> & data) override;
    std::string getSerialPort() const override;
-   CPairingHelper::EPairingMode getPairingMode() const override;
    // [END] IConfiguration implementation
 
 private:

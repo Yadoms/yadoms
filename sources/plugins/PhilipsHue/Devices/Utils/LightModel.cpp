@@ -1,4 +1,5 @@
-﻿#include "LightModel.h"
+﻿#include "stdafx.h"
+#include "LightModel.h"
 
 DECLARE_ENUM_IMPLEMENTATION(ELightModel,
                             ((LCT001)("LCT001"))

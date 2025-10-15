@@ -22,7 +22,7 @@ namespace logging
       //--------------------------------------------------------------
       /// \brief     Private impelmentation
       //--------------------------------------------------------------
-      static boost::shared_ptr<CLogConfigurationImpl> m_configurator;
+      static inline boost::shared_ptr<CLogConfigurationImpl> m_configurator;
    };
 } // namespace logging
 

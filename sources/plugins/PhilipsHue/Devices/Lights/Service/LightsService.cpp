@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "LightsService.h"
 #include "shared/Log.h"
 #include "shared/http/HttpRestHelpers.h"

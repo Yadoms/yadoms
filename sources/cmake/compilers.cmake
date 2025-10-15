@@ -3,7 +3,7 @@
 message(STATUS "System Name = ${CMAKE_SYSTEM_NAME}")
 
 #activate c++14 (now managed directly with those three lines
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
@@ -20,6 +20,9 @@ if(MSVC)
 	## Activate warning level4, and disable useless ones ##
 	#######################################################
 	add_definitions("/W4")
+
+	#Multiprocessors compilation
+	add_definitions("/MP")
 	
 	# A lot of level 4 warnings are involved by boost.
 	# Use the next link to see how to remove warning 

@@ -37,7 +37,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_A5_09_05::readInitialState(const std::string& senderId,
-                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+                                         boost::shared_ptr<IMessageHandler> messageHandler)
 {
 }
 
@@ -45,7 +45,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                    const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status,
                                                                                                    const std::string& senderId,
-                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler)
 {
    // Some devices supports several RORG telegrams, ignore non-4BS telegrams
    if (rorg != CRorgs::ERorgIds::k4BS_Telegram)
@@ -80,12 +80,11 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 void CProfile_A5_09_05::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
-                                    boost::shared_ptr<IMessageHandler> messageHandler) const
-{
+                                    boost::shared_ptr<IMessageHandler> messageHandler) {
 }
 
 void CProfile_A5_09_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
-                                          boost::shared_ptr<IMessageHandler> messageHandler) const
+                                          boost::shared_ptr<IMessageHandler> messageHandler)
 {
 }

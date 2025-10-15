@@ -1,4 +1,5 @@
-﻿#include "HueLightInformations.h"
+﻿#include "stdafx.h"
+#include "HueLightInformations.h"
 
 const CHueState& CHueLightInformations::getState() const
 {

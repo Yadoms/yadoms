@@ -1,17 +1,17 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
-#include "Configuration.h"
-#include <shared/communication/IAsyncPort.h>
-#include "message/Esp3ReceivedPacket.h"
-#include "message/UTE_ReceivedMessage.h"
-#include "message/DongleVersionResponseReceivedMessage.h"
-#include "profiles/IType.h"
-#include "ProfileHelper.h"
-#include "PairingHelper.h"
-#include "IMessageHandler.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
-#include "message/UTE_AnswerSendMessage.h"
-#include "profiles/IRorg.h"
+#include <shared/communication/IAsyncPort.h>
+#include "Configuration.h"
+#include "IMessageHandler.h"
+#include "PairingHelper.h"
+#include "ProfileHelper.h"
+#include "message/Esp3ReceivedPacket.h"
+#include "message/smart_ack/Client.h"
+#include "message/radioErp1/4BSTeachinRequest.h"
+#include "message/radioErp1/ReceivedMessage.h"
+#include "message/radioErp1/UTERequest.h"
+#include "message/radioErp1/UTEResponse.h"
 
 
 // Shortcut to yPluginApi namespace
@@ -19,231 +19,241 @@ namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	This plugin supports EnOcean
+/// \doc See https://www.enocean-alliance.org/wp-content/uploads/2020/07/EnOcean-Equipment-Profiles-3-1.pdf
 //--------------------------------------------------------------
 class CEnOcean final : public plugin_cpp_api::IPlugin
 {
 public:
-   CEnOcean();
-   ~CEnOcean() override = default;
+	CEnOcean();
+	~CEnOcean() override = default;
 
-   // IPlugin implementation
-   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
-   // [END] IPlugin implementation
+	// IPlugin implementation
+	void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
+	// [END] IPlugin implementation
 
 protected:
-   //--------------------------------------------------------------
-   /// \brief	                     Load all devices (create device object from devices stored in database)
-   //--------------------------------------------------------------
-   void loadAllDevices();
+	//--------------------------------------------------------------
+	/// \brief	                     Load all devices (create device object from devices stored in database)
+	//--------------------------------------------------------------
+	void loadAllDevices();
 
-   //--------------------------------------------------------------
-   /// \brief	                     Update (only add new) device keywords if list was changed
-   /// \note                        Useful in case of first run of a new plugin version
-   //--------------------------------------------------------------
-   void createNewKeywords(const std::string& deviceName,
-                          const boost::shared_ptr<IType>& loadedDevice) const;
+	//--------------------------------------------------------------
+	/// \brief	                     Update (only add new) device keywords if list was changed
+	/// \note                        Useful in case of first run of a new plugin version
+	//--------------------------------------------------------------
+	void createNewKeywords(const std::string& deviceName,
+						   const boost::shared_ptr<IType>& loadedDevice) const;
 
-   //--------------------------------------------------------------
-   /// \brief	                     Process a command received from Yadoms
-   /// \param [in] command          The received command
-   //--------------------------------------------------------------
-   void processDeviceCommand(const boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand>& command);
+	//--------------------------------------------------------------
+	/// \brief	                     Process a command received from Yadoms
+	/// \param [in] command          The received command
+	//--------------------------------------------------------------
+	void processDeviceCommand(const boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand>& command);
 
-   //--------------------------------------------------------------
-   /// \brief	                     Called when dongle becomes connected
-   //--------------------------------------------------------------
-   void processConnectionEvent();
+	//--------------------------------------------------------------
+	/// \brief	                     Called when dongle becomes connected
+	//--------------------------------------------------------------
+	void processConnectionEvent();
 
-   //--------------------------------------------------------------
-   /// \brief	                     Called when dongle becomes unconnected
-   /// \param[in] notification      The connection notification
-   //--------------------------------------------------------------
-   void processUnConnectionEvent(
-      const boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>& notification = boost::shared_ptr<
-         shared::communication::CAsyncPortConnectionNotification>());
+	//--------------------------------------------------------------
+	/// \brief	                     Called when dongle becomes unconnected
+	/// \param[in] notification      The connection notification
+	//--------------------------------------------------------------
+	void processUnConnectionEvent(
+		const boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>& notification = boost::shared_ptr<
+		shared::communication::CAsyncPortConnectionNotification>());
 
-   //--------------------------------------------------------------
-   /// \brief	                     Called when device was removed
-   /// \param[in] deviceId          ID of the removed device
-   //--------------------------------------------------------------
-   void processDeviceRemoved(const std::string& deviceId);
+	//--------------------------------------------------------------
+	/// \brief	                     Called when device was removed
+	/// \param[in] deviceId          ID of the removed device
+	//--------------------------------------------------------------
+	void processDeviceRemoved(const std::string& deviceId);
 
-   //--------------------------------------------------------------
-   /// \brief	                     Reconfigure a device (configuration must be set in Yadoms first)
-   /// \param [in] deviceId         The device ID
-   /// \param [in] configuration    The device configuration
-   //--------------------------------------------------------------
-   void processDeviceConfiguration(const std::string& deviceId,
-                                   const boost::shared_ptr<shared::CDataContainer>& configuration);
+	//--------------------------------------------------------------
+	/// \brief	                     Reconfigure a device (configuration must be set in Yadoms first)
+	/// \param [in] deviceId         The device ID
+	/// \param [in] configuration    The device configuration
+	//--------------------------------------------------------------
+	void processDeviceConfiguration(const std::string& deviceId,
+									const boost::shared_ptr<shared::CDataContainer>& configuration);
 
-   //--------------------------------------------------------------
-   /// \brief	                     Called when the data are received from the UPS
-   /// \param [in] message          Message received
-   //--------------------------------------------------------------
-   void processDataReceived(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& message);
+	//--------------------------------------------------------------
+	/// \brief	                     Called when the data are received from the UPS
+	/// \param [in] message          Message received
+	//--------------------------------------------------------------
+	void processDataReceived(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& message);
 
-   //--------------------------------------------------------------
-   /// \brief	                     Add signal power to historizable keyword list
-   /// \param [in,out] keywords     Keyword list
-   /// \param [in] deviceId         Device ID
-   /// \param [in] signalPower      The current signal strength value (%)
-   //--------------------------------------------------------------
-   void addSignalPower(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords,
-                       const std::string& deviceId,
-                       int signalPower) const;
+	//--------------------------------------------------------------
+	/// \brief	                     Add signal power to historizable keyword list
+	/// \param [in,out] keywords     Keyword list
+	/// \param [in] deviceId         Device ID
+	/// \param [in] signalPower      The current signal strength value (%)
+	//--------------------------------------------------------------
+	void addSignalPower(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords,
+						const std::string& deviceId,
+						int signalPower) const;
 
-   //--------------------------------------------------------------
-   /// \brief	                     Convert dBm value to signal power
-   /// \param [in] dBm              Signal power as dBm
-   /// \return                      Signal power value (%)
-   //--------------------------------------------------------------
-   static int dbmToSignalPower(int dBm);
+	//--------------------------------------------------------------
+	/// \brief	                     Convert dBm value to signal power
+	/// \param [in] dBm              Signal power as dBm
+	/// \return                      Signal power value (%)
+	//--------------------------------------------------------------
+	static int dbmToSignalPower(int dBm);
 
-   //--------------------------------------------------------------
-   /// \brief	                     Process received messages
-   /// \param [in] esp3Packet       Message received
-   //--------------------------------------------------------------
-   void processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
-   static void processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
-   void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
-                                     const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse);
-   void processEepTeachInMessage(const boost::dynamic_bitset<>& erp1UserData,
-                                 const boost::shared_ptr<IRorg>& rorg,
-                                 const std::string& deviceId);
-   void processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
-                                   const std::string& deviceId);
-   void processDataTelegram(const message::CRadioErp1ReceivedMessage& erp1Message,
-                            const boost::dynamic_bitset<>& erp1UserData,
-                            const boost::dynamic_bitset<>& erp1Status,
-                            const std::string& deviceId);
-   static void processEvent(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
-   void processUTE(message::CRadioErp1ReceivedMessage& erp1Message);
-   bool sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
-                      const boost::shared_ptr<const message::CUTE_ReceivedMessage>& uteMessage,
-                      bool isReversed,
-                      const std::string& deviceId);
+	//--------------------------------------------------------------
+	/// \brief	                     Process received messages
+	/// \param [in] esp3Packet       Message received
+	//--------------------------------------------------------------
+	void processRadioErp1(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
+	static void processResponse(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
+	std::string processEepTeachInMessage(const message::radioErp1::C4BSTeachinRequest& teachInRequest,
+										 const boost::shared_ptr<IRorg>& rorg,
+										 const std::string& deviceId);
+	std::string processNoEepTeachInMessage(const boost::shared_ptr<IRorg>& rorg,
+										   const std::string& deviceId);
+	void processDataTelegram(const message::radioErp1::CReceivedMessage& erp1Message,
+							 const boost::dynamic_bitset<>& erp1UserData,
+							 const boost::dynamic_bitset<>& erp1Status,
+							 const std::string& deviceId);
+	static void processEvent(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
+	std::string processUTE(message::radioErp1::CReceivedMessage& erp1Message);
+	bool sendUTEAnswer(message::radioErp1::CUTEResponse::EResponse response,
+					   const boost::shared_ptr<const message::radioErp1::CUTERequest>& uteMessage,
+					   bool isReversed,
+					   const std::string& deviceId);
 
-   //--------------------------------------------------------------
-   /// \brief	                           Declare a device
-   /// \param [in] deviceId               Device ID
-   /// \param [in] profile                Device profile
-   /// \param [in] manufacturer           Manufacturer
-   /// \param [in] model                  Device model (auto-generated if not provided)
-   /// \return                            The created device
-   //--------------------------------------------------------------
-   boost::shared_ptr<IType> declareDevice(const std::string& deviceId,
-                                          const CProfileHelper& profile,
-                                          const std::string& manufacturer,
-                                          const std::string& model = std::string());
+	//--------------------------------------------------------------
+	/// \brief	                           Declare a device
+	/// \param [in] deviceId               Device ID
+	/// \param [in] profile                Device profile
+	/// \param [in] manufacturer           Manufacturer
+	/// \param [in] model                  Device model (auto-generated if not provided)
+	/// \return                            The created device
+	//--------------------------------------------------------------
+	boost::shared_ptr<IType> declareDevice(const std::string& deviceId,
+										   const CProfileHelper& profile,
+										   const std::string& manufacturer,
+										   const std::string& model = std::string());
 
-   //--------------------------------------------------------------
-   /// \brief	                           Remove a device
-   /// \param [in] deviceId               Device ID
-   //--------------------------------------------------------------
-   void removeDevice(const std::string& deviceId);
+	//--------------------------------------------------------------
+	/// \brief	                           Remove a device
+	/// \param [in] deviceId               Device ID
+	//--------------------------------------------------------------
+	void removeDevice(const std::string& deviceId);
 
-   //--------------------------------------------------------------
-   /// \brief	                     Declare a device when ignoring profile
-   /// \param [in] deviceId         Device ID to declare
-   //--------------------------------------------------------------
-   void declareDeviceWithoutProfile(const std::string& deviceId) const;
+	//--------------------------------------------------------------
+	/// \brief	                     Declare a device when ignoring profile
+	/// \param [in] deviceId         Device ID to declare
+	//--------------------------------------------------------------
+	void declareDeviceWithoutProfile(const std::string& deviceId) const;
 
-   //--------------------------------------------------------------
-   /// \brief	                     Requests to EnOcean
-   //--------------------------------------------------------------
-   void requestDongleVersion();
+	//--------------------------------------------------------------
+	/// \brief	                     Requests to EnOcean
+	//--------------------------------------------------------------
+	void requestDongleVersion();
+	void enableSmartAckPostMaster(bool enable) const;
+	void readSmartAckLearnMode() const;
+	std::vector<boost::shared_ptr<message::smart_ack::CClient>> readSmartAckLearnedClients() const;
+	void readSmartAckClientMailboxStatus(const boost::shared_ptr<message::smart_ack::CClient>& smartAckClient) const;
 
-   //--------------------------------------------------------------
-   /// \brief	                     Create the connection
-   //--------------------------------------------------------------
-   void createConnection();
 
-   //--------------------------------------------------------------
-   /// \brief	                     Close the connection
-   //--------------------------------------------------------------
-   void destroyConnection();
+	//--------------------------------------------------------------
+	/// \brief	                     Create the connection
+	//--------------------------------------------------------------
+	void createConnection();
 
-   //--------------------------------------------------------------
-   /// \brief	                     Protocol error processing (retry last command)
-   //--------------------------------------------------------------
-   void protocolErrorProcess();
+	//--------------------------------------------------------------
+	/// \brief	                     Close the connection
+	//--------------------------------------------------------------
+	void destroyConnection();
 
-   //--------------------------------------------------------------
-   /// \brief	                     Check if connections are the same between the 2 configurations
-   /// \param [in] conf1            First configuration to compare
-   /// \param [in] conf2            Second configuration to compare
-   /// \return                      true is connection data are all the same in the both configurations
-   //--------------------------------------------------------------
-   static bool connectionsAreEqual(const CConfiguration& conf1,
-                                   const CConfiguration& conf2);
+	//--------------------------------------------------------------
+	/// \brief	                     Protocol error processing (retry last command)
+	//--------------------------------------------------------------
+	void protocolErrorProcess();
 
-   //--------------------------------------------------------------
-   /// \brief	                     Create a new device (local only)
-   /// \param [in] deviceId         The device ID
-   /// \param [in] profileHelper    The device profile
-   /// \return                      New device created
-   //--------------------------------------------------------------
-   boost::shared_ptr<IType> createDevice(const std::string& deviceId,
-                                         const CProfileHelper& profileHelper) const;
+	//--------------------------------------------------------------
+	/// \brief	                     Check if connections are the same between the 2 configurations
+	/// \param [in] conf1            First configuration to compare
+	/// \param [in] conf2            Second configuration to compare
+	/// \return                      true is connection data are all the same in the both configurations
+	//--------------------------------------------------------------
+	static bool connectionsAreEqual(const CConfiguration& conf1,
+									const CConfiguration& conf2);
 
-   //--------------------------------------------------------------
-   /// \brief	                     Generate a default model name if none provided
-   /// \param [in] model            Original model name
-   /// \param [in] manufacturer     Manufacturer name
-   /// \param [in] profile          Device profile
-   /// \return                      The model name
-   //--------------------------------------------------------------
-   std::string generateModel(const std::string& model,
-                             const std::string& manufacturer,
-                             const CProfileHelper& profile) const;
+	//--------------------------------------------------------------
+	/// \brief	                     Create a new device (local only)
+	/// \param [in] deviceId         The device ID
+	/// \param [in] profileHelper    The device profile
+	/// \return                      New device created
+	//--------------------------------------------------------------
+	boost::shared_ptr<IType> createDevice(const std::string& deviceId,
+										  const CProfileHelper& profileHelper) const;
 
-   //--------------------------------------------------------------
-   /// \brief	                     Process pairing devices
-   /// \param [in] api              Plugin execution context (Yadoms API)
-   /// \param [in] extraQuery       Extra query
-   //--------------------------------------------------------------
-   void startManualPairing(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                           boost::shared_ptr<yApi::IExtraQuery> extraQuery);
+	//--------------------------------------------------------------
+	/// \brief	                     Generate a default model name if none provided
+	/// \param [in] model            Original model name
+	/// \param [in] manufacturer     Manufacturer name
+	/// \param [in] profile          Device profile
+	/// \return                      The model name
+	//--------------------------------------------------------------
+	std::string generateModel(const std::string& model,
+							  const std::string& manufacturer,
+							  const CProfileHelper& profile) const;
+
+	//--------------------------------------------------------------
+	/// \brief	                     Start pairing devices
+	/// \param [in] api              Plugin execution context (Yadoms API)
+	//--------------------------------------------------------------
+	void startPairing(const boost::shared_ptr<yApi::IYPluginApi>& api);
+
+	//--------------------------------------------------------------
+	/// \brief	                     Stop pairing devices
+	/// \param [in] pairedDeviceTitle Paired device (empty if no device paired)
+	//--------------------------------------------------------------
+	void stopPairing(const std::string& pairedDeviceTitle = {});
 
 private:
-   //--------------------------------------------------------------
-   /// \brief	The plugin configuration
-   //--------------------------------------------------------------
-   CConfiguration m_configuration;
+	//--------------------------------------------------------------
+	/// \brief	The plugin configuration
+	//--------------------------------------------------------------
+	CConfiguration m_configuration;
 
-   //--------------------------------------------------------------
-   /// \brief  The communication port
-   //--------------------------------------------------------------
-   boost::shared_ptr<shared::communication::IAsyncPort> m_port;
+	//--------------------------------------------------------------
+	/// \brief  The communication port
+	//--------------------------------------------------------------
+	boost::shared_ptr<shared::communication::IAsyncPort> m_port;
 
-   //--------------------------------------------------------------
-   /// \brief  The message handler
-   //--------------------------------------------------------------
-   boost::shared_ptr<IMessageHandler> m_messageHandler;
+	//--------------------------------------------------------------
+	/// \brief  The message handler
+	//--------------------------------------------------------------
+	boost::shared_ptr<IMessageHandler> m_messageHandler;
 
-   //--------------------------------------------------------------
-   /// \brief  Api access
-   //--------------------------------------------------------------
-   boost::shared_ptr<yApi::IYPluginApi> m_api;
+	//--------------------------------------------------------------
+	/// \brief  Api access
+	//--------------------------------------------------------------
+	boost::shared_ptr<yApi::IYPluginApi> m_api;
 
-   //--------------------------------------------------------------
-   /// \brief  The known devices list (only configured devices)
-   //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<IType>> m_devices;
+	//--------------------------------------------------------------
+	/// \brief  The known devices list (only configured devices)
+	//--------------------------------------------------------------
+	std::map<std::string, boost::shared_ptr<IType>> m_devices;
 
-   //--------------------------------------------------------------
-   /// \brief  The send ID (ID of EnOcean chip on the USB dongle)
-   //--------------------------------------------------------------
-   std::string m_senderId;
+	//--------------------------------------------------------------
+	/// \brief  The send ID (ID of EnOcean chip on the USB dongle)
+	//--------------------------------------------------------------
+	std::string m_senderId;
 
-   //--------------------------------------------------------------
-   /// \brief  The signal power keyword, used for each received message
-   //--------------------------------------------------------------
-   boost::shared_ptr<shared::plugin::yPluginApi::historization::CSignalPower> m_signalPowerKeyword;
+	//--------------------------------------------------------------
+	/// \brief  The signal power keyword, used for each received message
+	//--------------------------------------------------------------
+	boost::shared_ptr<shared::plugin::yPluginApi::historization::CSignalPower> m_signalPowerKeyword;
 
-   //--------------------------------------------------------------
-   /// \brief  The pairing helper
-   //--------------------------------------------------------------
-   boost::shared_ptr<CPairingHelper> m_pairingHelper;
-   boost::shared_ptr<shared::event::CEventTimer> m_progressPairingTimer;
+	//--------------------------------------------------------------
+	/// \brief  The pairing helper
+	//--------------------------------------------------------------
+	boost::shared_ptr<yApi::IExtraQuery> m_pairingQuery;
+	unsigned int m_progressPairingCount = 0;
+	boost::shared_ptr<IPairingHelper> m_pairingHelper;
+	boost::shared_ptr<shared::event::CEventTimer> m_progressPairingTimer;
 };

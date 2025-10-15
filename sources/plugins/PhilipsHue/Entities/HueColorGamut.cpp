@@ -1,1 +1,2 @@
-﻿#include "HueColorGamut.h"
+﻿#include "stdafx.h"
+#include "HueColorGamut.h"

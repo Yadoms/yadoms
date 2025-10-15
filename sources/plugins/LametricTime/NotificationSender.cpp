@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "NotificationSender.h"
 #include "shared/http/HttpRestHelpers.h"
 #include "shared/Log.h"

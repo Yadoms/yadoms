@@ -1,4 +1,5 @@
-﻿#include "HueState.h"
+﻿#include "stdafx.h"
+#include "HueState.h"
 
 CHueState::CHueState(bool on, int bri, int hue, int sat, const std::string& effect, const CXy& xy, int ct,
                      const std::string& alert, const std::string& colorMode, const std::string& mode, bool reachable)
