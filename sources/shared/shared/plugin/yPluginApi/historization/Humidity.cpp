@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "Humidity.h"
 #include "../StandardCapacities.h"
-#include <shared/Log.h>
 
 namespace shared
 {

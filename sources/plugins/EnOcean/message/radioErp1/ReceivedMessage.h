@@ -2,26 +2,23 @@
 #include "profiles/eep.h"
 
 
-namespace message
+namespace message::radioErp1
 {
    //--------------------------------------------------------------
    /// \brief	EnOcean RADIO_ERP1 message
    ///
    /// This class manages a RADIO_ERP1 EnOcean message.
    //--------------------------------------------------------------
-   class CRadioErp1ReceivedMessage
+   class CReceivedMessage final
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                           Constructor
       /// \param[in] esp3Packet              The esp3 message
       //--------------------------------------------------------------
-      explicit CRadioErp1ReceivedMessage(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+      explicit CReceivedMessage(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet);
 
-      //--------------------------------------------------------------
-      /// \brief	                           Destructor
-      //--------------------------------------------------------------
-      virtual ~CRadioErp1ReceivedMessage();
+      ~CReceivedMessage();
 
       CRorgs::ERorgIds rorg() const;
       std::string senderId() const;

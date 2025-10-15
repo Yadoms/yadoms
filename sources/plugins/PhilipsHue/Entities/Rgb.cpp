@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Rgb.h"
 
 CRgb::CRgb(unsigned long& r, unsigned long& g, unsigned long& b)

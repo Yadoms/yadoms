@@ -1,4 +1,5 @@
-﻿#include "HueStartUp.h"
+﻿#include "stdafx.h"
+#include "HueStartUp.h"
 
 CHueStartUp::CHueStartUp(const std::string& mode, bool& configured)
    : m_mode(mode),

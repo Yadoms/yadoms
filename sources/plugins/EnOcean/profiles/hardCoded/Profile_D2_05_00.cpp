@@ -31,7 +31,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_D2_05_00::readInitialState(const std::string& senderId,
-                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+                                         boost::shared_ptr<IMessageHandler> messageHandler)
 {
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
@@ -45,7 +45,6 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                    const boost::dynamic_bitset<>& status,
                                                                                                    const std::string& senderId,
                                                                                                    boost::shared_ptr<IMessageHandler> messageHandler)
-const
 {
    return CProfile_D2_05_Common::extractReplyPositionAndAngleResponse(rorg,
                                                                       data,
@@ -56,8 +55,7 @@ const
 void CProfile_D2_05_00::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
-                                    boost::shared_ptr<IMessageHandler> messageHandler) const
-{
+                                    boost::shared_ptr<IMessageHandler> messageHandler) {
    if (keyword == m_curtain->getKeyword())
    {
       m_curtain->setCommand(commandBody);
@@ -88,7 +86,7 @@ void CProfile_D2_05_00::sendCommand(const std::string& keyword,
 
 void CProfile_D2_05_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
-                                          boost::shared_ptr<IMessageHandler> messageHandler) const
+                                          boost::shared_ptr<IMessageHandler> messageHandler)
 {
    const auto measuredDurationOfVerticalRunMs = deviceConfiguration.get<unsigned int>("measuredDurationOfVerticalRunMs");
    const auto measuredDurationOfRotationMs = deviceConfiguration.get<unsigned int>("measuredDurationOfRotationMs");

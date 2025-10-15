@@ -6,29 +6,21 @@
 class IPairingHelper
 {
 public:
-   enum EPairingMode
-   {
-      kAuto = 0,
-      kManual
-   };
+    virtual ~IPairingHelper() = default;
 
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~IPairingHelper()
-   {
-   }
+    //--------------------------------------------------------------
+    /// \brief     Check if pairing is currently active
+    /// \return    true if pairing is active
+    //--------------------------------------------------------------
+    virtual bool isPairing() = 0;    
 
-   //--------------------------------------------------------------
-   /// \brief     Check if device need to be paired
-   /// \param[in] deviceName  Device to check for pairing
-   /// \return    true if device need to be paired and pairing is enable
-   //--------------------------------------------------------------
-   virtual bool needPairing(const std::string& deviceName) = 0;
+    //--------------------------------------------------------------
+    /// \brief     Start the pairing
+    //--------------------------------------------------------------
+	virtual bool start() = 0;
 
-   //--------------------------------------------------------------
-   /// \brief     Get the pairing mode
-   /// \return    The pairing mode
-   //--------------------------------------------------------------
-   virtual EPairingMode getMode() const = 0;
+    //--------------------------------------------------------------
+    /// \brief     Stop the pairing
+    //--------------------------------------------------------------
+    virtual void stop() = 0;
 };

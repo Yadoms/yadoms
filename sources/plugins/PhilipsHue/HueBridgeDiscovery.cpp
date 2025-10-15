@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "HueBridgeDiscovery.h"
 #include "shared/http/ssdp/DiscoverService.h"
 #include "shared/http/HttpRestHelpers.h"

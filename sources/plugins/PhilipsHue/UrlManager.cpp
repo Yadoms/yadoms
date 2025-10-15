@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "UrlManager.h"
 
 const std::string CUrlManager::ApiPath("/api");

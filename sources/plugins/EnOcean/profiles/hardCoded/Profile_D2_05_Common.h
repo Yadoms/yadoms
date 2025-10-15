@@ -26,19 +26,19 @@ public:
    ) ;
 
    // CMD 0x1 - Actuator Set Output
-   static void sendGoToPositionAndAngle(boost::shared_ptr<IMessageHandler> messageHandler,
+   static void sendGoToPositionAndAngle(const boost::shared_ptr<IMessageHandler>& messageHandler,
                                         const std::string& senderId,
                                         const std::string& targetId,
                                         boost::optional<yApi::historization::ECurtainCommand> curtain,
-                                        specificHistorizers::EBlindLockingMode lockingMode);
+                                        const specificHistorizers::EBlindLockingMode& lockingMode);
 
    // CMD 0x2 - Stop
-   static void sendStop(boost::shared_ptr<IMessageHandler> messageHandler,
+   static void sendStop(const boost::shared_ptr<IMessageHandler>& messageHandler,
                         const std::string& senderId,
                         const std::string& targetId);
 
    // CMD 0x03 - Query Position and Angle
-   static void sendQueryPositionAndAngle(boost::shared_ptr<IMessageHandler> messageHandler,
+   static void sendQueryPositionAndAngle(const boost::shared_ptr<IMessageHandler>& messageHandler,
                                          const std::string& senderId,
                                          const std::string& targetId);
 
@@ -51,14 +51,14 @@ public:
                                                                                                                         boost::shared_ptr<specificHistorizers::CBlindLockingMode> lockingMode);
 
    // CMD 0x05 - Set parameters
-   static void sendSetParameters(boost::shared_ptr<IMessageHandler> messageHandler,
+   static void sendSetParameters(const boost::shared_ptr<IMessageHandler>& messageHandler,
                                  const std::string& senderId,
                                  const std::string& targetId,
                                  unsigned int measuredDurationOfVerticalRunMs,
                                  unsigned int measuredDurationOfRotationMs,
-                                 EAlarmAction alarmAction);
+                                 const EAlarmAction& alarmAction);
 
-   static void sendMessage(boost::shared_ptr<IMessageHandler> messageHandler,
+   static void sendMessage(const boost::shared_ptr<IMessageHandler>& messageHandler,
                            const std::string& senderId,
                            const std::string& targetId,
                            const boost::dynamic_bitset<>& userData,

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ColorConverter.h"
 #include <regex>
 
@@ -76,21 +77,21 @@ CXy CColorConverter::rgbToXy(CRgb& rgb)
 
    if (red > 0.04045)
    {
-      red = pow((red + 0.055) / (1.0 + 0.055), 2.4);
+      red = static_cast<float>(pow((red + 0.055) / (1.0 + 0.055), 2.4));
    }
-   else red = (red / 12.92);
+   else red = static_cast<float>(red / 12.92);
 
    if (green > 0.04045)
    {
-      green = pow((green + 0.055) / (1.0 + 0.055), 2.4);
+      green = static_cast<float>(pow((green + 0.055) / (1.0 + 0.055), 2.4));
    }
-   else green = (green / 12.92);
+   else green = static_cast<float>(green / 12.92);
 
    if (blue > 0.04045)
    {
-      blue = pow((blue + 0.055) / (1.0 + 0.055), 2.4);
+      blue = static_cast<float>(pow((blue + 0.055) / (1.0 + 0.055), 2.4));
    }
-   else blue = blue / 12.92;
+   else blue = blue / static_cast<float>(12.92);
 
    const auto x = red * 0.664511 + green * 0.154324 + blue * 0.162028;
    const auto y = red * 0.283881 + green * 0.668433 + blue * 0.047685;

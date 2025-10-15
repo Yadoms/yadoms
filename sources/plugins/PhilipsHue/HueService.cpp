@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "HueService.h"
 #include "shared/http/HttpRestHelpers.h"
 #include "shared/Log.h"
