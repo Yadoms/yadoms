@@ -9,16 +9,19 @@
 ##   Raspberry Raspbian Wheezy, g++ 4.7
 ##   MacOSx Snow Leopard 10.8, Lion 10.9, yosemite 10.10 and ElCaptain 10.11 , g++ 4.8 and more
 ##################################################################################################
-project (Yadoms)
-
-# Check the minimum CMake version
 cmake_minimum_required (VERSION 3.14.0)
+project (Yadoms)
 
 # Global CMake policies
 cmake_policy(SET CMP0074 NEW)
 cmake_policy(SET CMP0077 NEW)
 cmake_policy(SET CMP0078 NEW)
 cmake_policy(SET CMP0086 NEW)
+cmake_policy(SET CMP0144 NEW)
+cmake_policy(SET CMP0167 NEW)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 ##################################################################################################
 ## Extract Yadoms version from changelog.md file
@@ -101,17 +104,16 @@ add_definitions(-DBOOST_SPIRIT_THREADSAFE)
 # define all needed boost libraries
 set(BOOST_LIBS 
    atomic
-   system 
-   filesystem 
-   thread 
-   date_time 
-   chrono 
+   chrono
+   date_time
+   filesystem
+   process
    regex
+   thread
 )
 
 # search boost libs
-find_package(Boost 1.60.0 REQUIRED COMPONENTS ${BOOST_LIBS})
-set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
+find_package(Boost 1.89.0 CONFIG REQUIRED COMPONENTS ${BOOST_LIBS})
 
 
 ## Thread Library
@@ -175,11 +177,10 @@ endif()
 ###############################################
 SET(OPENSSL_USE_STATIC_LIBS TRUE)
 SET(OPENSSL_MSVC_STATIC_RT TRUE)
-SET(OPENSSL_ROOT_DIR ${OPENSSL_ROOT})
-FIND_PACKAGE(OpenSSL)
+FIND_PACKAGE(OpenSSL REQUIRED)
 
 if(NOT ${OPENSSL_FOUND})
-   message("Cannot find opensll, all plugins which requires SSL features will not be loaded")
+   message(FATAL_ERROR "Cannot find opensll, all plugins which requires SSL features will not be loaded")
    set(OPENSSL_INCLUDE_DIR "")
 endif()
 #Do not add OPENSSL_SSL_LIBRARY and OPENSSL_CRYPTO_LIBRARY here; it will be later
@@ -189,18 +190,17 @@ endif()
 ###############################################
 # POCO
 #
-# POCO_LIBS : define all required poco libraries
 ###############################################
 
-SET (POCO_LIBS
-   PocoUtil
-   PocoNetSSL
-   PocoCrypto
-   PocoZip
-   PocoXML
-   PocoNet
-   PocoJSON
-   PocoFoundation
+SET(POCO_COMPONENTS
+   Util
+   NetSSL
+   Crypto
+   Zip
+   XML
+   Net
+   JSON
+   Foundation
 )
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
@@ -213,12 +213,12 @@ if(MSVC)
 endif(MSVC)
 
 add_definitions(-DPOCO_EXTERNAL_OPENSSL=42) #force an unknown value (empty value do not work correctly)
-include(cmake/FindPoco.cmake)
 
-IF(NOT ${Poco_FOUND})
-   message(FATAL_ERROR "Unable to find the required POCO libraries")
-ENDIF()
-
+find_package(Poco CONFIG REQUIRED COMPONENTS ${POCO_COMPONENTS})
+set(Poco_TARGETS)
+foreach(c IN LISTS POCO_COMPONENTS)
+  list(APPEND Poco_TARGETS Poco::${c})
+endforeach()
 
 ###############################################
 # Protobuf
@@ -284,7 +284,7 @@ add_definitions("-DCURL_STATICLIB")
 #   3/ CMAKE_THREAD_LIBS_INIT must appear after Openssl
 # maybe other conditions are needed, but only those are actually detected
 set(LIBS
-   ${Poco_FOUND_LIBS}
+   ${Poco_TARGETS}
    ${OPENSSL_SSL_LIBRARY}
    ${OPENSSL_CRYPTO_LIBRARY}
    ${CMAKE_THREAD_LIBS_INIT}
@@ -302,16 +302,14 @@ set(LIBS
 ##################################################################################################
 
 #Use Sqlite database system
-set(USE_SQLITE_DATABASE TRUE)
+set(USE_SQLITE_DATABASE ON)
 #Use PostgreSQL database system
-set(USE_PGSQL_DATABASE TRUE)
+set(USE_PGSQL_DATABASE OFF)
 #Use Poco web server
-set(USE_POCO_WEBSERVER TRUE)
+set(USE_POCO_WEBSERVER ON)
 
 #include libs (have their own CMakeList.txt)
 add_subdirectory(external-libs)
-
-message("CMAKE_TOOLCHAIN_FILE 1 : ${CMAKE_TOOLCHAIN_FILE}")
 
 ##################################################################################################
 ## Yadoms
@@ -1009,9 +1007,9 @@ IF(USE_PGSQL_DATABASE)
       ENDIF(WIN32)
    
       set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${PostgreSQL_INCLUDE_DIRS})
+      add_definitions(-DUSE_PGSQL)
    else()
       message(WARNING "PostgreSQL not found. Only SQLite will be available")
-      add_definitions( -DPGSQL_NOT_FOUND )
    ENDIF(PostgreSQL_FOUND)   
 ENDIF(USE_PGSQL_DATABASE)
 
@@ -1167,12 +1165,14 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ## Link
 ##################################################################################################
 target_link_libraries(yadoms
-   yadoms-shared
-   plugin_IPC
-   interpreter_IPC script_IPC
-   ${YADOMS_EXTERNAL_LINK}
-   ${LIBS}
-   ${CMAKE_DL_LIBS}
+   PRIVATE
+      yadoms-shared
+      plugin_IPC
+      interpreter_IPC
+      script_IPC
+      ${YADOMS_EXTERNAL_LINK}
+      ${LIBS}
+      ${CMAKE_DL_LIBS}
 )
 
 ##################################################################################################

@@ -105,7 +105,7 @@ namespace xplcore
       }
 
       //We haven't found any valid ipv4 address we assume that we are only in local
-      return boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::from_string("localhost"), 0);
+      return boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::loopback(), 0);
    }
 
 

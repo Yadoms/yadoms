@@ -1,5 +1,6 @@
 #pragma once
 #define RAPIDJSON_VALUE_DEFAULT_OBJECT_CAPACITY 1
+#include <boost/function.hpp>
 #include <shared/exception/OutOfRange.hpp>
 #include <shared/exception/InvalidParameter.hpp>
 #include "serialization/IDataSerializable.h"

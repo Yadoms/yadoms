@@ -4,7 +4,7 @@
 #include "common/DataProvider.h"
 #include "sqlite/SQLiteRequester.h"
 
-#ifndef PGSQL_NOT_FOUND
+#ifdef USE_PGSQL
 #  include "pgsql/PgsqlRequester.h"
 #  include "pgsql/PgsqlLibrary.h"
 #endif
@@ -31,7 +31,7 @@ namespace database
       {
       case startupOptions::EDatabaseEngine::kSqliteValue:
          return boost::make_shared<sqlite::CSQLiteRequester>(m_pathProvider->databaseSqliteFile().string());
-#ifndef PGSQL_NOT_FOUND
+#ifdef USE_PGSQL
       case startupOptions::EDatabaseEngine::kPostgresqlValue:
          {
             // PostgreSql library is dynamically loaded to avoid dependency on it as it us rarely used (and dependency to MSVCRT under Windows)

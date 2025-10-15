@@ -6,7 +6,7 @@ include("../YadomsPluginsCommon.cmake")
 ## Plugin needs Python to generate code
 #########################################
 set (PYTHON_REQUIRED_VERSION 3.5)
-find_package(PythonInterp ${PYTHON_REQUIRED_VERSION} REQUIRED)
+find_package (Python3 ${PYTHON_REQUIRED_VERSION} COMPONENTS Interpreter REQUIRED)
 
 
 #########################################
@@ -461,13 +461,13 @@ USE_SPECIFIC_PACKAGE_JSON(${ENOCEAN_GENERATED_OUT_DIR}/package.json)
 
 add_custom_command(OUTPUT ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.h
                           ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.cpp
-                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py 
+                   COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py 
                            ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml
                            ${ENOCEAN_GENERATED_OUT_DIR}
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml
                            ${PYTHON_GENERATOR_FILES} 
                    COMMENT "Generating Manufacturers source code...")
-
+                   
 add_custom_command(OUTPUT ${ENOCEAN_GENERATED_OUT_DIR}/package.json
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/eep.cpp
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/eep.h
@@ -479,7 +479,7 @@ add_custom_command(OUTPUT ${ENOCEAN_GENERATED_OUT_DIR}/package.json
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CRPSTelegram.h
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CVLDTelegram.cpp
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CVLDTelegram.h
-                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py
+                   COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py
                           ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles
                           ${PACKAGE_JSON_IN_FILE}

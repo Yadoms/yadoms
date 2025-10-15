@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Instance.h"
 #include "CustomEnumHistorizer.h"
+#include <boost/algorithm/string.hpp>
 #include <shared/Log.h>
 #include <tools/OperatingSystem.h>
 

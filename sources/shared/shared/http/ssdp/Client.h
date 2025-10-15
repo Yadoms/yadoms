@@ -12,7 +12,7 @@ namespace shared
          class CClient
          {
          public:
-            CClient(boost::asio::io_service& ioService,
+            CClient(boost::asio::io_context& io,
                     const std::string& searchTarget,
                     const std::chrono::seconds& timeout);
             virtual ~CClient() = default;
@@ -23,7 +23,8 @@ namespace shared
             static const boost::asio::ip::address MulticastAddress;
             static const int MulticastPort;
 
-            void handleSendDiscoveryRequest(const boost::system::error_code& error);
+            void handleSendDiscoveryRequest(const boost::system::error_code& error,
+                                            std::size_t bytesTransferred);
             void handleDiscoveryTimeout(const boost::system::error_code& errorCode);
             void handleReadHeader(const boost::system::error_code& errorCode, size_t bytesReceived);
             void startAsynchronousSend();

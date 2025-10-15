@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "OledEspEasy.h"
+#include <boost/algorithm/string.hpp>
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
 #include <shared/currentTime/Provider.h>

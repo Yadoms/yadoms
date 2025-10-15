@@ -1,9 +1,10 @@
 #pragma once
+#include <chrono>
+#include <thread>
 #include "IAsyncPort.h"
 #include "IReceiveBufferHandler.h"
 
-namespace shared { namespace communication {
-
+namespace shared::communication {
    //--------------------------------------------------------------
    /// \brief	This class manage a serial port
    //--------------------------------------------------------------
@@ -19,7 +20,7 @@ namespace shared { namespace communication {
       CAsyncTcpClient(
          const std::string& serverAddress,
          const std::string& serverPort,
-         boost::posix_time::time_duration connectRetryDelay = boost::posix_time::seconds(30));
+         std::chrono::seconds connectRetryDelay = std::chrono::seconds(30));
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -55,7 +56,8 @@ namespace shared { namespace communication {
       /// \param[in] error             Error code (should be 0)
       /// \param[in] iterator          Selected end point
       //--------------------------------------------------------------
-      void handleEndPointResolve(const boost::system::error_code& error, boost::asio::ip::tcp::resolver::iterator iterator);
+      void handleEndPointResolve(const boost::system::error_code& error,
+                                 boost::asio::ip::tcp::resolver::results_type results);
 
       //--------------------------------------------------------------
       /// \brief	                     Handler called when after connect
@@ -97,13 +99,13 @@ namespace shared { namespace communication {
       /// \brief	                     Send buffer content
       /// \param[in] buffer            The buffer to send
       //--------------------------------------------------------------
-      void sendBuffer(boost::asio::const_buffers_1 & buffer);
+      void sendBuffer(const boost::asio::const_buffer& buffer);
 
    private:
       //--------------------------------------------------------------
-      /// \brief	boost:asio service
+      /// \brief	boost:asio context
       //--------------------------------------------------------------
-      boost::asio::io_service m_ioService;
+      boost::asio::io_context m_io;
 
       //--------------------------------------------------------------
       /// \brief	The boost socket port
@@ -116,9 +118,10 @@ namespace shared { namespace communication {
       boost::asio::ip::tcp::resolver m_serverAdressResolver;
 
       //--------------------------------------------------------------
-      /// \brief	The server address resolver query
+      /// \brief	The server address/port
       //--------------------------------------------------------------
-      boost::asio::ip::tcp::resolver::query m_serverAdressResolverQuery;
+      std::string m_serverAddress;
+      std::string m_serverPort;
 
       //--------------------------------------------------------------
       /// \brief	Read buffer for asynchronous operations
@@ -143,19 +146,18 @@ namespace shared { namespace communication {
       //--------------------------------------------------------------
       /// \brief	Try to reconnect timer delay
       //--------------------------------------------------------------
-      const boost::posix_time::time_duration m_connectRetryDelay;
+      const std::chrono::seconds m_connectRetryDelay;
 
       //--------------------------------------------------------------
       /// \brief	Try to reconnect timer delay
       //--------------------------------------------------------------
-      boost::asio::deadline_timer m_connectRetryTimer;
+      boost::asio::steady_timer m_connectRetryTimer;
 
       //--------------------------------------------------------------
       /// \brief	Thread for asynchronous operations
       //--------------------------------------------------------------
-      boost::shared_ptr<boost::thread> m_asyncThread;
+      boost::shared_ptr<std::thread> m_asyncThread;
    };
-
-} } // namespace shared::communication
+}
 
 

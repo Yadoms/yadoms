@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/function.hpp>
 #include "message/Esp3SendPacket.h"
 #include "message/Esp3ReceivedPacket.h"
 
@@ -8,9 +9,7 @@
 class IMessageHandler
 {
 public:
-   virtual ~IMessageHandler()
-   {
-   }
+   virtual ~IMessageHandler() = default;
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to EnOcean dongle

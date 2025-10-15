@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DataContainer.h"
 #include <shared/exception/JSONParse.hpp>
+#include <boost/algorithm/string.hpp>
 #include "exception/EmptyResult.hpp"
 #include "rapidjson/filereadstream.h"
 #include "rapidjson/writer.h"

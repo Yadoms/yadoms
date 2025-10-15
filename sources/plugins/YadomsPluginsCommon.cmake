@@ -129,6 +129,7 @@ MACRO(PLUGIN_LINK _targetName)
 	target_link_libraries(${_targetName}
       yadoms-shared
       plugin_cpp_api
+      ${Poco_TARGETS}
       ${LIBS}
       ${CMAKE_DL_LIBS}
       ${PROTOBUF_LIBRARIES}

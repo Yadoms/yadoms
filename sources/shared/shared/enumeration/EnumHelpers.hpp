@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IExtendedEnum.h"
+#include <boost/algorithm/string.hpp>
 #include "shared/exception/Exception.hpp"
 #include "shared/exception/OutOfRange.hpp"
 #include "shared/Log.h"
