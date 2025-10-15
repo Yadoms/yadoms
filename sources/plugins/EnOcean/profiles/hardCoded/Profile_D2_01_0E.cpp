@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Profile_D2_01_0E.h"
 #include "../bitsetHelpers.hpp"
-#include "../../message/RadioErp1SendMessage.h"
+#include "../../message/radioErp1/SendMessage.h"
 #include "Profile_D2_01_Common.h"
 #include <shared/Log.h>
 
@@ -36,7 +36,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_D2_01_0E::readInitialState(const std::string& senderId,
-                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+                                         boost::shared_ptr<IMessageHandler> messageHandler)
 {
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
@@ -59,7 +59,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
    const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+   boost::shared_ptr<IMessageHandler> messageHandler)
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -106,8 +106,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 void CProfile_D2_01_0E::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
-                                    boost::shared_ptr<IMessageHandler> messageHandler) const
-{
+                                    boost::shared_ptr<IMessageHandler> messageHandler) {
    if (keyword != m_channel->getKeyword())
    {
       m_channel->setCommand(commandBody);
@@ -144,7 +143,7 @@ void CProfile_D2_01_0E::sendCommand(const std::string& keyword,
 
 void CProfile_D2_01_0E::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
-                                          boost::shared_ptr<IMessageHandler> messageHandler) const
+                                          boost::shared_ptr<IMessageHandler> messageHandler)
 {
    const auto localControl = deviceConfiguration.get<std::string>("localControl") == "enable";
    const auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";

@@ -9,37 +9,37 @@
 class CMessageHandler : public IMessageHandler
 {
 public:
-   CMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
-                   shared::event::CEventHandler& mainEventHandler,
-                   int mainEvtPortDataReceived,
-                   boost::shared_ptr<shared::communication::IBufferLogger> bufferLogger);
-   virtual ~CMessageHandler();
+	explicit CMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
+							 shared::event::CEventHandler& mainEventHandler,
+							 int mainEvtPortDataReceived,
+							 boost::shared_ptr<shared::communication::IBufferLogger> bufferLogger);
+	virtual ~CMessageHandler();
 
-   // IMessageHandler implementation
-   void onReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> receivedMessage) override;
-   bool send(message::CEsp3SendPacket& sendMessage,
-             boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
-             boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct) override;
-   void send(message::CEsp3SendPacket& sendMessage) override;
-   // [END] IMessageHandler implementation
+	// IMessageHandler implementation
+	void onReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> receivedMessage) override;
+	bool send(message::CEsp3SendPacket& sendMessage,
+			  boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
+			  boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct) override;
+	void send(message::CEsp3SendPacket& sendMessage) override;
+	// [END] IMessageHandler implementation
 
 protected:
-   void setHook(boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
-                boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct);
-   void clearHook();
+	void setHook(boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
+				 boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct);
+	void clearHook();
 
-   bool waitAnswer(const boost::posix_time::time_duration& enOceanAnswerTimeout);
+	bool waitAnswer(const boost::posix_time::time_duration& enOceanAnswerTimeout);
 
 private:
-   boost::shared_ptr<shared::communication::IAsyncPort> m_port;
-   shared::event::CEventHandler& m_mainEventHandler;
-   int m_mainEvtPortDataReceived;
-   boost::shared_ptr<shared::communication::IBufferLogger> m_bufferLogger;
+	boost::shared_ptr<shared::communication::IAsyncPort> m_port;
+	shared::event::CEventHandler& m_mainEventHandler;
+	int m_mainEvtPortDataReceived;
+	boost::shared_ptr<shared::communication::IBufferLogger> m_bufferLogger;
 
-   // Hook
-   mutable boost::recursive_mutex m_hookMutex;
-   boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> m_isExpectedMessageHookFct;
-   boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> m_onReceiveHookFct;
-   shared::event::CEventHandler m_waitAnswerEventHandler;
+	// Hook
+	mutable boost::recursive_mutex m_hookMutex;
+	boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> m_isExpectedMessageHookFct;
+	boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> m_onReceiveHookFct;
+	shared::event::CEventHandler m_waitAnswerEventHandler;
 };
 

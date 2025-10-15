@@ -1,4 +1,5 @@
-﻿#include "GamutNone.h"
+﻿#include "stdafx.h"
+#include "GamutNone.h"
 
 #include "../../Utils/ColorConverter.h"
 #include "shared/http/HttpRestHelpers.h"

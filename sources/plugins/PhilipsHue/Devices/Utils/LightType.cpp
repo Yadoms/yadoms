@@ -1,4 +1,5 @@
-﻿#include "LightType.h"
+﻿#include "stdafx.h"
+#include "LightType.h"
 
 DECLARE_ENUM_IMPLEMENTATION(ELightType,
                             ((ON_OFF_LIGHT)("on/off light"))

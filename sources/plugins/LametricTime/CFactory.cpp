@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "DeviceState.h"
 #include "INotificationSender.h"
 #include "NotificationSender.h"

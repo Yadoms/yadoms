@@ -5,15 +5,6 @@
     "SerialPort": {
       "name": "Port série",
       "description": "Le port série (virtuel) connecté au stick USB EnOcean"
-    },
-    "PairingMode": {
-      "name": "Mode d'appairage",
-      "description":
-        "Le mode d'apparairage peut être automatique (chaque nouvel équipement détecté est enregistré automatiquement), ou manuel via une commande sur le plugin (bouton vert)",
-      "values": {
-        "auto": "Mode automatique, chaque équipement détecté est enregistré",
-        "manual": "Mode manuel, le plugin doit être mis en mode appairage via le bouton vert"
-      }
     }
   },
   "deviceConfiguration": {
@@ -31,8 +22,7 @@
             },
             "profile": {
               "name": "Profil",
-              "description":
-                "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
+              "description": "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
             }
           }
         }
@@ -54,13 +44,26 @@
       "ErrorInternal": "Execution de commande, erreur interne"
     },
     "pairing": {
-      "invalidCommandAutoMode": "Commande invalide, l'apparaige est configuré en automatique",
       "pairing": "Appairage en cours...",
       "devicePaired": "Nouvel équipement appairé !",
       "noDevicePaired": "Aucun équipement trouvé"
     }
   },
   "specificProfilesConfigurations": {
+    "A5-20-01": {
+      "content": {
+        "useInternalSensor": {
+          "name": "Régulation basée sur le capteur",
+          "values": {
+            "internal": "interne",
+            "external": "externe"
+          }
+        },
+        "setPointInverse": {
+          "name": "Consigne inversée"
+        }
+      }
+    },
     "D2-00-01": {
       "content": {
         "setPointEnable": {
