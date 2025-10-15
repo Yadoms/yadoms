@@ -114,6 +114,7 @@ set(BOOST_LIBS
 
 # search boost libs
 find_package(Boost 1.89.0 CONFIG REQUIRED COMPONENTS ${BOOST_LIBS})
+message("-- Found Boost: ${BOOST_LIBS}")
 
 
 ## Thread Library
