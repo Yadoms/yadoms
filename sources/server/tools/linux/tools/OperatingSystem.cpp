@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "OperatingSystem.h"
+#include <boost/algorithm/string.hpp>
 #include <Poco/Environment.h>
 #include <Poco/StringTokenizer.h>
 #include <shared/exception/Exception.hpp>

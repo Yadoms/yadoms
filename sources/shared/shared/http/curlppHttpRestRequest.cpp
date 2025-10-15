@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "curlppHttpRestRequest.h"
-#include <regex>
+#include <boost/algorithm/string.hpp>
 #include <utility>
 #include <curlpp/Options.hpp>
 #include <curlpp/cURLpp.hpp>

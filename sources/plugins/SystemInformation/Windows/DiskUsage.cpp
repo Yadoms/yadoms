@@ -18,7 +18,7 @@ void CDiskUsage::read()
 {
    ULARGE_INTEGER FreeSpaceAvailable, TotalSpace, TotalFreeSpaceAvailable;
 
-   if (!GetDiskFreeSpaceEx(m_driveName.c_str(), &FreeSpaceAvailable, &TotalSpace, &TotalFreeSpaceAvailable))
+   if (!GetDiskFreeSpaceEx(std::wstring(m_driveName.begin(), m_driveName.end()).c_str(), &FreeSpaceAvailable, &TotalSpace, &TotalFreeSpaceAvailable))
    {
       std::stringstream Message;
       Message << "GetDiskFreeSpaceEx return an error : ";

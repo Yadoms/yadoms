@@ -13,14 +13,15 @@ namespace shared
       namespace ssdp
       {
          const boost::asio::ip::address CClient::MulticastAddress =
-            boost::asio::ip::address_v4::from_string("239.255.255.250");
+            boost::asio::ip::make_address_v4("239.255.255.250");
          const int CClient::MulticastPort = 1900;
 
-         CClient::CClient(boost::asio::io_service& ioService, const std::string& searchTarget,
+         CClient::CClient(boost::asio::io_context& io, 
+                          const std::string& searchTarget,
                           const std::chrono::seconds& timeout)
             : m_endpoint(MulticastAddress, MulticastPort),
-              m_socket(ioService, m_endpoint.protocol()),
-              m_timer(ioService),
+              m_socket(io, m_endpoint.protocol()),
+              m_timer(io),
               m_multicastSearchRequest(getMulticastSearchRequest(searchTarget)),
               m_timeout(timeout)
          {
@@ -32,7 +33,7 @@ namespace shared
             try
             {
                m_socket.set_option(boost::asio::ip::multicast::outbound_interface(
-                  boost::asio::ip::address_v4::from_string(Poco::Net::IPAddress().toString())));
+                  boost::asio::ip::make_address_v4(Poco::Net::IPAddress().toString())));
             }
             catch (std::exception&)
             {
@@ -41,23 +42,26 @@ namespace shared
 
             m_socket.async_send_to(boost::asio::buffer(m_multicastSearchRequest),
                                    m_endpoint,
-                                   boost::bind(&CClient::handleSendDiscoveryRequest,
-                                               this,
-                                               boost::asio::placeholders::error));
+                                   [this](const boost::system::error_code& ec, std::size_t bytes_transferred){
+                                      handleSendDiscoveryRequest(ec, bytes_transferred);
+                                   });
          }
 
-         void CClient::handleSendDiscoveryRequest(const boost::system::error_code& errorCode)
+         void CClient::handleSendDiscoveryRequest(const boost::system::error_code& errorCode,
+                                                  const std::size_t bytesTransferred)
          {
             if (!errorCode)
             {
-               m_socket.async_receive(boost::asio::buffer(m_data),
-                                      boost::bind(&CClient::handleReadHeader, this,
-                                                  boost::asio::placeholders::error,
-                                                  boost::asio::placeholders::bytes_transferred));
+               m_socket.async_receive(
+                  boost::asio::buffer(m_data),
+                  [this](const boost::system::error_code& ec, std::size_t n){
+                     handleReadHeader(ec, n);
+                  });
 
                m_timer.expires_after(m_timeout);
-               m_timer.async_wait(boost::bind(&CClient::handleDiscoveryTimeout, this,
-                                              boost::asio::placeholders::error));
+               m_timer.async_wait([this](const boost::system::error_code& ec){
+                  handleDiscoveryTimeout(ec);
+               });
             }
          }
 
@@ -87,10 +91,11 @@ namespace shared
             if (!locationHeader.empty())
                m_descriptionUrls.insert(locationHeader);
 
-            m_socket.async_receive(boost::asio::buffer(m_data),
-                                   boost::bind(&CClient::handleReadHeader, this,
-                                               boost::asio::placeholders::error,
-                                               boost::asio::placeholders::bytes_transferred));
+            m_socket.async_receive(
+               boost::asio::buffer(m_data),
+               [this](const boost::system::error_code& ec, std::size_t n){
+                  handleReadHeader(ec, n);
+               });
          }
 
          std::string CClient::getMulticastSearchRequest(const std::string& searchTarget)
@@ -114,10 +119,10 @@ namespace shared
          std::string CClient::getHttpResponseHeaderField(const std::string& headerFieldName,
                                                          const std::string& httpResponse)
          {
-            const boost::regex pattern("^" + headerFieldName + ": ([^\\n$\\\\\\r]+)", boost::regex::icase);
-            boost::smatch match;
+            const std::regex pattern("^" + headerFieldName + ": ([^\\n$\\\\\\r]+)", std::regex::icase);
+            std::smatch match;
 
-            if (!regex_search(httpResponse, match, pattern))
+            if (!std::regex_search(httpResponse, match, pattern))
                return std::string();
 
             return match[1].str();
@@ -125,10 +130,10 @@ namespace shared
 
          ECodes CClient::getHttpCode(const std::string& httpResponse)
          {
-            const boost::regex pattern(R"(HTTP.*\s+(\d{3})\s)", boost::regex::icase);
-            boost::smatch match;
+            const std::regex pattern(R"(HTTP.*\s+(\d{3})\s)", std::regex::icase);
+            std::smatch match;
 
-            if (!regex_search(httpResponse, match, pattern))
+            if (!std::regex_search(httpResponse, match, pattern))
                throw std::runtime_error("Invalid response from the device, http code not found");
 
             return ECodes(stoi(match[1].str()));

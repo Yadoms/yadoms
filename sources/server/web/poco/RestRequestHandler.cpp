@@ -2,6 +2,7 @@
 #include "RestRequestHandler.h"
 #include <shared/Log.h>
 #include "web/rest/Result.h"
+#include <boost/algorithm/string.hpp>
 #include <Poco/URI.h>
 
 #include <utility>

@@ -36,15 +36,14 @@ namespace shared
             const std::string& searchTarget,
             const std::chrono::duration<long long>& timeout)
          {
-            boost::asio::io_service ios;
-            const auto ssdpClient = boost::make_shared<CClient>(ios, searchTarget, timeout);
+            boost::asio::io_context io;
+            const auto ssdpClient = boost::make_shared<CClient>(io, searchTarget, timeout);
 
-            ios.reset();
-            ios.run();
+            io.run();
 
             const auto discoveredDevices(getDevicesDescription(ssdpClient->getDescriptionUrls()));
 
-            ios.stop();
+            io.stop();
 
             return discoveredDevices;
          }

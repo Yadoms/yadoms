@@ -1,34 +1,58 @@
-# this one is important
-SET(CMAKE_SYSTEM_NAME Linux)
-#this one not so much
-SET(CMAKE_SYSTEM_VERSION 1)
-SET(CMAKE_CROSSCOMPILING True)
-set(CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER ON)
+# === Cible : Raspberry Pi 2 (ARMv7 / armhf, cortex-A7) ===
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR armv7)
 
-# User specific configuration
-include(CMakeListsUserConfig.txt OPTIONAL)
+# Toolchain croisée
+set(TOOLCHAIN_PREFIX arm-linux-gnueabihf)
+set(CMAKE_C_COMPILER   ${TOOLCHAIN_PREFIX}-gcc)
+set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
+# (optionnel mais utile)
+set(CMAKE_C_COMPILER_TARGET   ${TOOLCHAIN_PREFIX})
+set(CMAKE_CXX_COMPILER_TARGET ${TOOLCHAIN_PREFIX})
 
-# cross compiler tools
-set(CC_RPI_GCC ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-gcc)
-set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-g++)
-set(CC_RPI_LIBS ${CC_RPI_ROOT}/armv6-rpi-linux-gnueabihf/lib)
+# Sysroot = image montée
+set(RPI_SYSROOT "/mnt/raspi")
+set(CMAKE_SYSROOT "${RPI_SYSROOT}")
 
-# specify the cross compiler
-SET(CMAKE_C_COMPILER   ${CC_RPI_GCC})
-SET(CMAKE_CXX_COMPILER ${CC_RPI_GXX})
-
-message(STATUS "Cross building for RaspberryPI")
-message(STATUS "CC_RPI_ROOT : ${CC_RPI_ROOT}")
-message(STATUS "CC_RPI_GCC : ${CC_RPI_GCC}")
-message(STATUS "CC_RPI_GXX : ${CC_RPI_GXX}")
-message(STATUS "CC_RPI_LIBS : ${CC_RPI_LIBS}")
-
-# search for programs in the build host directories
-SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-# for libraries and headers in the target directories
-SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
+# Où chercher includes/libs (ne pas sortir du sysroot)
+set(CMAKE_FIND_ROOT_PATH "${RPI_SYSROOT}")
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
-#define the systemname (for good package name)
-set(CMAKE_PACKAGE_PLATFORM_NAME "RaspberryPI")
+# Arch triplet Debian pour armhf
+set(CMAKE_LIBRARY_ARCHITECTURE arm-linux-gnueabihf)
+
+# Flags CPU/ABI optimisés pour RPi2 (Cortex-A7, ARMv7, hard-float NEON)
+set(RPI_CPU_FLAGS "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -marm")
+# Sécurise l’édition de liens contre les libs du sysroot
+set(RPI_LINK_FLAGS "-Wl,-rpath-link,${RPI_SYSROOT}/usr/lib/arm-linux-gnueabihf \
+                    -Wl,-rpath-link,${RPI_SYSROOT}/lib/arm-linux-gnueabihf \
+                    -Wl,-rpath-link,${RPI_SYSROOT}/usr/lib \
+                    -Wl,-rpath-link,${RPI_SYSROOT}/lib")
+
+# Applique les flags
+set(CMAKE_C_FLAGS_INIT   "--sysroot=${RPI_SYSROOT} ${RPI_CPU_FLAGS}")
+set(CMAKE_CXX_FLAGS_INIT "--sysroot=${RPI_SYSROOT} ${RPI_CPU_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS_INIT   "${RPI_LINK_FLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "${RPI_LINK_FLAGS}")
+
+# Si vous utilisez libatomic sur ARM (atomics 64b) :
+# list(APPEND CMAKE_EXE_LINKER_FLAGS_INIT " -latomic")
+# list(APPEND CMAKE_SHARED_LINKER_FLAGS_INIT " -latomic")
+
+# PKG-CONFIG côté cible
+set(ENV{PKG_CONFIG_DIR} "")
+set(ENV{PKG_CONFIG_SYSROOT_DIR} "${RPI_SYSROOT}")
+set(ENV{PKG_CONFIG_LIBDIR} "${RPI_SYSROOT}/usr/lib/arm-linux-gnueabihf/pkgconfig:${RPI_SYSROOT}/usr/lib/pkgconfig:${RPI_SYSROOT}/usr/share/pkgconfig:${RPI_SYSROOT}/lib/arm-linux-gnueabihf/pkgconfig:${RPI_SYSROOT}/lib/pkgconfig")
+
+
+# Pour que CMake choisisse les bons compilos dès le premier run
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+

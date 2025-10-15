@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "OledScreenDevice.h"
+#include <boost/algorithm/string.hpp>
 #include <shared/http/HttpRestHelpers.h>
 
 COledScreenDevice::COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller, int lineCount)
