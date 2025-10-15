@@ -7,7 +7,7 @@ CDisksList::CDisksList()
    // Find out how big a buffer we need
    auto cchBuffer = GetLogicalDriveStrings(0, nullptr);
 
-   auto driveStrings = static_cast<LPSTR>(malloc((cchBuffer + 1) * sizeof(TCHAR)));
+   auto driveStrings = static_cast<LPWSTR>(malloc((cchBuffer + 1) * sizeof(WCHAR)));
    auto driveStringsInit = driveStrings;
 
    if (driveStrings == nullptr || cchBuffer == NULL)
@@ -31,7 +31,8 @@ CDisksList::CDisksList()
    {
       if (GetDriveType(driveStrings) == DRIVE_FIXED)
       {
-         DrivesList.push_back(driveStrings);
+         std::wstring wDriveStrings(driveStrings);
+         DrivesList.push_back(std::string(wDriveStrings.begin(), wDriveStrings.end()));
       }
       driveStrings += lstrlen(driveStrings) + 1;
    }

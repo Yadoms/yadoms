@@ -13,7 +13,7 @@ namespace shared
       {
          m_onStopRequestedFct = onStopRequestedFct;
 
-         m_serviceStatusHandle = RegisterServiceCtrlHandler("", reinterpret_cast<LPHANDLER_FUNCTION>(ServiceControlHandler));
+         m_serviceStatusHandle = RegisterServiceCtrlHandler(L"", reinterpret_cast<LPHANDLER_FUNCTION>(ServiceControlHandler));
       }
 
       SERVICE_STATUS CServiceControlHandler::m_serviceStatus;

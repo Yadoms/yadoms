@@ -63,7 +63,7 @@ namespace shared
    bool CDynamicLibrary::load(const std::string& libraryFile)
    {
       unload();
-      m_libraryHandle = LoadLibrary(libraryFile.c_str());
+      m_libraryHandle = LoadLibrary(std::wstring(libraryFile.begin(), libraryFile.end()).c_str());
 
       if (m_libraryHandle == NULL)
       {

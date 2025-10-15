@@ -12,7 +12,7 @@ namespace hardware
 
          HKEY serialCommKey;
          if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                          "HARDWARE\\DEVICEMAP\\SERIALCOMM",
+                          L"HARDWARE\\DEVICEMAP\\SERIALCOMM",
                           0,
                           KEY_QUERY_VALUE,
                           &serialCommKey) != ERROR_SUCCESS)

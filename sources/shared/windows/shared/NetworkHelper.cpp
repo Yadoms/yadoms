@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #include "../../shared/exception/Exception.hpp"
 #include "../../shared/Log.h"
@@ -7,35 +7,34 @@
 namespace shared
 {
 
-CNetworkHelper::CNetworkHelper()
-{
-}
+    CNetworkHelper::CNetworkHelper() = default;
+    CNetworkHelper::~CNetworkHelper() = default;
 
-CNetworkHelper::~CNetworkHelper()
-{
-}
+    std::vector<boost::asio::ip::address> CNetworkHelper::getLocalIps()
+    {
+       std::vector<boost::asio::ip::address> result;
 
-std::vector<boost::asio::ip::address> CNetworkHelper::getLocalIps()
-{
-   std::vector<boost::asio::ip::address> result = std::vector<boost::asio::ip::address>();
-   boost::asio::io_context io;
-   boost::asio::ip::udp::resolver resolver(io);
-   boost::asio::ip::udp::resolver::query query(boost::asio::ip::host_name(), "");
-   boost::asio::ip::udp::resolver::iterator iter = resolver.resolve(query);
-   boost::asio::ip::udp::resolver::iterator end; // End marker.
-   
-   //we push every ip in the vector
-   while (iter != end)
-   {
-      boost::asio::ip::address addr = iter->endpoint().address();
-      //we manage only ipv4
-      if(addr.is_v4())
-         result.push_back(addr);
-      
-      ++iter;
-   }
+       boost::asio::io_context io;
+       boost::asio::ip::udp::resolver resolver(io);
 
-   return result;
-}
+       try
+       {
+          auto results = resolver.resolve(boost::asio::ip::host_name(), "");
+
+          for (const auto& entry : results)
+          {
+             const auto addr = entry.endpoint().address();
+             if (addr.is_v4()) // on ne garde que les adresses IPv4
+                result.push_back(addr);
+          }
+       }
+       catch (const std::exception& e)
+       {
+          YADOMS_LOG(error) << "Erreur lors de la résolution des adresses locales : " << e.what();
+          throw shared::exception::CException(std::string("Network resolution failed: ") + e.what());
+       }
+
+       return result;
+    }
 
 } // namespace shared

@@ -16,7 +16,7 @@ namespace hardware
       class CDeviceInterfaceDetailDataContainer final
       {
       public:
-         explicit CDeviceInterfaceDetailDataContainer(SIZE_T requiredLength)
+         explicit CDeviceInterfaceDetailDataContainer(size_t requiredLength)
          {
             m_deviceDetailData = static_cast<PSP_DEVICE_INTERFACE_DETAIL_DATA>(GlobalAlloc(
                GPTR, requiredLength));
@@ -48,9 +48,9 @@ namespace hardware
       class CLpstrBuffer final
       {
       public:
-         explicit CLpstrBuffer(SIZE_T requiredLength)
+         explicit CLpstrBuffer(size_t requiredLength)
          {
-            m_buffer = static_cast<LPTSTR>(GlobalAlloc(GPTR, requiredLength));
+            m_buffer = static_cast<char*>(GlobalAlloc(GPTR, requiredLength));
             if (m_buffer == nullptr)
                throw std::bad_alloc();
          }
@@ -66,13 +66,13 @@ namespace hardware
                GlobalFree(m_buffer);
          }
 
-         LPTSTR get() const
+         char* get() const
          {
             return m_buffer;
          }
 
       private:
-         LPTSTR m_buffer;
+         char* m_buffer;
       };
 
       std::wstring CWinapiDevicesLister::toUtf8WideChar(const char* src)
@@ -227,7 +227,8 @@ namespace hardware
                   continue;
                }
 
-               const std::string devicePath(deviceDetailData.get()->DevicePath);
+               std::wstring wDevicePath(deviceDetailData.get()->DevicePath);
+               const std::string devicePath(std::string(wDevicePath.begin(), wDevicePath.end()));
 
                boost::regex pattern(
                   R"(\\\\\?\\usb#vid_([0-9a-fA-F]{4})&pid_([0-9a-fA-F]{4})#([[:graph:]]+)#{[0-9a-fA-F-]+})");
