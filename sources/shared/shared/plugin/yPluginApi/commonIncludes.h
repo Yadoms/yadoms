@@ -11,7 +11,6 @@
 //
 // ! please keep for full list alphabetic ordered !!
 ////////////////////////////////////////
-#include <boost/algorithm/string.hpp>
 #include <boost/any.hpp>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>

@@ -36,7 +36,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_D2_02_02::readInitialState(const std::string& senderId,
-                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+                                         boost::shared_ptr<IMessageHandler> messageHandler)
 {
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
@@ -49,7 +49,7 @@ void CProfile_D2_02_02::readInitialState(const std::string& senderId,
 
 void CProfile_D2_02_02::sendSensorMeasurementQuery(EMeasurementType query,
                                                    const std::string& senderId,
-                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
+                                                   boost::shared_ptr<IMessageHandler> messageHandler)
 {
    boost::dynamic_bitset<> userData(2 * 8);
    bitset_insert(userData, 4, 4, static_cast<int>(EMsgId::kSensorMeasurementQuery));
@@ -68,7 +68,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
    const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+   boost::shared_ptr<IMessageHandler> messageHandler)
 {
    if (static_cast<EMsgId>(bitset_extract(data, 4, 4)) != EMsgId::kSensorMeasurement)
    {
@@ -103,14 +103,13 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 void CProfile_D2_02_02::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
-                                    boost::shared_ptr<IMessageHandler> messageHandler) const
-{
+                                    boost::shared_ptr<IMessageHandler> messageHandler) {
    throw std::logic_error("device supports no command sending");
 }
 
 void CProfile_D2_02_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
-                                          boost::shared_ptr<IMessageHandler> messageHandler) const
+                                          boost::shared_ptr<IMessageHandler> messageHandler)
 {
    const auto deltaTemperatureToReport = deviceConfiguration.get<double>("deltaTemperatureToReport");
    const auto maxMessagesInterval = deviceConfiguration.get<unsigned int>("maxMessagesInterval");

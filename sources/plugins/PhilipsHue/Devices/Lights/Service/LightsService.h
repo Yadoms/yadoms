@@ -9,6 +9,8 @@
 #include "../../../Entities/HueSwUpdate.h"
 #include "../../Interfaces/ILightsService.h"
 
+#include <boost/asio/io_context.hpp>
+
 class CLightsService : public ILightsService
 {
 public:
@@ -22,8 +24,8 @@ public:
    void searchForNewLights() override;
 
    std::map<int, CHueLightInformations> getNewLights() override;
-private:
 
+private:
    static CHueState getHueLightInformationsState(boost::shared_ptr<shared::CDataContainer>& response);
    static CHueSwUpdate getHueLightInformationsSwUpdate(boost::shared_ptr<shared::CDataContainer>& response);
    static CHueCapabilities getHueLightInformationsCapabilities(boost::shared_ptr<shared::CDataContainer>& response);
@@ -43,7 +45,8 @@ private:
 
    boost::shared_ptr<CUrlManager>& m_urlManager;
    std::map<int, CHueLightInformations> m_newLights;
-   boost::asio::io_service m_ios;
+
+   boost::asio::io_context m_io;
 
    enum { kSearchNewLightsTimeout = 40 };
 };

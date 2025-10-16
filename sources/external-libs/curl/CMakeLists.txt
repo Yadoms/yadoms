@@ -80,7 +80,7 @@ if(CMAKE_TOOLCHAIN_FILE)
       list(APPEND CURL_BUILD_ARGS "-DPython2_ROOT=${Python2_ROOT}")
    endif()  
    if(Python3_ROOT)
-      list(APPEND CURL_BUILD_ARGS "-DPython2_ROOT=${Python3_ROOT}")
+      list(APPEND CURL_BUILD_ARGS "-DPython3_ROOT=${Python3_ROOT}")
    endif()  
    
    list(APPEND CURL_BUILD_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")

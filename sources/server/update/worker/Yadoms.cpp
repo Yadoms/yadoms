@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Yadoms.h"
+#include <boost/algorithm/string.hpp>
 #include <shared/Log.h>
 #include <shared/ServiceLocator.h>
 #include <Poco/Process.h>
@@ -7,7 +8,7 @@
 #include "i18n/ClientStrings.h"
 #include <shared/process/SoftwareStop.h> 
 #include "tools/OperatingSystem.h"
-#include <boost/process/environment.hpp>
+#include <boost/process.hpp>
 
 #include "shared/tools/Filesystem.h"
 
@@ -118,7 +119,7 @@ namespace update
 
          //create the argument list
          Poco::Process::Args args;
-         args.push_back(std::to_string(boost::this_process::get_id()));
+         args.push_back(std::to_string(boost::process::current_pid()));
          args.push_back(Poco::Path(runningInformation->getExecutablePath()).parent().toString());
 
          //run updater script

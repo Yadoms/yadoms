@@ -19,10 +19,10 @@ boost::shared_ptr<shared::communication::IAsyncPort> CFactory::constructPort(con
                                                                                  boost::asio::serial_port_base::character_size(8),
                                                                                  boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
                                                                                  boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::hardware),
-                                                                                 boost::posix_time::seconds(30),
+                                                                                 std::chrono::seconds(30),
                                                                                  true);
    // We have to define a write timeout, as we use flow control (write will block if RFPlayer device is not connected)
-   serialPort->setWriteTimeout(boost::posix_time::seconds(5));
+   serialPort->setWriteTimeout(std::chrono::seconds(5));
    return serialPort;
 }
 

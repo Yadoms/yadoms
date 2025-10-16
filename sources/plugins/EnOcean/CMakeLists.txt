@@ -7,7 +7,7 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 cmake_policy(SET CMP0148 OLD)
 set (PYTHON_REQUIRED_VERSION 3.5)
-find_package(PythonInterp ${PYTHON_REQUIRED_VERSION} REQUIRED)
+find_package (Python3 ${PYTHON_REQUIRED_VERSION} COMPONENTS Interpreter REQUIRED)
 
 
 #########################################
@@ -17,8 +17,6 @@ set(ENOCEAN_SOURCES
    stdafx.h
    stdafx.cpp
 
-   4BSTeachinVariant2.h
-   4BSTeachinVariant2.cpp
    Configuration.h
    Configuration.cpp
    DeviceConfigurationHelper.h
@@ -38,11 +36,7 @@ set(ENOCEAN_SOURCES
    ProfileHelper.cpp
    ReceiveBufferHandler.h
    ReceiveBufferHandler.cpp
-   
-   message/CommonCommandSendMessage.h
-   message/CommonCommandSendMessage.cpp
-   message/DongleVersionResponseReceivedMessage.h
-   message/DongleVersionResponseReceivedMessage.cpp
+
    message/Crc8.h
    message/Crc8.cpp
    message/Esp3ReceivedPacket.h
@@ -51,24 +45,55 @@ set(ENOCEAN_SOURCES
    message/Esp3SendPacket.cpp
    message/Header.h
    message/Header.cpp
+   message/LearnMode.h
    message/MessageHelpers.h
    message/MessageHelpers.cpp
-   message/RadioErp1ReceivedMessage.h
-   message/RadioErp1ReceivedMessage.cpp
-   message/RadioErp1SendMessage.h
-   message/RadioErp1SendMessage.cpp
-   message/ResponseReceivedMessage.h
-   message/ResponseReceivedMessage.cpp
+   message/ReadLearnModeCommand.h
+   message/ReadLearnModeCommand.cpp
+   message/RequestDongleVersionCommand.h
+   message/RequestDongleVersionCommand.cpp
    message/types.h
    message/types.cpp
-   message/UTE_AnswerSendMessage.h
-   message/UTE_AnswerSendMessage.cpp
-   message/UTE_GigaConceptReversedAnswerSendMessage.h
-   message/UTE_GigaConceptReversedAnswerSendMessage.cpp
-   message/UTE_GigaConceptReversedReceivedMessage.h
-   message/UTE_GigaConceptReversedReceivedMessage.cpp
-   message/UTE_ReceivedMessage.h
-   message/UTE_ReceivedMessage.cpp
+   message/WriteLearnModeCommand.h
+   message/WriteLearnModeCommand.cpp
+   
+   message/common_command/SendMessage.h
+   message/common_command/SendMessage.cpp
+
+   message/radioErp1/ReceivedMessage.h
+   message/radioErp1/ReceivedMessage.cpp
+   message/radioErp1/SendMessage.h
+   message/radioErp1/SendMessage.cpp
+   message/radioErp1/4BSTeachinRequest.h
+   message/radioErp1/4BSTeachinRequest.cpp
+   message/radioErp1/4BSTeachinResponse.h
+   message/radioErp1/4BSTeachinResponse.cpp
+   message/radioErp1/UTEGigaConceptReversedAnswer.h
+   message/radioErp1/UTEGigaConceptReversedAnswer.cpp
+   message/radioErp1/UTEGigaConceptReversedRequest.h
+   message/radioErp1/UTEGigaConceptReversedRequest.cpp
+   message/radioErp1/UTERequest.h
+   message/radioErp1/UTERequest.cpp
+   message/radioErp1/UTEResponse.h
+   message/radioErp1/UTEResponse.cpp
+
+   message/response/ReceivedMessage.h
+   message/response/ReceivedMessage.cpp
+
+   message/smart_ack/Client.h
+   message/smart_ack/Client.cpp
+   message/smart_ack/CommandSendMessage.h
+   message/smart_ack/CommandSendMessage.cpp
+   message/smart_ack/EnablePostMasterCommand.h
+   message/smart_ack/EnablePostMasterCommand.cpp
+   message/smart_ack/PairingCommand.h
+   message/smart_ack/PairingCommand.cpp
+   message/smart_ack/ReadClientMailboxStatusCommand.h
+   message/smart_ack/ReadClientMailboxStatusCommand.cpp
+   message/smart_ack/ReadLearnedClientsCommand.h
+   message/smart_ack/ReadLearnedClientsCommand.cpp
+   message/smart_ack/ReadLearnModeCommand.h
+   message/smart_ack/ReadLearnModeCommand.cpp
    
    specificHistorizers/Analog.h
    specificHistorizers/Analog.cpp
@@ -113,6 +138,10 @@ set(ENOCEAN_SOURCES
 #########################################
 source_group(sources ./*.*)
 source_group(sources\\message message/*.*)
+source_group(sources\\message\\common_command message/common_command/*.*)
+source_group(sources\\message\\radioErp1 message/radioErp1/*.*)
+source_group(sources\\message\\response message/response/*.*)
+source_group(sources\\message\\smart_ack message/smart_ack/*.*)
 source_group(sources\\specificHistorizers specificHistorizers/*.*)
 
 
@@ -462,13 +491,13 @@ USE_SPECIFIC_PACKAGE_JSON(${ENOCEAN_GENERATED_OUT_DIR}/package.json)
 
 add_custom_command(OUTPUT ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.h
                           ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.cpp
-                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py 
+                   COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py 
                            ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml
                            ${ENOCEAN_GENERATED_OUT_DIR}
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml
                            ${PYTHON_GENERATOR_FILES} 
                    COMMENT "Generating Manufacturers source code...")
-
+                   
 add_custom_command(OUTPUT ${ENOCEAN_GENERATED_OUT_DIR}/package.json
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/eep.cpp
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/eep.h
@@ -480,7 +509,7 @@ add_custom_command(OUTPUT ${ENOCEAN_GENERATED_OUT_DIR}/package.json
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CRPSTelegram.h
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CVLDTelegram.cpp
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CVLDTelegram.h
-                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py
+                   COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py
                           ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles
                           ${PACKAGE_JSON_IN_FILE}

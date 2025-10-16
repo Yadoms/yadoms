@@ -1,4 +1,5 @@
-﻿#include "ColorTypeHelper.h"
+﻿#include "stdafx.h"
+#include "ColorTypeHelper.h"
 #include "HueLightsResponseType.h"
 
 const std::set<std::string> CColorTypeHelper::GamutBTypes{"LCT001", "LCT002", "LCT003", "LCT007", "LLM001"};

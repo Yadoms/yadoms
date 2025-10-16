@@ -1,4 +1,5 @@
-﻿#include "HueControl.h"
+﻿#include "stdafx.h"
+#include "HueControl.h"
 
 CHueControl::CHueControl(int minDimLevel,
                          int maxLumen,

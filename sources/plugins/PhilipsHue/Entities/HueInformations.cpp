@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "HueInformations.h"
 
 CHueInformations::CHueInformations()

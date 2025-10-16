@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Hsv.h"
 
 CHsv::CHsv(const unsigned long& hue,

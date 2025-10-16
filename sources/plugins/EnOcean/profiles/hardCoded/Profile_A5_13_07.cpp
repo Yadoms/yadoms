@@ -32,7 +32,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 }
 
 void CProfile_A5_13_07::readInitialState(const std::string& senderId,
-                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+                                         boost::shared_ptr<IMessageHandler> messageHandler)
 {
 }
 
@@ -41,7 +41,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    const boost::dynamic_bitset<>& data,
    const boost::dynamic_bitset<>& status,
    const std::string& senderId,
-   boost::shared_ptr<IMessageHandler> messageHandler) const
+   boost::shared_ptr<IMessageHandler> messageHandler)
 {
    switch (bitset_extract(data, 4, 4))
    {
@@ -100,7 +100,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    m_averageSpeed->set((static_cast<double>(bitset_extract(data, 8, 8)) * 198.9 / 255.0 + 1.0) / 2.237);
    m_maximumSpeed->set((static_cast<double>(bitset_extract(data, 16, 8)) * 198.9 / 255.0 + 1.0) / 2.237);
 
-   m_battery->set(bitset_extract(data, 31, 1) ? 0 : 100);
+   m_battery->set(bitset_extract(data, 31, 1) ? 10 : 100);
 
    return m_historizers;
 }
@@ -108,14 +108,13 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 void CProfile_A5_13_07::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
-                                    boost::shared_ptr<IMessageHandler> messageHandler) const
-{
+                                    boost::shared_ptr<IMessageHandler> messageHandler) {
    throw std::logic_error("device supports no command sending");
 }
 
 void CProfile_A5_13_07::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
-                                          boost::shared_ptr<IMessageHandler> messageHandler) const
+                                          boost::shared_ptr<IMessageHandler> messageHandler)
 {
    // Device supports no configuration
 }

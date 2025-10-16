@@ -1,6 +1,7 @@
 #pragma once
 #include "IMessageHandler.h"
 #include "profiles/eep.h"
+#include "radioErp1/SendMessage.h"
 
 namespace message
 {
@@ -19,5 +20,9 @@ namespace message
                               const std::string& targetId,
                               const boost::dynamic_bitset<>& userData,
                               const std::string& messageName);
+
+      static void sendMessage(radioErp1::CSendMessage& message,
+                              const boost::shared_ptr<IMessageHandler>& messageHandler,
+                              const std::string& messageName = "unknown");
    };
 } // namespace message

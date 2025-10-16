@@ -112,7 +112,7 @@ void CPiface2::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, c
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";
-   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+   BOOST_ASSERT(newConfigurationData); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);   

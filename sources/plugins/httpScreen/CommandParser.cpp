@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CommandParser.h"
 #include "shared/DataContainer.h"
+#include <boost/algorithm/string.hpp>
 
 bool CCommandParser::Parse(const std::string& screenCommands, std::vector<CCommand> & outvec)
 {

@@ -1,4 +1,5 @@
-﻿#include "HueStreaming.h"
+﻿#include "stdafx.h"
+#include "HueStreaming.h"
 
 CHueStreaming::CHueStreaming(const bool& renderer, const bool& proxy)
    : m_renderer(renderer),

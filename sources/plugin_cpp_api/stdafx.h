@@ -40,4 +40,4 @@
 //
 // ! please keep for full list alphabetic ordered !!
 ////////////////////////////////////////
-#include <Poco/Util/AbstractConfiguration.h>
+#include <Poco/Logger.h>

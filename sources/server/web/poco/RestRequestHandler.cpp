@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RestRequestHandler.h"
 #include <shared/Log.h>
+#include <boost/algorithm/string.hpp>
 #include <Poco/URI.h>
 
 #include <utility>

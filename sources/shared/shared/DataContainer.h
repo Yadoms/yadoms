@@ -1,6 +1,7 @@
 #pragma once
 #define RAPIDJSON_VALUE_DEFAULT_OBJECT_CAPACITY 1
 #include <boost/date_time.hpp>
+#include <boost/function.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/function.hpp>
 #include <boost/optional.hpp>

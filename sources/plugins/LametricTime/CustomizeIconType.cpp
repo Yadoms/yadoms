@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CustomizeIconType.h"
+#include <boost/algorithm/string.hpp>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace specificHistorizers

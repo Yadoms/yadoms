@@ -1,3 +1,4 @@
+
 find_package(OpenCV PATHS ${OPENCV_ROOT} NO_DEFAULT_PATH)
 
 # This plugin is not available for Synology platform (requires libudev, not always available on this platform)
@@ -54,6 +55,7 @@ if (NOT CMAKE_PACKAGE_PLATFORM_NAME MATCHES "Synology")
             set(UDEV_PATH_INCLUDES ${LIBUDEV_ROOT})
             set(UDEV_PATH_LIB ${LIBUDEV_ROOT})
             
+            list(PREPEND CMAKE_FIND_ROOT_PATH ${LIBUDEV_ROOT})
             include(FindLibUdev.cmake)
             set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
                hidapi/sources/linux/hid.c

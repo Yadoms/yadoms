@@ -2,6 +2,7 @@
 #include "LametricTime.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 
+#include <boost/algorithm/string.hpp>
 #include <Poco/Net/HTTPSClientSession.h>
 #include <shared/Log.h>
 #include <shared/http/Codes.h>

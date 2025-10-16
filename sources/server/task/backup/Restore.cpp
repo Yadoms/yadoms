@@ -2,7 +2,8 @@
 #include "task/ITask.h"
 #include "Restore.h"
 
-#include <boost/process/environment.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/process.hpp>
 
 #include <Poco/Zip/Compress.h>
 #include <Poco/Zip/ZipException.h>
@@ -100,7 +101,7 @@ namespace task
          static const auto ExecutablePath(BACKUP_RESTORATION_SCRIPT_FILENAME);
 
          Poco::Process::Args args;
-         args.push_back(std::to_string(boost::this_process::get_id()));
+         args.push_back(std::to_string(boost::process::current_pid()));
          args.push_back(tempDirectory.string());
 
          YADOMS_LOG(debug) << "Launch script \"" << ExecutablePath << "\" with args " << boost::algorithm::join(args, ", ");

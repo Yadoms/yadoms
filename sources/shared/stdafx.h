@@ -11,7 +11,7 @@
 #include <type_traits>
 
 //include only needed files
-#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/any.hpp>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
@@ -22,6 +22,7 @@
 #include <boost/dynamic_bitset.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
+#include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/preprocessor.hpp>

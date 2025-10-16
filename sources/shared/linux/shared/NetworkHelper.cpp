@@ -50,9 +50,8 @@ std::vector<boost::asio::ip::address> CNetworkHelper::getLocalIps()
               if (!inet_ntop(AF_INET, in_addr, str, INET_ADDRSTRLEN))
                  throw exception::CException("Unable to get IP object from in_addr object");
                   
-              //we convert string to boost::asio::ip::address
               boost::system::error_code ec;
-              boost::asio::ip::address addr = boost::asio::ip::address::from_string(str, ec);
+              boost::asio::ip::address addr = boost::asio::ip::make_address(str, ec);
               if (ec)
                  throw exception::CException("Unable to get IP object from ip string : " + std::string(str) + ": " + ec.message());
                

@@ -21,7 +21,6 @@
 //
 // ! please keep for full list alphabetic ordered !!
 ////////////////////////////////////////
-#include <boost/algorithm/string.hpp>
 #include <boost/asio.hpp>
 #include <boost/assert.hpp>
 #include <boost/assign.hpp>

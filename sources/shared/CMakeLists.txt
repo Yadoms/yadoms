@@ -499,9 +499,6 @@ source_group(platformSpecific\\mac shared/mac/shared/*.*)
 source_group(platformSpecific\\mac\\process shared/mac/shared/process/*.*)
 
 
-
-
-
 ########################
 ## Output
 ########################
@@ -509,17 +506,17 @@ add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 
 add_dependencies(yadoms-shared curl_build curlpp_build)
 target_link_libraries(yadoms-shared
-   ${LIBS}
-   ${CMAKE_DL_LIBS}
-   ${CURL_LIBRARY}
-   ${CURLPP_LIBRARY}
+   PRIVATE
+      ${CURLPP_LIBRARY}
+      ${CURL_LIBRARY}
+      ${LIBS}
+      ${CMAKE_DL_LIBS}
 )
 
 set_property(TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES
    ${BOOST_INCL_DIR}
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${PLATFORM_SPECIFIC_INCL_DIR}
-   ${Poco_INCLUDE_DIRS}
    ${OPENSSL_INCLUDE_DIR}
    ${CURL_INCLUDE_DIR}
    ${CURLPP_INCLUDE_DIR}

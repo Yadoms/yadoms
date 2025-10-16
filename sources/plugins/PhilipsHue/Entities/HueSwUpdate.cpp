@@ -1,4 +1,5 @@
-﻿#include "HueSwUpdate.h"
+﻿#include "stdafx.h"
+#include "HueSwUpdate.h"
 
 CHueSwUpdate::CHueSwUpdate(const std::string& state, const std::string& lastInstall)
    : m_state(state),
