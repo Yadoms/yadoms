@@ -181,10 +181,14 @@ namespace web
                if (schema->containsChild("error")) //TODO c'est pas plutôt schema->empty() ?
                   return schema;
 
+               if (!schema->containsChild("content"))
+                  return schema;
+               const auto contentNode = schema->getChild("content");
+
                if (device->Configuration()->empty())
                   return schema;
 
-               return CConfigurationMerger::mergeConfigurationAndSchema(*schema,
+               return CConfigurationMerger::mergeConfigurationAndSchema(*contentNode,
                                                                         *device->Configuration());
             }
             catch (const std::exception& exception)
