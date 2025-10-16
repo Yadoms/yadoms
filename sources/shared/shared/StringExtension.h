@@ -111,17 +111,6 @@ namespace shared
       static std::string cultureInvariantToString(const T& value);
 
 
-      /// @brief Trim string at beginning (in place)
-      /// @param s string to trim
-      static void leftTrim(std::string& s);
-
-      /// @brief Trim string at end (in place)
-      /// @param s string to trim
-      static void rightTrim(std::string& s);
-
-      /// @brief Trim string at beginning and end (in place)
-      /// @param s string to trim
-      static void trim(std::string& s);
 
       /// @brief Trim string at beginning and end (in place)
       /// @param input Input string containing keys to replace
