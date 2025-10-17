@@ -183,12 +183,11 @@ namespace web
 
                if (!schema->containsChild("content"))
                   return schema;
-               const auto contentNode = schema->getChild("content");
 
                if (device->Configuration()->empty())
                   return schema;
 
-               schema->set("content", CConfigurationMerger::mergeConfigurationAndSchema(*contentNode,
+               schema->set("content", CConfigurationMerger::mergeConfigurationAndSchema(*schema->getChild("content"),
                                                                                         *device->Configuration()));
                return schema;
             }
