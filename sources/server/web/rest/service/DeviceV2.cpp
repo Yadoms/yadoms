@@ -287,9 +287,12 @@ namespace web
             const boost::shared_ptr<database::entities::CDevice>& device,
             const std::vector<std::string>& locales) const
          {
-            const auto dynamicConfigurationSchemaNode = findPluginInformation(device)->getDeviceDynamicConfigurationSchema();
-            if (dynamicConfigurationSchemaNode->empty())
-               return shared::CDataContainer::EmptyContainerSharedPtr;
+            //TODO utile ?
+            //const auto dynamicConfigurationSchemaNode = findPluginInformation(device)->getDeviceDynamicConfigurationSchema();
+            //if (dynamicConfigurationSchemaNode->empty())
+            //   return shared::CDataContainer::EmptyContainerSharedPtr;
+
+            // TODO y'aurait moyen de ne pas appeler le plugin si on est sûr que le device n'est pas dynamiquement configurable ?
 
             //TODO tout retester
             if (!m_pluginManager->isInstanceRunning(device->PluginId()))
@@ -310,10 +313,9 @@ namespace web
 
                YADOMS_LOG(trace) << res.result(); //TODO virer
 
-               const auto schema = res.result()->copy();
+               auto schema = shared::CDataContainer::make();
+               schema->set("content", res.result());
 
-               if (schema->empty())
-                  return shared::CDataContainer::make();
 
                //TODO
                //if (!locales->empty() && locales->exists("configurationSchema"))

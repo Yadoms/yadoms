@@ -64,7 +64,7 @@ boost::shared_ptr<shared::CDataContainer> CFakeDynamicallyConfigurableDevice::ge
    for (auto i = 0; i < 3; ++i)
    {
       shared::CDataContainer itemOptions;
-      itemOptions.set("type", "numeric");
+      itemOptions.set("type", "int");
       itemOptions.set("i18nKey", "ArrayItem"); // Force i18nPath to use same translations for all array items
       itemOptions.set("defaultValue", i + 1);
       results->set("ArrayItem#" + std::to_string(i), itemOptions);
