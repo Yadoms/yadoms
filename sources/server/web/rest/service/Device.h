@@ -198,17 +198,14 @@ namespace web
                                                                              const std::vector<std::string>& locales) const;
             boost::shared_ptr<shared::CDataContainer> getDeviceConfigurationSchema(
                const boost::shared_ptr<database::entities::CDevice>& device,
-               const boost::shared_ptr<const shared::CDataContainer>& locales) const;
+               const std::vector<std::string>& locales) const;
             boost::shared_ptr<const shared::plugin::information::IInformation> findPluginInformation(
                const boost::shared_ptr<database::entities::CDevice>& device) const;
             boost::shared_ptr<shared::CDataContainer> getDeviceStaticConfigurationSchema(
                const boost::shared_ptr<database::entities::CDevice>& device,
-               const boost::shared_ptr<const shared::CDataContainer>& locales) const;
+               const std::vector<std::string>& locales) const;
             boost::shared_ptr<shared::CDataContainer> getDeviceDynamicConfigurationSchema(
                const boost::shared_ptr<database::entities::CDevice>& device,
-               const boost::shared_ptr<const shared::CDataContainer>& locales) const;
-            boost::shared_ptr<shared::CDataContainer> getDeviceConfigurationLabels(
-               boost::shared_ptr<database::entities::CDevice> device,
                const std::vector<std::string>& locales) const;
             boost::shared_ptr<IAnswer> sendExtraQueryToDeviceV2(const boost::shared_ptr<IRequest>& request) const;
             std::string generateUniqueDeviceName(int pluginId) const;
