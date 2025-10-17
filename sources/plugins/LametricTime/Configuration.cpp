@@ -57,5 +57,5 @@ std::string CConfiguration::getAPIKey() const
 
 EPairingMode CConfiguration::getPairingMode() const
 {
-	return m_configuration.get<std::string>("PairingMode.activeSectionText") == "Auto" ? kAuto : kManual;
+	return m_configuration.get<std::string>("PairingMode.activeSection") == "Automatic" ? kAuto : kManual;
 }

@@ -1,10 +1,11 @@
-#include "stdafx.h"
+#include <boost/format.hpp>
 #include "LightsService.h"
 #include "shared/Log.h"
 #include "shared/http/HttpRestHelpers.h"
 #include "../../Utils/ColorConverter.h"
 #include "../../../Entities/HueStreaming.h"
 #include "../../Utils/ColorTypeHelper.h"
+#include "../../Utils/HueLightsResponseType.h"
 
 #include <boost/asio/steady_timer.hpp>
 #include <boost/format.hpp>
@@ -133,7 +134,7 @@ CHueLightInformations CLightsService::getLightAttributesAndState(const int id)
    {
       boost::shared_ptr<shared::CDataContainer> response;
 
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, lightUrl)
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kGet, lightUrl)
          ->send([&response](boost::shared_ptr<shared::CDataContainer> data)
          {
             response = std::move(data);

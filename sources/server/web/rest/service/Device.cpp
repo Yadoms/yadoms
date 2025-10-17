@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "Device.h"
-#include <shared/exception/EmptyResult.hpp>
-#include <unordered_set>
-#include <utility>
 
-#include "web/rest/Result.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
+#include <unordered_set>
+#include <shared/exception/EmptyResult.hpp>
+#include <utility>
+#include "web/poco/RestResult.h"
 #include "communication/callback/SynchronousCallback.h"
 #include "database/common/requesters/Keyword.h"
+#include "web/poco/RestDispatcherHelpers.hpp"
 
 namespace web
 {
@@ -32,85 +32,79 @@ namespace web
          {
          }
 
-         const std::string& CDevice::getRestKeyword()
+         void CDevice::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            return m_restKeyword;
-         }
-
-         void CDevice::configureDispatcher(CRestDispatcher& dispatcher)
-         {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CDevice::getOneDevice);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevicesV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CDevice::getOneDeviceV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"),
-                                        CDevice::getCompatibleForMergeDevice);
+                                        CDevice::getCompatibleForMergeDeviceV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"),
-                                        CDevice::getDeviceConfigurationSchema);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), CDevice::getAllKeywords);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CDevice::getKeyword);
+                                        CDevice::getDeviceConfigurationSchemaV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), CDevice::getAllKeywordsV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CDevice::getKeywordV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacity")("*")("*"),
-                                        CDevice::getDevicesWithCapacity);
+                                        CDevice::getDevicesWithCapacityV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacitytype")("*")("*"),
-                                        CDevice::getDeviceWithCapacityType);
+                                        CDevice::getDeviceWithCapacityTypeV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordaccess")("*"),
-                                        CDevice::getDeviceWithKeywordAccessMode);
+                                        CDevice::getDeviceWithKeywordAccessModeV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordhistorydepth")("*"),
-                                        CDevice::getDeviceWithKeywordHistoryDepth
-            );
+                                        CDevice::getDeviceWithKeywordHistoryDepthV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("matchkeywordcriteria"),
-                                                        CDevice::getDeviceMatchKeywordCriteria,
-                                                        CDevice::transactionalMethod);
+                                                        CDevice::getDeviceMatchKeywordCriteriaV1,
+                                                        CDevice::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"),
-                                        CDevice::getDeviceKeywordsForCapacity);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
+                                        CDevice::getDeviceKeywordsForCapacityV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywordsV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"),
-                                                        CDevice::getKeywordsLastState,
-                                                        CDevice:: transactionalMethod);
+                                                        CDevice::getKeywordsLastStateV1,
+                                                        CDevice::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"),
-                                                        CDevice::updateDeviceConfiguration,
-                                                        CDevice::transactionalMethod);
+                                                        CDevice::updateDeviceConfigurationV1,
+                                                        CDevice::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"),
-                                                        CDevice::mergeDevices,
-                                                        CDevice:: transactionalMethod);
+                                                        CDevice::mergeDevicesV1,
+                                                        CDevice::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"),
-                                                        CDevice::restoreDevice,
-                                                        CDevice:: transactionalMethod);
+                                                        CDevice::restoreDeviceV1,
+                                                        CDevice:: transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"),
-                                                        CDevice::updateKeywordFriendlyName,
-                                                        CDevice::transactionalMethod);
+                                                        CDevice::updateKeywordFriendlyNameV1,
+                                                        CDevice::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("blacklist"),
-                                                        CDevice:: updateKeywordBlacklist, CDevice::transactionalMethod);
+                                                        CDevice:: updateKeywordBlacklistV1, CDevice::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"),
-                                                        CDevice::sendKeywordCommand,
-                                                        CDevice::transactionalMethod);
+                                                        CDevice::sendKeywordCommandV1,
+                                                        CDevice::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"),
-                                                        CDevice::deleteDevice,
-                                                        CDevice:: transactionalMethod);
+                                                        CDevice::deleteDeviceV1,
+                                                        CDevice::transactionalMethodV1)
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getOneDevice(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getOneDeviceV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             std::string objectId;
             if (parameters.size() > 1)
                objectId = parameters[1];
 
             const auto deviceFound = m_deviceRequester->getDevice(boost::lexical_cast<int>(objectId), true);
-            return CResult::GenerateSuccess(deviceFound);
+            return poco::CRestResult::GenerateSuccess(deviceFound);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getCompatibleForMergeDevice(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getCompatibleForMergeDeviceV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() <= 1)
-                  return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
 
                const auto refDeviceId = boost::lexical_cast<int>(parameters[1]);
 
                // A device is compatible for merge with an other when :
-               // - plugins are compatible (see m_deviceRequester->getCompatibleForMergeDevice)
+               // - plugins are compatible (see m_deviceRequester->getCompatibleForMergeDeviceV1)
                // - They contain at least one compatible keyword. Keywords are compatible when :
                //   - capacityName, accessMode, name, type, units, typeInfo, measure and details are the same
 
@@ -163,7 +157,7 @@ namespace web
                                                                      return false;
 
                                                                   // A common device was found
-                                                                  auto commonKeyword = shared::CDataContainer::make();
+                                                                  const auto commonKeyword = shared::CDataContainer::make();
                                                                   commonKeyword->set("old", candidateKeyword);
                                                                   commonKeyword->set("new", refKeyword);
                                                                   commonKeywords.push_back(commonKeyword);
@@ -189,20 +183,21 @@ namespace web
                shared::CDataContainer collection;
                collection.set("compatibleDevices", compatibleDevices);
                collection.set("commonKeywordsByDevice", commonKeywordsForCompatibleDevices);
-               return CResult::GenerateSuccess(collection);
+               return poco::CRestResult::GenerateSuccess(collection);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in executing getDeviceConfigurationSchema query");
+               return poco::CRestResult::GenerateError("unknown exception in executing getDeviceConfigurationSchemaV1 query");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceConfigurationSchema(const std::vector<std::string>& parameters,
-                                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceConfigurationSchemaV1(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -224,43 +219,43 @@ namespace web
                         {
                            const auto res = cb.getCallbackResult();
                            if (res.success)
-                              return CResult::GenerateSuccess(res.result());
-                           return CResult::GenerateError(res.errorMessage);
+                              return poco::CRestResult::GenerateSuccess(res.result());
+                           return poco::CRestResult::GenerateError(res.errorMessage);
                         }
                      case shared::event::kTimeout:
-                        return CResult::GenerateError("The plugin did not respond");
+                        return poco::CRestResult::GenerateError("The plugin did not respond");
                      default:
-                        return CResult::GenerateError("Unknown plugin result");
+                        return poco::CRestResult::GenerateError("Unknown plugin result");
                      }
                   }
                   catch (shared::exception::CException& ex)
                   {
-                     return CResult::GenerateError(ex);
+                     return poco::CRestResult::GenerateError(ex);
                   }
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in executing getDeviceConfigurationSchema query");
+               return poco::CRestResult::GenerateError("unknown exception in executing getDeviceConfigurationSchemaV1 query");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getAllDevices(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getAllDevicesV1(
             const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             const auto dvList = m_deviceRequester->getDevices(true);
             shared::CDataContainer collection;
-            collection.set(getRestKeyword(), dvList);
-            return CResult::GenerateSuccess(collection);
+            collection.set(m_restKeyword, dvList);
+            return poco::CRestResult::GenerateSuccess(collection);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getKeyword(const std::vector<std::string>& parameters,
-                                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getKeywordV1(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             try
             {
@@ -268,22 +263,22 @@ namespace web
                {
                   const auto keywordId = boost::lexical_cast<int>(parameters[2]);
                   const auto keyword = m_keywordManager->getKeyword(keywordId);
-                  return CResult::GenerateSuccess(keyword);
+                  return poco::CRestResult::GenerateSuccess(keyword);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving keyword");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getKeywordsLastState(const std::vector<std::string>& parameters,
-                                                                                                   const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getKeywordsLastStateV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -297,43 +292,43 @@ namespace web
                   {
                      result.set(std::to_string(keywordLastData.get<0>()), keywordLastData.get<1>());
                   }
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving keyword");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getAllKeywords(const std::vector<std::string>& parameters,
-                                                                                             const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getAllKeywordsV1(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent) const
          {
             try
             {
                const auto result = m_keywordManager->getAllKeywords();
                shared::CDataContainer collection;
                collection.set("keywords", result);
-               return CResult::GenerateSuccess(collection);
+               return poco::CRestResult::GenerateSuccess(collection);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving keyword");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDevicesWithCapacity(const std::vector<std::string>& parameters,
-                                                                                                     const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDevicesWithCapacityV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -346,23 +341,23 @@ namespace web
                   //run query
                   const auto result = m_deviceRequester->getDeviceWithCapacity(capacityName, cam);
                   shared::CDataContainer collection;
-                  collection.set(getRestKeyword(), result);
-                  return CResult::GenerateSuccess(collection);
+                  collection.set(m_restKeyword, result);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceWithCapacityType(const std::vector<std::string>& parameters,
-                                                                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceWithCapacityTypeV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -374,22 +369,22 @@ namespace web
                   //run query
                   const auto result = m_deviceRequester->getDeviceWithCapacityType(cam, typ);
                   shared::CDataContainer collection;
-                  collection.set(getRestKeyword(), result);
-                  return CResult::GenerateSuccess(collection);
+                  collection.set(m_restKeyword, result);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceWithKeywordAccessMode(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceWithKeywordAccessModeV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -402,22 +397,22 @@ namespace web
                   //run query
                   const auto result = m_deviceRequester->getDeviceWithKeywordAccessMode(cam);
                   shared::CDataContainer collection;
-                  collection.set(getRestKeyword(), result);
-                  return CResult::GenerateSuccess(collection);
+                  collection.set(m_restKeyword, result);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve access-mode in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve access-mode in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceWithKeywordHistoryDepth(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceWithKeywordHistoryDepthV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -430,22 +425,22 @@ namespace web
                   //run query
                   const auto result = m_deviceRequester->getDeviceWithKeywordHistoryDepth(historyDepth);
                   shared::CDataContainer collection;
-                  collection.set(getRestKeyword(), result);
-                  return CResult::GenerateSuccess(collection);
+                  collection.set(m_restKeyword, result);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve history-depth in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve history-depth in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceMatchKeywordCriteria(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceMatchKeywordCriteriaV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -511,20 +506,21 @@ namespace web
                shared::CDataContainer collection;
                collection.set("devices", devices);
                collection.set("keywords", keywords);
-               return CResult::GenerateSuccess(collection);
+               return poco::CRestResult::GenerateSuccess(collection);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceKeywordsForCapacity(const std::vector<std::string>& parameters,
-                                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceKeywordsForCapacityV1(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -538,22 +534,22 @@ namespace web
                   const auto result = m_keywordManager->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
                   shared::CDataContainer collection;
                   collection.set("keyword", result);
-                  return CResult::GenerateSuccess(collection);
+                  return poco::CRestResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceKeywords(const std::vector<std::string>& parameters,
-                                                                                                const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceKeywordsV1(const std::vector<std::string>& parameters,
+                                                                                                  const std::string& requestContent) const
          {
             try
             {
@@ -567,24 +563,24 @@ namespace web
                      const auto allKeywordsForDevice = m_keywordManager->getKeywords(deviceId);
                      shared::CDataContainer collection;
                      collection.set("keyword", allKeywordsForDevice);
-                     return CResult::GenerateSuccess(collection);
+                     return poco::CRestResult::GenerateSuccess(collection);
                   }
-                  return CResult::GenerateError("Fail to retrieve device in database");
+                  return poco::CRestResult::GenerateError("Fail to retrieve device in database");
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::sendKeywordCommand(const std::vector<std::string>& parameters,
-                                                                                                 const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::sendKeywordCommandV1(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent) const
          {
             try
             {
@@ -596,27 +592,27 @@ namespace web
                   try
                   {
                      m_messageSender.sendKeywordCommandAsync(keywordId, requestContent);
-                     return CResult::GenerateSuccess();
+                     return poco::CRestResult::GenerateSuccess();
                   }
                   catch (shared::exception::CEmptyResult&)
                   {
-                     return CResult::GenerateError("invalid parameter. Can not retrieve keyword in database");
+                     return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve keyword in database");
                   }
                }
-               return CResult::GenerateError("invalid parameter. Not enough parameters in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Not enough parameters in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in sending command to keyword");
+               return poco::CRestResult::GenerateError("unknown exception in sending command to keyword");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::deleteDevice(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::deleteDeviceV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -638,28 +634,28 @@ namespace web
                      m_deviceManager->updateDeviceBlacklistState(deviceId, true);
                   }
 
-                  return CResult::GenerateSuccess();
+                  return poco::CRestResult::GenerateSuccess();
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading device data");
+               return poco::CRestResult::GenerateError("unknown exception in reading device data");
             }
          }
 
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateDeviceFriendlyName(const std::vector<std::string>& parameters,
-                                                                                                       const std::string& requestContent) const
+            const std::string& requestContent) const
          {
             try
             {
                if (parameters.empty())
-                  return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
 
                //get device id from URL
                const auto deviceId = boost::lexical_cast<int>(parameters[1]);
@@ -673,28 +669,28 @@ namespace web
 
                   //return the device info
                   const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
-                  return CResult::GenerateSuccess(deviceFound);
+                  return poco::CRestResult::GenerateSuccess(deviceFound);
                }
-               return CResult::GenerateError("invalid request content. could not retrieve device friendlyName");
+               return poco::CRestResult::GenerateError("invalid request content. could not retrieve device friendlyName");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating device friendly name");
+               return poco::CRestResult::GenerateError("unknown exception in updating device friendly name");
             }
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateDeviceConfiguration(const std::vector<std::string>& parameters,
-                                                                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateDeviceConfigurationV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
                if (parameters.empty())
-                  return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
 
                //get device id from URL
                const auto deviceId = boost::lexical_cast<int>(parameters[1]);
@@ -705,14 +701,10 @@ namespace web
 
                //update friendly name
                if (deviceToUpdate.FriendlyName.isDefined())
-               {
                   m_deviceRequester->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
-               }
 
                if (deviceToUpdate.Model.isDefined())
-               {
                   m_deviceRequester->updateDeviceModel(deviceId, deviceToUpdate.Model());
-               }
 
                if (deviceToUpdate.Configuration.isDefined())
                {
@@ -724,21 +716,21 @@ namespace web
 
                //return the device info
                const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
-               return CResult::GenerateSuccess(deviceFound);
+               return poco::CRestResult::GenerateSuccess(deviceFound);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating device configuration");
+               return poco::CRestResult::GenerateError("unknown exception in updating device configuration");
             }
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::mergeDevices(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::mergeDevicesV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             // Merging device goal is :
             // - Keep new device name so plugin can still historize to the new device
@@ -765,7 +757,8 @@ namespace web
                YADOMS_LOG(information) << "Starting merging 2 devices...";
 
                // Stop concerned plugins (needed to prevent plugin historizes on the new device, and to force it to retrieve right device ID)
-               const std::unordered_set<int> pluginsToStop{
+               const std::unordered_set<int> pluginsToStop
+               {
                   m_deviceRequester->getDevice(oldDeviceId)->PluginId(),
                   m_deviceRequester->getDevice(newDeviceId)->PluginId()
                };
@@ -815,47 +808,47 @@ namespace web
 
                YADOMS_LOG(information) << "Device merge done";
 
-               return CResult::GenerateSuccess();
+               return poco::CRestResult::GenerateSuccess();
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in merging devices");
+               return poco::CRestResult::GenerateError("unknown exception in merging devices");
             }
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::restoreDevice(const std::vector<std::string>& parameters,
-                                                                                            const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::restoreDeviceV1(const std::vector<std::string>& parameters,
+                                                                                              const std::string& requestContent) const
          {
             try
             {
                if (parameters.empty())
-                  return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
 
                const auto deviceId = boost::lexical_cast<int>(parameters[1]);
                m_deviceManager->updateDeviceBlacklistState(deviceId, false);
 
                //return the device info
                const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
-               return CResult::GenerateSuccess(deviceFound);
+               return poco::CRestResult::GenerateSuccess(deviceFound);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating device configuration");
+               return poco::CRestResult::GenerateError("unknown exception in updating device configuration");
             }
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateKeywordFriendlyName(const std::vector<std::string>& parameters,
-                                                                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateKeywordFriendlyNameV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -869,24 +862,24 @@ namespace web
                   if (keywordToUpdate.FriendlyName.isDefined())
                   {
                      m_keywordManager->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
-                     return CResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
+                     return poco::CRestResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
                   }
-                  return CResult::GenerateError("invalid request content. could not retrieve keyword friendlyName");
+                  return poco::CRestResult::GenerateError("invalid request content. could not retrieve keyword friendlyName");
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating device friendly name");
+               return poco::CRestResult::GenerateError("unknown exception in updating device friendly name");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateKeywordBlacklist(const std::vector<std::string>& parameters,
-                                                                                                     const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::updateKeywordBlacklistV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -900,28 +893,29 @@ namespace web
                   if (keywordToUpdate.Blacklist.isDefined())
                   {
                      m_keywordManager->updateKeywordBlacklistState(keywordId, keywordToUpdate.Blacklist());
-                     return CResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
+                     return poco::CRestResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
                   }
-                  return CResult::GenerateError("invalid request content. could not retrieve keyword blacklist");
+                  return poco::CRestResult::GenerateError("invalid request content. could not retrieve keyword blacklist");
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating device friendly name");
+               return poco::CRestResult::GenerateError("unknown exception in updating device friendly name");
             }
          }
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
-                                                                                                  const std::vector<std::string>& parameters,
-                                                                                                  const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::transactionalMethodV1(
+            const poco::CRestDispatcher::CRestMethodHandler realMethod,
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
-            auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+            const auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             boost::shared_ptr<shared::serialization::IDataSerializable> result;
             try
             {
@@ -931,16 +925,16 @@ namespace web
             }
             catch (std::exception& ex)
             {
-               result = CResult::GenerateError(ex);
+               result = poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               result = CResult::GenerateError("unknown exception device rest method");
+               result = poco::CRestResult::GenerateError("unknown exception device rest method");
             }
 
             if (pTransactionalEngine)
             {
-               if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
+               if (poco::CRestResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
                   pTransactionalEngine->transactionCommit();
                else
                   pTransactionalEngine->transactionRollback();

@@ -1,6 +1,6 @@
 ﻿{
    "name": "Composeur de Sms",
-   "description": "Envoi/réception de SMS avec un téléphone mobile. Ce plugin utilise un téléphone mobile compatible (supportant les commandes AT) connecté au système Yadoms pour envoyer/recevoir des SMS. Ce plugin utilise la librairie GAMMU (http://wammu.eu/).",
+   "description": "Envoi/réception de SMS avec un téléphone mobile. Ce plugin utilise un téléphone mobile compatible (supportant les commandes AT) connecté au système Yadoms pour envoyer/recevoir des SMS. Ce plugin utilise la [librairie GAMMU](http://wammu.eu/).",
    "configurationSchema":
    {
       "Serial Port":
@@ -11,7 +11,7 @@
       "Protocol":
       {
          "name": "Protocole",
-         "description": "Le protocole utilisé pour la connexion entre smsDialer et le téléphone. Utilisez Wammu (http://wammu.eu/) pour déterminer le protocole accepté par votre téléphone.",
+         "description": "Le protocole utilisé pour la connexion entre smsDialer et le téléphone. Utilisez [Wammu](http://wammu.eu/) pour déterminer le protocole accepté par votre téléphone.",
          "values":
          {
             "at19200": "at19200",

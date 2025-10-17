@@ -8,12 +8,7 @@
 class IRunningInformation
 {
 public:
-   //-----------------------------------------------------------------------------
-   /// \brief		                     Destructor
-   //-----------------------------------------------------------------------------
-   virtual ~IRunningInformation()
-   {
-   }
+   virtual ~IRunningInformation() = default;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     get the startup date/time

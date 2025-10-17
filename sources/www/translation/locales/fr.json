@@ -61,30 +61,15 @@
          "crash": "Tâche en erreur",
          "unknownError": "Erreur inconnue",
          "end": "Tâche arrétée",
-         "backup": {
-            "prepare": "Préparation de la sauvegarde...",
-            "copyfiles": "Copie des fichiers...",
-            "compress": "Compression des fichiers...",
-            "clean": "Nettoyage...",
-            "success": "Sauvegarde réussie"
-         },
          "restore": {
             "prepare": "Preparing de la restauration...",
             "decompress": "Décompression des fichiers...",
             "success": "Restauration réussie",
             "restarting": "Redémarrage de Yadoms..."
          },
-         "packLogs": {
-            "prepare": "Préparation des journaux...",
-            "copyfiles": "Copie des journaux...",
-            "compress": "Compression des journaux...",
-            "clean": "Nettoyage...",
-            "success": "Empaquetage des journaux réussi",
-            "downloadError": "Téléchargement des logs échoué"
-         },
          "exportData": {
             "prepare": "Préparation des données à exporter...",
-            "createfile": "Création du fichier...",
+            "copyfiles": "Copie des fichiers...",
             "compress": "Compression...",
             "clean": "Nettoyage...",
             "success": "Export des données réussi",

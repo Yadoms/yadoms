@@ -15,7 +15,7 @@ namespace shared
          ///\param[in] onStopRequestedFct Handler to call when stop is requested
          ///\details The handler to call when stop is requested takes another handler, to call by app when stop is finished
          //----------------------------- 
-         static void setOnStopRequestedHandler(boost::function<bool()> onStopRequestedFct);
+         static void setOnStopRequestedHandler(const boost::function<bool()>& onStopRequestedFct);
 
          //-----------------------------
          ///\brief   Ask application to stop

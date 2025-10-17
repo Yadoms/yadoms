@@ -22,30 +22,30 @@
     },
     "XplHub": {
       "type": "bool",
-      "defaultValue": "true"
+      "defaultValue": true
     }
   },
-  "supportManuallyDeviceCreation": "true",
+  "supportManuallyDeviceCreation": true,
   "deviceConfiguration": {
     "staticConfigurationSchema": {
       "schemas": {
         "ac": {
           "types": {
             "ac": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "deviceAddress": {
               "type": "string",
-              "required": "true"
+              "required": true
             }
           }
         },
         "x10": {
           "types": {
             "x10": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {

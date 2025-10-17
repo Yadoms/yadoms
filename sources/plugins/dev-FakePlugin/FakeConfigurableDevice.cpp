@@ -58,14 +58,14 @@ const std::string& CFakeConfigurableDevice::getDeviceName() const
 
 const std::string& CFakeConfigurableDevice::getModel()
 {
-   static const std::string model("Fake Configurable Device");
-   return model;
+   static const std::string Model("Fake Configurable Device");
+   return Model;
 }
 
 const std::string& CFakeConfigurableDevice::getType()
 {
-   static const std::string type("fakeConfigurableDeviceType");
-   return type;
+   static const std::string Type("fakeConfigurableDeviceType");
+   return Type;
 }
 
 void CFakeConfigurableDevice::setConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration)

@@ -92,8 +92,7 @@ namespace database
       ///\return     the acquisition
       //-----------------------------------------
       virtual boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(int keywordId,
-                                                                                       boost::posix_time::ptime time) =
-      0;
+                                                                                       boost::posix_time::ptime time) = 0;
 
       //-----------------------------------------
       ///\brief      Export acquisitions for a keyword
@@ -181,11 +180,24 @@ namespace database
       /// \return                Json string as a map of {date, value} tuples
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::string getHugeVectorKeywordData(
-         int keywordId,
-         boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
-         boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
-         int limit = -1) = 0;
+      virtual std::string getHugeVectorKeywordData(int keywordId,
+                                                   boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
+                                                   boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
+                                                   int limit = -1) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                    Get acquisitions for keywords
+      /// \param [in] keywordIds    Search keywords matching one of these IDs
+      /// \param [in] fromDate      The start date (optional, boost::posix_time::not_a_date_time if not provided)
+      /// \param [in] toDate        The end date (optional, boost::posix_time::not_a_date_time if not provided)
+      /// \param [in] limit         Max count of records to return (optional, -1 if no limit)
+      /// \return                Json string
+      //--------------------------------------------------------------
+      virtual std::string getHugeVectorKeywordDataV2(const std::set<int>& keywordIds,
+                                                     const boost::posix_time::ptime& fromDate = boost::posix_time::not_a_date_time,
+                                                     const boost::posix_time::ptime& toDate = boost::posix_time::not_a_date_time,
+                                                     int limit = -1) = 0;
+
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
@@ -234,6 +246,29 @@ namespace database
       virtual std::string getHugeVectorKeywordDataByYear(int keywordId,
                                                          boost::posix_time::ptime timeFrom,
                                                          boost::posix_time::ptime timeTo) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                    Get acquisitions for keywords
+      /// \param [in] type          Summary type
+      /// \param [in] keywordIds    Search keywords matching one of these IDs
+      /// \param [in] fromDate      The start date (optional, boost::posix_time::not_a_date_time if not provided)
+      /// \param [in] toDate        The end date (optional, boost::posix_time::not_a_date_time if not provided)
+      /// \param [in] limit         Max count of records to return (optional, -1 if no limit)
+      /// \param [in] withAverage   Will return average value
+      /// \param [in] withMin       Will return min value
+      /// \param [in] withMax       Will return max value
+      /// \param [in] withCount     Will return count value
+      /// \return                Json string
+      //--------------------------------------------------------------
+      virtual std::string getHugeVectorKeywordSummaryDataV2(const entities::EAcquisitionSummaryType& type,
+                                                            const std::set<int>& keywordIds,
+                                                            const boost::posix_time::ptime& fromDate = boost::posix_time::not_a_date_time,
+                                                            const boost::posix_time::ptime& toDate = boost::posix_time::not_a_date_time,
+                                                            int limit = -1,
+                                                            bool withAverage = false,
+                                                            bool withMin = false,
+                                                            bool withMax = false,
+                                                            bool withCount = false) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Delete old acquisition
