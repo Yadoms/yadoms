@@ -78,9 +78,9 @@ namespace web
                         if (props->empty() || props->find("fields") != props->end())
                         {
                            shared::CDataContainer fields;
-                           for (const auto& availableField : this->getAvailableFields()->getAsMap<boost::shared_ptr<shared::CDataContainer>>())
+                           for (const auto& availableField : getAvailableFields()->getAsMap<boost::shared_ptr<shared::CDataContainer>>())
                            {
-                              const auto fieldNamePair = this->fromFieldName(availableField.first);
+                              const auto fieldNamePair = fromFieldName(availableField.first);
 
                               const auto recipientFields = m_dataProvider->getRecipientRequester()->getFields(recipient->Id(),
                                  fieldNamePair.first,
@@ -152,7 +152,7 @@ namespace web
                         {
                            database::entities::CRecipientField fieldEntry;
                            fieldEntry.IdRecipient = newRecipientId;
-                           const auto fieldNamePair = this->fromFieldName(field.first);
+                           const auto fieldNamePair = fromFieldName(field.first);
                            fieldEntry.PluginType = fieldNamePair.first;
                            fieldEntry.FieldName = fieldNamePair.second;
 
@@ -213,7 +213,7 @@ namespace web
                         {
                            database::entities::CRecipientField fieldEntry;
                            fieldEntry.IdRecipient = recipientId;
-                           const auto fieldNamePair = this->fromFieldName(field.first);
+                           const auto fieldNamePair = fromFieldName(field.first);
                            fieldEntry.PluginType = fieldNamePair.first;
                            fieldEntry.FieldName = fieldNamePair.second;
 
