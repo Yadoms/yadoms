@@ -109,10 +109,8 @@ namespace web
                         pluginEntry->set("supportManuallyCreatedDevice", plugin->getSupportManuallyCreatedDevice());
                      if (props->empty() || props->find("supportDeviceRemovedNotification") != props->end())
                         pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
-                     if (props->empty() || props->find("configurationSchema") != props->end()) //TODO revoir le mot clé (préférer "configuration") ?
-                        pluginEntry->set("configurationSchema", CConfigurationMerger::mergeConfigurationAndSchema(
-                                            *getPluginConfigurationSchema(plugin, labels),
-                                            {})); //TODO ne faudrait-il pas injecter la config existante en base ?
+                     if (props->empty() || props->find("configuration") != props->end())
+                        pluginEntry->set("configuration", getPluginConfigurationSchema(plugin, labels));
 
                      if (!pluginEntry->empty())
                      {
