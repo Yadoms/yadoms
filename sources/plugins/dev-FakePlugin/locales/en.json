@@ -260,9 +260,9 @@
             "name": "Divider",
             "description": "Description of divider"
           },
-          "ArrayItem": {
-            "name": "Array item",
-            "description": "All array items share same translations"
+          "intValue": {
+            "name": "Interger value",
+            "description": "Description of the integer value"
           }
         }
       }

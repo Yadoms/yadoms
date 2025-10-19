@@ -260,9 +260,9 @@
             "name": "Diviseur",
             "description": "Description du diviseur"
           },
-          "ArrayItem": {
-            "name": "Elément d'un tableau",
-            "description": "Tous les éléments du tableau partagent les mêmes traductions"
+          "intValue": {
+            "name": "Entier",
+            "description": "Description de l'entier"
           }
         }
       }

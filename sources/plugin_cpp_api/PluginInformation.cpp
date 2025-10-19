@@ -69,7 +69,7 @@ namespace plugin_cpp_api
       const auto package = getPackage();
       if (package->containsChild("deviceConfiguration.staticConfigurationSchema"))
          return getPackage()->getChild("deviceConfiguration.staticConfigurationSchema");
-      return shared::CDataContainer::EmptyContainerSharedPtr;
+      return nullptr;
    }
 
    boost::shared_ptr<const shared::CDataContainer> CPluginInformation::getDeviceDynamicConfigurationSchema() const
@@ -77,7 +77,7 @@ namespace plugin_cpp_api
       const auto package = getPackage();
       if (package->containsChild("deviceConfiguration.dynamicConfigurationSchema"))
          return getPackage()->getChild("deviceConfiguration.dynamicConfigurationSchema");
-      return shared::CDataContainer::EmptyContainerSharedPtr;
+      return nullptr;
    }
 
    boost::shared_ptr<const shared::CDataContainer> CPluginInformation::getLabels(const std::vector<std::string>& locales) const

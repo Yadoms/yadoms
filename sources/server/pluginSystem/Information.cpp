@@ -70,12 +70,12 @@ namespace pluginSystem
          if (m_package->containsChild("deviceConfiguration.staticConfigurationSchema"))
             m_deviceStaticConfigurationSchema = m_package->getChild("deviceConfiguration.staticConfigurationSchema");
          else
-            m_deviceStaticConfigurationSchema = shared::CDataContainer::EmptyContainerSharedPtr;
+            m_deviceStaticConfigurationSchema = nullptr;
 
          if (m_package->containsChild("deviceConfiguration.dynamicConfigurationSchema"))
             m_deviceDynamicConfigurationSchema = m_package->getChild("deviceConfiguration.dynamicConfigurationSchema");
          else
-            m_deviceDynamicConfigurationSchema = shared::CDataContainer::EmptyContainerSharedPtr;
+            m_deviceDynamicConfigurationSchema = nullptr;
       }
       catch (shared::exception::CException& e)
       {

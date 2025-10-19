@@ -83,13 +83,13 @@ namespace shared
 
             //--------------------------------------------------------------
             /// \brief	    Returns the device static configuration schema
-            /// \return     The configuration schema
+            /// \return     The configuration schema (nullptr if none provided)
             //--------------------------------------------------------------
             virtual boost::shared_ptr<const CDataContainer> getDeviceStaticConfigurationSchema() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    Returns the device dynamic configuration schema
-            /// \return     The configuration schema
+            /// \return     The configuration schema (nullptr if none provided)
             //--------------------------------------------------------------
             virtual boost::shared_ptr<const CDataContainer> getDeviceDynamicConfigurationSchema() const = 0;
 

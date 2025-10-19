@@ -178,7 +178,7 @@ namespace web
                auto schema = getDeviceConfigurationSchema(device,
                                                           locales);
 
-               if (schema->containsChild("error")) //TODO c'est pas plutôt schema->empty() ? C'est que pour les dynamic
+               if (schema->containsChild("error"))
                   return schema;
 
                if (!schema->containsChild("content"))
@@ -249,7 +249,7 @@ namespace web
          {
             const auto pluginInformation = findPluginInformation(device);
             const auto staticConfigurationSchemaNode = pluginInformation->getDeviceStaticConfigurationSchema();
-            if (staticConfigurationSchemaNode->empty())
+            if (!staticConfigurationSchemaNode || staticConfigurationSchemaNode->empty())
                return shared::CDataContainer::EmptyContainerSharedPtr;
 
             for (const auto& node : staticConfigurationSchemaNode->getAsMap<boost::shared_ptr<shared::CDataContainer>>("schemas"))
@@ -259,7 +259,8 @@ namespace web
 
                auto schema = shared::CDataContainer::make();
                schema->set("canBeCreatedManually", node.second->getWithDefault<bool>("types." + device->Type() + ".canBeCreatedManually", false));
-               schema->set("content", node.second->getChild("content"));
+               const auto contentNode = node.second->getChild("content");
+               schema->set("content", contentNode);
 
                const auto pluginLabels = pluginInformation->getLabels(locales);
                if (pluginLabels->empty() || !pluginLabels->exists("deviceConfiguration.staticConfigurationSchema.schemas"))
@@ -271,9 +272,8 @@ namespace web
 
                if (staticDeviceConfigurationLabelsNode->containsChild(node.first + ".content"))
                {
-                  const auto currentContent = schema->getChild("content");
-                  currentContent->mergeFrom(staticDeviceConfigurationLabelsNode->getChild(node.first + ".content"));
-                  schema->set("content", currentContent);
+                  contentNode->mergeFrom(staticDeviceConfigurationLabelsNode->getChild(node.first + ".content"));
+                  schema->set("content", contentNode);
                }
 
                return schema;
@@ -287,14 +287,10 @@ namespace web
             const boost::shared_ptr<database::entities::CDevice>& device,
             const std::vector<std::string>& locales) const
          {
-            //TODO utile ?
-            //const auto dynamicConfigurationSchemaNode = findPluginInformation(device)->getDeviceDynamicConfigurationSchema();
-            //if (dynamicConfigurationSchemaNode->empty())
-            //   return shared::CDataContainer::EmptyContainerSharedPtr;
+            const auto pluginInformation = findPluginInformation(device);
+            if (!pluginInformation->getDeviceDynamicConfigurationSchema())
+               return shared::CDataContainer::EmptyContainerSharedPtr;
 
-            // TODO y'aurait moyen de ne pas appeler le plugin si on est sûr que le device n'est pas dynamiquement configurable ?
-
-            //TODO tout retester
             if (!m_pluginManager->isInstanceRunning(device->PluginId()))
                return shared::CDataContainer::make(std::map<std::string, std::string>(
                   { {"error", "Fail to get device configuration schema, plugin is not running"} }));
@@ -311,15 +307,21 @@ namespace web
                   return shared::CDataContainer::make(std::map<std::string, std::string>(
                      { {"error", "Fail to get device configuration schema, plugin returned error : " + res.errorMessage()} }));
 
-               YADOMS_LOG(trace) << res.result(); //TODO virer
-
                auto schema = shared::CDataContainer::make();
-               schema->set("content", res.result());
+               const auto contentNode = res.result();
+               schema->set("content", contentNode);
 
 
-               //TODO
-               //if (!locales->empty() && locales->exists("configurationSchema"))
-               //   schema->mergeFrom(locales->getChild("configurationSchema"));
+               const auto pluginLabels = pluginInformation->getLabels(locales);
+               if (pluginLabels->empty() || !pluginLabels->exists("deviceConfiguration.dynamicConfigurationSchema.schemas"))
+                  return schema;
+               const auto dynamicDeviceConfigurationLabelsNode = pluginLabels->getChild("deviceConfiguration.dynamicConfigurationSchema.schemas");
+
+               if (!dynamicDeviceConfigurationLabelsNode->containsChild(device->Type()))
+                  return schema;
+
+               contentNode->mergeFrom(dynamicDeviceConfigurationLabelsNode->getChild(device->Type()));
+               schema->set("content", contentNode);
 
                return schema;
             }
