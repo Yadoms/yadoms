@@ -62,11 +62,11 @@ namespace web
 
                // Pagination
                const auto page = request->queryParamExists("page")
-                                    ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("page"))))
-                                    : boost::optional<int>();
+                  ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("page"))))
+                  : boost::optional<int>();
                const auto pageSize = request->queryParamExists("perPage")
-                                        ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("perPage"))))
-                                        : boost::optional<int>();
+                  ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("perPage"))))
+                  : boost::optional<int>();
                const auto firstItem = (page && pageSize) ? *page * *pageSize : 0u;
                auto lastItem = 0;
 
@@ -174,25 +174,25 @@ namespace web
                   instances.erase(std::remove_if(instances.begin(),
                                                  instances.end(),
                                                  [this, &pluginList](const auto& instance)
-                                                 {
-                                                    if (!m_pluginManager->isInstanceRunning(instance->Id()))
-                                                       return true;
+                  {
+                     if (!m_pluginManager->isInstanceRunning(instance->Id()))
+                        return true;
 
-                                                    const auto matchingInfo = pluginList.find(instance->Type());
-                                                    if (matchingInfo == pluginList.end() || !matchingInfo->second->getSupportManuallyCreatedDevice())
-                                                       return true;
+                     const auto matchingInfo = pluginList.find(instance->Type());
+                     if (matchingInfo == pluginList.end() || !matchingInfo->second->getSupportManuallyCreatedDevice())
+                        return true;
 
-                                                    return false;
-                                                 }), instances.end());
+                     return false;
+                  }), instances.end());
                }
 
                // Pagination
                const auto page = request->queryParamExists("page")
-                                    ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("page"))))
-                                    : boost::optional<int>();
+                  ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("page"))))
+                  : boost::optional<int>();
                const auto pageSize = request->queryParamExists("perPage")
-                                        ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("perPage"))))
-                                        : boost::optional<int>();
+                  ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("perPage"))))
+                  : boost::optional<int>();
                const auto firstItem = (page && pageSize) ? *page * *pageSize : 0u;
                auto lastItem = 0;
 
@@ -266,29 +266,31 @@ namespace web
                   request,
                   m_dataProvider,
                   [this](const auto& req) -> boost::shared_ptr<IAnswer>
+               {
+                  shared::CDataContainer pluginToCreate(req->body());
+                  if (pluginToCreate.exists("configuration"))
                   {
-                     shared::CDataContainer pluginToCreate(req->body());
-                     if (pluginToCreate.exists("configuration"))
+                     try
                      {
-                        try
-                        {
-                           const auto extractedConfiguration = CConfigurationMerger::extractConfiguration(
-                              pluginToCreate.get<shared::CDataContainer>("configuration"));
-                           pluginToCreate.remove("configuration");
-                           pluginToCreate.set("configuration",
-                                              extractedConfiguration);
-                        }
-                        catch (const std::exception&)
-                        {
-                           // Fail to extract configuration ==> Consider that configuration is provided without schema and record as is
-                        }
+                        const auto extractedConfiguration = CConfigurationMerger::extractConfiguration(
+                           pluginToCreate.get<shared::CDataContainer>("configuration"));
+                        pluginToCreate.remove("configuration");
+                        pluginToCreate.set("configuration",
+                                           extractedConfiguration);
                      }
+                     catch (const std::exception&)
+                     {
+                        YADOMS_LOG(error) << "Create device : fail to extract configuration";
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                                "Invalid configuration");
+                     }
+                  }
 
-                     database::entities::CPlugin plugin;
-                     plugin.fillFromContent(pluginToCreate);
-                     const auto idCreated = m_pluginManager->createInstance(plugin);
-                     return boost::make_shared<CCreatedAnswer>("plugins-instances/" + std::to_string(idCreated));
-                  });
+                  database::entities::CPlugin plugin;
+                  plugin.fillFromContent(pluginToCreate);
+                  const auto idCreated = m_pluginManager->createInstance(plugin);
+                  return boost::make_shared<CCreatedAnswer>("plugins-instances/" + std::to_string(idCreated));
+               });
             }
             catch (const std::exception&)
             {
@@ -353,18 +355,18 @@ namespace web
                   request,
                   m_dataProvider,
                   [this](const auto& req) -> boost::shared_ptr<IAnswer>
-                  {
-                     // ID
-                     const auto id = req->pathVariable("id", std::string());
-                     if (id.empty())
-                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                                "plugin-instance id was not provided");
-                     const auto instanceId = static_cast<int>(std::stol(id));
+               {
+                  // ID
+                  const auto id = req->pathVariable("id", std::string());
+                  if (id.empty())
+                     return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                             "plugin-instance id was not provided");
+                  const auto instanceId = static_cast<int>(std::stol(id));
 
-                     m_pluginManager->deleteInstance(instanceId);
+                  m_pluginManager->deleteInstance(instanceId);
 
-                     return boost::make_shared<CNoContentAnswer>();
-                  });
+                  return boost::make_shared<CNoContentAnswer>();
+               });
             }
             catch (const std::exception&)
             {
@@ -424,15 +426,15 @@ namespace web
                switch (cb.waitForResult())
                {
                case communication::callback::CSynchronousCallback<boost::shared_ptr<shared::CDataContainer>>::kResult:
-                  {
-                     const auto res = cb.getCallbackResult();
+               {
+                  const auto res = cb.getCallbackResult();
 
-                     if (res.success)
-                        return boost::make_shared<CSuccessAnswer>(*res.result());
+                  if (res.success)
+                     return boost::make_shared<CSuccessAnswer>(*res.result());
 
-                     return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                             res.errorMessage);
-                  }
+                  return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                                          res.errorMessage);
+               }
 
                case shared::event::kTimeout:
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
@@ -495,9 +497,9 @@ namespace web
 
                const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId,
                                                                        boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                          request->body().empty()
-                                                                             ? shared::CDataContainer::make()
-                                                                             : shared::CDataContainer::make(request->body())));
+                                                                                                                         request->body().empty()
+                                                                                                                         ? shared::CDataContainer::make()
+                                                                                                                         : shared::CDataContainer::make(request->body())));
 
                if (taskId.empty())
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
@@ -551,78 +553,78 @@ namespace web
             schema->replaceAllNodesByName(
                "__Binding__",
                [this, &pluginInformation](
-               const boost::shared_ptr<const shared::CDataContainer>& bindingNode)-> boost::shared_ptr<shared::CDataContainer>
+                  const boost::shared_ptr<const shared::CDataContainer>& bindingNode)-> boost::shared_ptr<shared::CDataContainer>
+            {
+               try
                {
-                  try
+                  if (bindingNode->get<std::string>("type") != "system")
+                     return nullptr;
+
+                  const auto query = bindingNode->get<std::string>("query");
+
+                  if (query == "serialPorts")
+                     return CHelpers::getSerialPortsV2();
+                  if (query == "usbDevices")
                   {
-                     if (bindingNode->get<std::string>("type") != "system")
-                        return nullptr;
+                     std::vector<std::pair<int, int>> requestedUsbDevices;
+                     for (const auto& requestedDevice : bindingNode->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("content.oneOf"))
+                        requestedUsbDevices.emplace_back(requestedDevice->get<int>("vendorId"),
+                                                         requestedDevice->get<int>("productId"));
 
-                     const auto query = bindingNode->get<std::string>("query");
+                     const auto result = CHelpers::getUsbDevicesV2(requestedUsbDevices,
+                                                                   m_usbDevicesLister);
 
-                     if (query == "serialPorts")
-                        return CHelpers::getSerialPortsV2();
-                     if (query == "usbDevices")
-                     {
-                        std::vector<std::pair<int, int>> requestedUsbDevices;
-                        for (const auto& requestedDevice : bindingNode->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("content.oneOf"))
-                           requestedUsbDevices.emplace_back(requestedDevice->get<int>("vendorId"),
-                                                            requestedDevice->get<int>("productId"));
-
-                        const auto result = CHelpers::getUsbDevicesV2(requestedUsbDevices,
-                                                                      m_usbDevicesLister);
-
-                        return CHelpers::getUsbDevicesV2(requestedUsbDevices,
-                                                         m_usbDevicesLister);
-                     }
-                     if (query == "NetworkInterfaces")
-                        return CHelpers::getNetworkInterfacesV2(false);
-                     if (query == "NetworkInterfacesWithoutLoopback")
-                        return CHelpers::getNetworkInterfacesV2(true);
-                     if (query == "platformIsWindows")
-                     {
-                        auto result = shared::CDataContainer::make();
-                        result->set(bindingNode->get<std::string>("key"),
-                                    tools::COperatingSystem::getName() == "windows");
-                        return result;
-                     }
-                     if (query == "platformIsLinux")
-                     {
-                        auto result = shared::CDataContainer::make();
-                        result->set(bindingNode->get<std::string>("key"),
-                                    tools::COperatingSystem::getName() == "linux");
-                        return result;
-                     }
-                     if (query == "platformIsMac")
-                     {
-                        auto result = shared::CDataContainer::make();
-                        result->set(bindingNode->get<std::string>("key"),
-                                    tools::COperatingSystem::getName() == "mac");
-                        return result;
-                     }
-                     if (query == "supportedTimezones")
-                     {
-                        std::set<std::string> filter;
-                        if (bindingNode->exists("filter"))
-                        {
-                           const auto requestedFilter = bindingNode->get<std::string>("filter");
-                           char separator = '|';
-                           for (const auto& t : boost::tokenizer<boost::char_separator<char>>(requestedFilter,
-                                                                                              boost::char_separator<char>(&separator)))
-                              filter.insert(t);
-                        }
-                        return CHelpers::getSupportedTimezonesV2(filter,
-                                                                 m_timezoneDatabase);
-                     }
+                     return CHelpers::getUsbDevicesV2(requestedUsbDevices,
+                                                      m_usbDevicesLister);
                   }
-                  catch (const shared::exception::CInvalidParameter& exception)
+                  if (query == "NetworkInterfaces")
+                     return CHelpers::getNetworkInterfacesV2(false);
+                  if (query == "NetworkInterfacesWithoutLoopback")
+                     return CHelpers::getNetworkInterfacesV2(true);
+                  if (query == "platformIsWindows")
                   {
-                     throw std::runtime_error(
-                        "Fail to parse __Binding__ section of plugin " + pluginInformation->getType() + " : " + exception.what());
+                     auto result = shared::CDataContainer::make();
+                     result->set(bindingNode->get<std::string>("key"),
+                                 tools::COperatingSystem::getName() == "windows");
+                     return result;
                   }
+                  if (query == "platformIsLinux")
+                  {
+                     auto result = shared::CDataContainer::make();
+                     result->set(bindingNode->get<std::string>("key"),
+                                 tools::COperatingSystem::getName() == "linux");
+                     return result;
+                  }
+                  if (query == "platformIsMac")
+                  {
+                     auto result = shared::CDataContainer::make();
+                     result->set(bindingNode->get<std::string>("key"),
+                                 tools::COperatingSystem::getName() == "mac");
+                     return result;
+                  }
+                  if (query == "supportedTimezones")
+                  {
+                     std::set<std::string> filter;
+                     if (bindingNode->exists("filter"))
+                     {
+                        const auto requestedFilter = bindingNode->get<std::string>("filter");
+                        char separator = '|';
+                        for (const auto& t : boost::tokenizer<boost::char_separator<char>>(requestedFilter,
+                                                                                           boost::char_separator<char>(&separator)))
+                           filter.insert(t);
+                     }
+                     return CHelpers::getSupportedTimezonesV2(filter,
+                                                              m_timezoneDatabase);
+                  }
+               }
+               catch (const shared::exception::CInvalidParameter& exception)
+               {
+                  throw std::runtime_error(
+                     "Fail to parse __Binding__ section of plugin " + pluginInformation->getType() + " : " + exception.what());
+               }
 
-                  return nullptr;
-               });
+               return nullptr;
+            });
 
 
             return schema;
@@ -635,9 +637,9 @@ namespace web
                return {};
 
             if (fullState->get<shared::plugin::yPluginApi::historization::EPluginState>("state") ==
-               shared::plugin::yPluginApi::historization::EPluginState::kStopped
-               || fullState->get<shared::plugin::yPluginApi::historization::EPluginState>("state") ==
-               shared::plugin::yPluginApi::historization::EPluginState::kCustom)
+                shared::plugin::yPluginApi::historization::EPluginState::kStopped
+                || fullState->get<shared::plugin::yPluginApi::historization::EPluginState>("state") ==
+                shared::plugin::yPluginApi::historization::EPluginState::kCustom)
                return {};
 
             auto messageId = fullState->get<std::string>("messageId");
@@ -673,9 +675,9 @@ namespace web
                plugins.begin(),
                plugins.end(),
                [&pluginType](const auto& pluginItem)
-               {
-                  return pluginItem.second->getType() == pluginType;
-               });
+            {
+               return pluginItem.second->getType() == pluginType;
+            });
 
             if (plugin == plugins.end())
                throw std::runtime_error("Plugin configuration and schema merge : unable to find plugin");

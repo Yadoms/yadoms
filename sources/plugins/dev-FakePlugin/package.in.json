@@ -254,13 +254,16 @@
                   "type": "comboSection",
                   "content": {
                     "first": {
-                      "type": "section"
+                      "type": "section",
+                      "content": ""
                     },
                     "second": {
-                      "type": "section"
+                      "type": "section",
+                      "content": ""
                     },
                     "third": {
-                      "type": "section"
+                      "type": "section",
+                      "content": ""
                     }
                   }
                 }

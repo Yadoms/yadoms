@@ -413,22 +413,43 @@ namespace web
                   m_dataProvider,
                   [this](const auto& req) -> boost::shared_ptr<IAnswer>
                {
-                  auto device = boost::make_shared<database::entities::CDevice>();
-                  device->fillFromSerializedString(req->body());
+                  shared::CDataContainer deviceData(req->body());
+                  if (deviceData.exists("configuration"))
+                  {
+                     try
+                     {
+                        const auto extractedConfiguration = CConfigurationMerger::extractConfiguration(
+                           deviceData.get<shared::CDataContainer>("configuration"));
+                        deviceData.remove("configuration");
+                        deviceData.set("configuration",
+                                       extractedConfiguration);
+                     }
+                     catch (const std::exception&)
+                     {
+                        YADOMS_LOG(error) << "Create device : fail to extract configuration";
+                        return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                                "Invalid configuration");
+                     }
+                  }
 
-                  if (!device->PluginId.isDefined()
-                      || !device->Name.isDefined()
-                      || !device->Type.isDefined())
+                  deviceData.set("pluginId", deviceData.get("pluginInstance"));
+                  deviceData.remove("pluginInstance");
+
+                  auto deviceToCreate = boost::make_shared<database::entities::CDevice>();
+                  deviceToCreate->fillFromContent(deviceData);
+
+                  if (!deviceToCreate->PluginId.isDefined()
+                      || !deviceToCreate->FriendlyName.isDefined()
+                      || !deviceToCreate->Type.isDefined())
                      return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
-                                                             "invalid device creation request. Need at least plugin-id, name, type and configuration");
+                                                             "invalid device creation request. Need at least plugin-id, friendly name and type");
 
-                  device->Name = generateUniqueDeviceName(device->PluginId());
+                  deviceToCreate->Name = generateUniqueDeviceName(deviceToCreate->PluginId());
 
                   try
                   {
-                     // TODO extract config (voir plugins)
                      // Declare device
-                     device = m_deviceManager->createDevice(device);
+                     const auto device = m_deviceManager->createDevice(deviceToCreate);
 
                      // Send request to plugin
                      communication::callback::CSynchronousCallback<std::string> cb;
@@ -467,10 +488,10 @@ namespace web
                   {
                      YADOMS_LOG(error) << "Error creating device : " << ex.what() << ", will rollback...";
 
-                     if (m_dataProvider->getDeviceRequester()->deviceExists(device->PluginId(),
-                                                                            device->Name()))
-                        m_dataProvider->getDeviceRequester()->removeDevice(device->PluginId(),
-                                                                           device->Name());
+                     if (m_dataProvider->getDeviceRequester()->deviceExists(deviceToCreate->PluginId(),
+                                                                            deviceToCreate->Name()))
+                        m_dataProvider->getDeviceRequester()->removeDevice(deviceToCreate->PluginId(),
+                                                                           deviceToCreate->Name());
                      throw;
                   }
                });
@@ -511,8 +532,18 @@ namespace web
                if (body->exists("model"))
                   deviceToUpdate.Model = body->get<std::string>("model");
                if (body->exists("configuration"))
-                  // TODO extract config(voir plugins)
-                  deviceToUpdate.Configuration = body->get<boost::shared_ptr<shared::CDataContainer>>("configuration");
+               {
+                  try
+                  {
+                     const auto extractedConfiguration = CConfigurationMerger::extractConfiguration(
+                        *body->get<boost::shared_ptr<shared::CDataContainer>>("configuration"));
+                     deviceToUpdate.Configuration = extractedConfiguration;
+                  }
+                  catch (const std::exception&)
+                  {
+                     // Fail to extract configuration ==> Consider that configuration is provided without schema and record as is
+                  }
+               }
                if (body->exists("blacklist"))
                   deviceToUpdate.Blacklist = body->get<bool>("blacklist");
 

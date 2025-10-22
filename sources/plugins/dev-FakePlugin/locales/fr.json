@@ -222,28 +222,16 @@
                   "description": "Exemple d'une liste dans une sous-section",
                   "content": {
                     "first": {
-                      "types": {
-                        "first": {
                           "title": "Première section",
                           "description": "Première section de la liste : vous pouvez ajouter ici d'autres données de configuration"
-                        }
-                      }
                     },
                     "second": {
-                      "types": {
-                        "second": {
                           "title": "Seconde section",
                           "description": "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
-                        }
-                      }
                     },
                     "third": {
-                      "types": {
-                        "third": {
                           "title": "Troisième section",
                           "description": "Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration"
-                        }
-                      }
                     }
                   }
                 }
