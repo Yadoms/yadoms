@@ -9,14 +9,14 @@
 
 #include "../../mock/shared/currentTime/DefaultCurrentTimeMock.h"
 
-static shared::communication::CNoBufferLogger noLogger;
+static shared::communication::CNoBufferLogger NoLogger;
 
 
-void checkFilteredMessage(const std::vector<unsigned char>& txMessage)
+void CheckFilteredMessage(const std::vector<unsigned char>& txMessage)
 {
-   auto timeProviderMock = useTimeMock();
+   const boost::shared_ptr<CDefaultCurrentTimeMock> timeProviderMock = useTimeMock();
    shared::event::CEventHandler evtHandler;
-   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), noLogger);
+   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), NoLogger);
    bufferHandler.push(shared::communication::CByteBuffer(txMessage));
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
@@ -24,11 +24,11 @@ void checkFilteredMessage(const std::vector<unsigned char>& txMessage)
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
 }
 
-void checkExpectedMessage(const std::vector<unsigned char>& txMessage,
+void CheckExpectedMessage(const std::vector<unsigned char>& txMessage,
                           const std::vector<unsigned char>& expectedMessage)
 {
    shared::event::CEventHandler evtHandler;
-   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), noLogger);
+   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), NoLogger);
    bufferHandler.push(shared::communication::CByteBuffer(txMessage));
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
@@ -39,14 +39,14 @@ void checkExpectedMessage(const std::vector<unsigned char>& txMessage,
       expectedMessage.begin(), expectedMessage.end()) ;
 }
 
-void checkExpectedMessages(const std::vector<unsigned char>& txMessage,
+void CheckExpectedMessages(const std::vector<unsigned char>& txMessage,
                            const std::vector<std::vector<unsigned char>>& expectedMessages)
 {
    shared::event::CEventHandler evtHandler;
-   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), noLogger);
+   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), NoLogger);
    bufferHandler.push(shared::communication::CByteBuffer(txMessage));
 
-   for (const auto& expectedMessage:expectedMessages)
+   for (const auto& expectedMessage : expectedMessages)
    {
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
 
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       const std::vector<unsigned char> expectedMessage{
          0x00, 0x00 // Data0, Data1
       };
-      checkExpectedMessage(txMessage, expectedMessage);
+      CheckExpectedMessage(txMessage, expectedMessage);
    }
 
    BOOST_AUTO_TEST_CASE(NominalBigMessage)
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       const std::vector<unsigned char> expectedMessage{
          0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC // Datas
       };
-      checkExpectedMessage(txMessage, expectedMessage);
+      CheckExpectedMessage(txMessage, expectedMessage);
    }
 
    BOOST_AUTO_TEST_CASE(BadChecksum)
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       const std::vector<unsigned char> txMessage{
          kSTX, kSTX, 0x00, 0x00, 0xaa, kETX // STX, STX, Data0, Data1, bad checksum, ETX
       };
-      checkFilteredMessage(txMessage);
+      CheckFilteredMessage(txMessage);
    }
 
    BOOST_AUTO_TEST_CASE(Uncomplete)
@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       const std::vector<unsigned char> txMessage{
          kSTX, kSTX, 0x00, 0x00, 0x00, 0x00 // STX, STX, Data0, Data1... No ETX
       };
-      checkFilteredMessage(txMessage);
+      CheckFilteredMessage(txMessage);
    }
 
    BOOST_AUTO_TEST_CASE(Only2STX)
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       const std::vector<unsigned char> txMessage{
          kSTX, kSTX,
       };
-      checkFilteredMessage(txMessage);
+      CheckFilteredMessage(txMessage);
    }
 
    BOOST_AUTO_TEST_CASE(BytesBeforeSTX)
@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       const std::vector<unsigned char> expectedMessage{
          0x45, 0x67 // Data0, Data1
       };
-      checkExpectedMessage(txMessage, expectedMessage);
+      CheckExpectedMessage(txMessage, expectedMessage);
    }
 
    BOOST_AUTO_TEST_CASE(BytesBeforeUncompleteMessageBeforeMessage)
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       const std::vector<unsigned char> expectedMessage{
          0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC // True message
       };
-      checkExpectedMessage(txMessage, expectedMessage);
+      CheckExpectedMessage(txMessage, expectedMessage);
    }
 
    BOOST_AUTO_TEST_CASE(MultiplesMessages)
@@ -147,11 +147,12 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       const std::vector<unsigned char> expectedMessage3{
          0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF
       };
-      checkExpectedMessages(txMessage,
+      CheckExpectedMessages(txMessage,
                             std::vector<std::vector<unsigned char>>{
                                expectedMessage1,
                                expectedMessage2,
-                               expectedMessage3});
+                               expectedMessage3
+                            });
    }
 
    BOOST_AUTO_TEST_CASE(bytesAfterMessage)
@@ -162,9 +163,9 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       const std::vector<unsigned char> expectedMessage{
          0x45, 0x67 // Data0, Data1
       };
-      checkExpectedMessage(txMessage, expectedMessage);
+      CheckExpectedMessage(txMessage, expectedMessage);
    }
-   
+
    BOOST_AUTO_TEST_CASE(CuttedMessage)
    {
       const std::vector<unsigned char> txMessagePart1{
@@ -182,7 +183,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
       auto timeProviderMock = useTimeMock();
       shared::event::CEventHandler evtHandler;
-      CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), noLogger);
+      CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), NoLogger);
 
       bufferHandler.push(shared::communication::CByteBuffer(txMessagePart1));
       timeProviderMock->sleep(boost::posix_time::milliseconds(500));
@@ -191,7 +192,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       bufferHandler.push(shared::communication::CByteBuffer(txMessagePart2));
       timeProviderMock->sleep(boost::posix_time::milliseconds(500));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
-      
+
       bufferHandler.push(shared::communication::CByteBuffer(txMessagePart3));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
 
@@ -218,7 +219,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
       auto timeProviderMock = useTimeMock();
       shared::event::CEventHandler evtHandler;
-      CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), noLogger);
+      CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), NoLogger);
 
       bufferHandler.push(shared::communication::CByteBuffer(txMessagePart1));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
@@ -236,7 +237,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       BOOST_CHECK_EQUAL_COLLECTIONS(
          rxMessage.begin(), rxMessage.end(),
          expectedMessage.begin(), expectedMessage.end()) ;
-   }   
+   }
 
    BOOST_AUTO_TEST_CASE(EscapedCharacters)
    {
@@ -246,21 +247,20 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       const std::vector<unsigned char> expectedMessage{
          0x00, 0x12, kSTX, 0x23, 0x45, kETX, 0x67, kDLE, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC
       };
-      checkExpectedMessage(txMessage, expectedMessage);
+      CheckExpectedMessage(txMessage, expectedMessage);
    }
 
    BOOST_AUTO_TEST_CASE(EscapedCharactersAtLastPosition)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          kSTX, kSTX, 0x01, 0x01, 0x00, 0x00, 0xFF, 0x47, kDLE
       };
-      BOOST_CHECK_NO_THROW(checkFilteredMessage(txMessage));
+      BOOST_CHECK_NO_THROW(CheckFilteredMessage(txMessage));
 
-      std::vector<unsigned char> txMessage2{
+      const std::vector<unsigned char> txMessage2{
          kSTX, kSTX, 0x01, 0x01, 0x00, 0x00, 0xFF, 0x47, kDLE, kETX
       };
-      BOOST_CHECK_NO_THROW(checkFilteredMessage(txMessage2));
+      BOOST_CHECK_NO_THROW(CheckFilteredMessage(txMessage2));
    }
-   
-   BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

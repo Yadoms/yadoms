@@ -5,6 +5,8 @@
 #include <shared/http/HttpRestHelpers.h>
 #include <shared/ServiceLocator.h>
 
+#include <utility>
+
 namespace update
 {
    namespace info
@@ -83,12 +85,12 @@ namespace update
             }; 
 
             boost::shared_ptr<shared::CDataContainer> lastVersionInformation;
-            shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, url)
+            shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kGet, url)
                ->withHeaderParameters(headerParameters)
                .withParameters(parameters)
                .send([&lastVersionInformation](boost::shared_ptr<shared::CDataContainer> data)
                {
-                  lastVersionInformation = data;
+                  lastVersionInformation = std::move(data);
                });
 
             if (!lastVersionInformation->containsValue(DistantScriptResult))

@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
 
    namespace yApi = shared::plugin::yPluginApi;
 
-   void ckeckKeyword(boost::shared_ptr<CDefaultYPluginApiMock> api,
+   void CkeckKeyword(const boost::shared_ptr<CDefaultYPluginApiMock> api,
                      const std::string& keyword,
                      const std::string& device,
                      const yApi::CStandardCapacity& capacity)
@@ -38,14 +38,14 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
 
       // Check keywords declaration
       BOOST_CHECK_EQUAL(api->getKeywords().size(), static_cast<unsigned int>(5));
-      ckeckKeyword(api, "temp1", SensorId, yApi::CStandardCapacities::Temperature());
-      ckeckKeyword(api, "temp2", SensorId, yApi::CStandardCapacities::Temperature());
-      ckeckKeyword(api, "Battery", SensorId, yApi::CStandardCapacities::BatteryLevel());
-      ckeckKeyword(api, "signalPower", SensorId, yApi::CStandardCapacities::SignalPower());
-      ckeckKeyword(api, "current", SensorId, yApi::CStandardCapacities::Current());
+      CkeckKeyword(api, "temp1", SensorId, yApi::CStandardCapacities::Temperature());
+      CkeckKeyword(api, "temp2", SensorId, yApi::CStandardCapacities::Temperature());
+      CkeckKeyword(api, "Battery", SensorId, yApi::CStandardCapacities::BatteryLevel());
+      CkeckKeyword(api, "signalPower", SensorId, yApi::CStandardCapacities::SignalPower());
+      CkeckKeyword(api, "current", SensorId, yApi::CStandardCapacities::Current());
    }
 
-   const CDefaultYPluginApiMock::Data& readLastData(boost::shared_ptr<CDefaultYPluginApiMock> api,
+   const CDefaultYPluginApiMock::Data& ReadLastData(const boost::shared_ptr<CDefaultYPluginApiMock> api,
                                                     const std::string& keyword)
    {
       static CDefaultYPluginApiMock::Data noData;
@@ -74,32 +74,32 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
       sensor.historizeData(api);
 
       BOOST_CHECK_EQUAL(api->getData().size(), static_cast<unsigned int>(5));
-      BOOST_CHECK_EQUAL(readLastData(api, "temp1").m_device, SensorId);
-      BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), 25.0);
-      BOOST_CHECK_EQUAL(readLastData(api, "temp2").m_device, SensorId);
-      BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), 10.0);
-      BOOST_CHECK_EQUAL(readLastData(api, "Battery").m_device, SensorId);
-      BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "Battery").m_value), 100);
-      BOOST_CHECK_EQUAL(readLastData(api, "signalPower").m_device, SensorId);
-      BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "signalPower").m_value), 50);
-      BOOST_CHECK_EQUAL(readLastData(api, "current").m_device, SensorId);
-      BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(api, "current").m_value), 2.0);
+      BOOST_CHECK_EQUAL(ReadLastData(api, "temp1").m_device, SensorId);
+      BOOST_CHECK_EQUAL(boost::lexical_cast<double>(ReadLastData(api, "temp1").m_value), 25.0);
+      BOOST_CHECK_EQUAL(ReadLastData(api, "temp2").m_device, SensorId);
+      BOOST_CHECK_EQUAL(boost::lexical_cast<double>(ReadLastData(api, "temp2").m_value), 10.0);
+      BOOST_CHECK_EQUAL(ReadLastData(api, "Battery").m_device, SensorId);
+      BOOST_CHECK_EQUAL(boost::lexical_cast<int>(ReadLastData(api, "Battery").m_value), 100);
+      BOOST_CHECK_EQUAL(ReadLastData(api, "signalPower").m_device, SensorId);
+      BOOST_CHECK_EQUAL(boost::lexical_cast<int>(ReadLastData(api, "signalPower").m_value), 50);
+      BOOST_CHECK_EQUAL(ReadLastData(api, "current").m_device, SensorId);
+      BOOST_CHECK_EQUAL(boost::lexical_cast<double>(ReadLastData(api, "current").m_value), 2.0);
 
       sensor.read();
       sensor.historizeData(api);
 
       BOOST_CHECK_EQUAL(api->getData().size(), static_cast<unsigned int>(10));
-      BOOST_CHECK_EQUAL(readLastData(api, "temp1").m_device, SensorId);
-      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), 24.0);
-      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), 26.0);
-      BOOST_CHECK_EQUAL(readLastData(api, "temp2").m_device, SensorId);
-      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), 8.0);
-      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), 12.0);
-      BOOST_CHECK_EQUAL(readLastData(api, "Battery").m_device, SensorId);
-      BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "Battery").m_value), 99);
-      BOOST_CHECK_EQUAL(readLastData(api, "signalPower").m_device, SensorId);
-      BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "signalPower").m_value), 50);
-      BOOST_CHECK_EQUAL(readLastData(api, "current").m_device, SensorId);
+      BOOST_CHECK_EQUAL(ReadLastData(api, "temp1").m_device, SensorId);
+      BOOST_CHECK_GE(boost::lexical_cast<double>(ReadLastData(api, "temp1").m_value), 24.0);
+      BOOST_CHECK_LE(boost::lexical_cast<double>(ReadLastData(api, "temp1").m_value), 26.0);
+      BOOST_CHECK_EQUAL(ReadLastData(api, "temp2").m_device, SensorId);
+      BOOST_CHECK_GE(boost::lexical_cast<double>(ReadLastData(api, "temp2").m_value), 8.0);
+      BOOST_CHECK_LE(boost::lexical_cast<double>(ReadLastData(api, "temp2").m_value), 12.0);
+      BOOST_CHECK_EQUAL(ReadLastData(api, "Battery").m_device, SensorId);
+      BOOST_CHECK_EQUAL(boost::lexical_cast<int>(ReadLastData(api, "Battery").m_value), 99);
+      BOOST_CHECK_EQUAL(ReadLastData(api, "signalPower").m_device, SensorId);
+      BOOST_CHECK_EQUAL(boost::lexical_cast<int>(ReadLastData(api, "signalPower").m_value), 50);
+      BOOST_CHECK_EQUAL(ReadLastData(api, "current").m_device, SensorId);
    }
 
    BOOST_AUTO_TEST_CASE(BatteryDecrease)
@@ -113,9 +113,9 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
       {
          sensor.historizeData(api);
          if (i >= 20)
-            BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "Battery").m_value), static_cast<int>(i));
+            BOOST_CHECK_EQUAL(boost::lexical_cast<int>(ReadLastData(api, "Battery").m_value), static_cast<int>(i));
          else
-            BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "Battery").m_value), static_cast<int>(20));
+            BOOST_CHECK_EQUAL(boost::lexical_cast<int>(ReadLastData(api, "Battery").m_value), static_cast<int>(20));
          sensor.read();
       }
    }
@@ -132,13 +132,13 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
       for (auto i = 100; i >= 0; --i)
       {
          sensor.historizeData(api);
-         BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), static_cast<double>(temp1) - 1.1);
+         BOOST_CHECK_GE(boost::lexical_cast<double>(ReadLastData(api, "temp1").m_value), static_cast<double>(temp1) - 1.1);
          // Add some marging for float conversion
-         BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), static_cast<double>(temp1) + 1.1);
-         temp1 = boost::lexical_cast<double>(readLastData(api, "temp1").m_value);
-         BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), static_cast<double>(temp2) - 2.1);
-         BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), static_cast<double>(temp2) + 2.1);
-         temp2 = boost::lexical_cast<double>(readLastData(api, "temp2").m_value);
+         BOOST_CHECK_LE(boost::lexical_cast<double>(ReadLastData(api, "temp1").m_value), static_cast<double>(temp1) + 1.1);
+         temp1 = boost::lexical_cast<double>(ReadLastData(api, "temp1").m_value);
+         BOOST_CHECK_GE(boost::lexical_cast<double>(ReadLastData(api, "temp2").m_value), static_cast<double>(temp2) - 2.1);
+         BOOST_CHECK_LE(boost::lexical_cast<double>(ReadLastData(api, "temp2").m_value), static_cast<double>(temp2) + 2.1);
+         temp2 = boost::lexical_cast<double>(ReadLastData(api, "temp2").m_value);
          sensor.read();
       }
    }

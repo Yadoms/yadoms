@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include <boost/format.hpp>
 #include "DeviceState.h"
 #include "shared/http/HttpRestHelpers.h"
 #include "shared/Log.h"
@@ -13,7 +13,7 @@ boost::shared_ptr<shared::CDataContainer> CDeviceState::getState(const CUrlManag
    const auto url = buildUrl(requestType);
 
    boost::shared_ptr<shared::CDataContainer> response;
-   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet, url)
+   shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kGet, url)
       ->withHeaderParameters(m_urlManagerHelper->buildCommonHeaderParameters())
       .withBasicAuthentication("Basic", m_lametricConfiguration.getAPIKey())
       .send([&response](auto data)
@@ -51,7 +51,7 @@ void CDeviceState::getDeviceState()
    boost::shared_ptr<shared::CDataContainer> response;
    try
    {
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kHead, url)
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kHead, url)
          ->withHeaderParameters(m_urlManagerHelper->buildCommonHeaderParameters())
          .withBasicAuthentication("Basic", m_lametricConfiguration.getAPIKey())
          .send([&response](auto data)

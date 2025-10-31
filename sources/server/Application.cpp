@@ -19,6 +19,8 @@
 #include <Poco/Environment.h>
 #include <Poco/Format.h>
 #include <google/protobuf/stubs/common.h>
+#include <Poco/Debugger.h>
+
 #include "shared/http/Proxy.h"
 
 //define the main entry point
@@ -52,7 +54,8 @@ void CYadomsServer::initialize(Application& self)
    current_path(workingDir.parent_path());
 
    m_pathProvider = boost::make_shared<CPathProvider>(m_startupOptions);
-   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel(), m_pathProvider->logsPath());
+   m_logConfiguration = boost::make_shared<logging::CLogConfiguration>(m_startupOptions->getLogLevel(),
+                                                                       m_pathProvider->logsPath());
 
    //define proxy settings as earlier possible
    setupProxy();
@@ -139,7 +142,7 @@ void CYadomsServer::handleVersion(const std::string& name, const std::string& va
    stopOptionsProcessing();
 }
 
-void CYadomsServer::displayVersion() const
+void CYadomsServer::displayVersion()
 {
    //output string on standard output
    //because log is not defined (and will not => after calling "yadoms --version", it show version and exit)
@@ -177,7 +180,7 @@ int CYadomsServer::main(const ArgVec&)
                                                                         YadomsVersion);
 
 
-         YADOMS_LOG_CONFIGURE("Main");
+         YADOMS_LOG_CONFIGURE("Main")
 
          YADOMS_LOG(information) << "\n********************************************************************";
          YADOMS_LOG(information) << "Yadoms " << YadomsVersion << " is starting";
@@ -192,9 +195,9 @@ int CYadomsServer::main(const ArgVec&)
          YADOMS_LOG(information) << "\tLog level = " << m_startupOptions->getLogLevel();
          YADOMS_LOG(information) << "\tLog path = " << m_startupOptions->getLogPath();
          YADOMS_LOG(information) << "\tWeb server port number = " << m_startupOptions->getWebServerPortNumber();
-         YADOMS_LOG(information) << "\tSSL activated = " << m_startupOptions->getIsWebServerUseSSL();
-         YADOMS_LOG(information) << "\tSSL Web server port number = " << m_startupOptions->getSSLWebServerPortNumber();
-         YADOMS_LOG(information) << "\tWeb server ip = " << m_startupOptions->getWebServerIPAddress();
+         YADOMS_LOG(information) << "\tSSL activated = " << m_startupOptions->getIsWebServerUseHttps();
+         YADOMS_LOG(information) << "\tSSL Web server port number = " << m_startupOptions->getSslWebServerPortNumber();
+         YADOMS_LOG(information) << "\tWeb server ip = " << m_startupOptions->getWebServerIpAddress();
          YADOMS_LOG(information) << "\tWeb server path = " << m_startupOptions->getWebServerInitialPath();
          YADOMS_LOG(information) << "\tDatabase engine = " << m_startupOptions->getDatabaseEngine();
 
@@ -240,8 +243,10 @@ int CYadomsServer::main(const ArgVec&)
             // Ask for application stop and wait for application full stop
             YADOMS_LOG(debug) << "Receive termination request";
             stopRequestEventHandler->postEvent(kTerminationRequested);
-            const auto stopSuccess = stoppedEventHandler->waitForEvents(boost::posix_time::seconds(30)) ==
-               kApplicationFullyStopped;
+            const auto stopSuccess = stoppedEventHandler->waitForEvents(
+               Poco::Debugger::isAvailable()
+                  ? boost::posix_time::time_duration(boost::date_time::pos_infin)
+                  : boost::posix_time::seconds(30)) == kApplicationFullyStopped;
             if (!stopSuccess)
                YADOMS_LOG(error) << "Fail to wait the app end event";
             return stopSuccess;

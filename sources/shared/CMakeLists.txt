@@ -19,6 +19,7 @@ set(SHARED_LIB_SRC
    shared/ThreadBase.cpp
    shared/ThreadBase.h
 
+   shared/StringExtension.cpp
    shared/StringExtension.h
 	
    shared/Field.hpp
@@ -83,6 +84,8 @@ set(SHARED_LIB_SRC
    shared/dateTime/DateTimeContainer.cpp
    shared/dateTime/Format.h
    shared/dateTime/Format.cpp
+   shared/dateTime/Helper.h
+   shared/dateTime/Helper.cpp
 
    shared/encryption/Xor.h
    shared/encryption/Xor.cpp
@@ -130,6 +133,7 @@ set(SHARED_LIB_SRC
    shared/http/HttpHelpers.cpp
    shared/http/HttpRestHelpers.h
    shared/http/HttpRestHelpers.cpp
+   shared/http/HttpRestVerb.h
    shared/http/IHttpRestRequest.h
    shared/http/Proxy.h
    shared/http/Proxy.cpp

@@ -1,10 +1,9 @@
 ﻿#include "stdafx.h"
 #include "Page.h"
 #include <shared/exception/NotImplemented.hpp>
-#include <utility>
-#include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/Result.h"
+#include "web/poco/RestResult.h"
 #include "Widget.h"
+#include "web/poco/RestDispatcherHelpers.hpp"
 
 namespace web
 {
@@ -24,7 +23,7 @@ namespace web
             return m_restKeyword;
          }
 
-         void CPage::configureDispatcher(CRestDispatcher& dispatcher)
+         void CPage::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPage::getAllPages);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPage::getOnePage);
@@ -44,9 +43,20 @@ namespace web
                                                         CPage::deleteAllWidgetsForPage, CPage::transactionalMethod);
          }
 
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CPage::endPoints()
+         {
+            if (m_endPoints != nullptr)
+               return m_endPoints;
+
+            // No end point for this service
+            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
+
+            return m_endPoints;
+         }
+
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CPage::transactionalMethod(
-            CRestDispatcher::CRestMethodHandler realMethod,
+            poco::CRestDispatcher::CRestMethodHandler realMethod,
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -60,16 +70,16 @@ namespace web
             }
             catch (std::exception& ex)
             {
-               result = CResult::GenerateError(ex);
+               result = poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               result = CResult::GenerateError("unknown exception widget rest method");
+               result = poco::CRestResult::GenerateError("unknown exception widget rest method");
             }
 
             if (pTransactionalEngine)
             {
-               if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
+               if (poco::CRestResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
                   pTransactionalEngine->transactionCommit();
                else
                   pTransactionalEngine->transactionRollback();
@@ -85,9 +95,9 @@ namespace web
             {
                const auto pageId = boost::lexical_cast<int>(parameters[1]);
                const auto pageFound = m_dataProvider->getPageRequester()->getPage(pageId);
-               return CResult::GenerateSuccess(pageFound);
+               return poco::CRestResult::GenerateSuccess(pageFound);
             }
-            return CResult::GenerateError("Invalid parameter count (need page id in url)");
+            return poco::CRestResult::GenerateError("Invalid parameter count (need page id in url)");
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CPage::getAllPages(const std::vector<std::string>& parameters,
@@ -96,7 +106,7 @@ namespace web
             const auto pageList = m_dataProvider->getPageRequester()->getPages();
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), pageList);
-            return CResult::GenerateSuccess(collection);
+            return poco::CRestResult::GenerateSuccess(collection);
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CPage::getPageWidget(const std::vector<std::string>& parameters,
@@ -110,9 +120,9 @@ namespace web
                shared::CDataContainer collection;
                collection.set(CWidget::getRestKeyword(), widgetList);
 
-               return CResult::GenerateSuccess(collection);
+               return poco::CRestResult::GenerateSuccess(collection);
             }
-            return CResult::GenerateError("Invalid parameter count (need page id in url)");
+            return poco::CRestResult::GenerateError("Invalid parameter count (need page id in url)");
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CPage::addPage(const std::vector<std::string>& parameters,
@@ -124,15 +134,15 @@ namespace web
                pageToAdd.fillFromSerializedString(requestContent);
                const auto idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd.Name(), pageToAdd.PageOrder());
                const auto pageFound = m_dataProvider->getPageRequester()->getPage(idCreated);
-               return CResult::GenerateSuccess(pageFound);
+               return poco::CRestResult::GenerateSuccess(pageFound);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new page");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new page");
             }
          }
 
@@ -151,19 +161,19 @@ namespace web
                   if (pageToReplace.Id() > 0 && pageId == pageToReplace.Id())
                   {
                      m_dataProvider->getPageRequester()->updatePage(pageToReplace.Id(), pageToReplace.Name(), pageToReplace.PageOrder());
-                     return CResult::GenerateSuccess(m_dataProvider->getPageRequester()->getPage(pageToReplace.Id()));
+                     return poco::CRestResult::GenerateSuccess(m_dataProvider->getPageRequester()->getPage(pageToReplace.Id()));
                   }
-                  return CResult::GenerateError("The page to replace must have a valid id");
+                  return poco::CRestResult::GenerateError("The page to replace must have a valid id");
                }
-               return CResult::GenerateError("Invalid parameter count (need page id in url)");
+               return poco::CRestResult::GenerateError("Invalid parameter count (need page id in url)");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in replacing a page");
+               return poco::CRestResult::GenerateError("unknown exception in replacing a page");
             }
          }
 
@@ -182,15 +192,15 @@ namespace web
                const auto allPages = m_dataProvider->getPageRequester()->getPages();
                shared::CDataContainer collection;
                collection.set(getRestKeyword(), allPages);
-               return CResult::GenerateSuccess(collection);
+               return poco::CRestResult::GenerateSuccess(collection);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating all pages");
+               return poco::CRestResult::GenerateError("unknown exception in updating all pages");
             }
          }
 
@@ -208,17 +218,17 @@ namespace web
 
                   //remove page
                   m_dataProvider->getPageRequester()->removePage(pageId);
-                  return CResult::GenerateSuccess();
+                  return poco::CRestResult::GenerateSuccess();
                }
-               return CResult::GenerateError("The page to delete must have an id");
+               return poco::CRestResult::GenerateError("The page to delete must have an id");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in deleting a page");
+               return poco::CRestResult::GenerateError("unknown exception in deleting a page");
             }
          }
 
@@ -232,15 +242,15 @@ namespace web
 
                //remove page
                m_dataProvider->getPageRequester()->removeAllPages();
-               return CResult::GenerateSuccess();
+               return poco::CRestResult::GenerateSuccess();
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in deleting all pages");
+               return poco::CRestResult::GenerateError("unknown exception in deleting all pages");
             }
          }
 
@@ -253,15 +263,15 @@ namespace web
                widgetToAdd.fillFromSerializedString(requestContent);
                const auto idCreated = m_dataProvider->getWidgetRequester()->addWidget(widgetToAdd);
                const auto widgetFound = m_dataProvider->getWidgetRequester()->getWidget(idCreated);
-               return CResult::GenerateSuccess(widgetFound);
+               return poco::CRestResult::GenerateSuccess(widgetFound);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new widget");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new widget");
             }
          }
 
@@ -283,17 +293,17 @@ namespace web
                   for (const auto& widgetToAdd : widgetsToAdd)
                      m_dataProvider->getWidgetRequester()->addWidget(*widgetToAdd);
 
-                  return CResult::GenerateSuccess();
+                  return poco::CRestResult::GenerateSuccess();
                }
-               return CResult::GenerateError("Invalid parameter count (need page id in url)");
+               return poco::CRestResult::GenerateError("Invalid parameter count (need page id in url)");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new widget");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new widget");
             }
          }
 
@@ -307,17 +317,17 @@ namespace web
                   const auto pageId = boost::lexical_cast<int>(parameters[1].c_str());
 
                   m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
-                  return CResult::GenerateSuccess();
+                  return poco::CRestResult::GenerateSuccess();
                }
-               return CResult::GenerateError("Invalid parameter count (need page id in url)");
+               return poco::CRestResult::GenerateError("Invalid parameter count (need page id in url)");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new widget");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new widget");
             }
          }
       } //namespace service
