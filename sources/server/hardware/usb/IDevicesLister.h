@@ -2,16 +2,13 @@
 #include "IDevice.h"
 #include <shared/DataContainer.h>
 
-namespace hardware
+namespace hardware::usb
 {
-   namespace usb
-   {
-      class IDevicesLister
-      {
-      public:
-         virtual ~IDevicesLister() = default;
+	class IDevicesLister
+	{
+	public:
+		virtual ~IDevicesLister() = default;
 
-         virtual std::vector<boost::shared_ptr<IDevice>> listUsbDevices() = 0;
-      };
-   } // namespace usb
-} // namespace hardware
+		virtual std::vector<boost::shared_ptr<IDevice>> listUsbDevices() = 0;
+	};
+}
