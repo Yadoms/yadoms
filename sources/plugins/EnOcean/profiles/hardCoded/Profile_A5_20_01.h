@@ -32,6 +32,9 @@ public:
     // [END] IType implementation
 
 private:
+    [[nodiscard]] double byteToCelciusDegrees(const unsigned int byte);
+    [[nodiscard]] std::uint8_t celciusDegreesToByte(const double degrees);
+
     const std::string m_deviceId;
     boost::shared_ptr<yApi::historization::CSwitch> m_energyInputEnable;
     boost::shared_ptr<yApi::historization::CBatteryLevel> m_battery;
