@@ -1,25 +1,25 @@
 ﻿#include "stdafx.h"
 #include "StringContainer.h"
 
-namespace web { namespace rest { 
+#include <utility>
 
-   CStringContainer::CStringContainer(const std::string & content)
-      :m_content(content)
+namespace web
+{
+   namespace rest
    {
-   }
+      CStringContainer::CStringContainer(std::string content)
+         : m_content(std::move(content))
+      {
+      }
 
-   CStringContainer::~CStringContainer()
-   {}
+      std::string CStringContainer::serialize() const
+      {
+         return m_content;
+      }
 
-   std::string CStringContainer::serialize() const
-   {
-      return m_content;
-   }
-
-   void CStringContainer::deserialize(const std::string & data)
-   {
-      m_content = data;
-   }
-
-} //namespace rest
+      void CStringContainer::deserialize(const std::string& data)
+      {
+         m_content = data;
+      }
+   } //namespace rest
 } //namespace web 

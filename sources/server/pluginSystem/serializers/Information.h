@@ -7,12 +7,12 @@ namespace pluginSystem
 {
    namespace serializers
    {
-      class CInformation :public IInformation
+      class CInformation final : public IInformation
       {
       public:
          explicit CInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information);
 
-         virtual ~CInformation();
+         ~CInformation() override = default;
 
          // IInformationSerializer implementation
          void toPb(plugin_IPC::toPlugin::Information* pb) const override;

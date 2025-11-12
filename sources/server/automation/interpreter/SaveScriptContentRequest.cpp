@@ -1,20 +1,18 @@
 #include "stdafx.h"
 #include "SaveScriptContentRequest.h"
 
+#include <utility>
+
 namespace automation
 {
    namespace interpreter
    {
-      CSaveScriptContentRequest::CSaveScriptContentRequest(const std::string& scriptPath,
-                                                           const std::string& scriptContent,
+      CSaveScriptContentRequest::CSaveScriptContentRequest(std::string scriptPath,
+                                                           std::string scriptContent,
                                                            communication::callback::ISynchronousCallback<bool>& callback)
-         : m_scriptPath(scriptPath),
-           m_scriptContent(scriptContent),
+         : m_scriptPath(std::move(scriptPath)),
+           m_scriptContent(std::move(scriptContent)),
            m_requestPtr(boost::make_shared<communication::callback::CNoDataCallbackRequest<bool>>(callback))
-      {
-      }
-
-      CSaveScriptContentRequest::~CSaveScriptContentRequest()
       {
       }
 

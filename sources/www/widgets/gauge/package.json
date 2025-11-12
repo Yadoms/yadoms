@@ -31,7 +31,7 @@
     },
     "customYAxisMinMax": {
       "type": "section",
-      "enableWithCheckBox": "true",
+      "enableWithCheckBox": true,
       "checkbox": {
         "defaultValue": false
       },
@@ -71,7 +71,7 @@
               "type": "list",
               "nbItemsMin": "1",
               "nbItemsMax": "5",
-              "allowDuplication": "true",
+              "allowDuplication": true,
               "item": {
                 "type": "section",
                 "content": {

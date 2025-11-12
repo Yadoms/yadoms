@@ -1,12 +1,15 @@
 #include "stdafx.h"
 #include "Plugin.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/Result.h"
+#include "web/poco/RestResult.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "pluginSystem/BindingQueryData.h"
 #include "pluginSystem/ExtraQueryData.h"
 #include "communication/callback/SynchronousCallback.h"
 #include <shared/Log.h>
+
+#include <utility>
+
+#include "web/poco/RestDispatcherHelpers.hpp"
 
 namespace web
 {
@@ -17,11 +20,17 @@ namespace web
          CPlugin::CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
                           boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                          boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
+                          boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
+                          const boost::shared_ptr<task::CScheduler>& taskScheduler,
                           communication::ISendMessageAsync& messageSender,
                           bool developerMode)
-            : m_dataProvider(dataProvider),
-              m_pluginManager(pluginManager),
-              m_deviceManager(deviceManager),
+            : m_dataProvider(std::move(dataProvider)),
+              m_pluginManager(std::move(pluginManager)),
+              m_deviceManager(std::move(deviceManager)),
+              m_usbDevicesLister(std::move(usbDevicesLister)),
+              m_timezoneDatabase(std::move(timezoneDatabase)),
+              m_taskScheduler(taskScheduler),
               m_restKeyword("plugin"),
               m_messageSender(messageSender),
               m_developerMode(developerMode)
@@ -33,44 +42,46 @@ namespace web
             return m_restKeyword;
          }
 
-         void CPlugin::configureDispatcher(CRestDispatcher& dispatcher)
+         void CPlugin::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePlugins);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CPlugin::getAllAvailablePluginsParameterized);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("withPackage"), CPlugin::getAllAvailablePluginsWithPackage);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstance);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instanceWithState"), CPlugin::getAllPluginsInstanceWithState);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePluginsV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CPlugin::getAllAvailablePluginsParameterizedV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("withPackage"), CPlugin::getAllAvailablePluginsWithPackageV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstanceV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instanceWithState"), CPlugin::getAllPluginsInstanceWithStateV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::
-               getAllPluginsInstanceForManualDeviceCreation);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("state"), CPlugin::getInstanceState);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("log"), CPlugin::getInstanceLog);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstance);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("instanceRunning"), CPlugin::getInstanceRunning);
+                                        getAllPluginsInstanceForManualDeviceCreationV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePluginV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("state"), CPlugin::getInstanceStateV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevicesV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("log"), CPlugin::getInstanceLogV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("*")("binding")("*"), CPlugin::getBindingV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstanceV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstanceV1)
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("instanceRunning"), CPlugin::getInstanceRunningV1)
 
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::
-               transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPluginV1, CPlugin::transactionalMethodV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDeviceV1, CPlugin::
+                                                        transactionalMethodV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePluginV1,
+                                                        CPlugin::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraQuery")("*"), CPlugin::sendExtraQuery, CPlugin
-               ::transactionalMethod);
+                                                        ::transactionalMethodV1)
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::
-               sendDeviceExtraQuery, CPlugin::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod
-            );
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::
-               transactionalMethod);
+                                                        sendDeviceExtraQueryV1, CPlugin::transactionalMethodV1)
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPluginsV1,
+                                                        CPlugin::transactionalMethodV1
+            )
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePluginV1, CPlugin::
+                                                        transactionalMethodV1)
          }
 
-
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
-                                                                                                  const std::vector<std::string>& parameters,
-                                                                                                  const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::transactionalMethodV1(
+            poco::CRestDispatcher::CRestMethodHandler realMethod,
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
-            auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+            const auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             boost::shared_ptr<shared::serialization::IDataSerializable> result;
             try
             {
@@ -80,16 +91,16 @@ namespace web
             }
             catch (std::exception& ex)
             {
-               result = CResult::GenerateError(ex);
+               result = poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               result = CResult::GenerateError("unknown exception plugin rest method");
+               result = poco::CRestResult::GenerateError("unknown exception plugin rest method");
             }
 
             if (pTransactionalEngine)
             {
-               if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
+               if (poco::CRestResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
                   pTransactionalEngine->transactionCommit();
                else
                   pTransactionalEngine->transactionRollback();
@@ -97,38 +108,38 @@ namespace web
             return result;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getOnePlugin(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getOnePluginV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() > 1)
                {
                   const auto instanceId = boost::lexical_cast<int>(parameters[1]);
-                  return CResult::GenerateSuccess(m_pluginManager->getInstance(instanceId));
+                  return poco::CRestResult::GenerateSuccess(m_pluginManager->getInstance(instanceId));
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving one plugin instance");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving one plugin instance");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstance(const std::vector<std::string>& parameters,
-                                                                                                    const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             shared::CDataContainer t;
             t.set(getRestKeyword(), m_pluginManager->getInstanceList());
-            return CResult::GenerateSuccess(t);
+            return poco::CRestResult::GenerateSuccess(t);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceWithState(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceWithStateV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -145,26 +156,26 @@ namespace web
                   result.appendArray(getRestKeyword(), item);
                }
 
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading plugin instance status");
+               return poco::CRestResult::GenerateError("unknown exception in reading plugin instance status");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceForManualDeviceCreation(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceForManualDeviceCreationV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
             std::vector<boost::shared_ptr<database::entities::CPlugin>> result;
 
             // List all instances
-            auto hwList = m_pluginManager->getInstanceList();
+            const auto hwList = m_pluginManager->getInstanceList();
 
             // Search for manuallyCreatedDevice
             auto pluginList = m_pluginManager->getPluginList();
@@ -185,15 +196,15 @@ namespace web
             //send result
             shared::CDataContainer t;
             t.set(getRestKeyword(), result);
-            return CResult::GenerateSuccess(t);
+            return poco::CRestResult::GenerateSuccess(t);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePlugins(const std::vector<std::string>& parameters,
-                                                                                                     const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsV1(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
-               auto pluginList = m_pluginManager->getPluginList();
+               const auto pluginList = m_pluginManager->getPluginList();
 
                shared::CDataContainer result;
                std::vector<std::string> pluginCollection;
@@ -203,19 +214,19 @@ namespace web
 
                result.set("plugins", pluginCollection);
 
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new plugin instance");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new plugin instance");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsParameterized(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsParameterizedV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -264,19 +275,19 @@ namespace web
                   }
                }
 
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new plugin instance");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new plugin instance");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsWithPackage(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsWithPackageV1(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -294,40 +305,40 @@ namespace web
                   result.appendArray("plugins", pluginInfo);
                }
 
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new plugin instance");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new plugin instance");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::createPlugin(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::createPluginV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
                database::entities::CPlugin plugin;
                plugin.fillFromSerializedString(requestContent);
                const auto idCreated = m_pluginManager->createInstance(plugin);
-               return CResult::GenerateSuccess(m_pluginManager->getInstance(idCreated));
+               return poco::CRestResult::GenerateSuccess(m_pluginManager->getInstance(idCreated));
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in creating a new plugin instance");
+               return poco::CRestResult::GenerateError("unknown exception in creating a new plugin instance");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::updatePlugin(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::updatePluginV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -336,15 +347,15 @@ namespace web
 
                m_pluginManager->updateInstance(instanceToUpdate);
 
-               return CResult::GenerateSuccess(m_pluginManager->getInstance(instanceToUpdate.Id()));
+               return poco::CRestResult::GenerateSuccess(m_pluginManager->getInstance(instanceToUpdate.Id()));
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating a plugin instance");
+               return poco::CRestResult::GenerateError("unknown exception in updating a plugin instance");
             }
          }
 
@@ -359,7 +370,9 @@ namespace web
                   const auto query = parameters[3];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                      requestContent.empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(requestContent),
+                                                                                      requestContent.empty()
+                                                                                         ? shared::CDataContainer::make()
+                                                                                         : shared::CDataContainer::make(requestContent),
                                                                                       "");
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
@@ -367,24 +380,24 @@ namespace web
                   {
                      shared::CDataContainer result;
                      result.set("taskId", taskId);
-                     return CResult::GenerateSuccess(result);
+                     return poco::CRestResult::GenerateSuccess(result);
                   }
 
-                  return CResult::GenerateError("Fail to get extra query task");
+                  return poco::CRestResult::GenerateError("Fail to get extra query task");
                }
-               return CResult::GenerateError("invalid parameter. Not enough parameters in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Not enough parameters in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in sending extra query to plugin");
+               return poco::CRestResult::GenerateError("unknown exception in sending extra query to plugin");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::sendDeviceExtraQuery(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::sendDeviceExtraQueryV1(
             const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
@@ -398,7 +411,9 @@ namespace web
                   const auto query = parameters[4];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                      requestContent.empty() ? shared::CDataContainer::make() : shared::CDataContainer::make(requestContent),
+                                                                                      requestContent.empty()
+                                                                                         ? shared::CDataContainer::make()
+                                                                                         : shared::CDataContainer::make(requestContent),
                                                                                       device->Name());
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
@@ -406,25 +421,25 @@ namespace web
                   {
                      shared::CDataContainer result;
                      result.set("taskId", taskId);
-                     return CResult::GenerateSuccess(result);
+                     return poco::CRestResult::GenerateSuccess(result);
                   }
 
-                  return CResult::GenerateError("Fail to get extra query task");
+                  return poco::CRestResult::GenerateError("Fail to get extra query task");
                }
-               return CResult::GenerateError("invalid parameter. Not enough parameters in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Not enough parameters in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in sending extra query to plugin");
+               return poco::CRestResult::GenerateError("unknown exception in sending extra query to plugin");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::deletePlugin(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::deletePluginV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -432,33 +447,33 @@ namespace web
                {
                   const auto instanceId = boost::lexical_cast<int>(parameters[1]);
                   m_pluginManager->deleteInstance(instanceId);
-                  return CResult::GenerateSuccess();
+                  return poco::CRestResult::GenerateSuccess();
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in deleting one plugin instance");
+               return poco::CRestResult::GenerateError("unknown exception in deleting one plugin instance");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::deleteAllPlugins(const std::vector<std::string>& parameters,
-                                                                                               const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::deleteAllPluginsV1(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const
          {
             auto hwList = m_pluginManager->getInstanceList();
 
             while (!m_pluginManager->getInstanceList().empty())
                m_pluginManager->deleteInstance(m_pluginManager->getInstanceList().front()->Id());
 
-            return CResult::GenerateSuccess();
+            return poco::CRestResult::GenerateSuccess();
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceState(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceStateV1(
             const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
@@ -468,24 +483,24 @@ namespace web
                   const auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
                   if (m_pluginManager->getInstance(instanceId))
-                     return CResult::GenerateSuccess(m_pluginManager->getInstanceFullState(instanceId));
+                     return poco::CRestResult::GenerateSuccess(m_pluginManager->getInstanceFullState(instanceId));
 
-                  return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve instance id");
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading plugin instance status");
+               return poco::CRestResult::GenerateError("unknown exception in reading plugin instance status");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceRunning(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceRunningV1(
             const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
@@ -496,22 +511,22 @@ namespace web
 
                   shared::CDataContainer result;
                   result.set("isRunning", m_pluginManager->isInstanceRunning(instanceId));
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading plugin instance running");
+               return poco::CRestResult::GenerateError("unknown exception in reading plugin instance running");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getPluginDevices(const std::vector<std::string>& parameters,
-                                                                                               const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getPluginDevicesV1(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const
          {
             try
             {
@@ -522,23 +537,23 @@ namespace web
                   shared::CDataContainer t;
                   t.set("devices", m_dataProvider->getDeviceRequester()->getDevices(instanceId,
                                                                                     true));
-                  return CResult::GenerateSuccess(t);
+                  return poco::CRestResult::GenerateSuccess(t);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve plugin instance id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve plugin instance id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading plugin instance devices");
+               return poco::CRestResult::GenerateError("unknown exception in reading plugin instance devices");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::startInstance(const std::vector<std::string>& parameters,
-                                                                                            const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::startInstanceV1(const std::vector<std::string>& parameters,
+                                                                                              const std::string& requestContent) const
          {
             try
             {
@@ -552,27 +567,27 @@ namespace web
                      m_pluginManager->startInstance(instanceId);
                      //check for instance status
                      if (m_pluginManager->isInstanceRunning(instanceId))
-                        return CResult::GenerateSuccess();
-                     return CResult::GenerateError("Fail to start the plugin instance");
+                        return poco::CRestResult::GenerateSuccess();
+                     return poco::CRestResult::GenerateError("Fail to start the plugin instance");
                   }
 
-                  return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve instance id");
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in starting plugin instance");
+               return poco::CRestResult::GenerateError("unknown exception in starting plugin instance");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::stopInstance(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::stopInstanceV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -582,26 +597,26 @@ namespace web
 
                   const auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
                   if (!pluginInstanceFound)
-                     return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
+                     return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve instance id");
 
                   m_pluginManager->stopInstance(instanceId);
-                  return CResult::GenerateSuccess();
+                  return poco::CRestResult::GenerateSuccess();
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in stopping plugin instance");
+               return poco::CRestResult::GenerateError("unknown exception in stopping plugin instance");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceLog(const std::vector<std::string>& parameters,
-                                                                                             const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceLogV1(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent) const
          {
             try
             {
@@ -611,22 +626,22 @@ namespace web
 
                   shared::CDataContainer result;
                   result.set("log", m_pluginManager->getInstanceLog(instanceId));
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in get plugin instance log");
+               return poco::CRestResult::GenerateError("unknown exception in get plugin instance log");
             }
          }
 
-         std::string CPlugin::generateUniqueDeviceName(const int pluginId) const
+         std::string CPlugin::generateUniqueDeviceName(int pluginId) const
          {
             static const boost::regex DeviceNamePattern("^manuallyCreatedDevice_([[:digit:]]*)$");
             const auto& devices = m_dataProvider->getDeviceRequester()->getDevices(pluginId,
@@ -646,8 +661,8 @@ namespace web
             return std::string("manuallyCreatedDevice_") + std::to_string(lastNumber + 1);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::createDevice(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::createDeviceV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -656,15 +671,15 @@ namespace web
                   const auto pluginId = boost::lexical_cast<int>(parameters[1]);
 
                   if (requestContent.empty())
-                     return CResult::GenerateError("invalid request content. Must not be empty");
+                     return poco::CRestResult::GenerateError("invalid request content. Must not be empty");
 
                   shared::CDataContainer content(requestContent);
                   if (!content.exists("name") || !content.exists("type") || !content.exists("configuration"))
-                     return CResult::GenerateError("invalid request content. There must be a name, a type and a configuration field");
+                     return poco::CRestResult::GenerateError("invalid request content. There must be a name, a type and a configuration field");
 
                   YADOMS_LOG(information) << "Manually device creation request received";
 
-                  const auto& deviceName = generateUniqueDeviceName(pluginId);
+                  const auto deviceName = generateUniqueDeviceName(pluginId);
 
                   try
                   {
@@ -676,7 +691,8 @@ namespace web
                                                                         content.exists("model") ? content.get<std::string>("model") : "",
                                                                         shared::CDataContainer::make());
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
-                                                                                     content.get<boost::shared_ptr<shared::CDataContainer>>("configuration"));
+                                                                                     content.get<boost::shared_ptr<shared::CDataContainer>>(
+                                                                                        "configuration"));
 
                      // Send request to plugin
                      communication::callback::CSynchronousCallback<std::string> cb;
@@ -695,24 +711,24 @@ namespace web
                            const auto res = cb.getCallbackResult();
 
                            if (res.success)
-                              return CResult::GenerateSuccess(m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId,
-                                                                                                                      device->Name()));
+                              return poco::CRestResult::GenerateSuccess(m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId,
+                                 device->Name()));
 
                            // The plugin failed to process manually creation request, we have to remove the just created device
                            m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
-                           return CResult::GenerateError(res.errorMessage);
+                           return poco::CRestResult::GenerateError(res.errorMessage);
                         }
 
                      case shared::event::kTimeout:
                         {
                            m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
-                           return CResult::GenerateError("The plugin did not respond");
+                           return poco::CRestResult::GenerateError("The plugin did not respond");
                         }
 
                      default:
                         {
                            m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
-                           return CResult::GenerateError("Unknown plugin result");
+                           return poco::CRestResult::GenerateError("Unknown plugin result");
                         }
                      }
                   }
@@ -722,24 +738,24 @@ namespace web
                                                                             deviceName))
                         m_dataProvider->getDeviceRequester()->removeDevice(pluginId,
                                                                            deviceName);
-                     return CResult::GenerateError(ex);
+                     return poco::CRestResult::GenerateError(ex);
                   }
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving keyword");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getBinding(const std::vector<std::string>& parameters,
-                                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getBindingV1(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             try
             {
@@ -767,33 +783,33 @@ namespace web
                            const auto res = cb.getCallbackResult();
 
                            if (res.success)
-                              return CResult::GenerateSuccess(res.result());
+                              return poco::CRestResult::GenerateSuccess(res.result());
 
-                           return CResult::GenerateError(res.errorMessage);
+                           return poco::CRestResult::GenerateError(res.errorMessage);
                         }
 
                      case shared::event::kTimeout:
-                        return CResult::GenerateError("The plugin did not respond");
+                        return poco::CRestResult::GenerateError("The plugin did not respond");
 
                      default:
-                        return CResult::GenerateError("Unknown plugin result");
+                        return poco::CRestResult::GenerateError("Unknown plugin result");
                      }
                   }
                   catch (shared::exception::CException& ex)
                   {
-                     return CResult::GenerateError(ex);
+                     return poco::CRestResult::GenerateError(ex);
                   }
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve plugin id in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve plugin id in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in executing binding query");
+               return poco::CRestResult::GenerateError("unknown exception in executing binding query");
             }
          }
       } //namespace service

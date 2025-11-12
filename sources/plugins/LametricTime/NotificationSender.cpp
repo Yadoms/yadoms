@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include <boost/format.hpp>
 #include "NotificationSender.h"
 #include "shared/http/HttpRestHelpers.h"
 #include "shared/Log.h"
@@ -37,7 +37,7 @@ void CNotificationSender::displayText(const std::string& text,
    try
    {
       boost::shared_ptr<shared::CDataContainer> response;
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kPost, url)
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kPost, url)
          ->withBody(body)
          .withHeaderParameters(headerPostParameters)
          .withBasicAuthentication("Basic", m_configuration.getAPIKey())

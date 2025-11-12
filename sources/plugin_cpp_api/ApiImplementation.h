@@ -16,7 +16,7 @@ namespace plugin_cpp_api
       CApiImplementation();
       virtual ~CApiImplementation() = default;
 
-      void setSendingMessageQueue(boost::shared_ptr<boost::interprocess::message_queue> sendMessageQueue);
+      void setSendingMessageQueue(const boost::shared_ptr<boost::interprocess::message_queue>& sendMessageQueue);
 
       bool stopRequested() const;
 
@@ -79,7 +79,7 @@ namespace plugin_cpp_api
       boost::shared_ptr<const shared::plugin::information::IYadomsInformation> getYadomsInformation() const override;
       // [END] shared::script::yScriptApi::IYScriptApi implementation
 
-      void onReceive(boost::shared_ptr<const unsigned char[]> message,
+      void onReceive(const boost::shared_ptr<const unsigned char[]>& message,
                      size_t messageSize);
 
       void waitInitialized() const;
@@ -90,8 +90,8 @@ namespace plugin_cpp_api
    protected:
       void send(const plugin_IPC::toYadoms::msg& msg) const;
       void send(const plugin_IPC::toYadoms::msg& msg,
-                boost::function1<bool, const plugin_IPC::toPlugin::msg&> checkExpectedMessageFunction,
-                boost::function1<void, const plugin_IPC::toPlugin::msg&> onReceiveFunction) const;
+                const boost::function1<bool, const plugin_IPC::toPlugin::msg&>& checkExpectedMessageFunction,
+                const boost::function1<void, const plugin_IPC::toPlugin::msg&>& onReceiveFunction) const;
 
       void processSystem(const plugin_IPC::toPlugin::System& msg);
       void processInit(const plugin_IPC::toPlugin::Init& msg);
@@ -106,7 +106,7 @@ namespace plugin_cpp_api
 
       void setInitialized();
 
-      static void fillHistorizable(boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> in,
+      static void fillHistorizable(const boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>& in,
                                    plugin_IPC::toYadoms::Historizable* out);
       static void fillCapacity(const shared::plugin::yPluginApi::CStandardCapacity& in,
                                plugin_IPC::toYadoms::Capacity* out);
