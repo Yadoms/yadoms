@@ -114,7 +114,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 		(bitset_extract(m_pendingCommand, 8, 8) == 0
 		 ? "Internal sensor used"
 		 : (std::to_string(byteToCelciusDegrees(bitset_extract(m_pendingCommand, 8, 8))) + "°C"));
-	YADOMS_LOG(trace) << " - SB , Summer bit : " << bitset_extract(m_pendingCommand, 20, 1) ? true : false;
+	YADOMS_LOG(trace) << " - SB , Summer bit : " << (bitset_extract(m_pendingCommand, 20, 1) ? true : false);
 	YADOMS_LOG(trace) << " - SPS , SetPoint Selection : " << (bitset_extract(m_pendingCommand, 21, 1) ? true : false) << " => " <<
 		(bitset_extract(m_pendingCommand, 21, 1)
 		 ? "temperature"
