@@ -59,30 +59,38 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 	if (rorg != CRorgs::k4BS_Telegram)
 		return {}; // Some valves send extra messages, ignore them
 
-	YADOMS_LOG(trace) << "Message received from " + m_deviceId + " (A5-20-01) :";
-	YADOMS_LOG(trace) << " - CV , Current Value : " << bitset_extract(data, 0, 8);
-	YADOMS_LOG(trace) << " - SO , Service On : " << (bitset_extract(data, 8, 1) ? true : false);
-	YADOMS_LOG(trace) << " - ENIE , Energy Input Enable : " << (bitset_extract(data, 9, 1) ? true : false);
-	YADOMS_LOG(trace) << " - ES , Energy Storage : " << (bitset_extract(data, 10, 1) ? true : false);
-	YADOMS_LOG(trace) << " - BCAP , Battery capacity : " << (bitset_extract(data, 11, 1) ? true : false);
-	YADOMS_LOG(trace) << " - CCO , Contact Cover Open : " << (bitset_extract(data, 12, 1) ? true : false);
-	YADOMS_LOG(trace) << " - FTS , Fail Temperature Sensor (out of range) : " << (bitset_extract(data, 13, 1) ? true : false);
-	YADOMS_LOG(trace) << " - DWO , Detection, Windows Open : " << (bitset_extract(data, 14, 1) ? true : false);
-	YADOMS_LOG(trace) << " - ACO , Actuator obstructed : " << (bitset_extract(data, 15, 1) ? true : false);
-	YADOMS_LOG(trace) << " - TMP , Temperature : " << bitset_extract(data, 16, 8) << " => " <<
-		byteToCelciusDegrees(bitset_extract(data, 16, 8)) << "°C";
-	YADOMS_LOG(trace) << " - LRNB , Learn bit : " << (bitset_extract(data, 28, 1) ? true : false) << " => " <<
-		(bitset_extract(data, 28, 1)
-		 ? "data telegram"
-		 : "teach-in telegram");
+	const auto cv = bitset_extract(data, 0, 8);
+	const auto so = bitset_extract(data, 8, 1) ? true : false;
+	const auto enie = bitset_extract(data, 9, 1) ? true : false;
+	const auto es = bitset_extract(data, 10, 1) ? true : false;
+	const auto bcap = bitset_extract(data, 11, 1) ? true : false; // true = change battery in the next days
+	const auto cco = bitset_extract(data, 12, 1) ? true : false;
+	const auto fts = bitset_extract(data, 13, 1) ? true : false;
+	const auto dwo = bitset_extract(data, 14, 1) ? true : false;
+	const auto aco = bitset_extract(data, 15, 1) ? true : false;
+	const auto tmp = bitset_extract(data, 16, 8);
+	const auto lrnb = bitset_extract(data, 28, 1) ? true : false;
 
-	m_energyInputEnable->set(bitset_extract(data, 9, 1) ? true : false);
-	m_battery->set(bitset_extract(data, 10, 1) || bitset_extract(data, 11, 1) ? 100 : 10);
-	m_coverOpen->set(bitset_extract(data, 12, 1) ? true : false);
-	m_temperatureFailure->set(bitset_extract(data, 13, 1) ? true : false);
-	m_windowOpen->set(bitset_extract(data, 14, 1) ? true : false);
-	m_actuatorObstructed->set(bitset_extract(data, 15, 1) ? true : false);
-	m_internalSensorTemperature->set(byteToCelciusDegrees(bitset_extract(data, 16, 8)));
+	YADOMS_LOG(trace) << "Message received from " + m_deviceId + " (A5-20-01) :";
+	YADOMS_LOG(trace) << " - CV , Current Value : " << cv;
+	YADOMS_LOG(trace) << " - SO , Service On : " << so;
+	YADOMS_LOG(trace) << " - ENIE , Energy Input Enable : " << enie;
+	YADOMS_LOG(trace) << " - ES , Energy Storage : " << es;
+	YADOMS_LOG(trace) << " - BCAP , Battery capacity : " << bcap;
+	YADOMS_LOG(trace) << " - CCO , Contact Cover Open : " << cco;
+	YADOMS_LOG(trace) << " - FTS , Fail Temperature Sensor (out of range) : " << fts;
+	YADOMS_LOG(trace) << " - DWO , Detection, Windows Open : " << dwo;
+	YADOMS_LOG(trace) << " - ACO , Actuator obstructed : " << aco;
+	YADOMS_LOG(trace) << " - TMP , Temperature : " << tmp << " => " << byteToCelciusDegrees(tmp) << "°C";
+	YADOMS_LOG(trace) << " - LRNB , Learn bit : " << lrnb << " => " << (lrnb ? "data telegram" : "teach-in telegram");
+
+	m_energyInputEnable->set(enie);
+	m_battery->set(es ? 100 : (bcap ? 10 : 50));
+	m_coverOpen->set(cco);
+	m_temperatureFailure->set(fts);
+	m_windowOpen->set(dwo);
+	m_actuatorObstructed->set(aco);
+	m_internalSensorTemperature->set(byteToCelciusDegrees(tmp));
 
 	if (m_pendingCommand.empty())
 	{
@@ -153,10 +161,10 @@ void CProfile_A5_20_01::sendCommand(const std::string& keyword,
 	m_pendingCommand.reset();
 
 	bitset_insert(m_pendingCommand, 0, 8, m_setPointModeIsTemperature
-				  ? (m_useInternalSensor ? 0 : celciusDegreesToByte(m_temperatureSetPoint->get()))
+				  ? celciusDegreesToByte(m_temperatureSetPoint->get())
 				  : m_valvePosition->get());
 	bitset_insert(m_pendingCommand, 21, 1, m_setPointModeIsTemperature);
-	bitset_insert(m_pendingCommand, 8, 8, 255 - celciusDegreesToByte(m_externalSensorTemperature->get()));
+	bitset_insert(m_pendingCommand, 8, 8, m_useInternalSensor ? 0 : (255 - celciusDegreesToByte(m_externalSensorTemperature->get())));
 	bitset_insert(m_pendingCommand, 23, 1, false);
 	bitset_insert(m_pendingCommand, 16, 1, false);
 	bitset_insert(m_pendingCommand, 17, 1, false);
@@ -182,5 +190,5 @@ double CProfile_A5_20_01::byteToCelciusDegrees(const unsigned int byte)
 
 std::uint8_t CProfile_A5_20_01::celciusDegreesToByte(const double degrees)
 {
-	return static_cast<std::uint8_t>(std::round(m_temperatureSetPoint->get() * 255.0 / 40.0));
+	return static_cast<std::uint8_t>(std::round(degrees * 255.0 / 40.0));
 }
