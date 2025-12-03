@@ -1,3 +1,8 @@
+### 2.2.1
+* Fixes on A5-20-01 profile :
+  * External sensor sent value
+  * Battery level
+
 ### 2.2.0
 * Fix 4BS Teach-In variant 3
 * Fix A5-20-01 profile
