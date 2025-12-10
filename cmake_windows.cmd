@@ -9,18 +9,15 @@ setlocal & pushd .
 @echo Yadoms build for Windows
 @echo ========================
 @echo.
-@echo To enable Windows XP compatiblity, please enter the platform toolset
-@echo.
-@echo v120_xp : platform toolset "Visual Studio 2013 - WindowsXP"
-@echo v140_xp : platform toolset "Visual Studio 2015 - WindowsXP"
-@echo v141_xp : platform toolset "Visual Studio 2017 - WindowsXP"
 @echo v142 : platform toolset "Visual Studio 2019"
 @echo v143 : platform toolset "Visual Studio 2022"
-@echo Leave empty to disable Windows XP compatibility
+@echo v144 : platform toolset "Visual Studio 2026"
+@echo.
+@echo Leave empty to use default toolset
 @echo.
 @echo.
 
-set xp_compatibility=%1%
+set platformToolset=%1%
 
 call:getCMakeExecutable cmake_executable
 "%cmake_executable%" --version
@@ -28,34 +25,24 @@ call:getCMakeExecutable cmake_executable
 ::Move to destination folder
 cd /D %~dp0/projects
 
-if "%xp_compatibility%" == "" (
-   @echo Using default generator WITHOUT WindowsXP support
+if "%platformToolset%" == "" (
+   @echo Using default generator
 	"%cmake_executable%" %~dp0/sources -A Win32
    goto:eof
 )
-if "%xp_compatibility%" == "v120_xp" (
-   @echo Generating using "Visual Studio 2013" with WindowsXP support
-	"%cmake_executable%" %~dp0/sources -T %xp_compatibility% -A Win32
-   goto:eof
-)
-if "%xp_compatibility%" == "v140_xp" (
-   @echo Generating using "Visual Studio 2015" with WindowsXP support
-	"%cmake_executable%" %~dp0/sources -T %xp_compatibility% -A Win32
-   goto:eof
-)
-if "%xp_compatibility%" == "v141_xp" (
-   @echo Generating using "Visual Studio 2017" with WindowsXP support
-	"%cmake_executable%" %~dp0/sources -T %xp_compatibility% -A Win32
-   goto:eof
-)
-if "%xp_compatibility%" == "v142" (
+if "%platformToolset%" == "v142" (
    @echo Generating using "Visual Studio 2019"
-	"%cmake_executable%" %~dp0/sources -A Win32
+	"%cmake_executable%" -G "Visual Studio 16 2019" %~dp0/sources -A Win32
    goto:eof
 )
-if "%xp_compatibility%" == "v143" (
+if "%platformToolset%" == "v143" (
    @echo Generating using "Visual Studio 2022"
-	"%cmake_executable%" %~dp0/sources -A Win32
+	"%cmake_executable%" -G "Visual Studio 17 2022" %~dp0/sources -A Win32
+   goto:eof
+)
+if "%platformToolset%" == "v144" (
+   @echo Generating using "Visual Studio 2026"
+	"%cmake_executable%" -G "Visual Studio 18 2026" %~dp0/sources -A Win32
    goto:eof
 )
 echo Error: invalid toolset selected
