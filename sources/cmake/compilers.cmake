@@ -112,12 +112,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
    add_definitions("-Wno-c++11-narrowing")
 endif()
 
-#Cross compiling for Raspberry
-if (CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER)
-	message("Cross compile for Raspberry")   
-	add_definitions("-Wno-psabi")
-endif()
-
 # with -fPIC (don't distinguish platforms, already managed by cmake)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 

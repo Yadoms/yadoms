@@ -1,6 +1,6 @@
 # include common plugin definitions
 
-if(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
+if(CMAKE_PACKAGE_PLATFORM_NAME STREQUAL "Raspberry")
 
    include("../YadomsPluginsCommon.cmake")
 
