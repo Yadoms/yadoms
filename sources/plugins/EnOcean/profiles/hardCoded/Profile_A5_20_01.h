@@ -32,6 +32,7 @@ public:
     // [END] IType implementation
 
 private:
+    void updatePendingCommand();
     [[nodiscard]] double byteToCelciusDegrees(const unsigned int byte);
     [[nodiscard]] std::uint8_t celciusDegreesToByte(const double degrees);
 
@@ -53,6 +54,6 @@ private:
 	bool m_useInternalSensor = true;
 	bool m_setPointInverse = false;
 
-
+    std::mutex m_pendingCommandMutex;
     boost::dynamic_bitset<> m_pendingCommand;
 };
