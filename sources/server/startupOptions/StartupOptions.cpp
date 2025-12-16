@@ -436,35 +436,35 @@ namespace startupOptions
    {
       if (m_configContainer.has("server.pgsql.hostaddr"))
          return m_configContainer.getString("server.pgsql.hostaddr", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlConnectTimeout() const
    {
       if (m_configContainer.has("server.pgsql.connect-timeout"))
          return m_configContainer.getInt("server.pgsql.connect-timeout", 60);
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlClientEncoding() const
    {
       if (m_configContainer.has("server.pgsql.client-encoding"))
          return m_configContainer.getString("server.pgsql.client-encoding", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlOptions() const
    {
       if (m_configContainer.has("server.pgsql.options"))
          return m_configContainer.getString("server.pgsql.options", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlives() const
    {
       if (m_configContainer.has("server.pgsql.keep-alives"))
          return m_configContainer.getInt("server.pgsql.keep-alives", 1);
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
 
@@ -472,63 +472,63 @@ namespace startupOptions
    {
       if (m_configContainer.has("server.pgsql.keep-alives-idle"))
          return m_configContainer.getInt("server.pgsql.keep-alives-idle", 0 /* = use system default*/);
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlivesInterval() const
    {
       if (m_configContainer.has("server.pgsql.keep-alives-interval"))
          return m_configContainer.getInt("server.pgsql.keep-alives-interval", 0 /* = use system default*/);
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlKeepAlivesCount() const
    {
       if (m_configContainer.has("server.pgsql.keep-alives-count"))
          return m_configContainer.getInt("server.pgsql.keep-alives-count", 0 /* = use system default*/);
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslMode() const
    {
       if (m_configContainer.has("server.pgsql.ssl-mode"))
          return m_configContainer.getString("server.pgsql.ssl-mode", "prefer");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlRequireSsl() const
    {
       if (m_configContainer.has("server.pgsql.require-ssl"))
          return m_configContainer.getInt("server.pgsql.require-ssl", 0);
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<int> CStartupOptions::getDatabasePostgresqlSslCompression() const
    {
       if (m_configContainer.has("server.pgsql.ssl-compression"))
          return m_configContainer.getInt("server.pgsql.ssl-compression", 1);
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslCert() const
    {
       if (m_configContainer.has("server.pgsql.ssl-cert"))
          return m_configContainer.getString("server.pgsql.ssl-cert", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslKey() const
    {
       if (m_configContainer.has("server.pgsql.ssl-key"))
          return m_configContainer.getString("server.pgsql.ssl-key", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlSslRootCert() const
    {
       if (m_configContainer.has("server.pgsql.ssl-root"))
          return m_configContainer.getString("server.pgsql.ssl-root", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
 
@@ -536,35 +536,35 @@ namespace startupOptions
    {
       if (m_configContainer.has("server.pgsql.ssl-revocation"))
          return m_configContainer.getString("server.pgsql.ssl-revocation", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlRequirePeer() const
    {
       if (m_configContainer.has("server.pgsql.require-peer"))
          return m_configContainer.getString("server.pgsql.require-peer", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlKerberos() const
    {
       if (m_configContainer.has("server.pgsql.kerberos"))
          return m_configContainer.getString("server.pgsql.kerberos", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlGssLib() const
    {
       if (m_configContainer.has("server.pgsql.gss-lib"))
          return m_configContainer.getString("server.pgsql.gss-lib", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getDatabasePostgresqlService() const
    {
       if (m_configContainer.has("server.pgsql.service"))
          return m_configContainer.getString("server.pgsql.service", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    bool CStartupOptions::getNoPasswordFlag() const
@@ -596,35 +596,35 @@ namespace startupOptions
    {
       if (m_configContainer.has("server.proxy.host"))
          return m_configContainer.getString("server.proxy.host", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<Poco::UInt16> CStartupOptions::getProxyPort() const
    {
       if (m_configContainer.has("server.proxy.port"))
          return static_cast<Poco::UInt16>(m_configContainer.getUInt("server.proxy.port", 80)); //safe cast because server.proxy.port is checked between 1 and 65535
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getProxyUsername() const
    {
       if (m_configContainer.has("server.proxy.username"))
          return m_configContainer.getString("server.proxy.username", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getProxyPassword() const
    {
       if (m_configContainer.has("server.proxy.password"))
          return m_configContainer.getString("server.proxy.password", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
    Poco::Nullable<std::string> CStartupOptions::getProxyBypass() const
    {
       if (m_configContainer.has("server.proxy.bypass"))
          return m_configContainer.getString("server.proxy.bypass", "");
-      return Poco::NULL_GENERIC;
+      return {};
    }
 
 

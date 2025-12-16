@@ -47,7 +47,6 @@ set(interpreter_cpp_api_ALL_INCLUDE_DIRS
    ${SHARED_INCL_DIR}
    ${BOOST_INCL_DIR}
    ${Poco_INCLUDE_DIRS}
-   ${PROTOBUF_INCLUDE_DIRS}
    ${interpreter_IPC_INCLUDE_DIRS}
    ${CMAKE_CURRENT_SOURCE_DIR}/interpreter_cpp_api
    )

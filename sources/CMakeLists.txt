@@ -182,10 +182,6 @@ SET(OPENSSL_USE_STATIC_LIBS TRUE)
 SET(OPENSSL_MSVC_STATIC_RT TRUE)
 FIND_PACKAGE(OpenSSL REQUIRED)
 
-if(NOT ${OPENSSL_FOUND})
-   message(FATAL_ERROR "Cannot find opensll, all plugins which requires SSL features will not be loaded")
-   set(OPENSSL_INCLUDE_DIR "")
-endif()
 #Do not add OPENSSL_SSL_LIBRARY and OPENSSL_CRYPTO_LIBRARY here; it will be later
 #if done here, this is too early, and for gcc the libraries appears in bad order regarding Poco for example
 
@@ -227,39 +223,36 @@ endforeach()
 # Protobuf
 #
 ###############################################
-set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
+
+set(Protobuf_DIR "${PROTOBUF_ROOT}/lib/cmake/protobuf" CACHE PATH "Path to protobuf-config.cmake")
 set (Protobuf_USE_STATIC_LIBS ON)
 
-#Helper (FindProtoBuf.cmake allows defining all variables before finding it)
 #In case Protobuf has been installed in a custom directory (${PROTOBUF_ROOT}) 
 #then predefine all files and paths (make it works with old cmake <3.9)
+#TODO revoir le cas de la cross-compilation (en cas de cross-compile, Protobuf_PROTOC_EXECUTABLE doit être celui du système)
 if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
-   if(NOT PROTOBUF_INCLUDE_DIR)
-      set(PROTOBUF_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
-   endif(NOT PROTOBUF_INCLUDE_DIR)
-   if(NOT PROTOBUF_LIBRARY)
-      set(PROTOBUF_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
-   endif(NOT PROTOBUF_LIBRARY)
-   if(NOT PROTOBUF_LIBRARY_DEBUG)
-      set(PROTOBUF_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf.a")
-   endif(NOT PROTOBUF_LIBRARY_DEBUG)
-   if(NOT PROTOBUF_LITE_LIBRARY)
-      set(PROTOBUF_LITE_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
-   endif(NOT PROTOBUF_LITE_LIBRARY)
-   if(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
-      set(PROTOBUF_LITE_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
-   endif(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
-   if(NOT PROTOBUF_PROTOC_EXECUTABLE)
-      set(PROTOBUF_PROTOC_EXECUTABLE "${PROTOBUF_ROOT}/bin/protoc")
-   endif(NOT PROTOBUF_PROTOC_EXECUTABLE)
-endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
-
-find_package(Protobuf 3.1.0 REQUIRED)
-
-if(NOT ${PROTOBUF_FOUND})
-   message(FATAL_ERROR "Unable to find the required Protobuf tool")
+   if(NOT Protobuf_INCLUDE_DIR)
+      set(Protobuf_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
+   endif()
+   if(NOT Protobuf_LIBRARY)
+      set(Protobuf_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   endif()
+   if(NOT Protobuf_LIBRARY_DEBUG)
+      set(Protobuf_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   endif()
+   if(NOT Protobuf_LITE_LIBRARY)
+      set(Protobuf_LITE_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+   endif()
+   if(NOT Protobuf_LITE_LIBRARY_DEBUG)
+      set(Protobuf_LITE_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+   endif()
+   if(NOT Protobuf_PROTOC_EXECUTABLE)
+      set(Protobuf_PROTOC_EXECUTABLE "${PROTOBUF_ROOT}/bin/protoc")
+   endif()
 endif()
 
+find_package(Protobuf CONFIG REQUIRED)
+include("${Protobuf_DIR}/protobuf-module.cmake") # For protobuf_generate_cpp macro
 
 if(MSVC)   
    # Workaround to avoid conflict between min/max constants defined in windows.h and Protobuf
@@ -1223,7 +1216,6 @@ set(YADOMS_INCL_DIR
 # include OPENSSL_INCLUDE_DIR before YADOMS_INCL_DIR because YADOMS_INCL_DIR include postgresql which may embed its own openssl files (not used)
 # but this may infer in some compilation cases
 set(YADOMS_ALL_INCL_DIR
-   ${PROTOBUF_INCLUDE_DIRS}
    ${BOOST_INCL_DIR} 
    ${OPENSSL_INCLUDE_DIR}
    ${Poco_INCLUDE_DIRS}

@@ -18,7 +18,6 @@ set(script_cpp_api_ALL_INCLUDE_DIRS
    ${SHARED_INCL_DIR}
    ${BOOST_INCL_DIR}
    ${Poco_INCLUDE_DIRS}
-   ${PROTOBUF_INCLUDE_DIRS}
    ${script_IPC_INCLUDE_DIRS}
    ${CMAKE_CURRENT_SOURCE_DIR}/script_cpp_api
    )

@@ -19,9 +19,9 @@ set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
 set(plugin_IPC_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to generated protobuf files.")
 
 add_library(plugin_IPC STATIC ${plugin_IPC_SOURCES})
-target_link_libraries(plugin_IPC ${PROTOBUF_LIBRARIES})
 
-set_property(TARGET plugin_IPC PROPERTY INCLUDE_DIRECTORIES ${plugin_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
+target_link_libraries(plugin_IPC protobuf::libprotobuf)
+target_include_directories(plugin_IPC PRIVATE ${plugin_IPC_GENERATED_DIR})
 
 if(COTIRE_USE)
    # this target is for protobuf and precompiled header has no real sense
@@ -40,9 +40,3 @@ ENDIF()
 set(plugin_IPC_INCLUDE_DIRS ${plugin_IPC_GENERATED_DIR}/.. CACHE INTERNAL "plugin_IPC include directories")
 set(plugin_IPC_LIBRARY plugin_IPC CACHE INTERNAL "plugin_IPC library")
 
-
-
-if(MSVC)
-   #Ignore some warnings under VisualStudio for Protobuf generated files
-   add_definitions( "/wd4244 /wd4125" )
-endif()

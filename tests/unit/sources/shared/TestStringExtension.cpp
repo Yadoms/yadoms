@@ -37,4 +37,29 @@ BOOST_AUTO_TEST_SUITE(TestStringExtension)
 		                  "Replace value1 and value1 in my string");
 	}
 
+
+	BOOST_AUTO_TEST_CASE(StartsWith)
+	{
+        BOOST_CHECK_EQUAL(shared::CStringExtension::startsWith("My reference string", "My"), true);
+		BOOST_CHECK_EQUAL(shared::CStringExtension::startsWith("My reference string", "My reference string"), true);
+		BOOST_CHECK_EQUAL(shared::CStringExtension::startsWith("My reference string", "My reference"), true);
+		BOOST_CHECK_EQUAL(shared::CStringExtension::startsWith("My reference string", "reference"), false);
+		BOOST_CHECK_EQUAL(shared::CStringExtension::startsWith("My reference string", "y"), false);
+
+		BOOST_CHECK_EQUAL(shared::CStringExtension::startsWith("My reference string", 'M'), true);
+		BOOST_CHECK_EQUAL(shared::CStringExtension::startsWith("My reference string", 'y'), false);
+	}
+
+	BOOST_AUTO_TEST_CASE(EndsWith)
+	{
+		BOOST_CHECK_EQUAL(shared::CStringExtension::endsWith("My reference string", "string"), true);
+		BOOST_CHECK_EQUAL(shared::CStringExtension::endsWith("My reference string", "My reference string"), true);
+		BOOST_CHECK_EQUAL(shared::CStringExtension::endsWith("My reference string", "reference string"), true);
+		BOOST_CHECK_EQUAL(shared::CStringExtension::endsWith("My reference string", "reference"), false);
+		BOOST_CHECK_EQUAL(shared::CStringExtension::endsWith("My reference string", "n"), false);
+
+		BOOST_CHECK_EQUAL(shared::CStringExtension::endsWith("My reference string", 'g'), true);
+		BOOST_CHECK_EQUAL(shared::CStringExtension::endsWith("My reference string", 'n'), false);
+	}
+
 BOOST_AUTO_TEST_SUITE_END()

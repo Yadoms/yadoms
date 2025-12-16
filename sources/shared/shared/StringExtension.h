@@ -40,6 +40,18 @@ namespace shared
          return stringResult;
       }
 
+      static bool startsWith(const std::string& ref,
+                             const std::string& token);
+
+      static bool startsWith(const std::string& ref,
+                             const char& token);
+
+      static bool endsWith(const std::string& ref,
+                           const std::string& token);
+
+      static bool endsWith(const std::string& ref,
+                           const char& token);
+
       static std::string removeEol(const std::string& line)
       {
          const auto len = line.size();
@@ -109,7 +121,6 @@ namespace shared
       //
       template <typename T>
       static std::string cultureInvariantToString(const T& value);
-
 
 
       /// @brief Trim string at beginning and end (in place)

@@ -19,8 +19,9 @@ set(interpreter_IPC_SOURCES ${interpreter_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDR
 set(interpreter_IPC_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to generated protobuf files.")
 
 add_library(interpreter_IPC STATIC ${interpreter_IPC_SOURCES})
-target_link_libraries(interpreter_IPC ${PROTOBUF_LIBRARIES})
-set_property(TARGET interpreter_IPC PROPERTY INCLUDE_DIRECTORIES ${interpreter_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
+
+target_link_libraries(interpreter_IPC protobuf::libprotobuf)
+target_include_directories(interpreter_IPC PRIVATE ${interpreter_IPC_GENERATED_DIR})
 
 IF(MSVC OR XCODE)
    SET_PROPERTY(TARGET interpreter_IPC PROPERTY FOLDER "interpreter_IPC")
@@ -41,9 +42,3 @@ if(COTIRE_USE)
    cotire(interpreter_IPC)
 endif()
 
-
-
-if(MSVC)
-   #Ignore some warnings under VisualStudio for Protobuf generated files
-   add_definitions( "/wd4244 /wd4125" )
-endif()

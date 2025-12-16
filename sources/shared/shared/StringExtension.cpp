@@ -4,6 +4,38 @@
 using namespace shared;
 
 
+bool CStringExtension::startsWith(const std::string& ref,
+                                  const std::string& token)
+{
+   // TODO : when switch to C++20, use std::starts_with
+   if (ref.size() < token.size())
+      return false;
+
+   return ref.rfind(token, 0) == 0;
+}
+
+bool CStringExtension::startsWith(const std::string& ref,
+                                  const char& token)
+{
+   return startsWith(ref, std::string(1, token));
+}
+
+bool CStringExtension::endsWith(const std::string& ref,
+                                const std::string& token)
+{
+   // TODO : when switch to C++20, use std::ends_with
+   if (ref.size() < token.size())
+      return false;
+
+   return std::equal(token.rbegin(), token.rend(), ref.rbegin());
+}
+
+bool CStringExtension::endsWith(const std::string& ref,
+                                const char& token)
+{
+   return endsWith(ref, std::string(1, token));
+}
+
 std::string CStringExtension::replaceValues(const std::string& input,
                                             const std::map<std::string, std::string>& replacements,
                                             const std::string& keyEncapsulationStartToken,

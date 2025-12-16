@@ -2,9 +2,8 @@
 #include "WebsiteRequestHandler.h"
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
-#include <Poco/Net/HTTPBasicCredentials.h>
 #include "MimeType.h"
-#include <shared/encryption/Md5.h>
+#include "shared/StringExtension.h"
 
 namespace web { namespace poco {
 
@@ -26,13 +25,13 @@ namespace web { namespace poco {
          if (boost::filesystem::is_directory(boost::filesystem::path(documentsPath)))
          {
             std::string realAlias = alias;
-            if (!boost::istarts_with(realAlias, "/"))
+            if (!shared::CStringExtension::startsWith(realAlias, "/"))
                realAlias = "/" + realAlias;
-            if (!boost::iends_with(realAlias, "/"))
+            if (!shared::CStringExtension::endsWith(realAlias, "/"))
                realAlias = realAlias + "/";
 
             std::string realDocumentsPath = documentsPath;
-            if (!boost::iends_with(realDocumentsPath, "/"))
+            if (!shared::CStringExtension::endsWith(realDocumentsPath, "/"))
                realDocumentsPath = realDocumentsPath + "/";
 
             m_alias[realAlias] = realDocumentsPath;
@@ -40,7 +39,7 @@ namespace web { namespace poco {
          else 
          {
             std::string realAlias = alias;
-            if (!boost::istarts_with(realAlias, "/"))
+            if (!shared::CStringExtension::startsWith(realAlias, "/"))
                realAlias = "/" + realAlias;
             m_alias[realAlias] = documentsPath;
          }
@@ -103,7 +102,7 @@ namespace web { namespace poco {
          std::map<std::string, std::string>::iterator i;
          for (i = m_alias.begin(); i != m_alias.end(); ++i)
          {
-            if (boost::istarts_with(uri, i->first))
+            if (shared::CStringExtension::startsWith(uri, i->first))
             {
                std::string repl = uri;
                repl.replace(0, i->first.size(), i->second);
