@@ -1,3 +1,7 @@
+### 2.2.2
+* Fix first command on A5-20-01 profile
+* Add A5-20-06 profile support
+
 ### 2.2.1
 * Fixes on A5-20-01 profile :
   * External sensor sent value
