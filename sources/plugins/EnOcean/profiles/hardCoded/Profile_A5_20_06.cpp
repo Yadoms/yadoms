@@ -243,13 +243,13 @@ void CProfile_A5_20_06::updatePendingCommand()
 double CProfile_A5_20_06::byteRange0To80ToCelciusDegrees(const unsigned int byte)
 {
 	// Rounded to 1 decimal
-	return std::round(byte / 2.0) / 10;
+	return std::round(byte / 2.0);
 }
 
 double CProfile_A5_20_06::byteRange0To160ToCelciusDegrees(const unsigned int byte)
 {
 	// Rounded to 1 decimal
-	return std::round(byte / 4.0) / 10;
+	return std::round(byte / 4.0);
 }
 
 std::uint8_t CProfile_A5_20_06::celciusDegreesRange0To80ToByte(const double degrees)
