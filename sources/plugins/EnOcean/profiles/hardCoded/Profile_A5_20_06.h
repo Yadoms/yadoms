@@ -64,10 +64,11 @@ private:
     boost::shared_ptr<yApi::historization::CTemperature> m_externalSensorTemperature;
     boost::shared_ptr<yApi::historization::CSwitch> m_summerMode;
     mutable bool m_setPointModeIsTemperature = true;
+    bool m_forcedSetPoint = false;
     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 
 	bool m_useInternalSensor = true;
-	bool m_communicationInterval = false;
+	ECommunicationInterval m_communicationInterval = ECommunicationInterval::kauto;
 
     std::mutex m_pendingCommandMutex;
     boost::dynamic_bitset<> m_pendingCommand;

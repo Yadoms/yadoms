@@ -85,21 +85,21 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 	const auto aco = bitset_extract(data, 31, 1) ? true : false;
 
 	YADOMS_LOG(trace) << "Message received from " + m_deviceId + " (A5-20-06) :";
-	YADOMS_LOG(trace) << " - CV , Current Value : " << cv;
+	YADOMS_LOG(trace) << " - CV  , Current Value : " << cv;
 	YADOMS_LOG(trace) << " - LOM , Local Offset Mode : local offset is " << (lom ? "absolute" : "relative");
-	YADOMS_LOG(trace) << " - LO , Local Offset : " << lo << (lom
-															 ? byteRange0To80ToCelciusDegrees(lo)
-															 : localOffsetToCelciusDegreesInValvePositionMode(lo));
+	YADOMS_LOG(trace) << " - LO  , Local Offset : " << lo << " => " << (lom
+																		? (std::to_string(byteRange0To80ToCelciusDegrees(lo)) + "°C")
+																		: std::to_string(localOffsetToCelciusDegreesInValvePositionMode(lo)));
 	YADOMS_LOG(trace) << " - TMP , Temperature : " << tmp << " => " << (tmp == 0xFF
 																		? "Sensor failure"
 																		: (tsl
-																		   ? "feed" + std::to_string(byteRange0To160ToCelciusDegrees(tmp))
-																		   : "ambient" + std::to_string(byteRange0To80ToCelciusDegrees(tmp))) + "°C");
+																		   ? "feed " + std::to_string(byteRange0To160ToCelciusDegrees(tmp))
+																		   : "ambient " + std::to_string(byteRange0To80ToCelciusDegrees(tmp))) + "°C");
 	YADOMS_LOG(trace) << " - TSL , Temperature Selection: " << tsl;
-	YADOMS_LOG(trace) << " - ENIE , Energy Input Enable : " << enie;
-	YADOMS_LOG(trace) << " - ES , Energy Storage : " << es;
+	YADOMS_LOG(trace) << " - ENIE, Energy Input Enable : " << enie;
+	YADOMS_LOG(trace) << " - ES  , Energy Storage : " << es;
 	YADOMS_LOG(trace) << " - DWO , Detection, Windows Open : " << dwo;
-	YADOMS_LOG(trace) << " - LRNB , Learn bit : " << lrnb << " => " << (lrnb ? "data telegram" : "teach-in telegram");
+	YADOMS_LOG(trace) << " - LRNB, Learn bit : " << lrnb << " => " << (lrnb ? "data telegram" : "teach-in telegram");
 	YADOMS_LOG(trace) << " - RCE , Radio Com Error : " << rce << " => " << (rce
 																			? "Six or more consecutive radio communication errors have occurred"
 																			: "Radio communication is stable");
@@ -123,7 +123,11 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 		// Temperature Setpoint Mode
 		if (lom)
 		{
-			m_temperatureSetPoint->set(byteRange0To80ToCelciusDegrees(lo));
+			if (m_forcedSetPoint)
+				m_forcedSetPoint = false;
+			else
+				m_temperatureSetPoint->set(byteRange0To80ToCelciusDegrees(lo));
+
 			bitset_insert(m_pendingCommand, 0, 8, celciusDegreesRange0To80ToByte(m_temperatureSetPoint->get()));
 		}
 		else
@@ -134,8 +138,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 		// Valve Position Mode
 		if (!lom)
 		{
-			m_valvePosition->set(computeValvePosition(m_valvePosition->get(),
-													  localOffsetToCelciusDegreesInValvePositionMode(lo)));
+			if (m_forcedSetPoint)
+				m_forcedSetPoint = false;
+			else
+				m_valvePosition->set(computeValvePosition(m_valvePosition->get(),
+														  localOffsetToCelciusDegreesInValvePositionMode(lo)));
+
 			bitset_insert(m_pendingCommand, 0, 8, m_valvePosition->get());
 		}
 		else
@@ -192,14 +200,18 @@ void CProfile_A5_20_06::sendCommand(const std::string& keyword,
 {
 	// Set internal state
 	if (keyword == m_valvePosition->getKeyword())
+	{
 		m_setPointModeIsTemperature = false;
-	if (keyword == m_temperatureSetPoint->getKeyword())
-		m_setPointModeIsTemperature = true;
-
-	if (keyword == m_valvePosition->getKeyword())
+		m_forcedSetPoint = true;
 		m_valvePosition->setCommand(commandBody);
+	}
 	if (keyword == m_temperatureSetPoint->getKeyword())
+	{
+		m_setPointModeIsTemperature = true;
+		m_forcedSetPoint = true;
 		m_temperatureSetPoint->setCommand(commandBody);
+	}
+
 	if (keyword == m_externalSensorTemperature->getKeyword())
 		m_externalSensorTemperature->setCommand(commandBody);
 	if (keyword == m_summerMode->getKeyword())
@@ -242,14 +254,14 @@ void CProfile_A5_20_06::updatePendingCommand()
 
 double CProfile_A5_20_06::byteRange0To80ToCelciusDegrees(const unsigned int byte)
 {
-	// Rounded to 1 decimal
-	return std::round(byte / 2.0);
+	// Rounded to 2 decimals
+	return std::round(byte * 100.0 / 2.0) / 100.0;
 }
 
 double CProfile_A5_20_06::byteRange0To160ToCelciusDegrees(const unsigned int byte)
 {
-	// Rounded to 1 decimal
-	return std::round(byte / 4.0);
+	// Rounded to 2 decimals
+	return std::round(byte * 100.0 / 4.0) / 100.0;
 }
 
 std::uint8_t CProfile_A5_20_06::celciusDegreesRange0To80ToByte(const double degrees)
