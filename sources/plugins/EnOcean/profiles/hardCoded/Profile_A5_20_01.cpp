@@ -25,6 +25,8 @@ CProfile_A5_20_01::CProfile_A5_20_01(const std::string& deviceId,
 	   m_externalSensorTemperature, m_summerMode
 				  })
 {
+	// We always must send a command as answer, init first command
+	updatePendingCommand();
 }
 
 const std::string& CProfile_A5_20_01::profile() const
@@ -92,20 +94,6 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 	m_actuatorObstructed->set(aco);
 	m_internalSensorTemperature->set(byteToCelciusDegrees(tmp));
 
-	if (m_pendingCommand.empty())
-	{
-		// We always must send a command as answer. Init first command from received message.
-		m_pendingCommand.resize(4 * 8);
-
-		bitset_insert(m_pendingCommand, 0, 8, 50); // Valve default position to 50%
-		bitset_insert(m_pendingCommand, 21, 1, false); // Set Point Selection (false = valve position)
-		bitset_insert(m_pendingCommand, 8, 8, 0); // Use internal sensor
-		bitset_insert(m_pendingCommand, 20, 1, false); // Summer bit (false = not in summer mode)
-		bitset_insert(m_pendingCommand, 22, 1, false); // Set Point inversed (false = not inversed)
-
-		bitset_insert(m_pendingCommand, 28, 1, true); // Data telegram
-	}
-
 	message::CMessageHelpers::sendMessage(CRorgs::k4BS_Telegram,
 										  messageHandler,
 										  senderId,
@@ -114,14 +102,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 										  "send command");
 
 	YADOMS_LOG(trace) << "Message sent to " + m_deviceId + " (A5-20-01) :";
-	YADOMS_LOG(trace) << " - SP , Valve Position or Temperature Set Point: " << bitset_extract(m_pendingCommand, 0, 8) << " => " << 
+	YADOMS_LOG(trace) << " - SP , Valve Position or Temperature Set Point: " << bitset_extract(m_pendingCommand, 0, 8) << " => " <<
 		(bitset_extract(m_pendingCommand, 21, 1)
 		 ? (std::to_string(byteToCelciusDegrees(bitset_extract(m_pendingCommand, 0, 8))) + "°C")
 		 : (std::to_string(bitset_extract(m_pendingCommand, 0, 8)) + "%"));
 	YADOMS_LOG(trace) << " - TMP , Temperature from RCU : " << bitset_extract(m_pendingCommand, 8, 8) << " => " <<
 		(bitset_extract(m_pendingCommand, 8, 8) == 0
 		 ? "Internal sensor used"
-		 : (std::to_string(byteToCelciusDegrees(bitset_extract(m_pendingCommand, 8, 8))) + "°C"));
+		 : (std::to_string(byteToCelciusDegrees(255 - bitset_extract(m_pendingCommand, 8, 8))) + "°C"));
 	YADOMS_LOG(trace) << " - SB , Summer bit : " << (bitset_extract(m_pendingCommand, 20, 1) ? true : false);
 	YADOMS_LOG(trace) << " - SPS , SetPoint Selection : " << (bitset_extract(m_pendingCommand, 21, 1) ? true : false) << " => " <<
 		(bitset_extract(m_pendingCommand, 21, 1)
@@ -155,8 +143,23 @@ void CProfile_A5_20_01::sendCommand(const std::string& keyword,
 	if (keyword == m_summerMode->getKeyword())
 		m_summerMode->setCommand(commandBody);
 
+	updatePendingCommand();
+}
 
-	// Create message to send at next device wakeup
+void CProfile_A5_20_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+										  const std::string& senderId,
+										  boost::shared_ptr<IMessageHandler> messageHandler)
+{
+	m_useInternalSensor = deviceConfiguration.get<std::string>("useInternalSensor") == "internal";
+	m_setPointInverse = deviceConfiguration.get<bool>("setPointInverse");
+
+	updatePendingCommand();
+}
+
+void CProfile_A5_20_01::updatePendingCommand()
+{
+	std::lock_guard<std::mutex> guard(m_pendingCommandMutex);
+
 	m_pendingCommand.resize(4 * 8);
 	m_pendingCommand.reset();
 
@@ -172,14 +175,6 @@ void CProfile_A5_20_01::sendCommand(const std::string& keyword,
 	bitset_insert(m_pendingCommand, 22, 1, m_setPointInverse);
 
 	bitset_insert(m_pendingCommand, 28, 1, true); // Data telegram
-}
-
-void CProfile_A5_20_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
-										  const std::string& senderId,
-										  boost::shared_ptr<IMessageHandler> messageHandler)
-{
-   m_useInternalSensor = deviceConfiguration.get<std::string>("useInternalSensor") == "internal";
-   m_setPointInverse = deviceConfiguration.get<bool>("setPointInverse");
 }
 
 double CProfile_A5_20_01::byteToCelciusDegrees(const unsigned int byte)
