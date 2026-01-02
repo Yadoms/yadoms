@@ -64,6 +64,35 @@
         }
       }
     },
+    "A5-20-06": {
+      "type": "section",
+      "content": {
+        "useInternalSensor": {
+          "name": "Use internal sensor",
+          "type": "enum",
+          "values": {
+            "internal": "internal",
+            "external": "external"
+          },
+          "defaultValue": "internal"
+        },
+        "communicationInterval": {
+          "name": "Communication Interval",
+          "type": "enum",
+          "values": {
+            "auto": "auto",
+            "_2_minutes": "2_minutes",
+            "_5_minutes": "5_minutes",
+            "_10_minutes": "10_minutes",
+            "_20_minutes": "20_minutes",
+            "_30_minutes": "30_minutes",
+            "_60_minutes": "60_minutes",
+            "_120_minutes": "120_minutes"
+          },
+          "defaultValue": "auto"
+        }
+      }
+    },
     "D2-00-01": {
       "type": "section",
       "content": {

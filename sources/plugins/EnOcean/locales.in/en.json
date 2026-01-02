@@ -64,6 +64,30 @@
         }
       }
     },
+    "A5-20-06": {
+      "content": {
+        "useInternalSensor": {
+          "name": "Sensor-based control",
+          "values": {
+            "internal": "internal",
+            "external": "external"
+          }
+        },
+        "communicationInterval": {
+          "name": "Communication interval",
+          "values": {
+            "auto": "auto",
+            "_2_minutes": "2 minutes",
+            "_5_minutes": "5 minutes",
+            "_10_minutes": "10 minutes",
+            "_20_minutes": "20 minutes",
+            "_30_minutes": "30 minutes",
+            "_60_minutes": "60 minutes",
+            "_120_minutes": "120 minutes"
+          }
+        }
+      }
+    },
     "D2-00-01": {
       "content": {
         "setPointEnable": {
