@@ -176,7 +176,15 @@ IF(NOT ${Poco_FOUND})
 ENDIF()
 
 # define libraries to link with
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} )
+set(LIBS
+   ${LIBS}
+   ${Boost_LIBRARIES}
+   ${CMAKE_THREAD_LIBS_INIT}
+   ${RT_LIBRARY}
+   ${Poco_FOUND_LIBS}
+   ${OPENSSL_SSL_LIBRARY}
+   ${OPENSSL_CRYPTO_LIBRARY}
+)
 
 ##################################################################################################
 ## Sources

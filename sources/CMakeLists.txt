@@ -113,6 +113,7 @@ set(BOOST_LIBS
    chrono
    date_time
    filesystem
+   process
    regex
    thread
 )
