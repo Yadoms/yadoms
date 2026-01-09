@@ -17,11 +17,17 @@ cmake_policy(SET CMP0074 NEW)
 cmake_policy(SET CMP0077 NEW)
 cmake_policy(SET CMP0078 NEW)
 cmake_policy(SET CMP0086 NEW)
+cmake_policy(SET CMP0111 NEW)
 cmake_policy(SET CMP0144 NEW)
 cmake_policy(SET CMP0167 NEW)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+##################################################################################################
+## Options
+##################################################################################################
+option(ENABLE_ANALYSIS "Enable analysis" OFF)
 
 ##################################################################################################
 ## Extract Yadoms version from changelog.md file
@@ -107,7 +113,6 @@ set(BOOST_LIBS
    chrono
    date_time
    filesystem
-   process
    regex
    thread
 )
@@ -1488,12 +1493,14 @@ INCLUDE(CPack)
 ##################################################################################################
 ## SONARQUBE ANALYSIS
 ##################################################################################################
-include(cmake/analysis.cmake)
-analyse(
-      yadoms
-      ${YADOMS_VERSION}
-      "${YADOMS_SRC}"
-      Yadoms.SonarQube.Analysis.txt
-      Yadoms.SonarQube.Analysis.xml
-   )
-#TODO : add analysis for all libs (shared, xxx_IPC, plugins...)
+if(ENABLE_ANALYSIS)
+   include(cmake/analysis.cmake)
+   analyse(
+         yadoms
+         ${YADOMS_VERSION}
+         "${YADOMS_SRC}"
+         Yadoms.SonarQube.Analysis.txt
+         Yadoms.SonarQube.Analysis.xml
+      )
+   #TODO : add analysis for all libs (shared, xxx_IPC, plugins...)
+endif()
