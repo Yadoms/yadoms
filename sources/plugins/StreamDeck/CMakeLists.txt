@@ -45,9 +45,9 @@ if (NOT CMAKE_PACKAGE_PLATFORM_NAME MATCHES "Synology")
          )
          if(WIN32)
             set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
-               hidapi/sources/windows/hid.c
-               windows/DeviceManagerHelper.cpp
-               windows/DeviceManagerHelper.h
+               ${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/windows/hid.c
+               ${CMAKE_CURRENT_SOURCE_DIR}/windows/DeviceManagerHelper.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/windows/DeviceManagerHelper.h
             )
             source_group(sources\\windows windows/*.*)
 
@@ -58,9 +58,9 @@ if (NOT CMAKE_PACKAGE_PLATFORM_NAME MATCHES "Synology")
             list(PREPEND CMAKE_FIND_ROOT_PATH ${LIBUDEV_ROOT})
             include(FindLibUdev.cmake)
             set(STREAMDECK_PLUGIN_SOURCES ${STREAMDECK_PLUGIN_SOURCES}
-               hidapi/sources/linux/hid.c
-               linux/DeviceManagerHelper.cpp
-               linux/DeviceManagerHelper.h
+               ${CMAKE_CURRENT_SOURCE_DIR}/hidapi/sources/linux/hid.c
+               ${CMAKE_CURRENT_SOURCE_DIR}/linux/DeviceManagerHelper.cpp
+               ${CMAKE_CURRENT_SOURCE_DIR}/linux/DeviceManagerHelper.h
             )
             source_group(sources\\linux linux/*.*)
 
@@ -135,7 +135,9 @@ if (NOT CMAKE_PACKAGE_PLATFORM_NAME MATCHES "Synology")
          PLUGIN_SOURCES(StreamDeck ${STREAMDECK_PLUGIN_SOURCES})
          PLUGIN_INCLDIR(StreamDeck ${STREAMDECK_PLUGIN_INCLDIR})
          PLUGIN_LINK(StreamDeck ${STREAMDECK_PLUGIN_LINK})
-
+         
+         target_compile_definitions(StreamDeck PRIVATE "_GNU_SOURCE") # Required by HidApi
+         
          PLUGIN_POST_BUILD_COPY_DIRECTORY(StreamDeck icons_img)
    else()
       message(WARNING "StreamDeck plugin is not available. OpenCV is Missing")

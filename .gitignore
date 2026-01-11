@@ -47,3 +47,4 @@ sources/www/.vs
 /projects*
 
 /sources/external-libs/curl/build/
+*.Identifier
