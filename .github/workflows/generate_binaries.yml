@@ -111,7 +111,8 @@ jobs:
       uses: Yadoms/build-yadoms-action@v4.0.1
       id: yadoms_build_step
       with:
-          buildImage: ghcr.io/yadoms/build_for_raspberrypi:latest
+          buildImage: ghcr.io/yadoms/build_for_raspberrypi:feature-updateRPiBuild
+          # TODO à remettre buildImage: ghcr.io/yadoms/build_for_raspberrypi:latest
           registry: ghcr.io
           username: ${{ secrets.CONTAINER_GH_LOGIN }}
           password: ${{ secrets.CONTAINER_GH_TOKEN }}
