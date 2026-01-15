@@ -49,8 +49,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Yadoms build script
-        uses: Yadoms/build-yadoms-action@v4.0.2-beta.1
+        uses: Yadoms/build-yadoms-action@v4.0.2-beta.1 #TODO officialiser version
         with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
           buildImage: ${{ matrix.target.image }}
           privileged: ${{ matrix.target.privileged }}
           entrypoint: "sh /entrypoint_docker.sh" #TODO utile ?
