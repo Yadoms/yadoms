@@ -22,16 +22,17 @@ jobs:
         target:
           - name: Linux
           # TODO ghcr.io/yadoms/build_for_********:latest
-            image: ghcr.io/yadoms/build_for_linux:feature-updateRPiBuild
+            image: ghcr.io/yadoms/build_for_linux:feature-updateRPiBuild_notSureBestMethod
             artifact_prefix: Linux
             privileged: ""
           - name: Synology 218+
-            image: ghcr.io/yadoms/build_for_synology218p:latest
+          # TODO ghcr.io/yadoms/build_for_********:latest
+            image: ghcr.io/yadoms/build_for_synology218p:feature-updateRPiBuild_notSureBestMethod
             artifact_prefix: Synology218p
             privileged: ""
           - name: RaspberryPI (all versions)
           # TODO ghcr.io/yadoms/build_for_********:latest
-            image: ghcr.io/yadoms/build_for_raspberrypi:feature-updateRPiBuild
+            image: ghcr.io/yadoms/build_for_raspberrypi:feature-updateRPiBuild_notSureBestMethod
             artifact_prefix: RaspberryPI
             privileged: "--privileged"
 
