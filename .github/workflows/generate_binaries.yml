@@ -25,11 +25,6 @@ jobs:
             image: ghcr.io/yadoms/build_for_linux:feature-updateRPiBuild_notSureBestMethod
             artifact_prefix: Linux
             privileged: ""
-          - name: Synology 218+
-          # TODO ghcr.io/yadoms/build_for_********:latest
-            image: ghcr.io/yadoms/build_for_synology218p:feature-updateRPiBuild_notSureBestMethod
-            artifact_prefix: Synology218p
-            privileged: ""
           - name: RaspberryPI (all versions)
           # TODO ghcr.io/yadoms/build_for_********:latest
             image: ghcr.io/yadoms/build_for_raspberrypi:feature-updateRPiBuild_notSureBestMethod
@@ -40,9 +35,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Reco: si tes images GHCR sont privées et que GITHUB_TOKEN ne suffit pas,
-      # remplace password par secrets.CONTAINER_GH_TOKEN (et username par CONTAINER_GH_LOGIN).
-      - name: Login to GHCR
+      - name: Login to GitHub Container Repository (GHCR)
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -59,24 +52,17 @@ jobs:
           privileged: ${{ matrix.target.privileged }}
           entrypoint: "sh /entrypoint_docker.sh" #TODO utile ?
 
-      - name: Upload logs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.target.artifact_prefix }}-build_logs
-          path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
-
       - name: Archive binaries
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.artifact_prefix }}-Binaries
-          path: ./builds/package/Yadoms*
+          path: ./bin-${{ matrix.target.artifact_prefix }}/package/Yadoms*
 
       - name: Archive update packages
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.artifact_prefix }}-Update
-          path: ./builds/package/update*
+          path: ./bin-${{ matrix.target.artifact_prefix }}/package/update*
 
       - name: Cleanup Docker credentials
         if: always()
@@ -91,7 +77,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Login to GHCR
+      - name: Login to GitHub Container Repository (GHCR)
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -104,24 +90,17 @@ jobs:
           buildImage: ghcr.io/yadoms/build_for_windows:latest
           entrypoint: "powershell.exe -Command C:\\work\\build-scripts\\windows\\entrypoint_docker.ps1"  #TODO utile ?
 
-      - name: Upload logs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Windows-build_logs
-          path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
-
       - name: Archive binaries
         uses: actions/upload-artifact@v4
         with:
           name: Windows-Binaries
-          path: ./builds/package/Yadoms*
+          path: ./bin-windows/package/Yadoms*
 
       - name: Archive update packages
         uses: actions/upload-artifact@v4
         with:
           name: Windows-Update
-          path: ./builds/package/update*
+          path: ./bin-windows/package/update*
 
       - name: Cleanup Docker credentials
         if: always()
@@ -153,7 +132,7 @@ jobs:
       - name: Build RaspberryPI image (${{ matrix.label }})
         uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
         with:
-          output_folder: $GITHUB_WORKSPACE/builds/pi_image
+          output_folder: $GITHUB_WORKSPACE/bin-RaspberryPI/pi_image
           language: ${{ matrix.lang }}
           branch_or_tag_name: 2020-12-02-raspbian-buster
 
@@ -161,7 +140,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Raspbian-Lite-${{ matrix.label }}-Yadoms-Image
-          path: ./builds/pi_image/*.zip
+          path: ./bin-RaspberryPI/pi_image/*.zip
 
 
   release:

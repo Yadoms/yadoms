@@ -128,7 +128,7 @@ FIND_PACKAGE(Threads)
 
 #ensure "RT" is added after OpenSSL libs
 if(UNIX AND NOT APPLE)
-   set(LIBS ${LIBS} rt)
+   set(LIBS ${LIBS} rt z)
 endif()
 
 ## Poco dependencies
