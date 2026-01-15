@@ -9,7 +9,7 @@
 ##   Raspberry Raspbian Wheezy, g++ 4.7
 ##   MacOSx Snow Leopard 10.8, Lion 10.9, yosemite 10.10 and ElCaptain 10.11 , g++ 4.8 and more
 ##################################################################################################
-cmake_minimum_required (VERSION 3.14.0)
+cmake_minimum_required (VERSION 3.25.0)
 project (Yadoms)
 
 # Global CMake policies
@@ -27,7 +27,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 ##################################################################################################
 ## Options
 ##################################################################################################
-option(ENABLE_ANALYSIS "Enable analysis" OFF)
+option(ENABLE_ANALYSIS:BOOL "Enable analysis" OFF)
+option(YADOMS_BINARY_DIR:PATH "Output binary directory" "builds")
+
 
 ##################################################################################################
 ## Extract Yadoms version from changelog.md file
@@ -80,10 +82,8 @@ set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "YadomsCore")
 ## Project output configuration
 ##################################################################################################
 
-#define outputs
-set(YADOMS_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../builds)
-
 # First for the generic no-config case (e.g. with gcc)
+set(YADOMS_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/../${YADOMS_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR})
 set(CMAKE_PDB_OUTPUT_DIRECTORY .)
 # Second, for multi-config builds (e.g. msvc)
