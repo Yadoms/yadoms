@@ -30,7 +30,7 @@ namespace web
          std::vector<std::string> strings;
          std::vector<std::string> results;
          //split on slash or anti slash
-         split(strings, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
+         boost::split(strings, url, boost::is_any_of("/\\"), boost::token_compress_on);
          //remove empty strings
          //do not use std::empty in std::remove_if because MacOs Clang do not support it
          auto i = strings.begin();
