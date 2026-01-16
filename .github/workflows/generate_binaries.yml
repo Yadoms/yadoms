@@ -34,11 +34,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Mark workspace safe for git
-        run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE" || true
-          git config --global --add safe.directory /work || true
           
       - name: Login to GitHub Container Repository (GHCR)
         uses: docker/login-action@v3

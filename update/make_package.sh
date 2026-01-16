@@ -16,7 +16,6 @@ then
 else
 	#move to project root directory
 	cd $BASEDIR/..
-	echo "Build Yadoms update package"
 	mkdir updatepackage
 	yadomsVersion=$(grep -oP '###[[:space:]]\K.*' sources/server/changelog.md -m 1)
 	# Copy script
