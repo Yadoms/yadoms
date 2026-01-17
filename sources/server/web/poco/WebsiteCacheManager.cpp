@@ -56,7 +56,7 @@ namespace web { namespace poco {
 
       void CWebsiteCacheManager::addResponseHeaderCacheEnabled(Poco::Net::HTTPServerResponse& response, const std::string & etag) const
       {
-         response.set("Cache-Control", (boost::format("%1%, max-age=%2%") % m_cacheMode % m_cacheMaxAge).str() ); //2 minutes
+         response.set("Cache-Control", m_cacheMode + ", max-age=" + std::to_string(m_cacheMaxAge)); //2 minutes
          response.set("ETag", etag);
       }
 
