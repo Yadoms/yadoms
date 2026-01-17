@@ -112,13 +112,13 @@ jobs:
           Remove-Item "$env:USERPROFILE\.docker\config.json" -Force -ErrorAction SilentlyContinue
 
   rpi-image:
-    name: RaspberryPI image - ${{ matrix.label }}
+    name: RaspberryPI image - ${{ matrix.language.label }}
     runs-on: ubuntu-latest
     needs: build-linux
     strategy:
       fail-fast: false
       matrix:
-        include:
+        language:
           - lang: fr
             label: FR
           - lang: en
@@ -131,17 +131,17 @@ jobs:
           name: RaspberryPI-Binaries
           path: ./
 
-      - name: Build RaspberryPI image (${{ matrix.label }})
+      - name: Build RaspberryPI image (${{ matrix.language.label }})
         uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
         with:
           output_folder: $GITHUB_WORKSPACE/bin-RaspberryPI/pi_image
-          language: ${{ matrix.lang }}
+          language: ${{ matrix.language.lang }}
           branch_or_tag_name: 2020-12-02-raspbian-buster
 
-      - name: Archive RPi image (${{ matrix.label }})
+      - name: Archive RPi image (${{ matrix.language.label }})
         uses: actions/upload-artifact@v4
         with:
-          name: Raspbian-Lite-${{ matrix.label }}-Yadoms-Image
+          name: Raspbian-Lite-${{ matrix.language.label }}-Yadoms-Image
           path: ./bin-RaspberryPI/pi_image/*.zip
 
 
