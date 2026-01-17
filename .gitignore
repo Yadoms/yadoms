@@ -48,3 +48,4 @@ sources/www/.vs
 
 /sources/external-libs/curl/build/
 *.Identifier
+/builds/

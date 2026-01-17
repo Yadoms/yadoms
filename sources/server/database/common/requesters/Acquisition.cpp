@@ -245,7 +245,7 @@ namespace database
 				throw shared::exception::CEmptyResult(std::string("Cannot retrieve acquisition for KeywordId=")
 													  + std::to_string(keywordId)
 													  + " and date="
-													  + boost::posix_time::to_simple_string(date)
+													  + boost::posix_time::to_simple_string(time)
 													  + " in database");
 			}
 
