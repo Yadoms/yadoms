@@ -3,6 +3,7 @@
 #include <Manager.h>
 #include "OpenZWaveCommandClass.h"
 #include <shared/plugin/yPluginApi/StandardUnits.h>
+#include <shared/StringExtension.h>
 
 std::string COpenZWaveHelpers::GenerateKeywordName(OpenZWave::ValueID& value)
 {
@@ -90,8 +91,7 @@ void COpenZWaveHelpers::GetEnumValueInfo(OpenZWave::ValueID& value, std::string 
 
 void COpenZWaveHelpers::RetreiveOpenZWaveIds(const std::string& device, const std::string& keyword, uint32& homeId, uint8& nodeId, uint8& instance)
 {
-   std::vector<std::string> splittedDevice;
-   boost::split(splittedDevice, device, boost::is_any_of("."), boost::token_compress_on);
+   const auto splittedDevice = shared::CStringExtension::splitAnyOfAndCompress(device, ".");
    if (splittedDevice.size() < 2)
    {
       throw shared::exception::CException("The device id is invalid : not matching pattern : <homeId>.<nodeId>");
@@ -100,8 +100,7 @@ void COpenZWaveHelpers::RetreiveOpenZWaveIds(const std::string& device, const st
    nodeId = static_cast<uint8>(atoi(splittedDevice[1].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
 
                                                                  //instance <class>.<keyword>.<instance>
-   std::vector<std::string> splittedKeyword;
-   boost::split(splittedKeyword, keyword, boost::is_any_of("."), boost::token_compress_on);
+   const auto splittedKeyword = shared::CStringExtension::splitAnyOfAndCompress(keyword, ".");
    if (splittedKeyword.size() > 2)
       instance = static_cast<uint8>(atoi(splittedKeyword[2].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
    else

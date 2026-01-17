@@ -4,9 +4,7 @@
 #include "web/rest/Result.h"
 #include <boost/algorithm/string.hpp>
 #include <Poco/URI.h>
-#include <string>
-#include <string_view>
-#include <vector>
+#include <shared/StringExtension.h>
 
 #include <utility>
 
@@ -28,45 +26,11 @@ namespace web
 			return m_restBaseKeyword;
 		}
 
-
-		std::vector<std::string> CRestRequestHandler::splitAnyOfAndCompress(std::string_view input,
-																			std::string_view seps)
-		{
-			std::vector<std::string> result;
-			std::string token;
-
-			auto is_sep = [&](char c) {
-				return seps.find(c) != std::string_view::npos;
-			};
-
-			for (char c : input)
-			{
-				if (is_sep(c))
-				{
-					if (!token.empty())            // compression => ignore vides
-					{
-						result.push_back(std::move(token));
-						token.clear();
-					}
-				}
-				else
-				{
-					token += c;
-				}
-			}
-
-			if (!token.empty())
-				result.push_back(std::move(token));
-
-			return result;
-		}
-
-
 		std::vector<std::string> CRestRequestHandler::parseUrl(const std::string& url)
 		{
 			std::vector<std::string> results;
 			//split on slash or anti slash
-			auto strings = splitAnyOfAndCompress(url, "/\\");
+			auto strings = shared::CStringExtension::splitAnyOfAndCompress(url, "/\\");
 			//remove empty strings
 			//do not use std::empty in std::remove_if because MacOs Clang do not support it
 			auto i = strings.begin();

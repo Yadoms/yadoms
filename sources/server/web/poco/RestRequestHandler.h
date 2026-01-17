@@ -43,8 +43,6 @@ namespace web
 			const std::string& getRestKeyword() const;
 
 		private:
-			static std::vector<std::string> splitAnyOfAndCompress(std::string_view input,
-																  std::string_view seps);
 			//--------------------------------------   
 			///\brief         Parse a rest URL and extract each parameters
 			///\param [in]    url   the url to parse

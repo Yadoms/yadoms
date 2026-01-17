@@ -310,8 +310,7 @@ namespace pluginSystem
                                                      const std::string& deviceName,
                                                      const std::string& commaSeparatedValues) const
       {
-         std::vector<std::string> enumValues;
-         boost::split(enumValues, commaSeparatedValues, boost::is_any_of(","));
+         const auto enumValues = shared::CStringExtension::splitAnyOfAndCompress(commaSeparatedValues, ",");
          for (auto& enumValue : enumValues)
             boost::trim(enumValue);
 

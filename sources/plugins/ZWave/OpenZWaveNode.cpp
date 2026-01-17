@@ -3,6 +3,7 @@
 #include "OpenZWaveNodeKeywordFactory.h"
 #include "OpenZWaveHelpers.h"
 #include "OpenZWaveNodePluginFactory.h"
+#include <shared/StringExtension.h>
 
 COpenZWaveNode::COpenZWaveNode()
    : m_homeId(0), m_nodeId(0), m_configuration(0,0)
@@ -169,8 +170,7 @@ void COpenZWaveNode::getPluginExtraQueries(std::vector<std::string> & extraQueri
 bool COpenZWaveNode::onExtraQuery(const std::string & query, const boost::shared_ptr<shared::CDataContainer>&data)
 {
    //qeury must be: pluginName.extraQuery
-   std::vector<std::string> result;
-   boost::split(result, query, boost::is_any_of("_"), boost::token_compress_on);
+   const auto result = shared::CStringExtension::splitAnyOfAndCompress(query, "_");
    if (result.size() == 2)
    {
       for (auto i = m_plugins.begin(); i != m_plugins.end(); ++i)

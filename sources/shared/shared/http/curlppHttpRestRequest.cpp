@@ -7,6 +7,7 @@
 #include <curlpp/Infos.hpp>
 #include <shared/Log.h>
 #include <shared/exception/HttpException.hpp>
+#include <shared/StringExtension.h>
 #include "Codes.h"
 #include "curlppHelpers.h"
 
@@ -193,8 +194,7 @@ namespace shared
 
       std::map<std::string, std::string> CCurlppHttpRestRequest::formatResponseHeaders(const std::string& headersBuffer) const
       {
-         std::vector<std::string> headerKeyValues;
-         split(headerKeyValues, headersBuffer, boost::is_any_of("\n"), boost::algorithm::token_compress_on);
+         const auto headerKeyValues = shared::CStringExtension::splitAnyOfAndCompress(headersBuffer, "\n");
 
          std::map<std::string, std::string> responseHeaders;
          for (const auto& headerKeyValue : headerKeyValues)
