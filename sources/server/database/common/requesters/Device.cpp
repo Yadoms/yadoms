@@ -87,7 +87,9 @@ namespace database
 				adapters::CDeviceAdapter adapter;
 				m_databaseRequester->queryEntities(&adapter, *qSelect);
 				if (adapter.getResults().empty())
-					throw shared::exception::CEmptyResult((boost::format("Cannot retrieve Device Id=%1% in database") % name).str());
+					throw shared::exception::CEmptyResult(std::string("Cannot retrieve Device Id=")
+														  + name
+														  + " in database";
 
 				return adapter.getResults()[0];
 			}
