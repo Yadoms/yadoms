@@ -134,31 +134,31 @@ namespace automation
 		}
 		catch (shared::exception::CEmptyResult& e)
 		{
-			const auto error(std::string("Invalid rule ") + ruleLabel + ", element not found in database : " + e.what());
+			const auto error = std::string("Invalid rule ") + ruleLabel + ", element not found in database : " + e.what());
 			recordRuleStopped(ruleId, error);
 			throw CRuleException(error);
 		}
 		catch (shared::exception::CInvalidParameter& e)
 		{
-			const auto error(std::string("Invalid rule ") + ruleLabel + " configuration, invalid parameter : " + e.what());
+			const auto error = std::string("Invalid rule ") + ruleLabel + " configuration, invalid parameter : " + e.what());
 			recordRuleStopped(ruleId, error);
 			throw CRuleException(error);
 		}
 		catch (shared::exception::COutOfRange& e)
 		{
-			const auto error(std::string("Invalid rule ") + ruleLabel + " configuration, out of range : " + e.what());
+			const auto error = std::string("Invalid rule ") + ruleLabel + " configuration, out of range : " + e.what());
 			recordRuleStopped(ruleId, error);
 			throw CRuleException(error);
 		}
 		catch (std::exception& e)
 		{
-			const auto error(std::string("Failed to start rule ") + ruleLabel + " : " + e.what());
+			const auto error = std::string("Failed to start rule ") + ruleLabel + " : " + e.what());
 			recordRuleStopped(ruleId, error);
 			throw CRuleException(error);
 		}
 		catch (...)
 		{
-			const auto error(std::string("Failed to start rule ") + ruleLabel + " : unknown error");
+			const auto error = std::string("Failed to start rule ") + ruleLabel + " : unknown error");
 			recordRuleStopped(ruleId, error);
 			throw CRuleException(error);
 		}
