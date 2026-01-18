@@ -89,7 +89,7 @@ namespace database
 				if (adapter.getResults().empty())
 					throw shared::exception::CEmptyResult(std::string("Cannot retrieve Device Id=")
 														  + name
-														  + " in database";
+														  + " in database");
 
 				return adapter.getResults()[0];
 			}
