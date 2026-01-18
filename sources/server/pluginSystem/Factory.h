@@ -8,7 +8,6 @@
 #include <shared/versioning/SemVer.h>
 #include "IPathProvider.h"
 #include "IIpcAdapter.h"
-#include <IPathProvider.h>
 #include "yPluginApiImplementation.h"
 
 namespace pluginSystem
