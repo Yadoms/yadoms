@@ -4,23 +4,27 @@
 
 namespace plugin_cpp_api
 {
-   CCommandLine::CCommandLine(int argc, char **argv)
-   {
-      static const auto NbExpectedArguments = 2;
+	CCommandLine::CCommandLine(int argc, char** argv)
+	{
+		static const auto NbExpectedArguments = 2;
 
-      if (argc != NbExpectedArguments)
-         throw std::invalid_argument((boost::format("Invalid arguments number (%1%), %2% expected") % argc % NbExpectedArguments).str());
+		if (argc != NbExpectedArguments)
+			throw std::invalid_argument(std::string("Invalid arguments number (")
+										+ std::to_string(argc)
+										+ "), "
+										+ std::to_string(NbExpectedArguments)
+										+ " expected");
 
-      m_yPluginApiAccessorId = argv[1];
-   }
+		m_yPluginApiAccessorId = argv[1];
+	}
 
-   CCommandLine::~CCommandLine()
-   {
-   }
+	CCommandLine::~CCommandLine()
+	{
+	}
 
-   std::string CCommandLine::yPluginApiAccessorId() const
-   {
-      return m_yPluginApiAccessorId;
-   }
+	std::string CCommandLine::yPluginApiAccessorId() const
+	{
+		return m_yPluginApiAccessorId;
+	}
 
 } // namespace plugin_cpp_api

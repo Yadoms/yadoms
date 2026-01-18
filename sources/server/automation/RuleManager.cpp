@@ -146,7 +146,7 @@ namespace automation
 		}
 		catch (shared::exception::COutOfRange& e)
 		{
-			const auto error(std::string("Invalid rule ") + ruleLabel + " configuration, out of range : ") + e.what());
+			const auto error(std::string("Invalid rule ") + ruleLabel + " configuration, out of range : " + e.what());
 			recordRuleStopped(ruleId, error);
 			throw CRuleException(error);
 		}
