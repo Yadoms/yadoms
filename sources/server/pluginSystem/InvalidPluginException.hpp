@@ -34,7 +34,7 @@ namespace pluginSystem
 			:CException(std::string("Invalid plugin found "
 									+ plugin
 									+ " : "
-									+ message)
+									+ message))
 		{
 		}
 
