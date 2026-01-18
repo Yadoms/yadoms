@@ -1138,7 +1138,7 @@ namespace shared
 		{
 			const double b = v.GetDouble();
 			if (b< -FLT_MAX || b>FLT_MAX)
-				throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
+				throw exception::COutOfRange(std::to_string(b) + " is not assignable to float/single");
 			return static_cast<float>(b);
 		}
 
@@ -1146,7 +1146,7 @@ namespace shared
 		{
 			const int b = v.GetInt();
 			if (b< -FLT_MAX || b > FLT_MAX)
-				throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
+				throw exception::COutOfRange(std::to_string(b) + " is not assignable to float/single");
 			return static_cast<float>(b);
 		}
 
@@ -1154,7 +1154,7 @@ namespace shared
 		{
 			const unsigned int b = v.GetUint();
 			if (b< -FLT_MAX || b>FLT_MAX)
-				throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
+				throw exception::COutOfRange(std::to_string(b) + " is not assignable to float/single");
 			return static_cast<float>(b);
 		}
 
@@ -1162,7 +1162,7 @@ namespace shared
 		{
 			const int64_t b = v.GetInt64();
 			if (b< -FLT_MAX || b>FLT_MAX)
-				throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
+				throw exception::COutOfRange(std::to_string(b) + " is not assignable to float/single");
 			return static_cast<float>(b);
 		}
 
@@ -1170,7 +1170,7 @@ namespace shared
 		{
 			const uint64_t b = v.GetUint64();
 			if (b< -FLT_MAX || b>FLT_MAX)
-				throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
+				throw exception::COutOfRange(std::to_string(b) + " is not assignable to float/single");
 			return static_cast<float>(b);
 		}
 					   
