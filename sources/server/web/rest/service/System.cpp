@@ -14,381 +14,381 @@
 
 namespace web
 {
-   namespace rest
-   {
-      namespace service
-      {
-         std::string CSystem::m_restKeyword = std::string("system");
-         shared::CDataContainer CSystem::m_virtualDevicesSupportedCapacities;
+	namespace rest
+	{
+		namespace service
+		{
+			std::string CSystem::m_restKeyword = std::string("system");
+			shared::CDataContainer CSystem::m_virtualDevicesSupportedCapacities;
 
-         CSystem::CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
-                          boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister)
-            : m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>()),
-              m_timezoneDatabase(timezoneDatabase),
-              m_usbDevicesLister(usbDevicesLister)
-         {
-         }
-
-
-         void CSystem::configureDispatcher(CRestDispatcher& dispatcher)
-         {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBinding);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation
-            );
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"), CSystem
-                                        ::getVirtualDevicesSupportedCapacities);
-         }
+			CSystem::CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
+							 boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister)
+				: m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>()),
+				m_timezoneDatabase(timezoneDatabase),
+				m_usbDevicesLister(usbDevicesLister)
+			{
+			}
 
 
-         const std::string& CSystem::getRestKeyword()
-         {
-            return m_restKeyword;
-         }
+			void CSystem::configureDispatcher(CRestDispatcher& dispatcher)
+			{
+				REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBinding);
+				REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation
+				);
+				REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime);
+				REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"), CSystem
+											::getVirtualDevicesSupportedCapacities);
+			}
 
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getBinding(
-            const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
-         {
-            if (parameters.size() > 2)
-            {
-               const auto query = parameters[2];
+			const std::string& CSystem::getRestKeyword()
+			{
+				return m_restKeyword;
+			}
 
-               if (boost::iequals(query, "serialPorts"))
-                  return getSerialPorts();
-               if (boost::iequals(query, "usbDevices"))
-                  return getUsbDevices(requestContent);
-               if (boost::iequals(query, "NetworkInterfaces"))
-                  return getNetworkInterfaces(true);
-               if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
-                  return getNetworkInterfaces(false);
-               if (boost::iequals(query, "platformIsWindows"))
-                  return platformIs("windows");
-               if (boost::iequals(query, "platformIsLinux"))
-                  return platformIs("linux");
-               if (boost::iequals(query, "platformIsMac"))
-                  return platformIs("mac");
-               if (boost::iequals(query, "supportedTimezones"))
-                  return getSupportedTimezones();
-               return CResult::GenerateError("unsupported binding query : " + query);
-            }
 
-            return CResult::GenerateError("Cannot retrieve url parameters");
-         }
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getBinding(
+				const std::vector<std::string>& parameters,
+				const std::string& requestContent) const
+			{
+				if (parameters.size() > 2)
+				{
+					const auto query = parameters[2];
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSerialPorts() const
-         {
-            try
-            {
-               YADOMS_LOG(debug) << "List serial ports...";
-               const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
+					if (boost::iequals(query, "serialPorts"))
+						return getSerialPorts();
+					if (boost::iequals(query, "usbDevices"))
+						return getUsbDevices(requestContent);
+					if (boost::iequals(query, "NetworkInterfaces"))
+						return getNetworkInterfaces(true);
+					if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
+						return getNetworkInterfaces(false);
+					if (boost::iequals(query, "platformIsWindows"))
+						return platformIs("windows");
+					if (boost::iequals(query, "platformIsLinux"))
+						return platformIs("linux");
+					if (boost::iequals(query, "platformIsMac"))
+						return platformIs("mac");
+					if (boost::iequals(query, "supportedTimezones"))
+						return getSupportedTimezones();
+					return CResult::GenerateError("unsupported binding query : " + query);
+				}
 
-               shared::CDataContainer result;
-               for (const auto& serialPort : *serialPorts)
-               {
-                  result.set(serialPort.first, serialPort.second, 0x00);
-                  //in case of key contains a dot, just ensure the full key is taken into account
-               }
+				return CResult::GenerateError("Cannot retrieve url parameters");
+			}
 
-               return CResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in retrieving all serial ports");
-            }
-         }
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSerialPorts() const
+			{
+				try
+				{
+					YADOMS_LOG(debug) << "List serial ports...";
+					const auto serialPorts = hardware::serial::CSerialPortsLister::listSerialPorts();
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(
-            const std::string& requestContent) const
-         {
-            try
-            {
-               const auto request = shared::CDataContainer::make(requestContent);
+					shared::CDataContainer result;
+					for (const auto& serialPort : *serialPorts)
+					{
+						result.set(serialPort.first, serialPort.second, 0x00);
+						//in case of key contains a dot, just ensure the full key is taken into account
+					}
 
-               auto existingDevices = m_usbDevicesLister->listUsbDevices();
-               YADOMS_LOG(debug) << "USB existing devices :";
-               for (const auto& device : existingDevices)
-               {
-                  YADOMS_LOG(debug) << "  - "
-                     << "vid=" << device->vendorId()
-                     << ", pid=" << device->productId()
-                     << ", name=" << device->yadomsFriendlyName()
-                     << ", connectionId=" << device->nativeConnectionString()
-                     << ", serial=" << device->serialNumber();
-               }
+					return CResult::GenerateSuccess(result);
+				}
+				catch (std::exception& ex)
+				{
+					return CResult::GenerateError(ex);
+				}
+				catch (...)
+				{
+					return CResult::GenerateError("unknown exception in retrieving all serial ports");
+				}
+			}
 
-               // If request content is empty, return all existing USB devices
-               if (request->empty())
-               {
-                  shared::CDataContainer result;
-                  for (const auto& device : existingDevices)
-                     result.set(device->nativeConnectionString(), device->yadomsFriendlyName(), 0x00);
-                  //in case of key contains a dot, just ensure the full key is taken into account
-                  return CResult::GenerateSuccess(result);
-               }
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(
+				const std::string& requestContent) const
+			{
+				try
+				{
+					const auto request = shared::CDataContainer::make(requestContent);
 
-               // Filter USB devices by request content
+					auto existingDevices = m_usbDevicesLister->listUsbDevices();
+					YADOMS_LOG(debug) << "USB existing devices :";
+					for (const auto& device : existingDevices)
+					{
+						YADOMS_LOG(debug) << "  - "
+							<< "vid=" << device->vendorId()
+							<< ", pid=" << device->productId()
+							<< ", name=" << device->yadomsFriendlyName()
+							<< ", connectionId=" << device->nativeConnectionString()
+							<< ", serial=" << device->serialNumber();
+					}
 
-               const auto requestedDevices = request->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("oneOf");
-               shared::CDataContainer result;
-               YADOMS_LOG(debug) << "USB requested devices :";
-               for (const auto& requestedDevice : requestedDevices)
-               {
-                  YADOMS_LOG(debug) << "  - "
-                     << "vid=" << requestedDevice->get<int>("vendorId")
-                     << ", pid=" << requestedDevice->get<int>("productId");
+					// If request content is empty, return all existing USB devices
+					if (request->empty())
+					{
+						shared::CDataContainer result;
+						for (const auto& device : existingDevices)
+							result.set(device->nativeConnectionString(), device->yadomsFriendlyName(), 0x00);
+						//in case of key contains a dot, just ensure the full key is taken into account
+						return CResult::GenerateSuccess(result);
+					}
 
-                  for (const auto& existingDevice : existingDevices)
-                  {
-                     if (existingDevice->vendorId() == requestedDevice->get<int>("vendorId")
-                        && existingDevice->productId() == requestedDevice->get<int>("productId"))
-                     {
-                        //in case of key contains a dot, just ensure the full key is taken into account
-                        result.set(existingDevice->nativeConnectionString(), existingDevice->yadomsFriendlyName(),
-                                   0x00);
-                     }
-                  }
-               }
+					// Filter USB devices by request content
 
-               return CResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in retrieving filtered USB devices");
-            }
-         }
+					const auto requestedDevices = request->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("oneOf");
+					shared::CDataContainer result;
+					YADOMS_LOG(debug) << "USB requested devices :";
+					for (const auto& requestedDevice : requestedDevices)
+					{
+						YADOMS_LOG(debug) << "  - "
+							<< "vid=" << requestedDevice->get<int>("vendorId")
+							<< ", pid=" << requestedDevice->get<int>("productId");
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(
-            const bool includeLoopback) const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               auto networkInterfaces = Poco::Net::NetworkInterface::list();
-               for (const auto& nit : networkInterfaces)
-               {
-                  if (nit.address().isLoopback() && !includeLoopback)
-                     continue;
+						for (const auto& existingDevice : existingDevices)
+						{
+							if (existingDevice->vendorId() == requestedDevice->get<int>("vendorId")
+								&& existingDevice->productId() == requestedDevice->get<int>("productId"))
+							{
+								//in case of key contains a dot, just ensure the full key is taken into account
+								result.set(existingDevice->nativeConnectionString(), existingDevice->yadomsFriendlyName(),
+										   0x00);
+							}
+						}
+					}
 
-                  result.set(nit.name(),
-                             (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
-                             0x00); //in case of key contains a dot, just ensure the full key is taken into account
-               }
-               return CResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in retrieving all serial ports");
-            }
-         }
+					return CResult::GenerateSuccess(result);
+				}
+				catch (std::exception& ex)
+				{
+					return CResult::GenerateError(ex);
+				}
+				catch (...)
+				{
+					return CResult::GenerateError("unknown exception in retrieving filtered USB devices");
+				}
+			}
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSystemInformation(
-            const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
-               result.set("yadoms", m_runningInformation->getSoftwareVersion().getContainer());
-               result.set("startupTime", m_runningInformation->getStartupDateTime());
-               result.set("executablePath", m_runningInformation->getExecutablePath());
-               result.set("serverReady", m_runningInformation->isServerFullyLoaded());
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(
+				const bool includeLoopback) const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					auto networkInterfaces = Poco::Net::NetworkInterface::list();
+					for (const auto& nit : networkInterfaces)
+					{
+						if (nit.address().isLoopback() && !includeLoopback)
+							continue;
 
-               if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
-                  result.set("developerMode", "true");
+						result.set(nit.name(),
+								   nit.displayName() + " (" + nit.address().toString() + ")",
+								   0x00); //in case of key contains a dot, just ensure the full key is taken into account
+					}
+					return CResult::GenerateSuccess(result);
+				}
+				catch (std::exception& ex)
+				{
+					return CResult::GenerateError(ex);
+				}
+				catch (...)
+				{
+					return CResult::GenerateError("unknown exception in retrieving all serial ports");
+				}
+			}
 
-               return CResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in retrieving system information");
-            }
-         }
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSystemInformation(
+				const std::vector<std::string>& parameters,
+				const std::string& requestContent) const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
+					result.set("yadoms", m_runningInformation->getSoftwareVersion().getContainer());
+					result.set("startupTime", m_runningInformation->getStartupDateTime());
+					result.set("executablePath", m_runningInformation->getExecutablePath());
+					result.set("serverReady", m_runningInformation->isServerFullyLoaded());
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getCurrentTime(
-            const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               result.set("now", shared::currentTime::Provider().now());
-               return CResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in retrieving system information");
-            }
-         }
+					if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
+						result.set("developerMode", "true");
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getVirtualDevicesSupportedCapacities(
-            const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               result.set("capacities", getVirtualDevicesSupportedCapacities());
-               return CResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in retrieving system information");
-            }
-         }
+					return CResult::GenerateSuccess(result);
+				}
+				catch (std::exception& ex)
+				{
+					return CResult::GenerateError(ex);
+				}
+				catch (...)
+				{
+					return CResult::GenerateError("unknown exception in retrieving system information");
+				}
+			}
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::platformIs(
-            const std::string& refPlatform) const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               result.set("result", tools::COperatingSystem::getName() == refPlatform);
-               return CResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in retrieving system information");
-            }
-         }
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getCurrentTime(
+				const std::vector<std::string>& parameters,
+				const std::string& requestContent) const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					result.set("now", shared::currentTime::Provider().now());
+					return CResult::GenerateSuccess(result);
+				}
+				catch (std::exception& ex)
+				{
+					return CResult::GenerateError(ex);
+				}
+				catch (...)
+				{
+					return CResult::GenerateError("unknown exception in retrieving system information");
+				}
+			}
 
-         void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
-                                                          const std::vector<shared::plugin::yPluginApi::EMeasureType>&
-                                                          acceptedMeasureTypes)
-         {
-            auto capacityContainer = shared::CDataContainer::make();
-            capacityContainer->set("name", capacity.getName());
-            capacityContainer->set("unit", capacity.getUnit());
-            capacityContainer->set("dataType", capacity.getType());
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getVirtualDevicesSupportedCapacities(
+				const std::vector<std::string>& parameters,
+				const std::string& requestContent) const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					result.set("capacities", getVirtualDevicesSupportedCapacities());
+					return CResult::GenerateSuccess(result);
+				}
+				catch (std::exception& ex)
+				{
+					return CResult::GenerateError(ex);
+				}
+				catch (...)
+				{
+					return CResult::GenerateError("unknown exception in retrieving system information");
+				}
+			}
 
-            if (!acceptedMeasureTypes.empty())
-            {
-               std::vector<std::string> strAcceptedMeasureTypes;
-               std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(),
-                              std::back_inserter(strAcceptedMeasureTypes),
-                              [](const auto& acceptedMeasureType) -> std::string
-                              {
-                                 return acceptedMeasureType.toString();
-                              });
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::platformIs(
+				const std::string& refPlatform) const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					result.set("result", tools::COperatingSystem::getName() == refPlatform);
+					return CResult::GenerateSuccess(result);
+				}
+				catch (std::exception& ex)
+				{
+					return CResult::GenerateError(ex);
+				}
+				catch (...)
+				{
+					return CResult::GenerateError("unknown exception in retrieving system information");
+				}
+			}
 
-               capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
-            }
+			void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
+															 const std::vector<shared::plugin::yPluginApi::EMeasureType>&
+															 acceptedMeasureTypes)
+			{
+				auto capacityContainer = shared::CDataContainer::make();
+				capacityContainer->set("name", capacity.getName());
+				capacityContainer->set("unit", capacity.getUnit());
+				capacityContainer->set("dataType", capacity.getType());
 
-            m_virtualDevicesSupportedCapacities.set(capacity.getName(), capacityContainer);
-         }
+				if (!acceptedMeasureTypes.empty())
+				{
+					std::vector<std::string> strAcceptedMeasureTypes;
+					std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(),
+								   std::back_inserter(strAcceptedMeasureTypes),
+								   [](const auto& acceptedMeasureType) -> std::string
+					{
+						return acceptedMeasureType.toString();
+					});
 
-         const shared::CDataContainer& CSystem::getVirtualDevicesSupportedCapacities()
-         {
-            if (m_virtualDevicesSupportedCapacities.empty())
-            {
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ApparentPower());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ArmingAlarm());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::BatteryLevel());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::CameraMove());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGB());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGBW());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter(),
-                                                  std::vector<shared::plugin::yPluginApi::EMeasureType>
-                                                  {
-                                                     shared::plugin::yPluginApi::EMeasureType::kAbsolute,
-                                                     shared::plugin::yPluginApi::EMeasureType::kIncrement,
-                                                     shared::plugin::yPluginApi::EMeasureType::kCumulative
-                                                  });
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Current());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Curtain());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Dimmable());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Direction());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Distance());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Duration());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Energy(),
-                                                  std::vector<shared::plugin::yPluginApi::EMeasureType>
-                                                  {
-                                                     shared::plugin::yPluginApi::EMeasureType::kAbsolute,
-                                                     shared::plugin::yPluginApi::EMeasureType::kIncrement,
-                                                     shared::plugin::yPluginApi::EMeasureType::kCumulative
-                                                  });
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Event());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Frequency());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Humidity());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Illumination());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Load());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Power());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::PowerFactor());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Pressure());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rain(),
-                                                  std::vector<shared::plugin::yPluginApi::EMeasureType>
-                                                  {
-                                                     shared::plugin::yPluginApi::EMeasureType::kIncrement,
-                                                     shared::plugin::yPluginApi::EMeasureType::kCumulative
-                                                  });
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::RainRate());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rssi());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Speed());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Switch());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Temperature());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Text());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::UpDownStop());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Uv());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Voltage());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Volume());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::WeatherCondition());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Weight());
-            }
+					capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
+				}
 
-            return m_virtualDevicesSupportedCapacities;
-         }
+				m_virtualDevicesSupportedCapacities.set(capacity.getName(), capacityContainer);
+			}
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSupportedTimezones() const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               for (const auto& supportedTimezone : m_timezoneDatabase->allIds())
-               {
-                  result.set(supportedTimezone, supportedTimezone);
-               }
+			const shared::CDataContainer& CSystem::getVirtualDevicesSupportedCapacities()
+			{
+				if (m_virtualDevicesSupportedCapacities.empty())
+				{
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ApparentPower());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ArmingAlarm());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::BatteryLevel());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::CameraMove());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGB());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGBW());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter(),
+													   std::vector<shared::plugin::yPluginApi::EMeasureType>
+					{
+						shared::plugin::yPluginApi::EMeasureType::kAbsolute,
+							shared::plugin::yPluginApi::EMeasureType::kIncrement,
+							shared::plugin::yPluginApi::EMeasureType::kCumulative
+					});
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Current());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Curtain());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Dimmable());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Direction());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Distance());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Duration());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Energy(),
+													   std::vector<shared::plugin::yPluginApi::EMeasureType>
+					{
+						shared::plugin::yPluginApi::EMeasureType::kAbsolute,
+							shared::plugin::yPluginApi::EMeasureType::kIncrement,
+							shared::plugin::yPluginApi::EMeasureType::kCumulative
+					});
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Event());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Frequency());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Humidity());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Illumination());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Load());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Power());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::PowerFactor());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Pressure());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rain(),
+													   std::vector<shared::plugin::yPluginApi::EMeasureType>
+					{
+						shared::plugin::yPluginApi::EMeasureType::kIncrement,
+							shared::plugin::yPluginApi::EMeasureType::kCumulative
+					});
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::RainRate());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rssi());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Speed());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Switch());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Temperature());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Text());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::UpDownStop());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Uv());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Voltage());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Volume());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::WeatherCondition());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Weight());
+				}
 
-               return CResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in retrieving all serial ports");
-            }
-         }
-      } //namespace service
-   } //namespace rest
+				return m_virtualDevicesSupportedCapacities;
+			}
+
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSupportedTimezones() const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					for (const auto& supportedTimezone : m_timezoneDatabase->allIds())
+					{
+						result.set(supportedTimezone, supportedTimezone);
+					}
+
+					return CResult::GenerateSuccess(result);
+				}
+				catch (std::exception& ex)
+				{
+					return CResult::GenerateError(ex);
+				}
+				catch (...)
+				{
+					return CResult::GenerateError("unknown exception in retrieving all serial ports");
+				}
+			}
+		} //namespace service
+	} //namespace rest
 } //namespace web 
