@@ -180,7 +180,7 @@ namespace automation
 				boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
 				m_onReceiveHook.clear();
 				throw std::runtime_error(std::string("No answer from interpreter when sending message ")
-										 + pbMsg.OneOf_case());
+										 + std::to_string(pbMsg.OneOf_case()));
 			}
 
 			onReceiveFunction(receivedEvtHandler.getEventData<const interpreter_IPC::toYadoms::msg>());
@@ -214,7 +214,7 @@ namespace automation
 			case interpreter_IPC::toYadoms::msg::kNotifiyScriptStopped: processNotifyScriptStopped(toYadomsProtoBuffer.notifiyscriptstopped());
 				break;
 			default:
-				throw shared::exception::CInvalidParameter(std::string("message : unknown message type ") + toYadomsProtoBuffer.OneOf_case());
+				throw shared::exception::CInvalidParameter(std::string("message : unknown message type ") + std::to_string(toYadomsProtoBuffer.OneOf_case()));
 			}
 		}
 
