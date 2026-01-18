@@ -42,8 +42,11 @@ namespace message
                                   {
                                       answer = std::move(esp3Packet);
                                   }))
-            throw std::runtime_error(
-                (boost::format("Fail to send message to %1% : no answer to \"%2%\"") % message.destinationId() % messageName).str());
+            throw std::runtime_error(std::string("Fail to send message to ")
+                                     + message.destinationId() 
+                                     + " : no answer to \""
+                                     + messageName
+                                     + "\"");
 
         if (const auto response = boost::make_shared<response::CReceivedMessage>(answer);
             response->returnCode() != response::CReceivedMessage::RET_OK)

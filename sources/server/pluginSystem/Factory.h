@@ -1,9 +1,12 @@
 #pragma once
 #include "IFactory.h"
 #include "InstanceStateHandler.h"
+#include <shared/ILocation.h>
 #include <shared/process/IProcess.h>
 #include <shared/process/ICommandLine.h>
 #include <shared/process/IExternalProcessLogger.h>
+#include <shared/versioning/SemVer.h>
+#include "IPathProvider.h"
 #include "IIpcAdapter.h"
 #include <IPathProvider.h>
 #include "yPluginApiImplementation.h"
