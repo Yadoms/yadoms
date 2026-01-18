@@ -11,490 +11,490 @@
 
 namespace automation
 {
-   CRuleManager::CRuleManager(boost::shared_ptr<interpreter::IManager> interpreterManager,
-                              boost::shared_ptr<database::IDataProvider> dataProvider,
-                              boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-                              boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
-                              boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-                              boost::shared_ptr<shared::ILocation> location,
-                              boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
-      : m_interpreterManager(std::move(interpreterManager)),
-        m_pluginGateway(std::move(pluginGateway)),
-        m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
-        m_dbDeviceRequester(dataProvider->getDeviceRequester()),
-        m_keywordAccessLayer(std::move(keywordAccessLayer)),
-        m_dbRecipientRequester(dataProvider->getRecipientRequester()),
-        m_eventLogger(std::move(eventLogger)),
-        m_generalInfo(boost::make_shared<script::CGeneralInfo>(location, timezoneProvider)),
-        m_ruleRequester(dataProvider->getRuleRequester()),
-        m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-        m_yadomsShutdown(false)
-   {
-      m_interpreterManager->setOnScriptStoppedFct(
-         [&](int scriptInstanceId, const std::string& error)
-         {
-            onRuleStopped(scriptInstanceId,
-                          error);
-         });
-   }
-
-   CRuleManager::~CRuleManager()
-   {
-      if (!m_yadomsShutdown)
-         CRuleManager::stop();
-   }
-
-   void CRuleManager::start()
-   {
-      startAllRules();
-   }
-
-   void CRuleManager::stop()
-   {
-      m_yadomsShutdown = true;
-      stopRules();
-   }
-
-   void CRuleManager::startAllRules()
-   {
-      boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-
-      if (!startRules(m_ruleRequester->getRules()))
-         YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
-   }
-
-   bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::entities::CRule>>& rules)
-   {
-      auto allRulesStarted = true;
-      for (const auto& rule : rules)
-      {
-         try
-         {
-            // Start only autoStarted rules if not in error state
-            if (rule->AutoStart())
-            {
-               if (rule->State() != database::entities::ERuleState::kError)
-                  startRule(rule->Id);
-            }
-            else
-            {
-               // If Yadoms was non-gracefully stopped, running rules are still in running state
-               // and will keep their running state even if not started because of non-AutoStart rules.
-               // So force stopped state
-               if (rule->State() != database::entities::ERuleState::kError &&
-                  rule->State() != database::entities::ERuleState::kStopped)
-                  recordRuleStopped(rule->Id);
-            }
-         }
-         catch (CRuleException&)
-         {
-            YADOMS_LOG(error) << "Unable to start rule " << rule->Name() << ", skipped";
-            allRulesStarted = false;
-         }
-      }
-
-      return allRulesStarted;
-   }
-
-   std::vector<std::string> CRuleManager::getLoadedInterpreters()
-   {
-      return m_interpreterManager->getLoadedInterpreters();
-   }
-
-   std::vector<std::string> CRuleManager::getAvailableInterpreters()
-   {
-      return m_interpreterManager->getAvailablenterpreters();
-   }
-
-   void CRuleManager::startRule(int ruleId)
-   {
-      auto ruleLabel = std::to_string(ruleId);
-      try
-      {
-         auto ruleData = getRule(ruleId);
-         ruleLabel = ruleData->Name();
-
-         if (isRuleStarted(ruleData->Id()))
-            return; // Rule already started
-
-         recordRuleStarted(ruleId);
-
-         YADOMS_LOG(information) << "Start rule #" << ruleId;
-
-         boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-         const auto newRule(boost::make_shared<CRule>(ruleData,
-                                                      m_interpreterManager,
-                                                      m_pluginGateway,
-                                                      m_dbAcquisitionRequester,
-                                                      m_dbDeviceRequester,
-                                                      m_keywordAccessLayer,
-                                                      m_dbRecipientRequester,
-                                                      m_generalInfo));
-         m_startedRules[ruleId] = newRule;
-      }
-      catch (shared::exception::CEmptyResult& e)
-      {
-         const auto error((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleLabel % e.what()).str());
-         recordRuleStopped(ruleId, error);
-         throw CRuleException(error);
-      }
-      catch (shared::exception::CInvalidParameter& e)
-      {
-         const auto error((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleLabel % e.what()).str());
-         recordRuleStopped(ruleId, error);
-         throw CRuleException(error);
-      }
-      catch (shared::exception::COutOfRange& e)
-      {
-         const auto error((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleLabel % e.what()).str());
-         recordRuleStopped(ruleId, error);
-         throw CRuleException(error);
-      }
-      catch (std::exception& e)
-      {
-         const auto error((boost::format("Failed to start rule %1% : %2%") % ruleLabel % e.what()).str());
-         recordRuleStopped(ruleId, error);
-         throw CRuleException(error);
-      }
-      catch (...)
-      {
-         const auto error((boost::format("Failed to start rule %1% : unknown error") % ruleLabel).str());
-         recordRuleStopped(ruleId, error);
-         throw CRuleException(error);
-      }
-   }
-
-   void CRuleManager::stopRules()
-   {
-      while (true)
-      {
-         int ruleIdToStop;
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-            if (m_startedRules.empty())
-               return;
-            ruleIdToStop = m_startedRules.begin()->first;
-         }
-
-         stopRuleAndWaitForStopped(ruleIdToStop);
-      }
-   }
-
-   bool CRuleManager::stopRule(int ruleId)
-   {
-      boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-      auto rule = m_startedRules.find(ruleId);
-
-      if (rule == m_startedRules.end())
-         return false;
-
-      rule->second->requestStop();
-      return true;
-   }
-
-   void CRuleManager::stopRuleAndWaitForStopped(int ruleId,
-                                                const boost::posix_time::time_duration& timeout)
-   {
-      auto waitForStoppedRuleHandler(boost::make_shared<shared::event::CEventHandler>());
-      {
-         boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
-         m_ruleStopNotifiers[ruleId].insert(waitForStoppedRuleHandler);
-      }
-
-      if (isRuleStarted(ruleId))
-      {
-         // Stop the rule
-         if (stopRule(ruleId))
-         {
-            // Wait for rule stopped
-            if (waitForStoppedRuleHandler->waitForEvents(timeout) == shared::event::kTimeout)
-               throw CRuleException("Unable to stop rule");
-         }
-      }
-
-      {
-         boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
-         m_ruleStopNotifiers[ruleId].erase(waitForStoppedRuleHandler);
-      }
-   }
-
-   void CRuleManager::onRuleStopped(int ruleId,
-                                    const std::string& error)
-   {
-      {
-         boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-         const auto rule = m_startedRules.find(ruleId);
-
-         if (rule == m_startedRules.end())
-            return;
-
-         m_startedRules.erase(rule);
-      }
-
-      if (!m_yadomsShutdown)
-         recordRuleStopped(ruleId,
-                           error);
-
-      // Notify all handlers for this rule
-      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
-      auto itEventHandlerSetToNotify = m_ruleStopNotifiers.find(ruleId);
-      if (itEventHandlerSetToNotify != m_ruleStopNotifiers.end())
-         for (const auto& itHandler : itEventHandlerSetToNotify->second)
-            itHandler->postEvent(shared::event::kUserFirstId);
-   }
-
-   bool CRuleManager::isRuleStarted(int ruleId) const
-   {
-      boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-      return m_startedRules.find(ruleId) != m_startedRules.end();
-   }
-
-   std::vector<boost::shared_ptr<database::entities::CRule>> CRuleManager::getRules() const
-   {
-      return m_ruleRequester->getRules();
-   }
-
-   int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-                                const std::string& code, bool startNow)
-   {
-      // Add rule in database
-      const auto ruleId = m_ruleRequester->addRule(ruleData);
-
-      // Create script file
-      const auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(ruleId)));
-      m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
-                                             ruleProperties->scriptPath().string(),
-                                             code);
-
-      if (startNow)
-      {
-         // Start the rule
-         startRule(ruleId);
-      }
-
-      return ruleId;
-   }
-
-   boost::shared_ptr<database::entities::CRule> CRuleManager::getRule(int id) const
-   {
-      return m_ruleRequester->getRule(id);
-   }
-
-   std::string CRuleManager::getRuleCode(int id) const
-   {
-      try
-      {
-         const auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
-         return m_interpreterManager->getScriptContent(ruleProperties->interpreterName(),
-                                                       ruleProperties->scriptPath().string());
-      }
-      catch (shared::exception::CEmptyResult& e)
-      {
-         YADOMS_LOG(error) << "Unable to get rule code : " << e.what();
-         return std::string();
-      }
-   }
-
-   std::string CRuleManager::getRuleLog(int id) const
-   {
-      try
-      {
-         return m_interpreterManager->getScriptLogContent(id);
-      }
-      catch (shared::exception::CInvalidParameter& e)
-      {
-         YADOMS_LOG(information) << "Unable to get rule log (maybe not yet created or cleared) : " << e.what();
-         return std::string();
-      }
-   }
-
-   void CRuleManager::deleteRuleLog(int id) const
-   {
-      try
-      {
-         m_interpreterManager->deleteLog(id);
-      }
-      catch (shared::exception::CException& e)
-      {
-         YADOMS_LOG(error) << "Unable to delete rule log (" << id << ") : " << e.what();
-         throw shared::exception::CInvalidParameter(std::to_string(id));
-      }
-   }
-
-   std::string CRuleManager::getRuleTemplateCode(const std::string& interpreterName) const
-   {
-      try
-      {
-         return m_interpreterManager->getScriptTemplateContent(interpreterName);
-      }
-      catch (shared::exception::CEmptyResult& e)
-      {
-         YADOMS_LOG(error) << "Unable to get rule template code : " << e.what();
-         return std::string();
-      }
-   }
-
-   void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule> ruleData)
-   {
-      // Check for supported modifications
-      if (!ruleData->Id.isDefined())
-         throw shared::exception::CException("Update rule : rule ID was not provided");
-
-      m_ruleRequester->updateRule(ruleData);
-   }
-
-   void CRuleManager::updateRuleCode(int id,
-                                     const std::string& code)
-   {
-      // If rule was started, must be stopped to update its configuration
-      const auto ruleWasStarted = isRuleStarted(id);
-      if (ruleWasStarted)
-         stopRuleAndWaitForStopped(id);
-
-      // Update script file
-      const auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
-      m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
-                                             ruleProperties->scriptPath().string(),
-                                             code);
-
-      // Restart rule
-      if (ruleWasStarted)
-         startRule(id);
-   }
-
-   void CRuleManager::deleteRule(int id)
-   {
-      try
-      {
-         auto ruleData(m_ruleRequester->getRule(id));
-
-         // Stop the rule
-         stopRuleAndWaitForStopped(id);
-
-         // Remove in database
-         m_ruleRequester->deleteRule(id);
-
-         // Remove script file
-         const auto ruleProperties(boost::make_shared<script::CProperties>(ruleData));
-         m_interpreterManager->deleteScriptFile(ruleProperties->interpreterName(),
-                                                ruleProperties->scriptPath().string());
-      }
-      catch (shared::exception::CException& e)
-      {
-         YADOMS_LOG(error) << "Unable to delete rule (" << id << ") : " << e.what();
-         throw shared::exception::CInvalidParameter(std::to_string(id));
-      }
-   }
-
-   int CRuleManager::duplicateRule(int idToDuplicate, const std::string& newName)
-   {
-      try
-      {
-         //1. get rule
-         auto rule = getRule(idToDuplicate);
-
-         //2. get code
-         const auto ruleCode = getRuleCode(idToDuplicate);
-
-         //3. update name
-         rule->Name = newName;
-
-         //4. set new rule as stopped
-         rule->State = database::entities::ERuleState::kStopped;
-
-         //5. create rule
-         return createRule(rule, ruleCode, false); //don't start the rule
-      }
-      catch (shared::exception::CException& e)
-      {
-         YADOMS_LOG(error) << "Unable to duplicate rule (" << idToDuplicate << ") : " << e.what();
-         throw shared::exception::CInvalidParameter(std::to_string(idToDuplicate));
-      }
-   }
-
-   void CRuleManager::startAllRulesMatchingInterpreter(const std::string& interpreterName)
-   {
-      // Start all rules associated with this interpreter (and start-able)
-      if (!startRules(m_ruleRequester->getRules(interpreterName)))
-         YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
-   }
-
-   void CRuleManager::stopAllRulesMatchingInterpreter(const std::string& interpreterName)
-   {
-      // First, stop all running rules associated with this interpreter
-      auto interpreterRules = m_ruleRequester->getRules(interpreterName);
-      for (auto& interpreterRule : interpreterRules)
-      {
-         if (isRuleStarted(interpreterRule->Id()))
-            stopRuleAndWaitForStopped(interpreterRule->Id());
-      }
-
-      // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
-      m_interpreterManager->unloadInterpreter(interpreterName);
-
-      if (!waitForInterpreterUnloaded(interpreterName))
-         YADOMS_LOG(warning) << "Fail to unload interpreter " << interpreterName;
-   }
-
-   void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string& interpreterName)
-   {
-      auto interpreterRules = m_ruleRequester->getRules(interpreterName);
-      for (auto& interpreterRule : interpreterRules)
-         deleteRule(interpreterRule->Id());
-
-      // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
-      m_interpreterManager->unloadInterpreter(interpreterName);
-
-      if (!waitForInterpreterUnloaded(interpreterName))
-         YADOMS_LOG(warning) << "Fail to unload interpreter " << interpreterName;
-   }
-
-   bool CRuleManager::waitForInterpreterUnloaded(const std::string& interpreterName) const
-   {
-      auto nbTries = 10;
-      while (true)
-      {
-         const auto interpreters = m_interpreterManager->getLoadedInterpreters(false);
-         if (std::find(interpreters.begin(), interpreters.end(), interpreterName) == interpreters.end())
-            return true;
-
-         if (--nbTries == 0)
-         {
-            YADOMS_LOG(error) << "Fail to do action, definitively";
-            return false;
-         }
-         YADOMS_LOG(warning) << "Fail to do action, retry...";
-         boost::this_thread::sleep_for(boost::chrono::seconds(1));
-      }
-   }
-
-   void CRuleManager::recordRuleStarted(int ruleId) const
-   {
-      auto ruleData(boost::make_shared<database::entities::CRule>());
-      ruleData->Id = ruleId;
-      ruleData->State = database::entities::ERuleState::kRunning;
-      ruleData->StartDate = shared::currentTime::Provider().now();
-      ruleData->ErrorMessage = std::string();
-      m_ruleRequester->updateRule(ruleData);
-   }
-
-   void CRuleManager::recordRuleStopped(int ruleId,
-                                        const std::string& error) const
-   {
-      if (!error.empty())
-         YADOMS_LOG(error) << error;
-
-      auto ruleData(boost::make_shared<database::entities::CRule>());
-      ruleData->Id = ruleId;
-      ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
-      ruleData->StopDate = shared::currentTime::Provider().now();
-      if (!error.empty())
-         ruleData->ErrorMessage = error;
-      m_ruleRequester->updateRule(ruleData);
-
-      if (!error.empty())
-         m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed,
-                                 m_ruleRequester->getRule(ruleId)->Name(),
-                                 error);
-   }
+	CRuleManager::CRuleManager(boost::shared_ptr<interpreter::IManager> interpreterManager,
+							   boost::shared_ptr<database::IDataProvider> dataProvider,
+							   boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+							   boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+							   boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+							   boost::shared_ptr<shared::ILocation> location,
+							   boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
+		: m_interpreterManager(std::move(interpreterManager)),
+		m_pluginGateway(std::move(pluginGateway)),
+		m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
+		m_dbDeviceRequester(dataProvider->getDeviceRequester()),
+		m_keywordAccessLayer(std::move(keywordAccessLayer)),
+		m_dbRecipientRequester(dataProvider->getRecipientRequester()),
+		m_eventLogger(std::move(eventLogger)),
+		m_generalInfo(boost::make_shared<script::CGeneralInfo>(location, timezoneProvider)),
+		m_ruleRequester(dataProvider->getRuleRequester()),
+		m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
+		m_yadomsShutdown(false)
+	{
+		m_interpreterManager->setOnScriptStoppedFct(
+			[&](int scriptInstanceId, const std::string& error)
+		{
+			onRuleStopped(scriptInstanceId,
+						  error);
+		});
+	}
+
+	CRuleManager::~CRuleManager()
+	{
+		if (!m_yadomsShutdown)
+			CRuleManager::stop();
+	}
+
+	void CRuleManager::start()
+	{
+		startAllRules();
+	}
+
+	void CRuleManager::stop()
+	{
+		m_yadomsShutdown = true;
+		stopRules();
+	}
+
+	void CRuleManager::startAllRules()
+	{
+		boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
+
+		if (!startRules(m_ruleRequester->getRules()))
+			YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
+	}
+
+	bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::entities::CRule>>& rules)
+	{
+		auto allRulesStarted = true;
+		for (const auto& rule : rules)
+		{
+			try
+			{
+				// Start only autoStarted rules if not in error state
+				if (rule->AutoStart())
+				{
+					if (rule->State() != database::entities::ERuleState::kError)
+						startRule(rule->Id);
+				}
+				else
+				{
+					// If Yadoms was non-gracefully stopped, running rules are still in running state
+					// and will keep their running state even if not started because of non-AutoStart rules.
+					// So force stopped state
+					if (rule->State() != database::entities::ERuleState::kError &&
+						rule->State() != database::entities::ERuleState::kStopped)
+						recordRuleStopped(rule->Id);
+				}
+			}
+			catch (CRuleException&)
+			{
+				YADOMS_LOG(error) << "Unable to start rule " << rule->Name() << ", skipped";
+				allRulesStarted = false;
+			}
+		}
+
+		return allRulesStarted;
+	}
+
+	std::vector<std::string> CRuleManager::getLoadedInterpreters()
+	{
+		return m_interpreterManager->getLoadedInterpreters();
+	}
+
+	std::vector<std::string> CRuleManager::getAvailableInterpreters()
+	{
+		return m_interpreterManager->getAvailablenterpreters();
+	}
+
+	void CRuleManager::startRule(int ruleId)
+	{
+		auto ruleLabel = std::to_string(ruleId);
+		try
+		{
+			auto ruleData = getRule(ruleId);
+			ruleLabel = ruleData->Name();
+
+			if (isRuleStarted(ruleData->Id()))
+				return; // Rule already started
+
+			recordRuleStarted(ruleId);
+
+			YADOMS_LOG(information) << "Start rule #" << ruleId;
+
+			boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
+			const auto newRule(boost::make_shared<CRule>(ruleData,
+														 m_interpreterManager,
+														 m_pluginGateway,
+														 m_dbAcquisitionRequester,
+														 m_dbDeviceRequester,
+														 m_keywordAccessLayer,
+														 m_dbRecipientRequester,
+														 m_generalInfo));
+			m_startedRules[ruleId] = newRule;
+		}
+		catch (shared::exception::CEmptyResult& e)
+		{
+			const auto error(std::string("Invalid rule ") + ruleLabel + ", element not found in database : " + e.what());
+			recordRuleStopped(ruleId, error);
+			throw CRuleException(error);
+		}
+		catch (shared::exception::CInvalidParameter& e)
+		{
+			const auto error(std::string("Invalid rule ") + ruleLabel + " configuration, invalid parameter : " + e.what());
+			recordRuleStopped(ruleId, error);
+			throw CRuleException(error);
+		}
+		catch (shared::exception::COutOfRange& e)
+		{
+			const auto error(std::string("Invalid rule ") + ruleLabel + " configuration, out of range : ") + e.what());
+			recordRuleStopped(ruleId, error);
+			throw CRuleException(error);
+		}
+		catch (std::exception& e)
+		{
+			const auto error(std::string("Failed to start rule ") + ruleLabel + " : " + e.what());
+			recordRuleStopped(ruleId, error);
+			throw CRuleException(error);
+		}
+		catch (...)
+		{
+			const auto error(std::string("Failed to start rule ") + ruleLabel + " : unknown error");
+			recordRuleStopped(ruleId, error);
+			throw CRuleException(error);
+		}
+	}
+
+	void CRuleManager::stopRules()
+	{
+		while (true)
+		{
+			int ruleIdToStop;
+			{
+				boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
+				if (m_startedRules.empty())
+					return;
+				ruleIdToStop = m_startedRules.begin()->first;
+			}
+
+			stopRuleAndWaitForStopped(ruleIdToStop);
+		}
+	}
+
+	bool CRuleManager::stopRule(int ruleId)
+	{
+		boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
+		auto rule = m_startedRules.find(ruleId);
+
+		if (rule == m_startedRules.end())
+			return false;
+
+		rule->second->requestStop();
+		return true;
+	}
+
+	void CRuleManager::stopRuleAndWaitForStopped(int ruleId,
+												 const boost::posix_time::time_duration& timeout)
+	{
+		auto waitForStoppedRuleHandler(boost::make_shared<shared::event::CEventHandler>());
+		{
+			boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
+			m_ruleStopNotifiers[ruleId].insert(waitForStoppedRuleHandler);
+		}
+
+		if (isRuleStarted(ruleId))
+		{
+			// Stop the rule
+			if (stopRule(ruleId))
+			{
+				// Wait for rule stopped
+				if (waitForStoppedRuleHandler->waitForEvents(timeout) == shared::event::kTimeout)
+					throw CRuleException("Unable to stop rule");
+			}
+		}
+
+		{
+			boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
+			m_ruleStopNotifiers[ruleId].erase(waitForStoppedRuleHandler);
+		}
+	}
+
+	void CRuleManager::onRuleStopped(int ruleId,
+									 const std::string& error)
+	{
+		{
+			boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
+			const auto rule = m_startedRules.find(ruleId);
+
+			if (rule == m_startedRules.end())
+				return;
+
+			m_startedRules.erase(rule);
+		}
+
+		if (!m_yadomsShutdown)
+			recordRuleStopped(ruleId,
+							  error);
+
+		// Notify all handlers for this rule
+		boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
+		auto itEventHandlerSetToNotify = m_ruleStopNotifiers.find(ruleId);
+		if (itEventHandlerSetToNotify != m_ruleStopNotifiers.end())
+			for (const auto& itHandler : itEventHandlerSetToNotify->second)
+				itHandler->postEvent(shared::event::kUserFirstId);
+	}
+
+	bool CRuleManager::isRuleStarted(int ruleId) const
+	{
+		boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
+		return m_startedRules.find(ruleId) != m_startedRules.end();
+	}
+
+	std::vector<boost::shared_ptr<database::entities::CRule>> CRuleManager::getRules() const
+	{
+		return m_ruleRequester->getRules();
+	}
+
+	int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData,
+								 const std::string& code, bool startNow)
+	{
+		// Add rule in database
+		const auto ruleId = m_ruleRequester->addRule(ruleData);
+
+		// Create script file
+		const auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(ruleId)));
+		m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
+											   ruleProperties->scriptPath().string(),
+											   code);
+
+		if (startNow)
+		{
+			// Start the rule
+			startRule(ruleId);
+		}
+
+		return ruleId;
+	}
+
+	boost::shared_ptr<database::entities::CRule> CRuleManager::getRule(int id) const
+	{
+		return m_ruleRequester->getRule(id);
+	}
+
+	std::string CRuleManager::getRuleCode(int id) const
+	{
+		try
+		{
+			const auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
+			return m_interpreterManager->getScriptContent(ruleProperties->interpreterName(),
+														  ruleProperties->scriptPath().string());
+		}
+		catch (shared::exception::CEmptyResult& e)
+		{
+			YADOMS_LOG(error) << "Unable to get rule code : " << e.what();
+			return std::string();
+		}
+	}
+
+	std::string CRuleManager::getRuleLog(int id) const
+	{
+		try
+		{
+			return m_interpreterManager->getScriptLogContent(id);
+		}
+		catch (shared::exception::CInvalidParameter& e)
+		{
+			YADOMS_LOG(information) << "Unable to get rule log (maybe not yet created or cleared) : " << e.what();
+			return std::string();
+		}
+	}
+
+	void CRuleManager::deleteRuleLog(int id) const
+	{
+		try
+		{
+			m_interpreterManager->deleteLog(id);
+		}
+		catch (shared::exception::CException& e)
+		{
+			YADOMS_LOG(error) << "Unable to delete rule log (" << id << ") : " << e.what();
+			throw shared::exception::CInvalidParameter(std::to_string(id));
+		}
+	}
+
+	std::string CRuleManager::getRuleTemplateCode(const std::string& interpreterName) const
+	{
+		try
+		{
+			return m_interpreterManager->getScriptTemplateContent(interpreterName);
+		}
+		catch (shared::exception::CEmptyResult& e)
+		{
+			YADOMS_LOG(error) << "Unable to get rule template code : " << e.what();
+			return std::string();
+		}
+	}
+
+	void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule> ruleData)
+	{
+		// Check for supported modifications
+		if (!ruleData->Id.isDefined())
+			throw shared::exception::CException("Update rule : rule ID was not provided");
+
+		m_ruleRequester->updateRule(ruleData);
+	}
+
+	void CRuleManager::updateRuleCode(int id,
+									  const std::string& code)
+	{
+		// If rule was started, must be stopped to update its configuration
+		const auto ruleWasStarted = isRuleStarted(id);
+		if (ruleWasStarted)
+			stopRuleAndWaitForStopped(id);
+
+		// Update script file
+		const auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
+		m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
+											   ruleProperties->scriptPath().string(),
+											   code);
+
+		// Restart rule
+		if (ruleWasStarted)
+			startRule(id);
+	}
+
+	void CRuleManager::deleteRule(int id)
+	{
+		try
+		{
+			auto ruleData(m_ruleRequester->getRule(id));
+
+			// Stop the rule
+			stopRuleAndWaitForStopped(id);
+
+			// Remove in database
+			m_ruleRequester->deleteRule(id);
+
+			// Remove script file
+			const auto ruleProperties(boost::make_shared<script::CProperties>(ruleData));
+			m_interpreterManager->deleteScriptFile(ruleProperties->interpreterName(),
+												   ruleProperties->scriptPath().string());
+		}
+		catch (shared::exception::CException& e)
+		{
+			YADOMS_LOG(error) << "Unable to delete rule (" << id << ") : " << e.what();
+			throw shared::exception::CInvalidParameter(std::to_string(id));
+		}
+	}
+
+	int CRuleManager::duplicateRule(int idToDuplicate, const std::string& newName)
+	{
+		try
+		{
+			//1. get rule
+			auto rule = getRule(idToDuplicate);
+
+			//2. get code
+			const auto ruleCode = getRuleCode(idToDuplicate);
+
+			//3. update name
+			rule->Name = newName;
+
+			//4. set new rule as stopped
+			rule->State = database::entities::ERuleState::kStopped;
+
+			//5. create rule
+			return createRule(rule, ruleCode, false); //don't start the rule
+		}
+		catch (shared::exception::CException& e)
+		{
+			YADOMS_LOG(error) << "Unable to duplicate rule (" << idToDuplicate << ") : " << e.what();
+			throw shared::exception::CInvalidParameter(std::to_string(idToDuplicate));
+		}
+	}
+
+	void CRuleManager::startAllRulesMatchingInterpreter(const std::string& interpreterName)
+	{
+		// Start all rules associated with this interpreter (and start-able)
+		if (!startRules(m_ruleRequester->getRules(interpreterName)))
+			YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
+	}
+
+	void CRuleManager::stopAllRulesMatchingInterpreter(const std::string& interpreterName)
+	{
+		// First, stop all running rules associated with this interpreter
+		auto interpreterRules = m_ruleRequester->getRules(interpreterName);
+		for (auto& interpreterRule : interpreterRules)
+		{
+			if (isRuleStarted(interpreterRule->Id()))
+				stopRuleAndWaitForStopped(interpreterRule->Id());
+		}
+
+		// We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
+		m_interpreterManager->unloadInterpreter(interpreterName);
+
+		if (!waitForInterpreterUnloaded(interpreterName))
+			YADOMS_LOG(warning) << "Fail to unload interpreter " << interpreterName;
+	}
+
+	void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string& interpreterName)
+	{
+		auto interpreterRules = m_ruleRequester->getRules(interpreterName);
+		for (auto& interpreterRule : interpreterRules)
+			deleteRule(interpreterRule->Id());
+
+		// We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
+		m_interpreterManager->unloadInterpreter(interpreterName);
+
+		if (!waitForInterpreterUnloaded(interpreterName))
+			YADOMS_LOG(warning) << "Fail to unload interpreter " << interpreterName;
+	}
+
+	bool CRuleManager::waitForInterpreterUnloaded(const std::string& interpreterName) const
+	{
+		auto nbTries = 10;
+		while (true)
+		{
+			const auto interpreters = m_interpreterManager->getLoadedInterpreters(false);
+			if (std::find(interpreters.begin(), interpreters.end(), interpreterName) == interpreters.end())
+				return true;
+
+			if (--nbTries == 0)
+			{
+				YADOMS_LOG(error) << "Fail to do action, definitively";
+				return false;
+			}
+			YADOMS_LOG(warning) << "Fail to do action, retry...";
+			boost::this_thread::sleep_for(boost::chrono::seconds(1));
+		}
+	}
+
+	void CRuleManager::recordRuleStarted(int ruleId) const
+	{
+		auto ruleData(boost::make_shared<database::entities::CRule>());
+		ruleData->Id = ruleId;
+		ruleData->State = database::entities::ERuleState::kRunning;
+		ruleData->StartDate = shared::currentTime::Provider().now();
+		ruleData->ErrorMessage = std::string();
+		m_ruleRequester->updateRule(ruleData);
+	}
+
+	void CRuleManager::recordRuleStopped(int ruleId,
+										 const std::string& error) const
+	{
+		if (!error.empty())
+			YADOMS_LOG(error) << error;
+
+		auto ruleData(boost::make_shared<database::entities::CRule>());
+		ruleData->Id = ruleId;
+		ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
+		ruleData->StopDate = shared::currentTime::Provider().now();
+		if (!error.empty())
+			ruleData->ErrorMessage = error;
+		m_ruleRequester->updateRule(ruleData);
+
+		if (!error.empty())
+			m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed,
+									m_ruleRequester->getRule(ruleId)->Name(),
+									error);
+	}
 } // namespace automation	

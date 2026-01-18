@@ -269,7 +269,7 @@ namespace automation
 			}
 			catch (std::exception& e)
 			{
-				request->sendError((boost::format("Interpreter doesn't answer to available request : %1%") % e.what()).str());
+				request->sendError(std::string("Interpreter doesn't answer to available request : ") + e.what());
 				return;
 			}
 
@@ -300,7 +300,7 @@ namespace automation
 			}
 			catch (std::exception& e)
 			{
-				request->sendError((boost::format("Interpreter doesn't answer to load script content request : %1%") % e.what()).str());
+				request->sendError(std::string("Interpreter doesn't answer to load script content request : ")+ e.what());
 				return;
 			}
 
@@ -333,7 +333,7 @@ namespace automation
 			}
 			catch (std::exception& e)
 			{
-				request->sendError((boost::format("Interpreter doesn't answer to save script content request : %1%") % e.what()).str());
+				request->sendError(std::string("Interpreter doesn't answer to save script content request : ") + e.what());
 				return;
 			}
 
