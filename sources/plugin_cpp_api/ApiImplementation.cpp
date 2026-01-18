@@ -94,21 +94,21 @@ namespace plugin_cpp_api
 		{
 			boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
 			m_onReceiveHook = [&](const plugin_IPC::toPlugin::msg& receivedMsg)-> bool
-			{
-				if (!receivedMsg.error().empty())
 				{
-					receivedEvtHandler.postEvent<const plugin_IPC::toPlugin::msg>(kErrorReceived, receivedMsg);
+					if (!receivedMsg.error().empty())
+					{
+						receivedEvtHandler.postEvent<const plugin_IPC::toPlugin::msg>(kErrorReceived, receivedMsg);
+						return true;
+					}
+
+					if (!checkExpectedMessageFunction(receivedMsg))
+					{
+						return false;
+					}
+
+					receivedEvtHandler.postEvent<const plugin_IPC::toPlugin::msg>(kExpectedEventReceived, receivedMsg);
 					return true;
-				}
-
-				if (!checkExpectedMessageFunction(receivedMsg))
-				{
-					return false;
-				}
-
-				receivedEvtHandler.postEvent<const plugin_IPC::toPlugin::msg>(kExpectedEventReceived, receivedMsg);
-				return true;
-			};
+				};
 		}
 
 		send(msg);
@@ -126,9 +126,9 @@ namespace plugin_cpp_api
 			boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
 			m_onReceiveHook.clear();
 			throw std::runtime_error(std::string("Error \"")
-									 + receivedEvtHandler.getEventData<const				 plugin_IPC::toPlugin::msg>().error()
+									 + receivedEvtHandler.getEventData<const plugin_IPC::toPlugin::msg>().error()
 									 + "\" received from Yadoms when sending message "
-									 + std::to_string(msg.OneOf_case());
+									 + std::to_string(msg.OneOf_case()));
 		}
 
 		case shared::event::kTimeout:
@@ -302,21 +302,21 @@ namespace plugin_cpp_api
 		const boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> query =
 			boost::make_shared<CBindingQuery>(msg,
 											  [&](const boost::shared_ptr<shared::CDataContainer>& r)
-		{
-			plugin_IPC::toYadoms::msg ans;
-			auto answer = ans.mutable_bindingqueryanswer();
-			answer->set_success(true);
-			answer->set_result(r->serialize());
-			send(ans);
-		},
+											  {
+												  plugin_IPC::toYadoms::msg ans;
+												  auto answer = ans.mutable_bindingqueryanswer();
+												  answer->set_success(true);
+												  answer->set_result(r->serialize());
+												  send(ans);
+											  },
 											  [&](const std::string& r)
-		{
-			plugin_IPC::toYadoms::msg ans;
-			auto answer = ans.mutable_bindingqueryanswer();
-			answer->set_success(false);
-			answer->set_result(r);
-			send(ans);
-		});
+											  {
+												  plugin_IPC::toYadoms::msg ans;
+												  auto answer = ans.mutable_bindingqueryanswer();
+												  answer->set_success(false);
+												  answer->set_result(r);
+												  send(ans);
+											  });
 
 		m_pluginEventHandler.postEvent(kBindingQuery, query);
 	}
@@ -327,23 +327,23 @@ namespace plugin_cpp_api
 		const boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> query =
 			boost::make_shared<CDeviceConfigurationSchemaRequest>(msg,
 																  [&](const boost::shared_ptr<shared::CDataContainer>& r)
-		{
-			plugin_IPC::toYadoms::msg ans;
-			auto answer = ans.
-				mutable_deviceconfigurationschemaanswer();
-			answer->set_success(true);
-			answer->set_result(r->serialize());
-			send(ans);
-		},
+																  {
+																	  plugin_IPC::toYadoms::msg ans;
+																	  auto answer = ans.
+																		  mutable_deviceconfigurationschemaanswer();
+																	  answer->set_success(true);
+																	  answer->set_result(r->serialize());
+																	  send(ans);
+																  },
 																  [&](const std::string& r)
-		{
-			plugin_IPC::toYadoms::msg ans;
-			auto answer = ans.
-				mutable_deviceconfigurationschemaanswer();
-			answer->set_success(false);
-			answer->set_result(r);
-			send(ans);
-		});
+																  {
+																	  plugin_IPC::toYadoms::msg ans;
+																	  auto answer = ans.
+																		  mutable_deviceconfigurationschemaanswer();
+																	  answer->set_success(false);
+																	  answer->set_result(r);
+																	  send(ans);
+																  });
 
 		m_pluginEventHandler.postEvent(kGetDeviceConfigurationSchemaRequest, query);
 	}
@@ -368,33 +368,33 @@ namespace plugin_cpp_api
 		const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> command =
 			boost::make_shared<CExtraQuery>(msg,
 											[&, taskId](const boost::shared_ptr<shared::CDataContainer>& r)
-		{
-			plugin_IPC::toYadoms::msg ans;
-			auto answer = ans.mutable_extraqueryanswer();
-			answer->set_success(true);
-			answer->set_result(r->serialize());
-			answer->set_taskid(taskId);
-			send(ans);
-		},
+											{
+												plugin_IPC::toYadoms::msg ans;
+												auto answer = ans.mutable_extraqueryanswer();
+												answer->set_success(true);
+												answer->set_result(r->serialize());
+												answer->set_taskid(taskId);
+												send(ans);
+											},
 											[&, taskId](const std::string& r)
-		{
-			plugin_IPC::toYadoms::msg ans;
-			auto answer = ans.mutable_extraqueryanswer();
-			answer->set_success(false);
-			answer->set_result(r);
-			answer->set_taskid(taskId);
-			send(ans);
-		},
+											{
+												plugin_IPC::toYadoms::msg ans;
+												auto answer = ans.mutable_extraqueryanswer();
+												answer->set_success(false);
+												answer->set_result(r);
+												answer->set_taskid(taskId);
+												send(ans);
+											},
 											[&, taskId](const float progression,
 														const std::string& text)
-		{
-			plugin_IPC::toYadoms::msg ans;
-			auto answer = ans.mutable_extraqueryprogress();
-			answer->set_progress(progression);
-			answer->set_message(text);
-			answer->set_taskid(taskId);
-			send(ans);
-		});
+											{
+												plugin_IPC::toYadoms::msg ans;
+												auto answer = ans.mutable_extraqueryprogress();
+												answer->set_progress(progression);
+												answer->set_message(text);
+												answer->set_taskid(taskId);
+												send(ans);
+											});
 		m_pluginEventHandler.postEvent(kEventExtraQuery, command);
 	}
 
@@ -403,20 +403,20 @@ namespace plugin_cpp_api
 		const boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request =
 			boost::make_shared<CManuallyDeviceCreation>(msg,
 														[&]()
-		{
-			plugin_IPC::toYadoms::msg ans;
-			auto answer = ans.mutable_manuallydevicecreationanswer();
-			answer->mutable_sucess();
-			send(ans);
-		},
+														{
+															plugin_IPC::toYadoms::msg ans;
+															auto answer = ans.mutable_manuallydevicecreationanswer();
+															answer->mutable_sucess();
+															send(ans);
+														},
 														[&](const std::string& errorMessage)
-		{
-			plugin_IPC::toYadoms::msg ans;
-			auto answer = ans.mutable_manuallydevicecreationanswer();
-			auto error = answer->mutable_error();
-			error->set_message(errorMessage);
-			send(ans);
-		});
+														{
+															plugin_IPC::toYadoms::msg ans;
+															auto answer = ans.mutable_manuallydevicecreationanswer();
+															auto error = answer->mutable_error();
+															error->set_message(errorMessage);
+															send(ans);
+														});
 
 		m_pluginEventHandler.postEvent(kEventManuallyDeviceCreation, request);
 	}
@@ -474,9 +474,9 @@ namespace plugin_cpp_api
 			std::for_each(customMessageDataParams.begin(),
 						  customMessageDataParams.end(),
 						  [](const std::pair<const std::string, std::string>& param)
-			{
-				std::cerr << param.first << " = " << param.second << ", ";
-			});
+						  {
+							  std::cerr << param.first << " = " << param.second << ", ";
+						  });
 			std::cerr << "} )" << std::endl;
 			throw;
 		}
@@ -538,9 +538,9 @@ namespace plugin_cpp_api
 			std::for_each(keywords.begin(),
 						  keywords.end(),
 						  [](boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword)
-			{
-				std::cerr << keyword->getKeyword() << ", ";
-			});
+						  {
+							  std::cerr << keyword->getKeyword() << ", ";
+						  });
 			std::cerr << "}, " << details->serialize() << ")" << std::endl;
 			throw;
 		}
@@ -556,14 +556,14 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_alldevicesanswer();
-			},
+				 {
+					 return ans.has_alldevicesanswer();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				std::copy(ans.alldevicesanswer().devices().begin(), ans.alldevicesanswer().devices().end(),
-						  std::back_inserter(allDevices));
-			});
+				 {
+					 std::copy(ans.alldevicesanswer().devices().begin(), ans.alldevicesanswer().devices().end(),
+							   std::back_inserter(allDevices));
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -585,13 +585,13 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_deviceexists();
-			},
+				 {
+					 return ans.has_deviceexists();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				exists = ans.deviceexists().exists();
-			});
+				 {
+					 exists = ans.deviceexists().exists();
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -614,13 +614,13 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_deviceconfigurationanswer();
-			},
+				 {
+					 return ans.has_deviceconfigurationanswer();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				configuration->deserialize(ans.deviceconfigurationanswer().configuration());
-			});
+				 {
+					 configuration->deserialize(ans.deviceconfigurationanswer().configuration());
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -662,13 +662,13 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_devicedetails();
-			},
+				 {
+					 return ans.has_devicedetails();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				details->deserialize(ans.devicedetails().details());
-			});
+				 {
+					 details->deserialize(ans.devicedetails().details());
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -709,13 +709,13 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_devicemodelanswer();
-			},
+				 {
+					 return ans.has_devicemodelanswer();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				model = ans.devicemodelanswer().model();
-			});
+				 {
+					 model = ans.devicemodelanswer().model();
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -756,13 +756,13 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_devicetypeanswer();
-			},
+				 {
+					 return ans.has_devicetypeanswer();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				type = ans.devicetypeanswer().type();
-			});
+				 {
+					 type = ans.devicetypeanswer().type();
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -837,9 +837,9 @@ namespace plugin_cpp_api
 			std::for_each(customMessageDataParams.begin(),
 						  customMessageDataParams.end(),
 						  [](const std::pair<const std::string, std::string>& param)
-			{
-				std::cerr << param.first << " = " << param.second << ", ";
-			});
+						  {
+							  std::cerr << param.first << " = " << param.second << ", ";
+						  });
 			std::cerr << "} )" << std::endl;
 			throw;
 		}
@@ -885,9 +885,9 @@ namespace plugin_cpp_api
 			std::for_each(keywords.begin(),
 						  keywords.end(),
 						  [](boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword)
-			{
-				std::cerr << keyword->getKeyword() << ", ";
-			});
+						  {
+							  std::cerr << keyword->getKeyword() << ", ";
+						  });
 			std::cerr << "} )" << std::endl;
 			throw;
 		}
@@ -931,13 +931,13 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_keywordexists();
-			},
+				 {
+					 return ans.has_keywordexists();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				exists = ans.keywordexists().exists();
-			});
+				 {
+					 exists = ans.keywordexists().exists();
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -966,14 +966,14 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_allkeywordsanswer();
-			},
+				 {
+					 return ans.has_allkeywordsanswer();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				std::copy(ans.allkeywordsanswer().keywords().begin(), ans.allkeywordsanswer().keywords().end(),
-						  std::back_inserter(keywords));
-			});
+				 {
+					 std::copy(ans.allkeywordsanswer().keywords().begin(), ans.allkeywordsanswer().keywords().end(),
+							   std::back_inserter(keywords));
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -1040,13 +1040,13 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_recipientvalue();
-			},
+				 {
+					 return ans.has_recipientvalue();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				value = ans.recipientvalue().value();
-			});
+				 {
+					 value = ans.recipientvalue().value();
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -1071,15 +1071,15 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_findrecipientsfromfieldanswer();
-			},
+				 {
+					 return ans.has_findrecipientsfromfieldanswer();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				std::copy(ans.findrecipientsfromfieldanswer().recipientids().begin(),
-						  ans.findrecipientsfromfieldanswer().recipientids().end(),
-						  std::back_inserter(recipientIds));
-			});
+				 {
+					 std::copy(ans.findrecipientsfromfieldanswer().recipientids().begin(),
+							   ans.findrecipientsfromfieldanswer().recipientids().end(),
+							   std::back_inserter(recipientIds));
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -1103,13 +1103,13 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_keywordexists();
-			},
+				 {
+					 return ans.has_keywordexists();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				exists = ans.keywordexists().exists();
-			});
+				 {
+					 exists = ans.keywordexists().exists();
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -1169,9 +1169,9 @@ namespace plugin_cpp_api
 			std::for_each(dataVect.begin(),
 						  dataVect.end(),
 						  [](boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data)
-			{
-				std::cerr << " { " << data->getKeyword() << ", " << data->formatValue() << " }, ";
-			});
+						  {
+							  std::cerr << " { " << data->getKeyword() << ", " << data->formatValue() << " }, ";
+						  });
 			std::cerr << "} )" << std::endl;
 			throw;
 		}
@@ -1195,13 +1195,13 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_configurationanswer();
-			},
+				 {
+					 return ans.has_configurationanswer();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				configuration->deserialize(ans.configurationanswer().configuration());
-			});
+				 {
+					 configuration->deserialize(ans.configurationanswer().configuration());
+				 });
 		}
 		catch (std::exception& e)
 		{
@@ -1253,13 +1253,13 @@ namespace plugin_cpp_api
 		{
 			send(req,
 				 [](const plugin_IPC::toPlugin::msg& ans) -> bool
-			{
-				return ans.has_yadomsinformationanswer();
-			},
+				 {
+					 return ans.has_yadomsinformationanswer();
+				 },
 				 [&](const plugin_IPC::toPlugin::msg& ans) -> void
-			{
-				info = boost::make_shared<CYadomsInformation>(ans.yadomsinformationanswer());
-			});
+				 {
+					 info = boost::make_shared<CYadomsInformation>(ans.yadomsinformationanswer());
+				 });
 		}
 		catch (std::exception& e)
 		{
