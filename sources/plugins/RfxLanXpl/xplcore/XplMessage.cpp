@@ -4,6 +4,7 @@
 #include "XplHelper.h"
 #include "XplException.h"
 #include <shared/StringExtension.h>
+#include <boost/algorithm/string.hpp>
 
 namespace xplcore
 {

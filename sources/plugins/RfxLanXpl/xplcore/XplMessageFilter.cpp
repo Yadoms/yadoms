@@ -2,6 +2,7 @@
 #include "XplMessageFilter.h"
 #include "XplHelper.h"
 #include "XplException.h"
+#include <boost/algorithm/string.hpp>
 
 // A client send its data as broadcast on the XPL port,
 // and listen on a certain port, given in its XPL frame.
