@@ -4,6 +4,7 @@
 #include "task/ITask.h"
 #include "Backup.h"
 #include <shared/tools/Filesystem.h>
+#include <shared/StringExtension.h>
 #include <shared/Log.h>
 #include <Poco/Zip/Compress.h>
 #include <shared/currentTime/Provider.h>
@@ -204,10 +205,8 @@ namespace task
 
 		boost::filesystem::path CBackup::makeZipArchive(boost::filesystem::path& backupTempFolder)
 		{
-
 			//zip folder content (60 -> 99)
-			auto dateAsIsoString = boost::posix_time::to_iso_string(shared::currentTime::Provider().now());
-			boost::replace_all(dateAsIsoString, ",", "_");
+			auto dateAsIsoString = shared::CStringExtension::replaceAllSubstrings(boost::posix_time::to_iso_string(shared::currentTime::Provider().now()), ",", "_");
 
 			auto zipFilenameFinal = m_pathProvider->backupPath() / (std::string("backup_") + dateAsIsoString + ".zip");
 			const auto zipFilename = m_pathProvider->backupPath() / (std::string("backup_") + dateAsIsoString + ".zip.inprogress");
