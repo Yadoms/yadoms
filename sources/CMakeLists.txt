@@ -17,6 +17,7 @@ cmake_policy(SET CMP0074 NEW)
 cmake_policy(SET CMP0077 NEW)
 cmake_policy(SET CMP0078 NEW)
 cmake_policy(SET CMP0086 NEW)
+cmake_policy(SET CMP0091 NEW)
 cmake_policy(SET CMP0111 NEW)
 cmake_policy(SET CMP0144 NEW)
 cmake_policy(SET CMP0167 NEW)
@@ -58,14 +59,8 @@ else()
    include(cmake/PrecompiledHeader.cmake)
 endif()
 
-# Windows specific macro
-if(WIN32)
-   include(cmake/windows.cmake)
-endif()
-
 if(MSVC)
-   set (LINK_WITH_STATIC_RUNTIME 1)
-   include(cmake/MSVCRuntime.cmake)
+   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
    
 # Compilers/IDE configurations

@@ -64,27 +64,13 @@ if(MSVC)
 	#define Rapidjson configuration (make assert throw exceptions)
 	add_definitions(-DRAPIDJSON_ASSERT_THROWS=1)
 
-
-   # Overrides compilers flag to link with static runtime libraries
-   SET(MSVC_RUNTIME "static")
-   configure_msvc_runtime()
+	# Use MSVC static runtime library
+	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
 	add_definitions("-Wall")
-
-   #Manage c++11 (remove warnings and allow using precompiled header with cotire and g++)
-   ## include(CheckCXXCompilerFlag)
-   ## CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-   ## CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-   ## if(COMPILER_SUPPORTS_CXX11)
-   ##    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-   ## elseif(COMPILER_SUPPORTS_CXX0X)
-   ##    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-   ## else()
-   ##    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-   ## endif()
 
 	#optimize binaries in release mode
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
@@ -103,7 +89,6 @@ endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
    message("Using CLang")
 	add_definitions("-Wall -Wextra -pedantic")
-   #set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -stdlib=libc++")
    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-stdlib=libc++")
    add_definitions("-Woverloaded-virtual")
    add_definitions("-Wno-unused-parameter")
