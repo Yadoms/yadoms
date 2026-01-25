@@ -76,7 +76,7 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
       interpreter_cpp_api
       ${LIBS}
       ${CMAKE_DL_LIBS}
-      ${PROTOBUF_LIBRARIES}
+      protobuf::libprotobuf
       ${ARGN}
       )
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
@@ -114,7 +114,7 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 		cotire(${_targetName})
 		
 		if(COTIRE_USE_UNITY)
-			target_link_libraries(${_targetName}_unity yadoms-shared_unity interpreter_cpp_api_unity ${LIBS} ${CMAKE_DL_LIBS} ${PROTOBUF_LIBRARIES} ${ARGN})
+			target_link_libraries(${_targetName}_unity yadoms-shared_unity interpreter_cpp_api_unity ${LIBS} ${CMAKE_DL_LIBS} protobuf::libprotobuf ${ARGN})
 
 		   if(CMAKE_CROSSCOMPILING)
 		      #Fix RPATH for cross compilation

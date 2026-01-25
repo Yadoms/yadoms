@@ -1,27 +1,24 @@
 # Make a static library to use to encode/decode IPC messages using Protobuf
 
-
-
-set(plugin_IPC_SOURCES
+set(plugin_IPC_PROTOS
    pluginToYadoms.proto
    yadomsToPlugin.proto
    
    pluginInit.proto
 )
 
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS pluginToYadoms.proto)
-set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS yadomsToPlugin.proto)
-set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS pluginInit.proto)
-set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
+protobuf_generate(LANGUAGE cpp
+   OUT_VAR plugin_IPC_SOURCES
+   PROTOS ${plugin_IPC_PROTOS}
+)
 
 set(plugin_IPC_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to generated protobuf files.")
 
-add_library(plugin_IPC STATIC ${plugin_IPC_SOURCES})
-target_link_libraries(plugin_IPC ${PROTOBUF_LIBRARIES})
+add_library(plugin_IPC STATIC ${plugin_IPC_SOURCES} ${plugin_IPC_PROTOS})
+target_link_libraries(plugin_IPC protobuf::libprotobuf)
 
-set_property(TARGET plugin_IPC PROPERTY INCLUDE_DIRECTORIES ${plugin_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
+set_property(TARGET plugin_IPC
+   PROPERTY INCLUDE_DIRECTORIES ${plugin_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
 if(COTIRE_USE)
    # this target is for protobuf and precompiled header has no real sense

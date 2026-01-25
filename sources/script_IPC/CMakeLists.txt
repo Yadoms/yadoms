@@ -2,20 +2,20 @@
 
 
 
-set(script_IPC_SOURCES
+set(script_IPC_PROTOS
    scriptToYadoms.proto
    yadomsToScript.proto
 )
 
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS scriptToYadoms.proto)
-set(script_IPC_SOURCES ${script_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS yadomsToScript.proto)
-set(script_IPC_SOURCES ${script_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
+protobuf_generate(LANGUAGE cpp
+   OUT_VAR script_IPC_SOURCES
+   PROTOS ${script_IPC_PROTOS}
+)
 
 set(script_IPC_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to generated protobuf files.")
 
 add_library(script_IPC STATIC ${script_IPC_SOURCES})
-target_link_libraries(script_IPC ${PROTOBUF_LIBRARIES})
+target_link_libraries(script_IPC protobuf::libprotobuf)
 
 set_property(TARGET script_IPC PROPERTY INCLUDE_DIRECTORIES ${script_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
