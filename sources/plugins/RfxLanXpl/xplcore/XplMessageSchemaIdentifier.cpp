@@ -2,6 +2,7 @@
 #include "XplHelper.h"
 #include "XplMessageSchemaIdentifier.h"
 #include "XplException.h"
+#include <boost/algorithm/string.hpp>
 
 namespace xplcore
 {

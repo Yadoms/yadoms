@@ -129,7 +129,7 @@ namespace shared
 
 			auto is_sep = [&](char c) {
 				return seps.find(c) != std::string_view::npos;
-			};
+				};
 
 			for (char c : input)
 			{
@@ -150,6 +150,34 @@ namespace shared
 			if (!token.empty())
 				result.push_back(std::move(token));
 
+			return result;
+		}
+
+		//
+		/// \brief        Replace all occurences of subtring in a string
+		/// \param [in]   input : the main string
+		/// \param [in]   from : the subtring to replace
+		/// \param [in]   to : the subtring to replace with
+		/// \return       A vector of separated strings
+		//
+		static std::string replaceAllSubstrings(const std::string& input,
+												const std::string& from,
+												const std::string& to)
+		{
+			if (from.empty())
+				return input;
+
+			std::string result;
+			std::size_t start = 0;
+			std::size_t pos;
+
+			while ((pos = input.find(from, start)) != std::string::npos) {
+				result.append(input, start, pos - start);
+				result.append(to);
+				start = pos + from.length();
+			}
+
+			result.append(input, start);
 			return result;
 		}
 	};

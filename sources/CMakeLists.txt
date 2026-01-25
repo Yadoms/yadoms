@@ -17,12 +17,16 @@ cmake_policy(SET CMP0074 NEW)
 cmake_policy(SET CMP0077 NEW)
 cmake_policy(SET CMP0078 NEW)
 cmake_policy(SET CMP0086 NEW)
+cmake_policy(SET CMP0091 NEW)
 cmake_policy(SET CMP0111 NEW)
 cmake_policy(SET CMP0144 NEW)
 cmake_policy(SET CMP0167 NEW)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 
 ##################################################################################################
 ## Options
@@ -56,6 +60,10 @@ if(COTIRE_USE)
    include(cmake/cotire.cmake)
 else()
    include(cmake/PrecompiledHeader.cmake)
+endif()
+   
+if(MSVC)
+   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
    
 # Compilers/IDE configurations
