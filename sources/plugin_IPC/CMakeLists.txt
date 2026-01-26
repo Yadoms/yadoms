@@ -1,13 +1,14 @@
 # Make a static library to use to encode/decode IPC messages using Protobuf
 
 set(plugin_IPC_PROTOS
-   pluginToYadoms.proto
-   yadomsToPlugin.proto
+   ${CMAKE_CURRENT_SOURCE_DIR}/pluginToYadoms.proto
+   ${CMAKE_CURRENT_SOURCE_DIR}/yadomsToPlugin.proto
    
-   pluginInit.proto
+   ${CMAKE_CURRENT_SOURCE_DIR}/pluginInit.proto
 )
 
-protobuf_generate(LANGUAGE cpp
+protobuf_generate(
+   LANGUAGE cpp
    OUT_VAR plugin_IPC_SOURCES
    PROTOS ${plugin_IPC_PROTOS}
 )

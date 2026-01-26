@@ -263,7 +263,17 @@ endforeach()
 # if(NOT ${PROTOBUF_FOUND})
 #    message(FATAL_ERROR "Unable to find the required Protobuf tool")
 # endif()
-find_package(Protobuf CONFIG REQUIRED)
+
+
+
+# Don't use CONFIG mode because of incompatible with cross-compilation
+# set Protobuf_PROTOC_EXECUTABLE to force protoc path
+# set PROTOBUF_ROOT to force include/libs path
+if(PROTOBUF_ROOT)
+   set(Protobuf_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
+   set(Protobuf_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+endif()
+find_package(Protobuf MODULE 3.1.0 REQUIRED)
 message("-- Found Protobuf: ${Protobuf_VERSION}")
 
 #TODO encore utile ?

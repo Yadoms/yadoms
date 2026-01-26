@@ -42,13 +42,6 @@ set(PROTOBUF_ROOT "path/to/protobuf")
 #set(PostgreSQL_ROOT "F:/ProjetsPerso/postgresql-9.4.6-1-windows-binaries/pgsql")
 
 
-##### Cross compilation ######
-#
-# 
-#define CC_RPI_ROOT to cross compile for Raspberry PI (from a linux machine)
-#depending on linux machine architecture (32/64), choose from the first or second line
-#set(CC_RPI_ROOT /path/to/raspberry/git/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian)
-#set(CC_RPI_ROOT /path/to/raspberry/git/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64)
 
 #activate this option to enable eclipse debugging
 set(DEBUG_WITH_GCC OFF)

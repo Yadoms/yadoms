@@ -3,11 +3,12 @@
 
 
 set(script_IPC_PROTOS
-   scriptToYadoms.proto
-   yadomsToScript.proto
+   ${CMAKE_CURRENT_SOURCE_DIR}/scriptToYadoms.proto
+   ${CMAKE_CURRENT_SOURCE_DIR}/yadomsToScript.proto
 )
 
-protobuf_generate(LANGUAGE cpp
+protobuf_generate(
+   LANGUAGE cpp
    OUT_VAR script_IPC_SOURCES
    PROTOS ${script_IPC_PROTOS}
 )

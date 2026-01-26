@@ -3,13 +3,14 @@
 
 
 set(interpreter_IPC_PROTOS
-   interpreterToYadoms.proto
-   yadomsToInterpreter.proto
+   ${CMAKE_CURRENT_SOURCE_DIR}/interpreterToYadoms.proto
+   ${CMAKE_CURRENT_SOURCE_DIR}/yadomsToInterpreter.proto
 
-   interpreterInit.proto
+   ${CMAKE_CURRENT_SOURCE_DIR}/interpreterInit.proto
 )
 
-protobuf_generate(LANGUAGE cpp
+protobuf_generate(
+   LANGUAGE cpp
    OUT_VAR interpreter_IPC_SOURCES
    PROTOS ${interpreter_IPC_PROTOS}
 )

@@ -31,7 +31,7 @@ list(APPEND CURL_BUILD_ARGS "-DCURL_DISABLE_MQTT=ON")
 list(APPEND CURL_BUILD_ARGS "-DCURL_USE_OPENSSL=ON")
 
 if(CMAKE_TOOLCHAIN_FILE)
-   message("CURL : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC_RPI_GCC} and ${CC_RPI_GXX})")
+   message("CURL : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CMAKE_C_COMPILER} and ${CMAKE_CXX_COMPILER})")
 
    #provide OSXCROSS vars
    set(CURL_PATHCMD)
@@ -50,20 +50,6 @@ if(CMAKE_TOOLCHAIN_FILE)
    endif()
    if(OSXCROSS_SDK)
       list(APPEND CURL_BUILD_ARGS "-DOSXCROSS_SDK=${OSXCROSS_SDK}")
-   endif()
-
-
-   #provide RPI_ROOT and also GCC and G++ (used by toolchain file)
-   if(CC_RPI_ROOT)
-      list(APPEND CURL_BUILD_ARGS "-DCC_RPI_ROOT=${CC_RPI_ROOT}")
-   endif()
-   
-   if(CC_RPI_GCC)
-      list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GCC=${CC_RPI_GCC}")
-   endif()
-  
-   if(CC_RPI_GXX)
-      list(APPEND CURL_BUILD_ARGS "-DCC_RPI_GXX=${CC_RPI_GXX}")
    endif()
    
    #append all potentials dependencies that external project may need (openssl mostly)
