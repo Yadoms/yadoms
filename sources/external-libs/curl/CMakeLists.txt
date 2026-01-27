@@ -31,7 +31,7 @@ list(APPEND CURL_BUILD_ARGS "-DCURL_DISABLE_MQTT=ON")
 list(APPEND CURL_BUILD_ARGS "-DCURL_USE_OPENSSL=ON")
 
 if(CMAKE_TOOLCHAIN_FILE)
-   message("CURL : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CMAKE_C_COMPILER} and ${CMAKE_CXX_COMPILER})")
+   message("-- External lib - CURL : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CMAKE_C_COMPILER} and ${CMAKE_CXX_COMPILER})")
 
    #provide OSXCROSS vars
    set(CURL_PATHCMD)

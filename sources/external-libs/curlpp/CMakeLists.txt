@@ -13,7 +13,7 @@ endif()
 
 
 if(CMAKE_TOOLCHAIN_FILE)
-message("CURLPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CMAKE_C_COMPILER} and ${CMAKE_CXX_COMPILER})")
+message("-- External lib - CURLPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CMAKE_C_COMPILER} and ${CMAKE_CXX_COMPILER})")
 
    #provide OSXCROSS vars
    set(CURL_PATHCMD)
