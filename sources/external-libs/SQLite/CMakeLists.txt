@@ -46,13 +46,10 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY
 # Strip 'lib' prefix when compiling for windows
 if(WIN32)
   set_target_properties(sqlite PROPERTIES PREFIX "")
-endif()
-
-IF(WIN32)
-  SET_PROPERTY(TARGET sqlite PROPERTY FOLDER "External Libs")
-
-  #set warning level3 only for this project
-  add_definitions("/W3")
+  set_target_properties(sqlite PROPERTIES FOLDER "External Libs")
+  target_compile_options(sqlite PRIVATE
+    $<$<OR:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>:/W3>
+  )
 ENDIF()
 
 set(SQLITE_INCLUDE_DIR2 "${CMAKE_CURRENT_SOURCE_DIR}/${SQLITE_DIR_NAME}")

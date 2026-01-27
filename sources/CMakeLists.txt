@@ -235,19 +235,12 @@ endif()
 find_package(Protobuf MODULE 3.1.0 REQUIRED)
 message("-- Found Protobuf: ${Protobuf_VERSION}")
 
-#TODO encore utile ?
-if(MSVC)   
-   # Workaround to avoid conflict between min/max constants defined in windows.h and Protobuf
-   add_definitions(-DNOMINMAX)
-endif()
-
 
 ###############################################
 # Curl / CurlPp
 #
 ###############################################
 add_definitions("-DCURL_STATICLIB")
-
 
 
 ###############################################
