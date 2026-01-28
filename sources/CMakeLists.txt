@@ -230,7 +230,7 @@ endforeach()
 # set PROTOBUF_ROOT to force include/libs path
 if(PROTOBUF_ROOT)
    set(Protobuf_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
-   set(Protobuf_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   set(Protobuf_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf${CMAKE_STATIC_LIBRARY_SUFFIX}")
 endif()
 find_package(Protobuf MODULE 3.1.0 REQUIRED)
 message("-- Found Protobuf: ${Protobuf_VERSION}")
