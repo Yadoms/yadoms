@@ -9,10 +9,22 @@
 ##   Raspberry Raspbian Wheezy, g++ 4.7
 ##   MacOSx Snow Leopard 10.8, g++ 4.8
 ##################################################################################################
+cmake_minimum_required (VERSION 3.25.0)
 project (YadomsTests)
 
-# Check the minimum CMake version
-cmake_minimum_required (VERSION 3.2.0)
+# Global CMake policies
+cmake_policy(SET CMP0074 NEW)
+cmake_policy(SET CMP0077 NEW)
+cmake_policy(SET CMP0078 NEW)
+cmake_policy(SET CMP0086 NEW)
+cmake_policy(SET CMP0111 NEW)
+cmake_policy(SET CMP0144 NEW)
+cmake_policy(SET CMP0167 NEW)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # The main Yadoms path
 set(YADOMS_PATH ../../../sources)
@@ -26,20 +38,10 @@ set(YADOMS_PATH ../../../sources)
 include(${YADOMS_PATH}/cmake/preChecks.cmake)
 
 # User specific configuration
-include("CMakeListsUserConfig.txt" OPTIONAL)
+include(CMakeListsUserConfig.txt OPTIONAL)
 
 # Precompiled headers
 include(${YADOMS_PATH}/cmake/PrecompiledHeader.cmake)
-
-# Windows specific macro
-if(WIN32)
-	include(${YADOMS_PATH}/cmake/windows.cmake)
-endif()
-
-if(MSVC)
-   set (LINK_WITH_STATIC_RUNTIME 1)
-   include(${YADOMS_PATH}/cmake/MSVCRuntime.cmake)
-endif()
 
 # Compilers/IDE configurations
 include(${YADOMS_PATH}/cmake/compilers.cmake)
@@ -80,18 +82,18 @@ add_definitions(-DBOOST_TEST_DETECT_FP_EXCEPTIONS)
 # define all needed boost libraries
 set(BOOST_LIBS 
    atomic
-   system 
-   filesystem 
-   thread 
-   date_time 
-   chrono 
+   chrono
+   date_time
+   filesystem
+   process
    regex
+   thread
    unit_test_framework 
 )
 
 # search boost libs
-find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
-set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
+find_package(Boost 1.89.0 CONFIG REQUIRED COMPONENTS ${BOOST_LIBS})
+message("-- Found Boost: ${BOOST_LIBS}")
 
 ## thread library (pthread)
 FIND_PACKAGE(Threads)
@@ -127,19 +129,14 @@ endif()
 ###############################################
 SET(OPENSSL_USE_STATIC_LIBS TRUE)
 SET(OPENSSL_MSVC_STATIC_RT TRUE)
-SET(OPENSSL_ROOT_DIR ${OPENSSL_ROOT})
-FIND_PACKAGE(OpenSSL)
+FIND_PACKAGE(OpenSSL REQUIRED)
 
 if(NOT ${OPENSSL_FOUND})
-   message("Cannot find opensll, all plugins which requires SSL features will not be loaded")
+   message(FATAL_ERROR "Cannot find opensll, all plugins which requires SSL features will not be loaded")
    set(OPENSSL_INCLUDE_DIR "")
 endif()
-
-set(LIBS 
-   ${LIBS} 
-   ${OPENSSL_SSL_LIBRARY} 
-   ${OPENSSL_CRYPTO_LIBRARY}
-)
+#Do not add OPENSSL_SSL_LIBRARY and OPENSSL_CRYPTO_LIBRARY here; it will be later
+#if done here, this is too early, and for gcc the libraries appears in bad order regarding Poco for example
 
 ###############################################
 # POCO
@@ -147,43 +144,47 @@ set(LIBS
 # POCO_LIBS : define all required poco libraries
 ###############################################
 
-SET (POCO_LIBS
-   PocoUtil
-   PocoNetSSL
-   PocoZip
-   PocoXML
-   PocoNet
-   PocoJSON
-   PocoFoundation
+SET(POCO_COMPONENTS
+   Util
+   NetSSL
+   Crypto
+   Zip
+   XML
+   Net
+   JSON
+   Foundation
 )
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
-set(POCO_USE_STATIC_LIBS 1)
-set(POCO_USE_STATIC_RUNTIME 1) 
+set(POCO_USE_STATIC_RUNTIME 1)
 add_definitions(-DPOCO_STATIC)
 add_definitions(-DPOCO_NO_AUTOMATIC_LIBS)
 if(MSVC)
 	#fix for linking with external OpenSSL
-	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libcrypto.lib ")
-	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libssl.lib ")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}  /NODEFAULTLIB:libssl /NODEFAULTLIB:libcrypto")
 endif(MSVC)
 
 add_definitions(-DPOCO_EXTERNAL_OPENSSL=42) #force an unknown value (empty value do not work correctly)
-include(${YADOMS_PATH}/cmake/FindPoco.cmake)
 
-IF(NOT ${Poco_FOUND})
-	message(SEND_ERROR "Unable to find the requested POCO libraries")
-ENDIF()
+find_package(Poco CONFIG REQUIRED COMPONENTS ${POCO_COMPONENTS})
+set(Poco_TARGETS)
+foreach(c IN LISTS POCO_COMPONENTS)
+  list(APPEND Poco_TARGETS Poco::${c})
+endforeach()
 
+
+
+###############################################
 # define libraries to link with
+#
+###############################################
 set(LIBS
-   ${LIBS}
-   ${Boost_LIBRARIES}
-   ${CMAKE_THREAD_LIBS_INIT}
-   ${RT_LIBRARY}
-   ${Poco_FOUND_LIBS}
+   ${Poco_TARGETS}
    ${OPENSSL_SSL_LIBRARY}
    ${OPENSSL_CRYPTO_LIBRARY}
+   ${CMAKE_THREAD_LIBS_INIT}
+   ${Boost_LIBRARIES}
+   ${LIBS}
 )
 
 ##################################################################################################
