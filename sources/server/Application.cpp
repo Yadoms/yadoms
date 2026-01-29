@@ -6,7 +6,6 @@
 #include <Poco/Util/Option.h>
 #include <Poco/Util/OptionSet.h>
 #include <Poco/Util/HelpFormatter.h>
-#include <Poco/Net/HTTPClientSession.h>
 #include <Poco/Net/HTTPStreamFactory.h>
 
 #include "Supervisor.h"
@@ -61,20 +60,20 @@ void CYadomsServer::initialize(Application& self)
 
 void CYadomsServer::setupProxy() const
 {
-   if (m_startupOptions->getProxyHost().isNull())
+   if (m_startupOptions->getProxyHost())
       return;
 
    const auto host = m_startupOptions->getProxyHost().value();
-   const auto port = m_startupOptions->getProxyPort().isNull()
+   const auto port = m_startupOptions->getProxyPort()
                         ? shared::http::CProxy::kUseProxyDefaultPort
                         : m_startupOptions->getProxyPort().value();
-   const auto username = m_startupOptions->getProxyUsername().isNull()
+   const auto username = m_startupOptions->getProxyUsername()
                             ? std::string()
                             : m_startupOptions->getProxyUsername().value();
-   const auto password = m_startupOptions->getProxyPassword().isNull()
+   const auto password = m_startupOptions->getProxyPassword()
                             ? std::string()
                             : m_startupOptions->getProxyPassword().value();
-   const auto bypassRegex = m_startupOptions->getProxyBypass().isNull()
+   const auto bypassRegex = m_startupOptions->getProxyBypass()
                                ? std::string()
                                : m_startupOptions->getProxyBypass().value();
    shared::http::CProxy::setGlobalProxyConfig(host,
