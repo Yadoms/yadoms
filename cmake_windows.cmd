@@ -9,8 +9,9 @@ setlocal & pushd .
 @echo Yadoms build for Windows
 @echo ========================
 @echo.
-@echo v142 : platform toolset "Visual Studio 2019"
-@echo v143 : platform toolset "Visual Studio 2022"
+@echo vs2019 : platform toolset "Visual Studio 16 2019"
+@echo vs2022 : platform toolset "Visual Studio 17 2022"
+@echo vs2026 : platform toolset "Visual Studio 18 2026"
 @echo Leave empty to use default toolset
 @echo.
 @echo.
@@ -22,14 +23,19 @@ if "%1%" == "" (
 	cmake -S sources -B projects -DYADOMS_BINARY_DIR=bin -A Win32
    goto:eof
 )
-if "%1%" == "v142" (
-   @echo Generating using "Visual Studio 2019"
-	cmake -S sources -B projects -G "Visual Studio 17 2019" -DYADOMS_BINARY_DIR=bin -A Win32
+if "%1%" == "vs2019" (
+   @echo Generating using "Visual Studio 16 2019"
+	cmake -S sources -B projects -G "Visual Studio 16 2019" -DYADOMS_BINARY_DIR=bin -A Win32
    goto:eof
 )
-if "%1%" == "v143" (
-   @echo Generating using "Visual Studio 2022"
+if "%1%" == "vs2022" (
+   @echo Generating using "Visual Studio 17 2022"
 	cmake -S sources -B projects -G "Visual Studio 17 2022" -DYADOMS_BINARY_DIR=bin -A Win32
+   goto:eof
+)
+if "%1%" == "vs2026" (
+   @echo Generating using "Visual Studio 18 2026"
+	cmake -S sources -B projects -G "Visual Studio 18 2026" -DYADOMS_BINARY_DIR=bin -A Win32
    goto:eof
 )
 echo Error: invalid toolset selected

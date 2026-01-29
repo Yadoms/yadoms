@@ -9,7 +9,7 @@
 ##   Raspberry Raspbian Wheezy, g++ 4.7
 ##   MacOSx Snow Leopard 10.8, Lion 10.9, yosemite 10.10 and ElCaptain 10.11 , g++ 4.8 and more
 ##################################################################################################
-cmake_minimum_required (VERSION 3.25.0)
+cmake_minimum_required (VERSION 3.31.0)
 project (Yadoms)
 
 # Global CMake policies
