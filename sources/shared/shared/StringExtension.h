@@ -245,7 +245,7 @@ namespace shared
 	}
 
 	template<>
-	inline std::string CStringExtension::cultureInvariantToString(const Poco::UInt8& value)
+	inline std::string CStringExtension::cultureInvariantToString(const std::uint8_t& value)
 	{
 		std::ostringstream ss;
 		ss.imbue(std::locale::classic()); // Use the C locale 

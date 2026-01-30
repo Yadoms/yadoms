@@ -13,7 +13,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A color (RGB) historizable object
             //-----------------------------------------------------
-            class CColorRGB : public CSingleHistorizableData<Poco::UInt32>
+            class CColorRGB : public CSingleHistorizableData<std::uint32_t>
             {
             public:
                //-----------------------------------------------------

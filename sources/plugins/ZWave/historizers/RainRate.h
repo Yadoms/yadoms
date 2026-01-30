@@ -27,7 +27,7 @@ namespace historizers
       //-----------------------------------------------------
       virtual ~CRainRate();
 
-      // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
+      // COpenZWaveSingleHistorizableData<std::int64_t> override ------------------------
       void setWithUnits(double value, const std::string& unit) override;
       double getWithUnits(const std::string& unit) const override;
       // [END] - COpenZWaveSingleHistorizableData<double> override ------------------------

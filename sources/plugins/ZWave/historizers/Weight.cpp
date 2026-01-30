@@ -18,7 +18,7 @@ namespace historizers
    {
    }
 
-   // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
+   // COpenZWaveSingleHistorizableData<std::int64_t> override ------------------------
    void CWeight::setWithUnits(double value, const std::string& unit)
    {
       if (unit == "lb")

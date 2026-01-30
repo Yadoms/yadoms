@@ -267,7 +267,7 @@ namespace startupOptions
         /// \brief	    Get the proxy port
         /// \return     The proxy port
         //--------------------------------------------------------------
-        virtual std::optional<Poco::UInt16> getProxyPort() const = 0;
+        virtual std::optional<std::uint16_t> getProxyPort() const = 0;
 
         //--------------------------------------------------------------
         /// \brief	    Get the proxy username

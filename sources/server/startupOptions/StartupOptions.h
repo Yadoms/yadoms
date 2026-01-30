@@ -75,7 +75,7 @@ namespace startupOptions
         bool getNoPasswordFlag() const override;
         bool getIsRunningAsService() const override;
         std::optional<std::string> getProxyHost() const override;
-        std::optional<Poco::UInt16> getProxyPort() const override;
+        std::optional<std::uint16_t> getProxyPort() const override;
         std::optional<std::string> getProxyUsername() const override;
         std::optional<std::string> getProxyPassword() const override;
         std::optional<std::string> getProxyBypass() const override;

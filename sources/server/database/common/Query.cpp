@@ -396,42 +396,42 @@ namespace database
 		}
 
 
-		std::string CQuery::formatInt8ToSql(const Poco::Int8& anyStringValue)
+		std::string CQuery::formatInt8ToSql(const std::int8_t& anyStringValue)
 		{
 			return boost::lexical_cast<std::string>(anyStringValue);
 		}
 
-		std::string CQuery::formatUInt8ToSql(const Poco::UInt8& anyStringValue)
+		std::string CQuery::formatUInt8ToSql(const std::uint8_t& anyStringValue)
 		{
 			return boost::lexical_cast<std::string>(anyStringValue);
 		}
 
-		std::string CQuery::formatInt16ToSql(const Poco::Int16& anyStringValue)
+		std::string CQuery::formatInt16ToSql(const std::int16_t& anyStringValue)
 		{
 			return boost::lexical_cast<std::string>(anyStringValue);
 		}
 
-		std::string CQuery::formatUInt16ToSql(const Poco::UInt16& anyStringValue)
+		std::string CQuery::formatUInt16ToSql(const std::uint16_t& anyStringValue)
 		{
 			return boost::lexical_cast<std::string>(anyStringValue);
 		}
 
-		std::string CQuery::formatInt32ToSql(const Poco::Int32& anyStringValue)
+		std::string CQuery::formatInt32ToSql(const std::int32_t& anyStringValue)
 		{
 			return boost::lexical_cast<std::string>(anyStringValue);
 		}
 
-		std::string CQuery::formatUInt32ToSql(const Poco::UInt32& anyStringValue)
+		std::string CQuery::formatUInt32ToSql(const std::uint32_t& anyStringValue)
 		{
 			return boost::lexical_cast<std::string>(anyStringValue);
 		}
 
-		std::string CQuery::formatInt64ToSql(const Poco::Int64& anyStringValue)
+		std::string CQuery::formatInt64ToSql(const std::int64_t& anyStringValue)
 		{
 			return boost::lexical_cast<std::string>(anyStringValue);
 		}
 
-		std::string CQuery::formatUInt64ToSql(const Poco::UInt64& anyStringValue)
+		std::string CQuery::formatUInt64ToSql(const std::uint64_t& anyStringValue)
 		{
 			return boost::lexical_cast<std::string>(anyStringValue);
 		}

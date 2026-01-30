@@ -15,7 +15,7 @@ public:
    void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data) override;
    std::string getSenderEmail() const override;
    std::string getHost() const override;
-   Poco::UInt16 getPort() const override;
+   std::uint16_t getPort() const override;
    ESecurityMode getSecurityMode() const override;
    bool getAuthenticationRequired() const override;
    std::string getLogin() const override;
@@ -42,7 +42,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    The port of the server
    //--------------------------------------------------------------
-   Poco::UInt16 m_serverPort;
+   std::uint16_t m_serverPort;
 
    //--------------------------------------------------------------
    /// \brief	    The server securoty mode

@@ -12,7 +12,7 @@ std::string COpenZWaveHelpers::GenerateKeywordName(OpenZWave::ValueID& value)
 	return commandClass.toString() + "." + vLabel + "." + std::to_string(static_cast<int>(value.GetInstance()));
 }
 
-std::string COpenZWaveHelpers::GenerateDeviceName(Poco::UInt32 homeId, Poco::UInt8 nodeId)
+std::string COpenZWaveHelpers::GenerateDeviceName(std::uint32_t homeId, std::uint8_t nodeId)
 {
 	return homeId + "." + std::to_string(static_cast<int>(nodeId));
 }

@@ -12,7 +12,7 @@ namespace shared
             CColorRGB::CColorRGB(const std::string& keywordName,
                                  const EKeywordAccessMode& accessMode,
                                  const EHistoryDepth& historyDepth)
-               : CSingleHistorizableData<Poco::UInt32>(keywordName,
+               : CSingleHistorizableData<std::uint32_t>(keywordName,
                                                        CStandardCapacities::ColorRGB(),
                                                        accessMode,
                                                        0,

@@ -618,10 +618,10 @@ std::optional<std::string> CStartupOptions::getProxyHost() const
     return std::nullopt;
 }
 
-std::optional<Poco::UInt16> CStartupOptions::getProxyPort() const
+std::optional<std::uint16_t> CStartupOptions::getProxyPort() const
 {
     if (m_configContainer.has("server.proxy.port"))
-        return static_cast<Poco::UInt16>(m_configContainer.getUInt("server.proxy.port", 80));
+        return static_cast<std::uint16_t>(m_configContainer.getUInt("server.proxy.port", 80));
     //safe cast because server.proxy.port is checked between 1 and 65535
     return std::nullopt;
 }
