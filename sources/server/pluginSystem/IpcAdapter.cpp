@@ -574,15 +574,15 @@ namespace pluginSystem
         message->set_loglevel(logLevel);
 
         auto proxySettings = message->mutable_proxysettings();
-        if (!proxyHost)
+        if (proxyHost)
             proxySettings->set_host(proxyHost.value());
-        if (!proxyPort)
+        if (proxyPort)
             proxySettings->set_port(proxyPort.value());
-        if (!proxyUsername)
+        if (proxyUsername)
             proxySettings->set_username(proxyUsername.value());
-        if (!proxyPassword)
+        if (proxyPassword)
             proxySettings->set_password(proxyPassword.value());
-        if (!proxyBypass)
+        if (proxyBypass)
             proxySettings->set_bypassregex(proxyBypass.value());
 
         send(msg);

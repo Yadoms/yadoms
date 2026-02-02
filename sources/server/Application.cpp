@@ -60,22 +60,22 @@ void CYadomsServer::initialize(Application& self)
 
 void CYadomsServer::setupProxy() const
 {
-   if (m_startupOptions->getProxyHost())
+   if (!m_startupOptions->getProxyHost())
       return;
 
    const auto host = m_startupOptions->getProxyHost().value();
    const auto port = m_startupOptions->getProxyPort()
-                        ? shared::http::CProxy::kUseProxyDefaultPort
-                        : m_startupOptions->getProxyPort().value();
+                        ? m_startupOptions->getProxyPort().value()
+                        : shared::http::CProxy::kUseProxyDefaultPort;
    const auto username = m_startupOptions->getProxyUsername()
-                            ? std::string()
-                            : m_startupOptions->getProxyUsername().value();
+                            ? m_startupOptions->getProxyUsername().value()
+                            : std::string();
    const auto password = m_startupOptions->getProxyPassword()
-                            ? std::string()
-                            : m_startupOptions->getProxyPassword().value();
+                            ? m_startupOptions->getProxyPassword().value()
+                            : std::string();
    const auto bypassRegex = m_startupOptions->getProxyBypass()
-                               ? std::string()
-                               : m_startupOptions->getProxyBypass().value();
+                               ? m_startupOptions->getProxyBypass().value()
+                               : std::string();
    shared::http::CProxy::setGlobalProxyConfig(host,
                                               port,
                                               username,
