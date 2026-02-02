@@ -253,11 +253,11 @@ int CYadomsServer::main(const ArgVec&)
          supervisorThread.start(supervisor);
 
          //
-         // Yadoms is running...
+         // Yadoms is running
          //
 
          // Wait for stop
-         YADOMS_LOG(debug) << "Yadoms is running...";
+         YADOMS_LOG(debug) << "Yadoms is running";
          while (stopRequestEventHandler->waitForEvents() != kTerminationRequested)
          {
             YADOMS_LOG(warning) << "Wrong application stop event received : " << stopRequestEventHandler->getEventId();
