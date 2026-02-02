@@ -51,7 +51,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    api->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(300));
 
    // the main loop
-   YADOMS_LOG(information) << "SystemInformation plugin is running..." ;
+   YADOMS_LOG(information) << "SystemInformation plugin is running" ;
 
    while (true)
    {

@@ -39,7 +39,7 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                                      shared::event::CEventTimer::kOneShot);
 
    // the main loop
-   YADOMS_LOG(information) << "MailSender plugin is running...";
+   YADOMS_LOG(information) << "MailSender plugin is running";
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
    while (true)

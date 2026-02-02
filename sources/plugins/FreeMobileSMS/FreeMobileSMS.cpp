@@ -38,7 +38,7 @@ void CFreeMobileSms::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       api->declareKeyword(m_deviceName, keyword);
 
    // the main loop
-   YADOMS_LOG(information) << "CFreeMobileSms is running..." ;
+   YADOMS_LOG(information) << "CFreeMobileSms is running" ;
    api->setPluginState(yApi::historization::EPluginState::kRunning);
    while (1)
    {

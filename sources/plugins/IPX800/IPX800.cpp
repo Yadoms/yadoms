@@ -58,7 +58,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_refreshTimer->stop();
 
       api->setPluginState(yApi::historization::EPluginState::kRunning);
-      YADOMS_LOG(information) << "IPX800 plugin is running..." ;
+      YADOMS_LOG(information) << "IPX800 plugin is running" ;
    }
    catch (...)
    {

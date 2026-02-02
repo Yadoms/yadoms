@@ -69,7 +69,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
 
       // the main loop
-      YADOMS_LOG(information) << "RfxLanXpl plugin is running..." ;
+      YADOMS_LOG(information) << "RfxLanXpl plugin is running" ;
       while (1)
       {
          // Wait for an event
