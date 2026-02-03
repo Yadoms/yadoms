@@ -15,8 +15,13 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	                        Constructor
          //--------------------------------------------------------------
-         CJSONParse(const std::string& message, const long offset)
-            : CException((boost::format("Error parsing JSON data %1% : (%2%)") % message % offset).str())
+         CJSONParse(const std::string& message,
+                    const long offset)
+            : CException(std::string("Error parsing JSON data ")
+                         + message
+                         + " : ("
+                         + std::to_string(offset)
+                         + ")")
          {
          }
 

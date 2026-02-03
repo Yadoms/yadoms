@@ -11,27 +11,27 @@
 
 namespace database
 {
-   namespace common
-   {
-      namespace requesters
-      {
-         CRule::CRule(boost::shared_ptr<IDatabaseRequester> databaseRequester)
+	namespace common
+	{
+		namespace requesters
+		{
+			CRule::CRule(boost::shared_ptr<IDatabaseRequester> databaseRequester)
             : m_databaseRequester(std::move(databaseRequester))
-         {
-         }
+			{
+			}
 
-         // IRuleRequester implementation
+			// IRuleRequester implementation
 
-         std::vector<boost::shared_ptr<entities::CRule>> CRule::getRules() const
-         {
+			std::vector<boost::shared_ptr<entities::CRule>> CRule::getRules() const
+			{
             const auto qSelect = m_databaseRequester->newQuery();
-            qSelect->Select().
+				qSelect->Select().
                      From(CRuleTable::getTableName());
 
-            adapters::CRuleAdapter adapter;
-            m_databaseRequester->queryEntities(&adapter, *qSelect);
-            return adapter.getResults();
-         }
+				adapters::CRuleAdapter adapter;
+				m_databaseRequester->queryEntities(&adapter, *qSelect);
+				return adapter.getResults();
+			}
 
          std::vector<boost::shared_ptr<entities::CRule>> CRule::getRules(
             const boost::optional<int>& ruleId,
@@ -66,50 +66,50 @@ namespace database
             return adapter.getResults();
          }
 
-         std::vector<boost::shared_ptr<entities::CRule>> CRule::getRules(const std::string& interpreterName) const
-         {
+			std::vector<boost::shared_ptr<entities::CRule>> CRule::getRules(const std::string& interpreterName) const
+			{
             const auto qSelect = m_databaseRequester->newQuery();
-            qSelect->Select().
+				qSelect->Select().
                      From(CRuleTable::getTableName()).
                      Where(CRuleTable::getInterpreterColumnName(), CQUERY_OP_EQUAL, interpreterName);
 
-            adapters::CRuleAdapter adapter;
-            m_databaseRequester->queryEntities(&adapter, *qSelect);
-            return adapter.getResults();
-         }
+				adapters::CRuleAdapter adapter;
+				m_databaseRequester->queryEntities(&adapter, *qSelect);
+				return adapter.getResults();
+			}
 
-         boost::shared_ptr<entities::CRule> CRule::getRule(int ruleId) const
-         {
-            adapters::CRuleAdapter adapter;
+			boost::shared_ptr<entities::CRule> CRule::getRule(int ruleId) const
+			{
+				adapters::CRuleAdapter adapter;
 
             const auto qSelect = m_databaseRequester->newQuery();
 
-            qSelect->Select().
+				qSelect->Select().
                      From(CRuleTable::getTableName()).
                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleId);
 
-            m_databaseRequester->queryEntities(&adapter, *qSelect);
-            if (adapter.getResults().empty())
-            {
-               // Rule not found
-               throw shared::exception::CEmptyResult((boost::format("Rule Id %1% not found in database") % ruleId).str());
-            }
-            return adapter.getResults().at(0);
-         }
+				m_databaseRequester->queryEntities(&adapter, *qSelect);
+				if (adapter.getResults().empty())
+				{
+					// Rule not found
+					throw shared::exception::CEmptyResult(std::string("Rule Id " + std::to_string(ruleId) + " not found in database"));
+				}
+				return adapter.getResults().at(0);
+			}
 
          int CRule::addRule(const entities::CRule& ruleData)
-         {
+			{
             const auto qInsert = m_databaseRequester->newQuery();
 
-            qInsert->InsertInto(CRuleTable::getTableName(),
-                                CRuleTable::getNameColumnName(),
-                                CRuleTable::getDescriptionColumnName(),
-                                CRuleTable::getInterpreterColumnName(),
-                                CRuleTable::getEditorColumnName(),
-                                CRuleTable::getModelColumnName(),
-                                CRuleTable::getContentColumnName(),
-                                CRuleTable::getConfigurationColumnName(),
-                                CRuleTable::getStateColumnName()).
+				qInsert->InsertInto(CRuleTable::getTableName(),
+									CRuleTable::getNameColumnName(),
+									CRuleTable::getDescriptionColumnName(),
+									CRuleTable::getInterpreterColumnName(),
+									CRuleTable::getEditorColumnName(),
+									CRuleTable::getModelColumnName(),
+									CRuleTable::getContentColumnName(),
+									CRuleTable::getConfigurationColumnName(),
+									CRuleTable::getStateColumnName()).
                      Values(ruleData.Name(),
                             ruleData.Description(),
                             ruleData.Interpreter(),
@@ -119,69 +119,69 @@ namespace database
                             ruleData.Configuration(),
                             ruleData.State.isDefined() ? ruleData.State() : entities::ERuleState::kStopped);
 
-            if (m_databaseRequester->queryStatement(*qInsert) <= 0)
-               throw shared::exception::CEmptyResult("No lines affected");
+				if (m_databaseRequester->queryStatement(*qInsert) <= 0)
+					throw shared::exception::CEmptyResult("No lines affected");
 
 
             const auto qSelect = m_databaseRequester->newQuery();
-            qSelect->Select(CRuleTable::getIdColumnName()).
+				qSelect->Select(CRuleTable::getIdColumnName()).
                      From(CRuleTable::getTableName()).
                      Where(CRuleTable::getNameColumnName(), CQUERY_OP_EQUAL, ruleData.Name()).
                      OrderBy(CRuleTable::getIdColumnName(), CQuery::kDesc);
 
-            adapters::CSingleValueAdapter<int> adapter;
-            m_databaseRequester->queryEntities(&adapter, *qSelect);
+				adapters::CSingleValueAdapter<int> adapter;
+				m_databaseRequester->queryEntities(&adapter, *qSelect);
             if (!adapter.getResults().empty())
-            {
-               //search for inserted rule
+				{
+					//search for inserted rule
                const auto createdId = adapter.getResults()[0];
 
-               //update all optional flags 
+					//update all optional flags 
                const auto qUpdate = m_databaseRequester->newQuery();
 
-               //update error message
+					//update error message
                if (ruleData.ErrorMessage.isDefined())
-               {
-                  qUpdate->Clear().Update(CRuleTable::getTableName()).
+					{
+						qUpdate->Clear().Update(CRuleTable::getTableName()).
                            Set(CRuleTable::getErrorMessageColumnName(), ruleData.ErrorMessage()).
                            Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
 
-                  if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
-                     throw CDatabaseException("Failed to update error message field");
-               }
+						if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+							throw CDatabaseException("Failed to update error message field");
+					}
 
-               //update start date
+					//update start date
                if (ruleData.StartDate.isDefined())
-               {
-                  qUpdate->Clear().Update(CRuleTable::getTableName()).
+					{
+						qUpdate->Clear().Update(CRuleTable::getTableName()).
                            Set(CRuleTable::getStartDateColumnName(), ruleData.StartDate()).
                            Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
 
-                  if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
-                     throw CDatabaseException("Failed to update start date field");
-               }
+						if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+							throw CDatabaseException("Failed to update start date field");
+					}
 
-               //update stop date
+					//update stop date
                if (ruleData.StopDate.isDefined())
-               {
-                  qUpdate->Clear().Update(CRuleTable::getTableName()).
+					{
+						qUpdate->Clear().Update(CRuleTable::getTableName()).
                            Set(CRuleTable::getStopDateColumnName(), ruleData.StopDate()).
                            Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
 
-                  if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
-                     throw CDatabaseException("Failed to update stop date field");
-               }
+						if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+							throw CDatabaseException("Failed to update stop date field");
+					}
 
-               return createdId;
-            }
+					return createdId;
+				}
 
-            throw shared::exception::CEmptyResult("Cannot retrieve inserted Rule");
-         }
+				throw shared::exception::CEmptyResult("Cannot retrieve inserted Rule");
+			}
 
          void CRule::updateRule(const entities::CRule& ruleData)
-         {
+			{
             if (!ruleData.Id.isDefined())
-               throw CDatabaseException("Need an id to update");
+					throw CDatabaseException("Need an id to update");
 
             const auto query = m_databaseRequester->newQuery();
             query->Update(CRuleTable::getTableName());
@@ -217,17 +217,17 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update rule");
          }
 
-         void CRule::deleteRule(int ruleId)
-         {
+			void CRule::deleteRule(int ruleId)
+			{
             const auto qUpdate = m_databaseRequester->newQuery();
-            qUpdate->DeleteFrom(CRuleTable::getTableName()).
+				qUpdate->DeleteFrom(CRuleTable::getTableName()).
                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleId);
 
-            if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
-               throw shared::exception::CEmptyResult("No lines affected");
-         }
+				if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+					throw shared::exception::CEmptyResult("No lines affected");
+			}
 
-         // [END] IRuleRequester implementation
-      } //namespace requesters
-   } //namespace common
+			// [END] IRuleRequester implementation
+		} //namespace requesters
+	} //namespace common
 } //namespace database 

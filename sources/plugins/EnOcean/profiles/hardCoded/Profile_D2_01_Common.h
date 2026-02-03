@@ -11,17 +11,17 @@ class CProfile_D2_01_Common
 {
 public:
    DECLARE_ENUM_HEADER(EDefaultState,
-      ((off)(0))
-      ((on)(1))
-      ((previousState)(2))
-      ((notUsed)(3))
-   ) ;
+                       ((off)(0))
+                       ((on)(1))
+                       ((previousState)(2))
+                       ((notUsed)(3))
+   );
 
    DECLARE_ENUM_HEADER(EConnectedSwitchsType,
-      ((externalSwitch)(1))
-      ((externalPushButton)(2))
-      ((autodetection)(3))
-   ) ;
+                       ((externalSwitch)(1))
+                       ((externalPushButton)(2))
+                       ((autodetection)(3))
+   );
 
    enum class E_D2_01_Command
    {
@@ -44,7 +44,7 @@ public:
    {
       kEnergyWs = 0x00,
       kEnergyWh = 0x01,
-      kEnergyKWh= 0x02,
+      kEnergyKWh = 0x02,
       kPowerW = 0x03,
       kPowerKW = 0x04
    };
@@ -198,8 +198,8 @@ public:
                            const boost::dynamic_bitset<>& userData,
                            const std::string& commandName);
 
-   static Poco::Int64 extractEnergyWh(E_D2_01_MeasurementUnit unit,
-                                      unsigned int rawValue);
+   static std::int64_t extractEnergyWh(E_D2_01_MeasurementUnit unit,
+                                       unsigned int rawValue);
 
    static double extractPowerValueW(E_D2_01_MeasurementUnit unit,
                                     unsigned int rawValue);

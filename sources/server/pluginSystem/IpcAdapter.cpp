@@ -15,18 +15,17 @@ namespace pluginSystem
 {
    constexpr size_t CIpcAdapter::MaxMessages(100);
    constexpr size_t CIpcAdapter::MaxMessageSize(100000);
-
    CIpcAdapter::CIpcAdapter(const boost::shared_ptr<CYPluginApiImplementation>& yPluginApi)
       : m_pluginApi(yPluginApi),
-        m_id(createId()),
-        m_sendMessageQueueId(m_id + ".plugin_IPC.toPlugin"),
-        m_receiveMessageQueueId(m_id + ".plugin_IPC.toYadoms"),
-        m_sendMessageQueueRemover(m_sendMessageQueueId),
-        m_receiveMessageQueueRemover(m_receiveMessageQueueId),
-        m_sendMessageQueue(boost::interprocess::create_only, m_sendMessageQueueId.c_str(), MaxMessages, MaxMessageSize),
-        m_receiveMessageQueue(boost::interprocess::create_only, m_receiveMessageQueueId.c_str(), MaxMessages, MaxMessageSize),
-        m_messageCutter(boost::make_shared<shared::communication::SmallHeaderMessageCutter>(m_sendMessageQueue.get_max_msg_size(), MaxMessages)),
-        m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this, yPluginApi->getPluginId()))
+      m_id(createId()),
+      m_sendMessageQueueId(m_id + ".plugin_IPC.toPlugin"),
+      m_receiveMessageQueueId(m_id + ".plugin_IPC.toYadoms"),
+      m_sendMessageQueueRemover(m_sendMessageQueueId),
+      m_receiveMessageQueueRemover(m_receiveMessageQueueId),
+      m_sendMessageQueue(boost::interprocess::create_only, m_sendMessageQueueId.c_str(), MaxMessages, MaxMessageSize),
+      m_receiveMessageQueue(boost::interprocess::create_only, m_receiveMessageQueueId.c_str(), MaxMessages, MaxMessageSize),
+      m_messageCutter(boost::make_shared<shared::communication::SmallHeaderMessageCutter>(m_sendMessageQueue.get_max_msg_size(), MaxMessages)),
+      m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this, yPluginApi->getPluginId()))
    {
    }
 
@@ -55,7 +54,7 @@ namespace pluginSystem
       GOOGLE_PROTOBUF_VERIFY_VERSION;
 
       YADOMS_LOG_CONFIGURE("plugin.IpcAdapter#" + std::to_string(pluginId))
-      YADOMS_LOG(information) << "Message queue ID : " << m_id;
+         YADOMS_LOG(information) << "Message queue ID : " << m_id;
 
       try
       {
@@ -163,13 +162,13 @@ namespace pluginSystem
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook = [&](const plugin_IPC::toYadoms::msg& receivedMsg)-> bool
-         {
-            if (!checkExpectedMessageFunction(receivedMsg))
-               return false;
+            {
+               if (!checkExpectedMessageFunction(receivedMsg))
+                  return false;
 
-            receivedEvtHandler.postEvent<const plugin_IPC::toYadoms::msg>(shared::event::kUserFirstId, receivedMsg);
-            return true;
-         };
+               receivedEvtHandler.postEvent<const plugin_IPC::toYadoms::msg>(shared::event::kUserFirstId, receivedMsg);
+               return true;
+            };
       }
 
       send(pbMsg);
@@ -178,13 +177,14 @@ namespace pluginSystem
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook.clear();
-         throw std::runtime_error((boost::format("No answer from plugin when sending message %1%") % pbMsg.OneOf_case()).str());
+         throw std::runtime_error(std::string("No answer from plugin when sending message ") + std::to_string(pbMsg.OneOf_case()));
       }
 
       onReceiveFunction(receivedEvtHandler.getEventData<const plugin_IPC::toYadoms::msg>());
    }
 
-   void CIpcAdapter::processMessage(const boost::shared_ptr<const unsigned char[]>& message, size_t messageSize)
+   void CIpcAdapter::processMessage(const boost::shared_ptr<const unsigned char[]>& message,
+                                    size_t messageSize)
    {
       if (messageSize < 1)
          throw shared::exception::CInvalidParameter("messageSize");
@@ -195,7 +195,7 @@ namespace pluginSystem
          throw shared::exception::CInvalidParameter("message : fail to parse received data into protobuf format");
 
       YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from plugin instance #" << m_pluginApi->getPluginId() << (
-            m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
+         m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
@@ -228,7 +228,7 @@ namespace pluginSystem
       case plugin_IPC::toYadoms::msg::kRecipientValueRequest: processRecipientValueRequest(toYadomsProtoBuffer.recipientvaluerequest());
          break;
       case plugin_IPC::toYadoms::msg::kFindRecipientsFromFieldRequest: processFindRecipientsFromFieldRequest(
-            toYadomsProtoBuffer.findrecipientsfromfieldrequest());
+         toYadomsProtoBuffer.findrecipientsfromfieldrequest());
          break;
       case plugin_IPC::toYadoms::msg::kRecipientFieldExitsRequest:
          processRecipientFieldExitsRequest(toYadomsProtoBuffer.recipientfieldexitsrequest());
@@ -265,7 +265,8 @@ namespace pluginSystem
       case plugin_IPC::toYadoms::msg::kDeviceState: processSetDeviceState(toYadomsProtoBuffer.devicestate());
          break;
       default:
-         throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
+         throw shared::exception::CInvalidParameter(
+            std::string("message : unknown message type ") + std::to_string(toYadomsProtoBuffer.OneOf_case()));
       }
    }
 
@@ -285,10 +286,10 @@ namespace pluginSystem
       case plugin_IPC::toYadoms::SetPluginState_EPluginState_kCustom: state = shared::plugin::yPluginApi::historization::EPluginState::kCustom;
          break;
       case plugin_IPC::toYadoms::SetPluginState_EPluginState_kWaitDebugger: state = shared::plugin::yPluginApi::historization::EPluginState::
-            kWaitDebugger;
+         kWaitDebugger;
          break;
       default:
-         throw std::out_of_range((boost::format("Unsupported plugin state received : %1%") % msg.pluginstate()).str());
+         throw std::out_of_range(std::string("Unsupported plugin state received : ") + std::to_string(msg.pluginstate()));
       }
 
       const shared::CDataContainer dc(msg.custommessagedata());
@@ -316,7 +317,7 @@ namespace pluginSystem
       case plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kCustom: state = shared::plugin::yPluginApi::historization::EDeviceState::kCustom;
          break;
       default:
-         throw std::out_of_range((boost::format("Unsupported device state received : %1%") % msg.devicestate()).str());
+         throw std::out_of_range(std::string("Unsupported device state received : ") + std::to_string(msg.devicestate()));
       }
 
       const shared::CDataContainer dc(msg.custommessagedata());
@@ -541,9 +542,7 @@ namespace pluginSystem
    {
       const auto extraQueryItem = m_pendingExtraQueries.find(msg.taskid());
       if (extraQueryItem != m_pendingExtraQueries.end())
-      {
          extraQueryItem->second->reportProgress(msg.progress(), msg.message());
-      }
    }
 
 
@@ -560,11 +559,11 @@ namespace pluginSystem
                               const boost::filesystem::path& dataPath,
                               const boost::filesystem::path& logFile,
                               const std::string& logLevel,
-                              Poco::Nullable<std::string> proxyHost,
-                              Poco::Nullable<Poco::UInt16> proxyPort,
-                              Poco::Nullable<std::string> proxyUsername,
-                              Poco::Nullable<std::string> proxyPassword,
-                              Poco::Nullable<std::string> proxyBypass)
+                              const std::optional<std::string>& proxyHost,
+                              const std::optional<std::uint16_t>& proxyPort,
+                              const std::optional<std::string>& proxyUsername,
+                              const std::optional<std::string>& proxyPassword,
+                              const std::optional<std::string>& proxyBypass)
    {
       plugin_IPC::toPlugin::msg msg;
       auto message = msg.mutable_init();
@@ -574,15 +573,15 @@ namespace pluginSystem
       message->set_loglevel(logLevel);
 
       auto proxySettings = message->mutable_proxysettings();
-      if (!proxyHost.isNull())
+      if (proxyHost)
          proxySettings->set_host(proxyHost.value());
-      if (!proxyPort.isNull())
+      if (proxyPort)
          proxySettings->set_port(proxyPort.value());
-      if (!proxyUsername.isNull())
+      if (proxyUsername)
          proxySettings->set_username(proxyUsername.value());
-      if (!proxyPassword.isNull())
+      if (proxyPassword)
          proxySettings->set_password(proxyPassword.value());
-      if (!proxyBypass.isNull())
+      if (proxyBypass)
          proxySettings->set_bypassregex(proxyBypass.value());
 
       send(msg);
@@ -620,7 +619,7 @@ namespace pluginSystem
       }
       catch (std::exception& e)
       {
-         request->sendError((boost::format("Plugin doesn't answer to binding query : %1%") % e.what()).str());
+         request->sendError(std::string("Plugin doesn't answer to binding query : ") + e.what());
          return;
       }
 
@@ -654,7 +653,7 @@ namespace pluginSystem
       }
       catch (std::exception& e)
       {
-         request->sendError((boost::format("Plugin doesn't answer to device configuration schema request : %1%") % e.what()).str());
+         request->sendError(std::string("Plugin doesn't answer to device configuration schema request : ") + e.what());
          return;
       }
 
@@ -683,7 +682,8 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string& taskId)
+   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery,
+                                    const std::string& taskId)
    {
       plugin_IPC::toPlugin::msg req;
       const auto message = req.mutable_extraquery();
@@ -726,7 +726,7 @@ namespace pluginSystem
       }
       catch (std::exception& e)
       {
-         extraQuery->sendError((boost::format("Plugin doesn't answer to extra query : %1%") % e.what()).str());
+         extraQuery->sendError(std::string("Plugin doesn't answer to extra query : ") + e.what());
       }
    }
 
@@ -756,7 +756,7 @@ namespace pluginSystem
       }
       catch (std::exception& e)
       {
-         request->sendError((boost::format("Plugin doesn't answer to manually device creation : %1%") % e.what()).str());
+         request->sendError(std::string("Plugin doesn't answer to manually device creation : ") + e.what());
          return;
       }
 

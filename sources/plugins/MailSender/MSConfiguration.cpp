@@ -5,8 +5,8 @@
 
 CMSConfiguration::CMSConfiguration()
    : m_serverPort(587),
-     m_kSecurityMode(ESecurityMode::kTLS),
-     m_bRequireAuthentication(false)
+   m_kSecurityMode(ESecurityMode::kTLS),
+   m_bRequireAuthentication(false)
 {
 }
 
@@ -60,7 +60,7 @@ void CMSConfiguration::initializeWith(const boost::shared_ptr<shared::CDataConta
       case kOther:
       default:  // NOLINT(clang-diagnostic-covered-switch-default)
          m_serverName = m_data.get<std::string>("account.content.other.content.SMTPServer");
-         m_serverPort = m_data.get<Poco::UInt16>("account.content.other.content.SMTPPort");
+         m_serverPort = m_data.get<std::uint16_t>("account.content.other.content.SMTPPort");
          m_kSecurityMode = m_data.get<ESecurityMode>("account.content.other.content.Security");
          m_bRequireAuthentication = m_data.get<bool>("account.content.other.content.authentication.checkbox");
          m_userAccount = m_data.get<std::string>("account.content.other.content.authentication.content.user");
@@ -89,7 +89,7 @@ std::string CMSConfiguration::getHost() const
    return m_serverName;
 }
 
-Poco::UInt16 CMSConfiguration::getPort() const
+std::uint16_t CMSConfiguration::getPort() const
 {
    return m_serverPort;
 }

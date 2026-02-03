@@ -7,8 +7,8 @@ namespace pluginSystem
 {
    CInformation::CInformation(const boost::filesystem::path& pluginPath)
       : m_path(pluginPath),
-        m_isSupportedOnThisPlatform(true),
-        m_package(shared::CDataContainer::make())
+      m_isSupportedOnThisPlatform(true),
+      m_package(shared::CDataContainer::make())
    {
       try
       {
@@ -48,7 +48,7 @@ namespace pluginSystem
 
          if (m_package->containsValue("supportedPlatforms") || m_package->containsChild("supportedPlatforms"))
             m_isSupportedOnThisPlatform =
-               tools::CSupportedPlatformsChecker::isSupported(m_package->get<shared::CDataContainer>("supportedPlatforms"));
+            tools::CSupportedPlatformsChecker::isSupported(m_package->get<shared::CDataContainer>("supportedPlatforms"));
          else
             m_isSupportedOnThisPlatform = true;
 
@@ -90,8 +90,12 @@ namespace pluginSystem
       {
          // Set plugin as not supported
          m_isSupportedOnThisPlatform = false;
-         throw CInvalidPluginException(
-            m_type, (boost::format("The plugin folder '%1%' does not match plugin type '%2%'") % pluginFolder % m_type).str());
+         throw CInvalidPluginException(m_type,
+                                       std::string("The plugin folder '")
+                                       + pluginFolder
+                                       + "' does not match plugin type '"
+                                       + m_type
+                                       + "'");
       }
    }
 

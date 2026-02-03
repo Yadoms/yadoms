@@ -9,65 +9,65 @@
 
 namespace automation
 {
-   namespace script
-   {
-      CGeneralInfo::CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider,
-                                 boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
-         : m_locationProvider(locationProvider),
-           m_dayLightProvider(boost::make_shared<CDayLightProvider>(locationProvider, timezoneProvider))
-      {
-      }
+	namespace script
+	{
+		CGeneralInfo::CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider,
+								   boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
+			: m_locationProvider(locationProvider),
+			m_dayLightProvider(boost::make_shared<CDayLightProvider>(locationProvider, timezoneProvider))
+		{
+		}
 
-      CGeneralInfo::~CGeneralInfo()
-      {
-      }
+		CGeneralInfo::~CGeneralInfo()
+		{
+		}
 
-      std::string CGeneralInfo::get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const
-      {
-         try
-         {
-            switch (key)
-            {
-            case shared::script::yScriptApi::IYScriptApi::kSunrise:
-               {
-                  try
-                  {
-                     return CDayLightProvider::formatSunEventTime(m_dayLightProvider->sunriseTime());
-                  }
-                  catch (shared::exception::CEmptyResult&)
-                  {
-                     YADOMS_LOG(error) << "General info, get sunrise : daylight is not available (do you set your location ?)";
-                     return std::string();
-                  }
-               }
-            case shared::script::yScriptApi::IYScriptApi::kSunset:
-               {
-                  try
-                  {
-                     return CDayLightProvider::formatSunEventTime(m_dayLightProvider->sunsetTime());
-                  }
-                  catch (shared::exception::CEmptyResult&)
-                  {
-                     YADOMS_LOG(error) << "General info, get sunset : daylight is not available (do you set your location ?)";
-                     return std::string();
-                  }
-               }
-            case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->latitude());
-            case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->longitude());
-            case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->altitude());
-            case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS: return shared::CServiceLocator::instance().get<IRunningInformation>()->getOperatingSystemName();
-            case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().serialize();
-            default:
-               throw shared::exception::COutOfRange((boost::format("Key %1% doesn't exist") % key).str());
-            }
-         }
-         catch (shared::exception::CException& e)
-         {
-            YADOMS_LOG(error) << "General info, get " << key << " returning error : " << e.what();
-            return std::string();
-         }
-      }
-   }
+		std::string CGeneralInfo::get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const
+		{
+			try
+			{
+				switch (key)
+				{
+				case shared::script::yScriptApi::IYScriptApi::kSunrise:
+				{
+					try
+					{
+						return CDayLightProvider::formatSunEventTime(m_dayLightProvider->sunriseTime());
+					}
+					catch (shared::exception::CEmptyResult&)
+					{
+						YADOMS_LOG(error) << "General info, get sunrise : daylight is not available (do you set your location ?)";
+						return std::string();
+					}
+				}
+				case shared::script::yScriptApi::IYScriptApi::kSunset:
+				{
+					try
+					{
+						return CDayLightProvider::formatSunEventTime(m_dayLightProvider->sunsetTime());
+					}
+					catch (shared::exception::CEmptyResult&)
+					{
+						YADOMS_LOG(error) << "General info, get sunset : daylight is not available (do you set your location ?)";
+						return std::string();
+					}
+				}
+				case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->latitude());
+				case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->longitude());
+				case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->altitude());
+				case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS: return shared::CServiceLocator::instance().get<IRunningInformation>()->getOperatingSystemName();
+				case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().serialize();
+				default:
+					throw shared::exception::COutOfRange(std::string("Key ") + std::to_string(key) + " doesn't exist");
+				}
+			}
+			catch (shared::exception::CException& e)
+			{
+				YADOMS_LOG(error) << "General info, get " << key << " returning error : " << e.what();
+				return std::string();
+			}
+		}
+	}
 } // namespace automation::script
 
 

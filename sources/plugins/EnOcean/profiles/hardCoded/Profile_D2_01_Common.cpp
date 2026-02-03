@@ -59,12 +59,12 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(boost::shared_pt
    case specificHistorizers::EDimmerMode::kStopDimmingValue: dimMode = E_D2_01_DimMode::kStopDimming;
       break;
    default:
-      {
-         std::ostringstream oss;
-         oss << "Device " << targetId << " : send Actuator Set Pilot Wire Mode command with unsupported value " << mode;
-         YADOMS_LOG(information) << oss.str();
-         throw std::logic_error(oss.str());
-      }
+   {
+      std::ostringstream oss;
+      oss << "Device " << targetId << " : send Actuator Set Pilot Wire Mode command with unsupported value " << mode;
+      YADOMS_LOG(information) << oss.str();
+      throw std::logic_error(oss.str());
+   }
    }
    bitset_insert(userData, 8, 3, static_cast<unsigned int>(dimMode));
    bitset_insert(userData, 11, 5, static_cast<unsigned int>(outputChannel));
@@ -345,34 +345,34 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    switch (ioChannel) // NOLINT(hicpp-multiway-paths-covered)
    {
    case 0: // Output channel
+   {
+      switch (unit)
       {
-         switch (unit)
+      case E_D2_01_MeasurementUnit::kEnergyWs:
+      case E_D2_01_MeasurementUnit::kEnergyWh:
+      case E_D2_01_MeasurementUnit::kEnergyKWh:
+         if (!!loadEnergy)
          {
-         case E_D2_01_MeasurementUnit::kEnergyWs:
-         case E_D2_01_MeasurementUnit::kEnergyWh:
-         case E_D2_01_MeasurementUnit::kEnergyKWh:
-            if (!!loadEnergy)
-            {
-               loadEnergy->set(extractEnergyWh(unit,
-                                               rawValue));
-               historizers.emplace_back(loadEnergy);
-            }
-            break;
-         case E_D2_01_MeasurementUnit::kPowerW:
-         case E_D2_01_MeasurementUnit::kPowerKW:
-            if (!!loadPower)
-            {
-               loadPower->set(extractPowerValueW(unit,
-                                                 rawValue));
-               historizers.emplace_back(loadPower);
-            }
-            break;
-         default: // NOLINT(clang-diagnostic-covered-switch-default)
-            YADOMS_LOG(warning) << "ActuatorMeasurementResponse : received unsupported channel value " << ioChannel;
-            break;
+            loadEnergy->set(extractEnergyWh(unit,
+                                            rawValue));
+            historizers.emplace_back(loadEnergy);
          }
          break;
+      case E_D2_01_MeasurementUnit::kPowerW:
+      case E_D2_01_MeasurementUnit::kPowerKW:
+         if (!!loadPower)
+         {
+            loadPower->set(extractPowerValueW(unit,
+                                              rawValue));
+            historizers.emplace_back(loadPower);
+         }
+         break;
+      default: // NOLINT(clang-diagnostic-covered-switch-default)
+         YADOMS_LOG(warning) << "ActuatorMeasurementResponse : received unsupported channel value " << ioChannel;
+         break;
       }
+      break;
+   }
    default:
       YADOMS_LOG(warning) << "ActuatorMeasurementResponse : received unsupported channel value " << ioChannel;
       break;
@@ -404,12 +404,12 @@ void CProfile_D2_01_Common::sendActuatorSetPilotWireModeCommand(boost::shared_pt
    case specificHistorizers::EPilotWire::kAntiFreezeValue: pilotWireMode = EPilotWireMode::kAntiFreeze;
       break;
    default:
-      {
-         std::ostringstream oss;
-         oss << "Device " << targetId << " : send Actuator Set Pilot Wire Mode command with unsupported value " << mode;
-         YADOMS_LOG(information) << oss.str();
-         throw std::logic_error(oss.str());
-      }
+   {
+      std::ostringstream oss;
+      oss << "Device " << targetId << " : send Actuator Set Pilot Wire Mode command with unsupported value " << mode;
+      YADOMS_LOG(information) << oss.str();
+      throw std::logic_error(oss.str());
+   }
    }
    bitset_insert(userData, 13, 3, static_cast<unsigned int>(pilotWireMode));
 
@@ -522,17 +522,17 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
 }
 
 
-Poco::Int64 CProfile_D2_01_Common::extractEnergyWh(E_D2_01_MeasurementUnit unit,
-                                                   unsigned int rawValue)
+std::int64_t CProfile_D2_01_Common::extractEnergyWh(E_D2_01_MeasurementUnit unit,
+                                                    unsigned int rawValue)
 {
    switch (unit) // NOLINT(clang-diagnostic-switch-enum)
    {
    case E_D2_01_MeasurementUnit::kEnergyWs:
-      return static_cast<Poco::Int64>(rawValue) * 3600;
+      return static_cast<std::int64_t>(rawValue) * 3600;
    case E_D2_01_MeasurementUnit::kEnergyWh:
-      return static_cast<Poco::Int64>(rawValue);
+      return static_cast<std::int64_t>(rawValue);
    case E_D2_01_MeasurementUnit::kEnergyKWh:
-      return static_cast<Poco::Int64>(rawValue) * 1000;
+      return static_cast<std::int64_t>(rawValue) * 1000;
    default:
       YADOMS_LOG(warning) << "extractEnergyWh : received unsupported unit value " << static_cast<unsigned int>(unit);
       return 0;

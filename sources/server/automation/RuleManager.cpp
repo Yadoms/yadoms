@@ -19,16 +19,16 @@ namespace automation
                               boost::shared_ptr<shared::ILocation> location,
                               boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
       : m_interpreterManager(std::move(interpreterManager)),
-        m_pluginGateway(std::move(pluginGateway)),
-        m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
-        m_dbDeviceRequester(dataProvider->getDeviceRequester()),
-        m_keywordAccessLayer(std::move(keywordAccessLayer)),
-        m_dbRecipientRequester(dataProvider->getRecipientRequester()),
-        m_eventLogger(std::move(eventLogger)),
-        m_generalInfo(boost::make_shared<script::CGeneralInfo>(location, timezoneProvider)),
-        m_ruleRequester(dataProvider->getRuleRequester()),
-        m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-        m_yadomsShutdown(false)
+      m_pluginGateway(std::move(pluginGateway)),
+      m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
+      m_dbDeviceRequester(dataProvider->getDeviceRequester()),
+      m_keywordAccessLayer(std::move(keywordAccessLayer)),
+      m_dbRecipientRequester(dataProvider->getRecipientRequester()),
+      m_eventLogger(std::move(eventLogger)),
+      m_generalInfo(boost::make_shared<script::CGeneralInfo>(location, timezoneProvider)),
+      m_ruleRequester(dataProvider->getRuleRequester()),
+      m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
+      m_yadomsShutdown(false)
    {
       m_interpreterManager->setOnScriptStoppedFct(
          [&](int scriptInstanceId, const std::string& error)
@@ -82,7 +82,7 @@ namespace automation
                // and will keep their running state even if not started because of non-AutoStart rules.
                // So force stopped state
                if (rule->State() != database::entities::ERuleState::kError &&
-                  rule->State() != database::entities::ERuleState::kStopped)
+                   rule->State() != database::entities::ERuleState::kStopped)
                   recordRuleStopped(rule->Id);
             }
          }
@@ -150,31 +150,31 @@ namespace automation
       }
       catch (shared::exception::CEmptyResult& e)
       {
-         const auto error((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleLabel % e.what()).str());
+         const auto error = std::string("Invalid rule ") + ruleLabel + ", element not found in database : " + e.what();
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (shared::exception::CInvalidParameter& e)
       {
-         const auto error((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleLabel % e.what()).str());
+         const auto error = std::string("Invalid rule ") + ruleLabel + " configuration, invalid parameter : " + e.what();
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (shared::exception::COutOfRange& e)
       {
-         const auto error((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleLabel % e.what()).str());
+         const auto error = std::string("Invalid rule ") + ruleLabel + " configuration, out of range : " + e.what();
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (std::exception& e)
       {
-         const auto error((boost::format("Failed to start rule %1% : %2%") % ruleLabel % e.what()).str());
+         const auto error = std::string("Failed to start rule ") + ruleLabel + " : " + e.what();
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (...)
       {
-         const auto error((boost::format("Failed to start rule %1% : unknown error") % ruleLabel).str());
+         const auto error = std::string("Failed to start rule ") + ruleLabel + " : unknown error";
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }

@@ -8,7 +8,7 @@
 namespace startupOptions
 {
    //--------------------------------------------------------------
-   /// \brief CStartupOptions Default application options loader (by command line and file)
+  /// \brief CStartupOptions Default application options loader (by command line and file)
    /// This loader get each option from :
    /// - the command line first, if not provided
    /// - in config file, if not provided
@@ -49,34 +49,34 @@ namespace startupOptions
       std::string getDatabasePostgresqlDbName() const override;
       std::string getDatabasePostgresqlLogin() const override;
       std::string getDatabasePostgresqlPassword() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlHostAddr() const override;
-      Poco::Nullable<int> getDatabasePostgresqlConnectTimeout() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlClientEncoding() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlOptions() const override;
-      Poco::Nullable<int> getDatabasePostgresqlKeepAlives() const override;
-      Poco::Nullable<int> getDatabasePostgresqlKeepAlivesIdle() const override;
-      Poco::Nullable<int> getDatabasePostgresqlKeepAlivesInterval() const override;
-      Poco::Nullable<int> getDatabasePostgresqlKeepAlivesCount() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlSslMode() const override;
-      Poco::Nullable<int> getDatabasePostgresqlRequireSsl() const override;
-      Poco::Nullable<int> getDatabasePostgresqlSslCompression() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlSslCert() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlSslKey() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlSslRootCert() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlSslRevocationList() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlRequirePeer() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlKerberos() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlGssLib() const override;
-      Poco::Nullable<std::string> getDatabasePostgresqlService() const override;
+      std::optional<std::string> getDatabasePostgresqlHostAddr() const override;
+      std::optional<int> getDatabasePostgresqlConnectTimeout() const override;
+      std::optional<std::string> getDatabasePostgresqlClientEncoding() const override;
+      std::optional<std::string> getDatabasePostgresqlOptions() const override;
+      std::optional<int> getDatabasePostgresqlKeepAlives() const override;
+      std::optional<int> getDatabasePostgresqlKeepAlivesIdle() const override;
+      std::optional<int> getDatabasePostgresqlKeepAlivesInterval() const override;
+      std::optional<int> getDatabasePostgresqlKeepAlivesCount() const override;
+      std::optional<std::string> getDatabasePostgresqlSslMode() const override;
+      std::optional<int> getDatabasePostgresqlRequireSsl() const override;
+      std::optional<int> getDatabasePostgresqlSslCompression() const override;
+      std::optional<std::string> getDatabasePostgresqlSslCert() const override;
+      std::optional<std::string> getDatabasePostgresqlSslKey() const override;
+      std::optional<std::string> getDatabasePostgresqlSslRootCert() const override;
+      std::optional<std::string> getDatabasePostgresqlSslRevocationList() const override;
+      std::optional<std::string> getDatabasePostgresqlRequirePeer() const override;
+      std::optional<std::string> getDatabasePostgresqlKerberos() const override;
+      std::optional<std::string> getDatabasePostgresqlGssLib() const override;
+      std::optional<std::string> getDatabasePostgresqlService() const override;
       std::string getPluginsPath() const override;
       std::string getScriptInterpretersPath() const override;
       bool getNoPasswordFlag() const override;
       bool getIsRunningAsService() const override;
-      Poco::Nullable<std::string> getProxyHost() const override;
-      Poco::Nullable<Poco::UInt16> getProxyPort() const override;
-      Poco::Nullable<std::string> getProxyUsername() const override;
-      Poco::Nullable<std::string> getProxyPassword() const override;
-      Poco::Nullable<std::string> getProxyBypass() const override;
+      std::optional<std::string> getProxyHost() const override;
+      std::optional<std::uint16_t> getProxyPort() const override;
+      std::optional<std::string> getProxyUsername() const override;
+      std::optional<std::string> getProxyPassword() const override;
+      std::optional<std::string> getProxyBypass() const override;
       std::string getUpdateSiteUri() const override;
       std::string getBackupPath() const override;
       int getDatabaseAcquisitionLifetime() const override;

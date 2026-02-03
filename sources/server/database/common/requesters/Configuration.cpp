@@ -10,80 +10,79 @@
 
 namespace database
 {
-   namespace common
-   {
-      namespace requesters
-      {
-         CConfiguration::CConfiguration(boost::shared_ptr<IDatabaseRequester> databaseRequester)
+	namespace common
+	{
+		namespace requesters
+		{
+			CConfiguration::CConfiguration(boost::shared_ptr<IDatabaseRequester> databaseRequester)
             : m_databaseRequester(std::move(databaseRequester))
-         {
-         }
+			{
+			}
 
-         boost::shared_ptr<entities::CConfiguration> CConfiguration::getConfiguration(const std::string& section)
-         {
+			boost::shared_ptr<entities::CConfiguration> CConfiguration::getConfiguration(const std::string& section)
+			{
             const auto qSelect = m_databaseRequester->newQuery();
-            qSelect->Select().
-                     From(CConfigurationTable::getTableName()).
-                     Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section);
+				qSelect->Select().
+					From(CConfigurationTable::getTableName()).
+					Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section);
 
-            adapters::CConfigurationAdapter adapter;
-            m_databaseRequester->queryEntities(&adapter, *qSelect);
+				adapters::CConfigurationAdapter adapter;
+				m_databaseRequester->queryEntities(&adapter, *qSelect);
             if (!adapter.getResults().empty())
-               return adapter.getResults()[0];
+					return adapter.getResults()[0];
 
-            const auto sEx = (boost::format("Cannot retrieve Configuration Section=%1% in database") % section).str();
-            throw shared::exception::CEmptyResult(sEx);
-         }
+				throw shared::exception::CEmptyResult(std::string("Cannot retrieve Configuration Section=") + section + " in database");
+			}
 
-         std::vector<boost::shared_ptr<entities::CConfiguration>> CConfiguration::getConfigurations()
-         {
+			std::vector<boost::shared_ptr<entities::CConfiguration>> CConfiguration::getConfigurations()
+			{
             const auto qSelect = m_databaseRequester->newQuery();
-            qSelect->Select().
-                     From(CConfigurationTable::getTableName());
+				qSelect->Select().
+					From(CConfigurationTable::getTableName());
 
-            adapters::CConfigurationAdapter adapter;
-            m_databaseRequester->queryEntities(&adapter, *qSelect);
-            return adapter.getResults();
-         }
+				adapters::CConfigurationAdapter adapter;
+				m_databaseRequester->queryEntities(&adapter, *qSelect);
+				return adapter.getResults();
+			}
 
-         void CConfiguration::updateConfiguration(const std::string& section,
-                                                  const std::string& value)
-         {
+			void CConfiguration::updateConfiguration(const std::string& section,
+													 const std::string& value)
+			{
             const auto query = m_databaseRequester->newQuery();
             const auto updateDate = shared::currentTime::Provider().now();
 
-            if (m_databaseRequester->supportInsertOrUpdateStatement())
-            {
-               query->InsertOrReplaceInto(CConfigurationTable::getTableName(),
+				if (m_databaseRequester->supportInsertOrUpdateStatement())
+				{
+					query->InsertOrReplaceInto(CConfigurationTable::getTableName(),
                                           CConfigurationTable::getSectionColumnName(),
                                           CConfigurationTable::getValueColumnName(),
                                           CConfigurationTable::getLastModificationDateColumnName()).
                       Values(section, value, updateDate);
 
-               if (m_databaseRequester->queryStatement(*query) <= 0)
-                  throw shared::exception::CEmptyResult("No lines affected");
-            }
-            else
-            {
-               query->Update(CConfigurationTable::getTableName())
+					if (m_databaseRequester->queryStatement(*query) <= 0)
+						throw shared::exception::CEmptyResult("No lines affected");
+				}
+				else
+				{
+					query->Update(CConfigurationTable::getTableName())
                     .Set(CConfigurationTable::getSectionColumnName(), section,
                          CConfigurationTable::getValueColumnName(), value,
                          CConfigurationTable::getLastModificationDateColumnName(), updateDate);
-               if (m_databaseRequester->queryStatement(*query) <= 0)
-               {
-                  //fail to update, then insert
-                  //insert
-                  query->Clear();
-                  query->InsertInto(CConfigurationTable::getTableName(),
+					if (m_databaseRequester->queryStatement(*query) <= 0)
+					{
+						//fail to update, then insert
+						//insert
+						query->Clear();
+						query->InsertInto(CConfigurationTable::getTableName(),
                                     CConfigurationTable::getSectionColumnName(),
                                     CConfigurationTable::getValueColumnName(),
                                     CConfigurationTable::getLastModificationDateColumnName()).
                          Values(section, value, updateDate);
-                  if (m_databaseRequester->queryStatement(*query) <= 0)
-                     throw shared::exception::CEmptyResult("No lines affected");
-               }
-            }
-         }
-      } //namespace requesters
-   } //namespace common
+						if (m_databaseRequester->queryStatement(*query) <= 0)
+							throw shared::exception::CEmptyResult("No lines affected");
+					}
+				}
+			}
+		} //namespace requesters
+	} //namespace common
 } //namespace database 

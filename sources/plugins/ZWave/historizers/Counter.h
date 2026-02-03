@@ -4,7 +4,7 @@
 
 namespace historizers
 {
-   class CCounter : public COpenZWaveSingleHistorizableData<Poco::Int64>
+   class CCounter : public COpenZWaveSingleHistorizableData<std::int64_t>
    {
    public:
       //-----------------------------------------------------
@@ -13,7 +13,7 @@ namespace historizers
       ///\param[in] accessMode      The access mode
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CCounter(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CIntegerTypeInfo & ti);
+      CCounter(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CIntegerTypeInfo& ti);
 
       //-----------------------------------------------------
       ///\brief                     Constructor
@@ -22,7 +22,7 @@ namespace historizers
       ///\param[in] ti              The measure type information
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CCounter(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CIntegerTypeInfo & ti);
+      CCounter(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CIntegerTypeInfo& ti);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

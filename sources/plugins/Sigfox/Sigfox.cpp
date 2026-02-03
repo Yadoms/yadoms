@@ -49,7 +49,7 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    try {
       api->setPluginState(yApi::historization::EPluginState::kRunning);
-      YADOMS_LOG(information) << "Sigfox plugin is running..." ;
+      YADOMS_LOG(information) << "Sigfox plugin is running" ;
    }
    catch (...)
    {

@@ -15,33 +15,33 @@
 
 namespace task
 {
-   CScheduler::CScheduler(boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger)
+	CScheduler::CScheduler(boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger)
       : CThreadBase("Task_Scheduler"),
         m_eventLogger(std::move(eventLogger)),
         m_taskEventHandler(boost::make_shared<shared::event::CEventHandler>())
-   {
-   }
+	{
+	}
 
-   CScheduler::~CScheduler()
-   {
-      CThreadBase::stop();
-   }
+	CScheduler::~CScheduler()
+	{
+		CThreadBase::stop();
+	}
 
-   void CScheduler::doWork()
-   {
+	void CScheduler::doWork()
+	{
       YADOMS_LOG_CONFIGURE("taskScheduler")
 
       m_taskEventHandler->createTimer(kCleanFinishedTasks,
                                       shared::event::CEventTimer::kPeriodic,
                                       boost::posix_time::hours(12));
 
-      while (!isStopping())
-      {
-         try
-         {
-            switch (m_taskEventHandler->waitForEvents())
-            {
-            case kTaskEvent:
+		while (!isStopping())
+		{
+			try
+			{
+				switch (m_taskEventHandler->waitForEvents())
+				{
+				case kTaskEvent:
                {
                   auto evt = m_taskEventHandler->getEventData<CTaskEvent>();
                   if (m_tasks.find(evt.getGuid()) == m_tasks.end())
@@ -100,52 +100,52 @@ namespace task
 
                   break;
                }
-            default:
-               YADOMS_LOG(error) << "Unknown message id " << m_taskEventHandler->getEventId();
-               BOOST_ASSERT(false);
-               break;
-            }
-         }
-         catch (boost::thread_interrupted&)
-         {
-            YADOMS_LOG(information) << "Thread is stopping, stop all tasks...";
+				default:
+					YADOMS_LOG(error) << "Unknown message id " << m_taskEventHandler->getEventId();
+					BOOST_ASSERT(false);
+					break;
+				}
+			}
+			catch (boost::thread_interrupted&)
+			{
+				YADOMS_LOG(information) << "Thread is stopping, stop all tasks...";
             for (const auto& task : m_tasks)
                task.second->stop();
-         }
+			}
          catch (const std::exception& e)
-         {
-            YADOMS_LOG(error) << "taskScheduler crashed in doWork with exception : " << e.what();
+			{
+				YADOMS_LOG(error) << "taskScheduler crashed in doWork with exception : " << e.what();
 
-            database::entities::CEventLogger entry;
-            entry.Code = database::entities::ESystemEventCode::kThreadFailed;
-            entry.Who = "taskScheduler";
-            entry.What = (boost::format("Crashed in doWork with exception %1%") % e.what()).str();
-            m_eventLogger->addEvent(entry);
-         }
-         catch (...)
-         {
+				database::entities::CEventLogger entry;
+				entry.Code = database::entities::ESystemEventCode::kThreadFailed;
+				entry.Who = "taskScheduler";
+				entry.What = std::string("Crashed in doWork with exception ") + e.what();
+				m_eventLogger->addEvent(entry);
+			}
+			catch (...)
+			{
             YADOMS_LOG(error) << "task scheduler unknown exception";
 
-            database::entities::CEventLogger entry;
-            entry.Code = database::entities::ESystemEventCode::kThreadFailed;
-            entry.Who = "taskScheduler";
+				database::entities::CEventLogger entry;
+				entry.Code = database::entities::ESystemEventCode::kThreadFailed;
+				entry.Who = "taskScheduler";
             entry.What = "crash with unknown exception";
-            m_eventLogger->addEvent(entry);
-         }
-      }
-   }
+				m_eventLogger->addEvent(entry);
+			}
+		}
+	}
 
    bool CScheduler::runTask(const boost::shared_ptr<ITask>& taskToRun, std::string& uniqueId)
-   {
-      BOOST_ASSERT(taskToRun.get() != NULL);
+	{
+		BOOST_ASSERT(taskToRun.get() != NULL);
 
       boost::lock_guard<boost::mutex> lock(m_tasksMutex);
 
       std::string existingUid;
-      //we check if the task is IUnique
-      if (boost::dynamic_pointer_cast<IUnique>(taskToRun) != nullptr)
-      {
-         //the task is unique, we must check if it is not already running
+		//we check if the task is IUnique
+		if (boost::dynamic_pointer_cast<IUnique>(taskToRun) != nullptr)
+		{
+			//the task is unique, we must check if it is not already running
 
          const auto foundTask = std::find_if(m_tasks.begin(),
                                              m_tasks.end(),
@@ -156,29 +156,29 @@ namespace task
 
          if (foundTask != m_tasks.end())
             existingUid = foundTask->first; // we have found the task that have already created
-      }
+		}
 
       if (!existingUid.empty())
-      {
-         //the task can't be created because it is unique and it is already running
-         //we return the uid of the older task
-         uniqueId = existingUid;
-         return false;
-      }
+		{
+			//the task can't be created because it is unique and it is already running
+			//we return the uid of the older task
+			uniqueId = existingUid;
+			return false;
+		}
 
-      //the task is not unique or does not exist in the list, so we can create another
-      uniqueId = Poco::UUIDGenerator::defaultGenerator().createRandom().toString();
+		//the task is not unique or does not exist in the list, so we can create another
+		uniqueId = Poco::UUIDGenerator::defaultGenerator().createRandom().toString();
 
       m_tasks[uniqueId] = boost::make_shared<CInstance>(taskToRun,
                                                         m_taskEventHandler,
                                                         kTaskEvent,
                                                         uniqueId);
-      return true;
-   }
+		return true;
+	}
 
    bool CScheduler::cancelTask(const std::string& taskUuid,
                                int waitForStopSeconds)
-   {
+	{
       const auto task = m_tasks.at(taskUuid);
       return task->cancel(waitForStopSeconds);
    }
@@ -201,20 +201,20 @@ namespace task
       if (m_tasks.find(uniqueId) != m_tasks.end())
          return m_tasks[uniqueId];
 
-      return boost::shared_ptr<IInstance>();
-   }
+		return boost::shared_ptr<IInstance>();
+	}
 
    std::vector<boost::shared_ptr<IInstance>> CScheduler::getTasks(const std::set<std::string>& ids)
-   {
+	{
       boost::lock_guard<boost::mutex> lock(m_tasksMutex);
 
       std::vector<boost::shared_ptr<IInstance>> list;
 
       for (const auto& id : ids)
-      {
+		{
          if (m_tasks.find(id) != m_tasks.end())
             list.emplace_back(m_tasks[id]);
-      }
+		}
 
       return list;
    }
@@ -233,6 +233,6 @@ namespace task
                         return task.second;
                      });
 
-      return list;
-   }
+		return list;
+	}
 } //namespace task

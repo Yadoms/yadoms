@@ -14,16 +14,16 @@ namespace pluginSystem
                                                 boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                                                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager)
       : m_instanceData(std::move(instanceData)),
-        m_pluginInformation(std::move(pluginInformation)),
-        m_pluginRequester(std::move(pluginRequester)),
-        m_qualifier(std::move(qualifier)),
-        m_pluginEventLoggerRequester(std::move(pluginEventLoggerRequester)),
-        m_acquisitionHistorizer(std::move(acquisitionHistorizer)),
-        m_onPluginsStoppedFct(std::move(onPluginsStoppedFct)),
-        m_deviceManager(std::move(deviceManager)),
-        m_keywordDataAccessLayer(std::move(keywordManager)),
-        m_pluginStateKeywordId(pluginStateKeywordId()),
-        m_pluginStateMessageIdKeywordId(pluginStateMessageIdKeywordId())
+      m_pluginInformation(std::move(pluginInformation)),
+      m_pluginRequester(std::move(pluginRequester)),
+      m_qualifier(std::move(qualifier)),
+      m_pluginEventLoggerRequester(std::move(pluginEventLoggerRequester)),
+      m_acquisitionHistorizer(std::move(acquisitionHistorizer)),
+      m_onPluginsStoppedFct(std::move(onPluginsStoppedFct)),
+      m_deviceManager(std::move(deviceManager)),
+      m_keywordDataAccessLayer(std::move(keywordManager)),
+      m_pluginStateKeywordId(pluginStateKeywordId()),
+      m_pluginStateMessageIdKeywordId(pluginStateMessageIdKeywordId())
    {
    }
 
@@ -86,7 +86,7 @@ namespace pluginSystem
       switch (state)
       {
       case shared::plugin::yPluginApi::historization::EPluginState::kErrorValue:
-         recordPluginEvent(kError, (boost::format("error (%1%)") % customMessageId).str());
+         recordPluginEvent(kError, std::string("error (") + customMessageId + ")");
          break;
       case shared::plugin::yPluginApi::historization::EPluginState::kStoppedValue:
          recordPluginEvent(kInfo, "stopped");
@@ -95,7 +95,7 @@ namespace pluginSystem
          recordPluginEvent(kInfo, "started");
          break;
       case shared::plugin::yPluginApi::historization::EPluginState::kCustomValue:
-         recordPluginEvent(kInfo, (boost::format("custom event (%1%)") % customMessageId).str());
+         recordPluginEvent(kInfo, std::string("custom event (") + customMessageId + ")");
          break;
       default: break;
       }
@@ -151,11 +151,11 @@ namespace pluginSystem
       case kInfo: evenType = database::entities::EEventType::kInfo;
          break;
       default:  // NOLINT(clang-diagnostic-covered-switch-default)
-         {
-            YADOMS_LOG(warning) << "Unknown plugin event severity type " << severity;
-            evenType = database::entities::EEventType::kInfo; // Set a default value
-            break;
-         }
+      {
+         YADOMS_LOG(warning) << "Unknown plugin event severity type " << severity;
+         evenType = database::entities::EEventType::kInfo; // Set a default value
+         break;
+      }
       }
 
       m_pluginEventLoggerRequester->addEvent(m_pluginInformation->getType(),

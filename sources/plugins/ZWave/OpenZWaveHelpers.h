@@ -19,7 +19,7 @@ public:
    /// \param [in] nodeId   The node id
    /// \return The yadoms device name
    //-----------------------------------------------------------------------------
-   static std::string GenerateDeviceName(Poco::UInt32 homeId, Poco::UInt8 nodeId);
+   static std::string GenerateDeviceName(std::uint32_t homeId, std::uint8_t nodeId);
 
    //-----------------------------------------------------------------------------
    /// \brief	Get value information for strings

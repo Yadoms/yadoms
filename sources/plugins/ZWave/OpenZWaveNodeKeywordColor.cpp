@@ -18,7 +18,7 @@ COpenZWaveNodeKeywordColor::~COpenZWaveNodeKeywordColor()
 bool COpenZWaveNodeKeywordColor::sendCommand(const std::string& commandData)
 {
    //commandData should contain an integer (unsigned) value 287454020
-   const Poco::UInt32 value = shared::plugin::yPluginApi::IDeviceCommand::simpleNumericCommandHelperToUInt(commandData);
+   const std::uint32_t value = shared::plugin::yPluginApi::IDeviceCommand::simpleNumericCommandHelperToUInt(commandData);
    m_keyword->set(value);
 
    //it must be converted to "#11223344"
@@ -41,7 +41,7 @@ boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpe
       std::stringstream ss;
       ss << std::hex << results[1];
 
-      Poco::UInt32 valueInt = 0;
+      std::uint32_t valueInt = 0;
       ss >> valueInt;
       m_keyword->set(valueInt);
    } 

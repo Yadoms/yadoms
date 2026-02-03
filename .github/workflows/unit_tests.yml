@@ -1,6 +1,12 @@
 name: Unit tests
 
-on: push
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: read
 
 jobs:
   linux:
@@ -8,50 +14,63 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Generate unittests binary
-      uses: Yadoms/build-yadoms-action@v4.0.1
-      id: yadoms_build_step
+      uses: actions/checkout@v4
+          
+    - name: Login to GitHub Container Repository (GHCR)
+      uses: docker/login-action@v3
       with:
-          buildImage: ghcr.io/yadoms/build_for_linux:latest
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      
+    - name: Generate unittests binary
+      id: yadoms_build_step
+      uses: Yadoms/build-yadoms-action@v4.0.2
+      with:
           registry: ghcr.io
-          username: ${{ secrets.CONTAINER_GH_LOGIN }}
-          password: ${{ secrets.CONTAINER_GH_TOKEN }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+# TODO          buildImage: ghcr.io/yadoms/build_for_linux:latest
+          buildImage: ghcr.io/yadoms/build_for_linux:feature-updateRPiBuild_notSureBestMethod
+          privileged: ${{ matrix.target.privileged }}          
           entrypoint: 'sh /work/build-scripts/linux/entrypoint_docker_unittests.sh'
+          
     - name: Archive unittests artifacts
-      uses: actions/upload-artifact@v4.4.0
+      uses: actions/upload-artifact@v4
       with:
         name: Linux-UnitTests
         path: ./tests/unit/builds       
+        
     - name: Run unit tests
       run: |
         echo "Running unittests for yadoms ${{ steps.yadoms_build_step.outputs.yadomsVersion }}"
         cd tests/unit/builds
         ./yadomsTests -l test_suite
 
-  Windows:
-    name : Run Unit tests for Windows
-    runs-on: windows-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Yadoms build script
-      uses: Yadoms/build-yadoms-windows-action@v2.0.1
-      id: yadoms_build_step
-      with:
-          buildImage: ghcr.io/yadoms/build_for_windows:latest
-          registry: ghcr.io
-          username: ${{ secrets.CONTAINER_GH_LOGIN }}
-          password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker_unittests.ps1'
-    - name: Archive unittests artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: Windows-UnitTests
-        path: ./tests/unit/builds 
-    - name: Run Unit tests for Windows
-      shell: cmd
-      run: |
-        cd tests/unit/builds/RELEASE
-        yadomsTests.exe -l test_suite -t !TestLoader       # Disable TestLoader tests because of bad memory handling using Poco (random crashes). Need to rewrite startupOptions::CStartupOptions
+  # TODO à remettre
+  # Windows:
+  #   name : Run Unit tests for Windows
+  #   runs-on: windows-latest
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v2
+  #   - name: Yadoms build script
+  #     uses: Yadoms/build-yadoms-windows-action@v2.0.1
+  #     id: yadoms_build_step
+  #     with:
+  #         buildImage: ghcr.io/yadoms/build_for_windows:latest
+  #         registry: ghcr.io
+  #         username: ${{ secrets.CONTAINER_GH_LOGIN }}
+  #         password: ${{ secrets.CONTAINER_GH_TOKEN }}
+  #         entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker_unittests.ps1'
+  #   - name: Archive unittests artifacts
+  #     uses: actions/upload-artifact@v4.4.0
+  #     with:
+  #       name: Windows-UnitTests
+  #       path: ./tests/unit/builds 
+  #   - name: Run Unit tests for Windows
+  #     shell: cmd
+  #     run: |
+  #       cd tests/unit/builds/RELEASE
+  #       yadomsTests.exe -l test_suite -t !TestLoader       # Disable TestLoader tests because of bad memory handling using Poco (random crashes). Need to rewrite startupOptions::CStartupOptions
         

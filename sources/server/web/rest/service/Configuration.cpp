@@ -22,20 +22,20 @@ namespace web
          CConfiguration::CConfiguration(boost::shared_ptr<database::IDataProvider> dataProvider,
                                         boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
             : m_dataProvider(std::move(dataProvider)),
-              m_configurationManager(std::move(configurationManager))
+            m_configurationManager(std::move(configurationManager))
          {
          }
 
          void CConfiguration::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("server"), CConfiguration::getServerConfigurationV1)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server")("reset"), CConfiguration::resetServerConfigurationV1)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server"), CConfiguration::saveServerConfigurationV1)
+               REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server")("reset"), CConfiguration::resetServerConfigurationV1)
+               REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server"), CConfiguration::saveServerConfigurationV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("databaseVersion"), CConfiguration::getDatabaseVersionV1)
+               REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("databaseVersion"), CConfiguration::getDatabaseVersionV1)
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("external")("*"), CConfiguration::getExternalConfigurationV1)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfigurationV1)
+               REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("external")("*"), CConfiguration::getExternalConfigurationV1)
+               REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfigurationV1)
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::resetServerConfigurationV1(
@@ -87,7 +87,7 @@ namespace web
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getDatabaseVersionV1(const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
+                                                                                                          const std::string& requestContent) const
          {
             try
             {
@@ -114,7 +114,9 @@ namespace web
             }
             catch (shared::exception::CEmptyResult&)
             {
-               return poco::CRestResult::GenerateError((boost::format("[Section = %1%] not found.") % section).str());
+               return poco::CRestResult::GenerateError(std::string("[Section = ")
+                                                       + section
+                                                       + "] not found.");
             }
          }
 

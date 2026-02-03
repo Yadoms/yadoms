@@ -108,7 +108,7 @@ namespace xplcore
 
       //because our socket only supports ipv4; we need to get the first ipv4 address
       const auto& firstIpV4Addr = networkInterface.firstAddress(Poco::Net::IPAddress::Family::IPv4);
-      m_localEndPoint = Poco::Net::SocketAddress(firstIpV4Addr, static_cast<Poco::UInt16>(port)); //cast allowed because value is in [49152, 65535]
+      m_localEndPoint = Poco::Net::SocketAddress(firstIpV4Addr, static_cast<std::uint16_t>(port)); //cast allowed because value is in [49152, 65535]
 
       //the remote interface is just a broadcast one on xpl port
       m_remoteEndPoint = Poco::Net::SocketAddress(Poco::Net::IPAddress::broadcast(),

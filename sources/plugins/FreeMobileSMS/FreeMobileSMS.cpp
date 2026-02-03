@@ -14,7 +14,6 @@ IMPLEMENT_PLUGIN(CFreeMobileSms)
 
 std::string CFreeMobileSms::m_deviceName("sms");
 std::string CFreeMobileSms::m_keywordName("sms");
-std::string CFreeMobileSms::m_freeMobileApiUrl("https://smsapi.free-mobile.fr/sendmsg?user=%1%&pass=%2%&msg=%3%");
 
 
 CFreeMobileSms::CFreeMobileSms()
@@ -38,7 +37,7 @@ void CFreeMobileSms::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       api->declareKeyword(m_deviceName, keyword);
 
    // the main loop
-   YADOMS_LOG(information) << "CFreeMobileSms is running..." ;
+   YADOMS_LOG(information) << "CFreeMobileSms is running";
    api->setPluginState(yApi::historization::EPluginState::kRunning);
    while (1)
    {
@@ -46,48 +45,48 @@ void CFreeMobileSms::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       switch (api->getEventHandler().waitForEvents())
       {
       case yApi::IYPluginApi::kEventStopRequested:
-         {
-            YADOMS_LOG(information) << "Stop requested" ;
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
-            return;
-         }
+      {
+         YADOMS_LOG(information) << "Stop requested";
+         api->setPluginState(yApi::historization::EPluginState::kStopped);
+         return;
+      }
       case yApi::IYPluginApi::kEventDeviceCommand:
+      {
+         // A command was received from Yadoms
+         auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+         YADOMS_LOG(information) << "Command received from Yadoms :" << yApi::IDeviceCommand::toString(command);
+
+         try
          {
-            // A command was received from Yadoms
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-            YADOMS_LOG(information) << "Command received from Yadoms :" << yApi::IDeviceCommand::toString(command) ;
+            //parse the command data
+            yApi::historization::CMessageFormatter msgInfo(command->getBody());
 
-            try
+
+            if (msgInfo.isToProvided() && msgInfo.isBodyProvided())
             {
-               //parse the command data
-               yApi::historization::CMessageFormatter msgInfo(command->getBody());
-
-
-               if (msgInfo.isToProvided() && msgInfo.isBodyProvided())
-               {
-                  //send sms
-                  sendSms(api, msgInfo.to(), msgInfo.body());
-               }
-               else if (!msgInfo.isToProvided())
-               {
-                  YADOMS_LOG(error) << "SMS recipient ('to') not found in command data" << yApi::IDeviceCommand::toString(command) ;
-               }
-               else if (!msgInfo.isBodyProvided())
-               {
-                  YADOMS_LOG(error) << "SMS content ('body') not found in command data" << yApi::IDeviceCommand::toString(command) ;
-               }
+               //send sms
+               sendSms(api, msgInfo.to(), msgInfo.body());
             }
-            catch (std::exception& e)
+            else if (!msgInfo.isToProvided())
             {
-               YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
+               YADOMS_LOG(error) << "SMS recipient ('to') not found in command data" << yApi::IDeviceCommand::toString(command);
             }
-            break;
+            else if (!msgInfo.isBodyProvided())
+            {
+               YADOMS_LOG(error) << "SMS content ('body') not found in command data" << yApi::IDeviceCommand::toString(command);
+            }
          }
+         catch (std::exception& e)
+         {
+            YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
+         }
+         break;
+      }
       default:
-         {
-            YADOMS_LOG(error) << "Unknown ou unsupported message id " << api->getEventHandler().getEventId() ;
-            break;
-         }
+      {
+         YADOMS_LOG(error) << "Unknown ou unsupported message id " << api->getEventHandler().getEventId();
+         break;
+      }
       }
    }
 }
@@ -104,7 +103,12 @@ void CFreeMobileSms::sendSms(boost::shared_ptr<yApi::IYPluginApi> api,
       auto key = api->getRecipientValue(recipientId, "apiKey");
 
       //format url
-      auto uriStr = (boost::format(m_freeMobileApiUrl) % userId % key % smsContent).str();
+      auto uriStr = std::string("https://smsapi.free-mobile.fr/sendmsg?user="
+                                + userId
+                                + "&pass="
+                                + key
+                                + "&msg="
+                                + smsContent);
 
       //parse url
       Poco::URI uri(uriStr);
@@ -126,29 +130,29 @@ void CFreeMobileSms::sendSms(boost::shared_ptr<yApi::IYPluginApi> api,
 
       //read answer
       session.receiveResponse(response);
-      YADOMS_LOG(information) << response.getStatus() << " " << response.getReason() ;
+      YADOMS_LOG(information) << response.getStatus() << " " << response.getReason();
       if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
       {
          //return true;
-         YADOMS_LOG(information) << "SMS sent" ;
+         YADOMS_LOG(information) << "SMS sent";
       }
       else
       {
          //it went wrong ?
-         YADOMS_LOG(error) << "Fail to send SMS : " << response.getStatus() << " " << response.getReason() ;
+         YADOMS_LOG(error) << "Fail to send SMS : " << response.getStatus() << " " << response.getReason();
       }
    }
    catch (Poco::Exception& ex)
    {
-      YADOMS_LOG(error) << "Error " << ex.displayText() ;
+      YADOMS_LOG(error) << "Error " << ex.displayText();
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Error " << ex.what() ;
+      YADOMS_LOG(error) << "Error " << ex.what();
    }
    catch (...)
    {
-      YADOMS_LOG(error) << "Unknown exception in sendSms" ;
+      YADOMS_LOG(error) << "Unknown exception in sendSms";
    }
 }
 

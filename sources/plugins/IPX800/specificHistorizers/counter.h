@@ -5,11 +5,11 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
-{   
+{
    //-----------------------------------------------------
    ///\brief A inputOutput historizable object
    //-----------------------------------------------------
-   class CCounter : public yApi::historization::CSingleHistorizableData<Poco::Int64>
+   class CCounter : public yApi::historization::CSingleHistorizableData<std::int64_t>
    {
    public:
       //-----------------------------------------------------
@@ -20,10 +20,10 @@ namespace specificHistorizers
       ///\param[in] measureType     type of the data historized
       ///\param[in] additionalInfo  Additional information
       //-----------------------------------------------------
-	   explicit CCounter(const std::string& keywordName,
+      explicit CCounter(const std::string& keywordName,
                         const std::string& hardwareName,
-						      const yApi::EKeywordAccessMode& accessMode = yApi::EKeywordAccessMode::kGetSet,
-						      const yApi::EMeasureType& measureType = yApi::EMeasureType::kAbsolute,
+                        const yApi::EKeywordAccessMode& accessMode = yApi::EKeywordAccessMode::kGetSet,
+                        const yApi::EMeasureType& measureType = yApi::EMeasureType::kAbsolute,
                         const yApi::typeInfo::ITypeInfo& additionalInfo = yApi::typeInfo::CEmptyTypeInfo::Empty);
 
       virtual ~CCounter() = default;

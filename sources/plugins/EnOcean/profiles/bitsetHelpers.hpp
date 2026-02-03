@@ -71,7 +71,8 @@ inline unsigned int bitset_extract(const boost::dynamic_bitset<>& bitset,
 {
    unsigned int value = 0;
    if (size > (sizeof(value) * 8))
-      throw std::out_of_range((boost::format("bitset extraction error, size is too big : %1%") % size).str());
+      throw std::out_of_range(std::string("bitset extraction error, size is too big : ")
+                              + std::to_string(size));
    for (size_t index = 0; index < size; ++index)
       if (bitset[position + index])
          value |= 1 << (size - index - 1);

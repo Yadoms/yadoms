@@ -13,7 +13,7 @@ endif()
 
 
 if(CMAKE_TOOLCHAIN_FILE)
-message("CURLPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC_RPI_GCC} and ${CC_RPI_GXX})")
+message("-- External lib - CURLPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CMAKE_C_COMPILER} and ${CMAKE_CXX_COMPILER})")
 
    #provide OSXCROSS vars
    set(CURL_PATHCMD)
@@ -32,20 +32,6 @@ message("CURLPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${C
    endif()
    if(OSXCROSS_SDK)
       list(APPEND CURLPP_BUILD_ARGS "-DOSXCROSS_SDK=${OSXCROSS_SDK}")
-   endif()
-
-
-   #provide RPI_ROOT and also GCC and G++ (used by toolchain file)
-   if(CC_RPI_ROOT)
-      list(APPEND CURLPP_BUILD_ARGS "-DCC_RPI_ROOT=${CC_RPI_ROOT}")
-   endif()
-   
-   if(CC_RPI_GCC)
-      list(APPEND CURLPP_BUILD_ARGS "-DCC_RPI_GCC=${CC_RPI_GCC}")
-   endif()
-  
-   if(CC_RPI_GXX)
-      list(APPEND CURLPP_BUILD_ARGS "-DCC_RPI_GXX=${CC_RPI_GXX}")
    endif()
    
    #append all potentials dependencies that external project may need (openssl mostly)
@@ -73,7 +59,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 ExternalProject_Add (curlpp_build
    DEPENDS           curl_build
    GIT_REPOSITORY    https://github.com/jpbarrette/curlpp.git
-   GIT_TAG           d080e301ec71061c46049d23fedfb8106be3153f
+   GIT_TAG           de69e17c10f481d8e60da30d47f902ca81e52341
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${CURLPP_PATHCMD}   
    PREFIX            ${CURLPP_ROOT}

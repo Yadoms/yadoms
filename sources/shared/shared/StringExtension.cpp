@@ -3,6 +3,37 @@
 
 using namespace shared;
 
+std::vector<std::string> CStringExtension::splitAnyOfAndCompress(std::string_view input,
+                                                                 std::string_view seps)
+{
+   std::vector<std::string> result;
+   std::string token;
+
+   auto is_sep = [&](char c) {
+      return seps.find(c) != std::string_view::npos;
+      };
+
+   for (char c : input)
+   {
+      if (is_sep(c))
+      {
+         if (!token.empty())
+         {
+            result.push_back(std::move(token));
+            token.clear();
+         }
+      }
+      else
+      {
+         token += c;
+      }
+   }
+
+   if (!token.empty())
+      result.push_back(std::move(token));
+
+   return result;
+}
 
 std::string CStringExtension::replaceValues(const std::string& input,
                                             const std::map<std::string, std::string>& replacements,

@@ -26,9 +26,11 @@ namespace database
                //check recipient do not already exists
                if (exists(recipient.FirstName(), recipient.LastName()))
                {
-                  const auto exMessage = (boost::format("Fail to insert recipient. The recipient %1% %2% already exists") % recipient.FirstName() %
-                     recipient.LastName()).str();
-                  throw shared::exception::CInvalidParameter(exMessage);
+                  throw shared::exception::CInvalidParameter(std::string("Fail to insert recipient. The recipient ")
+                                                             + recipient.FirstName()
+                                                             + " "
+                                                             + recipient.LastName()
+                                                             + " already exists");
                }
 
 
@@ -36,17 +38,17 @@ namespace database
                const auto qInsert = m_databaseRequester->newQuery();
                qInsert->InsertInto(CRecipientTable::getTableName(), CRecipientTable::getFirstNameColumnName(),
                                    CRecipientTable::getLastNameColumnName()).
-                        Values(recipient.FirstName(), recipient.LastName());
+                  Values(recipient.FirstName(), recipient.LastName());
                if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                   throw shared::exception::CEmptyResult("Fail to insert recipient");
 
                //retrieve inserted recipient
                const auto qSelect = m_databaseRequester->newQuery();
                qSelect->Select(CRecipientTable::getIdColumnName()).
-                        From(CRecipientTable::getTableName()).
-                        Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, recipient.FirstName()).
-                        And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, recipient.LastName()).
-                        OrderBy(CRecipientTable::getIdColumnName(), CQuery::kDesc);
+                  From(CRecipientTable::getTableName()).
+                  Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, recipient.FirstName()).
+                  And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, recipient.LastName()).
+                  OrderBy(CRecipientTable::getIdColumnName(), CQuery::kDesc);
 
                adapters::CSingleValueAdapter<int> adapter;
                m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -68,26 +70,27 @@ namespace database
                throw shared::exception::CEmptyResult("Cannot add recipient without first and last name");
 
             if (exists(recipient.FirstName(), recipient.LastName()))
-            {
-               const auto exMessage = (boost::format("Fail to insert recipient. The recipient %1% %2% already exists") % recipient.FirstName() %
-                  recipient.LastName()).str();
-               throw shared::exception::CInvalidParameter(exMessage);
-            }
+               throw shared::exception::CInvalidParameter(std::string("Fail to insert recipient. The recipient ")
+                                                          + recipient.FirstName()
+                                                          + " "
+                                                          + recipient.LastName()
+                                                          + " already exists");
+
 
             // Create recipient
             const auto qInsert = m_databaseRequester->newQuery();
             qInsert->InsertInto(CRecipientTable::getTableName(),
                                 CRecipientTable::getFirstNameColumnName(), CRecipientTable::getLastNameColumnName()).
-                     Values(recipient.FirstName(), recipient.LastName());
+               Values(recipient.FirstName(), recipient.LastName());
             if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                throw shared::exception::CEmptyResult("Fail to create recipient");
 
             // Retrieve created recipient
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CRecipientTable::getIdColumnName()).
-                     From(CRecipientTable::getTableName()).
-                     Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, recipient.FirstName()).
-                     And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, recipient.LastName());
+               From(CRecipientTable::getTableName()).
+               Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, recipient.FirstName()).
+               And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, recipient.LastName());
 
             adapters::CSingleValueAdapter<int> adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -106,9 +109,9 @@ namespace database
                {
                   const auto qUpdate = m_databaseRequester->newQuery();
                   qUpdate->Update(CRecipientTable::getTableName())
-                         .Set(CRecipientTable::getFirstNameColumnName(), recipient.FirstName(), CRecipientTable::getLastNameColumnName(),
-                              recipient.LastName())
-                         .Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, recipient.Id());
+                     .Set(CRecipientTable::getFirstNameColumnName(), recipient.FirstName(), CRecipientTable::getLastNameColumnName(),
+                          recipient.LastName())
+                     .Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, recipient.Id());
 
                   if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                      throw shared::exception::CEmptyResult("Fail to update recipient");
@@ -149,9 +152,9 @@ namespace database
          {
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
-                     From(CRecipientTable::getTableName()).
-                     OrderBy(CRecipientTable::getFirstNameColumnName(), CQuery::kAsc,
-                             CRecipientTable::getLastNameColumnName(), CQuery::kAsc);
+               From(CRecipientTable::getTableName()).
+               OrderBy(CRecipientTable::getFirstNameColumnName(), CQuery::kAsc,
+                       CRecipientTable::getLastNameColumnName(), CQuery::kAsc);
 
             adapters::CRecipientAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -173,8 +176,8 @@ namespace database
             const auto query = m_databaseRequester->newQuery();
 
             query->Select().
-                   From(CRecipientTable::getTableName()).
-                   WhereTrue();
+               From(CRecipientTable::getTableName()).
+               WhereTrue();
 
             if (recipientId)
                query->And(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, *recipientId);
@@ -193,10 +196,10 @@ namespace database
          {
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
-                     From(CRecipientTable::getTableName()).
-                     Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, recipientId).
-                     OrderBy(CRecipientTable::getFirstNameColumnName(), CQuery::kAsc,
-                             CRecipientTable::getLastNameColumnName(), CQuery::kAsc);
+               From(CRecipientTable::getTableName()).
+               Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, recipientId).
+               OrderBy(CRecipientTable::getFirstNameColumnName(), CQuery::kAsc,
+                       CRecipientTable::getLastNameColumnName(), CQuery::kAsc);
 
             adapters::CRecipientAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -205,7 +208,9 @@ namespace database
             const auto recipients = adapter.getResults();
 
             if (recipients.empty())
-               throw shared::exception::CEmptyResult((boost::format("Cannot retrieve Recipient Id=%1% in database") % recipientId).str());
+               throw shared::exception::CEmptyResult(std::string("Cannot retrieve Recipient Id="
+                                                                 + std::to_string(recipientId)
+                                                                 + " in database"));
 
             auto result = recipients[0];
             readRecipientFields(result);
@@ -218,11 +223,11 @@ namespace database
          {
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
-                     From(CRecipientTable::getTableName()).
-                     Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, firstName).
-                     And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, lastName).
-                     OrderBy(CRecipientTable::getFirstNameColumnName(), CQuery::kAsc,
-                             CRecipientTable::getLastNameColumnName(), CQuery::kAsc);
+               From(CRecipientTable::getTableName()).
+               Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, firstName).
+               And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, lastName).
+               OrderBy(CRecipientTable::getFirstNameColumnName(), CQuery::kAsc,
+                       CRecipientTable::getLastNameColumnName(), CQuery::kAsc);
 
             adapters::CRecipientAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -231,10 +236,13 @@ namespace database
             const auto recipients = adapter.getResults();
 
             if (recipients.empty())
-               throw shared::exception::CEmptyResult(
-                  (boost::format("Cannot retrieve Recipient FirstName=%1% LastName=%2% in database") % firstName % lastName).str());
+               throw shared::exception::CEmptyResult(std::string("Cannot retrieve Recipient FirstName=")
+                                                     + firstName
+                                                     + " LastName="
+                                                     + lastName
+                                                     + " in database");
 
-            auto result = recipients[0];
+            const auto& result = recipients[0];
             readRecipientFields(result);
             return result;
          }
@@ -245,13 +253,13 @@ namespace database
             const auto qSelect = m_databaseRequester->newQuery();
             const auto qubQuery = m_databaseRequester->newQuery();
             qubQuery->Select(CRecipientFieldTable::getIdRecipientColumnName()).
-                      From(CRecipientFieldTable::getTableName()).
-                      Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName).
-                      And(CRecipientFieldTable::getValueColumnName(), CQUERY_OP_EQUAL, expectedFieldValue);
+               From(CRecipientFieldTable::getTableName()).
+               Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName).
+               And(CRecipientFieldTable::getValueColumnName(), CQUERY_OP_EQUAL, expectedFieldValue);
 
             qSelect->Select().
-                     From(CRecipientTable::getTableName()).
-                     Where(CRecipientTable::getIdColumnName(), CQUERY_OP_IN, *qubQuery);
+               From(CRecipientTable::getTableName()).
+               Where(CRecipientTable::getIdColumnName(), CQUERY_OP_IN, *qubQuery);
 
             adapters::CRecipientAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -270,7 +278,7 @@ namespace database
          {
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
-                     From(CRecipientFieldTable::getTableName());
+               From(CRecipientFieldTable::getTableName());
 
             adapters::CRecipientFieldAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -284,8 +292,8 @@ namespace database
          {
             const auto query = m_databaseRequester->newQuery();
             query->Select().
-                   From(CRecipientFieldTable::getTableName()).
-                   WhereTrue();
+               From(CRecipientFieldTable::getTableName()).
+               WhereTrue();
 
             if (recipientId)
                query->And(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, *recipientId);
@@ -304,8 +312,8 @@ namespace database
          {
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
-                     From(CRecipientFieldTable::getTableName()).
-                     Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName);
+               From(CRecipientFieldTable::getTableName()).
+               Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName);
 
             adapters::CRecipientFieldAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -318,9 +326,9 @@ namespace database
          {
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->SelectCount().
-                     From(CRecipientTable::getTableName()).
-                     Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, firstName).
-                     And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, lastName);
+               From(CRecipientTable::getTableName()).
+               Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, firstName).
+               And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, lastName);
 
             const int count = m_databaseRequester->queryCount(*qSelect);
             return count != 0;
@@ -330,8 +338,8 @@ namespace database
          {
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->SelectCount().
-                     From(CRecipientTable::getTableName()).
-                     Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, id);
+               From(CRecipientTable::getTableName()).
+               Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, id);
 
             const int count = m_databaseRequester->queryCount(*qSelect);
             return count != 0;
@@ -343,13 +351,13 @@ namespace database
             //delete recipient
             const auto qDelete = m_databaseRequester->newQuery();
             qDelete->DeleteFrom(CRecipientTable::getTableName()).
-                     Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, recipientId);
+               Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, recipientId);
             if (m_databaseRequester->queryStatement(*qDelete) <= 0)
                throw shared::exception::CEmptyResult("No lines affected");
 
             //delete recipient fields
             qDelete->Clear().DeleteFrom(CRecipientFieldTable::getTableName())
-                   .Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientId);
+               .Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientId);
             m_databaseRequester->queryStatement(*qDelete);
          }
 
@@ -371,8 +379,8 @@ namespace database
          {
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
-                     From(CRecipientFieldTable::getTableName()).
-                     Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientToComplete->Id());
+               From(CRecipientFieldTable::getTableName()).
+               Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientToComplete->Id());
 
             adapters::CRecipientFieldAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -390,7 +398,7 @@ namespace database
             //remove all existing fields
             const auto removeFields = m_databaseRequester->newQuery();
             removeFields->DeleteFrom(CRecipientFieldTable::getTableName()).
-                          Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientId);
+               Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientId);
             m_databaseRequester->queryStatement(*removeFields);
 
             //insert fields
@@ -404,7 +412,7 @@ namespace database
                qInsert->InsertInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getIdRecipientColumnName(),
                                    CRecipientFieldTable::getPluginTypeColumnName(), CRecipientFieldTable::getFieldNameColumnName(),
                                    CRecipientFieldTable::getValueColumnName()).
-                        Values(recipientId, field->PluginType(), field->FieldName(), field->Value());
+                  Values(recipientId, field->PluginType(), field->FieldName(), field->Value());
 
                if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                   throw shared::exception::CEmptyResult(
@@ -412,13 +420,14 @@ namespace database
             }
          }
 
-         bool CRecipient::fieldExists(const std::string& fieldName, const std::string& pluginName) const
+         bool CRecipient::fieldExists(const std::string& fieldName,
+                                      const std::string& pluginName) const
          {
             const auto qSelect = m_databaseRequester->newQuery();
             qSelect->SelectCount().
-                     From(CRecipientFieldTable::getTableName()).
-                     Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName).
-                     And(CRecipientFieldTable::getPluginTypeColumnName(), CQUERY_OP_EQUAL, pluginName);
+               From(CRecipientFieldTable::getTableName()).
+               Where(CRecipientFieldTable::getFieldNameColumnName(), CQUERY_OP_EQUAL, fieldName).
+               And(CRecipientFieldTable::getPluginTypeColumnName(), CQUERY_OP_EQUAL, pluginName);
 
             const int count = m_databaseRequester->queryCount(*qSelect);
             return count != 0;
@@ -428,6 +437,9 @@ namespace database
          {
             if (!field.IdRecipient.isDefined() || !field.FieldName.isDefined() || !field.PluginType.isDefined())
                throw shared::exception::CEmptyResult("Cannot add recipient, missing data");
+            //check field do not already exists
+            if (fieldExists(field.FieldName(), field.PluginType()))
+               throw shared::exception::CInvalidParameter(std::string("Fail to insert recipient field ") + field.FieldName() + " (already exists)");
 
             //insert field
             const auto qInsert = m_databaseRequester->newQuery();
@@ -436,10 +448,10 @@ namespace database
                                 CRecipientFieldTable::getFieldNameColumnName(),
                                 CRecipientFieldTable::getPluginTypeColumnName(),
                                 CRecipientFieldTable::getValueColumnName()).
-                     Values(field.IdRecipient(),
-                            field.FieldName(),
-                            field.PluginType(),
-                            field.Value.isDefined() ? field.Value() : std::string());
+               Values(field.IdRecipient(),
+                      field.FieldName(),
+                      field.PluginType(),
+                      field.Value.isDefined() ? field.Value() : std::string());
 
             if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                throw shared::exception::CEmptyResult("Fail to insert recipient field");
@@ -448,9 +460,9 @@ namespace database
          void CRecipient::updateField(const entities::CRecipientField& field)
          {
             if (!field.IdRecipient.isDefined()
-               || !field.PluginType.isDefined()
-               || !field.FieldName.isDefined()
-               || !field.Value.isDefined())
+                || !field.PluginType.isDefined()
+                || !field.FieldName.isDefined()
+                || !field.Value.isDefined())
                throw std::invalid_argument("Update field");
 
             const auto query = m_databaseRequester->newQuery();
@@ -462,10 +474,10 @@ namespace database
                                           CRecipientFieldTable::getPluginTypeColumnName(),
                                           CRecipientFieldTable::getFieldNameColumnName(),
                                           CRecipientFieldTable::getValueColumnName()).
-                      Values(field.IdRecipient(),
-                             field.PluginType(),
-                             field.FieldName(),
-                             field.Value());
+                  Values(field.IdRecipient(),
+                         field.PluginType(),
+                         field.FieldName(),
+                         field.Value());
 
                if (m_databaseRequester->queryStatement(*query) <= 0)
                   throw shared::exception::CEmptyResult("No lines affected");
@@ -473,10 +485,10 @@ namespace database
             else
             {
                query->Update(CRecipientFieldTable::getTableName())
-                    .Set(CRecipientFieldTable::getIdRecipientColumnName(), field.IdRecipient(),
-                         CRecipientFieldTable::getPluginTypeColumnName(), field.PluginType(),
-                         CRecipientFieldTable::getFieldNameColumnName(), field.FieldName(),
-                         CRecipientFieldTable::getValueColumnName(), field.Value());
+                  .Set(CRecipientFieldTable::getIdRecipientColumnName(), field.IdRecipient(),
+                       CRecipientFieldTable::getPluginTypeColumnName(), field.PluginType(),
+                       CRecipientFieldTable::getFieldNameColumnName(), field.FieldName(),
+                       CRecipientFieldTable::getValueColumnName(), field.Value());
                if (m_databaseRequester->queryStatement(*query) <= 0)
                {
                   //fail to update, then insert
@@ -486,10 +498,10 @@ namespace database
                                     CRecipientFieldTable::getPluginTypeColumnName(),
                                     CRecipientFieldTable::getFieldNameColumnName(),
                                     CRecipientFieldTable::getValueColumnName()).
-                         Values(field.IdRecipient(),
-                                field.PluginType(),
-                                field.FieldName(),
-                                field.Value());
+                     Values(field.IdRecipient(),
+                            field.PluginType(),
+                            field.FieldName(),
+                            field.Value());
 
                   if (m_databaseRequester->queryStatement(*query) <= 0)
                      throw shared::exception::CEmptyResult("No lines affected");

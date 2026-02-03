@@ -12,7 +12,7 @@ endif()
 
 
 if(CMAKE_TOOLCHAIN_FILE)
-message("OATPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC_RPI_GCC} and ${CC_RPI_GXX})")
+message("-- External lib - OATPP : cross compilation (toolchain:${CMAKE_TOOLCHAIN_FILE}, with ${CC_RPI_GCC} and ${CC_RPI_GXX})")
 
    #provide OSXCROSS vars
    if(OSXCROSS_HOST)
@@ -78,4 +78,3 @@ else()
    set(OATPP_LIBRARY ${INSTALL_DIR}/src/oatpp_build-build/src/liboatpp.a PARENT_SCOPE)
 endif()
 
-set(OATPP_ROOT ${OATPP_ROOT} PARENT_SCOPE)

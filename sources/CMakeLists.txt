@@ -9,7 +9,7 @@
 ##   Raspberry Raspbian Wheezy, g++ 4.7
 ##   MacOSx Snow Leopard 10.8, Lion 10.9, yosemite 10.10 and ElCaptain 10.11 , g++ 4.8 and more
 ##################################################################################################
-cmake_minimum_required (VERSION 3.14.0)
+cmake_minimum_required (VERSION 3.31.0)
 project (Yadoms)
 
 project (Yadoms)
@@ -19,11 +19,23 @@ cmake_policy(SET CMP0074 NEW)
 cmake_policy(SET CMP0077 NEW)
 cmake_policy(SET CMP0078 NEW)
 cmake_policy(SET CMP0086 NEW)
+cmake_policy(SET CMP0091 NEW)
+cmake_policy(SET CMP0111 NEW)
 cmake_policy(SET CMP0144 NEW)
 cmake_policy(SET CMP0167 NEW)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+
+##################################################################################################
+## Options
+##################################################################################################
+option(ENABLE_ANALYSIS:BOOL "Enable analysis" OFF)
+option(YADOMS_BINARY_DIR:PATH "Output binary directory" "builds")
+
 
 ##################################################################################################
 ## Extract Yadoms version from changelog.md file
@@ -51,15 +63,9 @@ if(COTIRE_USE)
 else()
    include(cmake/PrecompiledHeader.cmake)
 endif()
-
-# Windows specific macro
-if(WIN32)
-   include(cmake/windows.cmake)
-endif()
-
+   
 if(MSVC)
-   set (LINK_WITH_STATIC_RUNTIME 1)
-   include(cmake/MSVCRuntime.cmake)
+   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
    
 # Compilers/IDE configurations
@@ -69,17 +75,15 @@ include(cmake/compilers.cmake)
 ## CPack installation preconfiguration
 ##################################################################################################
 set(INSTALL_BINDIR "bin")
-SET(CPACK_OUTPUT_FILE_PREFIX "${PROJECT_SOURCE_DIR}/../builds/package")
+SET(CPACK_OUTPUT_FILE_PREFIX "${PROJECT_SOURCE_DIR}/../${YADOMS_BINARY_DIR}/package")
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "YadomsCore")
 
 ##################################################################################################
 ## Project output configuration
 ##################################################################################################
 
-#define outputs
-set(YADOMS_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../builds)
-
 # First for the generic no-config case (e.g. with gcc)
+set(YADOMS_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/../${YADOMS_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR})
 set(CMAKE_PDB_OUTPUT_DIRECTORY .)
 # Second, for multi-config builds (e.g. msvc)
@@ -181,11 +185,6 @@ endif()
 SET(OPENSSL_USE_STATIC_LIBS TRUE)
 SET(OPENSSL_MSVC_STATIC_RT TRUE)
 FIND_PACKAGE(OpenSSL REQUIRED)
-
-if(NOT ${OPENSSL_FOUND})
-   message(FATAL_ERROR "Cannot find opensll, all plugins which requires SSL features will not be loaded")
-   set(OPENSSL_INCLUDE_DIR "")
-endif()
 #Do not add OPENSSL_SSL_LIBRARY and OPENSSL_CRYPTO_LIBRARY here; it will be later
 #if done here, this is too early, and for gcc the libraries appears in bad order regarding Poco for example
 
@@ -218,6 +217,7 @@ endif(MSVC)
 add_definitions(-DPOCO_EXTERNAL_OPENSSL=42) #force an unknown value (empty value do not work correctly)
 
 find_package(Poco CONFIG REQUIRED COMPONENTS ${POCO_COMPONENTS})
+message("-- Found Poco: ${POCO_COMPONENTS}")
 set(Poco_TARGETS)
 foreach(c IN LISTS POCO_COMPONENTS)
   list(APPEND Poco_TARGETS Poco::${c})
@@ -227,44 +227,21 @@ endforeach()
 # Protobuf
 #
 ###############################################
-set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
-set (Protobuf_USE_STATIC_LIBS ON)
-
-#Helper (FindProtoBuf.cmake allows defining all variables before finding it)
-#In case Protobuf has been installed in a custom directory (${PROTOBUF_ROOT}) 
-#then predefine all files and paths (make it works with old cmake <3.9)
-if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
-   if(NOT PROTOBUF_INCLUDE_DIR)
-      set(PROTOBUF_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
-   endif(NOT PROTOBUF_INCLUDE_DIR)
-   if(NOT PROTOBUF_LIBRARY)
-      set(PROTOBUF_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
-   endif(NOT PROTOBUF_LIBRARY)
-   if(NOT PROTOBUF_LIBRARY_DEBUG)
-      set(PROTOBUF_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf.a")
-   endif(NOT PROTOBUF_LIBRARY_DEBUG)
-   if(NOT PROTOBUF_LITE_LIBRARY)
-      set(PROTOBUF_LITE_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
-   endif(NOT PROTOBUF_LITE_LIBRARY)
-   if(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
-      set(PROTOBUF_LITE_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
-   endif(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
-   if(NOT PROTOBUF_PROTOC_EXECUTABLE)
-      set(PROTOBUF_PROTOC_EXECUTABLE "${PROTOBUF_ROOT}/bin/protoc")
-   endif(NOT PROTOBUF_PROTOC_EXECUTABLE)
-endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
-
-find_package(Protobuf 3.1.0 REQUIRED)
-
-if(NOT ${PROTOBUF_FOUND})
-   message(FATAL_ERROR "Unable to find the required Protobuf tool")
+# Don't use CONFIG mode because of not compatible with cross-compilation
+# set Protobuf_PROTOC_EXECUTABLE to force protoc path
+# set PROTOBUF_ROOT to force include/libs path
+if(PROTOBUF_ROOT)
+   set(Protobuf_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
+   if(MSVC)
+      set(Protobuf_LIBRARY_DEBUG   "${PROTOBUF_ROOT}/lib/libprotobufd.lib")
+      set(Protobuf_LIBRARY_RELEASE "${PROTOBUF_ROOT}/lib/libprotobuf.lib")
+   else()
+      set(Protobuf_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf${CMAKE_STATIC_LIBRARY_SUFFIX}")
+   endif()
 endif()
-
-
-if(MSVC)   
-   # Workaround to avoid conflict between min/max constants defined in windows.h and Protobuf
-   add_definitions(-DNOMINMAX)
-endif()
+set(Protobuf_USE_STATIC_LIBS ON)
+find_package(Protobuf MODULE 3.1.0 REQUIRED)
+message("-- Found Protobuf: ${Protobuf_VERSION}")
 
 
 ###############################################
@@ -272,7 +249,6 @@ endif()
 #
 ###############################################
 add_definitions("-DCURL_STATICLIB")
-
 
 
 ###############################################
@@ -292,7 +268,6 @@ set(LIBS
    ${OPENSSL_CRYPTO_LIBRARY}
    ${CMAKE_THREAD_LIBS_INIT}
    ${Boost_LIBRARIES}
-   ${Protobuf_LIBRARIES}
    ${CURLPP_LIBRARY}
    ${LIBS}
 )
@@ -1564,12 +1539,14 @@ INCLUDE(CPack)
 ##################################################################################################
 ## SONARQUBE ANALYSIS
 ##################################################################################################
-include(cmake/analysis.cmake)
-analyse(
-      yadoms
-      ${YADOMS_VERSION}
-      "${YADOMS_SRC}"
-      Yadoms.SonarQube.Analysis.txt
-      Yadoms.SonarQube.Analysis.xml
-   )
-#TODO : add analysis for all libs (shared, xxx_IPC, plugins...)
+if(ENABLE_ANALYSIS)
+   include(cmake/analysis.cmake)
+   analyse(
+         yadoms
+         ${YADOMS_VERSION}
+         "${YADOMS_SRC}"
+         Yadoms.SonarQube.Analysis.txt
+         Yadoms.SonarQube.Analysis.xml
+      )
+   #TODO : add analysis for all libs (shared, xxx_IPC, plugins...)
+endif()

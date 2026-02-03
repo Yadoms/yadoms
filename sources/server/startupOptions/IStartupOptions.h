@@ -4,7 +4,7 @@
 #pragma once
 
 #include "DatabaseEngine.h"
-#include <Poco/Nullable.h>
+#include <optional>
 
 namespace startupOptions
 {
@@ -38,8 +38,8 @@ namespace startupOptions
       virtual unsigned short getSslWebServerPortNumber() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Use HTTPS for the web-server
-      /// \return     true if HTTPS is enabled
+    /// \brief	    Use HTTPS for the web-server
+    /// \return     true if HTTPS is enabled
       //--------------------------------------------------------------
       virtual bool getIsWebServerUseHttps() const = 0;
 
@@ -62,9 +62,9 @@ namespace startupOptions
       virtual EDatabaseEngine getDatabaseEngine() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Get the certificate local file for the web-server in HTTPS
-      /// \return     The certificate local file
-      //--------------------------------------------------------------
+    /// \brief	    Get the certificate local file for the web-server in HTTPS
+    /// \return     The certificate local file
+    //--------------------------------------------------------------
       virtual boost::filesystem::path getWebServerHttpsCertificateFile() const = 0;
 
       //--------------------------------------------------------------
@@ -74,10 +74,10 @@ namespace startupOptions
       virtual boost::filesystem::path getWebServerHttpsPrivateKeyFile() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Get the path of the database file (sqlite only)
-      /// \return     Database file path
-      /// \note       If not exist, Yadoms will create the file
-      //--------------------------------------------------------------
+        /// \brief	    Get the path of the database file (sqlite only)
+        /// \return     Database file path
+        /// \note       If not exist, Yadoms will create the file
+        //--------------------------------------------------------------
       virtual std::string getDatabaseSqliteFile() const = 0;
 
       //--------------------------------------------------------------
@@ -121,115 +121,115 @@ namespace startupOptions
       /// \brief	    Get the database host addr (PostgreSQL database only)
       /// \return     The hostaddr
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlHostAddr() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlHostAddr() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database connection timeout (PostgreSQL database only)
       /// \return     The connection timeout
       //--------------------------------------------------------------
-      virtual Poco::Nullable<int> getDatabasePostgresqlConnectTimeout() const = 0;
+      virtual std::optional<int> getDatabasePostgresqlConnectTimeout() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database client encoding(PostgreSQL database only)
       /// \return     The client encoding
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlClientEncoding() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlClientEncoding() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database connection command line options (PostgreSQL database only)
       /// \return     The connection command line options
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlOptions() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlOptions() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database keepAlives state (PostgreSQL database only)
       /// \return     The keepAlives state 
       //--------------------------------------------------------------
-      virtual Poco::Nullable<int> getDatabasePostgresqlKeepAlives() const = 0;
+      virtual std::optional<int> getDatabasePostgresqlKeepAlives() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database keepAlives idle (PostgreSQL database only)
       /// \return     The keepAlives idle
       //--------------------------------------------------------------
-      virtual Poco::Nullable<int> getDatabasePostgresqlKeepAlivesIdle() const = 0;
+      virtual std::optional<int> getDatabasePostgresqlKeepAlivesIdle() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database keepAlives interval (PostgreSQL database only)
       /// \return     The keepAlives interval
       //--------------------------------------------------------------
-      virtual Poco::Nullable<int> getDatabasePostgresqlKeepAlivesInterval() const = 0;
+      virtual std::optional<int> getDatabasePostgresqlKeepAlivesInterval() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database keepAlives count (PostgreSQL database only)
       /// \return     The keepAlives count
       //--------------------------------------------------------------
-      virtual Poco::Nullable<int> getDatabasePostgresqlKeepAlivesCount() const = 0;
+      virtual std::optional<int> getDatabasePostgresqlKeepAlivesCount() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database ssl mode (PostgreSQL database only)
       /// \return     The ssl mode
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlSslMode() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlSslMode() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database ssl required state (PostgreSQL database only)
       /// \return     The ssl required state
       //--------------------------------------------------------------
-      virtual Poco::Nullable<int> getDatabasePostgresqlRequireSsl() const = 0;
+      virtual std::optional<int> getDatabasePostgresqlRequireSsl() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database ssl compression state (PostgreSQL database only)
       /// \return     The ssl compression state
       //--------------------------------------------------------------
-      virtual Poco::Nullable<int> getDatabasePostgresqlSslCompression() const = 0;
+      virtual std::optional<int> getDatabasePostgresqlSslCompression() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database ssl certificate (PostgreSQL database only)
       /// \return     The ssl certificate
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlSslCert() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlSslCert() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database ssl key (PostgreSQL database only)
       /// \return     The ssl key
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlSslKey() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlSslKey() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database ssl root certificate (PostgreSQL database only)
       /// \return     The ssl root certificate
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlSslRootCert() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlSslRootCert() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database ssl revocation list file (PostgreSQL database only)
       /// \return     The ssl revocation list file
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlSslRevocationList() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlSslRevocationList() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database require peer name (PostgreSQL database only)
       /// \return     The require peer name
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlRequirePeer() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlRequirePeer() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database kerberos authentication service (PostgreSQL database only)
       /// \return     The kerberos authentication service
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlKerberos() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlKerberos() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database GSSLib path (PostgreSQL database only)
       /// \return     The GSS library path
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlGssLib() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlGssLib() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the database service(PostgreSQL database only)
       /// \return     The service
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getDatabasePostgresqlService() const = 0;
+      virtual std::optional<std::string> getDatabasePostgresqlService() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the plugin path
@@ -267,34 +267,34 @@ namespace startupOptions
       /// \brief	    Get the proxy host name or ip address
       /// \return     The proxy host
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getProxyHost() const = 0;
+      virtual std::optional<std::string> getProxyHost() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the proxy port
       /// \return     The proxy port
       //--------------------------------------------------------------
-      virtual Poco::Nullable<Poco::UInt16> getProxyPort() const = 0;
+      virtual std::optional<std::uint16_t> getProxyPort() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the proxy username
       /// \return     The proxy username
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getProxyUsername() const = 0;
+      virtual std::optional<std::string> getProxyUsername() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the proxy password
       /// \return     The proxy password
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getProxyPassword() const = 0;
+      virtual std::optional<std::string> getProxyPassword() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the proxy bypass filter
       /// A regular expression defining hosts for which the proxy should be bypassed,
-		/// e.g. "localhost|127\.0\.0\.1|192\.168\.0\.\d+". Can also be an empty
+        /// e.g. "localhost|127\.0\.0\.1|192\.168\.0\.\d+". Can also be an empty
       /// string to disable proxy bypassing.
       /// \return     The proxy filter
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getProxyBypass() const = 0;
+      virtual std::optional<std::string> getProxyBypass() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the update site URI

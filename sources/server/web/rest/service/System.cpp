@@ -24,12 +24,12 @@
 
 namespace web
 {
-   namespace rest
-   {
-      namespace service
-      {
-         std::string CSystem::m_restKeyword = std::string("system");
-         shared::CDataContainer CSystem::m_virtualDevicesSupportedCapacities;
+	namespace rest
+	{
+		namespace service
+		{
+			std::string CSystem::m_restKeyword = std::string("system");
+			shared::CDataContainer CSystem::m_virtualDevicesSupportedCapacities;
 
          CSystem::CSystem(boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
                           boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
@@ -40,73 +40,73 @@ namespace web
               m_configurationManager(std::move(configurationManager)),
               m_timezoneDatabase(std::move(timezoneDatabase)),
               m_usbDevicesLister(std::move(usbDevicesLister))
-         {
-         }
+			{
+			}
 
 
          void CSystem::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
-         {
+			{
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("binding")("*"), CSystem::getBindingV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformationV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTimeV1)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"),
                                         CSystem::getVirtualDevicesSupportedCapacitiesV1)
-         }
+			}
 
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getBindingV1(
-            const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
-         {
-            if (parameters.size() > 2)
-            {
+				const std::vector<std::string>& parameters,
+				const std::string& requestContent) const
+			{
+				if (parameters.size() > 2)
+				{
                const auto& query = parameters[2];
 
-               if (boost::iequals(query, "serialPorts"))
-                  return getSerialPorts();
-               if (boost::iequals(query, "usbDevices"))
-                  return getUsbDevices(requestContent);
-               if (boost::iequals(query, "NetworkInterfaces"))
-                  return getNetworkInterfaces(true);
-               if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
-                  return getNetworkInterfaces(false);
-               if (boost::iequals(query, "platformIsWindows"))
-                  return platformIs("windows");
-               if (boost::iequals(query, "platformIsLinux"))
-                  return platformIs("linux");
-               if (boost::iequals(query, "platformIsMac"))
-                  return platformIs("mac");
-               if (boost::iequals(query, "supportedTimezones"))
-                  return getSupportedTimezones();
+					if (boost::iequals(query, "serialPorts"))
+						return getSerialPorts();
+					if (boost::iequals(query, "usbDevices"))
+						return getUsbDevices(requestContent);
+					if (boost::iequals(query, "NetworkInterfaces"))
+						return getNetworkInterfaces(true);
+					if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
+						return getNetworkInterfaces(false);
+					if (boost::iequals(query, "platformIsWindows"))
+						return platformIs("windows");
+					if (boost::iequals(query, "platformIsLinux"))
+						return platformIs("linux");
+					if (boost::iequals(query, "platformIsMac"))
+						return platformIs("mac");
+					if (boost::iequals(query, "supportedTimezones"))
+						return getSupportedTimezones();
                return poco::CRestResult::GenerateError("unsupported binding query : " + query);
-            }
+				}
 
             return poco::CRestResult::GenerateError("Cannot retrieve url parameters");
-         }
+			}
 
          boost::shared_ptr<shared::CDataContainer> CSystem::getSerialPorts() const
-         {
-            try
-            {
+			{
+				try
+				{
                return poco::CRestResult::GenerateSuccess(CHelpers::getSerialPortsV2());
-            }
-            catch (std::exception& ex)
-            {
+				}
+				catch (std::exception& ex)
+				{
                return poco::CRestResult::GenerateError(ex);
-            }
-            catch (...)
-            {
+				}
+				catch (...)
+				{
                return poco::CRestResult::GenerateError("unknown exception in retrieving all serial ports");
-            }
-         }
+				}
+			}
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getUsbDevices(const std::string& requestContent) const
-         {
-            try
-            {
-               const auto request = shared::CDataContainer::make(requestContent);
+			{
+				try
+				{
+					const auto request = shared::CDataContainer::make(requestContent);
 
-               YADOMS_LOG(debug) << "USB requested devices :";
+					YADOMS_LOG(debug) << "USB requested devices :";
                std::vector<std::pair<int, int>> requestedUsbDevices;
                for (const auto& requestedDevice : request->get<std::vector<boost::shared_ptr<shared::CDataContainer>>>("oneOf"))
                   requestedUsbDevices.emplace_back(std::make_pair(requestedDevice->get<int>("vendorId"),
@@ -116,218 +116,218 @@ namespace web
                                                              m_usbDevicesLister);
 
                return poco::CRestResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
+				}
+				catch (std::exception& ex)
+				{
                return poco::CRestResult::GenerateError(ex);
-            }
-            catch (...)
-            {
+				}
+				catch (...)
+				{
                return poco::CRestResult::GenerateError("unknown exception in retrieving filtered USB devices");
-            }
-         }
+				}
+			}
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(
-            const bool includeLoopback) const
-         {
-            try
-            {
-               shared::CDataContainer result;
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(
+				const bool includeLoopback) const
+			{
+				try
+				{
+					shared::CDataContainer result;
                const auto networkInterfaces = Poco::Net::NetworkInterface::list();
-               for (const auto& nit : networkInterfaces)
-               {
-                  if (nit.address().isLoopback() && !includeLoopback)
-                     continue;
+					for (const auto& nit : networkInterfaces)
+					{
+						if (nit.address().isLoopback() && !includeLoopback)
+							continue;
 
-                  result.set(nit.name(),
-                             (boost::format("%1% (%2%)") % nit.displayName() % nit.address().toString()).str(),
-                             0x00); //in case of key contains a dot, just ensure the full key is taken into account
-               }
+						result.set(nit.name(),
+								   nit.displayName() + " (" + nit.address().toString() + ")",
+								   0x00); //in case of key contains a dot, just ensure the full key is taken into account
+					}
                return poco::CRestResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
+				}
+				catch (std::exception& ex)
+				{
                return poco::CRestResult::GenerateError(ex);
-            }
-            catch (...)
-            {
+				}
+				catch (...)
+				{
                return poco::CRestResult::GenerateError("unknown exception in retrieving all serial ports");
-            }
-         }
+				}
+			}
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSystemInformationV1(
-            const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
-               result.set("yadoms", m_runningInformation->getSoftwareVersion().getContainer());
-               result.set("startupTime", m_runningInformation->getStartupDateTime());
-               result.set("executablePath", m_runningInformation->getExecutablePath());
-               result.set("serverReady", m_runningInformation->isServerFullyLoaded());
+				const std::vector<std::string>& parameters,
+				const std::string& requestContent) const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
+					result.set("yadoms", m_runningInformation->getSoftwareVersion().getContainer());
+					result.set("startupTime", m_runningInformation->getStartupDateTime());
+					result.set("executablePath", m_runningInformation->getExecutablePath());
+					result.set("serverReady", m_runningInformation->isServerFullyLoaded());
 
 
-               if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
-                  result.set("developerMode", "true");
+					if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
+						result.set("developerMode", "true");
 
                return poco::CRestResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
+				}
+				catch (std::exception& ex)
+				{
                return poco::CRestResult::GenerateError(ex);
-            }
-            catch (...)
-            {
+				}
+				catch (...)
+				{
                return poco::CRestResult::GenerateError("unknown exception in retrieving system information");
-            }
-         }
+				}
+			}
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getCurrentTimeV1(
-            const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               result.set("now", shared::currentTime::Provider().now());
+				const std::vector<std::string>& parameters,
+				const std::string& requestContent) const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					result.set("now", shared::currentTime::Provider().now());
                return poco::CRestResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
+				}
+				catch (std::exception& ex)
+				{
                return poco::CRestResult::GenerateError(ex);
-            }
-            catch (...)
-            {
+				}
+				catch (...)
+				{
                return poco::CRestResult::GenerateError("unknown exception in retrieving system information");
-            }
-         }
+				}
+			}
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getVirtualDevicesSupportedCapacitiesV1(
-            const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               result.set("capacities", getVirtualDevicesSupportedCapacities());
+				const std::vector<std::string>& parameters,
+				const std::string& requestContent) const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					result.set("capacities", getVirtualDevicesSupportedCapacities());
                return poco::CRestResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
+				}
+				catch (std::exception& ex)
+				{
                return poco::CRestResult::GenerateError(ex);
-            }
-            catch (...)
-            {
+				}
+				catch (...)
+				{
                return poco::CRestResult::GenerateError("unknown exception in retrieving system information");
-            }
-         }
+				}
+			}
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::platformIs(
-            const std::string& refPlatform) const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               result.set("result", tools::COperatingSystem::getName() == refPlatform);
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::platformIs(
+				const std::string& refPlatform) const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					result.set("result", tools::COperatingSystem::getName() == refPlatform);
                return poco::CRestResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
+				}
+				catch (std::exception& ex)
+				{
                return poco::CRestResult::GenerateError(ex);
-            }
-            catch (...)
-            {
+				}
+				catch (...)
+				{
                return poco::CRestResult::GenerateError("unknown exception in retrieving system information");
-            }
-         }
+				}
+			}
 
-         void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
-                                                          const std::vector<shared::plugin::yPluginApi::EMeasureType>&
-                                                          acceptedMeasureTypes)
-         {
+			void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
+															 const std::vector<shared::plugin::yPluginApi::EMeasureType>&
+															 acceptedMeasureTypes)
+			{
             const auto capacityContainer = shared::CDataContainer::make();
-            capacityContainer->set("name", capacity.getName());
-            capacityContainer->set("unit", capacity.getUnit());
-            capacityContainer->set("dataType", capacity.getType());
+				capacityContainer->set("name", capacity.getName());
+				capacityContainer->set("unit", capacity.getUnit());
+				capacityContainer->set("dataType", capacity.getType());
 
-            if (!acceptedMeasureTypes.empty())
-            {
-               std::vector<std::string> strAcceptedMeasureTypes;
-               std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(),
-                              std::back_inserter(strAcceptedMeasureTypes),
-                              [](const auto& acceptedMeasureType) -> std::string
-                              {
-                                 return acceptedMeasureType.toString();
-                              });
+				if (!acceptedMeasureTypes.empty())
+				{
+					std::vector<std::string> strAcceptedMeasureTypes;
+					std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(),
+								   std::back_inserter(strAcceptedMeasureTypes),
+								   [](const auto& acceptedMeasureType) -> std::string
+					{
+						return acceptedMeasureType.toString();
+					});
 
-               capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
-            }
+					capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
+				}
 
-            m_virtualDevicesSupportedCapacities.set(capacity.getName(), capacityContainer);
-         }
+				m_virtualDevicesSupportedCapacities.set(capacity.getName(), capacityContainer);
+			}
 
-         const shared::CDataContainer& CSystem::getVirtualDevicesSupportedCapacities()
-         {
-            if (m_virtualDevicesSupportedCapacities.empty())
-            {
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ApparentPower());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ArmingAlarm());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::BatteryLevel());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::CameraMove());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGB());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGBW());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter(),
-                                                  std::vector<shared::plugin::yPluginApi::EMeasureType>
-                                                  {
-                                                     shared::plugin::yPluginApi::EMeasureType::kAbsolute,
-                                                     shared::plugin::yPluginApi::EMeasureType::kIncrement,
-                                                     shared::plugin::yPluginApi::EMeasureType::kCumulative
-                                                  });
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Current());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Curtain());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Dimmable());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Direction());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Distance());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Duration());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Energy(),
-                                                  std::vector<shared::plugin::yPluginApi::EMeasureType>
-                                                  {
-                                                     shared::plugin::yPluginApi::EMeasureType::kAbsolute,
-                                                     shared::plugin::yPluginApi::EMeasureType::kIncrement,
-                                                     shared::plugin::yPluginApi::EMeasureType::kCumulative
-                                                  });
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Event());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Frequency());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Humidity());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Illumination());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Load());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Power());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::PowerFactor());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Pressure());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rain(),
-                                                  std::vector<shared::plugin::yPluginApi::EMeasureType>
-                                                  {
-                                                     shared::plugin::yPluginApi::EMeasureType::kIncrement,
-                                                     shared::plugin::yPluginApi::EMeasureType::kCumulative
-                                                  });
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::RainRate());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rssi());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Speed());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Switch());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Temperature());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Text());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::UpDownStop());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Uv());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Voltage());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Volume());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::WeatherCondition());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Weight());
-            }
+			const shared::CDataContainer& CSystem::getVirtualDevicesSupportedCapacities()
+			{
+				if (m_virtualDevicesSupportedCapacities.empty())
+				{
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ApparentPower());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ArmingAlarm());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::BatteryLevel());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::CameraMove());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGB());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGBW());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter(),
+													   std::vector<shared::plugin::yPluginApi::EMeasureType>
+					{
+						shared::plugin::yPluginApi::EMeasureType::kAbsolute,
+							shared::plugin::yPluginApi::EMeasureType::kIncrement,
+							shared::plugin::yPluginApi::EMeasureType::kCumulative
+					});
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Current());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Curtain());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Dimmable());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Direction());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Distance());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Duration());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Energy(),
+													   std::vector<shared::plugin::yPluginApi::EMeasureType>
+					{
+						shared::plugin::yPluginApi::EMeasureType::kAbsolute,
+							shared::plugin::yPluginApi::EMeasureType::kIncrement,
+							shared::plugin::yPluginApi::EMeasureType::kCumulative
+					});
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Event());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Frequency());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Humidity());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Illumination());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Load());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Power());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::PowerFactor());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Pressure());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rain(),
+													   std::vector<shared::plugin::yPluginApi::EMeasureType>
+					{
+						shared::plugin::yPluginApi::EMeasureType::kIncrement,
+							shared::plugin::yPluginApi::EMeasureType::kCumulative
+					});
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::RainRate());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rssi());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Speed());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Switch());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Temperature());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Text());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::UpDownStop());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Uv());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Voltage());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Volume());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::WeatherCondition());
+					addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Weight());
+				}
 
-            return m_virtualDevicesSupportedCapacities;
-         }
+				return m_virtualDevicesSupportedCapacities;
+			}
 
          std::shared_ptr<std::vector<shared::plugin::yPluginApi::CStandardCapacity>> CSystem::getVirtualDevicesSupportedCapacitiesV2()
          {
@@ -375,24 +375,24 @@ namespace web
             return m_virtualDevicesSupportedCapacitiesV2;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSupportedTimezones() const
-         {
-            try
-            {
-               shared::CDataContainer result;
-               for (const auto& supportedTimezone : m_timezoneDatabase->allIds())
-               {
-                  result.set(supportedTimezone, supportedTimezone);
-               }
+			boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSupportedTimezones() const
+			{
+				try
+				{
+					shared::CDataContainer result;
+					for (const auto& supportedTimezone : m_timezoneDatabase->allIds())
+					{
+						result.set(supportedTimezone, supportedTimezone);
+					}
 
                return poco::CRestResult::GenerateSuccess(result);
-            }
-            catch (std::exception& ex)
-            {
+				}
+				catch (std::exception& ex)
+				{
                return poco::CRestResult::GenerateError(ex);
-            }
-            catch (...)
-            {
+				}
+				catch (...)
+				{
                return poco::CRestResult::GenerateError("unknown exception in retrieving all serial ports");
             }
          }
@@ -681,8 +681,8 @@ namespace web
             {
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                                        "Fail to get binding queries");
-            }
-         }
-      } //namespace service
-   } //namespace rest
+				}
+			}
+		} //namespace service
+	} //namespace rest
 } //namespace web 

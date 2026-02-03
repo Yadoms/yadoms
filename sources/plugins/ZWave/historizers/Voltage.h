@@ -13,7 +13,7 @@ namespace historizers
       ///\param[in] accessMode      The access mode
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CVoltage(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti);
+      CVoltage(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo& ti);
 
       //-----------------------------------------------------
       ///\brief                     Constructor
@@ -22,14 +22,14 @@ namespace historizers
       ///\param[in] measureType     The measure type (normally kAbsolute)
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CVoltage(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo &ti);
+      CVoltage(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo& ti);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CVoltage();
 
-      // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
+      // COpenZWaveSingleHistorizableData<std::int64_t> override ------------------------
       void setWithUnits(double value, const std::string& unit) override;
       double getWithUnits(const std::string& unit) const override;
       // [END] - COpenZWaveSingleHistorizableData<double> override ------------------------

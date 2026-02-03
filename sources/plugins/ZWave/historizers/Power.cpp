@@ -4,12 +4,12 @@
 
 namespace historizers
 {
-   CPower::CPower(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti)
+   CPower::CPower(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo& ti)
       : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CPower>(name, accessMode, shared::plugin::yPluginApi::EMeasureType::kAbsolute, ti))
    {
    }
 
-   CPower::CPower(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo &ti)
+   CPower::CPower(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo& ti)
       : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CPower>(name, accessMode, measureType, ti))
    {
 
@@ -19,7 +19,7 @@ namespace historizers
    {
    }
 
-   // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
+   // COpenZWaveSingleHistorizableData<std::int64_t> override ------------------------
    void CPower::setWithUnits(double value, const std::string& unit)
    {
       if (unit == "BTU/h")

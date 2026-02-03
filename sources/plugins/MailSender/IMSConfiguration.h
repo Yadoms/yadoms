@@ -21,7 +21,7 @@ public:
    //--------------------------------------------------------------
    virtual std::string getSenderEmail() const = 0;
    virtual std::string getHost() const = 0;
-   virtual Poco::UInt16 getPort() const = 0;
+   virtual std::uint16_t getPort() const = 0;
    virtual ESecurityMode getSecurityMode() const = 0;
    virtual bool getAuthenticationRequired() const = 0;
    virtual std::string getLogin() const = 0;

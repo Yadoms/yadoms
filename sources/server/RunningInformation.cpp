@@ -8,9 +8,9 @@
 CRunningInformation::CRunningInformation(std::string path,
                                          const shared::versioning::CSemVer& yadomsVersion)
    : m_startupDateTime(shared::currentTime::Provider().now()),
-     m_softwareVersion(yadomsVersion),
-     m_executablePath(std::move(path)),
-     m_serverFullyLoaded(false)
+   m_softwareVersion(yadomsVersion),
+   m_executablePath(std::move(path)),
+   m_serverFullyLoaded(false)
 {
 }
 
@@ -29,8 +29,7 @@ const shared::versioning::CVersionInformation& CRunningInformation::getSoftwareV
 
 const std::string& CRunningInformation::getOperatingSystemName() const
 {
-   static const auto OsName = (boost::format("%1% %2%") % Poco::Environment::osDisplayName() % Poco::Environment::
-      osVersion()).str();
+   static const auto OsName = Poco::Environment::osDisplayName() + " " + Poco::Environment::osVersion();
    return OsName;
 }
 

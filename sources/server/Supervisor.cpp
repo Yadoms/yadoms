@@ -44,7 +44,7 @@
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
                          const shared::versioning::CSemVer& yadomsVersion)
    : m_pathProvider(std::move(pathProvider)),
-     m_yadomsVersion(yadomsVersion)
+   m_yadomsVersion(yadomsVersion)
 {
 }
 
@@ -52,7 +52,7 @@ CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
 void CSupervisor::run()
 {
    YADOMS_LOG_CONFIGURE("Supervisor")
-   YADOMS_LOG(debug) << "Supervisor is starting";
+      YADOMS_LOG(debug) << "Supervisor is starting";
 
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer;
    try
@@ -209,7 +209,7 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().get<IRunningInformation>()->setServerFullyLoaded();
 
       // Main loop
-      YADOMS_LOG(information) << "Supervisor is running...";
+      YADOMS_LOG(information) << "Supervisor is running";
       while (m_eventHandler.waitForEvents() != kStopRequested)
       {
       }

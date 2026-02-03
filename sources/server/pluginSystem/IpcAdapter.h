@@ -11,7 +11,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	yPluginApi IPC adapter, based on message queues
    //--------------------------------------------------------------
-   class CIpcAdapter : public IIpcAdapter
+   class CIpcAdapter final : public IIpcAdapter
    {
    public:
       //--------------------------------------------------------------
@@ -20,10 +20,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       explicit CIpcAdapter(const boost::shared_ptr<CYPluginApiImplementation>& yPluginApi);
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~CIpcAdapter();
+      ~CIpcAdapter() override;
 
    protected:
       // IIpcAdapter Implementation
@@ -33,17 +30,18 @@ namespace pluginSystem
                     const boost::filesystem::path& dataPath,
                     const boost::filesystem::path& logFile,
                     const std::string& logLevel,
-                    Poco::Nullable<std::string> proxyHost,
-                    Poco::Nullable<Poco::UInt16> proxyPort,
-                    Poco::Nullable<std::string> proxyUsername,
-                    Poco::Nullable<std::string> proxyPassword,
-                    Poco::Nullable<std::string> proxyBypass) override;
+                    const std::optional<std::string>& proxyHost,
+                    const std::optional<std::uint16_t>& proxyPort,
+                    const std::optional<std::string>& proxyUsername,
+                    const std::optional<std::string>& proxyPassword,
+                    const std::optional<std::string>& proxyBypass) override;
       void postUpdateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration) override;
       void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
       void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) override;
       void postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command) override;
       void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) override;
-      void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string& taskId) override;
+      void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery,
+                          const std::string& taskId) override;
       void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) override;
       void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) override;
       // [END] IIpcAdapter Implementation
@@ -81,7 +79,8 @@ namespace pluginSystem
       /// \param[in] message The message data
       /// \param[in] messageSize The message size
       //--------------------------------------------------------------
-      void processMessage(const boost::shared_ptr<const unsigned char[]>& message, size_t messageSize);
+      void processMessage(const boost::shared_ptr<const unsigned char[]>& message,
+                          size_t messageSize);
 
       //--------------------------------------------------------------
       /// \brief	Process messages

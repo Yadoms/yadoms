@@ -3,6 +3,8 @@
 #include <cstdarg>
 #include <Poco/Types.h>
 #include <ostream>
+#include <string_view>
+#include <vector>
 
 namespace shared
 {
@@ -110,6 +112,14 @@ namespace shared
       template <typename T>
       static std::string cultureInvariantToString(const T& value);
 
+      //
+      /// \brief        Split a string with any of provided separators (equivalent of boost::split)
+      /// \param [in]   input : the string to split
+      /// \param [in]   seps : the separators
+      /// \return       A vector of separated strings
+      //
+      static std::vector<std::string> splitAnyOfAndCompress(std::string_view input,
+                                                            std::string_view seps);
 
 
       /// @brief Trim string at beginning and end (in place)
@@ -125,6 +135,34 @@ namespace shared
                                        const std::map<std::string, std::string>& replacements,
                                        const std::string& keyEncapsulationStartToken = "{{",
                                        const std::string& keyEncapsulationendToken = "}}");
+
+      //
+      /// \brief        Replace all occurences of subtring in a string
+      /// \param [in]   input : the main string
+      /// \param [in]   from : the subtring to replace
+      /// \param [in]   to : the subtring to replace with
+      /// \return       A vector of separated strings
+      //
+      static std::string replaceAllSubstrings(const std::string& input,
+                                              const std::string& from,
+                                              const std::string& to)
+      {
+         if (from.empty())
+            return input;
+
+         std::string result;
+         std::size_t start = 0;
+         std::size_t pos;
+
+         while ((pos = input.find(from, start)) != std::string::npos) {
+            result.append(input, start, pos - start);
+            result.append(to);
+            start = pos + from.length();
+         }
+
+         result.append(input, start);
+         return result;
+      }
    };
 
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +228,7 @@ namespace shared
    }
 
    template <>
-   inline std::string CStringExtension::cultureInvariantToString(const Poco::UInt8& value)
+   inline std::string CStringExtension::cultureInvariantToString(const std::uint8_t& value)
    {
       std::ostringstream ss;
       ss.imbue(std::locale::classic()); // Use the C locale 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "database/IDatabaseRequester.h"
-#include <Poco/Nullable.h>
+#include <optional>
 #include "PgsqlLibrary.h"
 
 namespace database
@@ -103,9 +103,9 @@ namespace database
          /// \param [in]	      paramName   The parameter name (to add in connection string)
          //--------------------------------------------------------------
          template <class T>
-         void connectionStringAppendOptionalParameter(std::string& cnx, Poco::Nullable<T> value, const std::string& paramName)
+         void connectionStringAppendOptionalParameter(std::string& cnx, const std::optional<T>& value, const std::string& paramName)
          {
-            if (!value.isNull())
+            if (value)
             {
                std::stringstream ss;
                ss << " " << paramName << "=" << value.value();

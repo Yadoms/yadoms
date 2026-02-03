@@ -6,56 +6,56 @@
 
 boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateForHistorizer(boost::shared_ptr<IOpenZWaveNodeKeyword> historizer)
 {
-   if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<double> >(historizer))
+   if (boost::dynamic_pointer_cast<COpenZWaveNodeKeywordGeneric<double>>(historizer))
    {
       return CConfigurationSchemaFactory::generateForDouble(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
 
-   if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<Poco::Int8> >(historizer) ||
-      boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<short> >(historizer) ||
-      boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<Poco::Int32> >(historizer) ||
-      boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<Poco::UInt8> >(historizer)
-      )
+   if (boost::dynamic_pointer_cast<COpenZWaveNodeKeywordGeneric<std::int8_t>>(historizer) ||
+       boost::dynamic_pointer_cast<COpenZWaveNodeKeywordGeneric<short>>(historizer) ||
+       boost::dynamic_pointer_cast<COpenZWaveNodeKeywordGeneric<std::int32_t>>(historizer) ||
+       boost::dynamic_pointer_cast<COpenZWaveNodeKeywordGeneric<std::uint8_t>>(historizer)
+       )
    {
       return CConfigurationSchemaFactory::generateForInteger(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
 
-   if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<bool> >(historizer))
+   if (boost::dynamic_pointer_cast<COpenZWaveNodeKeywordGeneric<bool>>(historizer))
    {
       return CConfigurationSchemaFactory::generateForBool(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
-   
-   if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<std::string> >(historizer))
+
+   if (boost::dynamic_pointer_cast<COpenZWaveNodeKeywordGeneric<std::string>>(historizer))
    {
       return CConfigurationSchemaFactory::generateForString(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
-   
-   if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<COpenZWaveEnumHandler> >(historizer))
+
+   if (boost::dynamic_pointer_cast<COpenZWaveNodeKeywordGeneric<COpenZWaveEnumHandler>>(historizer))
    {
       return CConfigurationSchemaFactory::generateForEnum(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
-   
+
    throw shared::exception::CNotSupported("This historizer");
 }
 
-std::string CConfigurationSchemaFactory::generateValidKeyName(const std::string & val)
+std::string CConfigurationSchemaFactory::generateValidKeyName(const std::string& val)
 {
    return boost::replace_all_copy(val, ".", "_");
 }
 
 boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateForDouble(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass)
 {
-/*
-   "CurrentCoefficient" : {
-      "type" : "decimal",
-      "name" : "correction coefficient",
-      "description" : "Set a correction coefficient to adjust the value",
-      "defaultValue" : "0.0",
-      "maximumValue" : "1.0",
-      "minimumValue" : "-1.0",
-      "precision" : "2"
-   }
-*/
+   /*
+      "CurrentCoefficient" : {
+         "type" : "decimal",
+         "name" : "correction coefficient",
+         "description" : "Set a correction coefficient to adjust the value",
+         "defaultValue" : "0.0",
+         "maximumValue" : "1.0",
+         "minimumValue" : "-1.0",
+         "precision" : "2"
+      }
+   */
    boost::shared_ptr<shared::CDataContainer> options = shared::CDataContainer::make();
    options->set("type", "decimal");
    options->set("name", zwaveTypeInfo->get<std::string>("name"));
@@ -65,7 +65,7 @@ boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateF
       options->set("minimumValue", zwaveTypeInfo->get<std::string>("min"));
    if (zwaveTypeInfo->containsValue("max"))
       options->set("maximumValue", zwaveTypeInfo->get<std::string>("max"));
-   if(zwaveTypeInfo->containsValue("precision"))
+   if (zwaveTypeInfo->containsValue("precision"))
       options->set("precision", zwaveTypeInfo->get<std::string>("precision"));
 
    return options;
@@ -96,7 +96,7 @@ boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateF
 
    //disable verification-> workaround for #248
    options->set("disableCheck", true);
-   
+
 
    return options;
 }
@@ -163,9 +163,9 @@ boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateF
 
 std::string CConfigurationSchemaFactory::generateDescription(boost::shared_ptr<shared::CDataContainer> zwaveTypeInfo, ECommandClass commandclass)
 {
-	std::string descr = (boost::format("0x%02X %s") % commandclass.toInteger() % commandclass.toString()).str();
-	if (zwaveTypeInfo->containsValue("description")) {
-		descr += " : " + zwaveTypeInfo->get<std::string>("description");
-	}
-	return descr;
+   std::string descr = (boost::format("0x%02X %s") % commandclass.toInteger() % commandclass.toString()).str();
+   if (zwaveTypeInfo->containsValue("description")) {
+      descr += " : " + zwaveTypeInfo->get<std::string>("description");
+   }
+   return descr;
 }

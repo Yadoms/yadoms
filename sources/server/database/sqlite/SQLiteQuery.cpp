@@ -15,12 +15,12 @@ namespace database
 
       std::string CSQLiteQuery::functionDateToIsoString(const std::string& sqlPart)
       {
-         return (boost::format("(strftime('%s', isodate(%1%)) * 1000)") % sqlPart).str();
+         return std::string("(strftime('%s', isodate(") + sqlPart + ")) * 1000)";
       }
 
       std::string CSQLiteQuery::functionSubstring(const std::string& sqlPart, int offset, int count)
       {
-         return (boost::format("substr(%1%, %2%, %3%)") % sqlPart % (offset + 1)  % count).str();
+         return std::string("substr(") + sqlPart + ", " + std::to_string(offset + 1) + ", " + std::to_string(count) + ")";
       }
    } //namespace sqlite
 } //namespace database 

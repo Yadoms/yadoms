@@ -20,8 +20,8 @@ namespace pluginSystem
          const shared::versioning::CSemVer& getVersion() const override;
          const std::string& getAuthor() const override;
          const std::string& getUrl() const override;
-         std::string toString() const override;
          std::string getIdentity() const override;
+         std::string toString() const override;
          bool isSupportedOnThisPlatform() const override;
          bool getSupportManuallyCreatedDevice() const override;
          bool getSupportDeviceRemovedNotification() const override;

@@ -16,7 +16,8 @@ namespace shared
          /// \brief	                        Constructor
          //--------------------------------------------------------------
          explicit CDownloadFailed(const std::string& failToDownload)
-            : CException(std::string("Fail to download " + failToDownload))
+            : CException(std::string("Fail to download ")
+                         + failToDownload)
          {
          }
 
@@ -24,19 +25,27 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	                        Constructor
          //--------------------------------------------------------------
-         CDownloadFailed(const std::string& failToDownload, const std::string& reason)
-            : CException(std::string("Fail to download " + failToDownload + " " + reason))
+         CDownloadFailed(const std::string& failToDownload,
+                         const std::string& reason)
+            : CException(std::string("Fail to download ")
+                         + failToDownload + " "
+                         + reason)
          {
          }
 
          //--------------------------------------------------------------
          /// \brief	                        Constructor
          //--------------------------------------------------------------
-         CDownloadFailed(const std::string& failToDownload, const boost::system::error_code& error)
-            : CException(std::string(
-               "Fail to download " + failToDownload + " " + (boost::
-                  format("Message : %1% \nCategory : %2%\nValue : %3%") % error.message() % error.category().name() %
-                  error.value()).str()))
+         CDownloadFailed(const std::string& failToDownload,
+                         const boost::system::error_code& error)
+            : CException(std::string("Fail to download ")
+                         + failToDownload
+                         + " Message : "
+                         + error.message()
+                         + " \nCategory : "
+                         + error.category().name()
+                         + "\nValue : "
+                         + std::to_string(error.value()))
          {
          }
 

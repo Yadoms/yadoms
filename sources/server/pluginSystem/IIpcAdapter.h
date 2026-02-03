@@ -7,7 +7,6 @@
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
-#include <Poco/Nullable.h>
 
 
 namespace pluginSystem
@@ -18,12 +17,7 @@ namespace pluginSystem
    class IIpcAdapter
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~IIpcAdapter()
-      {
-      }
+      virtual ~IIpcAdapter() = default;
 
       //--------------------------------------------------------------
       /// \brief	Get the context accessor ID (unique on full system)
@@ -52,11 +46,11 @@ namespace pluginSystem
                             const boost::filesystem::path& dataPath,
                             const boost::filesystem::path& logFile,
                             const std::string& logLevel,
-                            Poco::Nullable<std::string> proxyHost,
-                            Poco::Nullable<Poco::UInt16> proxyPort,
-                            Poco::Nullable<std::string> proxyUsername,
-                            Poco::Nullable<std::string> proxyPassword,
-                            Poco::Nullable<std::string> proxyBypass) = 0;
+                            const std::optional<std::string>& proxyHost,
+                            const std::optional<std::uint16_t>& proxyPort,
+                            const std::optional<std::string>& proxyUsername,
+                            const std::optional<std::string>& proxyPassword,
+                            const std::optional<std::string>& proxyBypass) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a configuration update to plugin instance
@@ -74,7 +68,8 @@ namespace pluginSystem
       /// \brief                 Post a device configuration schema request to a plugin
       /// \param [in] request    Request
       //--------------------------------------------------------------
-      virtual void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) = 0;
+      virtual void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) =
+         0;
 
       //--------------------------------------------------------------
       /// \brief                 Set a new device configuration to a plugin
@@ -92,7 +87,8 @@ namespace pluginSystem
       /// \brief                 Post an extra command to a plugin
       /// \param [in] extraQuery The command
       //--------------------------------------------------------------
-      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string& taskId) = 0;
+      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery,
+                                  const std::string& taskId) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
