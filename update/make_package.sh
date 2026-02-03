@@ -16,7 +16,6 @@ then
 else
 	#move to project root directory
 	cd $BASEDIR/..
-	echo "Build Yadoms update package"
 	mkdir updatepackage
 	yadomsVersion=$(grep -oP '###[[:space:]]\K.*' sources/server/changelog.md -m 1)
 	# Copy script
@@ -26,15 +25,15 @@ else
 	sed -i -- 's/__version__/'$yadomsVersion'/g' updatepackage/package.json
 	sed -i -- 's/__gitdate__/'`git log -1 --format=%cI `'/g' updatepackage/package.json
 	cp sources/server/changelog.md updatepackage/changelog.md
-	mv builds/package packagetomove
-	mv builds updatepackage/package
+	mv bin-$1/package packagetomove
+	mv bin-$1 updatepackage/package
 	rm -f updatepackage/package/yadoms.ini
 	cd updatepackage
 	zip -qr ../update-package-$1.zip ./ -x \*.gitignore
 	cd -
-	mkdir builds
-	mv packagetomove builds/package
-	mv update-package-$1.zip builds/package
+	mkdir bin-$1
+	mv packagetomove bin-$1/package
+	mv update-package-$1.zip bin-$1/package
 	#cleanup
 	rm -Rf updatepackage
 fi

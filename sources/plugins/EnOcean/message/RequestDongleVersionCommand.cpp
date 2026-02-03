@@ -55,10 +55,10 @@ namespace message
 
         static constexpr auto ExpectedDataSize = 33u;
         if (answer->header().dataLength() != ExpectedDataSize)
-            throw CProtocolException(
-                (boost::format("Invalid data length %1%, expected %2%")
-                    % answer->header().dataLength()
-                    % ExpectedDataSize).str());
+            throw CProtocolException(std::string("Invalid data length ")
+                                     + std::to_string(answer->header().dataLength())
+                                     + ", expected "
+                                     + std::to_string(ExpectedDataSize));
 
         processAnswer(response::CReceivedMessage(answer),
                       "CO_RD_VERSION");

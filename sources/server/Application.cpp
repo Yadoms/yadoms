@@ -6,7 +6,6 @@
 #include <Poco/Util/Option.h>
 #include <Poco/Util/OptionSet.h>
 #include <Poco/Util/HelpFormatter.h>
-#include <Poco/Net/HTTPClientSession.h>
 #include <Poco/Net/HTTPStreamFactory.h>
 
 #include "Supervisor.h"
@@ -61,22 +60,22 @@ void CYadomsServer::initialize(Application& self)
 
 void CYadomsServer::setupProxy() const
 {
-   if (m_startupOptions->getProxyHost().isNull())
+   if (!m_startupOptions->getProxyHost())
       return;
 
    const auto host = m_startupOptions->getProxyHost().value();
-   const auto port = m_startupOptions->getProxyPort().isNull()
-                        ? shared::http::CProxy::kUseProxyDefaultPort
-                        : m_startupOptions->getProxyPort().value();
-   const auto username = m_startupOptions->getProxyUsername().isNull()
-                            ? std::string()
-                            : m_startupOptions->getProxyUsername().value();
-   const auto password = m_startupOptions->getProxyPassword().isNull()
-                            ? std::string()
-                            : m_startupOptions->getProxyPassword().value();
-   const auto bypassRegex = m_startupOptions->getProxyBypass().isNull()
-                               ? std::string()
-                               : m_startupOptions->getProxyBypass().value();
+   const auto port = m_startupOptions->getProxyPort()
+                        ? m_startupOptions->getProxyPort().value()
+                        : shared::http::CProxy::kUseProxyDefaultPort;
+   const auto username = m_startupOptions->getProxyUsername()
+                            ? m_startupOptions->getProxyUsername().value()
+                            : std::string();
+   const auto password = m_startupOptions->getProxyPassword()
+                            ? m_startupOptions->getProxyPassword().value()
+                            : std::string();
+   const auto bypassRegex = m_startupOptions->getProxyBypass()
+                               ? m_startupOptions->getProxyBypass().value()
+                               : std::string();
    shared::http::CProxy::setGlobalProxyConfig(host,
                                               port,
                                               username,
@@ -254,11 +253,11 @@ int CYadomsServer::main(const ArgVec&)
          supervisorThread.start(supervisor);
 
          //
-         // Yadoms is running...
+         // Yadoms is running
          //
 
          // Wait for stop
-         YADOMS_LOG(debug) << "Yadoms is running...";
+         YADOMS_LOG(debug) << "Yadoms is running";
          while (stopRequestEventHandler->waitForEvents() != kTerminationRequested)
          {
             YADOMS_LOG(warning) << "Wrong application stop event received : " << stopRequestEventHandler->getEventId();

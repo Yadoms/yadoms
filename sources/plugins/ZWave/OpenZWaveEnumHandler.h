@@ -65,7 +65,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The current integer value
    //--------------------------------------------------------------
-   Poco::Int32 m_valueInteger;
+   std::int32_t m_valueInteger;
 
    //--------------------------------------------------------------
    /// \brief	The valueId
@@ -80,6 +80,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	The list of all enumeration integers
    //--------------------------------------------------------------
-   std::vector<Poco::Int32> m_integers;
+   std::vector<std::int32_t> m_integers;
 };
 

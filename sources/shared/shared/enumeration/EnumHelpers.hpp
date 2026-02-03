@@ -609,7 +609,7 @@ CCurtain::ECommand::ECommand()
 #define CHECK_VALUE(val)      if(!isDefined(val)) {                                                                                                                  \
                                  logEnum();                                                                                                                          \
                                  YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ") : Invalid value : " << val << " is not defined";                    \
-                                 throw shared::exception::COutOfRange((boost::format("Invalid enum value. Value =  %1%") % val).str());                              \
+                                 throw shared::exception::COutOfRange(std::string("Invalid enum value. Value =  ") + std::to_string(val));                              \
                               }
 
 //
@@ -670,7 +670,7 @@ CCurtain::ECommand::ECommand()
            default :                                                                                                                            \
                logEnum();                                                                                                                       \
                YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ")::toString : Invalid value : " << m_value << " is not known";     \
-               throw shared::exception::COutOfRange((boost::format("Invalid enum value. Value = %1%") % m_value).str());                        \
+               throw shared::exception::COutOfRange(std::string("Invalid enum value. Value = ") + std::to_string(m_value));                     \
             }                                                                                                                                   \
       }                                                                                                                                         \
     void _fullClassifiedEnumName::fromString(const std::string & val)                                                                           \
@@ -679,7 +679,7 @@ CCurtain::ECommand::ECommand()
          {                                                                                                                                      \
             logEnum();                                                                                                                          \
             YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ")::fromString : Invalid value : " << val << " is not known";          \
-            throw shared::exception::COutOfRange((boost::format("Invalid enum string value. Value =  %1%") % val).str());                       \
+            throw shared::exception::COutOfRange(std::string("Invalid enum string value. Value =  ") + val);                                 \
          }                                                                                                                                      \
     }                                                                                                                                           \
    _fullClassifiedEnumName _fullClassifiedEnumName::parse(const std::string & val)                                                              \

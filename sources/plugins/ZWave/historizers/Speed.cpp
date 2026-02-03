@@ -18,7 +18,7 @@ namespace historizers
    {
    }
 
-   // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
+   // COpenZWaveSingleHistorizableData<std::int64_t> override ------------------------
    void CSpeed::setWithUnits(double value,
                              const std::string& unit)
    {

@@ -3,6 +3,7 @@
 #include "XplHelper.h"
 #include "XplConstants.h"
 #include "XplException.h"
+#include <boost/algorithm/string.hpp>
 
 namespace xplcore
 {

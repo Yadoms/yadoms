@@ -514,7 +514,8 @@ void CEnOcean::processDataReceived(const boost::shared_ptr<const message::CEsp3R
 			processEvent(message);
 			break;
 		default:
-			throw CProtocolException((boost::format("Unknown or unsupported received packet type %1%") % message->header().packetType()).str());
+			throw CProtocolException(std::string("Unknown or unsupported received packet type ")
+									 + std::to_string(message->header().packetType()));
 		}
 	}
 	catch (CProtocolException& e)
@@ -831,7 +832,9 @@ void CEnOcean::processDataTelegram(const message::radioErp1::CReceivedMessage& e
 void CEnOcean::processEvent(const boost::shared_ptr<const message::CEsp3ReceivedPacket>& esp3Packet)
 {
 	if (esp3Packet->header().dataLength() < 1)
-		throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % esp3Packet->header().dataLength()).str());
+		throw CProtocolException(std::string("RadioERP1 message : wrong data size (")
+								 + std::to_string(esp3Packet->header().dataLength())
+								 + " < 1)");
 
 	enum
 	{

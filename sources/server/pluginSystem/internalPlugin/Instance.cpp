@@ -106,7 +106,7 @@ namespace pluginSystem
             YADOMS_LOG_CONFIGURE("InternalPlugin");
 
             // the main loop
-            YADOMS_LOG(debug) << "InternalPlugin is running...";
+            YADOMS_LOG(debug) << "InternalPlugin is running";
 
             // Declare all device/keywords
             static const std::string& SystemDevice("system");
@@ -310,8 +310,7 @@ namespace pluginSystem
                                                      const std::string& deviceName,
                                                      const std::string& commaSeparatedValues) const
       {
-         std::vector<std::string> enumValues;
-         boost::split(enumValues, commaSeparatedValues, boost::is_any_of(","));
+         auto enumValues = shared::CStringExtension::splitAnyOfAndCompress(commaSeparatedValues, ",");
          for (auto& enumValue : enumValues)
             boost::trim(enumValue);
 

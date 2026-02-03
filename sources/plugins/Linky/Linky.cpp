@@ -71,7 +71,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                                                 boost::posix_time::seconds(0));
 
    // the main loop
-   YADOMS_LOG(information) << "Linky plugin is running..." ;
+   YADOMS_LOG(information) << "Linky plugin is running" ;
 
    while (true)
    {

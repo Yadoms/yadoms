@@ -4,6 +4,7 @@
 #include <Poco/Environment.h>
 #include <Poco/StringTokenizer.h>
 #include <shared/exception/Exception.hpp>
+#include <shared/StringExtension.h>
 #include <shared/Log.h>
 
 namespace tools
@@ -65,8 +66,7 @@ namespace tools
       std::ifstream infile(scriptPath);
       std::stringstream buffer;
       buffer << infile.rdbuf();
-      auto content = buffer.str();
-      boost::replace_all(content, "\r\n", "\n");
+      auto content = shared::CStringExtension::replaceAllSubstrings(buffer.str(), "\r\n", "\n");
       const auto normalizedScriptPath(boost::filesystem::path(scriptPath).parent_path() / (std::string("normalized_") + boost::filesystem::path(scriptPath).filename().string()));
       std::ofstream outfile(normalizedScriptPath.string(), std::ios::out | std::ios::trunc);
       outfile << content;

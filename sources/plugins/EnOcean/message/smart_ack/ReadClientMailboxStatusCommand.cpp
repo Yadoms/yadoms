@@ -49,10 +49,10 @@ void CReadClientMailboxStatusCommand::sendAndReceive(const std::string& clientId
 
     static constexpr auto ExpectedResponseSize = 1u;
     if (answer->header().dataLength() != ExpectedResponseSize)
-        throw CProtocolException(
-            (boost::format("Invalid data length %1%, expected %2%")
-                % answer->header().dataLength()
-                % ExpectedResponseSize).str());
+		throw CProtocolException(std::string("Invalid data length ")
+								 + std::to_string(answer->header().dataLength())
+								 + ", expected "
+								 + std::to_string(ExpectedResponseSize));
 
     processAnswer(response::CReceivedMessage(answer),
                   "SA_RD_MAILBOX");
@@ -100,7 +100,7 @@ CReadClientMailboxStatusCommand::MailboxStatus CReadClientMailboxStatusCommand::
     case 2:
         return DOESNT_EXIST;
     default:
-        YADOMS_LOG(error) << boost::format("Smart Ack response : unsupported mailbox status value %1%") % byte;
+        YADOMS_LOG(error) << "Smart Ack response : unsupported mailbox status value " << static_cast<int>(byte);
         return DOESNT_EXIST;
     }
 }

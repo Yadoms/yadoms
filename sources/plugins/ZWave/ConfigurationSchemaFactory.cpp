@@ -11,10 +11,10 @@ boost::shared_ptr<shared::CDataContainer> CConfigurationSchemaFactory::generateF
       return CConfigurationSchemaFactory::generateForDouble(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
 
-   if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<Poco::Int8> >(historizer) ||
+   if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<std::int8_t> >(historizer) ||
       boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<short> >(historizer) ||
-      boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<Poco::Int32> >(historizer) ||
-      boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<Poco::UInt8> >(historizer)
+      boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<std::int32_t> >(historizer) ||
+      boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<std::uint8_t> >(historizer)
       )
    {
       return CConfigurationSchemaFactory::generateForInteger(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());

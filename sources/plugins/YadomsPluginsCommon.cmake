@@ -132,7 +132,7 @@ MACRO(PLUGIN_LINK _targetName)
       ${Poco_TARGETS}
       ${LIBS}
       ${CMAKE_DL_LIBS}
-      ${PROTOBUF_LIBRARIES}
+      protobuf::libprotobuf
       ${ARGN}
       )
 	

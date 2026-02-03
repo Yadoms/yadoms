@@ -6,41 +6,31 @@
 setlocal & pushd .
 
 
-call:getCMakeExecutable cmake_executable
+@echo Yadoms build for Windows
+@echo ========================
+@echo.
+@echo v142 : platform toolset "Visual Studio 2019"
+@echo v143 : platform toolset "Visual Studio 2022"
+@echo Leave empty to use default toolset
+@echo.
+@echo.
 
-"%cmake_executable%" --version
+cmake --version
 
-::Move to destination folder
-cd /D %~dp0/projects
-"%cmake_executable%" %~dp0/sources -A Win32
-
-
-goto:eof
-
-:: Function to find cmake executable
-:getCMakeExecutable
-@setlocal enableextensions enabledelayedexpansion
-set file=sources/CMakeListsUserConfig.txt
-set key=ALTERNATIVE_CMAKE_ROOT
-set value=
-for /f "usebackq delims=" %%a in ("!file!") do (
-   set ln=%%a
-   if not "x!ln:~0,1!"=="x#" (
-      for /f tokens^=2^ delims^=^(^)^  %%b in ("!ln!") do (
-         set current_key=%%b
-         if "x!key!"=="x!current_key!" (
-            for /f tokens^=2^ delims^=^" %%c in ("!ln!") do (
-               set value=%%c
-            )
-         )
-      )
-   )
+if "%1%" == "" (
+   @echo Generating using default generator
+	cmake -S sources -B projects -DYADOMS_BINARY_DIR=bin -A Win32
+   goto:eof
 )
-if [!value!] == [] (
-   echo Use cmake from PATH
-   endlocal&set "%~1=cmake"
-) else (
-   echo Use cmake from "%value%"
-   endlocal&set "%~1=%value%/bin/cmake"
+if "%1%" == "v142" (
+   @echo Generating using "Visual Studio 2019"
+	cmake -S sources -B projects -G "Visual Studio 17 2019" -DYADOMS_BINARY_DIR=bin -A Win32
+   goto:eof
 )
+if "%1%" == "v143" (
+   @echo Generating using "Visual Studio 2022"
+	cmake -S sources -B projects -G "Visual Studio 17 2022" -DYADOMS_BINARY_DIR=bin -A Win32
+   goto:eof
+)
+echo Error: invalid toolset selected
 goto:eof

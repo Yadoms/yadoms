@@ -6,9 +6,8 @@
 #include <Poco/Net/HTTPServerResponse.h>
 #include "WebsiteCacheManager.h"
 
-namespace web { namespace poco {
-
-  
+namespace web::poco 
+{  
    class CWebsiteRequestHandler : public Poco::Net::HTTPRequestHandler
    {
    public:
@@ -60,9 +59,5 @@ namespace web { namespace poco {
       //-------------------------------------
       CWebsiteCacheManager m_cacheManager;
    };
-
-
-
-} //namespace poco
-} //namespace web
+}
 

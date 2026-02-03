@@ -19,7 +19,7 @@ namespace historizers
    {
    }
 
-   // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
+   // COpenZWaveSingleHistorizableData<std::int64_t> override ------------------------
    void CPower::setWithUnits(double value, const std::string& unit)
    {
       if (unit == "BTU/h")

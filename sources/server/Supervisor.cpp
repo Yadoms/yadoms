@@ -200,7 +200,7 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().get<IRunningInformation>()->setServerFullyLoaded();
 
       // Main loop
-      YADOMS_LOG(information) << "Supervisor is running...";
+      YADOMS_LOG(information) << "Supervisor is running";
       while (m_eventHandler.waitForEvents() != kStopRequested)
       {
       }

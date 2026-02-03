@@ -46,8 +46,10 @@ boost::shared_ptr<const CSerialPortsLister::SerialPortsMap> CSerialPortsLister::
 			//serialPortName : \Device\Serial0
 			//=> friendlyName : COM1 (\Device\Serial0)
 			std::wstring wSerialPortName(reinterpret_cast<wchar_t*>(serialPortName));
-			const auto friendlyName(
-				(boost::format("%1% (%2%)") % portName % std::string(wSerialPortName.begin(), wSerialPortName.end())).str());
+			const auto friendlyName(portName
+									+ " ("
+									+ std::string(wSerialPortName.begin(), wSerialPortName.end())
+									+ ")");
 
 			// Assure compatibility with serial port numbers > 9
 			portName.insert(0, "\\\\.\\");

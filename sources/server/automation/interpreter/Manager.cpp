@@ -168,7 +168,7 @@ namespace automation
             loadInterpreters();
 
          // Filter only available interpreters
-         for (const auto loadedInterpreter : m_loadedInterpreters)
+         for (const auto& loadedInterpreter : m_loadedInterpreters)
          {
             if (loadedInterpreter.second->isAvailable())
                availableInterpreters.push_back(loadedInterpreter.first);

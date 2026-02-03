@@ -1,281 +1,170 @@
 name: Binaries generation
 
-on: push
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: read
 
 jobs:
-  linux:
-    name : Generate for Linux
+  build-linux:
+    name: Build (Linux targets) - ${{ matrix.target.name }}
     runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v4.0.1
-      id: yadoms_build_step
-      with:
-          buildImage: ghcr.io/yadoms/build_for_linux:latest
-          registry: ghcr.io
-          username: ${{ secrets.CONTAINER_GH_LOGIN }}
-          password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          entrypoint: 'sh /entrypoint_docker.sh'
-    - name: Upload logs on failure
-      uses: actions/upload-artifact@v4.4.0
-      if: failure()          
-      with:
-        name: linux-build_logs
-        path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
-    - name: Get tag/branch name
-      id: vars
-      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-    - name: Archive Linux-Binaries artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: Linux-Binaries
-        path: ./builds/package/Yadoms*
-    - name: Archive Linux-Update artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: Linux-Update
-        path: ./builds/package/update*
-    - name: Create Release (on Tag only)
-      id: create_release
-      uses: ncipollo/release-action@v1
-      if: contains(github.ref, 'refs/tags/')
-      with:
-        tag: ${{ github.ref }}
-        name: ${{ steps.vars.outputs.tag }}
-        draft: true
-        prerelease: true
-        allowUpdates: true
-        omitNameDuringUpdate: true
-        replacesArtifacts: true
-        artifacts: "./builds/package/*"
-        token: ${{ secrets.GITHUB_TOKEN }}
-    
-  Synology218p:
-    name : Generate for Synology 218+
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v4.0.1
-      id: yadoms_build_step
-      with:
-          buildImage: ghcr.io/yadoms/build_for_synology218p:latest
-          registry: ghcr.io
-          username: ${{ secrets.CONTAINER_GH_LOGIN }}
-          password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          entrypoint: 'sh /entrypoint_docker.sh'
-    - name: Upload logs on failure
-      uses: actions/upload-artifact@v4.4.0
-      if: failure()          
-      with:
-        name: Synology218p-build_logs
-        path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
-    - name: Get tag/branch name
-      id: vars
-      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-    - name: Archive Synology218p-Binaries artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: Synology218p-Binaries
-        path: ./builds/package/Yadoms*  
-    - name: Archive Synology218p-Update artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: Synology218p-Update
-        path: ./builds/package/update*  
-    - name: Create Release (on Tag only)
-      id: create_release
-      uses: ncipollo/release-action@v1
-      if: contains(github.ref, 'refs/tags/')
-      with:
-        tag: ${{ github.ref }}
-        name: ${{ steps.vars.outputs.tag }}
-        draft: true
-        prerelease: true
-        allowUpdates: true
-        omitNameDuringUpdate: true
-        replacesArtifacts: true
-        artifacts: "./builds/package/*"
-        token: ${{ secrets.GITHUB_TOKEN }}     
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - name: Linux
+          # TODO ghcr.io/yadoms/build_for_********:latest
+            image: ghcr.io/yadoms/build_for_linux:feature-updateRPiBuild_notSureBestMethod
+            artifact_prefix: Linux
+            privileged: ""
+          - name: RaspberryPI (all versions)
+          # TODO ghcr.io/yadoms/build_for_********:latest
+            image: ghcr.io/yadoms/build_for_raspberrypi:feature-updateRPiBuild_notSureBestMethod
+            artifact_prefix: RaspberryPI
+            privileged: "--privileged"
 
-  RapsberryPI:
-    name : Generate for RaspberryPI (all versions)
-    runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Yadoms build script
-      uses: Yadoms/build-yadoms-action@v4.0.1
-      id: yadoms_build_step
-      with:
-          buildImage: ghcr.io/yadoms/build_for_raspberrypi:latest
+      - name: Checkout code
+        uses: actions/checkout@v4
+          
+      - name: Login to GitHub Container Repository (GHCR)
+        uses: docker/login-action@v3
+        with:
           registry: ghcr.io
-          username: ${{ secrets.CONTAINER_GH_LOGIN }}
-          password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          privileged: '--privileged'
-          entrypoint: 'sh /entrypoint_docker.sh'
-    - name: Upload logs on failure
-      uses: actions/upload-artifact@v4.4.0
-      if: failure()          
-      with:
-        name: RapsberryPI-build_logs
-        path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
-    - name: Get tag/branch name
-      id: vars
-      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-    - name: Archive RapsberryPI-Binaries artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: RapsberryPI-Binaries
-        path: ./builds/package/Yadoms*
-    - name: Archive  RapsberryPI-Update artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: RapsberryPI-Update
-        path: ./builds/package/update*   
-    - name: Create Release (on Tag only)
-      id: create_release
-      uses: ncipollo/release-action@v1
-      if: contains(github.ref, 'refs/tags/')
-      with:
-        tag: ${{ github.ref }}
-        name: ${{ steps.vars.outputs.tag }}
-        draft: true
-        prerelease: true
-        allowUpdates: true
-        omitNameDuringUpdate: true
-        replacesArtifacts: true
-        artifacts: "./builds/package/*"
-        token: ${{ secrets.GITHUB_TOKEN }}     
-        
-  Windows:
-    name : Generate for Windows
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Yadoms build script
+        uses: Yadoms/build-yadoms-action@v4.0.2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          buildImage: ${{ matrix.target.image }}
+          privileged: ${{ matrix.target.privileged }}
+
+      - name: Archive binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target.artifact_prefix }}-Binaries
+          path: ./bin-${{ matrix.target.artifact_prefix }}/package/Yadoms*
+
+      - name: Archive update packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target.artifact_prefix }}-Update
+          path: ./bin-${{ matrix.target.artifact_prefix }}/package/update*
+
+      - name: Cleanup Docker credentials
+        if: always()
+        run: |
+          docker logout ghcr.io || true
+          rm -f ~/.docker/config.json
+
+  build-windows:
+    name: Build (Windows)
     runs-on: windows-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Yadoms build script
-      uses: Yadoms/build-yadoms-windows-action@v2.0.1
-      id: yadoms_build_step
-      with:
-          buildImage: ghcr.io/yadoms/build_for_windows:latest
-          registry: ghcr.io
-          username: ${{ secrets.CONTAINER_GH_LOGIN }}
-          password: ${{ secrets.CONTAINER_GH_TOKEN }}
-          entrypoint: 'powershell.exe -Command C:\work\build-scripts\windows\entrypoint_docker.ps1'
-    - name: Upload logs on failure
-      uses: actions/upload-artifact@v4.4.0
-      if: failure()          
-      with:
-        name: Windows-build_logs
-        path: ./projects/external-libs/oatpp/src/oatpp_build-build/CMakeFiles/*.log
-    - name: Get tag/branch name
-      id: vars
-      run: Write-Host "tag=$( $env:GITHUB_REF -replace '^refs/.*/(.*)$','$1')" >> $GITHUB_OUTPUT
-      shell: powershell
-    - name: Archive Windows-Binaries artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: Windows-Binaries
-        path: ./builds/package/Yadoms*    
-    - name: Archive Windows-Update package artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: Windows-Update
-        path: ./builds/package/update*    
-    - name: Create Release (on Tag only)
-      id: create_release
-      uses: ncipollo/release-action@v1
-      if: contains(github.ref, 'refs/tags/')
-      with:
-        tag: ${{ github.ref }}
-        name: ${{ steps.vars.outputs.tag }}
-        draft: true
-        prerelease: true
-        allowUpdates: true
-        omitNameDuringUpdate: true
-        replacesArtifacts: true
-        artifacts: "./builds/package/*"
-        token: ${{ secrets.GITHUB_TOKEN }}     
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  RapsberryPI_ImageFR:
-    name : Generate RaspberryPI image (French)
+      - name: Login to GitHub Container Repository (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Yadoms build script
+        uses: Yadoms/build-yadoms-windows-action@v2.0.2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          buildImage: ghcr.io/yadoms/build_for_windows:latest
+          entrypoint: "powershell.exe -Command C:\\work\\build-scripts\\windows\\entrypoint_docker.ps1"  #TODO utile ?
+
+      - name: Archive binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: Windows-Binaries
+          path: ./bin-windows/package/Yadoms*
+
+      - name: Archive update packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: Windows-Update
+          path: ./bin-windows/package/update*
+
+      - name: Cleanup Docker credentials
+        if: always()
+        shell: powershell
+        run: |
+          docker logout ghcr.io 2>$null
+          Remove-Item "$env:USERPROFILE\.docker\config.json" -Force -ErrorAction SilentlyContinue
+
+  rpi-image:
+    name: RaspberryPI image - ${{ matrix.language.label }}
     runs-on: ubuntu-latest
-    needs: RapsberryPI
+    needs: build-linux
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - lang: fr
+            label: FR
+          - lang: en
+            label: EN
+
     steps:
-    - name: Get RapsberryPI-Binaries
-      uses: actions/download-artifact@v4.1.7
-      with:
-        name: RapsberryPI-Binaries
-        path: ./
-    - name: Get tag/branch name
-      id: vars
-      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-    - name: Yadoms build raspberryPI image FR script
-      uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
-      with:
-        output_folder: $GITHUB_WORKSPACE/builds/pi_image
-        language: fr
-        branch_or_tag_name: 2020-12-02-raspbian-buster
-    - name: Archive Raspbian-Lite-FR-Yadoms-Image artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: Raspbian-Lite-FR-Yadoms-Image
-        path: ./builds/pi_image/*.zip
-    - name: Create Release (on Tag only)
-      id: create_release
-      uses: ncipollo/release-action@v1
-      if: contains(github.ref, 'refs/tags/')
-      with:
-        tag: ${{ github.ref }}
-        name: ${{ steps.vars.outputs.tag }}
-        draft: true
-        prerelease: true
-        allowUpdates: true
-        omitNameDuringUpdate: true
-        replacesArtifacts: true
-        artifacts: "./builds/pi_image/*.zip"
-        token: ${{ secrets.GITHUB_TOKEN }}   
-        
-  RapsberryPI_ImageEN:
-    name : Generate RaspberryPI image (English)
+      - name: Download RaspberryPI binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: RaspberryPI-Binaries
+          path: ./
+
+      - name: Build RaspberryPI image (${{ matrix.language.label }})
+        uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
+        with:
+          output_folder: $GITHUB_WORKSPACE/bin-RaspberryPI/pi_image
+          language: ${{ matrix.language.lang }}
+          branch_or_tag_name: 2020-12-02-raspbian-buster
+
+      - name: Archive RPi image (${{ matrix.language.label }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: Raspbian-Lite-${{ matrix.language.label }}-Yadoms-Image
+          path: ./bin-RaspberryPI/pi_image/*.zip
+
+
+  release:
+    name: Create/Update Release (tag only)
     runs-on: ubuntu-latest
-    needs: RapsberryPI
+    needs:
+      - build-linux
+      - build-windows
+      - rpi-image
+    if: github.ref_type == 'tag'
     steps:
-    - name: Get RapsberryPI-Binaries
-      uses: actions/download-artifact@v4.1.7
-      with:
-        name: RapsberryPI-Binaries
-        path: ./
-    - name: Get tag/branch name
-      id: vars
-      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-    - name: Yadoms build raspberryPI image EN script
-      uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
-      with:
-        output_folder: $GITHUB_WORKSPACE/builds/pi_image
-        language: en
-        branch_or_tag_name: 2020-12-02-raspbian-buster
-    - name: Archive Raspbian-Lite-EN-Yadoms-Image artifacts
-      uses: actions/upload-artifact@v4.4.0
-      with:
-        name: Raspbian-Lite-EN-Yadoms-Image
-        path: ./builds/pi_image/*.zip
-    - name: Create Release (on Tag only)
-      id: create_release
-      uses: ncipollo/release-action@v1
-      if: contains(github.ref, 'refs/tags/')
-      with:
-        tag: ${{ github.ref }}
-        name: ${{ steps.vars.outputs.tag }}
-        draft: true
-        prerelease: true
-        allowUpdates: true
-        omitNameDuringUpdate: true
-        replacesArtifacts: true
-        artifacts: "./builds/pi_image/*.zip"
-        token: ${{ secrets.GITHUB_TOKEN }}   
-        
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create or update GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          draft: true
+          prerelease: true
+          allowUpdates: true
+          omitNameDuringUpdate: true
+          replacesArtifacts: true
+          artifacts: "dist/**"
+          token: ${{ secrets.GITHUB_TOKEN }}

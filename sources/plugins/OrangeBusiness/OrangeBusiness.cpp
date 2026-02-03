@@ -62,7 +62,7 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          YADOMS_LOG(trace) << "State Ready : no device registered";
       }
 
-      YADOMS_LOG(information) << "Orange Business plugin is running..." ;
+      YADOMS_LOG(information) << "Orange Business plugin is running" ;
    }
    catch (...)
    {

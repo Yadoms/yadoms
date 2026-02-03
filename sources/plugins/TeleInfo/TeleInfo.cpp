@@ -73,7 +73,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                       boost::posix_time::seconds(1));
 
    // the main loop
-   YADOMS_LOG(information) << "Teleinfo plugin is running..." ;
+   YADOMS_LOG(information) << "Teleinfo plugin is running" ;
 
    while (true)
    {
