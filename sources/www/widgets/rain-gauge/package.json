@@ -31,7 +31,7 @@
       },
       "dateDisplay": {
          "type": "bool",
-         "defaultValue": "false"
+         "defaultValue": false
       }
    }
 }

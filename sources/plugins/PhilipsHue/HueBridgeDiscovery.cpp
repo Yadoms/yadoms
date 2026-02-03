@@ -1,4 +1,5 @@
-#include "stdafx.h"
+#include <boost/format.hpp>
+#include <boost/regex.hpp>
 #include "HueBridgeDiscovery.h"
 #include "shared/http/ssdp/DiscoverService.h"
 #include "shared/http/HttpRestHelpers.h"
@@ -55,7 +56,7 @@ CHueInformations CHueBridgeDiscovery::getHueInformations()
       const auto descriptionUrl = m_urlManager->getPatternUrl(urlPatternPath);
 
       std::string out;
-      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kGet,
+      shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kGet,
                                                             descriptionUrl)
          ->send([&out](const std::map<std::string, std::string>& receivedHeaders,
                        const std::string& data)

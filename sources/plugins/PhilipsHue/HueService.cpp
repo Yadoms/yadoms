@@ -46,7 +46,7 @@ void CHueService::requestUsername() const
 
          boost::shared_ptr<shared::CDataContainer> out;
 
-         shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::IHttpRestRequest::EType::kPost, url)
+         shared::http::CHttpRestHelpers::createHttpRestRequest(shared::http::ERestVerb::kPost, url)
             ->withBody(buildAuthorizedUsernameBody())
             .withHeaderParameters(buildCommonHeaderParameters())
             .send([&out](boost::shared_ptr<shared::CDataContainer> data)

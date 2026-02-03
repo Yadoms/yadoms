@@ -10,6 +10,7 @@
 #include "SQLiteQuery.h"
 #include <shared/Log.h>
 #include <shared/exception/NullReference.hpp>
+#include <utility>
 #include "i18n/ClientStrings.h"
 
 namespace database
@@ -22,14 +23,10 @@ namespace database
       int CSQLiteRequester::m_maxTries = 3;
 
 
-      CSQLiteRequester::CSQLiteRequester(const std::string& dbFile)
+      CSQLiteRequester::CSQLiteRequester(std::string dbFile)
          : m_pDatabaseHandler(nullptr),
-           m_dbFile(dbFile),
+           m_dbFile(std::move(dbFile)),
            m_bOneTransactionActive(false)
-      {
-      }
-
-      CSQLiteRequester::~CSQLiteRequester()
       {
       }
 
@@ -101,7 +98,7 @@ namespace database
 
                const auto buf = static_cast<char *>(malloc(sizeof(char) * (sVal.size())));
                memcpy(buf, sVal.c_str(), sVal.size());
-               sqlite3_result_text(context, buf, sVal.size(), free);
+               sqlite3_result_text(context, buf, static_cast<int>(sVal.size()), free);
                break;
             }
 
@@ -132,11 +129,11 @@ namespace database
 
       //--------------------------------------------------------------
       /// \Brief		    query for entities (the result is a vector of typed objects, accessible by a call to pAdapter->GetResult())
-      /// \param [in]	 adapter:  pointer to the adapter to use to map raw values to a new entity
-      /// \param [in]	 querytoExecute: the sql query
+      /// \param [in]	 adapter          pointer to the adapter to use to map raw values to a new entity
+      /// \param [in]	 queryToExecute   the sql query
       //--------------------------------------------------------------
       void CSQLiteRequester::queryEntities(common::adapters::IResultAdapter* adapter,
-                                           const common::CQuery& querytoExecute)
+                                           const common::CQuery& queryToExecute)
       {
          BOOST_ASSERT(adapter != NULL);
 
@@ -153,7 +150,7 @@ namespace database
                   retry = false;
 
                   sqlite3_stmt* stmt;
-                  const auto rc = sqlite3_prepare_v2(m_pDatabaseHandler, querytoExecute.c_str(), -1, &stmt, nullptr);
+                  const auto rc = sqlite3_prepare_v2(m_pDatabaseHandler, queryToExecute.c_str(), -1, &stmt, nullptr);
 
                   if (rc == SQLITE_OK)
                   {
@@ -259,7 +256,7 @@ namespace database
                retry = false;
             }
          }
-         while ((--remainingTries) > 0 && retry);
+         while (--remainingTries > 0 && retry);
 
          return sqlite3_changes(m_pDatabaseHandler);
       }
@@ -273,7 +270,7 @@ namespace database
          common::adapters::CSingleValueAdapter<int> countAdapter;
          queryEntities(&countAdapter, querytoExecute);
 
-         if (countAdapter.getResults().size() >= 1)
+         if (!countAdapter.getResults().empty())
             return countAdapter.getResults()[0];
          return -1;
       }
@@ -284,7 +281,7 @@ namespace database
          BOOST_ASSERT(querytoExecute.GetQueryType() == common::CQuery::kSelect);
 
          QueryResults results = query(querytoExecute);
-         if (results.size() >= 1)
+         if (!results.empty())
             return results[0];
 
          return QueryRow(); //returns empty data
@@ -344,8 +341,8 @@ namespace database
          CSQLiteQuery sCheckForTableExists;
          sCheckForTableExists.SelectCount().
                              From(CSqliteMasterTable::getTableName()).
-                             Where(CSqliteMasterTable::getTypeColumnName(), CQUERY_OP_EQUAL, SQLITEMASTER_TABLE).
-                             And(CSqliteMasterTable::getNameColumnName(), CQUERY_OP_EQUAL, tableName.GetName());
+                             Where(CSqliteMasterTable::getTypeColumnName(), common::CQUERY_OP_EQUAL, SQLITEMASTER_TABLE).
+                             And(CSqliteMasterTable::getNameColumnName(), common::CQUERY_OP_EQUAL, tableName.GetName());
          const auto count = queryCount(sCheckForTableExists);
          return (count == 1);
       }
@@ -432,7 +429,7 @@ namespace database
       {
          sqlite3* pFile; /* Database connection opened on zFilename */
 
-         auto backupfile = backupFolder + "/" + "yadoms.db3";
+         const auto backupfile = backupFolder + "/" + "yadoms.db3";
 
          //remove backup file if already exists
          if (boost::filesystem::exists(backupfile))
@@ -494,8 +491,8 @@ namespace database
          //we ensure that no transaction is active
          //if a transaction is active, just wait for the transaction to end (with timetout)
          auto waitLoopCount = 0;
-         const auto waitPeriodMs = 200;
-         const auto maxLoopWait = 2 * 60 * 1000 / waitPeriodMs; // 2 minutes
+         constexpr auto waitPeriodMs = 200;
+         constexpr auto maxLoopWait = 2 * 60 * 1000 / waitPeriodMs; // 2 minutes
 
          while (m_bOneTransactionActive && waitLoopCount < maxLoopWait)
          {

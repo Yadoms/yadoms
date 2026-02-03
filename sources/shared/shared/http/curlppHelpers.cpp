@@ -21,11 +21,11 @@ namespace shared
 			if (!CProxy::getBypassRegex().empty() && std::regex_search(url, std::regex(CProxy::getBypassRegex())))
 				return;
 
-			request.setOpt(new curlpp::options::Proxy(CProxy::getHost()));
+         request.setOpt<curlpp::options::Proxy>(CProxy::getHost());
 			if (CProxy::getPort() != CProxy::kUseProxyDefaultPort)
-				request.setOpt(new curlpp::options::ProxyPort(CProxy::getPort()));
+            request.setOpt<curlpp::options::ProxyPort>(CProxy::getPort());
 			if (!CProxy::getUsername().empty() && !CProxy::getPassword().empty())
-				request.setOpt(new curlpp::options::ProxyUserPwd(CProxy::getUsername() + ":" + CProxy::getPassword()));
+            request.setOpt<curlpp::options::ProxyUserPwd>(CProxy::getUsername() + ":" + CProxy::getPassword());
 		}
 
 		void CCurlppHelpers::setHeaders(curlpp::Easy& request,
@@ -39,7 +39,7 @@ namespace shared
 			for (const auto& headerParametersIterator : headerParameters)
 				headers.push_back(headerParametersIterator.first + ": " + headerParametersIterator.second);
 
-			request.setOpt(new curlpp::options::HttpHeader(headers));
+         request.setOpt<curlpp::options::HttpHeader>(headers);
 		}
 
 		std::string CCurlppHelpers::stringifyParameters(const std::map<std::string, std::string>& parameters)

@@ -5,7 +5,10 @@ class CHueInformations final
 {
 public:
    CHueInformations();
-   CHueInformations(std::string& ip, std::string& friendlyName, std::string& modelName, std::string& modelNumber);
+   CHueInformations(const std::string& ip,
+                    const std::string& friendlyName,
+                    const std::string& modelName,
+                    const std::string& modelNumber);
    virtual ~CHueInformations() = default;
 
    const std::string& getIp() const;
@@ -17,10 +20,10 @@ public:
    void setFriendlyName(const std::string& friendlyName);
    void setModelName(const std::string& modelName);
    void setModelNumber(const std::string& modelNumber);
+
 private:
    std::string m_ip;
    std::string m_friendlyName;
    std::string m_modelName;
    std::string m_modelNumber;
 };
-

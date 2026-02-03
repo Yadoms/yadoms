@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <string>
 #include "Xy.h"
 
 class CHueState
@@ -33,16 +34,15 @@ public:
    void setReachable(bool reachable);
 
 private:
-
-   bool m_on;
-   int m_bri;
-   int m_hue;
-   int m_sat;
+   bool m_on = false;
+   int m_bri = 0;
+   int m_hue = 0;
+   int m_sat = 0;
    std::string m_effect;
    CXy m_xy;
-   int m_ct;
+   int m_ct = 0;
    std::string m_alert;
    std::string m_colorMode;
    std::string m_mode;
-   bool m_reachable;
+   bool m_reachable = false;
 };

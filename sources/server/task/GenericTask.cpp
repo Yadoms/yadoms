@@ -1,26 +1,33 @@
 #include "stdafx.h"
 #include "GenericTask.h"
 
+#include <utility>
+
 namespace task
 {
-   CGenericTask::CGenericTask(const std::string& name, TaskFunc pFunctor)
-      : m_taskName(name), m_pFunctor(pFunctor)
+   CGenericTask::CGenericTask(std::string name,
+                              std::function<void(TaskProgressFunc)> taskFct)
+      : m_taskName(std::move(name)),
+        m_taskFct(std::move(taskFct))
    {
    }
 
-   CGenericTask::~CGenericTask()
-   {
-   }
-
-   const std::string& CGenericTask::getName() const
+   std::string CGenericTask::getName()
    {
       return m_taskName;
    }
 
-   void CGenericTask::doWork(TaskProgressFunc pFunctor)
+   void CGenericTask::doWork(TaskProgressFunc reportProgressFct)
    {
-      m_pFunctor(pFunctor);
+      m_taskFct(reportProgressFct);
+   }
+
+   void CGenericTask::onSetTaskId(const std::string& taskId)
+   {
+   }
+
+   bool CGenericTask::isCancellable() const
+   {
+      return false;
    }
 } //namespace task
-
-

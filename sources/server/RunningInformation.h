@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------
 /// \brief   Class which handle information about server system
 //-----------------------------------------------------------------------------
-class CRunningInformation : public IRunningInformation
+class CRunningInformation final : public IRunningInformation
 {
 public:
    //-----------------------------------------------------------------------------
@@ -12,13 +12,9 @@ public:
    /// \param [in] path The executable path
    /// \param [in] yadomsVersion The Yadoms version
    //-----------------------------------------------------------------------------
-   explicit CRunningInformation(const std::string& path,
+   explicit CRunningInformation(std::string path,
                                 const shared::versioning::CSemVer& yadomsVersion);
-
-   //-----------------------------------------------------------------------------
-   /// \brief		                     Destructor
-   //-----------------------------------------------------------------------------
-   virtual ~CRunningInformation() = default;
+   ~CRunningInformation() override = default;
 
    // IRunningInformation implementation
    const boost::posix_time::ptime& getStartupDateTime() const override;
