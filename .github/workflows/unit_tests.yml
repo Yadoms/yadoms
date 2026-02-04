@@ -33,7 +33,7 @@ jobs:
 # TODO          buildImage: ghcr.io/yadoms/build_for_linux:latest
           buildImage: ghcr.io/yadoms/build_for_linux:feature-updateRPiBuild_notSureBestMethod
           privileged: ${{ matrix.target.privileged }}          
-          entrypoint: 'entrypoint_docker_unittests.sh'
+          entrypoint: 'entrypoint_docker_tests.sh'
           
     - name: Archive unittests artifacts
       uses: actions/upload-artifact@v4
