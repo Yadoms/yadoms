@@ -25,7 +25,7 @@ jobs:
       
     - name: Generate unittests binary
       id: yadoms_build_step
-      uses: Yadoms/build-yadoms-action@v4.0.2
+      uses: Yadoms/build-yadoms-action@v4.0.3-beta.1
       with:
           registry: ghcr.io
           username: ${{ github.actor }}

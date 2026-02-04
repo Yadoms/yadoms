@@ -39,7 +39,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Yadoms build script
-        uses: Yadoms/build-yadoms-action@v4.0.2
+        uses: Yadoms/build-yadoms-action@v4.0.3-beta.1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
