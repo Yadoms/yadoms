@@ -167,6 +167,7 @@ endif(MSVC)
 add_definitions(-DPOCO_EXTERNAL_OPENSSL=42) #force an unknown value (empty value do not work correctly)
 
 find_package(Poco CONFIG REQUIRED COMPONENTS ${POCO_COMPONENTS})
+message("-- Found Poco: ${POCO_COMPONENTS}")
 set(Poco_TARGETS)
 foreach(c IN LISTS POCO_COMPONENTS)
   list(APPEND Poco_TARGETS Poco::${c})
