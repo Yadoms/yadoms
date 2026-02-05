@@ -625,16 +625,18 @@ BOOST_AUTO_TEST_CASE(Serialization)
 	auto str = cfg.serialize();
 	auto str_2 = defaultConf;
 
-	str.erase(
-		std::remove_if(str.begin(), str.end(),
-					   [](char c) {
-						   return std::string_view(" \t\n\r").find(c) != std::string_view::npos;
-					   }),
-		str.end());
-	str_2.erase(std::remove_if(str.begin(), str.end(),
+	str.erase(std::remove_if(str.begin(),
+							 str.end(),
+							 [](char c) {
+								 return std::string_view(" \t\n\r").find(c) != std::string_view::npos;
+							 }),
+			  str.end());
+	str_2.erase(std::remove_if(str_2.begin(),
+							   str_2.end(),
 							   [](char c) {
 								   return std::string_view(" \t\n\r").find(c) != std::string_view::npos;
-							   }), str_2.end());
+							   }),
+				str_2.end());
 
 	BOOST_CHECK_EQUAL(str, str_2);
 
