@@ -120,25 +120,25 @@ jobs:
           # - lang: en
             # label: EN
 
-    steps:
-      - name: Download RaspberryPI binaries
-        uses: actions/download-artifact@v4
-        with:
-          name: RaspberryPI-Binaries
-          path: ./
+    # steps:
+      # - name: Download RaspberryPI binaries
+        # uses: actions/download-artifact@v4
+        # with:
+          # name: RaspberryPI-Binaries
+          # path: ./
 
-      - name: Build RaspberryPI image (${{ matrix.language.label }})
-        uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
-        with:
-          output_folder: $GITHUB_WORKSPACE/bin-RaspberryPI/pi_image
-          language: ${{ matrix.language.lang }}
-          branch_or_tag_name: 2020-12-02-raspbian-buster
+      # - name: Build RaspberryPI image (${{ matrix.language.label }})
+        # uses: Yadoms/build-yadoms-rpiimage-action@v1.0.1
+        # with:
+          # output_folder: $GITHUB_WORKSPACE/bin-RaspberryPI/pi_image
+          # language: ${{ matrix.language.lang }}
+          # branch_or_tag_name: 2020-12-02-raspbian-buster
 
-      - name: Archive RPi image (${{ matrix.language.label }})
-        uses: actions/upload-artifact@v4
-        with:
-          name: Raspbian-Lite-${{ matrix.language.label }}-Yadoms-Image
-          path: ./bin-RaspberryPI/pi_image/*.zip
+      # - name: Archive RPi image (${{ matrix.language.label }})
+        # uses: actions/upload-artifact@v4
+        # with:
+          # name: Raspbian-Lite-${{ matrix.language.label }}-Yadoms-Image
+          # path: ./bin-RaspberryPI/pi_image/*.zip
 
 
   release:
