@@ -10,7 +10,7 @@
 
 BOOST_AUTO_TEST_SUITE(TestPluginInformation)
 
-static const boost::filesystem::path DefaultPackagePath("FakePackage");
+static const boost::filesystem::path DefaultPackagePath(boost::filesystem::temp_directory_path() / "FakePackage");
 static const std::string DefaultPackageFileContent(
 "{"
 "   \"type\": \"FakePackage\","
