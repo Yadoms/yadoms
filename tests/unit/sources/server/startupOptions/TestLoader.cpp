@@ -18,18 +18,18 @@ public:
         // Ensure TestDirectory is empty
         try
         {
-            testCommon::filesystem::removeDirectory(m_testDirectory);
+            test_common::Filesystem::removeDirectory(m_testDirectory);
         }
         catch (boost::filesystem::filesystem_error&)
         {
             // Under Windows, directory can be locked for a little duration after directory creation
             // So wait a bit and re-try
             boost::this_thread::sleep(boost::posix_time::millisec(500));
-            testCommon::filesystem::removeDirectory(m_testDirectory);
+            test_common::Filesystem::removeDirectory(m_testDirectory);
         }
 
         // Create directory
-        testCommon::filesystem::createDirectory(m_testDirectory);
+        test_common::Filesystem::createDirectory(m_testDirectory);
     }
 
     ~CTestPath()
@@ -37,14 +37,14 @@ public:
         // Clean-up TestDirectory
         try
         {
-            testCommon::filesystem::removeDirectory(m_testDirectory);
+            test_common::Filesystem::removeDirectory(m_testDirectory);
         }
         catch (boost::filesystem::filesystem_error&)
         {
             // Under Windows, directory can be locked for a little duration after directory creation
             // So wait a bit and re-try
             boost::this_thread::sleep(boost::posix_time::millisec(500));
-            testCommon::filesystem::removeDirectory(m_testDirectory);
+            test_common::Filesystem::removeDirectory(m_testDirectory);
         }
     }
 

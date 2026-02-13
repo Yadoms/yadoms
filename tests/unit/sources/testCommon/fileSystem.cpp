@@ -1,21 +1,22 @@
 #include "stdafx.h"
 #include "fileSystem.h"
 #include <filesystem>
+#include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
-using namespace testCommon;
+using namespace test_common;
 
-void filesystem::createDirectory(const std::filesystem::path& path)
+void Filesystem::createDirectory(const std::filesystem::path& path)
 {
     BOOST_REQUIRE(std::filesystem::create_directory(path)) ;
 }
 
-void filesystem::removeDirectory(const std::filesystem::path& path)
+void Filesystem::removeDirectory(const std::filesystem::path& path)
 {
     std::filesystem::remove_all(path);
 }
 
-void filesystem::createFile(const std::filesystem::path& file,
+void Filesystem::createFile(const std::filesystem::path& file,
                             const std::string& content,
                             bool withBom)
 {
@@ -42,14 +43,14 @@ void filesystem::createFile(const std::filesystem::path& file,
     textStream.close();
 }
 
-void filesystem::removeFile(const std::string& dir,
+void Filesystem::removeFile(const std::string& dir,
                             const std::string& file)
 {
     const auto fullPath = std::filesystem::path(dir) / file;
     BOOST_REQUIRE(std::filesystem::remove(fullPath)) ;
 }
 
-void filesystem::removeFile(const std::string& file,
+void Filesystem::removeFile(const std::string& file,
                             bool successRequired)
 {
     if (successRequired)
@@ -58,7 +59,7 @@ void filesystem::removeFile(const std::string& file,
         std::filesystem::remove(file);
 }
 
-void filesystem::removeFile(const std::filesystem::path& file,
+void Filesystem::removeFile(const std::filesystem::path& file,
                             bool successRequired)
 {
     if (successRequired)
@@ -67,13 +68,13 @@ void filesystem::removeFile(const std::filesystem::path& file,
         std::filesystem::remove(file.string());
 }
 
-void filesystem::writeFile(const std::string& dir,
+void Filesystem::writeFile(const std::string& dir,
                            const std::string& file)
 {
     writeFile(dir, file, "some text...");
 }
 
-void filesystem::writeFile(const std::string& dir,
+void Filesystem::writeFile(const std::string& dir,
                            const std::string& file,
                            const std::string& content)
 {
@@ -90,7 +91,7 @@ void filesystem::writeFile(const std::string& dir,
     outfile << content;
 }
 
-void filesystem::writeFile(const std::filesystem::path& file,
+void Filesystem::writeFile(const std::filesystem::path& file,
                            const std::string& content)
 {
     if (!file.parent_path().empty() && !std::filesystem::exists(file.parent_path()))
@@ -100,7 +101,7 @@ void filesystem::writeFile(const std::filesystem::path& file,
     outfile << content;
 }
 
-void filesystem::renameFile(const std::string& dir,
+void Filesystem::renameFile(const std::string& dir,
                             const std::string& oldFile,
                             const std::string& newFile)
 {
@@ -109,7 +110,7 @@ void filesystem::renameFile(const std::string& dir,
     std::filesystem::rename(oldFullPath, newFullPath);
 }
 
-boost::filesystem::path filesystem::toBoost(const std::filesystem::path& path)
+boost::filesystem::path Filesystem::toBoost(const std::filesystem::path& path)
 {
-    return boost::filesystem::path(path.string());
+    return {path.string()};
 }

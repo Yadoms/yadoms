@@ -1,8 +1,9 @@
 #pragma once
+#include <filesystem>
 
-namespace testCommon
+namespace test_common
 {
-    class filesystem
+    class Filesystem
     {
     public:
         static void createDirectory(const std::filesystem::path& path);
