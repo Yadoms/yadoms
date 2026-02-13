@@ -32,6 +32,11 @@ public:
         test_common::Filesystem::createDirectory(m_testDirectory);
     }
 
+    std::filesystem::path dir() const
+    {
+        return m_testDirectory;
+    }
+
     ~CTestPath()
     {
         // Clean-up TestDirectory
@@ -49,7 +54,7 @@ public:
     }
 
 private:
-    const std::filesystem::path m_testDirectory;
+    std::filesystem::path m_testDirectory;
 };
 
 static const std::string TestNewWebServerPath("newNewWebServerPath");
@@ -655,7 +660,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
     {
         CTestPath webServerPath(TestNewWebServerPath);
         std::string arg = "-w";
-        arg += TestNewWebServerPath;
+        arg += webServerPath.dir().string();
 
         const char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
@@ -664,7 +669,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
         BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
         BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
         BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
-        BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), TestNewWebServerPath) ;
+        BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), webServerPath.dir()) ;
         BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
         BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
         BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters") ;
@@ -684,7 +689,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
     {
         CTestPath webServerPath(TestNewWebServerPath);
         std::string arg = "--webServerPath:";
-        arg += TestNewWebServerPath;
+        arg += webServerPath.dir().string();
         const char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
         CStartupOptionMockup loader(2, argv, true);
@@ -692,7 +697,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
         BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
         BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
         BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "0.0.0.0") ;
-        BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), TestNewWebServerPath) ;
+        BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), webServerPath.dir()) ;
         BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "yadoms.db3") ;
         BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
         BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters") ;
@@ -727,7 +732,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
     BOOST_AUTO_TEST_CASE(All_Options1)
     {
-        CTestPath webServerPath(TestNewWebServerPath);
+        const auto wewWebServerPath = CTestPath(TestNewWebServerPath).dir().string();
 
         const char* argv[] =
         {
@@ -735,7 +740,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
             "--port", "8085",
             "--databaseSqliteFile", "test.db3",
             "--webServerIp", "192.168.1.3",
-            "--webServerPath", const_cast<char*>(TestNewWebServerPath.c_str()),
+            "--webServerPath", wewWebServerPath.c_str(),
             "--logLevel", "warning"
         };
 
@@ -744,7 +749,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
         BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
         BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085)) ;
         BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.3") ;
-        BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), TestNewWebServerPath) ;
+        BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), wewWebServerPath) ;
         BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "test.db3") ;
         BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
         BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters") ;
@@ -765,7 +770,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
         CTestPath webServerPath(TestNewWebServerPath);
 
         std::string arg = "-w:";
-        arg += TestNewWebServerPath;
+        arg += webServerPath.dir().string();
 
         const char* argv[] =
         {
@@ -782,7 +787,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
         BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
         BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085)) ;
         BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.3") ;
-        BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), TestNewWebServerPath) ;
+        BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), webServerPath.dir()) ;
         BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "test.db3") ;
         BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
         BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters") ;
