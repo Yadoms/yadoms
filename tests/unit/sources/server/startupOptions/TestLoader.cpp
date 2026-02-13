@@ -732,7 +732,8 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
     BOOST_AUTO_TEST_CASE(All_Options1)
     {
-        const auto wewWebServerPath = CTestPath(TestNewWebServerPath).dir().string();
+        const auto wewWebServerPath = CTestPath(TestNewWebServerPath);
+        const auto wewWebServerPathString = wewWebServerPath.dir().string();
 
         const char* argv[] =
         {
@@ -740,7 +741,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
             "--port", "8085",
             "--databaseSqliteFile", "test.db3",
             "--webServerIp", "192.168.1.3",
-            "--webServerPath", wewWebServerPath.c_str(),
+            "--webServerPath", wewWebServerPathString.c_str(),
             "--logLevel", "warning"
         };
 
@@ -749,7 +750,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
         BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
         BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085)) ;
         BOOST_CHECK_EQUAL(loader.options().getWebServerIPAddress(), "192.168.1.3") ;
-        BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), wewWebServerPath) ;
+        BOOST_CHECK_EQUAL(loader.options().getWebServerInitialPath(), wewWebServerPathString) ;
         BOOST_CHECK_EQUAL(loader.options().getDatabaseSqliteFile(), "test.db3") ;
         BOOST_CHECK_EQUAL(loader.options().getPluginsPath(), "plugins") ;
         BOOST_CHECK_EQUAL(loader.options().getScriptInterpretersPath(), "scriptInterpreters") ;
