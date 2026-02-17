@@ -11,7 +11,7 @@
 // Includes needed to compile the test
 #include "../../testCommon/serialTeleInfoMessage.h"
 
-using namespace testCommon;
+using namespace test_common;
 
 class BufferLoggerMock : public shared::communication::IBufferLogger
 {
@@ -67,23 +67,23 @@ BOOST_AUTO_TEST_SUITE(TestLinkyReceiveBufferHandler)
       BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("12"), false);
       BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("123"), false);
       BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("123"), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ testCommon::kStartMessage, testCommon::kHorizontalTab, testCommon::kEndMessage }), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ test_common::kStartMessage, test_common::kHorizontalTab, test_common::kEndMessage }), false);
 
       // Empty message
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ testCommon::kStartMessage, testCommon::kHorizontalTab, 0x29, testCommon::kEndMessage }), true); // 0x09+0x20
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ testCommon::kStartMessage, testCommon::kHorizontalTab, 0x30, testCommon::kEndMessage }), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ test_common::kStartMessage, test_common::kHorizontalTab, 0x29, test_common::kEndMessage }), true); // 0x09+0x20
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ test_common::kStartMessage, test_common::kHorizontalTab, 0x30, test_common::kEndMessage }), false);
 
       // Message OK
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("ADSC<ht>041067003463<ht>/")), true);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("VTIC<ht>01<ht>I")), true);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("DATE<ht>h150101150844<ht><ht>_")), true);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("NGTF<ht>       HC       <ht>,")), true);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("ADSC<ht>041067003463<ht>/")), true);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("VTIC<ht>01<ht>I")), true);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("DATE<ht>h150101150844<ht><ht>_")), true);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("NGTF<ht>       HC       <ht>,")), true);
 
       // Wrong CRC
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("ADSC<ht>041067003463<ht>1")), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("LTARF<ht>       BASE     <ht>G")), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("EAST<ht>000046245<ht>4")), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("SMAXN-1<ht>h141230000000<ht>00000<ht>D")), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("ADSC<ht>041067003463<ht>1")), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("LTARF<ht>       BASE     <ht>G")), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("EAST<ht>000046245<ht>4")), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("SMAXN-1<ht>h141230000000<ht>00000<ht>D")), false);
    }
 
 BOOST_AUTO_TEST_CASE(CheckCrcHistorical)
@@ -101,32 +101,32 @@ BOOST_AUTO_TEST_CASE(CheckCrcHistorical)
    BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("12"), false);
    BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("123"), false);
    BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("123"), false);
-   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ testCommon::kStartMessage, testCommon::kHorizontalTab, testCommon::kEndMessage }), false);
+   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ test_common::kStartMessage, test_common::kHorizontalTab, test_common::kEndMessage }), false);
 
    // Empty message
    //BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ testCommon::kStartMessage, testCommon::kHorizontalTab, 0x29, testCommon::kEndMessage }), true); // 0x09+0x20
-   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ testCommon::kStartMessage, testCommon::kHorizontalTab, 0x30, testCommon::kEndMessage }), false);
+   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ test_common::kStartMessage, test_common::kHorizontalTab, 0x30, test_common::kEndMessage }), false);
 
    //-----------------------------------------------------
    //   Historical frames
    //-----------------------------------------------------
 
    // Message OK
-   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("OPTARIF BASE 0")), true);
-   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("MOTDETAT 000000 B")), true);
-   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("ADCO 031428097115 @")), true);
-   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("PTEC TH.. $")), true);
+   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("OPTARIF BASE 0")), true);
+   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("MOTDETAT 000000 B")), true);
+   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("ADCO 031428097115 @")), true);
+   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("PTEC TH.. $")), true);
 
    // Wrong CRC
-   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("OPTARIF BASE 1")), false);
-   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("MOTDETAT 000000 Z")), false);
-   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("ADCO 031428097115 5")), false);
-   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("PTEC TH.. @")), false);
+   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("OPTARIF BASE 1")), false);
+   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("MOTDETAT 000000 Z")), false);
+   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("ADCO 031428097115 5")), false);
+   BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("PTEC TH.. @")), false);
 }
 
 BOOST_AUTO_TEST_CASE(getMessagesLinky)
 {
-	const boost::shared_ptr<const std::vector<unsigned char>> frame = boost::make_shared<const std::vector<unsigned char>>(testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>"));
+	const boost::shared_ptr<const std::vector<unsigned char>> frame = boost::make_shared<const std::vector<unsigned char>>(test_common::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>"));
 	const std::map<std::string, std::vector<std::string> > expectedMap = {
       { "ADSC", {"041067003463"} },
       { "VTIC", {"01"} },
@@ -148,7 +148,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(NominalLinky)
    {
-      const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
+      const auto frame = test_common::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADSC",{ "041067003463" } },
          { "VTIC",{ "01" } },
@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(twoframesOnePushLinky)
    {
-	   const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
+	   const auto frame = test_common::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADSC",{ "041067003463" } },
          { "VTIC",{ "01" } },
@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(twoframesTwoPushLinky)
    {
-	   const auto frame1 = testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
+	   const auto frame1 = test_common::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADSC",{ "041067003463" } },
          { "VTIC",{ "01" } },
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(extraCharactersbetweenCRetxLinky)
    {                                                                                                                                                                                                                                                                                         //*******//
-	   const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr>D4R } $<etx>");
+	   const auto frame = test_common::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr>D4R } $<etx>");
 
 	   shared::event::CEventHandler evtHandler;
 	   CLinkyReceiveBufferHandler bufferHandler(Standard,
@@ -245,7 +245,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(extraCharactersbetweenstxLFLinky)
    {                                                                           //*******//                                                                                                                                                                                                
-	   const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("<stx>D4R } $<lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
+	   const auto frame = test_common::serialTeleInfoMessage::normalizeFrame("<stx>D4R } $<lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADSC",{ "041067003463" } },
          { "VTIC",{ "01" } },
@@ -270,7 +270,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(extraCharactersbeforestxLinky)
    {
-	   const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("<lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
+	   const auto frame = test_common::serialTeleInfoMessage::normalizeFrame("<lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADSC",{ "041067003463" } },
          { "VTIC",{ "01" } },
@@ -295,7 +295,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(extraCharactersbeforestx2Linky)
    {
-	   const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("0000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
+	   const auto frame = test_common::serialTeleInfoMessage::normalizeFrame("0000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADSC",{ "041067003463" } },
          { "VTIC",{ "01" } },
@@ -320,7 +320,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(OneCRCFailedLinky)
    {                                                                                           //|// Here the CRC Error
-	   const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>T<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
+	   const auto frame = test_common::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>T<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
 
 	   shared::event::CEventHandler evtHandler;
 	   CLinkyReceiveBufferHandler bufferHandler(Standard,
@@ -335,7 +335,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(MissingCRLinky)
    {                                                                                                                                                                                                         //|// Missing CR
-	   const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
+	   const auto frame = test_common::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
 
 	   shared::event::CEventHandler evtHandler;
 	   CLinkyReceiveBufferHandler bufferHandler(Standard,
@@ -350,11 +350,11 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(MultiframeLinky)
    {
-	   const auto frame1 = testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTI");
-	   const auto frame2 = testCommon::serialTeleInfoMessage::normalizeFrame("C<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht> ");
-	   const auto frame3 = testCommon::serialTeleInfoMessage::normalizeFrame("      HC       <ht>,<cr><lf>LTARF<ht>       BAS");
-	   const auto frame4 = testCommon::serialTeleInfoMessage::normalizeFrame("E     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h1");
-	   const auto frame5 = testCommon::serialTeleInfoMessage::normalizeFrame("41230000000<ht>00000<ht>C<cr><etx>");
+	   const auto frame1 = test_common::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTI");
+	   const auto frame2 = test_common::serialTeleInfoMessage::normalizeFrame("C<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht> ");
+	   const auto frame3 = test_common::serialTeleInfoMessage::normalizeFrame("      HC       <ht>,<cr><lf>LTARF<ht>       BAS");
+	   const auto frame4 = test_common::serialTeleInfoMessage::normalizeFrame("E     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h1");
+	   const auto frame5 = test_common::serialTeleInfoMessage::normalizeFrame("41230000000<ht>00000<ht>C<cr><etx>");
 
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADSC",{ "041067003463" } },
@@ -389,8 +389,8 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(finalLinky)
    {
-	   const auto frame1 = testCommon::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr>");
-	   const auto frame2 = testCommon::serialTeleInfoMessage::normalizeFrame("<etx>");
+	   const auto frame1 = test_common::serialTeleInfoMessage::normalizeFrame("<stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr>");
+	   const auto frame2 = test_common::serialTeleInfoMessage::normalizeFrame("<etx>");
 	   
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADSC",{ "041067003463" } },
@@ -418,7 +418,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(LF_Change_to_STXLinky)
    {
-      const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("<stx>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
+      const auto frame = test_common::serialTeleInfoMessage::normalizeFrame("<stx>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADSC",{ "041067003463" } },
          { "VTIC",{ "01" } },
@@ -444,7 +444,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
 
    BOOST_AUTO_TEST_CASE(getMessagesHistorical)
    {
-      const boost::shared_ptr<const std::vector<unsigned char>> frame = boost::make_shared<const std::vector<unsigned char>>(testCommon::serialTeleInfoMessage::normalizeFrame("5 F<cr><lf>PAPP 00490 .<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006251693 +<cr><lf>PTEC TH.. $<cr><lf>IINST 002 Y<cr><lf>IMAX 025 F<cr><lf>PAPP 00490 .<cr><lf>MOTDETAT 000000 B<cr><etx>"));
+      const boost::shared_ptr<const std::vector<unsigned char>> frame = boost::make_shared<const std::vector<unsigned char>>(test_common::serialTeleInfoMessage::normalizeFrame("5 F<cr><lf>PAPP 00490 .<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006251693 +<cr><lf>PTEC TH.. $<cr><lf>IINST 002 Y<cr><lf>IMAX 025 F<cr><lf>PAPP 00490 .<cr><lf>MOTDETAT 000000 B<cr><etx>"));
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADCO", {"031428097115"} },
          { "OPTARIF", {"BASE"} },

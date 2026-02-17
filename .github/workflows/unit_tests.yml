@@ -25,7 +25,7 @@ jobs:
       
     - name: Generate unittests binary
       id: yadoms_build_step
-      uses: Yadoms/build-yadoms-action@v4.0.2
+      uses: Yadoms/build-yadoms-action@v4.0.3-beta.2
       with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -33,7 +33,7 @@ jobs:
 # TODO          buildImage: ghcr.io/yadoms/build_for_linux:latest
           buildImage: ghcr.io/yadoms/build_for_linux:feature-updateRPiBuild_notSureBestMethod
           privileged: ${{ matrix.target.privileged }}          
-          entrypoint: 'sh /work/build-scripts/linux/entrypoint_docker_unittests.sh'
+          entrypoint: '/entrypoint_tests.sh'
           
     - name: Archive unittests artifacts
       uses: actions/upload-artifact@v4

@@ -11,7 +11,7 @@
 // Includes needed to compile the test
 #include "../../testCommon/serialTeleInfoMessage.h"
 
-using namespace testCommon;
+using namespace test_common;
 
 class BufferLoggerMock : public shared::communication::IBufferLogger
 {
@@ -66,28 +66,28 @@ BOOST_AUTO_TEST_SUITE(TestTeleInfoReceiveBufferHandler)
       BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("12"), false);
       BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("123"), false);
       BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("123"), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ testCommon::kStartMessage, ' ', testCommon::kEndMessage }), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ test_common::kStartMessage, ' ', test_common::kEndMessage }), false);
 
       // Empty message
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ testCommon::kStartMessage, ' ', 0x20, testCommon::kEndMessage }), true);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ testCommon::kStartMessage, ' ', 0x21, testCommon::kEndMessage }), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ test_common::kStartMessage, ' ', 0x20, test_common::kEndMessage }), true);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ test_common::kStartMessage, ' ', 0x21, test_common::kEndMessage }), false);
 
       // Message OK
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("OPTARIF BASE 0")), true);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("MOTDETAT 000000 B")), true);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("ADCO 031428097115 @")), true);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("PTEC TH.. $")), true);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("OPTARIF BASE 0")), true);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("MOTDETAT 000000 B")), true);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("ADCO 031428097115 @")), true);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("PTEC TH.. $")), true);
 
       // Wrong CRC
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("OPTARIF BASE 1")), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("MOTDETAT 000000 Z")), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("ADCO 031428097115 5")), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(testCommon::serialTeleInfoMessage::toMessage("PTEC TH.. @")), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("OPTARIF BASE 1")), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("MOTDETAT 000000 Z")), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("ADCO 031428097115 5")), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(test_common::serialTeleInfoMessage::toMessage("PTEC TH.. @")), false);
    }
 
 BOOST_AUTO_TEST_CASE(getMessages)
 {
-	const boost::shared_ptr<const std::vector<unsigned char>> frame = boost::make_shared<const std::vector<unsigned char>>(testCommon::serialTeleInfoMessage::normalizeFrame("5 F<cr><lf>PAPP 00490 .<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006251693 +<cr><lf>PTEC TH.. $<cr><lf>IINST 002 Y<cr><lf>IMAX 025 F<cr><lf>PAPP 00490 .<cr><lf>MOTDETAT 000000 B<cr><etx>"));
+	const boost::shared_ptr<const std::vector<unsigned char>> frame = boost::make_shared<const std::vector<unsigned char>>(test_common::serialTeleInfoMessage::normalizeFrame("5 F<cr><lf>PAPP 00490 .<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006251693 +<cr><lf>PTEC TH.. $<cr><lf>IINST 002 Y<cr><lf>IMAX 025 F<cr><lf>PAPP 00490 .<cr><lf>MOTDETAT 000000 B<cr><etx>"));
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
 		{ "OPTARIF", "BASE" },

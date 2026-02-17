@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "serialTeleInfoMessage.h"
 
-namespace testCommon
+namespace test_common
 {
    std::string serialTeleInfoMessage::toMessage(const std::string& content)
    {
