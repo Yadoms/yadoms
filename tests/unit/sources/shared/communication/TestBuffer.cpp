@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_SUITE(TestBuffer)
       shared::communication::CByteBuffer buffer(input, sizeof(input));
       BOOST_CHECK_EQUAL(buffer.size(), sizeof(input)) ; // Check size
       BOOST_CHECK_NE(buffer.begin(), &input[0]) ; // Check that a copy was done
-      for (auto index = 0; index < buffer.size(); ++index) // Check content
+      for (auto index = 0u; index < buffer.size(); ++index) // Check content
       BOOST_CHECK_EQUAL(buffer[index], input[index]) ;
    }
 
@@ -54,8 +54,8 @@ BOOST_AUTO_TEST_SUITE(TestBuffer)
 
       // Check buffer content
       BOOST_CHECK_EQUAL(buffer.size(), input.size()) ; // Check size
-      BOOST_CHECK_NE(buffer.begin(), &input[0]) ; // Check that a copy was done
-      for (auto index = 0; index < buffer.size(); ++index) // Check content
+      BOOST_CHECK_NE(buffer.begin(), input.data()) ; // Check that a copy was done
+      for (auto index = 0u; index < buffer.size(); ++index) // Check content
       BOOST_CHECK_EQUAL(buffer[index], input[index]) ;
    }
 
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_SUITE(TestBuffer)
 
       // Check buffer content
       BOOST_CHECK_EQUAL(buffer.size(), input.size()) ; // Check size
-      BOOST_CHECK_NE(buffer.begin(), &input[0]) ; // Check that a copy was done
+      BOOST_CHECK_NE(buffer.begin(), input.data()) ; // Check that a copy was done
       BOOST_CHECK_EQUAL_COLLECTIONS(buffer.begin(), buffer.end(),
          input.begin(), input.end());
    }

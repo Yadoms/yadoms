@@ -1,16 +1,13 @@
 #pragma once
 #include "IFormDataPartHandler.h"
 
-namespace web
+namespace web::rest
 {
-   namespace rest
+   class IFormDataPartStringHandler : public IFormDataPartHandler
    {
-      class IFormDataPartStringHandler : public IFormDataPartHandler
-      {
-      public:
-         ~IFormDataPartStringHandler() override = default;
+   public:
+      ~IFormDataPartStringHandler() override = default;
 
-         virtual std::string string() const = 0;
-      };
-   } //namespace rest
-} //namespace web 
+      virtual std::string string() const = 0;
+   };
+}

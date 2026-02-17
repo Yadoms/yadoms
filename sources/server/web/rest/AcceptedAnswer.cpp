@@ -1,40 +1,36 @@
 #include "stdafx.h"
 #include "AcceptedAnswer.h"
 
-namespace web
+using namespace web::rest;
+
+CAcceptedAnswer::CAcceptedAnswer(const std::string& resourceCreatedPath)
+   : m_customHeaders(std::make_shared<std::map<std::string, std::string>>())
 {
-   namespace rest
-   {
-      CAcceptedAnswer::CAcceptedAnswer(const std::string& resourceCreatedPath)
-         : m_customHeaders(std::make_shared<std::map<std::string, std::string>>())
-      {
-         if (!resourceCreatedPath.empty())
-            (*m_customHeaders)["Location"] = resourceCreatedPath;
-      }
+   if (!resourceCreatedPath.empty())
+      (*m_customHeaders)["Location"] = resourceCreatedPath;
+}
 
-      shared::http::ECodes CAcceptedAnswer::code() const
-      {
-         return shared::http::ECodes::kAccepted;
-      }
+shared::http::ECodes CAcceptedAnswer::code() const
+{
+   return shared::http::ECodes::kAccepted;
+}
 
-      std::string CAcceptedAnswer::body() const
-      {
-         return {};
-      }
+std::string CAcceptedAnswer::body() const
+{
+   return {};
+}
 
-      bool CAcceptedAnswer::bodyIsFile() const
-      {
-         return false;
-      }
+bool CAcceptedAnswer::bodyIsFile() const
+{
+   return false;
+}
 
-      EContentType CAcceptedAnswer::contentType() const
-      {
-         return EContentType::kNone;
-      }
+EContentType CAcceptedAnswer::contentType() const
+{
+   return EContentType::kNone;
+}
 
-      std::shared_ptr<std::map<std::string, std::string>> CAcceptedAnswer::customHeaders() const
-      {
-         return m_customHeaders;
-      }
-   } //namespace rest
-} //namespace web 
+std::shared_ptr<std::map<std::string, std::string>> CAcceptedAnswer::customHeaders() const
+{
+   return m_customHeaders;
+}

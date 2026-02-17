@@ -1,16 +1,13 @@
 #pragma once
 #include "ContentType.h"
 
-namespace web
+namespace web::rest
 {
-   namespace rest
+   class IFormDataPartHandler
    {
-      class IFormDataPartHandler
-      {
-      public:
-         virtual ~IFormDataPartHandler() = default;
+   public:
+      virtual ~IFormDataPartHandler() = default;
 
-         virtual EContentType contentType() const = 0;
-      };
-   } //namespace rest
-} //namespace web 
+      virtual EContentType contentType() const = 0;
+   };
+}

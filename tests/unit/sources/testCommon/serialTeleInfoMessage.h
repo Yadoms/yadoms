@@ -3,7 +3,7 @@
 #include <string.h>
 #include <vector>
 
-namespace testCommon
+namespace test_common
 {
    enum
    {

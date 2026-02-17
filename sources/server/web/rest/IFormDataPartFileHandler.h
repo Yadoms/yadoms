@@ -1,17 +1,14 @@
 #pragma once
 #include "IFormDataPartHandler.h"
 
-namespace web
+namespace web::rest
 {
-   namespace rest
+   class IFormDataPartFileHandler : public IFormDataPartHandler
    {
-      class IFormDataPartFileHandler : public IFormDataPartHandler
-      {
-      public:
-         ~IFormDataPartFileHandler() override = default;
+   public:
+      ~IFormDataPartFileHandler() override = default;
 
-         virtual long long fileSize() const = 0; // Returns -1 if unknown
-         virtual std::string fileName() const = 0;
-      };
-   } //namespace rest
-} //namespace web 
+      virtual long long fileSize() const = 0; // Returns -1 if unknown
+      virtual std::string fileName() const = 0;
+   };
+}

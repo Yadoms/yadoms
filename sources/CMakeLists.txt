@@ -108,7 +108,7 @@ set(Boost_USE_STATIC_RUNTIME ON)
 add_definitions(-DBOOST_SPIRIT_THREADSAFE)
 
 # define all needed boost libraries
-set(BOOST_LIBS 
+set(BOOST_COMPONENTS
    atomic
    chrono
    date_time
@@ -119,8 +119,8 @@ set(BOOST_LIBS
 )
 
 # search boost libs
-find_package(Boost 1.89.0 CONFIG REQUIRED COMPONENTS ${BOOST_LIBS})
-message("-- Found Boost: ${BOOST_LIBS}")
+find_package(Boost 1.89.0 CONFIG REQUIRED COMPONENTS ${BOOST_COMPONENTS})
+message("-- Found Boost ${Boost_VERSION_STRING} : ${BOOST_COMPONENTS}")
 
 
 ## Thread Library
@@ -185,6 +185,7 @@ endif()
 SET(OPENSSL_USE_STATIC_LIBS TRUE)
 SET(OPENSSL_MSVC_STATIC_RT TRUE)
 FIND_PACKAGE(OpenSSL REQUIRED)
+message("-- Found OpenSSL ${OPENSSL_VERSION}")
 #Do not add OPENSSL_SSL_LIBRARY and OPENSSL_CRYPTO_LIBRARY here; it will be later
 #if done here, this is too early, and for gcc the libraries appears in bad order regarding Poco for example
 
@@ -217,7 +218,7 @@ endif(MSVC)
 add_definitions(-DPOCO_EXTERNAL_OPENSSL=42) #force an unknown value (empty value do not work correctly)
 
 find_package(Poco CONFIG REQUIRED COMPONENTS ${POCO_COMPONENTS})
-message("-- Found Poco: ${POCO_COMPONENTS}")
+message("-- Found Poco ${Poco_VERSION} : ${POCO_COMPONENTS}")
 set(Poco_TARGETS)
 foreach(c IN LISTS POCO_COMPONENTS)
   list(APPEND Poco_TARGETS Poco::${c})
@@ -241,7 +242,7 @@ if(PROTOBUF_ROOT)
 endif()
 set(Protobuf_USE_STATIC_LIBS ON)
 find_package(Protobuf MODULE 3.1.0 REQUIRED)
-message("-- Found Protobuf: ${Protobuf_VERSION}")
+message("-- Found Protobuf ${Protobuf_VERSION}")
 
 
 ###############################################

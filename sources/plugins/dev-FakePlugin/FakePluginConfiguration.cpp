@@ -8,7 +8,7 @@ void CFakePluginConfiguration::initializeWith(const boost::shared_ptr<shared::CD
    m_configuration.initializeWith(data);
 }
 
-void CFakePluginConfiguration::initializeWith(boost::shared_ptr<shared::CDataContainer> data,
+void CFakePluginConfiguration::initializeWith(const boost::shared_ptr<shared::CDataContainer>& data,
                                               const boost::filesystem::path& packageJsonPath)
 {
    m_configuration.initializeWith(data, packageJsonPath);
