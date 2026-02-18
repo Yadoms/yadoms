@@ -15,7 +15,6 @@ namespace hardware::usb
 
 	private:
 		static std::wstring CWinapiDevicesLister::toUtf8WideChar(const char* src);
-		static std::string toUtf8(const char* buffer);
 		static std::string toUtf8(const wchar_t* buffer);
 		static std::string getDeviceProperty(const HDEVINFO deviceInfoSet,
 											 PSP_DEVINFO_DATA deviceInfoData,

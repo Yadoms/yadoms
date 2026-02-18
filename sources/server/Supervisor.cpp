@@ -335,7 +335,7 @@ std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
    const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
    bool skipPasswordCheck)
 {
-   return std::make_unique<web::oatppServer::CWebServer>(address,
+   return std::make_unique<web::oatpp_server::CWebServer>(address,
                                                          port,
                                                          useHttps,
                                                          httpsPort,
@@ -345,7 +345,7 @@ std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
                                                          "rest",
                                                          restServices,
                                                          "ws",
-                                                         boost::make_shared<web::oatppServer::CAuthentication>(
+                                                         boost::make_shared<web::oatpp_server::CAuthentication>(
                                                             configurationManager,
                                                             skipPasswordCheck));
 }

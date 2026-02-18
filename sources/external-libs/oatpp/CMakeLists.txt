@@ -9,7 +9,6 @@ list(APPEND OATPP_BUILD_ARGS "-DOATPP_MSVC_LINK_STATIC_RUNTIME=ON")
 if(NOT WIN32)
    list(APPEND OATPP_BUILD_ARGS "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
 endif()
-list(APPEND OATPP_BUILD_ARGS "-DCMAKE_POLICY_VERSION_MINIMUM=3.5") # TODO remove when OATPP version will be > 1.3.0
 
 
 if(CMAKE_TOOLCHAIN_FILE)
@@ -58,8 +57,8 @@ message("-- External lib - OATPP : cross compilation (toolchain:${CMAKE_TOOLCHAI
 endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp_build
-   GIT_REPOSITORY    https://github.com/oatpp/oatpp.git
-   GIT_TAG           1.3.0-latest
+   GIT_REPOSITORY    https://github.com/Yadoms/oatpp.git
+   GIT_TAG           056d45b85e2084cdae25cff9f8b850ecae1666ec
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_PATCH_CMD}   
    PREFIX            ${OATPP_ROOT}

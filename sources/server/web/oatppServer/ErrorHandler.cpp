@@ -3,34 +3,30 @@
 #include "ErrorHandler.h"
 #include <oatpp/web/protocol/http/outgoing/BufferBody.hpp>
 
-namespace web
+using namespace web::oatpp_server;
+
+std::shared_ptr<oatpp::web::protocol::http::outgoing::Response> CErrorHandler::renderError(
+   const HttpServerErrorStacktrace& stacktrace)
 {
-   namespace oatppServer
-   {
-      std::shared_ptr<oatpp::web::protocol::http::outgoing::Response> CErrorHandler::handleError(
-         const oatpp::web::protocol::http::Status& status,
-         const oatpp::String& message,
-         const oatpp::web::protocol::http::Headers& headers)
-      {
-         static oatpp::String serverHeader(("yadoms/" + std::string(YADOMS_VERSION)).c_str());
+   static oatpp::String serverHeader(("yadoms/" + std::string(YADOMS_VERSION)).c_str());
 
-         oatpp::data::stream::BufferOutputStream stream;
-         stream << "server=" << serverHeader << "\n";
-         stream << "code=" << status.code << "\n";
-         stream << "description=" << status.description << "\n";
-         stream << "message=" << message << "\n";
-         auto response = oatpp::web::protocol::http::outgoing::Response::createShared
-            (status, oatpp::web::protocol::http::outgoing::BufferBody::createShared(stream.toString()));
+   oatpp::data::stream::BufferOutputStream stream;
+   stream << "server=" << serverHeader << "\n";
+   stream << "code=" << stacktrace.status.code << "\n";
+   stream << "description=" << stacktrace.status.description << "\n";
+   stream << "stacktrace:\n";
 
-         response->putHeader(oatpp::web::protocol::http::Header::SERVER, serverHeader);
-         response->putHeader(oatpp::web::protocol::http::Header::CONNECTION, oatpp::web::protocol::http::Header::Value::CONNECTION_CLOSE);
+   for (auto& msg : stacktrace.stack)
+      stream << "  - " << msg << "\n";
 
-         for (const auto& pair : headers.getAll())
-         {
-            response->putHeader_Unsafe(pair.first, pair.second);
-         }
+   auto response = oatpp::web::protocol::http::outgoing::Response::createShared
+      (stacktrace.status, oatpp::web::protocol::http::outgoing::BufferBody::createShared(stream.toString()));
 
-         return response;
-      }
-   } //namespace oatppServer
-} //namespace web
+   response->putHeaderIfNotExists(oatpp::web::protocol::http::Header::SERVER, serverHeader);
+   response->putHeaderIfNotExists(oatpp::web::protocol::http::Header::CONNECTION, oatpp::web::protocol::http::Header::Value::CONNECTION_CLOSE);
+
+   for (const auto& [key, value] : stacktrace.headers.getAll())
+      response->putHeader_Unsafe(key, value);
+
+   return response;
+}

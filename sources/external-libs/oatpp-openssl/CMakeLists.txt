@@ -14,7 +14,6 @@ list(APPEND OATPP_OPENSSL_BUILD_ARGS "-DOATPP_MSVC_LINK_STATIC_RUNTIME=ON")
 if(NOT WIN32)
    list(APPEND OATPP_OPENSSL_BUILD_ARGS "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
 endif()
-list(APPEND OATPP_OPENSSL_BUILD_ARGS "-DCMAKE_POLICY_VERSION_MINIMUM=3.5") # TODO remove when OATPP version will be > 1.3.0
 
 
 if(CMAKE_TOOLCHAIN_FILE)
@@ -64,8 +63,8 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp-openssl_build
    DEPENDS           oatpp_build
-   GIT_REPOSITORY    https://github.com/oatpp/oatpp-openssl.git
-   GIT_TAG           1.3.0-latest
+   GIT_REPOSITORY    https://github.com/Yadoms/oatpp-openssl.git
+   GIT_TAG           9c8f4e9b2d28e96e036d1fdb74ca222a933f2079
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_OPENSSL_PATCH_CMD}   
    PREFIX            ${OATPP_OPENSSL_ROOT}

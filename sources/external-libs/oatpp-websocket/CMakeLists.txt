@@ -15,7 +15,6 @@ list(APPEND OATPP_WEBSOCKET_BUILD_ARGS "-DOATPP_MSVC_LINK_STATIC_RUNTIME=ON")
 if(NOT WIN32)
    list(APPEND OATPP_WEBSOCKET_BUILD_ARGS "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
 endif()
-list(APPEND OATPP_WEBSOCKET_BUILD_ARGS "-DCMAKE_POLICY_VERSION_MINIMUM=3.5") # TODO remove when OATPP version will be > 1.3.0
 
 
 if(CMAKE_TOOLCHAIN_FILE)
@@ -65,8 +64,8 @@ endif(CMAKE_TOOLCHAIN_FILE)
 
 ExternalProject_Add (oatpp-websocket_build
    DEPENDS           oatpp_build
-   GIT_REPOSITORY    https://github.com/oatpp/oatpp-websocket.git
-   GIT_TAG           1.3.0-latest
+   GIT_REPOSITORY    https://github.com/Yadoms/oatpp-websocket.git
+   GIT_TAG           61ff2acc6960f2923b59e0c4a92fb4efe92be324
    GIT_CONFIG        advice.detachedHead=false
    PATCH_COMMAND     ${OATPP_WEBSOCKET_PATCH_CMD}   
    PREFIX            ${OATPP_WEBSOCKET_ROOT}
