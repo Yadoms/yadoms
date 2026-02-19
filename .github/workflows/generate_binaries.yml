@@ -17,13 +17,11 @@ jobs:
       matrix:
         target:
           - name: Linux
-          # TODO ghcr.io/yadoms/build_for_********:latest
-            image: ghcr.io/yadoms/build_for_linux:feature-updateRPiBuild_notSureBestMethod
+            image: ghcr.io/yadoms/build_for_linux:latest
             artifact_prefix: Linux
             privileged: ""
           - name: RaspberryPI (all versions)
-          # TODO ghcr.io/yadoms/build_for_********:latest
-            image: ghcr.io/yadoms/build_for_raspberrypi:feature-updateRPiBuild_notSureBestMethod
+            image: ghcr.io/yadoms/build_for_raspberrypi:latest
             artifact_prefix: RaspberryPI
             privileged: "--privileged"
 

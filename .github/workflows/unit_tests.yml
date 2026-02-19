@@ -30,8 +30,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-# TODO          buildImage: ghcr.io/yadoms/build_for_linux:latest
-          buildImage: ghcr.io/yadoms/build_for_linux:feature-updateRPiBuild_notSureBestMethod
+          buildImage: ghcr.io/yadoms/build_for_linux:latest
           privileged: ${{ matrix.target.privileged }}          
           entrypoint: '/entrypoint_tests.sh'
           
