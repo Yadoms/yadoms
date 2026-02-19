@@ -32,8 +32,8 @@
       },
       "additionalDevices": {
          "type": "section",
-         "defaultValue": "false",
-         "enableWithCheckBox": "true",
+         "defaultValue": false,
+         "enableWithCheckBox": true,
          "checkbox": {
            "defaultValue": false
          },
@@ -42,7 +42,7 @@
                "type": "list",
                "nbItemsMin": "1",
                "nbItemsMax": "10",
-               "allowDuplication": "true",
+               "allowDuplication": true,
                "item": {
                   "type": "section",
                   "name": "",

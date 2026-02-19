@@ -4,12 +4,12 @@
 
 namespace historizers
 {
-   CSpeed::CSpeed(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti)
+   CSpeed::CSpeed(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo& ti)
       : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CSpeed>(name, accessMode, shared::plugin::yPluginApi::EMeasureType::kAbsolute, ti))
    {
    }
 
-   CSpeed::CSpeed(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo &ti)
+   CSpeed::CSpeed(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo& ti)
       : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CSpeed>(name, accessMode, measureType, ti))
    {
    }

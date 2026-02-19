@@ -8,14 +8,15 @@ namespace web
    {
       namespace service
       {
-         class CEventLogger : public IRestService
+         class CEventLogger final : public IRestService
          {
          public:
             explicit CEventLogger(boost::shared_ptr<dataAccessLayer::IEventLogger> dataProvider);
-            virtual ~CEventLogger();
+            ~CEventLogger() override = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
          protected:
@@ -28,6 +29,7 @@ namespace web
          private:
             boost::shared_ptr<dataAccessLayer::IEventLogger> m_dataProvider;
             std::string m_restKeyword;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
          };
       } //namespace service
    } //namespace rest

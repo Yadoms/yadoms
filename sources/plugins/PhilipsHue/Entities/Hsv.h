@@ -2,7 +2,9 @@
 class CHsv
 {
 public:
-   CHsv(unsigned long& hue, unsigned long& saturation, unsigned long& value);
+   CHsv(const unsigned long& hue,
+        const unsigned long& saturation,
+        const unsigned long& value);
    virtual ~CHsv() = default;
 
    const unsigned long& getHue() const;
@@ -14,4 +16,3 @@ private:
    unsigned long m_saturation;
    unsigned long m_value;
 };
-

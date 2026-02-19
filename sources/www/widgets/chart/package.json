@@ -27,7 +27,7 @@
    "configurationSchema": {
       "automaticScale": {
          "type": "bool",
-         "defaultValue": "true"
+         "defaultValue": true
       },
       "interval": {
          "type": "enum",
@@ -54,8 +54,8 @@
       },
       "legends": {
          "type": "section",
-         "defaultValue": "true",
-         "enableWithCheckBox": "true",
+         "defaultValue": true,
+         "enableWithCheckBox": true,
          "checkbox": {
            "defaultValue": true
          },
@@ -73,15 +73,15 @@
       },
       "oneAxis": {
          "type": "section",
-         "defaultValue": "false",
-         "enableWithCheckBox": "true",
+         "defaultValue": false,
+         "enableWithCheckBox": true,
          "checkbox": {
            "defaultValue": false
          },
          "content": {
             "customYAxisMinMax": {
                "type": "section",
-               "enableWithCheckBox": "true",
+               "enableWithCheckBox": true,
                "checkbox": {
                  "defaultValue": false
                },
@@ -104,7 +104,7 @@
          "type": "list",
          "nbItemsMin": "1",
          "nbItemsMax": "3",
-         "allowDuplication": "true",
+         "allowDuplication": true,
          "item": {
             "type": "section",
             "content": {
@@ -123,7 +123,7 @@
                },
                "advancedConfiguration": {
                   "type": "section",
-                  "enableWithCheckBox": "true",
+                  "enableWithCheckBox": true,
                   "checkbox": {
                     "defaultValue": false
                   },
@@ -140,7 +140,7 @@
                            "absolute": "",
                            "relative": ""
                         },
-                        "sort": "true",
+                        "sort": true,
                         "defaultValue": "absolute"
                      },
                      "periodtype": {
@@ -150,7 +150,7 @@
                            "avg": "",
                            "max": ""
                         },
-                        "sort": "false",
+                        "sort": false,
                         "defaultValue": "avg"
                      }
                   }
@@ -162,7 +162,7 @@
                      "bar": "",
                      "arearange": ""
                   },
-                  "sort": "true",
+                  "sort": true,
                   "defaultValue": "line"
                }
             }

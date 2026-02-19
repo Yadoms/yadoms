@@ -13,7 +13,7 @@
   "configurationSchema": {
     "APIKey": {
       "type": "string",
-      "required": "true"
+      "required": true
     }
   },
   "extraQueries": {
@@ -27,6 +27,6 @@
       "iconClass": "glyphicon glyphicon-trash"
     }
   },
-  "supportManuallyDeviceCreation": "false",
-  "supportDeviceRemovedNotification": "false"
+  "supportManuallyDeviceCreation": false,
+  "supportDeviceRemovedNotification": false
 }

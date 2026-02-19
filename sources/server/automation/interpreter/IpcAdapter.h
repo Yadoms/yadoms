@@ -13,20 +13,18 @@ namespace automation
       //--------------------------------------------------------------
       /// \brief	Interpreter IPC adapter, based on message queues
       //--------------------------------------------------------------
-      class CIpcAdapter : public IIpcAdapter
+      class CIpcAdapter final : public IIpcAdapter
       {
       public:
          //--------------------------------------------------------------
          /// \brief	Constructor
-         /// \param[in] interpreterName The interpreter name (for log)
+         /// \param[in] interpreterName   The interpreter name (for log)
+         /// \param[in] apiImplementation Interpreter Api implementation
          //--------------------------------------------------------------
-         CIpcAdapter(const std::string& interpreterName,
+         CIpcAdapter(std::string interpreterName,
                      boost::shared_ptr<shared::script::yInterpreterApi::IYInterpreterApi> apiImplementation);
 
-         //--------------------------------------------------------------
-         /// \brief	Destructor
-         //--------------------------------------------------------------
-         virtual ~CIpcAdapter();
+         ~CIpcAdapter() override;
 
       protected:
          // IIpcAdapter Implementation
@@ -71,7 +69,7 @@ namespace automation
          //--------------------------------------------------------------
          void send(const interpreter_IPC::toInterpreter::msg& pbMsg,
                    boost::function1<bool, const interpreter_IPC::toYadoms::msg&> checkExpectedMessageFunction,
-                   boost::function1<void, const interpreter_IPC::toYadoms::msg&> onReceiveFunction,
+                   const boost::function1<void, const interpreter_IPC::toYadoms::msg&>& onReceiveFunction,
                    const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(30));
 
          //--------------------------------------------------------------
@@ -79,7 +77,7 @@ namespace automation
          /// \param[in] message The message data
          /// \param[in] messageSize The message size
          //--------------------------------------------------------------
-         void processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
+         void processMessage(const boost::shared_ptr<const unsigned char[]>& message, size_t messageSize);
 
          void processNotifyScriptStopped(const interpreter_IPC::toYadoms::NotifiyScriptStopped& notifyScriptStopped) const;
 
@@ -87,8 +85,8 @@ namespace automation
          //--------------------------------------------------------------
          /// \brief	Message queue max message size & number
          //--------------------------------------------------------------
-         static const size_t m_maxMessages;
-         static const size_t m_maxMessageSize;
+         static const size_t MaxMessages;
+         static const size_t MaxMessageSize;
 
          //--------------------------------------------------------------
          /// \brief	Interpreter name

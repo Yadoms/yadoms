@@ -164,7 +164,7 @@ namespace OpenZWave
 
 		string intToString(int x)
 		{
-#if __cplusplus==201103L || __APPLE__
+#if __cplusplus>=201103L || __APPLE__
 			return to_string(x);
 #else
 			std::ostringstream oss;

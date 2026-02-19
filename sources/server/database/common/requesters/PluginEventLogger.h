@@ -12,7 +12,7 @@ namespace database
          //--------------------------------------------------------------
          /// \Brief		   PluginEventLogger requester for SQLite database
          //--------------------------------------------------------------
-         class CPluginEventLogger : public IPluginEventLoggerRequester
+         class CPluginEventLogger final : public IPluginEventLoggerRequester
          {
          public:
             //--------------------------------------------------------------
@@ -21,7 +21,7 @@ namespace database
             //--------------------------------------------------------------
             explicit CPluginEventLogger(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 
-            virtual ~CPluginEventLogger() = default;
+            ~CPluginEventLogger() override = default;
 
             // IPluginEventLoggerRequester implementation
             int addEvent(const std::string& pluginName,

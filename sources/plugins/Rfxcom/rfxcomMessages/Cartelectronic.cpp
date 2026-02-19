@@ -43,7 +43,7 @@ namespace rfxcomMessages
       newKeywords.push_back(m_batteryLevel);
 
       // Remove obsolete keywords
-      for (const auto existingKeyword : existingKeywords)
+      for (const auto& existingKeyword : existingKeywords)
       {
          if (std::find_if(newKeywords.begin(),
                           newKeywords.end(),
@@ -55,7 +55,7 @@ namespace rfxcomMessages
       }
 
       // Create new keywords
-      for (const auto newKeyword : newKeywords)
+      for (const auto& newKeyword : newKeywords)
       {
          if (std::find_if(existingKeywords.begin(),
                           existingKeywords.end(),

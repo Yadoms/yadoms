@@ -12,19 +12,11 @@ namespace database
          //--------------------------------------------------------------
          /// \Brief		   Configuration requester for database
          //--------------------------------------------------------------
-         class CConfiguration : public IConfigurationRequester
+         class CConfiguration final : public IConfigurationRequester
          {
          public:
-            //--------------------------------------------------------------
-            /// \Brief		   Constructor
-            /// \param [in]	databaseRequester: the database requester
-            //--------------------------------------------------------------
             explicit CConfiguration(boost::shared_ptr<IDatabaseRequester> databaseRequester);
-
-            //--------------------------------------------------------------
-            /// \Brief		   Destructor
-            //--------------------------------------------------------------
-            virtual ~CConfiguration();
+            ~CConfiguration() override = default;
 
             // IConfigurationRequester implementation
             boost::shared_ptr<entities::CConfiguration> getConfiguration(const std::string& section) override;

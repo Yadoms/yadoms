@@ -37,13 +37,15 @@ namespace pluginSystem
       /// \param [in]   dataAccessLayer         The database access layer
       /// \param [in]   location                The location
       /// \param [in]   taskScheduler           The task scheduler
+      /// \param [in]   developperMode          Developper mode
       //--------------------------------------------------------------
       CManager(boost::shared_ptr<const IPathProvider> pathProvider,
                const shared::versioning::CSemVer& yadomsVersion,
                const boost::shared_ptr<database::IDataProvider>& dataProvider,
                const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
                boost::shared_ptr<shared::ILocation> location,
-               boost::shared_ptr<task::CScheduler> taskScheduler);
+               boost::shared_ptr<task::CScheduler> taskScheduler,
+               bool developperMode);
 
       //--------------------------------------------------------------
       /// \brief			Destructor
@@ -102,9 +104,10 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief           Get the plugin instances list
+      /// \param [in] systemPluginIncluded Include system internal plugin in answer
       /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<database::entities::CPlugin>> getInstanceList() const;
+      std::vector<boost::shared_ptr<database::entities::CPlugin>> getInstanceList(bool systemPluginIncluded = false) const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
@@ -209,8 +212,7 @@ namespace pluginSystem
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       void postManuallyDeviceCreationRequest(int id,
-                                             boost::shared_ptr<shared::plugin::yPluginApi::
-                                                IManuallyDeviceCreationRequest>& request) const;
+                                             const boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a binding query request to a plugin
@@ -218,7 +220,7 @@ namespace pluginSystem
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       void postBindingQueryRequest(int id,
-                                   boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const;
+                                   const boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a device configuration schema request to a plugin
@@ -310,7 +312,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Shortcut to plugins in database
       //--------------------------------------------------------------
-      boost::shared_ptr<database::IPluginRequester> m_pluginDBTable;
+      boost::shared_ptr<database::IPluginRequester> m_pluginDbTable;
 
       //--------------------------------------------------------------
       /// \brief			Plugin qualifier

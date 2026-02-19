@@ -176,7 +176,7 @@ function ConfigurationManager() {
     loadServerConfiguration = function () {
         var d = new $.Deferred();
 
-        RestEngine.getJson("rest/configuration/server")
+        RestEngine.getJson("rest/configurations/server")
          .done(function (data) {
              serverConfiguration = data;
              d.resolve();
@@ -192,7 +192,7 @@ function ConfigurationManager() {
         if (!serverConfigurationChanged) {
             d.resolve();
         } else {
-            RestEngine.putJson("/rest/configuration/server", {
+            RestEngine.putJson("/rest/configurations/server", {
                     data: JSON.stringify(serverConfiguration)
                 })
                 .done(function () {
@@ -208,7 +208,7 @@ function ConfigurationManager() {
     resetServerConfiguration = function () {
         var d = new $.Deferred();
 
-        RestEngine.putJson("/rest/configuration/server/reset")
+        RestEngine.putJson("/rest/configurations/server/reset")
             .done(function (newConfiguration) {
                 serverConfiguration = newConfiguration;
                 serverConfigurationChanged = false;
@@ -225,7 +225,7 @@ function ConfigurationManager() {
     loadDatabaseVersion = function () {
         var d = new $.Deferred();
 
-        RestEngine.getJson("rest/configuration/databaseVersion")
+        RestEngine.getJson("rest/configurations/databaseVersion")
             .done(function (data) {
                 databaseVersion = data;
                 d.resolve();
@@ -238,9 +238,9 @@ function ConfigurationManager() {
     loadWebClientConfiguration = function () {
         var d = new $.Deferred();
 
-        RestEngine.getJson("rest/configuration/external/webClient")
+        RestEngine.getJson("rest/configurations/external/webClient")
             .done(function (data) {
-                loadedClientConfiguration = JSON.parse(data);
+                loadedClientConfiguration = data;
 
                 // Merge loaded configuration with default one, in case of some new fields not in loaded configuration
                 Object.assign(webClientConfiguration, defaultWebClientConfiguration);
@@ -262,7 +262,7 @@ function ConfigurationManager() {
         if (!webClientConfigurationChanged) {
             d.resolve();
         } else {
-            RestEngine.putJson("/rest/configuration/external/webClient", {
+            RestEngine.putJson("/rest/configurations/external/webClient", {
                     data: JSON.stringify(webClientConfiguration)
                 })
                 .done(function () {

@@ -1,3 +1,6 @@
+### 1.2.2
+* Use new configuration format
+
 ### 1.2.1
 * Security patch on configuration
 

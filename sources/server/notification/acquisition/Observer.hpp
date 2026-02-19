@@ -12,19 +12,20 @@ namespace notification
       //-----------------------------
       ///\brief Observer for acquisition
       //-----------------------------
-      class CObserver : public change::CObserver<CNotification>
+      class CObserver final : public change::CObserver<CNotification>
       {
       public:
          //-----------------------------
          ///\brief Create an observer for any new acquisition on all keywords
          ///\param [in] action The action (what to do when the good notification appears)
          //-----------------------------
-         explicit CObserver(boost::shared_ptr<action::IAction<CNotification>> action)
-            : change::CObserver<CNotification>(notification::change::EChangeType::kCreate,
+         explicit CObserver(const boost::shared_ptr<action::IAction<CNotification>>& action)
+            : change::CObserver<CNotification>(change::EChangeType::kCreate,
                                                action)
          {
          }
 
+         ~CObserver() override = default;
 
          //-----------------------------
          ///\brief Add a keyword id to filter
@@ -33,8 +34,8 @@ namespace notification
          void addKeywordIdFilter(const int keywordId)
          {
             //search the keywordId in list
-            auto findIterator = std::find(m_allowedKeywordId.begin(), m_allowedKeywordId.end(),
-                                          keywordId);
+            const auto findIterator = std::find(m_allowedKeywordId.begin(), m_allowedKeywordId.end(),
+                                                keywordId);
 
             //if keyword is not found, add it to filter
             if (findIterator == m_allowedKeywordId.end())
@@ -48,8 +49,8 @@ namespace notification
          void resetKeywordIdFilter(const std::vector<int>& keywordsToListen)
          {
             clearKeywordIdFilter();
-            for (auto it = keywordsToListen.begin(); it != keywordsToListen.end(); ++it)
-               addKeywordIdFilter(*it);
+            for (const int it : keywordsToListen)
+               addKeywordIdFilter(it);
          }
 
          //-----------------------------
@@ -59,9 +60,9 @@ namespace notification
          void removeKeywordIdFilter(const int keywordId)
          {
             //search the keywordId in list
-            auto findIterator = std::find(m_allowedKeywordId.begin(),
-                                          m_allowedKeywordId.end(),
-                                          keywordId);
+            const auto findIterator = std::find(m_allowedKeywordId.begin(),
+                                                m_allowedKeywordId.end(),
+                                                keywordId);
 
             //if keywordId is found, remove it
             if (findIterator != m_allowedKeywordId.end())
@@ -77,18 +78,11 @@ namespace notification
          }
 
 
-         //-----------------------------
-         ///\brief Destructor
-         //-----------------------------
-         virtual ~CObserver()
-         {
-         }
-
          //IObserver implementation
          void observe(const boost::shared_ptr<INotification> n) override
          {
             //check notification is good type
-            auto notif = boost::dynamic_pointer_cast<CNotification>(n);
+            const auto notif = boost::dynamic_pointer_cast<CNotification>(n);
             if (notif)
             {
                //check keyword id is not filtered
@@ -106,9 +100,6 @@ namespace notification
          // [END] - IObserver implementation
 
       private:
-         //-----------------------------
-         ///\brief Destructor
-         //-----------------------------
          std::vector<int> m_allowedKeywordId;
       };
    } // namespace acquisition

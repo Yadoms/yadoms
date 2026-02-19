@@ -1,7 +1,9 @@
 ﻿#include "stdafx.h"
 #include "HueControl.h"
 
-CHueControl::CHueControl(int minDimLevel, int maxLumen, const std::string& colorGamutType,
+CHueControl::CHueControl(int minDimLevel,
+                         int maxLumen,
+                         const std::string& colorGamutType,
                          const CHueColorGamut& colorGamut,
                          const CHueCt& ct)
    : m_minDimLevel(minDimLevel),
@@ -37,7 +39,7 @@ const std::string& CHueControl::getColorGamutType() const
    return m_colorGamutType;
 }
 
-void CHueControl::setColorGamutType(std::string colorGamutType)
+void CHueControl::setColorGamutType(const std::string& colorGamutType)
 {
    m_colorGamutType = colorGamutType;
 }
@@ -47,7 +49,7 @@ const CHueColorGamut& CHueControl::getColorGamut() const
    return m_colorGamut;
 }
 
-void CHueControl::setColorGamut(CHueColorGamut& colorGamut)
+void CHueControl::setColorGamut(const CHueColorGamut& colorGamut)
 {
    m_colorGamut = colorGamut;
 }
@@ -57,7 +59,7 @@ const CHueCt& CHueControl::getCt() const
    return m_ct;
 }
 
-void CHueControl::setCt(CHueCt& ct)
+void CHueControl::setCt(const CHueCt& ct)
 {
    m_ct = ct;
 }

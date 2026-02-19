@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "PluginEventLogger.h"
-
 #include <utility>
-#include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/Result.h"
+
+#include "web/poco/RestDispatcherHelpers.hpp"
+#include "web/poco/RestResult.h"
 
 namespace web
 {
@@ -22,9 +22,20 @@ namespace web
             return m_restKeyword;
          }
 
-         void CPluginEventLogger::configureDispatcher(CRestDispatcher& dispatcher)
+         void CPluginEventLogger::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*"), CPluginEventLogger::getLogsForPluginName);
+         }
+
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CPluginEventLogger::endPoints()
+         {
+            if (m_endPoints != nullptr)
+               return m_endPoints;
+
+            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
+            //TODO (lorsque l'EventLogger sera refactoré)
+
+            return m_endPoints;
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CPluginEventLogger::getLogsForPluginName(
@@ -34,7 +45,7 @@ namespace web
             boost::posix_time::ptime fromDate;
 
             if (parameters.empty())
-               return CResult::GenerateError("Need plugin name");
+               return poco::CRestResult::GenerateError("Need plugin name");
 
             const auto pluginName = parameters[1];
 
@@ -45,7 +56,7 @@ namespace web
 
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), dvList);
-            return CResult::GenerateSuccess(collection);
+            return poco::CRestResult::GenerateSuccess(collection);
          }
       } //namespace service
    } //namespace rest

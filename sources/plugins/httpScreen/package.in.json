@@ -27,13 +27,13 @@
 		},
 		"screenWidth" : {
 		  "type" : "int",
-		  "defaultValue" : "250",
-		  "minimumValue" : "1"
+		  "defaultValue" : 250,
+		  "minimumValue" : 1
 		},
 		"screenHeight" : {
 		  "type" : "int",
-		  "defaultValue" : "122",
-		  "minimumValue" : "1"
+		  "defaultValue" : 122,
+		  "minimumValue" : 1
 		}
       }
     }

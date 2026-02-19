@@ -31,7 +31,7 @@
       },
       "customYAxisMinMax": {
          "type": "section",
-         "enableWithCheckBox": "true",
+         "enableWithCheckBox": true,
          "checkbox": {
            "defaultValue": false
          },

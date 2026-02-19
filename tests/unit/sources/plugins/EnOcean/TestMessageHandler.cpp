@@ -11,7 +11,7 @@
 #include "shared/currentTime/DefaultCurrentTimeMock.h"
 
 
-class CFakeMessage : public message::CEsp3SendPacket
+class CFakeMessage final : public message::CEsp3SendPacket
 {
 public:
    CFakeMessage()
@@ -19,7 +19,7 @@ public:
    {
    }
 
-   virtual ~CFakeMessage() = default;
+   ~CFakeMessage() override = default;
 };
 
 BOOST_AUTO_TEST_SUITE(TestMessageHandler)
@@ -29,11 +29,11 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       shared::event::CEventHandler evtHandler;
       enum
       {
-         kDataReceived = shared::event::kUserFirstId
+         KDataReceived = shared::event::kUserFirstId
       };
       CMessageHandler messageHandler(boost::make_shared<CAsyncPortMock>(),
                                      evtHandler,
-                                     kDataReceived,
+                                     KDataReceived,
                                      boost::make_shared<CBufferLoggerMock>());
 
       BOOST_CHECK(evtHandler.empty()) ;
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       messageHandler.onReceived(message);
 
       // Check that received message was transmitted to event handler by the message handler
-      BOOST_CHECK(evtHandler.waitForEvents(boost::date_time::min_date_time) == kDataReceived) ;
+      BOOST_CHECK(evtHandler.waitForEvents(boost::date_time::min_date_time) == KDataReceived) ;
       BOOST_CHECK(evtHandler.getEventData<boost::shared_ptr<const message::CEsp3ReceivedPacket>>() == message) ;
    }
 
@@ -81,16 +81,16 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
 
    BOOST_AUTO_TEST_CASE(TestNominalSendAndReceive)
    {
-      auto timeProviderMock = useTimeMock();
+      const auto timeProviderMock = useTimeMock();
       auto portMock = boost::make_shared<CAsyncPortMock>();
       shared::event::CEventHandler mainEvtHandler;
       enum
       {
-         kDataReceived = shared::event::kUserFirstId
+         KDataReceived = shared::event::kUserFirstId
       };
       auto messageHandler = boost::make_shared<CMessageHandler>(portMock,
                                                                 mainEvtHandler,
-                                                                kDataReceived,
+                                                                KDataReceived,
                                                                 boost::make_shared<CBufferLoggerMock>());
 
       BOOST_CHECK(mainEvtHandler.empty()) ;
@@ -105,11 +105,11 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
 
       // Send the message and process answer
       const auto sendSuccess = messageHandler->send(request,
-                                                    [](boost::shared_ptr<const message::CEsp3ReceivedPacket>)
+                                                    [](const boost::shared_ptr<const message::CEsp3ReceivedPacket>&)
                                                     {
                                                        return true;
                                                     },
-                                                    [&answer](boost::shared_ptr<const message::CEsp3ReceivedPacket> receivedAnswer)
+                                                    [&answer](const boost::shared_ptr<const message::CEsp3ReceivedPacket> receivedAnswer)
                                                     {
                                                        // Check that received message was transmitted as answer
                                                        BOOST_TEST_CHECK(receivedAnswer->buffer() == answer->buffer(), boost::test_tools::per_element()
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       // Check that sent message through message handler was really transmitted to port
       BOOST_CHECK_EQUAL(portMock->m_lastSendBuffer->size(), request.buffer()->size()) ;
       {
-         auto vector1 = portMock->m_lastSendBuffer;
+         const auto vector1 = portMock->m_lastSendBuffer;
          auto vector2 = *request.buffer();
          auto idx1 = vector1->begin();
          auto idx2 = vector2.begin();
@@ -143,17 +143,17 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
 
    BOOST_AUTO_TEST_CASE(TestSendAndTimeoutWhenReceive)
    {
-      auto timeProviderMock = useTimeMock();
+      const auto timeProviderMock = useTimeMock();
       auto portMock = boost::make_shared<CAsyncPortMock>();
       shared::event::CEventHandler mainEvtHandler;
       enum
       {
-         kDataReceived = shared::event::kUserFirstId
+         KDataReceived = shared::event::kUserFirstId
       };
-      auto messageHandler = boost::make_shared<CMessageHandler>(portMock,
-                                                                mainEvtHandler,
-                                                                kDataReceived,
-                                                                boost::make_shared<CBufferLoggerMock>());
+      const auto messageHandler = boost::make_shared<CMessageHandler>(portMock,
+                                                                      mainEvtHandler,
+                                                                      KDataReceived,
+                                                                      boost::make_shared<CBufferLoggerMock>());
 
       BOOST_CHECK(mainEvtHandler.empty()) ;
 

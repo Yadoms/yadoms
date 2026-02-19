@@ -13,7 +13,7 @@ namespace historizers
       ///\param[in] accessMode      The access mode
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CDistance(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti);
+      CDistance(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo& ti);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

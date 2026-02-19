@@ -6,30 +6,24 @@ namespace task
    //------------------------------
    ///\brief Class which handle generic task
    //------------------------------
-   class CGenericTask : public ITask
+   class CGenericTask final : public ITask
    {
    public:
-
-      //------------------------------
-      ///\brief The function pointer for task worker
-      //------------------------------
-      typedef boost::function1<void, TaskProgressFunc> TaskFunc;
-
       //------------------------------
       ///\brief                  Constructor
       ///\param [in] name        The task name (ie: yadoms.update)
-      ///\param [in] pFunctor    The function pointer to use (task real content)
+      ///\param [in] taskFct     The function to use (task real content)
       //------------------------------      
-      CGenericTask(const std::string& name, TaskFunc pFunctor);
+      CGenericTask(std::string name,
+                   std::function<void(TaskProgressFunc)> taskFct);
 
-      //------------------------------
-      ///\brief Destructor
-      //------------------------------        
-      virtual ~CGenericTask();
+      ~CGenericTask() override = default;
 
       // ITask implementation
-      const std::string& getName() const override;
-      void doWork(TaskProgressFunc pFunctor) override;
+      std::string getName() override;
+      void doWork(TaskProgressFunc reportProgressFct) override;
+      void onSetTaskId(const std::string& taskId) override;
+      bool isCancellable() const override;
       // ITask implementation
 
    private:
@@ -41,8 +35,6 @@ namespace task
       //------------------------------
       ///\brief The function pointer to use (task real content)
       //------------------------------         
-      TaskFunc m_pFunctor;
+      std::function<void(TaskProgressFunc)> m_taskFct;
    };
 } //namespace task
-
-

@@ -3,6 +3,7 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "../../../automation/IRuleManager.h"
+#include "web/poco/RestDispatcher.h"
 
 namespace web
 {
@@ -10,59 +11,73 @@ namespace web
    {
       namespace service
       {
-         class CAutomationRule : public IRestService
+         class CAutomationRule final : public IRestService
          {
          public:
             CAutomationRule(boost::shared_ptr<database::IDataProvider> dataProvider,
                             boost::shared_ptr<automation::IRuleManager> rulesManager);
-            virtual ~CAutomationRule() = default;
+            ~CAutomationRule() override = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
+         private:
             static const std::string& getRestKeyword();
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllInterpreters(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllInterpretersV1(const std::vector<std::string>& parameters,
                                                                                            const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAvailableInterpreters(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAvailableInterpretersV1(const std::vector<std::string>& parameters,
                                                                                                  const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllRules(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllRulesV1(const std::vector<std::string>& parameters,
                                                                                     const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getRule(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getRuleV1(const std::vector<std::string>& parameters,
                                                                                 const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getRuleCode(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getRuleCodeV1(const std::vector<std::string>& parameters,
                                                                                     const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getRuleCodeTemplate(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getRuleCodeTemplateV1(const std::vector<std::string>& parameters,
                                                                                             const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getRuleLog(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getRuleLogV1(const std::vector<std::string>& parameters,
                                                                                    const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> deleteRuleLog(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteRuleLogV1(const std::vector<std::string>& parameters,
                                                                                       const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> startRule(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> startRuleV1(const std::vector<std::string>& parameters,
                                                                                   const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> stopRule(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> stopRuleV1(const std::vector<std::string>& parameters,
                                                                                  const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> createRule(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> createRuleV1(const std::vector<std::string>& parameters,
                                                                                    const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> updateRule(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateRuleV1(const std::vector<std::string>& parameters,
                                                                                    const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> updateRuleCode(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateRuleCodeV1(const std::vector<std::string>& parameters,
                                                                                        const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> deleteRule(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteRuleV1(const std::vector<std::string>& parameters,
                                                                                    const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> duplicateRule(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> duplicateRuleV1(const std::vector<std::string>& parameters,
                                                                                       const std::string& requestContent) const;
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
                                                                                             const std::vector<std::string>& parameters,
                                                                                             const std::string& requestContent) const;
 
-         private:
+            boost::shared_ptr<IAnswer> getInterpretersV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getCodeTemplateV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getInterpreterIcon(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getRulesV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getRuleLogV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> createRuleV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updateRuleV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deleteRuleV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deleteRuleLogV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> startRuleV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> stopRuleV2(const boost::shared_ptr<IRequest>& request) const;
+
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<automation::IRuleManager> m_rulesManager;
-            static const std::string m_restKeyword;
-            static const std::string m_restSubKeywordInterpreter;
-            static const std::string m_restSubKeywordRule;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
+            static const std::string RestKeyword;
+            static const std::string RestSubKeywordInterpreter;
+            static const std::string RestSubKeywordRule;
          };
       } //namespace service
    } //namespace rest

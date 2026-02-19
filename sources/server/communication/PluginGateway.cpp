@@ -1,5 +1,7 @@
 ﻿#include "stdafx.h"
 #include "PluginGateway.h"
+
+#include <utility>
 #include "pluginSystem/DeviceCommand.h"
 #include "pluginSystem/ExtraQuery.h"
 #include "pluginSystem/ManuallyDeviceCreationRequest.h"
@@ -15,13 +17,9 @@ namespace communication
    CPluginGateway::CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider,
                                   boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
                                   boost::shared_ptr<pluginSystem::CManager> pluginManager)
-      : m_dataProvider(dataProvider),
-        m_pluginManager(pluginManager),
-        m_acquisitionHistorizer(acquisitionHistorizer)
-   {
-   }
-
-   CPluginGateway::~CPluginGateway()
+      : m_dataProvider(std::move(dataProvider)),
+        m_pluginManager(std::move(pluginManager)),
+        m_acquisitionHistorizer(std::move(acquisitionHistorizer))
    {
    }
 
@@ -29,7 +27,7 @@ namespace communication
                                                 const std::string& body)
    {
       auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
-      auto device = m_dataProvider->getDeviceRequester()->getDevice(keyword->DeviceId);
+      const auto device = m_dataProvider->getDeviceRequester()->getDevice(keyword->DeviceId);
 
       if (keyword->AccessMode() != shared::plugin::yPluginApi::EKeywordAccessMode::kGetSetValue)
       {
@@ -51,7 +49,7 @@ namespace communication
    std::string CPluginGateway::sendExtraQueryAsync(int pluginId, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data)
    {
       // Create the query
-      const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery(boost::make_shared<pluginSystem::CExtraQuery>(data));
+      const auto extraQuery(boost::make_shared<pluginSystem::CExtraQuery>(data));
 
       // Dispatch query to the right plugin
       return m_pluginManager->postExtraQuery(pluginId, extraQuery);
@@ -63,8 +61,9 @@ namespace communication
                                                           callback::ISynchronousCallback<std::string>& callback)
    {
       // Create the request
-      boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request(boost::make_shared<pluginSystem::CManuallyDeviceCreationRequest>(data,
-                                                                                                                                                             callback));
+      const boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request(
+         boost::make_shared<pluginSystem::CManuallyDeviceCreationRequest>(data,
+                                                                          callback));
 
       // Dispatch command to the right plugin
       m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
@@ -75,8 +74,8 @@ namespace communication
                                                 callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback)
    {
       // Create the request
-      boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request(boost::make_shared<pluginSystem::CBindingQueryRequest>(data,
-                                                                                                                                         callback));
+      const boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request(boost::make_shared<pluginSystem::CBindingQueryRequest>(data,
+         callback));
 
       // Dispatch command to the right plugin
       m_pluginManager->postBindingQueryRequest(pluginId, request);
@@ -96,5 +95,3 @@ namespace communication
                                                   configuration);
    }
 } //namespace communication
-
-

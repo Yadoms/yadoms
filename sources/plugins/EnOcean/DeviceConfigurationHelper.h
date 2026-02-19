@@ -5,12 +5,12 @@
 //--------------------------------------------------------------
 /// \brief	Device configuration helper
 //--------------------------------------------------------------
-class CDeviceConfigurationHelper
+class CDeviceConfigurationHelper final
 {
 public:
    CDeviceConfigurationHelper(const CProfileHelper& profile,
                               const std::string& manufacturerName);
-   virtual ~CDeviceConfigurationHelper();
+   ~CDeviceConfigurationHelper() = default;
 
    const boost::shared_ptr<shared::CDataContainer>& configuration() const;
 

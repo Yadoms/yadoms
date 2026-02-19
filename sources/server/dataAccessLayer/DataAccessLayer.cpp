@@ -19,10 +19,6 @@ namespace dataAccessLayer
    {
    }
 
-   CDataAccessLayer::~CDataAccessLayer()
-   {
-   }
-
    boost::shared_ptr<IDeviceManager> CDataAccessLayer::getDeviceManager() const
    {
       return m_deviceManager;
@@ -48,5 +44,3 @@ namespace dataAccessLayer
       return m_eventLogger;
    }
 } //namespace dataAccessLayer 
-
-

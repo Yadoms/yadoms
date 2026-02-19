@@ -26,7 +26,7 @@ namespace shared
          ///\brief Constructor
          ///\param[in] major       the major version number (when you make incompatible API changes,)
          ///\param[in] minor       the minor version number (when you add functionality in a backwards-compatible manner)
-         ///\param[in] patch       the patch version number (when you make backwards-compatible bug fixes)
+         ///\param[in] patch       the patch version number (when you make backwards-compatible fixes)
          //---------------------------------------------
          CSemVer(int major, int minor, int patch);
 
@@ -34,7 +34,7 @@ namespace shared
          ///\brief Constructor
          ///\param[in] major          the major version number (when you make incompatible API changes,)
          ///\param[in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
-         ///\param[in] patch          the patch version number (when you make backwards-compatible bug fixes)
+         ///\param[in] patch          the patch version number (when you make backwards-compatible fixes)
          ///\param[in] prerelease     the prerelease information
          //---------------------------------------------
          CSemVer(int major, int minor, int patch, const std::string& prerelease);
@@ -43,7 +43,7 @@ namespace shared
          ///\brief Constructor
          ///\param[in] major          the major version number (when you make incompatible API changes,)
          ///\param[in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
-         ///\param[in] patch          the patch version number (when you make backwards-compatible bug fixes)
+         ///\param[in] patch          the patch version number (when you make backwards-compatible fixes)
          ///\param[in] prerelease     the prerelease information
          ///\param[in] buildMetadata  the build metadata
          //---------------------------------------------
@@ -91,7 +91,7 @@ namespace shared
          //---------------------------------------------
          ///\brief Operator to print out version to a stream
          ///\param [in] oss the target stream
-         ///\param [rhs] rhs  the version object to serialize
+         ///\param [out] rhs  the version object to serialize
          ///\return  the target stream
          //---------------------------------------------
          friend std::ostream& operator<<(std::ostream& oss, const CSemVer& rhs);

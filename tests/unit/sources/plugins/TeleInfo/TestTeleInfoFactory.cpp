@@ -8,18 +8,16 @@
 // Includes needed to compile tested classes
 #include "TeleInfoFactory.h"
 
-namespace yApi = shared::plugin::yPluginApi;
-
 BOOST_AUTO_TEST_SUITE(TestTeleInfoFactory)
 
-   BOOST_AUTO_TEST_CASE(creation_FTDI_Driver)
+   BOOST_AUTO_TEST_CASE(CreationFtdiDriver)
    {
       const auto configuration = boost::make_shared<TeleInfoConfigurationMock>();
-      const auto evtPortConnection = 100;
-      const auto evtPortDataReceived = 101;
-      const auto isDeveloperMode = false;
+      constexpr auto evtPortConnection = 100;
+      constexpr auto evtPortDataReceived = 101;
+      constexpr auto isDeveloperMode = false;
 
-      auto api(boost::make_shared<CDefaultYPluginApiMock>());
+      const auto api(boost::make_shared<CDefaultYPluginApiMock>());
 
       const auto receiveBufferHandler = CTeleInfoFactory::GetBufferHandler(api->getEventHandler(),
                                                                            evtPortDataReceived,

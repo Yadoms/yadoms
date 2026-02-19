@@ -1,255 +1,238 @@
 #pragma once
 #include "exception/Exception.hpp"
-#include <stdarg.h>
+#include <cstdarg>
 #include <Poco/Types.h>
-#include <string>
+#include <ostream>
 #include <string_view>
 #include <vector>
 
 namespace shared
 {
-	//
-	/// \brief Static class that provide converters from const char * to data type 
-	//
-	class CStringExtension
-	{
-	public:
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Formatting methods
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		static std::string format(const char* szFormat, va_list& arg_ptr)
-		{
-			char c;
-			auto nSize = vsnprintf(&c, 1, szFormat, arg_ptr);
-			auto str = static_cast<char*>(malloc(sizeof(char) * (nSize + 1)));
-			vsnprintf(str, nSize + 1, szFormat, arg_ptr);
-			std::string result(str);
+   //
+   /// \brief Static class that provide converters from const char * to data type 
+   //
+   class CStringExtension
+   {
+   public:
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Formatting methods
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      static std::string format(const char* szFormat, va_list& argPtr)
+      {
+         char c;
+         const auto nSize = vsnprintf(&c, 1, szFormat, argPtr);
+         const auto str = static_cast<char*>(malloc(sizeof(char) * (nSize + 1)));
+         vsnprintf(str, nSize + 1, szFormat, argPtr);
+         std::string result(str);
 
-			return result;
-		}
+         return result;
+      }
 
-		static std::string format(const char* szFormat, ...)
-		{
-			std::string stringResult;
+      static std::string format(const char* szFormat, ...)
+      {
+         va_list args;
+         va_start(args, szFormat);
+         const std::string stringResult = format(szFormat, args);
+         va_end(args);
 
-			va_list args;
-			va_start(args, szFormat);
-			stringResult = format(szFormat, args);
-			va_end(args);
+         return stringResult;
+      }
 
-			return stringResult;
-		}
+      static std::string removeEol(const std::string& line)
+      {
+         const auto len = line.size();
 
-		static std::string removeEol(const std::string& line)
-		{
-			auto len = line.size();
+         if (len > 1 && line[len - 2] == '\r' && line[len - 1] == '\n')
+            return line.substr(0, len - 2);
+         if (len > 0 && (line[len - 1] == '\r' || line[len - 1] == '\n'))
+            return line.substr(0, len - 1);
 
-			if (len > 1 && line[len - 2] == '\r' && line[len - 1] == '\n')
-				return line.substr(0, len - 2);
-			if (len > 0 && (line[len - 1] == '\r' || line[len - 1] == '\n'))
-				return line.substr(0, len - 1);
+         return line;
+      }
 
-			return line;
-		}
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Parsing methods which use std::stringstream
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Parsing methods which use std::stringstream
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //Essaie de parser la chaine dans le type attendu et le renvoie
+      //si ko une exception est levee
+      //il est possible de specifier une base en 2eme parametre facultatif
+      template <class T>
+      static T parse(const std::string& s, std::ios_base& (*f)(std::ios_base&))
+      {
+         T result;
+         if (!tryParse(s, result, f))
+            throw exception::CException("Unable to parse " + s);
+         return result;
+      }
 
-		 //Essaie de parser la chaine dans le type attendu et le renvoie
-		 //si ko une exception est levee
-		 //il est possible de specifier une base en 2eme parametre facultatif
-		template <class T>
-		static T parse(const std::string& s, std::ios_base& (*f)(std::ios_base&))
-		{
-			T result;
-			if (!tryParse(s, result, f))
-				throw exception::CException("Unable to parse " + s);
-			return result;
-		}
-
-		//Essaie de parser la chaine dans le type attendu et le renvoie
-		//si ko une exception est levee
-		//il est possible de specifier une base en 2eme parametre facultatif
-		template <class T>
-		static T parse(const char* s, std::ios_base& (*f)(std::ios_base&))
-		{
-			std::string str(s);
-			return parse<T>(str, f);
-		}
+      //Essaie de parser la chaine dans le type attendu et le renvoie
+      //si ko une exception est levee
+      //il est possible de specifier une base en 2eme parametre facultatif
+      template <class T>
+      static T parse(const char* s, std::ios_base& (*f)(std::ios_base&))
+      {
+         const std::string str(s);
+         return parse<T>(str, f);
+      }
 
 
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Parsing methods
+      // Special case for gcc, template specialization need to be declared outside the class ;-(
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Parsing methods
-		// Special case for gcc, template specialization need to be declared outside the class ;-(
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		//
-		/// \brief        parse a string into the templated type using boost::lexical_cast
-		/// \param [in]   value : the string to parse
-		/// \template     T : the type of the parse result 
-		/// \return       the string parsed into the templated type
-		//
-		template<class T>
-		static T parse(const char* value);
+      //
+      /// \brief        parse a string into the templated type using boost::lexical_cast
+      /// \param [in]   value : the string to parse
+      /// \template     T : the type of the parse result 
+      /// \return       the string parsed into the templated type
+      //
+      template <class T>
+      static T parse(const char* value);
 
 
-		//
-		/// \brief               To string converter : used to convert data to string, locale-independently
-		/// \param[in] value     Value to convert
-		/// \return              Converted value, using the C locale
-		//
-		template<typename T>
-		static std::string cultureInvariantToString(const T& value);
+      //
+      /// \brief               To string converter : used to convert data to string, locale-independently
+      /// \param[in] value     Value to convert
+      /// \return              Converted value, using the C locale
+      //
+      template <typename T>
+      static std::string cultureInvariantToString(const T& value);
 
-		//
-		/// \brief        Split a string with any of provided separators (equivalent of boost::split)
-		/// \param [in]   input : the string to split
-		/// \param [in]   seps : the separators
-		/// \return       A vector of separated strings
-		//
-		static std::vector<std::string> splitAnyOfAndCompress(std::string_view input,
-															  std::string_view seps)
-		{
-			std::vector<std::string> result;
-			std::string token;
+      //
+      /// \brief        Split a string with any of provided separators (equivalent of boost::split)
+      /// \param [in]   input : the string to split
+      /// \param [in]   seps : the separators
+      /// \return       A vector of separated strings
+      //
+      static std::vector<std::string> splitAnyOfAndCompress(std::string_view input,
+                                                            std::string_view seps);
 
-			auto is_sep = [&](char c) {
-				return seps.find(c) != std::string_view::npos;
-				};
 
-			for (char c : input)
-			{
-				if (is_sep(c))
-				{
-					if (!token.empty())
-					{
-						result.push_back(std::move(token));
-						token.clear();
-					}
-				}
-				else
-				{
-					token += c;
-				}
-			}
+      /// @brief Trim string at beginning and end (in place)
+      /// @param input Input string containing keys to replace
+      /// @param replacements Map containing replacement strings
+      /// @param keyEncapsulationStartToken Token starting the key in input string
+      /// @param keyEncapsulationendToken Token ending the key in input string
+      /// @example :
+      /// input = "Replace {{first}} and {{second}} in my string"
+      /// replacement = { { "first": "value1" }, { "second": "value2" } }
+      /// ==> returns "Replace value1 and value2 in my string"
+      static std::string replaceValues(const std::string& input,
+                                       const std::map<std::string, std::string>& replacements,
+                                       const std::string& keyEncapsulationStartToken = "{{",
+                                       const std::string& keyEncapsulationendToken = "}}");
 
-			if (!token.empty())
-				result.push_back(std::move(token));
+      //
+      /// \brief        Replace all occurences of subtring in a string
+      /// \param [in]   input : the main string
+      /// \param [in]   from : the subtring to replace
+      /// \param [in]   to : the subtring to replace with
+      /// \return       A vector of separated strings
+      //
+      static std::string replaceAllSubstrings(const std::string& input,
+                                              const std::string& from,
+                                              const std::string& to)
+      {
+         if (from.empty())
+            return input;
 
-			return result;
-		}
+         std::string result;
+         std::size_t start = 0;
+         std::size_t pos;
 
-		//
-		/// \brief        Replace all occurences of subtring in a string
-		/// \param [in]   input : the main string
-		/// \param [in]   from : the subtring to replace
-		/// \param [in]   to : the subtring to replace with
-		/// \return       A vector of separated strings
-		//
-		static std::string replaceAllSubstrings(const std::string& input,
-												const std::string& from,
-												const std::string& to)
-		{
-			if (from.empty())
-				return input;
+         while ((pos = input.find(from, start)) != std::string::npos) {
+            result.append(input, start, pos - start);
+            result.append(to);
+            start = pos + from.length();
+         }
 
-			std::string result;
-			std::size_t start = 0;
-			std::size_t pos;
+         result.append(input, start);
+         return result;
+      }
+   };
 
-			while ((pos = input.find(from, start)) != std::string::npos) {
-				result.append(input, start, pos - start);
-				result.append(to);
-				start = pos + from.length();
-			}
+   /////////////////////////////////////////////////////////////////////////////////////////////////////////
+   /////////////////////////////////////////////////////////////////////////////////////////////////////////
+   /////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // Special case for gcc, template specialization need to be declared outside the class ;-(
+   /////////////////////////////////////////////////////////////////////////////////////////////////////////
+   /////////////////////////////////////////////////////////////////////////////////////////////////////////
+   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			result.append(input, start);
-			return result;
-		}
-	};
+   template <class T>
+   T CStringExtension::parse(const char* value)
+   {
+      return boost::lexical_cast<T>(value);
+   }
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Special case for gcc, template specialization need to be declared outside the class ;-(
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+   template <>
+   inline double CStringExtension::parse(const char* value)
+   {
+      return atof(value);
+   }
 
-	template<class T>
-	T CStringExtension::parse(const char* value)
-	{
-		return boost::lexical_cast<T>(value);
-	}
+   template <>
+   inline float CStringExtension::parse(const char* value)
+   {
+      return static_cast<float>(atof(value));
+   }
 
-	template<>
-	inline double CStringExtension::parse(const char* value)
-	{
-		return atof(value);
-	}
+   template <>
+   inline int CStringExtension::parse(const char* value)
+   {
+      return atoi(value);
+   }
 
-	template<>
-	inline float CStringExtension::parse(const char* value)
-	{
-		return static_cast<float>(atof(value));
-	}
+   template <>
+   inline long CStringExtension::parse(const char* value)
+   {
+      return atol(value);
+   }
 
-	template<>
-	inline int CStringExtension::parse(const char* value)
-	{
-		return atoi(value);
-	}
+   template <>
+   inline std::string CStringExtension::parse(const char* value)
+   {
+      return value;
+   }
 
-	template<>
-	inline long CStringExtension::parse(const char* value)
-	{
-		return atol(value);
-	}
+   template <>
+   inline bool CStringExtension::parse(const char* value)
+   {
+      std::istringstream iss(value);
+      auto result = false;
+      iss >> std::boolalpha >> result;
+      return result;
+   }
 
-	template<>
-	inline std::string CStringExtension::parse(const char* value)
-	{
-		return value;
-	}
+   template <typename T>
+   std::string CStringExtension::cultureInvariantToString(const T& value)
+   {
+      std::ostringstream ss;
+      ss.imbue(std::locale::classic()); // Use the C locale 
+      ss << value;
+      return ss.str();
+   }
 
-	template<>
-	inline bool CStringExtension::parse(const char* value)
-	{
-		std::istringstream iss(value);
-		auto result = false;
-		iss >> std::boolalpha >> result;
-		return result;
-	}
-
-	template<typename T>
-	std::string CStringExtension::cultureInvariantToString(const T& value)
-	{
-		std::ostringstream ss;
-		ss.imbue(std::locale::classic()); // Use the C locale 
-		ss << value;
-		return ss.str();
-	}
-
-	template<>
-	inline std::string CStringExtension::cultureInvariantToString(const std::uint8_t& value)
-	{
-		std::ostringstream ss;
-		ss.imbue(std::locale::classic()); // Use the C locale 
-		ss << static_cast<int>(value);
-		return ss.str();
-	}
+   template <>
+   inline std::string CStringExtension::cultureInvariantToString(const std::uint8_t& value)
+   {
+      std::ostringstream ss;
+      ss.imbue(std::locale::classic()); // Use the C locale 
+      ss << static_cast<int>(value);
+      return ss.str();
+   }
 } // namespace shared

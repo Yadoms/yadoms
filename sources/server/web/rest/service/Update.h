@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include "IRestService.h"
-#include "update/UpdateManager.h"
-#include <shared/enumeration/EnumHelpers.hpp>
+#include "update/IUpdateManager.h"
+#include "task/Scheduler.h"
+#include "task/IRunningTaskMutex.h"
 
 namespace web
 {
@@ -18,126 +19,82 @@ namespace web
             //-----------------------------------------------------------------------------
             /// \brief  Constructor
             /// \param [in] updateManager   The update manager
+            /// \param [in] taskScheduler   The task scheduler
             //-----------------------------------------------------------------------------      
-            explicit CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager);
+            explicit CUpdate(boost::shared_ptr<update::IUpdateManager> updateManager,
+                             boost::shared_ptr<task::CScheduler> taskScheduler);
             ~CUpdate() override = default;
 
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
-            //-----------------------------------------------------------------------------
-            /// \brief  Get the REST keyword
-            /// \return The REST keyword
-            //-----------------------------------------------------------------------------      
-            static const std::string& getRestKeyword();
          private:
-            boost::shared_ptr<shared::serialization::IDataSerializable> scanForUpdates(const std::vector<std::string>& parameters,
+            static const std::string& getRestKeyword();
+
+            boost::shared_ptr<shared::serialization::IDataSerializable> availableUpdatesV1(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateYadomsV1(const std::vector<std::string>& parameters,
                                                                                        const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> availableUpdates(const std::vector<std::string>& parameters,
-                                                                                         const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateWidgetV1(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> installWidgetV1(const std::vector<std::string>& parameters,
+                                                                                        const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> removeWidgetV1(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updatePluginV1(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> installPluginV1(const std::vector<std::string>& parameters,
+                                                                                        const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> removePluginV1(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateScriptInterpreterV1(const std::vector<std::string>& parameters,
+                                                                                                  const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> installScriptInterpreterV1(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> removeScriptInterpreterV1(const std::vector<std::string>& parameters,
+                                                                                                  const std::string& requestContent) const;
 
-            //-----------------------------------------------------------------------------
-            /// \brief  Update Yadoms to another version (upgrade or downgrade)
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            boost::shared_ptr<shared::serialization::IDataSerializable> updateYadoms(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
+            std::string findYadomsPackageUrl(const std::string& version) const;
+            std::pair<bool, std::string> findComponentPackageUrl(const std::string& componentTag,
+                                                                 const std::string& componentName,
+                                                                 const std::string& version) const;
 
-            //-----------------------------------------------------------------------------
-            /// \brief  Update a widget to another version (upgrade or downgrade)
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------   
-            boost::shared_ptr<shared::serialization::IDataSerializable> updateWidget(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
+            static void extractVersions(const boost::shared_ptr<shared::CDataContainer>& updates,
+                                        const std::string& path);
+            static void extractComponentVersions(const boost::shared_ptr<shared::CDataContainer>& updates,
+                                                 const std::string& componentTag);
+            static boost::shared_ptr<shared::CDataContainer> formatUpdates(const boost::shared_ptr<shared::CDataContainer>& availableUpdates);
+            boost::shared_ptr<IAnswer> forceCheckForUpdatesV2(const boost::shared_ptr<IRequest>& request) const;
 
-            //-----------------------------------------------------------------------------
-            /// \brief  Install a new widget
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------    
-            boost::shared_ptr<shared::serialization::IDataSerializable> installWidget(const std::vector<std::string>& parameters,
-                                                                                      const std::string& requestContent) const;
+            boost::shared_ptr<IAnswer> getAvailableUpdatesV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updateYadomsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updateComponentV2(
+               const std::string& componentName,
+               std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>>& updateComponentsInProgressTaskUidHandler,
+               const std::function<std::string()>& updateTask) const;
+            boost::shared_ptr<IAnswer> removeComponentV2(
+               const std::string& componentName,
+               std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>>& updateComponentsInProgressTaskUidHandler,
+               const std::function<std::string()>& removeTask) const;
+            boost::shared_ptr<IAnswer> updatePluginV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> removePluginV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> updateWidgetV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> removeWidgetV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> updateScriptInterpreterV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> removeScriptInterpreterV2(const boost::shared_ptr<IRequest>& request);
 
-            //-----------------------------------------------------------------------------
-            /// \brief  Remove a widget
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------   
-            boost::shared_ptr<shared::serialization::IDataSerializable> removeWidget(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
+            boost::shared_ptr<update::IUpdateManager> m_updateManager;
+            boost::shared_ptr<task::CScheduler> m_taskScheduler;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
 
-            //-----------------------------------------------------------------------------
-            /// \brief  Update a plugin to another version (upgrade or downgrade)
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            boost::shared_ptr<shared::serialization::IDataSerializable> updatePlugin(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
-
-            //-----------------------------------------------------------------------------
-            /// \brief  Install a new plugin
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            boost::shared_ptr<shared::serialization::IDataSerializable> installPlugin(const std::vector<std::string>& parameters,
-                                                                                      const std::string& requestContent) const;
-
-            //-----------------------------------------------------------------------------
-            /// \brief  Remove a plugin
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            boost::shared_ptr<shared::serialization::IDataSerializable> removePlugin(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
-
-            //-----------------------------------------------------------------------------
-            /// \brief  Update a scriptInterpreter to another version (upgrade or downgrade)
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            boost::shared_ptr<shared::serialization::IDataSerializable> updateScriptInterpreter(const std::vector<std::string>& parameters,
-                                                                                                const std::string& requestContent) const;
-
-            //-----------------------------------------------------------------------------
-            /// \brief  Install a new scriptInterpreter
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            boost::shared_ptr<shared::serialization::IDataSerializable> installScriptInterpreter(const std::vector<std::string>& parameters,
-                                                                                                 const std::string& requestContent) const;
-
-            //-----------------------------------------------------------------------------
-            /// \brief  Remove a scriptInterpreter
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            boost::shared_ptr<shared::serialization::IDataSerializable> removeScriptInterpreter(const std::vector<std::string>& parameters,
-                                                                                                const std::string& requestContent) const;
-
-
-            //-----------------------------------------------------------------------------
-            /// \brief  The dependancies
-            //-----------------------------------------------------------------------------         
-            boost::shared_ptr<update::CUpdateManager> m_updateManager;
-
-            //-----------------------------------------------------------------------------
-            /// \brief  The rest keyword
-            //-----------------------------------------------------------------------------         
             static std::string m_restKeyword;
+            boost::shared_ptr<task::IRunningTaskMutex> m_updateYadomsInProgressTaskUidHandler;
+            std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>> m_updatePluginsInProgressTaskUidHandler;
+            std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>> m_updateWidgetsInProgressTaskUidHandler;
+            std::map<std::string, boost::shared_ptr<task::IRunningTaskMutex>> m_updateScriptInterpretersInProgressTaskUidHandler;
          };
       } //namespace service
    } //namespace rest

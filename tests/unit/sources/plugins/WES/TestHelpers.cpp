@@ -6,7 +6,7 @@
 
 BOOST_AUTO_TEST_SUITE(TestHelpers)
 
-   BOOST_AUTO_TEST_CASE(checkRevision)
+   BOOST_AUTO_TEST_CASE(CheckRevision)
    {
 	  BOOST_CHECK_THROW(equipments::checkRevision(std::string("V0.70"));, std::exception);
 	  BOOST_CHECK_THROW(equipments::checkRevision(std::string("V0.83G")); , CtooLowRevisionException);

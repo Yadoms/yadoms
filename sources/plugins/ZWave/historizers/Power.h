@@ -13,7 +13,7 @@ namespace historizers
       ///\param[in] accessMode      The access mode
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CPower(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti);
+      CPower(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo& ti);
 
       //-----------------------------------------------------
       ///\brief                     Constructor
@@ -22,7 +22,7 @@ namespace historizers
       ///\param[in] measureType     The measure type (normally kAbsolute)
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CPower(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo &ti);
+      CPower(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo& ti);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

@@ -18,7 +18,7 @@ namespace shared
          ///\param [in] message     Message associated to current step
          ///\param [in] progress    Current progress value (0 to 1)
          //---------------------------------
-         typedef std::function<void(const std::string& message, float progress)> onProgressFunc;
+         typedef std::function<void(const std::string& message, float progress)> OnProgressFunc;
 
          //---------------------------------
          ///\brief Download a file
@@ -29,7 +29,7 @@ namespace shared
          //---------------------------------
          static boost::filesystem::path downloadFile(const std::string& url,
                                                      const boost::filesystem::path& location,
-                                                     onProgressFunc reporter);
+                                                     OnProgressFunc reporter);
 
          //---------------------------------
          ///\brief Download a file and check MD5 hash
@@ -45,7 +45,7 @@ namespace shared
          static boost::filesystem::path downloadFileAndVerify(const std::string& url,
                                                               const boost::filesystem::path& location,
                                                               const std::string& md5HashExpected,
-                                                              onProgressFunc reporter);
+                                                              OnProgressFunc reporter);
       };
    } //namespace http
 } //namespace shared

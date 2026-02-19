@@ -15,23 +15,22 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	IFactory implementation
    //--------------------------------------------------------------
-   class CFactory : public IFactory
+   class CFactory final : public IFactory
    {
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
       /// \param[in] pathProvider      The path provider
       /// \param[in] yadomsVersion     The Yadoms version
-      /// \param[in] locationProvider  The location provider
+      /// \param[in] location          The location provider
+      /// \param[in] developerMode     Developper mode enable
       //--------------------------------------------------------------
       CFactory(boost::shared_ptr<const IPathProvider> pathProvider,
                const shared::versioning::CSemVer& yadomsVersion,
-               const boost::shared_ptr<shared::ILocation> locationProvider);
+               const boost::shared_ptr<shared::ILocation>& location,
+               bool developerMode);
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~CFactory() = default;
+      ~CFactory() override = default;
 
       // IFactory Implementation
       AvailablePluginMap findAvailablePlugins() const override;
@@ -48,8 +47,8 @@ namespace pluginSystem
    private:
       boost::shared_ptr<IInstance> createInternalPluginInstance(
          boost::shared_ptr<const database::entities::CPlugin> instanceData,
-         boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+         const boost::shared_ptr<database::IDataProvider>& dataProvider,
+         const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
          boost::shared_ptr<IQualifier> qualifier,
          boost::function1<void, int> onPluginsStoppedFct) const;
 
@@ -58,7 +57,7 @@ namespace pluginSystem
 
 
       boost::shared_ptr<shared::process::ICommandLine> createCommandLine(
-         boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+         const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
          const std::string& messageQueueId) const;
 
       boost::shared_ptr<shared::process::IExternalProcessLogger> createLogger(const std::string& loggerName) const;
@@ -66,8 +65,8 @@ namespace pluginSystem
       boost::shared_ptr<CInstanceStateHandler> createInstanceStateHandler(
          boost::shared_ptr<const database::entities::CPlugin> instanceData,
          boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-         boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+         const boost::shared_ptr<database::IDataProvider>& dataProvider,
+         const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
          boost::shared_ptr<IQualifier> qualifier,
          boost::function1<void, int> onPluginsStoppedFct) const;
 
@@ -81,7 +80,7 @@ namespace pluginSystem
          boost::shared_ptr<const database::entities::CPlugin> instanceData,
          boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
          boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const;
+         const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer) const;
 
       boost::shared_ptr<IIpcAdapter> createInstanceRunningContext(
          boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
@@ -96,5 +95,6 @@ namespace pluginSystem
       const shared::versioning::CSemVer m_yadomsVersion;
       boost::shared_ptr<const IPathProvider> m_pathProvider;
       const boost::shared_ptr<const shared::ILocation> m_location;
+      const bool m_developerMode;
    };
 } // namespace pluginSystem

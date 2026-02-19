@@ -2,37 +2,63 @@
 
 #include "entities/Entities.h"
 
-namespace database { 
-
+namespace database
+{
    class IRecipientRequester
    {
    public:
+      virtual ~IRecipientRequester() = default;
+
       //--------------------------------------------------------------
       /// \brief                    Add a new recipient
       /// \param [in] recipient     Recipient data
       /// \return                   The created recipient
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CRecipient> addRecipient(const entities::CRecipient & recipient) = 0;
+      virtual boost::shared_ptr<entities::CRecipient> addRecipient(const entities::CRecipient& recipient) = 0;
 
       //--------------------------------------------------------------
-      /// \brief                    Udpate a recipient
+      /// \brief                    Create a new recipient
+      /// \param [in] recipient     Recipient data
+      /// \return                   The created recipient ID
+      //--------------------------------------------------------------
+      virtual int createRecipient(const entities::CRecipient& recipient) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                    Update a recipient
       /// \param [in] recipient     Recipient data
       /// \return                   The updated recipient
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CRecipient> updateRecipient(const entities::CRecipient & recipient) = 0;
-   
+      virtual boost::shared_ptr<entities::CRecipient> updateRecipient(const entities::CRecipient& recipient) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                    Update a recipient
+      /// \param [in] recipient     Recipient data
+      //--------------------------------------------------------------
+      virtual void updateRecipientV2(const entities::CRecipient& recipient) = 0;
+
       //--------------------------------------------------------------
       /// \brief           List all recipients
       /// \return          List of registered recipients
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CRecipient> > getRecipients() = 0;
+      virtual std::vector<boost::shared_ptr<entities::CRecipient>> getRecipients() = 0;
+
+      //--------------------------------------------------------------
+      ///\brief                           Find a recipient from a specific field value
+      ///\param [in] recipientId          The recipient ID
+      ///\param [in] firstName            The first name to search recipient
+      ///\param [in] lastName             The last name to search recipient
+      ///\return                          Found recipients
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CRecipient>> getRecipients(const boost::optional<int>& recipientId,
+                                                                                 const boost::optional<std::string>& firstName,
+                                                                                 const boost::optional<std::string>& lastName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                    Get one recipient
       /// \param [in] recipientId   Recipient id
       /// \return                   The specified recipient
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CRecipient> getRecipient(const int recipientId) = 0;
+      virtual boost::shared_ptr<entities::CRecipient> getRecipient(int recipientId) = 0;
 
       //--------------------------------------------------------------
       /// \brief                    Get one recipient from first and last name
@@ -40,15 +66,16 @@ namespace database {
       /// \param [in] lastName      Recipient last name
       /// \return                   The specified recipient
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CRecipient> getRecipient(const std::string & firstName, const std::string & lastName) = 0;
-      
+      virtual boost::shared_ptr<entities::CRecipient> getRecipient(const std::string& firstName,
+                                                                   const std::string& lastName) = 0;
+
       //--------------------------------------------------------------
       /// \brief                    Check is a recipient exists
       /// \param [in] firstName     Recipient first name
       /// \param [in] lastName      Recipient last name
       /// \return                   true if recipient exists
       //--------------------------------------------------------------
-      virtual bool exists(const std::string & firstName, const std::string & lastName) = 0;
+      virtual bool exists(const std::string& firstName, const std::string& lastName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                    Check if a recipient exists
@@ -80,10 +107,16 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief                    Create a new field
       /// \param [in] field         The field data
-      /// \return                   The created field
       /// \throw                    shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CRecipientField> createField(const entities::CRecipientField& field) = 0;
+      virtual void createField(const entities::CRecipientField& field) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                    Update field
+      /// \param [in] field         The field data
+      /// \throw                    shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateField(const entities::CRecipientField& field) = 0;
 
       //--------------------------------------------------------------
       ///\brief                           Find a recipient from a specific field value
@@ -91,28 +124,31 @@ namespace database {
       ///\param [in] expectedFieldValue   The expected field value
       ///\return                          The found recipients containing this field with this value
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CRecipient> > findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CRecipient>> findRecipientsFromField(const std::string& fieldName,
+                                                                                           const std::string& expectedFieldValue) = 0;
 
       //--------------------------------------------------------------
       ///\brief                           Get all existing fields
       ///\return                          The fields list
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CRecipientField> > getFields() = 0;
+      virtual std::vector<boost::shared_ptr<entities::CRecipientField>> getFields() = 0;
+
+      //--------------------------------------------------------------
+      ///\brief                           Get all existing fields
+      ///\param [in] recipientId          Filter by recipient ID
+      ///\param [in] pluginType           Filter by plugin type
+      ///\param [in] fieldName            Filter by field name
+      ///\return                          The fields list
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CRecipientField>> getFields(const boost::optional<int>& recipientId,
+                                                                                  const boost::optional<std::string>& pluginType,
+                                                                                  const boost::optional<std::string>& fieldName) = 0;
 
       //--------------------------------------------------------------
       ///\brief                           Get all the fields with specific name
       ///\param [in] fieldName            The field name ("mobile", "email", etc...)
       ///\return                          A fields list
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CRecipientField> > getFieldsByName(const std::string& fieldName) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~IRecipientRequester()
-      {
-      }
+      virtual std::vector<boost::shared_ptr<entities::CRecipientField>> getFieldsByName(const std::string& fieldName) = 0;
    };
-
- 
 } //namespace database 

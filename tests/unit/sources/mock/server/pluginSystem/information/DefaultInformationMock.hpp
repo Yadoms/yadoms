@@ -1,78 +1,102 @@
+#pragma once
 // Includes needed to compile tested classes
 #include "../../../../../../../sources/shared/shared/plugin/information/IInformation.h"
 
-class CDefaultInformationMock : public shared::plugin::information::IInformation
+class CDefaultInformationMock final : public shared::plugin::information::IInformation
 {
 public:
-   virtual ~CDefaultInformationMock()
-   {
-   }
+    ~CDefaultInformationMock() override = default;
 
-   // shared::plugin::IInformation implementation
-   const std::string& getType() const override
-   {
-      static const std::string str("mock");
-      return str;
-   }
+    CDefaultInformationMock() = default;
+    CDefaultInformationMock(const CDefaultInformationMock&) = delete;
+    CDefaultInformationMock(CDefaultInformationMock&&) = delete;
+    CDefaultInformationMock& operator=(const CDefaultInformationMock&) = delete;
+    CDefaultInformationMock& operator=(CDefaultInformationMock&&) = delete;
 
-   const shared::versioning::CSemVer& getVersion() const override
-   {
-      static const shared::versioning::CSemVer version("1.2.3-beta");
-      return version;
-   }
+    // shared::plugin::IInformation implementation
+    const std::string& getType() const override
+    {
+        static const std::string Str("mock");
+        return Str;
+    }
 
-   const std::string& getAuthor() const override
-   {
-      static const std::string str("YadomsTeam");
-      return str;
-   }
+    const shared::versioning::CSemVer& getVersion() const override
+    {
+        static const shared::versioning::CSemVer Version("1.2.3-beta");
+        return Version;
+    }
 
-   const std::string& getUrl() const override
-   {
-      static const std::string str("www.yadoms.com");
-      return str;
-   }
+    const std::string& getAuthor() const override
+    {
+        static const std::string Str("YadomsTeam");
+        return Str;
+    }
 
-   std::string getIdentity() const override
-   {
-      std::ostringstream formatedInformations;
-      formatedInformations << getType() << " v" << getVersion();
-      return formatedInformations.str();
-   }
+    const std::string& getUrl() const override
+    {
+        static const std::string Str("www.yadoms.com");
+        return Str;
+    }
 
-   std::string toString() const override
-   {
-      std::ostringstream formatedInformations;
-      formatedInformations << getIdentity() << " by " << getAuthor() << " (" << getUrl() << ")";
-      return formatedInformations.str();
-   }
+    std::string getIdentity() const override
+    {
+        std::ostringstream formattedInformation;
+        formattedInformation << getType() << " v" << getVersion();
+        return formattedInformation.str();
+    }
 
-   bool isSupportedOnThisPlatform() const override
-   {
-      return true;
-   }
+    std::string toString() const override
+    {
+        std::ostringstream formattedInformation;
+        formattedInformation << getIdentity() << " by " << getAuthor() << " (" << getUrl() << ")";
+        return formattedInformation.str();
+    }
 
-   bool getSupportManuallyCreatedDevice() const override
-   {
-      return false;
-   } 
-   
-   bool getSupportDeviceRemovedNotification() const override
-   {
-      return false;
-   }
+    bool isSupportedOnThisPlatform() const override
+    {
+        return true;
+    }
 
-   boost::shared_ptr<const shared::CDataContainer> getPackage() const override
-   {
-      return boost::shared_ptr<const shared::CDataContainer>();
-   }
+    bool getSupportManuallyCreatedDevice() const override
+    {
+        return false;
+    }
 
-   const boost::filesystem::path& getPath() const override
-   {
-      static boost::filesystem::path emptyPath;
-      return emptyPath;
-   }
+    bool getSupportDeviceRemovedNotification() const override
+    {
+        return false;
+    }
 
-   // [END] shared::plugin::IInformation implementation
+    boost::shared_ptr<const shared::CDataContainer> getPackage() const override
+    {
+        return {};
+    }
+
+    const boost::filesystem::path& getPath() const override
+    {
+        static boost::filesystem::path emptyPath; // NOLINT(clang-diagnostic-unique-object-duplication)
+        return emptyPath;
+    }
+
+    boost::shared_ptr<const shared::CDataContainer> getConfigurationSchema() const override
+    {
+        return {};
+    }
+
+    boost::shared_ptr<const shared::CDataContainer> getLabels(const std::vector<std::string>& locales) const override
+    {
+        return {};
+    }
+
+    boost::shared_ptr<const shared::CDataContainer> getDeviceStaticConfigurationSchema() const override
+    {
+        return {};
+    }
+
+    boost::shared_ptr<const shared::CDataContainer> getDeviceDynamicConfigurationSchema() const override
+    {
+        return {};
+    }
+
+    // [END] shared::plugin::IInformation implementation
 };
-

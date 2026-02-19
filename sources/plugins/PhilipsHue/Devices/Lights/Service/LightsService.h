@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../../Utils/HueLightsResponseType.h"
-#include "../../../Entities/HueState.h"
-#include "../../../Entities/HueSwUpdate.h"
+#include <map>
+#include <boost/asio.hpp>
+#include "../../../UrlManager.h"
 #include "../../../Entities/HueCapabilities.h"
 #include "../../../Entities/HueConfig.h"
-#include "../../../UrlManager.h"
+#include "../../../Entities/HueState.h"
+#include "../../../Entities/HueSwUpdate.h"
 #include "../../Interfaces/ILightsService.h"
 
 #include <boost/asio/io_context.hpp>

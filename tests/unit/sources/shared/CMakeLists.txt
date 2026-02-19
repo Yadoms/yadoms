@@ -7,8 +7,6 @@ IF(NOT DISABLE_TEST_DATACONTAINER)
       shared/shared/Log.cpp
       shared/shared/logInternal/LogStreamEnhanced.h
       shared/shared/logInternal/LogStreamEnhanced.cpp
-	   server/web/rest/Result.h
-	   server/web/rest/Result.cpp
    )
    ADD_SOURCES(TestDataContainer.cpp)
    
@@ -24,8 +22,19 @@ IF(NOT DISABLE_TEST_SEMVER)
    
 ENDIF()
 
+#dd current directory tests
+IF(NOT DISABLE_TEST_STRINGEXTENSION)
+   ADD_YADOMS_SOURCES(
+      shared/shared/StringExtension.h
+      shared/shared/StringExtension.cpp
+   )
+   ADD_SOURCES(TestStringExtension.cpp)
+   
+ENDIF()
+
 # List subdirectories here
 add_subdirectory(communication)
+add_subdirectory(dateTime)
 add_subdirectory(event)
 add_subdirectory(http)
 add_subdirectory(plugin)

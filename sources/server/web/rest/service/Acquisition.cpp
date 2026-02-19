@@ -1,11 +1,11 @@
 ﻿#include "stdafx.h"
 #include "Acquisition.h"
-#include "web/rest/Result.h"
-#include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/RestDispatcher.h"
+#include "web/poco/RestResult.h"
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include <utility>
+
+#include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/rest/StringContainer.h"
 
 namespace web
@@ -22,7 +22,7 @@ namespace web
          {
          }
 
-         void CAcquisition::configureDispatcher(CRestDispatcher& dispatcher)
+         void CAcquisition::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("keyword")("lastdata"),
                                         CAcquisition::getKeywordListLastData);
@@ -84,6 +84,17 @@ namespace web
             //get keyword data between two dates
          }
 
+         boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CAcquisition::endPoints()
+         {
+            if (m_endPoints != nullptr)
+               return m_endPoints;
+
+            // No end point for this service
+            m_endPoints = boost::make_shared<std::vector<boost::shared_ptr<IRestEndPoint>>>();
+
+            return m_endPoints;
+         }
+
          const std::string& CAcquisition::getRestKeyword()
          {
             return m_restKeyword;
@@ -101,17 +112,17 @@ namespace web
                   shared::CDataContainer result;
                   readKeywordInfo(keywordId, "lastValue", result);
 
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
-               return CResult::GenerateError("invalid parameter.");
+               return poco::CRestResult::GenerateError("invalid parameter.");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving one acquisition");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -239,15 +250,15 @@ namespace web
                   result.set(std::to_string(keywordId),
                              keywordResult);
                }
-               return CResult::GenerateSuccess(result);
+               return poco::CRestResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving one acquisition");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -281,19 +292,19 @@ namespace web
                         result.set(std::to_string(keywordId),
                                    keywordResult);
                      }
-                     return CResult::GenerateSuccess(result);
+                     return poco::CRestResult::GenerateSuccess(result);
                   }
-                  return CResult::GenerateError("invalid parameter. Can not retrieve keywords in request content");
+                  return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve keywords in request content");
                }
-               return CResult::GenerateError("invalid parameter.");
+               return poco::CRestResult::GenerateError("invalid parameter.");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving one acquisition");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -316,22 +327,22 @@ namespace web
                      timeFrom = boost::posix_time::from_iso_string(parameters[3]);
 
                   if (parameters.size() > 4)
-                     timeTo = boost::posix_time::from_iso_string(parameters[4]);                  
+                     timeTo = boost::posix_time::from_iso_string(parameters[4]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordData(keywordId,
-                                                                                                           timeFrom,
-                                                                                                           timeTo);
+                     timeFrom,
+                     timeTo);
                   return boost::make_shared<CStringContainer>(allData);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading device data");
+               return poco::CRestResult::GenerateError("unknown exception in reading device data");
             }
          }
 
@@ -359,17 +370,17 @@ namespace web
                   result.set(std::to_string(keywordId),
                              keywordResult);
 
-                  return CResult::GenerateSuccess(result);
+                  return poco::CRestResult::GenerateSuccess(result);
                }
-               return CResult::GenerateError("invalid parameter.");
+               return poco::CRestResult::GenerateError("invalid parameter.");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retrieving one acquisition");
+               return poco::CRestResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -395,19 +406,19 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByHour(keywordId,
-                                                                                                           timeFrom,
-                                                                                                           timeTo);
+                     timeFrom,
+                     timeTo);
                   return boost::make_shared<CStringContainer>(allData);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading device data by day");
+               return poco::CRestResult::GenerateError("unknown exception in reading device data by day");
             }
          }
 
@@ -434,19 +445,19 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByDay(keywordId,
-                                                                                                          timeFrom,
-                                                                                                          timeTo);
+                     timeFrom,
+                     timeTo);
                   return boost::make_shared<CStringContainer>(allData);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading device data by day");
+               return poco::CRestResult::GenerateError("unknown exception in reading device data by day");
             }
          }
 
@@ -473,19 +484,19 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByMonth(keywordId,
-                                                                                                            timeFrom,
-                                                                                                            timeTo);
+                     timeFrom,
+                     timeTo);
                   return boost::make_shared<CStringContainer>(allData);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading device data by month");
+               return poco::CRestResult::GenerateError("unknown exception in reading device data by month");
             }
          }
 
@@ -512,19 +523,19 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByYear(keywordId,
-                                                                                                           timeFrom,
-                                                                                                           timeTo);
+                     timeFrom,
+                     timeTo);
                   return boost::make_shared<CStringContainer>(allData);
                }
-               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
+               return poco::CRestResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
-               return CResult::GenerateError(ex);
+               return poco::CRestResult::GenerateError(ex);
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in reading device data by year");
+               return poco::CRestResult::GenerateError("unknown exception in reading device data by year");
             }
          }
       } //namespace service

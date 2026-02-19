@@ -8,23 +8,23 @@
 #include <shared/Log.h>
 
 DECLARE_ENUM_IMPLEMENTATION(EChannel,
-   ((Channel1))
-   ((Channel2))
-   ((Channel3))
-   ((Channel4))
-   ((Channel5))
+                            ((Channel1))
+                            ((Channel2))
+                            ((Channel3))
+                            ((Channel4))
+                            ((Channel5))
 );
 
 IMPLEMENT_PLUGIN(CSomfySituo)
 #define STX 0x02
 #define ETX 0x03
 
-inline int ctoi(const char c)
+inline int Ctoi(const char c)
 {
    return c - 48;
 }
 
-inline char itoc(const int i)
+inline char Itoc(const int i)
 {
    return static_cast<char>(i) + 48;
 }
@@ -43,7 +43,7 @@ enum
 
 
 const std::string CSomfySituo::DeviceName("SituoAdapter");
-const std::map<std::string, int> CSomfySituo::m_somfyModels = {{"Situo1", 1}, {"Situo5", 5}};
+const std::map<std::string, int> CSomfySituo::SomfyModels = {{"Situo1", 1}, {"Situo5", 5}};
 
 CSomfySituo::CSomfySituo()
    : m_logger(boost::make_shared<shared::communication::CAsciiBufferLogger>("trace")),
@@ -70,7 +70,7 @@ void CSomfySituo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_configuration.initializeWith(api->getConfiguration());
 
    // Create the buffer handler
-   m_ReceiveBufferHandler = CSomfySituoFactory::GetBufferHandler(api->getEventHandler(),
+   m_receiveBufferHandler = CSomfySituoFactory::GetBufferHandler(api->getEventHandler(),
                                                                  kEvtPortDataReceived,
                                                                  false);
 
@@ -89,7 +89,7 @@ void CSomfySituo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
+void CSomfySituo::manageEvents(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    // Wait for an event
    switch (api->getEventHandler().waitForEvents())
@@ -103,7 +103,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
    case yApi::IYPluginApi::kEventDeviceCommand:
       {
          // Command received from Yadoms
-         auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+         const auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
          YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command);
          if (boost::iequals(command->getKeyword(), m_curtain->getKeyword()))
          {
@@ -120,7 +120,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          // Configuration was updated
          api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-         auto newConfigurationData = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
+         const auto newConfigurationData = api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>();
          YADOMS_LOG(information) << "Update configuration...";
          BOOST_ASSERT(!newConfigurationData->empty());
          // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
@@ -130,7 +130,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
          newConfiguration.initializeWith(newConfigurationData);
 
          // If port has changed, destroy and recreate connection (if any)
-         auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
+         const auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
 
          if (needToReconnect)
             destroyConnection();
@@ -148,11 +148,11 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
    case yApi::IYPluginApi::kBindingQuery:
       {
          // Yadoms ask for a binding query 
-         auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
+         const auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
          if (request->getData().getQuery() == "channels")
          {
             std::vector<std::string> allDevices = api->getAllDevices();
-            boost::shared_ptr<shared::CDataContainer> ev = shared::CDataContainer::make();
+            const boost::shared_ptr<shared::CDataContainer> ev = shared::CDataContainer::make();
             for (std::string& str : api->getAllDevices())
             {
                if (str.find(DeviceName) != std::string::npos)
@@ -164,7 +164,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
          else
          {
             // Receive an unsupported query (is your package.json synchronized with the code ?)
-            auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
+            const auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
             request->sendError(errorMessage);
             YADOMS_LOG(error) << errorMessage;
          }
@@ -173,7 +173,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
    case yApi::IYPluginApi::kEventExtraQuery:
       {
          // Command was received from Yadoms
-         auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
+         const auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
          if (extraQuery)
          {
             if (extraQuery->getData()->query() == "progChannel")
@@ -202,13 +202,12 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
          else
          {
             YADOMS_LOG(error) << "Invalid extra-query";
-            extraQuery->sendError("invalid paramerter");
          }
          break;
       }
    case kEvtPortConnection:
       {
-         auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::
+         const auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::
             CAsyncPortConnectionNotification>>();
 
          if (notif && notif->isConnected())
@@ -224,7 +223,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
          m_logger->logReceived(buffer);
 
          // Message are in ASCII format
-         std::string message(reinterpret_cast<const char*>(buffer.begin()), buffer.size());
+         const std::string message(reinterpret_cast<const char*>(buffer.begin()), buffer.size());
          YADOMS_LOG(information) << "buffer received from controller : " << message;
          processDataReceived(api, message);
          break;
@@ -248,14 +247,14 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CSomfySituo::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
+void CSomfySituo::createConnection(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
    // Create the port instance
    m_port = CSomfySituoFactory::constructPort(m_configuration,
                                               api->getEventHandler(),
-                                              m_ReceiveBufferHandler,
+                                              m_receiveBufferHandler,
                                               kEvtPortConnection);
    m_port->start();
 }
@@ -281,7 +280,7 @@ void CSomfySituo::send(const std::string& message,
    for (unsigned int i = 0; i < message.size(); i++)
       messageToSend.push_back(message[i]);
    messageToSend.push_back(ETX); // footer
-   shared::communication::CByteBuffer buffer(messageToSend);
+   const shared::communication::CByteBuffer buffer(messageToSend);
 
    send(buffer, needAnswer);
 }
@@ -309,7 +308,7 @@ void CSomfySituo::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
       YADOMS_LOG(information) << "Command not send (Controler is not ready) : " << command;
 
    // Get Device number
-   int channelToActivate = ctoi(device[device.length() - 1]);
+   const int channelToActivate = Ctoi(device[device.length() - 1]);
 
    // Managet he command
    switch (m_curtain->get())
@@ -328,7 +327,7 @@ void CSomfySituo::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CSomfySituo::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CSomfySituo::processConnectionEvent(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    YADOMS_LOG(information) << "Controler port opened";
 
@@ -350,7 +349,7 @@ void CSomfySituo::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> ap
    }
 }
 
-void CSomfySituo::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
+void CSomfySituo::protocolErrorProcess(const boost::shared_ptr<yApi::IYPluginApi>& api)
 {
    if (m_protocolErrorCounter <= 3)
    {
@@ -366,9 +365,8 @@ void CSomfySituo::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
                                       boost::posix_time::seconds(30));
 }
 
-void CSomfySituo::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>
-                                           notification)
+void CSomfySituo::processUnConnectionEvent(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                                           const boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>& notification)
 {
    YADOMS_LOG(information) << "Controler connection was lost";
    if (notification)
@@ -426,13 +424,13 @@ void CSomfySituo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
             }
             else
             {
-               if (ctoi(message[1]) > 0)
+               if (Ctoi(message[1]) > 0)
                {
-                  m_activeChannel = ctoi(message[1]);
+                  m_activeChannel = Ctoi(message[1]);
                   m_channelSleep = false;
                   YADOMS_LOG(information) << "Active channel : " << m_activeChannel;
                }
-               else //the Led's is off. We don't care.
+               else //the LED is off. We don't care.
                {
                   m_channelSleep = true;
                }
@@ -447,7 +445,7 @@ void CSomfySituo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                YADOMS_LOG(information) << "Configuration : " << &message[1];
             break;
          }
-      case 'u': // get a ack of the command
+      case 'u': // get ack of the command
       case 'U':
       case 'd':
       case 'D':
@@ -456,7 +454,7 @@ void CSomfySituo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
       case 'p':
       case 'P':
          {
-            //do nothing, it was just a ack;
+            //do nothing, it was just ack;
             break;
          }
       default:
@@ -488,7 +486,7 @@ void CSomfySituo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 void CSomfySituo::sendConfigCmd(ConfigSituo conf, int value)
 {
    std::ostringstream cmd;
-   cmd << 'C' << conf << value;
+   cmd << 'C' << static_cast<char>(conf) << value;
    m_protocolErrorCounter = 0;
    send(cmd.str(), true);
 }
@@ -575,13 +573,13 @@ void CSomfySituo::sendQuickProgCmd(int chan)
    send(cmd.str(), true);
 }
 
-void CSomfySituo::processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> api,
+void CSomfySituo::processReceivedInformation(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                              const boost::tokenizer<boost::char_separator<char>>& tokens) const
 {
    auto itToken = tokens.begin();
-   auto model(*itToken);
+   const auto model(*itToken);
    ++itToken;
-   auto version(*itToken);
+   const auto version(*itToken);
 
    YADOMS_LOG(information) << "Controler Informations :";
    YADOMS_LOG(information) << "   model   : " << &model[1];
@@ -591,16 +589,17 @@ void CSomfySituo::processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi
 }
 
 
-void CSomfySituo::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                const std::string& model, const std::string& version) const
+void CSomfySituo::declareDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                                const std::string& model,
+                                const std::string& version) const
 {
    int numberOfChannel = 0;
    // Declare device/keywords if necessary
-   for (std::map<std::string, int>::const_iterator it = m_somfyModels.begin(); it != m_somfyModels.end(); ++it)
-      if (boost::iequals(it->first, model))
-         numberOfChannel = it->second;
+   for (const auto& knownModel : SomfyModels)
+      if (boost::iequals(knownModel.first, model))
+         numberOfChannel = knownModel.second;
 
-   auto deviceModel = model + std::string(" ") + version;
+   const auto deviceModel = model + std::string(" ") + version;
    if (numberOfChannel > 0)
    {
       for (int i = 1; i <= numberOfChannel; i++)

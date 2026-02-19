@@ -4,6 +4,8 @@
 #include "database/IDataProvider.h"
 #include "pluginSystem/Manager.h"
 #include "communication/ISendMessageAsync.h"
+#include "dateTime/TimeZoneDatabase.h"
+#include "hardware/usb/IDevicesLister.h"
 
 namespace web
 {
@@ -11,86 +13,113 @@ namespace web
    {
       namespace service
       {
-         class CPlugin : public IRestService
+         class CPlugin final : public IRestService
          {
          public:
-            explicit CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
-                             boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                             boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-                             communication::ISendMessageAsync& messageSender,
-                             bool developerMode);
-            virtual ~CPlugin() = default;
+            CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
+                    boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                    boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                    boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister,
+                    boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase,
+                    const boost::shared_ptr<task::CScheduler>& taskScheduler,
+                    communication::ISendMessageAsync& messageSender,
+                    bool developerMode);
+            ~CPlugin() override = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
+         private:
             const std::string& getRestKeyword() const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getOnePlugin(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstance(const std::vector<std::string>& parameters,
-                                                                                              const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceWithState(const std::vector<std::string>& parameters,
-                                                                                                       const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceForManualDeviceCreation(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getOnePluginV1(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceV1(const std::vector<std::string>& parameters,
+                                                                                                const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceWithStateV1(const std::vector<std::string>& parameters,
+               const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceForManualDeviceCreationV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePlugins(const std::vector<std::string>& parameters,
-                                                                                               const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsParameterized(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsV1(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsParameterizedV1(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters,
-                                                                                                          const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsWithPackageV1(
+               const std::vector<std::string>& parameters,
+               const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> sendExtraQuery(const std::vector<std::string>& parameters,
                                                                                        const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> sendDeviceExtraQuery(
+            boost::shared_ptr<shared::serialization::IDataSerializable> sendDeviceExtraQueryV1(
                const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> createPlugin(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> updatePlugin(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> deletePlugin(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllPlugins(const std::vector<std::string>& parameters,
-                                                                                         const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getInstanceState(const std::vector<std::string>& parameters,
-                                                                                         const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getInstanceRunning(
+            boost::shared_ptr<shared::serialization::IDataSerializable> createPluginV1(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updatePluginV1(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deletePluginV1(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllPluginsV1(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getInstanceStateV1(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getInstanceRunningV1(
                const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getPluginDevices(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getPluginDevicesV1(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> startInstanceV1(const std::vector<std::string>& parameters,
+                                                                                        const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> stopInstanceV1(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getInstanceLogV1(const std::vector<std::string>& parameters,
                                                                                          const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> startInstance(const std::vector<std::string>& parameters,
-                                                                                      const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> stopInstance(const std::vector<std::string>& parameters,
-                                                                                     const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getInstanceLog(const std::vector<std::string>& parameters,
+
+            boost::shared_ptr<shared::serialization::IDataSerializable> createDeviceV1(const std::vector<std::string>& parameters,
                                                                                        const std::string& requestContent) const;
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> createDevice(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getBindingV1(const std::vector<std::string>& parameters,
                                                                                      const std::string& requestContent) const;
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> getBinding(const std::vector<std::string>& parameters,
-                                                                                   const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethodV1(poco::CRestDispatcher::CRestMethodHandler realMethod,
+                                                                                              const std::vector<std::string>& parameters,
+                                                                                              const std::string& requestContent) const;
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
-                                                                                            const std::vector<std::string>& parameters,
-                                                                                            const std::string& requestContent) const;
+            boost::shared_ptr<IAnswer> getAvailablePluginsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getPluginsInstancesV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> createPluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updatePluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deletePluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getPluginsInstancesLogV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getPluginsInstancesBindingV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> startPluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> sendExtraQueryToPluginInstanceV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> stopPluginsInstanceV2(const boost::shared_ptr<IRequest>& request) const;
 
-         protected:
-            std::string generateUniqueDeviceName(const int pluginId) const;
 
-         private:
+            std::string generateUniqueDeviceName(int pluginId) const;
+            boost::shared_ptr<shared::CDataContainer> getPluginConfigurationSchema(
+               const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
+               const boost::shared_ptr<const shared::CDataContainer>& locales) const;
+            static std::string translatePluginFullState(const boost::shared_ptr<const shared::CDataContainer>& locales,
+                                                        const boost::shared_ptr<const shared::CDataContainer>& fullState);
+
+            boost::shared_ptr<const shared::plugin::information::IInformation> findPlugin(const std::string& pluginType) const;
+
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
-
             boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
+            boost::shared_ptr<hardware::usb::IDevicesLister> m_usbDevicesLister;
+            boost::shared_ptr<dateTime::CTimeZoneDatabase> m_timezoneDatabase;
+            boost::shared_ptr<task::CScheduler> m_taskScheduler;
 
             std::string m_restKeyword;
 
             communication::ISendMessageAsync& m_messageSender;
 
             bool m_developerMode;
+
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
          };
       } //namespace service
    } //namespace rest

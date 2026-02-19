@@ -12,19 +12,8 @@ namespace database
 		CQuery::CQuery(const bool fromWithClauseNeeded)
 			: m_insertOrUpdateName("INSERT OR REPLACE INTO"),
 			m_queryType(kNotYetDefined),
-			m_fromWithClauseNeeded(fromWithClauseNeeded)
-		{
-		}
-
-		CQuery::~CQuery()
-		{
-		}
-
-		CQuery::CQuery(const CQuery& toCopy)
-			: m_insertOrUpdateName(toCopy.m_insertOrUpdateName),
-			m_currentQuery(toCopy.m_currentQuery),
-			m_queryType(toCopy.m_queryType),
-			m_fromWithClauseNeeded(toCopy.m_fromWithClauseNeeded)
+           m_fromWithClauseNeeded(fromWithClauseNeeded),
+           m_multiSetFirstOperation(true)
 		{
 		}
 
@@ -41,6 +30,29 @@ namespace database
 			return Append("SELECT * ");
 		}
 
+
+      CQuery& CQuery::Select(const std::vector<CDatabaseColumn>& columns)
+      {
+         ChangeQueryType(kSelect);
+         std::ostringstream ss;
+         ss << "SELECT ";
+
+         bool first = true;
+         for (const auto& column : columns)
+         {
+            if (first)
+            {
+               ss << queryhelper<CDatabaseColumn>::format(this, column);
+               first = false;
+            }
+            else
+            {
+               AppendField(ss, queryhelper<CDatabaseColumn>::format(this, column));
+            }
+         }
+         Append(ss.str());
+         return *this;
+      }
 
 		//
 		/// \brief           Start a query with 'SELECT COUNT(*)'
@@ -92,12 +104,13 @@ namespace database
 		//
 		/// \brief           Append 'From (subquery)'
 		/// \param  subquery   the subquery
+      /// \param name      The name
 		/// \return          A reference to itself to allow method chaining
 		//   
-		CQuery& CQuery::FromParenthesis(const CQuery& subquery, const std::string& name)
+      CQuery& CQuery::FromParenthesis(const CQuery& subquery, const std::string& name)
 		{
 			std::ostringstream ss;
-			ss << " FROM (" << subquery.str() << " " << name << ")";
+         ss << " FROM (" << subquery.str() << " " << name << ")";
 			ss << " ";
 			return Append(ss);
 		}
@@ -228,7 +241,7 @@ namespace database
 		CQuery& CQuery::Union()
 		{
 			std::ostringstream ss;
-			ss << " UNION ";
+         ss << " UNION ";
 			return Append(ss);
 		}
 
@@ -248,7 +261,8 @@ namespace database
 			return Append(ss);
 		}
 
-		CQuery& CQuery::On(const std::string& tableIdentifier, const std::string& columnName, const std::string& table2Identifier, const std::string& column2Name)
+      CQuery& CQuery::On(const std::string& tableIdentifier, const std::string& columnName, const std::string& table2Identifier,
+                         const std::string& column2Name)
 		{
 			std::ostringstream ss;
 			ss << " ON " << tableIdentifier << "." << columnName << " = " << table2Identifier << "." << column2Name << " ";
@@ -296,7 +310,7 @@ namespace database
 			return CQuery().Append(customQuery).ChangeQueryType(typeOfQuery);
 		}
 
-		CQuery& CQuery::DropTable(const database::common::CDatabaseTable& tableName)
+      CQuery& CQuery::DropTable(const CDatabaseTable& tableName)
 		{
 			ChangeQueryType(kDrop);
 			std::ostringstream ss;
@@ -322,23 +336,23 @@ namespace database
 
 		void CQuery::AppendField(std::ostringstream& ss, const std::string& field)
 		{
-			if (field.size() > 0)
+         if (!field.empty())
 				ss << "," << field;
 		}
 
 		void CQuery::AppendOrderField(std::ostringstream& ss, const std::string& field, const E_OrderWay way)
 		{
-			if (field.size() > 0)
+         if (!field.empty())
 			{
 				ss << "," << field;
-				if (way == CQuery::kDesc)
+            if (way == kDesc)
 					ss << " DESC";
 			}
 		}
 
 		void CQuery::AppendSet(std::ostringstream& ss, const std::string& field, const std::string& value)
 		{
-			if (field.size() > 0)
+         if (!field.empty())
 				ss << ", " << field << "=" << value;
 		}
 
@@ -408,32 +422,32 @@ namespace database
 
 		std::string CQuery::formatInt16ToSql(const std::int16_t& anyStringValue)
 		{
-			return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
 		}
 
 		std::string CQuery::formatUInt16ToSql(const std::uint16_t& anyStringValue)
 		{
-			return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
 		}
 
 		std::string CQuery::formatInt32ToSql(const std::int32_t& anyStringValue)
 		{
-			return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
 		}
 
 		std::string CQuery::formatUInt32ToSql(const std::uint32_t& anyStringValue)
 		{
-			return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
 		}
 
 		std::string CQuery::formatInt64ToSql(const std::int64_t& anyStringValue)
 		{
-			return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
 		}
 
 		std::string CQuery::formatUInt64ToSql(const std::uint64_t& anyStringValue)
 		{
-			return boost::lexical_cast<std::string>(anyStringValue);
+         return std::to_string(anyStringValue);
 		}
 
 
@@ -481,7 +495,7 @@ namespace database
 			return "avg("
 				+ sqlPart
 				+ ")";
-		}
+      }
 
 		std::string CQuery::functionSum(const std::string& sqlPart)
 		{
@@ -566,5 +580,3 @@ namespace database
 		}
 	} //namespace common
 } //namespace database 
-
-
