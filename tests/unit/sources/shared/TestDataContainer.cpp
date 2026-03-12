@@ -5,8 +5,6 @@
 
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/DataContainer.h"
-#include "../../../../sources/server/web/rest/Result.h"
-#include "../testCommon/fileSystem.h"
 
 BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
@@ -261,17 +259,17 @@ BOOST_AUTO_TEST_CASE(ContainerToVectorOfContainers)
 }
 
 
-boost::shared_ptr<shared::serialization::IDataSerializable> maketest(const unsigned int testcount)
+static boost::shared_ptr<shared::serialization::IDataSerializable> maketest(const unsigned int testcount)
 {
-	shared::CDataContainer result;
+	const auto result = shared::CDataContainer::make();
 	std::vector<std::string> pluginCollection;
 
 	for (unsigned int i = 0; i < testcount; ++i)
 		pluginCollection.push_back((boost::format("plugin %1%") % i).str());
 
-	result.set("plugins", pluginCollection);
+	result->set("data.plugins", pluginCollection);
 
-	return web::rest::CResult::GenerateSuccess(result);
+	return result;
 }
 
 
@@ -487,7 +485,7 @@ BOOST_AUTO_TEST_CASE(RapidJsonInitAndCopy)
 BOOST_AUTO_TEST_CASE(DataCopy)
 {
 	shared::CDataContainer dc;
-	const unsigned int testcount = 10;
+    constexpr unsigned int testcount = 10;
 
 	//ensure braces are used => in that case, inner container will be deleted to brace close
 	{
@@ -1091,12 +1089,12 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
 
 	//check some out of range
 
-	std::cout << "Size of int = " << sizeof(int) << std::endl;
-	std::cout << "Size of uint = " << sizeof(unsigned int) << std::endl;
-	std::cout << "Size of int64 = " << sizeof(int64_t) << std::endl;
-	std::cout << "Size of uint64 = " << sizeof(uint64_t) << std::endl;
+	std::cout << "Size of int = " << sizeof(int) << "\n";
+	std::cout << "Size of uint = " << sizeof(unsigned int) << "\n";
+	std::cout << "Size of int64 = " << sizeof(int64_t) << "\n";
+	std::cout << "Size of uint64 = " << sizeof(uint64_t) << "\n";
 
-	std::cout << "Limits: testing char" << std::endl;
+	std::cout << "Limits: testing char\n";
 
 	BOOST_CHECK_EQUAL(c.get<char>("char_min"), INT8_MIN);
 	BOOST_CHECK_EQUAL(c.get<char>("char_max"), INT8_MAX);
@@ -1111,7 +1109,7 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
 	BOOST_CHECK_THROW(c.get<char>("int64_max"), shared::exception::COutOfRange);
 	BOOST_CHECK_THROW(c.get<char>("uint64_max"), shared::exception::COutOfRange);
 
-	std::cout << "Limits: testing unsigned char" << std::endl;
+	std::cout << "Limits: testing unsigned char\n";
 
 	BOOST_CHECK_THROW(c.get<unsigned char>("char_min"), shared::exception::COutOfRange);
 	BOOST_CHECK_EQUAL(c.get<unsigned char>("char_max"), INT8_MAX);
@@ -1126,7 +1124,7 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
 	BOOST_CHECK_THROW(c.get<unsigned char>("int64_max"), shared::exception::COutOfRange);
 	BOOST_CHECK_THROW(c.get<unsigned char>("uint64_max"), shared::exception::COutOfRange);
 
-	std::cout << "Limits: testing short" << std::endl;
+	std::cout << "Limits: testing short\n";
 
 	BOOST_CHECK_EQUAL(c.get<short>("char_min"), INT8_MIN);
 	BOOST_CHECK_EQUAL(c.get<short>("char_max"), INT8_MAX);
@@ -1141,7 +1139,7 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
 	BOOST_CHECK_THROW(c.get<short>("int64_max"), shared::exception::COutOfRange);
 	BOOST_CHECK_THROW(c.get<short>("uint64_max"), shared::exception::COutOfRange);
 
-	std::cout << "Limits: testing unsigned short" << std::endl;
+	std::cout << "Limits: testing unsigned short\n";
 
 	BOOST_CHECK_THROW(c.get<unsigned short>("char_min"), shared::exception::COutOfRange);
 	BOOST_CHECK_EQUAL(c.get<unsigned short>("char_max"), INT8_MAX);
@@ -1156,7 +1154,7 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
 	BOOST_CHECK_THROW(c.get<unsigned short>("int64_max"), shared::exception::COutOfRange);
 	BOOST_CHECK_THROW(c.get<unsigned short>("uint64_max"), shared::exception::COutOfRange);
 
-	std::cout << "Limits: testing int" << std::endl;
+	std::cout << "Limits: testing int\n";
 
 	BOOST_CHECK_EQUAL(c.get<int>("char_min"), INT8_MIN);
 	BOOST_CHECK_EQUAL(c.get<int>("char_max"), INT8_MAX);
@@ -1171,7 +1169,7 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
 	BOOST_CHECK_THROW(c.get<int>("int64_max"), shared::exception::COutOfRange);
 	BOOST_CHECK_THROW(c.get<int>("uint64_max"), shared::exception::COutOfRange);
 
-	std::cout << "Limits: testing unsigned int" << std::endl;
+	std::cout << "Limits: testing unsigned int\n";
 
 	BOOST_CHECK_THROW(c.get<unsigned int>("char_min"), shared::exception::COutOfRange);
 	BOOST_CHECK_EQUAL(c.get<unsigned int>("char_max"), static_cast<unsigned int>(INT8_MAX));
@@ -1186,7 +1184,7 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
 	BOOST_CHECK_THROW(c.get<unsigned int>("int64_max"), shared::exception::COutOfRange);
 	BOOST_CHECK_THROW(c.get<unsigned int>("uint64_max"), shared::exception::COutOfRange);
 
-	std::cout << "Limits: testing int64_t" << std::endl;
+	std::cout << "Limits: testing int64_t\n";
 
 	BOOST_CHECK_EQUAL(c.get<std::int64_t>("char_min"), INT8_MIN);
 	BOOST_CHECK_EQUAL(c.get<std::int64_t>("char_max"), INT8_MAX);
@@ -1201,7 +1199,7 @@ BOOST_AUTO_TEST_CASE(CheckDataLimits)
 	BOOST_CHECK_EQUAL(c.get<std::int64_t>("int64_max"), INT64_MAX);
 	BOOST_CHECK_THROW(c.get<std::int64_t>("uint64_max"), shared::exception::COutOfRange);
 
-	std::cout << "Limits: testing uint64_t" << std::endl;
+	std::cout << "Limits: testing uint64_t\n";
 
 	BOOST_CHECK_THROW(c.get<std::uint64_t>("char_min"), shared::exception::COutOfRange);
 	BOOST_CHECK_EQUAL(c.get<std::uint64_t>("char_max"), INT8_MAX);
@@ -1565,9 +1563,9 @@ BOOST_AUTO_TEST_CASE(MapOfContainers)
 	CHECK_MAPS_SHARED_PTR<shared::CDataContainer>(grab, expected);
 }
 
-double fRand(double fMin, double fMax)
+static double fRand(double fMin, double fMax)
 {
-	double f = (double)rand() / RAND_MAX;
+	double f = static_cast<double>(rand()) / RAND_MAX;
 	return fMin + f * (fMax - fMin);
 }
 
@@ -1594,7 +1592,7 @@ char* get_human_readable_size(double size/*in bytes*/) {
 #define DEBUG_HEAP_PRINT(title) \
          if(i%100000 == 0 || i<10)  {\
                   _CrtMemCheckpoint(&a);\
-                  std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << std::endl; \
+                  std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.lTotalCount) << "(" << a.lTotalCount << "). Diff = " << (a.lTotalCount - b.lTotalCount) << "\n"; \
                   memcpy(&b, &a, sizeof(a)); \
          }
 
@@ -1612,7 +1610,7 @@ char* get_human_readable_size(double size/*in bytes*/) {
             if (i % 100000 == 0 || i < 10) { \
                \
                   a = mallinfo(); \
-                  std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.uordblks) << "(" << a.uordblks << "). Diff = " << (a.uordblks - b.uordblks) << std::endl; \
+                  std::cout << "[" << title << "] Step=" << i << " : total = " << get_human_readable_size(a.uordblks) << "(" << a.uordblks << "). Diff = " << (a.uordblks - b.uordblks) << "\n"; \
                   memcpy(&b, &a, sizeof(a)); \
             }
 #else
@@ -1620,7 +1618,7 @@ char* get_human_readable_size(double size/*in bytes*/) {
 
 #define DEBUG_HEAP_PRINT(title) \
                   if (i % 100000 == 0 || i < 10) { \
-                        std::cout << "[" << title << "] Step=" << i << std::endl; \
+                        std::cout << "[" << title << "] Step=" << i << "\n"; \
                   }
 #endif
 #endif
@@ -1628,7 +1626,7 @@ char* get_human_readable_size(double size/*in bytes*/) {
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
 {
-	std::cout << "[START] DataContainer_HugeAmountOfData_Vector" << std::endl;
+	std::cout << "[START] DataContainer_HugeAmountOfData_Vector\n";
 	{
 		std::vector<boost::shared_ptr<shared::CDataContainer>> objectList;
 
@@ -1638,7 +1636,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
 		try
 		{
 			DEBUG_HEAP_INIT();
-			DEBUG_HEAP_PRINT("Init");
+			DEBUG_HEAP_PRINT("Init")
 
 			for (i = 0; i < 1000000; ++i)
 			{
@@ -1659,7 +1657,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
 
 				objectList.push_back(result);
 				t1 += boost::posix_time::seconds(1);
-				DEBUG_HEAP_PRINT("Next");
+				DEBUG_HEAP_PRINT("Next")
 			}
 
 		}
@@ -1668,12 +1666,12 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Vector)
 			BOOST_FAIL("Unknown exception");
 		}
 	}
-	std::cout << "[END] DataContainer_HugeAmountOfData_Vector" << std::endl;
+	std::cout << "[END] DataContainer_HugeAmountOfData_Vector\n";
 }
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 {
-	std::cout << "[START] DataContainer_HugeAmountOfData_Rapidjson" << std::endl;
+	std::cout << "[START] DataContainer_HugeAmountOfData_Rapidjson\n";
 	{
 		unsigned int itemCount = 100000;
 		auto whole = boost::make_shared< shared::CDataContainer>(30, itemCount);
@@ -1683,7 +1681,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 		try
 		{
 			DEBUG_HEAP_INIT();
-			DEBUG_HEAP_PRINT("Init");
+			DEBUG_HEAP_PRINT("Init")
 
 			for (i = 0; i < itemCount; ++i)
 			{
@@ -1695,11 +1693,12 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 				t1 += boost::posix_time::seconds(1);
 			}
 
-			DEBUG_HEAP_PRINT("Avant");
+			DEBUG_HEAP_PRINT("Avant")
 
-			auto k = web::rest::CResult::GenerateSuccess(whole);
+			auto k = shared::CDataContainer::make();
+            k->set("data", whole);
 
-			DEBUG_HEAP_PRINT("Après");
+			DEBUG_HEAP_PRINT("Après")
 
 		}
 		catch (...)
@@ -1707,14 +1706,14 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Rapidjson)
 			BOOST_FAIL("Unknown exception");
 		}
 	}
-	std::cout << "[END] DataContainer_HugeAmountOfData_Rapidjson" << std::endl;
+	std::cout << "[END] DataContainer_HugeAmountOfData_Rapidjson\n";
 }
 
 
 
 BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 {
-	std::cout << "[START] DataContainer_HugeAmountOfData_Array" << std::endl;
+	std::cout << "[START] DataContainer_HugeAmountOfData_Array\n";
 	{
 		shared::CDataContainer whole(100, 1000000);
 
@@ -1725,7 +1724,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 		try
 		{
 			DEBUG_HEAP_INIT();
-			DEBUG_HEAP_PRINT("Init");
+			DEBUG_HEAP_PRINT("Init")
 
 			for (i = 0; i < 1000000; ++i)
 			{
@@ -1734,7 +1733,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 				result.set("key", std::to_string(fRand(0, 1000)));
 				whole.appendArray("data", result);
 				t1 += boost::posix_time::seconds(1);
-				DEBUG_HEAP_PRINT("Next");
+				DEBUG_HEAP_PRINT("Next")
 			}
 		}
 		catch (...)
@@ -1742,7 +1741,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 			BOOST_FAIL("Unknown exception");
 		}
 	}
-	std::cout << "[END] DataContainer_HugeAmountOfData_Array" << std::endl;
+	std::cout << "[END] DataContainer_HugeAmountOfData_Array\n";
 }
 
 #ifdef CDATACONTAINER_TEST_BENCHMARK
@@ -1757,7 +1756,7 @@ BOOST_AUTO_TEST_CASE(DataContainer_HugeAmountOfData_Array)
 #define MEASURE_DURATION_STOP(name)\
       end = boost::posix_time::microsec_clock::local_time(); \
       dur = end - start;\
-      std::cout << "[ic=" << itemCount << "] Fonction=" << name << " Duration = " <<dur.total_milliseconds() << " ms (" << dur.total_microseconds() << " micro seconds)" << std::endl
+      std::cout << "[ic=" << itemCount << "] Fonction=" << name << " Duration = " <<dur.total_milliseconds() << " ms (" << dur.total_microseconds() << " micro seconds)\n"
 
 void bench_cdatacontainer(unsigned int itemCount)
 {
@@ -1812,7 +1811,7 @@ void bench_cdatacontainer(unsigned int itemCount)
 		dcread.deserializeFromFile("benchmark.json");
 		MEASURE_DURATION_STOP("Reading file benchmark.json");
 
-		std::cout << "[ic=" << itemCount << "] " << "Filesize is " << boost::filesystem::file_size("benchmark.json") << " bytes" << std::endl;
+		std::cout << "[ic=" << itemCount << "] " << "Filesize is " << boost::filesystem::file_size("benchmark.json") << " bytes\n";
 		boost::filesystem::remove("benchmark.json");
 	}
 	catch (...)
@@ -1823,19 +1822,19 @@ void bench_cdatacontainer(unsigned int itemCount)
 
 BOOST_AUTO_TEST_CASE(DataContainer_Benchmark)
 {
-	std::cout << "Start benchmark of CDataContainer" << std::endl;
-	std::cout << "Config :" << BOOST_PP_STRINGIZE(RAPIDJSON_DEFAULT_ALLOCATOR) << std::endl;
-	std::cout << "    Allocator = " << BOOST_PP_STRINGIZE(RAPIDJSON_DEFAULT_ALLOCATOR) << std::endl;
-	std::cout << "    Object capacity = " << RAPIDJSON_VALUE_DEFAULT_OBJECT_CAPACITY << std::endl;
-	std::cout << "    Array capacity = " << RAPIDJSON_VALUE_DEFAULT_ARRAY_CAPACITY << std::endl;
-	std::cout << "    Chunck capacity = " << RAPIDJSON_ALLOCATOR_DEFAULT_CHUNK_CAPACITY << std::endl;
+	std::cout << "Start benchmark of CDataContainer\n";
+	std::cout << "Config :" << BOOST_PP_STRINGIZE(RAPIDJSON_DEFAULT_ALLOCATOR) << "\n";
+	std::cout << "    Allocator = " << BOOST_PP_STRINGIZE(RAPIDJSON_DEFAULT_ALLOCATOR) << "\n";
+	std::cout << "    Object capacity = " << RAPIDJSON_VALUE_DEFAULT_OBJECT_CAPACITY << "\n";
+	std::cout << "    Array capacity = " << RAPIDJSON_VALUE_DEFAULT_ARRAY_CAPACITY << "\n";
+	std::cout << "    Chunck capacity = " << RAPIDJSON_ALLOCATOR_DEFAULT_CHUNK_CAPACITY << "\n";
 
 	bench_cdatacontainer(10);
 	bench_cdatacontainer(1000);
 	bench_cdatacontainer(100000);
 	bench_cdatacontainer(1000000);
 
-	std::cout << "End benchmark of CDataContainer" << std::endl;
+	std::cout << "End benchmark of CDataContainer\n";
 }
 #endif
 

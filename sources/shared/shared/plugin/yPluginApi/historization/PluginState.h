@@ -14,19 +14,19 @@ namespace shared
             ///\brief Plugin state
             //-----------------------------------------------------
             DECLARE_ENUM_HEADER(EPluginState,
-               ((Unknown))
-               ((Error))
-               ((Stopped))
-               ((Running))
-               ((Custom))
-               ((WaitDebugger))
+                                ((Unknown))
+                                ((Error))
+                                ((Stopped))
+                                ((Running))
+                                ((Custom))
+                                ((WaitDebugger))
             )
 
 
             //-----------------------------------------------------
             ///\brief The plugin state historizable object
             //-----------------------------------------------------
-            class CPluginState : public CSingleHistorizableData<EPluginState>
+            class CPluginState final : public CSingleHistorizableData<EPluginState>
             {
             public:
                //-----------------------------------------------------
@@ -37,11 +37,14 @@ namespace shared
                explicit CPluginState(const std::string& keywordName,
                                      const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
 
-               virtual ~CPluginState() = default;
+               CPluginState(const CPluginState&) = delete;
+               CPluginState(CPluginState&&) = delete;
+               CPluginState& operator=(const CPluginState&) = delete;
+               CPluginState& operator=(CPluginState&&) = delete;
+
+               ~CPluginState() override = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

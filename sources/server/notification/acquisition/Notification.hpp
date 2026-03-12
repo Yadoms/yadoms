@@ -1,41 +1,30 @@
 #pragma once
 
-#include "../INotification.h"
 #include "../change/Notification.hpp"
+#include "database/entities/Entities.h"
 
-namespace notification { namespace acquisition {
-   
-   //-----------------------------
-   ///\brief Interface for basic notification (handle a typed object)
-   //-----------------------------
-   class CNotification : public change::CNotification<database::entities::CAcquisition>
+namespace notification
+{
+   namespace acquisition
    {
-   public:
       //-----------------------------
-      ///\brief Constructor
-      ///\param [in] obj   The notification object
+      ///\brief Interface for basic notification (handle a typed object)
       //-----------------------------
-      explicit CNotification(boost::shared_ptr<database::entities::CAcquisition> acquisition)
-         :change::CNotification<database::entities::CAcquisition>(acquisition, notification::change::EChangeType::kCreate)
+      class CNotification final : public change::CNotification<database::entities::CAcquisition>
       {
-      }
+      public:
+         explicit CNotification(boost::shared_ptr<database::entities::CAcquisition> acquisition)
+            : change::CNotification<database::entities::CAcquisition>(acquisition,
+                                                                      change::EChangeType::kCreate)
+         {
+         }
 
-      //-----------------------------
-      ///\brief Destructor
-      //-----------------------------
-      virtual ~CNotification()
-      {
-      }
+         ~CNotification() override = default;
 
-      //-----------------------------
-      ///\brief Get the acquisition
-      ///\return The acquisition
-      //-----------------------------
-      boost::shared_ptr<database::entities::CAcquisition> getAcquisition()
-      {
-         return getObject();
-      }
-   };
-
-} //namespace acquisition
+         boost::shared_ptr<database::entities::CAcquisition> getAcquisition()
+         {
+            return getObject();
+         }
+      };
+   } //namespace acquisition
 } //namespace notification

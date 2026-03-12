@@ -6,9 +6,7 @@ namespace dataAccessLayer
    class IConfigurationManager
    {
    public:
-      virtual ~IConfigurationManager()
-      {
-      }
+      virtual ~IConfigurationManager() = default;
 
       //--------------------------------------------------------------
       /// \brief      Read a configuration entry
@@ -16,7 +14,7 @@ namespace dataAccessLayer
       /// \return     The configuration entry found
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::string getExternalConfiguration(const std::string& section) const = 0;
+      virtual boost::shared_ptr<shared::CDataContainer> getExternalConfiguration(const std::string& section) const = 0;
 
       //--------------------------------------------------------------
       /// \brief      Update a configuration entry

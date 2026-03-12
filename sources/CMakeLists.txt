@@ -12,6 +12,8 @@
 cmake_minimum_required (VERSION 3.31.0)
 project (Yadoms)
 
+project (Yadoms)
+
 # Global CMake policies
 cmake_policy(SET CMP0074 NEW)
 cmake_policy(SET CMP0077 NEW)
@@ -282,8 +284,6 @@ set(LIBS
 set(USE_SQLITE_DATABASE ON)
 #Use PostgreSQL database system
 set(USE_PGSQL_DATABASE OFF)
-#Use Poco web server
-set(USE_POCO_WEBSERVER ON)
 
 #include libs (have their own CMakeList.txt)
 add_subdirectory(external-libs)
@@ -310,10 +310,6 @@ set(YADOMS_SRC
    server/RunningInformation.h   
    server/Supervisor.cpp
    server/Supervisor.h
-
-   server/authentication/IAuthentication.h
-   server/authentication/BasicAuthentication.h
-   server/authentication/BasicAuthentication.cpp
 
    server/dateTime/DateTimeNotifier.h
    server/dateTime/DateTimeNotifier.cpp
@@ -552,6 +548,7 @@ set(YADOMS_SRC
    server/notification/acquisition/Observer.hpp
    server/notification/acquisition/Notification.hpp
    
+   server/notification/summary/Observer.hpp
    server/notification/summary/Notification.hpp
    
    server/startupOptions/DatabaseEngine.h
@@ -564,8 +561,6 @@ set(YADOMS_SRC
    server/startupOptions/MustExistPathValidator.h
    server/startupOptions/MustExistPathValidator.cpp
    
-   server/task/FinishedInstance.h
-   server/task/FinishedInstance.cpp
    server/task/GenericTask.h
    server/task/GenericTask.cpp
    server/task/IInstance.h
@@ -573,22 +568,28 @@ set(YADOMS_SRC
    server/task/Instance.cpp
    server/task/InstanceNotificationData.h
    server/task/InstanceNotificationData.cpp
+   server/task/IRunningTaskMutex.h
    server/task/ITask.h
    server/task/IUnique.h
+   server/task/RunningTaskMutex.h
+   server/task/RunningTaskMutex.cpp
    server/task/Scheduler.h
    server/task/Scheduler.cpp
    server/task/TaskEvent.h
    server/task/TaskEvent.cpp
    server/task/TaskStatus.h
    server/task/TaskStatus.cpp
-   server/task/backup/Backup.h
-   server/task/backup/Backup.cpp
+   server/task/backup/ExportBackupHandler.h
+   server/task/backup/ExportBackupHandler.cpp
    server/task/backup/Restore.h
    server/task/backup/Restore.cpp
+   server/task/exportAcquisitions/ExportAcquisitionsHandler.h
+   server/task/exportAcquisitions/ExportAcquisitionsHandler.cpp
    server/task/exportData/ExportData.h
    server/task/exportData/ExportData.cpp
-   server/task/packLogs/PackLogs.h
-   server/task/packLogs/PackLogs.cpp
+   server/task/exportData/IExportDataHandler.h
+   server/task/exportLogs/ExportLogsHandler.h
+   server/task/exportLogs/ExportLogsHandler.cpp
    server/task/plugins/ExtraQuery.h
    server/task/plugins/ExtraQuery.cpp
    
@@ -596,8 +597,6 @@ set(YADOMS_SRC
    server/update/IUpdateManager.h
    server/update/UpdateManager.h
    server/update/UpdateManager.cpp
-   server/update/UpdateType.h
-   server/update/UpdateType.cpp
    server/update/info/UpdateSite.h
    server/update/info/UpdateSite.cpp
    server/update/worker/IWidgetInformation.h
@@ -616,79 +615,79 @@ set(YADOMS_SRC
    
    server/web/IRestHandler.h
    server/web/IWebServer.h
-   server/web/IWebServerConfigurator.h
  
-   server/web/rest/RestDispatcher.h
-   server/web/rest/RestDispatcher.cpp
-   server/web/rest/RestDispatcherHelpers.hpp
-   server/web/rest/Result.h
-   server/web/rest/Result.cpp
+   server/web/rest/AcceptedAnswer.h
+   server/web/rest/AcceptedAnswer.cpp
+   server/web/rest/ContentType.h
+   server/web/rest/IFormDataPartFileHandler.h
+   server/web/rest/IFormDataPartHandler.h
+   server/web/rest/IFormDataPartStringHandler.h
+   server/web/rest/IRequest.h
+   server/web/rest/IAnswer.h
+   server/web/rest/CreatedAnswer.h
+   server/web/rest/CreatedAnswer.cpp
+   server/web/rest/ErrorAnswer.h
+   server/web/rest/ErrorAnswer.cpp
+   server/web/rest/Helpers.h
+   server/web/rest/Helpers.cpp
+   server/web/rest/NoContentAnswer.h
+   server/web/rest/NoContentAnswer.cpp
+   server/web/rest/Paging.h
+   server/web/rest/Paging.cpp
+   server/web/rest/SeeOtherLocationAnswer.h
+   server/web/rest/SeeOtherLocationAnswer.cpp
+   server/web/rest/SuccessAnswer.h
+   server/web/rest/SuccessAnswer.cpp
    server/web/rest/StringContainer.h
    server/web/rest/StringContainer.cpp
 
    server/web/rest/service/Acquisition.h
    server/web/rest/service/Acquisition.cpp
    server/web/rest/service/AutomationRule.h
-   server/web/rest/service/AutomationRule.cpp
+   server/web/rest/service/AutomationRuleV1.cpp
+   server/web/rest/service/AutomationRuleV2.cpp
    server/web/rest/service/Configuration.h
    server/web/rest/service/Configuration.cpp
    server/web/rest/service/Device.h
    server/web/rest/service/Device.cpp
+   server/web/rest/service/DeviceV2.cpp
    server/web/rest/service/EventLogger.h
    server/web/rest/service/EventLogger.cpp
+   server/web/rest/service/Keyword.h
+   server/web/rest/service/KeywordV2.cpp
    server/web/rest/service/IUploadFileManager.h
    server/web/rest/service/IRestService.h
+   server/web/rest/service/IRestEndPoint.h
    server/web/rest/service/Maintenance.h
-   server/web/rest/service/Maintenance.cpp
+   server/web/rest/service/MaintenanceV1.cpp
+   server/web/rest/service/MaintenanceV2.cpp
    server/web/rest/service/Page.h
    server/web/rest/service/Page.cpp
    server/web/rest/service/Plugin.h
    server/web/rest/service/Plugin.cpp
+   server/web/rest/service/PluginV2.cpp
+   server/web/rest/service/ConfigurationMerger.h
+   server/web/rest/service/ConfigurationMerger.cpp
    server/web/rest/service/PluginEventLogger.h
    server/web/rest/service/PluginEventLogger.cpp
    server/web/rest/service/Recipient.h
-   server/web/rest/service/Recipient.cpp
+   server/web/rest/service/RecipientV1.cpp
+   server/web/rest/service/RecipientV2.cpp
+   server/web/rest/service/RestEndPoint.h
+   server/web/rest/service/RestEndPoint.cpp
    server/web/rest/service/System.h
    server/web/rest/service/System.cpp
    server/web/rest/service/Task.h
    server/web/rest/service/Task.cpp
    server/web/rest/service/Update.h
-   server/web/rest/service/Update.cpp
+   server/web/rest/service/UpdateV1.cpp
+   server/web/rest/service/UpdateV2.cpp
    server/web/rest/service/UploadFileManager.h
    server/web/rest/service/UploadFileManager.cpp
    server/web/rest/service/UploadFileThread.h
    server/web/rest/service/UploadFileThread.cpp
    server/web/rest/service/Widget.h
    server/web/rest/service/Widget.cpp
-   
-   server/web/ws/AcquisitionFilterFrame.h
-   server/web/ws/AcquisitionFilterFrame.cpp
-   server/web/ws/AcquisitionUpdateFrame.h
-   server/web/ws/AcquisitionUpdateFrame.cpp
-   server/web/ws/AcquisitionSummaryUpdateFrame.h
-   server/web/ws/AcquisitionSummaryUpdateFrame.cpp
-   server/web/ws/DeviceBlackListedFrame.h
-   server/web/ws/DeviceBlackListedFrame.cpp
-   server/web/ws/DeviceDeletedFrame.h
-   server/web/ws/DeviceDeletedFrame.cpp
-   server/web/ws/KeywordDeletedFrame.h
-   server/web/ws/KeywordDeletedFrame.cpp
-   server/web/ws/KeywordNewFrame.h
-   server/web/ws/KeywordNewFrame.cpp
-   server/web/ws/FrameBase.h
-   server/web/ws/FrameBase.cpp
-   server/web/ws/FrameFactory.h
-   server/web/ws/FrameFactory.cpp
-   server/web/ws/IsAliveFrame.h
-   server/web/ws/IsAliveFrame.cpp
-   server/web/ws/LogEventFrame.h
-   server/web/ws/LogEventFrame.cpp
-   server/web/ws/NewDeviceFrame.h
-   server/web/ws/NewDeviceFrame.cpp
-   server/web/ws/TaskUpdateNotificationFrame.h
-   server/web/ws/TaskUpdateNotificationFrame.cpp
-   server/web/ws/TimeNotificationFrame.h
-   server/web/ws/TimeNotificationFrame.cpp
 )
 
 # Project folders
@@ -719,7 +718,9 @@ source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPl
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
-source_group(server\\task\\packLogs  server/task/packLogs/*.*)
+source_group(server\\task\\exportAcquisitions  server/task/exportAcquisitions/*.*)
+source_group(server\\task\\exportData  server/task/exportData/*.*)
+source_group(server\\task\\exportLogs  server/task/exportLogs/*.*)
 source_group(server\\task\\plugins  server/task/plugins/*.*)
 source_group(server\\update  server/update/*.*)
 source_group(server\\update\\info  server/update/info/*.*)
@@ -728,7 +729,6 @@ source_group(server\\web  server/web/*.*)
 source_group(server\\web\\rest  server/web/rest/*.*)
 source_group(server\\web\\rest\\json  server/web/rest/json/*.*)
 source_group(server\\web\\rest\\service  server/web/rest/service/*.*)
-source_group(server\\web\\ws  server/web/ws/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
@@ -832,10 +832,14 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/database/common/adapters/DatabaseAdapters.cpp
    server/database/common/adapters/GenericAdapter.h
    server/database/common/adapters/GenericAdapter.cpp
-   server/database/common/adapters/HugeDataVectorForKeywordDataAdapter.h
-   server/database/common/adapters/HugeDataVectorForKeywordDataAdapter.cpp
-   server/database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapter.h
-   server/database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapter.cpp
+   server/database/common/adapters/HugeDataVectorForKeywordDataAdapterV1.h
+   server/database/common/adapters/HugeDataVectorForKeywordDataAdapterV1.cpp
+   server/database/common/adapters/HugeDataVectorForKeywordDataAdapterV2.h
+   server/database/common/adapters/HugeDataVectorForKeywordDataAdapterV2.cpp
+   server/database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapterV1.h
+   server/database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapterV1.cpp
+   server/database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapterV2.h
+   server/database/common/adapters/HugeDataVectorForKeywordSummaryDataAdapterV2.cpp
    server/database/common/adapters/IResultAdapter.h
    server/database/common/adapters/MultipleValueAdapter.hpp
    server/database/common/adapters/SingleValueAdapter.hpp
@@ -990,31 +994,95 @@ IF(USE_PGSQL_DATABASE)
    ENDIF(PostgreSQL_FOUND)   
 ENDIF(USE_PGSQL_DATABASE)
 
-#Web server
-IF(USE_POCO_WEBSERVER)
-   set(YADOMS_SRC ${YADOMS_SRC}
-      server/web/poco/WebServer.h
-      server/web/poco/WebServer.cpp
-      server/web/poco/AuthenticationRequestHandler.h
-      server/web/poco/AuthenticationRequestHandler.cpp
-      server/web/poco/HttpRequestHandlerFactory.h
-      server/web/poco/HttpRequestHandlerFactory.cpp   
-      server/web/poco/HttpRequestHandlerContainer.h
-      server/web/poco/HttpRequestHandlerContainer.cpp
-      server/web/poco/RestRequestHandler.h
-      server/web/poco/RestRequestHandler.cpp
-      server/web/poco/WebsiteCacheManager.h
-      server/web/poco/WebsiteCacheManager.cpp
-      server/web/poco/WebsiteRequestHandler.h
-      server/web/poco/WebsiteRequestHandler.cpp
-      server/web/poco/WebSocketRequestHandler.h
-      server/web/poco/WebSocketRequestHandler.cpp   
-      server/web/poco/MimeType.h
-      server/web/poco/MimeType.cpp   
-   )
+# Poco-based Web server
+set(YADOMS_SRC ${YADOMS_SRC}
+   server/web/poco/WebServer.h
+   server/web/poco/WebServer.cpp
+   server/web/poco/AuthenticationRequestHandler.h
+   server/web/poco/AuthenticationRequestHandler.cpp
+   server/web/poco/BasicAuthentication.h
+   server/web/poco/BasicAuthentication.cpp
+   server/web/poco/HttpRequestHandlerFactory.h
+   server/web/poco/HttpRequestHandlerFactory.cpp   
+   server/web/poco/HttpRequestHandlerContainer.h
+   server/web/poco/HttpRequestHandlerContainer.cpp
+   server/web/poco/IAuthentication.h
+   server/web/poco/RestDispatcher.h
+   server/web/poco/RestDispatcher.cpp
+   server/web/poco/RestDispatcherHelpers.hpp
+   server/web/poco/RestRequestHandler.h
+   server/web/poco/RestRequestHandler.cpp
+   server/web/poco/RestResult.h
+   server/web/poco/RestResult.cpp
+   server/web/poco/WebsiteCacheManager.h
+   server/web/poco/WebsiteCacheManager.cpp
+   server/web/poco/WebsiteRequestHandler.h
+   server/web/poco/WebsiteRequestHandler.cpp
+   server/web/poco/WebSocketRequestHandler.h
+   server/web/poco/WebSocketRequestHandler.cpp   
+   server/web/poco/MimeType.h
+   server/web/poco/MimeType.cpp   
    
-   source_group(server\\web\\poco  server/web/poco/*.*)
-ENDIF()
+   server/web/poco/ws/AcquisitionFilterFrame.h
+   server/web/poco/ws/AcquisitionFilterFrame.cpp
+   server/web/poco/ws/AcquisitionUpdateFrame.h
+   server/web/poco/ws/AcquisitionUpdateFrame.cpp
+   server/web/poco/ws/AcquisitionSummaryUpdateFrame.h
+   server/web/poco/ws/AcquisitionSummaryUpdateFrame.cpp
+   server/web/poco/ws/DeviceBlackListedFrame.h
+   server/web/poco/ws/DeviceBlackListedFrame.cpp
+   server/web/poco/ws/DeviceDeletedFrame.h
+   server/web/poco/ws/DeviceDeletedFrame.cpp
+   server/web/poco/ws/KeywordDeletedFrame.h
+   server/web/poco/ws/KeywordDeletedFrame.cpp
+   server/web/poco/ws/KeywordNewFrame.h
+   server/web/poco/ws/KeywordNewFrame.cpp
+   server/web/poco/ws/FrameBase.h
+   server/web/poco/ws/FrameBase.cpp
+   server/web/poco/ws/FrameFactory.h
+   server/web/poco/ws/FrameFactory.cpp
+   server/web/poco/ws/IsAliveFrame.h
+   server/web/poco/ws/IsAliveFrame.cpp
+   server/web/poco/ws/LogEventFrame.h
+   server/web/poco/ws/LogEventFrame.cpp
+   server/web/poco/ws/NewDeviceFrame.h
+   server/web/poco/ws/NewDeviceFrame.cpp
+   server/web/poco/ws/TaskUpdateNotificationFrame.h
+   server/web/poco/ws/TaskUpdateNotificationFrame.cpp
+   server/web/poco/ws/TimeNotificationFrame.h
+   server/web/poco/ws/TimeNotificationFrame.cpp
+)
+source_group(server\\web\\poco  server/web/poco/*.*)
+source_group(server\\web\\poco\\ws  server/web/poco/ws/*.*)
+
+# Oatpp-based Web server
+set(YADOMS_SRC ${YADOMS_SRC}
+   server/web/oatppServer/Authentication.h
+   server/web/oatppServer/Authentication.cpp
+   server/web/oatppServer/ErrorHandler.h
+   server/web/oatppServer/ErrorHandler.cpp
+   server/web/oatppServer/FormDataPartFileHandler.h
+   server/web/oatppServer/FormDataPartFileHandler.cpp
+   server/web/oatppServer/FormDataPartStringHandler.h
+   server/web/oatppServer/FormDataPartStringHandler.cpp
+   server/web/oatppServer/WebsocketRequestHandler.h
+   server/web/oatppServer/WebsocketRequestHandler.cpp  
+   server/web/oatppServer/HttpPages.h
+   server/web/oatppServer/HttpPages.cpp
+   server/web/oatppServer/IAuthentication.h
+   server/web/oatppServer/IOatppFormDataPartHandler.h
+   server/web/oatppServer/RestRequest.h
+   server/web/oatppServer/RestRequest.cpp   
+   server/web/oatppServer/RestRequestHandler.h
+   server/web/oatppServer/RestRequestHandler.cpp
+   server/web/oatppServer/WebServer.h
+   server/web/oatppServer/WebServer.cpp    
+   server/web/oatppServer/WebSocketConnection.h
+   server/web/oatppServer/WebSocketConnection.cpp    
+   server/web/oatppServer/WebsocketListener.h
+   server/web/oatppServer/WebsocketListener.cpp    
+)
+source_group(server\\web\\oatppServer  server/web/oatppServer/*.*)
 
 
 
@@ -1054,6 +1122,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 
 #define YADOMS output
 add_executable(yadoms ${YADOMS_SRC})
+
+add_dependencies(yadoms oatpp_build oatpp-websocket_build oatpp-openssl_build)
 
 if(COTIRE_USE)
    #nothing to do
@@ -1133,7 +1203,10 @@ set(YADOMS_ALL_INCL_DIR
    ${BOOST_INCL_DIR} 
    ${OPENSSL_INCLUDE_DIR}
    ${Poco_INCLUDE_DIRS}
-   ${YADOMS_INCL_DIR} 
+   ${YADOMS_INCL_DIR}
+   ${OATPP_INCLUDE_DIR}
+   ${OATPP_WEBSOCKET_INCLUDE_DIR}
+   ${OATPP_OPENSSL_INCLUDE_DIR}
 )
 
 set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
@@ -1150,6 +1223,9 @@ target_link_libraries(yadoms
       ${YADOMS_EXTERNAL_LINK}
       ${LIBS}
       ${CMAKE_DL_LIBS}
+   ${OATPP_WEBSOCKET_LIBRARY}
+   ${OATPP_OPENSSL_LIBRARY}
+   ${OATPP_LIBRARY}
 )
 
 ##################################################################################################

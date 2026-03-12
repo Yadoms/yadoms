@@ -315,7 +315,6 @@ struct queryhelper<boost::shared_ptr<shared::CDataContainer>>
 };
 
 
-
 //--------------------------------------------------------------
 /// \brief	    Helper structure for converting IExtendedEnum to sql string
 //--------------------------------------------------------------
@@ -407,7 +406,8 @@ struct queryhelper<CQuery::CNotUsedTemplateField>
 
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery& CQuery::Select(const T1& field1, const T2& field2, const T3& field3, const T4& field4, const T5& field5, const T6& field6, const T7& field7, const T8& field8, const T9& field9, const T10& field10)
+inline CQuery& CQuery::Select(const T1& field1, const T2& field2, const T3& field3, const T4& field4, const T5& field5, const T6& field6,
+                              const T7& field7, const T8& field8, const T9& field9, const T10& field10)
 {
 	ChangeQueryType(kSelect);
 	std::ostringstream ss;
@@ -436,7 +436,8 @@ inline CQuery& CQuery::Select(const T1& field1, const T2& field2, const T3& fiel
 
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery& CQuery::SelectCount(const T1& field1, const T2& field2, const T3& field3, const T4& field4, const T5& field5, const T6& field6, const T7& field7, const T8& field8, const T9& field9, const T10& field10)
+inline CQuery& CQuery::SelectCount(const T1& field1, const T2& field2, const T3& field3, const T4& field4, const T5& field5, const T6& field6,
+                                   const T7& field7, const T8& field8, const T9& field9, const T10& field10)
 {
 	ChangeQueryType(kSelect);
 	std::ostringstream ss;
@@ -465,7 +466,8 @@ inline CQuery& CQuery::SelectCount(const T1& field1, const T2& field2, const T3&
 
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery& CQuery::From(const T1& table1, const T2& table2, const T3& table3, const T4& table4, const T5& table5, const T6& table6, const T7& table7, const T8& table8, const T9& table9, const T10& table10)
+inline CQuery& CQuery::From(const T1& table1, const T2& table2, const T3& table3, const T4& table4, const T5& table5, const T6& table6,
+                            const T7& table7, const T8& table8, const T9& table9, const T10& table10)
 {
 	std::ostringstream ss;
 	ss << " FROM " << queryhelper<T1>::format(this, table1);
@@ -502,7 +504,8 @@ inline CQuery& CQuery::From(const T1& table1, const T2& table2, const T3& table3
 
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery& CQuery::Values(const T1& value1, const T2& value2, const T3& value3, const T4& value4, const T5& value5, const T6& value6, const T7& value7, const T8& value8, const T9& value9, const T10& value10)
+inline CQuery& CQuery::Values(const T1& value1, const T2& value2, const T3& value3, const T4& value4, const T5& value5, const T6& value6,
+                              const T7& value7, const T8& value8, const T9& value9, const T10& value10)
 {
 	std::ostringstream ss;
 	ss << " VALUES  (" << queryhelper<T1>::format(this, value1);
@@ -542,7 +545,7 @@ inline CQuery& CQuery::Set(const T01& field1, const T1& value1,
 						   const T11& field10, const T10& value10)
 {
 	std::ostringstream ss;
-	ss << " SET " << queryhelper<T01>::format(this, field1) << "=" << queryhelper<T1>::format(this, value1);
+   ss << " SET " << queryhelper<T01>::format(this, field1) << CQUERY_OP_EQUAL << queryhelper<T1>::format(this, value1);
 	if (typeid(value2) != typeid(CNotUsedTemplateField))
 		AppendSet(ss, queryhelper<T02>::format(this, field2), queryhelper<T2>::format(this, value2));
 	if (typeid(value3) != typeid(CNotUsedTemplateField))
@@ -563,6 +566,26 @@ inline CQuery& CQuery::Set(const T01& field1, const T1& value1,
 		AppendSet(ss, queryhelper<T11>::format(this, field10), queryhelper<T10>::format(this, value10));
 	ss << " ";
 	return Append(ss);
+}
+
+template <class TFIELD, class TVALUE>
+CQuery& CQuery::MultiSet(const TFIELD& field, const TVALUE& value)
+{
+   std::ostringstream ss;
+
+   if (m_multiSetFirstOperation)
+   {
+      ss << " SET ";
+      m_multiSetFirstOperation = false;
+   }
+   else
+   {
+      ss << ", ";
+   }
+
+   ss << queryhelper<TFIELD>::format(this, field) << CQUERY_OP_EQUAL << queryhelper<TVALUE>::format(this, value) << " ";
+
+   return Append(ss);
 }
 
 
@@ -604,16 +627,16 @@ CQuery& CQuery::OrParenthesis(const T1& field, const std::string& op, const T2& 
 
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery& CQuery::OrderBy(const T1& value1, const CQuery::E_OrderWay way1,
-							   const T2& value2, const CQuery::E_OrderWay way2,
-							   const T3& value3, const CQuery::E_OrderWay way3,
-							   const T4& value4, const CQuery::E_OrderWay way4,
-							   const T5& value5, const CQuery::E_OrderWay way5,
-							   const T6& value6, const CQuery::E_OrderWay way6,
-							   const T7& value7, const CQuery::E_OrderWay way7,
-							   const T8& value8, const CQuery::E_OrderWay way8,
-							   const T9& value9, const CQuery::E_OrderWay way9,
-							   const T10& value10, const CQuery::E_OrderWay way10)
+inline CQuery& CQuery::OrderBy(const T1& value1, E_OrderWay way1,
+                               const T2& value2, E_OrderWay way2,
+                               const T3& value3, E_OrderWay way3,
+                               const T4& value4, E_OrderWay way4,
+                               const T5& value5, E_OrderWay way5,
+                               const T6& value6, E_OrderWay way6,
+                               const T7& value7, E_OrderWay way7,
+                               const T8& value8, E_OrderWay way8,
+                               const T9& value9, E_OrderWay way9,
+                               const T10& value10, E_OrderWay way10)
 {
 	std::ostringstream ss;
 	ss << " ORDER BY " << queryhelper<T1>::format(this, value1);
@@ -679,7 +702,7 @@ inline CQuery& CQuery::GroupBy(const T1& field1,
 }
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery& CQuery::InsertInto(const database::common::CDatabaseTable& table,
+inline CQuery& CQuery::InsertInto(const CDatabaseTable& table,
 								  const T1& field1,
 								  const T2& field2,
 								  const T3& field3,
@@ -717,7 +740,7 @@ inline CQuery& CQuery::InsertInto(const database::common::CDatabaseTable& table,
 }
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline CQuery& CQuery::InsertOrReplaceInto(const database::common::CDatabaseTable& table,
+inline CQuery& CQuery::InsertOrReplaceInto(const CDatabaseTable& table,
 										   const T1& field1,
 										   const T2& field2,
 										   const T3& field3,
@@ -796,7 +819,7 @@ inline const CQuery::CFunction CQuery::substr(const T& value, int offset, int co
 
 //--------------------------------------------------------------
 ///\brief	generate min function ( ie: min(field0) )
-///\param [in]	field    The field or query
+///\param [in]	value    The value
 ///\return The query function
 //--------------------------------------------------------------
 template <class T>
@@ -807,7 +830,7 @@ inline const CQuery::CFunction CQuery::min(const T& value)
 
 //--------------------------------------------------------------
 ///\brief	generate min function ( ie: min(field0) ) with numeric cast
-///\param [in]	field    The field or query
+///\param [in]	fieldOrQuery    The field or query
 ///\return The query function
 //--------------------------------------------------------------
 template <class T>
@@ -819,7 +842,7 @@ inline const CQuery::CFunction CQuery::minWithCast(const T& fieldOrQuery)
 
 //--------------------------------------------------------------
 ///\brief	generate max function ( ie: max(field0) )
-///\param [in]	field    The field or query
+///\param [in]	value    The value
 ///\return The query function
 //--------------------------------------------------------------
 template <class T>
@@ -831,7 +854,7 @@ inline const CQuery::CFunction CQuery::max(const T& value)
 
 //--------------------------------------------------------------
 ///\brief	generate max function ( ie: max(field0) ) with numeric cast
-///\param [in]	field    The field or query
+///\param [in]	fieldOrQuery    The field or query
 ///\return The query function
 //--------------------------------------------------------------
 template <class T>
@@ -843,7 +866,7 @@ inline const CQuery::CFunction CQuery::maxWithCast(const T& fieldOrQuery)
 
 //--------------------------------------------------------------
 ///\brief	generate average function ( ie: average(field0) )
-///\param [in]	field    The field or query
+///\param [in]	value    The value
 ///\return The query function
 //--------------------------------------------------------------
 template <class T>
@@ -855,7 +878,7 @@ inline const CQuery::CFunction CQuery::average(const T& value)
 
 //--------------------------------------------------------------
 ///\brief	generate average function ( ie: average(field0) ) with numeric cast
-///\param [in]	field    The field or query
+///\param [in]	fieldOrQuery    The field or query
 ///\return The query function
 //--------------------------------------------------------------
 template <class T>
@@ -867,7 +890,7 @@ inline const CQuery::CFunction CQuery::averageWithCast(const T& fieldOrQuery)
 
 //--------------------------------------------------------------
 ///\brief	generate coalesce function ( ie: coalesce(field0, default) )
-///\param [in]	field       The field or query
+///\param [in]	value       The field or query
 ///\param [in]	valueIfNull The fallback value
 ///\return The query function
 //--------------------------------------------------------------
@@ -880,8 +903,8 @@ inline const CQuery::CFunction CQuery::coalesce(const T& value, const T2& valueI
 
 //--------------------------------------------------------------
 ///\brief	generate cast function ( ie: CAST (field0 AS numeric) )
-///\param [in]	field       The field or query
-///\param [in]	type        The typing cast
+///\param [in]	fieldOrQuery      The field or query
+///\param [in]	type              The typing cast
 ///\return The query function
 //--------------------------------------------------------------
 template <class T>
@@ -892,7 +915,7 @@ inline const CQuery::CFunction CQuery::cast(const T& fieldOrQuery, const std::st
 
 //--------------------------------------------------------------
 ///\brief	generate cast function ( ie: CAST (field0 AS numeric) )
-///\param [in]	field       The field or query
+///\param [in]	fieldOrQuery       The field or query
 ///\return The query function
 //--------------------------------------------------------------
 template <class T>
@@ -908,7 +931,8 @@ inline const CQuery::CFunction CQuery::dateToIsoString(const T& fieldOrQuery)
 }
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10>
-inline const CQuery::CFunction CQuery::concatenate(const T1& field1, const T2& field2, const T3& field3, const T4& field4, const T5& field5, const T6& field6, const T7& field7, const T8& field8, const T9& field9, const T10& field10)
+inline const CQuery::CFunction CQuery::concatenate(const T1& field1, const T2& field2, const T3& field3, const T4& field4, const T5& field5,
+                                                   const T6& field6, const T7& field7, const T8& field8, const T9& field9, const T10& field10)
 {
 	std::string current = functionConcatenate(queryhelper<T1>::format(this, field1), queryhelper<T2>::format(this, field2));
 	if (typeid(field3) != typeid(CNotUsedTemplateField))

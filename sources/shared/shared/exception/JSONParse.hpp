@@ -2,35 +2,24 @@
 
 #include "Exception.hpp"
 
-namespace shared
+namespace shared::exception
 {
-	namespace exception
-	{
-		//--------------------------------------------------------------
-		/// \brief Exception for accessing NULL objects
-		//--------------------------------------------------------------
-		class CJSONParse : public CException
-		{
-		public:
-			//--------------------------------------------------------------
-			/// \brief	                        Constructor
-			//--------------------------------------------------------------
-			CJSONParse(const std::string& message,
-					   const long offset)
-				: CException(std::string("Error parsing JSON data ")
-							 + message
-							 + " : ("
-							 + std::to_string(offset)
-							 + ")")
-			{
-			}
+   //--------------------------------------------------------------
+   /// \brief Exception for accessing NULL objects
+   //--------------------------------------------------------------
+   class CJSONParse : public CException
+   {
+   public:
+      CJSONParse(const std::string& message,
+                 const long offset)
+         : CException(std::string("Error parsing JSON data ")
+            + message
+            + " : ("
+            + std::to_string(offset)
+            + ")")
+      {
+      }
 
-			//--------------------------------------------------------------
-			/// \brief      Destructor
-			//--------------------------------------------------------------
-			virtual ~CJSONParse() throw()
-			{
-			}
-		};
-	}
-} // namespace shared::exception
+      ~CJSONParse() throw() override = default;
+   };
+}

@@ -48,55 +48,55 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       switch (api->getEventHandler().waitForEvents())
       {
       case yApi::IYPluginApi::kEventStopRequested:
-         {
-            YADOMS_LOG(information) << "Stop requested";
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
-            return;
-         }
+      {
+         YADOMS_LOG(information) << "Stop requested";
+         api->setPluginState(yApi::historization::EPluginState::kStopped);
+         return;
+      }
 
       case yApi::IYPluginApi::kEventUpdateConfiguration:
-         {
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
-            m_retryTimer->stop();
-            m_pendingMailsQueue = std::queue<boost::shared_ptr<CPendingMail>>();
-            api->setPluginState(yApi::historization::EPluginState::kRunning);
-            break;
-         }
+      {
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+         onUpdateConfiguration(api, api->getEventHandler().getEventData<boost::shared_ptr<shared::CDataContainer>>());
+         m_retryTimer->stop();
+         m_pendingMailsQueue = std::queue<boost::shared_ptr<CPendingMail>>();
+         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         break;
+      }
 
       case yApi::IYPluginApi::kEventDeviceCommand:
+      {
+         const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+         YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command);
+
+         try
          {
-            const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-            YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command);
-
-            try
+            if (!boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
             {
-               if (!boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
-               {
-                  YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command);
-                  break;
-               }
+               YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command);
+               break;
+            }
 
-               onSendMailRequest(api, command->getBody());
-            }
-            catch (std::exception& e)
-            {
-               YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
-            }
+            onSendMailRequest(api, command->getBody());
          }
-         break;
+         catch (std::exception& e)
+         {
+            YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
+         }
+      }
+      break;
 
       case kRetryTimer:
-         {
-            sendPendingMails(api);
-            break;
-         }
+      {
+         sendPendingMails(api);
+         break;
+      }
 
       default:
-         {
-            YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
-            break;
-         }
+      {
+         YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
+         break;
+      }
       }
    }
 }
@@ -182,26 +182,26 @@ CMailSender::ESendResult CMailSender::sendMail(boost::shared_ptr<yApi::IYPluginA
       mailSendRequest.setOpt(new curlpp::options::Url(m_configuration->getHost()));
       mailSendRequest.setOpt(new curlpp::options::Port(m_configuration->getPort()));
       mailSendRequest.setOpt(new curlpp::options::MailFrom(from));
-      mailSendRequest.setOpt(new curlpp::options::MailRcpt({to}));
+      mailSendRequest.setOpt(new curlpp::options::MailRcpt({ to }));
 
       const auto bodyString = CMailBodyBuilder(from,
-                                               {to})
-                              .setSubject(formatSubject(mail->body()))
-                              .setAsciiBody(mail->body())
-                              .build();
+                                               { to })
+         .setSubject(formatSubject(mail->body()))
+         .setAsciiBody(mail->body())
+         .build();
 
       size_t bytesRead = 0;
       mailSendRequest.setOpt(new curlpp::options::ReadFunction([&bodyString, &bytesRead](char* ptr, size_t size, size_t nbItems)
-      {
-         if (size == 0 || nbItems == 0 || size * nbItems < 1 || bytesRead > bodyString.size())
-            return static_cast<size_t>(0);
+                                                               {
+                                                                  if (size == 0 || nbItems == 0 || size * nbItems < 1 || bytesRead > bodyString.size())
+                                                                     return static_cast<size_t>(0);
 
-         const size_t len = std::min(bodyString.size() - bytesRead, size * nbItems);
-         memcpy(ptr, &bodyString.c_str()[bytesRead], len);
-         bytesRead += len;
+                                                                  const size_t len = std::min(bodyString.size() - bytesRead, size * nbItems);
+                                                                  memcpy(ptr, &bodyString.c_str()[bytesRead], len);
+                                                                  bytesRead += len;
 
-         return len;
-      }));
+                                                                  return len;
+                                                               }));
       mailSendRequest.setOpt(new curlpp::options::Upload(true));
 
       setSecurity(mailSendRequest);

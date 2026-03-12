@@ -2,30 +2,19 @@
 
 #include "Exception.hpp"
 
-namespace shared
+namespace shared::exception
 {
-   namespace exception
+   //--------------------------------------------------------------
+   /// \brief Exception for accessing NULL objects
+   //--------------------------------------------------------------
+   class CInvalidParameter : public CException
    {
-      //--------------------------------------------------------------
-      /// \brief Exception for accessing NULL objects
-      //--------------------------------------------------------------
-      class CInvalidParameter : public CException
+   public:
+      explicit CInvalidParameter(const std::string& parameter)
+         : CException(std::string("Invalid parameter " + parameter))
       {
-      public:
-         //--------------------------------------------------------------
-         /// \brief	                        Constructor
-         //--------------------------------------------------------------
-         explicit CInvalidParameter(const std::string& parameter)
-            : CException(std::string("Invalid parameter " + parameter))
-         {
-         }
+      }
 
-         //--------------------------------------------------------------
-         /// \brief      Destructor
-         //--------------------------------------------------------------
-         virtual ~CInvalidParameter() throw()
-         {
-         }
-      };
-   }
-} // namespace shared::exception
+      ~CInvalidParameter() throw() override = default;
+   };
+}

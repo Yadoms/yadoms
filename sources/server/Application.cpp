@@ -18,6 +18,8 @@
 #include <Poco/Environment.h>
 #include <Poco/Format.h>
 #include <google/protobuf/stubs/common.h>
+#include <Poco/Debugger.h>
+
 #include "shared/http/Proxy.h"
 
 //define the main entry point
@@ -28,7 +30,7 @@ static const shared::versioning::CSemVer YadomsVersion(YADOMS_VERSION);
 
 CYadomsServer::CYadomsServer()
    : m_helpRequested(false),
-     m_startupOptions(boost::make_shared<startupOptions::CStartupOptions>(config()))
+   m_startupOptions(boost::make_shared<startupOptions::CStartupOptions>(config()))
 {
    //define unixstyle for command line parsing
    //so in Windows platform we use --option and -o for options (instead of /option)
@@ -51,7 +53,8 @@ void CYadomsServer::initialize(Application& self)
    current_path(workingDir.parent_path());
 
    m_pathProvider = boost::make_shared<CPathProvider>(m_startupOptions);
-   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel(), m_pathProvider->logsPath());
+   m_logConfiguration = boost::make_shared<logging::CLogConfiguration>(m_startupOptions->getLogLevel(),
+                                                                       m_pathProvider->logsPath());
 
    //define proxy settings as earlier possible
    setupProxy();
@@ -65,17 +68,17 @@ void CYadomsServer::setupProxy() const
 
    const auto host = m_startupOptions->getProxyHost().value();
    const auto port = m_startupOptions->getProxyPort()
-                        ? m_startupOptions->getProxyPort().value()
-                        : shared::http::CProxy::kUseProxyDefaultPort;
+      ? m_startupOptions->getProxyPort().value()
+      : shared::http::CProxy::kUseProxyDefaultPort;
    const auto username = m_startupOptions->getProxyUsername()
-                            ? m_startupOptions->getProxyUsername().value()
-                            : std::string();
+      ? m_startupOptions->getProxyUsername().value()
+      : std::string();
    const auto password = m_startupOptions->getProxyPassword()
-                            ? m_startupOptions->getProxyPassword().value()
-                            : std::string();
+      ? m_startupOptions->getProxyPassword().value()
+      : std::string();
    const auto bypassRegex = m_startupOptions->getProxyBypass()
-                               ? m_startupOptions->getProxyBypass().value()
-                               : std::string();
+      ? m_startupOptions->getProxyBypass().value()
+      : std::string();
    shared::http::CProxy::setGlobalProxyConfig(host,
                                               port,
                                               username,
@@ -138,7 +141,7 @@ void CYadomsServer::handleVersion(const std::string& name, const std::string& va
    stopOptionsProcessing();
 }
 
-void CYadomsServer::displayVersion() const
+void CYadomsServer::displayVersion()
 {
    //output string on standard output
    //because log is not defined (and will not => after calling "yadoms --version", it show version and exit)
@@ -176,9 +179,9 @@ int CYadomsServer::main(const ArgVec&)
                                                                         YadomsVersion);
 
 
-         YADOMS_LOG_CONFIGURE("Main");
+         YADOMS_LOG_CONFIGURE("Main")
 
-         YADOMS_LOG(information) << "\n********************************************************************";
+            YADOMS_LOG(information) << "\n********************************************************************";
          YADOMS_LOG(information) << "Yadoms " << YadomsVersion << " is starting";
          YADOMS_LOG(information) << "********************************************************************";
          if (m_startupOptions->getDeveloperMode())
@@ -191,9 +194,9 @@ int CYadomsServer::main(const ArgVec&)
          YADOMS_LOG(information) << "\tLog level = " << m_startupOptions->getLogLevel();
          YADOMS_LOG(information) << "\tLog path = " << m_startupOptions->getLogPath();
          YADOMS_LOG(information) << "\tWeb server port number = " << m_startupOptions->getWebServerPortNumber();
-         YADOMS_LOG(information) << "\tSSL activated = " << m_startupOptions->getIsWebServerUseSSL();
-         YADOMS_LOG(information) << "\tSSL Web server port number = " << m_startupOptions->getSSLWebServerPortNumber();
-         YADOMS_LOG(information) << "\tWeb server ip = " << m_startupOptions->getWebServerIPAddress();
+         YADOMS_LOG(information) << "\tSSL activated = " << m_startupOptions->getIsWebServerUseHttps();
+         YADOMS_LOG(information) << "\tSSL Web server port number = " << m_startupOptions->getSslWebServerPortNumber();
+         YADOMS_LOG(information) << "\tWeb server ip = " << m_startupOptions->getWebServerIpAddress();
          YADOMS_LOG(information) << "\tWeb server path = " << m_startupOptions->getWebServerInitialPath();
          YADOMS_LOG(information) << "\tDatabase engine = " << m_startupOptions->getDatabaseEngine();
 
@@ -235,16 +238,18 @@ int CYadomsServer::main(const ArgVec&)
          auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(
             m_startupOptions->getIsRunningAsService());
          stopHandler->setApplicationStopHandler([stopRequestEventHandler, stoppedEventHandler]() -> bool
-         {
-            // Ask for application stop and wait for application full stop
-            YADOMS_LOG(debug) << "Receive termination request";
-            stopRequestEventHandler->postEvent(kTerminationRequested);
-            const auto stopSuccess = stoppedEventHandler->waitForEvents(boost::posix_time::seconds(30)) ==
-               kApplicationFullyStopped;
-            if (!stopSuccess)
-               YADOMS_LOG(error) << "Fail to wait the app end event";
-            return stopSuccess;
-         });
+                                                {
+                                                   // Ask for application stop and wait for application full stop
+                                                   YADOMS_LOG(debug) << "Receive termination request";
+                                                   stopRequestEventHandler->postEvent(kTerminationRequested);
+                                                   const auto stopSuccess = stoppedEventHandler->waitForEvents(
+                                                      Poco::Debugger::isAvailable()
+                                                      ? boost::posix_time::time_duration(boost::date_time::pos_infin)
+                                                      : boost::posix_time::seconds(30)) == kApplicationFullyStopped;
+                                                   if (!stopSuccess)
+                                                      YADOMS_LOG(error) << "Fail to wait the app end event";
+                                                   return stopSuccess;
+                                                });
 
          //create supervisor
          CSupervisor supervisor(m_pathProvider,

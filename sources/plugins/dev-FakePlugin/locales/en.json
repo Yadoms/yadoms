@@ -222,28 +222,16 @@
                   "description": "Example of combo parameter in the sub-section",
                   "content": {
                     "first": {
-                      "types": {
-                        "first": {
                           "title": "First section",
                           "description": "The first list section : you can add here some other configuration parameters"
-                        }
-                      }
                     },
                     "second": {
-                      "types": {
-                        "first": {
                           "title": "Second section",
                           "description": "The second list section : you can add here some other configuration parameters"
-                        }
-                      }
                     },
                     "third": {
-                      "types": {
-                        "first": {
                           "title": "Third section",
                           "description": "The third list section : you can add here some other configuration parameters"
-                        }
-                      }
                     }
                   }
                 }
@@ -260,9 +248,9 @@
             "name": "Divider",
             "description": "Description of divider"
           },
-          "ArrayItem": {
-            "name": "Array item",
-            "description": "All array items share same translations"
+          "intValue": {
+            "name": "Interger value",
+            "description": "Description of the integer value"
           }
         }
       }
