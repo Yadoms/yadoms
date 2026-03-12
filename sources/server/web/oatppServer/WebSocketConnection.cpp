@@ -47,11 +47,11 @@ void CWebSocketConnection::onBeforeDestroy(const oatpp::websocket::WebSocket& so
    --m_clientsCount;
    YADOMS_LOG(information) << "Connection closed (Client count=" << m_clientsCount << ")";
 
-   std::lock_guard<std::recursive_mutex> lock(m_connectionThreadsMutex);
+   std::scoped_lock lock(m_connectionThreadsMutex);
    if (m_connectionThreads.empty())
       return;
-   auto& threadToStop = m_connectionThreads.at(&socket);
-   if (threadToStop.joinable())
+   if (auto& threadToStop = m_connectionThreads.at(&socket);
+      threadToStop.joinable())
    {
       threadToStop.interrupt();
       if (!threadToStop.try_join_for(boost::chrono::seconds(20)))
@@ -64,7 +64,7 @@ void CWebSocketConnection::close()
 {
    YADOMS_LOG(debug) << "Close all websocket connections...";
 
-   std::lock_guard<std::recursive_mutex> lock(m_connectionThreadsMutex);
+   std::scoped_lock lock(m_connectionThreadsMutex);
    for (auto& [ws, thread] : m_connectionThreads)
    {
       if (auto& threadToStop = thread; threadToStop.joinable())
@@ -73,9 +73,9 @@ void CWebSocketConnection::close()
          m_connectionThreads.erase(ws);
    }
 
-   for (auto& threadToStopIt : m_connectionThreads)
+   for (auto& [websocket, thread] : m_connectionThreads)
    {
-      auto& threadToStop = threadToStopIt.second;
+      auto& threadToStop = thread;
       if (!threadToStop.joinable())
          continue;
       if (!threadToStop.try_join_for(boost::chrono::seconds(20)))
@@ -303,9 +303,8 @@ void CWebSocketConnection::handleConnectionThread(const oatpp::websocket::WebSoc
 
          case kReceived:
             {
-               const shared::CDataContainer frame(eventHandler.getEventData<const std::string>());
-
-               if (frame.exists("acquisitionFilter"))
+               if (const shared::CDataContainer frame(eventHandler.getEventData<const std::string>());
+                  frame.exists("acquisitionFilter"))
                {
                   YADOMS_LOG(debug) << "Receive new acquisition filter : " << frame.getChild("acquisitionFilter.keywords")->serialize();
                   newAcquisitionObserver->resetKeywordIdFilter(frame.get<std::vector<int>>("acquisitionFilter.keywords"));
@@ -335,8 +334,15 @@ void CWebSocketConnection::handleConnectionThread(const oatpp::websocket::WebSoc
       }
       catch (const boost::thread_interrupted&)
       {
-         socket.sendClose();
-         socket.stopListening();
+         try
+         {
+            socket.sendClose();
+            socket.stopListening();
+         }
+         catch (const std::exception& e)
+         {
+            YADOMS_LOG(warning) << "Error while closing socket : " << e.what();
+         }
          break;
       }
       catch (const std::exception& e)
