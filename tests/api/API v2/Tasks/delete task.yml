@@ -1,0 +1,76 @@
+info:
+  name: delete task
+  type: http
+  seq: 2
+
+http:
+  method: DELETE
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/tasks/:id
+  params:
+    - name: from-name
+      value: backup
+      type: query
+      description: "[Optional]"
+      disabled: true
+    - name: from-status
+      value: success
+      type: query
+      description: "[Optional] started, success, fail"
+      disabled: true
+    - name: prop
+      value: uuid|name|progression
+      type: query
+      description: |-
+        [Optional] flags conbinaison of :
+        uuid|name|progression|messag|status|creationDate
+      disabled: true
+    - name: id
+      value: 3bde1166-0098-4ef5-9672-a948436f1efd
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: delete task
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/tasks/:id
+      method: DELETE
+      params:
+        - name: from-name
+          value: backup
+          type: query
+          description: "[Optional]"
+          disabled: true
+        - name: from-status
+          value: success
+          type: query
+          description: "[Optional] started, success, fail"
+          disabled: true
+        - name: prop
+          value: uuid|name|progression
+          type: query
+          description: |-
+            [Optional] flags conbinaison of :
+            uuid|name|progression|messag|status|creationDate
+          disabled: true
+        - name: id
+          value: d51bb340-32ad-409c-b608-dd4378a50043
+          type: path
+    response:
+      status: 204
+      statusText: No Content
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""

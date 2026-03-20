@@ -27,7 +27,7 @@ namespace web
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPage::getAllPages);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPage::getOnePage);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")(CWidget::getRestKeyword()), CPage::getPageWidget);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("widget"), CPage::getPageWidget);
 
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPage::addPage, CPage::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword), CPage::updateAllPages, CPage::transactionalMethod);
@@ -35,11 +35,11 @@ namespace web
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPage::deletePage, CPage::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPage::deleteAllPages, CPage::transactionalMethod);
 
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)(CWidget::getRestKeyword()), CPage::addWidgetForPage,
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("widget"), CPage::addWidgetForPage,
                                                         CPage::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")(CWidget::getRestKeyword()),
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("widget"),
                                                         CPage::replaceAllWidgetsForPage, CPage::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")(CWidget::getRestKeyword()),
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("widget"),
                                                         CPage::deleteAllWidgetsForPage, CPage::transactionalMethod);
          }
 
@@ -118,7 +118,7 @@ namespace web
 
                const auto widgetList = m_dataProvider->getWidgetRequester()->getWidgetsForPage(boost::lexical_cast<int>(pageId));
                shared::CDataContainer collection;
-               collection.set(CWidget::getRestKeyword(), widgetList);
+               collection.set("widget", widgetList);
 
                return poco::CRestResult::GenerateSuccess(collection);
             }

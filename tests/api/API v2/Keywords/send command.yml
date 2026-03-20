@@ -1,0 +1,60 @@
+info:
+  name: send command
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/:keywordId/command/:command
+  params:
+    - name: keywordId
+      value: ""
+      type: path
+      description: "[Required] Value/command to send (depending on keyword type)"
+    - name: command
+      value: ""
+      type: path
+      description: "[Optional if keyword is an event] The command to send"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: send command to switch keyword
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/32/command/1
+      method: POST
+    response:
+      status: 204
+      statusText: No Content
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+  - name: send command to event keyword
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/33/command/
+      method: POST
+    response:
+      status: 204
+      statusText: No Content
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""

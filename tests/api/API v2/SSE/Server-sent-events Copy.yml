@@ -1,0 +1,20 @@
+info:
+  name: Server-sent-events Copy
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/sse/acquisitions/:keywords
+  params:
+    - name: keywords
+      value: 1|2|3|4|5|6|7
+      type: path
+      description: List of observed keywords, as json array
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

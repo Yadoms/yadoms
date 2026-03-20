@@ -1,0 +1,70 @@
+info:
+  name: instance binding
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances/:idPluginInstance/binding/:query
+  params:
+    - name: idPluginInstance
+      value: "2"
+      type: path
+      description: "[Required] Plugin instance ID"
+    - name: query
+      value: test
+      type: path
+      description: Name of binding query (depends on plugin type)
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: Command "test" on plugin instance ID 2
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances/:idPluginInstance/binding/:query
+      method: GET
+      params:
+        - name: idPluginInstance
+          value: "2"
+          type: path
+          description: "[Required] Plugin instance ID"
+        - name: query
+          value: test
+          type: path
+          description: Name of binding query (depends on plugin type)
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "257"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "interval": {
+                  "name": "Interval of the chart",
+                  "description": "Permit to change the interval of all the chart",
+                  "type": "enum",
+                  "values": {
+                      "HOUR": "1 hour",
+                      "DAY": "1 day",
+                      "WEEK": "1 week",
+                      "MONTH": "1 month",
+                      "HALF_YEAR": "6 months",
+                      "YEAR": "1 year"
+                  },
+                  "defaultValue": "DAY"
+              }
+          }

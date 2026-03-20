@@ -1,0 +1,56 @@
+info:
+  name: create acquisition export
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/acquisitions
+  headers:
+    - name: Content-Type
+      value: application/x-www-form-urlencoded
+  body:
+    type: form-urlencoded
+    data:
+      - name: id
+        value: "25"
+        description: Keyword ID to export data
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: create acquisition export
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/acquisitions
+      method: POST
+      headers:
+        - name: Content-Type
+          value: application/x-www-form-urlencoded
+      body:
+        type: form-urlencoded
+        data:
+          - name: id
+            value: "25"
+            description: Keyword ID to export data
+    response:
+      status: 202
+      statusText: Accepted
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: tasks/87f9aef7-c647-4e27-96c0-454e960d9dd4
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+
+docs: Start a new logs packaging (returns ID of the created task)

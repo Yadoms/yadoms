@@ -1,0 +1,401 @@
+info:
+  name: create fakePlugin instance
+  type: http
+  seq: 11
+
+http:
+  method: POST
+  url: http://127.0.0.1:8080/rest/v2/plugins-instances
+  body:
+    type: json
+    data: "{\r
+
+      \    \"type\": \"dev-fakePlugin\",\r
+
+      \    \"displayName\": \"fake1\",\r
+
+      \    \"configuration\": {\r
+
+      \        \"StringParameter\": {\r
+
+      \            \"type\": \"string\",\r
+
+      \            \"name\": \"Un exemple de chaîne\",\r
+
+      \            \"description\": \"Voici un exemple de paramètre chaîne. Les champs de description supportent [les liens](http://www.yadoms.com)\",\r
+
+      \            \"value\": \"test\"\r
+
+      \        },\r
+
+      \        \"BoolParameter\": {\r
+
+      \            \"type\": \"bool\",\r
+
+      \            \"defaultValue\": false,\r
+
+      \            \"name\": \"Un exemple de booléen\",\r
+
+      \            \"description\": \"Voici un exemple de paramètre booléen\",\r
+
+      \            \"value\": false\r
+
+      \        },\r
+
+      \        \"IntParameter\": {\r
+
+      \            \"type\": \"int\",\r
+
+      \            \"defaultValue\": 258,\r
+
+      \            \"name\": \"Un exemple d'entier\",\r
+
+      \            \"description\": \"Voici un exemple de paramètre entier\",\r
+
+      \            \"value\": 258\r
+
+      \        },\r
+
+      \        \"DecimalParameter\": {\r
+
+      \            \"type\": \"decimal\",\r
+
+      \            \"defaultValue\": 25.3,\r
+
+      \            \"name\": \"Un exemple de nombre décimal\",\r
+
+      \            \"description\": \"Maintenant un decimal\",\r
+
+      \            \"value\": 25.3\r
+
+      \        },\r
+
+      \        \"EnumParameter\": {\r
+
+      \            \"type\": \"enum\",\r
+
+      \            \"values\": {\r
+
+      \                \"EnumValue1\": \"Ma première valeur\",\r
+
+      \                \"EnumValue2\": \"Ma seconde valeur\",\r
+
+      \                \"EnumValue3\": \"Ma troisième valeur\"\r
+
+      \            },\r
+
+      \            \"defaultValue\": \"EnumValue2\",\r
+
+      \            \"name\": \"Un exemple d'énuméré personnalisé\",\r
+
+      \            \"description\": \"Exemple d'énuméré avec 3 valeurs\",\r
+
+      \            \"value\": \"EnumValue2\"\r
+
+      \        },\r
+
+      \        \"MySection\": {\r
+
+      \            \"type\": \"section\",\r
+
+      \            \"content\": {\r
+
+      \                \"SubIntParameter\": {\r
+
+      \                    \"type\": \"int\",\r
+
+      \                    \"defaultValue\": 65535,\r
+
+      \                    \"name\": \"Entier dans une section\",\r
+
+      \                    \"description\": \"Un exemple de paramètre entier dans une section\",\r
+
+      \                    \"value\": 65535\r
+
+      \                },\r
+
+      \                \"SubStringParameter\": {\r
+
+      \                    \"type\": \"string\",\r
+
+      \                    \"name\": \"Chaîne dans une section\",\r
+
+      \                    \"description\": \"Un exemple de paramètre chaîne dans une section\",\r
+
+      \                    \"defaultValue\": \"Les sous-sections rendent la configuration vraiment puissante !\",\r
+
+      \                    \"value\": \"Les sous-sections rendent la configuration vraiment puissante !\"\r
+
+      \                }\r
+
+      \            },\r
+
+      \            \"name\": \"Une section\",\r
+
+      \            \"description\": \"Exemple d'utilisation d'une section de configuration.\"\r
+
+      \        },\r
+
+      \        \"ConditionalParameter\": {\r
+
+      \            \"type\": \"string\",\r
+
+      \            \"defaultValue\": \"Si vous voyez ceci, c'est que Yadoms tourne sous Windows.\",\r
+
+      \            \"name\": \"Un paramètre conditionnel\",\r
+
+      \            \"description\": \"Ce paramètre n'est affiché que si une condition, validée par le serveur, est remplie. Dans ce cas présent, il n'est affiché que si le serveur est exécuté sous Windows.\",\r
+
+      \            \"show\": true,\r
+
+      \            \"value\": \"Si vous voyez ceci, c'est que Yadoms tourne sous Windows.\"\r
+
+      \        },\r
+
+      \        \"SystemData\": {\r
+
+      \            \"type\": \"section\",\r
+
+      \            \"content\": {\r
+
+      \                \"SerialPort\": {\r
+
+      \                    \"type\": \"enum\",\r
+
+      \                    \"values\": {\r
+
+      \                        \"\\\\\\\\.\\\\COM1\": \"COM1 (\\\\Device\\\\ProlificSerial0)\",\r
+
+      \                        \"\\\\\\\\.\\\\COM3\": \"COM3 (\\\\Device\\\\Serial0)\",\r
+
+      \                        \"\\\\\\\\.\\\\COM30\": \"COM30 (\\\\Device\\\\USBSER000)\"\r
+
+      \                    },\r
+
+      \                    \"name\": \"Port série\",\r
+
+      \                    \"description\": \"Ce paramètre fournit la liste des ports série du serveur\",\r
+
+      \                    \"value\": \"\\\\\\\\.\\\\COM1\"\r
+
+      \                },\r
+
+      \                \"UsbDevices\": {\r
+
+      \                    \"type\": \"enum\",\r
+
+      \                    \"values\": {\r
+
+      \                        \"\\\\\\\\?\\\\usb#vid_413c&pid_2010#d&1ab3202&0&1#{a5dcbf10-6530-11d2-901f-00c04fb951ed}\": \"Périphérique USB composite\"\r
+
+      \                    },\r
+
+      \                    \"name\": \"Périphérique USB\",\r
+
+      \                    \"description\": \"Ce paramètre fournit la liste des péripéhriques USB, filtrés par fabricant et produit\",\r
+
+      \                    \"value\": \"\\\\\\\\?\\\\usb#vid_413c&pid_2010#d&1ab3202&0&1#{a5dcbf10-6530-11d2-901f-00c04fb951ed}\"\r
+
+      \                },\r
+
+      \                \"NetworkInterfaces\": {\r
+
+      \                    \"type\": \"enum\",\r
+
+      \                    \"values\": {\r
+
+      \                        \"VirtualBox Host-Only Network\": \"VirtualBox Host-Only Ethernet Adapter (192.168.56.1)\",\r
+
+      \                        \"Ethernet sur docking\": \"Realtek USB GbE Family Controller #2 (172.20.0.240)\",\r
+
+      \                        \"vEthernet (Default Switch)\": \"Hyper-V Virtual Ethernet Adapter (172.18.144.1)\"\r
+
+      \                    },\r
+
+      \                    \"name\": \"Interface réseau\",\r
+
+      \                    \"description\": \"Ce paramètre fournit la liste des interfaces réseau du serveur\",\r
+
+      \                    \"value\": \"VirtualBox Host-Only Network\"\r
+
+      \                },\r
+
+      \                \"NetworkInterfacesWithoutLoopback\": {\r
+
+      \                    \"type\": \"enum\",\r
+
+      \                    \"values\": {\r
+
+      \                        \"Loopback Pseudo-Interface 1\": \"Software Loopback Interface 1 (127.0.0.1)\",\r
+
+      \                        \"VirtualBox Host-Only Network\": \"VirtualBox Host-Only Ethernet Adapter (192.168.56.1)\",\r
+
+      \                        \"Ethernet sur docking\": \"Realtek USB GbE Family Controller #2 (172.20.0.240)\",\r
+
+      \                        \"vEthernet (Default Switch)\": \"Hyper-V Virtual Ethernet Adapter (172.18.144.1)\"\r
+
+      \                    },\r
+
+      \                    \"name\": \"Interface réseau hors boucle locale\",\r
+
+      \                    \"description\": \"Ce paramètre fournit la liste des interfaces réseau du serveur, hors boucle locale\",\r
+
+      \                    \"value\": \"Loopback Pseudo-Interface 1\"\r
+
+      \                },\r
+
+      \                \"SupportedTimezones\": {\r
+
+      \                    \"type\": \"enum\",\r
+
+      \                    \"values\": {\r
+
+      \                        \"Africa/Accra\": \"Africa/Accra\",\r
+
+      \                        \"Antarctica/Casey\": \"Antarctica/Casey\",\r
+
+      \                        \"Antarctica/Davis\": \"Antarctica/Davis\",\r
+
+      \                        \"Antarctica/DumontDUrville\": \"Antarctica/DumontDUrville\",\r
+
+      \                        \"Antarctica/Mawson\": \"Antarctica/Mawson\",\r
+
+      \                        \"Antarctica/McMurdo\": \"Antarctica/McMurdo\",\r
+
+      \                        \"Antarctica/Palmer\": \"Antarctica/Palmer\",\r
+
+      \                        \"Antarctica/South_Pole\": \"Antarctica/South_Pole\",\r
+
+      \                        \"Antarctica/Syowa\": \"Antarctica/Syowa\",\r
+
+      \                        \"Antarctica/Vostok\": \"Antarctica/Vostok\",\r
+
+      \                        \"Europe/Amsterdam\": \"Europe/Amsterdam\",\r
+
+      \                        \"Europe/Andorra\": \"Europe/Andorra\",\r
+
+      \                        \"Europe/Athens\": \"Europe/Athens\",\r
+
+      \                        \"Europe/Belfast\": \"Europe/Belfast\",\r
+
+      \                        \"Europe/Belgrade\": \"Europe/Belgrade\",\r
+
+      \                        \"Europe/Berlin\": \"Europe/Berlin\",\r
+
+      \                        \"Europe/Bratislava\": \"Europe/Bratislava\",\r
+
+      \                        \"Europe/Brussels\": \"Europe/Brussels\",\r
+
+      \                        \"Europe/Bucharest\": \"Europe/Bucharest\",\r
+
+      \                        \"Europe/Budapest\": \"Europe/Budapest\",\r
+
+      \                        \"Europe/Chisinau\": \"Europe/Chisinau\",\r
+
+      \                        \"Europe/Copenhagen\": \"Europe/Copenhagen\",\r
+
+      \                        \"Europe/Dublin\": \"Europe/Dublin\",\r
+
+      \                        \"Europe/Gibraltar\": \"Europe/Gibraltar\",\r
+
+      \                        \"Europe/Helsinki\": \"Europe/Helsinki\",\r
+
+      \                        \"Europe/Istanbul\": \"Europe/Istanbul\",\r
+
+      \                        \"Europe/Kaliningrad\": \"Europe/Kaliningrad\",\r
+
+      \                        \"Europe/Kiev\": \"Europe/Kiev\",\r
+
+      \                        \"Europe/Lisbon\": \"Europe/Lisbon\",\r
+
+      \                        \"Europe/Ljubljana\": \"Europe/Ljubljana\",\r
+
+      \                        \"Europe/London\": \"Europe/London\",\r
+
+      \                        \"Europe/Luxembourg\": \"Europe/Luxembourg\",\r
+
+      \                        \"Europe/Madrid\": \"Europe/Madrid\",\r
+
+      \                        \"Europe/Malta\": \"Europe/Malta\",\r
+
+      \                        \"Europe/Minsk\": \"Europe/Minsk\",\r
+
+      \                        \"Europe/Monaco\": \"Europe/Monaco\",\r
+
+      \                        \"Europe/Moscow\": \"Europe/Moscow\",\r
+
+      \                        \"Europe/Nicosia\": \"Europe/Nicosia\",\r
+
+      \                        \"Europe/Oslo\": \"Europe/Oslo\",\r
+
+      \                        \"Europe/Paris\": \"Europe/Paris\",\r
+
+      \                        \"Europe/Prague\": \"Europe/Prague\",\r
+
+      \                        \"Europe/Riga\": \"Europe/Riga\",\r
+
+      \                        \"Europe/Rome\": \"Europe/Rome\",\r
+
+      \                        \"Europe/Samara\": \"Europe/Samara\",\r
+
+      \                        \"Europe/San_Marino\": \"Europe/San_Marino\",\r
+
+      \                        \"Europe/Sarajevo\": \"Europe/Sarajevo\",\r
+
+      \                        \"Europe/Simferopol\": \"Europe/Simferopol\",\r
+
+      \                        \"Europe/Skopje\": \"Europe/Skopje\",\r
+
+      \                        \"Europe/Sofia\": \"Europe/Sofia\",\r
+
+      \                        \"Europe/Stockholm\": \"Europe/Stockholm\",\r
+
+      \                        \"Europe/Tallinn\": \"Europe/Tallinn\",\r
+
+      \                        \"Europe/Tirane\": \"Europe/Tirane\",\r
+
+      \                        \"Europe/Uzhgorod\": \"Europe/Uzhgorod\",\r
+
+      \                        \"Europe/Vaduz\": \"Europe/Vaduz\",\r
+
+      \                        \"Europe/Vatican\": \"Europe/Vatican\",\r
+
+      \                        \"Europe/Vienna\": \"Europe/Vienna\",\r
+
+      \                        \"Europe/Vilnius\": \"Europe/Vilnius\",\r
+
+      \                        \"Europe/Warsaw\": \"Europe/Warsaw\",\r
+
+      \                        \"Europe/Zagreb\": \"Europe/Zagreb\",\r
+
+      \                        \"Europe/Zaporozhye\": \"Europe/Zaporozhye\",\r
+
+      \                        \"Europe/Zurich\": \"Europe/Zurich\"\r
+
+      \                    },\r
+
+      \                    \"name\": \"Fuseau horaire\",\r
+
+      \                    \"description\": \"Ce paramètre fournit la liste des fuseaux horaires\",\r
+
+      \                    \"value\": \"Africa/Accra\"\r
+
+      \                }\r
+
+      \            },\r
+
+      \            \"name\": \"Données système\",\r
+
+      \            \"description\": \"Permet à l'utilisateur de sélectionner une ressource du serveur (port série, périphérique USB...)\"\r
+
+      \        }\r
+
+      \    }\r
+
+      }"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

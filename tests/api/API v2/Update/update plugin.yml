@@ -1,0 +1,56 @@
+info:
+  name: update plugin
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates/plugins/:pluginName/:version
+  params:
+    - name: pluginName
+      value: RfxLanXpl
+      type: path
+      description: The plugin name
+    - name: version
+      value: 1.0.0-beta
+      type: path
+      description: The requested version
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: update plugin
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates/plugins/:pluginName/:version
+      method: POST
+      params:
+        - name: pluginName
+          value: RfxLanXpl
+          type: path
+          description: The plugin name
+        - name: version
+          value: 1.0.0-beta
+          type: path
+          description: The requested version
+    response:
+      status: 202
+      statusText: Accepted
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: tasks/77289bf6-f2df-499e-9977-022e57294edf
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+
+docs: Update or install a plugin

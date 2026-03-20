@@ -1,0 +1,38 @@
+info:
+  name: create backup
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: create backup
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups
+      method: POST
+    response:
+      status: 202
+      statusText: Accepted
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: tasks/ca86fc5d-b0c4-4ce7-85c9-8804c9263985
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+
+docs: Start a new backup (returns ID of the created task)

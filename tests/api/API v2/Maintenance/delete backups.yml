@@ -1,0 +1,62 @@
+info:
+  name: delete backups
+  type: http
+  seq: 3
+
+http:
+  method: DELETE
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups/:url
+  params:
+    - name: url
+      value: backup_20211206T231010.849729.zip
+      type: path
+      description: "[optional] Delete all backups if omitted"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: delete one backup
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups/:url
+      method: DELETE
+      params:
+        - name: url
+          value: backup_20211209T000355.302488.zip
+          type: path
+    response:
+      status: 204
+      statusText: No Content
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+  - name: delete all backups
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups/
+      method: DELETE
+    response:
+      status: 204
+      statusText: No Content
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+
+docs: Delete backup(s)

@@ -1,0 +1,235 @@
+info:
+  name: Virtual devices supported capacities
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/virtual-devices-supported-capacities
+  params:
+    - name: prop
+      value: name|unit
+      type: query
+      description: |-
+        [optional] Set of flags of required values.Returns all values if omitted.
+        Supported values : name|unit|type
+      disabled: true
+  body:
+    type: text
+    data: ""
+  auth:
+    type: bearer
+    token: jhh
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: Virtual devices supported capacities for a given capacity
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/virtual-devices-supported-capacities/apparentpower?prop=name|unit
+      method: GET
+      params:
+        - name: prop
+          value: name|unit
+          type: query
+          description: name|unit|type
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "72"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "capacities": [
+                  {
+                      "name": "apparentpower",
+                      "unit": "data.units.voltAmpere"
+                  }
+              ]
+          }
+  - name: all virtual devices supported capacities (get name and unit)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/virtual-devices-supported-capacities?prop=name|unit
+      method: GET
+      params:
+        - name: prop
+          value: name|unit
+          type: query
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "1706"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "capacities": [
+                  {
+                      "name": "apparentpower",
+                      "unit": "data.units.voltAmpere"
+                  },
+                  {
+                      "name": "armingAlarm",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "batteryLevel",
+                      "unit": "data.units.percent"
+                  },
+                  {
+                      "name": "cameraMove",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "colorrgb",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "colorrgbw",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "count",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "current",
+                      "unit": "data.units.ampere"
+                  },
+                  {
+                      "name": "curtain",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "dimmable",
+                      "unit": "data.units.percent"
+                  },
+                  {
+                      "name": "direction",
+                      "unit": "data.units.degrees"
+                  },
+                  {
+                      "name": "distance",
+                      "unit": "data.units.meter"
+                  },
+                  {
+                      "name": "duration",
+                      "unit": "data.units.second"
+                  },
+                  {
+                      "name": "energy",
+                      "unit": "data.units.wattPerHour"
+                  },
+                  {
+                      "name": "event",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "frequency",
+                      "unit": "data.units.hertz"
+                  },
+                  {
+                      "name": "humidity",
+                      "unit": "data.units.percent"
+                  },
+                  {
+                      "name": "illumination",
+                      "unit": "data.units.lux"
+                  },
+                  {
+                      "name": "load",
+                      "unit": "data.units.percent"
+                  },
+                  {
+                      "name": "power",
+                      "unit": "data.units.watt"
+                  },
+                  {
+                      "name": "powerFactor",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "pressure",
+                      "unit": "data.units.hectoPascal"
+                  },
+                  {
+                      "name": "rain",
+                      "unit": "data.units.millimeter"
+                  },
+                  {
+                      "name": "rainrate",
+                      "unit": "data.units.millimeterPerSecond"
+                  },
+                  {
+                      "name": "rssi",
+                      "unit": "data.units.decibelPerMilliWatt"
+                  },
+                  {
+                      "name": "speed",
+                      "unit": "data.units.metersPerSecond"
+                  },
+                  {
+                      "name": "switch",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "temperature",
+                      "unit": "data.units.degreesCelcius"
+                  },
+                  {
+                      "name": "text",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "upDownStop",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "uv",
+                      "unit": "data.units.uv"
+                  },
+                  {
+                      "name": "voltage",
+                      "unit": "data.units.volt"
+                  },
+                  {
+                      "name": "volume",
+                      "unit": "data.units.cubicMetre"
+                  },
+                  {
+                      "name": "weathercondition",
+                      "unit": "data.units.noUnit"
+                  },
+                  {
+                      "name": "weight",
+                      "unit": "data.units.kg"
+                  }
+              ]
+          }

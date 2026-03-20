@@ -1,0 +1,114 @@
+info:
+  name: widget
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/widgets/:id?page=0&prop=id|page|type|position|title|configuration
+  params:
+    - name: page
+      value: "0"
+      type: query
+    - name: prop
+      value: id|page|type|position|title|configuration
+      type: query
+    - name: id
+      value: "1"
+      type: path
+  auth: inherit
+
+runtime:
+  variables:
+    - name: yadoms_ip
+      value: 127.0.0.1
+    - name: yadoms_port_v2
+      value: "8080"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: example
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/widgets/:id?page=0&prop=id|page|type|position|title|configuration
+      method: GET
+      params:
+        - name: page
+          value: "0"
+          type: query
+        - name: prop
+          value: id|page|type|position|title|configuration
+          type: query
+        - name: id
+          value: "1"
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: access-control-allow-origin
+          value: "*"
+        - name: server
+          value: yadoms/2.5.3
+        - name: connection
+          value: keep-alive
+        - name: content-type
+          value: application/json
+        - name: access-control-max-age
+          value: "1728000"
+        - name: access-control-allow-methods
+          value: GET, POST, OPTIONS, PATCH
+        - name: access-control-allow-headers
+          value: DNT, User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Type, Range, Authorization
+        - name: content-length
+          value: "452"
+      body:
+        type: json
+        data: |-
+          {
+            "id": 1,
+            "page": 0,
+            "type": "switch",
+            "position": 0,
+            "title": "My switch",
+            "configuration": {
+              "additionalDevices": {
+                "checkbox": "false",
+                "content": {
+                  "devices": ""
+                }
+              },
+              "device": {
+                "deviceId": "65",
+                "keywordId": "179"
+              },
+              "invert": "false",
+              "kind": {
+                "activeSection": "toggle",
+                "content": {
+                  "horizontalInverter": {
+                    "content": "",
+                    "radio": "false"
+                  },
+                  "pushButton": {
+                    "content": {
+                      "icon": ""
+                    },
+                    "radio": "false"
+                  },
+                  "toggle": {
+                    "content": "",
+                    "radio": "true"
+                  },
+                  "verticalInverter": {
+                    "content": "",
+                    "radio": "false"
+                  }
+                }
+              }
+            }
+          }
