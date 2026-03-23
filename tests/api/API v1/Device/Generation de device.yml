@@ -1,0 +1,18 @@
+info:
+  name: Generation de device
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/device/generate/rfxcom-lan.0004a31bb6d7/ac.basic
+  headers:
+    - name: Content-Type
+      value: application/json
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

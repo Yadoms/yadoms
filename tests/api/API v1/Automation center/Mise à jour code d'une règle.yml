@@ -1,0 +1,24 @@
+info:
+  name: Mise à jour code d'une règle
+  type: http
+  seq: 7
+
+http:
+  method: PUT
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/automation/rule/1/code
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+          "code" : "import%20time%0Aimport%20yScriptApiWrapper%0A%0Adef%20yMain(yApi)%3A%0A%20%20%20print%20%22%3C%3C%3C%20DEBUT%20(code%20modifie)%20%3E%3E%3E%22%0A%20%20%20temperature%20%3D%20float(yApi.readKeyword(9))%0A%20%20%20print%20%22Temperature%20actuelle%20%3A%20%22%2C%20temperature%0A%20%20%20if%20temperature%20%3E%3D%2035%3A%0A%20%20%20%20%20%20print%20%22Fait%20une%20chaleur%20la-dedans%20!%20!%20!%20STOP%20CHAUFFAGE%20!%20!%20!%22%0A%20%20%20%20%20%20yApi.writeKeyword(18%2C%20%220%22)%0A%20%20%20else%3A%0A%20%20%20%20%20%20print%20%22Brrr...%20DEMARRAGE%20CHAUFFAGE%22%0A%20%20%20%20%20%20yApi.writeKeyword(18%2C%20%221%22)%0A%20%20%20print%20%22%23%23%23%20FIN%20%23%23%23%22%0A%20%20%20time.sleep(5)%0A%20%20%20"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

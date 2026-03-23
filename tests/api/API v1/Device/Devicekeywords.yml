@@ -1,0 +1,33 @@
+info:
+  name: Devicekeywords
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/device/keywordslastvalue
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: "{\r
+
+      \   \"keywordIds\": [\r
+
+      \      \"10\",\r
+
+      \      \"15\",\r
+
+      \      \"18\"\r
+
+      \   ]\r
+
+      }\r\n"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

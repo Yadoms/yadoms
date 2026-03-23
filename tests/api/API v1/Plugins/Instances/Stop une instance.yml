@@ -1,0 +1,20 @@
+info:
+  name: Stop une instance
+  type: http
+  seq: 2
+
+http:
+  method: PUT
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/plugin/4/stop
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: multipart-form
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

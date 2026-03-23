@@ -1,0 +1,24 @@
+info:
+  name: Update keyword friendly name
+  type: http
+  seq: 10
+
+http:
+  method: PUT
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/device/keyword/1
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "friendlyName" : "toto"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

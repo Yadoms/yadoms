@@ -1,0 +1,7 @@
+info:
+  name: Automation center
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
