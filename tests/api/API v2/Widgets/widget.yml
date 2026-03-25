@@ -5,11 +5,8 @@ info:
 
 http:
   method: GET
-  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/widgets/:id?page=0&prop=id|page|type|position|title|configuration
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/widgets/:id?prop=id|page|type|position|title|configuration
   params:
-    - name: page
-      value: "0"
-      type: query
     - name: prop
       value: id|page|type|position|title|configuration
       type: query
@@ -34,12 +31,9 @@ settings:
 examples:
   - name: example
     request:
-      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/widgets/:id?page=0&prop=id|page|type|position|title|configuration
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/widgets/:id?prop=id|page|type|position|title|configuration
       method: GET
       params:
-        - name: page
-          value: "0"
-          type: query
         - name: prop
           value: id|page|type|position|title|configuration
           type: query

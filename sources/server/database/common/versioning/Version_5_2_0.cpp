@@ -85,7 +85,7 @@ namespace database
             }
             catch (std::exception& ex)
             {
-               YADOMS_LOG(fatal) << "Failed to upgrade database (5.0.0 -> 5.1.0) : " << ex.what();
+               YADOMS_LOG(fatal) << "Failed to upgrade database (5.1.0 -> 5.2.0) : " << ex.what();
                YADOMS_LOG(fatal) << "Rollback transaction";
                if (requester->transactionSupport())
                   requester->transactionRollback();
