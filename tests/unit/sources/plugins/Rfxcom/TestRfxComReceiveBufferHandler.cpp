@@ -7,9 +7,6 @@
 
 #include "../../mock/shared/currentTime/DefaultCurrentTimeMock.h"
 
-// Includes needed to compile the test
-#include "../../testCommon/fileSystem.h"
-
 
 BOOST_AUTO_TEST_SUITE(TestRfxComReceiveBufferHandler)
 
@@ -50,7 +47,7 @@ BOOST_AUTO_TEST_SUITE(TestRfxComReceiveBufferHandler)
          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // msg[9-16]
       };
 
-      auto timeProviderMock = useTimeMock();
+      const auto timeProviderMock = useTimeMock();
 
       shared::event::CEventHandler evtHandler;
       CRfxcomReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId);

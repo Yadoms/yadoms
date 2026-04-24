@@ -10,6 +10,8 @@ namespace dataAccessLayer
    class IDataAccessLayer
    {
    public:
+      virtual ~IDataAccessLayer() = default;
+
       //--------------------------------------------------------------
       /// \brief  Get device manager
       //--------------------------------------------------------------
@@ -34,13 +36,6 @@ namespace dataAccessLayer
       /// \brief  Get the event logger
       //--------------------------------------------------------------
       virtual boost::shared_ptr<IEventLogger> getEventLogger() const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief  Destructor
-      //--------------------------------------------------------------
-      virtual ~IDataAccessLayer()
-      {
-      }
    };
 } //namespace dataAccessLayer 
 

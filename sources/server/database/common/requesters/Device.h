@@ -12,7 +12,7 @@ namespace database
          //--------------------------------------------------------------
          /// \Brief		   Device requester for SQLite database
          //--------------------------------------------------------------
-         class CDevice : public IDeviceRequester
+         class CDevice final : public IDeviceRequester
          {
          public:
             //--------------------------------------------------------------
@@ -20,8 +20,7 @@ namespace database
             /// \param [in]	databaseRequester the database requester
             //--------------------------------------------------------------
             explicit CDevice(boost::shared_ptr<IDatabaseRequester> databaseRequester);
-
-            virtual ~CDevice() = default;
+            ~CDevice() override = default;
 
             // IDeviceRequester implementation
             bool deviceExists(int deviceId) const override;
@@ -38,20 +37,19 @@ namespace database
                                                               const std::string& type,
                                                               const std::string& model,
                                                               boost::shared_ptr<shared::CDataContainer> details) override;
-            std::vector<boost::shared_ptr<entities::CDevice>> getDevices(bool blacklistedIncluded = false) const
-            override;
+            boost::shared_ptr<entities::CDevice> createDevice(boost::shared_ptr<entities::CDevice> device) override;
+            std::vector<boost::shared_ptr<entities::CDevice>> getDevices(bool blacklistedIncluded = false) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(const std::set<int>& deviceIds) const override;
             std::vector<std::string> getDevicesNames(int pluginId,
                                                      bool blacklistedIncluded = false) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(int pluginId,
-                                                                         bool blacklistedIncluded = false) const
-            override;
+                                                                         bool blacklistedIncluded = false) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(const std::vector<std::string>& names,
                                                                          bool blacklistedIncluded) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevicesIdFromFriendlyName(const std::string& friendlyName) const override;
-            std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,
-                                                                                    const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode)
-            const override;
+            std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacity(
+               const std::string& capacityName,
+               const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacityType(
                const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
                const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const override;
@@ -59,6 +57,32 @@ namespace database
                const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithKeywordHistoryDepth(
                const shared::plugin::yPluginApi::EHistoryDepth& historyDepth) const override;
+            std::vector<boost::shared_ptr<entities::CDevice>> getDevices(
+               const boost::optional<int>& deviceId,
+               const boost::optional<int>& pluginInstanceId,
+               const boost::optional<std::string>& friendlyName,
+               const boost::optional<std::string>& type,
+               const boost::optional<std::string>& model,
+               const std::set<std::string>& containsKeywordWithCapacityName,
+               const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
+               const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
+               const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
+               bool blacklistedIncluded) const override;
+            void getDevices(
+               const boost::optional<int>& deviceId,
+               const boost::optional<int>& pluginInstanceId,
+               const boost::optional<std::string>& friendlyName,
+               const boost::optional<std::string>& type,
+               const boost::optional<std::string>& model,
+               const std::set<std::string>& containsKeywordWithCapacityName,
+               const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
+               const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
+               const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
+               bool blacklistedIncluded,
+               const boost::optional<int>& page,
+               const boost::optional<int>& pageSize,
+               std::function<void(std::vector<boost::shared_ptr<entities::CDevice>>,
+                                  int)> onDone) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getCompatibleForMergeDevice(int refDevice) const override;
             void updateDeviceFriendlyName(int deviceId,
                                           const std::string& newFriendlyName) override;
@@ -75,14 +99,30 @@ namespace database
                                             bool blacklist) override;
             void updateDeviceName(int deviceId,
                                   const std::string& newName) override;
+            void updateDevice(const entities::CDevice& device) const override;
             bool isDeviceBlacklisted(int deviceId) const override;
             void removeDevice(int deviceId) override;
             void removeDevice(int pluginId,
                               const std::string& deviceName) override;
             void removeAllDeviceForPlugin(int pluginId) override;
-            // [END] IDeviceRequester implementation
 
          private:
+            CQuery& addDevicesQueryFilters(
+               CQuery& query,
+               const boost::optional<int>& deviceId,
+               const boost::optional<int>& pluginInstanceId,
+               const boost::optional<std::string>& friendlyName,
+               const boost::optional<std::string>& type,
+               const boost::optional<std::string>& model,
+               const std::set<std::string>& containsKeywordWithCapacityName,
+               const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>&
+               containsKeywordWithAccessMode,
+               const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
+               const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>&
+               containsKeywordWithHistoryDepth,
+               bool blacklistedIncluded) const;
+            // [END] IDeviceRequester implementation
+
             boost::shared_ptr<IDatabaseRequester> m_databaseRequester;
          };
       } //namespace requesters

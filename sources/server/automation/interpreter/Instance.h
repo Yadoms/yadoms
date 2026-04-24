@@ -13,7 +13,7 @@ namespace automation
       class CInstance : public IInstance
       {
       public:
-         CInstance(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+         CInstance(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                    const boost::filesystem::path& logPath,
                    boost::shared_ptr<shared::process::IProcess> process,
                    boost::shared_ptr<IIpcAdapter> ipcAdapter);

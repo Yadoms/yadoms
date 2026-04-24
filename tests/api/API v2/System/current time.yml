@@ -1,0 +1,47 @@
+info:
+  name: current time
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/current-time
+  body:
+    type: text
+    data: ""
+  auth:
+    type: bearer
+    token: jhh
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: current time
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/current-time
+      method: GET
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "32"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "now": "20211108T225500.820382"
+          }

@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "DeviceCommand.h"
 
+#include <utility>
+
 namespace pluginSystem
 {
-   CDeviceCommand::CDeviceCommand(const std::string& targetDevice,
-                                  boost::shared_ptr<const database::entities::CKeyword> keyword,
+   CDeviceCommand::CDeviceCommand(std::string targetDevice,
+                                  const boost::shared_ptr<const database::entities::CKeyword>& keyword,
                                   const std::string& body)
-      : m_device(targetDevice),
+      : m_device(std::move(targetDevice)),
         m_keyword(keyword),
         m_body(body),
         m_historizableObject(keyword, body)
-   {
-   }
-
-   CDeviceCommand::~CDeviceCommand()
    {
    }
 

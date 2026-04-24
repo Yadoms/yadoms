@@ -17,7 +17,7 @@ namespace xplrules
       {
       public:
          CAcBasic();
-         virtual ~CAcBasic();
+         ~CAcBasic() override;
 
          //------------------------------------
          ///\brief Provide the xpl protocol implemented by this class
@@ -52,7 +52,7 @@ namespace xplrules
             ((Off))
             ((On))
             ((Dim))
-         ) ;
+         )
 
       private:
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MegatecUps.h"
+
 #include <fstream>
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include "MegatecUpsFactory.h"

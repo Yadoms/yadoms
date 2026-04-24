@@ -1,3 +1,6 @@
+### 1.3.2
+* Use new configuration format
+
 ### 1.3.1
 * Fix #703 : Fix some English translations
 

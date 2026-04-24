@@ -61,14 +61,13 @@
       }
     },
     "PINCode": {
-      "type": "section",
-      "enableWithCheckBox": "true",
-      "enableWithCheckBoxDefaultValue": "false",
+      "type": "checkboxSection",
+      "defaultValue": false,
       "content": {
         "PIN": {
           "type": "string",
           "regex": "[0-9]{4}",
-          "encrypted": "true"
+          "encrypted": true
         }
       }
     }

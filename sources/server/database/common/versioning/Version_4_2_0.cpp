@@ -17,14 +17,6 @@ namespace database
          // Modify this version to a greater value, to force update of current version
          const shared::versioning::CSemVer CVersion_4_2_0::Version(4, 2, 0);
 
-         CVersion_4_2_0::CVersion_4_2_0()
-         {
-         }
-
-         CVersion_4_2_0::~CVersion_4_2_0()
-         {
-         }
-
          void CVersion_4_2_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& requester,
                                               const shared::versioning::CSemVer& currentVersion)
          {
@@ -42,6 +34,7 @@ namespace database
             }
          }
 
+         // ReSharper disable once CppInconsistentNaming
          void CVersion_4_2_0::updateFrom4_1_0(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             try
@@ -133,42 +126,42 @@ namespace database
          {
             if (requester->supportInsertOrUpdateStatement())
             {
-               auto qInsert = requester->newQuery();
+               const auto qInsert = requester->newQuery();
                qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
-                  CConfigurationTable::getSectionColumnName(),
-                  CConfigurationTable::getValueColumnName(),
-                  CConfigurationTable::getLastModificationDateColumnName()).
-                  Values("databaseVersion", newVersion.toString(), insertDate);
+                                            CConfigurationTable::getSectionColumnName(),
+                                            CConfigurationTable::getValueColumnName(),
+                                            CConfigurationTable::getLastModificationDateColumnName()).
+                        Values("databaseVersion", newVersion.toString(), insertDate);
                requester->queryStatement(*qInsert);
             }
             else
             {
-               auto query = requester->newQuery();
+               const auto query = requester->newQuery();
                query->Update(CConfigurationTable::getTableName())
-                  .Set(CConfigurationTable::getSectionColumnName(), "databaseVersion",
-                       CConfigurationTable::getValueColumnName(), newVersion.toString(),
-                       CConfigurationTable::getLastModificationDateColumnName(), insertDate);
+                    .Set(CConfigurationTable::getSectionColumnName(), "databaseVersion",
+                         CConfigurationTable::getValueColumnName(), newVersion.toString(),
+                         CConfigurationTable::getLastModificationDateColumnName(), insertDate);
                if (requester->queryStatement(*query) <= 0)
                {
                   //fail to update, then insert
                   //insert
-                  auto qInsert = requester->newQuery();
+                  const auto qInsert = requester->newQuery();
                   qInsert->InsertInto(CConfigurationTable::getTableName(),
-                     CConfigurationTable::getSectionColumnName(),
-                     CConfigurationTable::getValueColumnName(),
-                     CConfigurationTable::getLastModificationDateColumnName()).
-                     Values("databaseVersion", newVersion.toString(), insertDate);
+                                      CConfigurationTable::getSectionColumnName(),
+                                      CConfigurationTable::getValueColumnName(),
+                                      CConfigurationTable::getLastModificationDateColumnName()).
+                           Values("databaseVersion", newVersion.toString(), insertDate);
                   requester->queryStatement(*qInsert);
                }
             }
          }
 
          template <typename T>
-         boost::optional<T> loadConfigurationValue(const boost::shared_ptr<IDatabaseRequester>& requester,
+         boost::optional<T> LoadConfigurationValue(const boost::shared_ptr<IDatabaseRequester>& requester,
                                                    const std::string& section,
                                                    const std::string& name)
          {
-            auto loadQuery = requester->newQuery();
+            const auto loadQuery = requester->newQuery();
             loadQuery->Select(CDatabaseColumn("value")).
                        From(CDatabaseTable("Configuration")).
                        Where(CDatabaseColumn("section"), CQUERY_OP_EQUAL, section).
@@ -181,49 +174,49 @@ namespace database
 
          boost::optional<bool> CVersion_4_2_0::loadFirstStart(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
-            return loadConfigurationValue<bool>(requester,
+            return LoadConfigurationValue<bool>(requester,
                                                 "install",
                                                 "firstStart");
          }
 
          boost::optional<std::string> CVersion_4_2_0::loadLocation(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
-            return loadConfigurationValue<std::string>(requester,
+            return LoadConfigurationValue<std::string>(requester,
                                                        "system",
                                                        "location");
          }
 
          boost::optional<std::string> CVersion_4_2_0::loadLanguage(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
-            return loadConfigurationValue<std::string>(requester,
+            return LoadConfigurationValue<std::string>(requester,
                                                        "system",
                                                        "language");
          }
 
          boost::optional<bool> CVersion_4_2_0::loadAdvancedParameters(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
-            return loadConfigurationValue<bool>(requester,
+            return LoadConfigurationValue<bool>(requester,
                                                 "system",
                                                 "advancedParameters");
          }
 
          boost::optional<std::string> CVersion_4_2_0::loadDateFormatString(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
-            return loadConfigurationValue<std::string>(requester,
+            return LoadConfigurationValue<std::string>(requester,
                                                        "system",
                                                        "dateFormatString");
          }
 
          boost::optional<bool> CVersion_4_2_0::loadRefreshPage(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
-            return loadConfigurationValue<bool>(requester,
+            return LoadConfigurationValue<bool>(requester,
                                                 "system",
                                                 "refreshPage");
          }
 
          boost::optional<std::string> CVersion_4_2_0::loadBasicAuthentication(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
-            return loadConfigurationValue<std::string>(requester,
+            return LoadConfigurationValue<std::string>(requester,
                                                        "system",
                                                        "basicAuthentication");
          }
@@ -260,31 +253,31 @@ namespace database
          {
             if (requester->supportInsertOrUpdateStatement())
             {
-               auto qInsert = requester->newQuery();
+               const auto qInsert = requester->newQuery();
                qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
-                  CConfigurationTable::getSectionColumnName(),
-                  CConfigurationTable::getValueColumnName(),
-                  CConfigurationTable::getLastModificationDateColumnName()).
-                  Values(section, value.serialize(), insertDate);
+                                            CConfigurationTable::getSectionColumnName(),
+                                            CConfigurationTable::getValueColumnName(),
+                                            CConfigurationTable::getLastModificationDateColumnName()).
+                        Values(section, value.serialize(), insertDate);
                requester->queryStatement(*qInsert);
             }
             else
             {
-               auto query = requester->newQuery();
+               const auto query = requester->newQuery();
                query->Update(CConfigurationTable::getTableName())
-                  .Set(CConfigurationTable::getSectionColumnName(), section,
-                       CConfigurationTable::getValueColumnName(), value.serialize(),
-                       CConfigurationTable::getLastModificationDateColumnName(), insertDate);
+                    .Set(CConfigurationTable::getSectionColumnName(), section,
+                         CConfigurationTable::getValueColumnName(), value.serialize(),
+                         CConfigurationTable::getLastModificationDateColumnName(), insertDate);
                if (requester->queryStatement(*query) <= 0)
                {
                   //fail to update, then insert
                   //insert
-                  auto qInsert = requester->newQuery();
+                  const auto qInsert = requester->newQuery();
                   qInsert->InsertInto(CConfigurationTable::getTableName(),
-                     CConfigurationTable::getSectionColumnName(),
-                     CConfigurationTable::getValueColumnName(),
-                     CConfigurationTable::getLastModificationDateColumnName()).
-                     Values(section, value.serialize(), insertDate);
+                                      CConfigurationTable::getSectionColumnName(),
+                                      CConfigurationTable::getValueColumnName(),
+                                      CConfigurationTable::getLastModificationDateColumnName()).
+                           Values(section, value.serialize(), insertDate);
                   requester->queryStatement(*qInsert);
                }
             }

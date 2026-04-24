@@ -1,0 +1,61 @@
+info:
+  name: network interfaces
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/network-interfaces?withLoopback=
+  params:
+    - name: withLoopback
+      value: ""
+      type: query
+      description: "[optional] Returns also loopback interface (localhost) if provided"
+  body:
+    type: text
+    data: ""
+  auth:
+    type: bearer
+    token: jhh
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: network interfaces
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/network-interfaces?withLoopback=
+      method: GET
+      params:
+        - name: withLoopback
+          value: ""
+          type: query
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "313"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "networkInterfaces": {
+                  "Loopback Pseudo-Interface 1": "Software Loopback Interface 1 (127.0.0.1)",
+                  "Ethernet": "Intel(R) Ethernet Connection (2) I218-V (192.168.0.8)",
+                  "Ethernet 2": "SAMSUNG Mobile USB Remote NDIS Network Device #3 (192.168.76.131)",
+                  "Ethernet 4": "VirtualBox Host-Only Ethernet Adapter (192.168.56.1)"
+              }
+          }

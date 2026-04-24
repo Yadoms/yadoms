@@ -12,11 +12,12 @@ namespace database
          //
          /// \brief Database version update manager
          //
+         // ReSharper disable once CppInconsistentNaming
          class CVersion_5_1_0 : public CVersion_5_0_0
          {
          public:
             CVersion_5_1_0() = default;
-            virtual ~CVersion_5_1_0() = default;
+            ~CVersion_5_1_0() override = default;
 
             // ISQLiteVersionUpgrade implementation
             void checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& requester,
@@ -26,6 +27,7 @@ namespace database
          private:
             static const shared::versioning::CSemVer Version;
 
+            // ReSharper disable once CppInconsistentNaming
             static void updateFrom5_0_0(const boost::shared_ptr<IDatabaseRequester>& requester);
          };
       } //namespace versioning

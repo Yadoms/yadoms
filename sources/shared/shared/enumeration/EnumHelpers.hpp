@@ -1,10 +1,16 @@
 #pragma once
 
+#include <boost/format.hpp>
+#include <boost/preprocessor.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/type_traits/is_enum.hpp>
+#include <boost/utility/enable_if.hpp>
+
 #include "IExtendedEnum.h"
 #include <boost/algorithm/string.hpp>
+#include "shared/Log.h"
 #include "shared/exception/Exception.hpp"
 #include "shared/exception/OutOfRange.hpp"
-#include "shared/Log.h"
 
 /*
 

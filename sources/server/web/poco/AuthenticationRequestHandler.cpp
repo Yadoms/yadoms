@@ -9,8 +9,12 @@ namespace web
 {
    namespace poco
    {
-      CAuthenticationRequestHandler::CAuthenticationRequestHandler(boost::shared_ptr<authentication::IAuthentication> authenticator, boost::shared_ptr<HTTPRequestHandler> baseRequestHandler, bool allowAuthentication)
-         : m_authenticator(authenticator), m_baseRequestHandler(baseRequestHandler), m_bAllowAuthentication(allowAuthentication)
+      CAuthenticationRequestHandler::CAuthenticationRequestHandler(boost::shared_ptr<IAuthentication> authenticator,
+                                                                   boost::shared_ptr<HTTPRequestHandler> baseRequestHandler,
+                                                                   bool allowAuthentication)
+         : m_authenticator(authenticator),
+           m_baseRequestHandler(baseRequestHandler),
+           m_bAllowAuthentication(allowAuthentication)
       {
       }
 
@@ -67,5 +71,3 @@ namespace web
       }
    } //namespace poco
 } //namespace web
-
-

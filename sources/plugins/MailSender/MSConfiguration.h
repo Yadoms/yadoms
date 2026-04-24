@@ -24,6 +24,17 @@ public:
    // [END] ISIConfiguration implementation
 
 private:
+   enum Provider
+   {
+      kGmail,
+      kOutlook,
+      kOvh,
+      kYahoo,
+      kOther
+   };
+
+   static Provider getSelectedProvider(const boost::shared_ptr<shared::CDataContainer>& accountNode);
+
    //--------------------------------------------------------------
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------

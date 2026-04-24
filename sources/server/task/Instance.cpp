@@ -22,7 +22,6 @@ namespace task
       : CThreadBase("Task " + task->getName()),
         m_currentIsRunning(false),
         m_currentProgression(0.0f),
-        m_currentMessage(""),
         m_taskData(shared::CDataContainer::make()),
         m_task(task),
         m_eventHandler(std::move(eventHandler)),
@@ -85,7 +84,23 @@ namespace task
       return m_creationDate;
    }
 
-   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, const std::string& message, const std::string& exception,
+   bool CInstance::cancel(int waitForStopSeconds)
+   {
+      if (!m_task->isCancellable())
+         throw std::runtime_error("Try to cancel non-cancellable task");
+
+      CThreadBase::requestToStop();
+
+      if (waitForStopSeconds == NoWait)
+         return true;
+
+      return CThreadBase::waitForStop(waitForStopSeconds);
+   }
+
+   void CInstance::onTaskProgressUpdated(bool isRunning,
+                                         boost::optional<float> progression,
+                                         const std::string& message,
+                                         const std::string& exception,
                                          boost::shared_ptr<shared::CDataContainer> taskData)
    {
       if (!isRunning)
@@ -117,7 +132,7 @@ namespace task
    void CInstance::doWork()
    {
       BOOST_ASSERT(m_task);
-      YADOMS_LOG_CONFIGURE(m_task->getName());
+      YADOMS_LOG_CONFIGURE(m_task->getName())
 
       try
       {
@@ -125,18 +140,29 @@ namespace task
          m_currentStatus = ETaskStatus::kStarted;
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
-         OnTaskProgressUpdated(true, 0.0f, i18n::CClientStrings::TaskStarted, std::string(), shared::CDataContainer::make());
+         onTaskProgressUpdated(true, 0.0f, i18n::CClientStrings::TaskStarted, std::string(), shared::CDataContainer::make());
 
          // Execute task code
          m_task->onSetTaskId(getGuid());
-         m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, boost::placeholders::_1, boost::placeholders::_2,
-                                    boost::placeholders::_3, boost::placeholders::_4, boost::placeholders::_5));
+
+         m_task->doWork([this](bool isRunning,
+                               boost::optional<float> progression,
+                               const std::string& message,
+                               const std::string& exception,
+                               boost::shared_ptr<shared::CDataContainer> taskData)
+         {
+            onTaskProgressUpdated(isRunning,
+                                  progression,
+                                  message,
+                                  exception,
+                                  std::move(taskData));
+         });
 
          //check if task is still running (modified by callback)
          if (m_currentIsRunning && m_currentStatus != ETaskStatus::kSuccess)
          {
             m_currentStatus = ETaskStatus::kSuccess;
-            OnTaskProgressUpdated(true, 100.0, i18n::CClientStrings::TaskEnd, std::string(), shared::CDataContainer::make());
+            onTaskProgressUpdated(true, 100.0, i18n::CClientStrings::TaskEnd, std::string(), shared::CDataContainer::make());
          }
 
          //task event stopped
@@ -147,21 +173,21 @@ namespace task
          // End-of-thread exception was not catch by task,
          // it's a developer's error, we have to report it
          YADOMS_LOG(error) << m_task->getName() << " didn't catch boost::thread_interrupted.";
-         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskInterrupted, "Task interrupted.", shared::CDataContainer::make());
+         onTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskInterrupted, "Task interrupted.", shared::CDataContainer::make());
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
       catch (std::exception& e)
       {
          // Task crashed
          YADOMS_LOG(error) << m_task->getName() << " crashed in doWork with exception : " << e.what();
-         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskCrashed, e.what(), shared::CDataContainer::make());
+         onTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskCrashed, e.what(), shared::CDataContainer::make());
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
       catch (...)
       {
          // Plugin crashed
          YADOMS_LOG(error) << m_task->getName() << " crashed in doWork with unknown exception.";
-         OnTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskUnkownError, "unknown exception not catched", shared::CDataContainer::make());
+         onTaskProgressUpdated(false, 100.0, i18n::CClientStrings::TaskUnkownError, "unknown exception not catched", shared::CDataContainer::make());
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
    }

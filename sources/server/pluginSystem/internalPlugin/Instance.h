@@ -19,7 +19,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	this class is used to manage a plugin instance. 
       //--------------------------------------------------------------
-      class CInstance : public IInstance
+      class CInstance final : public IInstance
       {
       public:
          //--------------------------------------------------------------
@@ -34,10 +34,7 @@ namespace pluginSystem
                    boost::shared_ptr<yApi::IYPluginApi> api,
                    boost::shared_ptr<CInstanceStateHandler> instanceStateHandler);
 
-         //--------------------------------------------------------------
-         /// \brief	Destructor
-         //--------------------------------------------------------------
-         virtual ~CInstance() = default;
+         ~CInstance() override = default;
 
          // IInstance Implementation
          void updateConfiguration(const boost::shared_ptr<shared::CDataContainer>& newConfiguration) override;
@@ -55,19 +52,19 @@ namespace pluginSystem
          // [END] IInstance Implementation
 
       protected:
-         void doWorkThread(boost::shared_ptr<yApi::IYPluginApi> api,
-                           boost::shared_ptr<shared::event::CEventHandler> eventHandler,
-                           boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const;
+         void doWorkThread(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                           const boost::shared_ptr<shared::event::CEventHandler>& eventHandler,
+                           const boost::shared_ptr<CInstanceStateHandler>& instanceStateHandler) const;
 
-         void doWork(boost::shared_ptr<yApi::IYPluginApi> api,
+         void doWork(const boost::shared_ptr<yApi::IYPluginApi>& api,
                      shared::event::CEventHandler& eventHandler) const;
 
-         void createVirtualDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+         void createVirtualDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                   const yApi::IManuallyDeviceCreationData& data) const;
-         void createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+         void createStandardCapacityDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                            const std::string& deviceName,
                                            const boost::shared_ptr<shared::CDataContainer>& standardCapacity) const;
-         void createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+         void createCustomEnumCapacityDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                              const std::string& deviceName,
                                              const std::string& commaSeparatedValues) const;
 
@@ -79,5 +76,3 @@ namespace pluginSystem
       };
    }
 } // namespace pluginSystem::internalPlugin
-
-

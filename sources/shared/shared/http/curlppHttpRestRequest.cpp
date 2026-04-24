@@ -33,7 +33,7 @@ namespace shared
 		static CCurlResources CurlResources;
 
 
-		CCurlppHttpRestRequest::CCurlppHttpRestRequest(EType requestType,
+      CCurlppHttpRestRequest::CCurlppHttpRestRequest(ERestVerb requestType,
 													   std::string url)
 			: m_requestType(requestType),
 			m_url(std::move(url)),
@@ -61,7 +61,7 @@ namespace shared
 
 		IHttpRestRequest& CCurlppHttpRestRequest::withBody(const std::string& body)
 		{
-			if (m_requestType != EType::kPost && m_requestType != EType::kPut)
+         if (m_requestType != ERestVerb::kPost && m_requestType != ERestVerb::kPut)
 				throw std::runtime_error("CCurlppHttpRestRequest : body is only supported for POST and PUT requests");
 			m_body = body;
 			return *this;
@@ -70,45 +70,46 @@ namespace shared
 		IHttpRestRequest& CCurlppHttpRestRequest::withBasicAuthentication(const std::string& user,
 																		  const std::string& password)
 		{
-			m_request.setOpt(curlpp::options::HttpAuth(CURLAUTH_BASIC));
-			m_request.setOpt(curlpp::options::UserPwd(user + ":" + password));
+         m_request.setOpt<curlpp::options::HttpAuth>(CURLAUTH_BASIC);
+         m_request.setOpt<curlpp::options::UserPwd>(user + ":" + password);
 			return *this;
 		}
 
 		void CCurlppHttpRestRequest::send(const std::function<void(const std::map<std::string, std::string>& receivedHeaders,
 																   const std::string& data)>& responseHandlerFct)
 		{
-			switch (m_requestType)
+         switch (m_requestType)  // NOLINT(clang-diagnostic-switch-enum)
 			{
-			case EType::kGet:
-				m_request.setOpt(new curlpp::options::HttpGet(true));
+         case ERestVerb::kGet:
+            m_request.setOpt<curlpp::options::HttpGet>(true);
 				break;
-			case EType::kHead:
-				m_request.setOpt(new curlpp::options::HttpGet(true));
-				m_request.setOpt(new curlpp::options::NoBody(true));
+         case ERestVerb::kHead:
+            m_request.setOpt<curlpp::options::HttpGet>(true);
+            m_request.setOpt<curlpp::options::NoBody>(true);
 				break;
-			case EType::kPost:
-				m_request.setOpt(new curlpp::options::PostFields(m_body));
+         case ERestVerb::kPost:
+            m_request.setOpt<curlpp::options::PostFields>(m_body);
 				break;
-			case EType::kPut:
-				m_request.setOpt(new curlpp::options::CustomRequest("PUT"));
-				m_request.setOpt(new curlpp::options::PostFields(m_body));
+         case ERestVerb::kPut:
+            m_request.setOpt<curlpp::options::CustomRequest>("PUT");
+            m_request.setOpt<curlpp::options::PostFields>(m_body);
 				break;
+         default:
+            throw std::invalid_argument("Unsupported REST verb " + ToString(m_requestType));
 			}
 
-			m_request.setOpt(new curlpp::options::Timeout(m_timeoutSeconds));
+         m_request.setOpt<curlpp::options::Timeout>(m_timeoutSeconds);
 
 			// Proxy         
 			CCurlppHelpers::setProxy(m_request,
 									 m_url);
 
 			// Follow redirections
-			m_request.setOpt(new curlpp::options::FollowLocation(true));
-			m_request.setOpt(new curlpp::options::MaxRedirs(3));
+         m_request.setOpt<curlpp::options::FollowLocation>(true);
+         m_request.setOpt<curlpp::options::MaxRedirs>(3);
 
 			// URL + parameters
-			m_request.setOpt(
-				new curlpp::options::Url(m_url + CCurlppHelpers::stringifyParameters(m_parameters)));
+         m_request.setOpt<curlpp::options::Url>(m_url + CCurlppHelpers::stringifyParameters(m_parameters));
 
 			// HTTPS support : skip peer and host verification
 			static const std::string HttpsHeader("https://");
@@ -120,8 +121,8 @@ namespace shared
 			})
 				!= m_url.end())
 			{
-				m_request.setOpt(new curlpp::options::SslVerifyPeer(false));
-				m_request.setOpt(new curlpp::options::SslVerifyHost(false));
+            m_request.setOpt<curlpp::options::SslVerifyPeer>(false);
+            m_request.setOpt<curlpp::options::SslVerifyHost>(false);
 			}
 
 			// Headers
@@ -130,25 +131,25 @@ namespace shared
 
 			// Response headers
 			std::string headersBuffer;
-			m_request.setOpt(curlpp::options::HeaderFunction(
+         m_request.setOpt<curlpp::options::HeaderFunction>(
 				[&headersBuffer](char* ptr, size_t size, size_t nbItems)
 			{
 				const auto incomingSize = size * nbItems;
 				headersBuffer.append(ptr, incomingSize);
 				return incomingSize;
-			}));
+            });
 
 			// Response data
 			std::string dataBuffer;
-			if (m_requestType != EType::kHead)
+         if (m_requestType != ERestVerb::kHead)
 			{
-				m_request.setOpt(curlpp::options::WriteFunction(
+            m_request.setOpt<curlpp::options::WriteFunction>(
 					[&dataBuffer](char* ptr, size_t size, size_t nbItems)
 				{
 					const auto incomingSize = size * nbItems;
 					dataBuffer.append(ptr, incomingSize);
 					return incomingSize;
-				}));
+               });
 			}
 
 			try

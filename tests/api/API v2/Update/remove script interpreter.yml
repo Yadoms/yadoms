@@ -1,0 +1,22 @@
+info:
+  name: remove script interpreter
+  type: http
+  seq: 9
+
+http:
+  method: DELETE
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates/scriptInterpreters/:scriptInterpreterName
+  params:
+    - name: scriptInterpreterName
+      value: yPython3
+      type: path
+      description: The script interpreter name
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: Uninstall a script interpreter

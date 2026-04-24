@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "Entities/HueInformations.h"
 
 class IHueBridgeDiscovery

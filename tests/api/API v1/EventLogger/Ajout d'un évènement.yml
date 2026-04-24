@@ -1,0 +1,26 @@
+info:
+  name: Ajout d'un évènement
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/eventLogger
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "code" : "-1",
+        "who" : "this task",
+        "what" :"an error occrus (fake)"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,224 @@
+info:
+  name: create device
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/devices
+  body:
+    type: json
+    data: "{\r
+
+      \    \"pluginInstance\": 2,\r
+
+      \    \"friendlyName\": \"My manually created device\",\r
+
+      \    \"model\": \"The device model\",\r
+
+      \    \"type\": \"fakeSensorType\",\r
+
+      \    \"details\": \"some details, can also be a json\",\r
+
+      \    \"configuration\": {\r
+
+      \        \"CounterDivider2\": {\r
+
+      \            \"type\": \"int\",\r
+
+      \            \"defaultValue\": 2,\r
+
+      \            \"minimumValue\": 1,\r
+
+      \            \"maximumValue\": 10,\r
+
+      \            \"name\": \"Prédiviseur n°2\",\r
+
+      \            \"description\": \"Prédiviseur permettant de diminuer la fréquence du compteur (tous les devices)\",\r
+
+      \            \"value\": 5\r
+
+      \        },\r
+
+      \        \"MySection\": {\r
+
+      \            \"type\": \"section\",\r
+
+      \            \"content\": {\r
+
+      \                \"SubIntParameter\": {\r
+
+      \                    \"type\": \"int\",\r
+
+      \                    \"defaultValue\": 65535,\r
+
+      \                    \"name\": \"Entier dans une section\",\r
+
+      \                    \"description\": \"Un exemple de paramètre entier dans une section\",\r
+
+      \                    \"value\": 65535\r
+
+      \                },\r
+
+      \                \"SubStringParameter\": {\r
+
+      \                    \"type\": \"string\",\r
+
+      \                    \"name\": \"Chaîne dans une section\",\r
+
+      \                    \"description\": \"Un exemple de paramètre chaîne dans une section\",\r
+
+      \                    \"defaultValue\": \"Les sous-sections rendent la configuration vraiment puissante !\",\r
+
+      \                    \"value\": \"\"\r
+
+      \                },\r
+
+      \                \"SubComboParameter\": {\r
+
+      \                    \"type\": \"comboSection\",\r
+
+      \                    \"content\": {\r
+
+      \                        \"first\": {\r
+
+      \                            \"type\": \"section\",\r
+
+      \                            \"content\": \"\",\r
+
+      \                            \"title\": \"Première section\",\r
+
+      \                            \"description\": \"Première section de la liste : vous pouvez ajouter ici d'autres données de configuration\"\r
+
+      \                        },\r
+
+      \                        \"second\": {\r
+
+      \                            \"type\": \"section\",\r
+
+      \                            \"content\": \"\",\r
+
+      \                            \"title\": \"Seconde section\",\r
+
+      \                            \"description\": \"Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration\"\r
+
+      \                        },\r
+
+      \                        \"third\": {\r
+
+      \                            \"type\": \"section\",\r
+
+      \                            \"content\": \"\",\r
+
+      \                            \"title\": \"Troisième section\",\r
+
+      \                            \"description\": \"Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration\"\r
+
+      \                        }\r
+
+      \                    },\r
+
+      \                    \"name\": \"Sous liste dans une section\",\r
+
+      \                    \"description\": \"Exemple d'une liste dans une sous-section\",\r
+
+      \                    \"activeSection\": \"first\"\r
+
+      \                }\r
+
+      \            },\r
+
+      \            \"name\": \"Une section\",\r
+
+      \            \"description\": \"Exemple d'utilisation d'une section de configuration.\"\r
+
+      \        }\r
+
+      \    }\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: create device (with minimal data)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/devices
+      method: POST
+      body:
+        type: json
+        data: "{\r
+
+          \    \"pluginId\":2,\r
+
+          \    \"name\":\"name2\",\r
+
+          \    \"type\":\"fakeSensorType\"\r
+
+          }"
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: devices/17
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+  - name: create device (providing all fields)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/devices
+      method: POST
+      body:
+        type: json
+        data: "{\r
+
+          \    \"pluginId\": 2,\r
+
+          \    \"name\": \"Device name\",\r
+
+          \    \"friendlyName\": \"A friendly name\",\r
+
+          \    \"model\": \"The device model\",\r
+
+          \    \"type\": \"fakeSensorType\",\r
+
+          \    \"details\": \"some details, can also be a json\",\r
+
+          \    \"configuration\": {\r
+
+          \        \"field1\": \"optional configuration, field 1\",\r
+
+          \        \"field2\": \"optional configuration, field 2\"\r
+
+          \    },\r
+
+          \    \"blacklist\": false\r
+
+          }"
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: devices/18
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""

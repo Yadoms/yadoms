@@ -49,14 +49,14 @@ IF(NOT DISABLE_TEST_PLUGIN_FAKEPLUGIN)
       shared/shared/plugin/yPluginApi/KeywordAccessMode.cpp
       shared/shared/plugin/yPluginApi/KeywordDataType.h
       shared/shared/plugin/yPluginApi/KeywordDataType.cpp
-		shared/shared/plugin/yPluginApi/StandardUnits.h
-		shared/shared/plugin/yPluginApi/StandardUnits.cpp
-		shared/shared/plugin/yPluginApi/StandardCapacities.h
-		shared/shared/plugin/yPluginApi/StandardCapacities.cpp
-		shared/shared/plugin/yPluginApi/StandardValues.h
-		shared/shared/plugin/yPluginApi/StandardValues.cpp
-		shared/shared/plugin/yPluginApi/StandardCapacity.h
-		shared/shared/plugin/yPluginApi/StandardCapacity.cpp
+      shared/shared/plugin/yPluginApi/StandardUnits.h
+      shared/shared/plugin/yPluginApi/StandardUnits.cpp
+      shared/shared/plugin/yPluginApi/StandardCapacities.h
+      shared/shared/plugin/yPluginApi/StandardCapacities.cpp
+      shared/shared/plugin/yPluginApi/StandardValues.h
+      shared/shared/plugin/yPluginApi/StandardValues.cpp
+      shared/shared/plugin/yPluginApi/StandardCapacity.h
+      shared/shared/plugin/yPluginApi/StandardCapacity.cpp
       shared/shared/plugin/yPluginApi/HistoryDepth.h
       shared/shared/plugin/yPluginApi/HistoryDepth.cpp
       shared/shared/plugin/yPluginApi/MeasureType.h
@@ -64,10 +64,5 @@ IF(NOT DISABLE_TEST_PLUGIN_FAKEPLUGIN)
       plugins/dev-FakePlugin/FakeSensor.h
       plugins/dev-FakePlugin/FakeSensor.cpp)
    ADD_SOURCES(TestFakeSensor.cpp)
-   
-   ADD_YADOMS_SOURCES(
-      plugins/dev-FakePlugin/FakePluginConfiguration.h
-      plugins/dev-FakePlugin/FakePluginConfiguration.cpp)
-   ADD_SOURCES(TestFakePluginConfiguration.cpp)
    
 ENDIF()

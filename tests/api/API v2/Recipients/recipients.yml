@@ -1,0 +1,220 @@
+info:
+  name: recipients
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/recipients/:id
+  params:
+    - name: prop
+      value: id|first-name|last-name
+      type: query
+      description: |-
+        [optional] properties to return. Flags conbinaison of values :
+        id|first-name|last-name|fields
+      disabled: true
+    - name: from-firstname
+      value: ""
+      type: query
+      description: "[optional] filter by firstname"
+      disabled: true
+    - name: from-lastname
+      value: ""
+      type: query
+      description: "[optional] filter by lastname"
+      disabled: true
+    - name: id
+      value: "1"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: "Find full name of recipient #2"
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/recipients/:id?prop=first-name|last-name
+      method: GET
+      params:
+        - name: prop
+          value: first-name|last-name
+          type: query
+          description: |-
+            [optional] properties to return. Flags conbinaison of values :
+            id|first-name|last-name|fields
+        - name: from-lastname
+          value: ""
+          type: query
+          description: "[optional] filter by lastname"
+          disabled: true
+        - name: from-firstname
+          value: ""
+          type: query
+          disabled: true
+        - name: id
+          value: "2"
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "58"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "firstname": "Bart",
+              "lastname": "Simpson"
+          }
+  - name: Get all recipients
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/recipients
+      method: GET
+      params:
+        - name: prop
+          value: id|first-name|last-name
+          type: query
+          description: |-
+            [optional] properties to return. Flags conbinaison of values :
+            id|first-name|last-name|fields
+          disabled: true
+        - name: from-firstname
+          value: ""
+          type: query
+          description: "[optional] filter by firstname"
+          disabled: true
+        - name: from-lastname
+          value: ""
+          type: query
+          description: "[optional] filter by lastname"
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "637"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "recipients": [
+                  {
+                      "id": 1,
+                      "firstname": "Bart",
+                      "lastname": "Simpson",
+                      "fields": {
+                          "freeMobileSms|apiKey": {
+                              "value": "XxXxXxXxXxXxXx"
+                          },
+                          "freeMobileSms|userId": {
+                              "value": "0000000"
+                          },
+                          "system|email": {
+                              "value": "bart.simpson@gmail.com"
+                          },
+                          "system|mobile": {
+                              "value": "+33123456789"
+                          }
+                      }
+                  },
+                  {
+                      "id": 2,
+                      "firstname": "Marge",
+                      "lastname": "Simpson",
+                      "fields": {
+                          "freeMobileSms|apiKey": {
+                              "value": "XxXxXxXxXxXxXx"
+                          },
+                          "freeMobileSms|userId": {
+                              "value": "9999999"
+                          },
+                          "system|email": {
+                              "value": "marge.simpson@gmail.com"
+                          },
+                          "system|mobile": {
+                              "value": "+339876543210"
+                          }
+                      }
+                  }        
+              ]
+          }
+  - name: one user
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/recipients/:id
+      method: GET
+      params:
+        - name: prop
+          value: id|first-name|last-name
+          type: query
+          description: |-
+            [optional] properties to return. Flags conbinaison of values :
+            id|first-name|last-name|fields
+          disabled: true
+        - name: from-firstname
+          value: ""
+          type: query
+          description: "[optional] filter by firstname"
+          disabled: true
+        - name: from-lastname
+          value: ""
+          type: query
+          description: "[optional] filter by lastname"
+          disabled: true
+        - name: id
+          value: "2"
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "222"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "id": 2,
+              "firstname": "Bart",
+              "lastname": "Simpson",
+              "fields": {
+                  "freeMobileSms|apiKey": {
+                      "value": "XxXxXxXxXxXxXx"
+                  },
+                  "freeMobileSms|userId": {
+                      "value": "0000000"
+                  },
+                  "system|email": {
+                      "value": "bart.simpson@gmail.com"
+                  },
+                  "system|mobile": {
+                      "value": "+33123456789"
+                  }
+              }
+          }
+
+docs: Return one or more users

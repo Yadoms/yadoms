@@ -8,7 +8,7 @@ namespace shared
    {
       boost::function<bool()> CSoftwareStop::m_onStopRequestedFct;
 
-      void CSoftwareStop::setOnStopRequestedHandler(boost::function<bool()> onStopRequestedFct)
+      void CSoftwareStop::setOnStopRequestedHandler(const boost::function<bool()>& onStopRequestedFct)
       {
          m_onStopRequestedFct = onStopRequestedFct;
       }

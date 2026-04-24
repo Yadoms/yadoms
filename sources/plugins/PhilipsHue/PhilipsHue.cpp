@@ -127,7 +127,7 @@ void CPhilipsHue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             if (!extraQuery)
             {
-               extraQuery->sendError("error content");
+               YADOMS_LOG(error) << "error content";
             }
             else
             {

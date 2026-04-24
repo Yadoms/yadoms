@@ -7,7 +7,7 @@
 
 namespace dataAccessLayer
 {
-   class CDeviceManager : public IDeviceManager
+   class CDeviceManager final : public IDeviceManager
    {
    public:
       //--------------------------------------------------------------
@@ -22,10 +22,7 @@ namespace dataAccessLayer
                      boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                      boost::shared_ptr<IKeywordManager> keywordManager);
 
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~CDeviceManager();
+      ~CDeviceManager() override = default;
 
       // IDeviceManager Implementation
       bool deviceExists(int deviceId) const override;
@@ -50,6 +47,7 @@ namespace dataAccessLayer
                                                                   const std::string& type,
                                                                   const std::string& model,
                                                                   boost::shared_ptr<shared::CDataContainer> details) override;
+      boost::shared_ptr<database::entities::CDevice> createDevice(boost::shared_ptr<database::entities::CDevice> device) override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDevices() const override;
       std::vector<std::string> getDevicesForPluginInstance(int pluginId) const override;
       void updateDeviceFriendlyName(int deviceId, const std::string& newFriendlyName) override;
@@ -58,8 +56,11 @@ namespace dataAccessLayer
       void updateDeviceModel(int deviceId, const std::string& model) override;
       void updateDeviceType(int deviceId, const std::string& type) override;
       void updateDeviceBlacklistState(int deviceId, bool blacklist) override;
-      void updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state,
-                             const std::string& customMessageId, boost::shared_ptr<shared::CDataContainer> data) const override;
+      void updateDeviceState(int deviceId,
+                             const shared::plugin::yPluginApi::historization::EDeviceState& state,
+                             const std::string& customMessageId,
+                             boost::shared_ptr<shared::CDataContainer> data) const override;
+      void updateDevice(const database::entities::CDevice& device) const override;
       void removeDevice(int deviceId) override;
       void removeDevice(int pluginId, const std::string& deviceName) override;
       void removeAllDeviceForPlugin(int pluginId) override;

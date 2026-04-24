@@ -1,14 +1,19 @@
 #pragma once
+#include <Poco/Runnable.h>
 #include <shared/event/EventHandler.hpp>
 #include <shared/versioning/SemVer.h>
-#include <Poco/Runnable.h>
 #include "IPathProvider.h"
+#include "dataAccessLayer/IDataAccessLayer.h"
+#include "dateTime/TimeZoneDatabase.h"
+#include "dateTime/TimeZoneProvider.h"
+#include "web/IWebServer.h"
+#include "web/rest/service/IRestService.h"
 
 
 //-----------------------------------------------------------------------------
 /// \brief              Yadoms supervisor
 //-----------------------------------------------------------------------------
-class CSupervisor : public Poco::Runnable
+class CSupervisor final : public Poco::Runnable
 {
    //--------------------------------------------------------------
    /// \brief	Event IDs
@@ -25,13 +30,10 @@ public:
    /// \param[in] pathProvider            The Yadoms paths provider
    /// \param[in] yadomsVersion           The Yadoms version
    //-----------------------------------------------------------------------------
-   explicit CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
-                        const shared::versioning::CSemVer& yadomsVersion);
+   CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
+               const shared::versioning::CSemVer& yadomsVersion);
 
-   //-----------------------------------------------------------------------------
-   /// \brief		                     Destructor
-   //-----------------------------------------------------------------------------
-   virtual ~CSupervisor() = default;
+   ~CSupervisor() override = default;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     The main method (blocking, returns at Yadoms exit)
@@ -44,6 +46,30 @@ public:
    void requestToStop();
 
 private:
+   std::unique_ptr<web::IWebServer> createPocoBasedWebServer(
+      const std::string& address,
+      unsigned short port,
+      bool useSsl,
+      unsigned short securedPort,
+      bool allowExternalAccess,
+      const boost::filesystem::path& webServerPath,
+      const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
+      const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
+      bool skipPasswordCheck) const;
+
+   static std::unique_ptr<web::IWebServer> createOatppBasedWebServer(
+      const std::string& address,
+      unsigned short port,
+      bool useHttps,
+      unsigned short httpsPort,
+      const boost::filesystem::path& webServerPath,
+      const boost::filesystem::path& httpsLocalCertificateFile,
+      const boost::filesystem::path& httpsPrivateKeyFile,
+      const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
+      const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
+      bool skipPasswordCheck);
+
+
    //-----------------------------------------------------------------------------
    /// \brief		                     The supervisor event handler
    //-----------------------------------------------------------------------------

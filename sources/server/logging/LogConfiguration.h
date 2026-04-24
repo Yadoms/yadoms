@@ -6,24 +6,14 @@ namespace logging
    //--------------------------------------------------------------
    /// \brief     Class used to configure the logger
    //--------------------------------------------------------------
-   class CLogConfiguration
+   class CLogConfiguration final
    {
    public:
-
-      //--------------------------------------------------------------
-      /// \brief	                  configure the logger with one file per thread without rolling on size
-      /// \param[in]  logLevel      The log level
-      /// \param[in]  logPath       The log path
-      //--------------------------------------------------------------
-      static void configure(const std::string& logLevel,
-                            const boost::filesystem::path& logPath);
+      explicit CLogConfiguration(const std::string& logLevel,
+                                 const boost::filesystem::path& logPath);
+      ~CLogConfiguration() = default;
 
    private:
-      //--------------------------------------------------------------
-      /// \brief     Private impelmentation
-      //--------------------------------------------------------------
-      static inline boost::shared_ptr<CLogConfigurationImpl> m_configurator;
+      boost::shared_ptr<CLogConfigurationImpl> m_configurator;
    };
 } // namespace logging
-
-

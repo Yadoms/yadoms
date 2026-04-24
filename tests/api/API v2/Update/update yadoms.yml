@@ -1,0 +1,22 @@
+info:
+  name: update yadoms
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates/yadoms/:version
+  params:
+    - name: version
+      value: 2.0.2-beta.3
+      type: path
+      description: Version to update
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: Update Yadoms

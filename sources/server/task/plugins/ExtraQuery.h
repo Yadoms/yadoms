@@ -20,9 +20,10 @@ namespace task
          ~CExtraQuery() override = default;
 
          // ITask implementation
-         const std::string& getName() const override;
+         std::string getName() override;
          void onSetTaskId(const std::string& taskId) override;
          void doWork(TaskProgressFunc pFunctor) override;
+         bool isCancellable() const override;
          // [END] ITask implementation
 
       private:

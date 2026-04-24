@@ -33,6 +33,17 @@ namespace dataAccessLayer
          const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
          const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth,
          bool blacklisted) const override;
+      std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywords(
+         const std::set<int>& keywordIds,
+         const boost::optional<int>& deviceId,
+         const boost::optional<std::string>& friendlyName,
+         const std::set<std::string>& capacityName,
+         const std::set<shared::plugin::yPluginApi::EKeywordDataType>& dataType,
+         const std::set<std::string>& units,
+         const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& accessMode,
+         const boost::optional<shared::plugin::yPluginApi::EMeasureType>& measure,
+         const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
+         bool blacklistedIncluded = false) override;
       boost::shared_ptr<database::entities::CAcquisition> getKeywordLastAcquisition(const int keywordId,
                                                                                     bool throwIfNotExists = true) override;
       std::string getKeywordLastData(const int keywordId, bool throwIfNotExists = true) override;
@@ -50,6 +61,7 @@ namespace dataAccessLayer
                                        const bool blacklist) override;
       void updateKeywordName(int keywordId,
                              const std::string& newName) override;
+      void updateKeyword(const database::entities::CKeyword& keyword) const override;
       void removeKeyword(int deviceId,
                          const std::string& keyword) override;
       void removeKeyword(int keywordId) override;

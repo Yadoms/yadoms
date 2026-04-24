@@ -21,7 +21,7 @@ namespace dataAccessLayer
       auto currentDate = shared::currentTime::Provider().now();
 
       //get current transactional engine
-      auto transactionalEngine = m_dataProvider->getTransactionalEngine();
+      const auto transactionalEngine = m_dataProvider->getTransactionalEngine();
 
       try
       {
@@ -53,7 +53,7 @@ namespace dataAccessLayer
       auto currentDate = shared::currentTime::Provider().now();
 
       //get current transactional engine
-      auto transactionalEngine = m_dataProvider->getTransactionalEngine();
+      const auto transactionalEngine = m_dataProvider->getTransactionalEngine();
 
       try
       {

@@ -1,7 +1,8 @@
 #pragma once
-
 #include <Poco/Net/HTTPServer.h>
-#include "web/IWebServerConfigurator.h"
+
+#include "web/rest/service/IRestService.h"
+#include "IAuthentication.h"
 
 namespace web
 {
@@ -10,39 +11,31 @@ namespace web
       //==============================================
       ///\brief The factiry which  handles http requests
       //==============================================
-      class CHttpRequestHandlerFactory : public Poco::Net::HTTPRequestHandlerFactory, public IWebServerConfigurator
+      class CHttpRequestHandlerFactory final : public Poco::Net::HTTPRequestHandlerFactory
       {
       public:
-         //==============================================
-         ///\brief Constructor
-         //==============================================
          CHttpRequestHandlerFactory();
-
-         //==============================================
-         ///\brief Destructor
-         //==============================================
-         virtual ~CHttpRequestHandlerFactory();
-
-         // IWebServerConfigurator implementation
-         void websiteHandlerConfigure(const std::string& doc_root) override;
-         void websiteHandlerAddAlias(const std::string& alias, const std::string& path) override;
-         void restHandlerConfigure(const std::string& restKeywordBase) override;
-         void restHandlerRegisterService(boost::shared_ptr<rest::service::IRestService> restService) override;
-         void webSocketConfigure(const std::string& webSocketKeyword) override;
-         void configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator) override;
-         void allowExternalAccess(bool allowExternalAccess) override;
-         // [END] IWebServerConfigurator implementation
+         ~CHttpRequestHandlerFactory() override;
 
          // Poco::Net::HTTPRequestHandlerFactory implementation
-         Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request);
+         Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request) override;
          // [END] Poco::Net::HTTPRequestHandlerFactory implementation
+
+         void websiteHandlerConfigure(const std::string& docRoot);
+         void websiteHandlerAddAlias(const std::string& alias,
+                                     const std::string& path);
+         void restHandlerConfigure(const std::string& restKeywordBase);
+         void webSocketConfigure(const std::string& webSocketKeyword);
+         void restHandlerRegisterService(boost::shared_ptr<rest::service::IRestService> restService);
+         void allowExternalAccess(bool allowExternalAccess);
+         void configureAuthentication(boost::shared_ptr<IAuthentication> authenticator);
 
       private:
          //==============================================
          /// \brief Create the websocket request handler
          /// \return       the request handler
          //==============================================
-         Poco::Net::HTTPRequestHandler* createWebSocketRequestHandler() const;
+         static Poco::Net::HTTPRequestHandler* createWebSocketRequestHandler();
 
          //==============================================
          /// \brief Create the REST request handler
@@ -61,7 +54,7 @@ namespace web
          std::string m_webSocketKeyword;
          std::vector<boost::shared_ptr<rest::service::IRestService>> m_restService;
          std::map<std::string, std::string> m_alias;
-         boost::shared_ptr<authentication::IAuthentication> m_authenticator;
+         boost::shared_ptr<IAuthentication> m_authenticator;
          bool m_allowExternalAccess;
 
          boost::shared_ptr<Poco::Net::HTTPRequestHandler> m_restRequestHandler;

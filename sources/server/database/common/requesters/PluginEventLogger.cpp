@@ -29,7 +29,7 @@ namespace database
          {
             const auto insertDate = shared::currentTime::Provider().now();
 
-            auto qInsert = m_databaseRequester->newQuery();
+            const auto qInsert = m_databaseRequester->newQuery();
             qInsert->InsertInto(CPluginEventLoggerTable::getTableName(),
                                 CPluginEventLoggerTable::getPluginNameColumnName(),
                                 CPluginEventLoggerTable::getPluginVersionColumnName(),
@@ -45,7 +45,7 @@ namespace database
             if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                throw shared::exception::CEmptyResult("No lines affected");
 
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CPluginEventLoggerTable::getIdColumnName()).
                      From(CPluginEventLoggerTable::getTableName()).
                      Where(CPluginEventLoggerTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName).
@@ -71,9 +71,9 @@ namespace database
          }
 
          std::vector<boost::shared_ptr<entities::CPluginEventLogger>> CPluginEventLogger::getPluginEvents(const std::string& pluginName,
-                                                                                                          const boost::posix_time::ptime& fromDate)
+            const boost::posix_time::ptime& fromDate)
          {
-            auto qSelect = m_databaseRequester->newQuery();
+            const auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                      From(CPluginEventLoggerTable::getTableName()).
                      Where(CPluginEventLoggerTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName);

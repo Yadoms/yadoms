@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_SUITE(TestEventTimer)
 
 
    // Class used to gain access to protected members of CEventTimer
-   class CEventTimerAccessProtectedMembers : public shared::event::CEventTimer
+   class CEventTimerAccessProtectedMembers final : public shared::event::CEventTimer
    {
    public:
       explicit CEventTimerAccessProtectedMembers(int eventId, EPeriodicity periodicity = kOneShot,
@@ -22,9 +22,7 @@ BOOST_AUTO_TEST_SUITE(TestEventTimer)
       {
       }
 
-      virtual ~CEventTimerAccessProtectedMembers()
-      {
-      }
+      ~CEventTimerAccessProtectedMembers() override = default;
 
       boost::posix_time::ptime getNextStopPoint() const override
       {
@@ -57,7 +55,7 @@ BOOST_AUTO_TEST_SUITE(TestEventTimer)
       useTimeMock();
 
       const boost::posix_time::time_duration period = boost::posix_time::seconds(5);
-      const auto evtId = 123456;
+      constexpr auto evtId = 123456;
 
       CEventTimerAccessProtectedMembers timer(evtId, shared::event::CEventTimer::kOneShot, period);
       const auto nextTimePoint(shared::currentTime::Provider().now() + period);
@@ -82,7 +80,7 @@ BOOST_AUTO_TEST_SUITE(TestEventTimer)
       useTimeMock();
 
       const boost::posix_time::time_duration period = boost::posix_time::seconds(5);
-      const auto evtId = 123456;
+      constexpr auto evtId = 123456;
 
       CEventTimerAccessProtectedMembers timer(evtId, shared::event::CEventTimer::kOneShot, period);
       auto nextTimePoint(shared::currentTime::Provider().now() + period);
@@ -110,10 +108,10 @@ BOOST_AUTO_TEST_SUITE(TestEventTimer)
    //--------------------------------------------------------------
    BOOST_AUTO_TEST_CASE(MultiStartsOnOneShotTimer)
    {
-      auto timeProviderMock = useTimeMock();
+      const auto timeProviderMock = useTimeMock();
 
       const boost::posix_time::time_duration period = boost::posix_time::seconds(5);
-      const auto evtId = 123456;
+      constexpr auto evtId = 123456;
 
       CEventTimerAccessProtectedMembers timer(evtId, shared::event::CEventTimer::kOneShot, period); // Timer started here
       auto nextTimePoint(shared::currentTime::Provider().now() + period);
@@ -140,13 +138,13 @@ BOOST_AUTO_TEST_SUITE(TestEventTimer)
    //--------------------------------------------------------------
    BOOST_AUTO_TEST_CASE(MultiStartsOnPeriodicTimer)
    {
-      auto timeProviderMock = useTimeMock();
+      const auto timeProviderMock = useTimeMock();
 
       const boost::posix_time::time_duration period = boost::posix_time::seconds(5);
-      const auto evtId = 123456;
+      constexpr auto evtId = 123456;
 
       CEventTimerAccessProtectedMembers timer(evtId, shared::event::CEventTimer::kPeriodic, period); // Timer started here
-      auto nextTimePoint(shared::currentTime::Provider().now() + period);
+      const auto nextTimePoint(shared::currentTime::Provider().now() + period);
 
       BOOST_CHECK_EQUAL(timer.getId(), evtId);
       BOOST_CHECK_EQUAL(timer.getNextStopPoint(), nextTimePoint);
@@ -165,10 +163,10 @@ BOOST_AUTO_TEST_SUITE(TestEventTimer)
 
    BOOST_AUTO_TEST_CASE(NominalEventHandlerTimerOneShot)
    {
-      auto timeProviderMock = useTimeMock();
+      const auto timeProviderMock = useTimeMock();
       shared::event::CEventHandler evtHandler;
 
-      const auto evtId = 123456;
+      constexpr auto evtId = 123456;
       evtHandler.createTimer(evtId, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(1));
 
       timeProviderMock->sleep(boost::posix_time::milliseconds(999));
@@ -181,10 +179,10 @@ BOOST_AUTO_TEST_SUITE(TestEventTimer)
 
    BOOST_AUTO_TEST_CASE(NominalEventHandlerTimerPeriodic)
    {
-      auto timeProviderMock = useTimeMock();
+      const auto timeProviderMock = useTimeMock();
       shared::event::CEventHandler evtHandler;
 
-      const auto evtId = 123456;
+      constexpr auto evtId = 123456;
       evtHandler.createTimer(evtId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(1));
 
       timeProviderMock->sleep(boost::posix_time::milliseconds(1));

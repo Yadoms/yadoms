@@ -4,6 +4,8 @@
 #include "XplException.h"
 #include <boost/algorithm/string.hpp>
 
+#include "shared/StringExtension.h"
+
 namespace xplcore
 {
    CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier()
@@ -64,8 +66,7 @@ namespace xplcore
    {
       auto lineString = boost::trim_copy(rawMessageSchemaIdentifier);
 
-      std::vector<std::string> line;
-      boost::split(line, lineString, boost::is_any_of("."), boost::token_compress_on);
+      std::vector<std::string> line = shared::CStringExtension::splitAnyOfAndCompress(lineString, ".");
 
       //We must have 2 results : class Id, type Id
       if (line.size() != 2)

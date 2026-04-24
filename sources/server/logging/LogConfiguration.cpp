@@ -4,16 +4,11 @@
 
 namespace logging
 {
-
-	void CLogConfiguration::configure(const std::string& logLevel,
-		                              const boost::filesystem::path& logPath)
-	{
-		if (!m_configurator)
-			m_configurator = boost::make_shared<CLogConfigurationImpl>();
-
-		m_configurator->configure(logLevel,
-			                      logPath);
-	}
+   CLogConfiguration::CLogConfiguration(const std::string& logLevel,
+                                        const boost::filesystem::path& logPath)
+      : m_configurator(boost::make_shared<CLogConfigurationImpl>())
+   {
+      m_configurator->configure(logLevel,
+                                logPath);
+   }
 } // namespace logging
-
-

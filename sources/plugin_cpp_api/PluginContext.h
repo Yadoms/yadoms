@@ -7,9 +7,9 @@
 namespace plugin_cpp_api
 {
    //--------------------------------------------------------------
-   /// \class The plugin context
+   /// \grief The plugin context
    //--------------------------------------------------------------
-   class CPluginContext : public IPluginContext
+   class CPluginContext final : public IPluginContext
    {
    public:
       //--------------------------------------------------------------
@@ -20,12 +20,17 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       CPluginContext(int argc,
                      char** argv,
-                     boost::shared_ptr<IPlugin> plugin);
+                     const boost::shared_ptr<IPlugin>& plugin);
+
+      CPluginContext(const CPluginContext&) = delete;
+      CPluginContext(CPluginContext&&) = delete;
+      CPluginContext& operator=(const CPluginContext&) = delete;
+      CPluginContext& operator=(CPluginContext&&) = delete;
 
       //--------------------------------------------------------------
       ///\brief               Destructor
       //--------------------------------------------------------------
-      virtual ~CPluginContext();
+      ~CPluginContext() override = default;
 
       // IPluginContext Implementation
       void run() override;
@@ -46,12 +51,12 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       ///\brief               Wait for debugger (debug only)
       //--------------------------------------------------------------
-      void waitDebugger(boost::shared_ptr<CApiImplementation> api) const;
+      static void waitDebugger(const boost::shared_ptr<CApiImplementation>& api);
 
       //--------------------------------------------------------------
       ///\brief               Configure the logger
       //--------------------------------------------------------------
-      static void configureLogger(boost::shared_ptr<CApiImplementation> api);
+      static void configureLogger(const boost::shared_ptr<CApiImplementation>& api);
 
    private:
       //--------------------------------------------------------------
@@ -77,7 +82,7 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       ///\brief               The thread function to receive messages from Yadoms
       //--------------------------------------------------------------
-      void msgReceiverThreaded(boost::shared_ptr<CApiImplementation> api) const;
+      void msgReceiverThreaded(const boost::shared_ptr<CApiImplementation>& api) const;
 
       //-----------------------------------------------------
       ///\brief               The message queues used to exchange data with Yadoms
@@ -87,5 +92,3 @@ namespace plugin_cpp_api
       mutable boost::shared_ptr<boost::interprocess::message_queue> m_receiveMessageQueue;
    };
 } // namespace plugin_cpp_api
-
-

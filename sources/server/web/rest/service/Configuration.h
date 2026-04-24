@@ -1,6 +1,9 @@
 #pragma once
 #include "IRestService.h"
 #include "dataAccessLayer/IConfigurationManager.h"
+#include "database/IDataProvider.h"
+#include "shared/http/ssdp/Client.h"
+#include "web/rest/IAnswer.h"
 
 namespace web
 {
@@ -8,35 +11,45 @@ namespace web
    {
       namespace service
       {
-         class CConfiguration : public IRestService
+         class CConfiguration final : public IRestService
          {
          public:
-            explicit CConfiguration(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
-            virtual ~CConfiguration();
+            CConfiguration(boost::shared_ptr<database::IDataProvider> m_dataProvider,
+                           boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager);
+            ~CConfiguration() override = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
-
          private:
-            boost::shared_ptr<shared::serialization::IDataSerializable> resetServerConfiguration(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> resetServerConfigurationV1(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getServerConfigurationV1(const std::vector<std::string>& parameters,
                                                                                                  const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getServerConfiguration(const std::vector<std::string>& parameters,
-                                                                                               const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> saveServerConfiguration(const std::vector<std::string>& parameters,
-                                                                                                const std::string& requestContent) const;
-
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDatabaseVersion(const std::vector<std::string>& parameters,
-                                                                                           const std::string& requestContent) const;
-
-            boost::shared_ptr<shared::serialization::IDataSerializable> getExternalConfiguration(const std::vector<std::string>& parameters,
-                                                                                                 const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> saveExternalConfiguration(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> saveServerConfigurationV1(const std::vector<std::string>& parameters,
                                                                                                   const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDatabaseVersionV1(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const;
 
+            boost::shared_ptr<shared::serialization::IDataSerializable> getExternalConfigurationV1(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> saveExternalConfigurationV1(const std::vector<std::string>& parameters,
+               const std::string& requestContent) const;
+
+            // REST Api v2
+            boost::shared_ptr<IAnswer> getServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> updateServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> resetServerConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> saveExternalConfigurationV2(const boost::shared_ptr<IRequest>& request) const;
+
+            boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
             static std::string m_restKeyword;
+
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
          };
       } //namespace service
    } //namespace rest

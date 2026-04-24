@@ -19,7 +19,8 @@
       "show": {
         "__Binding__": {
           "type": "system",
-          "query": "platformIsLinux"
+          "query": "platformIsLinux",
+          "key":  "show"  
         }
       },
       "content": {
@@ -50,7 +51,7 @@
         "smartBatteryMonitor": {
           "types": {
             "DS2438": {
-              "canBeCreatedManually": "false"
+              "canBeCreatedManually": false
             }
           },
           "content": {
@@ -70,12 +71,12 @@
             },
             "visSensor": {
               "type": "bool",
-              "defaultValue": "false"
+              "defaultValue": false
             }
           }
         }
       }
     }
   },
-  "supportDeviceRemovedNotification": "true"
+  "supportDeviceRemovedNotification": true
 }

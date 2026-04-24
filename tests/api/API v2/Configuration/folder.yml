@@ -1,0 +1,50 @@
+info:
+  name: Configuration
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    Use this service to update the server configuration or store/retrieve your client configuration
+
+    # Server configuration
+
+    Use this service to get or change server configuration.  
+    The shema is :
+
+    ``` json
+    {
+        "firstStart": false,
+        "location": {
+            "status": "default",
+            "latitude": 48.853,
+            "longitude": 2.35,
+            "altitude": 123.0,
+            "timezone": "Europe/Paris"
+        },
+        "basicAuthentication": {
+            "active": false,
+            "user": "admin",
+            "password": "1234"
+        }
+    }
+
+    ```
+
+    *   `firstStart` : read-only : Inform the client that server was freshly started (with no database). Useful to start tutorial, tips...
+    *   `location` : contains the server geographical location. Yadoms try to automaticaly get it.
+        *   `status` : read-only : set by Yadoms server to `autoDetected` if location was detected, `userDefined` if user changed geographical coordonates
+        *   `latitude`, `longitude`, `altitude` : geographical coordonates
+        *   `timezone` : current timezone
+    *   `basicAuthentication` : enable basic authentication
+        *   `active` : true is basic authentication is enabled
+        *   `user` : user name
+        *   `password` : user password (encrypted)
+
+    # External configuration
+
+    Use this service to store and retrieve your client configuration. The configuration must be JSON-formatted, but the content is free.
+  type: text/markdown

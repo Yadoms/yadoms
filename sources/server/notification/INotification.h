@@ -8,10 +8,6 @@ namespace notification
    class INotification
    {
    public:
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~INotification() {}
+      virtual ~INotification() = default;
    };
-
 } // namespace notification

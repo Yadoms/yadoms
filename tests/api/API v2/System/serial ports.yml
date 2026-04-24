@@ -1,0 +1,42 @@
+info:
+  name: serial ports
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/serial-ports
+  body:
+    type: text
+    data: ""
+  auth:
+    type: bearer
+    token: jhh
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: serial ports
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/serial-ports
+      method: GET
+      body:
+        type: text
+        data: ""
+    response:
+      status: 204
+      statusText: No Content
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""

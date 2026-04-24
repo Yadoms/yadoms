@@ -10,32 +10,31 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 DECLARE_ENUM_HEADER(EChannel,
-   ((Channel1)(1))
-   ((Channel2)(2))
-   ((Channel3)(3))
-   ((Channel4)(4))
-   ((Channel5)(5))
+                    ((Channel1)(1))
+                    ((Channel2)(2))
+                    ((Channel3)(3))
+                    ((Channel4)(4))
+                    ((Channel5)(5))
 );
 
 //--------------------------------------------------------------
 /// \brief	This plugin supports adapter for Somfy IO Situo Remote Controls
 //--------------------------------------------------------------
-class CSomfySituo : public plugin_cpp_api::IPlugin
+class CSomfySituo final : public plugin_cpp_api::IPlugin
 {
 public:
-   typedef enum
+   enum class ConfigSituo : char
    {
-      Debug = 'D',
-   } ConfigSituo;
+      kDebug = 'D',
+   };
 
    CSomfySituo();
-   virtual ~CSomfySituo();
+   ~CSomfySituo() override;
 
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
 
 protected:
-
-   void manageEvents(boost::shared_ptr<yApi::IYPluginApi> api);
+   void manageEvents(const boost::shared_ptr<yApi::IYPluginApi>& api);
 
    void send(const std::string& message,
              bool needAnswer = false);
@@ -46,30 +45,30 @@ protected:
    void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                   const std::string& device, const std::string& command);
 
-   void processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
+   void processConnectionEvent(const boost::shared_ptr<yApi::IYPluginApi>& api);
 
-   void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-                                 boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification
+   void processUnConnectionEvent(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                                 const boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>& notification
                                     =
                                     boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
 
    void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                             const std::string& message);
 
-   void createConnection(boost::shared_ptr<yApi::IYPluginApi> api);
+   void createConnection(const boost::shared_ptr<yApi::IYPluginApi>& api);
 
    void destroyConnection();
 
-   void protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api);
+   void protocolErrorProcess(const boost::shared_ptr<yApi::IYPluginApi>& api);
 
    static bool connectionsAreEqual(const CSomfySituoConfiguration& conf1,
                                    const CSomfySituoConfiguration& conf2);
 
-   void processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> api,
-      const boost::tokenizer<boost::char_separator<char>>& tokens) const;
+   void processReceivedInformation(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                                   const boost::tokenizer<boost::char_separator<char>>& tokens) const;
 
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-      const std::string& model, const std::string& version) const;
+   void declareDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                      const std::string& model, const std::string& version) const;
 
    //--------------------------------------------------------------
    /// \brief Send command to the remote control adapter
@@ -86,7 +85,6 @@ protected:
    void sendProgCmd();
    void sendQuickProgCmd(int chan);
 
-
 private:
    CSomfySituoConfiguration m_configuration;
    boost::shared_ptr<shared::communication::IAsyncPort> m_port;
@@ -100,8 +98,8 @@ private:
    int m_activeChannel;
    bool m_channelSleep;
    boost::shared_ptr<yApi::historization::CCurtain> m_curtain;
-   boost::shared_ptr<CSomfySituoReceiveBufferHandler> m_ReceiveBufferHandler;
+   boost::shared_ptr<CSomfySituoReceiveBufferHandler> m_receiveBufferHandler;
 
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
-   static const std::map<std::string, int> m_somfyModels;
+   static const std::map<std::string, int> SomfyModels;
 };

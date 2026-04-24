@@ -1,0 +1,48 @@
+info:
+  name: start instance
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances/:idPluginInstance/start
+  params:
+    - name: idPluginInstance
+      value: "2"
+      type: path
+      description: "[Required] Plugin instance ID to start"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: start instance
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances/:idPluginInstance/start
+      method: POST
+      params:
+        - name: idPluginInstance
+          value: "2"
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "16"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: oatpp/1.2.5
+      body:
+        type: json
+        data: |-
+          {
+              "started": true
+          }

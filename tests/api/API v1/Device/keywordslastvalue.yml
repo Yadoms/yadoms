@@ -1,0 +1,21 @@
+info:
+  name: keywordslastvalue
+  type: http
+  seq: 14
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/device/keywordslastvalue
+  headers:
+    - name: Content-Type
+      value: application/x-www-form-urlencoded
+  body:
+    type: text
+    data: '{ "keywordIds": [7, 8] }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

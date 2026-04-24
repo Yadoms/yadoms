@@ -2,33 +2,22 @@
 #include "Exception.hpp"
 
 
-namespace shared
+namespace shared::exception
 {
-   namespace exception
+   //--------------------------------------------------------------
+   /// \brief Exception for non implemented part of code
+   //--------------------------------------------------------------
+   class CNotImplemented : public CException
    {
-      //--------------------------------------------------------------
-      /// \brief Exception for non implemented part of code
-      //--------------------------------------------------------------
-      class CNotImplemented : public CException
+   public:
+      explicit CNotImplemented(const std::string& function)
+         : CException(function + " is not yet implemented")
       {
-      public:
-         //--------------------------------------------------------------
-         /// \brief	                        Constructor
-         //--------------------------------------------------------------
-         explicit CNotImplemented(const std::string& function)
-            : CException(function + " is not yet implemented")
-         {
-         }
+      }
 
-         //--------------------------------------------------------------
-         /// \brief      Destructor
-         //--------------------------------------------------------------
-         virtual ~CNotImplemented() throw()
-         {
-         }
-      };
-   }
-} // namespace shared::exception
+      ~CNotImplemented() throw() override = default;
+   };
+}
 
 // Helper macro
 #define NOT_IMPLEMENTED    throw shared::exception::CNotImplemented(__FUNCTION__)

@@ -14,12 +14,7 @@ namespace shared
          class IExtraQueryData
          {
          public:
-            //-----------------------------------------------------
-            ///\brief               Destructor
-            //-----------------------------------------------------
-            virtual ~IExtraQueryData()
-            {
-            }
+            virtual ~IExtraQueryData() = default;
 
             //-----------------------------------------------------
             ///\brief               Get the query
@@ -42,5 +37,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi	
-
-

@@ -1,0 +1,214 @@
+info:
+  name: backups
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups/:url
+  params:
+    - name: url
+      value: backup_20211209T000355.302488.zip
+      type: path
+      description: "[optional] Returns all backups if omitted"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: backups
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "347"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "backups": [
+                  {
+                      "size": 2551233,
+                      "modificationDate": "20211206T231013",
+                      "path": "backups\\backup_20211206T231010.849729.zip",
+                      "url": "backup_20211206T231010.849729.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2551510,
+                      "modificationDate": "20211206T231020",
+                      "path": "backups\\backup_20211206T231018.752053.zip",
+                      "url": "backup_20211206T231018.752053.zip",
+                      "inprogress": false
+                  }
+              ]
+          }
+  - name: all backups with one backup in progress
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "2430"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "backups": [
+                  {
+                      "size": 2551233,
+                      "modificationDate": "20211206T231013",
+                      "path": "backups\\backup_20211206T231010.849729.zip",
+                      "url": "backup_20211206T231010.849729.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2551510,
+                      "modificationDate": "20211206T231020",
+                      "path": "backups\\backup_20211206T231018.752053.zip",
+                      "url": "backup_20211206T231018.752053.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2633755,
+                      "modificationDate": "20211206T235435",
+                      "path": "backups\\backup_20211206T235432.813236.zip",
+                      "url": "backup_20211206T235432.813236.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2640410,
+                      "modificationDate": "20211207T233816",
+                      "path": "backups\\backup_20211207T233814.535154.zip",
+                      "url": "backup_20211207T233814.535154.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2658075,
+                      "modificationDate": "20211207T234755",
+                      "path": "backups\\backup_20211207T234753.039776.zip",
+                      "url": "backup_20211207T234753.039776.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2667966,
+                      "modificationDate": "20211207T235632",
+                      "path": "backups\\backup_20211207T235630.251545.zip",
+                      "url": "backup_20211207T235630.251545.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2681659,
+                      "modificationDate": "20211208T001029",
+                      "path": "backups\\backup_20211208T001026.826752.zip",
+                      "url": "backup_20211208T001026.826752.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2683211,
+                      "modificationDate": "20211208T001035",
+                      "path": "backups\\backup_20211208T001033.743427.zip",
+                      "url": "backup_20211208T001033.743427.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2683227,
+                      "modificationDate": "20211208T001038",
+                      "path": "backups\\backup_20211208T001036.682343.zip",
+                      "url": "backup_20211208T001036.682343.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2696329,
+                      "modificationDate": "20211208T204706",
+                      "path": "backups\\backup_20211208T204704.237426.zip",
+                      "url": "backup_20211208T204704.237426.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2702930,
+                      "modificationDate": "20211208T205124",
+                      "path": "backups\\backup_20211208T205122.445601.zip",
+                      "url": "backup_20211208T205122.445601.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2710362,
+                      "modificationDate": "20211208T205535",
+                      "path": "backups\\backup_20211208T205532.778475.zip",
+                      "url": "backup_20211208T205532.778475.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2852094,
+                      "modificationDate": "20211208T221019",
+                      "path": "backups\\backup_20211208T221016.842897.zip",
+                      "url": "backup_20211208T221016.842897.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 2023424,
+                      "modificationDate": "20211208T231253",
+                      "path": "backups\\backup_20211208T231251.586397.zip.inprogress",
+                      "url": "backup_20211208T231251.586397.zip.inprogress",
+                      "inprogress": true
+                  }
+              ],
+              "inProgress": "tasks/41324f38-72b0-46c4-a58c-03b2e1c43786"
+          }
+  - name: one backup
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups/:url
+      method: GET
+      params:
+        - name: url
+          value: backup_20211206T235432.813236.zip
+          type: path
+          description: "[Optional] Return all backups if omitted"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "166"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "size": 2633755,
+              "modificationDate": "20211206T235435",
+              "path": "backups\\backup_20211206T235432.813236.zip",
+              "url": "backup_20211206T235432.813236.zip",
+              "inprogress": false
+          }
+
+docs: Get backups

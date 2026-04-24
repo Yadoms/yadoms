@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Rgb.h"
 
-CRgb::CRgb(unsigned long& r, unsigned long& g, unsigned long& b)
+CRgb::CRgb(const unsigned long& r, const unsigned long& g, const unsigned long& b)
    : m_r(r),
      m_g(g),
      m_b(b)

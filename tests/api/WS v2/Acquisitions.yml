@@ -1,0 +1,40 @@
+info:
+  name: Acquisitions
+  type: websocket
+  seq: 1
+
+websocket:
+  url: "{{yadoms_ip}}:{{yadoms_port_v2}}/ws/v2"
+  message:
+    type: json
+    data: |-
+      {
+          "acquisitionFilter": {
+              "keywords": [
+                  24,
+                  25,
+                  26
+              ]
+          }
+      }
+  auth: inherit
+
+settings:
+  timeout: 0
+  keepAliveInterval: 0
+
+docs: |
+  
+
+  The websocket is used to notify clients of live events on the server (new acquisition, update availables...).
+
+
+  # Connection
+
+  Once connected, server manage a ping to the client. The client must answer a pong to maintain the connection.
+  The client can also test for available connection sending a ping and waiting for a pong.
+
+
+  # Acquisitions
+
+  By default, server send all new acquisitions to the client. For more performance, client can filter keywords for only required acquisitions.

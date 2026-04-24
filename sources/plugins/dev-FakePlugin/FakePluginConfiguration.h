@@ -36,7 +36,7 @@ public:
    /// \param [in] data The data container
    /// \param [in] packageJsonPath The package.json path
    //--------------------------------------------------------------
-   void initializeWith(boost::shared_ptr<shared::CDataContainer> data,
+   void initializeWith(const boost::shared_ptr<shared::CDataContainer>& data,
                        const boost::filesystem::path& packageJsonPath);
 
    //--------------------------------------------------------------

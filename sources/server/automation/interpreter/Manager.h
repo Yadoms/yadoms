@@ -10,7 +10,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief The script runner manager
       //-----------------------------------------------------
-      class CManager : public IManager
+      class CManager final : public IManager
       {
       public:
          //-----------------------------------------------------
@@ -19,15 +19,14 @@ namespace automation
          //-----------------------------------------------------
          explicit CManager(boost::shared_ptr<const IPathProvider> pathProvider);
 
-         //-----------------------------------------------------
-         ///\brief               Destructor
-         //-----------------------------------------------------
-         virtual ~CManager();
+         ~CManager() override;
 
       protected:
          // IManager Implementation
          std::vector<std::string> getLoadedInterpreters(bool loadIfNecessary = true) override;
          std::vector<std::string> getAvailablenterpreters(bool loadIfNecessary = true) override;
+         std::map<std::string, bool> getInterpreters(bool includeNotAvailable,
+                                                     bool loadIfNecessary = true) override;
          std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> getAvailableInterpretersInformation() override;
          std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> getLoadedInterpretersInformation() override;
          boost::shared_ptr<IInstance> getAvailableInterpreterInstance(const std::string& interpreterType) override;

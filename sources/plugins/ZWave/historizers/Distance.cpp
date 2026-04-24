@@ -4,7 +4,7 @@
 
 namespace historizers
 {
-   CDistance::CDistance(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti)
+   CDistance::CDistance(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo& ti)
       : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CDistance>(name, accessMode, ti))
    {
    }

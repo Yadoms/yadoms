@@ -1,0 +1,51 @@
+info:
+  name: rule log
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/rules/:id/log
+  params:
+    - name: id
+      value: "52"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: rule log
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/rules/:id/log
+      method: GET
+      params:
+        - name: id
+          value: "52"
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "255"
+        - name: Content-Type
+          value: text/plain
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: |
+          # Log file created/rotated Tuesday, 7 Dec 21 12:26:30 GMT
+          Tue, 13:26:30 : [Information] : #### START ####
+          Tue, 13:26:30 : [Information] : Script started
+          Tue, 13:27:00 : [Information] : toutes les minutes
+          Tue, 13:28:02 : [Information] : toutes les minutes
+
+docs: Returns last log of given rule

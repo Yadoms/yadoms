@@ -134,7 +134,6 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                else
                {
                   YADOMS_LOG(error) << "Invalid query";
-                  extraQuery->sendError("customLabels.extraquery.ErrorInternal");
                }
                break;
             }

@@ -66,7 +66,7 @@ namespace shared
 
             boost::shared_ptr<CDataContainer> CDateTime::getTypeInfo() const
             {
-               return shared::CDataContainer::make();
+               return CDataContainer::make();
             }
 
             const EHistoryDepth& CDateTime::getHistoryDepth() const

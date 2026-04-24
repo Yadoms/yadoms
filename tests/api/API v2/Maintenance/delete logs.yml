@@ -1,0 +1,22 @@
+info:
+  name: delete logs
+  type: http
+  seq: 8
+
+http:
+  method: DELETE
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/logs/:url
+  params:
+    - name: url
+      value: logs_20211209T182458.607438.zip
+      type: path
+      description: "[optional] Delete all logs if omitted"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: Delete log(s)

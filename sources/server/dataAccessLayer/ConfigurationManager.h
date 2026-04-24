@@ -4,34 +4,36 @@
 
 namespace dataAccessLayer
 {
-   class CConfigurationManager : public IConfigurationManager
+   class CConfigurationManager final : public IConfigurationManager
    {
    public:
       explicit CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester);
-      virtual ~CConfigurationManager();
+      ~CConfigurationManager() override = default;
 
       // IConfigurationManager implementation
-      std::string getExternalConfiguration(const std::string& section) const override;
+      boost::shared_ptr<shared::CDataContainer> getExternalConfiguration(const std::string& section) const override;
       void saveExternalConfiguration(const std::string& section,
                                      const shared::CDataContainer& value) override;
       boost::shared_ptr<shared::CDataContainer> getServerConfiguration() const override;
       void saveServerConfiguration(const shared::CDataContainer& newConfiguration) override;
       void resetServerConfiguration() override;
       std::string getDatabaseVersion() const override;
-      void subscribeOnServerConfigurationChanged(boost::function1<void, boost::shared_ptr<shared::CDataContainer> > onServerConfigurationChangedFct) override;
+      void subscribeOnServerConfigurationChanged(
+         boost::function1<void, boost::shared_ptr<shared::CDataContainer>> onServerConfigurationChangedFct) override;
       boost::shared_ptr<shared::CDataContainer> getLocation() const override;
       void saveAutoDetectedLocation(const shared::CDataContainer& newLocation) override;
       boost::shared_ptr<shared::CDataContainer> getBasicAuthentication() const override;
       // [END] - IConfigurationManager implementation
 
-   protected:
+   private:
+      static bool quiteEqual(double a, double b);
+
       std::string getConfiguration(const std::string& section) const;
       void saveConfiguration(const std::string& section,
-                             const shared::CDataContainer& value) const;
+                             const std::string& value) const;
 
-      void notifyServerConfigurationChanged(boost::shared_ptr<shared::CDataContainer> serverConfiguration);
+      void notifyServerConfigurationChanged(const boost::shared_ptr<shared::CDataContainer>& serverConfiguration);
 
-   private:
       boost::shared_ptr<database::IConfigurationRequester> m_configurationRequester;
       mutable boost::recursive_mutex m_configurationMutex;
 

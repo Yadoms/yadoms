@@ -3,7 +3,7 @@
 namespace plugin_cpp_api
 {
    //--------------------------------------------------------------
-   /// \class The plugin context
+   /// \brief The plugin context
    //--------------------------------------------------------------
    class IPluginContext
    {
@@ -16,7 +16,7 @@ namespace plugin_cpp_api
          kUnexpectedStop      // Plugin has stopped without stop requested
       };
 
-      virtual ~IPluginContext() { }
+      virtual ~IPluginContext() = default;
 
       //--------------------------------------------------------------
       /// \brief                 The main run method, where the plugin code is executed

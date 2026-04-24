@@ -1,10 +1,7 @@
-### 1.2.3-beta.3
+### 1.2.3
+* Use new configuration format
 * Security patch on configuration
-
-### 1.2.3-beta.2
 * Fix customizable email subject under Linux
-
-### 1.2.3-beta.1
 * Use Curlpp to send emails (Remove Poco)
 * Make email subject customizable
 * Manage an emails stack in case of connection temporary lost (retry every 2 minutes)

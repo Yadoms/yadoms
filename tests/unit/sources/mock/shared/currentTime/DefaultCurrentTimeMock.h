@@ -3,12 +3,12 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/currentTime/ICurrentTime.h"
 
-class CDefaultCurrentTimeMock : public shared::currentTime::ICurrentTime
+class CDefaultCurrentTimeMock final : public shared::currentTime::ICurrentTime
 {
 public:
    explicit CDefaultCurrentTimeMock(const std::string& refTime = "2015-10-05 08:30:00.000");
 
-   virtual ~CDefaultCurrentTimeMock();
+   ~CDefaultCurrentTimeMock() override = default;
 
    // shared::currentTime::ICurrentTime implementation
    boost::posix_time::ptime now() const override;
@@ -29,4 +29,4 @@ private:
    boost::posix_time::ptime m_refTime;
 };
 
-extern boost::shared_ptr<CDefaultCurrentTimeMock> useTimeMock();
+extern boost::shared_ptr<CDefaultCurrentTimeMock> useTimeMock(const std::string& refTime = "2015-10-05 08:30:00.000");

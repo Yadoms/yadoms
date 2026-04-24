@@ -7,7 +7,7 @@ CXy::CXy()
 {
 }
 
-CXy::CXy(float& x, float& y)
+CXy::CXy(const float& x, const float& y)
    : m_x(x),
      m_y(y)
 {
