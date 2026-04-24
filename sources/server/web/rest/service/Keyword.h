@@ -2,6 +2,7 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "communication/ISendMessageAsync.h"
+#include "dataAccessLayer/IKeywordManager.h"
 
 namespace web::rest::service
 {
