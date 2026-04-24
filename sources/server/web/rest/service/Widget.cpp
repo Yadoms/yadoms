@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "RestEndPoint.h"
+#include "shared/exception/EmptyResult.hpp"
 #include "web/poco/RestDispatcherHelpers.hpp"
 #include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
@@ -23,16 +24,16 @@ CWidget::CWidget(const boost::shared_ptr<database::IDataProvider>& dataProvider,
 
 void CWidget::configurePocoDispatcher(poco::CRestDispatcher& dispatcher)
 {
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CWidget::getAllWidgetsV1);
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CWidget::getOneWidgetV1);
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("package"), CWidget::findWidgetPackagesV1);
-   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CWidget::addWidgetV1, CWidget::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CWidget::getAllWidgetsV1)
+   REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CWidget::getOneWidgetV1)
+   REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("package"), CWidget::findWidgetPackagesV1)
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CWidget::addWidgetV1, CWidget::transactionalMethod)
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CWidget::updateOneWidgetV1,
-                                               CWidget::transactionalMethod);
+                                               CWidget::transactionalMethod)
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CWidget::deleteAllWidgetsV1,
-                                               CWidget::transactionalMethod);
+                                               CWidget::transactionalMethod)
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CWidget::deleteOneWidgetV1,
-                                               CWidget::transactionalMethod);
+                                               CWidget::transactionalMethod)
 }
 
 boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CWidget::endPoints()
@@ -134,7 +135,11 @@ boost::shared_ptr<web::rest::IAnswer> CWidget::getWidgetsV2(const boost::shared_
                                                  widgetsEntries,
                                                  "widgets");
    }
-
+   catch (const shared::exception::CEmptyResult& exception)
+   {
+      YADOMS_LOG(error) << "Error processing getWidgets request : " << exception.what();
+      return boost::make_shared<CNoContentAnswer>();
+   }
    catch (const shared::exception::COutOfRange& exception)
    {
       YADOMS_LOG(error) << "Error processing getWidgets request : " << exception.what();
