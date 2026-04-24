@@ -5,6 +5,7 @@
 
 #include "RestEndPoint.h"
 #include "web/poco/RestDispatcherHelpers.hpp"
+#include "web/rest/CreatedAnswer.h"
 #include "web/rest/ErrorAnswer.h"
 #include "web/rest/Helpers.h"
 #include "web/rest/NoContentAnswer.h"
@@ -43,6 +44,8 @@ boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CWidget::endPoi
 
    m_endPoints->push_back(MAKE_ENDPOINT(kGet, "widgets", getWidgetsV2));
    m_endPoints->push_back(MAKE_ENDPOINT(kGet, "widgets/{id}", getWidgetsV2));
+
+   m_endPoints->push_back(MAKE_ENDPOINT(kPost, "widgets", createWidgetV2));
 
    return m_endPoints;
 }
@@ -142,6 +145,30 @@ boost::shared_ptr<web::rest::IAnswer> CWidget::getWidgetsV2(const boost::shared_
       YADOMS_LOG(error) << "Error processing getWidgets request : " << exception.what();
       return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                               "Fail to get widgets");
+   }
+}
+
+boost::shared_ptr<web::rest::IAnswer> CWidget::createWidgetV2(const boost::shared_ptr<IRequest>& request) const
+{
+   try
+   {
+      return CHelpers::transactionalMethodV2(
+         request,
+         m_dataProvider,
+         [this](const auto& req) -> boost::shared_ptr<IAnswer>
+         {
+            shared::CDataContainer widgetToCreate(req->body());
+
+            database::entities::CWidget widget;
+            widget.fillFromContent(widgetToCreate);
+            const auto idCreated = m_dataProvider->getWidgetRequester()->addWidget(widget);
+            return boost::make_shared<CCreatedAnswer>("widgets/" + std::to_string(idCreated));
+         });
+   }
+   catch (const std::exception&)
+   {
+      return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                              "Fail to create plugin instance");
    }
 }
 

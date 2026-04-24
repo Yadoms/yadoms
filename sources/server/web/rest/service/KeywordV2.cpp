@@ -169,8 +169,8 @@ boost::shared_ptr<web::rest::IAnswer> CKeyword::getKeywordsAcquisitionsV2(const 
       auto resolution = boost::optional<database::entities::EAcquisitionSummaryType>();
       if (request->queryParamExists("resolution"))
       {
-         const auto resolutionStr = request->queryParam("resolution");
-         if (resolutionStr == "hour")
+         if (const auto resolutionStr = request->queryParam("resolution");
+            resolutionStr == "hour")
             resolution = boost::make_optional(database::entities::EAcquisitionSummaryType::kHour);
          else if (resolutionStr == "day")
             resolution = boost::make_optional(database::entities::EAcquisitionSummaryType::kDay);

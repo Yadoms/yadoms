@@ -2,7 +2,6 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "communication/ISendMessageAsync.h"
-#include "pluginSystem/Manager.h"
 
 namespace web::rest::service
 {

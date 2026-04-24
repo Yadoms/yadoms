@@ -323,7 +323,7 @@ namespace database
 														  + std::to_string(keywordId)
 														  + " in database");
 
-				return boost::shared_ptr<entities::CAcquisition>();
+				return {};
 			}
 
 			std::string CKeyword::getKeywordLastData(int keywordId,
@@ -341,11 +341,11 @@ namespace database
 					return adapter.getResults()[0]->LastAcquisitionValue();
 
 				if (throwIfNotExists)
-					throw shared::exception::CEmptyResult(std::string("Cannot retrieve any acquisition for the keyword id=")
+					throw shared::exception::CEmptyResult(std::string("Cannot retrieve any data for the keyword id=")
 														  + std::to_string(keywordId)
 														  + " in database");
 
-				return std::string();
+				return {};
 			}
 
 			std::vector<boost::tuple<int, std::string>> CKeyword::getKeywordListLastData(const std::vector<int>& keywordIds)
