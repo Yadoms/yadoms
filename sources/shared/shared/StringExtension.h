@@ -1,7 +1,6 @@
 #pragma once
 #include "exception/Exception.hpp"
 #include <cstdarg>
-#include <Poco/Types.h>
 #include <ostream>
 #include <string_view>
 #include <vector>

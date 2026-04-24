@@ -35,9 +35,7 @@ namespace xplrules
       //------------------------------------
       ///\brief Destructor
       //------------------------------------
-      virtual ~CProtocol()
-      {
-      }
+      ~CProtocol() override = default;
 
       // IProtocol implementation
       boost::shared_ptr<IRule> createRuleInstance(CRuleInstanceManager& instanceManager) override

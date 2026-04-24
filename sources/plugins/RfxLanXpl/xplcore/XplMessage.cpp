@@ -199,13 +199,11 @@ namespace xplcore
       try
       {
          //we explode the string onto the { char
-         std::vector<std::string> result;
          auto trimRawMessage = boost::trim_copy(rawMessage);
          if (trimRawMessage[trimRawMessage.size() - 1] == '\0')
             trimRawMessage.erase(trimRawMessage.end() - 1);
 
-         boost::split(result, trimRawMessage, boost::is_any_of("{}"), boost::token_compress_on);
-
+         std::vector<std::string> result = shared::CStringExtension::splitAnyOfAndCompress(trimRawMessage, "{}");
 
          //we trim each '\n' '\r' at the beggining or the end of each line
          //and we suppress empty lines due to previous trim
@@ -255,9 +253,8 @@ namespace xplcore
          //Header block parsing
 
          //we explode onto line feed char and also '\r' to be more peaceful
-         std::vector<std::string> header;
          auto trimHeaderBlockIndex = boost::trim_copy(result[headerBlockIndex]);
-         boost::split(header, trimHeaderBlockIndex, boost::is_any_of("\n\r"), boost::token_compress_on);
+         std::vector<std::string> header = shared::CStringExtension::splitAnyOfAndCompress(trimHeaderBlockIndex, "\n\r");
 
          //We must have 3 results : hop, source and dest
          if (header.size() != 3)
@@ -270,9 +267,8 @@ namespace xplcore
          for (auto headerLineIter = header.begin(); headerLineIter != header.end(); ++headerLineIter)
          {
             auto headerLine = *headerLineIter;
-            std::vector<std::string> headerLineDecomposed;
             auto trimHeaderLine = boost::trim_copy(headerLine);
-            boost::split(headerLineDecomposed, trimHeaderLine, boost::is_any_of("="), boost::token_compress_on);
+            std::vector<std::string> headerLineDecomposed = shared::CStringExtension::splitAnyOfAndCompress(trimHeaderLine, "=");
 
             const auto nameIndex = 0;
             const auto valueIndex = 1;
@@ -319,16 +315,14 @@ namespace xplcore
          msg.setMessageSchemaIdentifier(CXplMessageSchemaIdentifier::parse(result[messageSchemaIndex]));
 
          //Body parsing
-         std::vector<std::string> body;
          auto trimBodyIndex = boost::trim_copy(result[bodyIndex]);
-         boost::split(body, trimBodyIndex, boost::is_any_of("\n\r"), boost::token_compress_on);
-
+         std::vector<std::string> body = shared::CStringExtension::splitAnyOfAndCompress(trimBodyIndex, "\n\r");
+         
          for (auto bodyIter = body.begin(); bodyIter != body.end(); ++bodyIter)
          {
             auto bodyLine = *bodyIter;
-            std::vector<std::string> bodyLineDecomposed;
             auto trimBodyLine = boost::trim_copy(bodyLine);
-            boost::split(bodyLineDecomposed, trimBodyLine, boost::is_any_of("="), boost::token_compress_on);
+            std::vector<std::string> bodyLineDecomposed = shared::CStringExtension::splitAnyOfAndCompress(trimBodyLine, "=");
 
             //we must have a couple of name=value -> 2 elements
             if (bodyLineDecomposed.size() != 2)
