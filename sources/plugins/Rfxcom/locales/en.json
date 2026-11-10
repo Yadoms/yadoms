@@ -17,6 +17,8 @@
     "Protocols": {
       "name": "Protocols to listen",
       "description": "Supported protocols to listen, see RFXCom manual to configure. Be careful, some protocols are incompatible and must not be selected together.",
+      "placeholder": "Choose one or more protocols",
+      "nothingFound": "No protocol was found",
       "content": {
         "AE Blyss": { "name": "AE Blyss" },
         "Rubicson": { "name": "Rubicson" },
@@ -734,7 +736,7 @@
               "values": {
                 "energyWh": "Energy (Wh)",
                 "waterLiter": "Water (one pulse per Liter)",
-                "waterQuarterLiter": "Water (one pulse per ¼ liter)",
+                "waterQuarterLiter": "Water (one pulse per Â¼ liter)",
                 "gasDeciM3": "Gas (one pulse per 1/10 m3)",
                 "gasCentiM3": "Gas (one pulse per 1/100 m3)",
                 "raw": "Other (Raw counter only)"
@@ -746,7 +748,7 @@
               "values": {
                 "energyWh": "Energy (Wh)",
                 "waterLiter": "Water (one pulse per Liter)",
-                "waterQuarterLiter": "Water (one pulse per ¼ liter)",
+                "waterQuarterLiter": "Water (one pulse per Â¼ liter)",
                 "gasDeciM3": "Gas (one pulse per 1/10 m3)",
                 "gasCentiM3": "Gas (one pulse per 1/100 m3)",
                 "raw": "Other (Raw counter only)"

@@ -46,7 +46,7 @@ MACRO(SCRIPT_API_WRAPPER_INCLDIR _targetName)
 ENDMACRO()
 
 MACRO(SCRIPT_API_WRAPPER_LINK _targetName)
-   SWIG_LINK_LIBRARIES(${_targetName} yadoms-shared ${ARGN})
+   TARGET_LINK_LIBRARIES(${_targetName} yadoms-shared ${ARGN})
    
 	if(COTIRE_USE)
    
@@ -61,7 +61,7 @@ MACRO(SCRIPT_API_WRAPPER_LINK _targetName)
       
 	  
 	if(MSVC)
-		#fix for linking with external OpenSSL (due to SWIG_LINK_LIBRARIES, default link flags are not used)
+		#fix for linking with external OpenSSL (due to TARGET_LINK_LIBRARIES, default link flags are not used)
 		set_target_properties(${_targetName} PROPERTIES LINK_FLAGS "/NODEFAULTLIB:libssl /NODEFAULTLIB:libcrypto")		
 	endif(MSVC)
 	  

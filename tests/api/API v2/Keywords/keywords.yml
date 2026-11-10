@@ -1,0 +1,771 @@
+info:
+  name: keywords
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/:keywordIds?from-capacity-name=pluginState|switch|frequency&prop=id|friendly-name|type
+  params:
+    - name: from-device-id
+      value: "4"
+      type: query
+      description: "[Optional] "
+      disabled: true
+    - name: from-capacity-name
+      value: pluginState|switch|frequency
+      type: query
+      description: "[Optional] switch|event|temperature|text|load|voltage|..."
+    - name: from-access-mode
+      value: get
+      type: query
+      description: "[Optional] get, getset, noaccess"
+      disabled: true
+    - name: from-friendly-name
+      value: signalPower
+      type: query
+      description: "[Optional] "
+      disabled: true
+    - name: from-data-type
+      value: numeric|bool
+      type: query
+      description: "[Optional] nodata|string|numeric|bool|json|enum|datetime"
+      disabled: true
+    - name: from-units
+      value: noUnit
+      type: query
+      description: "[Optional] noUnit, ampere, ampereHour, cubicMetre, cubicMeterPerSecond, decibel, decibelPerMilliWatt, degrees, degreesCelcius, degreesFarenheit, hectoPascal, hertz, kg, lux, meter, metersPerSecond, millimeter, millimeterPerSecond, percent, second, uv, volt, voltAmpere, watt, wattPerHour, wattPerSquareMeter"
+      disabled: true
+    - name: from-measure
+      value: absolute
+      type: query
+      description: "[Optional] absolute, increment, cumulative"
+      disabled: true
+    - name: with-blacklisted
+      value: ""
+      type: query
+      description: "[Optional] "
+      disabled: true
+    - name: from-history-depth
+      value: nohistory
+      type: query
+      description: "[Optional] default, nohistory"
+      disabled: true
+    - name: prop
+      value: id|friendly-name|type
+      type: query
+      description: "[Optional] id|device-id|capacity-name|access-mode|friendly-name|type|units|type-info|measure|details|blacklisted|last-acquisition-value|last-acquisition-date|history-depth|"
+    - name: keywordIds
+      value: ""
+      type: path
+      description: "[Optional] keyword ID list"
+  auth: inherit
+
+runtime:
+  variables:
+    - name: yadoms_ip
+      value: 127.0.0.1
+    - name: yadoms_port_v2
+      value: "8080"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: all keywords
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/:keywordId?prop=id|friendly-name
+      method: GET
+      params:
+        - name: from-device-id
+          value: "4"
+          type: query
+          disabled: true
+        - name: from-capacity-name
+          value: pluginState|switch|frequency
+          type: query
+          description: switch|event|temperature|text|load|voltage|...
+          disabled: true
+        - name: from-access-mode
+          value: get
+          type: query
+          description: get, getset, noaccess
+          disabled: true
+        - name: from-friendly-name
+          value: fakeSensor1
+          type: query
+          disabled: true
+        - name: from-data-type
+          value: numeric|bool
+          type: query
+          description: nodata|string|numeric|bool|json|enum|datetime
+          disabled: true
+        - name: from-units
+          value: noUnit
+          type: query
+          description: noUnit, ampere, ampereHour, cubicMetre, cubicMeterPerSecond, decibel, decibelPerMilliWatt, degrees, degreesCelcius, degreesFarenheit, hectoPascal, hertz, kg, lux, meter, metersPerSecond, millimeter, millimeterPerSecond, percent, second, uv, volt, voltAmpere, watt, wattPerHour, wattPerSquareMeter
+          disabled: true
+        - name: from-measure
+          value: absolute
+          type: query
+          description: absolute, increment, cumulative
+          disabled: true
+        - name: with-blacklisted
+          value: ""
+          type: query
+          disabled: true
+        - name: from-history-depth
+          value: nohistory
+          type: query
+          description: default, nohistory
+          disabled: true
+        - name: prop
+          value: id|friendly-name
+          type: query
+          description: id|device-id|capacity-name|access-mode|friendly-name|type|units|type-info|measure|details|blacklisted|last-acquisition-value|last-acquisition-date|history-depth|
+        - name: keywordId
+          value: ""
+          type: path
+          description: "[Required] Keyword ID"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "1106"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "keywords": [
+                  {
+                      "id": 1,
+                      "friendly-name": "state"
+                  },
+                  {
+                      "id": 2,
+                      "friendly-name": "customMessageId"
+                  },
+                  {
+                      "id": 3,
+                      "friendly-name": "shutdown"
+                  },
+                  {
+                      "id": 4,
+                      "friendly-name": "restart"
+                  },
+                  {
+                      "id": 5,
+                      "friendly-name": "state"
+                  },
+                  {
+                      "id": 6,
+                      "friendly-name": "customMessageId"
+                  },
+                  {
+                      "id": 7,
+                      "friendly-name": "temp1"
+                  },
+                  {
+                      "id": 8,
+                      "friendly-name": "temp2"
+                  },
+                  {
+                      "id": 9,
+                      "friendly-name": "Battery"
+                  },
+                  {
+                      "id": 10,
+                      "friendly-name": "signalPower"
+                  },
+                  {
+                      "id": 11,
+                      "friendly-name": "current"
+                  },
+                  {
+                      "id": 12,
+                      "friendly-name": "temp1"
+                  },
+                  {
+                      "id": 13,
+                      "friendly-name": "temp2"
+                  },
+                  {
+                      "id": 14,
+                      "friendly-name": "Battery"
+                  },
+                  {
+                      "id": 15,
+                      "friendly-name": "signalPower"
+                  },
+                  {
+                      "id": 16,
+                      "friendly-name": "current"
+                  },
+                  {
+                      "id": 17,
+                      "friendly-name": "incrementCount"
+                  },
+                  {
+                      "id": 18,
+                      "friendly-name": "totalCounter"
+                  },
+                  {
+                      "id": 19,
+                      "friendly-name": "Switch"
+                  },
+                  {
+                      "id": 20,
+                      "friendly-name": "Switch"
+                  },
+                  {
+                      "id": 21,
+                      "friendly-name": "DimmableSwitch"
+                  },
+                  {
+                      "id": 22,
+                      "friendly-name": "DimmableSwitch"
+                  },
+                  {
+                      "id": 23,
+                      "friendly-name": "controllerValue"
+                  },
+                  {
+                      "id": 24,
+                      "friendly-name": "counter"
+                  },
+                  {
+                      "id": 25,
+                      "friendly-name": "counter"
+                  },
+                  {
+                      "id": 26,
+                      "friendly-name": "Curtain"
+                  },
+                  {
+                      "id": 27,
+                      "friendly-name": "temperature"
+                  },
+                  {
+                      "id": 28,
+                      "friendly-name": "humidity"
+                  },
+                  {
+                      "id": 29,
+                      "friendly-name": "incrementCount"
+                  }
+              ]
+          }
+  - name: all information about a keyword
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/21
+      method: GET
+      params:
+        - name: from-device-id
+          value: "4"
+          type: query
+          disabled: true
+        - name: from-capacity-name
+          value: pluginState|switch|frequency
+          type: query
+          description: switch|event|temperature|text|load|voltage|...
+          disabled: true
+        - name: from-access-mode
+          value: get
+          type: query
+          description: get, getset, noaccess
+          disabled: true
+        - name: from-friendly-name
+          value: fakeSensor1
+          type: query
+          disabled: true
+        - name: from-data-type
+          value: numeric|bool
+          type: query
+          description: nodata|string|numeric|bool|json|enum|datetime
+          disabled: true
+        - name: from-units
+          value: noUnit
+          type: query
+          description: noUnit, ampere, ampereHour, cubicMetre, cubicMeterPerSecond, decibel, decibelPerMilliWatt, degrees, degreesCelcius, degreesFarenheit, hectoPascal, hertz, kg, lux, meter, metersPerSecond, millimeter, millimeterPerSecond, percent, second, uv, volt, voltAmpere, watt, wattPerHour, wattPerSquareMeter
+          disabled: true
+        - name: from-measure
+          value: absolute
+          type: query
+          description: absolute, increment, cumulative
+          disabled: true
+        - name: with-blacklisted
+          value: ""
+          type: query
+          disabled: true
+        - name: from-history-depth
+          value: nohistory
+          type: query
+          description: default, nohistory
+          disabled: true
+        - name: prop
+          value: id|friendly-name|units
+          type: query
+          description: id|device-id|capacity-name|access-mode|friendly-name|type|units|type-info|measure|details|blacklisted|last-acquisition-value|last-acquisition-date|history-depth|
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "364"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "keywords": [
+                  {
+                      "id": 21,
+                      "device-id": 9,
+                      "capacity-name": "dimmable",
+                      "access-mode": "Get",
+                      "friendly-name": "DimmableSwitch",
+                      "type": "Numeric",
+                      "units": "data.units.percent",
+                      "type-info": {
+                          "min": 0,
+                          "max": 100,
+                          "step": 1
+                      },
+                      "measure": "Absolute",
+                      "details": {},
+                      "blacklisted": false,
+                      "last-acquisition-value": "69",
+                      "last-acquisition-date": "20211119T003402.633752",
+                      "history-depth": "Default"
+                  }
+              ]
+          }
+  - name: all keywords of a device
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords?from-device-id=4&prop=id|friendly-name|units
+      method: GET
+      params:
+        - name: from-device-id
+          value: "4"
+          type: query
+        - name: from-capacity-name
+          value: pluginState|switch|frequency
+          type: query
+          description: switch|event|temperature|text|load|voltage|...
+          disabled: true
+        - name: from-access-mode
+          value: get
+          type: query
+          description: get, getset, noaccess
+          disabled: true
+        - name: from-friendly-name
+          value: signalPower
+          type: query
+          disabled: true
+        - name: from-data-type
+          value: numeric|bool
+          type: query
+          description: nodata|string|numeric|bool|json|enum|datetime
+          disabled: true
+        - name: from-units
+          value: noUnit
+          type: query
+          description: noUnit, ampere, ampereHour, cubicMetre, cubicMeterPerSecond, decibel, decibelPerMilliWatt, degrees, degreesCelcius, degreesFarenheit, hectoPascal, hertz, kg, lux, meter, metersPerSecond, millimeter, millimeterPerSecond, percent, second, uv, volt, voltAmpere, watt, wattPerHour, wattPerSquareMeter
+          disabled: true
+        - name: from-measure
+          value: absolute
+          type: query
+          description: absolute, increment, cumulative
+          disabled: true
+        - name: with-blacklisted
+          value: ""
+          type: query
+          disabled: true
+        - name: from-history-depth
+          value: nohistory
+          type: query
+          description: default, nohistory
+          disabled: true
+        - name: prop
+          value: id|friendly-name|units
+          type: query
+          description: id|device-id|capacity-name|access-mode|friendly-name|type|units|type-info|measure|details|blacklisted|last-acquisition-value|last-acquisition-date|history-depth|
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "349"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "keywords": [
+                  {
+                      "id": 7,
+                      "friendly-name": "temp1",
+                      "units": "data.units.degreesCelcius"
+                  },
+                  {
+                      "id": 8,
+                      "friendly-name": "temp2",
+                      "units": "data.units.degreesCelcius"
+                  },
+                  {
+                      "id": 9,
+                      "friendly-name": "Battery",
+                      "units": "data.units.percent"
+                  },
+                  {
+                      "id": 10,
+                      "friendly-name": "signalPower",
+                      "units": "data.units.percent"
+                  },
+                  {
+                      "id": 11,
+                      "friendly-name": "current",
+                      "units": "data.units.ampere"
+                  }
+              ]
+          }
+  - name: last acquisition of a keyword
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/21?prop=last-acquisition-value|last-acquisition-date
+      method: GET
+      params:
+        - name: from-device-id
+          value: "4"
+          type: query
+          disabled: true
+        - name: from-capacity-name
+          value: pluginState|switch|frequency
+          type: query
+          description: switch|event|temperature|text|load|voltage|...
+          disabled: true
+        - name: from-access-mode
+          value: get
+          type: query
+          description: get, getset, noaccess
+          disabled: true
+        - name: from-friendly-name
+          value: signalPower
+          type: query
+          disabled: true
+        - name: from-data-type
+          value: numeric|bool
+          type: query
+          description: nodata|string|numeric|bool|json|enum|datetime
+          disabled: true
+        - name: from-units
+          value: noUnit
+          type: query
+          description: noUnit, ampere, ampereHour, cubicMetre, cubicMeterPerSecond, decibel, decibelPerMilliWatt, degrees, degreesCelcius, degreesFarenheit, hectoPascal, hertz, kg, lux, meter, metersPerSecond, millimeter, millimeterPerSecond, percent, second, uv, volt, voltAmpere, watt, wattPerHour, wattPerSquareMeter
+          disabled: true
+        - name: from-measure
+          value: absolute
+          type: query
+          description: absolute, increment, cumulative
+          disabled: true
+        - name: with-blacklisted
+          value: ""
+          type: query
+          disabled: true
+        - name: from-history-depth
+          value: nohistory
+          type: query
+          description: default, nohistory
+          disabled: true
+        - name: prop
+          value: last-acquisition-value|last-acquisition-date
+          type: query
+          description: id|device-id|capacity-name|access-mode|friendly-name|type|units|type-info|measure|details|blacklisted|last-acquisition-value|last-acquisition-date|history-depth|
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "95"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "keywords": [
+                  {
+                      "last-acquisition-value": "43",
+                      "last-acquisition-date": "20211119T211022.839805"
+                  }
+              ]
+          }
+  - name: Values from several keywords
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/9|10?prop=id|friendly-name|last-acquisition-value
+      method: GET
+      params:
+        - name: from-device-id
+          value: "4"
+          type: query
+          disabled: true
+        - name: from-capacity-name
+          value: pluginState|switch|frequency
+          type: query
+          description: switch|event|temperature|text|load|voltage|...
+          disabled: true
+        - name: from-access-mode
+          value: get
+          type: query
+          description: get, getset, noaccess
+          disabled: true
+        - name: from-friendly-name
+          value: signalPower
+          type: query
+          disabled: true
+        - name: from-data-type
+          value: numeric|bool
+          type: query
+          description: nodata|string|numeric|bool|json|enum|datetime
+          disabled: true
+        - name: from-units
+          value: noUnit
+          type: query
+          description: noUnit, ampere, ampereHour, cubicMetre, cubicMeterPerSecond, decibel, decibelPerMilliWatt, degrees, degreesCelcius, degreesFarenheit, hectoPascal, hertz, kg, lux, meter, metersPerSecond, millimeter, millimeterPerSecond, percent, second, uv, volt, voltAmpere, watt, wattPerHour, wattPerSquareMeter
+          disabled: true
+        - name: from-measure
+          value: absolute
+          type: query
+          description: absolute, increment, cumulative
+          disabled: true
+        - name: with-blacklisted
+          value: ""
+          type: query
+          disabled: true
+        - name: from-history-depth
+          value: nohistory
+          type: query
+          description: default, nohistory
+          disabled: true
+        - name: prop
+          value: id|friendly-name|last-acquisition-value
+          type: query
+          description: id|device-id|capacity-name|access-mode|friendly-name|type|units|type-info|measure|details|blacklisted|last-acquisition-value|last-acquisition-date|history-depth|
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "157"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "keywords": [
+                  {
+                      "id": 9,
+                      "friendly-name": "C_DiskUsage",
+                      "last-acquisition-value": "92.7"
+                  },
+                  {
+                      "id": 10,
+                      "friendly-name": "D_DiskUsage",
+                      "last-acquisition-value": "69.7"
+                  }
+              ]
+          }
+  - name: one keyword
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/:keywordIds
+      method: GET
+      params:
+        - name: from-device-id
+          value: "4"
+          type: query
+          description: "[Optional] "
+          disabled: true
+        - name: from-capacity-name
+          value: pluginState|switch|frequency
+          type: query
+          description: "[Optional] switch|event|temperature|text|load|voltage|..."
+          disabled: true
+        - name: from-access-mode
+          value: get
+          type: query
+          description: "[Optional] get, getset, noaccess"
+          disabled: true
+        - name: from-friendly-name
+          value: signalPower
+          type: query
+          description: "[Optional] "
+          disabled: true
+        - name: from-data-type
+          value: numeric|bool
+          type: query
+          description: "[Optional] nodata|string|numeric|bool|json|enum|datetime"
+          disabled: true
+        - name: from-units
+          value: noUnit
+          type: query
+          description: "[Optional] noUnit, ampere, ampereHour, cubicMetre, cubicMeterPerSecond, decibel, decibelPerMilliWatt, degrees, degreesCelcius, degreesFarenheit, hectoPascal, hertz, kg, lux, meter, metersPerSecond, millimeter, millimeterPerSecond, percent, second, uv, volt, voltAmpere, watt, wattPerHour, wattPerSquareMeter"
+          disabled: true
+        - name: from-measure
+          value: absolute
+          type: query
+          description: "[Optional] absolute, increment, cumulative"
+          disabled: true
+        - name: with-blacklisted
+          value: ""
+          type: query
+          description: "[Optional] "
+          disabled: true
+        - name: from-history-depth
+          value: nohistory
+          type: query
+          description: "[Optional] default, nohistory"
+          disabled: true
+        - name: prop
+          value: last-acquisition-value|last-acquisition-date
+          type: query
+          description: "[Optional] id|device-id|capacity-name|access-mode|friendly-name|type|units|type-info|measure|details|blacklisted|last-acquisition-value|last-acquisition-date|history-depth|"
+          disabled: true
+        - name: keywordIds
+          value: "5"
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "316"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "id": 5,
+              "device-id": 3,
+              "capacity-name": "load",
+              "access-mode": "Get",
+              "friendly-name": "MemoryLoad",
+              "type": "Numeric",
+              "units": "data.units.percent",
+              "type-info": {},
+              "measure": "Absolute",
+              "details": {},
+              "blacklisted": false,
+              "last-acquisition-value": "81.1",
+              "last-acquisition-date": "20211208T162537.319271",
+              "history-depth": "Default"
+          }
+  - name: last acquisition of a keyword
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/:keywordIds?prop=last-acquisition-value|last-acquisition-date
+      method: GET
+      params:
+        - name: from-device-id
+          value: "4"
+          type: query
+          description: "[Optional] "
+          disabled: true
+        - name: from-capacity-name
+          value: pluginState|switch|frequency
+          type: query
+          description: "[Optional] switch|event|temperature|text|load|voltage|..."
+          disabled: true
+        - name: from-access-mode
+          value: get
+          type: query
+          description: "[Optional] get, getset, noaccess"
+          disabled: true
+        - name: from-friendly-name
+          value: signalPower
+          type: query
+          description: "[Optional] "
+          disabled: true
+        - name: from-data-type
+          value: numeric|bool
+          type: query
+          description: "[Optional] nodata|string|numeric|bool|json|enum|datetime"
+          disabled: true
+        - name: from-units
+          value: noUnit
+          type: query
+          description: "[Optional] noUnit, ampere, ampereHour, cubicMetre, cubicMeterPerSecond, decibel, decibelPerMilliWatt, degrees, degreesCelcius, degreesFarenheit, hectoPascal, hertz, kg, lux, meter, metersPerSecond, millimeter, millimeterPerSecond, percent, second, uv, volt, voltAmpere, watt, wattPerHour, wattPerSquareMeter"
+          disabled: true
+        - name: from-measure
+          value: absolute
+          type: query
+          description: "[Optional] absolute, increment, cumulative"
+          disabled: true
+        - name: with-blacklisted
+          value: ""
+          type: query
+          description: "[Optional] "
+          disabled: true
+        - name: from-history-depth
+          value: nohistory
+          type: query
+          description: "[Optional] default, nohistory"
+          disabled: true
+        - name: prop
+          value: last-acquisition-value|last-acquisition-date
+          type: query
+          description: "[Optional] id|device-id|capacity-name|access-mode|friendly-name|type|units|type-info|measure|details|blacklisted|last-acquisition-value|last-acquisition-date|history-depth|"
+        - name: keywordIds
+          value: "5"
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "82"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "last-acquisition-value": "81.1",
+              "last-acquisition-date": "20211208T162537.319271"
+          }

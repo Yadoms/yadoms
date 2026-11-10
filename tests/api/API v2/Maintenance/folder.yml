@@ -1,0 +1,14 @@
+info:
+  name: Maintenance
+  type: folder
+  seq: 8
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    Maintenance tasks end-points : full installation backup/restore, log export, and acquisitions export.
+
+    *Acquisition export end-points can be duplicate of the GET keywords/{keywordIds}/acquisitions end-point (if webclient can create CSV files). Need to check if acquisitions exports end-points need to be removed.*
+  type: text/markdown

@@ -124,7 +124,7 @@ namespace notification
       ///\brief Post a notification
       ///      Manage two cases:
       ///         1. if the parameter is an implementation of INotification, just post the notification
-      ///         1. if the parameter is NOT an implementation of INotification, encapsulate the object into a basic notification and post the notification
+      ///         2. if the parameter is NOT an implementation of INotification, encapsulate the object into a basic notification and post the notification
       ///\param [in] n                    The notification to post (shared_ptr)
       ///\param [in] changeType           The type of change notification to observer (create, update or delete)
       ///\param [in] notificationCenter   The notification center (if not specified, it tries to get the service located NotificationCenter)

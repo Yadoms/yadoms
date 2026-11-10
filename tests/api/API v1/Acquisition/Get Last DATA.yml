@@ -1,0 +1,47 @@
+info:
+  name: Get Last DATA
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/acquisition/keyword/1/Lastdata
+  headers:
+    - name: Content-Type
+      value: application/json
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: Get Last DATA
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/acquisition/keyword/1/Lastdata
+      method: GET
+      headers:
+        - name: Content-Type
+          value: application/json
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Date
+          value: Tue, 16 Nov 2021 09:44:07 GMT
+        - name: Server
+          value: 2.5.1-beta.1
+        - name: Content-Type
+          value: application/json; charset=utf-8
+      body:
+        type: json
+        data: |-
+          {
+              "result": true,
+              "message": "",
+              "data": {
+                  "lastValue": "0"
+              }
+          }

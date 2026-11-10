@@ -9,11 +9,11 @@ namespace database
 {
    namespace sqlite
    {
-      class CSQLiteRequester : public IDatabaseRequester
+      class CSQLiteRequester final : public IDatabaseRequester
       {
       public:
-         explicit CSQLiteRequester(const std::string& dbFile);
-         virtual ~CSQLiteRequester();
+         explicit CSQLiteRequester(std::string dbFile);
+         ~CSQLiteRequester() override = default;
 
          // IDatabaseEngine implementation
          void initialize() override;
@@ -49,7 +49,7 @@ namespace database
          // IDataBackup implementation
          bool backupSupported() const override;
          uintmax_t backupNeededSpace() const override;
-         void backupData(const std::string & backupFolder, ProgressFunc reporter) const override;
+         void backupData(const std::string& backupFolder, ProgressFunc reporter) const override;
          // [END] IDataBackup implementation
 
       protected:
@@ -59,7 +59,7 @@ namespace database
          //--------------------------------------------------------------
          /// \Brief		Do the backup
          //--------------------------------------------------------------
-         int doBackup(const std::string & backupFolder, ProgressFunc reporter) const;
+         int doBackup(const std::string& backupFolder, ProgressFunc reporter) const;
 
          //--------------------------------------------------------------
          /// \Brief		Inject C functions in sqlite engine
@@ -88,5 +88,3 @@ namespace database
       };
    } //namespace sqlite
 } //namespace database 
-
-

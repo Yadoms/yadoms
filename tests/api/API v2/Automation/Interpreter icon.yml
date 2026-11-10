@@ -1,0 +1,41 @@
+info:
+  name: Interpreter icon
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/interpreters/yPython3/icon
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: all Interpreters
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/interpreters
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "41"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "interpreters": {
+                  "yPython3": "available"
+              }
+          }

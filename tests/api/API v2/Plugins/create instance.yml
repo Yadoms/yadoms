@@ -1,0 +1,208 @@
+info:
+  name: create instance
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances
+  body:
+    type: json
+    data: "{\r
+
+      \    \"type\":\"LametricTime\",\r
+
+      \    \"displayName\":\"my lametric\",\r
+
+      \    \"configuration\":{\r
+
+      \        \"apiKey\":\"0123456789012345678901234567890123456789012345678901234567890123\"\r
+
+      \    }\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: create instance
+    request:
+      url: http://127.0.0.1:8080/rest/v2/plugins-instances
+      method: POST
+      body:
+        type: json
+        data: "{\r
+
+          \    \"type\": \"LametricTime\",\r
+
+          \    \"displayName\": \"my lametric\",\r
+
+          \    \"configuration\": {\r
+
+          \        \"APIKey\": \"0123456789012345678901234567890123456789012345678901234567890123\",\r
+
+          \        \"PairingMode\": {\r
+
+          \            \"activeSection\": \"Automatic\",\r
+
+          \            \"activeSectionText\": \"Auto\",\r
+
+          \            \"content\": {\r
+
+          \                \"Automatic\": {\r
+
+          \                    \"content\": {\r
+
+          \                        \"Port\": \"Https\"\r
+
+          \                    }\r
+
+          \                },\r
+
+          \                \"Manual\": {\r
+
+          \                    \"content\": {\r
+
+          \                        \"IPAddress\": \"\",\r
+
+          \                        \"Port\": \"Https\"\r
+
+          \                    }\r
+
+          \                }\r
+
+          \            }\r
+
+          \        }\r
+
+          \    }\r
+
+          }"
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: plugins-instances/3
+        - name: Server
+          value: oatpp/1.2.5
+      body:
+        type: text
+        data: ""
+  - name: create instance (configuration provided with schema)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances
+      method: POST
+      body:
+        type: json
+        data: "{\r
+
+          \  \"type\": \"IPX800\",\r
+
+          \  \"displayName\": \"IPX800\",\r
+
+          \  \"configuration\": {\r
+
+          \    \"IPAddress\": {\r
+
+          \      \"type\": \"string\",\r
+
+          \      \"regex\": \"^(?:[0-9]{1,3}\\\\.){3}[0-9]{1,3}$\",\r
+
+          \      \"required\": true,\r
+
+          \      \"name\": \"Adresse IP\",\r
+
+          \      \"description\": \"L'adresse IP du module\",\r
+
+          \      \"regexErrorMessage\": \"Ce n'est pas une adresse IP valide\",\r
+
+          \      \"value\": \"123.123.123.123\"\r
+
+          \    },\r
+
+          \    \"Port\": {\r
+
+          \      \"type\": \"int\",\r
+
+          \      \"required\": true,\r
+
+          \      \"defaultValue\": 80,\r
+
+          \      \"name\": \"Port\",\r
+
+          \      \"description\": \"Le port de communication de l'IPX800 (exemple: 80)\",\r
+
+          \      \"value\": 80\r
+
+          \    },\r
+
+          \    \"authentication\": {\r
+
+          \      \"type\": \"checkboxSection\",\r
+
+          \      \"defaultValue\": true,\r
+
+          \      \"content\": {\r
+
+          \        \"Password\": {\r
+
+          \          \"type\": \"string\",\r
+
+          \          \"encrypted\": true,\r
+
+          \          \"required\": true,\r
+
+          \          \"name\": \"Mot de passe\",\r
+
+          \          \"description\": \"la clé d'accès\",\r
+
+          \          \"value\": \"dhsudsd\"\r
+
+          \        }\r
+
+          \      },\r
+
+          \      \"name\": \"clé d'accès au module IPX800\",\r
+
+          \      \"description\": \"seulement si la clé est activée\",\r
+
+          \      \"checkbox\": true\r
+
+          \    }\r
+
+          \  }\r
+
+          }"
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Server
+          value: yadoms/2.5.3
+        - name: Access-Control-Max-Age
+          value: "1728000"
+        - name: Access-Control-Allow-Methods
+          value: GET, POST, OPTIONS, PATCH
+        - name: Location
+          value: plugins-instances/21
+        - name: Access-Control-Allow-Headers
+          value: DNT, User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Type, Range, Authorization
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+      body:
+        type: text
+        data: ""

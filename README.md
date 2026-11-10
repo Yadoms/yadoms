@@ -1,12 +1,21 @@
+<p align="center">
+    <img style="display: block; margin: auto; width: 100px;"  src="https://avatars.githubusercontent.com/u/12893166?s=200&v=4">
+</p>
+
+<div align="center">
+
+# Yadoms, your home automation solution
+
+**✨ It aims to publish a simple, powerfull, flexible and multiplatforms domotic solution.</a> ✨.**
+
 [![Binaries generation](https://github.com/Yadoms/yadoms/workflows/Binaries%20generation/badge.svg)](https://github.com/Yadoms/yadoms/actions/workflows/generate_binaries.yml)
 [![Unit tests](https://github.com/Yadoms/yadoms/workflows/Unit%20tests/badge.svg)](https://github.com/Yadoms/yadoms/actions/workflows/unit_tests.yml)
+<a href="https://github.com/Yadoms/yadoms/blob/master/LICENSE.md"><img alt="GPLv3 License" src="https://img.shields.io/badge/License-GPL%20v3-yellow.svg"></a>
+<a href="https://twitter.com/yadoms2607"><img alt="Yadoms" src="https://img.shields.io/twitter/url?label=yadoms&style=social&url=https%3A%2F%2Ftwitter.com%2Fyadoms2607"></a>
 
-# yadoms
+</div>
 
-Yadoms is an open source project.
-
-It aims to publish a simple, powerfull, flexible and multiplatforms domotic solution.
-
+<hr>
 ## Forum
 
 http://www.yadoms.com/forum
@@ -44,3 +53,15 @@ http://www.yadoms.com/forum
 ## Downloads
 
 [Go to download page](https://github.com/Yadoms/yadoms/releases/)
+
+## Docker
+
+# build the image with the current source code
+```bash
+docker build -t yadoms .
+```
+
+# Run it
+```bash
+docker run --name yadoms -it -p 8080:8080 yadoms
+```

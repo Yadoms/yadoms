@@ -23,10 +23,7 @@ namespace notification {
 
       //-----------------------------
       ///\brief Post a notification
-      ///      Manage two cases:
-      ///         1. if the parameter is an implementation of INotification, just post the notification
-      ///         1. if the parameter is NOT an implementation of INotification, encapsulate the object into a basic notification and post the notification
-      ///\param [in] notification  The notification to post (shared_ptr)
+      ///\param [in] notification  The notification to post
       //-----------------------------
       void postNotification(const boost::shared_ptr<INotification> notification);
 

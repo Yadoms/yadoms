@@ -5,10 +5,10 @@
 CFakeDynamicallyConfigurableDevice::CFakeDynamicallyConfigurableDevice(const std::string& deviceName,
                                                                        const boost::shared_ptr<shared::CDataContainer>& configuration)
    : m_deviceName(deviceName),
-     m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
-     m_internalCounter(0),
-     m_divider(readDividerConfiguration(configuration)),
-     m_historizers({m_counter})
+   m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
+   m_internalCounter(0),
+   m_divider(readDividerConfiguration(configuration)),
+   m_historizers({ m_counter })
 {
    m_counter->set(0);
 }
@@ -54,20 +54,17 @@ boost::shared_ptr<shared::CDataContainer> CFakeDynamicallyConfigurableDevice::ge
 
    shared::CDataContainer options;
    options.set("type", "decimal");
-   options.set("minimumValue", "0.01");
-   options.set("maximumValue", "20.0");
-   options.set("precision", "2");
-
+   options.set("minimumValue", 0.01);
+   options.set("maximumValue", 20.0);
+   options.set("precision", 2);
    results->set("DynamicDivider", options);
 
-   // Array of values
-   for (auto i = 0; i < 3; ++i)
-   {
-      shared::CDataContainer itemOptions;
-      itemOptions.set("type", "numeric");
-      itemOptions.set("i18nKey", "ArrayItem"); // Force i18nPath to use same translations for all array items
-      results->set("ArrayItem#" + std::to_string(i), itemOptions);
-   }
+   shared::CDataContainer options2;
+   options2.set("type", "int");
+   options.set("minimumValue", 0);
+   options.set("maximumValue", 20);
+   options2.set("defaultValue", 1);
+   results->set("intValue", options2);
 
    return results;
 }

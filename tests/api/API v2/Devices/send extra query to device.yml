@@ -1,0 +1,80 @@
+info:
+  name: send extra query to device
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/devices/:deviceId/extra-query/:query
+  params:
+    - name: deviceId
+      value: "2"
+      type: path
+    - name: query
+      value: simpleCommand
+      type: path
+      description: "[Required] query name (depends on device)"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: send extra query to instance
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances/:idPluginInstance/extra-query/:query
+      method: POST
+      params:
+        - name: idPluginInstance
+          value: "2"
+          type: path
+          description: "[Required] Plugin instance ID"
+        - name: query
+          value: simpleCommand
+          type: path
+          description: "[Required] query name (depends on plugin)"
+    response:
+      status: 202
+      statusText: Accepted
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: tasks/c714b887-de19-459d-9188-25be7ee45134
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+  - name: send extra query to device
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances/:deviceId/extra-query/:query
+      method: POST
+      params:
+        - name: deviceId
+          value: "2"
+          type: path
+        - name: query
+          value: simpleCommand
+          type: path
+          description: "[Required] query name (depends on device)"
+    response:
+      status: 202
+      statusText: Accepted
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: tasks/603605cc-3ee7-4c99-8a75-db48c84ac0d3
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""

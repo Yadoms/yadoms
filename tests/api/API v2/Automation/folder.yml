@@ -1,0 +1,34 @@
+info:
+  name: Automation
+  type: folder
+  seq: 9
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    These endpoints are used to manage rules and associated interpreters
+
+    A rule interpreter is a Yadoms component, able to run a rule. Two interpreters are currently supported by Yadoms : yPython27 (supports Python 2.7 based rules) and yPython3 (supports Python 3.x based rules). They can be used in parallel (some rules using yPython27, others using yPython3).
+
+    Each interpreter can provide a code template, helping user to start writing his rule.
+
+    A rule contains, or is related to :
+
+    *   A name, description, state...
+    *   The code to run (dependent of interpreter used)
+    *   An interpreter (used by server to run the rule)
+    *   An editor (used by webclient to edit the rule)
+    *   model and configuration are RFU fields
+        
+
+    Some examples of rule combination :
+
+    *   Blockly rule, edited by Blockly (editor = "blockly") and run by Ptyhon3 interpreter (Blockly generates the Pyhon code. Generation is done client-side)
+    *   Python3 rule, edited by a code editor (editor = "code") and run by Python3 interpreter
+    *   Python27 rule, edited by a code editor and run by Python27 interpreter
+        
+
+    *Note : rule duplication end-point was provided in API v1. For v2, decision was took to manage duplication by client, so no dedicated end-point is provided (rule creation endpoint should be called).*
+  type: text/markdown

@@ -1,0 +1,84 @@
+info:
+  name: create rule
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/rules
+  body:
+    type: json
+    data: "{\r
+
+      \    \"name\": \"test\",\r
+
+      \    \"description\": \"\",\r
+
+      \    \"interpreter\": \"yPython3\",\r
+
+      \    \"editor\": \"code\",\r
+
+      \    \"model\": \"\",\r
+
+      \    \"content\": \"\",\r
+
+      \    \"configuration\": \"\",\r
+
+      \    \"autostart\": true,\r
+
+      \    \"code\": \"# This is a template of Python 3.x rule.\\n# This aims is to demonstrate usage of main functions.\\n# Full documentation is available by the button below code window.\\n#\\n# Yadoms runs your rule by calling the yMain method.\\n# Yadoms pass its context (the Yadoms script API instance) by the yApi parameter.\\n# This parameter is used in the rule to call Yadoms methods.\\n#\\n# This sample is a simple thermostat, reading a temperature to drive a heating.\\n# Heating is ON when temperature is lower than a setPoint, and OFF if greater.\\n\\n# Import some helper functions (see help)\\nimport scriptUtilities\\n\\n# The temperature setPoint.\\nsetPoint = 21.5\\n\\n# The main function, called by Yadoms. yApi is the Yadoms API context.\\ndef yMain(yApi):\\n   # Usually, we first get all required keyword IDs. The method getKeywordId\\n   # takes the device name and keyword name as arguments (see Keyword page on the dashboard).\\n   # Replace devices and keywords by your real sensor/actuator, or instantiate a fakePlugin.\\n   temperatureKw = yApi.getKeywordId('fakeSensor1', 'temp1')\\n   heatingKw = yApi.getKeywordId('fakeOnOffReadWriteSwitch', 'Switch')\\n   \\n   # Our thermostat runs infinitely\\n   while True:\\n   \\n      # Wait for change on temperature. waitForNextAcquisition returns a string, that we have to convert to float.\\n      newTemperature = float(yApi.waitForNextAcquisition(temperatureKw))\\n         \\n      # Log the new temperature\\n      print (\\\"New temperature : \\\", newTemperature)\\n      \\n      # Now decide to drive or not heating\\n      if newTemperature >= setPoint:\\n         print (\\\"Enough hot ! ! ! STOP HEATING ! ! !\\\")\\n         # Stop heating. Be careful, value must be set as string\\n         yApi.writeKeyword(heatingKw, '0')\\n      else:\\n         print (\\\"Brrr... START HEATING\\\")\\n         # Start heating. Be careful, value must be set as string\\n         yApi.writeKeyword(heatingKw, '1')\\n\\n      # Next iteration\\n\\n\"\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: create rule
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/rules
+      method: POST
+      body:
+        type: json
+        data: "{\r
+
+          \    \"name\": \"test\",\r
+
+          \    \"description\": \"\",\r
+
+          \    \"interpreter\": \"yPython3\",\r
+
+          \    \"editor\": \"code\",\r
+
+          \    \"model\": \"\",\r
+
+          \    \"content\": \"\",\r
+
+          \    \"configuration\": \"\",\r
+
+          \    \"autostart\": true,\r
+
+          \    \"code\": \"# This is a template of Python 3.x rule.\\n# This aims is to demonstrate usage of main functions.\\n# Full documentation is available by the button below code window.\\n#\\n# Yadoms runs your rule by calling the yMain method.\\n# Yadoms pass its context (the Yadoms script API instance) by the yApi parameter.\\n# This parameter is used in the rule to call Yadoms methods.\\n#\\n# This sample is a simple thermostat, reading a temperature to drive a heating.\\n# Heating is ON when temperature is lower than a setPoint, and OFF if greater.\\n\\n# Import some helper functions (see help)\\nimport scriptUtilities\\n\\n# The temperature setPoint.\\nsetPoint = 21.5\\n\\n# The main function, called by Yadoms. yApi is the Yadoms API context.\\ndef yMain(yApi):\\n   # Usually, we first get all required keyword IDs. The method getKeywordId\\n   # takes the device name and keyword name as arguments (see Keyword page on the dashboard).\\n   # Replace devices and keywords by your real sensor/actuator, or instantiate a fakePlugin.\\n   temperatureKw = yApi.getKeywordId('fakeSensor1', 'temp1')\\n   heatingKw = yApi.getKeywordId('fakeOnOffReadWriteSwitch', 'Switch')\\n   \\n   # Our thermostat runs infinitely\\n   while True:\\n   \\n      # Wait for change on temperature. waitForNextAcquisition returns a string, that we have to convert to float.\\n      newTemperature = float(yApi.waitForNextAcquisition(temperatureKw))\\n         \\n      # Log the new temperature\\n      print (\\\"New temperature : \\\", newTemperature)\\n      \\n      # Now decide to drive or not heating\\n      if newTemperature >= setPoint:\\n         print (\\\"Enough hot ! ! ! STOP HEATING ! ! !\\\")\\n         # Stop heating. Be careful, value must be set as string\\n         yApi.writeKeyword(heatingKw, '0')\\n      else:\\n         print (\\\"Brrr... START HEATING\\\")\\n         # Start heating. Be careful, value must be set as string\\n         yApi.writeKeyword(heatingKw, '1')\\n\\n      # Next iteration\\n\\n\"\r
+
+          }"
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: automation/rules/57
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+
+docs: Create new rule

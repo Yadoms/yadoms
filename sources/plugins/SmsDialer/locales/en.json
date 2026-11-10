@@ -1,6 +1,6 @@
 {
    "name": "Sms Dialer",
-   "description": "Send/receive SMS with a mobile phone. This plugin uses a compatible phone (supporting AT commands) connected to the system where Yadoms run to send/receive SMS. This plugin uses the GAMMU library (http://wammu.eu/).",
+   "description": "Send/receive SMS with a mobile phone. This plugin uses a compatible phone (supporting AT commands) connected to the system where Yadoms run to send/receive SMS. This plugin uses the [GAMMU library](http://wammu.eu/).",
    "configurationSchema":
    {
       "Serial Port":
@@ -11,7 +11,7 @@
       "Protocol":
       {
          "name": "Protocol",
-         "description": "The protocol used to dial with the phone. Use Wammu (http://wammu.eu/) to find accepted protocol for your phone.",
+         "description": "The protocol used to dial with the phone. Use [Wammu](http://wammu.eu/) to find accepted protocol for your phone.",
          "values":
          {
             "at19200": "at19200",

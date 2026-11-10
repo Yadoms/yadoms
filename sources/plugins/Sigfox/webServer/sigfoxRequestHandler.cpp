@@ -31,11 +31,13 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
       {
          auto& i = req.stream();
          const auto len = req.getContentLength();
-         const auto buffer = new char[len];
+         const auto buffer = new char[static_cast<size_t>(len)];
          i.read(buffer, len);
 
          m_receiveDataEventHandler.postEvent<boost::shared_ptr<shared::CDataContainer>>(m_receiveDataEventId,
-                                                                     shared::CDataContainer::make(buffer));
+                                                                     shared::CDataContainer::make(std::string(buffer)));
+
+         delete[] buffer;
       }
       else
       {

@@ -1,0 +1,18 @@
+info:
+  name: Binding test
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/plugin/10/binding/test
+  headers:
+    - name: Content-Type
+      value: application/json
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

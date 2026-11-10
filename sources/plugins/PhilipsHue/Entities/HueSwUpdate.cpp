@@ -12,7 +12,7 @@ const std::string& CHueSwUpdate::getState() const
    return m_state;
 }
 
-void CHueSwUpdate::setState(std::string state)
+void CHueSwUpdate::setState(const std::string& state)
 {
    m_state = state;
 }
@@ -22,7 +22,7 @@ const std::string& CHueSwUpdate::getLastInstall() const
    return m_lastInstall;
 }
 
-void CHueSwUpdate::setLastInstall(std::string lastInstall)
+void CHueSwUpdate::setLastInstall(const std::string& lastInstall)
 {
    m_lastInstall = lastInstall;
 }

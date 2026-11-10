@@ -1,0 +1,25 @@
+info:
+  name: upload backup
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups/upload
+  body:
+    type: multipart-form
+    data:
+      - name: backup-file
+        type: file
+        value:
+          - backup_20211206T233543.249116.zip
+        description: Backup file to upload
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: Start a new backup (returns ID of the created task)

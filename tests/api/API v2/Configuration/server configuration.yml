@@ -1,0 +1,98 @@
+info:
+  name: server configuration
+  type: http
+  seq: 1
+
+http:
+  method: PATCH
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/configurations/server
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: "{\r
+
+      \    \"location\": {\r
+
+      \        \"latitude\": 48.853,\r
+
+      \        \"longitude\": 2.35,\r
+
+      \        \"altitude\": 169.0,\r
+
+      \        \"timezone\": \"Europe/Paris\"\r
+
+      \    },\r
+
+      \    \"basicAuthentication\": {\r
+
+      \        \"active\": false,\r
+
+      \        \"user\": \"admin\",\r
+
+      \        \"password\": \"1234\"\r
+
+      \    }\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: server configuration
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/configurations/server
+      method: PUT
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: "{\r
+
+          \    \"location\": {\r
+
+          \        \"latitude\": 48.853,\r
+
+          \        \"longitude\": 2.35,\r
+
+          \        \"altitude\": 123.0,\r
+
+          \        \"timezone\": \"Europe/Paris\"\r
+
+          \    },\r
+
+          \    \"basicAuthentication\": {\r
+
+          \        \"active\": false,\r
+
+          \        \"user\": \"admin\",\r
+
+          \        \"password\": \"1234\"\r
+
+          \    }\r
+
+          }"
+    response:
+      status: 204
+      statusText: No Content
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+
+docs: |-
+  Update server configuration. Full configuration can be patched or only selected fields (shema must be kept unchanged).  
+  Provided read-only values won't be saved in database (ignored, no error raised).

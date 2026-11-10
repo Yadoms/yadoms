@@ -1,0 +1,18 @@
+info:
+  name: Get DATA [From; To]
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/acquisition/keyword/1/20140604T100000/20140604T10300
+  headers:
+    - name: Content-Type
+      value: application/json
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

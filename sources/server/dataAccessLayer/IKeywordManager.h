@@ -49,7 +49,7 @@ namespace dataAccessLayer
       /// \throw                          shared::exception::CEmptyResult if none found
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId,
-                                                                                                        const std::string& friendlyName) const = 0;
+         const std::string& friendlyName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords 
@@ -79,9 +79,9 @@ namespace dataAccessLayer
       /// \return          List of registered keywords
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getDeviceKeywordsWithCapacity(int deviceId,
-                                                                                                         const std::string& capacityName,
-                                                                                                         const shared::plugin::yPluginApi::
-                                                                                                         EKeywordAccessMode& capacityAccessMode) const
+         const std::string& capacityName,
+         const shared::plugin::yPluginApi::
+         EKeywordAccessMode& capacityAccessMode) const
       = 0;
 
       //--------------------------------------------------------------
@@ -91,6 +91,7 @@ namespace dataAccessLayer
       /// \param [in] expectedKeywordAccesses      The access mode criteria
       /// \param [in] expectedKeywordHistoryDepth  The history depth criteria
       /// \param [in] blacklisted                  The blacklisted criteria
+      /// \return keyword list
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordsMatchingCriteria(
          const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
@@ -98,6 +99,32 @@ namespace dataAccessLayer
          const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
          const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth,
          bool blacklisted) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          General search function for keywords
+      /// \param [in] keywordIds          Search keywords matching one of these IDs
+      /// \param [in] deviceId            Search keywords matching this device ID
+      /// \param [in] friendlyName        Search keywords matching this friendly name
+      /// \param [in] capacityName        Search keywords matching one of these capacity names
+      /// \param [in] dataType            Search keywords matching one of these data type
+      /// \param [in] units               Search keywords matching this unit
+      /// \param [in] accessMode          Search keywords matching this access mode
+      /// \param [in] measure             Search keywords matching this measure
+      /// \param [in] historyDepth        Search keywords matching this history depth
+      /// \param [in] blacklistedIncluded Include blacklisted devices
+      /// \return                         The keywords list
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywords(
+         const std::set<int>& keywordIds,
+         const boost::optional<int>& deviceId,
+         const boost::optional<std::string>& friendlyName,
+         const std::set<std::string>& capacityName,
+         const std::set<shared::plugin::yPluginApi::EKeywordDataType>& dataType,
+         const std::set<std::string>& units,
+         const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& accessMode,
+         const boost::optional<shared::plugin::yPluginApi::EMeasureType>& measure,
+         const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
+         bool blacklistedIncluded = false) = 0;
 
       //-----------------------------------------
       ///\brief      Get the last acquisition of a keyword
@@ -179,10 +206,17 @@ namespace dataAccessLayer
       /// \brief           Update keyword name (be careful, plugins reference a keyword by its name, renaming it may brake plugin historization)
       /// \param [in]      keywordId The keyword to rename
       /// \param [in]      newName The new name
-      /// \note /!\ Use it only if you really know what you are doing
+      /// \note !!! ATTENTION !!! Use it only if you really know what you are doing
       //--------------------------------------------------------------
       virtual void updateKeywordName(int keywordId,
                                      const std::string& newName) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the keyword
+      /// \param [in] keyword             The keyword to update
+      /// \throw  shared::exception::CEmptyResult if device doesn't exist
+      //--------------------------------------------------------------
+      virtual void updateKeyword(const database::entities::CKeyword& keyword) const = 0;      
 
       //--------------------------------------------------------------
       /// \brief           Remove a keyword

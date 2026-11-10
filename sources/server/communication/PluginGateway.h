@@ -10,7 +10,7 @@ namespace communication
    //----------------------------------------------
    ///\brief Class used to communicate with plugins
    //----------------------------------------------
-   class CPluginGateway : public ISendMessageAsync
+   class CPluginGateway final : public ISendMessageAsync
    {
    public:
       //----------------------------------------------
@@ -22,19 +22,23 @@ namespace communication
       CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider,
                      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
                      boost::shared_ptr<pluginSystem::CManager> pluginManager);
-
-      //----------------------------------------------
-      ///\brief Destructor
-      //----------------------------------------------
-      virtual ~CPluginGateway();
+      ~CPluginGateway() override = default;
 
       // ISendMessageAsync Implementation
-      void sendKeywordCommandAsync(int keywordId, const std::string& body) override;
-      std::string sendExtraQueryAsync(int pluginId, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data) override;
-      void sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yPluginApi::IManuallyDeviceCreationData& data, communication::callback::ISynchronousCallback<std::string>& callback) override;
-      void sendBindingQueryRequest(int pluginId, const shared::plugin::yPluginApi::IBindingQueryData& data, communication::callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) override;
-      void sendDeviceConfigurationSchemaRequest(int deviceId, communication::callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) override;
-      void sendSetDeviceConfiguration(int deviceId, const boost::shared_ptr<shared::CDataContainer>& configuration) override;
+      void sendKeywordCommandAsync(int keywordId,
+                                   const std::string& body) override;
+      std::string sendExtraQueryAsync(int pluginId,
+                                      boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data) override;
+      void sendManuallyDeviceCreationRequest(int pluginId,
+                                             const shared::plugin::yPluginApi::IManuallyDeviceCreationData& data,
+                                             callback::ISynchronousCallback<std::string>& callback) override;
+      void sendBindingQueryRequest(int pluginId,
+                                   const shared::plugin::yPluginApi::IBindingQueryData& data,
+                                   callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) override;
+      void sendDeviceConfigurationSchemaRequest(int deviceId,
+                                                callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) override;
+      void sendSetDeviceConfiguration(int deviceId,
+                                      const boost::shared_ptr<shared::CDataContainer>& configuration) override;
       // [END] ISendMessageAsync Implementation
 
    private:
@@ -54,5 +58,3 @@ namespace communication
       boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
    };
 } //namespace communication
-
-

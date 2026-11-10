@@ -1,0 +1,2817 @@
+info:
+  name: available plugins
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins?byType=dev-fakePlugin&prop=configurationSchema|customLabels
+  headers:
+    - name: Accept-Language
+      value: fr
+      description: "Optional : provides translations if requested (en langugage if requested language not found)"
+  params:
+    - name: byType
+      value: dev-fakePlugin
+      type: query
+      description: "[optional] Filter by plugin type. Returns all plugins if ommited"
+    - name: prop
+      value: configurationSchema|customLabels
+      type: query
+      description: |-
+        [optional] A flags combinaison of following values (returns all values if no prop provided, except for icon that must be requested alone) :
+        type|version|author|url|support-manually-created-device|support-device-removed-notification|package|icon|configurationSchema|name|description
+    - name: page
+      value: "0"
+      type: query
+      description: "Pagination : required page"
+      disabled: true
+    - name: perPage
+      value: "10"
+      type: query
+      description: "Pagination : page size"
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: available plugins (filtered)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins?byType=LametricTime|rfxcom&prop=type|author|version
+      method: GET
+      params:
+        - name: byType
+          value: LametricTime|rfxcom
+          type: query
+        - name: prop
+          value: type|author|version
+          type: query
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "146"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "plugins": [
+                  {
+                      "type": "LametricTime",
+                      "version": "1.0.2",
+                      "author": "Oussama DAHMAZ"
+                  },
+                  {
+                      "type": "rfxcom",
+                      "version": "1.3.1",
+                      "author": "Sébastien GALLOU"
+                  }
+              ]
+          }
+  - name: one plugin
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins?byType=LametricTime
+      method: GET
+      params:
+        - name: byType
+          value: LametricTime
+          type: query
+          description: "[optional] Filter by plugin type. Returns all plugins if ommited"
+        - name: prop
+          value: type|author|version
+          type: query
+          description: |-
+            [optional] A flags combinaison of following values (returns all values if no prop provided) :
+            type|version|author|url|support-manually-created-device|support-device-removed-notification|package
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "859"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "type": "LametricTime",
+              "version": "1.0.2",
+              "author": "Oussama DAHMAZ",
+              "url": "",
+              "supportManuallyCreatedDevice": false,
+              "supportDeviceRemovedNotification": false,
+              "package": {
+                  "type": "LametricTime",
+                  "version": "1.0.2",
+                  "author": "Oussama DAHMAZ",
+                  "credits": "",
+                  "supportedPlatforms": "all",
+                  "dependencies": {
+                      "yadoms": {
+                          "minimumVersion": "2.4.0-beta.1"
+                      }
+                  },
+                  "configurationSchema": {
+                      "APIKey": {
+                          "type": "string",
+                          "required": "true",
+                          "regex": "[a-zA-Z0-9]{64}"
+                      },
+                      "PairingMode": {
+                          "type": "comboSection",
+                          "content": {
+                              "Automatic": {
+                                  "name": "Auto",
+                                  "type": "section",
+                                  "content": {
+                                      "Port": {
+                                          "type": "enum",
+                                          "values": {
+                                              "Http": "8080",
+                                              "Https": "4343"
+                                          },
+                                          "defaultValue": "Https"
+                                      }
+                                  }
+                              },
+                              "Manual": {
+                                  "name": "Manual",
+                                  "type": "section",
+                                  "content": {
+                                      "IPAddress": {
+                                          "type": "string",
+                                          "regex": "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$",
+                                          "required": "true"
+                                      },
+                                      "Port": {
+                                          "type": "enum",
+                                          "values": {
+                                              "Http": "8080",
+                                              "Https": "4343"
+                                          },
+                                          "defaultValue": "Https"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+  - name: available plugins with FR locales
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins?byType=LametricTime|rfxcom&prop=type|author|version|url|supportManuallyCreatedDevice|supportDeviceRemovedNotification|package&page=0&perPage=10
+      method: GET
+      headers:
+        - name: Accept-Language
+          value: fr
+      params:
+        - name: byType
+          value: LametricTime|rfxcom
+          type: query
+          description: "[optional] Filter by plugin type. Returns all plugins if ommited"
+        - name: prop
+          value: type|author|version|url|supportManuallyCreatedDevice|supportDeviceRemovedNotification|package
+          type: query
+          description: |-
+            [optional] A flags combinaison of following values (returns all values if no prop provided, except for icon that must be requested alone) :
+            type|version|author|url|support-manually-created-device|support-device-removed-notification|package|icon
+        - name: page
+          value: "0"
+          type: query
+          description: "Pagination : required page"
+        - name: perPage
+          value: "10"
+          type: query
+          description: "Pagination : page size"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Server
+          value: yadoms/2.5.3
+        - name: Connection
+          value: keep-alive
+        - name: Content-Type
+          value: application/json
+        - name: Content-Length
+          value: "33699"
+      body:
+        type: json
+        data: |-
+          {
+              "plugins": [
+                  {
+                      "type": "LametricTime",
+                      "version": "1.0.2",
+                      "author": "Oussama DAHMAZ",
+                      "url": "",
+                      "supportManuallyCreatedDevice": false,
+                      "supportDeviceRemovedNotification": false,
+                      "package": {
+                          "type": "LametricTime",
+                          "version": "1.0.2",
+                          "author": "Oussama DAHMAZ",
+                          "credits": "",
+                          "supportedPlatforms": "all",
+                          "dependencies": {
+                              "yadoms": {
+                                  "minimumVersion": "2.4.0-beta.1"
+                              }
+                          },
+                          "configurationSchema": {
+                              "APIKey": {
+                                  "type": "string",
+                                  "required": "true",
+                                  "regex": "[a-zA-Z0-9]{64}"
+                              },
+                              "PairingMode": {
+                                  "type": "comboSection",
+                                  "content": {
+                                      "Automatic": {
+                                          "name": "Auto",
+                                          "type": "section",
+                                          "content": {
+                                              "Port": {
+                                                  "type": "enum",
+                                                  "values": {
+                                                      "Http": "8080",
+                                                      "Https": "4343"
+                                                  },
+                                                  "defaultValue": "Https"
+                                              }
+                                          }
+                                      },
+                                      "Manual": {
+                                          "name": "Manual",
+                                          "type": "section",
+                                          "content": {
+                                              "IPAddress": {
+                                                  "type": "string",
+                                                  "regex": "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$",
+                                                  "required": "true"
+                                              },
+                                              "Port": {
+                                                  "type": "enum",
+                                                  "values": {
+                                                      "Http": "8080",
+                                                      "Https": "4343"
+                                                  },
+                                                  "defaultValue": "Https"
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      "locales": {
+                          "name": "LametricTime",
+                          "description": "Support de l'équipement Lametric Time (voir [site web Lametric](https://lametric.com/en-US/time/overview), comment utiliser le [plugin LametricTime](https://github.com/Yadoms/yadoms/wiki/LametricTime))",
+                          "configurationSchema": {
+                              "APIKey": {
+                                  "name": "Clé d'API",
+                                  "description": "Cette clé est nécessaire pour le fonctionnement de votre plugin. Elle peut être obtenue sur simple inscription (gratuite) au [Lametric](https://developer.lametric.com/user/devices).",
+                                  "regexErrorMessage": "Ce n'est pas une API KEY valide"
+                              },
+                              "PairingMode": {
+                                  "name": "Mode d'appairage",
+                                  "type": "comboSection",
+                                  "content": {
+                                      "Automatic": {
+                                          "name": "Appairage automatique",
+                                          "description": "Appairage automatique en utilisant le protocole UPNP",
+                                          "content": {
+                                              "Port": {
+                                                  "name": "Port",
+                                                  "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)"
+                                              }
+                                          }
+                                      },
+                                      "Manual": {
+                                          "name": "Appairage manuel",
+                                          "description": "Appairage manuel",
+                                          "content": {
+                                              "IPAddress": {
+                                                  "name": "Adresse IP",
+                                                  "description": "L'adresse IP du module",
+                                                  "regexErrorMessage": "Ce n'est pas une adresse IP valide"
+                                              },
+                                              "Port": {
+                                                  "name": "Port",
+                                                  "description": "Le port de communication de Lametric (exemple Http: 8080, Https: 4343)"
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          },
+                          "customLabels": {
+                              "pluginState": {
+                                  "failedToConnect": "La connexion a échoué...",
+                                  "initializationError": "Erreur d'initialisation"
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "type": "rfxcom",
+                      "version": "1.3.2",
+                      "author": "Sébastien GALLOU",
+                      "url": "https://github.com/Yadoms/yadoms/wiki/Rfxcom",
+                      "supportManuallyCreatedDevice": true,
+                      "supportDeviceRemovedNotification": false,
+                      "package": {
+                          "type": "rfxcom",
+                          "version": "1.3.2",
+                          "author": "Sébastien GALLOU",
+                          "url": "https://github.com/Yadoms/yadoms/wiki/Rfxcom",
+                          "credits": "",
+                          "supportedPlatforms": "all",
+                          "dependencies": {
+                              "yadoms": {
+                                  "minimumVersion": "2.5.3-beta.1"
+                              }
+                          },
+                          "configurationSchema": {
+                              "SerialPort": {
+                                  "type": "enum",
+                                  "values": {
+                                      "__Binding__": {
+                                          "type": "system",
+                                          "query": "serialPorts"
+                                      }
+                                  }
+                              },
+                              "PairingMode": {
+                                  "type": "enum",
+                                  "values": {
+                                      "auto": "Automatic pairing mode",
+                                      "manual": "Manual pairing mode"
+                                  }
+                              },
+                              "Protocols": {
+                                  "type": "section",
+                                  "enableWithCheckBox": "false",
+                                  "checkbox": {
+                                      "defaultValue": false
+                                  },
+                                  "content": {
+                                      "AE Blyss": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "Rubicson": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "FineOffset/Viking": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "Lighting4": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "RSL": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "Byron SX": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "Imagintronix": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "undecoded messages": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "Mertik": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "AD LightwaveRF": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "Hideki/UPM": {
+                                          "type": "bool",
+                                          "defaultValue": "true"
+                                      },
+                                      "La Crosse": {
+                                          "type": "bool",
+                                          "defaultValue": "true"
+                                      },
+                                      "LegrandCAD": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "BlindsT0": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "BlindsT1": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "X10": {
+                                          "type": "bool",
+                                          "defaultValue": "true"
+                                      },
+                                      "ARC": {
+                                          "type": "bool",
+                                          "defaultValue": "true"
+                                      },
+                                      "AC": {
+                                          "type": "bool",
+                                          "defaultValue": "true"
+                                      },
+                                      "HomeEasy EU": {
+                                          "type": "bool",
+                                          "defaultValue": "true"
+                                      },
+                                      "Meiantech": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "Oregon Scientific": {
+                                          "type": "bool",
+                                          "defaultValue": "true"
+                                      },
+                                      "ATI": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "Visonic": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "KeeLoq": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "HomeConfort": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "MCZ": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      },
+                                      "Funkbus": {
+                                          "type": "bool",
+                                          "defaultValue": "false"
+                                      }
+                                  }
+                              }
+                          },
+                          "supportManuallyDeviceCreation": "true",
+                          "deviceConfiguration": {
+                              "staticConfigurationSchema": {
+                                  "schemas": {
+                                      "hcA_P-uc1_16": {
+                                          "types": {
+                                              "x10": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "ARC": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "ab400d": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "waveman": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "emw200": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "impuls": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "risingSun": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "philips": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "energenie": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "energenie5": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "harrisonCurtain": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "type": "string",
+                                                  "regex": "[A-P]",
+                                                  "defaultValue": "A"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "16"
+                                              }
+                                          }
+                                      },
+                                      "hcA_D-uc1_4": {
+                                          "types": {
+                                              "gdr2": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "hqCoco20": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "type": "string",
+                                                  "regex": "[A-D]",
+                                                  "defaultValue": "A"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "4"
+                                              }
+                                          }
+                                      },
+                                      "hcA_D-uc1_3": {
+                                          "types": {
+                                              "oase": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "type": "string",
+                                                  "regex": "[A-D]",
+                                                  "defaultValue": "A"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "3"
+                                              }
+                                          }
+                                      },
+                                      "id1_67108863-unitCode1_16": {
+                                          "types": {
+                                              "smartwares": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "67108863"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "16"
+                                              }
+                                          }
+                                      },
+                                      "id1_67108863-unitCode1_16-onOffOrDimmable": {
+                                          "types": {
+                                              "AC": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "homeEasyEU": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "anslut": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "67108863"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "16"
+                                              },
+                                              "type": {
+                                                  "type": "enum",
+                                                  "values": {
+                                                      "onOff": "on-off type (switch, light...)",
+                                                      "dimmable": "dimmable type (light dimmer...)"
+                                                  }
+                                              }
+                                          }
+                                      },
+                                      "id1_16777215-unitCode1_5": {
+                                          "types": {
+                                              "kambrookRf3672": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "type": "string",
+                                                  "regex": "[A-D]",
+                                                  "defaultValue": "A"
+                                              },
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "16777215"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "5"
+                                              }
+                                          }
+                                      },
+                                      "id1_16777215-unitCode1_6": {
+                                          "types": {
+                                              "sunperyBtx": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "16777215"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "6"
+                                              }
+                                          }
+                                      },
+                                      "id1_16777215-unitCode1_15": {
+                                          "types": {
+                                              "aOkAc114": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "16777215"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "15"
+                                              }
+                                          }
+                                      },
+                                      "s0_16-c0_1023": {
+                                          "types": {
+                                              "koppla": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "system": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "16"
+                                              },
+                                              "channel": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "1023"
+                                              }
+                                          }
+                                      },
+                                      "id0_16777215": {
+                                          "types": {
+                                              "pt2262": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "mcz1PelletStove": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "mcz2PelletStove": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "mcz3PelletStove": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "meiantech": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "16777215"
+                                              }
+                                          }
+                                      },
+                                      "id1_16777215-unitCode1_16": {
+                                          "types": {
+                                              "lightwaveRf": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "rsl": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "hualite": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "16777215"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "16"
+                                              }
+                                          }
+                                      },
+                                      "id1_16383-unitCode1_4": {
+                                          "types": {
+                                              "emw100": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "16383"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "4"
+                                              }
+                                          }
+                                      },
+                                      "id1_524287-unitCode1_6": {
+                                          "types": {
+                                              "bbsb": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "524287"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "6"
+                                              }
+                                          }
+                                      },
+                                      "id0_16": {
+                                          "types": {
+                                              "lucciAir": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "westinghouse7226640": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "16"
+                                              }
+                                          }
+                                      },
+                                      "id0_255": {
+                                          "types": {
+                                              "byronSx": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "255"
+                                              }
+                                          }
+                                      },
+                                      "id0_1023": {
+                                          "types": {
+                                              "selectPlus": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "1023"
+                                              }
+                                          }
+                                      },
+                                      "id0_65535": {
+                                          "types": {
+                                              "byronMp001": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "envivo": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "x10SecurityRemote": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "digimax": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "digimaxShort": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "65535"
+                                              }
+                                          }
+                                      },
+                                      "id1_65535": {
+                                          "types": {
+                                              "mdRemote106": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "livolo": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "aoke": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "rgb432w": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "mdremote107": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "legrandCad": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "it": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "mdRemote108": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "65535"
+                                              }
+                                          }
+                                      },
+                                      "id1_1048575": {
+                                          "types": {
+                                              "avantek": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "1048575"
+                                              }
+                                          }
+                                      },
+                                      "id1_16777215": {
+                                          "types": {
+                                              "trc02": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "aOkRf01": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "raex": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "mediaMount": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "dolatDlm1": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "asp": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "16777215"
+                                              }
+                                          }
+                                      },
+                                      "id0_32767": {
+                                          "types": {
+                                              "siemensSf01": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "32767"
+                                              }
+                                          }
+                                      },
+                                      "id1_32767": {
+                                          "types": {
+                                              "trc02_2": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "32767"
+                                              }
+                                          }
+                                      },
+                                      "id1_524287-unitCode1_4": {
+                                          "types": {
+                                              "eurodomest": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "524287"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "4"
+                                              }
+                                          }
+                                      },
+                                      "id1_32767-unitCode1_10": {
+                                          "types": {
+                                              "livolo1to10": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "32767"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "10"
+                                              }
+                                          }
+                                      },
+                                      "id0_65535-gcA_P-uc1_5": {
+                                          "types": {
+                                              "blyss": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "65535"
+                                              },
+                                              "groupCode": {
+                                                  "type": "string",
+                                                  "regex": "[A-P]",
+                                                  "defaultValue": "A"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "5"
+                                              }
+                                          }
+                                      },
+                                      "id0_65535-gc0_3-uc1_8": {
+                                          "types": {
+                                              "cuveo": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "65535"
+                                              },
+                                              "groupCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "3"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "8"
+                                              }
+                                          }
+                                      },
+                                      "id0_65535-gcA_C-uc1_8": {
+                                          "types": {
+                                              "funkbus": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "65535"
+                                              },
+                                              "groupCode": {
+                                                  "type": "string",
+                                                  "regex": "[A-C]",
+                                                  "defaultValue": "A"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "8"
+                                              }
+                                          }
+                                      },
+                                      "seavTxs4": {
+                                          "types": {
+                                              "seavTxs4": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "sw2-1": {
+                                                  "type": "bool"
+                                              },
+                                              "sw2-2": {
+                                                  "type": "bool"
+                                              },
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "32767"
+                                              }
+                                          }
+                                      },
+                                      "id1_65535-uc1_6": {
+                                          "types": {
+                                              "zemismart": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "65535"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "6"
+                                              }
+                                          }
+                                      },
+                                      "id1_65535-uc1_15": {
+                                          "types": {
+                                              "rollerTrolHastaNew": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "hastaOld": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "confexx": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "65535"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "15"
+                                              }
+                                          }
+                                      },
+                                      "id1_65535-uc1_30": {
+                                          "types": {
+                                              "kangtai": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "65535"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "30"
+                                              }
+                                          }
+                                      },
+                                      "id1_65535-uc1_99": {
+                                          "types": {
+                                              "screenline": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "65535"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "99"
+                                              }
+                                          }
+                                      },
+                                      "id1_4294967295-uc1_15": {
+                                          "types": {
+                                              "dc106": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "forest": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "4294967295"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "15"
+                                              }
+                                          }
+                                      },
+                                      "id1_4095-uc1_6": {
+                                          "types": {
+                                              "chamberlaincs4330cn": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "4095"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "6"
+                                              }
+                                          }
+                                      },
+                                      "id1_1048575-uc0_4": {
+                                          "types": {
+                                              "rfy": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "1048575"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "4"
+                                              }
+                                          }
+                                      },
+                                      "id1_1048575-uc1_5": {
+                                          "types": {
+                                              "asa": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "1048575"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "5"
+                                              }
+                                          }
+                                      },
+                                      "id1_1048575-uc0_15": {
+                                          "types": {
+                                              "rfyExt": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "1048575"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "15"
+                                              }
+                                          }
+                                      },
+                                      "id1_524287-hcA_D-uc1_4": {
+                                          "types": {
+                                              "homeConfort": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "524287"
+                                              },
+                                              "houseCode": {
+                                                  "type": "string",
+                                                  "regex": "[A-D]",
+                                                  "defaultValue": "A"
+                                              },
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "1",
+                                                  "maximumValue": "4"
+                                              }
+                                          }
+                                      },
+                                      "id0_268435456": {
+                                          "types": {
+                                              "keeLoq": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "268435456"
+                                              }
+                                          }
+                                      },
+                                      "uc0_31": {
+                                          "types": {
+                                              "he105": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "31"
+                                              }
+                                          }
+                                      },
+                                      "uc0_255": {
+                                          "types": {
+                                              "rts10": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "g6rH4t1": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "g6rH3t1": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "255"
+                                              }
+                                          }
+                                      },
+                                      "uc0_262143": {
+                                          "types": {
+                                              "g6rH4tb": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "g6rH4s": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "262143"
+                                              }
+                                          }
+                                      },
+                                      "uc0_65535": {
+                                          "types": {
+                                              "g6rH4td": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "unitCode": {
+                                                  "type": "int",
+                                                  "minimumValue": "0",
+                                                  "maximumValue": "65535"
+                                              }
+                                          }
+                                      },
+                                      "hcrx-garx-sarx": {
+                                          "types": {
+                                              "fs20": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "fht8v": {
+                                                  "canBeCreatedManually": "true"
+                                              },
+                                              "fht80": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "type": "string",
+                                                  "regex": "[1-4]{8}",
+                                                  "defaultValue": "11111111"
+                                              },
+                                              "groupAddress": {
+                                                  "type": "string",
+                                                  "regex": "[1-4]{2}",
+                                                  "defaultValue": "11"
+                                              },
+                                              "subAddress": {
+                                                  "type": "string",
+                                                  "regex": "[1-4]{2}",
+                                                  "defaultValue": "11"
+                                              }
+                                          }
+                                      },
+                                      "cameraX10Ninja": {
+                                          "types": {
+                                              "cameraX10Ninja": {
+                                                  "canBeCreatedManually": "true"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "type": "string",
+                                                  "regex": "[A-P]",
+                                                  "defaultValue": "A"
+                                              }
+                                          }
+                                      },
+                                      "Encoder Module": {
+                                          "types": {
+                                              "Encoder Module": {
+                                                  "canBeCreatedManually": "false"
+                                              }
+                                          },
+                                          "content": {
+                                              "counter1Configuration": {
+                                                  "type": "enum",
+                                                  "values": {
+                                                      "energyWh": "Energy (Wh)",
+                                                      "waterLiter": "Water (Liter)",
+                                                      "waterQuarterLiter": "Water (¼ Liter)",
+                                                      "gasDeciM3": "Gas (1/10 m3)",
+                                                      "gasCentiM3": "Gas (1/100 m3)",
+                                                      "raw": "Other"
+                                                  },
+                                                  "defaultValue": "Other"
+                                              },
+                                              "counter2Configuration": {
+                                                  "type": "enum",
+                                                  "values": {
+                                                      "energyWh": "Energy (Wh)",
+                                                      "waterLiter": "Water (Liter)",
+                                                      "waterQuarterLiter": "Water (¼ Liter)",
+                                                      "gasDeciM3": "Gas (1/10 m3)",
+                                                      "gasCentiM3": "Gas (1/100 m3)",
+                                                      "raw": "Other"
+                                                  },
+                                                  "defaultValue": "Other"
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          },
+                          "extraQueries": {
+                              "firmwareUpdate": {
+                                  "iconClass": "fa fa-upload",
+                                  "commandData": {
+                                      "fileContent": {
+                                          "type": "file",
+                                          "filter": ".hex"
+                                      }
+                                  }
+                              },
+                              "pairing": {
+                                  "iconClass": "fa fa-handshake-o"
+                              }
+                          }
+                      },
+                      "locales": {
+                          "name": "RFXCom",
+                          "description": "Support du module radio RFXCom ([Site officiel](http://rfxcom.com))",
+                          "configurationSchema": {
+                              "SerialPort": {
+                                  "name": "Port série",
+                                  "description": "Le port série virtuel connecté au RFXCom"
+                              },
+                              "PairingMode": {
+                                  "name": "Mode d'appairage",
+                                  "description": "Le mode d'apparairage peut être automatique (chaque nouvel équipement détecté est enregistré automatiquement), ou manuel via une commande sur le plugin (bouton vert). Ce mode manuel est utile lors de l'utilisation d'un protocole ne permettant pas de vérifier qu'un message est valide, ce qui peut entraîner l'enregistrement de faux équipements.",
+                                  "values": {
+                                      "auto": "Mode automatique, chaque équipement détecté est enregistré",
+                                      "manual": "Mode manuel, le plugin doit être mis en mode appairage via le bouton vert"
+                                  }
+                              },
+                              "Protocols": {
+                                  "name": "Protocoles en écoute",
+                                  "description": "Protocoles à écouter, voir le manuel d'utilisation du RFXCom. Attention, certains protocoles ne sont pas compatibles entre eux, et ne doivent pas être activés simultanément.",
+                                  "content": {
+                                      "AE Blyss": {
+                                          "name": "AE Blyss (Castorama)"
+                                      },
+                                      "Rubicson": {
+                                          "name": "Rubicson"
+                                      },
+                                      "FineOffset/Viking": {
+                                          "name": "FineOffset, Viking"
+                                      },
+                                      "Lighting4": {
+                                          "name": "Lighting4"
+                                      },
+                                      "RSL": {
+                                          "name": "RSL, Revolt"
+                                      },
+                                      "Byron SX": {
+                                          "name": "Byron SX, SelectPlus"
+                                      },
+                                      "Imagintronix": {
+                                          "name": "Imagintronix/Opus"
+                                      },
+                                      "undecoded messages": {
+                                          "name": "undecoded messages"
+                                      },
+                                      "Mertik": {
+                                          "name": "Mertik"
+                                      },
+                                      "AD LightwaveRF": {
+                                          "name": "AD LightwaveRF"
+                                      },
+                                      "Hideki/UPM": {
+                                          "name": "Hideki, TFA, Cresta, UPM"
+                                      },
+                                      "La Crosse": {
+                                          "name": "La Crosse"
+                                      },
+                                      "LegrandCAD": {
+                                          "name": "Legrand CAD"
+                                      },
+                                      "BlindsT0": {
+                                          "name": "BlindsT0"
+                                      },
+                                      "BlindsT1": {
+                                          "name": "BlindsT1"
+                                      },
+                                      "X10": {
+                                          "name": "X10"
+                                      },
+                                      "ARC": {
+                                          "name": "ARC"
+                                      },
+                                      "AC": {
+                                          "name": "AC"
+                                      },
+                                      "HomeEasy EU": {
+                                          "name": "HomeEasy EU"
+                                      },
+                                      "Meiantech": {
+                                          "name": "Meiantech"
+                                      },
+                                      "Oregon Scientific": {
+                                          "name": "Oregon Scientific"
+                                      },
+                                      "ATI": {
+                                          "name": "ATI/Cartelectronic"
+                                      },
+                                      "Visonic": {
+                                          "name": "Visonic"
+                                      },
+                                      "KeeLoq": {
+                                          "name": "KeeLoq"
+                                      },
+                                      "HomeConfort": {
+                                          "name": "HomeConfort"
+                                      },
+                                      "MCZ": {
+                                          "name": "MCZ"
+                                      },
+                                      "Funkbus": {
+                                          "name": "FunkBus"
+                                      }
+                                  }
+                              }
+                          },
+                          "enumerations": {
+                              "EColor": {
+                                  "name": "Couleur de demain",
+                                  "values": {
+                                      "NOTDEFINED": "Pas définie",
+                                      "BLUE": "Bleu",
+                                      "WHITE": "Blanc",
+                                      "RED": "Rouge"
+                                  }
+                              },
+                              "EPeriod": {
+                                  "name": "Période tarifaire",
+                                  "values": {
+                                      "AllHours": "Toutes heures",
+                                      "LowCostHours": "Heures creuses",
+                                      "PeakCostHour": "Heures pleines",
+                                      "NormalCostHours": "Heures pleines",
+                                      "MobilePeakCostHours": "heures pointe mobile",
+                                      "LowCostBlueDays": "Heures creuses bleues",
+                                      "LowCostWhiteDays": "Heures creuses blanches",
+                                      "LowCostRedDays": "Heures creuses rouges",
+                                      "NormalCostBlueDays": "Heures pleines bleues",
+                                      "NormalCostWhiteDays": "Heures pleines blanches",
+                                      "NormalCostRedDays": "Heures pleines rouges"
+                                  }
+                              }
+                          },
+                          "deviceConfiguration": {
+                              "staticConfigurationSchema": {
+                                  "schemas": {
+                                      "hcA_P-uc1_16": {
+                                          "types": {
+                                              "x10": {
+                                                  "title": "x10"
+                                              },
+                                              "ARC": {
+                                                  "title": "ARC"
+                                              },
+                                              "ab400d": {
+                                                  "title": "ab400d"
+                                              },
+                                              "waveman": {
+                                                  "title": "waveman"
+                                              },
+                                              "emw200": {
+                                                  "title": "emw200"
+                                              },
+                                              "impuls": {
+                                                  "title": "impuls"
+                                              },
+                                              "risingSun": {
+                                                  "title": "risingSun"
+                                              },
+                                              "philips": {
+                                                  "title": "philips"
+                                              },
+                                              "energenie": {
+                                                  "title": "energenie"
+                                              },
+                                              "energenie5": {
+                                                  "title": "energenie5"
+                                              },
+                                              "harrisonCurtain": {
+                                                  "title": "harrisonCurtain"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "name": "Bâtiment",
+                                                  "description": "L'identifiant du bâtiment (A-P)",
+                                                  "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de l'équipement (1-16)"
+                                              }
+                                          }
+                                      },
+                                      "hcA_D-uc1_4": {
+                                          "types": {
+                                              "gdr2": {
+                                                  "title": "gdr2"
+                                              },
+                                              "hqCoco20": {
+                                                  "title": "hqCoco20"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "name": "Bâtiment",
+                                                  "description": "L'identifiant du bâtiment (A-D)",
+                                                  "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de l'équipement (1-4)"
+                                              }
+                                          }
+                                      },
+                                      "hcA_D-uc1_3": {
+                                          "types": {
+                                              "oase": {
+                                                  "title": "oase"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "name": "Bâtiment",
+                                                  "description": "L'identifiant du bâtiment (A-D)",
+                                                  "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de l'équipement (1-3)"
+                                              }
+                                          }
+                                      },
+                                      "id1_67108863-unitCode1_16": {
+                                          "types": {
+                                              "smartwares": {
+                                                  "title": "smartwares"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-67108863)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-16)"
+                                              }
+                                          }
+                                      },
+                                      "id1_67108863-unitCode1_16-onOffOrDimmable": {
+                                          "types": {
+                                              "AC": {
+                                                  "title": "AC"
+                                              },
+                                              "homeEasyEU": {
+                                                  "title": "homeEasyEU"
+                                              },
+                                              "anslut": {
+                                                  "title": "anslut"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-67108863)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-16)"
+                                              },
+                                              "type": {
+                                                  "name": "Type d'équipement",
+                                                  "values": {
+                                                      "onOff": "On-Off (interrupteur, lumière, contact sec...)",
+                                                      "dimmable": "Analogique (variateur de lumière...)"
+                                                  }
+                                              }
+                                          }
+                                      },
+                                      "id1_16777215-unitCode1_5": {
+                                          "types": {
+                                              "kambrookRf3672": {
+                                                  "title": "kambrookRf3672"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-16777215)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-5)"
+                                              }
+                                          }
+                                      },
+                                      "id1_16777215-unitCode1_6": {
+                                          "types": {
+                                              "sunperyBtx": {
+                                                  "title": "sunperyBtx"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-16777215)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-6)"
+                                              }
+                                          }
+                                      },
+                                      "id1_16777215-unitCode1_15": {
+                                          "types": {
+                                              "aOkAc114": {
+                                                  "title": "aOkAc114"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-16777215)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-15)"
+                                              }
+                                          }
+                                      },
+                                      "s0_16-c0_1023": {
+                                          "types": {
+                                              "koppla": {
+                                                  "title": "koppla"
+                                              }
+                                          },
+                                          "content": {
+                                              "system": {
+                                                  "name": "Système",
+                                                  "description": "Code système (1-16)"
+                                              },
+                                              "channel": {
+                                                  "name": "Canal",
+                                                  "description": "Canal (0-1023)"
+                                              }
+                                          }
+                                      },
+                                      "id0_16777215": {
+                                          "types": {
+                                              "pt2262": {
+                                                  "title": "pt2262"
+                                              },
+                                              "mcz1PelletStove": {
+                                                  "title": "mcz1PelletStove"
+                                              },
+                                              "mcz2PelletStove": {
+                                                  "title": "mcz2PelletStove"
+                                              },
+                                              "mcz3PelletStove": {
+                                                  "title": "mcz3PelletStove"
+                                              },
+                                              "meiantech": {
+                                                  "title": "meiantech"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-16777215)"
+                                              }
+                                          }
+                                      },
+                                      "id1_16777215-unitCode1_16": {
+                                          "types": {
+                                              "lightwaveRf": {
+                                                  "title": "lightwaveRf"
+                                              },
+                                              "rsl": {
+                                                  "title": "rsl"
+                                              },
+                                              "hualite": {
+                                                  "title": "hualite"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-16777215)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-16)"
+                                              }
+                                          }
+                                      },
+                                      "id1_16383-unitCode1_4": {
+                                          "types": {
+                                              "emw100": {
+                                                  "title": "emw100"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-16383)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-4)"
+                                              }
+                                          }
+                                      },
+                                      "id1_524287-unitCode1_6": {
+                                          "types": {
+                                              "bbsb": {
+                                                  "title": "bbsb"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-524287)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-6)"
+                                              }
+                                          }
+                                      },
+                                      "id0_16": {
+                                          "types": {
+                                              "lucciAir": {
+                                                  "title": "lucciAir"
+                                              },
+                                              "westinghouse7226640": {
+                                                  "title": "westinghouse7226640"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-16)"
+                                              }
+                                          }
+                                      },
+                                      "id0_255": {
+                                          "types": {
+                                              "byronSx": {
+                                                  "title": "byronSx"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-255)"
+                                              }
+                                          }
+                                      },
+                                      "id0_1023": {
+                                          "types": {
+                                              "selectPlus": {
+                                                  "title": "selectPlus"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-1023)"
+                                              }
+                                          }
+                                      },
+                                      "id0_65535": {
+                                          "types": {
+                                              "byronMp001": {
+                                                  "title": "byronMp001"
+                                              },
+                                              "envivo": {
+                                                  "title": "envivo"
+                                              },
+                                              "x10SecurityRemote": {
+                                                  "title": "x10SecurityRemote"
+                                              },
+                                              "digimax": {
+                                                  "title": "digimax"
+                                              },
+                                              "digimaxShort": {
+                                                  "title": "digimaxShort"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-65535)"
+                                              }
+                                          }
+                                      },
+                                      "id1_65535": {
+                                          "types": {
+                                              "mdRemote106": {
+                                                  "title": "mdRemote106"
+                                              },
+                                              "livolo": {
+                                                  "title": "livolo"
+                                              },
+                                              "aoke": {
+                                                  "title": "aoke"
+                                              },
+                                              "rgb432w": {
+                                                  "title": "rgb432w"
+                                              },
+                                              "mdremote107": {
+                                                  "title": "mdremote107"
+                                              },
+                                              "legrandCad": {
+                                                  "title": "legrandCad"
+                                              },
+                                              "it": {
+                                                  "title": "it"
+                                              },
+                                              "mdRemote108": {
+                                                  "title": "mdRemote108"
+                                              },
+                                              "kangtai": {
+                                                  "title": "kangtai"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-65535)"
+                                              }
+                                          }
+                                      },
+                                      "id1_1048575": {
+                                          "types": {
+                                              "avantek": {
+                                                  "title": "avantek"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-1048575)"
+                                              }
+                                          }
+                                      },
+                                      "id1_16777215": {
+                                          "types": {
+                                              "trc02": {
+                                                  "title": "trc02"
+                                              },
+                                              "aOkRf01": {
+                                                  "title": "aOkRf01"
+                                              },
+                                              "raex": {
+                                                  "title": "raex"
+                                              },
+                                              "mediaMount": {
+                                                  "title": "mediaMount"
+                                              },
+                                              "dolatDlm1": {
+                                                  "title": "dolatDlm1"
+                                              },
+                                              "asp": {
+                                                  "title": "asp"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-16777215)"
+                                              }
+                                          }
+                                      },
+                                      "id0_32767": {
+                                          "types": {
+                                              "siemensSf01": {
+                                                  "title": "siemensSf01"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-32767)"
+                                              }
+                                          }
+                                      },
+                                      "id1_32767": {
+                                          "types": {
+                                              "trc02_2": {
+                                                  "title": "trc02_2"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-32767)"
+                                              }
+                                          }
+                                      },
+                                      "id1_524287-unitCode1_4": {
+                                          "types": {
+                                              "eurodomest": {
+                                                  "title": "eurodomest"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-524287)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-4)"
+                                              }
+                                          }
+                                      },
+                                      "id1_32767-unitCode1_10": {
+                                          "types": {
+                                              "livolo1to10": {
+                                                  "title": "livolo1to10"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-32767)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-10)"
+                                              }
+                                          }
+                                      },
+                                      "id0_65535-gcA_P-uc1_5": {
+                                          "types": {
+                                              "blyss": {
+                                                  "title": "blyss"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-65535)"
+                                              },
+                                              "groupCode": {
+                                                  "name": "Groupe",
+                                                  "description": "L'identifiant du groupe de l'équipement (A-P)",
+                                                  "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-5)"
+                                              }
+                                          }
+                                      },
+                                      "id0_65535-gc0_3-uc1_8": {
+                                          "types": {
+                                              "cuveo": {
+                                                  "title": "cuveo"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-65535)"
+                                              },
+                                              "groupCode": {
+                                                  "name": "Groupe",
+                                                  "description": "L'identifiant du groupe de l'équipement (0-3)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-2 pour le groupe 0, 1-9 pour les groupes 1 à 3)"
+                                              }
+                                          }
+                                      },
+                                      "id0_65535-gcA_C-uc1_8": {
+                                          "types": {
+                                              "funkbus": {
+                                                  "title": "funkbus"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-65535)"
+                                              },
+                                              "groupCode": {
+                                                  "name": "Groupe",
+                                                  "description": "L'identifiant du groupe de l'équipement (A-C)",
+                                                  "regexErrorMessage": "L'identifiant doit être entre A et C (inclus)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-8)"
+                                              }
+                                          }
+                                      },
+                                      "seavTxs4": {
+                                          "types": {
+                                              "seavTxs4": {
+                                                  "title": "seavTxs4"
+                                              }
+                                          },
+                                          "content": {
+                                              "sw2-1": {
+                                                  "name": "sw2-1",
+                                                  "description": "Position du micro-interrupteur sw2-1"
+                                              },
+                                              "sw2-2": {
+                                                  "name": "sw2-2",
+                                                  "description": "Position du micro-interrupteur sw2-2"
+                                              },
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-32767)"
+                                              }
+                                          }
+                                      },
+                                      "id1_65535-uc1_6": {
+                                          "types": {
+                                              "zemismart": {
+                                                  "title": "zemismart"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-65535)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-6)"
+                                              }
+                                          }
+                                      },
+                                      "id1_65535-uc1_15": {
+                                          "types": {
+                                              "rollerTrolHastaNew": {
+                                                  "title": "rollerTrolHastaNew"
+                                              },
+                                              "hastaOld": {
+                                                  "title": "hastaOld"
+                                              },
+                                              "confexx": {
+                                                  "title": "confexx"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-65535)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-15)"
+                                              }
+                                          }
+                                      },
+                                      "id1_65535-uc1_30": {
+                                          "types": {
+                                              "kangtai": {
+                                                  "title": "kangtai"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "The device ID (1-65535)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unit Code",
+                                                  "description": "The unit code (1-30)"
+                                              }
+                                          }
+                                      },
+                                      "id1_65535-uc1_99": {
+                                          "types": {
+                                              "screenline": {
+                                                  "title": "screenline"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-65535)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-99)"
+                                              }
+                                          }
+                                      },
+                                      "id1_4294967295-uc1_15": {
+                                          "types": {
+                                              "dc106": {
+                                                  "title": "dc106"
+                                              },
+                                              "forest": {
+                                                  "title": "forest"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-4294967295)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-15)"
+                                              }
+                                          }
+                                      },
+                                      "id1_4095-uc1_6": {
+                                          "types": {
+                                              "chamberlaincs4330cn": {
+                                                  "title": "chamberlaincs4330cn"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-4095)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-6)"
+                                              }
+                                          }
+                                      },
+                                      "id1_1048575-uc0_4": {
+                                          "types": {
+                                              "rfy": {
+                                                  "title": "rfy"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-1048575)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (0-4)"
+                                              }
+                                          }
+                                      },
+                                      "id1_1048575-uc1_5": {
+                                          "types": {
+                                              "asa": {
+                                                  "title": "asa"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-1048575)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-5)"
+                                              }
+                                          }
+                                      },
+                                      "id1_1048575-uc0_15": {
+                                          "types": {
+                                              "rfyExt": {
+                                                  "title": "rfyExt"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-1048575)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-15)"
+                                              }
+                                          }
+                                      },
+                                      "id1_524287-hcA_D-uc1_4": {
+                                          "types": {
+                                              "homeConfort": {
+                                                  "title": "homeConfort"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (1-524287)"
+                                              },
+                                              "houseCode": {
+                                                  "name": "Bâtiment",
+                                                  "description": "L'identifiant du bâtiment (A-D)",
+                                                  "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
+                                              },
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de la fonction de l'équipement (1-4)"
+                                              }
+                                          }
+                                      },
+                                      "id0_268435456": {
+                                          "types": {
+                                              "keeLoq": {
+                                                  "title": "keeLoq"
+                                              }
+                                          },
+                                          "content": {
+                                              "id": {
+                                                  "name": "ID",
+                                                  "description": "L'identifiant de l'équipement (0-268435456)"
+                                              }
+                                          }
+                                      },
+                                      "uc0_31": {
+                                          "types": {
+                                              "he105": {
+                                                  "title": "he105"
+                                              }
+                                          },
+                                          "content": {
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de l'équipement (0-31)"
+                                              }
+                                          }
+                                      },
+                                      "uc0_255": {
+                                          "types": {
+                                              "rts10": {
+                                                  "title": "rts10"
+                                              },
+                                              "g6rH4t1": {
+                                                  "title": "g6rH4t1"
+                                              },
+                                              "g6rH3t1": {
+                                                  "title": "g6rH3t1"
+                                              }
+                                          },
+                                          "content": {
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de l'équipement (0-255)"
+                                              }
+                                          }
+                                      },
+                                      "uc0_262143": {
+                                          "types": {
+                                              "g6rH4tb": {
+                                                  "title": "g6rH4tb"
+                                              },
+                                              "g6rH4s": {
+                                                  "title": "g6rH4s"
+                                              }
+                                          },
+                                          "content": {
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de l'équipement (0-262143)"
+                                              }
+                                          }
+                                      },
+                                      "uc0_65535": {
+                                          "types": {
+                                              "g6rH4td": {
+                                                  "title": "g6rH4td"
+                                              }
+                                          },
+                                          "content": {
+                                              "unitCode": {
+                                                  "name": "Unité",
+                                                  "description": "L'identifiant de l'équipement (0-65535)"
+                                              }
+                                          }
+                                      },
+                                      "hcrx-garx-sarx": {
+                                          "types": {
+                                              "fs20": {
+                                                  "title": "fs20"
+                                              },
+                                              "fht8v": {
+                                                  "title": "fht8v"
+                                              },
+                                              "fht80": {
+                                                  "title": "fht80"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "name": "Bâtiment",
+                                                  "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)",
+                                                  "regexErrorMessage": "L'identifiant doit contenir 8 chiffres entre 1 et 4 : exemple : 12341234"
+                                              },
+                                              "groupAddress": {
+                                                  "name": "Adresse du groupe",
+                                                  "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)",
+                                                  "regexErrorMessage": "L'adresse doit contenir 2 chiffres entre 1 et 4 : exemple : 14"
+                                              },
+                                              "subAddress": {
+                                                  "name": "Sous-adresse",
+                                                  "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)",
+                                                  "regexErrorMessage": "La sous-adresse doit contenir 2 chiffres entre 1 et 4 : exemple : 14"
+                                              }
+                                          }
+                                      },
+                                      "cameraX10Ninja": {
+                                          "types": {
+                                              "cameraX10Ninja": {
+                                                  "title": "cameraX10Ninja"
+                                              }
+                                          },
+                                          "content": {
+                                              "houseCode": {
+                                                  "name": "Bâtiment",
+                                                  "description": "L'identifiant du bâtiment (A-P)",
+                                                  "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+                                              }
+                                          }
+                                      },
+                                      "Encoder Module": {
+                                          "types": {
+                                              "Encoder Module": {
+                                                  "title": "Encoder Module"
+                                              }
+                                          },
+                                          "content": {
+                                              "counter1Configuration": {
+                                                  "name": "Configuration compteur 1",
+                                                  "description": "Préciser ici le type de capteur connecté à l'entrée 1 du module",
+                                                  "values": {
+                                                      "energyWh": "Energie (Wh)",
+                                                      "waterLiter": "Eau (une impulsion par Litre)",
+                                                      "waterQuarterLiter": "Eau (une impulsion par ¼ litre)",
+                                                      "gasDeciM3": "Gaz (une impulsion par 1/10 m3)",
+                                                      "gasCentiM3": "Gaz (une impulsion par 1/100 m3)",
+                                                      "raw": "Autre (Compteur sans unité seulement)"
+                                                  }
+                                              },
+                                              "counter2Configuration": {
+                                                  "name": "Configuration compteur 2",
+                                                  "description": "Préciser ici le type de capteur connecté à l'entrée 2 du module",
+                                                  "values": {
+                                                      "energyWh": "Energie (Wh)",
+                                                      "waterLiter": "Eau (une impulsion par Litre)",
+                                                      "waterQuarterLiter": "Eau (une impulsion par ¼ litre)",
+                                                      "gasDeciM3": "Gaz (une impulsion par 1/10 m3)",
+                                                      "gasCentiM3": "Gaz (une impulsion par 1/100 m3)",
+                                                      "raw": "Autre (Compteur sans unité seulement)"
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          },
+                          "extraQueries": {
+                              "firmwareUpdate": {
+                                  "name": "Mise à jour firmware",
+                                  "commandData": {
+                                      "fileContent": {
+                                          "name": "Fichier",
+                                          "description": "Le nouveau firmware à utiliser"
+                                      }
+                                  }
+                              },
+                              "pairing": {
+                                  "name": "Appairage"
+                              }
+                          },
+                          "customLabels": {
+                              "pluginState": {
+                                  "connecting": "Connexion en cours...",
+                                  "initializing": "Initialisation RFXCom...",
+                                  "connectionLost": "Connexion perdue",
+                                  "updateConfiguration": "Mise à jour de la configuration...",
+                                  "updateFirmware": "Mise à jour du firmware...",
+                                  "failToConfigure": "Impossible de configurer le RFXCom, des protocoles incompatibles ont propablement été sélectionnés. Voir le manuel du RFXCom."
+                              },
+                              "firmwareUpdate": {
+                                  "loadInputFile": "Chargement du fichier...",
+                                  "connect": "Connexion au RFXCom...",
+                                  "erase": "Effacement...",
+                                  "write": "Ecriture...",
+                                  "reboot": "Redémarrage du RFXCom",
+                                  "ErrorOnlyAvailableForSerial": "La mise à jour du firmware n'est possible qu'en connexion directe avec un câble série",
+                                  "ErrorInvalidInputFile": "Impossible de mettre à jour le firmware, le fichier d'entrée est invalide"
+                              },
+                              "extraquery": {
+                                  "ErrorInternal": "Execution de commande, erreur interne"
+                              },
+                              "pairing": {
+                                  "invalidCommandAutoMode": "Commande invalide, l'apparaige est configuré en automatique",
+                                  "alreadyRunning": "L'appairage est déjà en cours",
+                                  "pairing": "Appairage en cours...",
+                                  "devicePaired": "Nouvel équipement appairé !",
+                                  "noDevicePaired": "Aucun équipement trouvé"
+                              }
+                          }
+                      }
+                  }
+              ],
+              "paging": {
+                  "currentPage": 0,
+                  "totalPage": 1,
+                  "pageSize": 10
+              }
+          }
+  - name: Plugin with configuration schema
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins?byType=dev-fakePlugin&prop=configurationSchema
+      method: GET
+      headers:
+        - name: Accept-Language
+          value: fr
+          description: "Optional : provides translations if requested (en langugage if requested language not found)"
+      params:
+        - name: byType
+          value: dev-fakePlugin
+          type: query
+          description: "[optional] Filter by plugin type. Returns all plugins if ommited"
+        - name: prop
+          value: configurationSchema
+          type: query
+          description: |-
+            [optional] A flags combinaison of following values (returns all values if no prop provided, except for icon that must be requested alone) :
+            type|version|author|url|support-manually-created-device|support-device-removed-notification|package|icon|configurationSchema|name|description
+        - name: page
+          value: "0"
+          type: query
+          description: "Pagination : required page"
+          disabled: true
+        - name: perPage
+          value: "10"
+          type: query
+          description: "Pagination : page size"
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Server
+          value: yadoms/2.5.3
+        - name: Connection
+          value: keep-alive
+        - name: Content-Type
+          value: application/json
+        - name: Access-Control-Max-Age
+          value: "1728000"
+        - name: Access-Control-Allow-Methods
+          value: GET, POST, OPTIONS, PATCH
+        - name: Access-Control-Allow-Headers
+          value: DNT, User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Type, Range, Authorization
+        - name: Content-Length
+          value: "5608"
+      body:
+        type: json
+        data: |-
+          {
+              "configurationSchema": {
+                  "StringParameter": {
+                      "type": "string",
+                      "name": "Un exemple de chaîne",
+                      "description": "Voici un exemple de paramètre chaîne. Les champs de description supportent [les liens](http://www.yadoms.com)"
+                  },
+                  "BoolParameter": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "name": "Un exemple de booléen",
+                      "description": "Voici un exemple de paramètre booléen"
+                  },
+                  "IntParameter": {
+                      "type": "int",
+                      "defaultValue": 258,
+                      "name": "Un exemple d'entier",
+                      "description": "Voici un exemple de paramètre entier"
+                  },
+                  "DecimalParameter": {
+                      "type": "decimal",
+                      "defaultValue": 25.3,
+                      "name": "Un exemple de nombre décimal",
+                      "description": "Maintenant un decimal"
+                  },
+                  "EnumParameter": {
+                      "type": "enum",
+                      "values": {
+                          "EnumValue1": "Ma première valeur",
+                          "EnumValue2": "Ma seconde valeur",
+                          "EnumValue3": "Ma troisième valeur"
+                      },
+                      "defaultValue": "EnumValue2",
+                      "name": "Un exemple d'énuméré personnalisé",
+                      "description": "Exemple d'énuméré avec 3 valeurs"
+                  },
+                  "MySection": {
+                      "type": "section",
+                      "content": {
+                          "SubIntParameter": {
+                              "type": "int",
+                              "defaultValue": 65535,
+                              "name": "Entier dans une section",
+                              "description": "Un exemple de paramètre entier dans une section"
+                          },
+                          "SubStringParameter": {
+                              "type": "string",
+                              "name": "Chaîne dans une section",
+                              "description": "Un exemple de paramètre chaîne dans une section",
+                              "defaultValue": "Les sous-sections rendent la configuration vraiment puissante !"
+                          }
+                      },
+                      "name": "Une section",
+                      "description": "Exemple d'utilisation d'une section de configuration."
+                  },
+                  "ConditionalParameter": {
+                      "type": "string",
+                      "defaultValue": "Si vous voyez ceci, c'est que Yadoms toune sous Windows.",
+                      "name": "Un paramètre conditionnel",
+                      "description": "Ce paramètre n'est affiché que si une condition, validée par le serveur, est remplie. Dans ce cas présent, il n'est affiché que si le serveur est exécuté sous Windows.",
+                      "show": true
+                  },
+                  "SystemData": {
+                      "type": "section",
+                      "content": {
+                          "SerialPort": {
+                              "type": "enum",
+                              "values": {
+                                  "\\\\.\\COM3": "COM3 (\\Device\\ProlificSerial0)",
+                                  "\\\\.\\COM8": "COM8 (\\Device\\ssudmdm0000)"
+                              },
+                              "name": "Port série",
+                              "description": "Ce paramètre fournit la liste des ports série du serveur"
+                          },
+                          "UsbDevices": {
+                              "type": "enum",
+                              "values": {
+                                  "\\\\?\\usb#vid_045e&pid_0040#6&af0ffb3&3&3#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Souris Microsoft USB Wheel Mouse Optical",
+                                  "\\\\?\\usb#vid_413c&pid_2010#6&af0ffb3&3&1#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Périphérique USB composite"
+                              },
+                              "name": "Périphérique USB",
+                              "description": "Ce paramètre fournit la liste des péripéhriques USB, filtrés par fabricant et produit"
+                          },
+                          "NetworkInterfaces": {
+                              "type": "enum",
+                              "values": {
+                                  "Ethernet maison": "Intel(R) Ethernet Connection (2) I218-V (192.168.0.8)",
+                                  "Ethernet 4": "VirtualBox Host-Only Ethernet Adapter (192.168.56.1)"
+                              },
+                              "name": "Interface réseau",
+                              "description": "Ce paramètre fournit la liste des interfaces réseau du serveur"
+                          },
+                          "NetworkInterfacesWithoutLoopback": {
+                              "type": "enum",
+                              "values": {
+                                  "Loopback Pseudo-Interface 1": "Software Loopback Interface 1 (127.0.0.1)",
+                                  "Ethernet maison": "Intel(R) Ethernet Connection (2) I218-V (192.168.0.8)",
+                                  "Ethernet 4": "VirtualBox Host-Only Ethernet Adapter (192.168.56.1)"
+                              },
+                              "name": "Interface réseau hors boucle locale",
+                              "description": "Ce paramètre fournit la liste des interfaces réseau du serveur, hors boucle locale"
+                          },
+                          "SupportedTimezones": {
+                              "type": "enum",
+                              "values": {
+                                  "Africa/Accra": "Africa/Accra",
+                                  "Antarctica/Casey": "Antarctica/Casey",
+                                  "Antarctica/Davis": "Antarctica/Davis",
+                                  "Antarctica/DumontDUrville": "Antarctica/DumontDUrville",
+                                  "Antarctica/Mawson": "Antarctica/Mawson",
+                                  "Antarctica/McMurdo": "Antarctica/McMurdo",
+                                  "Antarctica/Palmer": "Antarctica/Palmer",
+                                  "Antarctica/South_Pole": "Antarctica/South_Pole",
+                                  "Antarctica/Syowa": "Antarctica/Syowa",
+                                  "Antarctica/Vostok": "Antarctica/Vostok",
+                                  "Europe/Amsterdam": "Europe/Amsterdam",
+                                  "Europe/Andorra": "Europe/Andorra",
+                                  "Europe/Athens": "Europe/Athens",
+                                  "Europe/Belfast": "Europe/Belfast",
+                                  "Europe/Belgrade": "Europe/Belgrade",
+                                  "Europe/Berlin": "Europe/Berlin",
+                                  "Europe/Bratislava": "Europe/Bratislava",
+                                  "Europe/Brussels": "Europe/Brussels",
+                                  "Europe/Bucharest": "Europe/Bucharest",
+                                  "Europe/Budapest": "Europe/Budapest",
+                                  "Europe/Chisinau": "Europe/Chisinau",
+                                  "Europe/Copenhagen": "Europe/Copenhagen",
+                                  "Europe/Dublin": "Europe/Dublin",
+                                  "Europe/Gibraltar": "Europe/Gibraltar",
+                                  "Europe/Helsinki": "Europe/Helsinki",
+                                  "Europe/Istanbul": "Europe/Istanbul",
+                                  "Europe/Kaliningrad": "Europe/Kaliningrad",
+                                  "Europe/Kiev": "Europe/Kiev",
+                                  "Europe/Lisbon": "Europe/Lisbon",
+                                  "Europe/Ljubljana": "Europe/Ljubljana",
+                                  "Europe/London": "Europe/London",
+                                  "Europe/Luxembourg": "Europe/Luxembourg",
+                                  "Europe/Madrid": "Europe/Madrid",
+                                  "Europe/Malta": "Europe/Malta",
+                                  "Europe/Minsk": "Europe/Minsk",
+                                  "Europe/Monaco": "Europe/Monaco",
+                                  "Europe/Moscow": "Europe/Moscow",
+                                  "Europe/Nicosia": "Europe/Nicosia",
+                                  "Europe/Oslo": "Europe/Oslo",
+                                  "Europe/Paris": "Europe/Paris",
+                                  "Europe/Prague": "Europe/Prague",
+                                  "Europe/Riga": "Europe/Riga",
+                                  "Europe/Rome": "Europe/Rome",
+                                  "Europe/Samara": "Europe/Samara",
+                                  "Europe/San_Marino": "Europe/San_Marino",
+                                  "Europe/Sarajevo": "Europe/Sarajevo",
+                                  "Europe/Simferopol": "Europe/Simferopol",
+                                  "Europe/Skopje": "Europe/Skopje",
+                                  "Europe/Sofia": "Europe/Sofia",
+                                  "Europe/Stockholm": "Europe/Stockholm",
+                                  "Europe/Tallinn": "Europe/Tallinn",
+                                  "Europe/Tirane": "Europe/Tirane",
+                                  "Europe/Uzhgorod": "Europe/Uzhgorod",
+                                  "Europe/Vaduz": "Europe/Vaduz",
+                                  "Europe/Vatican": "Europe/Vatican",
+                                  "Europe/Vienna": "Europe/Vienna",
+                                  "Europe/Vilnius": "Europe/Vilnius",
+                                  "Europe/Warsaw": "Europe/Warsaw",
+                                  "Europe/Zagreb": "Europe/Zagreb",
+                                  "Europe/Zaporozhye": "Europe/Zaporozhye",
+                                  "Europe/Zurich": "Europe/Zurich"
+                              },
+                              "name": "Fuseau horaire",
+                              "description": "Ce paramètre fournit la liste des fuseaux horaires"
+                          }
+                      },
+                      "name": "Données système",
+                      "description": "Permet à l'utilisateur de sélectionner une ressource du serveur (port série, périphérique USB...)"
+                  }
+              }
+          }

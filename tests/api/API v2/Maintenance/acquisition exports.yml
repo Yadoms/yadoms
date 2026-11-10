@@ -1,0 +1,53 @@
+info:
+  name: acquisition exports
+  type: http
+  seq: 10
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/acquisitions/:url
+  params:
+    - name: url
+      value: acquisitions_20211214T232151.912929.zip
+      type: path
+      description: "[optional] Returns all acquisition exports if omitted"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: acquisition exports
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/acquisitions/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "176"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "acquisitions": [
+                  {
+                      "size": 84651,
+                      "modificationDate": "20211214T232152",
+                      "path": "backups\\acquisitions_20211214T232151.912929.zip",
+                      "url": "acquisitions_20211214T232151.912929.zip"
+                  }
+              ]
+          }
+
+docs: Get logs

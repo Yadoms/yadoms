@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_SUITE(TestFixedSizeReceiveBufferHandler)
 
    enum { kEvtId = shared::event::kUserFirstId };
 
-   static bool buffersAreEqual(const shared::communication::CByteBuffer& buf1, const shared::communication::CByteBuffer& buf2)
+   static bool BuffersAreEqual(const shared::communication::CByteBuffer& buf1, const shared::communication::CByteBuffer& buf2)
    {
       if (buf1.size() != buf2.size())
          return false;
@@ -20,8 +20,8 @@ BOOST_AUTO_TEST_SUITE(TestFixedSizeReceiveBufferHandler)
       return true;
    }
 
-   static shared::communication::CByteBuffer concatBuffers(const shared::communication::CByteBuffer& buf1,
-                                                                 const shared::communication::CByteBuffer& buf2)
+   static shared::communication::CByteBuffer ConcatBuffers(const shared::communication::CByteBuffer& buf1,
+                                                           const shared::communication::CByteBuffer& buf2)
    {
       const auto fullContent = new unsigned char[buf1.size() + buf2.size()];
       memcpy(fullContent, buf1.begin(), buf1.size());
@@ -38,26 +38,26 @@ BOOST_AUTO_TEST_SUITE(TestFixedSizeReceiveBufferHandler)
       shared::communication::CFixedSizeReceiveBufferHandler buffer(evtHandler, kEvtId, sizeof(tab));
 
       // Push data to buffer
-      shared::communication::CByteBuffer sentBuffer(tab, sizeof(tab));
+      const shared::communication::CByteBuffer sentBuffer(tab, sizeof(tab));
       buffer.push(sentBuffer);
 
       // EventHandler should be already notified
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), kEvtId);
       BOOST_CHECK_EQUAL(evtHandler.isEventType<const shared::communication::CByteBuffer>(), true);
-      auto receivedBuffer = evtHandler.getEventData<const shared::communication::CByteBuffer>();
-      BOOST_CHECK_EQUAL(buffersAreEqual(sentBuffer, receivedBuffer), true);
+      const auto receivedBuffer = evtHandler.getEventData<const shared::communication::CByteBuffer>();
+      BOOST_CHECK_EQUAL(BuffersAreEqual(sentBuffer, receivedBuffer), true);
    }
 
    BOOST_AUTO_TEST_CASE(ExactSizeFrom2Parts)
    {
       unsigned char tab1[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g'};
       unsigned char tab2[] = {'1', '2', '3', '4'};
-      auto timeProviderMock = useTimeMock();
+      const auto timeProviderMock = useTimeMock();
       shared::event::CEventHandler evtHandler;
       shared::communication::CFixedSizeReceiveBufferHandler buffer(evtHandler, kEvtId, sizeof(tab1) + sizeof(tab2));
 
       // Push first part to buffer
-      shared::communication::CByteBuffer sentBuffer1(tab1, sizeof(tab1));
+      const shared::communication::CByteBuffer sentBuffer1(tab1, sizeof(tab1));
       buffer.push(sentBuffer1);
 
       // EventHandler should not be notified
@@ -65,14 +65,14 @@ BOOST_AUTO_TEST_SUITE(TestFixedSizeReceiveBufferHandler)
       BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 
       // Push second part to buffer
-      shared::communication::CByteBuffer sentBuffer2(tab2, sizeof(tab2));
+      const shared::communication::CByteBuffer sentBuffer2(tab2, sizeof(tab2));
       buffer.push(sentBuffer2);
 
       // EventHandler should now be notified
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), kEvtId);
       BOOST_CHECK_EQUAL(evtHandler.isEventType<const shared::communication::CByteBuffer>(), true);
-      auto receivedBuffer = evtHandler.getEventData<const shared::communication::CByteBuffer>();
-      BOOST_CHECK_EQUAL(buffersAreEqual(concatBuffers(sentBuffer1, sentBuffer2), receivedBuffer), true);
+      const auto receivedBuffer = evtHandler.getEventData<const shared::communication::CByteBuffer>();
+      BOOST_CHECK_EQUAL(BuffersAreEqual(ConcatBuffers(sentBuffer1, sentBuffer2), receivedBuffer), true);
    }
 
    BOOST_AUTO_TEST_CASE(GreaterSizeFrom2Parts)
@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_SUITE(TestFixedSizeReceiveBufferHandler)
       shared::communication::CByteBuffer b2(sizeof(tab2) - 2);
       memcpy(b2.begin(), tab2, sizeof(tab2) - 2);
 
-      auto b3 = concatBuffers(sentBuffer1, b2);
+      auto b3 = ConcatBuffers(sentBuffer1, b2);
       shared::communication::CByteBuffer expectedBuffer(b3.size());
       memcpy(expectedBuffer.begin(), b3.begin(), b3.size());
 
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_SUITE(TestFixedSizeReceiveBufferHandler)
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), kEvtId);
       BOOST_CHECK_EQUAL(evtHandler.isEventType<const shared::communication::CByteBuffer>(), true);
       auto receivedBuffer = evtHandler.getEventData<const shared::communication::CByteBuffer>();
-      BOOST_CHECK_EQUAL(buffersAreEqual(expectedBuffer, receivedBuffer), true);
+      BOOST_CHECK_EQUAL(BuffersAreEqual(expectedBuffer, receivedBuffer), true);
    }
 
 BOOST_AUTO_TEST_SUITE_END()

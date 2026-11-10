@@ -15,7 +15,7 @@ void CConfiguration::trace() const
 {
    try
    {
-      YADOMS_LOG(information) << "Pairing mode : " << m_configuration.get<std::string>("PairingMode.activeSectionText");
+      YADOMS_LOG(information) << "Pairing mode : " << m_configuration.get<std::string>("PairingMode.activeSection");
       YADOMS_LOG(information) << "Bridge IP is :  "
          << (m_configuration.get<std::string>("PairingMode.content.Manual.content.IPAddress").empty()
                 ? "Automatic Mode"
@@ -45,5 +45,5 @@ void CConfiguration::setIPAddress(const std::string& ipAddress)
 
 EPairingMode CConfiguration::getPairingMode() const
 {
-   return m_configuration.get<std::string>("PairingMode.activeSectionText") == "Auto" ? kAuto : kManual;
+   return m_configuration.get<std::string>("PairingMode.activeSection") == "Automatic" ? kAuto : kManual;
 }

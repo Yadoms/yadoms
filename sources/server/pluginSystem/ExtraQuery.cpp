@@ -1,17 +1,13 @@
 #include "stdafx.h"
 #include "ExtraQuery.h"
-#include "communication/callback/CallbackRequest.h"
-#include <shared/Log.h>
+
+#include <utility>
 #include "i18n/ClientStrings.h"
 
 namespace pluginSystem
 {
    CExtraQuery::CExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data)
-      : m_data(data)
-   {
-   }
-
-   CExtraQuery::~CExtraQuery()
+      : m_data(std::move(data))
    {
    }
 
@@ -38,7 +34,7 @@ namespace pluginSystem
 
    void CExtraQuery::registerCallback(task::ITask::TaskProgressFunc callback)
    {
-      m_progressNotifier = callback;
+      m_progressNotifier = std::move(callback);
    }
 
    void CExtraQuery::waitForExtraQueryProcess()
@@ -57,11 +53,13 @@ namespace pluginSystem
             m_progressNotifier(false, 100, i18n::CClientStrings::ExtraQueryFail, m_eventHandler.getEventData<std::string>(), shared::CDataContainer::make());
             running = false;
             break;
+         default: 
+            break;;
          }
       }
    }
 
-   void CExtraQuery::reportProgress(const float progression, const std::string& message)
+   void CExtraQuery::reportProgress(float progression, const std::string& message)
    {
       //use callback directly (if using m_eventHadler, there are bad side effects)
       m_progressNotifier(true, progression, message, "", shared::CDataContainer::make());

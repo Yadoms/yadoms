@@ -1,7 +1,7 @@
 #pragma once
 #include <Poco/Net/HTTPServer.h>
 #include <Poco/Net/HTTPRequestHandler.h>
-#include "authentication/IAuthentication.h"
+#include "IAuthentication.h"
 
 namespace web
 {
@@ -10,7 +10,7 @@ namespace web
       //-------------------------------------
       ///\brief Authentication request handler. This is an authentication layer which check for authorized only users requests
       //-------------------------------------
-      class CAuthenticationRequestHandler : public Poco::Net::HTTPRequestHandler
+      class CAuthenticationRequestHandler final : public Poco::Net::HTTPRequestHandler
       {
       public:
          //-------------------------------------
@@ -19,12 +19,14 @@ namespace web
          ///\param [in]    baseRequestHandler   handle requests called after a successfull authentication
          ///\param [in]    allowAuthentication  Indicate if the current request allow authentication
          //-------------------------------------
-         CAuthenticationRequestHandler(boost::shared_ptr<authentication::IAuthentication> authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler> baseRequestHandler, bool allowAuthentication);
+         CAuthenticationRequestHandler(boost::shared_ptr<IAuthentication> authenticator,
+                                       boost::shared_ptr<HTTPRequestHandler> baseRequestHandler,
+                                       bool allowAuthentication);
 
          //-------------------------------------
          ///\brief Destructor
          //-------------------------------------
-         virtual ~CAuthenticationRequestHandler();
+         ~CAuthenticationRequestHandler() override;
 
 
          // Poco::Net::HTTPRequestHandler implementation
@@ -35,12 +37,12 @@ namespace web
          //-------------------------------------
          ///\brief Authenticator object
          //-------------------------------------
-         boost::shared_ptr<authentication::IAuthentication> m_authenticator;
+         boost::shared_ptr<IAuthentication> m_authenticator;
 
          //-------------------------------------
          ///\brief Base request handler
          //-------------------------------------
-         boost::shared_ptr<Poco::Net::HTTPRequestHandler> m_baseRequestHandler;
+         boost::shared_ptr<HTTPRequestHandler> m_baseRequestHandler;
 
          //-------------------------------------
          ///\brief Allow the request to authenticate (web only, should be false for rest and ws)
@@ -49,5 +51,3 @@ namespace web
       };
    } //namespace poco
 } //namespace web
-
-

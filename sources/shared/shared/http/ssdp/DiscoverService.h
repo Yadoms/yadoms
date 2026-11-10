@@ -1,4 +1,5 @@
 #pragma once
+#include <set>
 #include <string>
 #include "IDiscoveredDevice.h"
 

@@ -1,0 +1,103 @@
+info:
+  name: Creation
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: http://192.168.109.91:8080/rest/plugin/8/createDevice
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      { "name" : "test",
+       "configuration" :  
+      {
+          "type": {
+              "content": {
+                  "ac": {
+                      "content": {
+                          "deviceAddress": ""
+                      },
+                      "radio": "false"
+                  },
+                  "x10": {
+                      "content": {
+                          "Protocol": {
+                              "content": {
+                                  "proto_x10": {
+                                      "content": {
+                                          "HouseCode": "D",
+                                          "UnitCode": "6"
+                                      },
+                                      "radio": "true"
+                                  },
+                                  "proto_arc": {
+                                      "content": {
+                                          "HouseCode": "A",
+                                          "UnitCode": "1"
+                                      },
+                                      "radio": "false"
+                                  },
+                                  "proto_flamingo": {
+                                      "content": {
+                                          "HouseCode": "A",
+                                          "UnitCode": "1"
+                                      },
+                                      "radio": "false"
+                                  },
+                                  "proto_koppla": {
+                                      "content": {
+                                          "HouseCode": "A",
+                                          "UnitCode": "1"
+                                      },
+                                      "radio": "false"
+                                  },
+                                  "proto_waveman": {
+                                      "content": {
+                                          "HouseCode": "A",
+                                          "UnitCode": "1"
+                                      },
+                                      "radio": "false"
+                                  },
+                                  "proto_harrison": {
+                                      "content": {
+                                          "HouseCode": "A",
+                                          "UnitCode": "1"
+                                      },
+                                      "radio": "false"
+                                  },
+                                  "proto_he105": {
+                                      "content": {
+                                          "HouseCode": "A",
+                                          "UnitCode": "1"
+                                      },
+                                      "radio": "false"
+                                  },
+                                  "proto_rts10": {
+                                      "content": {
+                                          "HouseCode": "A",
+                                          "UnitCode": "1"
+                                      },
+                                      "radio": "false"
+                                  }
+                              },
+                              "activeSection": "proto_x10"
+                          }
+                      },
+                      "radio": "true"
+                  }
+              },
+              "activeSection": "x10"
+          }
+      }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

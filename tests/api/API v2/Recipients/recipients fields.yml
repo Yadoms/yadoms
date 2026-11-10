@@ -1,0 +1,66 @@
+info:
+  name: recipients fields
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/recipients/fields
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: recipients fields
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/users/recipients
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "469"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "fields": {
+                  "email": {
+                      "type": "string",
+                      "regex": "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$",
+                      "pluginType": "system",
+                      "i18nPath": "locales"
+                  },
+                  "mobile": {
+                      "type": "string",
+                      "regex": "^\\+(?:[0-9]?){6,14}[0-9]$",
+                      "pluginType": "system",
+                      "i18nPath": "locales"
+                  },
+                  "apiKey": {
+                      "type": "string",
+                      "regex": "",
+                      "pluginType": "freeMobileSms",
+                      "i18nPath": "plugins\\freeMobileSms\\locales"
+                  },
+                  "userId": {
+                      "type": "string",
+                      "regex": "",
+                      "pluginType": "freeMobileSms",
+                      "i18nPath": "plugins\\freeMobileSms\\locales"
+                  }
+              }
+          }
+
+docs: Get all available fields for user creation/update. Each field is a Json node formatted as a standart configuration item.

@@ -12,7 +12,7 @@ namespace historizers
       ///\param[in] name            Yadoms keyword name
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      explicit CRainRate(const std::string& name, CDecimalTypeInfo &ti);
+      explicit CRainRate(const std::string& name, CDecimalTypeInfo& ti);
 
       //-----------------------------------------------------
       ///\brief                     Constructor
@@ -20,7 +20,7 @@ namespace historizers
       ///\param[in] measureType     The measure type (normally kAbsolute)
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CRainRate(const std::string& name, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo &ti);
+      CRainRate(const std::string& name, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo& ti);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

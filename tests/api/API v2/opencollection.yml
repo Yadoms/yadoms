@@ -1,0 +1,45 @@
+opencollection: 1.0.0
+
+info:
+  name: API v2
+config:
+  proxy:
+    inherit: false
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+    disabled: true
+
+request:
+  variables:
+    - name: externalClientType
+      value: externalClientType
+
+docs:
+  content: |-
+    Here is the documentation of the Yadoms server API v2 (server based on oat++)
+
+    # Conventions used in this documentation
+
+    ## Path Params
+
+    Some path params can take multiple values (separated with '|')
+
+    ## Query Params
+
+    Query params can take values like :
+
+    *   single value : can be a numeric or text value. In case of enum, available values are documented as comma-separated (,)
+    *   multiple values : documented as '|' separated value (ex : prop = min|max)
+  type: text/markdown
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

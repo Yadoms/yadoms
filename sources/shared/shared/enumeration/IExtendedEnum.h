@@ -1,4 +1,8 @@
 #pragma once
+#include <map>
+#include <iosfwd>
+#include <string>
+#include <vector>
 
 namespace shared
 {

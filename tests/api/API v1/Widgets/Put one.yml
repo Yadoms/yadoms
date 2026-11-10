@@ -1,0 +1,34 @@
+info:
+  name: Put one
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/widget/1
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "id": "1",
+        "idPage": "1",
+        "name": "widget1",
+        "sizeX": "1",
+        "sizeY": "1",
+        "positionX": "1",
+        "positionY": "1",
+        "configuration": 
+        {
+          "intParameter":"0"
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

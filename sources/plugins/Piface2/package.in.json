@@ -13,7 +13,7 @@
          "minimumVersion": "2.3.0-beta.1"
       }
    },
-	"supportManuallyDeviceCreation": "false",
+	"supportManuallyDeviceCreation": false,
 	"configurationSchema": {
 		"DI0": {
 			"type": "enum",

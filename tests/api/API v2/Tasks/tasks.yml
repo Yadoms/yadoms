@@ -1,0 +1,231 @@
+info:
+  name: tasks
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/tasks/:uuids
+  params:
+    - name: from-name
+      value: backup
+      type: query
+      description: "[Optional]"
+      disabled: true
+    - name: from-status
+      value: success
+      type: query
+      description: "[Optional] started, success, fail"
+      disabled: true
+    - name: prop
+      value: uuid|name|progression
+      type: query
+      description: |-
+        [Optional] flags conbinaison of :
+        uuid|name|progression|messag|status|creationDate
+      disabled: true
+    - name: uuids
+      value: ""
+      type: path
+      description: "[optional] UUID list of tasks"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: All tasks
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/tasks
+      method: GET
+      params:
+        - name: prop
+          value: uuid|name|progression
+          type: query
+          description: uuid|name|progression|messag|status|creationDate
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "374"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "tasks": [
+                  {
+                      "uuid": "cc033e99-2827-45a6-bcf1-d4745a95fca4",
+                      "name": "scanForUpdates",
+                      "progression": 100,
+                      "message": "scanForUpdates.success",
+                      "status": "Success",
+                      "creationDate": "20211124T133017.716939"
+                  },
+                  {
+                      "uuid": "f3a8da09-6436-4194-b231-e6cb4ca73393",
+                      "name": "plugin.update",
+                      "progression": 100,
+                      "message": "plugin.success",
+                      "status": "Success",
+                      "creationDate": "20211124T133015.734266"
+                  }
+              ]
+          }
+  - name: scan for update tasks only
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/tasks?from-name=scanForUpdates
+      method: GET
+      params:
+        - name: from-name
+          value: scanForUpdates
+          type: query
+          description: backup, scanForUpdates, etc...
+        - name: from-status
+          value: success
+          type: query
+          description: started, success, fail
+          disabled: true
+        - name: prop
+          value: uuid|name|progression
+          type: query
+          description: uuid|name|progression|messag|status|creationDate
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "197"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "tasks": [
+                  {
+                      "uuid": "0c8284a3-82db-445e-97e4-ce0be505f07f",
+                      "name": "scanForUpdates",
+                      "progression": 100,
+                      "message": "scanForUpdates.success",
+                      "status": "Success",
+                      "creationDate": "20211125T171137.612247"
+                  }
+              ]
+          }
+  - name: finish task
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/tasks/:uuids
+      method: GET
+      params:
+        - name: from-name
+          value: backup
+          type: query
+          description: "[Optional]"
+          disabled: true
+        - name: from-status
+          value: success
+          type: query
+          description: "[Optional] started, success, fail"
+          disabled: true
+        - name: prop
+          value: uuid|name|progression
+          type: query
+          description: |-
+            [Optional] flags conbinaison of :
+            uuid|name|progression|messag|status|creationDate
+          disabled: true
+        - name: uuids
+          value: d51bb340-32ad-409c-b608-dd4378a50043
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "186"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "uuid": "d51bb340-32ad-409c-b608-dd4378a50043",
+              "name": "backup",
+              "progression": 100,
+              "message": "task.backup.success",
+              "status": "Success",
+              "creationDate": "20211207T235629.975545"
+          }
+  - name: one task
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/tasks/:uuids
+      method: GET
+      params:
+        - name: from-name
+          value: backup
+          type: query
+          description: "[Optional]"
+          disabled: true
+        - name: from-status
+          value: success
+          type: query
+          description: "[Optional] started, success, fail"
+          disabled: true
+        - name: prop
+          value: uuid|name|progression
+          type: query
+          description: |-
+            [Optional] flags conbinaison of :
+            uuid|name|progression|messag|status|creationDate
+          disabled: true
+        - name: uuids
+          value: 59d2b76b-d4ec-496b-bc97-119093de28f2
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "187"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "uuid": "59d2b76b-d4ec-496b-bc97-119093de28f2",
+              "name": "backup",
+              "progression": 91.66666412353516,
+              "message": "task.backup.compress",
+              "status": "Started",
+              "creationDate": "20211208T161557.389940"
+          }
+
+docs: |-
+  List tasks.
+
+  If called with only one task UUID (ex /tasks/1dd9e0e2-6c35-452b-9aa4-d49c08964bbf), respect the ["Long Running Operation with Polling" pattern](http://restalk-patterns.org/long-running-operation-polling.html) (returns 200 until task completed, then 303 to redirect on the result URL)

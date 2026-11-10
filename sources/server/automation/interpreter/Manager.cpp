@@ -39,13 +39,13 @@ namespace automation
                   try
                   {
                      m_loadedInterpreters[interpreterKeyName] = m_factory->createInterpreterInstance(interpreterKeyName,
-                                                                                                     [this](bool running,
-                                                                                                            const std::string& interpreterType)
-                                                                                                     {
-                                                                                                        if (!running)
-                                                                                                           onInterpreterUnloaded(interpreterType);
-                                                                                                     },
-                                                                                                     m_onScriptStoppedFct);
+                        [this](bool running,
+                               const std::string& interpreterType)
+                        {
+                           if (!running)
+                              onInterpreterUnloaded(interpreterType);
+                        },
+                        m_onScriptStoppedFct);
                   }
                   catch (std::exception& e)
                   {
@@ -177,6 +177,24 @@ namespace automation
          return availableInterpreters;
       }
 
+      std::map<std::string, bool> CManager::getInterpreters(bool includeNotAvailable,
+                                                            bool loadIfNecessary)
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+
+         std::map<std::string, bool> interpreters;
+
+         // Update loaded interpreters list if necessary
+         if (loadIfNecessary)
+            loadInterpreters();
+
+         for (const auto& loadedInterpreter : m_loadedInterpreters)
+            interpreters[loadedInterpreter.first] = loadedInterpreter.second->isAvailable();
+
+         return interpreters;
+      }
+
+
       std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> CManager::getAvailableInterpretersInformation()
       {
          const auto interpreters = getLoadedInterpreters();
@@ -228,7 +246,7 @@ namespace automation
          loadInterpreters();
 
          // Now find corresponding interpreter
-         auto interpreter = m_loadedInterpreters.find(interpreterType);
+         const auto interpreter = m_loadedInterpreters.find(interpreterType);
          if (interpreter == m_loadedInterpreters.end())
             throw std::runtime_error("Interpreter " + interpreterType + " was not found");
          if (!interpreter->second->isAvailable())

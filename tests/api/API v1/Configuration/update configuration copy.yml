@@ -1,0 +1,29 @@
+info:
+  name: update configuration copy
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/configuration/database/version
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+          "section": "Database",
+          "name": "Version",
+          "value": "2.0.0.0",
+          "default_value": "",
+          "description": "Database version",
+          "last_modification_date": "2014-Feb-06 14:45:45"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

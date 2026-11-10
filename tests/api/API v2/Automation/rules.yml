@@ -1,0 +1,314 @@
+info:
+  name: rules
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/rules/:id
+  params:
+    - name: from-name
+      value: Température Pi
+      type: query
+      description: "[optional] Filter for a specific rule name"
+      disabled: true
+    - name: from-interpreter
+      value: yPython27
+      type: query
+      description: "[optional] Filter for specific rule interpreters (list)"
+      disabled: true
+    - name: from-editor
+      value: blockly
+      type: query
+      description: "[optional] Filter for a specific rule editor"
+      disabled: true
+    - name: from-autostart
+      value: ""
+      type: query
+      description: "[optional] Filter for a autostarted rules"
+      disabled: true
+    - name: from-state
+      value: error
+      type: query
+      description: |-
+        [optional] Filter for specific rule states (list). Accepted values are :
+        stopped, running, error
+      disabled: true
+    - name: prop
+      value: code|id
+      type: query
+      description: |-
+        [optional] A flags combinaison of following values (returns all values if no prop provided) :
+        id|name|description|interpreter|editor|model|content|configuration|autostart|state|errorMessage|startDate|stopDate|code
+      disabled: true
+    - name: id
+      value: "56"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: rules (name, id) in error state
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/rules?from-state=error&prop=name|id
+      method: GET
+      params:
+        - name: from-name
+          value: Température Pi
+          type: query
+          description: "[optional] Filter for a specific rule name"
+          disabled: true
+        - name: from-interpreter
+          value: yPython27
+          type: query
+          description: "[optional] Filter for specific rule interpreters (list)"
+          disabled: true
+        - name: from-editor
+          value: blockly
+          type: query
+          description: "[optional] Filter for a specific rule editor"
+          disabled: true
+        - name: from-autostart
+          value: ""
+          type: query
+          description: "[optional] Filter for a autostarted rules"
+          disabled: true
+        - name: from-state
+          value: error
+          type: query
+          description: |-
+            [optional] Filter for specific rule states (list). Accepted values are :
+            stopped, running, error
+        - name: prop
+          value: name|id
+          type: query
+          description: |-
+            [optional] A flags combinaison of following values (returns all values if no prop provided) :
+            id|name|description|interpreter|editor|model|content|autostart|state|errorMessage|startDate|stopDate
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "640"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "rules": [
+                  {
+                      "id": 1,
+                      "name": "Pilotage du Wifi"
+                  },
+                  {
+                      "id": 3,
+                      "name": "Température Pi"
+                  },
+                  {
+                      "id": 4,
+                      "name": "Gestion alimentation"
+                  },
+                  {
+                      "id": 8,
+                      "name": "Il va pleuvoir"
+                  },
+                  {
+                      "id": 11,
+                      "name": "Décongélation pain"
+                  },
+                  {
+                      "id": 12,
+                      "name": "Durée Wifi"
+                  },
+                  {
+                      "id": 26,
+                      "name": "Récupération du vent"
+                  },
+                  {
+                      "id": 32,
+                      "name": "Etat batterie onduleur"
+                  },
+                  {
+                      "id": 35,
+                      "name": "Chauffage d'appoint salle de bain"
+                  },
+                  {
+                      "id": 40,
+                      "name": "Fuite salle-de-bain sous-sol"
+                  },
+                  {
+                      "id": 42,
+                      "name": "Volets étage"
+                  },
+                  {
+                      "id": 43,
+                      "name": "Reboot routeur (sur demande)"
+                  },
+                  {
+                      "id": 48,
+                      "name": "Etat plugins"
+                  },
+                  {
+                      "id": 49,
+                      "name": "Alarme"
+                  },
+                  {
+                      "id": 50,
+                      "name": "Monitoring Internet"
+                  },
+                  {
+                      "id": 51,
+                      "name": "Surveillance capteurs sur batterie"
+                  }
+              ]
+          }
+  - name: rule code
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/rules/:id?prop=code|id
+      method: GET
+      params:
+        - name: from-name
+          value: Température Pi
+          type: query
+          description: "[optional] Filter for a specific rule name"
+          disabled: true
+        - name: from-interpreter
+          value: yPython27
+          type: query
+          description: "[optional] Filter for specific rule interpreters (list)"
+          disabled: true
+        - name: from-editor
+          value: blockly
+          type: query
+          description: "[optional] Filter for a specific rule editor"
+          disabled: true
+        - name: from-autostart
+          value: ""
+          type: query
+          description: "[optional] Filter for a autostarted rules"
+          disabled: true
+        - name: from-state
+          value: error
+          type: query
+          description: |-
+            [optional] Filter for specific rule states (list). Accepted values are :
+            stopped, running, error
+          disabled: true
+        - name: prop
+          value: code|id
+          type: query
+          description: |-
+            [optional] A flags combinaison of following values (returns all values if no prop provided) :
+            id|name|description|interpreter|editor|model|content|autostart|state|errorMessage|startDate|stopDate|code
+        - name: id
+          value: "56"
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "1978"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "rules": [
+                  {
+                      "id": 56,
+                      "code": "# This is a template of Python 3.x rule.\n# This aims is to demonstrate usage of main functions.\n# Full documentation is available by the button below code window.\n#\n# Yadoms runs your rule by calling the yMain method.\n# Yadoms pass its context (the Yadoms script API instance) by the yApi parameter.\n# This parameter is used in the rule to call Yadoms methods.\n#\n# This sample is a simple thermostat, reading a temperature to drive a heating.\n# Heating is ON when temperature is lower than a setPoint, and OFF if greater.\n\n# Import some helper functions (see help)\nimport scriptUtilities\n\n# The temperature setPoint.\nsetPoint = 21.5\n\n# The main function, called by Yadoms. yApi is the Yadoms API context.\ndef yMain(yApi):\n   # Usually, we first get all required keyword IDs. The method getKeywordId\n   # takes the device name and keyword name as arguments (see Keyword page on the dashboard).\n   # Replace devices and keywords by your real sensor/actuator, or instantiate a fakePlugin.\n   temperatureKw = yApi.getKeywordId('fakeSensor1', 'temp1')\n   heatingKw = yApi.getKeywordId('fakeOnOffReadWriteSwitch', 'Switch')\n   \n   # Our thermostat runs infinitely\n   while True:\n   \n      # Wait for change on temperature. waitForNextAcquisition returns a string, that we have to convert to float.\n      newTemperature = float(yApi.waitForNextAcquisition(temperatureKw))\n         \n      # Log the new temperature\n      print (\"New temperature : \", newTemperature)\n      \n      # Now decide to drive or not heating\n      if newTemperature >= setPoint:\n         print (\"Enough hot ! ! ! STOP HEATING ! ! !\")\n         # Stop heating. Be careful, value must be set as string\n         yApi.writeKeyword(heatingKw, '0')\n      else:\n         print (\"Brrr... START HEATING\")\n         # Start heating. Be careful, value must be set as string\n         yApi.writeKeyword(heatingKw, '1')\n\n      # Next iteration\n\n"
+                  }
+              ]
+          }
+  - name: one rule
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/rules/:id
+      method: GET
+      params:
+        - name: from-name
+          value: Température Pi
+          type: query
+          description: "[optional] Filter for a specific rule name"
+          disabled: true
+        - name: from-interpreter
+          value: yPython27
+          type: query
+          description: "[optional] Filter for specific rule interpreters (list)"
+          disabled: true
+        - name: from-editor
+          value: blockly
+          type: query
+          description: "[optional] Filter for a specific rule editor"
+          disabled: true
+        - name: from-autostart
+          value: ""
+          type: query
+          description: "[optional] Filter for a autostarted rules"
+          disabled: true
+        - name: from-state
+          value: error
+          type: query
+          description: |-
+            [optional] Filter for specific rule states (list). Accepted values are :
+            stopped, running, error
+          disabled: true
+        - name: prop
+          value: code|id
+          type: query
+          description: |-
+            [optional] A flags combinaison of following values (returns all values if no prop provided) :
+            id|name|description|interpreter|editor|model|content|configuration|autostart|state|errorMessage|startDate|stopDate|code
+          disabled: true
+        - name: id
+          value: "56"
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "2938"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "id": 56,
+              "name": "test",
+              "description": "",
+              "interpreter": "yPython3",
+              "editor": "code",
+              "model": "",
+              "content": "",
+              "configuration": "",
+              "autostart": true,
+              "state": "Error",
+              "errorMessage": "Traceback (most recent call last):\r  File \"D:\\Projets\\Domotique\\yadoms\\builds\\DEBUG\\scriptInterpreters\\yPython3\\scriptCaller.py\", line 45, in <module>\r    script.yMain(yApi)\r  File \"D:\\Projets\\Domotique\\yadoms\\builds\\DEBUG\\scripts\\locals\\rule_56\\yadomsScript.py\", line 23, in yMain\r    temperatureKw = yApi.getKeywordId('fakeSensor1', 'temp1')\r  File \"D:\\Projets\\Domotique\\yadoms\\builds\\DEBUG\\scriptInterpreters\\yPython3\\yScriptApiWrapper3.py\", line 172, in getKeywordId\r    return _yScriptApiWrapper3.IYScriptApi_getKeywordId(self, deviceName, keywordName)\rRuntimeError: yScriptApiWrapper::getKeywordId returned error : getKeywordId, keyword temp1 for device fakeSensor1 not found\r",
+              "startDate": "20211208T082522.630860",
+              "stopDate": "20211208T082523.913899",
+              "code": "# This is a template of Python 3.x rule.\n# This aims is to demonstrate usage of main functions.\n# Full documentation is available by the button below code window.\n#\n# Yadoms runs your rule by calling the yMain method.\n# Yadoms pass its context (the Yadoms script API instance) by the yApi parameter.\n# This parameter is used in the rule to call Yadoms methods.\n#\n# This sample is a simple thermostat, reading a temperature to drive a heating.\n# Heating is ON when temperature is lower than a setPoint, and OFF if greater.\n\n# Import some helper functions (see help)\nimport scriptUtilities\n\n# The temperature setPoint.\nsetPoint = 21.5\n\n# The main function, called by Yadoms. yApi is the Yadoms API context.\ndef yMain(yApi):\n   # Usually, we first get all required keyword IDs. The method getKeywordId\n   # takes the device name and keyword name as arguments (see Keyword page on the dashboard).\n   # Replace devices and keywords by your real sensor/actuator, or instantiate a fakePlugin.\n   temperatureKw = yApi.getKeywordId('fakeSensor1', 'temp1')\n   heatingKw = yApi.getKeywordId('fakeOnOffReadWriteSwitch', 'Switch')\n   \n   # Our thermostat runs infinitely\n   while True:\n   \n      # Wait for change on temperature. waitForNextAcquisition returns a string, that we have to convert to float.\n      newTemperature = float(yApi.waitForNextAcquisition(temperatureKw))\n         \n      # Log the new temperature\n      print (\"New temperature : \", newTemperature)\n      \n      # Now decide to drive or not heating\n      if newTemperature >= setPoint:\n         print (\"Enough hot ! ! ! STOP HEATING ! ! !\")\n         # Stop heating. Be careful, value must be set as string\n         yApi.writeKeyword(heatingKw, '0')\n      else:\n         print (\"Brrr... START HEATING\")\n         # Start heating. Be careful, value must be set as string\n         yApi.writeKeyword(heatingKw, '1')\n\n      # Next iteration\n\n"
+          }
+
+docs: Returns available rules

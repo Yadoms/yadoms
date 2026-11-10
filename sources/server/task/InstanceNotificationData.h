@@ -62,7 +62,7 @@ namespace task {
       boost::shared_ptr<shared::CDataContainer> m_taskData;      
       
       //--------------------------------------------------------------
-      /// \brief			The current exception given by the task
+      /// \brief			The task name
       //--------------------------------------------------------------
       std::string m_name;
 

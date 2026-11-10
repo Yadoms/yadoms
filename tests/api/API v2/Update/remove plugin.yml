@@ -1,0 +1,48 @@
+info:
+  name: remove plugin
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates/plugins/:pluginName
+  params:
+    - name: pluginName
+      value: RfxLanXpl
+      type: path
+      description: The plugin name
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: remove plugin
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates/plugins/:pluginName
+      method: DELETE
+      params:
+        - name: pluginName
+          value: RfxLanXpl
+          type: path
+          description: The plugin name
+    response:
+      status: 202
+      statusText: Accepted
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: tasks/bfc9c8f2-0a94-446c-ac34-84dccdc24852
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+
+docs: Uninstall a plugin

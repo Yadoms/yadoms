@@ -33,7 +33,7 @@
         "type": "list",
         "nbItemsMin": "0",
         "nbItemsMax": "5",
-        "allowDuplication": "true",
+        "allowDuplication": true,
         "item": {
           "type": "section",
           "content": {

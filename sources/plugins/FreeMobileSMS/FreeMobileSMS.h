@@ -36,7 +36,6 @@ private:
                        const std::string& smsContent);
 
 
-   static std::string m_freeMobileApiUrl;
    static std::string m_deviceName;
    static std::string m_keywordName;
 };

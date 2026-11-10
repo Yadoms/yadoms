@@ -1,0 +1,24 @@
+info:
+  name: Set device configuration
+  type: http
+  seq: 13
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/device/22/setDeviceConfiguration
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+          "CounterDivider": "4"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

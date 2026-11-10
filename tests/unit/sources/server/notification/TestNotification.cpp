@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_SUITE(TestNotification)
          auto waitActionCustomNotif(boost::make_shared<notification::action::CWaitAction<CCustomNotif> >());
 
          //create the acquisition observer
-         auto observer(boost::make_shared<notification::basic::CObserver<CCustomNotif> >(waitActionCustomNotif));
+         const auto observer(boost::make_shared<notification::basic::CObserver<CCustomNotif> >(waitActionCustomNotif));
 
          //regsiter the observer
          notification::CHelpers::CCustomSubscriber subscriber(observer, center);
@@ -60,18 +60,18 @@ BOOST_AUTO_TEST_SUITE(TestNotification)
          auto waitActionInt(boost::make_shared<notification::action::CWaitAction<CIntNotif> >());
 
          //create the acquisition observer
-         auto observerInt(boost::make_shared<notification::basic::CObserver<CIntNotif> >(waitActionInt));
+         const auto observerInt(boost::make_shared<notification::basic::CObserver<CIntNotif> >(waitActionInt));
 
-         //regsiter the observer
+         //register the observer
          notification::CHelpers::CCustomSubscriber subscriberInt(observerInt, center);
 
-         boost::shared_ptr<CCustomNotif> notifCustom = waitActionCustomNotif->wait(boost::posix_time::seconds(5000));
+         const boost::shared_ptr<CCustomNotif> notifCustom = waitActionCustomNotif->wait(boost::posix_time::seconds(5000));
          if (notifCustom && notifCustom->m_integer == 42 && boost::iequals(notifCustom->m_string, "a custom notif"))
          {
             (*notifReceivedCount)++;
          }
 
-         boost::shared_ptr<CIntNotif> notifInt = waitActionInt->wait(boost::posix_time::seconds(5000));
+         const boost::shared_ptr<CIntNotif> notifInt = waitActionInt->wait(boost::posix_time::seconds(5000));
          if (notifInt && notifInt->m_integer == 666)
          {
             (*notifReceivedCount)++;
@@ -84,10 +84,10 @@ BOOST_AUTO_TEST_SUITE(TestNotification)
 
    BOOST_AUTO_TEST_CASE(Notification_3Clients)
    {
-      auto center(boost::make_shared<notification::CNotificationCenter>());
+      const auto center(boost::make_shared<notification::CNotificationCenter>());
 
-      auto notificationInt(boost::make_shared<CIntNotif>(666));
-      auto notifCustom(boost::make_shared<CCustomNotif>(42, "a custom notif"));
+      const auto notificationInt(boost::make_shared<CIntNotif>(666));
+      const auto notifCustom(boost::make_shared<CCustomNotif>(42, "a custom notif"));
 
 
       int notifReceivedCountL1 = 0;
@@ -123,13 +123,13 @@ BOOST_AUTO_TEST_SUITE(TestNotification)
    }
 
 
-   void ThreadPoster(boost::shared_ptr<notification::CNotificationCenter> center, int nbPosts)
+   void ThreadPoster(const boost::shared_ptr<notification::CNotificationCenter> center, int nbPosts)
    {
       //wait some time to provide time for listener
       boost::this_thread::sleep(boost::posix_time::milliseconds(500));
 
-      auto notificationInt(boost::make_shared<CIntNotif>(666));
-      auto notifCustom(boost::make_shared<CCustomNotif>(42, "a custom notif"));
+      const auto notificationInt(boost::make_shared<CIntNotif>(666));
+      const auto notifCustom(boost::make_shared<CCustomNotif>(42, "a custom notif"));
 
       for (int i = 0; i < nbPosts; ++i)
       {

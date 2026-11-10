@@ -4,7 +4,7 @@
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Net/WebSocket.h>
 #include <shared/event/EventHandler.hpp>
-#include "web/ws/FrameBase.h"
+#include "ws/FrameBase.h"
 
 namespace web
 {

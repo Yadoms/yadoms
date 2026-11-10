@@ -54,7 +54,7 @@
             },
             "customText": {
                "type": "string",
-               "required": "false"
+               "required": false
             },
             "fileContent": {
                "type": "file",
@@ -62,7 +62,7 @@
                   ".png",
                   ".jpeg"
                ],
-               "required": "true"
+               "required": true
             }
          }
       },
@@ -71,6 +71,6 @@
       }
    },
    "deviceConfiguration": {
-      "dynamicConfigurationSchema": "true"
+      "dynamicConfigurationSchema": true
    }
 }

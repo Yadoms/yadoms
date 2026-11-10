@@ -1,0 +1,26 @@
+info:
+  name: update widget
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates/widgets/:widgetName/:version
+  params:
+    - name: widgetName
+      value: RGB-color-picker
+      type: path
+      description: The widget name
+    - name: version
+      value: 1.0.0-rc.1
+      type: path
+      description: The requested version
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: Update or install a widget

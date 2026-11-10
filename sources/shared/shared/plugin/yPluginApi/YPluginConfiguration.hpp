@@ -18,21 +18,13 @@ namespace shared
          class YPluginConfiguration
          {
          public:
-            //-----------------------------------------------------
-            ///\brief Constructor
-            //-----------------------------------------------------
             YPluginConfiguration()
-               :m_configurationData(shared::CDataContainer::make()), m_packageData(shared::CDataContainer::make())
+               : m_configurationData(CDataContainer::make()),
+                 m_packageData(CDataContainer::make())
             {
-               
             }
 
-            //-----------------------------------------------------
-            ///\brief Destructor
-            //-----------------------------------------------------
-            virtual ~YPluginConfiguration()
-            {
-            }
+            virtual ~YPluginConfiguration() = default;
 
             //--------------------------------------------------------------
             /// \brief		   Load configuration data
@@ -40,7 +32,8 @@ namespace shared
             /// \param [in] packagePath The package path (default to "package.json" from module path)
             //--------------------------------------------------------------
             void initializeWith(const boost::shared_ptr<CDataContainer>& configurationData,
-                                const boost::filesystem::path& packagePath = CFileSystemExtension::getModulePath() / boost::filesystem::path("package.json"))
+                                const boost::filesystem::path& packagePath =
+                                   CFileSystemExtension::getModulePath() / boost::filesystem::path("package.json"))
             {
                // Reload package file
                m_packageData->deserializeFromFile(packagePath.string());
@@ -117,5 +110,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi	
-
-

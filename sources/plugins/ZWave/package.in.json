@@ -22,11 +22,11 @@
     },
     "IncludeSystemKeywords": {
       "type": "bool",
-      "defaultValue": "false"
+      "defaultValue": false
     },
     "initTimeout": {
-      "type": "numeric",
-      "defaultValue": "0"
+      "type": "int",
+      "defaultValue": 0
     }
   },
   "extraQueries": {
@@ -40,7 +40,7 @@
       "iconClass": "fa fa-check",
       "commandData": {
         "frameCount": {
-          "type": "numeric"
+          "type": "int"
         }
       }
 
@@ -64,6 +64,6 @@
     }
   },
   "deviceConfiguration": {
-    "dynamicConfigurationSchema": "true"
+    "dynamicConfigurationSchema": {}
   }
 }

@@ -12,18 +12,12 @@ namespace database
          //
          /// \brief Database version 4.1.0 update manager
          //
+         // ReSharper disable once CppInconsistentNaming
          class CVersion_4_1_0 : public CVersion_4_0_1
          {
          public:
-            //
-            /// \brief Constructor
-            //
-            CVersion_4_1_0();
-
-            //
-            /// \brief Destructor
-            //
-            virtual ~CVersion_4_1_0();
+            CVersion_4_1_0() = default;
+            ~CVersion_4_1_0() override = default;
 
             // ISQLiteVersionUpgrade implementation
             void checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester,
@@ -40,7 +34,8 @@ namespace database
             /// \brief     Create the database (when tables are not found)
             ///\param [in] pRequester : database requester object
             //-----------------------------------
-            void UpdateFrom4_0_1(const boost::shared_ptr<IDatabaseRequester>& pRequester) const;
+            // ReSharper disable once CppInconsistentNaming
+            static void UpdateFrom4_0_1(const boost::shared_ptr<IDatabaseRequester>& pRequester);
          };
       } //namespace versioning
    } //namespace common

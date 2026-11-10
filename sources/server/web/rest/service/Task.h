@@ -16,7 +16,8 @@ namespace web
             ~CTask() override = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
             static const std::string& getRestKeyword();
@@ -27,9 +28,14 @@ namespace web
 
          private:
             boost::shared_ptr<task::CScheduler> m_taskManager;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
             static std::string m_restKeyword;
 
             boost::shared_ptr<shared::CDataContainer> serialize(const boost::shared_ptr<const task::IInstance>& instance) const;
+            boost::shared_ptr<IAnswer> getTasksV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deleteTaskV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getTasksResultsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> deleteTaskResultV2(const boost::shared_ptr<IRequest>& request) const;
          };
       } //namespace service
    } //namespace rest

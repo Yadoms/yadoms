@@ -1,0 +1,24 @@
+info:
+  name: Commande simple
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/device/keyword/3/command
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "command": "on"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

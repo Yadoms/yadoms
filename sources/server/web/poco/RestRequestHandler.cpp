@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "RestRequestHandler.h"
 #include <shared/Log.h>
-#include "web/rest/Result.h"
 #include <boost/algorithm/string.hpp>
 #include <Poco/URI.h>
 #include <shared/StringExtension.h>
 
 #include <utility>
+
+#include "RestResult.h"
 
 namespace web
 {
@@ -81,13 +82,13 @@ namespace web
 			}
 			catch (std::exception& ex)
 			{
-				YADOMS_LOG(error) << "An exception occured in treating REST url : " << requestPath << std::endl << "Exception : " << ex.what();
-				return rest::CResult::GenerateError(ex)->serialize();
+            YADOMS_LOG(error) << "An exception occurred in treating REST url : " << requestPath << std::endl << "Exception : " << ex.what();
+            return CRestResult::GenerateError(ex)->serialize();
 			}
 			catch (...)
 			{
 				YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << requestPath;
-				return rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + requestPath)->serialize();
+            return CRestResult::GenerateError("An unknown exception occured in treating REST url : " + requestPath)->serialize();
 			}
 		}
 
@@ -113,7 +114,7 @@ namespace web
 			for (auto& i : m_restService)
 			{
 				if (i.get() != nullptr)
-					i->configureDispatcher(m_restDispatcher);
+               i->configurePocoDispatcher(m_restDispatcher);
 			}
 		}
 	} //namespace poco

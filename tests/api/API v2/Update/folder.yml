@@ -1,0 +1,11 @@
+info:
+  name: Update
+  type: folder
+  seq: 10
+
+request:
+  auth: inherit
+
+docs:
+  content: Manage updates for Yadoms and its components
+  type: text/markdown

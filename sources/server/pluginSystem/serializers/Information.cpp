@@ -7,11 +7,7 @@ namespace pluginSystem
    namespace serializers
    {
       CInformation::CInformation(boost::shared_ptr<const shared::plugin::information::IInformation> information)
-         : m_information(information)
-      {
-      }
-
-      CInformation::~CInformation()
+         : m_information(std::move(information))
       {
       }
 

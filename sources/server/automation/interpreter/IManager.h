@@ -31,6 +31,15 @@ namespace automation
          virtual std::vector<std::string> getAvailablenterpreters(bool loadIfNecessary = true) = 0;
 
          //-----------------------------------------------------
+         ///\brief               Get all available interpreters (re-scan interpreters)
+         ///\param[in] includeNotAvailable   Include not available interpreters (interpreter marking itself as not runnable)
+         ///\param loadIfNecessary Load interpreters when true
+         ///\return              The interpreter list (interpreter name as key, available status as value)
+         //-----------------------------------------------------
+         virtual std::map<std::string, bool> getInterpreters(bool includeNotAvailable,
+                                                             bool loadIfNecessary = true) = 0;
+
+         //-----------------------------------------------------
          ///\brief               Get loaded interpreters with associated information
          ///\return              The list of loaded interpreters (available or not) with their information
          //-----------------------------------------------------
@@ -40,7 +49,8 @@ namespace automation
          ///\brief               Get available interpreters with associated information
          ///\return              The list of available interpreters with their information
          //-----------------------------------------------------
-         virtual std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> getAvailableInterpretersInformation() = 0;
+         virtual std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> getAvailableInterpretersInformation() =
+         0;
 
          //-----------------------------------------------------
          ///\brief               Get the available interpreter instance

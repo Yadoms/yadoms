@@ -13,6 +13,8 @@
 #include "internalPlugin/Information.h"
 #include <shared/process/NativeExecutableCommandLine.h>
 #include <shared/process/Process.h>
+
+#include <utility>
 #include "logging/YadomsSubModuleProcessLogger.h"
 
 
@@ -20,10 +22,12 @@ namespace pluginSystem
 {
    CFactory::CFactory(boost::shared_ptr<const IPathProvider> pathProvider,
                       const shared::versioning::CSemVer& yadomsVersion,
-                      const boost::shared_ptr<shared::ILocation> location)
+                      const boost::shared_ptr<shared::ILocation>& location,
+                      bool developerMode)
       : m_yadomsVersion(yadomsVersion),
-        m_pathProvider(pathProvider),
-        m_location(location)
+        m_pathProvider(std::move(pathProvider)),
+        m_location(location),
+        m_developerMode(developerMode)
    {
    }
 
@@ -81,8 +85,8 @@ namespace pluginSystem
 
    boost::shared_ptr<IInstance> CFactory::createInternalPluginInstance(
       boost::shared_ptr<const database::entities::CPlugin> instanceData,
-      boost::shared_ptr<database::IDataProvider> dataProvider,
-      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+      const boost::shared_ptr<database::IDataProvider>& dataProvider,
+      const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
       boost::shared_ptr<IQualifier> qualifier,
       boost::function1<void, int> onPluginsStoppedFct) const
    {
@@ -92,8 +96,8 @@ namespace pluginSystem
                                                              pluginInformation,
                                                              dataProvider,
                                                              dataAccessLayer,
-                                                             qualifier,
-                                                             onPluginsStoppedFct);
+                                                             std::move(qualifier),
+                                                             std::move(onPluginsStoppedFct));
 
       auto apiImplementation = createApiPluginImplementation(pluginInformation,
                                                              instanceData,
@@ -127,8 +131,8 @@ namespace pluginSystem
       boost::shared_ptr<const database::entities::CPlugin> instanceData,
       boost::shared_ptr<const shared::plugin::information::IInformation>
       pluginInformation,
-      boost::shared_ptr<database::IDataProvider> dataProvider,
-      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+      const boost::shared_ptr<database::IDataProvider>& dataProvider,
+      const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
       boost::shared_ptr<IQualifier> qualifier,
       boost::function1<void, int> onPluginsStoppedFct) const
    {
@@ -144,7 +148,7 @@ namespace pluginSystem
    }
 
    boost::shared_ptr<shared::process::ICommandLine> CFactory::createCommandLine(
-      const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+      const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
       const std::string& messageQueueId) const
    {
       std::vector<std::string> args;
@@ -186,7 +190,7 @@ namespace pluginSystem
       boost::shared_ptr<const database::entities::CPlugin> instanceData,
       boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
       boost::shared_ptr<database::IDataProvider> dataProvider,
-      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
+      const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer) const
    {
       return boost::make_shared<CYPluginApiImplementation>(pluginInformation,
                                                            instanceData,
@@ -208,10 +212,10 @@ namespace pluginSystem
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
    {
       auto apiImplementation =
-         createApiPluginImplementation(pluginInformation,
-                                       instanceData,
-                                       instanceStateHandler,
-                                       dataProvider,
+         createApiPluginImplementation(std::move(pluginInformation),
+                                       std::move(instanceData),
+                                       std::move(instanceStateHandler),
+                                       std::move(dataProvider),
                                        dataAccessLayer);
 
       return boost::make_shared<CIpcAdapter>(apiImplementation);
@@ -260,26 +264,30 @@ namespace pluginSystem
    {
       AvailablePluginMap availablePlugins;
 
-      auto pluginDirectories = findPluginDirectories();
+      const auto pluginDirectories = findPluginDirectories();
 
-      for (auto pluginDirectory = pluginDirectories.begin();
-           pluginDirectory != pluginDirectories.end(); ++pluginDirectory)
+      for (auto& pluginDirectory : pluginDirectories)
       {
          try
          {
             // Get information for current found plugin
-            const auto pluginName = pluginDirectory->filename().string();
+            const auto pluginName = pluginDirectory.filename().string();
 
             const auto pluginInformation = createInformation(pluginName);
-            if (pluginInformation->isSupportedOnThisPlatform())
+            if (!pluginInformation->isSupportedOnThisPlatform())
             {
-               availablePlugins[pluginName] = pluginInformation;
-               YADOMS_LOG(information) << "Plugin " << pluginName << " found";
+               YADOMS_LOG(debug) << "Plugin " << pluginName << " found but unsupported on this platform";
+               continue;
             }
-            else
+
+            if (!m_developerMode && boost::starts_with(pluginName, "dev-"))
             {
-               YADOMS_LOG(warning) << "Plugin " << pluginName << " found but unsupported on this platform";
+               YADOMS_LOG(debug) << "Plugin " << pluginName << " for debug purpose only (need developper mode enable)";
+               continue;
             }
+
+            availablePlugins[pluginName] = pluginInformation;
+            YADOMS_LOG(information) << "Plugin " << pluginName << " found";
          }
          catch (CInvalidPluginException& e)
          {
