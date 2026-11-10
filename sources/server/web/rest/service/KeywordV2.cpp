@@ -103,19 +103,19 @@ boost::shared_ptr<web::rest::IAnswer> CKeyword::getKeywordsV2(const boost::share
          if (props->empty() || props->find("id") != props->end())
             keywordEntry->set("id", keyword->Id());
          if (props->empty() || props->find("device-id") != props->end())
-            keywordEntry->set("device-id", keyword->DeviceId());
+            keywordEntry->set("deviceId", keyword->DeviceId());
          if (props->empty() || props->find("capacity-name") != props->end())
-            keywordEntry->set("capacity-name", keyword->CapacityName());
+            keywordEntry->set("capacityName", keyword->CapacityName());
          if (props->empty() || props->find("access-mode") != props->end())
-            keywordEntry->set("access-mode", keyword->AccessMode());
+            keywordEntry->set("accessMode", keyword->AccessMode());
          if (props->empty() || props->find("friendly-name") != props->end())
-            keywordEntry->set("friendly-name", keyword->FriendlyName());
+            keywordEntry->set("friendlyName", keyword->FriendlyName());
          if (props->empty() || props->find("type") != props->end())
             keywordEntry->set("type", keyword->Type());
          if (props->empty() || props->find("units") != props->end())
             keywordEntry->set("units", keyword->Units());
          if (props->empty() || props->find("type-info") != props->end())
-            keywordEntry->set("type-info", keyword->TypeInfo());
+            keywordEntry->set("typeInfo", keyword->TypeInfo());
          if (props->empty() || props->find("measure") != props->end())
             keywordEntry->set("measure", keyword->Measure());
          if (props->empty() || props->find("details") != props->end())
@@ -123,11 +123,11 @@ boost::shared_ptr<web::rest::IAnswer> CKeyword::getKeywordsV2(const boost::share
          if (props->empty() || props->find("blacklisted") != props->end())
             keywordEntry->set("blacklisted", keyword->Blacklist());
          if (props->empty() || props->find("last-acquisition-value") != props->end())
-            keywordEntry->set("last-acquisition-value", keyword->LastAcquisitionValue());
+            keywordEntry->set("lastAcquisitionValue", keyword->LastAcquisitionValue());
          if (props->empty() || props->find("last-acquisition-date") != props->end())
-            keywordEntry->set("last-acquisition-date", keyword->LastAcquisitionDate());
+            keywordEntry->set("lastAcquisitionDate", keyword->LastAcquisitionDate());
          if (props->empty() || props->find("history-depth") != props->end())
-            keywordEntry->set("history-depth", keyword->HistoryDepth());
+            keywordEntry->set("historyDepth", keyword->HistoryDepth());
 
          keywordEntries.push_back(keywordEntry);
       }
