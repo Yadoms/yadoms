@@ -35,7 +35,7 @@ http:
       description: "[Optional] average|min|max|count (ignored if resolution set to 'all')"
       disabled: true
     - name: keywordIds
-      value: 7|8
+      value: 179|1251
       type: path
       description: "[Optional] keyword ID list"
   auth: inherit

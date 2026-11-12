@@ -47,6 +47,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CWidget::endPoi
    m_endPoints->push_back(MAKE_ENDPOINT(kGet, "widgets/{id}", getWidgetsV2));
 
    m_endPoints->push_back(MAKE_ENDPOINT(kPost, "widgets", createWidgetV2));
+   m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "widgets/{id}", updateWidgetV2));
 
    return m_endPoints;
 }
@@ -174,6 +175,65 @@ boost::shared_ptr<web::rest::IAnswer> CWidget::createWidgetV2(const boost::share
    {
       return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                               "Fail to create plugin instance");
+   }
+}
+
+boost::shared_ptr<web::rest::IAnswer> CWidget::updateWidgetV2(const boost::shared_ptr<IRequest>& request) const
+{
+   try
+   {
+      // ID
+      const auto id = request->pathVariable("id", std::string());
+      if (id.empty())
+         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                 "widget id was not provided");
+      const auto widgetId = static_cast<int>(std::stol(id));
+
+      if (request->body().empty())
+         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                 "body was not provided");
+
+      const auto body = shared::CDataContainer::make(request->body());
+      if (body->empty())
+         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                 "body was not provided");
+
+      try
+      {
+         m_dataProvider->getWidgetRequester()->getWidget(widgetId);
+      }
+      catch (const shared::exception::CEmptyResult&)
+      {
+         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                 "widget not found");
+      }
+
+      // Filter only client-modifiable fields
+      database::entities::CWidget widgetToUpdate;
+      widgetToUpdate.Id = widgetId;
+      if (body->exists("page"))
+         widgetToUpdate.IdPage = body->get<int>("page");
+      if (body->exists("position"))
+         widgetToUpdate.Position = body->get<int>("position");
+      if (body->exists("title"))
+         widgetToUpdate.Title = body->get<std::string>("title");
+      if (body->exists("configuration"))
+         widgetToUpdate.Configuration = body->get<boost::shared_ptr<shared::CDataContainer>>("configuration");
+
+      return CHelpers::transactionalMethodV2(
+         request,
+         m_dataProvider,
+         [this, &widgetToUpdate](const auto&) -> boost::shared_ptr<IAnswer>
+         {
+            m_dataProvider->getWidgetRequester()->updateWidget(widgetToUpdate, false);
+            return boost::make_shared<CNoContentAnswer>();
+         });
+   }
+   catch (const std::exception& exception)
+   {
+      YADOMS_LOG(error) << "Error processing updateWidget request : " << exception.what();
+      return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                              "Fail to update widget");
    }
 }
 

@@ -1,0 +1,54 @@
+info:
+  name: update widget
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/widgets/:id
+  params:
+    - name: id
+      value: "1"
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "title": "switch renamed"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: yadoms_ip
+      value: 127.0.0.1
+    - name: yadoms_port_v2
+      value: "8080"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: example
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/widgets/:id
+      method: PATCH
+      params:
+        - name: id
+          value: "1"
+          type: path
+      body:
+        type: json
+        data: |-
+          {
+            "title": "switch renamed"
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""
