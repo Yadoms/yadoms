@@ -50,7 +50,7 @@ CWebServer::CWebServer(const std::string& address,
    m_httpConnectionHandler->addRequestInterceptor(std::make_shared<oatpp::web::server::interceptor::AllowOptionsGlobal>());
    m_httpConnectionHandler->addResponseInterceptor(std::make_shared<oatpp::web::server::interceptor::AllowCorsGlobal>(
       "*",
-      "GET, POST, OPTIONS, PATCH",
+      "GET, POST, OPTIONS, PATCH, PUT, DELETE",
       "DNT, User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Type, Range, Authorization",
       "1728000"));
 

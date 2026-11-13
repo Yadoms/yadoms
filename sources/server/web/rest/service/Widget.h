@@ -57,6 +57,7 @@ namespace web::rest::service
       boost::shared_ptr<IAnswer> getWidgetsV2(const boost::shared_ptr<IRequest>& request) const;
       boost::shared_ptr<IAnswer> createWidgetV2(const boost::shared_ptr<IRequest>& request) const;
       boost::shared_ptr<IAnswer> updateWidgetV2(const boost::shared_ptr<IRequest>& request) const;
+      boost::shared_ptr<IAnswer> deleteWidgetV2(const boost::shared_ptr<IRequest>& request) const;
 
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
       boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;

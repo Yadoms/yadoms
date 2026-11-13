@@ -48,6 +48,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CWidget::endPoi
 
    m_endPoints->push_back(MAKE_ENDPOINT(kPost, "widgets", createWidgetV2));
    m_endPoints->push_back(MAKE_ENDPOINT(kPatch, "widgets/{id}", updateWidgetV2));
+   m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "widgets/{id}", deleteWidgetV2));
 
    return m_endPoints;
 }
@@ -234,6 +235,43 @@ boost::shared_ptr<web::rest::IAnswer> CWidget::updateWidgetV2(const boost::share
       YADOMS_LOG(error) << "Error processing updateWidget request : " << exception.what();
       return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
                                               "Fail to update widget");
+   }
+}
+
+boost::shared_ptr<web::rest::IAnswer> CWidget::deleteWidgetV2(const boost::shared_ptr<IRequest>& request) const
+{
+   try
+   {
+      return CHelpers::transactionalMethodV2(
+         request,
+         m_dataProvider,
+         [this](const auto& req) -> boost::shared_ptr<IAnswer>
+         {
+            // ID
+            const auto id = req->pathVariable("id", std::string());
+            if (id.empty())
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
+                                                       "widget id was not provided");
+            const auto widgetId = static_cast<int>(std::stol(id));
+
+            try
+            {
+               m_dataProvider->getWidgetRequester()->removeWidget(widgetId);
+            }
+            catch (const shared::exception::CEmptyResult&)
+            {
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kNotFound,
+                                                       "widget not found");
+            }
+
+            return boost::make_shared<CNoContentAnswer>();
+         });
+   }
+   catch (const std::exception& exception)
+   {
+      YADOMS_LOG(error) << "Error processing deleteWidget request : " << exception.what();
+      return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
+                                              "Fail to delete widget");
    }
 }
 
