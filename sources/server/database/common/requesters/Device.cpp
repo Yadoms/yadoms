@@ -225,7 +225,8 @@ namespace database
                                                  containsKeywordWithDataType,
                                                  const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>&
                                                  containsKeywordWithHistoryDepth,
-                                                 bool blacklistedIncluded) const
+                                                 bool blacklistedIncluded,
+                                                 bool pluginStateIncluded) const
          {
             if (deviceId)
                query.And(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, *deviceId);
@@ -237,8 +238,12 @@ namespace database
                query.And(CDeviceTable::getTypeColumnName(), CQUERY_OP_EQUAL, *type);
             if (model)
                query.And(CDeviceTable::getModelColumnName(), CQUERY_OP_EQUAL, *model);
-            if (blacklistedIncluded)
-               query.And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklistedIncluded ? 1 : 0);
+            if (!blacklistedIncluded)
+               query.And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, 0);
+            if (!pluginStateIncluded)
+               query.AndParenthesis(CDeviceTable::getNameColumnName(), CQUERY_OP_NOT_EQUAL, std::string(PluginStateDeviceName))
+                    .Or(CDeviceTable::getModelColumnName(), CQUERY_OP_NOT_EQUAL, std::string(PluginStateDeviceModel))
+                    .EndParenthesis();
 
             if (!containsKeywordWithCapacityName.empty()
                || containsKeywordWithAccessMode
@@ -277,7 +282,8 @@ namespace database
             const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
             const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
             const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
-            bool blacklistedIncluded) const
+            bool blacklistedIncluded,
+            bool pluginStateIncluded) const
          {
             const auto query = m_databaseRequester->newQuery();
 
@@ -295,7 +301,8 @@ namespace database
                                    containsKeywordWithAccessMode,
                                    containsKeywordWithDataType,
                                    containsKeywordWithHistoryDepth,
-                                   blacklistedIncluded);
+                                   blacklistedIncluded,
+                                   pluginStateIncluded);
 
             adapters::CDeviceAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *query);
@@ -313,6 +320,7 @@ namespace database
                                   const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
                                   const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
                                   bool blacklistedIncluded,
+                                  bool pluginStateIncluded,
                                   const boost::optional<int>& page,
                                   const boost::optional<int>& pageSize,
                                   std::function<void(std::vector<boost::shared_ptr<entities::CDevice>>, int)> onDone) const
@@ -336,7 +344,8 @@ namespace database
                                       containsKeywordWithAccessMode,
                                       containsKeywordWithDataType,
                                       containsKeywordWithHistoryDepth,
-                                      blacklistedIncluded);
+                                      blacklistedIncluded,
+                                      pluginStateIncluded);
 
                pagesCount = m_databaseRequester->queryCount(*countQuery) / *pageSize + 1;
             }
@@ -357,7 +366,8 @@ namespace database
                                    containsKeywordWithAccessMode,
                                    containsKeywordWithDataType,
                                    containsKeywordWithHistoryDepth,
-                                   blacklistedIncluded);
+                                   blacklistedIncluded,
+                                   pluginStateIncluded);
 
             if (page && pageSize)
                query->Limit(*pageSize, *page * *pageSize);

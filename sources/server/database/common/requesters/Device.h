@@ -67,7 +67,8 @@ namespace database
                const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
                const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
                const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
-               bool blacklistedIncluded) const override;
+               bool blacklistedIncluded,
+               bool pluginStateIncluded) const override;
             void getDevices(
                const boost::optional<int>& deviceId,
                const boost::optional<int>& pluginInstanceId,
@@ -79,6 +80,7 @@ namespace database
                const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
                const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
                bool blacklistedIncluded,
+               bool pluginStateIncluded,
                const boost::optional<int>& page,
                const boost::optional<int>& pageSize,
                std::function<void(std::vector<boost::shared_ptr<entities::CDevice>>,
@@ -120,7 +122,8 @@ namespace database
                const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
                const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>&
                containsKeywordWithHistoryDepth,
-               bool blacklistedIncluded) const;
+               bool blacklistedIncluded,
+               bool pluginStateIncluded) const;
             // [END] IDeviceRequester implementation
 
             boost::shared_ptr<IDatabaseRequester> m_databaseRequester;

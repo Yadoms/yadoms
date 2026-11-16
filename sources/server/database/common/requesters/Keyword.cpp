@@ -6,6 +6,7 @@
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
 #include "database/common/adapters/MultipleValueAdapter.hpp"
+#include "database/IDeviceRequester.h"
 
 namespace database
 {
@@ -230,7 +231,8 @@ namespace database
             const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& accessMode,
             const boost::optional<shared::plugin::yPluginApi::EMeasureType>& measure,
             const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
-            bool blacklistedIncluded)
+            bool blacklistedIncluded,
+            bool pluginStateKeywordsIncluded)
          {
             const auto query = m_databaseRequester->newQuery();
 
@@ -262,6 +264,18 @@ namespace database
                query->And(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_EQUAL, *historyDepth);
             if (blacklistedIncluded)
                query->And(CKeywordTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklistedIncluded ? 1 : 0);
+            if (!pluginStateKeywordsIncluded)
+            {
+               const auto pluginStateDevicesQuery = m_databaseRequester->newQuery();
+               pluginStateDevicesQuery->Select(CDeviceTable::getIdColumnName()).
+                                        From(CDeviceTable::getTableName()).
+                                        Where(CDeviceTable::getNameColumnName(), CQUERY_OP_EQUAL,
+                                              std::string(IDeviceRequester::PluginStateDeviceName)).
+                                        And(CDeviceTable::getModelColumnName(), CQUERY_OP_EQUAL,
+                                            std::string(IDeviceRequester::PluginStateDeviceModel));
+
+               query->And(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_NOT_IN, *pluginStateDevicesQuery);
+            }
 
             adapters::CKeywordAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *query);

@@ -26,10 +26,10 @@ boost::shared_ptr<IAnswer> CHelpers::transactionalMethodV2(
          pTransactionalEngine->transactionBegin();
       answer = realMethod(request);
    }
-   catch (std::exception&)
+   catch (std::exception& exception)
    {
       answer = boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
-                                                "Fail to process transactional method");
+                                                std::string("Fail to process transactional method (") + exception.what() + ")");
    }
 
    if (pTransactionalEngine)
@@ -82,8 +82,8 @@ boost::shared_ptr<IAnswer> CHelpers::createLongRunningOperationAnswer(const std:
    return boost::make_shared<CAcceptedAnswer>("tasks/" + taskUid);
 }
 
-boost::shared_ptr<IAnswer> CHelpers::getLongRunningOperationAnswer(boost::shared_ptr<task::IInstance> task,
-                                                                   boost::shared_ptr<shared::CDataContainer> taskEntry)
+boost::shared_ptr<IAnswer> CHelpers::getLongRunningOperationAnswer(const boost::shared_ptr<task::IInstance>& task,
+                                                                   const boost::shared_ptr<shared::CDataContainer>& taskEntry)
 {
    if (task->getStatus() != task::ETaskStatus::kStarted)
       return boost::make_shared<CSeeOtherLocationAnswer>(task->getGuid() + "/result");
@@ -109,7 +109,7 @@ boost::shared_ptr<shared::CDataContainer> CHelpers::getSerialPortsV2()
 }
 
 boost::shared_ptr<shared::CDataContainer> CHelpers::getUsbDevicesV2(const std::vector<std::pair<int, int>>& requestedUsbDevices,
-                                                                    boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister)
+                                                                    const boost::shared_ptr<hardware::usb::IDevicesLister>& usbDevicesLister)
 {
    const auto existingDevices = usbDevicesLister->listUsbDevices();
    YADOMS_LOG(debug) << "USB existing devices :";

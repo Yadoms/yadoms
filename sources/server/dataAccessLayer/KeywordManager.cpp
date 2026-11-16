@@ -107,7 +107,8 @@ namespace dataAccessLayer
       const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& accessMode,
       const boost::optional<shared::plugin::yPluginApi::EMeasureType>& measure,
       const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
-      bool blacklistedIncluded)
+      bool blacklistedIncluded,
+      bool pluginStateKeywordsIncluded)
    {
       return m_keywordRequester->getKeywords(keywordIds,
                                              deviceId,
@@ -118,7 +119,8 @@ namespace dataAccessLayer
                                              accessMode,
                                              measure,
                                              historyDepth,
-                                             blacklistedIncluded);
+                                             blacklistedIncluded,
+                                             pluginStateKeywordsIncluded);
    }
 
    boost::shared_ptr<database::entities::CAcquisition> CKeywordManager::getKeywordLastAcquisition(const int keywordId,

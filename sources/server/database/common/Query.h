@@ -18,6 +18,7 @@ namespace database
       static constexpr char CQUERY_OP_EQUAL[] = "=";
       static constexpr char CQUERY_OP_LIKE[] = " LIKE ";
       static constexpr char CQUERY_OP_IN[] = " IN ";
+      static constexpr char CQUERY_OP_NOT_IN[] = " NOT IN ";
       static constexpr char CQUERY_OP_SUP[] = ">";
       static constexpr char CQUERY_OP_INF[] = "<";
       static constexpr char CQUERY_OP_NOT_EQUAL[] = "<>";

@@ -11,6 +11,12 @@ namespace database
       virtual ~IDeviceRequester() = default;
 
       //--------------------------------------------------------------
+      /// \brief   Name and model identifying a pluginState device (created/removed by the server only)
+      //--------------------------------------------------------------
+      static constexpr char PluginStateDeviceName[] = "pluginState";
+      static constexpr char PluginStateDeviceModel[] = "Plugin state";
+
+      //--------------------------------------------------------------
       /// \brief                          Check if device exists
       /// \param [in] deviceId            The device Id
       /// \return                         true if exist, else false
@@ -109,6 +115,7 @@ namespace database
       /// \param [in] containsKeywordWithDataType            Search devices matching one of these capacity type
       /// \param [in] containsKeywordWithHistoryDepth        Search devices matching this history depth
       /// \param [in] blacklistedIncluded                    Include blacklisted devices
+      /// \param [in] pluginStateIncluded                    Include pluginState devices
       /// \return                                            The devices list
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(
@@ -121,7 +128,8 @@ namespace database
          const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& containsKeywordWithAccessMode,
          const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
          const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
-         bool blacklistedIncluded) const = 0;
+         bool blacklistedIncluded,
+         bool pluginStateIncluded) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                                             General search function for devices
@@ -135,6 +143,7 @@ namespace database
       /// \param [in] containsKeywordWithDataType            Search devices matching one of these capacity type
       /// \param [in] containsKeywordWithHistoryDepth        Search devices matching this history depth
       /// \param [in] blacklistedIncluded                    Include blacklisted devices
+      /// \param [in] pluginStateIncluded                    Include pluginState devices
       /// \param [in] page                                   Pagination management, number of required page
       /// \param [in] pageSize                               Pagination management, size of a page
       /// \param [in] onDone                                 On done callback. Pass selected devices and pages count.
@@ -150,6 +159,7 @@ namespace database
          const std::set<shared::plugin::yPluginApi::EKeywordDataType>& containsKeywordWithDataType,
          const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& containsKeywordWithHistoryDepth,
          bool blacklistedIncluded,
+         bool pluginStateIncluded,
          const boost::optional<int>& page,
          const boost::optional<int>& pageSize,
          std::function<void(std::vector<boost::shared_ptr<entities::CDevice>>,

@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/devices/:deviceId?page=0&perPage=10&prop=id|type|friendlyName|pluginInstance|configuration
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/devices/:deviceId?page=0&perPage=10
   params:
     - name: fromPluginInstance
       value: "21"
@@ -59,6 +59,10 @@ http:
       type: query
       description: "[optional] Includes blacklisted devices"
       disabled: true
+    - name: withPluginState
+      value: ""
+      type: query
+      disabled: true
     - name: page
       value: "0"
       type: query
@@ -70,6 +74,7 @@ http:
     - name: prop
       value: id|type|friendlyName|pluginInstance|configuration
       type: query
+      disabled: true
     - name: deviceId
       value: "2"
       type: path

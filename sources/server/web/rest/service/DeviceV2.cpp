@@ -3,6 +3,7 @@
 #include <map>
 #include <regex>
 #include <string>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "ConfigurationMerger.h"
 #include "Device.h"
@@ -35,6 +36,12 @@ boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> CDevice::endPoi
    m_endPoints->push_back(MAKE_ENDPOINT(kDelete, "devices/{id}", deleteDeviceV2));
 
    return m_endPoints;
+}
+
+bool CDevice::isPluginStateDevice(const database::entities::CDevice& device)
+{
+   return device.Name() == database::IDeviceRequester::PluginStateDeviceName
+      && device.Model() == database::IDeviceRequester::PluginStateDeviceModel;
 }
 
 boost::shared_ptr<web::rest::IAnswer> CDevice::getDevicesV2(const boost::shared_ptr<IRequest>& request) const
@@ -78,6 +85,7 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::getDevicesV2(const boost::shared_
                                                             request->queryParam("containingKeywordWithHistoryDepth")))
                                                       : boost::optional<shared::plugin::yPluginApi::EHistoryDepth>();
       const auto withBlacklisted = request->queryParamExists("withBlacklisted");
+      const auto withPluginState = request->queryParamExists("withPluginState");
 
       // Pagination
       const auto page = request->queryParamExists("page")
@@ -101,6 +109,7 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::getDevicesV2(const boost::shared_
          *containsKeywordWithDataType,
          containsKeywordWithHistoryDepth,
          withBlacklisted,
+         withPluginState,
          page,
          pageSize,
          [this, &deviceId, &request, &answer, &page, &pageSize](const auto& devices,
@@ -353,6 +362,10 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::sendExtraQueryToDeviceV2(const bo
          {
             const auto device = m_deviceRequester->getDevice(deviceId);
 
+            if (isPluginStateDevice(*device))
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kForbidden,
+                                                       "extra query is not supported by pluginState device");
+
             const auto taskId = m_messageSender.sendExtraQueryAsync(device->PluginId(),
                                                                     boost::make_shared<pluginSystem::CExtraQueryData>(query,
                                                                        req->body().empty()
@@ -405,6 +418,13 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::createDeviceV2(const boost::share
          [this](const auto& req) -> boost::shared_ptr<IAnswer>
          {
             shared::CDataContainer deviceData(req->body());
+            if (boost::iequals(deviceData.getWithDefault<std::string>("name", std::string()),
+                               database::IDeviceRequester::PluginStateDeviceName)
+               || boost::iequals(deviceData.getWithDefault<std::string>("model", std::string()),
+                                 database::IDeviceRequester::PluginStateDeviceModel))
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kForbidden,
+                                                       "pluginState device can only be created by the server");
+
             if (deviceData.exists("configuration"))
             {
                try
@@ -515,6 +535,10 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::updateDeviceV2(const boost::share
          return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                  "body was not provided");
 
+      if (isPluginStateDevice(*m_deviceRequester->getDevice(deviceId, true)))
+         return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kForbidden,
+                                                 "pluginState device can not be modified");
+
       // Filter only client-modifiable fields
       database::entities::CDevice deviceToUpdate;
       deviceToUpdate.Id = deviceId;
@@ -567,6 +591,11 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::deleteDeviceV2(const boost::share
                return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                        "device id was not provided");
             const auto deviceId = static_cast<int>(std::stol(id));
+
+            if (m_deviceRequester->deviceExists(deviceId)
+               && isPluginStateDevice(*m_deviceRequester->getDevice(deviceId, true)))
+               return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kForbidden,
+                                                       "pluginState device can not be deleted");
 
             m_pluginManager->notifyDeviceRemoved(deviceId);
             m_deviceManager->removeDevice(deviceId);

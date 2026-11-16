@@ -95,8 +95,8 @@ namespace web::rest
          /// \param[in] taskEntry          The task entry (send only UUID if not provided)
          /// \return The formatted answer
       //-----------------------------------------
-      static boost::shared_ptr<IAnswer> getLongRunningOperationAnswer(boost::shared_ptr<task::IInstance> task,
-                                                                      boost::shared_ptr<shared::CDataContainer> taskEntry = nullptr);
+      static boost::shared_ptr<IAnswer> getLongRunningOperationAnswer(const boost::shared_ptr<task::IInstance>& task,
+                                                                      const boost::shared_ptr<shared::CDataContainer>& taskEntry = nullptr);
 
       //-----------------------------------------
       ///\brief         List serial ports
@@ -112,7 +112,7 @@ namespace web::rest
       //-----------------------------------------
       [[nodiscard]] static boost::shared_ptr<shared::CDataContainer> getUsbDevicesV2(
          const std::vector<std::pair<int, int>>& requestedUsbDevices,
-         boost::shared_ptr<hardware::usb::IDevicesLister> usbDevicesLister);
+         const boost::shared_ptr<hardware::usb::IDevicesLister>& usbDevicesLister);
 
       [[nodiscard]] static boost::shared_ptr<shared::CDataContainer> getNetworkInterfacesV2(bool includeLoopback);
       [[nodiscard]] static boost::shared_ptr<shared::CDataContainer> getSupportedTimezonesV2(

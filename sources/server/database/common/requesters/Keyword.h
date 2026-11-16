@@ -44,7 +44,8 @@ namespace database
                const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& accessMode,
                const boost::optional<shared::plugin::yPluginApi::EMeasureType>& measure,
                const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
-               bool blacklistedIncluded = false) override;
+               bool blacklistedIncluded = false,
+               bool pluginStateKeywordsIncluded = false) override;
             boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId, const std::string& keyword) const override;
             boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const override;
             std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId,

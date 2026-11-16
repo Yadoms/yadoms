@@ -74,6 +74,7 @@ boost::shared_ptr<web::rest::IAnswer> CKeyword::getKeywordsV2(const boost::share
                                   ? boost::make_optional(shared::plugin::yPluginApi::EMeasureType(request->queryParam("from-measure")))
                                   : boost::optional<shared::plugin::yPluginApi::EMeasureType>();
       const auto withBlacklisted = request->queryParamExists("with-blacklisted");
+      const auto withPluginStateKeywords = request->queryParamExists("withPluginStateKeywords");
       const auto fromHistoryDepth = request->queryParamExists("from-history-depth")
                                        ? boost::make_optional(
                                           shared::plugin::yPluginApi::EHistoryDepth(request->queryParam("from-history-depth")))
@@ -89,7 +90,8 @@ boost::shared_ptr<web::rest::IAnswer> CKeyword::getKeywordsV2(const boost::share
                                                           fromAccessMode,
                                                           fromMeasure,
                                                           fromHistoryDepth,
-                                                          withBlacklisted);
+                                                          withBlacklisted,
+                                                          withPluginStateKeywords);
 
       if (keywords.empty())
          return boost::make_shared<CNoContentAnswer>();

@@ -43,7 +43,8 @@ namespace dataAccessLayer
          const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& accessMode,
          const boost::optional<shared::plugin::yPluginApi::EMeasureType>& measure,
          const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
-         bool blacklistedIncluded = false) override;
+         bool blacklistedIncluded = false,
+         bool pluginStateKeywordsIncluded = false) override;
       boost::shared_ptr<database::entities::CAcquisition> getKeywordLastAcquisition(const int keywordId,
                                                                                     bool throwIfNotExists = true) override;
       std::string getKeywordLastData(const int keywordId, bool throwIfNotExists = true) override;

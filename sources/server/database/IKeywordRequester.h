@@ -89,6 +89,7 @@ namespace database
       /// \param [in] measure             Search keywords matching this measure
       /// \param [in] historyDepth        Search keywords matching this history depth
       /// \param [in] blacklistedIncluded Include blacklisted devices
+      /// \param [in] pluginStateKeywordsIncluded Include keywords of pluginState devices
       /// \return                         The keywords list
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CKeyword>> getKeywords(
@@ -101,7 +102,8 @@ namespace database
          const boost::optional<shared::plugin::yPluginApi::EKeywordAccessMode>& accessMode,
          const boost::optional<shared::plugin::yPluginApi::EMeasureType>& measure,
          const boost::optional<shared::plugin::yPluginApi::EHistoryDepth>& historyDepth,
-         bool blacklistedIncluded = false) = 0;
+         bool blacklistedIncluded = false,
+         bool pluginStateKeywordsIncluded = false) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords which match capacity for a device
