@@ -42,8 +42,15 @@ void CVersion_6_0_0::updateFrom5_2_0(const boost::shared_ptr<IDatabaseRequester>
          requester->transactionBegin();
 
       //TODO Migration des widgets :
+      // - Faire un backup de la base actuelle avant tout (copie du fichier)
       // - traiter les configurations des widgets :
       //   - certaines données sont exprimées en string (exemple "checkbox": "false", "deviceId": "65", ...) ==> A remplacer par les types natifs
+      // - Convertir les devices virtuels attachés au plugin System en keywords. Mettre à jour ce qui est attaché
+      //   - Historiques
+      //   - Widgets
+      //   - Scripts
+      // - Prévoir une progressBar d'update (ça peut être long) ?
+      // - Générer un rapport d'update
 
       //TODO mettre à jour CVersionUpgraderFactory::GetUpgrader pour pointer sur cette classe
 

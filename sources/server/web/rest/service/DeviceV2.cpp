@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <algorithm>
 #include <map>
 #include <regex>
 #include <string>
@@ -44,6 +45,13 @@ bool CDevice::isPluginStateDevice(const database::entities::CDevice& device)
       && device.Model() == database::IDeviceRequester::PluginStateDeviceModel;
 }
 
+bool CDevice::isDeletableDevice(const database::entities::CDevice& device,
+                                const int systemPluginId)
+{
+   return !isPluginStateDevice(device)
+      && device.PluginId() != systemPluginId;
+}
+
 boost::shared_ptr<web::rest::IAnswer> CDevice::getDevicesV2(const boost::shared_ptr<IRequest>& request) const
 {
    try
@@ -55,9 +63,9 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::getDevicesV2(const boost::shared_
                                          : boost::make_optional(static_cast<int>(std::stol(request->pathVariable("id"))));
 
       // Filtering
-      const auto fromPluginInstanceId = request->queryParamExists("fromPluginInstance")
-                                           ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("fromPluginInstance"))))
-                                           : boost::optional<int>();
+      auto fromPluginInstanceId = request->queryParamExists("fromPluginInstance")
+                                     ? boost::make_optional(static_cast<int>(std::stol(request->queryParam("fromPluginInstance"))))
+                                     : boost::optional<int>();
       const auto fromFriendlyName = request->queryParamExists("fromFriendlyName")
                                        ? boost::make_optional(request->queryParam("fromFriendlyName"))
                                        : boost::optional<std::string>();
@@ -85,7 +93,18 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::getDevicesV2(const boost::shared_
                                                             request->queryParam("containingKeywordWithHistoryDepth")))
                                                       : boost::optional<shared::plugin::yPluginApi::EHistoryDepth>();
       const auto withBlacklisted = request->queryParamExists("withBlacklisted");
-      const auto withPluginState = request->queryParamExists("withPluginState");
+      auto withPluginState = request->queryParamExists("withPluginState");
+      const auto onlyDeletable = request->queryParamExists("deletable");
+
+      const auto systemPluginId = m_dataProvider->getPluginRequester()->getSystemInstance()->Id();
+
+      if (onlyDeletable)
+      {
+         if (fromPluginInstanceId && *fromPluginInstanceId != systemPluginId)
+            return boost::make_shared<CNoContentAnswer>();
+         fromPluginInstanceId = systemPluginId;
+         withPluginState = false;
+      }
 
       // Pagination
       const auto page = request->queryParamExists("page")
@@ -112,8 +131,8 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::getDevicesV2(const boost::shared_
          withPluginState,
          page,
          pageSize,
-         [this, &deviceId, &request, &answer, &page, &pageSize](const auto& devices,
-                                                                const int pagesCount)
+         [this, &deviceId, &request, &answer, &page, &pageSize, &systemPluginId](const auto& devices,
+                                                                                 const int pagesCount)
          {
             if (devices.empty())
             {
@@ -144,6 +163,8 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::getDevicesV2(const boost::shared_
                   deviceEntry->set("type", device->Type());
                if (props->empty() || props->find("blacklisted") != props->end())
                   deviceEntry->set("blacklisted", device->Blacklist());
+               if (props->empty() || props->find("deletable") != props->end())
+                  deviceEntry->set("deletable", isDeletableDevice(*device, systemPluginId));
 
                deviceEntries.push_back(deviceEntry);
             }
@@ -396,12 +417,11 @@ std::string CDevice::generateUniqueDeviceName(const int pluginId) const
    unsigned int lastNumber = 0;
    for (const auto& device : devices)
    {
-      std::smatch result;
-      if (std::regex_search(device->Name(), result, DeviceNamePattern))
+      if (std::smatch result;
+         std::regex_search(device->Name(), result, DeviceNamePattern))
       {
          const auto number = std::stoul(std::string(result[1].first, result[1].second));
-         if (lastNumber < number)
-            lastNumber = number;
+         lastNumber = std::max<unsigned long>(lastNumber, number);
       }
    }
 
@@ -554,7 +574,7 @@ boost::shared_ptr<web::rest::IAnswer> CDevice::updateDeviceV2(const boost::share
                *body->get<boost::shared_ptr<shared::CDataContainer>>("configuration"));
             deviceToUpdate.Configuration = extractedConfiguration;
          }
-         catch (const std::exception&)
+         catch (const std::exception&) // NOLINT(bugprone-empty-catch)
          {
             // Fail to extract configuration ==> Consider that configuration is provided without schema and record as is
          }

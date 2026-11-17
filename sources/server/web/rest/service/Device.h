@@ -190,6 +190,8 @@ namespace web::rest::service
          const std::string& requestContent) const;
 
       static bool isPluginStateDevice(const database::entities::CDevice& device);
+      static bool isDeletableDevice(const database::entities::CDevice& device,
+                                    int systemPluginId);
       boost::shared_ptr<IAnswer> getDevicesV2(const boost::shared_ptr<IRequest>& request) const;
       boost::shared_ptr<shared::CDataContainer> getDeviceConfiguration(const boost::shared_ptr<database::entities::CDevice>& device,
                                                                        const std::vector<std::string>& locales) const;

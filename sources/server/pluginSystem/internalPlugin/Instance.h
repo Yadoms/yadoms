@@ -43,7 +43,8 @@ namespace pluginSystem
          boost::shared_ptr<const database::entities::CPlugin> about() const override;
          boost::shared_ptr<const shared::plugin::information::IInformation> aboutPlugin() const override;
          void postDeviceCommand(boost::shared_ptr<const yApi::IDeviceCommand> deviceCommand) override;
-         void postExtraQuery(boost::shared_ptr<yApi::IExtraQuery> extraQuery, const std::string& taskId) override;
+         void postExtraQuery(boost::shared_ptr<yApi::IExtraQuery> extraQuery,
+                             const std::string& taskId) override;
          void postBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequest> request) override;
          void postDeviceConfigurationSchemaRequest(boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> request) override;
          void postManuallyDeviceCreationRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> request) override;
@@ -59,14 +60,14 @@ namespace pluginSystem
          void doWork(const boost::shared_ptr<yApi::IYPluginApi>& api,
                      shared::event::CEventHandler& eventHandler) const;
 
-         void createVirtualDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                                  const yApi::IManuallyDeviceCreationData& data) const;
-         void createStandardCapacityDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                                           const std::string& deviceName,
-                                           const boost::shared_ptr<shared::CDataContainer>& standardCapacity) const;
-         void createCustomEnumCapacityDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                                             const std::string& deviceName,
-                                             const std::string& commaSeparatedValues) const;
+         static void createVirtualDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                                         const yApi::IManuallyDeviceCreationData& data);
+         static void createStandardCapacityDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                                                  const std::string& deviceName,
+                                                  const boost::shared_ptr<shared::CDataContainer>& standardCapacity);
+         static void createCustomEnumCapacityDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                                                    const std::string& deviceName,
+                                                    const std::string& commaSeparatedValues);
 
       private:
          boost::shared_ptr<const database::entities::CPlugin> m_instanceInformation;

@@ -192,7 +192,7 @@ namespace pluginSystem
       }
 
       void CInstance::createVirtualDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                                          const yApi::IManuallyDeviceCreationData& data) const
+                                          const yApi::IManuallyDeviceCreationData& data)
       {
          if (data.getDeviceType() != "virtualDeviceType")
             throw std::invalid_argument("Wrong device type");
@@ -217,7 +217,7 @@ namespace pluginSystem
 
       void CInstance::createStandardCapacityDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                                    const std::string& deviceName,
-                                                   const boost::shared_ptr<shared::CDataContainer>& standardCapacity) const
+                                                   const boost::shared_ptr<shared::CDataContainer>& standardCapacity)
       {
          boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
 
@@ -322,7 +322,7 @@ namespace pluginSystem
 
       void CInstance::createCustomEnumCapacityDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                                      const std::string& deviceName,
-                                                     const std::string& commaSeparatedValues) const
+                                                     const std::string& commaSeparatedValues)
       {
          auto enumValues = shared::CStringExtension::splitAnyOfAndCompress(commaSeparatedValues, ",");
          for (auto& enumValue : enumValues)

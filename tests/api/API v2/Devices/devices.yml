@@ -63,6 +63,11 @@ http:
       value: ""
       type: query
       disabled: true
+    - name: deletable
+      value: ""
+      type: query
+      description: "[optional] Only deletable devices (not pluginState and attached to system plugin)"
+      disabled: true
     - name: page
       value: "0"
       type: query
