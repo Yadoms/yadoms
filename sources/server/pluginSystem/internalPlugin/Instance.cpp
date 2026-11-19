@@ -105,7 +105,7 @@ namespace pluginSystem
       }
 
       void CInstance::doWork(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                             shared::event::CEventHandler& eventHandler) const
+                             shared::event::CEventHandler& eventHandler)
       {
          try
          {

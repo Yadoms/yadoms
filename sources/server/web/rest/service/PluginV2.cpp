@@ -274,9 +274,10 @@ boost::shared_ptr<web::rest::IAnswer> CPlugin::createPluginsInstanceV2(const boo
                   pluginToCreate.set("configuration",
                                      extractedConfiguration);
                }
-               catch (const std::exception&)
+               catch (const std::exception& exception)
                {
-                  YADOMS_LOG(error) << "Create device : fail to extract configuration";
+                  YADOMS_LOG(error) << "Create device : fail to extract configuration " << exception.what();
+                  YADOMS_LOG(debug) << "Configuration was " << req->body();
                   return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                           "Invalid configuration");
                }

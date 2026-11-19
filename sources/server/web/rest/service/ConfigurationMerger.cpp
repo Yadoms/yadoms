@@ -113,40 +113,45 @@ namespace web
          {
             auto out = shared::CDataContainer::make();
 
-            for (const auto& item : instanceConfigurationAndSchema.getAsMap<boost::shared_ptr<shared::CDataContainer>>())
+            for (const auto& [parameterName, parameterContent] : instanceConfigurationAndSchema.getAsMap<boost::shared_ptr<shared::CDataContainer>>())
             {
-               const auto parameterType = item.second->get("type");
+               const auto required = parameterContent->getWithDefault("required", false);
 
-               if (parameterType == "section"
+               if (const auto parameterType = parameterContent->get("type");
+                  parameterType == "section"
                   || parameterType == "multiSelectSection"
                   || parameterType == "radioSection"
                   || parameterType == "comboSection"
                   || parameterType == "checkboxSection")
                {
-                  out->set(item.first + ".content",
-                           extractConfiguration(instanceConfigurationAndSchema.get<shared::CDataContainer>(item.first + ".content")));
-                  if (instanceConfigurationAndSchema.exists(item.first + ".activeSection"))
-                     out->set(item.first + ".activeSection", instanceConfigurationAndSchema.get<std::string>(item.first + ".activeSection"));
-                  if (instanceConfigurationAndSchema.exists(item.first + ".checkbox"))
-                     out->set(item.first + ".checkbox", instanceConfigurationAndSchema.get<bool>(item.first + ".checkbox"));
+                  out->set(parameterName + ".content",
+                           extractConfiguration(instanceConfigurationAndSchema.get<shared::CDataContainer>(parameterName + ".content")));
+                  if (instanceConfigurationAndSchema.exists(parameterName + ".activeSection"))
+                     out->set(parameterName + ".activeSection", instanceConfigurationAndSchema.get<std::string>(parameterName + ".activeSection"));
+                  if (instanceConfigurationAndSchema.exists(parameterName + ".checkbox"))
+                     out->set(parameterName + ".checkbox", instanceConfigurationAndSchema.get<bool>(parameterName + ".checkbox"));
                }
                else if (parameterType == "string"
                   || parameterType == "enum"
                   || parameterType == "time")
                {
-                  out->set(item.first, instanceConfigurationAndSchema.get<std::string>(item.first + ".value"));
+                  if (required && instanceConfigurationAndSchema.exists(parameterName + ".value"))
+                     out->set(parameterName, instanceConfigurationAndSchema.get<std::string>(parameterName + ".value"));
                }
                else if (parameterType == "bool")
                {
-                  out->set(item.first, instanceConfigurationAndSchema.get<bool>(item.first + ".value"));
+                  if (required && instanceConfigurationAndSchema.exists(parameterName + ".value"))
+                     out->set(parameterName, instanceConfigurationAndSchema.get<bool>(parameterName + ".value"));
                }
                else if (parameterType == "int")
                {
-                  out->set(item.first, instanceConfigurationAndSchema.get<int>(item.first + ".value"));
+                  if (required && instanceConfigurationAndSchema.exists(parameterName + ".value"))
+                     out->set(parameterName, instanceConfigurationAndSchema.get<int>(parameterName + ".value"));
                }
                else if (parameterType == "decimal")
                {
-                  out->set(item.first, instanceConfigurationAndSchema.get<double>(item.first + ".value"));
+                  if (required && instanceConfigurationAndSchema.exists(parameterName + ".value"))
+                     out->set(parameterName, instanceConfigurationAndSchema.get<double>(parameterName + ".value"));
                }
                else
                {

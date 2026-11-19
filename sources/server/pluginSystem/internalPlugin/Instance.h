@@ -57,8 +57,8 @@ namespace pluginSystem
                            const boost::shared_ptr<shared::event::CEventHandler>& eventHandler,
                            const boost::shared_ptr<CInstanceStateHandler>& instanceStateHandler) const;
 
-         void doWork(const boost::shared_ptr<yApi::IYPluginApi>& api,
-                     shared::event::CEventHandler& eventHandler) const;
+         static void doWork(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                            shared::event::CEventHandler& eventHandler);
 
          static void createVirtualDevice(const boost::shared_ptr<yApi::IYPluginApi>& api,
                                          const yApi::IManuallyDeviceCreationData& data);
