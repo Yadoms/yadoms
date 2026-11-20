@@ -529,14 +529,20 @@ namespace pluginSystem
 
    void CManager::killInstance(int id)
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      boost::shared_ptr<IInstance> instance;
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
-      const auto instance = m_runningInstances.find(id);
+         const auto instanceIt = m_runningInstances.find(id);
 
-      if (instance == m_runningInstances.end())
-         return; // Already stopped ==> nothing more to do
+         if (instanceIt == m_runningInstances.end())
+            return; // Already stopped ==> nothing more to do
 
-      instance->second->kill();
+         instance = instanceIt->second;
+      }
+
+      // Kill can take time, don't lock the running instances list meanwhile
+      instance->kill();
    }
 
    void CManager::stopInstance(int id)
@@ -557,14 +563,11 @@ namespace pluginSystem
          boost::this_thread::yield();
       } while (shared::currentTime::Provider().now() < timeout);
 
+      if (isInstanceRunning(id))
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-         if (m_runningInstances.find(id) != m_runningInstances.end())
-         {
-            YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id <<
-               " didn't stop when requested. Will be killed.";
-            killInstance(id);
-         }
+         YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id <<
+            " didn't stop when requested. Will be killed.";
+         killInstance(id);
       }
 
       timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(20);

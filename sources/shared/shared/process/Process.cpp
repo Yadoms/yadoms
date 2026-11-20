@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Process.h"
+#include <chrono>
+#include <thread>
 #include <shared/Log.h>
 
 namespace shared
@@ -20,6 +22,10 @@ namespace shared
       CProcess::~CProcess()
       {
          CProcess::kill();
+
+         // Monitor thread uses this object, so must be ended before destruction
+         if (m_processMonitorThread && m_processMonitorThread->joinable())
+            m_processMonitorThread->join();
       }
 
       void CProcess::start(boost::shared_ptr<IExternalProcessLogger> logger)
@@ -115,8 +121,18 @@ namespace shared
             {
                Poco::Process::kill(*m_processHandle);
 
-               if (Poco::Process::isRunning(*m_processHandle))
-                  m_processHandle->wait();
+               // Process can stay blocked in kernel (ie a thread blocked in a buggy driver), so don't wait infinitely
+               const auto timeout = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+               while (m_processHandle->tryWait() == -1)
+               {
+                  if (std::chrono::steady_clock::now() > timeout)
+                  {
+                     YADOMS_LOG(error) << "Process " << m_commandLine->executable() << " (pid " << m_processHandle->id() <<
+                        ") doesn't end after kill, probably blocked in a system call";
+                     return;
+                  }
+                  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+               }
             }
          }
          catch (Poco::NotFoundException&)

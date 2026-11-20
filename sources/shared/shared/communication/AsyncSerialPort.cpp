@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AsyncSerialPort.h"
+#include <future>
 #include <shared/Log.h>
 #include <shared/SerialPortHelper.h>
 #include "PortException.hpp"
@@ -29,7 +30,8 @@ CAsyncSerialPort::CAsyncSerialPort(const std::string& port,
 	m_connectRetryTimer(m_io),
 	m_flushAtConnect(flushAtConnect),
 	m_writeTimeout(std::chrono::milliseconds::max()),
-	m_writeTimeouted(false)
+	m_writeTimeouted(false),
+	m_stopping(false)
 {
 }
 
@@ -53,6 +55,9 @@ void CAsyncSerialPort::start()
 	if (!!m_asyncThread)
 		return; // Already started
 
+	m_io.restart();
+	m_workGuard.emplace(m_io.get_executor());
+
 	// Try to connect
 	tryConnect();
 	m_asyncThread = boost::make_shared<std::thread>([this] { m_io.run(); });
@@ -63,11 +68,25 @@ void CAsyncSerialPort::stop()
 	if (!m_asyncThread)
 		return; // Already stopped
 
-	disconnect();
+	// Serial port object is not thread-safe : close it from the asynchronous thread
+	std::promise<void> disconnected;
+	auto disconnectedFuture = disconnected.get_future();
+	boost::asio::post(m_io, [this, &disconnected]
+	{
+		m_stopping = true;
+		m_connectRetryTimer.cancel();
+		disconnect();
+		disconnected.set_value();
+	});
 
+	if (disconnectedFuture.wait_for(std::chrono::seconds(5)) == std::future_status::timeout)
+		YADOMS_LOG(error) << " : Timeout closing serial port " << m_port << ", serial driver seems to be blocked";
+
+	m_workGuard.reset();
 	m_io.stop();
 	m_asyncThread->join();
 	m_asyncThread.reset();
+	m_stopping = false;
 }
 
 bool CAsyncSerialPort::connect()
@@ -100,17 +119,20 @@ void CAsyncSerialPort::disconnect()
 	if (!isConnected())
 		return;
 
-	// Close the port
-	try
-	{
-		m_boostSerialPort.cancel();
-		YADOMS_LOG(debug) << " : m_boostSerialPort.close();";
-		m_boostSerialPort.close();
-	}
-	catch (boost::system::system_error& e)
-	{
-		YADOMS_LOG(error) << " : Failed to close serial port " << e.what();
-	}
+	// Close the port, even if cancel fails (the port must not stay open with an invalid handle)
+	boost::system::error_code ec;
+	m_boostSerialPort.cancel(ec);
+	if (ec)
+		YADOMS_LOG(warning) << " : Failed to cancel serial port operations : " << ec.message();
+
+	m_boostSerialPort.close(ec);
+	if (ec)
+		YADOMS_LOG(error) << " : Failed to close serial port : " << ec.message();
+}
+
+void CAsyncSerialPort::asyncDisconnect()
+{
+	boost::asio::post(m_io, [this] { disconnect(); });
 }
 
 bool CAsyncSerialPort::isConnected() const
@@ -142,6 +164,9 @@ void CAsyncSerialPort::flush()
 
 void CAsyncSerialPort::reconnectTimerHandler(const boost::system::error_code& error)
 {
+	if (error == boost::asio::error::operation_aborted || m_stopping)
+		return;
+
 	if (error)
 		throw exception::CException("Error code should be 0 here");
 
@@ -180,13 +205,10 @@ void CAsyncSerialPort::tryConnect()
 
 void CAsyncSerialPort::startRead()
 {
+	if (m_stopping || !isConnected())
+		return;
+
 	// Start an asynchronous read and call readCompleted when it completes or fails 
-	m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(),
-														  m_asyncReadBuffer.size()),
-									  boost::bind(&CAsyncSerialPort::readCompleted,
-												  this,
-												  boost::asio::placeholders::error,
-												  boost::asio::placeholders::bytes_transferred));
 	m_boostSerialPort.async_read_some(
 		boost::asio::buffer(m_asyncReadBuffer.begin(), m_asyncReadBuffer.size()),
 		[this](const boost::system::error_code& ec, std::size_t n) {
@@ -197,6 +219,9 @@ void CAsyncSerialPort::startRead()
 void CAsyncSerialPort::readCompleted(const boost::system::error_code& error,
 									 std::size_t bytesTransferred)
 {
+	if (m_stopping)
+		return;
+
 	if (error)
 	{
 		// boost::asio::error::operation_aborted is fired when stop is required
@@ -303,7 +328,7 @@ void CAsyncSerialPort::sendBuffer(const boost::asio::const_buffer& buffer)
 		if (e.code() != boost::asio::error::eof)
 		{
 			YADOMS_LOG(error) << " : Serial port send error : " << e.what();
-			disconnect();
+			asyncDisconnect();
 			notifyEventHandler("asyncPort.serial.connectionError");
 			throw CPortException(CPortException::kConnectionError, e.what());
 		}

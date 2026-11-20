@@ -1,5 +1,7 @@
 #pragma once
+#include <atomic>
 #include <chrono>
+#include <optional>
 #include <thread>
 #include "IAsyncPort.h"
 #include "IReceiveBufferHandler.h"
@@ -72,6 +74,11 @@ namespace shared::communication
       virtual void disconnect();
 
       //--------------------------------------------------------------
+      /// \brief	Close the connection from the asynchronous thread
+      //--------------------------------------------------------------
+      void asyncDisconnect();
+
+      //--------------------------------------------------------------
       /// \brief	Try to connect asynchronously
       //--------------------------------------------------------------
       void tryConnect();
@@ -124,6 +131,11 @@ namespace shared::communication
       /// \brief	boost:asio context
       //--------------------------------------------------------------
       boost::asio::io_context m_io;
+
+      //--------------------------------------------------------------
+      /// \brief	Keep the asynchronous thread running, even without pending operation
+      //--------------------------------------------------------------
+      std::optional<boost::asio::executor_work_guard<boost::asio::io_context::executor_type>> m_workGuard;
 
       //--------------------------------------------------------------
       /// \brief	The boost serial port
@@ -185,5 +197,10 @@ namespace shared::communication
       //--------------------------------------------------------------
       std::chrono::milliseconds m_writeTimeout;
       bool m_writeTimeouted;
+
+      //--------------------------------------------------------------
+      /// \brief	Stop in progress
+      //--------------------------------------------------------------
+      std::atomic<bool> m_stopping;
    };
 }
