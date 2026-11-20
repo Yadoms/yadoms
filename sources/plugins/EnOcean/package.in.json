@@ -13,6 +13,7 @@
   "configurationSchema": {
     "SerialPort": {
       "type": "enum",
+      "required": true,
       "values": {
         "__Binding__": {
           "type": "system",
