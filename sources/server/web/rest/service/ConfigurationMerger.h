@@ -4,29 +4,23 @@
 #include "pluginSystem/Manager.h"
 
 
-namespace web
+namespace web::rest::service
 {
-   namespace rest
+   class CConfigurationMerger final
    {
-      namespace service
-      {
-         class CConfigurationMerger final
-         {
-         public:
-            CConfigurationMerger() = delete;
-            ~CConfigurationMerger() = delete;
-            CConfigurationMerger(const CConfigurationMerger&) = delete;
-            CConfigurationMerger(CConfigurationMerger&&) = delete;
-            CConfigurationMerger& operator=(const CConfigurationMerger&) = delete;
-            CConfigurationMerger& operator=(const CConfigurationMerger&&) = delete;
+   public:
+      CConfigurationMerger() = delete;
+      ~CConfigurationMerger() = delete;
+      CConfigurationMerger(const CConfigurationMerger&) = delete;
+      CConfigurationMerger(CConfigurationMerger&&) = delete;
+      CConfigurationMerger& operator=(const CConfigurationMerger&) = delete;
+      CConfigurationMerger& operator=(const CConfigurationMerger&&) = delete;
 
-            static boost::shared_ptr<shared::CDataContainer> mergeConfigurationAndSchema(
-               const shared::CDataContainer& configurationSchema,
-               const shared::CDataContainer& instanceConfiguration);
+      static boost::shared_ptr<shared::CDataContainer> mergeConfigurationAndSchema(
+         const shared::CDataContainer& configurationSchema,
+         const shared::CDataContainer& instanceConfiguration);
 
-            static boost::shared_ptr<shared::CDataContainer> extractConfiguration(
-               const shared::CDataContainer& instanceConfigurationAndSchema);
-         };
-      } //namespace service
-   } //namespace rest
-} //namespace web 
+      static boost::shared_ptr<shared::CDataContainer> extractConfiguration(
+         const shared::CDataContainer& instanceConfigurationAndSchema);
+   };
+}
